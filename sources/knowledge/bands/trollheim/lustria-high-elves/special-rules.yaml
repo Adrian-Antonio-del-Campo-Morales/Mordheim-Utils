@@ -552,3 +552,32 @@ rules:
   applies_to:
     profile_ids:
     - sword-guardians
+- id: band--no-dwarf-equipment
+  name: No Dwarf-made Equipment
+  effect: High Elves may never use Dwarf-made equipment, including Gromril and Obsidian equipment.
+  source:
+    manual: lustria
+    printed_page: 114
+    section: High Elf Special Rules / Honourable
+  name_i18n:
+    es: Sin equipo de fabricación enana
+  effect_i18n:
+    es: >-
+      Los Altos Elfos nunca pueden usar equipo fabricado por enanos, incluido el equipo de Gromril
+      y de Obsidiana.
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - material.gromril
+          - material.obsidian

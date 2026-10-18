@@ -254,6 +254,25 @@ items:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/grave-robbers
   combat_status: implemented
   mechanic_id: weapon.pry-bar
+- id: iron_fan
+  kind: combat-equipment
+  name: Iron Fan
+  name_i18n:
+    es: Abanico de Hierro
+  effect: >-
+    The iron fan flicks deadly force with the grace of a dance. It uses the bearer's normal
+    Strength, grants him +1 Initiative and allows him to parry enemy blows.
+  effect_i18n:
+    es: >-
+      El abanico de hierro proyecta fuerza letal con la gracia de una danza. Usa la Fuerza normal
+      del portador, le otorga +1 Iniciativa y le permite parar golpes enemigos.
+  source_refs:
+  - manual: Border Town Burning
+    printed_page: 0
+    section: Grand Master Ippan Shu / Iron Fan
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1c
+  combat_status: implemented
+  mechanic_id: weapon.iron-fan
 - id: surgeons_journal
   kind: combat-equipment
   name: Surgeon's Journal
@@ -717,7 +736,36 @@ items:
     printed_page: 2
     section: Specialists / Grave Warden / Equipment
     url: https://broheim.net/downloads/hiredswords/mutinyinmarienburg/Specialists.pdf
-  combat_status: out_of_scope
+  combat_status: implemented
+  mechanic_id: weapon.halberd
+- id: pointy_stick
+  kind: combat-equipment
+  name: Pointy Stick
+  name_i18n:
+    es: Palo Puntiagudo
+  effect: >-
+    The Snotlings' dagger - the equipment lists print their rows as "Dagger/Pointy Stick". +1 enemy
+    armour save: pointy sticks are not the best weapons to use for penetrating an enemy model's
+    armour. An enemy wounded by a pointy stick gains a +1 bonus to his armour save, and a 6+ armour
+    save if he has none normally. 1st free/2 gc, Common.
+  effect_i18n:
+    es: >-
+      Es la daga de los Snotlings: las listas de equipo imprimen sus filas como "Daga/Palo
+      Puntiagudo". +1 a la salvación por armadura enemiga: los palos puntiagudos no son las mejores
+      armas para penetrar la armadura de un enemigo. Un enemigo herido por un palo puntiagudo gana
+      +1 a su salvación por armadura, y una salvación de 6+ si normalmente no tiene ninguna. La
+      primera gratis/2 co, Común.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: New Equipment / Pointy Stick
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  - manual: broheim.net
+    printed_page: 15
+    section: Henchmen / 0-1 Snotling Mob (consists of 5 Snotlings)
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Crooked%20Moon%20Night%20Goblins.pdf
+  combat_status: implemented
+  mechanic_id: weapon.dagger
 - id: arcane_candelabrum
   kind: combat-equipment
   name: Arcane Candelabrum
@@ -1318,7 +1366,8 @@ items:
     printed_page: 59
     section: Special Equipment / Warpaint
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
-  combat_status: out_of_scope
+  combat_status: implemented
+  mechanic_id: preparation.warpaint
 - id: effigy_of_mork
   kind: combat-equipment
   name: Effigy of Mork
@@ -1413,3 +1462,54 @@ items:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
   combat_status: implemented
   mechanic_id: preparation.head-splitter-mushrooms
+
+- id: hireling.dramatis.drenok-johansen-wielder-of-the-great-axe.item.sabertooth-hide
+  kind: armour
+  name: Sabertooth Tiger Hide
+  name_i18n: {es: 'Piel de Tigre Dientes de Sable'}
+  effect: 'Worn hide grants a 6+ armour save in close combat; its 5+ missile save remains outside the duel.'
+  effect_i18n: {es: 'Armadura de 6+ en cuerpo a cuerpo; se excluye la salvación de disparos de 5+.'}
+  source_refs:
+  - manual: broheim.net
+    printed_page: 27
+    section: Town Cryer 15 / Drenok Johansen
+    url: https://broheim.net/downloads/towncryer/old/TownCryer15.pdf
+  combat_status: implemented
+  mechanic_id: defence.sabertooth-hide
+
+- id: hireling.dramatis.abdul-alhazred-the-mad-sorcerer.item.eye-pendant
+  kind: combat-equipment
+  name: Eye Pendant
+  name_i18n: {es: Colgante del Ojo}
+  effect: 'A worn 4+ Ward; Undead opponents must pass Leadership before attacking the bearer.'
+  effect_i18n: {es: 'Guarda de 4+ equipado; los No Muertos deben superar Liderazgo para atacar al portador.'}
+  source_refs:
+  - manual: broheim.net
+    printed_page: 16
+    section: Khemri Dramatis Personae / Abdul Alhazred / Eye Pendant
+    url: https://broheim.net/downloads/campaigns/khemri/Khemri%20Dramatis%20Personae.pdf
+  combat_status: implemented
+  mechanic_id: defence.eye-pendant
+
+- id: all_seeing_eye_of_numas
+  kind: combat-equipment
+  name: All-seeing Eye of Numas
+  name_i18n:
+    es: Ojo que Todo lo Ve de Numas
+  effect: >-
+    The bearer has an additional 6+ save against strikes in close combat that is not modified by
+    Strength or weapon modifiers; its shooting half is outside the duel runtime and the bearer's
+    sight and extra Exploration die are excluded campaign consequences.
+  effect_i18n:
+    es: >-
+      El portador tiene una tirada de salvación adicional de 6+ contra golpes en combate cuerpo a
+      cuerpo que no se ve modificada por la Fuerza ni por modificadores de armas; su mitad de
+      disparo queda fuera del duelo y la visión del portador y el dado de Exploración adicional
+      son consecuencias de campaña excluidas.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Income / Magical Artefacts Table
+    url: https://mordheimer.net/docs/campaigns/income
+  combat_status: implemented
+  mechanic_id: defence.all-seeing-eye-of-numas

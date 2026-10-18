@@ -16,7 +16,6 @@ from mordheim_combat.modular.contexts import prepare_special_save_context
 from mordheim_combat.modular.contexts import prepare_wound_context
 from mordheim_combat.modular.contexts import weapon_against_opponent
 from mordheim_combat.modular.contexts import OwnedRollDice
-from mordheim_combat.modular.contexts import reject_curse_unmodifiable_save
 from mordheim_combat.modular.state import AttackOutcome
 from mordheim_combat.modular.state import FighterState
 from mordheim_combat.modular.state import require_characteristics
@@ -66,6 +65,23 @@ def _mim_regeneration(defender, current, dice, decisions, key):
     return current.spend("mim-regeneration-exhausted"), False
 
 
+def _choose_whip_disarm(defender, current, decisions, key):
+    candidates = [(defender.main_hand_slot, defender.main_weapon),
+                  (defender.off_hand_slot, defender.off_hand)]
+    candidates += [(tag.removeprefix('mutation.hand.'), attack)
+                   for attack in defender.extra_attacks for tag in attack.tags
+                   if tag.startswith('mutation.hand.')]
+    for slot, held in candidates:
+        if (held is None or slot in current.broken_hands
+                or any(has_tag(held, tag) for tag in
+                       ('weapon.indestructible', 'weapon.fist', 'weapon.natural-attacks'))
+                or not any(tag.startswith('weapon.') for tag in held.tags)):
+            continue
+        if decisions.choose(f'{key}.whip-disarm.{slot}', (defender, current, held)):
+            return slot
+    return None
+
+
 def resolve_reference_attack(attacker, defender, attacker_state, defender_state, weapon, dice, **options):
     """Resolve an attack; Rapier Barrage requires no established wound, even saved."""
     trance_target = defender_state.entranced
@@ -109,11 +125,13 @@ def resolve_reference_attack(attacker, defender, attacker_state, defender_state,
 
 
 def _resolve_reference_attack_once(attacker, defender, attacker_state, defender_state, weapon, dice, **options):
-    own = OwnedRollDice(dice, attacker, attacker_state, options.get("decisions"))
+    own = OwnedRollDice(dice, attacker, attacker_state, options.get("decisions"),
+        close_combat=options.get("melee_attack", True))
     self_hit = (attacker_state is defender_state and (
         attacker is defender or has_tag(weapon, "mechanic.black-hunger-backlash")))
     enemy = own if self_hit else OwnedRollDice(
-        dice, defender, defender_state, options.get("decisions"))
+        dice, defender, defender_state, options.get("decisions"),
+        close_combat=options.get("melee_attack", True))
     result = _resolve_reference_attack_body(attacker, defender, attacker_state, defender_state,
         weapon, dice, attacker_dice=own, defender_dice=enemy, self_attack=self_hit, **options)
     return replace(result,
@@ -143,16 +161,25 @@ def _resolve_reference_attack_body(
     attacker_dice=None, defender_dice=None,
     rememberer_pool_key: str | None = None,
     self_attack: bool = False,
+    disarm_slot: str | None = None,
     single_wound: bool = False,
+    deathblow: bool = False,
 ) -> AttackOutcome:
     """Resolve one attack and return new immutable fighter states."""
-    if not attacker_state.active or not defender_state.active:
+    # Printed Deathblow: a Slayer taken out of action in hand-to-hand still
+    # makes the attacks he has remaining, so his own removal must not swallow
+    # the attack.  Only that readiness is relaxed; the hit, the defences, the
+    # wound and the injury all resolve exactly as any other attack.
+    if not defender_state.active or (not attacker_state.active and not deathblow):
         return AttackOutcome(attacker_state, defender_state)
+    if (prepared_hit is None and melee_attack and not self_attack
+            and has_tag(weapon, 'weapon.whip-tc14') and decisions is not None):
+        disarm_slot = _choose_whip_disarm(defender, defender_state, decisions, key)
     if (melee_attack and prepared_hit is None
             and phases.has_tag(attacker.global_effects, "mechanic.honorable")
             and defender_state.condition in (Condition.KNOCKED_DOWN, Condition.STUNNED)):
         return AttackOutcome(attacker_state, defender_state)
-    if (melee_attack and not has_tag(weapon, "mechanic.electrical-touch-attack")
+    if (not disarm_slot and melee_attack and not has_tag(weapon, "mechanic.electrical-touch-attack")
             and (stunned_at_start if stunned_at_start is not None else
                          defender_state.condition == Condition.STUNNED and prepared_hit is None)):
         return AttackOutcome(attacker_state, replace(defender_state, condition=Condition.OUT))
@@ -196,22 +223,39 @@ def _resolve_reference_attack_body(
         allow_luck=decisions is None,
     )
     hit_context = replace(hit_context, modifier=hit_context.modifier - barrage_penalty)
+    if disarm_slot:
+        # Disarm is a declared non-wounding action with its own printed hit roll,
+        # not a coup de grace or an automatic injury against a helpless model.
+        hit_context = replace(hit_context, automatic=False)
     reroll = _hit_reroll(attacker, defender, weapon, effect, first_round, charging, frenzy=attacker_state.frenzy)
     luck_available = phases.has_tag(effect, "skill.luck") and "luck" not in attacker_state.resources_spent
     luck_for_hit = decisions is None and luck_available and not reroll
     if prepared_hit is not None:
         hit = prepared_hit
     elif phases.has_tag(effect, "skill.sweep") and weapon.two_handed and not hit_context.needs_sixes:
-        passed = phases._characteristic_test(
-            defender_state.initiative, defender_dice, f"{key}.sweep",
-            reroll=phases.has_tag(defender.global_effects, "skill.blessed-sight"),
-        )
+        # Sweep's printed condition (canonical skill.sweep) is the opponent
+        # failing an Initiative test.  A profile that prints no Initiative has
+        # no value a D6 could equal or undercut, so the printed pass condition
+        # can never be met: the test fails and the sweep's one attack hits
+        # automatically.  No Initiative is invented for it and no test die is
+        # rolled for a value the profile does not print; an ordinary
+        # Initiative test still resolves exactly as before.
+        passed = (False if defender_state.initiative is None else
+                  phases._characteristic_test(
+                      defender_state.initiative, defender_dice, f"{key}.sweep",
+                      reroll=phases.has_tag(defender.global_effects, "skill.blessed-sight"),
+                  ))
         from mordheim_combat.phases import HitResult
         hit = HitResult(0, 1 if passed else 6, not passed)
     else:
         hit = phases.resolve_hit(hit_context, attacker_dice)
         if attacker_dice.rerolled:
             hit = replace(hit, rerolled=True)
+    if (prepared_hit is None and melee_attack and hit.roll > 0 and not hit.rerolled
+            and has_tag(weapon, 'weapon.whip-tc14') and has_tag(effect, 'mechanic.whip-master')
+            and decisions is not None and decisions.choose(f'{key}.whip-master', hit)):
+        hit = replace(phases.resolve_hit(replace(hit_context,
+            reroll=False, key=f'{key}.hit.reroll'), attacker_dice), rerolled=True)
     if (prepared_hit is None and melee_attack and not hit.success and not hit.rerolled
             and has_tag(attacker.global_effects, "condition.rememberer-support")
             and has_tag(attacker.global_effects, "identity.slayer")
@@ -281,6 +325,7 @@ def _resolve_reference_attack_body(
         return AttackOutcome(
             attacker_state, defender_state, hit=True, hit_roll=hit.roll,
             hit_target=hit.target, trace=trace, natural_hit_six=natural_hit_six,
+            disarm_slot=disarm_slot,
         )
     attacker_state = replace(attacker_state,
         resources_spent=attacker_state.resources_spent | attacker_dice.state.resources_spent)
@@ -289,7 +334,6 @@ def _resolve_reference_attack_body(
     if (not defences_resolved and not ethereal_resolved
             and phases.has_tag(defender.global_effects, "mechanic.ethereal-hit-save")
             and not phases.has_tag(effect, "attack.magical")):
-        reject_curse_unmodifiable_save(defender, effect, "Ethereal")
         if defender_dice.unmodifiable(RollRequest(f"{key}.ethereal")) >= defender.global_effects.ethereal_hit_save:
             return AttackOutcome(attacker_state, defender_state, hit=True, hit_roll=hit.roll,
                 hit_target=hit.target, saved=True, trace=trace)
@@ -300,7 +344,6 @@ def _resolve_reference_attack_body(
     # resolves later as a ward save.
     if (not defences_resolved and not marks_resolved
             and phases.has_tag(defender.global_effects, "mechanic.marks-of-ranald")):
-        reject_curse_unmodifiable_save(defender, effect, "Marks of Ranald")
         if defender_dice.unmodifiable(RollRequest(f"{key}.marks-of-ranald")) >= 6:
             return AttackOutcome(attacker_state, defender_state, hit=True, hit_roll=hit.roll,
                 hit_target=hit.target, saved=True, trace=trace)
@@ -312,6 +355,20 @@ def _resolve_reference_attack_body(
         defender_state = replace(defender_state, lucky_charm=False)
         if charm >= 4:
             return AttackOutcome(attacker_state, defender_state, hit=True, hit_roll=hit.roll, saved=True, trace=trace)
+    if disarm_slot is not None and not defences_only:
+        from mordheim_combat.phases import ParryContext
+        if disarm_slot in defender_state.broken_hands:
+            return AttackOutcome(attacker_state, defender_state, hit=True, trace=trace)
+        # A single hold attempt is always allowed, irrespective of equipment,
+        # ordinary parry availability, weapon Strength or the whip's no-parry rule.
+        holding = phases.resolve_parry(ParryContext(hit.roll, 0, max(1, defender_state.strength),
+            key=f'{key}.disarm-hold', can_parry_six=True), defender_dice)
+        if not holding.blocked:
+            defender_state = replace(defender_state,
+                broken_hands=defender_state.broken_hands | {disarm_slot})
+        return AttackOutcome(attacker_state, defender_state, hit=True,
+            hit_roll=hit.roll, hit_target=hit.target, parried=holding.blocked,
+            trace=(*trace, Phase.PARRY), disarm_slot=disarm_slot)
     parry_context = None if defences_resolved or not parry_allowed else _parry_context(
         defender, defender_state, effect, 0, hit.roll, key, natural_hit_six=natural_hit_six,
     )
@@ -433,9 +490,13 @@ def _resolve_reference_attack_body(
             and not phases.has_tag(defender.global_effects, "undead_or_possessed")
             and not phases._characteristic_test(defender_state.toughness, defender_dice, f"{key}.infection")):
         # Infection is an additional automatic wound, not a second dagger hit.
-        # The source grants no armour-denial exception; retain ordinary saves.
-        infection = EffectSet(tags=("effect.automatic-wound", "effect.no-critical"),
-            automatic_hit=True, cannot_be_parried=True, fixed_strength=3)
+        # Human ruling D13 (2026-10-14): the extra infection wound is
+        # automatic and allows no saving throws, so no save die is rolled for
+        # it (armour stays unrollable via ignore_armour, ward and regeneration
+        # are blocked by the no-saves tag below) and no luck reroll can fire
+        # on it either.
+        infection = EffectSet(tags=("effect.automatic-wound", "effect.no-critical", "effect.no-saves"),
+            automatic_hit=True, cannot_be_parried=True, fixed_strength=3, ignore_armour=True)
         attacker_state = replace(attacker_state,
             resources_spent=attacker_state.resources_spent | attacker_dice.state.resources_spent)
         defender_state = replace(defender_state,
@@ -444,7 +505,11 @@ def _resolve_reference_attack_body(
             infection, dice, key=f"{key}.infection-wound", melee_attack=False,
             defences_resolved=True, decisions=decisions)
         from mordheim_combat.modular.aftermath import _react_to_wound
-        extra = _react_to_wound(attacker, defender, extra, dice, f"{key}.infection-wound", decisions=decisions)
+        # The infection wound is automatic, but it is still lost in the
+        # close-combat attack that infected the victim: it keeps its parent's
+        # close-combat provenance for the wound reactions it triggers.
+        extra = _react_to_wound(attacker, defender, extra, dice, f"{key}.infection-wound",
+                                decisions=decisions, close_combat=melee_attack)
         if secondary_outcomes is not None:
             secondary_outcomes.append(extra)
         attacker_state, defender_state = extra.attacker, extra.defender
@@ -472,12 +537,13 @@ def _resolve_reference_attack_body(
         hit_roll=6 if natural_hit_six else 0, first_round=first_round, charging=charging, key=f"{key}.wound",
         melee_attack=melee_attack, allow_luck=decisions is None,
     )
-    if killing_blow and not (phases.has_tag(effect, "poison.black-lotus") and not poison_blocked):
+    lotus = phases.black_lotus_wounds(effect, defender.global_effects)
+    if killing_blow and not (lotus and not poison_blocked):
         # No To Wound die is rolled, so no natural wound six or critical is invented.
         # Black Lotus retains its explicitly permitted critical attempt and
         # existing guaranteed-wound fallback; it is not an ordinary wound roll.
         wound_context = replace(wound_context, automatic=True, reroll=False)
-    if (natural_hit_six and phases.has_tag(effect, "poison.black-lotus") and not poison_blocked
+    if (natural_hit_six and lotus and not poison_blocked
             and decisions is not None and not decisions.choose(f"{key}.lotus-critical", wound_context)):
         wound_context = replace(wound_context, automatic=True)
     luck_for_wound = (
@@ -572,11 +638,13 @@ def _resolve_reference_attack_body(
 
 def _resolve_wound_damage(attacker, defender, attacker_state, defender_state, weapon, effect,
                           wound, critical, dice, **options):
-    own = OwnedRollDice(dice, attacker, attacker_state, options.get("decisions"))
+    own = OwnedRollDice(dice, attacker, attacker_state, options.get("decisions"),
+        close_combat=options.get("melee_attack", True))
     self_hit = options.pop("self_attack", False) or (attacker_state is defender_state and (
         attacker is defender or has_tag(weapon, "mechanic.black-hunger-backlash")))
     enemy = own if self_hit else OwnedRollDice(
-        dice, defender, defender_state, options.get("decisions"))
+        dice, defender, defender_state, options.get("decisions"),
+        close_combat=options.get("melee_attack", True))
     result = _resolve_wound_damage_body(attacker, defender, attacker_state, defender_state,
         weapon, effect, wound, critical, dice, attacker_dice=own, defender_dice=enemy, **options)
     return replace(result,
@@ -612,8 +680,6 @@ def _resolve_wound_damage_body(
             and not has_tag(effect, "attack.magical") and not has_tag(effect, "attack.blessed")
             and not armour_context.ignore_armour
             and phases.armour_target(armour_context) == defender.natural_armour_save)
-    if daemonic_save:
-        reject_curse_unmodifiable_save(defender, effect, "Daemonic Flesh")
     armour_dice = SimpleNamespace(roll=defender_dice.unmodifiable) if daemonic_save else defender_dice
     armour = phases.resolve_armour(armour_context, armour_dice)
     trace += (Phase.ARMOUR,)
@@ -651,12 +717,12 @@ def _resolve_wound_damage_body(
         defender, effect, key=f"{key}.special", defender_state=defender_state,
         melee_attack=melee_attack,
     )
-    intrinsic_djinn = (has_tag(defender.global_effects, "mechanic.djinn-ethereal")
-        and not has_tag(defender.global_effects, "condition.djinns-luck-active")
-        and not special_context.ward_blocked
-        and special_context.ward_save - int(has_tag(effect, "condition.djinns-curse-active")) == 5)
-    if intrinsic_djinn:
-        reject_curse_unmodifiable_save(defender, effect, "Djinn Ethereal")
+    # Decisions like D13 declare the additional wound saves nothing; reuse the
+    # existing blocked-save fields so no ward or regeneration die is rolled.
+    if phases.has_tag(effect, "effect.no-saves"):
+        special_context = replace(special_context,
+            ward_blocked=True, regeneration_blocked=True)
+    intrinsic_djinn = special_context.ward_unmodifiable and not special_context.ward_blocked
     special_dice = SimpleNamespace(roll=lambda request:
         defender_dice.unmodifiable(request) if intrinsic_djinn and request.key.endswith(".ward")
         else defender_dice.roll(request))
@@ -700,6 +766,15 @@ def _resolve_wound_damage_body(
                     parries_remaining=0)
                 return AttackOutcome(attacker_state, defender_state, True,
                     wounded=True, damage=damage, critical=wound.critical, trace=trace)
+    if remaining <= 0 and has_tag(defender.global_effects, 'mechanic.drenok-berserker'):
+        # The first crossing to zero requires 4+. A success lasts this player
+        # turn, so subsequent damage does not create further attempts/injuries.
+        fighting = (defender_state.drenok_fighting and defender_state.wounds <= 0
+            or defender_dice.roll(RollRequest(f'{key}.drenok-berserker')) >= 4)
+        defender_state = replace(defender_state, wounds=0, drenok_fighting=fighting,
+            condition=Condition.STANDING if fighting else Condition.OUT)
+        return AttackOutcome(attacker_state, defender_state, True, wounded=True,
+            damage=damage, critical=wound.critical, trace=trace)
     if remaining > 0:
         defender_state = replace(defender_state, wounds=remaining)
         return AttackOutcome(attacker_state, defender_state, True, wounded=True, damage=damage, critical=wound.critical, trace=trace)

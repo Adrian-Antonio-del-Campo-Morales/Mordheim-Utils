@@ -124,6 +124,70 @@ rules:
       habiendo durado en combate como si se hubiera levantado de estar derribado.
   applies_to:
     band: true
+# The list itself stays a compound record: Ded Shooty is a shooting modifier and
+# Sneaky Git a deployment mechanic.  Netter is the in-combat skill of the same
+# stanza, so it carries its own record, exactly like the sibling Night Goblins.
+- id: band--night-goblin-special-skills-netter
+  name: Netter
+  name_i18n:
+    es: Redador
+  effect: >-
+    A Night Goblin hunts Squigs in the depths of the mountains and has mastered the technique of the
+    net and charge; the Goblin may declare that he is making a net charge, throwing the net at a
+    target in the same way as described in the Mordheim rulebook; if he hits and the target fails to
+    escape the net then the target counts as knocked down and the Goblin completes his charge; if he
+    misses or the target escapes then the Goblin makes a failed charge (if the failed charge would
+    take him into base contact then stop him 1" away); a warrior caught in a net will be
+    automatically hit in combat but the Goblin must still roll to wound as with a knocked down
+    enemy; in the warrior's next recovery phase, unless stunned or out of action, he will cut
+    himself out of the net but cannot do anything else and will count as lasting in combat as if he
+    had stood up from being knocked down.
+  effect_i18n:
+    es: >-
+      Un Goblin Nocturno caza Squigs en las profundidades de las montañas y ha dominado la técnica
+      de la red y la carga; el Goblin puede declarar que efectúa una carga con red, lanzando la red
+      contra un objetivo de la misma forma que se describe en el libro de reglas de Mordheim; si
+      impacta y el objetivo no logra escapar de la red, el objetivo cuenta como derribado y el
+      Goblin completa su carga; si falla o el objetivo escapa, el Goblin efectúa una carga fallida
+      (si la carga fallida lo llevara a contacto, detenlo a 1" de distancia); un guerrero atrapado
+      en una red será impactado automáticamente en combate, pero el Goblin aún debe tirar para herir
+      como contra un enemigo derribado; en la siguiente fase de recuperación del guerrero, salvo
+      que esté aturdido o fuera de combate, se cortará la red por sí mismo pero no podrá hacer nada
+      más y contará como habiendo durado en combate como si se hubiera levantado de estar derribado.
+  source:
+    manual: broheim.net
+    printed_page: 8
+    section: Night Goblin Special Skills / Netter
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Crooked Moon Night Goblins.pdf
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    # The caught victim's own state is the clause's individually admitted
+    # consequence.  It is supplied expressly by the caller as the canonical
+    # condition.netted (catalog/rules/conditions.yaml), which the duel's state
+    # and recovery already consume; this row grants no technique of its own,
+    # so it is declared with no selectable grant: choosing it in a duel would
+    # have to produce the excluded throw, which is not simulated.
+    - id: condition.netted
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.netted
+    # The procedure the clause itself prints stays the excluded producer: a
+    # thrown net resolved by ballistic skill, the target's Strength escape test
+    # and the failed charge stopped short of contact are not simulated.
+    - id: band--night-goblin-special-skills-netter.net-charge-producer
+      scope: 'NO'
+      binding: null
+      reason: >-
+        The net charge is a throw resolved by ballistic skill followed by the target's Strength escape
+        test, and a miss or escape is a failed charge stopped short of contact; those producers and the
+        board placement remain outside the duel and are not simulated.  Only the caught victim's
+        individually admitted state applies, and the caller supplies it expressly as condition.netted.
 - id: band--waagh-magic
   runtime:
     scope: 'NO'

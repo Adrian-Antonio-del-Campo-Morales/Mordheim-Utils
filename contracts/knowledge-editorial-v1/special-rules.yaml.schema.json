@@ -69,6 +69,13 @@
           "minItems": 1,
           "items": { "$ref": "defs.schema.json#/$defs/id" }
         },
+        "eligible_condition_ids": {
+          "description": "Canonical supplied conditions that qualify a member the static `eligibility` list does not name. Some printed clauses name a state instead of a starting profile ('only the current warband leader may choose this skill'), so a member that carries every named condition is admitted as if the list named it, while a member that carries none stays governed by the list. A condition is a caller-supplied current fact, never inferred from a profile.",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "defs.schema.json#/$defs/id" }
+        },
         "summoned_profile_id": {
           "description": "Profile the rule summons, when it does.",
           "$ref": "defs.schema.json#/$defs/id"

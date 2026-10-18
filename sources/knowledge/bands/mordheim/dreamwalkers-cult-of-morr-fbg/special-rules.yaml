@@ -4,13 +4,14 @@ rules:
 - id: band--undead-foes-no-fear
   runtime:
     scope: 'YES'
-    implemented: 'NO'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.dreamwalkers-cult-of-morr-fbg.band.undead-foes-no-fear
+    - id: mechanic.undead-foes-no-fear
       scope: 'YES'
-      binding: null
-      reason: 'Included individual duel effect, not implemented: Individual source-qualified immunity to Fear against Undead; the canonical activation is not implemented.'
+      binding:
+        kind: mechanic
+        id: mechanic.undead-foes-no-fear
   name: Fearless Against the Undead Servants of Necromancers
   effect: >-
     Such is the faith of the followers of Morr in their god and in his protection, that in order to

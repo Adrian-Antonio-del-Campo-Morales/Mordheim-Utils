@@ -45,9 +45,18 @@ equipment_lists:
   - item_id: light_armour
     cost: 20
   - item_id: feather_headdress
+    # 'Warband leader only': the mandatory Witch Doctor is the leader at
+    # creation, and the detailed entry states that the headdress is inherited by
+    # each new leader, so the position itself is the other recipient. That
+    # recipient is the supplied state `condition.current-warband-leader` — the
+    # same condition the Norse Battle Tongue skill row reads — never a static
+    # profile list: the same profile is refused while another model leads, and a
+    # model without the condition keeps the printed refusal.
     applies_to:
       profile_ids:
       - witch-doctor
+      eligible_condition_ids:
+      - condition.current-warband-leader
     cost: 20
     notes: Warband leader only. At creation the mandatory Witch Doctor is the leader. The detailed entry is Rare 6 and states that the headdress is inherited by each new leader and must be worn. Internal
       item mechanics are intentionally not modelled here.

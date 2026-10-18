@@ -38,6 +38,16 @@ profiles:
   - id: hireling.hired-sword.beggar.rule.scrounge
     name: Scrounge
     effect: Adds an exploration die when eligible.
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: beggar-scrounge-excluded
+        scope: 'NO'
+        binding: null
+        reason: The extra exploration die belongs to the post-battle exploration procedure and produces
+          no consequence in a resolved duel.
     effect_i18n:
       es: >-
         Añade un dado de exploración cuando es elegible.
@@ -46,6 +56,16 @@ profiles:
   - id: hireling.hired-sword.beggar.rule.not-a-threat
     name: Not a Threat
     effect: May be ignored for source target/charge restrictions.
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: beggar-not-a-threat-excluded
+        scope: 'NO'
+        binding: null
+        reason: The clause governs an enemy's target and charge choices inside the battle's movement and
+          shooting procedures; the resolved duel already fields and engages both warriors.
     effect_i18n:
       es: >-
         Puede ser ignorado para las restricciones de objetivo/carga de la fuente.
@@ -359,9 +379,69 @@ profiles:
         reason: >-
           Ranged cloak save, shooting-phase Control and post-battle equipment collection are outside
           the duel; Rage is an unselected advancement skill.
-  unresolved_references:
-  - kind: alternate_profile
-    source_name: Wolf form M7 WS4 BS0 S4 T4 W2 I5 A2(3) Ld6
+  - id: hireling.hired-sword.cursed-hillman.rule.wolf-form
+    name: Wolf Form
+    name_i18n:
+      es: Forma de Lobo
+    effect: >-
+      While in wolf-form the Hillman discards every garment and weapon; the werewolf uses only its
+      teeth and claws in close combat, suffers no penalties for doing so, and has a bonus Bite
+      attack resolved at -1 Strength. Wolf profile M7 WS4 BS0 S4 T4 W2 I5 A2(3) Ld6.
+    effect_i18n:
+      es: >-
+        En forma de lobo el Montañés descarta todas las prendas y armas; el hombre lobo usa solo sus
+        dientes y garras en combate cuerpo a cuerpo sin penalización y tiene un ataque de Mordisco a
+        -1F. Perfil de lobo M7 HA4 HP0 F4 R4 H2 I5 A2(3) Ld6.
+    kind: special-skill-option
+    eligibility:
+    - hireling.hired-sword.cursed-hillman
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: selectable
+      effects:
+      - id: wolf-form-stats
+        scope: 'YES'
+        binding:
+          kind: profile
+          id: profile.characteristics
+          parameters:
+            profile_ids:
+            - hireling.hired-sword.cursed-hillman
+            bonuses:
+              movement: 3
+              weapon_skill: 1
+              strength: 1
+              toughness: 1
+              wounds: 1
+              initiative: 2
+              attacks: 1
+              leadership: -2
+      # The printed kit is not destroyed: it is discarded for the form and
+      # collected after the battle, so ownership stays legal while the duel
+      # runs the werewolf state (`equipment_for_state` ignores every carried
+      # item and supplies the -1S Bite).
+      - id: wolf-form-discarded-kit
+        scope: 'YES'
+        binding:
+          kind: compiler
+          id: compiler.hillman-wolf-form
+      # The heavy fur cloak is a garment, so the wolf form carries no 6+ save;
+      # the printed wolf line has no armour of its own.
+      - id: wolf-form-no-cloak
+        scope: 'YES'
+        binding:
+          kind: trait
+          id: trait.natural-armour-save
+          parameters:
+            value: 7
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Hired Swords / Cursed Hillman / Lycanthrope
+      url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+  special_skill_rule_ids:
+  - hireling.hired-sword.cursed-hillman.rule.wolf-form
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -402,6 +482,16 @@ profiles:
   - id: hireling.hired-sword.dark-mage.rule.wizard
     name: Wizard
     effect: Uses the Dark Magic spell list.
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: dark-mage-wizard-excluded
+        scope: 'NO'
+        binding: null
+        reason: Spell-list selection and spell casting are the excluded magic subsystem; the duel resolves
+          no casting.
     effect_i18n:
       es: >-
         Usa la lista de hechizos de Magia Oscura.
@@ -415,6 +505,16 @@ profiles:
         Usa la regla de odio/actitud de la fuente.
     name_i18n:
       es: Desprecio a los Saqueadores
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: mechanic.despise-despoilers
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.despise-despoilers
   - id: hireling.hired-sword.dark-mage.rule.self-assured
     name: Self Assured
     effect: Uses source psychology rule.
@@ -470,6 +570,10 @@ profiles:
       quantity:
         kind: fixed
         value: 1
+    - item_id: pistol
+      quantity:
+        kind: fixed
+        value: 1
   skill_access:
   - combat
   - shooting
@@ -486,28 +590,37 @@ profiles:
     runtime:
       grant: profile
       scope: 'YES'
-      implemented: 'NO'
+      implemented: 'YES'
       effects:
       - id: mechanic.psychology-immunity
         scope: 'YES'
         binding:
           kind: mechanic
           id: mechanic.psychology-immunity
-      - id: hireling.hired-sword.dwarf-slayer-pirate.rule.slayer-pirate.hard-to-kill.pending
+      - id: skill.hard-to-kill
         scope: 'YES'
-        binding: null
-        reason: 'Retained individual clause: Admitted individual consequence: the bearer is taken out of action only on an injury roll of 6 and a 5 is treated as stunned. The KB declares the identical contract as skill.hard-to-kill.'
-      - id: hireling.hired-sword.dwarf-slayer-pirate.rule.slayer-pirate.hard-head.pending
+        binding:
+          kind: mechanic
+          id: skill.hard-to-kill
+      - id: trait.concussion-immune
         scope: 'YES'
+        binding:
+          kind: trait
+          id: trait.concussion-immune
+          parameters:
+            value: true
+      - id: dwarf-slayer-pirate-all-alone
+        scope: 'NO'
         binding: null
-        reason: 'Retained individual clause: Admitted individual condition: the bearer ignores the concussion rule. The KB declares trait.concussion-immune for the same Dwarf rule.'
-      - id: hireling.hired-sword.dwarf-slayer-pirate.rule.slayer-pirate.festooned-with-pistols--scope--festooned-pistols-melee.pending
+        reason: The All Alone half of Deathwish is a multiple-combat clause; the duel fields two warriors, so no All Alone test is produced.
+      - id: mechanic.festooned-with-pistols
         scope: 'YES'
-        binding: null
-        reason: 'Retained individual clause: Using pistols in the first round of hand-to-hand combat and counting them as clubs in later rounds is admitted weapon behaviour of this duelist, with the pistol profile supplied from the sources. Printed clause: except in hand-to-hand combat, where they may use pistols in the first round only and count the pistol as a club in later rounds, drawing another pistol once out of combat.'
+        binding:
+          kind: mechanic
+          id: mechanic.festooned-with-pistols
   unresolved_references:
   - kind: equipment_loadout
-    source_name: multiple Pistols as defined by source
+    source_name: 'the further copies of "many many Pistols" beyond the one carried copy'
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -851,6 +964,16 @@ profiles:
   - id: hireling.hired-sword.the-fallen-sister.rule.wizard
     name: Wizard
     effect: May use Lesser Magic according to source.
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: the-fallen-sister-wizard-excluded
+        scope: 'NO'
+        binding: null
+        reason: Spell-list selection and spell casting are the excluded magic subsystem; the duel resolves
+          no casting.
     effect_i18n:
       es: >-
         Puede usar Magia Menor según la fuente.
@@ -859,6 +982,16 @@ profiles:
   - id: hireling.hired-sword.the-fallen-sister.rule.warrior-wizard
     name: Warrior Wizard
     effect: Uses source warrior-wizard rule.
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: the-fallen-sister-warrior-wizard-excluded
+        scope: 'NO'
+        binding: null
+        reason: The warrior-wizard rule belongs to spell casting and campaign advancement, which the duel
+          excludes; the clause establishes no individual melee consequence.
     effect_i18n:
       es: >-
         Usa la regla de guerrero-hechicero de la fuente.
@@ -872,6 +1005,16 @@ profiles:
         Usa la regla de psicología de la fuente.
     name_i18n:
       es: Avergonzado y Asustado
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: mechanic.ashamed-and-afraid
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.ashamed-and-afraid
   unresolved_references:
   - kind: equipment_mapping
     source_name: Sling
@@ -920,9 +1063,29 @@ profiles:
         Usa la regla de Listo de la fuente.
     name_i18n:
       es: Listo
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: goblin-lantern-bearer-smart-excluded
+        scope: 'NO'
+        binding: null
+        reason: Animosity is the excluded group procedure; being exempt from it has no
+          consequence in a one-on-one duel.
   - id: hireling.hired-sword.goblin-lantern-bearer.rule.very-lucky
     name: Very Lucky
     effect: Uses special post-battle injury table 1 Lost, 2-6 Survives.
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: goblin-lantern-bearer-very-lucky-excluded
+        scope: 'NO'
+        binding: null
+        reason: The special injury table resolves after the battle and produces no consequence in a
+          resolved duel.
     effect_i18n:
       es: >-
         Usa la tabla especial de lesiones tras la batalla: 1 Desaparece, 2-6 Sobrevive.
@@ -931,6 +1094,15 @@ profiles:
   - id: hireling.hired-sword.goblin-lantern-bearer.rule.small-size
     name: Small Size
     effect: Adds +3 to exploration total according to source.
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: goblin-lantern-bearer-small-size-excluded
+        scope: 'NO'
+        binding: null
+        reason: The bonus applies to the post-battle exploration total, outside the duel.
     effect_i18n:
       es: >-
         Suma +3 al total de exploración según la fuente.
@@ -980,6 +1152,7 @@ profiles:
         es: Pala
     - id: hireling.hired-sword.gravesman.item.pry-bar
       name: Pry Bar
+      counts_as: pry_bar
       name_i18n:
         es: Palanqueta
   skill_access:
@@ -989,12 +1162,26 @@ profiles:
   rules:
   - id: hireling.hired-sword.gravesman.rule.gravesman
     name: Gravesman
-    effect: May retain a dead Hero's equipment on the source 4+ result.
+    effect: >-
+      He's o'er dere: when a Hero dies on the post-game Serious Injuries chart this Gravesman
+      may retain that Hero's equipment on a D6 roll of 4+, provided his own upkeep was paid.
     effect_i18n:
       es: >-
-        Puede conservar el equipo de un Héroe muerto con el resultado de 4+ de la fuente.
+        Está por ahí: cuando un Héroe muere en la tabla de Heridas Graves posterior a la partida,
+        este Sepulturero puede conservar su equipo con 4+ en 1D6, siempre que se haya pagado su
+        mantenimiento.
     name_i18n:
       es: Sepulturero
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: gravesman-retains-dead-hero-equipment
+        scope: 'NO'
+        binding: null
+        reason: Retaining a dead Hero's equipment is a post-battle roster and upkeep consequence; no
+          participant in the duel is affected.
   source_notes:
   - Mordheimer's profile row is labelled 'Diestro'; retained data values but not the apparent label typo.
   source_refs:
@@ -1151,6 +1338,16 @@ profiles:
         Usa la regla táctica de la fuente.
     name_i18n:
       es: Táctico Experto
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: imperial-tactician-expert-tactician-excluded
+        scope: 'NO'
+        binding: null
+        reason: The recommended changes to the warband's deployment are a pre-battle
+          deployment procedure the duel does not run.
   - id: hireling.hired-sword.imperial-tactician.rule.read-the-battle
     name: Read the Battle
     effect: Uses source tactical rule.
@@ -1159,9 +1356,28 @@ profiles:
         Usa la regla táctica de la fuente.
     name_i18n:
       es: Leer la Batalla
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: imperial-tactician-read-the-battle-excluded
+        scope: 'NO'
+        binding: null
+        reason: Passing the warband's first Rout test belongs to the excluded group
+          rout procedure.
   - id: hireling.hired-sword.imperial-tactician.rule.organized-search-party
     name: Organized Search Party
     effect: Uses post-battle search rule.
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: imperial-tactician-organized-search-party-excluded
+        scope: 'NO'
+        binding: null
+        reason: The post-battle search rule is a campaign procedure, outside the duel.
     effect_i18n:
       es: >-
         Usa la regla de búsqueda tras la batalla.
@@ -1170,6 +1386,16 @@ profiles:
   - id: hireling.hired-sword.imperial-tactician.rule.send-false-signals
     name: Send False Signals
     effect: Uses source scenario/tactical rule.
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: imperial-tactician-send-false-signals-excluded
+        scope: 'NO'
+        binding: null
+        reason: The scenario/tactical rule concerns battle deployment and scenario procedures, outside the
+          resolved duel.
     effect_i18n:
       es: >-
         Usa la regla de escenario/táctica de la fuente.
@@ -1232,6 +1458,16 @@ profiles:
         Usa la regla de orgullo de la fuente.
     name_i18n:
       es: Orgullo
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: mechanic.leader-six
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.leader-six
   - id: hireling.hired-sword.knight-of-the-white-wolf.rule.cavalryman
     name: Cavalryman
     effect: Uses source cavalry rule.
@@ -1240,6 +1476,16 @@ profiles:
         Usa la regla de caballería de la fuente.
     name_i18n:
       es: Jinete
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: knight-of-the-white-wolf-cavalryman-excluded
+        scope: 'NO'
+        binding: null
+        reason: The optional Warhorse and its mounted bonuses belong to the excluded
+          mount subsystem, and the rating increase is a roster cost.
   - id: hireling.hired-sword.knight-of-the-white-wolf.rule.among-wolves
     name: Among Wolves
     effect: Uses source wolf-related rule.
@@ -1248,11 +1494,31 @@ profiles:
         Usa la regla relacionada con lobos de la fuente.
     name_i18n:
       es: Entre Lobos
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: knight-of-the-white-wolf-among-wolves-excluded
+        scope: 'NO'
+        binding: null
+        reason: The halved upkeep for a Middenheim warband is a hiring-cost clause settled
+          between games.
   - id: hireling.hired-sword.knight-of-the-white-wolf.rule.campaign-eligibility
     name: Dynamic Hiring Eligibility — Warrior Priest Incompatibility
     effect: >-
       The Knight of the White Wolf will not join or remain with a warband whose current roster
       contains a Warrior Priest.
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: knight-of-the-white-wolf-campaign-eligibility-excluded
+        scope: 'NO'
+        binding: null
+        reason: The roster-composition restriction is evaluated when the warband is hired and has no
+          duel-time consequence.
     effect_i18n:
       es: >-
         El Caballero del Lobo Blanco no se unirá a una banda cuya plantilla actual incluya un
@@ -1305,6 +1571,9 @@ profiles:
         es: Túnica Ninja
     - id: hireling.hired-sword.ninja-gnoblar.item.bo
       name: Bo
+      counts_as:
+        item_id: bo
+        context: rules
       name_i18n:
         es: Bo
   skill_access:
@@ -1316,6 +1585,16 @@ profiles:
   - id: hireling.hired-sword.ninja-gnoblar.rule.stealthy
     name: Stealthy
     effect: Uses source stealth rule.
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: ninja-gnoblar-stealthy-excluded
+        scope: 'NO'
+        binding: null
+        reason: Hiding and concealment on the battle map are visibility and deployment procedures the duel
+          does not resolve.
     effect_i18n:
       es: >-
         Usa la regla de sigilo de la fuente.
@@ -1324,6 +1603,15 @@ profiles:
   - id: hireling.hired-sword.ninja-gnoblar.rule.rooftop-to-rooftop
     name: Rooftop to Rooftop
     effect: Uses source rooftop movement rule.
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: ninja-gnoblar-rooftop-to-rooftop-excluded
+        scope: 'NO'
+        binding: null
+        reason: Rooftop movement is a terrain movement procedure, outside the resolved duel.
     effect_i18n:
       es: >-
         Usa la regla de movimiento por tejados de la fuente.
@@ -1337,10 +1625,30 @@ profiles:
         Opción de habilidad especial.
     name_i18n:
       es: Saltador de Tejados Experto
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: ninja-gnoblar-expert-rooftop-jumper-excluded
+        scope: 'NO'
+        binding: null
+        reason: Jumping distance and the Initiative test for jumps and diving charges
+          are movement and terrain clauses.
   - id: hireling.hired-sword.ninja-gnoblar.rule.campaign-eligibility
     name: Dynamic Hiring Eligibility — Fear-Causing Roster
     effect: >-
       The Ninja Gnoblar may only be hired if the current warband contains no fear-causing creatures.
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: ninja-gnoblar-campaign-eligibility-excluded
+        scope: 'NO'
+        binding: null
+        reason: The roster-composition restriction is evaluated when the warband is hired and has no
+          duel-time consequence.
     effect_i18n:
       es: >-
         El Gnoblar Ninja solo puede ser contratado si la banda actual no contiene criaturas que
@@ -1396,6 +1704,15 @@ profiles:
   - id: hireling.hired-sword.ogre-slave-master.rule.slave-master
     name: Slave Master
     effect: Uses source slave-master campaign rule.
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: ogre-slave-master-slave-master-excluded
+        scope: 'NO'
+        binding: null
+        reason: The slave-master rule is a campaign hiring and upkeep procedure, outside the duel.
     effect_i18n:
       es: >-
         Usa la regla de campaña de tratante de esclavos de la fuente.
@@ -1422,6 +1739,16 @@ profiles:
   - id: hireling.hired-sword.ogre-slave-master.rule.large-target
     name: Large Target
     effect: Counts as a large target.
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: condition.large-target
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: condition.large-target
     effect_i18n:
       es: >-
         Cuenta como objetivo grande.
@@ -1484,6 +1811,15 @@ profiles:
   - id: hireling.hired-sword.slaver.rule.slaver
     name: Slaver
     effect: Uses the source automatic-capture and slave-sale rules.
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: slaver-slaver-excluded
+        scope: 'NO'
+        binding: null
+        reason: Automatic capture and slave sale are post-battle campaign procedures, outside the duel.
     effect_i18n:
       es: >-
         Usa las reglas de captura automática y venta de esclavos de la fuente.
@@ -1548,9 +1884,28 @@ profiles:
         Usa la regla de acrobático de la fuente.
     name_i18n:
       es: Acrobático
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: swashbuckler-acrobatic-excluded
+        scope: 'NO'
+        binding: null
+        reason: The waived Initiative test when wounded near a building edge is a terrain
+          and falling clause.
   - id: hireling.hired-sword.swashbuckler.rule.nimble
     name: Nimble
     effect: Uses source nimble rule.
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: swashbuckler-nimble-excluded
+        scope: 'NO'
+        binding: null
+        reason: The nimble rule governs movement, which the resolved duel does not resolve.
     effect_i18n:
       es: >-
         Usa la regla de agilidad de la fuente.
@@ -1628,6 +1983,15 @@ profiles:
   - id: hireling.hired-sword.ungor-trapper.rule.set-traps
     name: Set Traps
     effect: Uses source trap rule.
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: ungor-trapper-set-traps-excluded
+        scope: 'NO'
+        binding: null
+        reason: Setting traps is a pre-battle terrain procedure; no trap is resolved in the duel.
     effect_i18n:
       es: >-
         Usa la regla de trampas de la fuente.
@@ -1636,6 +2000,15 @@ profiles:
   - id: hireling.hired-sword.ungor-trapper.rule.hunter-s-eye
     name: Hunter's Eye
     effect: Uses source hunter rule.
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: ungor-trapper-hunter-s-eye-excluded
+        scope: 'NO'
+        binding: null
+        reason: The hunting rule concerns locating prey on the battle map, outside the resolved duel.
     effect_i18n:
       es: >-
         Usa la regla de cazador de la fuente.
@@ -1644,6 +2017,15 @@ profiles:
   - id: hireling.hired-sword.ungor-trapper.rule.excellent-sight
     name: Excellent Sight
     effect: Uses source sight rule.
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: ungor-trapper-excellent-sight-excluded
+        scope: 'NO'
+        binding: null
+        reason: Spotting and visibility are map procedures that produce no consequence in the resolved duel.
     effect_i18n:
       es: >-
         Usa la regla de visión de la fuente.
@@ -1657,6 +2039,16 @@ profiles:
         Usa la regla de limitación de la fuente.
     name_i18n:
       es: Solo un Tonto
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: ungor-trapper-just-a-twit-excluded
+        scope: 'NO'
+        binding: null
+        reason: The departure roll and the upkeep taken along are post-battle roster
+          and payment consequences.
   unresolved_references:
   - kind: special_skill_options
     source_name: Mutant/Fearless/Manhater
@@ -1716,12 +2108,23 @@ profiles:
   rules:
   - id: hireling.hired-sword.weaponsmith.rule.maintenance
     name: Maintenance
-    effect: After battle uses the source D6 equipment-maintenance improvement table.
+    effect: Before each game, accept the first D6 maintenance result for Heroes and the Weaponsmith; armour, helmets, bucklers and shields retain their printed improvement for that game.
     effect_i18n:
       es: >-
-        Tras la batalla usa la tabla de mejora de mantenimiento de equipo de 1D6 de la fuente.
+        Antes de cada partida acepta el primer resultado de mantenimiento de 1D6 para los Héroes y el Armero; las mejoras duran esa partida.
     name_i18n:
       es: Manutención
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: weaponsmith-maintenance-post-battle-table
+        scope: 'NO'
+        binding: null
+        reason: Rolling the maintenance table before a game is an excluded producer, not an
+          automatic bonus to the Weaponsmith. Supply the first result with condition.maintenance-1
+          through condition.maintenance-6 on an eligible recipient; missile ranges are not simulated.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1771,6 +2174,16 @@ profiles:
   - id: hireling.hired-sword.wood-elf-hunter.rule.stalk
     name: Stalk
     effect: Uses source stalking rule.
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: wood-elf-hunter-stalk-excluded
+        scope: 'NO'
+        binding: null
+        reason: Stalking and concealment are map deployment and visibility procedures, outside the resolved
+          duel.
     effect_i18n:
       es: >-
         Usa la regla de acecho de la fuente.
@@ -1779,6 +2192,15 @@ profiles:
   - id: hireling.hired-sword.wood-elf-hunter.rule.hunted
     name: Hunted
     effect: Uses source hunted/retention rule.
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: wood-elf-hunter-hunted-excluded
+        scope: 'NO'
+        binding: null
+        reason: The hunted rule is a post-battle retention consequence, outside the duel.
     effect_i18n:
       es: >-
         Usa la regla de cacería/retención de la fuente.
@@ -1787,6 +2209,15 @@ profiles:
   - id: hireling.hired-sword.wood-elf-hunter.rule.keen-eyed
     name: Keen Eyed
     effect: Uses source spotting rule.
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: wood-elf-hunter-keen-eyed-excluded
+        scope: 'NO'
+        binding: null
+        reason: Spotting is a map visibility procedure, outside the resolved duel.
     effect_i18n:
       es: >-
         Usa la regla de avistamiento de la fuente.
@@ -1800,3 +2231,4 @@ profiles:
     printed_page: 0
     section: Hired Swords / Wood Elf Hunter
     url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+

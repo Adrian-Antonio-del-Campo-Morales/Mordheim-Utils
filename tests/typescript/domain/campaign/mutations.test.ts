@@ -76,12 +76,19 @@ describe.skipIf(!ARTEFACT_PATH)("T10 mutations (generated artefact)", () => {
     expect(rule.rule_id).toBe("band--aquatic-mutants");
     expect(rule.recipients).toBe("hero");
     expect(rule.limit_per_warrior).toBe(1);
-    expect(rule.mutation_ids).toEqual([BLACKBLOOD, "campaign.mutation.great-claw", TENTACLE]);
-    // The printed names with no catalogue entry are published, not invented.
-    expect(rule.unrouted_mutation_names).toEqual(["prehensile tail", "beak", "electrical touch", "mer-creature", "suckers", "eye stalks"]);
-    expect(availableMutations(reader, BAND).map((mutation) => mutation.id).sort()).toEqual([BLACKBLOOD, "campaign.mutation.great-claw", TENTACLE].sort());
+    // Every printed pool name is published and priced; nothing is left unrouted.
+    expect(rule.mutation_ids).toEqual([
+      BLACKBLOOD, "campaign.mutation.great-claw", TENTACLE,
+      "campaign.mutation.prehensile-tail", "campaign.mutation.beak",
+      "campaign.mutation.electrical-touch", "campaign.mutation.mer-creature",
+      "campaign.mutation.suckers", "campaign.mutation.eye-stalks",
+    ]);
+    expect(rule.unrouted_mutation_names).toEqual([]);
+    expect(availableMutations(reader, BAND).map((mutation) => mutation.id).sort()).toEqual(
+      rule.mutation_ids.slice().sort());
     expect(availableMutations(reader, "masters-of-horror-sylv")).toEqual([]);
     expect(mutationCatalogue(reader).find((mutation) => mutation.id === BLACKBLOOD)?.cost_gc).toBe(30);
+    expect(mutationCatalogue(reader).find((mutation) => mutation.id === "campaign.mutation.mer-creature")?.cost_gc).toBe(25);
     // Listed price the first time, doubled for a second mutation.
     expect(mutationPrice(reader, BLACKBLOOD, 0)).toBe(30);
     expect(mutationPrice(reader, BLACKBLOOD, 1)).toBe(60);
@@ -107,7 +114,7 @@ describe.skipIf(!ARTEFACT_PATH)("T10 mutations (generated artefact)", () => {
     expect(mutationsOf(restored, "reaver")).toEqual([BLACKBLOOD]);
   });
 
-  it("refuses a duplicate, a second mutation over the printed limit, an unpriced name and a non-Hero", () => {
+  it("refuses a duplicate, a second mutation over the printed limit and a non-Hero", () => {
     const first = buyMutation(draft([warrior("reaver", "reavers")]), reader, { warrior_id: "reaver", mutation_id: BLACKBLOOD });
     expect(first.ok).toBe(true);
     if (!first.ok) return;
@@ -120,13 +127,18 @@ describe.skipIf(!ARTEFACT_PATH)("T10 mutations (generated artefact)", () => {
     expect(overLimit.ok).toBe(false);
     if (!overLimit.ok) expect(overLimit.reason).toBe("limit_reached");
 
-    const unpriced = buyMutation(draft([warrior("reaver", "reavers")]), reader, { warrior_id: "reaver", mutation_id: "campaign.mutation.mer-creature" });
-    expect(unpriced.ok).toBe(false);
-    if (!unpriced.ok) expect(unpriced.reason).toBe("not_found");
-
     const henchman = buyMutation(draft([warrior("wrecker", "wreckers", "henchman")]), reader, { warrior_id: "wrecker", mutation_id: BLACKBLOOD });
     expect(henchman.ok).toBe(false);
     if (!henchman.ok) expect(henchman.reason).toBe("invalid_input");
+  });
+
+  it("buys the 'Corrupted Characters' pool names previously left unrouted", () => {
+    const MER_CREATURE = "campaign.mutation.mer-creature";
+    const bought = buyMutation(draft([warrior("reaver", "reavers")]), reader, { warrior_id: "reaver", mutation_id: MER_CREATURE });
+    expect(bought.ok, bought.ok ? "" : bought.message).toBe(true);
+    if (!bought.ok) return;
+    expect(mutationsOf(bought.state, "reaver")).toEqual([MER_CREATURE]);
+    expect(bought.state.campaign.warriors.find((row) => row.id === "reaver")?.cost).toBe(25);
   });
 
   it("refuses a purchase with insufficient funds", () => {

@@ -121,6 +121,7 @@ rules:
         parameters:
           allowed_kinds:
           - weapon.mace
+          - weapon.club
           - weapon.dagger
   name: Tenants of the Order
   effect: >-
@@ -323,17 +324,19 @@ rules:
     - onnabushi
 - id: band--nippon-special-skills
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.nipponese-expedition-web.special.nippon-special-skills
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: skill selections on promotion are advancement-time mechanics outside the
-        duel scope (combat-critical parts of Death before Dishonor and Iaijutsu are candidates for
-        later implementation).
+    - id: profile.skill-access
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.skill-access
+        parameters:
+          category: special
+    # The table grants the printed choice; each named member keeps its own
+    # record, so an excluded member is never granted by the access itself.
   name: Nippon Special Skills
   effect: >-
     Nippon Warband members may choose to use the following skill list instead of the standard skill
@@ -390,6 +393,11 @@ rules:
       resultado de esta segunda tirada debe aceptarse, aunque sea peor.
   applies_to:
     band: true
+    profile_ids:
+    - hatamoto
+    - vim-to-mage
+    - shinobi
+    - retainer
 - id: warrior-monks--no-armour
   runtime:
     scope: 'YES'
@@ -419,3 +427,191 @@ rules:
   applies_to:
     profile_ids:
     - warrior-monks
+- id: band--nippon-special-skills-death-before-dishonor
+  kind: warband_skill
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.nipponese-expedition-web.nippon.death-before-dishonor
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred: the final attack happens when the model would be removed and needs a
+        removal-triggered attack step the duel does not yet own.
+  name: Death before Dishonor
+  effect: >-
+    Once per grim engagement, if this model would be removed from the battlefield as the result
+    of a close combat attack, before removing it make a single close combat attack with it as
+    normal; if these last, desperate blows fell an adversary, the warrior defies death's grasp,
+    standing amidst the carnage with but a single thread of life remaining.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Nippon Special Skills
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/nipponese-expedition
+  name_i18n:
+    es: Muerte antes que Deshonor
+  eligibility:
+  - hatamoto
+  - vim-to-mage
+  - shinobi
+  - retainer
+  applies_to:
+    band: true
+- id: band--nippon-special-skills-night-fighter
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.nipponese-expedition-web.nippon.night-fighter
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: hiding and running while hidden are deployment/stealth rules outside the
+        duel.
+  name: Night Fighter
+  effect: This model is able to run while remaining hidden, as per hiding rules.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Nippon Special Skills
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/nipponese-expedition
+  name_i18n:
+    es: Luchador Nocturno
+  eligibility:
+  - shinobi
+  applies_to:
+    band: true
+- id: band--nippon-special-skills-iaijutsu
+  kind: warband_skill
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.nipponese-expedition-web.nippon.iaijutsu
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred: the charged +1 Attack that strikes first needs the charge-state attack step
+        before it can be granted without widening it to every attack.
+  name: Iaijutsu
+  effect: >-
+    When this model is charged they gain +1A that they may only use against the charger; this
+    additional attack will "strike first". If the wielder is simultaneously charged by two or more
+    opponents they will still only receive a total of +1A. These attacks are resolved at the
+    Strength value of the model, with no further modifiers.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Nippon Special Skills
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/nipponese-expedition
+  name_i18n:
+    es: Iaijutsu
+  eligibility:
+  - hatamoto
+  - vim-to-mage
+  - shinobi
+  - retainer
+  applies_to:
+    band: true
+- id: band--nippon-special-skills-last-stand
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.nipponese-expedition-web.nippon.last-stand
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: the all-alone test and the 6-inch friendly proximity are group Leadership
+        rules the isolated duel never performs.
+  name: Last Stand
+  effect: >-
+    If this model would normally take an all-alone test, it may be re-rolled; in addition, at the
+    start of this model's turn, if it is 6" away from friendly models, it can choose to have +1 to
+    WS or BS until the start of its next turn.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Nippon Special Skills
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/nipponese-expedition
+  name_i18n:
+    es: Última Posición
+  eligibility:
+  - hatamoto
+  - vim-to-mage
+  - shinobi
+  - retainer
+  applies_to:
+    band: true
+- id: band--nippon-special-skills-tea-ceremony
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.nipponese-expedition-web.nippon.tea-ceremony
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: the post-battle experience gain and rare-item search are campaign
+        progression.
+  name: Tea Ceremony
+  effect: >-
+    After a battle, if this hero survives and did not go out of action, they can forgo searching
+    for rare items and spend 10 gold crowns representing the cost of preparations for the tea
+    ceremony; then choose any other hero, and roll a D6 — on a 3+, the chosen hero gains an
+    Experience point from the introspective nature of the ceremony.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Nippon Special Skills
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/nipponese-expedition
+  name_i18n:
+    es: Ceremonia del Té
+  eligibility:
+  - hatamoto
+  - vim-to-mage
+  - shinobi
+  - retainer
+  applies_to:
+    band: true
+- id: band--nippon-special-skills-blessed-by-the-kami
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.nipponese-expedition-web.nippon.blessed-by-the-kami
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: the re-roll is on the post-battle Heroes Serious Injury chart.
+  name: Blessed by the Kami
+  effect: >-
+    When rolling on the Heroes Serious Injury chart for this Hero after a game in which he has
+    been taken out of action, the dice may be re-rolled once; the result of this second dice roll
+    must be accepted, even if it is a worse result.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Nippon Special Skills
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/nipponese-expedition
+  name_i18n:
+    es: Bendecido por los Kami
+  eligibility:
+  - hatamoto
+  - vim-to-mage
+  - shinobi
+  - retainer
+  applies_to:
+    band: true

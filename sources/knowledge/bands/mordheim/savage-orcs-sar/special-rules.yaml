@@ -269,3 +269,31 @@ rules:
       de Lanzamiento.
   applies_to:
     band: true
+- id: orc-shaman--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - armour
+  name: Equipment Restrictions
+  effect: May select weapons from the Orc Equipment List, but may never wear armour.
+  source:
+    manual: broheim.net
+    printed_page: 5
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
+    section: 0-2 Orc Shaman
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: May select weapons from the Orc Equipment List, but may never wear armour.
+  applies_to:
+    profile_ids:
+    - orc-shaman

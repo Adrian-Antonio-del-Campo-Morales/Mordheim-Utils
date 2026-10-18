@@ -29,6 +29,13 @@ export interface ItemFacts {
   readonly mechanic_id: string | null;
   readonly tags: readonly string[];
   readonly hands?: number;
+  /**
+   * Further printed profiles of the *same physical object* (the Yari's two
+   * grips). `mechanic_id` stays the default profile; these are offered and
+   * accepted beside it for a bearer of this item, with the item's own list
+   * line, cost and recipient, and never as a second item record.
+   */
+  readonly alternate_mechanic_ids?: readonly string[];
 }
 
 /**
@@ -54,6 +61,8 @@ export interface ProfileFacts {
   readonly fixed_equipment: readonly string[];
   readonly equipment_access: readonly { readonly item_id: string; readonly list_id?: string }[] | null;
   readonly equipment_forbids: readonly string[];
+  /** Prohibition tokens resolved to catalogue item IDs by the producer. */
+  readonly equipment_forbid_items?: readonly string[];
   readonly equipment_permits?: readonly { readonly rule_id: string; readonly permits: readonly string[] }[];
   readonly equipment_slots?: { readonly rule_id: string; readonly equipment: number; readonly armour: number;
     readonly costs: Readonly<Record<string, number>> };
@@ -71,6 +80,9 @@ export interface ProfileFacts {
   readonly active_weapon_limit?: { readonly rule_id: string; readonly maximum: number };
   /** Compulsory-item obligations of the profile's own printed clauses. */
   readonly required_equipment?: readonly RequiredEquipment[];
+  readonly conditional_equipment_forbids?: readonly {
+    readonly rule_id: string; readonly when_items: readonly string[]; readonly forbids: readonly string[];
+  }[];
   /** Weapon kinds each governed poison may coat for this bearer. */
   readonly poison_application?: readonly PoisonApplication[];
   /**
@@ -81,6 +93,31 @@ export interface ProfileFacts {
   readonly active_weapon_permits?: readonly { readonly rule_id: string; readonly permits: readonly string[] }[];
   /** Printed missile bounds of the profile's own clauses, counted over the set. */
   readonly missile_weapon_limit?: readonly MissileWeaponLimit[];
+  /**
+   * The clause admits any hand-to-hand weapon once Weapons Training is taken
+   * ('use any hand-to-hand weapon, not only weapons in the warrior's normal
+   * equipment options'). Declared by the granting clause and read by
+   * `equipmentIssue`, so an absolute ban without that clause keeps refusing.
+   */
+  readonly weapons_training?: boolean;
+  /**
+   * Items the profile's own list offers but the printed trading-post clause
+   * grants to another recipient. The projection decides them once
+   * (`marketBearerAdmits`), so the offering layer and a direct selection read
+   * one fact instead of a second interpretation table.
+   */
+  readonly market_bearer_forbids?: readonly MarketBearerForbid[];
+}
+
+/**
+ * One printed bearer refusal of the market catalogue. The refusal names the
+ * entry that published the clause and the printed wording it came from, so a
+ * consumer reports the legal recipient instead of guessing one.
+ */
+export interface MarketBearerForbid {
+  readonly item_id: string;
+  readonly entry_id: string;
+  readonly bearer: string;
 }
 
 export interface SkillFacts {
@@ -121,6 +158,8 @@ export interface EquipmentLimits {
  */
 export interface RequiredEquipment {
   readonly rule_id: string;
+  /** Apply this obligation only while one of these items/mechanics is carried. */
+  readonly when_items?: readonly string[];
   /**
    * Item kinds, or an item/mechanic id when the obligation names one canonical
    * object ('must include a Chaos Dwarf Blunderbuss'), any one of which
@@ -158,7 +197,7 @@ const OTHER_ARMOUR_PIECES = ["defence.helmet", "defence.cooking-pot-helmet",
 /** Item kinds that are a weapon a profile may hold and swing. */
 const WEAPON_KINDS = ["close-combat-weapon", "ranged-weapon"];
 const INTERPRETED_TOKENS = ["armour", "armour-suit", "heavy-armour", "ranged-weapons", "weapons",
-  "two-handed-weapons", "equipment", "non-thrown-ranged", ...EQUIPMENT_TAG_VOCABULARY];
+  "two-handed-weapons", "equipment", "non-thrown-ranged", "mounts", ...EQUIPMENT_TAG_VOCABULARY];
 
 /**
  * The attack a weaponless creature fights with. It is the profile's own bite or
@@ -178,8 +217,15 @@ export function tokenForbids(token: string, itemId: string, item: ItemFacts | nu
   if (token === "equipment") return true;
   if (item === null) return false;
   if (EQUIPMENT_TAG_VOCABULARY.includes(token)) return item.tags.includes(token);
-  if (token === "armour") return ["armour", "shield-or-defence"].includes(item.kind);
-  if (token === "armour-suit") return item.kind === "armour" || item.mechanic_id === "defence.sea-dragon-cloak";
+  if (token === "armour") return ["armour", "shield-or-defence"].includes(item.kind)
+    || (item.mechanic_id?.startsWith("armour.") ?? false);
+  // A body armour suit is named by its own armour mechanic even when the
+  // catalogue carries a second, differently-kinded object of the same mechanic
+  // (the Trollheim bronze breastplate beside light armour): the merged facts of
+  // that alias then publish no single kind, and the mechanic still says it is
+  // an armour suit.
+  if (token === "armour-suit") return item.kind === "armour"
+    || (item.mechanic_id?.startsWith("armour.") ?? false) || item.mechanic_id === "defence.sea-dragon-cloak";
   if (token === "heavy-armour") return item.mechanic_id !== null && HEAVY_ARMOUR.includes(item.mechanic_id);
   // A printed 'may not use weapons' covers held weapons of either reach; a
   // natural attack or an item record with no weapon mechanic is not one.
@@ -222,8 +268,75 @@ export const EQUIPMENT_MECHANIC_PREFIXES: readonly string[] = [
   "weapon.", "armour.", "defence.", "material.", "preparation.", "poison.",
 ];
 
+/**
+ * Ordinary human equipment the Mercenary warband's list publishes.
+ *
+ * A printed clause that hands the Mercenary Equipment list to another band's
+ * profile names that list, not a copy of it: the resolved records are read from
+ * the package that owns them (`catalogue.foreign_packages`, or the same
+ * collection's packages when the band is the one being compiled).
+ */
+function ordinaryHumanEquipment(catalogue: Catalogue): readonly EquipmentList[] {
+  const pack = catalogue.foreign_packages["mercenaries"] ?? catalogue.packages["mercenaries"];
+  return pack?.equipment_lists ?? [];
+}
+
+/**
+ * Items a compiled clause adds to this profile's access on top of its own
+ * lists. The clause is declared as a `compiler.*` binding of a rule that
+ * applies to the profile, so the same declaration decides the offer and the
+ * acceptance instead of a per-band branch.
+ */
+function contractEquipment(pack: BandPackage, profile: EditorialProfile,
+  catalogue: Catalogue, build?: BuildFacts): readonly string[] {
+  const rules = applicableRules(pack, profile);
+  const declared = rules.some((rule) => rule.runtime?.implemented === "YES"
+    && (rule.bindings ?? []).some((binding) => binding.id === "compiler.mercenary-equipment-at-creation"));
+  // The printed phase: the list is available before the first game and is
+  // replaced afterwards by the band's own lists. The phase is the same
+  // supplied fact `entryReachesProfile` reads, carried on the configured
+  // profile by the caller and on the build by a canonical compilation.
+  const phase = [...(profile.variants ?? []), ...(build?.variant_ids ?? [])];
+  if (declared && !phase.includes("equipment.post-creation"))
+    return ordinaryHumanEquipment(catalogue).flatMap((list) => (list.items ?? [])
+      .filter((item) => entryReachesProfile(item, recipientView(profile, build)))
+      .flatMap((item) => itemMechanics(catalogue, item.item_id)));
+  // A printed permission to learn Weapons Training ('use any hand-to-hand
+  // weapon, not only weapons in the warrior's normal equipment options')
+  // replaces the ordinary allowance with the close-combat catalogue. The
+  // exception is declared by the clause that prints it, never inferred from
+  // the general skill alone: a warrior whose own rule is an absolute ban keeps
+  // it until its source states the exception.
+  const training = rules.some((rule) => rule.runtime?.implemented === "YES"
+    && (rule.bindings ?? []).some((binding) => binding.id === "compiler.weapons-training-exception"));
+  if (training && (build?.skill_ids ?? []).includes("skill.weapons-training"))
+    return Object.keys(catalogue.mechanics ?? {}).filter((id) => id.startsWith("weapon.")
+      && !["weapon.fist", "weapon.natural-attacks"].includes(id)
+      && carriedItemFacts(catalogue, id)?.kind !== "ranged-weapon");
+  return [];
+}
+
 export function isEquipmentMechanic(id: string): boolean {
   return EQUIPMENT_MECHANIC_PREFIXES.some((prefix) => id.startsWith(prefix));
+}
+
+/**
+ * Band-wide prohibition tokens that name a canonical item record.
+ *
+ * The same reading the profile projection publishes as
+ * `equipment_forbid_items`, applied to the band-wide list: a band clause can
+ * name an object beside its material and weapon families ('may not use the
+ * handgun of the Estalian line'), and the token is decided by its own id like
+ * any other prohibition. The caller supplies the canonical item facts it
+ * already carries, so a token the map cannot answer stays a visible report
+ * instead of being guessed, and the field widens no permission and refuses no
+ * extra item.
+ */
+function resolvedBandForbids(
+  tokens: readonly string[],
+  items: Readonly<Record<string, ItemFacts | null>>,
+): readonly string[] {
+  return tokens.filter((token) => items[token] != null);
 }
 
 export function equipmentIssue(args: {
@@ -231,19 +344,38 @@ export function equipmentIssue(args: {
   readonly item_id: string;
   readonly item: ItemFacts | null;
   readonly band_forbids?: readonly string[];
+  /**
+   * The subset of `band_forbids` the caller resolved to canonical item records.
+   * A band-wide prohibition that names the item itself is expressed by that
+   * clause instead of being reported while another, legal item of the same
+   * bearer is selected; the named item keeps being refused by its own token. A
+   * caller that cannot answer the lookup leaves it empty and the token stays a
+   * visible report.
+   */
+  readonly band_forbid_items?: readonly string[];
   readonly active_lists?: readonly string[];
   readonly gated_lists?: readonly string[];
 }): EligibilityIssue | null {
   const { profile, item_id: itemId, item } = args;
   const subject = [profile.band_id, profile.profile_id, itemId];
   if (NEUTRAL_ITEM_IDS.includes(itemId)) return null;
+  // The pieces the profile prints as already carried are admitted before any
+  // clause narrows the choice: a stricture never refuses its own ceremonial kit.
+  if (profile.fixed_equipment.includes(itemId)) return null;
   for (const restriction of profile.equipment_permits ?? []) {
     if (!restriction.permits.some(token => tokenPermits(token, itemId, item))) return {
       code: "equipment_forbidden", subject_ids: subject, rule_id: restriction.rule_id,
       message: `${itemId} may not be carried; the printed clause admits only ${restriction.permits.join(", ")}.`,
     };
   }
-  if (profile.fixed_equipment.includes(itemId)) return null;
+  // A printed market bearer is decided by the same predicate the offering layer
+  // used, so a direct selection meets the verdict of the printed clause rather
+  // than the generic 'not on a list' message of the filtered offer.
+  const bearer = (profile.market_bearer_forbids ?? []).find((row) => row.item_id === itemId);
+  if (bearer) return {
+    code: "equipment_not_permitted", subject_ids: subject, rule_id: bearer.entry_id,
+    message: `"${itemId}" is not offered to ${profile.band_id}/${profile.profile_id}: the printed trading-post clause grants it to ${bearer.bearer}.`,
+  };
   const offers = (profile.equipment_access ?? []).filter((offer) => offer.list_id === undefined
     || !(args.gated_lists ?? []).includes(offer.list_id) || (args.active_lists ?? []).includes(offer.list_id));
   const offered = profile.equipment_access !== null && offers.some((offer) => offer.item_id === itemId);
@@ -252,12 +384,21 @@ export function equipmentIssue(args: {
     message: `"${itemId}" is not on any equipment list of ${profile.band_id}/${profile.profile_id}.`,
   };
   const forbids = [...profile.equipment_forbids, ...(args.band_forbids ?? [])];
-  for (const token of forbids) if (tokenForbids(token, itemId, item)) return {
-    code: "equipment_forbidden", subject_ids: subject,
-    message: `"${token}" is forbidden for ${profile.band_id}/${profile.profile_id}.`,
-  };
+  // A printed Weapons Training exception replaces the ordinary allowance for
+  // hand-to-hand weapons only; the projection declares it from the clause
+  // that grants the training, so an absolute ban without such a clause keeps
+  // refusing the item.
+  const trainedHere = profile.weapons_training === true && item?.kind !== "ranged-weapon";
+  for (const token of forbids) {
+    if (trainedHere && ["equipment", "weapons"].includes(token)) continue;
+    if (tokenForbids(token, itemId, item)) return {
+      code: "equipment_forbidden", subject_ids: subject,
+      message: `"${token}" is forbidden for ${profile.band_id}/${profile.profile_id}.`,
+    };
+  }
+  const resolvedItems = [...(profile.equipment_forbid_items ?? []), ...(args.band_forbid_items ?? [])];
   const unknown = forbids.find((token) => !INTERPRETED_TOKENS.includes(token) && token !== itemId
-    && !isEquipmentMechanic(token));
+    && !isEquipmentMechanic(token) && !resolvedItems.includes(token));
   if (unknown) return {
     code: "construction_clause_unstructured", subject_ids: subject, rule_id: unknown, owner_task: "KB",
     message: `The prohibition token "${unknown}" of ${profile.band_id}/${profile.profile_id} has no construction contract; the choice is reported, not silently allowed.`,
@@ -362,13 +503,22 @@ export function skillCategoryAllowed(access: readonly string[], category: string
 }
 
 export function equipmentSetIssues(args: {
-  readonly profile: Pick<ProfileFacts, "band_id" | "profile_id" | "required_equipment" | "missile_weapon_limit">;
+  readonly profile: Pick<ProfileFacts, "band_id" | "profile_id" | "required_equipment" | "missile_weapon_limit" | "conditional_equipment_forbids">;
   readonly limits: EquipmentLimits | null;
   readonly items: readonly { readonly item_id: string; readonly item: ItemFacts | null }[];
 }): readonly EligibilityIssue[] {
   const { profile, limits, items } = args;
   const subject = [profile.band_id, profile.profile_id];
   const issues: EligibilityIssue[] = [];
+  const carries = (ids: readonly string[]) => items.some(entry => ids.includes(entry.item_id)
+    || (entry.item?.mechanic_id != null && ids.includes(entry.item.mechanic_id)));
+  for (const restriction of profile.conditional_equipment_forbids ?? []) {
+    if (carries(restriction.when_items) && carries(restriction.forbids)) issues.push({
+      code: "equipment_combination_forbidden", rule_id: restriction.rule_id,
+      subject_ids: [...subject, ...restriction.when_items, ...restriction.forbids],
+      message: `${restriction.when_items.join("/")} cannot be combined with ${restriction.forbids.join("/")}.`,
+    });
+  }
   // The profile's own printed missile bound: one entry is one unit of the kit,
   // and the printed exemptions are left out of the count instead of refused.
   for (const bound of profile.missile_weapon_limit ?? []) {
@@ -415,6 +565,9 @@ export function equipmentSetIssues(args: {
   // include one item of the family, and the printed items that do not count
   // (the free dagger) never satisfy it.
   for (const requirement of profile.required_equipment ?? []) {
+    if (requirement.when_items?.length && !items.some(entry =>
+      requirement.when_items!.includes(entry.item_id)
+      || (entry.item?.mechanic_id != null && requirement.when_items!.includes(entry.item.mechanic_id)))) continue;
     const satisfied = items.some((entry) => {
       const item = entry.item;
       if (NEUTRAL_ITEM_IDS.includes(entry.item_id)) return false;
@@ -453,6 +606,14 @@ export interface EditorialProfile {
    * profile.
    */
   readonly variants?: readonly string[];
+  /**
+   * Supplied canonical conditions of this member, the same facts a build
+   * declares (`condition.current-warband-leader`). `configuredProfile` attaches
+   * them beside the variants, and `recipientView` also reads them from the build
+   * when a caller compiles against the canonical row, so the recipient decision
+   * of a clause printed for a state reads one fact in either route.
+   */
+  readonly conditions?: readonly string[];
   readonly hireling_equipment?: HirelingEquipment;
 }
 export interface HirelingKitEntry {
@@ -488,6 +649,12 @@ export interface EditorialRule {
   readonly id: string;
   readonly kind?: string;
   readonly eligibility?: readonly string[];
+  /**
+   * Supplied conditions that qualify a member the static list does not name:
+   * the printed recipient may be a state ('only the current warband leader may
+   * choose this skill') rather than a starting profile.
+   */
+  readonly eligible_condition_ids?: readonly string[];
   readonly applies_to?: { readonly band?: boolean; readonly profile_ids?: readonly string[]; readonly profile_types?: readonly string[] };
   readonly runtime?: { readonly grant?: string; readonly implemented?: string; readonly scope?: string };
   readonly bindings?: readonly Binding[];
@@ -511,6 +678,21 @@ export interface EquipmentEntry {
     readonly variants?: readonly string[];
     /** Named profiles the printed line denies even when the selectors reach them. */
     readonly excluded_profile_ids?: readonly string[];
+    readonly post_creation_profile_ids?: readonly string[];
+    readonly required_rule_ids?: readonly string[];
+    /**
+     * Printed recipient that is a supplied state: the canonical condition the
+     * caller declares for this member, read exactly as a rule's
+     * `eligible_condition_ids` is read with the build's conditions. A clause
+     * that reserves a line to 'the warband's current leader' cannot be decided
+     * from the profile alone — the same profile is refused while another model
+     * leads — so the condition is one more alternative recipient beside the
+     * named selectors ('Warband leader only' names the mandatory starting leader
+     * in `profile_ids` and the inherited position here), and it reaches the
+     * decision through the configured profile like a declared variant. A line
+     * whose only recipient is that state reaches nobody until it is supplied.
+     */
+    readonly eligible_condition_ids?: readonly string[];
   };
 }
 export interface EquipmentList { readonly id: string; readonly items?: readonly EquipmentEntry[]; readonly loadouts?: readonly { readonly items?: unknown }[] }
@@ -524,7 +706,7 @@ export interface EquipmentList { readonly id: string; readonly items?: readonly 
  */
 export function entryReachesProfile(
   entry: EquipmentEntry,
-  profile: { readonly id: string; readonly type?: string; readonly variants?: readonly string[] },
+  profile: { readonly id: string; readonly type?: string; readonly variants?: readonly string[]; readonly rule_ids?: readonly string[]; readonly conditions?: readonly string[] },
 ): boolean {
   const recipients = entry.applies_to;
   if (!recipients) return true;
@@ -534,10 +716,147 @@ export function entryReachesProfile(
   if ((recipients.excluded_profile_ids ?? []).includes(profile.id)) return false;
   if (recipients.variants?.length
     && !recipients.variants.some((token) => (profile.variants ?? []).includes(token))) return false;
-  if (!recipients.profile_types?.length && !recipients.profile_ids?.length) return true;
+  if (recipients.required_rule_ids?.some(id => !(profile.rule_ids ?? []).includes(id))) return false;
+  if (recipients.post_creation_profile_ids && profile.variants?.includes("equipment.post-creation"))
+    return recipients.post_creation_profile_ids.includes(profile.id);
+  const conditions = recipients.eligible_condition_ids ?? [];
+  if (!recipients.profile_types?.length && !recipients.profile_ids?.length && !conditions.length)
+    return true;
+  // The supplied state is one more alternative recipient, decided by the
+  // member's declared conditions instead of by the named selectors: the bearer
+  // that carries the current-leader condition reaches the line, and the same
+  // bearer without it stays governed by the selectors.
+  if (conditions.length && conditions.every(id => (profile.conditions ?? []).includes(id))) return true;
   if ((recipients.profile_types ?? []).includes(profile.type ?? "")) return true;
   return (recipients.profile_ids ?? []).includes(profile.id);
 }
+
+/**
+ * Printed recipients of one market entry, as `catalog/campaign/trading-post.yaml`
+ * publishes them.
+ *
+ * The market catalogue is the only place a printed buying clause is kept for an
+ * item no equipment list gates, so the recipients it names are read here
+ * exactly like an `equipment-access.yaml` line is: `band_ids`/`groups` are the
+ * entry's own published scope (a `warband_only` restriction or a band-scoped
+ * `condition`), `profile_ids` is the printed list of named bearers, the kinds
+ * are `profile_types`, `excluded_profile_ids` is the named denial and
+ * `required_rule_ids` is the capability the printed bearer must carry (the
+ * vocabulary `equipment-access.yaml` already publishes for a source capability,
+ * e.g. the Watchmen Falconer). An entry
+ * that names no band speaks for every band; one that names bands speaks only
+ * for them, so a clause of one band's market never narrows another band's list.
+ * `note` is the printed wording, kept so a refusal can quote its source.
+ */
+export interface MarketRecipientFacts {
+  readonly band_ids?: readonly string[];
+  readonly groups?: readonly string[];
+  readonly profile_ids?: readonly string[];
+  readonly profile_types?: readonly string[];
+  readonly excluded_profile_ids?: readonly string[];
+  readonly required_rule_ids?: readonly string[];
+  /**
+   * Printed phase of that same bearer: the named profiles the clause reaches
+   * once the band's starting list no longer governs
+   * (`equipment.post-creation` in the build's declared variants), exactly as
+   * `equipment-access.yaml` publishes the phase of its own lines. At creation
+   * such a clause names no starting bearer and the band's own list decides.
+   */
+  readonly post_creation_profile_ids?: readonly string[];
+  readonly entry_id?: string;
+  readonly note?: string;
+}
+
+/**
+ * Whether the printed market recipients of one item admit this bearer.
+ *
+ * Each entry of the catalogue is one alternative bearer the source published
+ * (the same item is deliberately listed by several bands); the selectors inside
+ * one entry are conjunctive, exactly like a rule's `applies_to`, and the named
+ * profiles of one selector are the union the printed clause enumerates. An item
+ * with no entry, or with no entry speaking for this band, is unrestricted here:
+ * the band's own equipment list stays its only offering authority.
+ *
+ * A printed capability is a requirement, never a default: the bearer must
+ * carry at least one of the named ids, so a clause whose requirement the
+ * runtime cannot satisfy yet refuses the item instead of granting it.
+ */
+export function marketBearerAdmits(args: {
+  readonly band_id: string;
+  readonly profile_id: string;
+  readonly profile_type?: string;
+  /** Declared capability: the source rules, selected rules and skills of the bearer. */
+  readonly capability_ids?: readonly string[];
+  /** Declared selection facts of the build, including its equipment phase. */
+  readonly variants?: readonly string[];
+  readonly alternatives: readonly MarketRecipientFacts[] | undefined;
+}): boolean {
+  const applicable = (args.alternatives ?? [])
+    .filter((entry) => !entry.band_ids?.length || entry.band_ids.includes(args.band_id));
+  if (!applicable.length) return true;
+  return applicable.some((entry) => {
+    if ((entry.excluded_profile_ids ?? []).includes(args.profile_id)) return false;
+    if (entry.post_creation_profile_ids?.length) {
+      // The clause names its bearer for the phase the band's list prints: it
+      // speaks outside the starting list, where that named bearer replaces the
+      // starting recipient set.
+      if (!(args.variants ?? []).includes("equipment.post-creation")) return true;
+      if (!entry.post_creation_profile_ids.includes(args.profile_id)) return false;
+    }
+    if (entry.profile_types?.length && !entry.profile_types.includes(args.profile_type ?? "")) return false;
+    if (entry.profile_ids?.length && !entry.profile_ids.includes(args.profile_id)) return false;
+    if (entry.required_rule_ids?.length
+      && !entry.required_rule_ids.some((id) => (args.capability_ids ?? []).includes(id))) return false;
+    return true;
+  });
+}
+
+/**
+ * Capability a printed bearer may require ('Marauders with the Chosen of Chaos
+ * skill only'). The source declares it on the profile row, the build adds what
+ * it selected, and a supplied promotion is a selection fact like any other.
+ */
+export function bearerCapabilities(
+  profile: { readonly rule_ids?: readonly string[] },
+  build?: BuildFacts,
+): readonly string[] {
+  return Array.from(new Set([...(profile.rule_ids ?? []), ...(build?.skill_ids ?? []),
+    ...(build?.special_rule_ids ?? []), ...(build?.variant_ids ?? [])]));
+}
+
+/** The refusal fact of one item whose printed bearer is not this profile. */
+export function marketBearerForbid(
+  item_id: string,
+  alternatives: readonly MarketRecipientFacts[] | undefined,
+): MarketBearerForbid {
+  const entries = alternatives ?? [];
+  const printed = entries.flatMap((entry) => entry.note ? [entry.note] : []);
+  return { item_id, entry_id: entries[0]?.entry_id ?? "",
+    bearer: printed.length ? printed.join("; ") : "a named recipient of the printed market clause" };
+}
+
+/**
+ * Whether the printed market recipients of one item reach this profile of this
+ * band. The offering layers and the whole-set projection ask this one question,
+ * so no caller re-derives the recipient of a published clause.
+ */
+export function marketBearerReaches(args: {
+  readonly band_id: string;
+  readonly profile: { readonly id: string; readonly type?: string; readonly rule_ids?: readonly string[] };
+  readonly pack: BandPackage;
+  readonly catalogue: Catalogue;
+  readonly item_id: string;
+  readonly build?: BuildFacts;
+}): boolean {
+  return marketBearerAdmits({
+    band_id: args.band_id, profile_id: args.profile.id,
+    ...(args.profile.type ? { profile_type: args.profile.type } : {}),
+    capability_ids: bearerCapabilities(args.profile, args.build),
+    variants: args.build?.variant_ids ?? [],
+    alternatives: args.catalogue.market_recipients?.[args.item_id],
+  });
+}
+
 export interface BandPackage {
   readonly band: { readonly id: string; readonly canonical_family?: string };
   readonly profiles: readonly EditorialProfile[];
@@ -552,6 +871,20 @@ export interface Catalogue {
   readonly skills: Readonly<Record<string, SkillFacts & { readonly source_refs?: readonly { readonly url?: string }[] }>>;
   readonly items?: Readonly<Record<string, ItemFacts>>;
   readonly free_rules?: Readonly<Record<string, EditorialRule>>;
+  /** Printed recipients of the market catalogue, keyed by canonical item id. */
+  readonly market_recipients?: Readonly<Record<string, readonly MarketRecipientFacts[]>>;
+  /**
+   * Bands and groups a printed ``warband_only`` market clause reserves for an
+   * item, keyed by canonical item id. It is the recipient clause of a
+   * consumable the band lists do not gate; an item without an entry stays the
+   * unrestricted Trading Post object it always was.
+   */
+  readonly market_band_scope?: Readonly<Record<string, readonly MarketBandScopeFacts[]>>;
+}
+/** One printed ``warband_only`` alternative of a market entry. */
+export interface MarketBandScopeFacts {
+  readonly band_ids?: readonly string[];
+  readonly groups?: readonly string[];
 }
 export interface BuildFacts {
   readonly trait_overrides?: Readonly<Record<string, unknown>>;
@@ -573,16 +906,47 @@ export interface BuildFacts {
   readonly preparation_ids: readonly string[];
   readonly special_rule_ids: readonly string[];
   readonly variant_ids: readonly string[];
+  /**
+   * Supplied canonical conditions of the member: current states the caller
+   * declares, such as being the warband's actual current leader. They are read
+   * by the recipient decision of a rule whose printed recipient is that state.
+   */
+  readonly condition_ids?: readonly string[];
+}
+
+const MORR_PRIEST = "hireling.hired-sword.priest-of-morr-miracle-workers";
+function isBlackGuardsman(build?: BuildFacts): boolean {
+  return build?.profile_id === MORR_PRIEST && build.special_rule_ids.includes(`${MORR_PRIEST}.skill.haunted-mien`);
+}
+
+/** Ordinary human equipment access, not a wildcard granting faction/unique items. */
+function blackGuardEquipment(catalogue: Catalogue): readonly string[] {
+  const pack = catalogue.foreign_packages["mercenaries"] ?? catalogue.packages["mercenaries"];
+  const list = pack?.equipment_lists.find(list => list.id === "mercenary-equipment-lists");
+  if (!list) throw new Error("Haunted Mien requires the canonical ordinary human equipment list");
+  return (list.items ?? []).map(item => item.item_id);
 }
 
 /** Resolve one complete printed kit, preserving quantities and choice groups.
  * Active positions select a compatible kit when ownership is unspecified;
  * supplied ownership must equal a legal kit, not merely its availability union.
  */
+function weaponKnowledgeAllows(rules: readonly EditorialRule[], catalogue: Catalogue, id: string): boolean {
+  return rules.some(rule => rule.runtime?.implemented === "YES" && rule.bindings?.some(binding => {
+    if (binding.id !== "compiler.weapon-knowledge") return false;
+    const kinds = strings(binding.parameters?.["allowed_kinds"]);
+    if (!kinds.length) return id.startsWith("weapon.") || ["poison.black-lotus", "poison.black-venom"].includes(id);
+    const item = carriedItemFacts(catalogue, id);
+    return id.startsWith("weapon.") && item !== null
+      && Object.keys(catalogue.items ?? {}).some(key => !key.startsWith("hireling.") && (catalogue.mappings[key] ?? key) === id)
+      && kinds.some(kind => weaponSatisfiesKind(kind, id, item));
+  }));
+}
+
 export function resolveHirelingKit(equipment: HirelingEquipment, build: BuildFacts, catalogue: Catalogue,
   rules: readonly EditorialRule[] = []): readonly string[] {
   const unique = equipment.unique_equipment ?? [];
-  const uniqueMechanics = new Map<string, string>();
+  const uniqueMechanics = new Map<string, readonly string[]>();
   for (const item of unique) {
     const rulesResolved = Boolean(item.rules?.length && item.rules.every(id => {
       const matching = rules.filter(rule => rule.id === id);
@@ -598,7 +962,13 @@ export function resolveHirelingKit(equipment: HirelingEquipment, build: BuildFac
       throw new Error(`hireling unique equipment needs a canonical combat mapping: ${item.id}`);
     if (equivalent && !catalogue.items?.[equivalent] && !catalogue.mappings[equivalent])
       throw new Error(`hireling unique equipment names no canonical equivalence: ${item.id} -> ${equivalent}`);
-    uniqueMechanics.set(item.id, ownMapping ?? (equivalent ? catalogue.mappings[equivalent] ?? item.id : item.id));
+    const primary = ownMapping ?? (equivalent ? catalogue.mappings[equivalent] ?? item.id : item.id);
+    // A unique object whose canonical equivalent prints more than one grip
+    // offers every declared profile, exactly as `itemMechanics` does for a
+    // catalogue row; the physical piece keeps one identity.
+    const alternates = (equivalent ? catalogue.items?.[equivalent]?.alternate_mechanic_ids ?? [] : [])
+      .filter(id => id in (catalogue.mechanics ?? {}));
+    uniqueMechanics.set(item.id, [primary, ...alternates.filter(id => id !== primary)]);
   }
   const expand = (entries: readonly HirelingKitEntry[]): string[] => entries.flatMap(entry => {
     const count = entry.quantity.value;
@@ -640,12 +1010,55 @@ export function resolveHirelingKit(equipment: HirelingEquipment, build: BuildFac
   if (active.some(id => unique.some(item => item.id === id)))
     throw new Error("non-duel unique equipment cannot occupy an active combat position");
   const owned = build.owned_item_ids;
+  if (isBlackGuardsman(build)) {
+    const allowed = new Set([...blackGuardEquipment(catalogue), ...expand(equipment.fixed_items ?? [])]);
+    const canonical = (id: string) => catalogue.mappings[id] ?? id;
+    const inventory = owned !== undefined && owned !== null ? [...owned] : [...(kits[0] ?? [])];
+    if (inventory.some(id => !allowed.has(id)))
+      throw new Error("Black Guard equipment must belong to its ordinary human access");
+    const remaining = inventory.map(canonical);
+    for (const id of active) {
+      const position = remaining.indexOf(canonical(id));
+      if (position >= 0) remaining.splice(position, 1);
+      else if (owned === undefined || owned === null) {
+        const item = [...allowed].find(item => canonical(item) === canonical(id));
+        if (!item) throw new Error(`equipment is not available to Black Guard: ${id}`);
+        inventory.push(item);
+      } else throw new Error("Black Guard active equipment requires the supplied physical copies");
+    }
+    return inventory;
+  }
+  const knowledgeRules = rules.filter(rule => !rule.applies_to?.profile_ids?.length
+    || rule.applies_to.profile_ids.includes(build.profile_id ?? ""));
+  const scopedTraining = knowledgeRules.some(rule => rule.runtime?.implemented === "YES"
+    && rule.bindings?.some(binding => binding.id === "compiler.weapon-knowledge"
+      && strings(binding.parameters?.["allowed_kinds"]).includes("close-combat-weapon")));
+  if (scopedTraining) {
+    const inventory = owned != null ? [...owned] : [...kits[0]!];
+    const printed = new Set(kits.flat());
+    const mapped = (id: string) => catalogue.mappings[id] ?? id;
+    for (const id of inventory) if (!printed.has(id)
+      && (!catalogue.items?.[id] || id.startsWith("hireling.") || !weaponKnowledgeAllows(knowledgeRules, catalogue, mapped(id))))
+      throw new Error("Weapons Training does not grant ranged weapons, armour or another character's unique items");
+    const remaining = inventory.map(mapped);
+    for (const id of active) {
+      const position = remaining.indexOf(mapped(id));
+      if (position < 0) throw new Error("Weapons Training requires supplied physical copies of active equipment");
+      remaining.splice(position, 1);
+    }
+    return inventory;
+  }
   const matched = kits.find(kit => {
     if (owned != null && signature(kit) !== signature(owned)) return false;
     const chosen = (equipment.choices ?? []).flatMap(group => group.options.flatMap(option =>
       option.items ?? (option.from_item_ids ?? []).map(item_id => ({ item_id, quantity: { kind: "fixed", value: 1 } }))));
     const entries = [...(equipment.fixed_items ?? []), ...(equipment.optional_items ?? []), ...chosen];
-    const mechanic = (id: string) => entries.find(entry => entry.item_id === id)?.mechanic_id ?? uniqueMechanics.get(id) ?? catalogue.mappings[id] ?? id;
+    const mechanicsOf = (id: string): readonly string[] => {
+      const entryMechanic = entries.find(entry => entry.item_id === id)?.mechanic_id;
+      if (entryMechanic) return [entryMechanic];
+      return uniqueMechanics.get(id) ?? [catalogue.mappings[id] ?? id];
+    };
+    const mechanic = (id: string) => mechanicsOf(id)[0]!;
     for (const [id, material] of [[build.main_weapon_id, build.main_material_id], [build.off_hand_id, build.off_material_id]]) {
       if (!id || neutral.has(id)) {
         if (material !== "material.normal") return false;
@@ -654,11 +1067,10 @@ export function resolveHirelingKit(equipment: HirelingEquipment, build: BuildFac
       const printed = entries.find(entry => kit.includes(entry.item_id) && mechanic(entry.item_id) === id)?.material_id ?? "material.normal";
       if (material !== "material.normal" && material !== printed) return false;
     }
-    const remaining = kit.map(mechanic);
-    const weaponMaster = rules.some(rule => rule.runtime?.implemented === "YES"
-      && rule.bindings?.some(binding => binding.id === "compiler.weapon-knowledge"));
+    const remaining = kit.flatMap(mechanicsOf);
+
     for (const id of active) {
-      if (weaponMaster && (id.startsWith("weapon.") || ['poison.black-lotus', 'poison.black-venom'].includes(id))) continue;
+      if (weaponKnowledgeAllows(knowledgeRules, catalogue, id)) continue;
       const position = remaining.indexOf(catalogue.mappings[id] ?? id);
       if (position < 0) return false;
       remaining.splice(position, 1);
@@ -680,7 +1092,39 @@ export interface BuildContext {
 
 export const BLACKPOWDER_WEAPONS = ["weapon.pistol", "weapon.duelling-pistol"];
 export const MISSILE_WEAPONS = BLACKPOWDER_WEAPONS;
+/** 'A trapper starts with ONE of the following Special Skills'. */
+export const VETERAN_TRACKER_SKILLS: readonly string[] = [
+  "band--ogre-hunting-skills-infiltration",
+  "band--ogre-hunting-skills-set-traps",
+  "band--ogre-hunting-skills-netter",
+  "band--ogre-hunting-skills-scent-hound",
+];
 export const DRUG_PREPARATIONS = ["preparation.crimson-shade", "preparation.mandrake-root", "preparation.mad-cap-mushrooms", "preparation.head-splitter-mushrooms"];
+/**
+ * Why the bearer's printed clauses forbid drugs as a class, or null when they
+ * allow them.
+ *
+ * A band's `compiler.forbid-item-categories` with `drug` and the Knight's
+ * chivalry are the same printed prohibition, so the offer and both construction
+ * stages read it here instead of re-deriving the class per caller. Drug
+ * *immunity* (the Constructs) is a different consumer: it suppresses the effect
+ * and never removes the choice.
+ */
+function drugsForbidden(context: BuildContext): "category" | "knight" | null {
+  const { build: b, profile: p, package: pack, compiler_bindings, contracts } = context;
+  // The offer is projected without the compiler's selected contracts, so the
+  // band's own automatic bindings are read from its published rules; the
+  // compiled build adds the same bindings it already resolved.
+  const bindings = [...compiler_bindings,
+    ...applicableRules(pack, p).flatMap((rule) => rule.bindings ?? [])];
+  if (bindings.some((binding) => binding.id === "compiler.forbid-item-categories"
+    && strings(binding.parameters?.["categories"]).includes("drug"))) return "category";
+  const knight = (p.rule_ids ?? []).some((id) => id.endsWith("--knight"))
+    || b.variant_ids.includes("promotion.knight-errant");
+  const chivalry = contracts.includes("compiler.chivalry")
+    || bindings.some((binding) => binding.id === "compiler.chivalry");
+  return chivalry && knight ? "knight" : null;
+}
 function strings(value: unknown): string[] {
   return typeof value === "string" ? [value] : Array.isArray(value) ? value.map(String) : [];
 }
@@ -704,7 +1148,8 @@ export function carriedItemFacts(catalogue: Pick<Catalogue, "items">, id: string
   const items = catalogue.items ?? {};
   const direct = items[id];
   if (direct) return direct;
-  const aliases = Object.values(items).filter((item) => item.mechanic_id === id);
+  const aliases = Object.values(items).filter((item) => item.mechanic_id === id
+    || (item.alternate_mechanic_ids ?? []).includes(id));
   if (!aliases.length) return null;
   const kinds = Array.from(new Set(aliases.map((item) => item.kind)));
   return { kind: kinds.length === 1 ? kinds[0]! : "", mechanic_id: id,
@@ -728,12 +1173,34 @@ export function catalogueItemFacts(catalogue: Catalogue): Record<string, ItemFac
     if (facts) result[id] = { ...facts, ...(typeof hands === "number" ? { hands } : {}) };
   }
   for (const row of Object.values(items)) {
-    if (!row.mechanic_id) continue;
-    const merged = carriedItemFacts(catalogue, row.mechanic_id);
-    const hands = catalogue.mechanics[row.mechanic_id]?.["hands"];
-    if (merged) result[row.mechanic_id] = { ...merged, ...(typeof hands === "number" ? { hands } : {}) };
+    // Every profile the object declares, its default one and the alternates it
+    // prints beside it: a desktop adapter carries mechanics while the catalogue
+    // rows are keyed by item id, so both spellings must resolve to the same
+    // object facts and to the hand count of the profile actually selected.
+    for (const id of [row.mechanic_id, ...(row.alternate_mechanic_ids ?? [])]) {
+      if (!id) continue;
+      const merged = carriedItemFacts(catalogue, id);
+      const hands = catalogue.mechanics[id]?.["hands"];
+      if (merged) result[id] = { ...merged, ...(typeof hands === "number" ? { hands } : {}) };
+    }
   }
   return result;
+}
+
+/**
+ * Executable mechanics one canonical item offers.
+ *
+ * `catalogue.mappings` bridges one object to its default profile, and a printed
+ * weapon whose own entry describes more than one mode declares the other
+ * profiles beside it (`alternate_mechanic_ids`). The same physical object is
+ * therefore offered under every printed mode, through its own list line, cost
+ * and recipient, and never as a second item record.
+ */
+export function itemMechanics(catalogue: Catalogue, itemId: string): readonly string[] {
+  const primary = catalogue.mappings[itemId];
+  const alternates = (catalogue.items?.[itemId]?.alternate_mechanic_ids ?? [])
+    .filter((id) => id in (catalogue.mechanics ?? {}));
+  return [...(primary ? [primary] : []), ...alternates];
 }
 
 export function applicableProfileRules(pack: BandPackage, profile: EditorialProfile): readonly EditorialRule[] {
@@ -746,11 +1213,62 @@ function recipientTypeMatches(rule: EditorialRule, profile: EditorialProfile): b
   return !rule.applies_to?.profile_types?.length || rule.applies_to.profile_types.includes(profile.type ?? "");
 }
 
+/**
+ * Whether the printed recipients of one selectable rule admit this member.
+ *
+ * The static `eligibility` list is the plain case. A clause that prints a state
+ * instead of a starting profile ('only the current warband leader may choose
+ * this skill') names it in `eligible_condition_ids`: the member that carries
+ * those supplied conditions is admitted as if the list named it, while the
+ * member that carries none stays governed by the list. Conditions are supplied
+ * current facts, so the same build without them is refused.
+ */
+function ruleRecipientsAdmit(
+  rule: EditorialRule, profile: EditorialProfile, build?: BuildFacts,
+): boolean {
+  if (!rule.eligibility?.length) return true;
+  if (rule.eligibility.includes(profile.id)) return true;
+  const conditions = rule.eligible_condition_ids ?? [];
+  return conditions.length > 0 && conditions.every((id) => (build?.condition_ids ?? []).includes(id));
+}
+
+/**
+ * Candidate equipment lists of a profile after its Lahmian Brotherhood
+ * Foreign/Native background selection.
+ *
+ * The source publishes both candidates and prints them as alternatives ('Use
+ * only the Undead Equipment List assigned by the selected Foreign or Native
+ * background'), never as a union. The selected background therefore intersects
+ * the declaration instead of adding its list beside the other; a profile whose
+ * printed restriction fixes one background ('Foreign background only') keeps
+ * only that candidate. An absent selection reads as the printed assignment,
+ * exactly like the `compiler.foreign-or-native-background` default.
+ */
+function backgroundEquipmentLists(
+  lists: readonly string[] | undefined,
+  variants: readonly string[],
+): readonly string[] | undefined {
+  const declared = lists ?? [];
+  if (!declared.some((id) => /^(foreign|native)-/.test(id))) return lists;
+  const background = variants.includes("background.native") ? "native"
+    : variants.includes("background.foreign") ? "foreign"
+    : declared.every((id) => id.startsWith("native-")) ? "native" : "foreign";
+  const other = background === "native" ? "foreign" : "native";
+  return declared.filter((id) => !id.startsWith(`${other}-`));
+}
+
 /** Supplied local advancement result, not a campaign promotion calculation. */
-export function configuredProfile(profile: EditorialProfile, variants: readonly string[]): EditorialProfile {
+export function configuredProfile(profile: EditorialProfile, variants: readonly string[],
+  conditions: readonly string[] = []): EditorialProfile {
   // The selected facts travel with the profile so a printed entry conditional
   // on them is read by the same `entryReachesProfile` the offering layer uses.
+  // The declared conditions of the member are the same kind of supplied fact,
+  // so a line whose printed recipient is a state is decided by one predicate.
   let configured = variants.length ? { ...profile, variants: [...variants] } : profile;
+  if (conditions.length) configured = { ...configured, conditions: [...conditions] };
+  const assignedLists = backgroundEquipmentLists(profile.equipment_lists, variants);
+  if (assignedLists && assignedLists !== profile.equipment_lists)
+    configured = { ...configured, equipment_lists: assignedLists };
   if (variants.includes("deity.solkan")) {
     if (profile.id !== "hireling.hired-sword.priest-of-verena")
       throw new Error("deity.solkan requires the printed War-Priest of Solkan variant");
@@ -760,7 +1278,7 @@ export function configuredProfile(profile: EditorialProfile, variants: readonly 
     // gaining an invented empty declaration. `rule_ids` keeps the same
     // absent-vs-explicit distinction for the same reason.
     const solkanFixedItems = profile.hireling_equipment?.fixed_items;
-    configured = { ...configured, skill_access: ["strength"],
+    configured = { ...configured,
       hireling_equipment: { ...profile.hireling_equipment,
         ...(solkanFixedItems ? { fixed_items: solkanFixedItems.filter(item => item.item_id !== "sword") } : {}) },
       ...(profile.rule_ids ? { rule_ids: profile.rule_ids.filter(id => id !== profile.id + ".rule.strictures") } : {}) };
@@ -776,7 +1294,26 @@ export function applicableRules(pack: BandPackage, profile: EditorialProfile): r
     && rule.applies_to?.band === true && (!(rule.applies_to?.profile_ids?.length) || rule.applies_to.profile_ids.includes(profile.id)) && (!(rule.eligibility?.length) || rule.eligibility.includes(profile.id)))];
 }
 
-function profileEquipmentItems(pack: BandPackage, profile: EditorialProfile): Set<string> {
+/**
+ * The profile view a printed recipient set is decided with.
+ *
+ * A caller declares the supplied facts of a member in one of two equivalent
+ * ways: on a configured profile (`configuredProfile`, the transport's route,
+ * which carries variants and conditions) or on the build beside a canonical row
+ * (a canonical compilation, exactly as the printed phase is read from both).
+ * The build's conditions are attached when the profile does not already carry
+ * them, so one predicate decides the offer in either route and a line whose
+ * printed recipient is a supplied state reaches the member that declares it.
+ */
+function recipientView(
+  profile: EditorialProfile, build?: BuildFacts,
+): EditorialProfile & { readonly conditions?: readonly string[] } {
+  const conditions = [...new Set([...(profile.conditions ?? []), ...(build?.condition_ids ?? [])])];
+  return conditions.length ? { ...profile, conditions } : profile;
+}
+
+function profileEquipmentItems(pack: BandPackage, profile: EditorialProfile, build?: BuildFacts): Set<string> {
+  const recipients = recipientView(profile, build);
   const itemIds = new Set(profile.fixed_equipment ?? []);
   for (const listId of profile.equipment_lists ?? []) {
     const list = pack.equipment_lists.find((entry) => entry.id === listId);
@@ -785,7 +1322,7 @@ function profileEquipmentItems(pack: BandPackage, profile: EditorialProfile): Se
     // only') travel on the entry itself, so the offering layer and every
     // decision read one fact instead of a per-band exception.
     for (const item of list.items ?? []) {
-      if (!entryReachesProfile(item, profile)) continue;
+      if (!entryReachesProfile(item, recipients)) continue;
       itemIds.add(item.item_id);
     }
     for (const loadout of list.loadouts ?? []) for (const id of loadoutItems(loadout.items)) itemIds.add(id);
@@ -802,9 +1339,9 @@ function profileEquipmentItems(pack: BandPackage, profile: EditorialProfile): Se
   if (pack.band.id === "savage-orcs-kaz" && profile.id === "gobbo-boyz") itemIds.delete("skull_busta");
   return itemIds;
 }
-export function profileEquipment(pack: BandPackage, profile: EditorialProfile, catalogue: Catalogue): string[] {
-  const itemIds = profileEquipmentItems(pack, profile);
-  const allowed = new Set(Array.from(itemIds).flatMap((id) => catalogue.mappings[id] ? [catalogue.mappings[id]!] : []));
+export function profileEquipment(pack: BandPackage, profile: EditorialProfile, catalogue: Catalogue, build?: BuildFacts): string[] {
+  const itemIds = profileEquipmentItems(pack, profile, build);
+  const allowed = new Set(Array.from(itemIds).flatMap((id) => itemMechanics(catalogue, id)));
   // Printed equipment concessions are the bindings of equipment families. The
   // skills family indexes skills and passive mechanics beside the weapons and
   // armours; those are abilities, not equipment offers, so they are excluded
@@ -813,15 +1350,136 @@ export function profileEquipment(pack: BandPackage, profile: EditorialProfile, c
   // stays offered: canonical builds select it as their main weapon, and the
   // missing record is reported informationally, never refused.
   for (const rule of applicableProfileRules(pack, profile)) for (const binding of rule.bindings ?? []) {
-    if (isEquipmentMechanic(binding.id) && binding.id in catalogue.mechanics) allowed.add(binding.id);
+    // A binding of an equipment family is an offer only when the rule grants
+    // the piece.  A rule that applies the piece to the bearer's own attack (the
+    // Tomb Scorpion's sting *is* Black Lotus) declares `applies_to_own_attack`
+    // and is skipped here: the rider stays on the attack without becoming a
+    // flask the profile could buy, carry or select.
+    if (binding.parameters?.["applies_to_own_attack"] === true) continue;
+    if (isEquipmentMechanic(binding.id) && binding.id in (catalogue.mechanics ?? {})) allowed.add(binding.id);
   }
-  return Array.from(allowed).sort();
+  if (isBlackGuardsman(build)) for (const item of blackGuardEquipment(catalogue)) {
+    const id = catalogue.mappings[item];
+    if (id) allowed.add(id);
+  }
+  // A caller that carries only the mappings it needs (the maintained minimal
+  // catalogue) has no mechanics to admit; the projection stays usable there.
+  for (const id of Object.keys(catalogue.mechanics ?? {}))
+    if (weaponKnowledgeAllows(applicableRules(pack, profile), catalogue, id)) allowed.add(id);
+  for (const id of contractEquipment(pack, profile, catalogue, build)) allowed.add(id);
+  // The market catalogue publishes the printed recipient of the items it lists.
+  // The offer and the acceptance read one predicate, so a line the printed
+  // clause grants to another bearer is never merely hidden from a picker.
+  return Array.from(allowed).sort().filter((id) => marketBearerReaches({
+    band_id: pack.band.id, profile, pack, catalogue, item_id: id, ...(build ? { build } : {}),
+  }));
 }
 
-export function specialRuleOptions(pack: BandPackage, profile: EditorialProfile, catalogue: Catalogue): string[] {
+/**
+ * Printable offer of one member: the canonical list access minus what the
+ * bearer's own printed clause refuses.
+ *
+ * `profileEquipment` materialises the access lists (and the projection reads it
+ * as such); the picker must not show a line the same clause refuses, so the
+ * offer applies the shared `equipmentIssue` predicate to every candidate with
+ * `equipment_access: null`. A generic concession therefore never erases a
+ * specific prohibition, and the printed kit stays admitted.
+ */
+export function profileOffer(pack: BandPackage, profile: EditorialProfile,
+  catalogue: Catalogue, build?: BuildFacts): string[] {
+  const permission = profileFactsProjection({ pack, profile, catalogue, ...(build ? { build } : {}) });
+  return profileEquipment(pack, profile, catalogue, build).filter((id) => {
+    const issue = equipmentIssue({
+      profile: { ...permission, equipment_access: null },
+      item_id: id, item: carriedItemFacts(catalogue, id),
+    });
+    return !issue || issueIsInformational(issue.code);
+  });
+}
+
+/**
+ * Preparations the bearer may take into a duel.
+ *
+ * A preparation is a Trading Post consumable, not a line of a band's equipment
+ * list: its printed buying clause is the item's own market entry, so absence
+ * from a list is not a prohibition. Each candidate is decided by the same
+ * `equipmentIssue` predicate a direct selection meets in the construction
+ * stage, so a printed 'no equipment/items' clause (the Strigoi) removes them
+ * while a clause that names only weapons or armour leaves them available, and a
+ * printed drug prohibition removes the drug class for that bearer. A profile's
+ * own printed kit is never refused by that clause.
+ */
+/**
+ * The objects through which one preparation reaches a bearer.
+ *
+ * A preparation is data; the object that supplies it names itself through the
+ * item's ``mechanic_id``. That item's printed market clause is the statement of
+ * who may take the consumable (``warband_only``), while a band whose own
+ * equipment list prints the object reaches it through that line instead. A
+ * preparation whose objects publish no band scope stays the unrestricted
+ * Trading Post consumable it always was, so a short weapon list never narrows
+ * one. Whether the preparation applies at all is a separate question decided by
+ * the bearer's own clause (`preparationIssue`).
+ */
+function preparationReachesBearer(context: BuildContext, id: string): boolean {
+  const { build: b, profile: p, package: pack, catalogue: c } = context;
+  const suppliers = Object.keys(c.items ?? {})
+    .filter((item_id) => c.items?.[item_id]?.mechanic_id === id);
+  const scope = suppliers.flatMap((item_id) => c.market_band_scope?.[item_id] ?? []);
+  if (!scope.length) return true;
+  if (scope.some((entry) => (entry.band_ids ?? []).includes(pack.band.id))) return true;
+  // A clause that names only groups is left to the campaign market, which owns
+  // membership; it never narrows the offer on a guess here.
+  if (scope.every((entry) => !entry.band_ids?.length)) return true;
+  const printed = profileEquipmentItems(pack, p, b);
+  return suppliers.some((item_id) => printed.has(item_id));
+}
+
+function preparationIssue(context: BuildContext, id: string): EligibilityIssue | null {
+  const { build: b, profile: p, package: pack, catalogue: c, profile_bindings } = context;
+  const facts = profileFactsProjection({ pack, profile: p, catalogue: c, build: b, additional_bindings: profile_bindings });
+  const printedKit = Array.from(new Set((p.fixed_equipment ?? []).flatMap((entry) => [entry, c.mappings[entry] ?? entry])));
+  // The bearer's own printed clause decides the consumable exactly as it
+  // decides a carried object: `equipment_permits` is the exception list of a
+  // 'may never have any equipment' vow, `equipment_forbids` names what the
+  // clause refuses. `equipment_access` stays null because a preparation is not
+  // a line of a band list, so a short weapon list is not a preparation ban.
+  const recipient = preparationReachesBearer(context, id);
+  if (!recipient) return {
+    code: "equipment_not_permitted", subject_ids: [b.band_id ?? "custom", p.id, id],
+    message: `${id} is not a preparation the printed recipients of ${pack.band.id}/${p.id} reach.`,
+  };
+  return equipmentIssue({
+    profile: { band_id: b.band_id ?? "custom", profile_id: p.id, fixed_equipment: printedKit,
+      equipment_access: null, equipment_forbids: facts.equipment_forbids,
+      ...(facts.equipment_permits ? { equipment_permits: facts.equipment_permits } : {}),
+      skill_access: [], skill_lists: [] },
+    item_id: id, item: carriedItemFacts(c, id),
+  });
+}
+
+export function preparationOptions(context: BuildContext): string[] {
+  const { build: b, profile: p, package: pack, catalogue: c } = context;
+  const drugs = drugsForbidden(context) !== null;
+  const offered: string[] = [];
+  for (const id of Object.keys(c.mechanics ?? {})) {
+    if (!id.startsWith("preparation.")) continue;
+    if (drugs && DRUG_PREPARATIONS.includes(id)) continue;
+    const issue = preparationIssue(context, id);
+    if (issue && !issueIsInformational(issue.code)) continue;
+    // The market entry publishes a printed recipient for some consumables; the
+    // offer reads that clause instead of narrowing every preparation alike.
+    if (!marketBearerReaches({ band_id: pack.band.id, profile: p, pack, catalogue: c, item_id: id, build: b })) continue;
+    offered.push(id);
+  }
+  return offered.sort();
+}
+
+export function specialRuleOptions(pack: BandPackage, profile: EditorialProfile, catalogue: Catalogue,
+  build?: BuildFacts): string[] {
   const result = pack.special_rules.filter((rule) => rule.kind === "warband_skill"
     && recipientTypeMatches(rule, profile)
-    && (!rule.eligibility?.length || rule.eligibility.includes(profile.id))
+    && ruleRecipientsAdmit(rule, profile, build)
     && (!rule.applies_to?.profile_ids?.length || rule.applies_to.profile_ids.includes(profile.id))
     && (Boolean(rule.eligibility?.length || rule.applies_to?.profile_ids?.length) || (profile.skill_access ?? []).includes("special")))
     .map((rule) => rule.id);
@@ -830,32 +1488,45 @@ export function specialRuleOptions(pack: BandPackage, profile: EditorialProfile,
     const dwarf = catalogue.packages["chaos-streets-dwarf-treasure-hunters"];
     for (const rule of dwarf?.special_rules ?? []) if (rule.kind === "warband_skill" && rule.runtime?.implemented === "YES") result.push(rule.id);
   }
+  // A printed inheritance ('Savage Orc heroes may use the Orc special skills')
+  // names the sibling band's own table, so its published members are offered
+  // here instead of copied into this band with a second origin.
+  if (applicableRules(pack, profile).some((rule) => rule.runtime?.implemented === "YES"
+    && rule.bindings?.some((binding) => binding.id === "compiler.inherited-orc-special-skills"))) {
+    const orc = catalogue.packages["orc-mob"] ?? catalogue.foreign_packages["orc-mob"];
+    for (const rule of orc?.special_rules ?? []) if (rule.kind === "warband_skill") result.push(rule.id);
+  }
   return result.sort();
 }
 
 /** Configured abilities/mutations use the same recipients, independently of duel support. */
-export function selectableRuleOptions(pack: BandPackage, profile: EditorialProfile): string[] {
+export function selectableRuleOptions(pack: BandPackage, profile: EditorialProfile,
+  build?: BuildFacts): string[] {
   return pack.special_rules.filter((rule) => rule.kind !== "warband_skill" && rule.runtime?.grant === "selectable"
     && recipientTypeMatches(rule, profile)
-    && (!rule.eligibility?.length || rule.eligibility.includes(profile.id))
+    && ruleRecipientsAdmit(rule, profile, build)
     && (!rule.applies_to?.profile_ids?.length || rule.applies_to.profile_ids.includes(profile.id)))
     .map((rule) => rule.id).sort();
 }
 
 export function buildAccess(context: BuildContext): { equipment: string[]; skills: string[] } {
   const { build, profile, package: pack, catalogue, contracts, profile_bindings, compiler_bindings } = context;
-  const equipment = new Set(profileEquipment(pack, profile, catalogue));
+  const equipment = new Set(profileEquipment(pack, profile, catalogue, build));
   const addLists = (lists: readonly EquipmentList[]) => {
     for (const list of lists) for (const item of list.items ?? []) {
-      if (!entryReachesProfile(item, profile)) continue;
-      const id = catalogue.mappings[item.item_id];
-      if (id) equipment.add(id);
+      if (!entryReachesProfile(item, recipientView(profile, build))) continue;
+      for (const id of itemMechanics(catalogue, item.item_id)) equipment.add(id);
     }
   };
   if (contracts.includes("compiler.pirate-human-mercenary-equipment-access")) addLists(catalogue.foreign_packages["mercenaries"]?.equipment_lists ?? []);
   if (contracts.includes("compiler.foreign-or-native-background")) {
     const background = build.variant_ids.includes("background.native") || (!build.variant_ids.length && ["spirits", "jackals"].includes(profile.id)) ? "native" : "foreign";
-    addLists(pack.equipment_lists.filter((list) => list.id === `${background}-${profile.id === "beloved" ? "beloved" : "undead"}-equipment-list`));
+    const assigned = `${background}-${profile.id === "beloved" ? "beloved" : "undead"}-equipment-list`;
+    // The printed assignment is the profile's own declaration: a profile fixed
+    // to the other background ('Foreign background only') never gains the
+    // selected one, so the two candidate lists stay alternatives, not a union.
+    addLists(pack.equipment_lists.filter((list) => list.id === assigned
+      && (profile.equipment_lists ?? []).includes(assigned)));
   }
   if (contracts.includes("compiler.knighthood") && build.variant_ids.includes("promotion.knight-errant")) {
     equipment.clear(); addLists(pack.equipment_lists.filter((list) => list.id === "knights-equipment-list"));
@@ -867,13 +1538,14 @@ export function buildAccess(context: BuildContext): { equipment: string[]; skill
     const blackOrc = pack.profiles.find((row) => row.id === "black-orcs");
     addLists(pack.equipment_lists.filter((list) => blackOrc?.equipment_lists?.includes(list.id)));
   }
-  if (contracts.includes("compiler.weapon-knowledge")) for (const id of Object.keys(catalogue.mechanics)) if (id.startsWith("weapon.")) equipment.add(id);
+  if (contracts.includes("compiler.weapon-knowledge")) for (const id of Object.keys(catalogue.mechanics)) if (weaponKnowledgeAllows(applicableRules(pack, profile), catalogue, id)) equipment.add(id);
   const skills = new Set(profile.skill_access ?? []);
   // A promoted Hero is the configured copy (`configuredProfile`) or a build
   // that declares the promotion variant; the printed grant is conditional on
   // becoming a Hero, so an unpromoted Henchman never receives these tables.
   const promoted = profile.type === "hero" || build.variant_ids.includes("promotion.hero");
-  for (const binding of profile_bindings) if (binding.id === "profile.skill-access") for (const value of strings(binding.parameters?.["category"])) skills.add(value);
+  for (const binding of profile_bindings) if (binding.id === "profile.skill-access"
+    && bindingAppliesToBuild(binding, build)) for (const value of strings(binding.parameters?.["category"])) skills.add(value);
   for (const binding of compiler_bindings) if (binding.id === "compiler.promoted-hero-skill-access" && promoted) for (const value of strings(binding.parameters?.["allowed_skill_lists"])) skills.add(value);
   if (contracts.includes("compiler.promoted-hero-no-strength-access")) for (const id of build.variant_ids) if (id.startsWith("skill-list.")) skills.add(id.slice(11));
   if (contracts.includes("compiler.slayer-skill-options")) for (const category of ["combat", "strength", "special"]) skills.add(category);
@@ -891,7 +1563,12 @@ export function buildRestriction(context: BuildContext, stage: string): string |
   const { build: b, profile: p, package: pack, catalogue: c, contracts, profile_bindings, compiler_bindings } = context;
   const who = `${b.band_id}/${b.profile_id}`;
   const hands = [b.main_weapon_id, b.off_hand_id, b.extra_hand_id];
-  const selected = [...hands, b.armour_id, ...b.defence_ids];
+  // Everything the build carries, not only the weapons and the armour: the
+  // printed 'no equipment' clause refuses a material, a coating or a
+  // preparation as well, and the offering layer already withholds them from a
+  // profile whose clause refuses them. One predicate decides both paths.
+  const selected: (string | null | undefined)[] = [...hands, b.armour_id, ...b.defence_ids,
+    b.main_material_id, b.off_material_id, b.main_poison_id, b.off_poison_id, ...b.preparation_ids];
   const has = (id: string) => contracts.includes(id);
   const forbiddenSkills = (predicate: (id: string) => boolean) => b.skill_ids.filter(predicate).sort();
   const magic = (id: string) => id.includes("arcane") || id.includes("sorcery");
@@ -910,7 +1587,7 @@ export function buildRestriction(context: BuildContext, stage: string): string |
   // printed clause the single interpreter of the fallback.
   if (stage === "implicitWeapon") {
     if (b.main_weapon_id !== "weapon.dagger") return null;
-    const facts = profileFactsProjection({ pack, profile: p, catalogue: c });
+    const facts = profileFactsProjection({ pack, profile: p, catalogue: c, build: b });
     const issue = equipmentIssue({ profile: facts, item_id: "weapon.dagger", item: carriedItemFacts(c, "weapon.dagger") });
     return issue && !issueIsInformational(issue.code) ? issue.message : null;
   }
@@ -919,18 +1596,32 @@ export function buildRestriction(context: BuildContext, stage: string): string |
       try { resolveHirelingKit(p.hireling_equipment, b, c, pack.special_rules); }
       catch (error) { return error instanceof Error ? error.message : String(error); }
     }
-    const profileFacts = profileFactsProjection({ pack, profile: p, catalogue: c, additional_bindings: profile_bindings });
+    const profileFacts = profileFactsProjection({ pack, profile: p, catalogue: c, build: b, additional_bindings: profile_bindings });
     if (profileFacts.active_weapon_limit || profileFacts.active_weapon_forbids?.length
       || profileFacts.active_weapon_permits?.length) {
       const issues = activeWeaponIssues({ profile: profileFacts, items: catalogueItemFacts(c), skills: {},
         slots: { main_weapon_id: b.main_weapon_id, off_hand_id: b.off_hand_id ?? null, extra_hand_id: b.extra_hand_id ?? null } });
       if (issues.length) return issues[0]!.message;
     }
-    const forbidden = profile_bindings.filter((binding) => binding.id === "profile.equipment-restrictions").flatMap((binding) => strings(binding.parameters?.["forbids"]));
+    const forbidden = profile_bindings.filter((binding) => binding.id === "profile.equipment-restrictions"
+      && !strings(binding.parameters?.["when_items"]).length).flatMap((binding) => strings(binding.parameters?.["forbids"]));
     if (forbidden.includes("armour") && ((b.armour_id !== "armour.no-armour" || b.defence_ids.includes("defence.sea-dragon-cloak")) || containsAny(selected, ["defence.shield", "defence.buckler", "defence.helmet", "defence.cooking-pot-helmet"]))) return `armour is forbidden for ${who}`;
-    if (forbidden.includes("ranged-weapons") && containsAny(selected, MISSILE_WEAPONS)) return `missile weapons are forbidden for ${who}`;
+    // The printed 'no missile weapons' clause is the same fact the offering
+    // layer reads: the item's own kind decides it (`tokenForbids`), and the
+    // bare mechanics the blackpowder list names keep their verdict when the
+    // catalogue publishes no row for them. A direct selection therefore meets
+    // the refusal the picker already applied instead of surviving because the
+    // chosen id is neither of the two pistol mechanics.
+    const isMissile = (id: string) => MISSILE_WEAPONS.includes(id)
+      || tokenForbids("ranged-weapons", id, carriedItemFacts(c, id));
+    if (forbidden.includes("ranged-weapons") && selected.some((id) => Boolean(id) && isMissile(id!)))
+      return `missile weapons are forbidden for ${who}`;
     if (forbidden.includes("heavy-armour") && HEAVY_ARMOUR.includes(b.armour_id)) return `heavy armour is forbidden for ${who}`;
     if (forbidden.includes("weapon.lance") && selected.includes("weapon.lance")) return `lance is forbidden for ${who}`;
+    // A printed 'does not ride mounts' clause is a construction legality fact:
+    // the supplied mounted state is refused without producing any movement,
+    // and a permitted rider keeps it.
+    if (forbidden.includes("mounts") && b.mounted) return `mounts are forbidden for ${who}`;
     if (forbidden.includes("defence.helmet") && containsAny(selected, ["defence.helmet", "defence.cooking-pot-helmet"])) return `helmet is forbidden for ${who}`;
     // Every remaining token is decided by the same predicate the offering layer
     // uses, so a direct selection meets the same verdict as the offer: the
@@ -940,11 +1631,39 @@ export function buildRestriction(context: BuildContext, stage: string): string |
     // no canonical item stays informational and never becomes a refusal.
     const sharedTokens = forbidden.filter((token) => !BOUND_STAGE_TOKENS.includes(token)
       && (INTERPRETED_TOKENS.includes(token) || token.includes(".") || carriedItemFacts(c, token) !== null));
+    // The profile's own printed kit travels with the prohibition: a clause that
+    // forbids all equipment ('may only ever use its free pointy stick') forbids
+    // what the bearer might be given, never the pieces the same profile prints
+    // as what it already carries. The selected ids are mechanics while the
+    // printed kit names catalogue items, so both spellings are admitted before
+    // the tokens are read, exactly as the offering layer resolves them.
+    const printedKit = Array.from(new Set((p.fixed_equipment ?? [])
+      .flatMap((id) => [id, c.mappings[id] ?? id])));
+    const trainingException = sharedTokens.includes("equipment") && has("compiler.weapons-training-exception");
     if (sharedTokens.length) for (const id of selected) {
       if (!id) continue;
+      if (trainingException) {
+        const trained = carriedItemFacts(c, id)?.kind === "ranged-weapon" ? "skill.weapons-expert" : "skill.weapons-training";
+        if ((b.skill_ids ?? []).includes(trained)) continue;
+      }
       const issue = equipmentIssue({
-        profile: { band_id: b.band_id ?? "custom", profile_id: p.id, fixed_equipment: [], equipment_access: null,
-          equipment_forbids: sharedTokens, skill_access: [], skill_lists: [] },
+        profile: { band_id: b.band_id ?? "custom", profile_id: p.id, fixed_equipment: printedKit,
+          equipment_access: null, equipment_forbids: sharedTokens, skill_access: [], skill_lists: [],
+          ...(profileFacts.weapons_training ? { weapons_training: true } : {}) },
+        item_id: id, item: carriedItemFacts(c, id),
+      });
+      if (issue && !issueIsInformational(issue.code)) return issue.message;
+    }
+    // A printed exception list ('may only be armed with a sword', 'blunt
+    // weapons only except dagger') is a permission rather than a prohibition:
+    // a carried weapon or armour it does not admit meets the same predicate the
+    // picker reads, while the profile's own printed kit stays admitted. Coating
+    // and materials are not objects the clause names, so they keep their own
+    // contracts.
+    if (profileFacts.equipment_permits?.length) for (const id of [...hands, b.armour_id, ...b.defence_ids]) {
+      if (!id || NEUTRAL_ITEM_IDS.includes(id)) continue;
+      const issue = equipmentIssue({
+        profile: { ...profileFacts, equipment_access: null, equipment_forbids: [] },
         item_id: id, item: carriedItemFacts(c, id),
       });
       if (issue && !issueIsInformational(issue.code)) return issue.message;
@@ -957,7 +1676,7 @@ export function buildRestriction(context: BuildContext, stage: string): string |
     if (has("compiler.strictures") && ["dragon-monks", "warrior-monks"].includes(p.id) && (b.armour_id !== "armour.no-armour" || b.defence_ids.includes("defence.sea-dragon-cloak"))) return "Dragon Monks and Warrior Monks may never wear armour";
     const categories = compiler_bindings.filter((binding) => binding.id === "compiler.forbid-item-categories").flatMap((binding) => strings(binding.parameters?.["categories"]));
     if (categories.includes("poison") && (b.main_poison_id || b.off_poison_id)) return `poisons are forbidden for ${who}`;
-    if (categories.includes("drug") && containsAny(b.preparation_ids, DRUG_PREPARATIONS)) return `drugs are forbidden for ${who}`;
+    if (drugsForbidden(context) === "category" && containsAny(b.preparation_ids, DRUG_PREPARATIONS)) return `drugs are forbidden for ${who}`;
     return null;
   }
   if (stage === "requiredInitial") {
@@ -970,6 +1689,37 @@ export function buildRestriction(context: BuildContext, stage: string): string |
         return "Blessing of Sigmar requires exactly two distinct Sisters special skills";
     }
     if (has("compiler.mutant-requires-mutation-at-recruitment") && !b.special_rule_ids.some((id) => id.startsWith("band--mutations-"))) return `at least one mutation is required for ${who}`;
+    // 'When hired each Rat Ogre must purchase a single Mutation': the printed
+    // obligation is both a floor and a ceiling, so an unpurchased or a doubled
+    // choice is refused by the same clause.
+    if (has("compiler.rat-ogre-single-mutation-at-recruitment")
+      && b.special_rule_ids.filter((id) => id.startsWith("band--mutations-")).length !== 1)
+      return `exactly one mutation is required for ${who}`;
+    if (has("compiler.rat-ogre-single-mutation-at-recruitment")
+      && b.special_rule_ids.filter((id) => id.startsWith("band--mutations-")).length
+        && p.id !== "rat-ogres")
+      return `mutations are available only to the Rat Ogres: ${who}`;
+    if (has("compiler.twistkin-single-mutation-at-recruitment")) {
+      if (b.special_rule_ids.filter((id) => id.startsWith("band--mutations-")).length !== 1)
+        return `exactly one mutation is required for ${who}`;
+      if (p.id !== "stormvermin") return `Twistkin is available only to Stormvermin: ${who}`;
+    }
+    if (has("compiler.veteran-tracker-skill-choice")) {
+      const chosen = b.special_rule_ids.filter((id) => VETERAN_TRACKER_SKILLS.includes(id));
+      if (chosen.length !== 1) return `Veteran Tracker requires exactly one starting special skill: ${who}`;
+      if (p.id !== "trappers") return `Veteran Tracker is available only to Trappers: ${who}`;
+    }
+    // 'a Mule Skinner starts with one Animal Handling skill (the player
+    // chooses which animal)': the published members are the options, and both
+    // the floor and the ceiling are the printed single choice.
+    const animalHandler = compiler_bindings.find((binding) => binding.id === "compiler.animal-handler-skill-choice");
+    if (animalHandler) {
+      const options = strings(animalHandler.parameters?.["options"]);
+      if (b.special_rule_ids.filter((id) => options.includes(id)).length !== 1)
+        return `Animal Handler requires exactly one Animal Handling skill: ${who}`;
+      if (p.id !== "hireling.hired-sword.mule-skinner")
+        return `Animal Handler is available only to the Mule Skinner: ${who}`;
+    }
     if (has("compiler.nurgle-s-blessings") && !b.special_rule_ids.some((id) => id.startsWith("band--blessings-of-nurgle-"))) return "Tainted Ones require at least one Blessing of Nurgle";
     return null;
   }
@@ -1003,16 +1753,23 @@ export function buildRestriction(context: BuildContext, stage: string): string |
   if (has("compiler.chivalry") && knight) {
     if (containsAny(hands, MISSILE_WEAPONS)) return `missile weapons are forbidden for Knights: ${who}`;
     if (b.main_poison_id || b.off_poison_id) return `poisons are forbidden for Knights: ${who}`;
-    if (containsAny(b.preparation_ids, DRUG_PREPARATIONS)) return `drugs are forbidden for Knights: ${who}`;
+    if (drugsForbidden(context) === "knight" && containsAny(b.preparation_ids, DRUG_PREPARATIONS)) return `drugs are forbidden for Knights: ${who}`;
   }
   if (has("compiler.haughty") && containsAny(equipment, ["material.gromril", "material.obsidian", "armour.gromril-armour"])) return `Dwarf-made equipment is forbidden for ${who}`;
   if (has("compiler.chaos-engineer") && Array.from(equipment).some((id) => id.includes("chaos"))) return `Chaos armour is forbidden for ${who}`;
   if (has("compiler.saurus-skill-prohibitions") && ["saurus-totem-warrior", "saurus-braves"].includes(p.id) && containsAny(hands, MISSILE_WEAPONS)) return "missile weapons are forbidden for Saurus";
+  // A preparation is decided by the bearer's own printed clause through the
+  // same `preparationIssue` the picker reads, never by the band list the
+  // neutral profile models below: a short weapon list is not a preparation ban.
+  for (const id of b.preparation_ids) {
+    const issue = preparationIssue(context, id);
+    if (issue && !issueIsInformational(issue.code)) return issue.message;
+  }
   const access = buildAccess(context);
   const neutralProfile: ProfileFacts = {
     band_id: b.band_id ?? "custom", profile_id: p.id, fixed_equipment: [], equipment_forbids: [],
     equipment_access: access.equipment.map((item_id) => ({ item_id })), skill_access: access.skills,
-    skill_lists: profileSkillLists(pack, p).length ? profileSkillLists(pack, p) : [{ rule_id: p.id, category: "special", skills: Object.values(c.skills).filter((skill) =>
+    skill_lists: profileSkillLists(pack, p, b).length ? profileSkillLists(pack, p, b) : [{ rule_id: p.id, category: "special", skills: Object.values(c.skills).filter((skill) =>
       (skill.source_refs ?? []).some((ref) => [b.band_id, pack.band.canonical_family].some((band) => band && (ref.url ?? "").includes(`/${band}`))))
       .map((skill) => skill.id) }],
   };
@@ -1048,6 +1805,14 @@ export function buildRestriction(context: BuildContext, stage: string): string |
     return !skill || skillIssue(neutralProfile, skill, true) !== null;
   });
   if (illegalSkills.length) return `skills are not available to ${who}: ${pythonList(illegalSkills)}`;
+  // Big Bully: 'The BigSnot immediately learns ONE Strength Skill. A BigSnot
+  // may only take this skill once each.' The printed quantity is counted over
+  // the member's own skill choices; the repetition bound is the same clause.
+  if (b.special_rule_ids.filter((id) => id === "bigsnotz--big-bully").length > 1)
+    return `Big Bully may only be taken once by ${who}`;
+  if (b.special_rule_ids.includes("bigsnotz--big-bully")
+      && b.skill_ids.filter((id) => c.skills[id]?.category === "strength").length !== 1)
+    return `Big Bully grants exactly one Strength skill to ${who}`;
   if (has("compiler.knighthood") && new Set(b.skill_ids.map((id) => c.skills[id]?.category).filter((category) => category !== "special")).size > 2) return "a promoted Squire may use at most two ordinary skill lists";
   const restrictions = (p.equipment_restrictions ?? []).join(" ").toLowerCase();
   if (["never wear armour", "cannot wear armour", "armour is not allowed", "does not allow armour", "using any armour", "non-armour items", "do not wear armour", "any form of armour", "do not use weapons or wear armour", "never use weapons or armour", "cannot use normal equipment"].some((text) => restrictions.includes(text)) && (b.armour_id !== "armour.no-armour" || b.defence_ids.includes("defence.sea-dragon-cloak"))) return `armour is forbidden for ${who}`;
@@ -1314,6 +2079,7 @@ function equipmentProposalIssues(context: ConstructionContext, proposal: Selecti
     item_id: proposal.id,
     item: itemFactsFor(context, proposal.id, proposal.item),
     band_forbids: context.band_forbids ?? [],
+    band_forbid_items: resolvedBandForbids(context.band_forbids ?? [], context.items),
     active_lists: context.active_lists ?? [],
     gated_lists: context.gated_lists ?? [],
   });
@@ -1479,6 +2245,7 @@ export function validateConstruction(
     const issue = equipmentIssue({
       profile: context.profile, item_id: id, item,
       band_forbids: context.band_forbids ?? [],
+      band_forbid_items: resolvedBandForbids(context.band_forbids ?? [], context.items),
       active_lists: context.active_lists ?? [], gated_lists: context.gated_lists ?? [],
     });
     if (issue) issues.push(issue);
@@ -1542,7 +2309,29 @@ export function validateConstruction(
 
 /** Bindings of every applicable rule of one profile, flattened in rule order. */
 export function profileBindings(pack: BandPackage, profile: EditorialProfile): readonly Binding[] {
-  return applicableRules(pack, profile).flatMap((rule) => rule.bindings ?? []);
+  return applicableRules(pack, profile).flatMap((rule) => rule.bindings ?? [])
+    .filter((binding) => bindingAppliesToProfile(binding, profile));
+}
+
+/**
+ * A binding that names the profiles it serves applies to those members only.
+ * The parameter is the printed recipient narrowing (a mark whose Bloodfather
+ * consequence belongs to the Seer), not a second effect record.
+ */
+function bindingAppliesToProfile(binding: Binding, profile: EditorialProfile | null): boolean {
+  const profiles = strings(binding.parameters?.["profile_ids"]);
+  return profiles.length === 0 || (profile !== null && profiles.includes(profile.id));
+}
+
+/** A binding may be restricted to a supplied variant (`deity.solkan`). */
+function bindingAppliesToBuild(binding: Binding, build?: BuildFacts | null): boolean {
+  const variants = strings(binding.parameters?.["variant_ids"]);
+  return variants.length === 0 || variants.some((variant) => (build?.variant_ids ?? []).includes(variant));
+}
+
+/** A selectable rule grants its bindings once the member chose it. */
+function ruleActiveForBuild(rule: EditorialRule, build?: BuildFacts | null): boolean {
+  return rule.runtime?.grant !== "selectable" || (build?.special_rule_ids ?? []).includes(rule.id);
 }
 
 /**
@@ -1554,6 +2343,7 @@ export function profileBindings(pack: BandPackage, profile: EditorialProfile): r
  */
 export function selectedRuleBindings(
   pack: BandPackage, rule_ids: readonly string[], catalogue?: Catalogue | null,
+  profile?: EditorialProfile | null,
 ): readonly Binding[] {
   const byId = new Map<string, EditorialRule>();
   for (const rule of pack.special_rules) byId.set(rule.id, rule);
@@ -1561,7 +2351,23 @@ export function selectedRuleBindings(
     for (const rule of candidate.special_rules) if (!byId.has(rule.id)) byId.set(rule.id, rule);
   }
   for (const rule of Object.values(catalogue?.free_rules ?? {})) if (!byId.has(rule.id)) byId.set(rule.id, rule);
-  return rule_ids.flatMap((id) => byId.get(id)?.bindings ?? []);
+  return rule_ids.flatMap((id) => byId.get(id)?.bindings ?? [])
+    .filter((binding) => bindingAppliesToProfile(binding, profile ?? null));
+}
+
+/**
+ * Every spelling of the pieces a profile prints as already carried.
+ *
+ * A hireling declares its kit in `hireling_equipment` rather than in
+ * `fixed_equipment`, and the printed line names catalogue items while a build
+ * selects mechanics (`dagger` / `weapon.dagger`). A printed kit is admitted by
+ * every restriction judgement under either spelling, exactly as the offering
+ * layer resolves it.
+ */
+function printedEquipmentIds(profile: EditorialProfile, catalogue?: Pick<Catalogue, "mappings"> | null): string[] {
+  const ids = [...(profile.fixed_equipment ?? []),
+    ...(profile.hireling_equipment?.fixed_items ?? []).map((item) => item.item_id)];
+  return Array.from(new Set(ids.flatMap((id) => [id, catalogue?.mappings[id] ?? id])));
 }
 
 /**
@@ -1578,6 +2384,7 @@ export function profileFactsProjection(args: {
   readonly profile: EditorialProfile;
   readonly band_id?: string;
   readonly catalogue?: Catalogue | null;
+  readonly build?: BuildFacts;
   readonly additional_bindings?: readonly Binding[];
 }): ProfileFacts {
   const { pack, profile } = args;
@@ -1591,11 +2398,16 @@ export function profileFactsProjection(args: {
   const activeWeaponForbids: NonNullable<ProfileFacts["active_weapon_forbids"]>[number][] = [];
   const activeWeaponPermits: NonNullable<ProfileFacts["active_weapon_permits"]>[number][] = [];
   const requiredEquipment: RequiredEquipment[] = [];
+  const conditionalForbids: NonNullable<ProfileFacts["conditional_equipment_forbids"]>[number][] = [];
   const poisonApplication: PoisonApplication[] = [];
   const missileWeaponLimit: MissileWeaponLimit[] = [];
-  const projectedRules = [...applicableRules(pack, profile),
+  const projectedRules = [...applicableRules(pack, profile).filter(rule =>
+    (!isBlackGuardsman(args.build) || rule.id !== `${MORR_PRIEST}.rule.strictures`) && ruleActiveForBuild(rule, args.build)),
+    ...(isBlackGuardsman(args.build) ? pack.special_rules.filter(rule =>
+      rule.id === `${MORR_PRIEST}.skill.haunted-mien`) : []),
     { id: "supplied-condition", bindings: args.additional_bindings ?? [], runtime: { implemented: "YES", grant: "profile" } }];
   for (const rule of projectedRules) for (const binding of rule.bindings ?? []) {
+    if (!bindingAppliesToBuild(binding, args.build)) continue;
     if (binding.id === "compiler.promoted-hero-skill-access" && rule.runtime?.implemented === "YES") {
       for (const category of strings(binding.parameters?.["allowed_skill_lists"])) {
         if (!promotionSkills.includes(category)) promotionSkills.push(category);
@@ -1633,10 +2445,16 @@ export function profileFactsProjection(args: {
       for (const token of strings(binding.parameters?.["forbids"])) {
         const trimmed = token.trim();
         // Generator defect (list-valued `forbids` stringified): report, never guess a list.
-        if (trimmed && !trimmed.startsWith("[") && !forbids.includes(trimmed)) forbids.push(trimmed);
+        if (trimmed && !trimmed.startsWith("[") && !forbids.includes(trimmed)
+            && !strings(binding.parameters?.["when_items"]).length) forbids.push(trimmed);
       }
+      const whenItems = strings(binding.parameters?.["when_items"]);
+      const forbiddenItems = strings(binding.parameters?.["forbids"]);
+      if (whenItems.length && forbiddenItems.length)
+        conditionalForbids.push({ rule_id: rule.id, when_items: whenItems, forbids: forbiddenItems });
       const kinds = strings(binding.parameters?.["required_kinds"]);
       if (kinds.length) requiredEquipment.push({ rule_id: rule.id, kinds,
+        when_items: strings(binding.parameters?.["when_items"]),
         excludes: strings(binding.parameters?.["required_excludes"]) });
       const governedPoisons = strings(binding.parameters?.["poisons"]);
       if (governedPoisons.length) poisonApplication.push({ rule_id: rule.id, poisons: governedPoisons,
@@ -1666,17 +2484,36 @@ export function profileFactsProjection(args: {
   // anything. `null` stays reserved for a caller that could not supply the
   // canonical catalogue (custom and free-build contexts), where the module
   // genuinely cannot resolve the profile's offers.
-  const weaponKnowledge = applicableRules(pack, profile).some(rule => rule.runtime?.implemented === 'YES'
-    && rule.bindings?.some(binding => binding.id === 'compiler.weapon-knowledge'));
+  const knowledgeRules = applicableRules(pack, profile);
+  const candidates = args.catalogue
+    ? Array.from(new Set([...profileEquipmentItems(pack, profile, args.build), ...profileEquipment(pack, profile, args.catalogue, args.build),
+        ...(isBlackGuardsman(args.build) ? blackGuardEquipment(args.catalogue) : []),
+        ...Object.keys(args.catalogue.mechanics ?? {}).filter(id => weaponKnowledgeAllows(knowledgeRules, args.catalogue!, id)),
+        ...Object.keys(args.catalogue.mappings ?? {}).filter(id => weaponKnowledgeAllows(knowledgeRules, args.catalogue!, args.catalogue!.mappings[id]!))]))
+      .sort()
+    : [];
+  // The market catalogue publishes the printed recipient of the items it lists.
+  // The projection decides it once for the configured bearer, so the offer
+  // (`profileEquipment`, `catalogueEquipment`) and every whole-set acceptance
+  // that reads `equipment_access` share one verdict, and the refused ids leave
+  // the access list while keeping the clause that names the legal recipient.
+  const marketForbids = args.catalogue ? candidates.filter((id) => !marketBearerReaches({
+    band_id: bandId, profile, pack, catalogue: args.catalogue!, item_id: id,
+    ...(args.build ? { build: args.build } : {}),
+  })).map((id) => marketBearerForbid(id, args.catalogue!.market_recipients?.[id])) : [];
+  const refused = new Set(marketForbids.map((row) => row.item_id));
   const access = args.catalogue
-    ? Array.from(new Set([...profileEquipmentItems(pack, profile), ...profileEquipment(pack, profile, args.catalogue),
-        ...(weaponKnowledge ? Object.keys(args.catalogue.mechanics).filter(id => id.startsWith('weapon.')) : [])]))
-      .sort().map((item_id) => ({ item_id }))
+    ? candidates.filter((id) => !refused.has(id)).map((item_id) => ({ item_id }))
     : null;
   const declaredSkills = Array.from(new Set([...(profile.skill_access ?? []), ...skillLists.map((list) => list.category)]));
+  const forbidItems = args.catalogue
+    ? forbids.filter((token) => token in (args.catalogue!.items ?? {})
+        || token in (args.catalogue!.mappings ?? {}))
+    : [];
   return {
-    band_id: bandId, profile_id: profile.id, fixed_equipment: profile.fixed_equipment ?? [],
+    band_id: bandId, profile_id: profile.id, fixed_equipment: printedEquipmentIds(profile, args.catalogue),
     equipment_access: access, equipment_forbids: forbids,
+    ...(forbidItems.length ? { equipment_forbid_items: forbidItems } : {}),
     ...(equipmentPermits.length ? { equipment_permits: equipmentPermits } : {}),
     ...(equipmentSlots ? { equipment_slots: equipmentSlots } : {}),
     // The promotion grant enters `skill_access` only for the configured Hero:
@@ -1690,8 +2527,10 @@ export function profileFactsProjection(args: {
     ...(activeWeaponForbids.length ? { active_weapon_forbids: activeWeaponForbids } : {}),
     ...(activeWeaponPermits.length ? { active_weapon_permits: activeWeaponPermits } : {}),
     ...(requiredEquipment.length ? { required_equipment: requiredEquipment } : {}),
+    ...(conditionalForbids.length ? { conditional_equipment_forbids: conditionalForbids } : {}),
     ...(poisonApplication.length ? { poison_application: poisonApplication } : {}),
     ...(missileWeaponLimit.length ? { missile_weapon_limit: missileWeaponLimit } : {}),
+    ...(marketForbids.length ? { market_bearer_forbids: marketForbids } : {}),
   };
 }
 
@@ -1737,7 +2576,7 @@ export function bandEquipmentForbids(pack: BandPackage): readonly string[] {
   for (const rule of pack.special_rules) {
     if (rule.runtime?.grant !== "band" || rule.applies_to?.band !== true) continue;
     for (const binding of rule.bindings ?? []) {
-      if (binding.id !== "profile.equipment-restrictions") continue;
+      if (binding.id !== "profile.equipment-restrictions" || strings(binding.parameters?.["when_items"]).length) continue;
       for (const token of strings(binding.parameters?.["forbids"])) {
         const trimmed = token.trim();
         if (trimmed && !trimmed.startsWith("[") && !result.includes(trimmed)) result.push(trimmed);
@@ -1754,12 +2593,16 @@ export function bandEquipmentForbids(pack: BandPackage): readonly string[] {
  * list with no published members stays empty on purpose: `skillIssue` reports
  * it as pending instead of presenting the whole special catalogue as legal.
  */
-export function profileSkillLists(pack: BandPackage, profile: EditorialProfile): readonly { readonly rule_id: string; readonly category: string; readonly skills: readonly string[] }[] {
+export function profileSkillLists(pack: BandPackage, profile: EditorialProfile, build?: BuildFacts | null): readonly { readonly rule_id: string; readonly category: string; readonly skills: readonly string[] }[] {
   const lists: { rule_id: string; category: string; skills: readonly string[] }[] = [];
-  for (const rule of applicableRules(pack, profile)) for (const binding of rule.bindings ?? []) {
-    if (binding.id !== "profile.skill-access") continue;
-    const category = strings(binding.parameters?.["category"])[0] ?? "";
-    if (category) lists.push({ rule_id: rule.id, category, skills: strings(binding.parameters?.["skills"]) });
+  for (const rule of applicableRules(pack, profile)) {
+    if (!ruleActiveForBuild(rule, build)) continue;
+    for (const binding of rule.bindings ?? []) {
+      if (binding.id !== "profile.skill-access") continue;
+      if (!bindingAppliesToProfile(binding, profile) || !bindingAppliesToBuild(binding, build)) continue;
+      const category = strings(binding.parameters?.["category"])[0] ?? "";
+      if (category) lists.push({ rule_id: rule.id, category, skills: strings(binding.parameters?.["skills"]) });
+    }
   }
   return lists;
 }
@@ -1784,7 +2627,7 @@ export function specialRuleRestriction(args: {
     return "a Priest of Morr may choose only one Mark: Augur or Haunted Mien";
   if (!args.stage || args.stage === "recipients") {
     if (p && !recipientTypeMatches(rule, p)) return unavailable;
-    if (p && rule.eligibility?.length && !rule.eligibility.includes(p.id)) return unavailable;
+    if (p && !ruleRecipientsAdmit(rule, p, b)) return unavailable;
     if (p && rule.applies_to?.profile_ids?.length && !rule.applies_to.profile_ids.includes(p.id)) return unavailable;
     if (rule.id.startsWith("band--blessings-of-nurgle-") && b.profile_id !== "tainted-ones") return unavailable;
     if (rule.id.startsWith("band--virtue-of-") && !args.native_virtue && !b.special_rule_ids.includes("band--renowned-virtue")) return "a foreign Bretonnian Virtue requires Renowned Virtue";
@@ -1871,7 +2714,21 @@ export function loadoutRestriction(args: {
   return args.stage === "hands" ? null : skillLoadoutRestriction(b, contracts, mechanics);
 }
 
+/**
+ * Warband-skill pairs whose printed clauses refuse each other.
+ *
+ * 'This skill cannot be combined with the "Big Bully" skill above' is one
+ * exclusion the source writes in both entries, so the pair is declared once
+ * and the verdict is the same whichever of the two a member names.
+ */
+const EXCLUSIVE_WARBAND_SKILLS: readonly (readonly [string, string])[] = [
+  ["bigsnotz--big-bully", "bullied-goblin--frustratingly-tiny"],
+];
+
 function skillLoadoutRestriction(b: BuildFacts, contracts: readonly string[], mechanics: readonly string[]): string | null {
+  for (const [first, second] of EXCLUSIVE_WARBAND_SKILLS)
+    if (b.special_rule_ids.includes(first) && b.special_rule_ids.includes(second))
+      return `"${first}" cannot be combined with "${second}"`;
   if (contracts.includes("compiler.berserker-incompatible-with-ferocious-charge") && mechanics.includes("skill.ferocious-charge")) return "Berserker may not be combined with Ferocious Charge";
   if (contracts.includes("compiler.censer-bearer-loadout")) {
     if (!mechanics.includes("mechanic.black-hunger")) return "Censer Bearer requires Black Hunger";
@@ -1881,6 +2738,10 @@ function skillLoadoutRestriction(b: BuildFacts, contracts: readonly string[], me
 }
 
 function cloakArmourRestriction(b: BuildFacts): string | null {
+  // Only the shared constant-save cloak occupies the armour choice. The
+  // printed Druchii variant combines with shields and armour with no
+  // penalty, so its own mechanic id never trips this restriction.
+  if (b.defence_ids.includes("defence.sea-dragon-cloak-druchii")) return null;
   return b.defence_ids.includes("defence.sea-dragon-cloak") && b.armour_id !== "armour.no-armour"
     ? "Sea Dragon cloak occupies the armour choice and cannot be combined with another suit" : null;
 }
@@ -1895,16 +2756,20 @@ export function additionalEquipmentRestriction(b: BuildFacts): string | null {
   return cloakArmourRestriction(b);
 }
 
-export function catalogueEquipment(pack: BandPackage, profile: EditorialProfile, catalogue: Catalogue): string[] {
+export function catalogueEquipment(pack: BandPackage, profile: EditorialProfile, catalogue: Catalogue, build?: BuildFacts): string[] {
   let actual = profile;
   if (pack.band.id === "khemri-lahmian-brotherhood" && !profile.equipment_lists?.length) {
     actual = { ...profile, equipment_lists: [`foreign-${profile.id === "beloved" ? "beloved" : "undead"}-equipment-list`] };
   }
-  const result = new Set(profileEquipment(pack, actual, catalogue));
+  const result = new Set(profileOffer(pack, actual, catalogue, build));
   if (pack.band.id === "lustria-pirates") for (const list of catalogue.foreign_packages["mercenaries"]?.equipment_lists ?? []) {
-    for (const item of list.items ?? []) if (catalogue.mappings[item.item_id]) result.add(catalogue.mappings[item.item_id]!);
+    for (const item of list.items ?? []) for (const id of itemMechanics(catalogue, item.item_id)) result.add(id);
   }
-  return Array.from(result).sort();
+  // A line another source adds to the offer meets the same printed market
+  // recipient as the profile's own lists.
+  return Array.from(result).sort().filter((id) => marketBearerReaches({
+    band_id: pack.band.id, profile: actual, pack, catalogue, item_id: id, ...(build ? { build } : {}),
+  }));
 }
 
 export function selectedRuleCandidates(context: BuildContext): { rules: Record<string, EditorialRule>; message: string | null } {
@@ -1916,9 +2781,29 @@ export function selectedRuleCandidates(context: BuildContext): { rules: Record<s
   if (b.special_rule_ids.includes("band--renowned-virtue")) for (const rule of c.foreign_packages["bretonnian-knights"]?.special_rules ?? []) {
     if (rule.id.startsWith("band--virtue-of-") && !rules[rule.id]) rules[rule.id] = { ...rule, eligibility: [] };
   }
+  if (contracts.includes("compiler.inherited-orc-special-skills")) {
+    const orc = c.packages["orc-mob"] ?? c.foreign_packages["orc-mob"];
+    for (const rule of orc?.special_rules ?? []) {
+      if (rule.kind === "warband_skill" && !rules[rule.id]) rules[rule.id] = { ...rule, eligibility: [], applies_to: {} };
+    }
+  }
   const count = b.special_rule_ids.filter((id) => id.startsWith("band--mutations-")).length;
   const grants: Record<string, string> = { "beastmen-raiders": "band--beastmen-special-skills-mutant", "marauders-of-chaos": "band--marauder-special-skills-mutant" };
   const grant = grants[b.band_id ?? ""];
+  // A band whose printed permission is the member's own inherent rule (the
+  // Moulder Rat Ogre's It's Alive!) authorises the purchase through that
+  // contract instead of a selected Mutant skill.
+  const mutationGrants = ["compiler.rat-ogre-single-mutation-at-recruitment", "compiler.twistkin-single-mutation-at-recruitment"];
+  const permitted = applicableRules(pack, context.profile).some((rule) => rule.runtime?.implemented === "YES" && rule.bindings?.some((binding) => mutationGrants.includes(binding.id)))
+    || selectedRuleBindings(pack, b.special_rule_ids ?? [], c).some((binding) => mutationGrants.includes(binding.id));
+  // The printed obligation is the reason a Rat Ogre sees the purchase at all:
+  // the offer precedes the first choice instead of waiting for one.
+  if (!grant && permitted) {
+    const possessed = c.packages["cult-of-the-possessed"] ?? c.foreign_packages["cult-of-the-possessed"];
+    for (const rule of possessed?.special_rules ?? []) {
+      if (rule.id.startsWith("band--mutations-") && !rules[rule.id]) rules[rule.id] = { ...rule, eligibility: [] };
+    }
+  }
   if (count && grant) {
     if (b.special_rule_ids.filter((id) => id === grant).length < count) return { rules, message: `each purchased mutation requires ${grant}` };
     for (const candidate of Object.values(c.packages)) for (const rule of candidate.special_rules) {
@@ -1940,7 +2825,15 @@ export function bannedSkillCategories(pack: BandPackage, profile: EditorialProfi
 
 export function catalogueSkillChoices(context: BuildContext): Record<string, boolean> {
   const rules = applicableRules(context.package, context.profile);
-  const bindings = rules.flatMap((rule) => rule.bindings ?? []);
+  // A selectable rule the member has already chosen grants its access here too
+  // ('The BigSnot immediately learns ONE Strength Skill'), so the offered
+  // skills follow the current selection and not the profile alone.
+  const chosen = (context.build.special_rule_ids ?? []).filter((id) => !rules.some((rule) => rule.id === id));
+  const bindings = [...rules.filter((rule) => ruleActiveForBuild(rule, context.build))
+      .flatMap((rule) => rule.bindings ?? [])
+      .filter((binding) => bindingAppliesToProfile(binding, context.profile) && bindingAppliesToBuild(binding, context.build)),
+    ...selectedRuleBindings(context.package, chosen, context.catalogue, context.profile)
+      .filter((binding) => bindingAppliesToBuild(binding, context.build))];
   const compilerBindings = rules.filter((rule) => rule.runtime?.implemented === "YES").flatMap((rule) => rule.bindings ?? []).filter((binding) => binding.id.startsWith("compiler."));
   const access = buildAccess({ ...context,
     profile_bindings: bindings.filter((binding) => binding.id.startsWith("profile.")),
@@ -1948,7 +2841,7 @@ export function catalogueSkillChoices(context: BuildContext): Record<string, boo
   });
   const profile: ProfileFacts = {
     band_id: context.package.band.id, profile_id: context.profile.id, fixed_equipment: [],
-    equipment_access: null, equipment_forbids: [], skill_access: access.skills, skill_lists: profileSkillLists(context.package, context.profile),
+    equipment_access: null, equipment_forbids: [], skill_access: access.skills, skill_lists: profileSkillLists(context.package, context.profile, context.build),
   };
   const banned = bannedSkillCategories(context.package, context.profile);
   return Object.fromEntries(Object.values(context.catalogue.skills).map((skill) => [skill.id,

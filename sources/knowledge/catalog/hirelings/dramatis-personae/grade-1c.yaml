@@ -222,41 +222,94 @@ profiles:
     unique_equipment:
     - id: hireling.dramatis.grand-master-ippan-shu.item.iron-fan
       name: Iron Fan
+      counts_as: iron_fan
       name_i18n:
         es: Abanico de Hierro
-  skill_access: []
-  starting_skill_ids: []
+  # "all Speed skills and Battle Monk special skills except Warmonger": the
+  # Speed list is the canonical category; of the Battle Monk members only
+  # Energy Focus is admitted (Lightning Speed is movement, Leap of Faith is
+  # voluntary escape and Human Shield is multiple combat; Warmonger is
+  # excluded by the clause itself), so it keeps its own selectable record.
+  skill_access:
+  - speed
+  starting_skill_ids:
+  - skill.art-of-silent-death
   rules:
   - id: hireling.dramatis.grand-master-ippan-shu.rule.bare-handed
     name: Bare-Handed
-    effect: Uses source unarmed martial-arts rules.
+    effect: >-
+      Bare-handed Fighting: Ippan Shu can fight without weapons and suffers no penalties when doing
+      so. In fact, he then counts as having a second close combat weapon and gets +1 attack.
     effect_i18n:
       es: >-
-        Usa las reglas de artes marciales sin armas de la fuente.
+        Combate a Mano Limpia: Ippan Shu puede luchar sin armas y no sufre penalización alguna al
+        hacerlo. De hecho, entonces cuenta como si tuviera una segunda arma de combate cuerpo a
+        cuerpo y recibe +1 ataque.
     name_i18n:
       es: Desarmado
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: skill.unarmed-fighting
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: skill.unarmed-fighting
   - id: hireling.dramatis.grand-master-ippan-shu.rule.iron-fan
     name: Iron Fan
-    effect: Uses unique Iron Fan rules.
+    effect: >-
+      Iron Fan: the weapon grants him +1 Initiative and allows him to parry enemy blows. The bearer
+      always carries the fan, so its profile is bound here and the printed missile half of the
+      clause is classified separately.
     effect_i18n:
       es: >-
-        Usa las reglas propias de su Abanico de Hierro.
+        Abanico de Hierro: el arma le otorga +1 Iniciativa y le permite parar golpes enemigos. El
+        portador siempre lleva el abanico, así que su perfil se vincula aquí y la mitad de la
+        cláusula sobre proyectiles se clasifica por separado.
     name_i18n:
       es: Abanico de Hierro
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: mechanic.iron-fan
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.iron-fan
   - id: hireling.dramatis.grand-master-ippan-shu.rule.parry-missiles
     name: Parry Missiles
-    effect: Uses source missile-parry rule.
+    effect: >-
+      Parry Missiles: for each hit by a missile weapon he parries the shot if he beats the 'to hit'
+      roll.
     effect_i18n:
       es: >-
-        Usa la regla de parada de proyectiles de la fuente.
+        Parada de Proyectiles: por cada impacto de un arma a distancia para el disparo si supera la
+        tirada 'para impactar'.
     name_i18n:
       es: Estocar Proyectiles
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: ippan-shu-parry-missiles
+        scope: 'NO'
+        binding: null
+        reason: Parrying a missile shot resolves in the shooting phase against a ranged attack; the duel
+          resolves one close combat.
   - id: hireling.dramatis.grand-master-ippan-shu.rule.immune-to-psychology
     name: Immune to Psychology
-    effect: Immune to psychology.
+    effect: >-
+      Immune to Psychology: Ippan Shu is in total control of his emotions, therefore immune to
+      psychology, and automatically passes all Leadership-based tests.
     effect_i18n:
       es: >-
-        Inmune a la psicología.
+        Inmune a la Psicología: Ippan Shu controla por completo sus emociones, por lo que es inmune a
+        la psicología y supera automáticamente todas las tiradas basadas en Liderazgo.
     name_i18n:
       es: Inmune a la Psicología
     runtime:
@@ -269,22 +322,56 @@ profiles:
         binding:
           kind: mechanic
           id: mechanic.psychology-immunity
+      - id: mechanic.automatic-leadership
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.automatic-leadership
   - id: hireling.dramatis.grand-master-ippan-shu.rule.feather-movement
     name: Feather Movement
-    effect: Uses source movement rule.
+    effect: >-
+      With the Elegance of a Feather: when running or charging he may move up to half his movement
+      rate in any direction, not only on the ground, and may combine it with the leap skill.
     effect_i18n:
       es: >-
-        Usa la regla de movimiento de la fuente.
+        Con la Elegancia de una Pluma: al correr o cargar puede moverse hasta la mitad de su ritmo de
+        movimiento en cualquier dirección, no solo por el suelo, y puede combinarlo con la habilidad
+        de salto.
     name_i18n:
       es: Movimiento de Pluma
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: ippan-shu-feather-movement
+        scope: 'NO'
+        binding: null
+        reason: Free movement, three-dimensional charge paths and the leap combination are movement and
+          boarding rules; the duel resolves a close combat between two models.
   - id: hireling.dramatis.grand-master-ippan-shu.rule.fire-breath
     name: Fire Breath
-    effect: Uses source fire-breath attack.
+    effect: >-
+      Way of the Dragon: in the shooting phase he spits fire, using the flame template to hit models
+      at Strength 4 and setting them on fire on 4+; he may also use it while engaged in close
+      combat.
     effect_i18n:
       es: >-
-        Usa el ataque de aliento de fuego de la fuente.
+        Vía del Dragón: en la fase de disparo escupe fuego, usando la plantilla de llama para impactar
+        a Fuerza 4 y prendiéndolos fuego con 4+; también puede usarlo mientras está trabado en
+        combate cuerpo a cuerpo.
     name_i18n:
       es: Aliento de Fuego
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: ippan-shu-fire-breath
+        scope: 'NO'
+        binding: null
+        reason: The breath is a shooting-phase flame-template producer against a group of models; the single
+          opposing duellist is not the printed recipient of a template attack.
   - id: hireling.dramatis.grand-master-ippan-shu.rule.campaign-eligibility
     name: Dynamic Hiring Eligibility — Human or Elf Composition
     effect: >-
@@ -296,11 +383,45 @@ profiles:
         Proscritos y Bandidos están excluidos estáticamente en el catálogo de campaña.
     name_i18n:
       es: Elegibilidad de Contratación Dinámica — Composición Humana o Élfica
-  unresolved_references:
-  - kind: skill
-    source_name: Art of Silent Death
-  - kind: skill_set
-    source_name: all Speed skills and Battle Monk special skills except Warmonger
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: ippan-shu-campaign-eligibility
+        scope: 'NO'
+        binding: null
+        reason: Hiring based on the roster's composition is a campaign consequence.
+  - id: hireling.dramatis.grand-master-ippan-shu.skill.energy-focus
+    name: Energy Focus
+    name_i18n:
+      es: Concentración de Energía
+    effect: >-
+      If fighting unarmed, the Hero may choose to reduce his Attacks by –1 and thus gain +1 Strength
+      in close combat. The monk may sacrifice any number of attacks this way.
+    effect_i18n:
+      es: >-
+        Si lucha sin armas, el héroe puede optar por reducir sus Ataques en -1 y ganar así +1 Fuerza
+        en el combate cuerpo a cuerpo. El monje puede sacrificar cualquier número de ataques de esta
+        manera.
+    kind: warband_skill
+    eligibility:
+    - hireling.dramatis.grand-master-ippan-shu
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: selectable
+      effects:
+      - id: mechanic.energy-focus
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.energy-focus
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Battle Monks Special Skills / Energy Focus
+      url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -354,6 +475,8 @@ profiles:
       name: Dark Elf Blade
       name_i18n:
         es: Arma Elfa Oscura
+      rules:
+      - hireling.dramatis.innominatus-the-tilean-gladiator.item.dark-elf-blade.rule.combat
   skill_access: []
   starting_skill_ids: []
   rules:
@@ -365,6 +488,15 @@ profiles:
         Usa la regla de arena de la fuente.
     name_i18n:
       es: Maestro del Foso
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: innominatus-pit-master-arena
+        scope: 'NO'
+        binding: null
+        reason: The recorded clause names only the source arena rule, whose subject is the pit bout and its proceedings, and a resolved duel closes a single fight without any arena procedure.
   - id: hireling.dramatis.innominatus-the-tilean-gladiator.rule.who-is-the-hero
     name: Who Is the Hero?
     effect: Uses source identity rule.
@@ -373,6 +505,70 @@ profiles:
         Usa la regla de identidad de la fuente.
     name_i18n:
       es: ¿Quién Es el Héroe?
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: innominatus-who-is-the-hero-identity
+        scope: 'NO'
+        binding: null
+        reason: The clause settles which persona the hired gladiator is, a hiring and roster identity fact, and the duellist is already supplied with his characteristics and rules when the duel begins.
+  - id: hireling.dramatis.innominatus-the-tilean-gladiator.rule.grizzled-veteran
+    name: Grizzled Veteran
+    effect: The warrior is immune to all psychology.
+    effect_i18n:
+      es: El guerrero es inmune a toda la psicología.
+    name_i18n:
+      es: Veterano Curtido
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.psychology-immunity
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.psychology-immunity
+  - id: hireling.dramatis.innominatus-the-tilean-gladiator.rule.death-without-a-face
+    name: Death without a face
+    effect: The bearer causes fear.
+    effect_i18n:
+      es: El portador provoca Miedo.
+    name_i18n:
+      es: Muerte sin Rostro
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.causes-fear
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.causes-fear
+  - id: hireling.dramatis.innominatus-the-tilean-gladiator.item.dark-elf-blade.rule.combat
+    name: Dark Elf Blade
+    effect: >-
+      Adds +1 to the critical hit table and treats Injury results of 2-4 as stunned; retains the
+      underlying weapon's properties.
+    effect_i18n:
+      es: >-
+        Añade +1 a la tabla de golpes críticos y trata los resultados de Herida de 2-4 como
+        Aturdido; conserva las propiedades del arma subyacente.
+    name_i18n:
+      es: Arma Elfa Oscura
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: material.dark-elf-blade
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: material.dark-elf-blade
   - id: hireling.dramatis.innominatus-the-tilean-gladiator.rule.thumbs-up-thumbs-down
     name: Thumbs Up / Thumbs Down
     effect: Uses source crowd/arena rule.
@@ -381,13 +577,18 @@ profiles:
         Usa la regla de público/arena de la fuente.
     name_i18n:
       es: Pulgares Arriba / Pulgares Abajo
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: innominatus-thumbs-up-thumbs-down-crowd
+        scope: 'NO'
+        binding: null
+        reason: The clause is the arena crowd's verdict on the bout, a scenario and post-fight consequence that exists only in an arena game.
   unresolved_references:
   - kind: skill
     source_name: Pit Fighter
-  - kind: skill
-    source_name: Grizzled Veteran
-  - kind: skill
-    source_name: Death without a face
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -430,6 +631,15 @@ profiles:
         Usa la regla de Mal de Ojo de la fuente.
     name_i18n:
       es: Malojo
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: luthor-wolfenbaum-evil-eye-injury-table
+        scope: 'NO'
+        binding: null
+        reason: The printed clause makes Luthor immune to Eye Injuries and disregards result 31 of the Permanent Injury table, both post-battle injury consequences outside the duel.
   - id: hireling.dramatis.luthor-wolfenbaum.rule.i-am-everywhere
     name: I Am Everywhere
     effect: Uses source persona rule.
@@ -438,9 +648,20 @@ profiles:
         Usa la regla de personalidad de la fuente.
     name_i18n:
       es: Estoy en Todas Partes
-  unresolved_references:
-  - kind: multi_loadout_persona
-    source_name: multiple selectable personas/equipment sets
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: luthor-wolfenbaum-i-am-everywhere-multi-warband
+        scope: 'NO'
+        binding: null
+        reason: The printed clause lets two warbands facing each other each use Luthor and fixes the rule set his assumed role takes, a multi-warband hiring and identity rule.
+  source_notes:
+  - >-
+    The printed selectable personas/equipment sets are separate construction profiles: this row keeps
+    the published Luthor identity and its `out_of_scope` adjudication, while the selectable Luthor the
+    Looter loadout is the normalized `hireling.dramatis.luthor-the-looter` profile with its own kit.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -499,6 +720,15 @@ profiles:
         Usa la regla de la fuente.
     name_i18n:
       es: No Tengo Tiempo para Esto
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: luthor-the-looter-escape-from-combat
+        scope: 'NO'
+        binding: null
+        reason: The printed clause makes Luthor always succeed at escaping from combat, which is voluntary escape from the engagement and not a step the duel resolves.
   - id: hireling.dramatis.luthor-the-looter.rule.looter
     name: Looter
     effect: Uses source post-battle loot rule.
@@ -507,6 +737,15 @@ profiles:
         Usa la regla de botín de postbatalla de la fuente.
     name_i18n:
       es: Saqueador
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: luthor-the-looter-post-battle-loot
+        scope: 'NO'
+        binding: null
+        reason: The printed clause is a post-battle loot rule over the warband's income, which a resolved duel does not settle.
   - id: hireling.dramatis.luthor-the-looter.rule.mordheim-guide
     name: Mordheim Guide
     effect: Uses source exploration/guide rule.
@@ -515,6 +754,15 @@ profiles:
         Usa la regla de exploración/guía de la fuente.
     name_i18n:
       es: Guía de Mordheim
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: luthor-the-looter-mordheim-guide-exploration
+        scope: 'NO'
+        binding: null
+        reason: The printed clause is an exploration and guiding rule for the after-game phase, which the duel does not resolve.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -581,6 +829,15 @@ profiles:
         Usa la regla de montura de la fuente.
     name_i18n:
       es: Montar Lobo Gigante
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: maglah-khan-ride-giant-wolf-mount
+        scope: 'NO'
+        binding: null
+        reason: The clause is a mount rule for the Giant Wolf, which the duel does not field as an independent participant of the fight.
   - id: hireling.dramatis.maglah-khan-s-horde.rule.horse-archer
     name: Horse Archer
     effect: Uses source mounted-shooting rule.
@@ -589,6 +846,15 @@ profiles:
         Usa la regla de disparo a caballo de la fuente.
     name_i18n:
       es: Arquero a Caballo
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: maglah-khan-horse-archer-mounted-shooting
+        scope: 'NO'
+        binding: null
+        reason: The printed clause governs shooting from a mount, and missile resolution lies outside the single close combat the duel resolves.
   - id: hireling.dramatis.maglah-khan-s-horde.rule.horde
     name: Horde
     effect: Must hire the source-defined number of Hobgoblin Scouts and uses leader rules.
@@ -597,6 +863,15 @@ profiles:
         Debe contratar el número de Exploradores Hobgoblin definido por la fuente y usa las reglas de líder.
     name_i18n:
       es: Horda
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: maglah-khan-horde-dependent-hirelings
+        scope: 'NO'
+        binding: null
+        reason: The clause is a hiring requirement to field the source number of Hobgoblin Scouts and the leader procedure over that group, while the duel fields the persona alone.
   unresolved_references:
   - kind: mount_profile
     source_name: Giant Wolf M9 WS3 BS0 S3 T3 W1 I4 A1 Ld4

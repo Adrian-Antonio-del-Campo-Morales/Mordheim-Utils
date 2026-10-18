@@ -404,16 +404,15 @@ rules:
     - ogre-hunter
 - id: trappers--veteran-tracker
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.ogre-hunting-party-web.trappers.veteran-tracker
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: skill selections at purchase are roster-construction mechanics outside
-        the duel scope.
+    - id: compiler.veteran-tracker-skill-choice
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.veteran-tracker-skill-choice
   name: Veteran Tracker
   effect: >-
     A trapper starts with ONE of the following Special Skills: Infiltration (max 1), Set Traps,
@@ -640,16 +639,19 @@ rules:
     - sabretusks
 - id: band--ogre-hunting-skills
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.ogre-hunting-party-web.special.ogre-hunting-skills
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: skill selections on promotion are advancement-time mechanics outside the
-        duel scope.
+    - id: profile.skill-access
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.skill-access
+        parameters:
+          category: special
+    # The table grants the printed choice; each named member keeps its own
+    # record, so an excluded member is never granted by the access itself.
   name: Ogre Hunting Party Special Skills
   effect: >-
     Crude Belch: Ogres and Gnoblars eat almost anything. A Hero with this 'condition' may unleash
@@ -712,6 +714,10 @@ rules:
       de nuevo con 3 redes, sin penalización ni coste.
   applies_to:
     band: true
+    profile_ids:
+    - ogre-hunter
+    - trappers
+    - sabre-baiter
 
 - id: ogre-hunter--equipment-restrictions
   runtime:
@@ -745,7 +751,7 @@ rules:
   kind: warband_skill
   name: Crude Belch
   name_i18n:
-    es: Crude Belch
+    es: Eructo Grosero
   effect: A Hero may unleash fumes on engaged enemies; failed Leadership causes -1 to hit for the
     turn. Must wait until a new enemy engages him before using again.
   effect_i18n:
@@ -775,7 +781,7 @@ rules:
   kind: warband_skill
   name: Bull Charge
   name_i18n:
-    es: Bull Charge
+    es: Carga de Toro
   effect: Ogres only. When charging, may attempt one attack with +1 to hit rather than normal attacks;
     if it hits the enemy is automatically knocked down.
   effect_i18n:
@@ -799,3 +805,190 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.bull-charge
+# The Gnoblar half of the same printed list.  This clause is supply, not the
+# technique: three Nets a game for each named Gnoblar hero, restocked without
+# cost and neither sold nor traded.
+- id: band--ogre-hunting-skills-netter
+  kind: warband_skill
+  name: Netter
+  name_i18n:
+    es: Redador
+  effect: >-
+    Gnoblars only. Each game, the hero starts with 3 Nets; these may not be sold, traded, or given
+    to another warrior; if not used during the game, they are assumed to be stashed away or fallen
+    apart. The next game, the hero will start with 3 nets again, without penalty or cost.
+  effect_i18n:
+    es: >-
+      Solo Gnoblars. En cada partida, el héroe comienza con 3 Redes; no pueden venderse,
+      intercambiarse ni darse a otro guerrero; si no se usan durante la partida, se supone que
+      quedan guardadas o se han descompuesto. En la siguiente partida, el héroe comenzará de nuevo
+      con 3 redes, sin penalización ni coste.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills / Netter
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+  applies_to:
+    profile_ids:
+    - trappers
+    - sabre-baiter
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: none
+    effects:
+    # No technique is granted here: the printed text names three Nets per game
+    # for a Gnoblar hero and says nothing about the Night Goblin net charge, so
+    # no netter operator belongs on this record.
+    - id: band--ogre-hunting-skills-netter.net-supply
+      scope: 'NO'
+      binding: null
+      reason: >-
+        This clause supplies three Nets per game and regulates their restock and transfer; it grants
+        no attack, defence or characteristic modifier in melee, and does not grant the Night Goblin
+        net-charge technique. Using the nets requires the excluded throw producer; its already-caught
+        victim may independently be supplied as condition.netted. Quantity three and the named Gnoblar
+        recipients remain printed facts, not an unlimited technique. Restock between games and sale,
+        trade or transfer restrictions belong to the excluded campaign/inventory lifecycle. This
+        disposition follows the clause's content, not missing equipment lists or binding support.
+- id: band--ogre-hunting-skills-scent-hound
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.ogre-hunting-party-web.ogre-hunting-skills.scent-hound
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: spotting Hidden enemies is a detection rule, not an individual duel
+        consequence.
+  name: Scent Hound
+  effect: >-
+    The Ogre or Gnoblar has the keen nose of an expert tracker; the hero spots Hidden enemies from
+    two times as far away as other warriors (ie, twice his Initiative value in inches).
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+  name_i18n:
+    es: Olfato de Sabueso
+  eligibility:
+  - ogre-hunter
+  - trappers
+  - sabre-baiter
+  applies_to:
+    band: true
+- id: band--ogre-hunting-skills-maneater
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.ogre-hunting-party-web.ogre-hunting-skills.maneater
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: the Ogre immediately learns one Shooting or Academic skill, an
+        advancement-time choice outside the duel.
+  name: Maneater
+  effect: >-
+    This Ogre may immediately learn one skill from the Shooting or Academic skill lists; this
+    skill may be taken only once.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+  name_i18n:
+    es: Devorador de Hombres
+  eligibility:
+  - ogre-hunter
+  - sabre-baiter
+  applies_to:
+    band: true
+- id: band--ogre-hunting-skills-bellowing-roar
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.ogre-hunting-party-web.ogre-hunting-skills.bellowing-roar
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: re-rolling the first failed Rout test is a warband Rout mechanic.
+  name: Bellowing Roar
+  effect: >-
+    This skill may only be taken by the warband leader, allowing him to reroll the first failed
+    Rout test.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+  name_i18n:
+    es: Rugido Estentóreo
+  eligibility:
+  - ogre-hunter
+  applies_to:
+    band: true
+- id: band--ogre-hunting-skills-set-traps
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.ogre-hunting-party-web.ogre-hunting-skills.set-traps
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: spending a turn to place a marker and the marker's 2-inch trigger are
+        terrain/deployment rules.
+  name: Set Traps
+  effect: >-
+    A Trapper may set a trap if he spends a turn doing nothing else (he may not set traps if he's
+    just recovered from being Knocked Down). Place a marker in base contact with the Trapper; when
+    another model moves within 2" of the marker roll a D6: on 3+ it suffers a S4 hit, and the
+    marker is removed whether or not it triggered.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+  name_i18n:
+    es: Poner Trampas
+  eligibility:
+  - trappers
+  applies_to:
+    band: true
+- id: band--ogre-hunting-skills-infiltration
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.ogre-hunting-party-web.ogre-hunting-skills.infiltration
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: deployment order and off-table placement happen before the duel.
+  name: Infiltration
+  effect: As the standard Infiltration skill.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+  name_i18n:
+    es: Infiltración
+  eligibility:
+  - trappers
+  applies_to:
+    band: true

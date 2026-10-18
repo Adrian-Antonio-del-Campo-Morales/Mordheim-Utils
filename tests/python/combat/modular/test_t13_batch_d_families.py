@@ -149,12 +149,15 @@ def test_canonical_batch_d_bindings_and_honest_admission():
         band_id='hirelings.dramatis-personae.1b', profile_id='hireling.dramatis.crow-master-the',
         main_weapon_id='weapon.quarter-staff'))
     assert {'mechanic.mantle-of-crows', 'mechanic.needle-and-thread'} <= set(crow.global_effects.tags)
-    # The printed Staff is the canonical quarter staff; the two unique objects of
-    # the entry (Mantle of Crows, Needle and Thread) reach the duel through the
-    # rule their own records link, never through an invented item equivalence.
+    # The default weapon of an omitted main selection is the printed Staff of
+    # this kit; the distinct explicit weapons outside the kit stay refused by
+    # the matcher, never silently substituted.
+    crow_default = compile_fighter(FighterBuild('mordheim', band_id='hirelings.dramatis-personae.1b',
+        profile_id='hireling.dramatis.crow-master-the'))
+    assert 'weapon.quarter-staff' in crow_default.main_weapon.tags
     with pytest.raises(ValueError, match='complete legal printed kit'):
         compile_fighter(FighterBuild('mordheim', band_id='hirelings.dramatis-personae.1b',
-            profile_id='hireling.dramatis.crow-master-the', main_weapon_id='weapon.dagger'))
+            profile_id='hireling.dramatis.crow-master-the', main_weapon_id='weapon.mace'))
     hillman = compile_fighter(FighterBuild('mordheim',
         band_id='hirelings.hired-sword.2a', profile_id='hireling.hired-sword.cursed-hillman'))
     assert {'mechanic.hillman-lycanthrope', 'rule.thin-flesh'} <= set(hillman.global_effects.tags)

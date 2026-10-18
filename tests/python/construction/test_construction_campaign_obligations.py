@@ -281,14 +281,27 @@ def test_mutation_grant_publishes_priced_ids_and_names_the_unpriced_ones():
         "campaign.mutation.blackblood",
         "campaign.mutation.great-claw",
         "campaign.mutation.tentacle",
+        "campaign.mutation.prehensile-tail",
+        "campaign.mutation.beak",
+        "campaign.mutation.electrical-touch",
+        "campaign.mutation.mer-creature",
+        "campaign.mutation.suckers",
+        "campaign.mutation.eye-stalks",
     ]
     priced = {str(row["id"]) for row in catalogue["mutations"]}
     assert set(entry["mutation_ids"]) <= priced, "every granted id must be priced in the catalogue"
-    # The printed names the catalogue does not price are transcribed, never invented.
-    printed = " ".join(str(_rule(_band(SHALLOWS), "band--aquatic-mutants").get("effect") or "").split())
-    for name in entry["unrouted_mutation_names"]:
-        assert name in printed, name
-    assert not any("prehensile" in str(row["id"]) or "mer-creature" in str(row["id"]) for row in catalogue["mutations"])
+    # Every printed pool name is published and priced; nothing is left unrouted.
+    assert entry["unrouted_mutation_names"] == []
+    # Construction access is compiled per band rule; the pool members coming from
+    # the "Corrupted Characters" chapter publish the Mutiny in Marienburg prices.
+    costs = {row["id"]: row["cost_gc"] for row in catalogue["mutations"]}
+    assert costs["campaign.mutation.prehensile-tail"] == 50
+    assert costs["campaign.mutation.beak"] == 35
+    assert costs["campaign.mutation.electrical-touch"] == 45
+    assert costs["campaign.mutation.mer-creature"] == 25
+    assert costs["campaign.mutation.suckers"] == 25
+    assert costs["campaign.mutation.eye-stalks"] == 40
+    # The acquisition clauses stay outside the duel and are not simulated here.
     assert catalogue["rules"]["purchase"]["timing"] == "at_recruitment_only"
     assert catalogue["rules"]["purchase"]["pricing"] == {
         "first_mutation": "listed_price",

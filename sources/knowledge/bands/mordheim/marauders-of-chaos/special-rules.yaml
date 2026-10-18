@@ -112,6 +112,34 @@ rules:
   applies_to:
     profile_ids:
     - warhounds-of-chaos
+- id: spawn-of-chaos--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - equipment
+  name: Equipment Restrictions
+  effect: "A Spawn of Chaos uses only its claws, tentacles and other extremities and cannot use normal equipment."
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: "0 – 1 Spawn of Chaos"
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "Un Engendro del Caos solo usa sus garras, tentáculos y otras extremidades y no puede usar equipo normal."
+  applies_to:
+    profile_ids:
+    - spawn-of-chaos
 - id: warhounds-of-chaos--animals
   runtime:
     scope: 'NO'
@@ -791,6 +819,42 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.mark-of-arkhar
+    # 'A Seer with this mark becomes a Bloodfather ... A Bloodfather may also
+    # take Strength skills': the role's construction consequence belongs to the
+    # Seer alone, so the binding names its profiles instead of widening the
+    # Chieftain's own access. Casting and the post-combat characteristic gain
+    # stay on their own dispositions.
+    - id: bloodfather--strength-access
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.skill-access
+        parameters:
+          category: strength
+          profile_ids:
+          - seer
+    # The remaining printed consequences of the same clause are classified
+    # here instead of being left as an unexplained remainder.
+    - id: bloodfather--spell-targeting
+      scope: 'NO'
+      binding: null
+      reason: >-
+        'spells targeting him fail on 4+' resolves a prayer/spell target roll; casting is outside
+        the duel.
+    - id: bloodfather--cannot-cast
+      scope: 'NO'
+      binding: null
+      reason: >-
+        'he cannot cast spells' is a magic-access clause; spell resolution is outside the duel.
+    - id: bloodfather--post-combat-gain
+      scope: 'NO'
+      binding: null
+      reason: >-
+        The printed +1 WS/S/T/I after taking an enemy Out of Action in hand-to-hand combat needs a
+        duelist still fighting to carry the gain until the end of the battle. A resolved 1v1 duel
+        ends at that Out of Action result, so no later close combat exists in which the Leadership
+        test and its once-per-characteristic cap could operate; no second enemy is supplied and a
+        resolved duel is not prolonged to manufacture one.
   name: Mark of Arkhar the Dog
   effect: >-
     A marked leader is subject to Frenzy and spells targeting him fail on 4+. A Seer with this mark
@@ -815,6 +879,7 @@ rules:
   applies_to:
     profile_ids:
     - marauder-chieftain
+    - seer
   kind: mark
 - id: band--mark-of-onogal
   kind: mark
@@ -892,16 +957,22 @@ rules:
 - id: band--marauder-special-skills-chosen-of-chaos
   kind: warband_skill
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.marauders-of-chaos.band.marauder-special-skills-chosen-of-chaos
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+    # The admitted consequence is the capability itself, selected through the
+    # shared `special-rule.<rule-id>` compiler contract its sibling Marauder
+    # skills use. The printed campaign maximum is advancement and stays out,
+    # and the Hero equipment list the same sentence grants is already declared
+    # by every recipient's own profile row ('if he does not already'), so the
+    # selection carries no equipment of its own. The printed market clauses
+    # that require the capability reach the Great Axe through it.
+    - id: special-rule.band--marauder-special-skills-chosen-of-chaos
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: special-rule.band--marauder-special-skills-chosen-of-chaos
   name: Chosen of Chaos
   effect: >-
     The Hero has been found worthy of his god’s service and entered the rank of a Chaos Warrior. He
@@ -1080,3 +1151,33 @@ rules:
   applies_to:
     profile_ids:
     - warhounds-of-chaos
+- id: seer--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - armour
+  name: Equipment Restrictions
+  effect: May select weapons from the Hero Equipment List; the profile entry does
+    not allow armour.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+    section: Hero Equipment List
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: May select weapons from the Hero Equipment List; the profile entry does not
+      allow armour.
+  applies_to:
+    profile_ids:
+    - seer

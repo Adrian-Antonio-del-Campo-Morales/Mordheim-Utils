@@ -355,7 +355,8 @@ items:
     note_i18n:
       es: Común (solo héroes gnoblar). 50 coronas de oro.
     structure:
-      repeats_entry: true
+      profile_ids: [gnoblar-fighters, flingers]
+      profile_types: [hero]
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -471,6 +472,8 @@ items:
     note: Common (Gnoblars only). 1st free / second 3 gc.
     note_i18n:
       es: Común (solo gnoblars). La primera gratis / la segunda 3 co.
+    structure:
+      profile_ids: [gnoblar-fighters, flingers]
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -763,6 +766,8 @@ items:
     note: Armen Abbas starting equipment only (unique).
     note_i18n:
       es: Solo equipo inicial de Armen Abbas (único).
+    structure:
+      profile_ids: [hireling.dramatis.armen-abbas]
   source_refs:
   - manual: broheim.net
     printed_page: 16
@@ -794,6 +799,8 @@ items:
     note: Sister of Sigmar starting equipment only.
     note_i18n:
       es: Solo equipo inicial de la Hermana de Sigmar.
+    structure:
+      profile_ids: [hireling.hired-sword.sister-of-sigmar]
   source_refs:
   - manual: broheim.net
     printed_page: 4
@@ -990,6 +997,8 @@ items:
     note: Ogre Treasure-Hunter starting equipment only.
     note_i18n:
       es: Solo equipo inicial del Cazatesoros Ogro.
+    structure:
+      profile_ids: [hireling.hired-sword.ogre-treasure-hunter]
   source_refs:
   - manual: broheim.net
     printed_page: 1
@@ -2328,6 +2337,8 @@ items:
     note: 50 gc, Petru only.
     note_i18n:
       es: 50 co, solo Petru.
+    structure:
+      profile_ids: [petru]
   source_refs:
   - manual: broheim.net
     printed_page: 178
@@ -2355,8 +2366,9 @@ items:
     kind: not_sold
   restrictions:
   - type: condition
-    note: Norse Bearman Bodyguard starting equipment only. Distinct from the KB `wolfcloak` (Middenheim
-      hunt cloak, +1 armour saves vs shooting) and from the MW White Wolf Pelt Cloak (6+ saving throw).
+    note: Norse Bearman Bodyguard starting equipment only. Distinct from the KB `wolfcloak` (Middenheim hunt cloak, +1 armour saves vs shooting) and from the MW White Wolf Pelt Cloak (6+ saving throw).
+    structure:
+      profile_ids: [hireling.hired-sword.norse-bearman-bodyguard]
     note_i18n:
       es: >-
         Solo equipo inicial del Guardaespaldas Hombre Oso Nórdico. Distinto del `wolfcloak` del
@@ -2377,6 +2389,8 @@ items:
     note: Wolf-Priests of Ulric only (starting equipment, not purchasable).
     note_i18n:
       es: Solo Sacerdotes Lobo de Ulric (equipo inicial, no comprable).
+    structure:
+      profile_ids: [hireling.hired-sword.wolf-priest-of-ulric-miracle-workers]
   source_refs:
   - manual: liber-malefic
     printed_page: 9
@@ -2431,6 +2445,8 @@ items:
     note: One Marauders of Chaos Hero only
     note_i18n:
       es: Solo un héroe Merodeador del Caos
+    structure:
+      profile_types: [hero]
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2449,6 +2465,8 @@ items:
     note: Dark Elves Beastmaster only
     note_i18n:
       es: Solo Domador de Bestias de los Elfos Oscuros
+    structure:
+      profile_ids: [beastmaster]
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2525,6 +2543,8 @@ items:
     note: Bretonnian Chapel Guard Knights only
     note_i18n:
       es: Solo Caballeros de la Guardia de la Capilla Brettoniana
+    structure:
+      profile_ids: [questing-knight, knights-errant]
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2747,6 +2767,9 @@ items:
     note: Marauders of Chaos Heroes with the Chosen of Chaos skill only
     note_i18n:
       es: Solo héroes Merodeadores del Caos con la habilidad Elegido del Caos
+    structure:
+      profile_types: [hero]
+      required_rule_ids: [band--marauder-special-skills-chosen-of-chaos]
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -3023,6 +3046,8 @@ items:
     note: Tomb Guardians Liche Priest only
     note_i18n:
       es: Solo el Sacerdote Liche de los Guardianes de la Tumba
+    structure:
+      profile_ids: [liche-priest]
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -3032,18 +3057,21 @@ items:
   item_id: shortsword
   price: { base_gc: 7 }
   availability: { kind: common }
+  # The source lists this weapon for Pilgrims and Bowmen, not Knights.
+  # The former "Knights only" note was an extraction error; the band's
+  # explicit equipment lists determine the individual recipients.
   restrictions:
   - type: warband_only
     band_ids: [bretonnian-chapel-guard]
-  - type: profile_only
-    note: Bretonnian Chapel Guard Knights only
-    note_i18n:
-      es: Solo Caballeros de la Guardia de la Capilla Brettoniana
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Trading Post / Hand-to-hand Combat Weapons
     url: https://mordheimer.net/docs/trading-post
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Bretonnian Chapel Guard / Pilgrims and Bowmen equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/bretonnian-chapel-guard
 - id: campaign.trading-post.sigmarite-warhammer
   item_id: sigmarite_hammer
   price: { base_gc: 15 }
@@ -3352,6 +3380,8 @@ items:
     note: Tomb Guardians Tomb Lord only
     note_i18n:
       es: Solo el Señor de la Tumba de los Guardianes de la Tumba
+    structure:
+      profile_ids: [tomb-lord]
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -3685,6 +3715,8 @@ items:
     note: Pirate Gunners only
     note_i18n:
       es: Solo Artilleros Piratas
+    structure:
+      profile_ids: [gunners]
   - type: limit_per_warband
     value: 1
   source_refs:
@@ -3834,6 +3866,8 @@ items:
     note: Bretonnian Chapel Guard Knights only
     note_i18n:
       es: Solo Caballeros de la Guardia de la Capilla Brettoniana
+    structure:
+      profile_ids: [questing-knight, knights-errant]
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -3943,6 +3977,8 @@ items:
     note: Tomb Guardians Tomb Lord only
     note_i18n:
       es: Solo el Señor de la Tumba de los Guardianes de la Tumba
+    structure:
+      profile_ids: [tomb-lord]
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -4032,6 +4068,8 @@ items:
     note: Vampires and Necromancers only
     note_i18n:
       es: Solo vampiros y nigromantes
+    structure:
+      profile_ids: [vampire, blood-dragon-vampire, lahmia-vampire, lahmian-vampire, necrarch-vampire, strigoi-vampire, von-carstein-vampire, necromancer]
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -4130,6 +4168,8 @@ items:
     note: Amazons (Lustria) Piranha Warrior only
     note_i18n:
       es: Solo Guerrera Piraña de las Amazonas (Lustria)
+    structure:
+      profile_ids: [piranha-warriors]
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -4202,6 +4242,9 @@ items:
     note: Shadow Warrior Weavers only
     note_i18n:
       es: Solo Tejedoras de los Guerreros de las Sombras
+    structure:
+      profile_ids: [shadow-weaver]
+      post_creation_profile_ids: [shadow-weaver]
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -4741,6 +4784,8 @@ items:
     note: Pirate Captain and Mates only
     note_i18n:
       es: Solo el Capitán Pirata y los Oficiales
+    structure:
+      profile_ids: [pirate-captain, ships-mates]
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -4827,6 +4872,8 @@ items:
     note: Skink Henchmen only
     note_i18n:
       es: Solo secuaces skink
+    structure:
+      profile_types: [henchman]
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -5331,6 +5378,8 @@ items:
     note: Marauders with the Chosen of Chaos skill only
     note_i18n:
       es: Solo Merodeadores con la habilidad Elegido del Caos
+    structure:
+      required_rule_ids: [band--marauder-special-skills-chosen-of-chaos]
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -6484,6 +6533,8 @@ items:
     note: Sold as Lance (entry lance); not available to Questing Knights.
     note_i18n:
       es: Se vende como Lanza de Caballería (entrada lance); no disponible para los Caballeros Andantes.
+    structure:
+      excluded_profile_ids: [questing-knight]
   source_refs:
   - manual: mordheimer.net
     printed_page: 0

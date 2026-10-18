@@ -133,7 +133,7 @@
       ]
     },
     "restriction": {
-      "description": "A typed buying restriction. `condition` and `profile_only` carry the source wording in `note`; a `condition` may also declare the `band_ids` or `groups` the printed clause names, and only then is it a scope an application evaluates. `warband_only` and `warband_forbidden` are always evaluated. A warband restriction names either the individual bands (`band_ids`) or the shared groups (`groups`), never both. An unscoped `condition` may publish its printed clause as data in `structure`; the market never drops such a clause — it evaluates a structured one (and carries the buyer-scoped keys to the assignment route) and otherwise refuses the purchase (`market_condition_unstructured`) with the note, so the gap is surfaced rather than ignored. `structure` and a scope are alternatives, never combined on the same restriction.",
+      "description": "A typed buying restriction. `condition` and `profile_only` carry the source wording in `note`; a `condition` may also declare the `band_ids` or `groups` the printed clause names, and only then is it a scope an application evaluates. `warband_only` and `warband_forbidden` are always evaluated. A warband restriction names either the individual bands (`band_ids`) or the shared groups (`groups`), never both. An unscoped `condition` may publish its printed clause as data in `structure`; the market never drops such a clause — it evaluates a structured one (and carries the buyer-scoped keys to the assignment route) and otherwise refuses the purchase (`market_condition_unstructured`) with the note, so the gap is surfaced rather than ignored. A `profile_only` restriction is not a purchase decision (the entry may be bought into the stash) but it does name the printed bearer, so it may publish the same `structure` block: the assignment route reads it and refuses every other recipient instead of keeping the printed clause as prose. `structure` and a scope are alternatives, never combined on the same restriction.",
       "type": "object",
       "required": ["type"],
       "additionalProperties": false,
@@ -173,13 +173,13 @@
           "then": { "not": { "anyOf": [{ "required": ["band_ids"] }, { "required": ["groups"] }] } }
         },
         {
-          "if": { "not": { "properties": { "type": { "const": "condition" } }, "required": ["type"] } },
+          "if": { "not": { "properties": { "type": { "enum": ["condition", "profile_only"] } }, "required": ["type"] } },
           "then": { "not": { "required": ["structure"] } }
         }
       ]
     },
     "condition_structure": {
-      "description": "The printed clause of an unscoped `condition` written as data, so the market evaluates or surfaces it instead of dropping it. `repeats_entry` is an editorial declaration, verified against the source at ingestion, that the note adds no requirement beyond what the entry already publishes (scope, availability kind or price); `creation_only` is the printed 'only when the warband is created'; `characteristic_roll` is the test the buyer must pass; `purchase_unit` names the unit the printed price covers. `profile_ids`, `skill_ids` and `max_per_wizard` scope the buyer rather than the purchase, so the market carries them to the assignment route (a stash copy has no recipient) instead of refusing the buy.",
+      "description": "The printed clause of an unscoped `condition`, or the printed bearer of a `profile_only` clause, written as data, so the market evaluates or surfaces it instead of dropping it. `repeats_entry` is an editorial declaration, verified against the source at ingestion, that the note adds no requirement beyond what the entry already publishes (scope, availability kind or price); `creation_only` is the printed 'only when the warband is created'; `characteristic_roll` is the test the buyer must pass; `purchase_unit` names the unit the printed price covers. `profile_ids`, `profile_types`, `excluded_profile_ids`, `skill_ids`, `required_rule_ids` and `max_per_wizard` scope the recipient rather than the purchase, so the market carries them to the assignment route (a stash copy has no recipient) instead of refusing the buy. `profile_types`, `excluded_profile_ids`, `required_rule_ids` and `post_creation_profile_ids` are the vocabulary `equipment-access.yaml` already publishes for its printed recipients: the roster kind a clause names (`Heroes only`), the profiles a clause denies (`not available to Questing Knights`), the source capability it requires (Watchmen Falconer) and the phase a named recipient starts to govern (`outside the starting list`, Elven Runestones). The kinds are the two the printed bearers name; a clause that names a creature kind keeps its prose note instead.",
       "type": "object",
       "additionalProperties": false,
       "minProperties": 1,
@@ -187,7 +187,17 @@
         "repeats_entry": { "type": "boolean" },
         "creation_only": { "type": "boolean" },
         "profile_ids": { "$ref": "defs.schema.json#/$defs/id_list" },
+        "profile_types": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["hero", "henchman"] } },
+        "excluded_profile_ids": { "$ref": "defs.schema.json#/$defs/id_list" },
         "skill_ids": { "$ref": "defs.schema.json#/$defs/id_list" },
+        "required_rule_ids": {
+          "description": "Capability the printed bearer must carry, by the canonical id of the rule that grants it ('Marauders with the Chosen of Chaos skill only'). It is the same member `equipment-access.yaml` publishes for a source capability (the Watchmen Falconer), so a clause that names a warband skill keeps its identity instead of being forced into a `skill.*` id. The shared eligibility projection decides it against the bearer's declared rules and the selections the build carries, and it is a requirement, never a default: the bearer that does not carry the capability is refused, and a requirement whose rule has no executable contract yet refuses the item instead of granting it.",
+          "$ref": "defs.schema.json#/$defs/id_list"
+        },
+        "post_creation_profile_ids": {
+          "description": "Recipients the clause names for the phase its own source prints: the named profiles that replace the starting recipient set outside the band's starting list, when `equipment.post-creation` is supplied in the build's variants (Elven Runestones: 'Heroes only at warband creation; outside the starting list, Elven Runestones are available to Shadow Weavers only'). At creation such a clause names no starting bearer and the band's own equipment list governs; afterwards it narrows the bearer to these profiles. It is the same member `equipment-access.yaml` publishes for the phase of its own lines.",
+          "$ref": "defs.schema.json#/$defs/id_list"
+        },
         "max_per_wizard": { "type": "integer", "minimum": 1 },
         "characteristic_roll": { "enum": ["M", "WS", "BS", "S", "T", "W", "I", "A", "Ld"] },
         "purchase_unit": { "enum": ["copy", "pair", "brace", "set"] }

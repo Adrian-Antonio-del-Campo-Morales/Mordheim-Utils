@@ -2,13 +2,12 @@ schema_version: 2
 band_id: dwarf-guildsmen-kaz
 rules:
 - id: band--town-crier-6-inheritance
-  kind: warband_skill
   runtime:
     scope: 'YES'
     implemented: 'YES'
-    grant: selectable
+    grant: band
     effects:
-    - id: unimplemented.dwarf-guildsmen-kaz.band.town-crier-6-inheritance
+    - id: inherited.dwarf-guildsmen-kaz.band.town-crier-6-inheritance.hard-to-kill
       scope: 'YES'
       binding:
         kind: mechanic
@@ -25,10 +24,6 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.hatred-orcs-goblins
-      reason: >-
-        Deferred cross-reference: inherits special rules, equipment lists, Dwarf Axe usage and
-        Dwarf special skills from Town Crier 6 (or Best of Town Crier), except Incomparable
-        Miners. Resolves after equivalence review against the active KB dwarf bands.
   name: Town Crier 6 Inheritance
   effect: >-
     All of the special rules and equipment lists from Town Crier 6 (or Best of Town Crier) apply
@@ -51,6 +46,74 @@ rules:
       Crier).
   applies_to:
     band: true
+- id: band--town-crier-6-dwarf-special-skills
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: profile.skill-access
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.skill-access
+        parameters:
+          category: special
+          skills:
+          - skill.unbeatable-warrior
+          - skill.tough-as-steel
+          - skill.thick-skull
+    - id: unimplemented.dwarf-guildsmen-kaz.special.extra-tough
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope by content: the printed Extra Tough re-rolls this Hero's roll on the Heroes'
+        Serious Injury chart after a game in which he was taken out of action. Both the chart and the
+        re-roll happen after the duel, so the member has no duel consequence. It is a real printed
+        member of this column and is disposed here instead of being dropped for lacking a catalogue
+        row.
+    - id: unimplemented.dwarf-guildsmen-kaz.special.resource-hunter
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope by content: the printed Resource Hunter modifies one dice roll on the Exploration
+        chart at the end of a game, a post-game campaign step with no duel consequence. It is a real
+        printed member of this column and is disposed here instead of being dropped for lacking a
+        catalogue row.
+  name: Dwarf Special Skills
+  effect: >-
+    Dwarf Heroes may use any of the Dwarf Special Skills listed in Town Crier 6 (or Best of Town
+    Crier): Master of Blades, Extra Tough, Resource Hunter, True Grit and Thick Skull. Master of
+    Blades is one printed entry and publishes one equivalent skill, Unbeatable Warrior (parry by
+    equalling the highest hit roll, and two parries with two Parry weapons); the Vampire's Sword
+    Master is a different contract and is never granted for this entry. The printed Master of Blades
+    sentence about two Dwarf Axes reaches rule.dwarf-axe-parry-reroll, not this column. Extra Tough
+    and Resource Hunter are printed members whose entire effect is post-game campaign bookkeeping, so
+    each carries its own out-of-scope disposition.
+  source:
+    manual: broheim.net
+    printed_page: 26
+    section: Special Rules / Dwarf Equipment Lists / Dwarf Special Skills
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Habilidades Especiales Enanas
+  effect_i18n:
+    es: >-
+      Los heroes      enanos pueden usar cualquiera de las Habilidades Especiales Enanas listadas en Town Crier 6 (o
+      Best of Town Crier): Maestro de Hojas, Duro de Pelar, Cazador de Recursos, Temple de Acero y
+      Craneo Grueso. Maestro de Hojas es una unica entrada impresa y publica una unica habilidad
+      equivalente, Guerrero Imbatible (parar igualando la tirada mas alta y dos paradas con dos armas
+      con Parada); Maestro de la Espada del Vampiro es un contrato distinto y nunca se concede por
+      esta entrada. La frase impresa de Maestro de Hojas sobre dos Hachas Enanas llega a
+      rule.dwarf-axe-parry-reroll, no a esta columna. Duro de Pelar y Cazador de Recursos son miembros
+      impresos cuyo efecto completo es contabilidad de campana posterior a la partida, asi que cada
+      uno lleva su propia disposicion fuera de alcance.
+  applies_to:
+    band: true
+    profile_ids:
+    - master-craftsman
+    - expert-craftsmen
+    - apprentices
 - id: master-craftsman--leader
   runtime:
     scope: 'YES'
@@ -199,7 +262,10 @@ rules:
       scope: LATER
       binding: null
       reason: >-
-        Deferred subsystem: pre-battle random effects and psychology (fear, frenzy).
+        Pre-battle producer: the leader's D3 nomination, the drinking group and the single D6 are
+        outside the duel. The nominated Dwarf's admitted results are supplied as
+        condition.troll-brew-fear-immunity (1-2), condition.troll-brew-frenzy (3-4) and
+        condition.troll-brew-special-brew (5-6), each resolved by the shared supplied-condition route.
   name: Brewers
   effect: >-
     A Dwarf Brewer is always able to produce a barrel of his finest brew prior to each battle.

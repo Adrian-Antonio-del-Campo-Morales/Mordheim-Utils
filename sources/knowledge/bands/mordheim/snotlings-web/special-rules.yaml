@@ -74,16 +74,25 @@ rules:
     band: true
 - id: band--small-hands
   runtime:
-    scope: LATER
-    implemented: 'NO'
-    grant: band
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
     effects:
-    - id: unimplemented.snotlings-web.band.small-hands
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: equipment restrictions are roster-construction mechanics outside the
-        duel scope.
+    # The printed ban names the weapons a tiny hand cannot use, not a family the
+    # whole band shares: Shoota Teams are the one named carve-out, so the
+    # recipients are the Snotling profiles and not the band-wide token set.
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - long_bow
+          - elf_bow
+          - handgun
+          - hochland_long_rifle
+          - blunderbuss
   name: Small Hands
   effect: >-
     Snotlings and the Bullied Goblin may never use Long bows, Elf Bows, Handguns, Long Rifles or
@@ -104,7 +113,14 @@ rules:
       lo permita. ¡Esas armas tan grandes no están hechas para unas manos tan pequeñas! La excepción
       son los Equipos de Tiro, que usan el trabajo en equipo para compensar la diferencia.
   applies_to:
-    band: true
+    profile_ids:
+    - bullied-goblin
+    - bigsnotz
+    - scouts
+    - shaman
+    - snotling-mobs
+    - runts
+    - wheelo
 - id: band--not-so-tough-gits
   runtime:
     scope: 'YES'
@@ -591,15 +607,17 @@ rules:
     - shaman
 - id: shoota-teams--teamwork
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
-    - id: unimplemented.snotlings-web.shoota-teams.teamwork
-      scope: LATER
+    - id: profile.single-model-projection
+      scope: 'NO'
       binding: null
       reason: >-
-        Deferred subsystem: multi-model single-unit abstraction is outside the current engine scope.
+        The printed profile is already the duel's one participant with one injury and
+        resource state; the duel has no multi-model unit, so this clause is that projection
+        and not a deferred subsystem. No extra per-Snotling attacks are added.
   name: Teamwork
   effect: >-
     While a Shoota Team technically consists of 2 or more snotlings, for all intents and purposes,
@@ -687,15 +705,17 @@ rules:
     - shoota-teams
 - id: snotling-mobs--teamwork
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
-    - id: unimplemented.snotlings-web.snotling-mobs.teamwork
-      scope: LATER
+    - id: profile.single-model-projection
+      scope: 'NO'
       binding: null
       reason: >-
-        Deferred subsystem: multi-model single-unit abstraction is outside the current engine scope.
+        The printed profile is already the duel's one participant with one injury and
+        resource state; the duel has no multi-model unit, so this clause is that projection
+        and not a deferred subsystem. No extra per-Snotling attacks are added.
   name: Teamwork
   effect: >-
     While a Snotling Mob technically consists of LOTS of snotlings, for all intents and purposes,
@@ -1342,16 +1362,19 @@ rules:
     profile_ids:
     - scouts
 - id: bigsnotz--big-bully
+  kind: warband_skill
   runtime:
-    scope: LATER
-    implemented: 'NO'
-    grant: profile
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
     effects:
-    - id: unimplemented.snotlings-web.special.big-bully
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: skill grants are advancement-time mechanics outside the duel scope.
+    - id: profile.skill-access
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.skill-access
+        parameters:
+          category: strength
   name: Big Bully
   effect: >-
     (BigSnotz only) The BigSnot is immensely big and strong, especially by Snotling standards. The
@@ -1499,16 +1522,15 @@ rules:
     - wheelo
 - id: band--pointy-stick
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: none
     effects:
     - id: pointy-stick-dagger-alias
-      scope: 'NO'
-      binding: null
-      reason: The list names Dagger/Pointy Stick and its printed armour modifier is the existing weapon.dagger
-        contract. This descriptive item entry grants no passive bonus to other weapons; canonical list
-        mapping supplies the dagger.
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: weapon.dagger
   name: Pointy Stick
   effect: >-
     1st free/2 gc, Common. The Snotlings' dagger - the equipment lists print their rows as

@@ -32,6 +32,24 @@ weapons:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons-lustria
   name_i18n:
     es: Espada
+- id: weapon.shortsword
+  name: Shortsword
+  name_i18n:
+    es: Espada corta
+  effect: May parry; grants the enemy +1 armour save, including 6+ without armour.
+  effect_i18n:
+    es: Puede parar; concede +1 a la salvación enemiga, incluida una salvación de 6+ sin armadura.
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Shortsword
+  rules_source_url: https://mordheimer.net/docs/warbands/grade-1c-warbands/bretonnian-chapel-guard
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Special Equipment / Shortsword
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/bretonnian-chapel-guard
 - id: weapon.mace
   name: Mace
   effect: Uses normal Strength and has Concussion on Injury rolls of 2-4.
@@ -50,6 +68,25 @@ weapons:
   - *id003
   name_i18n:
     es: Maza
+- id: weapon.club
+  name: Club
+  effect: Uses normal Strength and has Concussion on Injury rolls of 2-4.
+  effect_i18n:
+    es: >-
+      Usa la Fuerza normal y provoca Conmoción con tiradas de Heridas de 2-4.
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Club
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Close Combat Weapons / Club
+    url: https://mordheimer.net/docs/weapons-armour/close-combat
+  name_i18n:
+    es: Garrote
 - id: weapon.ladle
   name: Ladle
   effect: >-
@@ -1192,6 +1229,64 @@ weapons:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
   name_i18n:
     es: Látigo de Púas
+- id: weapon.thinglash
+  name: Thinglash
+  name_i18n:
+    es: Latigocosas
+  effect: >-
+    Range: Close Combat; Strength: as user +1; special rules: +1 enemy armour save, whipcrack,
+    cannot be parried. An enemy wounded by a thinglash gains a +1 bonus to his armour save, and a 6+
+    armour save if he has none normally; the flexible lash is used with great expertise, so attempts
+    to parry its strikes are futile. Whipcrack grants one bonus attack when charging or charged, and
+    only that bonus strikes first when charged. Infuriate and the Clan Pristekk-only acquisition are
+    not duel consequences.
+  effect_i18n:
+    es: >-
+      Alcance: cuerpo a cuerpo; Fuerza: la del usuario +1; reglas especiales: +1 a la salvación de
+      armadura del enemigo, látigo restallante y no puede detenerse. Un enemigo herido por un
+      latigocosas obtiene un bonificador de +1 a su salvación por armadura, y una salvación de 6+ si
+      normalmente no tiene ninguna; el látigo flexible se usa con gran maestría, así que los intentos
+      de detener sus golpes son inútiles. Látigo restallante: otorga un ataque adicional al cargar o
+      ser cargado, y solo ese ataque adicional golpea primero al ser cargado. Enfurecer y la
+      adquisición exclusiva del Clan Pristekk no son consecuencias del duelo.
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Thinglash
+  rules_source_url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clan%20Pristekk.pdf
+  source_refs:
+  - manual: broheim.net
+    printed_page: 4
+    section: Special equipment / Thinglash
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clan%20Pristekk.pdf
+- id: weapon.thing-catcher
+  name: Thing Catcher
+  name_i18n:
+    es: Cazacosas
+  effect: >-
+    Range: Close Combat; Strength: as user; special rules: two-handed, capture. A model taken out of
+    action by a thing-catcher becomes captured instead of rolling for Serious Injuries, and only
+    animals and large models may be captured this way; the capture procedure itself is a post-battle
+    roster effect, so the loadout that occupies both hands is the duel consequence recorded here.
+  effect_i18n:
+    es: >-
+      Alcance: cuerpo a cuerpo; Fuerza: como usuario; reglas especiales: a dos manos, captura. Un
+      modelo dejado fuera de combate por un cazacosas queda capturado en lugar de tirar por Heridas
+      Graves, y solo pueden capturarse así animales y modelos grandes; el procedimiento de captura es
+      un efecto de plantilla posterior a la batalla, así que la conexión registrada aquí es la de la
+      carga que ocupa ambas manos.
+  hands: 2
+  paired: false
+  main_hand: true
+  off_hand: false
+  engine_option: Thing Catcher
+  rules_source_url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clan%20Pristekk.pdf
+  source_refs:
+  - manual: broheim.net
+    printed_page: 4
+    section: Special equipment / Thing-catcher
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clan%20Pristekk.pdf
 - id: weapon.sun-gauntlet
   name: Sun Gauntlet
   effect: A ranged Strength 4 weapon with range 12 inches and no long-range hit penalty. In close combat
@@ -1287,6 +1382,31 @@ weapons:
   source_refs: []
   name_i18n:
     es: Draich
+- id: weapon.draich-druchii
+  name: Draich (Druchii)
+  name_i18n:
+    es: Draich Druchii
+  effect: >-
+    Range: Close combat. Strength: As user +2. Special Rules: Two-handed, Swift. A Draich,
+    unlike other double-handed weapons, does not Strike last. This printed Druchii variant
+    carries no parry, Concussion or Critical Hit bonus of the shared catalogue entry.
+  effect_i18n:
+    es: >-
+      Alcance: combate cuerpo a cuerpo. Fuerza: la del usuario +2. Reglas especiales: a dos
+      manos, Veloz. A diferencia de otras armas a dos manos, no golpea el último. Esta variante
+      impresa Druchii no hereda la parada, la Conmoción ni el bono crítico de la entrada
+      compartida.
+  hands: 2
+  paired: false
+  main_hand: true
+  off_hand: false
+  engine_option: Druchii Draich
+  rules_source_url: https://mordheimer.net/docs/warbands/grade-2a-warbands/druchii
+  source_refs:
+  - manual: mordheim-index-catalog
+    printed_page: 0
+    section: Druchii / Special Equipment / Draich
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/druchii
 - id: weapon.yari-one-handed
   name: Yari (One-Handed)
   effect: One-handed weapon that may parry.
@@ -1650,6 +1770,30 @@ weapons:
   - *id027
   name_i18n:
     es: Bastón
+- id: weapon.travel-staff
+  name: Travel Staff
+  name_i18n:
+    es: Bastón de Viaje
+  effect: >-
+    Range: Close Combat; Strength: as user; Balanced: the fighting staff is especially light and
+    easy to wield, so a model armed with it gets +1 Initiative in close combat. The Arcane Society
+    entry prints only the Balanced clause, so no parry and no two-handed loadout are claimed here.
+  effect_i18n:
+    es: >-
+      Alcance: cuerpo a cuerpo; Fuerza: como usuario; Equilibrado: el bastón de lucha es
+      especialmente ligero y fácil de manejar, así que un modelo armado con él obtiene +1 a la
+      Iniciativa en combate cuerpo a cuerpo. La entrada de la Sociedad Arcana solo imprime la cláusula
+      Equilibrado, así que aquí no se reclaman ni la parada ni el uso a dos manos.
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Travel Staff
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - manual: chaos-in-the-streets
+    printed_page: 167
+    section: Arcane Society Equipment List
 - id: weapon.vomit-attack
   name: Vomit Attack
   effect: >-
@@ -1783,6 +1927,24 @@ weapons:
     printed_page: 0
     section: Special Equipment / Pry Bar
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/grave-robbers
+- id: weapon.iron-fan
+  name: Iron Fan
+  name_i18n:
+    es: Abanico de Hierro
+  effect: Uses normal Strength with Parry and grants its bearer +1 Initiative.
+  effect_i18n:
+    es: Usa la Fuerza normal con Parada y otorga a su portador +1 Iniciativa.
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Iron Fan
+  rules_source_url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1c
+  source_refs:
+  - manual: Border Town Burning
+    printed_page: 0
+    section: Grand Master Ippan Shu / Iron Fan
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1c
 - id: weapon.kanabo
   name: Kanabo
   name_i18n:
@@ -2045,6 +2207,62 @@ weapons:
   paired: false
   main_hand: true
   off_hand: false
+- id: weapon.whip-tc14
+  name: Whip (Town Cryer 14)
+  name_i18n: {es: Látigo (Town Cryer 14)}
+  effect: 'Town Cryer 14 whip: Strength as user -1, cannot be parried, target gains +1 armour save. May disarm instead of wounding; one holding parry regardless of equipment. Reach and ranged use are excluded.'
+  effect_i18n: {es: 'Fuerza del usuario -1; no permite paradas y concede +1 armadura al objetivo. Puede desarmar en lugar de herir, con una parada para retener el arma. Alcance y disparo excluidos.'}
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Whip (Town Cryer 14)
+  rules_source_url: https://broheim.net/downloads/towncryer/TownCryer14.pdf
+  source_refs:
+  - manual: broheim.net
+    printed_page: 0
+    section: Town Cryer 14 / Mule Skinner / Whip (PDF page 11)
+    url: https://broheim.net/downloads/towncryer/TownCryer14.pdf
+- id: weapon.icefang-axe
+  name: Axe of Icefang
+  name_i18n: {es: Hacha de Colmillo de Hielo}
+  effect: A double-handed weapon with Parry and +1 on injury rolls; its bearer Strongman retains its own source effect.
+  effect_i18n: {es: Arma a dos manos con Parada y +1 a las tiradas de heridas; conserva la interacción con Forzudo.}
+  hands: 2
+  paired: false
+  main_hand: true
+  off_hand: false
+  engine_option: Axe of Icefang
+  rules_source_url: https://broheim.net/downloads/towncryer/old/TownCryer15.pdf
+  source_refs:
+  - manual: broheim.net
+    printed_page: 27
+    section: Town Cryer 15 / Drenok Johansen
+    url: https://broheim.net/downloads/towncryer/old/TownCryer15.pdf
+- id: weapon.count-of-ventimiglias-misericordia
+  name: The Count of Ventimiglia's Misericordia
+  effect: >-
+    Treated as a sword. Opponents wounded by it are stunned on a result of 1-3 (Undead are knocked
+    down as normal) and put out of action on a 4-6; this printed table replaces the ordinary
+    knocked-down, stunned and out-of-action bands of the Injury chart.
+  effect_i18n:
+    es: >-
+      Se considera una espada. Los oponentes heridos por ella quedan aturdidos con un resultado de
+      1-3 (los No Muertos son derribados con normalidad) y fuera de combate con un 4-6; esta tabla
+      impresa sustituye las bandas ordinarias de la tabla de Heridas.
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Count of Ventimiglia's Misericordia
+  rules_source_url: https://mordheimer.net/docs/campaigns/income
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Income / Magical Artefacts Table
+    url: https://mordheimer.net/docs/campaigns/income
+  name_i18n:
+    es: La Misericordia del Conde de Ventimiglia
 armours:
 - id: armour.no-armour
   name: No Armour
@@ -2423,6 +2641,26 @@ defences:
   - *id034
   name_i18n:
     es: Capa de Dragón Marino
+- id: defence.sea-dragon-cloak-druchii
+  name: Sea Dragon Cloak (Druchii)
+  name_i18n:
+    es: Capa de Dragón Marino Druchii
+  effect: >-
+    Scales: the wearer receives a +1 bonus to his save in close combat, or a 6+ save if he has
+    none, and it may be combined with other pieces of armour (shield, light armour) with no
+    penalty. The +2 save against shooting is outside the current duel runtime.
+  effect_i18n:
+    es: >-
+      Escamas: el portador recibe un bono de +1 a su salvación en combate cuerpo a cuerpo, o una
+      salvación de 6+ si no tiene ninguna, y se puede combinar con otras piezas de armadura
+      (escudo, armadura ligera) sin penalización. El bono de +2 contra disparos queda fuera del
+      duelo actual.
+  engine_option: Druchii Sea Dragon cloak
+  source_refs:
+  - manual: mordheim-index-catalog
+    printed_page: 0
+    section: Druchii / Special Equipment / Sea Dragon Cloak
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/druchii
 - id: defence.cooking-pot-helmet
   name: Cooking Pot Helmet
   effect: An unmodified 5+ converts a Stunned injury result to Knocked Down.
@@ -2452,6 +2690,25 @@ defences:
   - *id003
   name_i18n:
     es: Pieles Encantadas
+- id: defence.all-seeing-eye-of-numas
+  name: All-seeing Eye of Numas
+  effect: >-
+    The bearer of the artefact has an additional 6+ save against strikes in close combat that is
+    not modified by Strength or weapon modifiers; the same printed save against shooting is
+    outside the current duel runtime.
+  effect_i18n:
+    es: >-
+      El portador del artefacto tiene una tirada de salvación adicional de 6+ contra golpes en
+      combate cuerpo a cuerpo que no se ve modificada por la Fuerza ni por modificadores de armas;
+      esa misma salvación impresa contra disparos queda fuera del duelo actual.
+  engine_option: All-seeing Eye of Numas
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Income / Magical Artefacts Table
+    url: https://mordheimer.net/docs/campaigns/income
+  name_i18n:
+    es: Ojo que Todo lo Ve de Numas
 - id: defence.kite-shield
   name: Kite Shield
   effect: +2 armour save on foot or +1 while mounted; the final save cannot improve beyond 1+.
@@ -2497,6 +2754,28 @@ defences:
     section: Magic Acorn
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Militiant%20Mootlanders.pdf
   rules_source_url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Militiant%20Mootlanders.pdf
+- id: defence.sabertooth-hide
+  name: Sabertooth Tiger Hide
+  name_i18n: {es: Piel de Tigre Dientes de Sable}
+  effect: A 6+ armour save in close combat. Its 5+ missile save belongs to excluded shooting.
+  effect_i18n: {es: Armadura de 6+ en cuerpo a cuerpo. Se excluye la salvación de 5+ frente a disparos.}
+  engine_option: Sabertooth Tiger Hide
+  source_refs:
+  - manual: broheim.net
+    printed_page: 27
+    section: Town Cryer 15 / Drenok Johansen
+    url: https://broheim.net/downloads/towncryer/old/TownCryer15.pdf
+- id: defence.eye-pendant
+  name: Eye Pendant
+  name_i18n: {es: Colgante del Ojo}
+  effect: 'The worn pendant grants a 4+ Ward against damage. An Undead warrior must pass Leadership before attacking its bearer.'
+  effect_i18n: {es: 'El colgante equipado otorga Guarda de 4+; un No Muerto debe superar Liderazgo para atacar al portador.'}
+  engine_option: Eye Pendant
+  source_refs:
+  - manual: broheim.net
+    printed_page: 16
+    section: Khemri Dramatis Personae / Abdul Alhazred / Eye Pendant
+    url: https://broheim.net/downloads/campaigns/khemri/Khemri%20Dramatis%20Personae.pdf
 materials:
 - id: material.normal
   name: Normal
@@ -2637,6 +2916,46 @@ preparations:
   - *id037
   name_i18n:
     es: Champiñones Partecabezas
+- id: preparation.warpaint
+  name: Warpaint
+  effect: >-
+    While wearing the warpaint the bearer gains a 6+ invulnerable save. One use only: the paint is
+    put on before the battle and covers that battle. Also useable by Savage Goblin Boyz.
+  effect_i18n:
+    es: >-
+      Mientras lleva la pintura de guerra, el portador obtiene una salvación invulnerable de 6+.
+      Un solo uso: la pintura se aplica antes de la batalla y cubre esa batalla. También pueden
+      usarla los Goblins Salvajes Boyz.
+  engine_option: Warpaint
+  modular_only: true
+  source_refs:
+  - manual: broheim.net
+    printed_page: 59
+    section: Special Equipment / Warpaint
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak%20Azgal.pdf
+  name_i18n:
+    es: Pintura de Guerra
+- id: preparation.elven-wine
+  name: Elven Wine
+  effect: >-
+    The bearer drinks the Elven Wine before a battle and is immune to fear for the whole of that
+    battle. One use only.
+  effect_i18n:
+    es: >-
+      El portador bebe el Vino Élfico antes de una batalla y es inmune al miedo durante toda esa
+      batalla. Un solo uso.
+  engine_option: Elven Wine
+  modular_only: true
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Shadow Warrior equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/shadow-warriors
+  - manual: lustria
+    printed_page: 113
+    section: High Elf Equipment List
+  name_i18n:
+    es: Vino Élfico
 poisons:
 - id: poison.black-lotus
   name: Black Lotus
@@ -2653,6 +2972,26 @@ poisons:
   source_refs: []
   name_i18n:
     es: Loto Negro
+- id: poison.garlic-black-lotus
+  name: Garlic Coating
+  effect: >-
+    A weapon coated with garlic counts as coated with Black Lotus against Vampires only: a natural
+    6 to hit guarantees the wound, with the ordinary critical attempt and saves. The coating adds
+    nothing against any other opponent.
+  effect_i18n:
+    es: >-
+      Un arma recubierta de ajo cuenta como recubierta de Loto Negro solo contra Vampiros: un 6
+      natural para impactar garantiza la herida, con el intento de crítico y las salvaciones
+      normales. El recubrimiento no añade nada contra cualquier otro oponente.
+  engine_option: Garlic coating
+  engine_code: 3
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Countess Marianna Chevaux, Vampire Assassin
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+  name_i18n:
+    es: Recubrimiento de Ajo
 - id: poison.black-venom
   name: Black Venom
   effect: +1 S when wounding and calculating armour penetration.
@@ -2814,6 +3153,26 @@ skills:
   source_refs: []
   name_i18n:
     es: Maestro del Hacha
+- id: skill.axe-mastery
+  name: Axe Mastery
+  category: special
+  effect: >-
+    The Slayer may re-roll all missed attacks if using an axe or dwarven axe in the hand-to-hand phase
+    of the turn that he charges; he may not use this skill with Whirling Blades.
+  kind: warband
+  engine_option: Axe Mastery
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills / Axe Mastery
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dwarf-slayer-cult
+  name_i18n:
+    es: Maestría con el Hacha
+  effect_i18n:
+    es: >-
+      El Matatrolles puede repetir todos los ataques fallados si usa un hacha o hacha enana en la fase
+      de combate cuerpo a cuerpo del turno en que carga; no puede usar esta habilidad con Hojas
+      Giratorias.
 - id: skill.bellowing-battle-roar
   name: Bellowing Battle Roar
   category: special
@@ -2876,6 +3235,45 @@ skills:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
   name_i18n:
     es: Golpe Aplastante
+- id: skill.deathblow
+  name: Deathblow
+  category: special
+  effect: >-
+    If the Hero is taken out of action in hand-to-hand combat, he may immediately make the remainder of
+    his attacks before being removed, provided he has not made all of his attacks this turn; he may use
+    this skill even if he is knocked down or stunned.
+  kind: warband
+  engine_option: Deathblow
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills / Deathblow
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dwarf-slayer-cult
+  name_i18n:
+    es: Golpe Mortal
+  effect_i18n:
+    es: >-
+      Si el Héroe queda Fuera de Combate en combate cuerpo a cuerpo, puede realizar inmediatamente el
+      resto de sus ataques antes de ser retirado, siempre que no haya hecho ya todos sus ataques este
+      turno; puede usar esta habilidad aunque esté derribado o aturdido.
+- id: skill.deathwish
+  name: Deathwish
+  category: special
+  effect: >-
+    The Slayer is completely immune to all psychology and never needs to test if fighting alone.
+  kind: warband
+  engine_option: Deathwish
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills / Deathwish
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dwarf-slayer-cult
+  name_i18n:
+    es: Deseo de Muerte
+  effect_i18n:
+    es: >-
+      El Matatrolles es completamente inmune a toda la psicología y nunca necesita chequear si lucha
+      solo.
 - id: skill.defensive-stance
   name: Defensive Stance
   category: special
@@ -3887,6 +4285,30 @@ skills:
     es: >-
       Si el Héroe tiene al menos 2 Ataques en su perfil, puede sustituir todos sus ataques por un
       único ataque resuelto a +1 para impactar, +1 para herir y +1 en la tirada de heridas.
+- id: mechanic.deathblow
+  name: Deathblow
+  category: special
+  effect: >-
+    A Slayer taken out of action in hand-to-hand combat may immediately make the remainder of his
+    attacks before he is removed, provided he has not made all of his attacks this turn. He may use
+    the skill even while knocked down or stunned. This is distinct from the Death Blow skill, which
+    replaces a Hero's attacks with one stronger attack.
+  kind: warband
+  engine_option: Deathblow
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills / Deathblow
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dwarf-slayer-cult
+  name_i18n:
+    es: Golpe Mortal
+  effect_i18n:
+    es: >-
+      Un Matatrolles que quede Fuera de Combate en combate cuerpo a cuerpo puede realizar
+      inmediatamente el resto de sus ataques antes de ser retirado, siempre que no haya hecho ya todos
+      sus ataques este turno. Puede usar la habilidad aunque esté derribado o aturdido. Es distinta de
+      la habilidad Golpe Aplastante, que sustituye los ataques del Héroe por un único ataque más
+      fuerte.
 - id: mechanic.disability
   name: Disability
   category: special
@@ -4481,6 +4903,58 @@ skills:
     printed_page: 0
     section: Dark Elves / Kindred Hatred
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dark-elves
+- id: mechanic.hatred-slavers
+  name: Hatred Against Slavers
+  name_i18n:
+    es: Odio contra Esclavistas
+  category: special
+  kind: profile
+  effect: >-
+    Pit Fighters hate slavers: reroll missed melee hits in the first combat turn against an opponent whose
+    own identity is a slaver. Selling captured opponents to slavers is a campaign resolution and stays
+    outside the duel.
+  effect_i18n:
+    es: >-
+      Los Luchadores de Foso odian a los esclavistas: repiten los impactos fallidos cuerpo a cuerpo en el
+      primer turno de combate contra un oponente cuya propia identidad sea la de esclavista. Vender
+      oponentes capturados a esclavistas es una resolución de campaña y queda fuera del duelo.
+  engine_option: Hatred against Slavers
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Pit Fighters / Special Rules / Free the Slaves!
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+- id: mechanic.vengeful-hatred
+  name: Vengeful Hatred
+  name_i18n:
+    es: Odio Vengativo
+  category: special
+  kind: profile
+  effect: >-
+    The warrior permanently hates the single enemy the campaign's serious-injury result determined:
+    the individual who caused the injury (the enemy leader when a henchman caused it), that warband's
+    leader, the whole warband, or every warband of its type. The duel is supplied that concrete
+    identity: the warrior's own instance key, the key of the warband instance it belongs to, or, for
+    the last kind alone, the warband type. It rerolls missed melee hits in the first combat round
+    only against that identity, never against every warrior of a profile, every warband of a
+    catalogue list or, in the leader kind, every bearer of a Leader rule; the D6 that chose the
+    target belongs to the campaign and is not simulated.
+  effect_i18n:
+    es: >-
+      El guerrero odia permanentemente al único enemigo que determinó el resultado de herida grave:
+      el individuo que causó la herida (el líder enemigo si fue un Secuaz), el líder de esa banda, la
+      banda entera o todas las bandas de su tipo. El duelo recibe esa identidad concreta: la clave
+      de instancia del guerrero, la de la banda concreta a la que pertenece o, sólo en el último
+      caso, el tipo de banda. Sólo contra ella repite los impactos fallidos del primer turno de
+      combate, nunca contra todos los guerreros de un perfil, todas las bandas de un listado ni, en
+      la rama de líder, todo portador de una regla de Líder; el 1D6 que eligió el objetivo
+      pertenece a la campaña y no se simula.
+  engine_option: Vengeful Hatred
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Serious Injuries / Heroes' Serious Injuries Chart / 56 Bitter Enmity
+    url: https://mordheimer.net/docs/campaigns
 - id: mechanic.fear-immunity
   name: Fear Immunity
   name_i18n:
@@ -4496,6 +4970,86 @@ skills:
     printed_page: 0
     section: Beastmen Special Skills / Fearless
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
+- id: mechanic.holy-relic-frenzy
+  name: Holy Relic Frenzy
+  name_i18n:
+    es: Frenesí por Reliquia Santa
+  category: special
+  kind: profile
+  effect: >-
+    A Battle Pilgrim who owns a Holy Relic is Frenzied; a Frenzied warrior is immune to Hatred.
+  effect_i18n:
+    es: >-
+      Un Peregrino de Guerra que posee una Reliquia Santa está en Frenesí; un guerrero en
+      Frenesí es inmune al Odio.
+  engine_option: Holy Relic Frenzy
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 5 Battle pilgrims / Special Rules / Holy Relics
+- id: mechanic.fear-immunity-undead-chargers
+  name: Hardened to Terror
+  name_i18n:
+    es: Curtido ante el Terror
+  category: special
+  kind: profile
+  effect: >-
+    No Fear test is taken when the charger is an Undead model; other Leadership and Psychology
+    tests are unaffected, and an Undead opponent that did not charge leaves Fear normal.
+  effect_i18n:
+    es: >-
+      No realiza chequeo de Miedo cuando quien carga es una miniatura No Muerta; los demás
+      chequeos de Liderazgo y Psicología no cambian, y un oponente No Muerto que no ha cargado
+      deja el Miedo normal.
+  engine_option: Hardened to Terror
+  source_refs:
+  - manual: sylvania-supplement
+    printed_page: 0
+    section: Special Skills / Instinctual Violence
+- id: mechanic.nominated-strike-first
+  name: Nominated Strike First
+  name_i18n:
+    es: Golpe Primero Designado
+  category: special
+  kind: profile
+  effect: >-
+    One of this warrior's attacks strikes first; the rest of his attack pool keeps its own
+    priority instead of acting before the opponent.
+  effect_i18n:
+    es: >-
+      Uno de los ataques de este guerrero golpea primero; el resto de su reserva de ataques
+      conserva su propia prioridad en lugar de resolver antes que el oponente.
+  engine_option: Nominated Strike First
+  source_refs:
+  - manual: sylvania-supplement
+    printed_page: 0
+    section: Special Skills / Instinctual Violence
+- id: mechanic.undead-foes-no-fear
+  name: Fearless Against the Undead Servants of Necromancers
+  name_i18n:
+    es: Sin Miedo Ante los Siervos No Muertos de los Nigromantes
+  category: special
+  kind: warband
+  effect: >-
+    Conditional Fear immunity: no Fear test is taken when the opponent causing Fear is a
+    vampire, a necromancer, or one of their undead followers (canonical duel identities
+    species.vampire, identity.necromancer or nature.undead). A necromancer need not be
+    Undead; being a spellcaster alone does not qualify. Fear against any other enemy is normal, and
+    other Leadership and Psychology tests are unaffected.
+  effect_i18n:
+    es: >-
+      Inmunidad al Miedo condicional: no se realiza el chequeo de Miedo cuando el enemigo que
+      provoca Miedo es un vampiro, un nigromante o uno de sus seguidores no muertos
+      (identidades canónicas species.vampire, identity.necromancer o nature.undead). Un
+      nigromante no tiene por qué ser no muerto; ser hechicero no basta. El Miedo
+      ante cualquier otro enemigo sigue siendo normal, y los demás chequeos de Liderazgo y
+      Psicología no cambian.
+  engine_option: Fearless Against the Undead Servants of Necromancers
+  source_refs:
+  - manual: mordheim-facebook-group
+    printed_page: 0
+    section: Special Rules / Necromancers and vampires are Morr's ultimate enemies
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dreamwalkers-cult-of-morr
 - id: mechanic.leadership-reroll
   name: Optional Leadership Reroll
   name_i18n:
@@ -5074,6 +5628,28 @@ skills:
     printed_page: 0
     section: Mark of the Dark Gods / Mark of Shornaal the Serpent
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+- id: mechanic.scryer
+  name: Scryer
+  name_i18n:
+    es: Vidente
+  category: special
+  kind: profile
+  effect: >-
+    A Sleuth can re-roll any rolls in close combat (the second result must be accepted).
+    The rolls stay her own: no enemy die is re-rolled, a roll that was already re-rolled
+    is not repeated, and no per-round or per-battle resource is granted. The exploration
+    phase clause of this rule is outside the current duel runtime.
+  effect_i18n:
+    es: >-
+      Una detective puede repetir cualquier tirada en combate cuerpo a cuerpo (debe aceptarse
+      el segundo resultado). Las tiradas son las suyas: ningún dado del enemigo se repite, una
+      tirada ya repetida no se repite otra vez, y la regla no concede recurso por ronda ni por
+      batalla. La cláusula de fase de exploración queda fuera del duelo actual.
+  engine_option: Scryer
+  source_refs:
+  - manual: broheim.net
+    printed_page: 4
+    section: 0-1 Private sleuth / Special Rules / Scryer
 - id: mechanic.hypnotist
   name: Hypnotist
   name_i18n:
@@ -6273,6 +6849,22 @@ skills:
     printed_page: 0
     section: Imperial Assassin / Backstabber
     url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+- id: condition.summoned-this-turn
+  kind: profile
+  category: special
+  name: Supplied Summon Turn
+  name_i18n: {es: Turno de Invocación Aportado}
+  engine_option: SummonedThisTurn
+  effect: >-
+    Supplied fact that this Malignant Spirit was summoned on the current turn. The fact alone grants
+    nothing: charging on that same turn is what pays Violent Entry's +1 to hit and +1 Strength, while
+    a later turn or a charge without the supplied fact grants neither.
+  effect_i18n: {es: 'Hecho aportado de que este Espíritu Maligno fue invocado en el turno actual. El hecho por sí solo no concede nada: cargar en ese mismo turno es lo que paga el +1 para impactar y +1 Fuerza de Entrada Violenta, y ni un turno posterior ni una carga sin el hecho aportado los conceden.'}
+  source_refs:
+  - manual: broheim.net
+    printed_page: 4
+    section: 0-2 Malignant Spirits / Special Rules / Violent Entry
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
 - id: condition.mouth-sewn
   kind: profile
   category: special
@@ -6691,6 +7283,111 @@ skills:
     printed_page: 0
     section: Hired Swords / Hobgoblin Scout
     url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1c
+- id: mechanic.fear-beastmen
+  name: Fear of Beastmen
+  name_i18n:
+    es: Miedo a los Hombres Bestia
+  kind: profile
+  category: special
+  engine_option: Fear of Beastmen
+  effect: Causes fear in all Beastmen.
+  effect_i18n:
+    es: Causa miedo a todos los Hombres Bestia.
+  source_refs:
+  - manual: Town Cryer 28
+    printed_page: 0
+    section: Hired Swords / Beast Hunter / Skull Rack
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+- id: mechanic.hatred-beastmen
+  name: Hatred of Beastmen
+  name_i18n:
+    es: Odio a los Hombres Bestia
+  kind: profile
+  category: special
+  engine_option: Hatred of Beastmen
+  effect: Subject to Hatred against Beastmen only; the first-round melee reroll never reaches another opponent.
+  effect_i18n:
+    es: Sujeto a Odio únicamente contra los Hombres Bestia; la repetición de golpes de la primera ronda nunca alcanza a otro oponente.
+  source_refs:
+  - manual: Town Cryer 28
+    printed_page: 0
+    section: Hired Swords / Beast Hunter / Beastmen Vengeance
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+- id: mechanic.undead-construct
+  name: Undead Construct
+  name_i18n:
+    es: Constructo No Muerto
+  kind: profile
+  category: special
+  engine_option: Undead Construct
+  effect: For each Injury result roll a D6; on 4+ the result is ignored without restoring lost Wounds, and magical attacks bypass the roll.
+  effect_i18n:
+    es: Por cada resultado de Herida se tira 1D6; con 4+ el resultado se ignora sin recuperar Heridas, y los ataques mágicos ignoran esa tirada.
+  source_refs:
+  - manual: Border Town Burning
+    printed_page: 173
+    section: Bone Goliath / Undead Construct
+    url: https://tonightwedineinmordheim.com/pdf/btb_pt3_lq.pdf
+- id: mechanic.marianna-no-pain-jump-up
+  name: No Pain with Jump Up
+  name_i18n:
+    es: Sin Dolor con Levantarse de un Salto
+  kind: profile
+  category: special
+  engine_option: No Pain with Jump Up
+  effect: A Knocked Down Injury result leaves this warrior standing; the source expressly combines No Pain with Jump Up.
+  effect_i18n:
+    es: Un resultado de Herida de Derribado deja en pie a este guerrero; la fuente combina expresamente Sin Dolor con Levantarse de un Salto.
+  source_refs:
+  - manual: Town Cryer 22
+    printed_page: 12
+    section: Revenge is Eternal / Marianna / No Pain
+    url: https://mordheim.net/downloads/fo/62RevengeIsEternal.pdf
+- id: mechanic.iron-fan
+  name: Iron Fan
+  name_i18n:
+    es: Abanico de Hierro
+  kind: profile
+  category: special
+  engine_option: Iron Fan
+  effect: The bearer always carries the iron fan, which grants him +1 Initiative.
+  effect_i18n:
+    es: El portador siempre lleva el abanico de hierro, que le otorga +1 Iniciativa.
+  source_refs:
+  - manual: Border Town Burning
+    printed_page: 0
+    section: Grand Master Ippan Shu / Iron Fan
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1c
+- id: mechanic.festooned-with-pistols
+  name: Festooned with Pistols
+  name_i18n:
+    es: Sembrado de Pistolas
+  kind: profile
+  category: special
+  engine_option: Festooned with Pistols
+  effect: A spent pistol stays in hand and is counted as a club in the rounds after the opening one.
+  effect_i18n:
+    es: Una pistola ya disparada permanece en la mano y se cuenta como garrote en los turnos posteriores al primero.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Dwarf Slayer Pirate / Festooned with Pistols
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+- id: mechanic.fighting-undead
+  name: Fighting Undead
+  name_i18n:
+    es: Combatir contra No Muertos
+  kind: profile
+  category: special
+  engine_option: Fighting Undead
+  effect: An opposing Vampire has Hatred directed at this warrior.
+  effect_i18n:
+    es: Un Vampiro oponente siente Odio hacia este guerrero.
+  source_refs:
+  - manual: Town Cryer 22
+    printed_page: 12
+    section: Revenge is Eternal / Marianna / Fighting Undead
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
 - id: mechanic.cannot-charge
   name: Crazed Firestarter
   name_i18n:
@@ -6997,6 +7694,27 @@ skills:
     url: https://broheim.net/downloads/dramatispersonae/btb/btb%20Dramatis%20Personae.pdf
   kind: profile
   category: special
+- id: mechanic.mob-leadership
+  name: Mob Leadership
+  name_i18n:
+    es: Liderazgo de la Horda
+  effect: A Raging Peasant gets +1 Leadership for each other allied Peasant model within three inches;
+    the caller supplies how many such allies are present and the duel never counts the group.  The
+    same printed sentence denies the bearer the leader rule, which is the separate mechanic.own-leadership
+    condition.
+  effect_i18n:
+    es: Un Campesino Enfurecido obtiene +1 al Liderazgo por cada otro modelo Campesino aliado a tres
+      pulgadas; el llamante suministra cuántos aliados hay y el duelo nunca cuenta el grupo. La misma
+      frase impresa niega al portador la regla de líder, que es la condición separada
+      mechanic.own-leadership.
+  engine_option: Mob Leadership
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 5 Raging Peasants / Special Rules / Mob
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
+  kind: profile
+  category: special
 - id: mechanic.own-leadership
   name: Own Leadership Only
   name_i18n:
@@ -7203,11 +7921,11 @@ skills:
   name: Backley's Brew
   name_i18n:
     es: Backley's Brew
-  effect: -1 Strength and -1 Initiative until the supplied clearance of the Toughness test. The source
-    does not specify the test timing.
+  effect: -1 Strength and -1 Initiative until a Toughness test is passed. By project ruling, test once
+    at the start of each own turn until recovery; the source does not specify the timing.
   effect_i18n:
-    es: -1 Strength and -1 Initiative until the supplied clearance of the Toughness test. The source
-      does not specify the test timing.
+    es: -1 Fuerza e Iniciativa hasta superar un chequeo de Resistencia. Por decisión del proyecto,
+      se intenta al inicio de cada turno propio hasta recuperarse; la fuente no fija la cadencia.
   engine_option: Backley's Brew
   source_refs:
   - manual: sylvania-supplement
@@ -7221,10 +7939,12 @@ skills:
   name_i18n:
     es: Alchemist Addiction
   effect: The supplied addicted Scientist cannot act until he rolls a 6 while brewing Aberrantius
-    Vigortia. The source does not define the brew attempt timing.
+    Vigortia. By project ruling, a standing Scientist attempts once at the start of each own turn;
+    success releases him and supplies the potion's Strength and Toughness bonus once.
   effect_i18n:
-    es: The supplied addicted Scientist cannot act until he rolls a 6 while brewing Aberrantius Vigortia.
-      The source does not define the brew attempt timing.
+    es: El Científico adicto no actúa hasta sacar un 6 elaborando Aberrantius Vigortia. Por decisión
+      del proyecto, si está de pie lo intenta al inicio de cada turno propio; el éxito lo libera y
+      concede una sola vez el bono de Fuerza y Resistencia de la poción.
   engine_option: Alchemist Addiction
   source_refs:
   - manual: sylvania-supplement
@@ -7250,6 +7970,36 @@ skills:
     printed_page: 0
     section: Cursed Piper / Danse Macabre
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
+  kind: profile
+  category: special
+- id: condition.massively-built-lost-turn
+  name: Massively Built — Lost Turn
+  name_i18n:
+    es: Complexión Masiva — Turno Perdido
+  effect: The supplied target of a failed Massively Built check loses its entire next turn as it
+    stands dumbfounded. The check itself, its shooting-phase activation, the 12-inch range and the
+    visibility of a male target stay outside the duel; the caller supplies the failed outcome. The
+    printed exemption stays with the supplied fact, not with a generic immunity. Females, Skaven,
+    Orcs and other non-human races are immune, while Vampires and Necromancers are not, and Elves
+    and Dwarves are affected.
+  effect_i18n:
+    es: El objetivo suministrado de una prueba fallida de Complexión Masiva pierde su turno
+      siguiente completo, aturdido por su imponente volumen. La prueba en sí, su activación en fase
+      de disparo, el alcance de 12" y la visibilidad de un objetivo masculino quedan fuera del
+      duelo; el llamador aporta el resultado fallido. La excepción impresa permanece en el hecho
+      suministrado, no en una inmunidad genérica. Las mujeres, los Skaven, los Orcos y otras razas
+      no humanas son inmunes, mientras que los Vampiros y Nigromantes no lo son, y Elfos y Enanos se
+      ven afectados.
+  engine_option: Massively Built Lost Turn
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / “Busty” Gwen / Special Rules / Massively Built
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-2a
+  - manual: Fanatic Online89
+    printed_page: 2
+    section: Dramatis Personae / “Busty” Gwen / Special Rules / Massively Built
+    url: https://broheim.net/downloads/fo/89RunnersUp.pdf
   kind: profile
   category: special
 - id: mechanic.leader-twelve
@@ -7662,6 +8412,26 @@ skills:
     url: https://www.broheim.net/downloads/hiredswords/facebook/Gaoler.pdf
   kind: profile
   category: special
+- id: mechanic.fanatical-hatred
+  name: Fanatical
+  name_i18n:
+    es: Fanático
+  effect: Hates every member of the eleven warband categories printed in the source — Orcs and
+    Goblins, Black Orcs, Forest Goblins, Horned Hunters, Sisters of Sigmar, Middenheimers, Skaven,
+    Undead, Beastmen, Possessed and Carnival of Chaos — regardless of that member’s own species.
+  effect_i18n:
+    es: Odia a todo miembro de las once categorías de banda impresas en la fuente — Orcos y Goblins,
+      Orcos Negros, Goblins del Bosque, Cazadores Cornudos, Hermanas de Sigmar, Middenheim,
+      Skaven, No Muertos, Hombres Bestia, Posesos y Carnaval del Caos — independientemente
+      de la especie de ese miembro.
+  engine_option: Fanatical
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Maximilian The Mad / Fanatical
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1b
+  kind: profile
+  category: special
 - id: mechanic.giggle-juice-spray
   name: Giggle Juice Spray
   name_i18n:
@@ -7932,6 +8702,25 @@ skills:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/kislevites
   kind: profile
   category: special
+- id: condition.stupidity-exempt
+  name: Nearby exempting hero
+  name_i18n:
+    es: Nearby exempting hero
+  effect: The Rat Ogre has its actual qualifying Skaven Hero within 6 inches, so the printed Stupidity
+    exemption applies and no Stupidity test is taken. The caller supplies the exemption; the duel
+    neither simulates the surrounding warband nor measures table positions.
+  effect_i18n:
+    es: The Rat Ogre has its actual qualifying Skaven Hero within 6 inches, so the printed Stupidity
+      exemption applies and no Stupidity test is taken. The caller supplies the exemption; the duel
+      neither simulates the surrounding warband nor measures table positions.
+  engine_option: Nearby exempting hero
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Rat ogre / Special Rules / Stupidity
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
+  kind: profile
+  category: special
 - id: mechanic.dim-witted-leader
   name: Dim-witted Leader
   name_i18n:
@@ -7964,6 +8753,28 @@ skills:
     printed_page: 22
     section: heroes / 0-1 Barbarian / Special Rules / Dim-witted
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  kind: profile
+  category: special
+- id: condition.current-warband-leader
+  name: Current warband leader
+  name_i18n:
+    es: Líder actual de la banda
+  effect: This warrior is the actual current leader of its warband, a state the caller supplies. The
+    position carries the printed Leader rule, so any warband warrior within 6 inches may use this
+    warrior's Leadership; a band skill may widen that radius and both rules stay the position's own.
+  effect_i18n:
+    es: Este guerrero es el líder actual de su banda, un estado que aporta el llamador. La posición
+      lleva la regla impresa de Líder, de modo que cualquier guerrero de la banda a 6" puede usar el
+      Liderazgo de este guerrero; una habilidad de banda puede ampliar ese radio y ambas reglas
+      siguen siendo de la posición.
+  engine_option: Current warband leader
+  source_refs:
+  - manual: lustria
+    printed_page: 108
+    section: Heroes / 1 Jarl / Leader
+  - manual: lustria
+    printed_page: 111
+    section: Norse Special Skills / Battle Tongue
   kind: profile
   category: special
 - id: condition.poetry-victorious-leader
@@ -8135,4 +8946,205 @@ skills:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/nipponese-expedition
   kind: profile
   category: special
+- id: mechanic.whip-master
+  name: Whip Master
+  name_i18n: {es: 'Maestro del Látigo'}
+  effect: 'May reroll each own hit roll made with this whip once, accepting the second result even if worse; no battle resource.'
+  effect_i18n: {es: 'Puede repetir una vez cada tirada propia para impactar con el látigo; acepta el segundo resultado, sin recurso por batalla.'}
+  engine_option: Whip Master
+  kind: profile
+  category: special
+  source_refs:
+  - manual: broheim.net
+    printed_page: 0
+    section: Town Cryer 14 / Mule Skinner / Whip (PDF page 11)
+    url: https://broheim.net/downloads/towncryer/TownCryer14.pdf
+- id: mechanic.fear-of-snakes
+  name: Fear of Snakes
+  name_i18n: {es: 'Miedo a las Serpientes'}
+  effect: 'The bearer fears snakes and serpents using ordinary Fear consequences; this grants no Fear to the bearer.'
+  effect_i18n: {es: 'El portador teme a serpientes; se aplican las consecuencias ordinarias de Miedo y no causa Miedo por ello.'}
+  engine_option: Fear of Snakes
+  kind: profile
+  category: special
+  source_refs:
+  - manual: broheim.net
+    printed_page: 18
+    section: Heinrich Altdorf Schmidt / Oh no, not Snakes
+    url: https://broheim.net/downloads/campaigns/khemri/Khemri%20Dramatis%20Personae.pdf
+- id: mechanic.drenok-berserker
+  name: Drenok Berserker
+  name_i18n: {es: Berserker de Drenok}
+  effect: When reduced to zero Wounds, a 4+ keeps Drenok standing and fighting for this turn. Roll every subsequent player turn while at zero; failure takes him Out of Action. No Wound is restored.
+  effect_i18n: {es: 'Al llegar a cero Heridas, un 4+ permite seguir luchando durante el turno sin recuperar Heridas; repite cada turno posterior y un fallo lo deja Fuera de combate.'}
+  engine_option: Drenok Berserker
+  kind: profile
+  category: special
+  source_refs:
+  - manual: broheim.net
+    printed_page: 27
+    section: Town Cryer 15 / Drenok Johansen
+    url: https://broheim.net/downloads/towncryer/old/TownCryer15.pdf
+- id: condition.ye-give-way-refused
+  name: Ye Give Way (refused)
+  name_i18n: {es: 'Ye Give Way (refused)'}
+  effect: 'The Hero who refused a prior challenge has -1 to hit in melee until the end of the game, non-cumulative.'
+  effect_i18n: {es: 'Modificador individual persistente del resultado suministrado de Ye Give Way.'}
+  engine_option: Ye Give Way (refused)
+  kind: profile
+  category: special
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Fallen Noble / Ye Give Way
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/mazzalupo
+- id: condition.ye-give-way-victorious
+  name: Ye Give Way (victorious)
+  name_i18n: {es: 'Ye Give Way (victorious)'}
+  effect: 'A Fallen Noble who put the challenged opponent Out of Action has +1 to hit in melee and +1 Strength until the end of the game, non-cumulative.'
+  effect_i18n: {es: 'Modificador individual persistente del resultado suministrado de Ye Give Way.'}
+  engine_option: Ye Give Way (victorious)
+  kind: profile
+  category: special
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Fallen Noble / Ye Give Way
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/mazzalupo
+- id: condition.disability-1
+  name: Disability result 1
+  name_i18n: {es: 'Discapacidad: resultado 1'}
+  effect: 'Lame and arthritic: minus one Movement and Initiative. Supplied permanent result.'
+  effect_i18n: {es: 'Resultado permanente suministrado de Discapacidad.'}
+  engine_option: Disability result 1
+  kind: profile
+  category: special
+  source_refs:
+  - manual: chaos-in-the-streets
+    printed_page: 149
+    section: Henchmen / Cripples / Disability
+- id: condition.disability-2
+  name: Disability result 2
+  name_i18n: {es: 'Discapacidad: resultado 2'}
+  effect: 'Parkinson: minus one Weapon Skill; cannot use two weapons or a weapon and shield. Supplied permanent result.'
+  effect_i18n: {es: 'Resultado permanente suministrado de Discapacidad.'}
+  engine_option: Disability result 2
+  kind: profile
+  category: special
+  source_refs:
+  - manual: chaos-in-the-streets
+    printed_page: 149
+    section: Henchmen / Cripples / Disability
+- id: condition.disability-3
+  name: Disability result 3
+  name_i18n: {es: 'Discapacidad: resultado 3'}
+  effect: 'Poor eyesight: minus one Ballistic Skill; no shooting action is simulated. Supplied permanent result.'
+  effect_i18n: {es: 'Resultado permanente suministrado de Discapacidad.'}
+  engine_option: Disability result 3
+  kind: profile
+  category: special
+  source_refs:
+  - manual: chaos-in-the-streets
+    printed_page: 149
+    section: Henchmen / Cripples / Disability
+- id: condition.disability-4
+  name: Disability result 4
+  name_i18n: {es: 'Discapacidad: resultado 4'}
+  effect: 'Sickly: minus one Toughness. Supplied permanent result.'
+  effect_i18n: {es: 'Resultado permanente suministrado de Discapacidad.'}
+  engine_option: Disability result 4
+  kind: profile
+  category: special
+  source_refs:
+  - manual: chaos-in-the-streets
+    printed_page: 149
+    section: Henchmen / Cripples / Disability
+- id: condition.disability-5
+  name: Disability result 5
+  name_i18n: {es: 'Discapacidad: resultado 5'}
+  effect: 'Weakness: minus one Strength. Supplied permanent result.'
+  effect_i18n: {es: 'Resultado permanente suministrado de Discapacidad.'}
+  engine_option: Disability result 5
+  kind: profile
+  category: special
+  source_refs:
+  - manual: chaos-in-the-streets
+    printed_page: 149
+    section: Henchmen / Cripples / Disability
+- id: condition.disability-6
+  name: Disability result 6
+  name_i18n: {es: 'Discapacidad: resultado 6'}
+  effect: 'Head injury: Stupidity unless within six inches of a Hero. Supplied permanent result.'
+  effect_i18n: {es: 'Resultado permanente suministrado de Discapacidad.'}
+  engine_option: Disability result 6
+  kind: profile
+  category: special
+  source_refs:
+  - manual: chaos-in-the-streets
+    printed_page: 149
+    section: Henchmen / Cripples / Disability
+- id: condition.disability-hero-nearby
+  name: Cripple within six inches of a Hero
+  name_i18n: {es: Heroe cercano al Lisiado}
+  effect: 'Current supplied Hero proximity for Head Injury only.'
+  effect_i18n: {es: Proximidad actual de un Heroe para Lesion craneal.}
+  engine_option: Cripple nearby Hero
+  kind: profile
+  category: special
+  source_refs:
+  - manual: chaos-in-the-streets
+    printed_page: 149
+    section: Henchmen / Cripples / Disability
+- id: mechanic.man-hater
+  name: Man-Hater (human males)
+  name_i18n: {es: Odio a varones humanos}
+  effect: 'Hatred of human males, using the individual opponent species and sex rather than warband affiliation.'
+  effect_i18n: {es: 'Odio contra varones humanos segun la especie y sexo del oponente individual.'}
+  kind: profile
+  category: special
+  engine_option: Man-Hater (human males)
+  source_refs:
+  - manual: broheim.net
+    printed_page: 26
+    section: Town Cryer 15 / Penthesilea / Man-Hater
+    url: https://broheim.net/downloads/towncryer/TownCryer15.pdf
+- id: mechanic.despise-despoilers
+  name: Despise Despoilers
+  name_i18n:
+    es: Desprecio a los Saqueadores
+  category: special
+  kind: profile
+  effect: >-
+    The Dark Mage hates Necromancers and adversaries using Necromancy or Dreaded Scrolls of Nagash
+    spells in the first round of close combat.
+  effect_i18n:
+    es: >-
+      El Mago Oscuro odia a los Nigromantes y a los adversarios que usan Nigromancia o los Pergaminos
+      Temidos de Nagash durante la primera ronda de combate cuerpo a cuerpo.
+  engine_option: Despise Despoilers
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Dark Mage / Special Rules / Despise Despoilers
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+- id: mechanic.ashamed-and-afraid
+  name: Ashamed and Afraid
+  name_i18n:
+    es: Avergonzado y Asustado
+  category: special
+  kind: profile
+  effect: >-
+    The Fallen Sister must pass a Leadership test before charging a Sisters of Sigmar warband or a
+    Warrior-Priest of a Witch Hunters warband; failure prevents the declared charge.
+  effect_i18n:
+    es: >-
+      La Hermana Caída debe superar una prueba de Liderazgo antes de cargar contra una banda de
+      Hermanas de Sigmar o un Sacerdote Guerrero de una banda de Cazadores de Brujas; si falla, la
+      carga declarada no se realiza.
+  engine_option: Ashamed and Afraid
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / The Fallen Sister / Special Rules / Ashamed and Afraid
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
 pending_mechanics: []

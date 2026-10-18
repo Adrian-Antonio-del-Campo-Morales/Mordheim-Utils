@@ -13,13 +13,18 @@ from typing import Mapping
 
 @dataclass(frozen=True, slots=True)
 class Characteristics:
-    weapon_skill: int; strength: int; toughness: int; wounds: int; initiative: int; attacks: int
+    #: ``initiative`` is ``None`` when the printed profile fixes none (the
+    #: Necrarchs' Banshee prints a blank Initiative).  An absent characteristic
+    #: travels as an absence, exactly like ``movement``/``leadership``: it is
+    #: never coerced to a number, and the combat order makes such a fighter
+    #: strike last (``phases.resolve_priority``).
+    weapon_skill: int; strength: int; toughness: int; wounds: int; initiative: int | None; attacks: int
     movement: int | None = field(default=None, kw_only=True)
     leadership: int | None = field(default=None, kw_only=True)
     def __post_init__(self):
         for name in self.__slots__:
             value = getattr(self, name)
-            if name in {"movement", "leadership"} and value is None:
+            if name in {"movement", "leadership", "initiative"} and value is None:
                 continue
             if name in {"movement", "leadership"} and isinstance(value, bool):
                 raise ValueError(f"{name} must be a non-negative integer or unknown")
@@ -32,7 +37,8 @@ class FighterBuild:
     ruleset: str
     characteristics: Characteristics | None = None
     band_id: str | None = None; profile_id: str | None = None
-    main_weapon_id: str = "weapon.dagger"; off_hand_id: str | None = None
+    # None means no main weapon was selected; compilation resolves the legal default.
+    main_weapon_id: str | None = None; off_hand_id: str | None = None
     armour_id: str = "armour.no-armour"; defence_ids: tuple[str, ...] = ()
     main_material_id: str = "material.normal"; off_material_id: str = "material.normal"
     skill_ids: tuple[str, ...] = (); preparation_ids: tuple[str, ...] = ()
@@ -95,6 +101,11 @@ class EffectSet:
     bear_hug: bool = False
     poison_immunity: bool = False; frenzy: bool = False
     damage: int = 1; regeneration_save: int = 7; out_of_action_threshold: int = 5
+    # Printed True Grit / Hard as Steel chart: 1-3 Knocked Down, 4-5 Stunned,
+    # 6 Out of Action.  The declared variant is distinct from
+    # ``out_of_action_threshold`` 6 alone, which is the Hard to Kill chart
+    # (1-2 Knocked Down, 3-5 Stunned): the two differ on a total of 3.
+    true_grit: bool = False
     damage_die_sides: int = 0
     maximum_wound_target: int = 7
     armour_save_floor: int = 7
@@ -177,6 +188,9 @@ class CompiledFighter:
     # Supplied individual conditions; these values never simulate nearby groups.
     stupidity_leadership: int | None = None
     stupidity_leadership_bonus: int = 0
+    # Printed Mob: the caller supplies how many other allied Peasants are within
+    # three inches.  The duel never counts a group for itself.
+    mob_allies: int = 0
     animal_handler_leadership: int | None = None
     skill_effects_only: EffectSet = EffectSet()
     # Retained innate, skill and supplied-condition contributions after the

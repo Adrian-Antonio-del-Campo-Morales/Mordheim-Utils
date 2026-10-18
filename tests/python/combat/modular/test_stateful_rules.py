@@ -351,9 +351,9 @@ def test_reference_bear_hug_replaces_two_hits_before_wound_resolution():
     assert t.condition == Condition.OUT
 
 
-def test_reference_disability_is_applied_during_scalar_initialization():
-    base = fighter(toughness=4)
-    disabled = replace(base, global_effects=EffectSet(tags=("mechanic.disability",)))
-    state = initialize_fighter(disabled, TapeDice(4), "disabled")
+def test_reference_disability_uses_the_permanent_supplied_result_without_reroll():
+    disabled = compile_fighter(FighterBuild("mordheim", Characteristics(3, 3, 4, 1, 3, 1),
+        skill_ids=("mechanic.disability",), condition_ids=("condition.disability-4",)))
+    state = initialize_fighter(disabled, TapeDice(), "disabled")
     assert state.toughness == 3
     assert "disability.4" in state.resources_spent

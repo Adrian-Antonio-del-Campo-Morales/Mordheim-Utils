@@ -48,6 +48,16 @@ rules:
     url: https://mordheimer.net/docs/campaigns/dramatis-personae
   name_i18n:
     es: Equipo Personal
+  runtime:
+    grant: profile
+    scope: 'YES'
+    implemented: 'YES'
+    effects:
+    - id: compiler.hireling-fixed-equipment
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.hireling-fixed-equipment
 - id: hireling.dramatis.rule.no-experience
   name: No Experience
   effect: Special characters do not earn Experience points.

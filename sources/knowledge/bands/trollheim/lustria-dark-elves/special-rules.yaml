@@ -677,3 +677,37 @@ rules:
   applies_to:
     profile_ids:
     - darkblades
+
+- id: cold-ones--natural-weapons
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+    - id: profile.natural-attacks
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.natural-attacks
+  name: Natural Weapons
+  effect: Cold Ones are animals and never use weapons or armour; their claws and jaws are natural attacks.
+  source:
+    manual: lustria
+    printed_page: 64
+    section: 0-2 Cold Ones
+  name_i18n:
+    es: Armas Naturales
+  effect_i18n:
+    es: Los Sangre Fría son animales que nunca usan armas ni armaduras; sus garras y mandíbulas son ataques naturales.
+  applies_to:
+    profile_ids:
+    - cold-ones

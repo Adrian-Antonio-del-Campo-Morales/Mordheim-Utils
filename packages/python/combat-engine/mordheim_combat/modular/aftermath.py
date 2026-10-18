@@ -35,20 +35,32 @@ def _reaction_source(fighter: CompiledFighter) -> CompiledFighter:
 def _react_to_wound(
     attacker: CompiledFighter, defender: CompiledFighter,
     outcome: AttackOutcome, dice: DiceSource, key: str,
-    *, decisions=None,
+    *, decisions=None, close_combat: bool | None = None,
 ) -> AttackOutcome:
     if outcome.reactions_resolved:
         return outcome
+    # The wound's own provenance decides which reactions belong to a
+    # close-combat wound.  A sub-wound of a melee attack (the disease-dagger's
+    # infection) is resolved as an automatic hit and says so explicitly, so the
+    # caller's flag overrides the outcome's own ``melee_attack`` marker.
+    close_combat = outcome.melee_attack if close_combat is None else close_combat
     attacker_state = outcome.attacker
     # Rescue is an immediate response to OOA, before the next prepared hit.
-    defender_state = _force_of_will(defender, outcome.defender, dice, f"{key}.force-of-will", decisions=decisions)
+    defender_state = _force_of_will(defender, outcome.defender, dice, f"{key}.force-of-will",
+        decisions=decisions, close_combat=outcome.melee_attack)
     reactive_damage = outcome.damage - outcome.damage_already_reacted
     if (reactive_damage > 0 and outcome.melee_attack
             and phases.has_tag(attacker.global_effects, "mechanic.torturer")
             and not phases.has_tag(defender.global_effects, "nature.undead")):
         defender_state = replace(defender_state, strength=max(1, defender_state.strength - 1),
             torture_strength_loss=defender_state.torture_strength_loss + 1)
-    if reactive_damage and phases.has_tag(defender.global_effects, "acid_blood"):
+    # Blackblood (cult-of-the-possessed and the trollheim twin): "If the model
+    # loses a wound in close combat, anyone in base contact with the model
+    # suffers a Strength 3 hit (no critical hits)".  The trigger is a
+    # close-combat wound, so burning, the Spines phase-start hit, the Chimaera
+    # impact and the hunger backlash - each an independently resolved automatic
+    # hit - do not spurt the corrosive blood.
+    if reactive_damage and close_combat and phases.has_tag(defender.global_effects, "acid_blood"):
         acid = EffectSet(
             tags=("rule.acid-blood", "effect.no-critical"), fixed_strength=3,
             automatic_hit=True, cannot_be_parried=True,
@@ -67,14 +79,16 @@ def _react_to_wound(
                 resources_spent=defender_state.resources_spent | reaction.attacker.resources_spent)
             reaction_source = replace(reaction_source, resources_spent=defender_state.resources_spent)
     contagious = (
-        defender_state.condition == Condition.OUT
+        outcome.melee_attack and reactive_damage > 0
+        and defender_state.condition == Condition.OUT
         and phases.has_tag(defender.global_effects, "contagious")
         and not phases.has_tag(attacker.global_effects, "undead_or_possessed")
     )
     if contagious:
         attacker_state = require_characteristics(attacker, attacker_state, dice,
                                                 key, {'T'}, decisions)
-    own = OwnedRollDice(dice, attacker, attacker_state, decisions)
+    own = OwnedRollDice(dice, attacker, attacker_state, decisions,
+        close_combat=outcome.melee_attack)
     if contagious and not phases._characteristic_test(
             attacker_state.toughness, own, f"{key}.contagious", six_fails=True,
             reroll=phases.has_tag(attacker.global_effects, "skill.blessed-sight"),
@@ -124,7 +138,7 @@ def _start_round_state(fighter: CompiledFighter, state: FighterState, *, recover
 
 def _force_of_will(
     fighter: CompiledFighter, state: FighterState, dice: DiceSource, key: str,
-    *, sustain: bool = False, decisions=None,
+    *, sustain: bool = False, decisions=None, close_combat: bool = False,
 ) -> FighterState:
     if not phases.has_tag(fighter.global_effects, "mechanic.force-of-will"):
         return state
@@ -132,7 +146,7 @@ def _force_of_will(
             or (state.condition == Condition.OUT and not state.force_of_will_active
                 and "force-of-will" not in state.resources_spent)):
         state = require_characteristics(fighter, state, dice, key, {'T'}, decisions)
-    own = OwnedRollDice(dice, fighter, state, decisions)
+    own = OwnedRollDice(dice, fighter, state, decisions, close_combat=close_combat)
     if sustain and state.force_of_will_active and state.condition != Condition.OUT:
         penalty = state.force_of_will_penalty + 1
         if not phases._characteristic_test(

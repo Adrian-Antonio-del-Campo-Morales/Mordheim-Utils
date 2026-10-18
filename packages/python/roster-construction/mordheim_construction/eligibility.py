@@ -9,6 +9,7 @@ from pathlib import Path
 from threading import RLock
 
 from mordheim_construction.combat_packages import combat_packages
+from mordheim_knowledge.campaign import load_campaign_catalog
 from mordheim_knowledge.loader import (
     knowledge_root, load_bands, load_collections, load_items, load_mechanics, load_simulation_mappings,
     load_skills, runtime_bindings,
@@ -68,7 +69,7 @@ def package_facts(package):
         "equipment_lists": [{key: row[key] for key in ("id", "items", "loadouts") if key in row}
                             for row in package.equipment_lists],
         "special_rules": [
-            {**{key: rule[key] for key in ("id", "kind", "eligibility", "applies_to") if key in rule},
+            {**{key: rule[key] for key in ("id", "kind", "eligibility", "eligible_condition_ids", "applies_to") if key in rule},
              "runtime": rule.get("runtime") or {},
              "bindings": [
                 binding for kind in ("mechanic", "profile", "compiler")
@@ -100,13 +101,88 @@ def _catalogue(collection, ruleset, root):
         "skills": {str(row["id"]): {key: row[key] for key in ("id", "category", "kind", "source_refs") if key in row}
                    for row in load_skills(ruleset, root)},
         "items": {str(row["id"]): {"kind": str(row.get("kind") or ""), "mechanic_id": row.get("mechanic_id"),
-                                   "tags": [str(tag) for tag in row.get("tags") or ()]}
+                                   "tags": [str(tag) for tag in row.get("tags") or ()],
+                                   "alternate_mechanic_ids": [str(value)
+                                                              for value in row.get("alternate_mechanic_ids") or ()]}
                   for row in load_items(ruleset, root)},
         "free_rules": {str(rule["id"]): rule for collection_row in load_collections(root)
                        if ruleset in collection_row.get("rulesets", ())
                        for pack in combat_packages(str(collection_row["id"]), root)
                        for rule in package_facts(pack)["special_rules"]},
+        "market_recipients": market_recipients(root),
+        "market_band_scope": market_band_scope(root),
     }
+
+
+def market_recipients(root=None):
+    """Printed recipients of the market catalogue, keyed by canonical item id.
+
+    ``catalog/campaign/trading-post.yaml`` is the only place a printed buying
+    clause is kept for an item the band lists do not gate, so the recipients it
+    publishes travel to the shared module as data: the entry's own scope
+    (``band_ids``/``groups`` of its ``warband_only`` or band-scoped
+    ``condition``) and the printed bearer itself (``profile_ids``, the kinds
+    ``profile_types``, the named denial ``excluded_profile_ids``, the
+    capability ``required_rule_ids`` and the phase
+    ``post_creation_profile_ids``). An item listed by several bands keeps one
+    alternative per entry, because the printed clause of one band's market never
+    narrows another band's list. Band scope is not decided here: it is the
+    purchase scope the campaign market already evaluates.
+    """
+    resolved = Path(root) if root is not None else knowledge_root()
+    document = load_campaign_catalog("mordheim", resolved).catalogue("trading-post.yaml")
+    recipients = {}
+    for entry in document.get("items") or ():
+        restrictions = list(entry.get("restrictions") or ())
+        bands, groups = [], []
+        for restriction in restrictions:
+            if restriction.get("type") not in {"warband_only", "condition"}:
+                continue
+            bands.extend(restriction.get("band_ids") or ())
+            groups.extend(restriction.get("groups") or ())
+        for restriction in restrictions:
+            structure = restriction.get("structure") or {}
+            bearer = {key: list(structure[key]) for key in
+                      ("profile_ids", "profile_types", "excluded_profile_ids", "required_rule_ids",
+                       "post_creation_profile_ids")
+                      if key in structure}
+            if not bearer:
+                continue
+            bearer["band_ids"] = sorted({str(value) for value in bands})
+            bearer["groups"] = sorted({str(value) for value in groups})
+            bearer["entry_id"] = str(entry["id"])
+            bearer["note"] = str(restriction.get("note") or "")
+            recipients.setdefault(str(entry["item_id"]), []).append(bearer)
+    return recipients
+
+
+def market_band_scope(root=None):
+    """Bands a printed market entry reserves for an item (``warband_only``).
+
+    A ``warband_only`` clause is the market's own statement of who may buy the
+    object, so it is the recipient clause of a consumable the band lists do not
+    gate: Warpaint and Elven Wine are bought and drunk, not carried as a list
+    line of every warband. The ids the source publishes travel; a clause whose
+    recipient is only free text stays unresolved here instead of being guessed.
+    Band scope is published beside the item, never instead of it, so the
+    equipment offer keeps reading the same market recipient facts.
+    """
+    resolved = Path(root) if root is not None else knowledge_root()
+    document = load_campaign_catalog("mordheim", resolved).catalogue("trading-post.yaml")
+    scope = {}
+    for entry in document.get("items") or ():
+        bands, groups = set(), set()
+        for restriction in entry.get("restrictions") or ():
+            if restriction.get("type") != "warband_only":
+                continue
+            bands.update(str(value) for value in restriction.get("band_ids") or ())
+            groups.update(str(value) for value in restriction.get("groups") or ())
+        if bands or groups:
+            scope.setdefault(str(entry["item_id"]), []).append({
+                **({"band_ids": sorted(bands)} if bands else {}),
+                **({"groups": sorted(groups)} if groups else {}),
+            })
+    return scope
 
 
 def build_facts(build, main_weapon_id=None):
@@ -115,6 +191,11 @@ def build_facts(build, main_weapon_id=None):
             "off_poison_id", "defence_ids", "skill_ids", "preparation_ids",
             "special_rule_ids", "mounted", "owned_item_ids", "trait_overrides")
     result = {key: getattr(build, key) for key in keys}
+    # A supplied current condition is a declared fact of the member, like its
+    # trait overrides: the shared recipient decision reads it so a clause whose
+    # printed recipient is a state (the warband's current leader) admits the
+    # member that carries it.
+    result["condition_ids"] = tuple(getattr(build, "condition_ids", ()) or ())
     # The House chosen for a House Guard warband is a selection fact, like a
     # declared variant; the shared `configuredProfile` turns it into the
     # conjunctive gate printed equipment lines carry. Other selected facts travel

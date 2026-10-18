@@ -342,15 +342,17 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.skaven-clan-pestilens.band.clan-pestilens-special-skills-contagious
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: trait.contagious
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.contagious
+        parameters:
+          value: true
 - id: band--clan-pestilens-special-skills-ignore-pain
   kind: warband_skill
   name: Ignore Pain

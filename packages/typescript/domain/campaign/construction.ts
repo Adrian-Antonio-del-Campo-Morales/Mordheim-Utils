@@ -131,6 +131,15 @@ export interface BandFacts {
    * band rule): item ids, interpreted family tokens or item tags.
    */
   readonly equipment_forbids: readonly string[];
+  /**
+   * The subset of `equipment_forbids` that names a canonical item record, the
+   * same reading `ProfileFacts.equipment_forbid_items` publishes for a profile.
+   * A band clause that names the object itself ('may not use the handgun of the
+   * Estalian line') is expressed by that fact instead of being reported while
+   * another, legal item of the same bearer is selected; the named item keeps
+   * being refused by its own token and a token no record answers stays reported.
+   */
+  readonly equipment_forbid_items: readonly IdString[];
   /** Whole-set equipment limits, when a band rule publishes them. */
   readonly equipment_limits: BandEquipmentLimits | null;
   /** The KB demands choosing a warband variant before the warband is usable. */
@@ -168,6 +177,8 @@ export interface ProfileFacts {
   readonly equipment_lists: readonly IdString[];
   readonly fixed_equipment: readonly IdString[];
   readonly equipment_forbids: readonly string[];
+  /** Canonical item IDs resolved from the profile's prohibition tokens. */
+  readonly equipment_forbid_items: readonly string[];
   /** Tokens that arrived malformed in the source (reported, never invented). */
   readonly equipment_forbids_malformed: readonly string[];
   readonly equipment_restrictions: readonly string[];
@@ -279,6 +290,8 @@ export function bandFactsOf(reader: KnowledgeReader, bandId: IdString): BandFact
       ),
     ].sort(),
     equipment_forbids: strings(data["equipment_forbids"]),
+    equipment_forbid_items: strings(data["equipment_forbids"])
+      .filter((token) => itemFactsOf(reader, token) !== null),
     equipment_limits:
       data["equipment_limits"] && typeof data["equipment_limits"] === "object"
         ? (data["equipment_limits"] as BandEquipmentLimits)
@@ -358,6 +371,7 @@ export function profileFactsOf(
     equipment_lists: strings(row["equipment_lists"]),
     fixed_equipment: strings(row["fixed_equipment"]),
     equipment_forbids: forbids,
+    equipment_forbid_items: forbids.filter((token) => itemFactsOf(reader, token) !== null),
     equipment_forbids_malformed: malformed,
     equipment_restrictions: strings(row["equipment_restrictions"]),
     required_equipment: (Array.isArray(row["required_equipment"]) ? (row["required_equipment"] as OpenPayload[]) : [])
@@ -797,6 +811,7 @@ export function equipmentIssueFor(
   return equipmentIssue({
     profile, item_id: itemId, item: itemFactsOf(reader, itemId),
     band_forbids: band?.equipment_forbids ?? [],
+    band_forbid_items: band?.equipment_forbid_items ?? [],
     active_lists: band ? variantActiveListsOf(reader, band, profile, variantId) : [],
     gated_lists: band ? [...variantGatedListsOf(reader, band)] : [],
   });

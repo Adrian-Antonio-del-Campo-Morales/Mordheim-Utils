@@ -860,3 +860,31 @@ rules:
       6, HA 5, HP 0, F 5, R 5, H 5, I 2, A 4, L 10.
   applies_to:
     band: true
+- id: treekin--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+  name: Equipment Restrictions
+  effect: "Treekin cannot use weapons and fight unarmed without penalty."
+  source:
+    manual: broheim.net
+    printed_page: 5
+    section: "0-2 Treekin"
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen Guard.pdf
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "Los Hombres Árbol no pueden usar armas y luchan sin armas y sin penalización."
+  applies_to:
+    profile_ids:
+    - treekin

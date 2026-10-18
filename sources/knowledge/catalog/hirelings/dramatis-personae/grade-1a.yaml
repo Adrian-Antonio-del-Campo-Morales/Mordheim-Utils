@@ -79,6 +79,18 @@ profiles:
         Inmune al veneno.
     name_i18n:
       es: Inmune al Veneno
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: trait.poison-immune
+        scope: 'YES'
+        binding:
+          kind: trait
+          id: trait.poison-immune
+          parameters:
+            value: true
   - id: hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.no-pain
     name: No Pain
     effect: Stunned Injury results become Knocked Down through No Pain; the source expressly combines
@@ -140,6 +152,15 @@ profiles:
         Usa la regla de séquito/criados de la fuente.
     name_i18n:
       es: Serutat
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: marianna-serutat
+        scope: 'NO'
+        binding: null
+        reason: The Serutat retainer/upkeep rule governs hiring and payment in the campaign; the duel fields the assassin alone.
   - id: hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.fighting-undead
     name: Fighting Undead
     effect: Uses the source anti-Undead rule.
@@ -148,6 +169,17 @@ profiles:
         Usa la regla anti-No-muertos de la fuente.
     name_i18n:
       es: Combatir contra No Muertos
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: mechanic.fighting-undead
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.fighting-undead
+        reason: 'Target-imposed grant: the opposing Vampire, not this profile, is the recipient of the Hatred. Printed clause: the source grants Fighting Undead to all Vampires against Marianna.'
   - id: hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.noctu
     name: Noctu
     effect: Applies the source shooting penalty.
@@ -156,9 +188,42 @@ profiles:
         Aplica la penalización de disparo de la fuente.
     name_i18n:
       es: Noctu
-  unresolved_references:
-  - kind: equipment_modifier
-    source_name: garlic coating acting as Black Lotus against Vampires
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: marianna-noctu
+        scope: 'NO'
+        binding: null
+        reason: Noctu is a shooting penalty; shooting resolution is outside the single close combat the duel resolves.
+  - id: hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.garlic-coated-weapons
+    name: Garlic-Coated Weapons
+    effect: >-
+      Her weapons carry a garlic coating. Against Vampires only, the coating acts as Black Lotus:
+      a natural 6 to hit guarantees the wound, keeping the ordinary critical attempt and saves.
+    effect_i18n:
+      es: >-
+        Sus armas llevan un recubrimiento de ajo. Solo contra Vampiros, el recubrimiento actúa como
+        Loto Negro: un 6 natural para impactar garantiza la herida, con el intento de crítico y
+        las salvaciones normales.
+    name_i18n:
+      es: Armas Recubiertas de Ajo
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Dramatis Personae / Countess Marianna Chevaux, Vampire Assassin
+      url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: poison.garlic-black-lotus
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: poison.garlic-black-lotus
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -191,6 +256,11 @@ profiles:
       name: Enormous Wizard's Staff
       name_i18n:
         es: Bastón de Mago Enorme
+      counts_as:
+        item_id: enormous_wizards_staff
+        quantity:
+          kind: fixed
+          value: 1
   skill_access: []
   starting_skill_ids:
   - skill.sorcery
@@ -204,14 +274,38 @@ profiles:
         Requiere el pago en piedra bruja de la fuente al unirse y después de las batallas.
     name_i18n:
       es: Maldito
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: nicodemus-cursed-wyrdstone-payment
+        scope: 'NO'
+        binding: null
+        reason: The printed clause is the wyrdstone payment owed when joining and after battles, an upkeep and post-battle cost with no consequence in a resolved duel.
   - id: hireling.dramatis.nicodemus-the-cursed-pilgrim.rule.wizard-s-staff
     name: Wizard's Staff
-    effect: Uses source staff modes.
+    effect: >-
+      The staff may be used two-handed, counting as a Club and allowing Nicodemus to parry as if
+      armed with a buckler, or in his left hand as a normal Club while the Sword of Rezhebel spell
+      occupies his right hand.
     effect_i18n:
       es: >-
-        Usa los modos de bastón de la fuente.
+        El bastón puede usarse a dos manos, contando como Garrote y permitiendo a Nicodemo parar
+        como si llevara un broquel, o en su mano izquierda como un Garrote normal mientras el
+        conjuro Espada de Rezhebel ocupa su mano derecha.
     name_i18n:
       es: Bastón de Mago
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: weapon.wizards-staff
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: weapon.wizards-staff
   - id: hireling.dramatis.nicodemus-the-cursed-pilgrim.rule.master-of-lesser-magic
     name: Master of Lesser Magic
     effect: Knows all six Lesser Magic spells.
@@ -220,6 +314,15 @@ profiles:
         Conoce los seis conjuros de Magia Menor.
     name_i18n:
       es: Maestro de la Magia Menor
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: nicodemus-lesser-magic-spell-selection
+        scope: 'NO'
+        binding: null
+        reason: Knowing the six Lesser Magic spells grants a spell list; selecting and casting those spells is the excluded magic subsystem and leaves no consequence for a resolved duel.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -247,6 +350,15 @@ profiles:
         Usan la regla de una batalla/errante de la fuente.
     name_i18n:
       es: Errantes
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: ulli-wanderers-one-battle-retention
+        scope: 'NO'
+        binding: null
+        reason: The one-battle wanderer condition decides whether the pair stays with the warband after the game, a hiring and retention consequence settled outside the duel.
   - id: hireling.dramatis.ulli-and-marquand.rule.a-fistful-of-crowns
     name: A Fistful of Crowns
     effect: Uses source payment/behaviour rule.
@@ -255,6 +367,15 @@ profiles:
         Usa la regla de pago/comportamiento de la fuente.
     name_i18n:
       es: Un Puñado de Coronas
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: ulli-a-fistful-of-crowns-payment
+        scope: 'NO'
+        binding: null
+        reason: The printed clause is the pair's payment and behaviour rule, an upkeep consequence settled between games rather than in a resolved duel.
   - id: hireling.dramatis.ulli-and-marquand.rule.where-s-the-money
     name: Where's the Money
     effect: Uses source post-battle rule.
@@ -263,16 +384,133 @@ profiles:
         Usa la regla de postbatalla de la fuente.
     name_i18n:
       es: ¿Dónde Está el Dinero?
-  unresolved_references:
-  - kind: multi_profile_entity
-    source_name: Marquand profile M4 WS5 BS4 S3 T3 W2 I5 A2 Ld8; Sword, Light Armour, Throwing Knives;
-      Step Aside, Knife Fighter, Lightning Reflexes
-  - kind: multi_profile_entity
-    source_name: Ulli profile M4 WS4 BS4 S4 T3 W2 I4 A2 Ld7; two-handed warhammer, Light Armour; Strongman,
-      Unstoppable Charge, Combat Master
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: ulli-wheres-the-money-post-battle
+        scope: 'NO'
+        binding: null
+        reason: The printed clause is a post-battle rule over the warband's income and the pair's share of it, which a resolved duel does not settle.
+  source_notes:
+  - >-
+    The pair keeps its joint identity and its `out_of_scope` adjudication. Each printed warrior line is
+    published as its own normalized close-combat profile: `hireling.dramatis.ulli` carries the printed
+    characteristics, two-handed warhammer, Light Armour, Strongman and Unstoppable Charge, and
+    `hireling.dramatis.marquand` carries his own line. Combat Master's two-or-more-enemies clause is
+    outside the resolved 1v1 duel, so no operator is invented for it.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Dramatis Personae / Ulli & Marquand
     url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
   out_of_scope_reason: Composite Dramatis entry with two independent warrior profiles.
+- id: hireling.dramatis.marquand
+  kind: dramatis-personae
+  grade: 1a
+  publication: Town Cryer 13
+  name: Marquand
+  name_i18n:
+    es: Marquand
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 5
+    BS: 4
+    S: 3
+    T: 3
+    W: 2
+    I: 5
+    A: 2
+    Ld: 8
+  equipment:
+    fixed_items:
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: light_armour
+      quantity:
+        kind: fixed
+        value: 1
+      notes: The printed Light Armour resolves to the canonical light armour.
+      notes_i18n:
+        es: La Armadura Ligera impresa se resuelve como la armadura ligera canónica.
+    - item_id: throwing_knives
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Carried as printed; as a ranged weapon it stays outside the resolved close combat.
+      notes_i18n:
+        es: Se porta como se imprime; como arma a distancia queda fuera del combate cuerpo a cuerpo resuelto.
+  skill_access: []
+  starting_skill_ids:
+  - skill.step-aside
+  - skill.lightning-reflexes
+  - skill.knife-fighter
+  source_notes:
+  - >-
+    Individual warrior of the composite entry hireling.dramatis.ulli-and-marquand: the pair keeps its identity and
+    its joint hiring, and this profile is the duel participant the printed Marquand profile line describes.
+  - >-
+    Knife-Fighter is printed on a shooting skill list: its whole content is the Shooting-phase throwing attack, which
+    the KB already declares outside the duel, so no consequence is granted for it here.
+  unresolved_references: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Ulli & Marquand
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+- id: hireling.dramatis.ulli
+  kind: dramatis-personae
+  grade: 1a
+  publication: Town Cryer 13
+  name: Ulli
+  name_i18n:
+    es: Ulli
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 4
+    T: 3
+    W: 2
+    I: 4
+    A: 2
+    Ld: 7
+  equipment:
+    fixed_items:
+    - item_id: two_handed_weapon
+      quantity:
+        kind: fixed
+        value: 1
+      notes: The printed two-handed warhammer resolves to the canonical double-handed weapon.
+      notes_i18n:
+        es: El martillo de guerra a dos manos impreso se resuelve como el arma a dos manos canonica.
+    - item_id: light_armour
+      quantity:
+        kind: fixed
+        value: 1
+      notes: The printed Light Armour resolves to the canonical light armour.
+      notes_i18n:
+        es: La Armadura Ligera impresa se resuelve como la armadura ligera canonica.
+  skill_access: []
+  starting_skill_ids:
+  - skill.strongman
+  - skill.unstoppable-charge
+  - skill.combat-master
+  source_notes:
+  - >-
+    Individual warrior of the composite entry hireling.dramatis.ulli-and-marquand: the pair keeps its identity and
+    its joint hiring, and this profile is the duel participant the printed Ulli profile line describes.
+  - >-
+    Combat Master is printed on the source skill list: its whole content is the two-or-more-enemies Attack and the
+    All Alone tests, which the KB already declares outside the resolved 1v1 duel, so no consequence is granted for it here.
+  unresolved_references: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Ulli & Marquand
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a

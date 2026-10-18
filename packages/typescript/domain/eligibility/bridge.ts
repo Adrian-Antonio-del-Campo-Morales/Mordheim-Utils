@@ -17,10 +17,10 @@ export function installCatalogue(key: string, catalogue: Catalogue): boolean {
  * consumer walks `runtime.effects` on its own.
  */
 export function profileFacts(pack: BandPackage, profile: EditorialProfile, bandId?: string, catalogue?: Catalogue | null,
-  additionalBindings: readonly Binding[] = []): ProfileFacts {
+  additionalBindings: readonly Binding[] = [], build?: eligibility.BuildFacts): ProfileFacts {
   return eligibility.profileFactsProjection({
     pack, profile, ...(bandId ? { band_id: bandId } : {}), ...(catalogue ? { catalogue } : {}),
-    additional_bindings: additionalBindings,
+    additional_bindings: additionalBindings, ...(build ? { build } : {}),
   });
 }
 
@@ -51,19 +51,31 @@ export function selectedRuleBindings(
 export function desktopCall(operation: string, key: string, input: Omit<BuildContext, "catalogue">): unknown {
   const catalogue = catalogues.get(key);
   if (!catalogue) throw new Error(`eligibility catalogue is not installed: ${key}`);
-  const profile = input.profile.type ? eligibility.configuredProfile(input.profile, input.build.variant_ids) : input.profile;
+  // The build's declared selection facts and its supplied conditions are the
+  // same kind of fact for a printed recipient: `configuredProfile` carries both
+  // so a conditional line is decided by the one `entryReachesProfile`.
+  const profile = input.profile.type
+    ? eligibility.configuredProfile(input.profile, input.build.variant_ids, input.build.condition_ids ?? [])
+    : input.profile;
   const context = { ...input, profile, catalogue };
   input = { ...input, profile };
   if (operation === "hirelingKit") return eligibility.resolveHirelingKit(input.profile.hireling_equipment ?? {}, input.build, catalogue, input.package.special_rules);
-  if (operation === "equipment") return eligibility.profileEquipment(input.package, input.profile, catalogue);
-  if (operation === "specialRules") return eligibility.specialRuleOptions(input.package, input.profile, catalogue);
-  if (operation === "configuredRules") return eligibility.selectableRuleOptions(input.package, input.profile);
-  if (operation === "catalogueEquipment") return eligibility.catalogueEquipment(input.package, input.profile, catalogue);
+  // The offer is the list access its own printed clause still permits: the
+  // projection behind `profileEquipment` keeps the full access materialisation
+  // for validation, and the picker reads the same predicate the compiler does.
+  if (operation === "equipment") return eligibility.profileOffer(input.package, input.profile, catalogue, input.build);
+  // Trading Post consumables are not band-list lines: the shared projection
+  // decides them from the printed clauses, so the picker and the compiled
+  // fighter read one permission.
+  if (operation === "preparationOptions") return eligibility.preparationOptions(context);
+  if (operation === "specialRules") return eligibility.specialRuleOptions(input.package, input.profile, catalogue, input.build);
+  if (operation === "configuredRules") return eligibility.selectableRuleOptions(input.package, input.profile, input.build);
+  if (operation === "catalogueEquipment") return eligibility.catalogueEquipment(input.package, input.profile, catalogue, input.build);
   if (operation === "selectedRules") return eligibility.selectedRuleCandidates(context);
   if (operation === "ruleBindings") return eligibility.selectedRuleBindings(
     input.package, input.build.special_rule_ids ?? [], catalogue);
   if (operation === "skillChoices") return eligibility.catalogueSkillChoices(context);
-  if (operation === "profileFacts") return profileFacts(input.package, input.profile, input.build.band_id ?? undefined, catalogue, input.profile_bindings);
+  if (operation === "profileFacts") return profileFacts(input.package, input.profile, input.build.band_id ?? undefined, catalogue, input.profile_bindings, input.build);
   if (operation === "bandFacts") return bandFacts(input.package);
   if (operation === "profileSkillLists") return profileSkillLists(input.package, input.profile);
   if (operation === "profileBindings") return profileBindings(input.package, input.profile);

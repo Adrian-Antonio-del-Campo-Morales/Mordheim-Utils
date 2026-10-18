@@ -9,6 +9,23 @@ from mordheim_knowledge.loader import load_skills
 import pytest as pytest
 
 
+def test_the_preparation_picker_lists_the_trading_post_consumables_its_bearer_may_use():
+    """The picker reads the same permission the compiled fighter applies."""
+    catalogue = CombatCatalogue()
+
+    def picker(band: str, profile_id: str) -> set[str]:
+        choice = next(choice for choice in catalogue.profiles("trollheim", band)
+                      if choice.profile_id == profile_id)
+        return {item_id for item_id, _ in catalogue.preparations(choice) if item_id}
+
+    assert "preparation.mandrake-root" in picker("chaos-streets-undead-bloodlines", "ghoul")
+    # The printed weapons/armour clause of a creature does not ban a consumable.
+    assert "preparation.mandrake-root" in picker("lustria-amazons", "great-cats")
+    assert picker("chaos-streets-undead-bloodlines", "strigoi-vampire") == set()
+    assert picker("chaos-streets-sons-of-nagarythe", "shadow-master") == {
+        "preparation.tears-of-shallaya"}
+
+
 def test_catalogue_exposes_kb_profiles_and_profile_equipment():
     catalogue = CombatCatalogue()
     choices = catalogue.profiles("mordheim", "mercenaries")

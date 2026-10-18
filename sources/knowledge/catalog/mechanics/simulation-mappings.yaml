@@ -1,6 +1,9 @@
 schema_version: 2
 ruleset: mordheim
 item_mappings:
+- item_id: all_seeing_eye_of_numas
+  status: implemented
+  engine_option: All-seeing Eye of Numas
 - item_id: amulet_of_the_moon
   status: out_of_scope
 - item_id: asp_arrows
@@ -22,8 +25,7 @@ item_mappings:
   status: implemented
   engine_option: Beastlash
 - item_id: belaying_pin
-  status: implemented
-  engine_option: Mace
+  status: out_of_scope
 - item_id: bird_of_prey_aristocrat_only
   status: out_of_scope
 - item_id: blessed_stag_hide
@@ -36,6 +38,9 @@ item_mappings:
   status: out_of_scope
 - item_id: blunderbuss_one_per_warband
   status: out_of_scope
+- item_id: bo
+  status: implemented
+  engine_option: Bo
 - item_id: boar_spear_aristocrat_only
   status: implemented
   engine_option: Boar Spear
@@ -91,10 +96,14 @@ item_mappings:
   engine_option: Claw of the Old Ones
 - item_id: club
   status: implemented
-  engine_option: Mace
+  engine_option: Club
+  mechanic_id: weapon.club
 - item_id: cooking_pot_helmet
   status: implemented
   engine_option: Cooking pot helmet
+- item_id: count_of_ventimiglias_misericordia
+  status: implemented
+  engine_option: Count of Ventimiglia's Misericordia
 - item_id: crimson_shade
   status: implemented
   engine_option: Crimson Shade
@@ -146,7 +155,9 @@ item_mappings:
 - item_id: elven_runestones
   status: out_of_scope
 - item_id: elven_wine
-  status: out_of_scope
+  status: implemented
+  engine_option: Elven Wine
+  mechanic_id: preparation.elven-wine
 - item_id: enchanted_skins
   status: implemented
   engine_option: Enchanted skins
@@ -293,7 +304,8 @@ item_mappings:
   engine_option: Obsidian
 - item_id: ogre_club
   status: implemented
-  engine_option: Mace
+  engine_option: Club
+  mechanic_id: weapon.club
 - item_id: pigeon_bombs
   status: out_of_scope
 - item_id: pike
@@ -332,7 +344,8 @@ item_mappings:
   status: out_of_scope
 - item_id: shortsword
   status: implemented
-  engine_option: Sword
+  mechanic_id: weapon.shortsword
+  engine_option: Shortsword
 - item_id: sigmarite_hammer
   status: implemented
   engine_option: Sigmarite hammer
@@ -361,6 +374,18 @@ item_mappings:
 - item_id: starsword
   status: implemented
   engine_option: Starsword
+- item_id: whip_tc14
+  status: implemented
+  engine_option: Whip (Town Cryer 14)
+- item_id: hireling.dramatis.drenok-johansen-wielder-of-the-great-axe.item.axe-of-icefang
+  status: implemented
+  engine_option: Axe of Icefang
+- item_id: hireling.dramatis.drenok-johansen-wielder-of-the-great-axe.item.sabertooth-hide
+  status: implemented
+  engine_option: Sabertooth Tiger Hide
+- item_id: hireling.dramatis.abdul-alhazred-the-mad-sorcerer.item.eye-pendant
+  status: implemented
+  engine_option: Eye Pendant
 - item_id: steel_whip
   status: implemented
   engine_option: Steel whip
@@ -371,8 +396,7 @@ item_mappings:
   status: implemented
   engine_option: Sun gauntlet
 - item_id: sunstaff
-  status: implemented
-  engine_option: Brazier iron
+  status: out_of_scope
 - item_id: sunstaff_lustria
   status: implemented
   engine_option: Brazier iron

@@ -299,23 +299,30 @@ rules:
     es: >-
       Solo el líder actual de la banda puede elegir esta habilidad. El radio de la regla de Líder de
       ese guerrero aumenta a 12".
+  # The printed clause names a state, not a starting profile: the native Jarl is
+  # listed, and another Hero of the band is admitted only while the caller
+  # supplies that he is its actual current leader. That condition carries the
+  # position's own Leader rule, so the skill widens a Leader rule its bearer
+  # already has and never grants one; the same Hero without the condition is
+  # refused by the shared selection and by compilation.
   eligibility:
   - jarl
-  - berserkers
-  - wulfen
-  - bondsmen
+  eligible_condition_ids:
+  - condition.current-warband-leader
   applies_to:
     band: true
+    profile_types:
+    - hero
   runtime:
     grant: selectable
     scope: 'YES'
     implemented: 'YES'
     effects:
-    - id: mechanic.leader-six
+    - id: mechanic.leader-twelve
       scope: 'YES'
       binding:
         kind: mechanic
-        id: mechanic.leader-six
+        id: mechanic.leader-twelve
 - id: band--norse-special-skills-barbarian-courage
   kind: warband_skill
   name: Barbarian Courage
@@ -403,3 +410,71 @@ rules:
   applies_to:
     profile_ids:
     - marauders
+
+- id: wulfen--natural-weapons
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+    - id: profile.natural-attacks
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.natural-attacks
+  name: Natural Weapons
+  effect: Wulfen never use weapons or armour; their claws are natural attacks and they suffer no penalty for fighting without weapons.
+  source:
+    manual: lustria
+    printed_page: 109
+    section: 0-1 Wulfen
+  name_i18n:
+    es: Armas Naturales
+  effect_i18n:
+    es: Los Wulfen nunca usan armas ni armaduras; sus garras son ataques naturales y no sufren penalización por luchar sin armas.
+  applies_to:
+    profile_ids:
+    - wulfen
+
+- id: wolves--natural-weapons
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+    - id: profile.natural-attacks
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.natural-attacks
+  name: Natural Weapons
+  effect: Wolves never use weapons or armour; their attacks are natural.
+  source:
+    manual: lustria
+    printed_page: 110
+    section: 0-5 Wolves
+  name_i18n:
+    es: Armas Naturales
+  effect_i18n:
+    es: Los Lobos nunca usan armas ni armaduras; sus ataques son naturales.
+  applies_to:
+    profile_ids:
+    - wolves

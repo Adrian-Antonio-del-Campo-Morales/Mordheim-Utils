@@ -50,8 +50,15 @@
           "enum": ["implemented", "out_of_scope"]
         },
         "mechanic_id": {
-          "description": "Mechanic of `catalog/mechanics/close-combat.yaml` that implements the item.",
+          "description": "Mechanic of `catalog/mechanics/close-combat.yaml` that implements the item. It is the object's default profile: the one a bearer uses unless another declared grip is selected.",
           "$ref": "defs.schema.json#/$defs/id"
+        },
+        "alternate_mechanic_ids": {
+          "description": "Further mechanics of `catalog/mechanics/close-combat.yaml` the *same physical object* is used with, printed as other modes of one entry (the two grips of the Yari). They are offered and accepted beside `mechanic_id` for a bearer of this item, with the item's own line, cost and recipient — never as a second item record and never as another copy of the equipment. `mechanic_id` stays the default profile, and this member is readable only for an `implemented` object: an out-of-scope record has no executable profile to offer.",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "defs.schema.json#/$defs/id" }
         },
         "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
       },
@@ -63,6 +70,16 @@
             "required": ["combat_status"]
           },
           "then": { "required": ["mechanic_id"] }
+        },
+        {
+          "description": "Only an implemented object offers executable profiles, so an out-of-scope record cannot declare a grip.",
+          "if": {
+            "required": ["alternate_mechanic_ids"]
+          },
+          "then": {
+            "properties": { "combat_status": { "const": "implemented" } },
+            "required": ["mechanic_id"]
+          }
         }
       ]
     }

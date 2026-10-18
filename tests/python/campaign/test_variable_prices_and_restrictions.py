@@ -6,6 +6,8 @@ the example campaign. No KB data is edited.
 """
 from __future__ import annotations
 
+from types import SimpleNamespace
+
 from mordheim_campaign.application.knowledge_port import KnowledgePort
 from mordheim_campaign.application.post_battle_catalogue import PostBattleCatalogue, resolve_offer_price
 from tests.python.campaign.test_post_battle_engine import _pending
@@ -217,3 +219,72 @@ def test_creation_only_offer_is_hidden_after_creation():
 
     assert "standard_of_nagarythe" in {offer.item_id for offer in creation.rare_items()}
     assert "standard_of_nagarythe" not in {offer.item_id for offer in post_battle.rare_items()}
+
+
+# ------------------------------------------------- published bearer (C03a)
+
+
+def test_published_bearer_decides_the_offering_route_and_a_direct_selection():
+    """The printed bearer is read from the entry, not from its prose note.
+
+    ``arcane_candelabrum`` publishes the Sister of Sigmar's profile id, so any
+    other warrior is refused with the printed clause and she is not;
+    ``lance_not_questing_knight`` publishes the printed denial, so the Questing
+    Knight is refused while a Knight Errant is not. Offering an item and
+    accepting a direct selection call this same decision.
+    """
+    port = KnowledgePort()
+    assert port.trading_post_restriction("arcane_candelabrum")["profile_ids"] == (
+        "hireling.hired-sword.sister-of-sigmar",)
+    sister = SimpleNamespace(profile_id="hireling.hired-sword.sister-of-sigmar", kind="hero", skills=[])
+    other = SimpleNamespace(profile_id="ogre-treasure-hunter", kind="hero", skills=[])
+    assert port.trading_post_bearer_issue(sister, "arcane_candelabrum") is None
+    assert "Sister of Sigmar" in port.trading_post_bearer_issue(other, "arcane_candelabrum")
+
+    assert port.trading_post_restriction("lance_not_questing_knight")["excluded_profile_ids"] == (
+        "questing-knight",)
+    knight = SimpleNamespace(profile_id="questing-knight", kind="hero", skills=[])
+    errant = SimpleNamespace(profile_id="knights-errant", kind="hero", skills=[])
+    assert port.trading_post_bearer_issue(knight, "lance_not_questing_knight")
+    assert port.trading_post_bearer_issue(errant, "lance_not_questing_knight") is None
+
+
+def test_published_bearer_reaches_the_engine_assignment_route():
+    """A published bearer with no legacy literal rule refuses the wrong warrior.
+
+    The example campaign's first warrior is a Sister of Sigmar, never the
+    printed bearer of these entries, so the selection is refused before the
+    shared stage's facts with the printed clause.
+    """
+    engine, state, _ = _pending()
+    item_id = "angel_wings"  # published bearer: Armen Abbas, no literal guard
+    row = engine._inventory_row(item_id, name="Angel Wings", price_gc=1)
+    row.owned = row.stash = 1
+    warrior = state.campaign.warriors[0]
+
+    ok, message = engine.move_stash_to_warrior(item_id, warrior.id)
+
+    assert not ok
+    assert "Armen Abbas" in message
+
+
+def test_published_kind_bearer_admits_the_printed_kind_and_refuses_the_other():
+    """The printed kind is decided from the entry, on the same route.
+
+    ``barbed_whip`` publishes `profile_types: [hero]`, so the assignment route
+    refuses the henchman group with the printed clause, while a hero is not
+    stopped by the bearer (the weapon still lies outside her own equipment
+    access, which is an acquisition limit and not the bearer's decision).
+    """
+    engine, state, _ = _pending()
+    item_id = "barbed_whip"
+    row = engine._inventory_row(item_id, name="Barbed Whip", price_gc=1)
+    row.owned = row.stash = 4
+    hero = next(w for w in state.campaign.warriors if w.kind == "hero")
+    henchman = next(w for w in state.campaign.warriors if w.kind == "henchman")
+
+    ok, message = engine.move_stash_to_warrior(item_id, henchman.id)
+    assert not ok and "One Marauders of Chaos Hero only" in message
+
+    _, hero_message = engine.move_stash_to_warrior(item_id, hero.id)
+    assert "One Marauders of Chaos Hero only" not in hero_message

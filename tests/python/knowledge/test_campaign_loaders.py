@@ -210,7 +210,10 @@ def test_campaign_catalog_rejects_unknown_item_reference(monkeypatch):
 def test_hireling_catalogue_profiles_resolve_across_catalog():
     catalogue = load_hirelings()
     profiles = catalogue.profiles
-    assert len(profiles) == 130
+    # 132 profiles: the 129 published before plus the composite pair and its
+    # two individual participants hireling.dramatis.marquand and
+    # hireling.dramatis.ulli.
+    assert len(profiles) == 132
     ids = [row["id"] for row in profiles]
     assert len(set(ids)) == len(ids)
     assert all(profile_id.startswith("hireling.") for profile_id in ids)

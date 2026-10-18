@@ -97,9 +97,9 @@ def test_configured_hero_type_does_not_make_a_non_halfling_a_shifty_recipient(pr
     assert 'halfling-elder--shifty' not in available_special_rules(build, ROOT)
 
 
-@pytest.mark.parametrize('off', ('weapon.mace', 'weapon.dagger'))
+@pytest.mark.parametrize('off', ('weapon.club', 'weapon.dagger'))
 def test_runt_active_limit_and_promoted_exception(off):
-    kwargs = dict(band_id='snotlings-web', profile_id='runts', main_weapon_id='weapon.mace', off_hand_id=off)
+    kwargs = dict(band_id='snotlings-web', profile_id='runts', main_weapon_id='weapon.club', off_hand_id=off)
     with pytest.raises(ValueError, match='at most 1 one-handed weapon at a time'):
         compile_fighter(FighterBuild('mordheim', **kwargs))
     assert compile_fighter(FighterBuild('mordheim', **kwargs, variant_ids=('promotion.hero',))).off_hand_attacks
@@ -107,13 +107,13 @@ def test_runt_active_limit_and_promoted_exception(off):
 
 def test_runt_ownership_is_not_active_weapon_count_and_armour_guard_survives():
     ch = choice('snotlings-web', 'runts')
-    assert catalogue().validate_configuration(ch, possession=('club', 'dagger'), slots={'main_weapon_id': 'weapon.mace'}) == ()
+    assert catalogue().validate_configuration(ch, possession=('club', 'dagger'), slots={'main_weapon_id': 'weapon.club'}) == ()
     dual = catalogue().validate_configuration(ch, possession=('club', 'dagger'),
-        slots={'main_weapon_id': 'weapon.mace', 'off_hand_id': 'weapon.dagger'})
+        slots={'main_weapon_id': 'weapon.club', 'off_hand_id': 'weapon.dagger'})
     assert dual[0]['code'] == 'equipment_limit_exceeded' and dual[0]['rule_id'] == 'runts--teeny-hands'
-    assert catalogue().equipment_decisions(ch, ('weapon.dagger',), slot='off', main_weapon_id='weapon.mace')['weapon.dagger']
+    assert catalogue().equipment_decisions(ch, ('weapon.dagger',), slot='off', main_weapon_id='weapon.club')['weapon.dagger']
     assert catalogue().validate_configuration(ch, possession=('club', 'dagger'),
-        slots={'main_weapon_id': 'weapon.mace', 'off_hand_id': 'weapon.dagger'}, variant_ids=('promotion.hero',)) == ()
+        slots={'main_weapon_id': 'weapon.club', 'off_hand_id': 'weapon.dagger'}, variant_ids=('promotion.hero',)) == ()
     with pytest.raises(ValueError, match='armour is forbidden'):
         compile_fighter(FighterBuild('mordheim', band_id='snotlings-web', profile_id='runts', off_hand_id='defence.shield'))
     assert compile_fighter(FighterBuild('mordheim', band_id='snotlings-web', profile_id='runts',

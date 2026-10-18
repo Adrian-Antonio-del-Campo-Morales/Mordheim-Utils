@@ -1,6 +1,32 @@
 schema_version: 2
 band_id: lustria-clan-pestilens
 rules:
+- id: band--fog-warpstone-censer-requirement
+  name: Fog Warpstone Fragments Require a Censer
+  name_i18n:
+    es: Los Fragmentos de Piedra Bruja de Niebla requieren un Incensario
+  effect: Fog-enhancing warpstone fragments require a Censer.
+  source:
+    manual: lustria
+    printed_page: 77
+    section: Special Equipment / Fog Warpstone Fragments
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          when_items:
+          - fog_warpstone_fragments
+          required_kinds:
+          - weapon.censer
 - id: plague-priest--leader
   name: Leader
   effect: >-
@@ -58,6 +84,87 @@ rules:
       binding: null
       reason: >-
         Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+- id: plague-priest--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - rat_familiar_scroll
+  name: Equipment Restrictions
+  effect: "May not use the Rat Familiar Scroll; only a Pestilens Sorcerer can use its spell."
+  source:
+    manual: lustria
+    printed_page: 78
+    section: "1 Plague Priest"
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "No puede usar el Pergamino del Familiar Rata; solo un Hechicero Pestilens puede usar su conjuro."
+  applies_to:
+    profile_ids:
+    - plague-priest
+- id: plague-monks--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - rat_familiar_scroll
+  name: Equipment Restrictions
+  effect: "May not use the Rat Familiar Scroll; only a Pestilens Sorcerer can use its spell."
+  source:
+    manual: lustria
+    printed_page: 78
+    section: "0-2 Plague Monks"
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "No puede usar el Pergamino del Familiar Rata; solo un Hechicero Pestilens puede usar su conjuro."
+  applies_to:
+    profile_ids:
+    - plague-monks
+- id: monk-initiates--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - rat_familiar_scroll
+  name: Equipment Restrictions
+  effect: "May not use the Rat Familiar Scroll; only a Pestilens Sorcerer can use its spell."
+  source:
+    manual: lustria
+    printed_page: 78
+    section: "0-2 Monk Initiates"
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "No puede usar el Pergamino del Familiar Rata; solo un Hechicero Pestilens puede usar su conjuro."
+  applies_to:
+    profile_ids:
+    - monk-initiates
 - id: giant-rats--animal
   name: Animal
   source:
@@ -387,3 +494,37 @@ rules:
       binding: null
       reason: >-
         Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+
+- id: rat-ogre--natural-weapons
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+    - id: profile.natural-attacks
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.natural-attacks
+  name: Natural Weapons
+  effect: Rat Ogres fight with jaws, claws and brute force and never use weapons or armour.
+  source:
+    manual: lustria
+    printed_page: 79
+    section: 0-1 Rat Ogre
+  name_i18n:
+    es: Armas Naturales
+  effect_i18n:
+    es: Los Ogros Rata luchan con mandíbulas, garras y fuerza bruta y nunca usan armas ni armaduras.
+  applies_to:
+    profile_ids:
+    - rat-ogre

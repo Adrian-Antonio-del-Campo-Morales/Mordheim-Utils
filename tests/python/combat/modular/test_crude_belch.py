@@ -3,7 +3,7 @@ from dataclasses import replace
 
 import pytest
 
-from mordheim_combat.modular.rounds import resolve_round
+from mordheim_combat.modular.rounds import resolve_crude_belch, resolve_round
 from mordheim_combat.modular.state import initialize_duel
 from mordheim_combat_lab.verification.dice import StrictDice, StrictDecisions
 from mordheim_construction.compiler import compile_fighter
@@ -86,10 +86,13 @@ def test_no_repeat_on_later_round():
 
 
 def test_explicit_no_contact_skips_decision_and_leadership():
-    result = run(opponent(), [('round.0.first.attack.0.hit', 1),
-                             ('round.0.second.attack.0.hit', 1)], choose=None,
-                 context=DuelContext(contacts=(), charging=('first',), active_participant='first'))
-    assert all(attack.hit_roll == 1 for attack in result.attacks)
+    halfling, enemy = owner(), opponent()
+    dice, decisions = StrictDice([]), StrictDecisions([])
+    state = initialize_duel(halfling, enemy, dice,
+        context=DuelContext(contacts=(), charging=('first',), active_participant='first'))
+    missed, after = resolve_crude_belch(halfling, enemy, state, dice, decisions, first=True)
+    assert not missed and after == state
+    dice.finish(); decisions.finish()
 
 
 def test_unknown_leadership_and_additional_enemies_fail_before_attack_dice():
@@ -98,8 +101,12 @@ def test_unknown_leadership_and_additional_enemies_fail_before_attack_dice():
     enemy = opponent()
     context = DuelContext(nearby=(LocalParticipant('third', 'second', enemy),),
         contacts=(('first', 'third'),), charging=('first',), active_participant='first')
+    halfling = owner()
+    dice, decisions = StrictDice([]), StrictDecisions([])
+    state = initialize_duel(halfling, enemy, dice, context=context)
     with pytest.raises(ValueError, match='multi-participant'):
-        run(enemy, [], choose=None, context=context)
+        resolve_crude_belch(halfling, enemy, state, dice, decisions, first=True)
+    dice.finish(); decisions.finish()
 
 
 def test_timed_shifty_bonus_misses_once_and_ordinary_attack_survives():

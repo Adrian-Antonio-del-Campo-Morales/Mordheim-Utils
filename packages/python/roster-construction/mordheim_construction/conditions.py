@@ -42,8 +42,15 @@ def resolve_supplied_conditions(
     profiles: list[dict] = []
     # Each supplied result is one source roll or draught, never the whole table.
     for choices in (
+        {f"condition.disability-{result}" for result in range(1, 7)},
+        {f"condition.maintenance-{result}" for result in range(1, 7)},
+        {"condition.witch-debilitating", "condition.witch-strength", "condition.witch-resilience", "condition.witch-fortitude"},
         {"condition.petru-debilitating", "condition.petru-strength", "condition.petru-resilience", "condition.petru-fortitude"},
         {"condition.alchemist-resilience", "condition.alchemist-strength", "condition.alchemist-aberrantius-vigortia", "condition.alchemist-backleys-brew"},
+        # One brew is drawn per battle, and a race is either the majority or the
+        # minority at match start, never both.
+        {"condition.troll-brew-fear-immunity", "condition.troll-brew-frenzy", "condition.troll-brew-special-brew"},
+        {"condition.power-grab-majority", "condition.power-grab-minority"},
     ):
         if len(set(condition_ids).intersection(choices)) > 1:
             raise ValueError("choose only one supplied result of the same potion table")
@@ -90,4 +97,8 @@ def resolve_supplied_conditions(
                 raise ValueError(
                     f"condition {condition_id} has an unsupported binding kind: {kind!r} ({binding_id})")
         ordered.append(condition_id)
-    return SuppliedConditions(tuple(ordered), traits, tuple(mechanics), tuple(profiles))
+    potion_tags = {"condition.petru-debilitating", "condition.petru-strength",
+                   "condition.petru-resilience", "condition.petru-fortitude"}
+    if len(potion_tags.intersection(mechanics)) > 1:
+        raise ValueError("choose only one supplied result of the same potion table")
+    return SuppliedConditions(tuple(ordered), traits, tuple(dict.fromkeys(mechanics)), tuple(profiles))

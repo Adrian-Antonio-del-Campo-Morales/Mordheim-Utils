@@ -270,16 +270,22 @@ rules:
     - charnel-guard
 - id: charnel-guard--cunning
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.strigoi-kaz.charnel-guard.cunning
-      scope: LATER
+    - id: compiler.weapons-training-exception
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.weapons-training-exception
+    - id: unimplemented.strigoi-kaz.charnel-guard.cunning.weapons-expert
+      scope: 'NO'
       binding: null
       reason: >-
-        Deferred: skill acquisition (Weapons Training / Weapons Expert) is a campaign progression
-        mechanic.
+        Out of scope: the only consequence of Weapons Expert is additional missile-weapon
+        equipment access, and missile equipment is outside the close-combat-only duel. The
+        hand-to-hand permission of Weapons Training is delivered by the binding above.
   name: Cunning
   effect: >-
     Unlike ordinary ghouls a Charnel Guard can take the Weapons Training or Weapons Expert skills

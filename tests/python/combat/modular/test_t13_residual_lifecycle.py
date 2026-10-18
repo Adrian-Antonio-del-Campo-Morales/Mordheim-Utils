@@ -4,7 +4,7 @@ from dataclasses import replace
 import pytest
 
 from mordheim_combat.modular.rounds import resolve_round
-from mordheim_combat.modular.state import initialize_duel
+from mordheim_combat.modular.state import initialize_duel, initialize_fighter
 from mordheim_combat.phases import Condition
 from mordheim_combat_lab.verification.dice import StrictDice, StrictDecisions
 from mordheim_construction.compiler import compile_fighter
@@ -194,7 +194,8 @@ def test_alchemist_supplied_bonuses_and_addiction_preserve_defence():
     state = start(scientist, enemy, charging=('second',))
     assert (state.first.strength, state.first.toughness) == (4, 4)
     result = run(scientist, enemy, state,
-        [('round.0.second.attack.0.hit', 4), ('round.0.second.attack.0.wound', 4)])
+        [('round.0.first.alchemist-brew', 5),
+         ('round.0.second.attack.0.hit', 4), ('round.0.second.attack.0.wound', 4)])
     assert len(result.attacks) == 1 and not result.attacks[0].wounded
     assert result.state.first.condition == Condition.STANDING
 
@@ -423,7 +424,7 @@ def test_electrical_sole_replacement_does_not_draw_unused_ordinary_priority_tie(
 
 def test_electrical_canonical_shallows_mutation_uses_s3_not_hero_strength_or_armour():
     mutant=compile_fighter(FighterBuild('mordheim',band_id='shallows-beasts-mim',
-        profile_id='buccaneer',main_weapon_id='weapon.mace',
+        profile_id='buccaneer',main_weapon_id='weapon.club',
         special_rule_ids=('band--mutations-electrical-touch',)))
     assert 'mechanic.electrical-touch' in mutant.global_effects.tags
     enemy=bare(initiative=2)
@@ -734,6 +735,17 @@ def test_canonical_witch_finder_supplied_attempt_requires_named_enemy_and_mark()
     assert state.first_charged
 
 
+def test_the_inquisitor_judgement_belongs_to_the_chosen_mark_alone():
+    priest=compile_fighter(FighterBuild('mordheim',band_id='hirelings.hired-sword.2b',
+        profile_id='hireling.hired-sword.priest-of-verena',variant_ids=('deity.solkan',),
+        special_rule_ids=('hireling.hired-sword.priest-of-verena.skill.witch-finder',)))
+    assert not priest.mutation_options
+    target=bare(initiative=1)
+    result=run(priest,target,start(priest,target),
+        [('round.0.first.attack.0.hit',1),('round.0.second.attack.0.hit',1)])
+    assert not result.state.second.mutations
+
+
 def test_canonical_nuttaz_only_supplied_required_attempt_is_compulsory():
     nuttaz=compile_fighter(FighterBuild('mordheim',band_id='black-orcs',profile_id='orc-nuttaz',
         main_weapon_id='weapon.axe',condition_ids=('condition.nuttaz-charge',)))
@@ -813,3 +825,79 @@ def test_castoff_retains_only_actual_extra_hand_dagger_in_its_physical_slot():
     assert 'weapon.fist' in projected.main_weapon.tags
     assert len(projected.extra_attacks)==1 and 'weapon.dagger' in projected.extra_attacks[0].tags
     assert 'mutation.hand.extra.0' in projected.extra_attacks[0].tags
+
+
+def test_crimson_shade_has_no_effect_on_undead_or_the_possessed():
+    # Printed item text: "Crimson Shade has no effect on Undead such as Vampires
+    # and Zombies, or the Possessed." The living bearer is the control and the
+    # suppressed consequence is the whole preparation: Strength, Movement and
+    # the single 1D3 Initiative roll, not just its bonus.
+    def bearer(**options):
+        return compile_fighter(FighterBuild('mordheim',
+            Characteristics(3, 3, 3, 2, 3, 1, movement=3, leadership=7),
+            main_weapon_id='weapon.mace',
+            preparation_ids=('preparation.crimson-shade',), **options))
+    living=bearer()
+    assert 'preparation.crimson-shade' in living.global_effects.tags
+    assert living.global_effects.strength_bonus==1
+    assert living.characteristics.movement==4
+    dice=StrictDice([{'key':'probe.crimson-shade','value':3,'sides':3}])
+    initialized=initialize_fighter(living,dice,'probe')
+    dice.finish()
+    assert initialized.initiative==6
+    for nature in ('undead','possessed'):
+        excluded=bearer(trait_overrides={'creature_kind':nature})
+        assert 'preparation.crimson-shade' not in excluded.global_effects.tags,nature
+        assert excluded.global_effects.strength_bonus==0,nature
+        assert excluded.characteristics.movement==3,nature
+        # No preparation die is requested at all: an empty strict tape passes
+        # only when the bearer's nature removes the item's contribution.
+        dice=StrictDice([])
+        initialize_fighter(excluded,dice,'probe')
+        dice.finish()
+
+
+def test_magic_acorn_spends_its_single_first_round_auto_hit_across_the_round_loop():
+    # Printed item clause: "in the first round of every close combat the Hero
+    # automatically hits with a single attack that was rolled as a miss." The
+    # shape is proved at the attack level in test_t13_defence_parries_and_ward;
+    # here the canonical item binding must carry the spent resource through the
+    # whole round loop, so the later round keeps the ordinary miss.
+    acorn=compile_fighter(FighterBuild('mordheim',
+        Characteristics(3,3,3,2,3,1,leadership=7),main_weapon_id='weapon.mace',
+        defence_ids=('defence.magic-acorn',),trait_overrides={'fighter_kind':'hero'}))
+    enemy=bare()
+    assert 'mechanic.magic-acorn' in acorn.global_effects.tags
+    result=run(acorn,enemy,start(acorn,enemy),
+        [('round.0.first.attack.0.hit',1),('round.0.first.attack.0.wound',1),
+         ('round.0.second.attack.0.hit',1)])
+    assert [attack.hit for attack in result.attacks]==[True,False]
+    assert 'magic-acorn' in result.state.first.resources_spent
+    later=run(acorn,enemy,result.state,
+        [('round.1.priority-tie',1),('round.1.second.attack.0.hit',1),
+         ('round.1.first.attack.0.hit',1)])
+    assert not any(attack.hit for attack in later.attacks)
+    assert 'magic-acorn' in later.state.first.resources_spent
+
+
+def test_canonical_aquatic_mutants_eye_stalks_reaver_sends_the_fear_consequence():
+    # Printed pool clause: "or eye stalks (counts as hideous)". The canonical
+    # compiler route shallows-beasts-mim/buccaneer -> band--mutations-eye-stalks
+    # must reach the shared causes-fear operator through a real round, not only
+    # through hand-built tags.
+    reaver=compile_fighter(FighterBuild('mordheim',band_id='shallows-beasts-mim',
+        profile_id='buccaneer',main_weapon_id='weapon.club',
+        special_rule_ids=('band--mutations-eye-stalks',)))
+    assert 'mechanic.causes-fear' in reaver.global_effects.tags
+    enemy=bare()
+    # The charged enemy passes its Leadership test and attacks normally:
+    # its own hit is measured against the ordinary WS target.
+    result=run(reaver,enemy,start(reaver,enemy),
+        [('round.0.second.fear.charged.0',3),('round.0.second.fear.charged.1',4),
+         ('round.0.first.attack.0.hit',1),('round.0.second.attack.0.hit',1)])
+    assert not result.attacks[-1].hit and result.attacks[-1].hit_target==4
+    # A failed test leaves the charged enemy natural-six-only in that round.
+    failed=run(reaver,enemy,start(reaver,enemy),
+        [('round.0.second.fear.charged.0',4),('round.0.second.fear.charged.1',4),
+         ('round.0.first.attack.0.hit',1),('round.0.second.attack.0.hit',4)])
+    assert not failed.attacks[-1].hit and failed.attacks[-1].hit_target==6

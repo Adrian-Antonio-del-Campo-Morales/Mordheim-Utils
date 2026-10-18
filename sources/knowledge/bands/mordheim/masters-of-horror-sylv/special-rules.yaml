@@ -663,8 +663,11 @@ rules:
       scope: LATER
       binding: null
       reason: >-
-        Deferred subsystem: game-start random potion table with out-of-combat addiction effects is
-        outside the current engine scope.
+        The initial potion roll and post-battle addiction producer remain outside the duel.
+        Supply the admitted result through condition.alchemist-resilience, alchemist-strength,
+        alchemist-backleys-brew, alchemist-aberrantius-vigortia or alchemist-addicted. Recovery and
+        brewing resolve at each own-turn start under the project's 2026-10-15 timing ruling.
+        Quicksilver Movement has no duel consumer.
   name: Alchemist
   effect: >-
     The Mad Scientist fancies himself an alchemist and brews all sorts of concoctions and potions to
@@ -767,3 +770,31 @@ rules:
     - thrall
     - wolfman
     - hunchbacks
+- id: wolfman--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - equipment
+  name: Equipment Restrictions
+  effect: "A werewolf cannot bear equipment. They attack with tooth and claw, and suffer no penalties for doing so."
+  source:
+    manual: sylvania-supplement
+    printed_page: 0
+    section: "0-1 Wolfman"
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "Un hombre lobo no puede llevar equipo. Ataca con dientes y garras, y no sufre penalización alguna por ello."
+  applies_to:
+    profile_ids:
+    - wolfman

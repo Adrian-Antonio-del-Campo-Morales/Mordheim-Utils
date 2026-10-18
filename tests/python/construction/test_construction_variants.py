@@ -299,6 +299,42 @@ def test_bloodline_options_follow_the_profile_bloodlines():
         } == {vampire, *({"carrion-ghoul"} if slug == "strigoi" else set())}, row
 
 
+def test_the_selected_background_owns_the_profile_equipment_list():
+    """F074/`compiler.foreign-or-native-background`: the two candidate undead
+    lists of a Lahmian profile are alternatives, not a union.
+
+    A profile assigned the background's list keeps the selected candidate and
+    loses the other; a profile whose printed restriction fixes one background
+    keeps only that candidate.
+    """
+    from mordheim_core.models import FighterBuild
+    from mordheim_construction.eligibility import desktop_call
+
+    package = _packages()[("trollheim", KHEMRI)]
+    profiles = _profiles(package)
+
+    def offered(profile_id: str, background: str) -> set[str]:
+        build = FighterBuild("mordheim", collection="trollheim", band_id=KHEMRI,
+                             profile_id=profile_id, main_weapon_id="weapon.dagger",
+                             variant_ids=(f"background.{background}",))
+        return set(desktop_call("equipment", build, KB, package=package,
+                                profile=profiles[profile_id],
+                                compiler_contracts=("compiler.foreign-or-native-background",)))
+
+    # `katar` is printed only in the Native list, `axe` only in the Foreign one.
+    assert "weapon.katar" in offered("lahmian-vampire", "native")
+    assert "weapon.katar" not in offered("lahmian-vampire", "foreign")
+    assert "weapon.axe" in offered("lahmian-vampire", "foreign")
+    assert "weapon.axe" not in offered("lahmian-vampire", "native")
+    # Both lists print a great weapon, so the shared line survives either choice.
+    assert "weapon.double-handed-weapon" in offered("lahmian-vampire", "foreign")
+    assert "weapon.double-handed-weapon" in offered("lahmian-vampire", "native")
+    # The fixed recipients keep their printed background instead of gaining the
+    # selected one.
+    assert "weapon.katar" not in offered("blood-slaves", "native")
+    assert "weapon.axe" not in offered("spirits", "foreign")
+
+
 def test_the_accepted_specs_use_the_published_ids():
     spec = yaml.safe_load((SPECS / "khemri-background.yaml").read_text(encoding="utf-8"))
     used = set()

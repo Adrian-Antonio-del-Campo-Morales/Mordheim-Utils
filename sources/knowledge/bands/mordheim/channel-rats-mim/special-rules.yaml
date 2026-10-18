@@ -631,17 +631,19 @@ rules:
     - fugitives
 - id: band--strigany-special-skills-list
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.channel-rats-mim.band.strigany-special-skills-list
-      scope: LATER
-      binding: null
-      reason: >-
-        River Strigany may choose this list instead of the standard skill lists. The six special
-        skills have no matching engine mechanics; preserved verbatim for the skills equivalence
-        review at promotion time.
+    - id: profile.skill-access
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.skill-access
+        parameters:
+          category: special
+    # Each printed member keeps its own record and runtime disposition; the
+    # table grants the choice, never the members' effects.
   name: Strigany Special Skills
   effect: >-
     River Strigany may choose to use the following skill list instead of the standard skill lists.
@@ -685,5 +687,197 @@ rules:
       siempre que esté fuera de la línea de visión de la banda oponente y a más de 12" de cualquier
       modelo enemigo; si ambos jugadores tienen modelos que infiltran, tira 1D6 por cada uno, y el
       que saque el resultado más bajo despliega primero.
+  applies_to:
+    band: true
+    profile_ids:
+    - domnu
+    - petru
+    - tinker
+    - truants
+- id: band--strigany-special-skills-knowledge-of-myths
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.channel-rats-mim.strigany.knowledge-of-myths
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: the re-roll belongs to the Exploration phase, not to the duel.
+  name: Knowledge of Myths and Legends
+  effect: >-
+    During the Exploration phase, if the Hero was not taken out of action, you may re-roll one
+    dice, keeping the second result even if it is worse.
+  source:
+    manual: broheim.net
+    printed_page: 181
+    section: Strigany Special Skills
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Channel Rats.pdf
+  name_i18n:
+    es: Conocimiento de Mitos y Leyendas
+  eligibility:
+  - domnu
+  - petru
+  - tinker
+  - truants
+  applies_to:
+    band: true
+- id: band--strigany-special-skills-bull-rush
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: mechanic.bull-charge
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.bull-charge
+  name: Bull Rush
+  effect: >-
+    When he charges, the Hero may attempt to knock down his opponent rather than making his normal
+    attacks; roll to hit once with a +1 to hit modifier, though no roll to wound is necessary; if
+    the warrior hits with this attack, the opposing model is knocked down.
+  source:
+    manual: broheim.net
+    printed_page: 181
+    section: Strigany Special Skills
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Channel Rats.pdf
+  name_i18n:
+    es: Embestida
+  eligibility:
+  - domnu
+  - petru
+  - tinker
+  - truants
+  applies_to:
+    band: true
+- id: band--strigany-special-skills-songster
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.channel-rats-mim.strigany.songster
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: the re-roll is a provider effect for friendly models within 6 inches, a
+        group Leadership mechanic rather than the bearer's own test.
+  name: Songster
+  effect: >-
+    Any friendly model within 6" of the Hero may re-roll any failed Leadership test with a +1 to
+    Leadership; this includes rout tests.
+  source:
+    manual: broheim.net
+    printed_page: 181
+    section: Strigany Special Skills
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Channel Rats.pdf
+  name_i18n:
+    es: Cantor
+  eligibility:
+  - domnu
+  - petru
+  - tinker
+  - truants
+  applies_to:
+    band: true
+- id: band--strigany-special-skills-prize-fighter
+  kind: warband_skill
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.channel-rats-mim.strigany.prize-fighter
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred: the printed bonus applies only while fighting unarmed, and no canonical operator
+        carries that condition; granting the attack unconditionally would widen the rule.
+  name: Prize-fighter
+  effect: >-
+    The Hero suffers no penalties whatsoever for fighting unarmed and receives +1 Attack when
+    doing so.
+  source:
+    manual: broheim.net
+    printed_page: 181
+    section: Strigany Special Skills
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Channel Rats.pdf
+  name_i18n:
+    es: Luchador
+  eligibility:
+  - domnu
+  - petru
+  - tinker
+  - truants
+  applies_to:
+    band: true
+- id: band--strigany-special-skills-animal-charmer
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.channel-rats-mim.strigany.animal-charmer
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: controlling up to five animals and their random movement is a group/animal
+        subsystem, not an individual duel consequence.
+  name: Animal Charmer
+  effect: >-
+    The Hero can control up to five animals using Strigany charms provided that they remain
+    within 6" of him; if an animal is not within 6" of the Animal Charmer in the Movement phase,
+    they will move D6" in a random direction.
+  source:
+    manual: broheim.net
+    printed_page: 181
+    section: Strigany Special Skills
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Channel Rats.pdf
+  name_i18n:
+    es: Encantador de Animales
+  eligibility:
+  - domnu
+  - petru
+  - tinker
+  - truants
+  applies_to:
+    band: true
+- id: band--strigany-special-skills-infiltration
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.channel-rats-mim.strigany.infiltration
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: deployment order and off-table placement happen before the duel.
+  name: Infiltration
+  effect: >-
+    A Strigany with this skill is always placed on the battlefield after the opposing warband and
+    can be placed anywhere on the table as long as it is out of sight of the opposing warband and
+    more than 12" away from any enemy model; if both players have models which infiltrate, roll a
+    D6 for each, and the lowest roll sets up first.
+  source:
+    manual: broheim.net
+    printed_page: 181
+    section: Strigany Special Skills
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Channel Rats.pdf
+  name_i18n:
+    es: Infiltración
+  eligibility:
+  - domnu
+  - petru
+  - tinker
+  - truants
   applies_to:
     band: true

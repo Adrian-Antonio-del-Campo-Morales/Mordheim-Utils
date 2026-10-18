@@ -171,3 +171,45 @@ describe("canonical projection: empty access, equipment concessions and promotio
     expect(catalogueSkillChoices(promoted)["skill.arcane-lore"]).toBe(false);
   });
 });
+
+/**
+ * C04a: the Lahmian Brotherhood Foreign/Native background selects one of the
+ * candidate undead lists the profile declares. The two are alternatives, never
+ * a union, so a background's choice must not leave the other candidate offered;
+ * a profile whose printed restriction fixes one background keeps only that one.
+ */
+describe("the Foreign/Native background intersects the declared candidate lists", () => {
+  const backgroundPack: BandPackage = {
+    band: { id: "khemri-lahmian-brotherhood" }, profiles: [], special_rules: [],
+    equipment_lists: [
+      { id: "foreign-undead-equipment-list", items: [{ item_id: "axe" }, { item_id: "dagger" }] },
+      { id: "native-undead-equipment-list", items: [{ item_id: "katar" }, { item_id: "dagger" }] },
+    ],
+  };
+  const backgroundCatalogue: Catalogue = { ...catalogue,
+    mappings: { axe: "weapon.axe", dagger: "weapon.dagger", katar: "weapon.katar" } };
+  const candidate = { id: "lahmian-vampire", type: "hero",
+    equipment_lists: ["foreign-undead-equipment-list", "native-undead-equipment-list"] };
+  const fixedForeign = { id: "blood-slaves", type: "henchman",
+    equipment_lists: ["foreign-undead-equipment-list"] };
+
+  it("keeps only the chosen background's candidate", () => {
+    expect(profileEquipment(backgroundPack,
+      configuredProfile(candidate, ["background.native"]), backgroundCatalogue))
+      .toEqual(["weapon.dagger", "weapon.katar"]);
+    expect(profileEquipment(backgroundPack,
+      configuredProfile(candidate, ["background.foreign"]), backgroundCatalogue))
+      .toEqual(["weapon.axe", "weapon.dagger"]);
+  });
+
+  it("reads an absent choice as the printed Foreign assignment", () => {
+    expect(profileEquipment(backgroundPack, configuredProfile(candidate, []), backgroundCatalogue))
+      .toEqual(["weapon.axe", "weapon.dagger"]);
+  });
+
+  it("never hands the other background's list to a fixed recipient", () => {
+    expect(profileEquipment(backgroundPack,
+      configuredProfile(fixedForeign, ["background.native"]), backgroundCatalogue))
+      .toEqual([]);
+  });
+});

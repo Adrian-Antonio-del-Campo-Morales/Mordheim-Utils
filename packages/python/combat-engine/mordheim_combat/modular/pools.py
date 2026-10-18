@@ -17,7 +17,6 @@ from mordheim_combat.modular.contexts import prepare_special_save_context
 from mordheim_combat.modular.contexts import prepare_wound_context
 from mordheim_combat.modular.contexts import weapon_against_opponent
 from mordheim_combat.modular.contexts import OwnedRollDice, _estalian_parry
-from mordheim_combat.modular.contexts import reject_curse_unmodifiable_save
 from mordheim_combat.modular.state import AttackOutcome
 from mordheim_combat.modular.state import FighterState
 from mordheim_combat.modular.state import require_characteristics
@@ -99,6 +98,39 @@ def allocate_attack_weapons(
     return tuple(_weapon_for_attack(fighter, index, count, first_round) for index in range(count))
 
 
+def pool_attack_weapons(
+    attacker: CompiledFighter, count: int, *, first_round: bool, charging: bool,
+    decisions: DecisionPolicy, key: str, single_bonus: bool = False,
+    body_slam: bool = False,
+) -> tuple[EffectSet, ...]:
+    """The ordinary pool's own allocation, in the order the pool resolves it.
+
+    One allocation governs the printed weapon choice, the Whipcrack bonus and
+    the bearer's independent extra attacks.  A caller that nominates one of
+    these attacks (Instinctual Violence) and the pool that resolves the rest
+    therefore read the same weapons: the nominated strike keeps the profile and
+    hand slot the pool allocated for that position, and the remainder keeps the
+    allocation it was printed with instead of a shorter pool re-deriving one.
+    """
+    vomit = any(has_tag(attacker.main_weapon, tag) for tag in
+                ("weapon.vomit-attack", "effect.wraith-touch"))
+    if single_bonus:
+        return (attacker.main_weapon,)
+    if body_slam:
+        return (EffectSet(tags=("mechanic.body-slam",), strength_bonus=1, hit_modifier=1),)
+    whip = whipcrack_weapon(attacker) if not vomit and first_round and charging else None
+    weapons = allocate_attack_weapons(
+        attacker, count - int(whip is not None), first_round, decisions, key=key)
+    if whip is not None:
+        weapons += (whip,)
+    if not vomit:
+        weapons += tuple(weapon for weapon in attacker.extra_attacks
+                         if not any(has_tag(weapon, tag) for tag in
+                                    ("rule.strikes-last-bite", "rule.eagle-friend"))
+                         and (charging or not has_tag(weapon, "rule.horned-one")))
+    return weapons
+
+
 def _prepared_hit(prepared: AttackOutcome):
     from mordheim_combat.phases import HitResult
 
@@ -118,6 +150,7 @@ def _resolve_prepared_defences(
     charging: bool,
     helpless: bool,
     decisions: DecisionPolicy | None = None,
+    deathblow: bool = False,
 ) -> tuple[FighterState, FighterState, dict[int, AttackOutcome]]:
     """Resolve per-hit defences after every hit roll is known.
 
@@ -137,8 +170,6 @@ def _resolve_prepared_defences(
             weapon, prepared = prepared_attacks[index]
             own = OwnedRollDice(dice, defender, defender_state, decisions, modifiable=False)
             incoming = _combined_effect(attacker, weapon)
-            if not has_tag(incoming, "attack.magical"):
-                reject_curse_unmodifiable_save(defender, incoming, "Ethereal")
             if (not has_tag(incoming, "attack.magical")
                     and own.roll(RollRequest(f"{keys[index]}.ethereal")) >= defender.global_effects.ethereal_hit_save):
                 resolved[index] = replace(prepared, saved=True, defender=replace(defender_state,
@@ -148,8 +179,6 @@ def _resolve_prepared_defences(
     successful = [index for index in successful if index not in resolved]
     if has_tag(defender.global_effects, "mechanic.marks-of-ranald"):
         for index in successful:
-            reject_curse_unmodifiable_save(defender,
-                _combined_effect(attacker, prepared_attacks[index][0]), "Marks of Ranald")
             own = OwnedRollDice(dice, defender, defender_state, decisions, modifiable=False)
             if own.roll(RollRequest(f"{keys[index]}.marks-of-ranald")) >= 6:
                 resolved[index] = replace(prepared_attacks[index][1], saved=True, defender=replace(defender_state,
@@ -163,10 +192,10 @@ def _resolve_prepared_defences(
         outcome = resolve_reference_attack(
             attacker, defender, attacker_state, defender_state, weapon, dice,
             key=keys[index], first_round=first_round, charging=charging,
-            helpless_at_start=helpless or prepared.knocked_down_target, stunned_at_start=False, prepared_hit=_prepared_hit(prepared),
+            helpless_at_start=helpless or prepared.knocked_down_target, stunned_at_start=False, prepared_hit=_prepared_hit(prepared), disarm_slot=prepared.disarm_slot,
             natural_hit_six=prepared.natural_hit_six,
             defences_only=True, parry_allowed=False, ethereal_resolved=True,
-            marks_resolved=True, decisions=decisions,
+            marks_resolved=True, decisions=decisions, deathblow=deathblow,
         )
         attacker_state, defender_state = outcome.attacker, outcome.defender
         if outcome.saved:
@@ -181,7 +210,7 @@ def _resolve_prepared_defences(
         reverse=True,
     )
     for index in candidates:
-        if defender_state.parries_remaining <= 0 or not attacker_state.active:
+        if defender_state.parries_remaining <= 0 or (not attacker_state.active and not deathblow):
             break
         weapon, prepared = prepared_attacks[index]
         if (prepared.natural_hit_six and not phases.has_tag(
@@ -197,10 +226,10 @@ def _resolve_prepared_defences(
         outcome = resolve_reference_attack(
             attacker, defender, attacker_state, defender_state, weapon, dice,
             key=keys[index], first_round=first_round, charging=charging,
-            helpless_at_start=helpless or prepared.knocked_down_target, stunned_at_start=False, prepared_hit=_prepared_hit(prepared),
+            helpless_at_start=helpless or prepared.knocked_down_target, stunned_at_start=False, prepared_hit=_prepared_hit(prepared), disarm_slot=prepared.disarm_slot,
             natural_hit_six=prepared.natural_hit_six,
             defences_only=True, ethereal_resolved=True, marks_resolved=True,
-            decisions=decisions,
+            decisions=decisions, deathblow=deathblow,
         )
         attacker_state, defender_state = outcome.attacker, outcome.defender
         if outcome.parried:
@@ -252,11 +281,19 @@ def _resolve_attack_pool_body(
     forfeit_index: int | None = None,
     forfeit_indices: tuple[int, ...] = (),
     grapple_declared: bool | None = None,
+    allocated_weapons: tuple[EffectSet, ...] | None = None,
+    deathblow: bool = False,
 ) -> tuple[FighterState, FighterState, tuple[AttackOutcome, ...]]:
     outcomes: list[AttackOutcome] = []
+    # Printed Deathblow: a Slayer taken out of action in hand-to-hand is
+    # entitled to the attacks he has still to make, and the printed clause says
+    # he may use it even while Knocked Down or Stunned.  Only that readiness
+    # condition is relaxed; being out of action is what triggers the pool, so
+    # the caller sets the flag for the remainder and nothing else.
     if (count <= 0 or attacker_state.animosity_failed or attacker_state.charm_attack_blocked or attacker_state.entranced
             or attacker_state.grappled or attacker_state.grappling
-            or attacker_state.condition != Condition.STANDING or not defender_state.active):
+            or (attacker_state.condition != Condition.STANDING and not deathblow)
+            or not defender_state.active):
         return attacker_state, defender_state, ()
     if (has_tag(attacker.global_effects, "mechanic.honorable")
             and defender_state.condition in (Condition.KNOCKED_DOWN, Condition.STUNNED)):
@@ -282,12 +319,12 @@ def _resolve_attack_pool_body(
         if result.hit:
             result = resolve_reference_attack(attacker, defender, result.attacker, result.defender,
                 weapon, dice, key=attack_key, first_round=first_round, charging=charging,
-                prepared_hit=_prepared_hit(result), natural_hit_six=result.natural_hit_six,
+                prepared_hit=_prepared_hit(result), disarm_slot=result.disarm_slot, natural_hit_six=result.natural_hit_six,
                 defences_only=True, decisions=decisions)
         if result.hit and not result.parried and not result.saved:
             target_state = require_characteristics(defender, result.defender, dice,
                 f"{attack_key}.defender", {"S"}, decisions)
-            owned = OwnedRollDice(dice, defender, target_state, decisions)
+            owned = OwnedRollDice(dice, defender, target_state, decisions, close_combat=True)
             escaped = _characteristic_test(target_state.strength - 2, owned,
                 f"{attack_key}.strength", six_fails=False,
                 reroll=has_tag(defender.global_effects, "skill.blessed-sight"))
@@ -344,20 +381,18 @@ def _resolve_attack_pool_body(
         and phases.has_tag(attacker.global_effects, "mechanic.body-slam")
         and decisions.choose(f"{key}.body-slam", attacker)
     )
-    if single_bonus:
-        weapons = (attacker.main_weapon,)
-    elif use_body_slam:
-        weapons = (EffectSet(tags=("mechanic.body-slam",), strength_bonus=1, hit_modifier=1),)
+    if single_bonus or use_body_slam:
+        weapons = pool_attack_weapons(
+            attacker, count, first_round=first_round, charging=charging,
+            decisions=decisions, key=key, single_bonus=single_bonus, body_slam=use_body_slam)
+    elif allocated_weapons is not None:
+        # Instinctual Violence's nominated strike was taken from this very
+        # allocation, so the pool resolves the remainder without re-drawing it.
+        weapons = allocated_weapons
     else:
-        whip = whipcrack_weapon(attacker) if not vomit and first_round and charging else None
-        weapons = allocate_attack_weapons(
-            attacker, count - int(whip is not None), first_round, decisions, key=key)
-        if whip is not None:
-            weapons += (whip,)
-    if not single_bonus and not vomit:
-        weapons += tuple(weapon for weapon in attacker.extra_attacks
-                         if not any(has_tag(weapon, tag) for tag in ("rule.strikes-last-bite", "rule.eagle-friend"))
-                         and (charging or not phases.has_tag(weapon, "rule.horned-one")))
+        weapons = pool_attack_weapons(
+            attacker, count, first_round=first_round, charging=charging,
+            decisions=decisions, key=key)
     # Filter the original allocation together, so two forfeits never shift a
     # later nominated hand/natural attack onto a different slot.
     weapons = tuple(weapon for index, weapon in enumerate(weapons) if index not in forfeits)
@@ -420,6 +455,7 @@ def _resolve_attack_pool_body(
                 charging=charging, helpless_at_start=helpless, stunned_at_start=False, hit_only=True,
                 decisions=decisions,
                 rememberer_pool_key=key,
+                deathblow=deathblow,
             )
         attacker_state, defender_state = prepared.attacker, prepared.defender
         prepared_attacks.append((weapon, prepared))
@@ -433,6 +469,7 @@ def _resolve_attack_pool_body(
         keys=attack_keys, first_round=first_round, charging=charging,
         helpless=helpless,
         decisions=decisions,
+        deathblow=deathblow,
     )
 
     # Bear Hug replaces two successful, undefended hits before wound
@@ -451,8 +488,8 @@ def _resolve_attack_pool_body(
             defender_state = require_characteristics(defender, defender_state, dice,
                 f"{key}.defender", {"S"}, decisions)
         hug_dice = {
-            f"{key}.bear-hug.attacker": OwnedRollDice(dice, attacker, attacker_state, decisions),
-            f"{key}.bear-hug.defender": OwnedRollDice(dice, defender, defender_state, decisions),
+            f"{key}.bear-hug.attacker": OwnedRollDice(dice, attacker, attacker_state, decisions, close_combat=True),
+            f"{key}.bear-hug.defender": OwnedRollDice(dice, defender, defender_state, decisions, close_combat=True),
         }
         hug = phases.resolve_bear_hug(BearHugContext(
             sum(surviving),
@@ -486,7 +523,7 @@ def _resolve_attack_pool_body(
                     attacker, defender, attacker_state, defender_state, weapon, dice,
                     key=attack_keys[index], first_round=first_round,
                     charging=charging, helpless_at_start=helpless, stunned_at_start=False,
-                    prepared_hit=_prepared_hit(prepared_tuple[index][1]),
+                    prepared_hit=_prepared_hit(prepared_tuple[index][1]), disarm_slot=prepared_tuple[index][1].disarm_slot,
                     natural_hit_six=prepared_tuple[index][1].natural_hit_six,
                     defences_resolved=True, decisions=decisions,
                 )
@@ -510,9 +547,9 @@ def _resolve_attack_pool_body(
                 attacker, defender, attacker_state, defender_state, weapon, dice,
                 key=attack_keys[index], first_round=first_round,
                 charging=charging, helpless_at_start=helpless or prepared.knocked_down_target, stunned_at_start=False,
-                prepared_hit=_prepared_hit(prepared),
+                prepared_hit=_prepared_hit(prepared), disarm_slot=prepared.disarm_slot,
                 natural_hit_six=prepared.natural_hit_six, defences_resolved=True,
-                decisions=decisions,
+                decisions=decisions, deathblow=deathblow,
             )
             result = replace(
                 result, hit_roll=prepared.hit_roll, hit_target=prepared.hit_target
@@ -532,15 +569,15 @@ def _resolve_attack_pool_body(
         if index in defended:
             outcomes.append(defended[index])
             continue
-        if not attacker_state.active or not defender_state.active:
+        if (not attacker_state.active and not deathblow) or not defender_state.active:
             break
         result = resolve_reference_attack(
             attacker, defender, attacker_state, defender_state, weapon, dice,
             key=f"{key}.attack.{index}", first_round=first_round,
             charging=charging, helpless_at_start=helpless or prepared.knocked_down_target, stunned_at_start=False,
-            prepared_hit=_prepared_hit(prepared),
+            prepared_hit=_prepared_hit(prepared), disarm_slot=prepared.disarm_slot,
             natural_hit_six=prepared.natural_hit_six, defences_resolved=True,
-            decisions=decisions,
+            decisions=decisions, deathblow=deathblow,
         )
         result = replace(
             result, hit_roll=prepared.hit_roll, hit_target=prepared.hit_target
@@ -552,7 +589,7 @@ def _resolve_attack_pool_body(
         # inert outside a charge (Khemri, Necromantic Modification / Anvil Head).
         if (not single_bonus and not vomit and result.hit and not result.parried and first_round and charging
                 and phases.has_tag(_combined_effect(attacker, weapon), "mechanic.anvil-head")):
-            own = OwnedRollDice(dice, attacker, attacker_state, decisions)
+            own = OwnedRollDice(dice, attacker, attacker_state, decisions, close_combat=True)
             repeats = own.roll(RollRequest(f"{key}.attack.{index}.anvil-hits", 3)) - 1
             attacker_state = replace(attacker_state,
                 resources_spent=attacker_state.resources_spent | own.state.resources_spent)
@@ -563,6 +600,7 @@ def _resolve_attack_pool_body(
                     key=f"{key}.attack.{index}.anvil.{repeat_index}",
                     first_round=first_round, charging=charging,
                     helpless_at_start=helpless, stunned_at_start=False, decisions=decisions,
+                    deathblow=deathblow,
                 )
                 extra = _react_to_wound(
                     attacker, defender, extra, dice,

@@ -558,6 +558,24 @@ def test_m17_undead_or_possessed_skips_infection_test():
     assert result.defender.wounds == 3
 
 
+def test_d13_the_infection_wound_takes_no_save_but_the_dagger_keeps_its_own():
+    from mordheim_combat_lab.verification.dice import StrictDice
+    a = fighter(main_weapon_id='weapon.disease-dagger')
+    armoured = fighter(armour_id='armour.light-armour',
+                       skill_ids=('skill.step-aside', 'skill.regeneration'))
+    # Hit six infects (T-test failed).  No save die (armour, ward or
+    # regeneration) may be rolled for the infection wound, while the ordinary
+    # dagger wound keeps every printed save of its own: it fails the armour
+    # roll and survives through the Step Aside ward.
+    dice = StrictDice([{'key': 'a.hit', 'value': 6}, {'key': 'a.infection', 'value': 4},
+                       {'key': 'a.wound', 'value': 4}, {'key': 'a.armour', 'value': 1},
+                       {'key': 'a.special.ward', 'value': 6}])
+    result = resolve_reference_attack(a, armoured, state(a), state(armoured),
+                                      a.main_weapon, dice, key='a')
+    dice.finish()
+    assert result.defender.wounds == armoured.characteristics.wounds - 1
+
+
 def test_lethal_infection_reacts_once_and_cancels_the_remaining_dagger_wound():
     from mordheim_combat.modular.aftermath import _react_to_wound
     a = fighter(main_weapon_id='weapon.disease-dagger')
@@ -735,3 +753,82 @@ def test_two_whips_get_only_one_whipcrack_bonus_after_frenzy():
     count = phases.build_attacks(phases.AttackPoolContext(a, first_round=True, charging=True)).attacks
     assert apply_round_weapon_attack_modifiers(a, fighter(), count,
         first_round=True, charging=True, charged=False) == 4
+
+
+def cult_mutant(**options):
+    """One compiled Cult of the Possessed Mutant carrying the named mutation."""
+    mutation = options.pop('mutation')
+    return compile_fighter(FighterBuild(
+        'mordheim', band_id='cult-of-the-possessed', profile_id='mutants',
+        main_weapon_id=options.pop('main_weapon_id', 'weapon.mace'),
+        special_rule_ids=(mutation,), **options,
+    ))
+
+
+def test_blackblood_reacts_to_a_close_combat_wound_but_not_to_burning_or_spines():
+    """Blackblood: 'If the model loses a wound in close combat, anyone in base
+    contact with the model suffers a Strength 3 hit (no critical hits)'.
+
+    The campaign mutation binds the engine's acid-blood reaction, so its
+    trigger is the wound of a close-combat blow.  The independently resolved
+    automatic hits - burning and the Spines phase-start hit - carry no
+    close-combat provenance, so the strict tape must resolve without the
+    Strength 3 reply.  Source:
+    ``sources/knowledge/catalog/campaign/mutations.yaml`` Blackblood, bound by
+    ``cult-of-the-possessed/special-rules.yaml`` as ``trait.acid-blood``.
+    """
+    from mordheim_combat.modular.aftermath import _react_to_wound, _spines
+    from mordheim_combat_lab.verification.dice import StrictDice
+    blackblood = cult_mutant(mutation='band--mutations-blackblood')
+    assert 'acid_blood' in blackblood.global_effects.tags
+    attacker = fighter(ws=4, strength=6)
+    attacker_state = state(attacker)
+
+    # The close-combat wound spurts: the reply resolves its own Strength 3
+    # wound against the attacker that wounded the mutant.
+    melee = StrictDice([{'key': 'a.hit', 'value': 6}, {'key': 'a.wound', 'value': 5},
+                        {'key': 'a.injury.0', 'value': 3},
+                        {'key': 'a.acid-blood.0.wound', 'value': 5}])
+    outcome = resolve_reference_attack(attacker, blackblood, attacker_state, state(blackblood),
+                                       attacker.main_weapon, melee, key='a')
+    reply = _react_to_wound(attacker, blackblood, outcome, melee, 'a')
+    melee.finish()
+    assert reply.damage == 1 and reply.attacker.wounds == attacker_state.wounds - 1
+
+    # Burning is not a close-combat wound.
+    burning = StrictDice([{'key': 'fire.extinguish', 'value': 1},
+                          {'key': 'fire.hit.wound', 'value': 5},
+                          {'key': 'fire.hit.injury.0', 'value': 3}])
+    victim, fired_at, _ = _fire_recovery(blackblood, attacker,
+        replace(state(blackblood), on_fire=True), state(attacker), burning, key='fire')
+    burning.finish()
+    assert victim.wounds == 0 and fired_at.wounds == attacker_state.wounds
+
+    # Neither is the Spines automatic hit, which the mutation itself grants.
+    spiny = cult_mutant(mutation='band--mutations-spines')
+    spines = StrictDice([{'key': 'own.spines.wound', 'value': 6},
+                         {'key': 'own.spines.injury.0', 'value': 3}])
+    _, target, hits = _spines(spiny, blackblood, state(spiny), state(blackblood), spines,
+                              key='own.spines')
+    spines.finish()
+    assert hits[0].hit and not hits[0].critical and target.wounds == 0
+
+
+def test_scorpion_tail_gives_a_strength_five_attack_that_drops_to_two_against_immunity():
+    """Scorpion Tail: 'an extra Strength 5 attack in each hand-to-hand combat
+    phase.  If the model hit by the tail is immune to poison, the Strength of
+    the hit is reduced to 2.'  The compiled mutation is the weapon the engine
+    reduces."""
+    from mordheim_combat.modular.contexts import _attack_strength
+    from mordheim_core.models import EffectSet
+    tail_mutant = cult_mutant(mutation='band--mutations-scorpion-tail')
+    tail = next(attack for attack in tail_mutant.extra_attacks
+                if 'rule.scorpion-tail' in attack.tags)
+    assert tail.fixed_strength == 5
+    ordinary = fighter()
+    immune = replace(fighter(), global_effects=EffectSet(tags=('poison_immune',)))
+    attacker_state = state(tail_mutant)
+    assert _attack_strength(tail_mutant, ordinary, attacker_state, tail, tail,
+                            False, False) == (5, 5)
+    assert _attack_strength(tail_mutant, immune, attacker_state, tail, tail,
+                            False, False) == (2, 2)

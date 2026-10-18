@@ -30,7 +30,10 @@ them without flattening their rules.
 The authoritative backlog is the `unresolved_references` collection in each
 profile. Add the missing canonical catalogue or schema, update references, and
 remove only the entries that now resolve. [Project backlog](../TODO.md) groups
-the remaining categories without duplicating volatile counts.
+the remaining categories without duplicating volatile counts. Modular admission,
+projection and consumer follow-ups are consolidated in
+[Remaining modular engine problems](2a2b/REMAINING_MODULAR_ENGINE_PROBLEMS.md);
+canonical unresolved references remain in the profiles.
 
 ## Source provenance
 

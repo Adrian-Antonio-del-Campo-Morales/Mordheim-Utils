@@ -31,7 +31,7 @@ SELECTABLE_RULE_KINDS = frozenset({
 PROFILE_BINDING_IDS = frozenset({
     "profile.skill-access", "profile.equipment-restrictions", "profile.active-weapon-restrictions",
     "profile.natural-attacks", "profile.fist", "profile.random-characteristics",
-    "profile.characteristics", "profile.item-modifiers",
+    "profile.characteristics", "profile.item-modifiers", "profile.equipment-maintenance",
 })
 
 
@@ -253,9 +253,19 @@ def load_simulation_mappings(ruleset: str, root: Path | None = None):
             engine_option = mechanic_options.get(str(mechanic_id))
             if not mechanic_id or not engine_option:
                 raise ValueError(f"implemented item has no executable mechanic: {item_id}")
+            # The further printed profiles of the same physical object: the
+            # item's own record declares them, so the object keeps one identity
+            # and one list line while offering every mode its source prints.  A
+            # declared grip that resolves to no executable mechanic is a data
+            # defect, not a silently dropped offer.
+            alternates = [str(value) for value in item.get("alternate_mechanic_ids") or ()]
+            unresolved = sorted(value for value in alternates if value not in mechanic_options)
+            if unresolved:
+                raise ValueError(f"item {item_id} declares an unexecutable grip: {unresolved}")
             mappings[item_id] = {
                 "item_id": item_id, "status": "implemented",
                 "mechanic_id": mechanic_id, "engine_option": engine_option,
+                **({"alternate_mechanic_ids": alternates} if alternates else {}),
             }
         elif status == "out_of_scope":
             mappings[item_id] = {"item_id": item_id, "status": "out_of_scope"}

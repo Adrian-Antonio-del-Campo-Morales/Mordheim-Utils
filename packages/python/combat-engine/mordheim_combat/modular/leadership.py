@@ -85,12 +85,45 @@ def _instructing_leader(context, participant_id, side, bands, inches):
     return False
 
 
+def undead_foes_fear_immunity(fighter: CompiledFighter, opponent: CompiledFighter | None) -> bool:
+    """Dreamwalkers of Morr: Fearless Against the Undead Servants of Necromancers.
+
+    The Fear test is skipped only when the Fear-causing opponent itself carries
+    one of the canonical duel identities named by the source: a vampire
+    (``species.vampire``), a necromancer (``identity.necromancer``), or an
+    undead follower (``nature.undead``). A necromancer need not be Undead,
+    and being a spellcaster does not identify one. Other enemies and other
+    Psychology tests retain their ordinary rules.
+    """
+    return (opponent is not None
+            and phases.has_tag(fighter.global_effects, "mechanic.undead-foes-no-fear")
+            and (phases.has_tag(opponent.global_effects, "species.vampire")
+                 or phases.has_tag(opponent.global_effects, "identity.necromancer")
+                 or phases.has_tag(opponent.global_effects, "nature.undead")))
+
+
+def _charged_by_undead_opponent(state, first: bool, opponent) -> bool:
+    """True when the opposing Undead model is the one that charged this warrior.
+
+    The printed exemption is conditional on the charger, not on the opponent's
+    identity alone: a living or merely adjacent Undead foe leaves the Fear test
+    in place.
+    """
+    if not state.initial_charge_flags[1 if first else 0]:
+        return False
+    foe = opponent
+    if foe is None and state.context is not None:
+        participant_id = state.context.facts.second_id if first else state.context.facts.first_id
+        foe = state.context.participant(participant_id).fighter
+    return foe is not None and phases.has_tag(foe.global_effects, "nature.undead")
+
+
 def resolve_local_leadership(
     fighter: CompiledFighter, state: DuelState, dice: DiceSource,
     decisions: DecisionPolicy, key: str, *, first: bool, psychology: bool = False,
     stupidity: bool = False, fear: bool = False, discard_lowest: bool = False,
     opponent: CompiledFighter | None = None, return_state: bool = False,
-    own_value_only: bool = False, contacting: bool = True,
+    own_value_only: bool = False, contacting: bool = True, close_combat: bool = False,
 ) -> bool | tuple[bool, FighterState]:
     """Return the updated fighter state for tests with a persistent reroll resource."""
     current = state.first if first else state.second
@@ -107,7 +140,14 @@ def resolve_local_leadership(
 
     if psychology and (current.frenzy or phases.has_tag(fighter.global_effects, "mechanic.psychology-immunity")):
         return result(True)
+    # Instinctual Violence prints the exemption only for an Undead charger, so
+    # both the opponent's identity and the direction of the charge are read.
+    if (fear and phases.has_tag(fighter.global_effects, "mechanic.fear-immunity-undead-chargers")
+            and _charged_by_undead_opponent(state, first, opponent)):
+        return result(True)
     if fear and phases.has_tag(fighter.global_effects, "mechanic.fear-immunity"):
+        return result(True)
+    if fear and undead_foes_fear_immunity(fighter, opponent):
         return result(True)
     if phases.has_tag(fighter.global_effects, "mechanic.automatic-leadership"):
         return result(True)
@@ -223,6 +263,11 @@ def resolve_local_leadership(
         current = current.spend('poetry-first-leadership')
         if value is not None:
             value += 1
+    # Printed Mob: the caller supplies how many other allied Peasants are within
+    # three inches, so the printed +1 Leadership each is added without
+    # simulating the group or any table position.
+    if value is not None and phases.has_tag(fighter.global_effects, "mechanic.mob-leadership"):
+        value += fighter.mob_allies
     if opponent is None and context is not None:
         enemy_id = context.facts.second_id if first else context.facts.first_id
         opponent = context.participant(enemy_id).fighter
@@ -242,7 +287,7 @@ def resolve_local_leadership(
     discard_highest = (phases.has_tag(fighter.global_effects, "mechanic.cold-blooded-leadership")
         or (psychology and phases.has_tag(fighter.global_effects, "mechanic.cold-blooded-psychology")))
     from mordheim_combat.modular.contexts import OwnedRollDice
-    dice = OwnedRollDice(dice, fighter, current, decisions)
+    dice = OwnedRollDice(dice, fighter, current, decisions, close_combat=close_combat)
     passed = phases.resolve_leadership(value, dice, key, discard_highest=discard_highest and not discard_lowest, discard_lowest=discard_lowest)
     first_failed = first_failure and "leadership.first-failed" not in current.resources_spent and not passed
     if first_failed:

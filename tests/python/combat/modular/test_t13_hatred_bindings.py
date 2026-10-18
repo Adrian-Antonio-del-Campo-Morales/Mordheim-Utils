@@ -154,9 +154,9 @@ def test_target_imposed_and_undefined_hatred_stay_unbound():
         "hireling.dramatis.countess-marianna-chevaux-vampire-assassin") == set()
 
 
-# --- Free the Slaves! is admitted but has no registered operator ------------
+# --- Free the Slaves! targets the opponent's own supplied slaver identity ---
 
-def test_free_the_slaves_is_admitted_without_binding_a_wrong_operator():
+def test_free_the_slaves_binds_the_slaver_identity_not_a_warband_category():
     for path, prefix in (
         ("sources/knowledge/bands/mordheim/pit-fighters/special-rules.yaml", "pit-fighters"),
         ("sources/knowledge/bands/trollheim/chaos-streets-pit-fighters/special-rules.yaml",
@@ -166,11 +166,12 @@ def test_free_the_slaves_is_admitted_without_binding_a_wrong_operator():
         assert rule["rule_ref"] == "shared-rule.free-the-slaves"
         runtime = rule["runtime"]
         assert runtime["scope"] == "YES"
-        assert runtime["implemented"] == "NO"
+        assert runtime["implemented"] == "YES"
         effects = runtime["effects"]
         assert len(effects) == 1
-        # The admitted half is declared unimplemented; no Hatred operator is bound
-        # to a category the source does not print.
-        assert effects[0]["binding"] is None
-        assert effects[0]["id"].startswith("unimplemented.%s.band.free-the-slaves" % prefix)
-        assert "slaver" in effects[0]["reason"]
+        # The printed group is the slaver itself, so the operator reads the
+        # opponent's own slaver identity and never a warband category: no
+        # warband-group operator is bound to a category the source omits.
+        assert effects[0]["id"] == "mechanic.hatred-slavers"
+        assert effects[0]["binding"] == {"kind": "mechanic", "id": "mechanic.hatred-slavers"}
+        assert prefix  # the two printed bands are the only carriers of the rule

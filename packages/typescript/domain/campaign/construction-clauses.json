@@ -13,13 +13,13 @@
  ],
  "reconciliation": {
   "total_obligations": 125,
-  "covered_by_contract": 49,
-  "open_clauses": 29,
+  "covered_by_contract": 52,
+  "open_clauses": 26,
   "transfers": 35,
   "excluded_by_plan": 12,
-  "absorbed_clauses": 7,
+  "absorbed_clauses": 10,
   "review_categories": {
-   "pending-owner": 24,
+   "pending-owner": 21,
    "covered-data": 3,
    "by-plan": 5,
    "combat": 32,
@@ -62,30 +62,6 @@
   {
    "rule_id": "band--corsair-special-skills",
    "band_id": "dark-elf-corsairs-mou",
-   "mechanism": "E02-skill-access",
-   "scope": "skills",
-   "owner_task": "KB",
-   "reason": "the rule applies_to.band declares no recipient set and the KB publishes no member list of the printed special skills; the contract reports the clause instead of granting the whole special catalogue"
-  },
-  {
-   "rule_id": "axe-hurlers--born-marksmen",
-   "band_id": "dwarf-slayer-cult-web",
-   "mechanism": "E02-skill-access",
-   "scope": "skills",
-   "owner_task": "KB",
-   "reason": "the rule applies_to.band declares no recipient set and the KB publishes no member list of the printed special skills; the contract reports the clause instead of granting the whole special catalogue"
-  },
-  {
-   "rule_id": "band--slayer-special-skills",
-   "band_id": "dwarf-slayer-cult-web",
-   "mechanism": "E02-skill-access",
-   "scope": "skills",
-   "owner_task": "KB",
-   "reason": "the rule applies_to.band declares no recipient set and the KB publishes no member list of the printed special skills; the contract reports the clause instead of granting the whole special catalogue"
-  },
-  {
-   "rule_id": "band--slayer-special-skills",
-   "band_id": "dwarf-slayers-kaz",
    "mechanism": "E02-skill-access",
    "scope": "skills",
    "owner_task": "KB",
@@ -509,7 +485,7 @@
  ],
  "review": {
   "categories": {
-   "pending-owner": 24,
+   "pending-owner": 21,
    "covered-data": 3,
    "by-plan": 5,
    "combat": 32,
@@ -536,6 +512,42 @@
    "note": "T09 registers the coordination decision on the twelve `spell.*` records the T06 matrix routed to construction by prose: they belong to the excluded battle-magic system, they are not T09 obligations and they are not transferred to T13. Each effect stays in the traceability matrix (`review.rows`, category `system-excluded`) without generating an implementation obligation. The historical T06 evidence is not rewritten: `misrouted_by_t06` keeps the routing conflict."
   },
   "closed_by_t09": [
+   {
+    "key": "dwarf-slayer-cult-web|axe-hurlers--born-marksmen",
+    "category": "absorbed",
+    "band_id": "dwarf-slayer-cult-web",
+    "rule_id": "axe-hurlers--born-marksmen",
+    "mechanism": "E02-skill-access",
+    "impact": "under-allow",
+    "kb_change": "the rule publishes `applies_to.profile_ids: [axe-hurlers]` — the printed \"That Lad's Got Talent\" event keeps the grant on the Hero's line (`profile_types: [hero]`) — the printed Shooting member list in the `profile.skill-access` parameters (`skills:`) and the `compiler.promoted-hero-skill-access` grant of the `shooting` list",
+    "contract": "`profile.skill-access` and `compiler.promoted-hero-skill-access` in `profileFactsProjection`/`buildAccess`: the configured promoted Hero's facts carry the Shooting member list and the promotion grant, while the unpromoted Henchman row keeps its empty skill access and the campaign advance flow reads the print's own advance-access clause",
+    "test": "tests/typescript/application/campaign/features/advances/born-marksmen.test.ts",
+    "evidence": "before: the rule was an unimplemented placeholder whose band declaration named no recipient; after: `promotionTablesForWarrior` offers `shooting` for the promoted Axe Hurler, a profile the clause does not name keeps Combat/Speed, and the pending advance accepts the published Shooting skill"
+   },
+   {
+    "key": "dwarf-slayer-cult-web|band--slayer-special-skills",
+    "category": "absorbed",
+    "band_id": "dwarf-slayer-cult-web",
+    "rule_id": "band--slayer-special-skills",
+    "mechanism": "E02-skill-access",
+    "impact": "under-allow",
+    "kb_change": "the rule publishes `applies_to.profile_ids: [giant-slayer, doomseeker]` — the printed column is Slayers Only, so the Rememberer is never a recipient — and the complete printed member list in the `profile.skill-access` parameters (`skills: skill.deathwish, skill.ferocious-charge, skill.monster-slayer, skill.berserker, skill.deathblow, skill.axe-mastery, skill.tough-as-steel, skill.thick-skull`), with `skill.tough-as-steel` declaring `true_grit` and the printed 1-3/4-5/6 chart and the Relentless member disposed by content (failed-charge movement) inside the rule",
+    "contract": "`profileSkillLists`/`profileFactsProjection` publish the bounded special list and `skillIssue` refuses a special skill outside it; the Deathblow member is resolved by `modular.rounds`/`modular.pools`/`modular.attacks`",
+    "test": "tests/python/construction/test_c05a_dwarf_slayer_skills.py; tests/python/combat/modular/test_c05a_deathblow.py",
+    "evidence": "before: the rule covered the whole band with no member list and Deathwish, Deathblow and Axe Mastery stayed unavailable; after: the Slayer Heroes pick the eight admitted printed members, any other special skill is refused as `skill_not_permitted`, the Rememberer publishes no Slayer list, and a Slayer taken out of action still makes the remainder of the phase's attacks through the modular pool"
+   },
+   {
+    "key": "dwarf-slayers-kaz|band--slayer-special-skills",
+    "category": "absorbed",
+    "band_id": "dwarf-slayers-kaz",
+    "rule_id": "band--slayer-special-skills",
+    "mechanism": "E02-skill-access",
+    "impact": "under-allow",
+    "kb_change": "the rule publishes `applies_to.profile_ids: [giant-slayer, troll-slayers]` and the printed member list in the `profile.skill-access` parameters (`skills: skill.ferocious-charge, skill.monster-slayer, skill.berserker`); the inherited Dwarf column of the same table (`band--town-crier-6-dwarf-special-skills`) publishes exactly its printed members (`skill.unbeatable-warrior`, `skill.tough-as-steel`, `skill.thick-skull`), Master of Blades being one printed entry, and disposes the campaign-only Extra Tough and Resource Hunter by content",
+    "contract": "`profileSkillLists`/`profileFactsProjection` publish the bounded special list and `skillIssue` refuses a special skill outside it; `skill.tough-as-steel` carries the printed True Grit chart",
+    "test": "tests/python/construction/test_c05a_dwarf_slayer_skills.py",
+    "evidence": "before: the Town Crier 6 cross-reference stayed deferred and the column granted nothing; after: Giant Slayer and Troll Slayer pick the three transcribed Slayer members while the Rememberer keeps the inherited Dwarf column, the Dwarf column admits Unbeatable Warrior but never the distinct Vampire `skill.sword-master`, and the campaign-only members keep their own dispositions"
+   },
    {
     "key": "adventurers-kaz|band--barbarian-special-skills",
     "category": "absorbed",
@@ -777,45 +789,6 @@
     "owner_task": "T10",
     "reason": "the rule applies_to.band declares no recipient set and the KB publishes no member list of the printed special skills; the contract reports the clause instead of granting the whole special catalogue",
     "key": "dark-elf-corsairs-mou|band--corsair-special-skills",
-    "category": "pending-owner",
-    "impact": "advances",
-    "evidence": "the rule publishes no recipient and no member list; the paper skill table is prose (the rule applies_to.band declares no recipient set and the KB publishes no member list of the printed special skills; the contract reports the clause instead of granting the whole special catalogue)",
-    "closing_condition": "skill acquisition happens on advancement, not at construction: an initial warband has no bought skills (only the printed `combat_traits.starting_skills`), so the clause changes the advance flow T10 owns. The contract already reports `skill_pending_special_list` when a special skill is validated, so the gap is never silent."
-   },
-   {
-    "rule_id": "axe-hurlers--born-marksmen",
-    "band_id": "dwarf-slayer-cult-web",
-    "mechanism": "E02-skill-access",
-    "scope": "skills",
-    "owner_task": "T10",
-    "reason": "the rule applies_to.band declares no recipient set and the KB publishes no member list of the printed special skills; the contract reports the clause instead of granting the whole special catalogue",
-    "key": "dwarf-slayer-cult-web|axe-hurlers--born-marksmen",
-    "category": "pending-owner",
-    "impact": "advances",
-    "evidence": "the rule publishes no recipient and no member list; the paper skill table is prose (the rule applies_to.band declares no recipient set and the KB publishes no member list of the printed special skills; the contract reports the clause instead of granting the whole special catalogue)",
-    "closing_condition": "skill acquisition happens on advancement, not at construction: an initial warband has no bought skills (only the printed `combat_traits.starting_skills`), so the clause changes the advance flow T10 owns. The contract already reports `skill_pending_special_list` when a special skill is validated, so the gap is never silent."
-   },
-   {
-    "rule_id": "band--slayer-special-skills",
-    "band_id": "dwarf-slayer-cult-web",
-    "mechanism": "E02-skill-access",
-    "scope": "skills",
-    "owner_task": "T10",
-    "reason": "the rule applies_to.band declares no recipient set and the KB publishes no member list of the printed special skills; the contract reports the clause instead of granting the whole special catalogue",
-    "key": "dwarf-slayer-cult-web|band--slayer-special-skills",
-    "category": "pending-owner",
-    "impact": "advances",
-    "evidence": "the rule publishes no recipient and no member list; the paper skill table is prose (the rule applies_to.band declares no recipient set and the KB publishes no member list of the printed special skills; the contract reports the clause instead of granting the whole special catalogue)",
-    "closing_condition": "skill acquisition happens on advancement, not at construction: an initial warband has no bought skills (only the printed `combat_traits.starting_skills`), so the clause changes the advance flow T10 owns. The contract already reports `skill_pending_special_list` when a special skill is validated, so the gap is never silent."
-   },
-   {
-    "rule_id": "band--slayer-special-skills",
-    "band_id": "dwarf-slayers-kaz",
-    "mechanism": "E02-skill-access",
-    "scope": "skills",
-    "owner_task": "T10",
-    "reason": "the rule applies_to.band declares no recipient set and the KB publishes no member list of the printed special skills; the contract reports the clause instead of granting the whole special catalogue",
-    "key": "dwarf-slayers-kaz|band--slayer-special-skills",
     "category": "pending-owner",
     "impact": "advances",
     "evidence": "the rule publishes no recipient and no member list; the paper skill table is prose (the rule applies_to.band declares no recipient set and the KB publishes no member list of the printed special skills; the contract reports the clause instead of granting the whole special catalogue)",
@@ -1543,45 +1516,6 @@
     "owner_task": "T10",
     "reason": "the rule applies_to.band declares no recipient set and the KB publishes no member list of the printed special skills; the contract reports the clause instead of granting the whole special catalogue",
     "key": "dark-elf-corsairs-mou|band--corsair-special-skills",
-    "category": "pending-owner",
-    "impact": "advances",
-    "evidence": "the rule publishes no recipient and no member list; the paper skill table is prose (the rule applies_to.band declares no recipient set and the KB publishes no member list of the printed special skills; the contract reports the clause instead of granting the whole special catalogue)",
-    "closing_condition": "skill acquisition happens on advancement, not at construction: an initial warband has no bought skills (only the printed `combat_traits.starting_skills`), so the clause changes the advance flow T10 owns. The contract already reports `skill_pending_special_list` when a special skill is validated, so the gap is never silent."
-   },
-   {
-    "rule_id": "axe-hurlers--born-marksmen",
-    "band_id": "dwarf-slayer-cult-web",
-    "mechanism": "E02-skill-access",
-    "scope": "skills",
-    "owner_task": "T10",
-    "reason": "the rule applies_to.band declares no recipient set and the KB publishes no member list of the printed special skills; the contract reports the clause instead of granting the whole special catalogue",
-    "key": "dwarf-slayer-cult-web|axe-hurlers--born-marksmen",
-    "category": "pending-owner",
-    "impact": "advances",
-    "evidence": "the rule publishes no recipient and no member list; the paper skill table is prose (the rule applies_to.band declares no recipient set and the KB publishes no member list of the printed special skills; the contract reports the clause instead of granting the whole special catalogue)",
-    "closing_condition": "skill acquisition happens on advancement, not at construction: an initial warband has no bought skills (only the printed `combat_traits.starting_skills`), so the clause changes the advance flow T10 owns. The contract already reports `skill_pending_special_list` when a special skill is validated, so the gap is never silent."
-   },
-   {
-    "rule_id": "band--slayer-special-skills",
-    "band_id": "dwarf-slayer-cult-web",
-    "mechanism": "E02-skill-access",
-    "scope": "skills",
-    "owner_task": "T10",
-    "reason": "the rule applies_to.band declares no recipient set and the KB publishes no member list of the printed special skills; the contract reports the clause instead of granting the whole special catalogue",
-    "key": "dwarf-slayer-cult-web|band--slayer-special-skills",
-    "category": "pending-owner",
-    "impact": "advances",
-    "evidence": "the rule publishes no recipient and no member list; the paper skill table is prose (the rule applies_to.band declares no recipient set and the KB publishes no member list of the printed special skills; the contract reports the clause instead of granting the whole special catalogue)",
-    "closing_condition": "skill acquisition happens on advancement, not at construction: an initial warband has no bought skills (only the printed `combat_traits.starting_skills`), so the clause changes the advance flow T10 owns. The contract already reports `skill_pending_special_list` when a special skill is validated, so the gap is never silent."
-   },
-   {
-    "rule_id": "band--slayer-special-skills",
-    "band_id": "dwarf-slayers-kaz",
-    "mechanism": "E02-skill-access",
-    "scope": "skills",
-    "owner_task": "T10",
-    "reason": "the rule applies_to.band declares no recipient set and the KB publishes no member list of the printed special skills; the contract reports the clause instead of granting the whole special catalogue",
-    "key": "dwarf-slayers-kaz|band--slayer-special-skills",
     "category": "pending-owner",
     "impact": "advances",
     "evidence": "the rule publishes no recipient and no member list; the paper skill table is prose (the rule applies_to.band declares no recipient set and the KB publishes no member list of the printed special skills; the contract reports the clause instead of granting the whole special catalogue)",

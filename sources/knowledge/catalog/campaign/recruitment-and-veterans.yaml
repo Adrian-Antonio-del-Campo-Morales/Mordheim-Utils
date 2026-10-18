@@ -193,6 +193,29 @@ lifecycle_clauses:
 # The core-book consequence the rules refer to is not published; the campaign
 # closes the boundary at the published data (see T10 §10).
 succession_clauses:
+- id: campaign.succession.black-orcs
+  band_id: black-orcs
+  rule_id: band--da-boss-is-dead
+  leader_profile_ids:
+  - black-orc-boss
+  successor_profile_ids:
+  - black-orcs
+  name: Da Boss Is Dead! (Black Orcs)
+  name_i18n:
+    es: ¡El Jefe Ha Muerto! (Orcos Negros)
+  effect: >-
+    If the Boss is killed, a Black Orc takes over leadership before any other warrior regardless of
+    relative experience, and the replacement automatically gains "Oi Behave!".
+  effect_i18n:
+    es: >-
+      Si el Jefe muere, un Orco Negro asume el liderazgo antes que cualquier otro guerrero
+      independientemente de su experiencia relativa, y el sustituto gana automáticamente "¡Pórtate
+      bien! (Oi Behave!)".
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Da Boss is Dead!
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
 - id: campaign.succession.cathayan-pirates
   band_id: pirates-of-the-cathayan-sea-sar
   rule_id: band--succession

@@ -68,16 +68,19 @@ rules:
     band: true
 - id: band--mutations
   runtime:
-    scope: LATER
+    scope: 'YES'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.skaven-of-clan-moulder-web.band.mutations
-      scope: LATER
+      scope: 'YES'
       binding: null
       reason: >-
-        Deferred subsystem: mutation purchases are roster-construction/campaign mechanics outside
-        the duel scope.
+        The band sentence is an authorization, not a choice of its own: each printed recipient
+        carries the admitting clause and its quantity. `rat-ogres--its-alive` requires exactly one
+        Possessed mutation when recruited and `band--clan-moulder-special-skills-twistkin` requires
+        exactly one upon taking Twistkin (Stormvermin only); no other member may buy one. Prices and
+        campaign history stay outside the duel.
   name: Mutations
   effect: >-
     Certain models may purchase Mutations from the Possessed Warband list in the Mordheim Rulebook.
@@ -466,16 +469,15 @@ rules:
   rule_ref: shared-rule.large-target
 - id: rat-ogres--its-alive
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.skaven-of-clan-moulder-web.rat-ogres.its-alive
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: mutation purchases are roster-construction/campaign mechanics outside
-        the duel scope.
+    - id: compiler.rat-ogre-single-mutation-at-recruitment
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.rat-ogre-single-mutation-at-recruitment
   name: It's Alive!
   effect: >-
     Moulder Rat Ogres are twisted creatures ever subject to the cruel curiosity of their masters.
@@ -529,16 +531,25 @@ rules:
     - rat-ogres
 - id: band--clan-moulder-special-skills
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
+    - id: profile.skill-access
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.skill-access
+        parameters:
+          category: special
     - id: unimplemented.skaven-of-clan-moulder-web.special.clan-moulder-special-skills
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: >-
-        Deferred subsystem: skill selections on promotion are advancement-time mechanics outside the
-        duel scope (Black Hunger's combat-relevant effect is a candidate for later implementation).
+        Out of scope: Beastkin's handling range and Subjugator of Mankind's post-battle capture are
+        beast-handling and campaign rules. The list's own members keep their own records
+        (`band--clan-moulder-special-skills-black-hunger`, `-hypnotic-musk` and `-twistkin`) and the
+        access above is the printed grant.
   name: Clan Moulder Special Skills
   effect: >-
     Clan Moulder heroes may choose to use the following Skill list instead of any of the standard
@@ -580,6 +591,10 @@ rules:
       indicado.
   applies_to:
     band: true
+    profile_ids:
+    - packmaster
+    - stormvermin
+    - apprentices
 - id: band--clan-moulder-special-skills-hypnotic-musk
   name: Hypnotic Musk
   name_i18n:
@@ -636,3 +651,34 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.black-hunger
+- id: band--clan-moulder-special-skills-twistkin
+  kind: warband_skill
+  name: Twistkin
+  name_i18n:
+    es: Retorcido
+  effect: >-
+    Twistkin (Stormvermin only): upon taking this skill the Hero must buy a Mutation from the list in
+    the Mordheim Rulebook (see Possessed Warband) at half the listed cost.
+  effect_i18n:
+    es: >-
+      Retorcido (solo Guerreros Tormenta): al tomar esta habilidad, el Héroe debe comprar una
+      Mutación de la lista del libro de reglas de Mordheim (ver banda de los Endemoniados) a mitad
+      del precio indicado.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/skaven-of-clan-moulder
+  applies_to:
+    profile_ids:
+    - stormvermin
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: compiler.twistkin-single-mutation-at-recruitment
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.twistkin-single-mutation-at-recruitment

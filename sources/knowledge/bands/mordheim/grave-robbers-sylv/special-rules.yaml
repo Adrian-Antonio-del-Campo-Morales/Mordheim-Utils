@@ -141,15 +141,20 @@ rules:
   kind: warband_skill
 - id: band--special-skill-instinctual-violence
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.grave-robbers-sylv.special-skill.instinctual-violence
-      scope: LATER
-      binding: null
-      reason: >-
-        Psychology (fear) and strike-first binding: deferred to the close-combat milestone.
+    - id: mechanic.fear-immunity-undead-chargers
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.fear-immunity-undead-chargers
+    - id: mechanic.nominated-strike-first
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.nominated-strike-first
   name: Instinctual Violence
   effect: >-
     Having experienced countless encounters with the Undead, this warrior is hardened to terror.

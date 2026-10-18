@@ -3,6 +3,7 @@ from dataclasses import replace
 
 from mordheim_combat import phases
 from mordheim_combat.modular.leadership import resolve_local_leadership
+from mordheim_combat.modular.leadership import undead_foes_fear_immunity
 from mordheim_combat.modular.state import DuelState
 from mordheim_core.dice import DecisionPolicy, DiceSource
 from mordheim_core.models import CompiledFighter
@@ -17,6 +18,10 @@ def fears_opponent_fire(fighter: CompiledFighter, enemy: CompiledFighter) -> boo
 
 
 def causes_fear(fighter: CompiledFighter, enemy: CompiledFighter) -> bool:
+    if (phases.has_tag(enemy.global_effects, "mechanic.fear-of-snakes")
+            and any(phases.has_tag(fighter.global_effects, tag) for tag in
+                    ("species.snake", "species.serpent"))):
+        return True
     if (phases.has_tag(enemy.global_effects, "mechanic.fear-of-elves")
             and any(phases.has_tag(fighter.global_effects, tag) for tag in ("species.high-elf", "species.dark-elf", "species.wood-elf"))):
         return True
@@ -57,6 +62,18 @@ def resolve_stupidity(first, second, state, dice, decisions):
     passed = (current.frenzy or phases.has_tag(fighter.global_effects, "condition.stupidity-exempt")
         or state.round_index == 0 and state.initial_charge_flags[int(not is_first)]
         and phases.has_tag(fighter.global_effects, "condition.impetuous-charge"))
+    if not passed and "disability.6" in current.resources_spent:
+        supplied_hero = phases.has_tag(fighter.global_effects, "condition.disability-hero-nearby")
+        heroes = ()
+        if state.context is not None:
+            context = state.context
+            participant = context.facts.first_id if is_first else context.facts.second_id
+            side = context.participant(participant).side_id
+            heroes = tuple(record for record in context.facts.nearby
+                if phases.has_tag(record.fighter.global_effects, "fighter-kind.hero"))
+            passed = any(record.side_id == side and record.condition != "out"
+                and context.distance(participant, record.participant_id) <= 6 for record in heroes)
+        passed = passed or supplied_hero and not heroes
     if not passed and phases.has_tag(fighter.global_effects, 'mechanic.bear-handler-recipient'):
         supplied = phases.has_tag(fighter.global_effects, 'condition.bear-handler-nearby')
         providers = ()
@@ -103,7 +120,10 @@ def resolve_fear(
     states = [state.first, state.second]
     for index, (target, singer) in enumerate(((first, second), (second, first))):
         gate = None
-        if phases.has_tag(singer.global_effects, "mechanic.slaanesh-charge-test"):
+        if (phases.has_tag(target.global_effects, "mechanic.ashamed-and-afraid")
+                and phases.has_tag(singer.global_effects, "identity.sigmarite-opponent")):
+            gate = "ashamed-and-afraid"
+        elif phases.has_tag(singer.global_effects, "mechanic.slaanesh-charge-test"):
             gate = "slaanesh-charge"
         elif (phases.has_tag(singer.global_effects, "mechanic.hypnotic-musk")
                 and not target.mounted
@@ -175,6 +195,7 @@ def resolve_fear(
                      or phases.has_tag(fighters[index].global_effects, "mechanic.craven"))
                 and not states[index].frenzy
                 and not phases.has_tag(fighters[index].global_effects, "mechanic.fear-immunity")
+                and not undead_foes_fear_immunity(fighters[index], fighters[1 - index])
                 and not phases.has_tag(fighters[index].global_effects, "mechanic.psychology-immunity"))
 
     def test_fear(index, label, suffix):
@@ -183,7 +204,8 @@ def resolve_fear(
             fighters[index], replace(state, first=states[0], second=states[1]), dice, decisions,
             f"round.0.{label}.fear.{suffix}", first=index == 0,
             psychology=ordinary_fear, fear=ordinary_fear,
-            opponent=fighters[1 - index], return_state=True, contacting=suffix != "charge")
+            opponent=fighters[1 - index], return_state=True, contacting=suffix != "charge",
+            close_combat=suffix == "charged")
         return passed
 
     # A voluntary charge must succeed before contact/charged reactions exist.

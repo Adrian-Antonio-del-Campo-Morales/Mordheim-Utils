@@ -1452,6 +1452,20 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+    # The printed increase itself: the Vampire's supplied Leader radius is twelve
+    # inches, not the ordinary six.
+    - id: mechanic.leader-twelve
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-twelve
+    - id: band--von-carstein-power-dark-majesty.rout-reroll
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Re-rolling the warband's failed Rout tests is the excluded group Rout mechanic and is not
+        simulated.  Only the printed radius increase of this Vampire's supplied Leader range is
+        admitted.
   name: Dark Majesty
   effect: >-
     Increase the Vampire's Leader range by 6" (from 6" to 12"). While the Vampire remains on the
@@ -2079,3 +2093,140 @@ rules:
   applies_to:
     profile_ids:
     - necrarch-vampire
+
+- id: strigoi-vampire--natural-weapons
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+          - equipment
+    - id: profile.natural-attacks
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.natural-attacks
+  name: Natural Weapons
+  effect: May not use weapons, armour or items and suffers no penalty for fighting without equipment.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 178
+    section: 1 Strigoi Vampire
+  name_i18n:
+    es: Armas Naturales
+  effect_i18n:
+    es: No puede usar armas, armaduras ni objetos y no sufre penalización por luchar sin equipo.
+  applies_to:
+    profile_ids:
+    - strigoi-vampire
+
+- id: carrion-ghoul--natural-weapons
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+    - id: profile.natural-attacks
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.natural-attacks
+  name: Natural Weapons
+  effect: Never uses weapons or armour and suffers no penalty for fighting without equipment.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 179
+    section: 0-1 Carrion Ghoul
+  name_i18n:
+    es: Armas Naturales
+  effect_i18n:
+    es: Nunca usa armas ni armaduras y no sufre penalización por luchar sin equipo.
+  applies_to:
+    profile_ids:
+    - carrion-ghoul
+
+- id: zombie--natural-weapons
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+    - id: profile.natural-attacks
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.natural-attacks
+  name: Natural Weapons
+  effect: Zombies may not use weapons or armour and suffer no penalty for fighting without equipment.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 180
+    section: Zombies
+  name_i18n:
+    es: Armas Naturales
+  effect_i18n:
+    es: Los Zombis no pueden usar armas ni armaduras y no sufren penalización por luchar sin equipo.
+  applies_to:
+    profile_ids:
+    - zombie
+
+- id: ghoul--natural-weapons
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+    - id: profile.natural-attacks
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.natural-attacks
+  name: Natural Weapons
+  effect: Ghouls never use weapons or armour and suffer no penalty for fighting without equipment.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 180
+    section: Ghouls
+  name_i18n:
+    es: Armas Naturales
+  effect_i18n:
+    es: Los Ghouls nunca usan armas ni armaduras y no sufren penalización por luchar sin equipo.
+  applies_to:
+    profile_ids:
+    - ghoul

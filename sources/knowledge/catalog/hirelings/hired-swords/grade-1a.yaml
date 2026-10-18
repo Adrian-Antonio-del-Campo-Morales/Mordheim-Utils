@@ -44,6 +44,16 @@ profiles:
         Mejora los beneficios cuando la banda vende objetos, sujeto a las condiciones de la fuente.
     name_i18n:
       es: Prestamista
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: arabian-merchant-pawnbroker-excluded
+        scope: 'NO'
+        binding: null
+        reason: >-
+          The improved sale proceeds are settled during the post-battle trading phase and no duel-time consequence remains.
   - id: hireling.hired-sword.arabian-merchant.rule.marketeer
     name: Marketeer
     effect: May search one of the special merchant markets after a battle if eligible.
@@ -53,6 +63,16 @@ profiles:
         elegible.
     name_i18n:
       es: Comerciante
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: arabian-merchant-marketeer-excluded
+        scope: 'NO'
+        binding: null
+        reason: >-
+          Searching a special merchant market after a battle is a campaign acquisition action with no consequence in a resolved duel.
   source_notes:
   - The source calls the weapon a Scimitar and explicitly states that it counts as a Sword.
   source_refs:
@@ -107,10 +127,10 @@ profiles:
   rules:
   - id: hireling.hired-sword.beast-hunter.rule.beastmen-vengeance
     name: Beastmen Vengeance
-    effect: Has a source-defined hatred/vengeance interaction against Beastmen.
+    effect: Subject to Hatred against Beastmen only.
     effect_i18n:
       es: >-
-        Tiene una interacción de odio/venganza contra los Hombres Bestia definida por la fuente.
+        Sujeto a Odio únicamente contra los Hombres Bestia.
     name_i18n:
       es: Venganza de los Hombres Bestia
     runtime:
@@ -118,17 +138,17 @@ profiles:
       scope: 'YES'
       implemented: 'YES'
       effects:
-      - id: skill.hatred
+      - id: mechanic.hatred-beastmen
         scope: 'YES'
         binding:
           kind: mechanic
-          id: skill.hatred
+          id: mechanic.hatred-beastmen
   - id: hireling.hired-sword.beast-hunter.rule.skull-rack
     name: Skull Rack
-    effect: Uses trophies from slain beasts according to the source rule.
+    effect: The bearer causes fear in all Beastmen.
     effect_i18n:
       es: >-
-        Usa trofeos de las bestias abatidas según la regla de la fuente.
+        El portador causa miedo a todos los Hombres Bestia.
     name_i18n:
       es: Atril de Cráneos
     runtime:
@@ -136,19 +156,28 @@ profiles:
       scope: 'YES'
       implemented: 'YES'
       effects:
-      - id: mechanic.causes-fear
+      - id: mechanic.fear-beastmen
         scope: 'YES'
         binding:
           kind: mechanic
-          id: mechanic.causes-fear
+          id: mechanic.fear-beastmen
   - id: hireling.hired-sword.beast-hunter.rule.predator
     name: Predator
-    effect: Has the source-defined hunting/predator ability.
+    effect: In a wilderness battle that involves Beastmen the Beast Hunter is set up after deployment, hidden and outside the enemy deployment zone.
     effect_i18n:
       es: >-
-        Tiene la capacidad de caza/depredador definida por la fuente.
+        En una batalla en terreno salvaje con Hombres Bestia, el Cazador de Bestias se despliega después, oculto y fuera de la zona de despliegue enemiga.
     name_i18n:
       es: Depredador
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: beast-hunter-predator
+        scope: 'NO'
+        binding: null
+        reason: A deployment permission in a wilderness scenario is outside the duel; no individual combat consequence remains once the deployment clause is removed.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -218,6 +247,16 @@ profiles:
         Usa la regla de jinete experto montado de la fuente.
     name_i18n:
       es: Jinete Experto
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: highwayman-expert-rider-excluded
+        scope: 'NO'
+        binding: null
+        reason: >-
+          The clause governs riding a mount, and the duel fields no mount, so no riding consequence survives.
   - id: hireling.hired-sword.highwayman.rule.unscrupulous
     name: Unscrupulous
     effect: Uses the source post-battle/behaviour rule.
@@ -226,6 +265,16 @@ profiles:
         Usa la regla de conducta tras la batalla de la fuente.
     name_i18n:
       es: Sin Escrúpulos
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: highwayman-unscrupulous-excluded
+        scope: 'NO'
+        binding: null
+        reason: >-
+          The printed behaviour is a post-battle conduct rule with no consequence in a resolved duel.
   - id: hireling.hired-sword.highwayman.rule.campaign-eligibility
     name: Dynamic Hiring Eligibility — Roadwarden Incompatibility
     effect: >-
@@ -237,6 +286,16 @@ profiles:
         Guardacamino, ni permanecer en ella, según la regla de incompatibilidad de la fuente.
     name_i18n:
       es: Elegibilidad de Contratación Dinámica — Incompatibilidad con Guardiacaminos
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: highwayman-roadwarden-incompatibility-excluded
+        scope: 'NO'
+        binding: null
+        reason: >-
+          The roster-composition restriction is evaluated when the warband is hired and has no duel-time consequence.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -457,6 +516,16 @@ profiles:
         Usa la regla de jinete experto montado de la fuente.
     name_i18n:
       es: Jinete Experto
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: roadwarden-expert-rider-excluded
+        scope: 'NO'
+        binding: null
+        reason: >-
+          The clause governs riding a mount, and the duel fields no mount, so no riding consequence survives.
   - id: hireling.hired-sword.roadwarden.rule.lethal-marksman
     name: Lethal Marksman
     effect: Uses the source lethal marksman rule.
@@ -465,6 +534,16 @@ profiles:
         Usa la regla de tirador letal de la fuente.
     name_i18n:
       es: Tirador Letal
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: roadwarden-lethal-marksman-excluded
+        scope: 'NO'
+        binding: null
+        reason: >-
+          The trick-shooter and eagle-eyes clauses modify missile resolution, the excluded shooting subsystem.
   - id: hireling.hired-sword.roadwarden.rule.stern
     name: Stern
     effect: The Roadwarden may reroll failed Leadership tests for panic and fear, and is immune to All
@@ -498,6 +577,16 @@ profiles:
         Salteador.
     name_i18n:
       es: Elegibilidad de Contratación Dinámica — Incompatibilidad con Salteador
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: roadwarden-highwayman-incompatibility-excluded
+        scope: 'NO'
+        binding: null
+        reason: >-
+          The roster-composition restriction is evaluated when the warband is hired and has no duel-time consequence.
   unresolved_references:
   - kind: equipment_mapping
     source_name: three Torches
@@ -558,6 +647,16 @@ profiles:
         Usa la regla de pulso firme de la fuente.
     name_i18n:
       es: Manos Firmes
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: tilean-marksman-steady-hands-excluded
+        scope: 'NO'
+        binding: null
+        reason: >-
+          The printed clause removes a long-range missile modifier, so its whole consequence lies in the excluded shooting subsystem.
   - id: hireling.hired-sword.tilean-marksman.rule.dead-eye-shot
     name: Dead Eye Shot
     effect: Uses the source dead-eye-shot rule.
@@ -566,6 +665,16 @@ profiles:
         Usa la regla de tiro certero de la fuente.
     name_i18n:
       es: Disparo de Ojo Muerto
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: tilean-marksman-dead-eye-shot-excluded
+        scope: 'NO'
+        binding: null
+        reason: >-
+          The dead-eye shot is a missile-resolution clause of the excluded shooting subsystem.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0

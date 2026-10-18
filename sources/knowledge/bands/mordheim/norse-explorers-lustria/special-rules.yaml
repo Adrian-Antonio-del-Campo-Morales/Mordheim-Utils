@@ -336,3 +336,32 @@ rules:
         id: profile.equipment-restrictions
         parameters:
           forbids: armour
+- id: wulfen--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+  name: Equipment Restrictions
+  effect: "May never use weapons or armour and suffers no penalty for fighting unarmed."
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: "0 – 1 Wulfen"
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "Nunca puede usar armas ni armaduras y no sufre penalización por luchar sin armas."
+  applies_to:
+    profile_ids:
+    - wulfen

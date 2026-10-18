@@ -131,7 +131,11 @@ profiles:
     I: 3
     A: 2
     Ld: 5
-  equipment_lists: []
+  # The printed clause grants the Fallen equipment list to the promoted Hero
+  # only: the list's lines name the hero kind as their recipient, so the
+  # unpromoted Henchman reaches none of them and the configured Hero the rest.
+  equipment_lists:
+  - fallen-equipment-list
   fixed_equipment: []
   equipment_restrictions:
   - Ghouls never carry equipment as henchmen. However, if promoted to a Hero they may choose weapons and armour from the Fallen equipment list.

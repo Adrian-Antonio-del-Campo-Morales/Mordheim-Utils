@@ -13,12 +13,6 @@ profile_exclusions:
   reason: >-
     The River Boat is a watercraft the warband fields, not a fighter: every characteristic of its
     profile line is blank and its rule is transport. It has no fighter characteristics to compile.
-- band_id: necrarchs-mou
-  profile_id: banshee
-  reason: >-
-    The Banshee is a combat creature whose printed profile leaves Initiative blank (it always
-    strikes last), so it cannot be compiled without inventing the missing characteristic. T13
-    must decide whether it earns a contract of its own.
 mechanic_exclusions:
 - id: weapon.lance
   reason: >-
@@ -106,6 +100,7 @@ special_rule_policy:
   executable_binding: profile.combat_traits
   note: Only normalized combat_traits participate in one-against-one runtime combat. Other rule_ids remain available to the UI as editorial rules but cannot silently affect a duel.
 supported_combat_traits:
+- mob_allies
 - wheelo_fitting
 - righteous_charge_active
 - active_command
@@ -167,3 +162,7 @@ supported_combat_traits:
 - devoted_vampire_killed
 - spellcaster
 - metal_armour
+- enmity_kind
+- enmity_target
+- instance_id
+- warband_instance

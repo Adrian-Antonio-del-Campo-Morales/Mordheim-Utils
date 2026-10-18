@@ -90,6 +90,41 @@ skills:
         id: skill.axe-master
   name_i18n:
     es: Maestro del Hacha
+- id: skill.axe-mastery
+  name: Axe Mastery
+  category: special
+  effect: >-
+    The Slayer may re-roll all missed attacks if using an axe or dwarven axe in the hand-to-hand phase
+    of the turn that he charges; he may not use this skill with Whirling Blades.
+  effect_i18n:
+    es: >-
+      El Matatrolles puede repetir todos los ataques fallados si usa un hacha o hacha enana en la fase
+      de combate cuerpo a cuerpo del turno en que carga; no puede usar esta habilidad con Hojas
+      Giratorias.
+  kind: warband
+  engine_option: Axe Mastery
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills / Axe Mastery
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dwarf-slayer-cult
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: skill.axe-mastery
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.axe-expert
+      reason: >-
+        Shares the canonical Axe Expert operator (a failed to-hit roll with an axe or dwarven axe is
+        repeated in the turn the bearer charges) and keeps its own provenance tag. Whirling Blades is
+        out of the resolved runtime (catalog/items/combat-equipment.yaml, combat_status out_of_scope),
+        so the printed prohibition cannot be violated by a reused reroll.
+  name_i18n:
+    es: Maestría con el Hacha
 - id: skill.bellowing-battle-roar
   name: Bellowing Battle Roar
   category: special
@@ -182,6 +217,71 @@ skills:
         id: skill.crushing-blow
   name_i18n:
     es: Golpe Aplastante
+- id: skill.deathblow
+  name: Deathblow
+  category: special
+  effect: >-
+    If the Hero is taken out of action in hand-to-hand combat, he may immediately make the remainder of
+    his attacks before being removed, provided he has not made all of his attacks this turn; he may use
+    this skill even if he is knocked down or stunned.
+  effect_i18n:
+    es: >-
+      Si el Héroe queda Fuera de Combate en combate cuerpo a cuerpo, puede realizar inmediatamente el
+      resto de sus ataques antes de ser retirado, siempre que no haya hecho ya todos sus ataques este
+      turno; puede usar esta habilidad aunque esté derribado o aturdido.
+  kind: warband
+  engine_option: Deathblow
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills / Deathblow
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dwarf-slayer-cult
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: mechanic.deathblow
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.deathblow
+  name_i18n:
+    es: Golpe Mortal
+- id: skill.deathwish
+  name: Deathwish
+  category: special
+  effect: >-
+    The Slayer is completely immune to all psychology and never needs to test if fighting alone.
+  effect_i18n:
+    es: >-
+      El Matatrolles es completamente inmune a toda la psicología y nunca necesita chequear si lucha
+      solo.
+  kind: warband
+  engine_option: Deathwish
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills / Deathwish
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dwarf-slayer-cult
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: skill.deathwish
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
+    - id: unimplemented.skill.deathwish.all-alone
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: the fighting-alone rider belongs to the excluded group enemy-counting
+        subsystem, which an isolated duel never triggers.
+  name_i18n:
+    es: Deseo de Muerte
 - id: skill.defensive-stance
   name: Defensive Stance
   category: special
@@ -963,10 +1063,13 @@ skills:
 - id: skill.tough-as-steel
   name: Tough as Steel
   category: special
-  effect: Only goes Out of Action on a 6 on the Injury table.
+  effect: >-
+    When rolling on the Injury table for this Hero, a roll of 1-3 is treated as knocked down, 4-5 as
+    stunned, and 6 as out of action.
   effect_i18n:
     es: >-
-      Solo cae fuera de combate con un 6 en la tabla de Heridas.
+      Al tirar en la tabla de Heridas para este Héroe, un resultado de 1-3 se trata como derribado, 4-5
+      como aturdido y 6 como fuera de combate.
   kind: warband
   engine_option: Tough as Steel
   source_refs: []

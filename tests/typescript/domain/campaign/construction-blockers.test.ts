@@ -509,6 +509,65 @@ describe.skipIf(!ARTEFACT_PATH)("T09 §6 blockers (generated artefact)", () => {
       expect(equipmentIssueFor(reader, clansman, "helmet")).toBeNull();
     });
 
+    it("expresses a prohibition token that names a catalogue entry", () => {
+      // C02b: `beastmaster_whip` (Corsairs), `mage_staff` and
+      // `elven_runestones` (Explorers, Sea Guard, Sword Guardians) and
+      // `sacrifice_dagger` (Red Teeth) name a catalogue record next to the
+      // material and weapon families of their clause. The entry is decided by
+      // its own id, so the clause is expressed: no selection of the bearer is
+      // reported as one the KB does not carry, and the named entry is refused.
+      const records = [
+        ["lustria-dark-elves", "corsairs", "beastmaster_whip"],
+        ["lustria-high-elves", "explorers", "mage_staff"],
+        ["lustria-high-elves", "explorers", "elven_runestones"],
+        ["lustria-high-elves", "sea-guard", "elven_runestones"],
+        ["lustria-high-elves", "sword-guardians", "elven_runestones"],
+        ["lustria-savage-goblins", "red-teeth", "sacrifice_dagger"],
+      ] as const;
+      for (const [bandId, profileId, token] of records) {
+        const facts = profileFactsOf(reader, bandId, profileId)!;
+        expect(facts.equipment_forbids, token).toContain(token);
+        expect(facts.equipment_forbid_items, `${bandId}/${profileId}`).toContain(token);
+        expect(equipmentIssueFor(reader, facts, token)?.code, token).not.toBe("construction_clause_unstructured");
+      }
+      // The prohibition decides every other selection of the bearer too: the
+      // families the clause carries beside the entry keep their own verdict and
+      // a legal offer of the same list is neither refused nor reported.
+      const families = [
+        ["chaos-streets-undead-bloodlines", "lahmia-vampire", "armour.heavy-armour"],
+        ["chaos-streets-undead-bloodlines", "necrarch-vampire", "two-handed-weapons"],
+        ["khemri-tomb-guardians", "mortuary-acolytes", "armour-suit"],
+        ["lustria-high-elves", "sword-guardians", "ranged-weapons"],
+        ["lustria-savage-goblins", "red-teeth", "non-thrown-ranged"],
+        ["lustria-lizardmen", "skink-braves", "weapon.sword"],
+      ] as const;
+      for (const [bandId, profileId, token] of families) {
+        const facts = profileFactsOf(reader, bandId, profileId)!;
+        expect(facts.equipment_forbids, token).toContain(token);
+        const offers = facts.equipment_access ?? [];
+        expect(offers.length, `${bandId}/${profileId}`).toBeGreaterThan(0);
+        for (const offer of offers) {
+          expect(equipmentIssueFor(reader, facts, offer.item_id)?.code, offer.item_id)
+            .not.toBe("construction_clause_unstructured");
+        }
+      }
+    });
+
+    it("expresses a band-wide prohibition token that names a catalogue entry", () => {
+      // C02b: the same reading for the band-wide list. The Sartosan Pirates'
+      // `band--foreign-variant-equipment` forbids `handgun` beside the rapier and
+      // the heavy armour of the Estalian/Wasteland lines, and the token names a
+      // canonical record: the clause is expressed by that fact, so no selection
+      // of the bearer is reported as one the KB does not carry while the named
+      // entry keeps its own refusal.
+      const band = bandFactsOf(reader, "sartosan-pirates-sar")!;
+      expect(band.equipment_forbids).toContain("handgun");
+      expect(band.equipment_forbid_items).toContain("handgun");
+      const captain = profileFactsOf(reader, "sartosan-pirates-sar", "captain")!;
+      expect(equipmentIssueFor(reader, captain, "sword")).toBeNull();
+      expect(equipmentIssueFor(reader, captain, "handgun")?.code).toBe("equipment_forbidden");
+    });
+
     it("applies a printed recipient clause across the collections", () => {
       // Trollheim bands read the same generated artefact and the same decision.
       expect(equipmentIssueFor(reader, profileFactsOf(reader, "lustria-pirates", "pirate-captain")!, "parrot"))

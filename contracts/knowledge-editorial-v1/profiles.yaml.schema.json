@@ -153,7 +153,9 @@
                 "goblin",
                 "halfling",
                 "ogre",
-                "beastman"
+                "beastman",
+                "snake",
+                "serpent"
               ]
             },
             "lit_item": {
@@ -163,6 +165,7 @@
             "vampire": {
               "type": "boolean"
             },
+            "necromancer": {"type": "boolean"},
             "snorri_drunk_result": {"type": "integer", "minimum": 2, "maximum": 6},
             "chaos_follower": {"type": "boolean"},
             "onogal_follower": {"type": "boolean"},
@@ -174,6 +177,7 @@
             "mercenary_origin": {"type": "string", "enum": ["reikland", "marienburg", "middenheim", "other"]},
             "ulric_rival": {"type": "boolean"},
             "aquatic": {"type": "boolean"},
+            "greenskin": {"type": "boolean"},
             "guiding_dream_target": {"type": "boolean"},
             "flesh_peddler_mark": {"type": "boolean"},
             "normal_animal": {
@@ -192,6 +196,9 @@
               "type": "integer"
             },
             "stupidity_leadership_bonus": {
+              "type": "integer"
+            },
+            "mob_allies": {
               "type": "integer"
             },
             "starting_skills": {
@@ -287,6 +294,12 @@
             },
             "scourge_armed": { "type": "boolean" },
             "slave": { "type": "boolean" },
+            "slaver": { "type": "boolean" },
+            "enmity_kind": { "type": "string" },
+            "enmity_target": { "type": "string" },
+            "instance_id": { "type": "string" },
+            "warband_instance": { "type": "string" },
+            "crusader_of_law": { "type": "boolean" },
             "devoted_vampire_down": { "type": "boolean" },
             "devoted_vampire_killed": { "type": "boolean" },
             "spellcaster": { "type": "boolean" },
@@ -298,6 +311,11 @@
             "rune_striking_slots": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "pattern": "^(main|off|extra|armour|defence\\.[0-9]+)$" } },
             "rune_speed_slots": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "pattern": "^(main|off|extra|armour|defence\\.[0-9]+)$" } },
             "rune_cleaving_slots": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "pattern": "^(main|off|extra|armour|defence\\.[0-9]+)$" } },
+            "blessed_weapon_slots": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "pattern": "^(main|off|extra)$" } },
+            "honing_slots": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "pattern": "^(main|off|extra)$" } },
+            "coating_slots": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "pattern": "^(main|off|extra)$" } },
+            "craftsman_strength_slots": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "pattern": "^(main|off|extra)$" } },
+            "craftsman_initiative_slots": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "pattern": "^(main|off|extra)$" } },
             "magical_attacks": {
               "type": "boolean"
             },

@@ -317,11 +317,11 @@ rules:
     scope: 'YES'
     implemented: 'YES'
     effects:
-    - id: skill.hatred
+    - id: mechanic.hatred-slavers
       scope: 'YES'
       binding:
         kind: mechanic
-        id: skill.hatred
+        id: mechanic.hatred-slavers
 - id: shared-rule.goblin-limit
   name: Goblin Limit
   name_i18n:
@@ -695,6 +695,20 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.stupidity
+    # The printed exemption: the supplied nearby qualifying hero is an admitted
+    # current fact of this duelist, which psychology.resolve_stupidity honours.
+    - id: condition.stupidity-exempt
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.stupidity-exempt
+    - id: shared-rule.stupidity.proximity-producer
+      scope: 'NO'
+      binding: null
+      reason: >-
+        The six-inch proximity to the designated hero is supplied by the caller as the admitted
+        condition.stupidity-exempt fact; the duel neither simulates the surrounding group nor
+        measures table positions.
 - id: shared-rule.stupidity-2
   name: Stupidity
   name_i18n:

@@ -26,9 +26,11 @@
  *   recipient-scoped `profile_ids` / `skill_ids` / `max_per_wizard`, which the
  *   purchase cannot decide for a stash copy and which the assignment route
  *   reads from the same published block;
- * - `profile_only` and `heroes_only` are not purchase availability: the first
- *   carries the per-warband limit elsewhere in the entry, the second is an
- *   assignment rule evaluated when equipment reaches a warrior.
+ * - `profile_only` and `heroes_only` are not purchase availability: they are
+ *   assignment rules evaluated when equipment reaches a warrior. Since C03a a
+ *   `profile_only` clause publishes the printed bearer it names in the same
+ *   `structure` block a `condition` uses, so the assignment route reads the
+ *   bearer as data instead of keeping the clause as prose.
  *
  * Purity: no React, no DOM, no filesystem.
  */
@@ -146,11 +148,14 @@ function conditionIssueFor(
 /**
  * Why one market entry cannot reach one warrior, or `null` when it may.
  *
- * The recipient-scoped half of a structured `condition` cannot be decided by a
+ * The recipient-scoped half of a structured clause cannot be decided by a
  * purchase into the stash (there is no recipient yet), so the assignment route
  * reads it from the same published block: `profile_ids` (`nightmare`: "Vampires,
- * Necromancers and Grave Guards only", `whirling_blades`: "Slayers only") and
- * `skill_ids`.
+ * Necromancers and Grave Guards only", `whirling_blades`: "Slayers only"),
+ * `profile_types` and `excluded_profile_ids` (the printed kinds and denials a
+ * bearer clause names, the vocabulary `equipment-access.yaml` publishes) and
+ * `skill_ids`. A `profile_only` clause carries the same block, because the
+ * clause it prints is exactly the bearer such an entry restricts.
  */
 export function marketAssignmentIssueFor(
   offer: Readonly<Record<string, unknown>>,
@@ -158,10 +163,27 @@ export function marketAssignmentIssueFor(
   itemName: string,
 ): MarketIssue | null {
   for (const restriction of restrictionsOf(offer)) {
-    if (String(restriction["type"] ?? "") !== "condition") continue;
+    const type = String(restriction["type"] ?? "");
+    if (type !== "condition" && type !== "profile_only") continue;
     const structure = structureOf(restriction);
     if (!structure) continue;
     const note = typeof restriction["note"] === "string" ? restriction["note"] : undefined;
+    const denied = identifiers(structure["excluded_profile_ids"]);
+    if (denied.length > 0 && recipient.profile_id && denied.includes(recipient.profile_id)) {
+      return {
+        code: "market_condition_unstructured",
+        message: `${itemName} is not available to ${recipient.profile_id}.`,
+        ...(note ? { note } : {}),
+      };
+    }
+    const kinds = identifiers(structure["profile_types"]);
+    if (kinds.length > 0 && !kinds.includes(recipient.kind)) {
+      return {
+        code: "market_condition_unstructured",
+        message: `${itemName} is restricted to ${kinds.join(", ")} profiles: this ${recipient.kind} may not carry it.`,
+        ...(note ? { note } : {}),
+      };
+    }
     const profiles = identifiers(structure["profile_ids"]);
     if (profiles.length > 0 && !(recipient.profile_id && profiles.includes(recipient.profile_id))) {
       return {

@@ -31,16 +31,25 @@ rules:
     band: true
 - id: band--too-big
   runtime:
-    scope: LATER
-    implemented: 'NO'
-    grant: band
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
     effects:
-    - id: unimplemented.halflings-mic.band.too-big
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: equipment restrictions on advancement are roster-construction mechanics
-        outside the duel scope.
+    # The clause names the Halflings, not the whole warband: the Village Ogre
+    # keeps the Long Bow its own list prints. The named weapons are refused by
+    # the offer, the whole-set verdict and a direct selection alike.
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - long_bow
+          - elf_bow
+          - handgun
+          - hochland_long_rifle
+          - blunderbuss
   name: Too Big
   effect: >-
     Halflings may never use Long bows, Elf Bows, Handguns, Long Rifles or Blunderbusses even if they
@@ -59,7 +68,13 @@ rules:
       Francotirador ni Tronaderas, incluso si obtienen una tirada de mejora que se lo permita. ¡Esas
       armas tan grandes no están hechas para unas manos tan pequeñas!
   applies_to:
-    band: true
+    profile_ids:
+    - halfling-elder
+    - halfling-cook
+    - halfling-thief
+    - halfling-youths
+    - halfling-scouts
+    - halfling-warriors
 - id: band--halfling-items
   runtime:
     scope: LATER
@@ -321,16 +336,19 @@ rules:
     - village-ogre
 - id: village-ogre--skills
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.halflings-mic.village-ogre.skills
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: promotion to Hero and skill selection are post-duel/campaign progression
-        mechanics.
+    - id: compiler.promoted-hero-skill-access
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.promoted-hero-skill-access
+        parameters:
+          allowed_skill_lists:
+          - combat
+          - strength
   name: Skills
   effect: An Ogre-kin who becomes a Hero may only choose from Combat and Strength skill-lists.
   source:

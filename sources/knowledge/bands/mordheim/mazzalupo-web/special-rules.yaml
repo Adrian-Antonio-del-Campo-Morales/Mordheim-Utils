@@ -459,16 +459,20 @@ rules:
     - fallen-noble
 - id: fallen-noble--ye-give-way
   runtime:
-    scope: LATER
-    implemented: 'NO'
-    grant: profile
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
     effects:
-    - id: unimplemented.mazzalupo-web.fallen-noble.ye-give-way
-      scope: LATER
+    - id: condition.ye-give-way-refused
+      scope: 'YES'
+      binding: {kind: mechanic, id: condition.ye-give-way-refused}
+    - id: condition.ye-give-way-victorious
+      scope: 'YES'
+      binding: {kind: mechanic, id: condition.ye-give-way-victorious}
+    - id: ye-give-way-challenge-producer
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: challenge/duel-isolation mechanics and cumulative modifiers are outside
-        the current engine scope.
+      reason: 'Only supplied prior results apply in a resolved duel. Challenge declaration/refusal cancels this duel; other warriors, area effects and later opponents are excluded. Select one result through condition_ids; these are not automatic grants.'
   name: Ye Give Way
   effect: >-
     When the Fallen noble declares a charge against a Hero, they may challenge the target to yield

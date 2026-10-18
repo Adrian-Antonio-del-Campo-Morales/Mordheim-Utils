@@ -539,3 +539,60 @@ rules:
       binding: null
       reason: >-
         Out of scope: magic.
+- id: ghouls--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - equipment
+  name: Equipment Restrictions
+  effect: "Ghouls never carry equipment. Their primitive bones, teeth and claws are treated as intrinsic attacks rather than purchased equipment."
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: "Ghouls"
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/undead
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "Los Carroñeros nunca llevan equipo. Sus huesos, dientes y garras primitivos se tratan como ataques intrínsecos y no como equipo comprado."
+  applies_to:
+    profile_ids:
+    - ghouls
+- id: zombies--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+  name: Equipment Restrictions
+  effect: "Zombies may not carry weapons or wear armour and suffer no penalty for fighting without equipment."
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: "Zombies"
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/undead
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "Los Zombis no pueden llevar armas ni armadura y no sufren penalización por luchar sin equipo."
+  applies_to:
+    profile_ids:
+    - zombies

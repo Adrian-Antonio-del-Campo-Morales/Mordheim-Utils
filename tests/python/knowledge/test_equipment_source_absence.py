@@ -11,10 +11,11 @@ defect, so the product renders a specific localized absence notice instead of
 the generic fallback (``RulesCatalogue`` / ``sourceDescriptionUnavailableText``),
 and this test keeps the evidence executable.
 
-KB↔staging parity is therefore *not applicable* for those 24 rows, and the test
-asserts exactly that: if a row ever gains an effect, or a 2A/2B document ever
-starts declaring one, the absence is no longer real and the decision must be
-revisited. The mirror contract that *is* applicable — the six exploration
+KB↔staging parity is therefore *not applicable* for those remaining rows, and the
+test asserts exactly that: if a row ever gains an effect, or a 2A/2B document
+ever starts declaring one, or the row ever leaves ``out_of_scope`` for a bound
+operator, the absence is no longer real and the decision must be revisited (the
+``yari`` revisit of 2026-10-16 is the third case). The mirror contract that *is* applicable — the six exploration
 magical artefacts, which must publish both locales for their names and effects
 in the canonical campaign catalogue — is checked too.
 """
@@ -31,15 +32,21 @@ STAGING_ROOTS = (
 )
 CAMPAIGN = KB_ROOT / "catalog" / "campaign" / "exploration-and-income.yaml"
 
-#: The 24 canonical rows whose source publishes no description (2026-09-29 gate).
+#: The canonical rows whose source publishes no description (2026-09-29 gate).
+#: ``yari`` left the set on 2026-10-16: the Deathbringer equipment line's
+#: canonical item is now bound to its declared operator ``weapon.yari-one-handed``
+#: (the two printed grips are ``weapon.yari-one-handed`` and
+#: ``weapon.yari-two-handed``), which is the state its three sibling items
+#: (``kusara_kama``, ``death_knife``, ``witch_sword``) already occupy. Its source
+#: still publishes no description of its own, so the row carries no effect and the
+#: product resolves it through the bound operator instead of the absence notice.
 ABSENT_ITEM_IDS = frozenset({
-    "ancestral_claw", "anointed_bolts", "bronze_breastplate", "carronade",
+    "ancestral_claw", "anointed_bolts", "carronade",
     "carronade_cannonball", "carronade_chain", "carronade_grapeshot",
     "dispelling_scroll", "feather_headdress", "hochland_long_rifle",
     "horned_rat_amulet", "icon_of_manann", "jungle_roast", "magic_tattoo",
     "magic_tattoos", "pirate_flag", "poison_darts", "poisoned_darts",
     "sacrifice_dagger", "scourge", "shrunken_head", "spider_amulet", "whip",
-    "yari",
 })
 
 #: The six exploration magical artefacts and the published Spanish name each

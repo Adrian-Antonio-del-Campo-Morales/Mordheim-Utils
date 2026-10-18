@@ -8,6 +8,7 @@ from mordheim_knowledge.loader import BandPackage
 from mordheim_construction.combat_packages import combat_packages
 from mordheim_knowledge.loader import load_collections
 from mordheim_knowledge.loader import load_conditions
+from mordheim_knowledge.loader import load_items
 from mordheim_knowledge.loader import load_mechanics
 from mordheim_knowledge.loader import load_racial_maximums
 from mordheim_knowledge.loader import load_runtime_scope
@@ -118,6 +119,13 @@ class CombatCatalogue:
             str(row["item_id"]): option_to_id[str(row["engine_option"])]
             for row in load_simulation_mappings(ruleset).get("item_mappings", ())
             if row.get("status") == "implemented" and str(row.get("engine_option")) in option_to_id
+        }
+        #: Further printed profiles of the same physical object (the two grips of
+        #: the Yari), keyed by canonical item id. They are the item's own line:
+        #: one price, one recipient, one carried object.
+        self._item_alternate_mechanics = {
+            str(row["id"]): tuple(str(value) for value in row.get("alternate_mechanic_ids") or ())
+            for row in load_items(ruleset)
         }
         self._global_costs = self._costs_for_packages(tuple(self._packages.values()))
 
@@ -468,11 +476,18 @@ class CombatCatalogue:
                 if allowed_lists is not None and str(equipment_list.get("id")) not in allowed_lists:
                     continue
                 for item in equipment_list.get("items") or ():
-                    mechanic_id = self._item_mechanics.get(str(item.get("item_id")))
+                    item_id = str(item.get("item_id"))
                     cost = item.get("cost")
-                    if mechanic_id is None or not isinstance(cost, (int, float)):
+                    if not isinstance(cost, (int, float)):
                         continue
-                    costs[mechanic_id] = min(costs.get(mechanic_id, float(cost)), float(cost))
+                    # Every profile the object's own record declares is priced by
+                    # this one line: the bearer buys a single weapon at the
+                    # printed cost, whichever printed grip he uses.
+                    for profile_id in (self._item_mechanics.get(item_id),
+                                       *self._item_alternate_mechanics.get(item_id, ())):
+                        if profile_id is None:
+                            continue
+                        costs[profile_id] = min(costs.get(profile_id, float(cost)), float(cost))
         return costs
 
     def _equipment(self, choice, families, allowed) -> tuple[tuple[str, str], ...]:
@@ -644,9 +659,17 @@ class CombatCatalogue:
         profile = next(row for row in package.profiles if row["id"] == choice.profile_id)
         build = FighterBuild(self.ruleset, collection=choice.collection,
                              band_id=choice.band_id, profile_id=choice.profile_id)
-        item_ids = desktop_call("catalogueEquipment", build, package=package, profile=profile)
+        item_ids = set(desktop_call("catalogueEquipment", build, package=package, profile=profile))
         if isinstance(families, str):
             families = (families,)
+        if "preparations" in families:
+            # A preparation is a Trading Post consumable, not a line of a band's
+            # equipment list: the shared projection decides it, so the picker
+            # and the compiled fighter read one permission. A mechanic the duel
+            # cannot run is not offered either, exactly as the compiler refuses it.
+            item_ids.update(set(desktop_call("preparationOptions", build,
+                                             package=package, profile=profile))
+                            - self._excluded_mechanics)
         prefixes = tuple({"weapons": "weapon.", "defences": "defence.", "armours": "armour.", "materials": "material.", "preparations": "preparation.", "poisons": "poison."}[family] for family in families)
         result = {item_id for item_id in item_ids
                   if item_id in self._mechanics and item_id.startswith(prefixes)

@@ -469,16 +469,22 @@ rules:
     - tomb-banshee
 - id: malignant-spirits--violent-entry
   runtime:
-    scope: LATER
-    implemented: 'NO'
-    grant: profile
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
     effects:
-    - id: unimplemented.call-of-the-night-haint-mim.malignant-spirits.violent-entry
-      scope: LATER
+    - id: condition.summoned-this-turn
+      scope: 'YES'
+      binding: {kind: mechanic, id: condition.summoned-this-turn}
+    - id: violent-entry-summoning-producer
+      scope: 'NO'
       binding: null
       reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+        Releasing a spirit from the Requilary - casting, deployment and the miniatures involved - is
+        the excluded summoning subsystem, which adds nothing a resolved duel consumes. Supply
+        condition.summoned-this-turn instead: the printed +1 to hit and +1 Strength then follow from
+        the bearer's own charge on that turn, for its Malignant Spirits recipient only, and are never
+        an automatic grant of this rule.
   name: Violent Entry
   effect: >-
     Malignant Spirits contained within the Requilary thirst for the moment they are released into

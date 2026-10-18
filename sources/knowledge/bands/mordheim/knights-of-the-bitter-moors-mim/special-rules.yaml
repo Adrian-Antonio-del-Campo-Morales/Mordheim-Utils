@@ -677,3 +677,34 @@ rules:
       habilidad.
   applies_to:
     band: true
+- id: henchmen--no-missile-weapons
+  name: No Missile Weapons
+  effect: >-
+    Men-at-Arms and Mounted Yeomen may not use missile weapons.
+  source:
+    manual: broheim.net
+    printed_page: 5
+    section: Men-at-Arms / 0-3 Mounted Yeomen
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Knights Of The Bitter%20Moors.pdf
+  name_i18n:
+    es: Sin armas de proyectil
+  effect_i18n:
+    es: >-
+      Los Hombres de Armas y los Vassalos Montados no pueden usar armas de proyectil.
+  applies_to:
+    profile_ids:
+    - men-at-arms
+    - mounted-yeomen
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - ranged-weapons

@@ -54,6 +54,16 @@ profiles:
         liderazgo del Bardo.
     name_i18n:
       es: Cantador
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.songster
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.songster
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -116,6 +126,16 @@ profiles:
         Puede colocar trampas según el procedimiento de la fuente.
     name_i18n:
       es: Colocar Trampas
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: set-traps-deployment
+        scope: 'NO'
+        binding: null
+        reason: Setting traps is a pre-battle deployment action over the scenario's terrain; a resolved
+          duel fields no trap marker and no model moving into it.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -153,6 +173,24 @@ profiles:
       quantity:
         kind: fixed
         value: 1
+    choices:
+    - id: hireling.hired-sword.black-orc-overseer.equipment-choice
+      choose: 1
+      options:
+      - items:
+        - item_id: axe
+          quantity:
+            kind: fixed
+            value: 1
+        - item_id: axe
+          quantity:
+            kind: fixed
+            value: 1
+      - items:
+        - item_id: two_handed_weapon
+          quantity:
+            kind: fixed
+            value: 1
   starting_skill_ids: []
   rules:
   - id: hireling.hired-sword.black-orc-overseer.rule.overseer
@@ -163,9 +201,21 @@ profiles:
         Usa las reglas especiales del Capataz Orco Negro de la fuente.
     name_i18n:
       es: Sobrestante
-  unresolved_references:
-  - kind: equipment_choice
-    source_name: two Axes or Double-handed Weapon
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: black-orc-overseer-animosity-suppression
+        scope: 'NO'
+        binding: null
+        reason: The printed clause suppresses Animosity for Orcs and Goblins within six inches; the
+          recipients are a surrounding group the duel does not simulate.
+      - id: black-orc-overseer-leader-succession
+        scope: 'NO'
+        binding: null
+        reason: The trigger is another model being taken out of action, and the effect is the group Leader
+          ability and a permanent roster change.
   source_notes:
   - The original publication does not provide advancement skill lists; Mordheimer gives an editorial recommendation.
     It has not been normalized as canonical skill_access.
@@ -241,6 +291,16 @@ profiles:
         Tiene una regla de captura tras la batalla definida por la fuente.
     name_i18n:
       es: Captura
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: capture-post-battle
+        scope: 'NO'
+        binding: null
+        reason: Capturing a defeated enemy and its ransom are resolved after the battle, outside the duel's
+          phases.
   unresolved_references:
   - kind: equipment_mapping
     source_name: Lantern
@@ -299,6 +359,16 @@ profiles:
         Usa la regla de ocultación de piel de camaleón de la fuente.
     name_i18n:
       es: Piel de Camaleón
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: chameleon-skin-concealment
+        scope: 'NO'
+        binding: null
+        reason: Chameleon-skin concealment is a Hidden and spotting rule; visibility and Hidden markers
+          are outside the duel.
   - id: hireling.hired-sword.chameleon-skink.rule.infiltrator
     name: Infiltrator
     effect: May infiltrate according to the source rule.
@@ -307,6 +377,15 @@ profiles:
         Puede infiltrarse según la regla de la fuente.
     name_i18n:
       es: Infiltrado
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: infiltrator-deployment
+        scope: 'NO'
+        binding: null
+        reason: Infiltration places the model during pre-battle deployment, before the duel's first round.
   - id: hireling.hired-sword.chameleon-skink.rule.aquatic
     name: Aquatic
     effect: Uses the source aquatic rule.
@@ -315,6 +394,16 @@ profiles:
         Usa la regla acuática de la fuente.
     name_i18n:
       es: Acuático
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: aquatic-water-terrain
+        scope: 'NO'
+        binding: null
+        reason: The aquatic rule concerns rivers, marshes and other water terrain; the duel resolves
+          no terrain movement.
   - id: hireling.hired-sword.chameleon-skink.rule.cold-blooded
     name: Cold Blooded
     effect: Uses the source cold-blooded rule.
@@ -384,6 +473,16 @@ profiles:
         Cuenta como objetivo grande.
     name_i18n:
       es: Grande
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: condition.large-target
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: condition.large-target
   - id: hireling.hired-sword.clan-skryre-rat-ogre.rule.fear
     name: Fear
     effect: Causes fear.
@@ -428,6 +527,16 @@ profiles:
         Requiere mantenimiento/energía de Piedra bruja definidos por la fuente.
     name_i18n:
       es: Propulsado por Piedra Bruja
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: wyrdstone-powered-upkeep
+        scope: 'NO'
+        binding: null
+        reason: Wyrdstone upkeep and the model's power source are paid and tracked between battles,
+          not during the duel.
   - id: hireling.hired-sword.clan-skryre-rat-ogre.rule.may-not-run
     name: May Not Run
     effect: May not run according to the source rule.
@@ -436,6 +545,16 @@ profiles:
         No puede correr según la regla de la fuente.
     name_i18n:
       es: No Pueden Correr
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: may-not-run-movement
+        scope: 'NO'
+        binding: null
+        reason: The printed prohibition concerns the run move of the movement phase; a resolved duel
+          runs no movement.
   - id: hireling.hired-sword.clan-skryre-rat-ogre.rule.immune-to-poison
     name: Immune to Poison
     effect: Immune to poison.
@@ -444,6 +563,18 @@ profiles:
         Inmune al veneno.
     name_i18n:
       es: Inmune al Veneno
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: trait.poison-immune
+        scope: 'YES'
+        binding:
+          kind: trait
+          id: trait.poison-immune
+          parameters:
+            value: true
   - id: hireling.hired-sword.clan-skryre-rat-ogre.rule.warpfire-thrower
     name: Warpfire Thrower
     effect: Has an integrated warpfire thrower and malfunction rule.
@@ -452,6 +583,16 @@ profiles:
         Tiene un lanzallamas de fuego warp integrado y una regla de avería.
     name_i18n:
       es: Lanzallamas de Disformidad
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: warpfire-thrower-shooting
+        scope: 'NO'
+        binding: null
+        reason: The integrated warpfire thrower is a shooting weapon with its own malfunction procedure;
+          shooting resolution is excluded.
   - id: hireling.hired-sword.clan-skryre-rat-ogre.rule.no-experience
     name: No Experience
     effect: Does not gain Experience.
@@ -460,6 +601,15 @@ profiles:
         No gana Experiencia.
     name_i18n:
       es: Sin Experiencia
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: no-experience-campaign
+        scope: 'NO'
+        binding: null
+        reason: Gaining Experience is a post-battle advancement step with no duel-time consequence.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -528,6 +678,18 @@ profiles:
         Usa la regla de Asesino Perfecto de la fuente.
     name_i18n:
       es: Asesino Perfecto
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: trait.perfect-killer
+        scope: 'YES'
+        binding:
+          kind: trait
+          id: trait.perfect-killer
+          parameters:
+            value: true
   - id: hireling.hired-sword.dark-elf-assassin.rule.kindred-hatred
     name: Kindred Hatred
     effect: Uses the source Dark Elf hatred rule.
@@ -611,6 +773,18 @@ profiles:
         Usa la regla de Acero Fugaz de la fuente.
     name_i18n:
       es: Acero Veloz
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: trait.counts-as-buckler
+        scope: 'YES'
+        binding:
+          kind: trait
+          id: trait.counts-as-buckler
+          parameters:
+            value: true
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -730,11 +904,11 @@ profiles:
       implemented: 'YES'
       grant: profile
       effects:
-      - id: mechanic.hatred-greenskins
+      - id: mechanic.hatred-orcs-goblins
         scope: 'YES'
         binding:
           kind: mechanic
-          id: mechanic.hatred-greenskins
+          id: mechanic.hatred-orcs-goblins
   - id: hireling.hired-sword.dwarf-pathfinder.rule.elf-grudge
     name: Elf Grudge
     effect: Uses the source Elf-grudge restriction.
@@ -806,10 +980,12 @@ profiles:
       name: Mining Pick
       name_i18n:
         es: Pico de Minero
+      counts_as: two_handed_weapon
     - id: hireling.hired-sword.dwarf-treasure-hunter.item.lantern-rig
       name: Lantern Rig
       name_i18n:
         es: Aparejo de Linterna
+      counts_as: lantern
   skill_access:
   - combat
   - strength
@@ -866,11 +1042,11 @@ profiles:
       implemented: 'YES'
       grant: profile
       effects:
-      - id: mechanic.hatred-greenskins
+      - id: mechanic.hatred-orcs-goblins
         scope: 'YES'
         binding:
           kind: mechanic
-          id: mechanic.hatred-greenskins
+          id: mechanic.hatred-orcs-goblins
   - id: hireling.hired-sword.dwarf-treasure-hunter.rule.treasure-hunter
     name: Treasure Hunter
     effect: Uses the source treasure-hunting subtable.
@@ -956,6 +1132,16 @@ profiles:
         Usa la regla de Hada de la fuente.
     name_i18n:
       es: Hada
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: fey-hostile-spells
+        scope: 'NO'
+        binding: null
+        reason: The source Fey rule protects the model from hostile spells; casting and spell resolution
+          are excluded.
   - id: hireling.hired-sword.elf-mage.rule.sorcery
     name: Sorcery
     effect: Uses the source sorcery rule.
@@ -964,6 +1150,15 @@ profiles:
         Usa la regla de hechicería de la fuente.
     name_i18n:
       es: Hechicería
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: sorcery-casting
+        scope: 'NO'
+        binding: null
+        reason: Sorcery is the model's spellcasting ability; casting and spell resolution are excluded.
   - id: hireling.hired-sword.elf-mage.rule.wanderer
     name: Wanderer
     effect: Does not advance and uses the source one-battle/wanderer condition.
@@ -972,6 +1167,16 @@ profiles:
         No progresa y usa la condición de una batalla/errante de la fuente.
     name_i18n:
       es: Errante
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: wanderer-retention
+        scope: 'NO'
+        binding: null
+        reason: The one-battle wanderer condition governs advancement, upkeep and retention between
+          battles.
   - id: hireling.hired-sword.elf-mage.rule.wizard
     name: Wizard
     effect: Begins with three randomly generated Djed'hi spells.
@@ -980,6 +1185,16 @@ profiles:
         Comienza con tres hechizos Djed'hi generados al azar.
     name_i18n:
       es: Mago
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: wizard-spell-generation
+        scope: 'NO'
+        binding: null
+        reason: Spell generation and casting are excluded; the separate canonical spellcaster identity
+          remains available to actual duel consumers.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1184,6 +1399,15 @@ profiles:
         Añade Tesoro adicional cuando se cumplen sus condiciones de la fuente.
     name_i18n:
       es: Ladrón Astuto
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: wily-thief-treasure
+        scope: 'NO'
+        binding: null
+        reason: The extra Treasure is added during the post-battle exploration step.
   - id: hireling.hired-sword.halfling-thief.rule.stealthy
     name: Stealthy
     effect: May hide/run according to the source rule.
@@ -1192,6 +1416,16 @@ profiles:
         Puede ocultarse/correr según la regla de la fuente.
     name_i18n:
       es: Sigiloso
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: stealthy-hiding-and-run
+        scope: 'NO'
+        binding: null
+        reason: Hiding and the run move belong to the movement and shooting phases, which the duel does
+          not resolve.
   - id: hireling.hired-sword.halfling-thief.rule.infiltrator
     name: Infiltrator
     effect: Uses the source infiltration rule.
@@ -1200,6 +1434,15 @@ profiles:
         Usa la regla de infiltración de la fuente.
     name_i18n:
       es: Infiltrado
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: infiltrator-deployment
+        scope: 'NO'
+        binding: null
+        reason: Infiltration places the model during pre-battle deployment, before the duel's first round.
   - id: hireling.hired-sword.halfling-thief.rule.pick-locks
     name: Pick Locks
     effect: Uses Initiative to open locked doors.
@@ -1208,6 +1451,15 @@ profiles:
         Usa la Iniciativa para abrir puertas cerradas.
     name_i18n:
       es: Forzar Cerraduras
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: pick-locks-doors
+        scope: 'NO'
+        binding: null
+        reason: Opening locked doors is a scenario terrain action with no duel-time consequence.
   - id: hireling.hired-sword.halfling-thief.rule.cutpurse
     name: Cutpurse
     effect: Adds one Treasure when eligible.
@@ -1216,6 +1468,15 @@ profiles:
         Añade un Tesoro cuando es elegible.
     name_i18n:
       es: Carterista
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: cutpurse-treasure
+        scope: 'NO'
+        binding: null
+        reason: The extra Treasure is a post-battle exploration consequence.
   - id: hireling.hired-sword.halfling-thief.rule.uneasy-ally
     name: Uneasy Ally
     effect: Has a source-defined post-battle upkeep/retention table.
@@ -1224,6 +1485,15 @@ profiles:
         Tiene una tabla de mantenimiento/retención tras la batalla definida por la fuente.
     name_i18n:
       es: Aliado Incómodo
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: uneasy-ally-retention
+        scope: 'NO'
+        binding: null
+        reason: The upkeep and retention table is rolled between battles.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1281,6 +1551,16 @@ profiles:
         Usa una regla especial de lesión/retención.
     name_i18n:
       es: No Es Luchador
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: not-a-fighter-retention
+        scope: 'NO'
+        binding: null
+        reason: The rule is a post-game retention roll, leaving the warband on a 1-3, with no duel-time
+          consequence.
   - id: hireling.hired-sword.human-scout.rule.expert-hunter
     name: Expert Hunter
     effect: Uses the source hunting rule.
@@ -1289,6 +1569,15 @@ profiles:
         Usa la regla de caza de la fuente.
     name_i18n:
       es: Cazador Experto
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: expert-hunter-foraging
+        scope: 'NO'
+        binding: null
+        reason: Hunting is a post-battle foraging action in the campaign sequence.
   - id: hireling.hired-sword.human-scout.rule.sit-in-wait
     name: Sit in Wait
     effect: Uses the source ambush rule.
@@ -1297,6 +1586,16 @@ profiles:
         Usa la regla de emboscada de la fuente.
     name_i18n:
       es: Aguaitar
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: sit-in-wait-deployment
+        scope: 'NO'
+        binding: null
+        reason: Waiting in ambush is a pre-battle deployment decision; the duel opens with the participants
+          already engaged.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1496,7 +1795,7 @@ profiles:
     per_experience_point: 1
   equipment:
     fixed_items:
-    - item_id: whip
+    - item_id: whip_tc14
       quantity:
         kind: fixed
         value: 1
@@ -1513,20 +1812,108 @@ profiles:
   rules:
   - id: hireling.hired-sword.mule-skinner.rule.animal-handler
     name: Animal Handler
-    effect: Uses the source animal-handler rule.
+    effect: >-
+      Animal Handler: a Mule Skinner starts with one Animal Handling skill (the player chooses which
+      animal).
     effect_i18n:
       es: >-
-        Usa la regla de adiestrador de animales de la fuente.
+        Tratador de Animales: un Arriero de Mulas empieza con una habilidad de Manejo de Animales (el
+        jugador elige qué animal).
     name_i18n:
       es: Tratador de Animales
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      # 'starts with one Animal Handling skill (the player chooses which
+      # animal)' is an admitted construction choice. The KB publishes two
+      # named Animal Handling skills, published below as selectable members;
+      # both members' own printed content is excluded (shooting-phase bird,
+      # mounts), so the selection is a recorded construction fact and the
+      # compiler never turns it into a duel effect.
+      - id: compiler.animal-handler-skill-choice
+        scope: 'YES'
+        binding:
+          kind: compiler
+          id: compiler.animal-handler-skill-choice
+          parameters:
+            options:
+            - hireling.hired-sword.mule-skinner.skill.animal-handling-falconer
+            - hireling.hired-sword.mule-skinner.skill.animal-handling-horse
+  - id: hireling.hired-sword.mule-skinner.skill.animal-handling-falconer
+    name: Animal Handling — Falconer
+    name_i18n:
+      es: Manejo de Animales — Halconero
+    effect: >-
+      Falconer: hunting birds may only be used by a Hero with the animal handling skill 'Falconer'.
+      The falcon has a 24 inch range as a missile weapon and strikes first in close combat with a
+      single Strength 3 attack; it cannot be attacked or slain.
+    effect_i18n:
+      es: >-
+        Halconero: las aves de caza solo pueden usarlas héroes con la habilidad de manejo de
+        animales 'Falconero'. El halcón tiene un alcance de 24 pulgadas como arma de misil y golpea
+        primero en combate cuerpo a cuerpo con un único ataque de Fuerza 3; no puede ser atacado ni
+        muerto.
+    kind: warband_skill
+    eligibility:
+    - hireling.hired-sword.mule-skinner
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: selectable
+      effects:
+      - id: unimplemented.hirelings.hired-sword.mule-skinner.animal-handling-falconer
+        scope: 'NO'
+        binding: null
+        reason: >-
+          The printed content is the Watchmen Falconer's 24" hunting bird, resolved as a missile
+          weapon in the shooting phase plus a third model that fights on its own; shooting and
+          additional combatants are outside the 1v1 duel. The chosen skill is a construction fact.
+  - id: hireling.hired-sword.mule-skinner.skill.animal-handling-horse
+    name: Animal Handling — Horse Handling
+    name_i18n:
+      es: Manejo de Animales — Manejo de Caballos
+    effect: >-
+      Horse Handling: Grooms have the Animal Handling skill as detailed in the Blazing Saddles
+      article.
+    effect_i18n:
+      es: >-
+        Manejo de Caballos: los Palafreneros tienen la habilidad Manejo de animales tal como se
+        detalla en el artículo Blazing Saddles.
+    kind: warband_skill
+    eligibility:
+    - hireling.hired-sword.mule-skinner
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: selectable
+      effects:
+      - id: unimplemented.hirelings.hired-sword.mule-skinner.animal-handling-horse
+        scope: 'NO'
+        binding: null
+        reason: >-
+          The printed content is the Blazing Saddles mount-handling subsystem; mounts and mounted
+          play are excluded from the duel. The chosen skill is a construction fact.
   - id: hireling.hired-sword.mule-skinner.rule.whip-master
     name: Whip Master
-    effect: Uses the source whip-master rule.
+    effect: May reroll each hit roll using the whip once, accepting the second result even if worse.
     effect_i18n:
       es: >-
         Usa la regla de maestro del látigo de la fuente.
     name_i18n:
       es: Maestro del Látigo
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: mechanic.whip-master
+        scope: 'YES'
+        binding: {kind: mechanic, id: mechanic.whip-master}
+  special_skill_rule_ids:
+  - hireling.hired-sword.mule-skinner.skill.animal-handling-falconer
+  - hireling.hired-sword.mule-skinner.skill.animal-handling-horse
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1577,6 +1964,16 @@ profiles:
         Usa la regla de especialista del desierto de la fuente.
     name_i18n:
       es: Hijo del Desierto
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: son-of-the-desert-terrain
+        scope: 'NO'
+        binding: null
+        reason: Desert specialisation concerns the scenario's desert terrain and its movement, which a
+          resolved duel does not simulate.
   source_notes:
   - The source weapon is a Scimitar; this entry records it by the existing canonical Sword item only because
     the rule states its sword-equivalent use.
@@ -1626,6 +2023,16 @@ profiles:
         Comienza con dos Runas Nórdicas y puede aprender más runas según la fuente.
     name_i18n:
       es: Lanzador de Runas
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: runecaster-rune-knowledge
+        scope: 'NO'
+        binding: null
+        reason: Rune knowledge and learning are pre-battle inscription data; the six supplied source-qualified
+          item Rune conditions carry any individual battle consequence, so no Rune is granted automatically.
   unresolved_references:
   - kind: equipment_choice
     source_name: Sword or Axe
@@ -1701,6 +2108,15 @@ profiles:
         Conserva los tesoros/Piedra bruja encontrados según la fuente.
     name_i18n:
       es: ¡Quien Se Lo Encuentra Se Lo Queda!
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: finders-keepers-treasure
+        scope: 'NO'
+        binding: null
+        reason: Keeping found Treasure or Wyrdstone is a post-battle exploration outcome.
   - id: hireling.hired-sword.old-prospector.rule.old-coot
     name: Old Coot
     effect: May leave after a battle on the source D6 result.
@@ -1709,6 +2125,15 @@ profiles:
         Puede marcharse tras una batalla según el resultado de 1D6 de la fuente.
     name_i18n:
       es: Viejo Chocho
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: old-coot-retention
+        scope: 'NO'
+        binding: null
+        reason: Leaving after a battle on a D6 is campaign retention.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1773,6 +2198,16 @@ profiles:
         Ignora los modificadores de terreno según la fuente.
     name_i18n:
       es: Conocer el Terreno
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: lay-of-the-land-terrain
+        scope: 'NO'
+        binding: null
+        reason: Ignoring terrain modifiers applies to movement across the scenario's terrain, which the
+          duel does not resolve.
   - id: hireling.hired-sword.pathfinder.rule.knowledge-of-myths-and-legends
     name: Knowledge of Myths and Legends
     effect: May reroll one exploration die when eligible.
@@ -1781,6 +2216,15 @@ profiles:
         Puede repetir un dado de exploración cuando sea elegible.
     name_i18n:
       es: Conocimiento de Mitos y Leyendas
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: myths-and-legends-exploration
+        scope: 'NO'
+        binding: null
+        reason: Changing an Exploration die is a campaign action.
   - id: hireling.hired-sword.pathfinder.rule.lookout
     name: Lookout
     effect: Special skill option to cancel a trap/hazard.
@@ -1789,6 +2233,16 @@ profiles:
         Opción de habilidad especial para anular una trampa/peligro.
     name_i18n:
       es: Vigía
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: lookout-hazard
+        scope: 'NO'
+        binding: null
+        reason: Cancelling a scenario trap or hazard concerns scenario terrain and deployment, not a
+          duel phase.
   - id: hireling.hired-sword.pathfinder.rule.this-way
     name: This Way
     effect: Special skill option allowing nearby models to traverse impassable terrain.
@@ -1798,6 +2252,16 @@ profiles:
         infranqueable.
     name_i18n:
       es: Por Aquí
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: this-way-impassable-terrain
+        scope: 'NO'
+        binding: null
+        reason: Leading nearby models across impassable terrain is a group movement action outside the
+          duel.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1844,6 +2308,16 @@ profiles:
         No sufre Completamente Solo.
     name_i18n:
       es: Solitario
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: loner-all-alone
+        scope: 'NO'
+        binding: null
+        reason: The All Alone test is the excluded group procedure, and a one-on-one duel never runs
+          it.
   - id: hireling.hired-sword.priest-of-morr.rule.funerary-rites
     name: Funerary Rites
     effect: May learn and perform Funerary Rites according to Magic rules.
@@ -1852,6 +2326,16 @@ profiles:
         Puede aprender y realizar Ritos Funerarios según las reglas de Magia.
     name_i18n:
       es: Ritos Funerarios
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: funerary-rites-casting
+        scope: 'NO'
+        binding: null
+        reason: Learning and performing Funerary Rites follows the Magic rules; casting and spell resolution
+          are excluded.
   unresolved_references:
   - kind: entity_semantics
     source_name: Mercenary Hero replacement rather than normal Hired Sword
@@ -2071,11 +2555,11 @@ profiles:
       implemented: 'YES'
       grant: profile
       effects:
-      - id: mechanic.hatred-greenskins
+      - id: mechanic.hatred-orcs-goblins
         scope: 'YES'
         binding:
           kind: mechanic
-          id: mechanic.hatred-greenskins
+          id: mechanic.hatred-orcs-goblins
     source_refs:
     - manual: Nemesis Crown Supplement
       printed_page: 0
@@ -2165,6 +2649,15 @@ profiles:
         Usa la regla mejorada de avistamiento de la fuente.
     name_i18n:
       es: Vista Excepcional
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: excellent-sight-spotting
+        scope: 'NO'
+        binding: null
+        reason: Spotting Hidden models requires visibility and is outside the duel.
   - id: hireling.hired-sword.shadow-warrior.rule.bitter-enemies
     name: Bitter Enemies
     effect: Uses the source rivalry/restriction rule.
@@ -2173,6 +2666,15 @@ profiles:
         Usa la regla de rivalidad/restricción de la fuente.
     name_i18n:
       es: Enemigos Amargos
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: bitter-enemies-rivalry
+        scope: 'NO'
+        binding: null
+        reason: The rivalry affects which models may be hired into and kept in the warband roster.
   - id: hireling.hired-sword.shadow-warrior.rule.infiltration
     name: Infiltration
     effect: Uses source infiltration.
@@ -2181,6 +2683,15 @@ profiles:
         Usa la infiltración de la fuente.
     name_i18n:
       es: Infiltración
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: infiltration-deployment
+        scope: 'NO'
+        binding: null
+        reason: Infiltration deploys the model before the first round, outside the duel's phases.
   - id: hireling.hired-sword.shadow-warrior.rule.campaign-eligibility
     name: Dynamic Hiring Eligibility — Evil Hired Sword Incompatibility
     effect: >-
@@ -2192,6 +2703,16 @@ profiles:
         incluya una Espada a Sueldo maligna, ni permanecer en ella.
     name_i18n:
       es: Elegibilidad de Contratación Dinámica — Incompatibilidad con Espada Contratada Maligna
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: campaign-eligibility-roster
+        scope: 'NO'
+        binding: null
+        reason: The roster-composition restriction is evaluated when the warband is hired and has no
+          duel-time consequence.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2242,6 +2763,16 @@ profiles:
         Controla hasta el número de serpientes definido por la fuente.
     name_i18n:
       es: Encantador de Serpientes
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: snake-charmer-companions
+        scope: 'NO'
+        binding: null
+        reason: The rule controls companion snakes, separate combatants a one-against-one duel does not
+          field.
   - id: hireling.hired-sword.snake-charmer.rule.immune-to-poison
     name: Immune to Poison
     effect: Immune to poison.
@@ -2250,6 +2781,18 @@ profiles:
         Inmune al veneno.
     name_i18n:
       es: Inmune al Veneno
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: trait.poison-immune
+        scope: 'YES'
+        binding:
+          kind: trait
+          id: trait.poison-immune
+          parameters:
+            value: true
   - id: hireling.hired-sword.snake-charmer.rule.venomous
     name: Venomous
     effect: Snake attacks use the source venom rule.
@@ -2258,6 +2801,15 @@ profiles:
         Los ataques de las serpientes usan la regla de veneno de la fuente.
     name_i18n:
       es: Venenosos
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: venomous-snake-attacks
+        scope: 'NO'
+        binding: null
+        reason: The venom applies to the snake companions' attacks, and the duel fields no snake.
   - id: hireling.hired-sword.snake-charmer.rule.animals
     name: Animals
     effect: Snakes use animal/no-XP rules.
@@ -2266,6 +2818,16 @@ profiles:
         Las serpientes usan las reglas de animal/sin experiencia.
     name_i18n:
       es: Animales
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: animals-companion-rules
+        scope: 'NO'
+        binding: null
+        reason: The animal and no-Experience rules govern the snake companions, which the duel does not
+          field.
   - id: hireling.hired-sword.snake-charmer.rule.snake-hunter
     name: Snake Hunter
     effect: Uses the source snake-hunting rule.
@@ -2274,6 +2836,15 @@ profiles:
         Usa la regla de caza de serpientes de la fuente.
     name_i18n:
       es: Cazador de Serpientes
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: snake-hunter-scenario
+        scope: 'NO'
+        binding: null
+        reason: Hunting snakes concerns scenario creatures and campaign encounters, not the duel.
   unresolved_references:
   - kind: companion_profiles
     source_name: three snakes with separate profile
@@ -2334,6 +2905,15 @@ profiles:
         Usa las reglas de robo/exploración de la fuente.
     name_i18n:
       es: Ladrón
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: thief-stealing-exploration
+        scope: 'NO'
+        binding: null
+        reason: Stealing and the exploration step are resolved between battles.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2493,6 +3073,16 @@ profiles:
         Puede aprender/usar Oraciones de Sigmar.
     name_i18n:
       es: Plegarias
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: prayers-casting
+        scope: 'NO'
+        binding: null
+        reason: Learning and using Prayers of Sigmar is casting, which is excluded; the separate canonical
+          spellcaster identity remains available to duel consumers.
   - id: hireling.hired-sword.warrior-priest-of-sigmar.rule.campaign-eligibility
     name: Dynamic Hiring Eligibility — Middenheim Variant
     effect: >-
@@ -2504,6 +3094,16 @@ profiles:
         aplicación debe evaluar la variante de Mercenario seleccionada.
     name_i18n:
       es: Elegibilidad de Contratación Dinámica — Variante de Middenheim
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: campaign-eligibility-variant
+        scope: 'NO'
+        binding: null
+        reason: The roster-composition restriction is evaluated when the warband is hired and has no
+          duel-time consequence.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2549,6 +3149,16 @@ profiles:
         Comienza con dos hechizos aleatorios de Encantos y Maleficios.
     name_i18n:
       es: Mago
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: wizard-spell-generation
+        scope: 'NO'
+        binding: null
+        reason: Spell generation and casting are excluded; the separate canonical spellcaster identity
+          remains available to actual duel consumers.
   - id: hireling.hired-sword.witch.rule.recluse
     name: Recluse
     effect: Requires a source D6 hiring check.
@@ -2557,6 +3167,15 @@ profiles:
         Requiere una tirada de contratación de 1D6 según la fuente.
     name_i18n:
       es: Recluso
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: recluse-hiring-check
+        scope: 'NO'
+        binding: null
+        reason: The D6 check is rolled when the Witch is hired, before the warband enters a battle.
   - id: hireling.hired-sword.witch.rule.potions
     name: Potions
     effect: May give one Hero a source-defined random potion before battle.
@@ -2565,6 +3184,18 @@ profiles:
         Puede dar a un Héroe una poción aleatoria definida por la fuente antes de la batalla.
     name_i18n:
       es: Pociones
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: witch-potions-pre-battle-grant
+        scope: 'NO'
+        binding: null
+        reason: Giving a potion to another Hero is an excluded pre-battle producer, not an
+          automatic bonus to the Witch. Supply the recipient's draught with condition.witch-debilitating,
+          condition.witch-strength, condition.witch-resilience or condition.witch-fortitude;
+          the existing potion operators implement its modifiers and expiry.
   - id: hireling.hired-sword.witch.rule.reluctant
     name: Reluctant
     effect: Uses source movement/charge restrictions.
@@ -2617,6 +3248,24 @@ profiles:
       quantity:
         kind: fixed
         value: 1
+    - item_id: garlic
+      quantity:
+        kind: fixed
+        value: 1
+    choices:
+    - id: hireling.hired-sword.witch-hunter.equipment-choice
+      choose: 1
+      options:
+      - items:
+        - item_id: duelling_pistol
+          quantity:
+            kind: fixed
+            value: 1
+      - items:
+        - item_id: crossbow_pistol
+          quantity:
+            kind: fixed
+            value: 1
   skill_access:
   - combat
   - speed
@@ -2671,6 +3320,15 @@ profiles:
         Puede reducir el mantenimiento cuando se cumplen las condiciones de victoria de la fuente.
     name_i18n:
       es: Recompensa de Sigmar
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: sigmar-s-reward-upkeep
+        scope: 'NO'
+        binding: null
+        reason: Reducing upkeep on the source victory conditions is settled after the battle.
   - id: hireling.hired-sword.witch-hunter.rule.campaign-eligibility
     name: Dynamic Hiring Eligibility — Spellcaster Restriction
     effect: >-
@@ -2682,11 +3340,16 @@ profiles:
         de hechizos, salvo un Sacerdote de Sigmar, Ulric, Taal o Morr.
     name_i18n:
       es: Elegibilidad de Contratación Dinámica — Restricción de Lanzadores de Hechizos
-  unresolved_references:
-  - kind: equipment_choice
-    source_name: Duelling Pistol or Crossbow Pistol
-  - kind: equipment_mapping
-    source_name: Garlic
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: campaign-eligibility-spellcaster
+        scope: 'NO'
+        binding: null
+        reason: The roster-composition restriction is evaluated when the warband is hired and has no
+          duel-time consequence.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2735,6 +3398,16 @@ profiles:
         Puede usar Oraciones de Ulric.
     name_i18n:
       es: Plegarias
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: prayers-casting
+        scope: 'NO'
+        binding: null
+        reason: Learning and using Prayers of Ulric is casting, which is excluded; the separate canonical
+          spellcaster identity remains available to duel consumers.
   - id: hireling.hired-sword.wolf-priest-of-ulric.rule.hatred
     name: Hatred
     effect: Hates the source-listed Sigmarite models.
@@ -2761,6 +3434,15 @@ profiles:
         Puede ir acompañado del Compañero Lobo de la fuente.
     name_i18n:
       es: Lobo Compañero
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: wolf-companion
+        scope: 'NO'
+        binding: null
+        reason: The Wolf Companion is a second combatant that the one-against-one duel does not field.
   - id: hireling.hired-sword.wolf-priest-of-ulric.rule.campaign-eligibility
     name: Dynamic Hiring Eligibility — Middenheim Variant
     effect: >-
@@ -2772,6 +3454,46 @@ profiles:
         Middenheim. La aplicación debe evaluar la variante de Mercenario seleccionada.
     name_i18n:
       es: Elegibilidad de Contratación Dinámica — Variante de Middenheim
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: campaign-eligibility-hero-replacement
+        scope: 'NO'
+        binding: null
+        reason: The Hero replacement and its variant restriction are evaluated when the warband is hired
+          and have no duel-time consequence.
+  - id: hireling.hired-sword.wolf-priest-of-ulric.rule.strictures
+    name: Strictures
+    effect: >-
+      A Wolf Priest may only use blunt weapons, except for a dagger, and may never wear armour;
+      the white wolf cloak is the only garb the stricture allows.
+    effect_i18n:
+      es: >-
+        Un Sacerdote Lobo solo puede usar armas contundentes, salvo una daga, y nunca puede llevar
+        armadura; la capa de piel de lobo blanca es la única prenda que permite la estrictura.
+    name_i18n:
+      es: Preceptos
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: profile.equipment-restrictions
+        scope: 'YES'
+        binding:
+          kind: profile
+          id: profile.equipment-restrictions
+          parameters:
+            forbids:
+            - armour
+            allowed_kinds:
+            - weapon.club
+            - weapon.mace
+            - weapon.flail
+            - weapon.quarter-staff
+            - weapon.dagger
   unresolved_references:
   - kind: entity_semantics
     source_name: Middenheim Hero replacement rather than normal Hired Sword

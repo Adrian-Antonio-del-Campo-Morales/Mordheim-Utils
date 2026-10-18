@@ -30,6 +30,63 @@ rules:
       binding: null
       reason: >-
         Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+- id: zombies--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+  name: Equipment Restrictions
+  effect: "May not carry weapons or wear armour and suffers no penalty for fighting unarmed."
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: "Zombies"
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "No puede llevar armas ni armadura y no sufre penalización por luchar sin armas."
+  applies_to:
+    profile_ids:
+    - zombies
+- id: scarecrows--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - equipment
+  name: Equipment Restrictions
+  effect: "Carries no equipment and suffers no penalty for fighting unarmed."
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: "0 - 2 Scarecrows"
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "No lleva equipo y no sufre penalización por luchar sin armas."
+  applies_to:
+    profile_ids:
+    - scarecrows
 - id: liche--cause-fear
   name: Cause Fear
   effect: A Liche is a horrible abomination and causes fear.

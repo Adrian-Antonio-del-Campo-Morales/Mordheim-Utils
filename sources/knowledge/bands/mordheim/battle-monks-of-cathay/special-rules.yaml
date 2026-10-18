@@ -223,15 +223,32 @@ rules:
     - raging-peasants
 - id: raging-peasants--mob
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.battle-monks-of-cathay.raging-peasants.mob
-      scope: LATER
+    # The printed +1 Leadership per other allied Peasant within three inches: the
+    # caller supplies how many such allies are present as the mob_allies fact,
+    # and leadership.resolve_local_leadership adds them to every test.
+    - id: mechanic.mob-leadership
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.mob-leadership
+    # The second printed sentence, no leader benefit, is the shared
+    # own-leadership condition the same consumer already honours.
+    - id: mechanic.own-leadership
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.own-leadership
+    - id: raging-peasants--mob.ally-count-producer
+      scope: 'NO'
       binding: null
       reason: >-
-        Deferred subsystem: psychology.
+        The count of other allied Peasant models within three inches is the excluded producer: the
+        caller supplies it as the admitted mob_allies fact and the duel neither simulates the
+        surrounding group nor measures table positions.
   name: Mob
   effect: >-
     Peasants become threatening in large numbers. A Peasant gets +1 Ld for each other allied Peasant
@@ -484,7 +501,9 @@ rules:
   applies_to:
     band: true
   eligibility:
+  - officer
   - dragon-monks
+  - warrior-monks
 - id: band--battle-monks-special-skills-lightning-speed
   kind: warband_skill
   runtime:
@@ -515,7 +534,9 @@ rules:
   applies_to:
     band: true
   eligibility:
+  - officer
   - dragon-monks
+  - warrior-monks
 - id: band--battle-monks-special-skills-leap-of-faith
   kind: warband_skill
   runtime:
@@ -550,7 +571,9 @@ rules:
   applies_to:
     band: true
   eligibility:
+  - officer
   - dragon-monks
+  - warrior-monks
 - id: band--battle-monks-special-skills-human-shield
   kind: warband_skill
   runtime:
@@ -590,7 +613,9 @@ rules:
   applies_to:
     band: true
   eligibility:
+  - officer
   - dragon-monks
+  - warrior-monks
 - id: band--battle-monks-special-skills-warmonger
   kind: warband_skill
   runtime:

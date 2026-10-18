@@ -185,6 +185,20 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.dim-witted-leader
+    # The printed supply itself: this leader lends his effective 7 for members
+    # within six inches, so the shared six-inch borrow must recognise him.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
+    - id: barbarian--dim-witted.rout-tests
+      scope: 'NO'
+      binding: null
+      reason: >-
+        The printed extension of the effective Leadership to Rout tests belongs to the excluded
+        group Rout subsystem; only the individual six-inch borrow of this leader's value is
+        admitted.
   name: Dim-Witted
   effect: >-
     If the Barbarian is the warband's leader then he has an effective Leadership of 7 for warband

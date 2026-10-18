@@ -68,16 +68,20 @@ rules:
     band: true
 - id: band--disdain
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.druchii-mic.band.disdain
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: equipment-purchase restrictions are roster-construction mechanics
-        outside the duel scope.
+    # The same printed prohibition the dark-elves band declares as a compiler
+    # contract; here it is the catalogue tag so the offer, the construction
+    # verdict and the active blackpowder weapon read one token.
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids: blackpowder
   name: Disdain
   effect: >-
     Dark Elves may never use black powder weapons, as they find them too crude, noisy and

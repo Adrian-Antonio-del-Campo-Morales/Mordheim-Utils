@@ -370,15 +370,15 @@ rules:
     - battle-pilgrims
 - id: battle-pilgrims--holy-relics
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.bretonnian-chapel-guard.battle-pilgrims.holy-relics
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: compiler.holy-relic-frenzy
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.holy-relic-frenzy
   name: Holy Relics
   effect: >-
     Battle Pilgrims may be given a Holy Relic, regardless of the fact that henchman are not normally

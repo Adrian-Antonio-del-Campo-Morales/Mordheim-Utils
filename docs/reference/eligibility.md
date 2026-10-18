@@ -34,6 +34,21 @@ eligibility, advance roll, ordinary skill-list choice or persistence is computed
 Runt active weapon limits count occupied one-handed positions, including equal
 weapon IDs in two positions, separately from owned holstered weapons.
 
+`variant_ids=("equipment.post-creation",)` supplies the post-creation equipment
+stage without simulating acquisition. `applies_to.post_creation_profile_ids`
+replaces the starting recipients in that stage (Shadow Weaver Runestones).
+`applies_to.required_rule_ids` requires the bearer's declared source capability
+(Watchmen Falconer); this does not enable an excluded combat producer. A printed
+recipient of the market catalogue (`catalog/campaign/trading-post.yaml`) carries
+the same vocabulary and the same phase member, so the clause of a trading-post
+entry reaches the offer and a direct selection through one verdict: the phase
+member speaks outside the band's starting list, and a required capability is a
+requirement rather than a default — a bearer that does not carry it is refused,
+and so is a requirement whose rule has no executable construction contract yet.
+Conditional equipment prohibitions use `when_items` with `forbids`: whole-kit
+validation checks owned and active items together, while untriggered prohibitions
+are absent from individual offers and unconditional band restrictions.
+
 An equipment entry may also name its printed recipients in `equipment-access.yaml`:
 `applies_to` carries the profile kinds (`profile_types`) and profile ids the note
 limits that line to, while `notes`/`notes_i18n` keep the printed prose for
@@ -123,7 +138,8 @@ ownership and active slots to the same batch operation used by
 `CombatCatalogue.validate_configuration`. The shared module keeps its existing
 blocking/informational policy; the catalogue exposes all reports. Unspecified
 kit compilation is not proof of mandatory owned equipment. Visible editing of
-these supplied facts belongs to the remaining L18 product integration.
+these supplied facts belongs to the remaining L18 product integration, tracked in
+[the modular implementation plan](../knowledge/2a2b/REMAINING_MODULAR_ENGINE_WORK.md).
 
 Combat Lab's 2B hired-sword/Dramatis participant projection uses canonical
 hireling ids and the same shared eligibility engine, without campaign hiring.

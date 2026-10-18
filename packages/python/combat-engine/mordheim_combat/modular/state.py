@@ -36,12 +36,17 @@ class FighterState:
     strength: int = 0
     torture_strength_loss: int = 0
     toughness: int = 0
-    initiative: int = 0
+    #: ``None`` when the printed profile fixes no Initiative: the absence
+    #: travels unchanged (no number is invented for it).
+    initiative: int | None = 0
     attacks: int = 0
     broken_hands: frozenset[str] = frozenset()
     hampered_hands: tuple[str, ...] = ()
     fear_hit_sixes: bool = False
     stupidity_failed: bool = False
+    #: A supplied failed Massively Built check: the printed outcome is that the
+    #: target loses its entire next turn.  It is spent once, in its own turn.
+    massively_built_lost_turn: bool = False
     charm_attack_blocked: bool = False
     charm_auto_hit: bool = False
     entranced: bool = False
@@ -55,6 +60,7 @@ class FighterState:
     mouth_sewn: bool = False
     hillman_wolf: bool = False
     devoted_frenzy: bool = False
+    drenok_fighting: bool = False
     transformed: bool = False
     equipment_cast_off: bool = False
     bitten_result: int = 0
@@ -78,6 +84,7 @@ class FighterState:
     atrophied_legs: int = 0
     mutated_hands: tuple[str, ...] = ()
     mutation_equipment: tuple[CarriedEquipment, ...] | None = None
+    alchemist_backley_penalties: tuple[tuple[str, int], ...] = ()
 
     @property
     def active(self) -> bool:
@@ -133,6 +140,7 @@ class AttackOutcome:
     natural_hit_six: bool = False
     melee_attack: bool = True
     knocked_down_target: bool = False
+    disarm_slot: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -250,8 +258,9 @@ def initialize_fighter(fighter: CompiledFighter, dice: DiceSource, key: str,
             dice.roll(RollRequest(f"{key}.characteristic.{characteristic}.{index}", sides))
             for index in range(count)
         ) + bonus
-    if phases.has_tag(fighter.global_effects, "preparation.crimson-shade"):
+    if phases.has_tag(fighter.global_effects, "preparation.crimson-shade") and values["I"] is not None:
         values["I"] += dice.roll(RollRequest(f"{key}.crimson-shade", 3))
+    backley_penalties = {}
     for tag, stat, bonus in (("condition.petru-debilitating", "T", -1),
         ("condition.petru-strength", "S", 1), ("condition.petru-resilience", "T", 1),
         ("condition.alchemist-resilience", "T", 1), ("condition.alchemist-strength", "S", 1),
@@ -259,24 +268,32 @@ def initialize_fighter(fighter: CompiledFighter, dice: DiceSource, key: str,
         ("condition.alchemist-aberrantius-vigortia", "T", 1),
         ("condition.alchemist-backleys-brew", "S", -1), ("condition.alchemist-backleys-brew", "I", -1)):
         if phases.has_tag(fighter.global_effects, tag):
+            if values[stat] is None:
+                # An absent characteristic has no base to modify (the compiler
+                # refuses the same bonus at construction time).
+                continue
+            before = values[stat]
             values[stat] = values[stat] + bonus if inconsistency else max(1, values[stat]+bonus)
+            if tag == "condition.alchemist-backleys-brew":
+                backley_penalties[stat] = before - values[stat]
     poetry = phases.has_tag(fighter.global_effects,'condition.poetry-inspired')
     if poetry:
         values['WS'] += 1
-    disability = 0
-    if phases.has_tag(fighter.global_effects, "mechanic.disability"):
-        disability = dice.roll(RollRequest(f"{key}.disability"))
-        affected = {1: "I", 2: "WS", 4: "T", 5: "S"}.get(disability)
-        if affected:
-            values[affected] = max(1, values[affected] - 1)
+    # The group-creation table has already been rolled outside this duel.
+    # Statistics were applied once at compilation, never again at initialization.
+    disability = next((result for result in range(1, 7)
+        if phases.has_tag(fighter.global_effects, f"condition.disability-{result}")), 0)
+    if phases.has_tag(fighter.global_effects, "mechanic.disability") and not disability:
+        raise ValueError("Disability requires a permanent supplied result, not a duel-time table roll")
     guiding_dream = (dice.roll(RollRequest(f"{key}.guiding-dream"))
                      if phases.has_tag(fighter.global_effects, "mechanic.guiding-dream") else 0)
     nominated = phases.has_tag(fighter.global_effects, "condition.guiding-dream-target")
     if nominated and guiding_dream in (4, 5):
         values["S"] += 1
     wounds = maximum_wounds(fighter)
-    return FighterState(
+    state = FighterState(
         wounds=wounds,
+        alchemist_backley_penalties=tuple(backley_penalties.items()),
         netted=phases.has_tag(fighter.global_effects, "condition.netted"),
         condition=Condition.KNOCKED_DOWN if phases.has_tag(fighter.global_effects, "condition.netted") else Condition.STANDING,
         starting_wounds=wounds,
@@ -291,6 +308,8 @@ def initialize_fighter(fighter: CompiledFighter, dice: DiceSource, key: str,
                           and not phases.has_tag(fighter.global_effects, "condition.stupidity-exempt")
                           and not fighter.global_effects.frenzy
                           and not phases.has_tag(fighter.global_effects, "mechanic.psychology-immunity")),
+        massively_built_lost_turn=phases.has_tag(
+            fighter.global_effects, "condition.massively-built-lost-turn"),
         lucky_charm=phases.has_tag(fighter.global_effects, "defence.lucky-charm"),
         parries_remaining=_parry_capacity(fighter),
         weapon_skill=values["WS"], strength=values["S"], toughness=values["T"],
@@ -301,6 +320,13 @@ def initialize_fighter(fighter: CompiledFighter, dice: DiceSource, key: str,
         resources_spent=dice.state.resources_spent | (frozenset({f"disability.{disability}"}) if disability else frozenset())
             | (frozenset({"poetry-inspiration-active"}) if poetry else frozenset()),
     )
+    # A supplied alternate form (`wolf-form` of the Cursed Hillman) starts the
+    # duel in the same werewolf state the wound-triggered transformation sets:
+    # `equipment_for_state` discards the printed kit and supplies the bonus Bite,
+    # so the form reuses one operator instead of inventing a second one.
+    if "compiler.hillman-wolf-form" in fighter.construction_tags:
+        state = replace(state, hillman_wolf=True)
+    return state
 
 
 def initialize_duel(

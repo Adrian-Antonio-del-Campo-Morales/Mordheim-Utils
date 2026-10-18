@@ -4,10 +4,10 @@ note: Current included compiler, trait and mechanic binding memberships of imple
   and Trollheim. Counts.rules counts memberships, not distinct rules or complete-clause semantic certification.
   Compound excluded or deferred clauses remain in their canonical runtime records.
 counts:
-  families: 258
-  rules: 990
+  families: 260
+  rules: 998
   kinds:
-    compiler: 63
+    compiler: 65
     mechanic: 157
     trait: 38
 families:
@@ -96,6 +96,8 @@ families:
   - lustria-clan-pestilens/band--clan-pestilens-special-skills-black-hunger
   - skaven-clan-eshin/band--skaven-special-skills-black-hunger
   - skaven-clan-pestilens/band--clan-pestilens-special-skills-black-hunger
+  - skaven-of-clan-mors-kaz/band--skaven-special-skills-black-hunger
+  - skaven-of-clan-skryre-kaz/band--skaven-special-skills-black-hunger
   - trollheim-skaven-clan-eshin/band--skaven-special-skills-black-hunger
 - id: mechanic.body-slam
   kind: mechanic
@@ -111,6 +113,7 @@ families:
   members:
   - maneaters/band--ogres-special-skills-bull-charge
   - maneaters/bulls--bull-charge
+  - ogre-hunting-party-web/band--ogre-hunting-skills-bull-charge
   - ostlanders/band--ostlander-special-skills-bull-rush
 - id: compiler.censer-bearer-loadout
   kind: compiler
@@ -305,6 +308,12 @@ families:
   basis: unique-effect
   members:
   - lustria-pirates/band--hired-swords
+- id: compiler.mercenary-equipment-at-creation
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - disciples-of-maldred-mou/mercenaries--equipment-restrictions
 - id: compiler.knighthood
   kind: compiler
   implemented: 'YES'
@@ -1881,6 +1890,12 @@ families:
   basis: unique-effect
   members:
   - carnival-of-chaos/band--blessings-of-nurgle-mark-of-nurgle
+- id: special-rule.band--marauder-special-skills-chosen-of-chaos
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - marauders-of-chaos/band--marauder-special-skills-chosen-of-chaos
 - id: special-rule.band--marauder-special-skills-mutant
   kind: compiler
   implemented: 'YES'
@@ -1945,6 +1960,8 @@ families:
   basis: shared-effect
   members:
   - skaven-clan-eshin/band--skaven-special-skills-tail-fighting
+  - skaven-of-clan-mors-kaz/band--skaven-special-skills-tail-fighting
+  - skaven-of-clan-skryre-kaz/band--skaven-special-skills-tail-fighting
   - trollheim-skaven-clan-eshin/band--skaven-special-skills-tail-fighting
 - id: special-rule.band--strigoi-power-monstrosity
   kind: compiler
@@ -1977,6 +1994,7 @@ families:
   basis: shared-effect
   members:
   - chaos-streets-undead-bloodlines/dire-wolf--charge
+  - lustria-amazons/band--amazon-special-skills-animal-fury
   - trollheim-undead/dire-wolves--charge
   - undead/dire-wolves--charge
 - id: trait.cloud-of-flies

@@ -24,6 +24,8 @@ profiles:
   warband_rating:
     kind: fixed
     value: 50
+  equipment:
+    innate_weapon_id: weapon.natural-attacks
   skill_access: []
   starting_skill_ids: []
   rules:
@@ -53,6 +55,15 @@ profiles:
         No puede correr, pero puede cargar.
     name_i18n:
       es: No Pueden Correr
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: bone-goliath-may-not-run
+        scope: 'NO'
+        binding: null
+        reason: Running is a movement mechanic; the duel resolves a close combat, so the prohibition has no consumer.
   - id: hireling.hired-sword.bone-goliath.rule.immune-to-psychology
     name: Immune to Psychology
     effect: Immune to psychology.
@@ -79,6 +90,18 @@ profiles:
         Inmune al veneno.
     name_i18n:
       es: Inmune al Veneno
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: trait.poison-immune
+        scope: 'YES'
+        binding:
+          kind: trait
+          id: trait.poison-immune
+          parameters:
+            value: true
   - id: hireling.hired-sword.bone-goliath.rule.undead-construct
     name: Undead Construct
     effect: 'For each Injury result roll a D6: on 4+ the result is ignored, without restoring lost Wounds.
@@ -117,6 +140,15 @@ profiles:
         Es construido por un Liche con el coste/consecuencias de la fuente.
     name_i18n:
       es: Ensamblaje
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: bone-goliath-assembly
+        scope: 'NO'
+        binding: null
+        reason: Assembly is the campaign construction of the Goliath by a Liche, with cost and consequences outside the duel.
   - id: hireling.hired-sword.bone-goliath.rule.large
     name: Large
     effect: Counts as a large target.
@@ -125,6 +157,15 @@ profiles:
         Cuenta como objetivo grande.
     name_i18n:
       es: Grande
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: bone-goliath-large
+        scope: 'NO'
+        binding: null
+        reason: Being a Large target is a shooting-resolution definition with no admitted close-combat consequence.
   - id: hireling.hired-sword.bone-goliath.rule.no-pain
     name: No Pain
     effect: Treats Stunned as Knocked Down.
@@ -151,6 +192,15 @@ profiles:
         Nunca gana Experiencia.
     name_i18n:
       es: Carente de Mente
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: bone-goliath-mindless
+        scope: 'NO'
+        binding: null
+        reason: Experience gain is campaign progression; no consumer exists in the duel.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -198,6 +248,16 @@ profiles:
         Usa la regla de precio de venta del mercader.
     name_i18n:
       es: Prestamista
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: cathayan-merchant-pawnbroker-excluded
+        scope: 'NO'
+        binding: null
+        reason: >-
+          The improved merchant sale proceeds are settled during the post-battle trading phase and no duel-time consequence remains.
   - id: hireling.hired-sword.cathayan-merchant.rule.marketeer
     name: Marketeer
     effect: Uses special-market rule.
@@ -206,6 +266,16 @@ profiles:
         Usa la regla de mercado especial.
     name_i18n:
       es: Comerciante
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: cathayan-merchant-marketeer-excluded
+        scope: 'NO'
+        binding: null
+        reason: >-
+          Searching a special merchant market after a battle is a campaign acquisition action with no consequence in a resolved duel.
   - id: hireling.hired-sword.cathayan-merchant.rule.stone-cutter
     name: Stone Cutter
     effect: Uses source stone-cutting rule.
@@ -214,6 +284,16 @@ profiles:
         Usa la regla de tallado de piedra de la fuente.
     name_i18n:
       es: Cortador de Piedra
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: cathayan-merchant-stone-cutter-excluded
+        scope: 'NO'
+        binding: null
+        reason: >-
+          Refining wyrdstone when the warband sells it is a post-battle trading income clause with no consequence in a resolved duel.
   - id: hireling.hired-sword.cathayan-merchant.rule.guardian
     name: Guardian
     effect: Uses source guardian rule.
@@ -222,6 +302,16 @@ profiles:
         Usa la regla de guardián de la fuente.
     name_i18n:
       es: Guardián
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: cathayan-merchant-guardian-excluded
+        scope: 'NO'
+        binding: null
+        reason: >-
+          The printed Guardian is a second model with its own profile that intercepts shooting and charges aimed at the Merchant; a second independent fighter is outside the resolved duel and the acquisition is a roster matter.
   - id: hireling.hired-sword.cathayan-merchant.rule.campaign-eligibility
     name: Dynamic Hiring Eligibility — Human or Dwarf Composition
     effect: >-
@@ -233,6 +323,16 @@ profiles:
         Enanos; los Monjes Guerreros de Cathay están explícitamente incluidos por la fuente.
     name_i18n:
       es: Elegibilidad de Contratación Dinámica — Composición Humana o Enana
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: cathayan-merchant-campaign-eligibility-excluded
+        scope: 'NO'
+        binding: null
+        reason: >-
+          The roster-composition restriction is evaluated when the warband is hired and has no duel-time consequence.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -413,6 +513,16 @@ profiles:
         Usa la regla de conducción de vehículos de la fuente.
     name_i18n:
       es: Conductor
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: coachman-driver-excluded
+        scope: 'NO'
+        binding: null
+        reason: >-
+          Driving the coach belongs to the excluded vehicle subsystem and has no consequence for a duelist on foot.
   - id: hireling.hired-sword.coachman.rule.handyman
     name: Handyman
     effect: Uses source repair rule.
@@ -421,6 +531,16 @@ profiles:
         Usa la regla de reparación de la fuente.
     name_i18n:
       es: Manitas
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: coachman-handyman-excluded
+        scope: 'NO'
+        binding: null
+        reason: >-
+          Repairing the warband's equipment is a post-battle action with no consequence in a resolved duel.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -458,6 +578,10 @@ profiles:
       quantity:
         kind: fixed
         value: 1
+    - item_id: lantern
+      quantity:
+        kind: fixed
+        value: 1
     unique_equipment:
     - id: hireling.hired-sword.grave-robber.item.pickaxe
       name: Pickaxe
@@ -491,12 +615,26 @@ profiles:
           id: mechanic.hatred-undead
   - id: hireling.hired-sword.grave-robber.rule.grave-robbing
     name: Grave Robbing
-    effect: Uses source post-battle grave-robbing table.
+    effect: >-
+      During the exploration phase a Grave Robber who was not taken out of action may loot a local
+      cemetery, rolling 2D6 on the source chart for gold, a free Zombie or a Lesser artefact.
     effect_i18n:
       es: >-
-        Usa la tabla de profanación de tumbas tras la batalla de la fuente.
+        Durante la fase de exploración, un Ladrón de Tumbas que no haya quedado fuera de combate
+        puede saquear un cementerio local, tirando 2D6 en la tabla de la fuente por oro, un Zombi
+        gratis o un artefacto Menor.
     name_i18n:
       es: Saqueo de Tumbas
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: grave-robber-exploration-table
+        scope: 'NO'
+        binding: null
+        reason: The grave-robbing chart is rolled in the post-battle exploration phase and produces
+          gold, roster additions and artefacts; nothing in it reaches the duel.
   - id: hireling.hired-sword.grave-robber.rule.campaign-eligibility
     name: Dynamic Hiring Eligibility — Necromantic Roster
     effect: >-
@@ -508,9 +646,16 @@ profiles:
         Nigromante o un Liche.
     name_i18n:
       es: Elegibilidad de Contratación Dinámica — Lista Nigromántica
-  unresolved_references:
-  - kind: equipment_mapping
-    source_name: Lantern
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: grave-robber-campaign-eligibility
+        scope: 'NO'
+        binding: null
+        reason: Hiring based on the roster's Vampire, Necromancer or Liche is a campaign roster
+          consequence.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -707,6 +852,7 @@ profiles:
         es: Bomba de Humo
   skill_access: []
   starting_skill_ids:
+  - skill.art-of-silent-death
   - skill.expert-swordsman
   - skill.knife-fighter
   - skill.scale-sheer-surfaces
@@ -719,6 +865,16 @@ profiles:
         Usa la regla de contratación de un solo trabajo de la fuente.
     name_i18n:
       es: Solo Negocios
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: ninja-strictly-business-excluded
+        scope: 'NO'
+        binding: null
+        reason: >-
+          The one-job condition governs recruitment and retention between battles and has no consequence in a resolved duel.
   - id: hireling.hired-sword.ninja.rule.secrecy
     name: Secrecy
     effect: Uses the source secrecy rule.
@@ -727,6 +883,16 @@ profiles:
         Usa la regla de sigilo de la fuente.
     name_i18n:
       es: Secreto
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: ninja-secrecy-excluded
+        scope: 'NO'
+        binding: null
+        reason: >-
+          Keeping the Ninja's employment hidden is a campaign record-keeping condition with no consequence in a resolved duel.
   - id: hireling.hired-sword.ninja.rule.no-experience
     name: No Experience
     effect: Does not gain Experience.
@@ -735,9 +901,17 @@ profiles:
         No gana Experiencia.
     name_i18n:
       es: Sin Experiencia
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: ninja-no-experience-excluded
+        scope: 'NO'
+        binding: null
+        reason: >-
+          Experience and advancement are settled between battles, so the clause has no consequence in a resolved duel.
   unresolved_references:
-  - kind: skill
-    source_name: Art of Silent Death
   - kind: skill
     source_name: Lightning Speed
   - kind: skill
@@ -809,6 +983,16 @@ profiles:
         Usa la regla de cohetes de la fuente.
     name_i18n:
       es: Cohetes
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: pyromaniac-rockets-excluded
+        scope: 'NO'
+        binding: null
+        reason: >-
+          The rocket is resolved in the shooting phase through the excluded fireworks and artillery subsystem and has no close-combat consequence.
   - id: hireling.hired-sword.pyromaniac.rule.rocket-science
     name: Rocket Science
     effect: Special skill option.
@@ -817,6 +1001,16 @@ profiles:
         Opción de habilidad especial.
     name_i18n:
       es: Ciencia de Cohetes
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: pyromaniac-rocket-science-excluded
+        scope: 'NO'
+        binding: null
+        reason: >-
+          The +1/-1 modifier applies only to the fireworks table roll used by the excluded rocket subsystem.
   - id: hireling.hired-sword.pyromaniac.rule.display-artist
     name: Display Artist
     effect: Special skill option.
@@ -825,6 +1019,16 @@ profiles:
         Opción de habilidad especial.
     name_i18n:
       es: Artista de Exposiciones
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: pyromaniac-display-artist-excluded
+        scope: 'NO'
+        binding: null
+        reason: >-
+          Detonating the rocket immediately by Initiative test belongs to the excluded fireworks and artillery subsystem.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -876,6 +1080,16 @@ profiles:
         Usa la regla de artesanía de la fuente.
     name_i18n:
       es: Maestro Artesano
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: swordsmith-master-craftsman-excluded
+        scope: 'NO'
+        binding: null
+        reason: >-
+          Crafting weapons between battles is a post-battle action with no consequence in a resolved duel.
   - id: hireling.hired-sword.swordsmith.rule.honing
     name: Honing
     effect: Special skill option.
@@ -892,6 +1106,16 @@ profiles:
         Opción de habilidad especial.
     name_i18n:
       es: Herrador
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: swordsmith-farrier-excluded
+        scope: 'NO'
+        binding: null
+        reason: >-
+          Shoeing and caring for mounts concerns the excluded mount subsystem and has no consequence for a duelist on foot.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0

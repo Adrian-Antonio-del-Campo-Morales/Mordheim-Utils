@@ -468,16 +468,15 @@ rules:
     - dragon-monk
 - id: dragon-monk--art-of-silent-death
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.pirates-of-the-cathayan-sea-sar.dragon-monk.art-of-silent-death
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+    - id: skill.unarmed-critical-strikes
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.unarmed-critical-strikes
   name: Art of Silent Death (Dragon Monk)
   effect: >-
     Dragon Monks have become masters of the Cathayan art of open-hand fighting. In hand-to-hand
@@ -502,16 +501,18 @@ rules:
     - dragon-monk
 - id: dragon-monk--distaste-for-poison
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.pirates-of-the-cathayan-sea-sar.dragon-monk.distaste-for-poison
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+    - id: compiler.forbid-item-categories
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.forbid-item-categories
+        parameters:
+          categories:
+          - poison
   name: Distaste for Poison (Dragon Monk)
   effect: >-
     The use of poisons and various drugs is a specialty for dishonourable warriors who would stoop
@@ -846,3 +847,31 @@ rules:
     - deck-hands
     - gunners
     - martial-artists
+- id: dragon-monk--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - armour-suit
+  name: Equipment Restrictions
+  effect: "May never wear armour. Suffers no penalties for fighting unarmed and receives +1 Attack when doing so."
+  source:
+    manual: broheim.net
+    printed_page: 3
+    section: "Heroes / 0-1 Dragon Monk"
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Pirates%20of%20the%20Cathayan%20Sea.pdf
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "Nunca puede llevar armadura. No sufre penalización por luchar sin armas y recibe +1 Ataque al hacerlo. \n Reemplaza a un Shanghaier \n No puede llevar armadura."
+  applies_to:
+    profile_ids:
+    - dragon-monk

@@ -6,19 +6,20 @@ this page.
 
 ## Combat and verification
 
-- Replace transitional `compiler` bindings with shared `mechanic` or `trait`
-  bindings where the semantics are truly equivalent.
-- Complete pending semantic specifications and required interactions reported
-  by `python tools/mordheim-utils.py verify --inventory`.
+- Modular implementation, bindings and required semantic interactions:
+  [Remaining modular engine problems](knowledge/2a2b/REMAINING_MODULAR_ENGINE_PROBLEMS.md),
+  with clause details in the semantic CSV and executable inventories.
+- Unresolved authority choices:
+  [Remaining human decisions](knowledge/2a2b/REMAINING_HUMAN_DECISIONS.md).
 - Keep NumPy and native candidates certified against the modular oracle before
-  relying on them.
+  relying on them; their ports/certification are outside modular completion.
 
 ## Deferred product scope
 
 The current duel runtime deliberately excludes these domains. Implement them
 only after approving a scope change in `registry/runtime-scope.yaml`:
 
-- psychology and warband-wide proximity effects;
+- group psychology and warband-wide proximity effects;
 - shooting and missile weapons;
 - movement, terrain and falling;
 - magic in battle;

@@ -40,9 +40,12 @@ a single spec.
   backlash resolve as hits likewise.
 - **Poison timing.** Spider Spittle tests immediately on an undefended hit,
   before wound and saves; a parry prevents the trigger. Disease Dagger tests
-  on a natural hit six; the extra wound is separate, general armour saves
-  apply (no denial clause exists), Undead/Possessed are immune, and wound
-  reactions resolve immediately and exactly once.
+  on a natural hit six; the extra infection wound is separate and automatic
+  (no To Wound roll), and allows no saving throws, as explicitly confirmed by
+  the user under D13 on 2026-10-14. This supersedes the earlier instruction to
+  allow general armour saves for that extra wound. Undead/Possessed are immune,
+  and wound reactions resolve immediately and exactly once. The D13 exception
+  applies to the extra infection wound, not the dagger's ordinary attack.
 - **Stateful equipment projection happens before** priority, parry resource
   initialization and attack counting. Brace is limited to two shots with a
   surviving-hand-weapon or KB-compiled unarmed fallback afterwards; Trap
@@ -311,3 +314,134 @@ and Dodge saves"), the coordinator rules that the printed Dodge save and the war
 save are the same thing. The engine's ward face therefore carries the printed
 Dodge exemption; no separate Dodge-save representation is added. The E2E
 scenarios live in the `dodge-exception` clause of the starsword ficha.
+
+
+## Supplied Weaponsmith maintenance affects the physical equipment — 2026-10-15
+
+The recovered Maintenance table in T13 is rolled before each game; its first result
+stands even without eligible equipment. Only its already obtained individual result
+is supplied to the duel. Recipients are Heroes and the Weaponsmith. Result 2 gives
+heavy armour 4+ and light armour 5+ before other modifiers. The extra +1 save for
+helmets (3) and bucklers (4) is an armour-save contribution of that worn piece;
+it does not change the helmet's separate 4+ Stunned reaction. Result 5 lets a shield
+parry as a buckler, including sword-and-buckler composition, retaining its normal
+armour contribution. Improvements last this game and leave with the physical item.
+Results 1 and 6 grant no close-combat bonus; result 6's shooting range is excluded.
+This implements the admitted supplied effects, not the external roll or party.
+
+
+## Djinn's Curse respects expressly unmodifiable saves — 2026-10-15
+
+Implementation criterion: the general penalty to enemy saves does not override
+an individual save explicitly printed as unmodifiable. Ethereal's hit interception,
+Marks of Ranald's 6+, Daemonic Flesh's unmodified 5+ and the Djinn's intrinsic 5+
+keep their faces and prohibit roll modifiers. This follows the specific save's
+exception; it does not make ordinary armour, wards or regeneration unmodifiable.
+Djinn's Luck supplies an ordinary modifiable ward, so Curse still worsens it. If a
+stronger ordinary ward ties the intrinsic save after the penalty, the ordinary
+ward retains its own optional modifiers. Magic/blessed denials retain their
+printed scope. These combinations resolve the duel rather than raising a
+composition-ruling error.
+
+
+## TC14 whip: disarm is a declared replacement action — 2026-10-15
+
+Town Cryer 14, Mule Skinner / Whip (PDF page 11), is a distinct source-qualified
+weapon (`whip_tc14`); it does not resolve the unqualified Trollheim placeholder.
+Its melee uses S-1, cannot be parried and grants the enemy +1 armour save. Reach
+and use outside contact remain excluded. Declare the target physical weapon before
+the hit roll; disarm replaces injury, including a normal coup de grace. It still
+rolls to hit, then grants exactly one independent hold parry irrespective of native
+parry equipment/capacity or Strength. This hold attempt is not prevented by the
+whip's normal no-parry clause, does not spend an ordinary parry, and grants no
+weapon-pair reroll. It uses the ordinary strict-higher comparison (so a six cannot
+be beaten), while universal owned-roll choices retain their own scope. Indestructible
+and natural weapons are not disarm targets. Dropped pieces remain unavailable for
+this combat; active or separately carried backups are used in declared kit order,
+otherwise the fighter uses its unarmed fallback. Their actual effects apply already
+to the reply in the same round. No post-combat retrieval/loss process is simulated.
+
+
+## Haunted Mien lifts the Priest kit restriction — 2026-10-15
+
+A selected Haunted Mien is the Black Guard career, mutually exclusive with Augur.
+Ignoring Strictures lifts both the Priest's armour prohibition and the exclusive
+scythe/dagger kit, not merely the armour token. Implementation uses the maintained
+ordinary human Mercenary Equipment List for the newly available basic equipment;
+it grants no faction-specific/unique catalogue wildcard. The printed starting kit
+is retained when ownership is unspecified; an explicitly supplied current kit may
+replace it but must contain the physical copies actually wielded. Offering, shared
+facts and compilation consume the same choice. Combat/Strength access is added by
+the existing source bindings. An unmarked Priest and an Augur retain Strictures;
+Augur alone retains the permanent -1 S and the once-per-battle personal reroll.
+Campaign advancement and determination of new prayers remain excluded.
+
+
+## Drenok's Berserker is not the Slayer skill — 2026-10-15
+
+Town Cryer 15 printed p27 (PDF p29, read visually) defines a distinct ability:
+a first reduction to zero Wounds requires 4+ to stand fighting this turn, with a
+fresh roll every subsequent player turn while still at zero; failure means Out
+of Action. It neither restores a Wound nor grants the Slayer skill's charging hit
+bonus. A successful roll covers further ordinary wound damage in that same turn;
+renewal occurs next turn, including the opposing player's turn, because the source
+says every turn without an own-turn qualifier. The roll is a continuation test,
+not an armour/ward save that negates the wound. Other explicit instant-Out effects
+retain their own conditions. Icefang is the printed double-handed weapon plus
+Parry and +1 injury, not two stacked weapon profiles. The hide supplies ordinary
+6+ melee armour; the separate 5+ missile face remains excluded. Gear effects belong
+to the actual active pieces; they are not automatic innate profile grants.
+
+
+## Eye Pendant: the attacking Undead tests — 2026-10-15
+
+Khemri Dramatis Personae printed p16 requires any Undead warrior wishing to attack
+Abdul to pass Leadership. The attacker tests once before its attacks in each combat
+turn; a failure blocks that turn's attacks, without cancelling contact, charge or
+defence. There is no retained success or once-per-battle resource. This is an attack
+restriction rather than Psychology, so Psychology immunity does not waive it; an
+explicit automatic-Leadership ability still follows the shared Leadership contract.
+The text does not prohibit using a leader's Leadership. Both this restriction and
+the 4+ Ward are carried by the equipped Eye, not an innate property of Abdul.
+The Ward uses the ordinary pipeline including explicit all-save prohibitions such
+as D13. Nomad Robes' weather effects and the spellcasting/Lamp producers stay excluded.
+
+
+## Disability consumes a permanent supplied result — 2026-10-15
+
+Chaos in the Streets p149 rolls Disability when the Cripple group is created.
+The modular duel accepts exactly one condition.disability-1..6 and applies its
+statistics once during compilation; initialization must not roll group creation
+again. Parkinson permits one active weapon, not two weapons or weapon plus shield;
+it does not forbid a single two-handed weapon or equate a buckler with a shield.
+Head Injury uses ordinary Stupidity unless a friendly active Hero is within six
+inches. A supplied qualified proximity condition is a current local fact, not a
+permanent cure; explicit supplied provider records resolve side, activity and the
+inclusive six-inch boundary. Poor Eyesight adjusts stored BS only; shooting, group
+creation and campaign progression remain excluded.
+
+
+## Penthesilea Weapon Master means Weapons Training — 2026-10-15
+
+The user explicitly approved treating Penthesilea's undefined printed Weapon Master
+as Weapons Training: proficiency/access to hand-to-hand weapons, without any extra
+hit, attack or parry bonus. This is a project ruling, not a recovered definition
+from Town Cryer 15. Bind compiler.weapon-knowledge with allowed_kinds restricted to
+close-combat-weapon. Proficiency does not create physical copies, grant ranged
+weapons, manufacture innate attacks or transfer another character's unique gear.
+Her printed M/I 5/5 already include the Mark; Dance, Fury and individual human-male
+Hatred retain their own operators. Concealment (jungle detection), Elixir of Life
+(post-battle injury reroll) and hiring remain outside the duel.
+
+## Alchemist attempts at the start of the owner's turn — 2026-10-15
+
+The user chose the start of each own turn, once per turn, for both Backley's
+Toughness test and the addicted Mad Scientist's attempt to brew a 6. The source
+states the effects and release conditions but does not specify their cadence;
+this timing is a project ruling, not recovered source text. No attempt occurs on
+the opponent's turn or after that state has been cleared. Success is effective
+that turn: Backley's actual Strength/Initiative penalties end; a successful brew
+ends the action restriction and supplies Aberrantius Vigortia (+1 Strength and
+Toughness), once, without healing Wounds or duplicating an already supplied dose.
+The initial potion result/addiction are supplied. Campaign creation of addiction,
+post-battle rolls and Quicksilver's Movement effect remain excluded.

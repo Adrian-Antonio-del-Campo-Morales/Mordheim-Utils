@@ -413,16 +413,34 @@ rules:
     - axe-hurlers
 - id: axe-hurlers--born-marksmen
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.dwarf-slayer-cult-web.axe-hurlers.born-marksmen
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: skill selections on promotion are advancement-time mechanics outside the
-        duel scope.
+    - id: profile.skill-access
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.skill-access
+        parameters:
+          category: shooting
+          skills:
+          - skill.eagle-eyes
+          - skill.hunter
+          - skill.knife-fighter
+          - skill.nimble
+          - skill.pistolier
+          - skill.quick-shot
+          - skill.trick-shooter
+          - skill.weapons-expert
+    - id: compiler.promoted-hero-skill-access
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.promoted-hero-skill-access
+        parameters:
+          allowed_skill_lists:
+          - shooting
   name: Born Marksmen
   effect: >-
     If an Axe Hurler rolls a "That Lad's Got Talent" as an advancement, he may always choose
@@ -445,6 +463,8 @@ rules:
   applies_to:
     profile_ids:
     - axe-hurlers
+    profile_types:
+    - hero
 - id: axe-hurlers--skittish
   runtime:
     scope: LATER
@@ -480,16 +500,35 @@ rules:
     - axe-hurlers
 - id: band--slayer-special-skills
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.dwarf-slayer-cult-web.special.slayer-special-skills
-      scope: LATER
+    - id: profile.skill-access
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.skill-access
+        parameters:
+          category: special
+          skills:
+          - skill.deathwish
+          - skill.ferocious-charge
+          - skill.monster-slayer
+          - skill.berserker
+          - skill.deathblow
+          - skill.axe-mastery
+          - skill.tough-as-steel
+          - skill.thick-skull
+    - id: unimplemented.dwarf-slayer-cult-web.special.slayer-special-skills-relentless
+      scope: 'NO'
       binding: null
       reason: >-
-        Deferred subsystem: skill selections on promotion are advancement-time mechanics outside the
-        duel scope.
+        Out of scope by content: the printed Relentless lets a Slayer whose charge failed still move
+        the full distance of his move against an enemy within sight or that he can detect. Movement,
+        sight and detection are outside the resolved duel, so the member has no duel consequence. It
+        is a real printed member of this list and is disposed here instead of being dropped for
+        lacking a catalogue row.
   name: Slayer Special Skills
   effect: >-
     The Slayer hero skill list (Slayers Only): Deathwish — the hero is completely immune to all
@@ -536,18 +575,37 @@ rules:
       quedar aturdido; si la supera, trata el resultado de aturdido como derribado.
   applies_to:
     band: true
+    profile_ids:
+    - giant-slayer
+    - doomseeker
 - id: band--rememberer-skills
+  kind: warband_skill
   runtime:
-    scope: LATER
-    implemented: 'NO'
-    grant: band
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
     effects:
-    - id: unimplemented.dwarf-slayer-cult-web.special.rememberer-skills
-      scope: LATER
+    # Printed Songster, Rememberer only: a supplied friendly model within six
+    # inches re-rolls one failed Leadership test with +1, capped at 10.
+    - id: mechanic.songster
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.songster
+    # The printed post-game experience is campaign, and the printed extension to
+    # Rout tests belongs to the excluded group subsystem.
+    - id: band--rememberer-skills.song-of-honor
+      scope: 'NO'
       binding: null
       reason: >-
-        Deferred subsystem: leadership reroll auras and post-game experience are psychology/campaign
-        mechanics outside the duel scope.
+        +1 Experience to every hero and henchman after a game in which a Slayer died is post-game
+        campaign advancement, not a duel consequence.
+    - id: band--rememberer-skills.rout-tests
+      scope: 'NO'
+      binding: null
+      reason: >-
+        The printed extension of the re-roll to Rout tests belongs to the excluded group Rout
+        subsystem; only the individual Leadership re-roll of a supplied friendly model is admitted.
   name: Rememberer Skills
   effect: >-
     Songster — a Bard's rousing war songs steel the hearts of all those around him. Any friendly
@@ -569,7 +627,8 @@ rules:
       Memoralista. Canción de Honor — tras la partida, si uno o más Matatrolles de tu banda
       murieron, todos los héroes y secuaces ganan +1 de Experiencia. Solo Memoralista.
   applies_to:
-    band: true
+    profile_ids:
+    - rememberer
 - id: band--slayer-rites
   runtime:
     scope: LATER

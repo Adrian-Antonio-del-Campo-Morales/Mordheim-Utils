@@ -684,6 +684,7 @@ rules:
           bonuses:
             weapon_skill: 1
 - id: band--necromantic-modification-paladin-of-horror
+  kind: modification
   name: Paladin of Horror
   effect: 6 on 2D6; costs 20 gc. The Necromantic Abomination gains +1 Leadership.
   source:
@@ -699,15 +700,20 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
-    implemented: 'NO'
-    grant: band
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
     effects:
-    - id: unimplemented.khemri-necromancers.band.necromantic-modification-paladin-of-horror
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: profile.characteristics
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.characteristics
+        parameters:
+          profile_ids:
+          - necromantic-abomination
+          bonuses:
+            leadership: 1
 - id: band--necromantic-modification-enhanced-reflexes
   kind: modification
   name: Enhanced Reflexes

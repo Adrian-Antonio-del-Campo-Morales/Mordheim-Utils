@@ -40,11 +40,95 @@ def has_tag(effect: EffectSet, tag: str) -> bool:
     return tag in effect.tags
 
 
+def black_lotus_wounds(effect: EffectSet, defender_effects: EffectSet) -> bool:
+    """Whether this attack carries the Black Lotus wound guarantee.
+
+    A coating the source prints as acting against Vampires only supplies the
+    same operator for that recipient alone: every other opponent is untouched.
+    """
+    if not has_tag(effect, "poison.black-lotus"):
+        return False
+    return (not has_tag(effect, "poison.vampires-only")
+            or has_tag(defender_effects, "species.vampire"))
+
+
 def ignores_unarmed_penalties(effect: EffectSet) -> bool:
     return any(has_tag(effect, tag) for tag in (
         "skill.unarmed-fighting", "skill.art-of-silent-death",
         "guardian_unarmed", "rule.unarmed-without-penalties",
     ))
+
+
+#: Printed Cold Steel (Necrarchs Banshee, Mousillon p6): "Any attack made with a
+#: steel/iron weapon (ie. anything but clubs, fists etc.) can harm it, but is at
+#: -1 to hit.  Blessed and magic weapons ... hit normally."  The clause reads the
+#: attack's own identity, never a display name: its exceptions are the fighter's
+#: own body and its natural attacks, and its two exemptions are the properties
+#: the incoming attack already carries.
+COLD_STEEL_NON_METAL_TAGS = ("weapon.club", "weapon.fist", "weapon.natural-attacks")
+
+#: Cold Steel's printed exemptions: a blessed or magical weapon hits normally.
+COLD_STEEL_EXEMPT_TAGS = ("attack.blessed", "attack.magical")
+
+#: The defence the compiled bearer carries.  A band rule binds the clause as a
+#: compiler special rule and contributes this tag, so the consumers below read
+#: the same identity the KB declares.
+COLD_STEEL_TAG = "defence.cold-steel"
+
+
+def cold_steel_weapon_attack(weapon: EffectSet) -> bool:
+    """Whether Cold Steel speaks about this attack at all.
+
+    The printed sentence is about weapons, so an attack that carries no weapon
+    identity -- fire, acid blood, spines, Black Hunger backlash and the other
+    synthetic hits -- is not one of its attacks and keeps its ordinary to-hit
+    and wound resolution.
+    """
+    return any(str(tag).startswith("weapon.") for tag in weapon.tags)
+
+
+def cold_steel_metal_attack(weapon: EffectSet) -> bool:
+    """Whether the attack is made with a steel or iron weapon.
+
+    The printed gloss defines the set by what it excepts -- "anything but
+    clubs, fists etc." -- so the identity of the weapon carried decides, never
+    its visible name.  Fists and natural attacks are the body identities the
+    catalogue records, and the ordinary club carries its own ``weapon.club``
+    identity (which also keeps the shared mace behaviour); the hammer and mace
+    keep the metal treatment.
+    """
+    return (cold_steel_weapon_attack(weapon)
+            and not any(has_tag(weapon, tag) for tag in COLD_STEEL_NON_METAL_TAGS))
+
+
+def cold_steel_exempt(effect: EffectSet) -> bool:
+    """Whether the printed exemption applies: blessed and magic weapons."""
+    return any(has_tag(effect, tag) for tag in COLD_STEEL_EXEMPT_TAGS)
+
+
+def cold_steel_unharmed(defender_effects: EffectSet, weapon: EffectSet, effect: EffectSet) -> bool:
+    """Whether the printed clause leaves this attack unable to harm the bearer.
+
+    Only a steel or iron weapon, or a blessed or magical one, can harm a
+    Banshee: the body identities its gloss excepts cannot.
+    """
+    return (has_tag(defender_effects, COLD_STEEL_TAG)
+            and cold_steel_weapon_attack(weapon)
+            and not cold_steel_metal_attack(weapon)
+            and not cold_steel_exempt(effect))
+
+
+def unarmed_attack_cap_applies(effect: EffectSet) -> bool:
+    """Whether the ordinary one-attack cap of an unarmed fighter applies.
+
+    ``ignores_unarmed_penalties`` waives every dagger-like penalty at once,
+    including the opponent's +1 armour save.  A printed clause may instead keep
+    that gift and only lift the cap, so reducing a fist to a single attack is a
+    separate question from the penalty waiver (Ogre Hunter, "Don't Fight with
+    Eating Knives": the printed Attacks value, the ogre's normal Strength and
+    the opponent's +1 armour save all remain).
+    """
+    return not ignores_unarmed_penalties(effect) and not has_tag(effect, "mechanic.ogre-unarmed")
 
 
 def to_hit_target(attacker_ws: int, defender_ws: int) -> int:
@@ -101,15 +185,42 @@ class PriorityContext:
 @dataclass(frozen=True, slots=True)
 class PriorityResult:
     priority: int
-    initiative: int
+    #: ``None`` when the profile prints no Initiative: no number is invented for
+    #: it, and an equal tier falls back to the printed tie roll.
+    initiative: int | None
+
+
+def priority_order(result: PriorityResult) -> tuple[int, float]:
+    """Scheduling key for one priority result.
+
+    ``PriorityResult.initiative`` is ``None`` for a profile that prints no
+    Initiative (the Necrarchs Banshee).  An absent value is never a number: the
+    order places it after every printed Initiative of its tier, and a pair the
+    order cannot separate -- two absent values, or two equal printed ones --
+    falls back to the printed tie roll in ``first_acts_before``.
+    """
+    return (result.priority,
+            float("-inf") if result.initiative is None else float(result.initiative))
 
 
 def first_acts_before(first: PriorityResult, second: PriorityResult,
                       dice: DiceSource, *, key: str = "priority-tie") -> bool:
-    """Resolve tier, Initiative, then an unbiased tie using the shared contract."""
-    if first == second:
+    """Resolve tier, Initiative, then an unbiased tie using the shared contract.
+
+    An absent Initiative is never compared with a printed number: the printed
+    value orders the pair and the fighter whose profile prints none acts after
+    it.  Two absent values leave the pair undecided and the printed tie roll
+    decides, exactly as it does for two equal Initiatives.
+    """
+    if first.priority != second.priority:
+        return first.priority > second.priority
+    if first.initiative is None and second.initiative is None:
         return dice.roll(RollRequest(key)) >= 4
-    return (first.priority, first.initiative) > (second.priority, second.initiative)
+    if first.initiative is None or second.initiative is None:
+        return second.initiative is None
+    if first.initiative != second.initiative:
+        return first.initiative > second.initiative
+    return dice.roll(RollRequest(key)) >= 4
 
 
 def resolve_priority(context: PriorityContext) -> PriorityResult:
@@ -143,8 +254,14 @@ def resolve_priority(context: PriorityContext) -> PriorityResult:
         if has_tag(fighter.global_effects, "skill.lightning-reflexes") and context.charged:
             value = max(value, 1)
         # Spears and chargers share Strike First; the FAQ resolves ties by I.
+    # A profile that prints no Initiative fights outside the Initiative order:
+    # it strikes last, and the first-round charge floor never raises it — the
+    # standing ruling that Strike Last controls the whole round order.
+    absent_initiative = fighter.characteristics.initiative is None
     # Lost Innocence explicitly retains strike-first when standing up.
     if context.stood_up and not has_tag(fighter.global_effects, "skill.always-strikes-first"):
+        value = -1
+    if absent_initiative:
         value = -1
     if has_tag(fighter.global_effects, "dance.woven-mist-active"):
         value = max(1, value)
@@ -152,12 +269,14 @@ def resolve_priority(context: PriorityContext) -> PriorityResult:
         # Frantic's explicit top priority remains stronger than an ordinary Dance.
         # Frantic explicitly ignores weapon penalties and ordinary Initiative.
         value = 30
-    initiative = max(
+    initiative = None if absent_initiative else max(
         context.initiative_floor,
         fighter.characteristics.initiative
         + fighter.global_effects.initiative_bonus
         + fighter.main_weapon.initiative_bonus
         + (fighter.off_hand.initiative_bonus if fighter.off_hand is not None else 0)
+        + sum(item.effect.initiative_bonus for item in fighter.mutation_equipment
+              if item.slot == "extra" and item.effect in fighter.extra_attacks)
         + context.initiative_bonus
         - context.initiative_penalty,
     )
@@ -207,10 +326,17 @@ def build_attacks(context: AttackPoolContext) -> AttackPoolResult:
         attacks += effect.charge_attacks_bonus
     if context.first_round and context.charging:
         attacks += effect.first_round_charge_attacks_bonus
-    if has_tag(fighter.main_weapon, "weapon.fist") and not ignores_unarmed_penalties(effect):
+    if has_tag(fighter.main_weapon, "weapon.fist") and unarmed_attack_cap_applies(effect):
         attacks = 1
         extra_weapon_attack = 0
-    if has_tag(effect, "skill.unarmed-fighting") and has_tag(fighter.main_weapon, "weapon.fist"):
+    # Unarmed Fighting prints '+1 Attack while unarmed'.  A profile whose own
+    # body is the attack (the natural attack an unequippable creature fights
+    # with) is unarmed in the same sense as the neutral fist, so the printed
+    # bonus follows the chosen body identity instead of requiring a fist that
+    # such a profile cannot carry.
+    if has_tag(effect, "skill.unarmed-fighting") and any(
+        has_tag(fighter.main_weapon, tag) for tag in ("weapon.fist", "weapon.natural-attacks")
+    ):
         attacks += 1
     if has_tag(effect, "skill.art-of-silent-death") and any(
         has_tag(fighter.main_weapon, tag)
@@ -229,7 +355,7 @@ def build_attacks(context: AttackPoolContext) -> AttackPoolResult:
     # Core combat: the one attack from a second weapon is added after other
     # modifiers; frenzy must not duplicate that extra attack.
     attacks += extra_weapon_attack
-    if has_tag(fighter.main_weapon, "weapon.fist") and not ignores_unarmed_penalties(effect):
+    if has_tag(fighter.main_weapon, "weapon.fist") and unarmed_attack_cap_applies(effect):
         attacks = min(attacks, 1)
     if (has_tag(fighter.main_weapon, "weapon.vomit-attack")
             or has_tag(fighter.main_weapon, "effect.wraith-touch")):
@@ -376,6 +502,11 @@ class WoundContext:
     critical_on_reroll: bool = True
     failure_still_wounds: bool = False
     critical_when_needing_six: bool = False
+    #: Printed Cold Steel: this attack's weapon cannot harm the bearer at all,
+    #: so no wound and no critical come from it.  Distinct from a failed wound
+    #: roll, which a reroll or a "failure still wounds" clause may still turn
+    #: into a wound.
+    unharmed: bool = False
 
 
 @dataclass(frozen=True, slots=True)
@@ -389,6 +520,10 @@ class WoundResult:
 
 def resolve_wound(context: WoundContext, dice: DiceSource) -> WoundResult:
     target = max(2, wound_target(context.strength, context.toughness, context.maximum_target) - context.modifier)
+    if context.unharmed:
+        # An attack the printed clause leaves unable to harm the bearer consumes
+        # no wound die and can never produce a wound or a critical.
+        return WoundResult(target, 0, False, False)
     if context.automatic:
         return WoundResult(target, 0, True, False)
     roll = dice.roll(RollRequest(context.key))
@@ -483,6 +618,7 @@ class SpecialSaveContext:
     ward_blocked: bool = False
     regeneration_blocked: bool = False
     key: str = "special_save"
+    ward_unmodifiable: bool = False
 
 
 @dataclass(frozen=True, slots=True)
@@ -513,6 +649,10 @@ class InjuryContext:
     modifier: int = 0
     critical_bonus: int = 0
     out_threshold: int = 5
+    #: Band edge where the chart stops knocking the victim down and stuns him
+    #: instead.  The core chart prints 3; a weapon whose own table stuns on 1-3
+    #: and leaves the victim out of action on 4-6 moves both edges.
+    stun_threshold: int = 3
     injury_profile: int = 0
     hard_to_kill: bool = False
     true_grit: bool = False
@@ -537,7 +677,7 @@ class InjuryResult:
 
 
 def injury_condition(total: int, context: InjuryContext) -> Condition:
-    result = Condition.OUT if total >= context.out_threshold else Condition.STUNNED if total >= 3 else Condition.KNOCKED_DOWN
+    result = Condition.OUT if total >= context.out_threshold else Condition.STUNNED if total >= context.stun_threshold else Condition.KNOCKED_DOWN
     if context.hard_to_kill:
         result = Condition.OUT if total >= 6 else Condition.STUNNED if total >= 3 else Condition.KNOCKED_DOWN
     if context.true_grit:
@@ -763,6 +903,12 @@ def _characteristic_test(
     value: int, dice: DiceSource, key: str, *, six_fails: bool = True,
     reroll: bool = False,
 ) -> bool:
+    if value is None:
+        # No profile reached this helper with an absent characteristic: a
+        # caller that would test one against a value the source does not print
+        # must state the printed consequence itself (see the Sweep branch of
+        # modular/attacks), never invent a number here.
+        raise ValueError(f"{key}: the target prints no fixed characteristic, so this test has no source value")
     roll = dice.roll(RollRequest(key))
     passed = roll <= value and not (six_fails and getattr(dice, "original_roll", roll) == 6)
     if not passed and reroll:

@@ -118,6 +118,54 @@ describe("T10 market availability verdict", () => {
     expect(refused?.message).toContain("vampire");
   });
 
+  it("reads the published bearer of a `profile_only` clause on the assignment route", () => {
+    // C03a: the printed bearer a `profile_only` clause names is published as
+    // data, so offering an item and accepting a direct selection read one rule
+    // instead of the prose note.
+    const offer = {
+      availability: { kind: "common" },
+      restrictions: [
+        { type: "warband_only", band_ids: ["pirates"] },
+        { type: "profile_only", note: "Pirate Gunners only", structure: { profile_ids: ["gunners"] } },
+      ],
+    };
+    expect(marketAssignmentIssueFor(offer, { profile_id: "gunners", kind: "henchman", skill_ids: [] }, "Swivel Gun"))
+      .toBeNull();
+    const refused = marketAssignmentIssueFor(offer, { profile_id: "pirate-captain", kind: "hero", skill_ids: [] }, "Swivel Gun");
+    expect(refused?.message).toContain("gunners");
+    expect(refused?.note).toContain("Pirate Gunners only");
+    // A bearer clause is not a purchase decision: the stash copy is undecided.
+    expect(marketAvailabilityIssueFor({ offer, band_id: "pirates", groups: [], item_name: "Swivel Gun" })).toBeNull();
+  });
+
+  it("refuses the printed kind and the printed denial of a bearer clause", () => {
+    const kindOnly = {
+      availability: { kind: "common" },
+      restrictions: [
+        { type: "profile_only", note: "One Marauders of Chaos Hero only", structure: { profile_types: ["hero"] } },
+      ],
+    };
+    expect(marketAssignmentIssueFor(kindOnly, { profile_id: "marauder-chieftain", kind: "hero", skill_ids: [] }, "Barbed Whip"))
+      .toBeNull();
+    const henchman = marketAssignmentIssueFor(kindOnly, { profile_id: "chaos-marauders", kind: "henchman", skill_ids: [] }, "Barbed Whip");
+    expect(henchman?.message).toContain("hero");
+    expect(henchman?.note).toContain("One Marauders of Chaos Hero only");
+    const denial = {
+      availability: { kind: "common" },
+      restrictions: [
+        {
+          type: "condition",
+          note: "Sold as Lance (entry lance); not available to Questing Knights.",
+          structure: { excluded_profile_ids: ["questing-knight"] },
+        },
+      ],
+    };
+    expect(marketAssignmentIssueFor(denial, { profile_id: "questing-knight", kind: "hero", skill_ids: [] }, "Lance")?.message)
+      .toContain("questing-knight");
+    expect(marketAssignmentIssueFor(denial, { profile_id: "knights-errant", kind: "hero", skill_ids: [] }, "Lance"))
+      .toBeNull();
+  });
+
   it("keeps refusing an unscoped editorial note", () => {
     const offer = { availability: { kind: "common" }, restrictions: [{ type: "condition", note: "Ask the campaign organiser." }] };
     const issue = marketAvailabilityIssueFor({ offer, band_id: OTHER, groups: [], item_name: "Oddity" });

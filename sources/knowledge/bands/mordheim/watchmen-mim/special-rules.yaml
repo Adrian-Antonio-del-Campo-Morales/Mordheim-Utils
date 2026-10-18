@@ -155,16 +155,15 @@ rules:
     band: true
 - id: band--fanatical
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.watchmen-mim.band.fanatical
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: compiler.knight-of-purity
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.knight-of-purity
   name: Fanatical
   effect: >-
     Knights of Purity are vigilante crusaders hell-bent on the destruction of Chaos. Any Hero of the
@@ -267,15 +266,15 @@ rules:
     - sergeants
 - id: private-sleuth--scryer
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: trait.re-roll-melee
-      scope: LATER
-      binding: null
-      reason: >-
-        Pending L09 and T13-Q104: source-specific optional rerolls of close-combat rolls, accepting the second result; exploration remains excluded.
+    - id: mechanic.scryer
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.scryer
   name: Scryer
   effect: >-
     A Sleuth can re-roll any rolls in close combat (the second result must be accepted). In

@@ -214,8 +214,39 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
+            "maintenance_result": { "description": "Supplied first Weaponsmith table result; no campaign roll.", "type": "integer", "minimum": 1, "maximum": 6 },
             "slot_fact": { "description": "Supplied fact naming the physical active item positions.", "$ref": "#/$defs/id" },
             "effect_parameters": { "$ref": "catalog-mechanics-execution.yaml.schema.json#/$defs/mechanic/properties/parameters" },
+            "eligibility": {
+              "description": "Physical items a supplied modifier may reach. Declaring it replaces the binding's own default rule: only an active weapon it admits is modified, one supplied result covers at most `max_items` of them, and `bearer_tags` names the bearers the printed result is restricted to.",
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "tags": {
+                  "description": "Item tags the modified exemplar must carry; absent admits any active weapon.",
+                  "type": "array",
+                  "items": { "$ref": "#/$defs/id" }
+                },
+                "max_items": {
+                  "description": "How many physical items one supplied result covers ('up to three swords').",
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "bearer_tags": {
+                  "description": "Any one of these bearer tags admits the supplied result ('Sisters of Sigmar and Witch Hunters').",
+                  "type": "array",
+                  "items": { "$ref": "#/$defs/id" }
+                }
+              }
+            },
+            "poison_coating": {
+              "description": "The supplied modifier is itself a poison: a poison-immune defender meets the piece without it, as the engine's existing poison transport already does.",
+              "type": "boolean"
+            },
+            "applies_to_own_attack": {
+              "description": "The binding applies the named equipment mechanic to the bearer's own attack instead of granting it as equipment: the offer, the configuration verdict and the canonical compilation never let the bearer buy, carry or select the piece. The intrinsic rider declares it itself (the Tomb Scorpion's sting is Black Lotus); it is never inferred from the mechanic family or the bearer.",
+              "type": "boolean"
+            },
             "allowed_skill_lists": {
               "description": "Skill tables a granted access extends.",
               "type": "array",
@@ -236,9 +267,33 @@
                 "leadership": { "type": "integer" }
               }
             },
+            "maximum": {
+              "description": "Printed ceiling of the same `bonuses` block, keyed by the same characteristics: a bonus named here never takes its characteristic above the ceiling (the Brewers' Special Brew raises Weapon Skill and Strength but \"never greater than 10\").",
+              "type": "object",
+              "propertyNames": {
+                "enum": [
+                  "initiative",
+                  "strength",
+                  "toughness",
+                  "weapon_skill",
+                  "wounds",
+                  "attacks",
+                  "movement",
+                  "leadership"
+                ]
+              },
+              "additionalProperties": { "type": "integer" }
+            },
             "categories": {
               "description": "Item or rule categories the binding covers.",
               "type": "array",
+              "items": { "$ref": "#/$defs/id" }
+            },
+            "options": {
+              "description": "Rule ids a printed one-of choice selects among (the Mule Skinner's single Animal Handling skill). The binding requires exactly one of them and the selected member keeps its own record.",
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
               "items": { "$ref": "#/$defs/id" }
             },
             "category": {
@@ -302,6 +357,11 @@
               "type": "integer",
               "minimum": 0
             },
+            "when_items": {
+              "description": "Apply required_kinds only while one of these item or mechanic ids is carried.",
+              "type": "array",
+              "items": { "$ref": "#/$defs/id" }
+            },
             "required_kinds": {
               "description": "Item kinds, or an item/mechanic id when the clause names one canonical object ('must include a Chaos Dwarf Blunderbuss'), any one of which satisfies a compulsory-acquisition clause ('must buy a weapon from the hand-to-hand combat list'); this is a purchase obligation, never an obligation to attack with the item.",
               "type": "array",
@@ -338,6 +398,13 @@
             "profile_ids": {
               "description": "Profiles the binding applies to.",
               "type": "array",
+              "items": { "$ref": "#/$defs/id" }
+            },
+            "variant_ids": {
+              "description": "Supplied variants that must be current for the binding to apply (a mark whose access belongs to the War-Priest of Solkan).",
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
               "items": { "$ref": "#/$defs/id" }
             },
             "value": {

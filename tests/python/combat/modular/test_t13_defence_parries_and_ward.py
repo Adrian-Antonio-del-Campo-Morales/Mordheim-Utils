@@ -160,6 +160,35 @@ def test_instinctive_warrior_keeps_the_ordinary_sword_parry_without_a_reroll():
 # Marks of Ranald: an unmodifiable 6+ duck past any hit, magic included, rolled
 # before critical hit effects are determined and never repeated as a ward save.
 # ---------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
+# Dwarfs printed Parry: two Dwarf axes, or a Dwarf axe with a sword in either
+# hand order, give up the second parry and gain a single failed-parry reroll.
+# Two ordinary swords keep no reroll, and the parry limit stays at one.
+# ---------------------------------------------------------------------------
+def test_two_dwarf_axes_re_roll_a_failed_parry():
+    axes = bare("dwarf-slayers-kaz", "slayers", main_weapon_id="weapon.dwarf-axe",
+                off_hand_id="weapon.dwarf-axe")
+    assert _parry_capacity(axes) == 1
+    assert _parry_context(axes, state(axes), axes.main_weapon, 3, 4, "p").reroll is True
+
+
+def test_a_dwarf_axe_and_a_sword_re_roll_the_parry_in_both_hand_orders():
+    main_axe = bare("dwarf-slayers-kaz", "slayers", main_weapon_id="weapon.dwarf-axe",
+                    off_hand_id="weapon.sword")
+    main_sword = bare("dwarf-slayers-kaz", "slayers", main_weapon_id="weapon.sword",
+                      off_hand_id="weapon.dwarf-axe")
+    assert _parry_capacity(main_axe) == 1
+    assert _parry_context(main_axe, state(main_axe), main_axe.main_weapon, 3, 4, "p").reroll is True
+    assert _parry_context(main_sword, state(main_sword), main_sword.main_weapon, 3, 4, "p").reroll is True
+
+
+def test_two_ordinary_swords_gain_no_failed_parry_reroll():
+    swords = bare("dwarf-slayers-kaz", "slayers", main_weapon_id="weapon.sword",
+                  off_hand_id="weapon.sword")
+    assert _parry_capacity(swords) == 1
+    assert _parry_context(swords, state(swords), swords.main_weapon, 3, 4, "p").reroll is False
+
+
 def test_trickster_priest_ducks_hits_on_six():
     assert strike(attacker(), trickster(special_rule_ids=(MARKS,)),
                   [("hit", 6), ("marks-of-ranald", 6)]).saved
@@ -340,9 +369,13 @@ def test_mourngul_three_plus_ethereal_save_has_the_printed_threshold_and_magic_e
     assert not magic.saved
 
 
-def test_pooled_ranald_ducks_every_hit_and_skips_a_hit_already_saved_by_ethereal():
+@pytest.mark.parametrize("curse", [False, True])
+def test_pooled_ranald_ducks_every_hit_and_skips_a_hit_already_saved_by_ethereal(curse):
     # Composition witness: it does not establish a canonical Ethereal Priest.
     atk = attacker()
+    if curse:
+        atk = replace(atk, global_effects=replace(atk.global_effects,
+            tags=(*atk.global_effects.tags, "condition.djinns-curse-active")))
     priest = trickster(special_rule_ids=(MARKS,))
     priest = replace(priest, global_effects=replace(priest.global_effects,
         tags=(*priest.global_effects.tags, "mechanic.ethereal-hit-save")))
@@ -1058,6 +1091,19 @@ def test_native_bone_goliath_ignores_injury_only_on_four_and_magic_denies_it(mag
     dice.finish()
 
 
+def test_the_highest_of_several_injury_results_applies():
+    unit, target = attacker(), attacker()
+    unit = replace(unit, global_effects=replace(unit.global_effects, damage=2))
+    target = replace(target, characteristics=replace(target.characteristics, wounds=1))
+    # A multi-wound hit forcing one knocked-down and one out-of-action injury
+    # ends out of action; the same roll set without the 6 stays knocked down.
+    result = strike(unit, target, [("hit", 4), ("wound", 4), ("injury.0", 2), ("injury.1", 6)])
+    assert result.defender.condition == phases.Condition.OUT
+    assert result.defender.wounds == -1
+    survived = strike(unit, target, [("hit", 4), ("wound", 4), ("injury.0", 2), ("injury.1", 3)])
+    assert survived.defender.condition == phases.Condition.STUNNED
+
+
 def test_bone_goliath_checks_each_injury_and_keeps_the_unignored_result():
     unit,target = attacker(strength=6),canonical('hirelings.hired-sword.1c','hireling.hired-sword.bone-goliath','weapon.natural-attacks')
     unit = replace(unit,main_weapon=replace(unit.main_weapon,damage=2))
@@ -1088,26 +1134,72 @@ def test_intrinsic_djinn_save_is_unmodifiable_but_luck_replacement_is_an_ordinar
     dice.finish(); decisions.finish()
 
 
-@pytest.mark.parametrize("source", ["mechanic.ethereal-hit-save", "mechanic.marks-of-ranald", "mechanic.djinn-ethereal"])
-def test_active_curse_refuses_only_its_unsettled_composition_with_an_applicable_unmodifiable_save(source):
+@pytest.mark.parametrize("source,key,face", [
+    ("mechanic.ethereal-hit-save", "x.ethereal", 4),
+    ("mechanic.marks-of-ranald", "x.marks-of-ranald", 6),
+    ("mechanic.djinn-ethereal", "x.special.ward", 5),
+])
+@pytest.mark.parametrize("passes", [False, True])
+def test_active_curse_preserves_the_printed_unmodifiable_save(source, key, face, passes):
     unit, target = attacker(), attacker()
     unit = replace(unit, global_effects=replace(unit.global_effects,
         tags=(*unit.global_effects.tags, "condition.djinns-curse-active")))
     target = replace(target, global_effects=replace(target.global_effects,
-        tags=(*target.global_effects.tags, source), ward_save=5 if source == "mechanic.djinn-ethereal" else 7))
+        tags=(*target.global_effects.tags, source, "mechanic.ranalds-luck"),
+        ward_save=5 if source == "mechanic.djinn-ethereal" else 7))
     rolls = [{"key": "x.hit", "value": 4}]
     if source == "mechanic.djinn-ethereal":
-        rolls += [{"key": "x.wound", "value": 4}]
+        rolls.append({"key": "x.wound", "value": 4})
+    rolls.append({"key": key, "value": face if passes else face-1})
+    if not passes and source != "mechanic.djinn-ethereal":
+        rolls.append({"key": "x.wound", "value": 1})
     dice = StrictDice(rolls)
-    with pytest.raises(ValueError, match="Djinn's Curse versus the explicitly unmodifiable"):
-        resolve_reference_attack(unit, target, state(unit), state(target), unit.main_weapon,
-            dice, key="x", decisions=StrictDecisions([]))
-    dice.finish()
-    dice = StrictDice([{"key": "x.hit", "value": 1}])
     result = resolve_reference_attack(unit, target, state(unit), state(target), unit.main_weapon,
         dice, key="x", decisions=StrictDecisions([]))
-    assert not result.hit
     dice.finish()
+    assert result.saved == passes
+    assert "ranalds-luck" not in result.defender.resources_spent
+
+
+@pytest.mark.parametrize("face,saved", [(4, False), (5, True)])
+def test_curse_preserves_daemonic_flesh_face_and_its_roll_is_unmodifiable(face, saved):
+    unit = attacker()
+    unit = replace(unit, global_effects=replace(unit.global_effects,
+        tags=(*unit.global_effects.tags, "condition.djinns-curse-active")))
+    target = compile_fighter(FighterBuild("mordheim", Characteristics(3, 3, 3, 2, 3, 1),
+        trait_overrides={"natural_armour_save": 5, "natural_armour_unmodified": True,
+                         "natural_armour_negated_by_magic": True}))
+    target = replace(target, global_effects=replace(target.global_effects,
+        tags=(*target.global_effects.tags, "mechanic.daemonic-flesh", "mechanic.ranalds-luck")))
+    dice = StrictDice([{"key": "x.hit", "value": 4}, {"key": "x.wound", "value": 4},
+                       {"key": "x.armour", "value": face}])
+    result = resolve_reference_attack(unit, target, state(unit), state(target), unit.main_weapon,
+        dice, key="x", decisions=StrictDecisions([]))
+    dice.finish()
+    assert result.saved == saved
+    assert "ranalds-luck" not in result.defender.resources_spent
+
+
+@pytest.mark.parametrize("luck,ordinary_face", [(True, 5), (False, 4)])
+def test_curse_keeps_a_stronger_ordinary_djinn_ward_modifiable(luck, ordinary_face):
+    unit, target = attacker(), attacker()
+    unit = replace(unit, global_effects=replace(unit.global_effects,
+        tags=(*unit.global_effects.tags, "condition.djinns-curse-active")))
+    tags = ("mechanic.djinn-ethereal", "mechanic.ranalds-luck")
+    if luck:
+        tags += ("condition.djinns-luck-active",)
+    target = replace(target, global_effects=replace(target.global_effects,
+        tags=(*target.global_effects.tags, *tags), ward_save=ordinary_face))
+    incoming = _combined_effect(unit, unit.main_weapon)
+    prepared = prepare_special_save_context(target, incoming)
+    assert prepared.ward_save == 5 and not prepared.ward_unmodifiable
+    dice = StrictDice([{"key": "x.hit", "value": 4}, {"key": "x.wound", "value": 4},
+                       {"key": "x.special.ward", "value": 4}])
+    decisions = StrictDecisions([{"key": "x.special.ward.ranalds-luck.plus", "value": True}])
+    result = resolve_reference_attack(unit, target, state(unit), state(target), unit.main_weapon,
+        dice, key="x", decisions=decisions)
+    dice.finish(); decisions.finish()
+    assert result.saved and "ranalds-luck" in result.defender.resources_spent
 
 
 @pytest.mark.parametrize("incoming_tag", [None, "attack.magical", "attack.blessed"])
@@ -1282,3 +1374,37 @@ def test_mim_regeneration_precedes_automatic_out_from_an_established_wound_and_a
     assert result.defender.wounds == 2 and result.defender.condition == current.condition
     assert result.damage == 1 and not result.saved
     dice.finish(); decisions.finish()
+
+
+# ---------------------------------------------------------------------------
+# P03: the printed Dwarf-slayer-cult Parry clause binds the single failed-parry
+# reroll to two Dwarf axes or to a Dwarf axe and a sword in either hand order,
+# while it keeps the one-parry limit and grants no reroll to two swords.
+# ---------------------------------------------------------------------------
+def dwarf_combatant(main_weapon, off_hand):
+    # Both arming orders sit inside the printed slayer equipment list, where the
+    # clause belongs, so each compiled side runs the real eligibility route.
+    return canonical("dwarf-slayer-cult-web", "giant-slayer", main_weapon,
+                     off_hand_id=off_hand)
+
+
+def test_dwarf_axe_with_sword_gains_the_printed_failed_parry_reroll():
+    for combo in (("weapon.dwarf-axe", "weapon.sword"), ("weapon.sword", "weapon.dwarf-axe")):
+        fighter = dwarf_combatant(*combo)
+        assert fighter.main_weapon.parry or fighter.off_hand.parry
+        context = _parry_context(fighter, state(fighter), fighter.main_weapon, 3, 4, "p")
+        assert context.reroll is True, combo
+
+
+def test_dwarf_axe_pair_keeps_the_reroll_and_two_swords_get_none():
+    pair = dwarf_combatant("weapon.dwarf-axe", "weapon.dwarf-axe")
+    assert _parry_context(pair, state(pair), pair.main_weapon, 3, 4, "p").reroll is True
+    # The one-parry-per-phase limit stays: the printed pair gives up the second
+    # parry in exchange for the reroll, and never parries twice.
+    assert _parry_capacity(pair) == 1
+    swords = compile_fighter(FighterBuild(
+        "mordheim", Characteristics(3, 3, 3, 3, 3, 1, leadership=7),
+        main_weapon_id="weapon.sword", off_hand_id="weapon.sword"))
+    assert swords.main_weapon.parry and swords.off_hand.parry
+    context = _parry_context(swords, state(swords), swords.main_weapon, 3, 4, "p")
+    assert context.reroll is False

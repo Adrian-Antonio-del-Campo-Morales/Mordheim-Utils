@@ -29,7 +29,7 @@ are listed in section 7.
   The still-versioned `sources/2A`, `sources/2B` and their exclusive ingestion
   tools are legacy material awaiting removal; their presence does not imply
   another consolidation phase. Preserve any unresolved source contradictions
-  listed in [final integration problems](2A2B-final-integration-problems.md).
+  listed in [remaining problems](REMAINING_MODULAR_ENGINE_PROBLEMS.md).
 
 Phase history (all accepted before this consolidation): preparation T01–T05,
 KB integration T06–T08 (phase 1), Warband Manager Web T09–T12 (phase 2).
@@ -107,27 +107,31 @@ meaning/scope; it does not certify implementation. Original audit IDs are
 permanent. Match origin ID + raw effect-text SHA-256 before reusing a decision.
 User rulings override source-review interpretations.
 
-| Id | Scope | Decision | Remaining work |
-| --- | --- | --- | --- |
-| `F074-brood-dagger` | YES | Printed dagger restricts the bearer to Henchmen; not merely a free-dagger price condition. | Encode the Henchman entry restriction in shared eligibility. |
-| `F074-crooked-moon-daggers` | YES | Poison Daggers belong to the Fanatic list; their appearance on the ordinary Night Goblin list does not grant them to ordinary Goblins. | Remove/restrict the incorrect general-list offer; keep the Fanatic route and its Black Lotus effect. |
-| `F074-pirate-variants` | YES | Qualifiers select warband variants: Estalian adds rapier/heavy armour and removes crossbows; Wasteland adds handguns. Keep other prohibitions conjunctive. | Reconcile affected offers against the canonical variant; no nationality selector. |
-| `F074-forest-bosspole` | YES | Bosspole recipients are Chieftain and Bosses, not every Hero; its spear contribution and Animosity immunity affect the duel. | Connect the special-equipment route and its individual contributions. |
-| `F074-halfling-aliases` | YES | The Cook-only footnote is about parenthesized culinary aliases; it does not prohibit generic dagger/hammer/axe/sword/helmet for other list users. | Presentation only; no mechanical bearer restriction. |
-| `F074-mare-heavy-armour` | YES (user) | Web version prioritized over the conflicting PDF: heavy armour in the Footman list is restricted to Paragon, Gallant and Redeemed Knights. | Applied in KB/2A staging; retain the shared recipient regression. |
-| `F074-mare-lance` | YES | Knight-only in both tables; the Paragon has a separate explicit lance prohibition. | Encode the entry restriction; preserve Vow of Poverty; the modular unsupported-lance guard is separate. |
-| `F074-mare-mounts` | NO | Barding/warhorse entries belong to excluded mount-equipment support. | Keep source/campaign availability; do not add mounted combat. |
-| `F074-house-equipment` | YES | A House is selected for the whole warband; Fierezza/Halcon/Baluardo qualifiers are explicit. | Transport the selected House into the shared equipment decision. |
-| `F074-lizard-poisons` | YES | Skinks use these poisons only on missile weapons; Saurus may use them on melee weapons. | Publish species+weapon-qualified eligibility (Saurus melee admitted, Skink melee refused). |
-| `F074-reptile-venom` | NO | Belongs to Skink Henchmen missile weapons and lasts one battle; no admitted melee contribution. | None required for the duel. |
-| `F074-lizard-sacred-marks` | YES | Sacred Markings Hero-only, at most one; Oversized Jaws Saurus-only (modifies bite); Poison Glands Skink-only (replacement bite). | Connect source-qualified Hero/species eligibility and the admitted bite contributions. |
-| `F074-sniper-equipment` | YES | Sniper is a chosen Modus Operandi of a Hero other than the Silent Master, not a missing profile. | Project the specialization into shared eligibility. |
-| `F074-underworld-leaders` | YES | The warband has two leaders; Man Catcher is Leader-only on both faction lists, so Goblin Bully and Skaven Slum Lord qualify. | Restore source-backed access for the two canonical leaders. |
-| `F074-wood-elf-ithilmar` | YES (user) | Local Ithilmar weapon/armour entries restricted to Heroes, including promoted Henchmen; discount/rarity are separate acquisition conditions. | Applied in KB/2A staging; retain the promotion.hero regression. |
+| Id | Scope | Decision |
+| --- | --- | --- |
+| `F074-brood-dagger` | YES | Printed dagger restricts the bearer to Henchmen; not merely a free-dagger price condition. |
+| `F074-crooked-moon-daggers` | YES | Poison Daggers belong to the Fanatic list; their appearance on the ordinary Night Goblin list does not grant them to ordinary Goblins. |
+| `F074-pirate-variants` | YES | Qualifiers select warband variants: Estalian adds rapier/heavy armour and removes crossbows; Wasteland adds handguns. Keep other prohibitions conjunctive. |
+| `F074-forest-bosspole` | YES | Bosspole recipients are Chieftain and Bosses, not every Hero; its spear contribution and Animosity immunity affect the duel. |
+| `F074-halfling-aliases` | YES | The Cook-only footnote is about parenthesized culinary aliases; it does not prohibit generic dagger/hammer/axe/sword/helmet for other list users. |
+| `F074-mare-heavy-armour` | YES (user) | Web version prioritized over the conflicting PDF: heavy armour in the Footman list is restricted to Paragon, Gallant and Redeemed Knights. |
+| `F074-mare-lance` | YES | Knight-only in both tables; the Paragon has a separate explicit lance prohibition. |
+| `F074-mare-mounts` | NO | Barding/warhorse entries belong to excluded mount-equipment support. |
+| `F074-house-equipment` | YES | A House is selected for the whole warband; Fierezza/Halcon/Baluardo qualifiers are explicit. |
+| `F074-lizard-poisons` | YES | Skinks use these poisons only on missile weapons; Saurus may use them on melee weapons. |
+| `F074-reptile-venom` | NO | Belongs to Skink Henchmen missile weapons and lasts one battle; no admitted melee contribution. |
+| `F074-lizard-sacred-marks` | YES | Sacred Markings Hero-only, at most one; Oversized Jaws Saurus-only (modifies bite); Poison Glands Skink-only (replacement bite). |
+| `F074-sniper-equipment` | YES | Sniper is a chosen Modus Operandi of a Hero other than the Silent Master, not a missing profile. |
+| `F074-underworld-leaders` | YES | The warband has two leaders; Man Catcher is Leader-only on both faction lists, so Goblin Bully and Skaven Slum Lord qualify. |
+| `F074-wood-elf-ithilmar` | YES (user) | Local Ithilmar weapon/armour entries restricted to Heroes, including promoted Henchmen; discount/rarity are separate acquisition conditions. |
 
 The former register also carried per-origin `effect_sha256` fingerprints and
 source URLs (`broheim.net` / `mordheimer.net`); recover them from Git history
 if a clarification must be re-validated.
+
+Implementation follow-through remains in
+[the semantic CSV](tasks/T13-semantic-analysis.csv). Concrete unresolved defects
+are recorded in [the problems register](REMAINING_MODULAR_ENGINE_PROBLEMS.md).
 
 ## 5. Current progress and remaining work (T13–T15)
 
@@ -147,21 +151,13 @@ Git history and the index below. Permanent user rulings are authoritative in
 
 ## 6. Open follow-up findings
 
-Formerly `tasks/T13-execution-follow-ups.md` (deferred findings discovered during
-T13 execution). Resolved findings are not repeated here. The identifiers remain
-the stable keys; full detail is in Git history.
-
-Open / incomplete: `F001` (inherited semantic failures and stale source pins) ·
-`F004` (Shifty promoted access) · `F005`/`F026`/`Q151` (melee-pistol allocation
-and reload/save contract) · `F006`/`F009` (optimized Shifty/Spectral Touch ports)
-· `F013` (Curse of the Revenant implementation) · `F024` (Sea Dragon Cloak
-composition) · `F028`/`F065` (residual item/choice projections) · `F036`
-(canonical hireling combat route) · `F047` (Boglar fire-magic witness) · `F057`
-(parity inventory count gate) · `F061` (Halfling Crude Belch first-attack loss) ·
-`F063` (Knight's Helm KB/reference cleanup) · `F064`/`F070` (Hellblade target
-facts; conditional Fear sources) · `F067` (Domnu Bear Hug third attack) · `F068`
-(keeper/target/charge facts) · `F069` (Fear vs involuntary movement) ·
-`L19`/`L20` optimized ports · `T14`/`T15` certification and closure.
+Verified unresolved defects are recorded in
+[Remaining modular engine problems](REMAINING_MODULAR_ENGINE_PROBLEMS.md).
+General implementation work remains in the plan and semantic CSV; historical
+finding lists are not maintained as current obstacles.
+Unresolved authority choices are in
+[Remaining human decisions](REMAINING_HUMAN_DECISIONS.md).
+This heading remains as a stable link target for permanent rulings.
 
 ## 7. Artifacts intentionally kept in this directory
 
@@ -181,8 +177,10 @@ facts; conditional Fear sources) · `F067` (Domnu Bear Hug third attack) · `F06
   and `verification/audit_export.py`.
 - [Source scope review](tasks/T13-audit-scope-review.csv): input to
   `verification/audit_export.py` and the source-review guide.
-- [Final integration problems](2A2B-final-integration-problems.md): source
-  contradictions and modelling gaps with exact identities and closing criteria.
+- [Remaining modular engine problems](REMAINING_MODULAR_ENGINE_PROBLEMS.md):
+  unresolved obstacles encountered by agents, with evidence and resumption context.
+- [Remaining human decisions](REMAINING_HUMAN_DECISIONS.md): unresolved authority
+  choices and the disposition of former questions.
 
 The superseded modular implementation plan, scratch assignment, C/D delivery
 CSVs and independent scope/equivalence review CSVs have been removed. Their

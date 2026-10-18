@@ -1097,3 +1097,71 @@ rules:
   applies_to:
     profile_ids:
     - spirits
+
+- id: black-hounds--natural-weapons
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+    - id: profile.natural-attacks
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.natural-attacks
+  name: Natural Weapons
+  effect: Black Hounds never use weapons or armour and suffer no penalty for fighting without equipment.
+  source:
+    manual: khemri
+    printed_page: 88
+    section: 0-5 Black Hounds
+  name_i18n:
+    es: Armas Naturales
+  effect_i18n:
+    es: Los Sabuesos Negros nunca usan armas ni armaduras y no sufren penalización por luchar sin equipo.
+  applies_to:
+    profile_ids:
+    - black-hounds
+
+- id: jackals--natural-weapons
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+    - id: profile.natural-attacks
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.natural-attacks
+  name: Natural Weapons
+  effect: Jackals never use weapons or armour and suffer no penalty for fighting without equipment.
+  source:
+    manual: khemri
+    printed_page: 89
+    section: Jackals
+  name_i18n:
+    es: Armas Naturales
+  effect_i18n:
+    es: Los Chacales nunca usan armas ni armaduras y no sufren penalización por luchar sin equipo.
+  applies_to:
+    profile_ids:
+    - jackals

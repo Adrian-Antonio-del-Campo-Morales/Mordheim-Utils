@@ -342,7 +342,13 @@ rules:
         kind: profile
         id: profile.equipment-restrictions
         parameters:
-          forbids: armour-suit
+          # The Estalian Special Rules add the heavy armour line to the Pirate
+          # Equipment List, so the printed 'may not wear armour' refuses the
+          # other body armour that same list offers and leaves the added heavy
+          # armour selectable, per the F074-pirate-variants ruling.
+          forbids:
+          - armour.light-armour
+          - armour.toughened-leathers
   name: No Armour
   effect: >-
     These profiles may not wear armour.

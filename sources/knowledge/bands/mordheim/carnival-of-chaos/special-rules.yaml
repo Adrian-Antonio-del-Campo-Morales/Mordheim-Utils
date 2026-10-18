@@ -125,6 +125,14 @@ rules:
         id: trait.cloud-of-flies
         parameters:
           value: true
+    - id: unimplemented.carnival-of-chaos.plague-bearers.dodgy-ranged-part
+      scope: 'NO'
+      binding: null
+      reason: >-
+        The claimed ranged part has no source support in this origin: the printed Cloud of Flies
+        sentence names only the close-combat opponent. Missile resolution is also outside the
+        isolated 1v1 duel, so the ranged half is recorded as excluded rather than folded into the
+        admitted close-combat modifier.
   name: Cloud of Flies
   effect: >-
     Plague Bearers are surrounded by a cloud of flies, which buzz around them and their combat
@@ -388,6 +396,14 @@ rules:
         id: trait.cloud-of-flies
         parameters:
           value: true
+    - id: unimplemented.carnival-of-chaos.nurglings.dodgy-ranged-part
+      scope: 'NO'
+      binding: null
+      reason: >-
+        The claimed ranged part has no source support in this origin: the printed Cloud of Flies
+        sentence names only the close-combat opponent. Missile resolution is also outside the
+        isolated 1v1 duel, so the ranged half is recorded as excluded rather than folded into the
+        admitted close-combat modifier.
   name: Cloud of Flies
   effect: >-
     Nurglings are surrounded by a cloud of flies, which buzz around them and their combat opponent.
@@ -610,15 +626,23 @@ rules:
     - nurglings
 - id: plague-cart--plague-cart
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.carnival-of-chaos.plague-cart.plague-cart
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: >-
-        Deferred subsystem: psychology.
+        Content exclusion, not a missing binding. The printed sentence raises the warband size (a
+        roster limit) and offsets the Daemonic Instability of the band's daemons: it re-rolls the
+        Leadership tests of Instability and adds +1 to the Injury tests of the Plague Bearers and
+        Nurglings taken out of action. Both daemon halves belong to the Instability subsystem the
+        source itself frames as offsetting that instability - the Rout Leadership test and the roll
+        taken after being taken out of action - and the resolved duel never reaches them; the band's
+        own daemonic-instability records and the shared daemon record are NO for the same reason. The
+        supplied facts stay caller-supplied, never simulated: no Plague Cart, no group and no table
+        distance is drawn or counted here.
   name: Plague Cart
   effect: >-
     While the Plague Cart is in the warband, the maximum number of warriors is increased by 2.
@@ -922,6 +946,14 @@ rules:
         id: trait.cloud-of-flies
         parameters:
           value: true
+    - id: unimplemented.carnival-of-chaos.band.dodgy-ranged-part
+      scope: 'NO'
+      binding: null
+      reason: >-
+        The claimed ranged part has no source support in this origin: the printed Cloud of Flies
+        sentence names only the close-combat opponent. Missile resolution is also outside the
+        isolated 1v1 duel, so the ranged half is recorded as excluded rather than folded into the
+        admitted close-combat modifier.
   name: Cloud of Flies
   effect: >-
     Cost: 25 Gold Crowns The Tainted One is surrounded by a cloud of flies, which buzz around him

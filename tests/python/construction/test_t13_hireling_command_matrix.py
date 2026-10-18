@@ -468,6 +468,8 @@ def test_native_kit_keeps_whole_choices_quantities_and_materials():
                     {'main_material_id': 'material.ithilmar'}):
         with pytest.raises(ValueError, match='complete legal printed kit'):
             compile_fighter(FighterBuild('mordheim', **base, **options))
-    with pytest.raises(ValueError, match='intrinsic duel clauses are pending'):
-        compile_fighter(FighterBuild('mordheim', band_id='hirelings.dramatis-personae.2b',
-            profile_id='hireling.dramatis.aldred-fellblade', main_weapon_id='weapon.double-handed-weapon'))
+    # Aldred's intrinsic clauses resolve (Righteous Fury, the Fellblade and the
+    # excluded Destiny), so the same build compiles with its printed weapon.
+    aldred = compile_fighter(FighterBuild('mordheim', band_id='hirelings.dramatis-personae.2b',
+        profile_id='hireling.dramatis.aldred-fellblade', main_weapon_id='weapon.double-handed-weapon'))
+    assert aldred.main_weapon.two_handed and 'skill.righteous-fury' in aldred.global_effects.tags

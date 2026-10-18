@@ -4,6 +4,9 @@ Reference material and procedures for the Mordheim Utils repository. Start
 with the [repository overview](../README.md) for installation and the common
 commands.
 
+Current modular follow-ups: [implementation problems](knowledge/2a2b/REMAINING_MODULAR_ENGINE_PROBLEMS.md)
+and [human decisions](knowledge/2a2b/REMAINING_HUMAN_DECISIONS.md).
+
 ## Reference — how the system is built
 
 - [Architecture](reference/architecture.md) — source layout, dependency

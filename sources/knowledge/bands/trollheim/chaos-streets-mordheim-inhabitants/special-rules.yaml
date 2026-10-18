@@ -395,8 +395,44 @@ rules:
     implemented: 'NO'
     grant: band
     effects:
-    - id: unimplemented.chaos-streets-mordheim-inhabitants.band.revival-sermons
+    - id: band.revival-sermons
       scope: LATER
       binding: null
       reason: >-
-        Deferred subsystem: psychology or mounts.
+        Deferred subsystem: sermon delivery and its group reception (casting procedure,
+        range, one active sermon and the sermon list). The individual armour permission is
+        carried by the Prophet's own equipment restriction and its list, not by this rule.
+
+- id: street-dogs--natural-weapons
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+    - id: profile.natural-attacks
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.natural-attacks
+  name: Natural Weapons
+  effect: Street Dogs fight with their jaws and ferocity and never use or need weapons or armour.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 149
+    section: 0-5 Street Dogs
+  name_i18n:
+    es: Armas Naturales
+  effect_i18n:
+    es: Los Perros Callejeros luchan con sus mandíbulas y ferocidad y nunca usan ni necesitan armas ni armaduras.
+  applies_to:
+    profile_ids:
+    - street-dogs

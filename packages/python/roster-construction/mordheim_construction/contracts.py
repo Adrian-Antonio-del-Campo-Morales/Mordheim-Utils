@@ -20,14 +20,19 @@ TRAIT_TYPES = {
     "condemned_fixed_characteristics": list,
     "rune_iron_slots": list, "rune_stone_slots": list, "rune_fury_slots": list,
     "rune_striking_slots": list, "rune_speed_slots": list, "rune_cleaving_slots": list,
+    "blessed_weapon_slots": list, "honing_slots": list, "coating_slots": list,
+    "craftsman_strength_slots": list, "craftsman_initiative_slots": list,
     "snorri_drunk_result": int,
-    "chaos_follower": bool, "onogal_follower": bool, "ulric_rival": bool, "aquatic": bool, "flesh_peddler_mark": bool, "guiding_dream_target": bool,
+    "chaos_follower": bool, "onogal_follower": bool, "ulric_rival": bool, "aquatic": bool, "greenskin": bool, "flesh_peddler_mark": bool, "guiding_dream_target": bool,
     "eagle_friends": int,
     "fauna_animal_kind": str, "animal_handler_leadership": int,
     "house_guard_house": str, "fighter_kind": str, "vampire_bloodline": str,
     "mercenary_origin": str, "elf_kind": str, "creature_kind": str, "active_command": str, "righteous_charge_active": bool, "wheelo_fitting": str, "sex": str, "species": str, "lit_item": bool, "vampire": bool, "normal_animal": bool, "lizardman": bool,
     "stupidity": bool, "stupidity_exempt": bool, "stupidity_initial_failed": bool,
     "stupidity_leadership": int, "stupidity_leadership_bonus": int,
+    # Printed Mob: how many other allied Peasants the caller supplies within
+    # three inches; the engine never counts the group itself.
+    "mob_allies": int,
     "starting_skills": (list,tuple), "natural_armour_save": int, "injury_profile": int,
     "ward_save": int, "regeneration_save": int,
     "extra_natural_attacks": int, "poison_immune": bool, "undead_or_possessed": bool,
@@ -47,9 +52,28 @@ TRAIT_TYPES = {
     "natural_armour_negated_by_fire": bool,
     "scourge_armed": bool,
     "slave": bool,
+    # Supplied identity of the opposing model: Free the Slaves! selects on it,
+    # exactly as `slave` carries the opposite printed fact.
+    "slaver": bool,
+    # Bitter Enmity (serious injury 56): the campaign determines which enemy the
+    # warrior hates, so the duel is supplied both the printed kind of target and
+    # its concrete identity.  A category never stands in for a named warrior and
+    # no supplied pair grants Hatred against every enemy.
+    "enmity_kind": str,
+    "enmity_target": str,
+    # Supplied instance identities: the caller's own keys for one warrior and for
+    # the warband instance it belongs to.  Bitter Enmity's three instance kinds
+    # select these, never a catalogue profile or band, so two warriors of one
+    # profile and two rosters built from one catalogue list stay distinct.
+    "instance_id": str,
+    "warband_instance": str,
+    # Supplied promotion fact: this Hero of the Watch has become a Knight of
+    # Purity, the only recipient the printed Fanatical rule names.
+    "crusader_of_law": bool,
     "devoted_vampire_down": bool,
     "devoted_vampire_killed": bool,
     "spellcaster": bool,
+    "necromancer": bool,
     "metal_armour": bool,
     "magical_attacks": bool,
     "spectral_touch": bool,
@@ -73,8 +97,11 @@ TRAIT_TYPES = {
 
 
 COMPILER_CONTRACTS = {
+    "compiler.holy-relic-frenzy",
+    "compiler.knight-of-purity",
     "compiler.aquatic-mutants",
     "compiler.johann-crimson-shade",
+    "compiler.hireling-fixed-equipment",
     "compiler.assassin-poisoner",
     "compiler.woodsmen-quarterstaff",
     "compiler.aldred-fellblade",
@@ -99,10 +126,17 @@ COMPILER_CONTRACTS = {
     "compiler.foreign-or-native-background",
     "compiler.haughty",
     "compiler.pirate-human-mercenary-equipment-access",
+    "compiler.mercenary-equipment-at-creation",
     "compiler.knighthood",
     "compiler.master-of-arms",
     "compiler.master-of-throwing-weapons",
     "compiler.mutation-purchase-at-recruitment",
+    "compiler.rat-ogre-single-mutation-at-recruitment",
+    "compiler.twistkin-single-mutation-at-recruitment",
+    "compiler.veteran-tracker-skill-choice",
+    "compiler.animal-handler-skill-choice",
+    "compiler.hillman-wolf-form",
+    "compiler.inherited-orc-special-skills",
     "compiler.bite-attack",
     "compiler.strikes-last-bite",
     "compiler.berserker-incompatible-with-ferocious-charge",
@@ -126,13 +160,32 @@ COMPILER_CONTRACTS = {
     "compiler.warrior-wizard",
     "compiler.warrior-s-code",
     "compiler.weapon-knowledge",
+    "compiler.weapons-training-exception",
     "compiler.lizardmen-scaly-skin",
 }
+
+
+# 'A trapper starts with ONE of the following Special Skills'. The choice is
+# admitted construction; each option keeps its own excluded runtime, so the
+# selection stays inert instead of granting the member's subsystem.
+VETERAN_TRACKER_SKILLS = (
+    "band--ogre-hunting-skills-infiltration",
+    "band--ogre-hunting-skills-set-traps",
+    "band--ogre-hunting-skills-netter",
+    "band--ogre-hunting-skills-scent-hound",
+)
 
 
 SPECIAL_RULE_EFFECTS = {
     "band--beastmen-special-skills-mutant": {},
     "band--marauder-special-skills-mutant": {},
+    # Chosen of Chaos: the admitted construction consequence is the capability
+    # itself, so a build can carry the selection the printed market clauses
+    # require. Nothing is added to the fighter: the printed campaign maximum is
+    # advancement (outside the duel), and the Hero equipment list the same
+    # sentence grants is already the declared list of every recipient of the
+    # rule, exactly as its own '(if he does not already)' reads.
+    "band--marauder-special-skills-chosen-of-chaos": {},
     # Tentacle: the printed grapple lets the mutant nominate which of the
     # opponent's attacks is lost, so the compiled effect carries the rule's
     # own tag beside the flat modifier the optimized drivers already apply.
@@ -170,6 +223,14 @@ SPECIAL_RULE_EFFECTS = {
 
 
 PROFILE_RULE_EFFECTS = {
+    # Cold Steel (Necrarchs Banshee): the printed clause reads the identity of
+    # the incoming attack -- a steel or iron weapon can harm the bearer at -1 to
+    # hit, a blessed or magical one hits normally, and the body identities its
+    # gloss excepts ("anything but clubs, fists etc.") cannot harm her at all.
+    # The bearer therefore carries one declared tag, and the modular consumers
+    # resolve it on the attack's own weapon and properties, never on a visible
+    # weapon name.  Missile references stay outside the duel.
+    "banshee--cold-steel": {"effects": {"tags": ("defence.cold-steel",)}},
     "fanatics--frantic": {"effects": {"priority": 10}},
     "centigors--trample": {},
     # Spiked Tail adds one repeated natural tail attack at the bearer's

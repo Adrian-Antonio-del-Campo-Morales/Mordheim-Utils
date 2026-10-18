@@ -461,6 +461,15 @@ rules:
         parameters:
           forbids:
           - ranged-weapons
+    # The printed first half of the same clause: the Mercenary Equipment list is
+    # open before the first game of a new campaign, and the `equipment.post-creation`
+    # variant is what removes it afterwards, leaving the Squire and Men-at-Arms
+    # Equipment Lists the profile declares.
+    - id: compiler.mercenary-equipment-at-creation
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.mercenary-equipment-at-creation
   name: Equipment Restrictions
   effect: "May be equipped from the Mercenary Equipment list before the first game of a new campaign; after that only from the Squire or Men-at-Arms Equipment Lists. May not use missile weapons."
   source:

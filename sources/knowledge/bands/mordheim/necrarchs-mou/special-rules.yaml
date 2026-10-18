@@ -573,15 +573,22 @@ rules:
     - banshee
 - id: banshee--immune-to-poisons
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.necrarchs-mou.banshee.immune-to-poisons
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+    - id: mechanic.drug-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.drug-immunity
   name: Immune to Poisons (Banshee)
   effect: Banshees are not affected by any drug or poison.
   source:
@@ -598,15 +605,15 @@ rules:
     - banshee
 - id: banshee--cold-steel
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.necrarchs-mou.banshee.cold-steel
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+    - id: special-rule.banshee--cold-steel
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: special-rule.banshee--cold-steel
   name: Cold Steel
   effect: >-
     While a Banshee cannot be killed by mundane weapons, it can still feel the cold bite of steel
@@ -1040,3 +1047,31 @@ rules:
   applies_to:
     profile_ids:
     - skeleton
+- id: nosferatu--no-armour
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - armour
+  name: No Armour
+  effect: He will never wear armour.
+  source:
+    manual: broheim.net
+    printed_page: 3
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+    section: 0-1 Nosferatu
+  name_i18n:
+    es: Sin Armadura
+  effect_i18n:
+    es: He will never wear armour.
+  applies_to:
+    profile_ids:
+    - nosferatu

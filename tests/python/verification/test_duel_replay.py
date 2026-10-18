@@ -167,6 +167,9 @@ def test_disability_initialization_marker_is_not_a_spent_resource(backend):
     first, second = fighter(), fighter(initiative=2)
     first = replace(first, global_effects=replace(first.global_effects, tags=("mechanic.disability",)))
     scalar = [roll("first.disability", 3), roll("round.0.first.attack.0.hit", 1), roll("round.0.second.attack.0.hit", 1)]
+    if backend == "modular":
+        first = fighter(skill_ids=("mechanic.disability",), condition_ids=("condition.disability-3",))
+        scalar = scalar[1:]  # Modular consumes a supplied permanent result, not group creation.
     result = execute(first, second, backend, scalar, [("integer", 6, v) for v in (3, 1, 1)],
         context=DuelContext(charging=("first",), active_participant="first"))
     assert result.terminal == (2, 1, (1, 1), (0, 0), (frozenset(), frozenset()))

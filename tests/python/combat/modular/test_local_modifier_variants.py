@@ -137,6 +137,19 @@ def strike(attacker, defender, rolls):
     return result
 
 
+@pytest.mark.parametrize('armour,face', [('armour.no-armour', 6), ('armour.heavy-armour', 4)])
+def test_shortsword_keeps_parry_and_grants_the_printed_enemy_armour_bonus(armour, face):
+    short = canonical('bretonnian-chapel-guard', 'battle-pilgrims', 'weapon.shortsword')
+    sword = canonical('bretonnian-chapel-guard', 'battle-pilgrims', 'weapon.sword')
+    assert short.main_weapon.parry and sword.main_weapon.parry
+    assert (short.main_weapon.target_armour_bonus, sword.main_weapon.target_armour_bonus) == (1, 0)
+    assert strike(short, enemy(armour=armour), [('hit', 4), ('wound', 4), ('armour', face)]).saved
+    control = [('hit', 4), ('wound', 4)]
+    if armour != 'armour.no-armour':
+        control.append(('armour', face))
+    assert not strike(sword, enemy(armour=armour), control).saved
+
+
 @pytest.mark.parametrize('band,profile,rule', [
     ('dark-elves', 'high-born', 'band--dark-elf-special-skills-fey-quickness'),
     ('druchii-mic', 'noble', 'noble--fey-quickness'),
@@ -448,6 +461,69 @@ def test_domnu_prize_fighter_only_adds_attack_and_removes_penalties_when_unarmed
     # S4, rather than ordinary unarmed S3, wounds T3 on 3; no enemy armour bonus.
     assert not strike(domnu, enemy(armour='armour.heavy-armour'),
         [('hit', 4), ('wound', 3), ('armour', 5)]).saved
+
+
+def _ogre_round_rolls():
+    return [('round.0.second.fear.charged.0', 3), ('round.0.second.fear.charged.1', 4),
+            ('round.0.first.attack.0.hit', 1), ('round.0.first.attack.1.hit', 1),
+            ('round.0.second.attack.0.hit', 1)]
+
+
+def test_ogre_hunter_keeps_full_attacks_unarmed_without_waiving_the_enemy_armour_bonus():
+    hunter = canonical('ogre-hunting-party-web', 'ogre-hunter', 'weapon.fist')
+    waiver = canonical('channel-rats-mim', 'domnu', 'weapon.fist')
+    assert hunter.characteristics.attacks == 2 and hunter.global_effects.attacks_bonus == 0
+    assert build_attacks(AttackPoolContext(hunter)).attacks == 2
+    # S4 rather than the dagger-like S3: the same roll wounds T3 for the ogre and
+    # fails for an ordinary unarmed fighter.
+    ordinary = enemy(weapon='weapon.fist')
+    assert strike(hunter, enemy(), [('hit', 4), ('wound', 3)]).wounded
+    assert not strike(ordinary, enemy(), [('hit', 4), ('wound', 3)]).wounded
+    # The printed +1 armour save of the opponent survives. Both attackers strike
+    # at Strength 4, so the identical roll saves against the ogre - whose gift is
+    # retained - and not against the waiver that cancels it.
+    assert strike(hunter, enemy(armour='armour.heavy-armour'),
+        [('hit', 4), ('wound', 3), ('armour', 5)]).saved
+    assert not strike(waiver, enemy(armour='armour.heavy-armour'),
+        [('hit', 4), ('wound', 3), ('armour', 5)]).saved
+    # The ordinary one-attack cap is untouched for everyone else.
+    assert build_attacks(AttackPoolContext(ordinary, base_attacks=2)).attacks == 1
+
+
+def test_ogre_hunter_unarmed_pool_strikes_twice_in_a_real_round():
+    hunter = canonical('ogre-hunting-party-web', 'ogre-hunter', 'weapon.fist')
+    foe = enemy()
+    dice = StrictDice([{'key': key, 'value': value} for key, value in _ogre_round_rolls()])
+    choices = StrictDecisions([])
+    state = initialize_duel(hunter, foe, dice, context=DuelContext(
+        charging=('first',), active_participant='first'))
+    result = resolve_round(hunter, foe, state, dice, choices)
+    dice.finish(); choices.finish()
+    assert len(result.attacks) == 3
+
+
+def test_ogre_hunter_losing_its_last_weapon_falls_back_without_losing_attacks():
+    from mordheim_combat.modular.equipment import equipment_for_state
+    hunter = canonical('ogre-hunting-party-web', 'ogre-hunter', 'weapon.mace')
+    assert 'weapon.fist' not in hunter.main_weapon.tags
+    stripped = equipment_for_state(hunter, replace(
+        initialize_fighter(hunter, StrictDice([]), 'd'),
+        broken_hands=frozenset({hunter.main_hand_slot})), first_round=False)
+    assert stripped.main_weapon == hunter.unarmed_weapon
+    assert build_attacks(AttackPoolContext(stripped)).attacks == 2
+    assert strike(stripped, enemy(armour='armour.heavy-armour'),
+        [('hit', 4), ('wound', 3), ('armour', 5)]).saved
+    # The same fallback feeds the modular round once the weapon is already gone.
+    foe = enemy()
+    dice = StrictDice([{'key': key, 'value': value} for key, value in _ogre_round_rolls()])
+    choices = StrictDecisions([])
+    state = initialize_duel(hunter, foe, dice, context=DuelContext(
+        charging=('first',), active_participant='first'))
+    state = replace(state, first=replace(state.first,
+        broken_hands=frozenset({hunter.main_hand_slot})))
+    result = resolve_round(hunter, foe, state, dice, choices)
+    dice.finish(); choices.finish()
+    assert len(result.attacks) == 3
 
 
 def test_miniath_canonical_native_parry_uses_the_existing_reroll():
@@ -1354,9 +1430,8 @@ def test_stupidity_completion_acquired_prior_failure_lasts_until_next_own_turn()
 
 def test_stupidity_completion_disability_head_injury_uses_the_same_turn_operator():
     from mordheim_combat.modular.psychology import resolve_stupidity
-    fighter = enemy(skill_ids=('mechanic.disability',))
-    dice = StrictDice([{'key': 'first.disability', 'value': 6},
-                       {'key': 'round.0.first.stupidity.0', 'value': 6},
+    fighter = enemy(skill_ids=('mechanic.disability',), condition_ids=('condition.disability-6',))
+    dice = StrictDice([{'key': 'round.0.first.stupidity.0', 'value': 6},
                        {'key': 'round.0.first.stupidity.1', 'value': 6}])
     decisions = StrictDecisions([])
     state = initialize_duel(fighter, enemy(), dice, context=DuelContext(charging=(), active_participant='first'))
@@ -2029,6 +2104,50 @@ def test_savage_fury_immunity_and_charge_bonus_and_lizardman_exemption():
     assert 'species.lizardman' in lizard.global_effects.tags
 
 
+def _penthesilea_canonical():
+    return compile_fighter(FighterBuild('mordheim',
+        band_id='hirelings.dramatis-personae.1b',
+        profile_id='hireling.dramatis.penthesilea-mark-of-the-serpent'))
+
+
+def test_penthesilea_canonical_profile_treatment_does_not_duplicate_the_mark():
+    pent = _penthesilea_canonical()
+    # The printed +1 Movement/Initiative of the mark is already inside the
+    # normalized profile (M 5*, I 5*); compilation keeps exactly those numbers.
+    assert (pent.characteristics.movement, pent.characteristics.initiative) == (5, 5)
+    assert 'weapon.starsword' in pent.main_weapon.tags
+    assert 'mechanic.mesmerising-dance' in pent.global_effects.tags
+    assert {'mechanic.charm-immunity', 'mechanic.fear-immunity'} <= set(pent.global_effects.tags)
+    assert pent.global_effects.charge_attacks_bonus == 1
+
+
+def test_penthesilea_dance_transfixes_a_failing_foe_and_fury_scores_the_charge_swing():
+    pent = _penthesilea_canonical()
+    foe = enemy()
+    def dance(rolls, foe_attacks):
+        tape = [{'key': f'round.0.second.mesmerising-dance.{i}', 'value': r}
+                for i, r in enumerate(rolls)]
+        tape += [{'key': f'round.0.first.attack.{i}.hit', 'value': 1}
+                 for i in range(3)]
+        if foe_attacks:
+            tape.append({'key': 'round.0.second.attack.0.hit', 'value': 1})
+        dice = StrictDice(tape)
+        state = initialize_duel(pent, foe, dice, context=DuelContext(
+            charging=('first',), active_participant='first'))
+        return resolve_round(pent, foe, state, dice, StrictDecisions([])), dice
+    # (6,6)=12 above Ld 7 fails the start-of-round test: no enemy attacks, her
+    # own charged swing is the Fury's +1 A on top of her printed A 2 (misses).
+    result, dice = dance((6, 6), False)
+    assert result.state.second.charm_attack_blocked
+    assert len(result.attacks) == 3
+    dice.finish()
+    # (1,1) passes: the foe keeps its ordinary single attack.
+    result, dice = dance((1, 1), True)
+    assert not result.state.second.charm_attack_blocked
+    assert len(result.attacks) == 4
+    dice.finish()
+
+
 def test_shornaal_uses_highest_two_then_stops_testing_after_success():
     mark = canonical('marauders-of-chaos', 'marauder-chieftain', special_rule_ids=(
         'band--mark-of-shornaal',))
@@ -2600,6 +2719,28 @@ def test_ulric_pelt_contributes_once_and_the_printed_kit_refuses_other_armour():
         with pytest.raises(ValueError): canonical('hirelings.hired-sword.2b', profile, selected, **options)
     with pytest.raises(ValueError, match='modular'):
         require_optimized_support(wolf, enemy())
+
+
+def test_ulric_pelt_protection_is_the_cloak_piece_and_leaves_with_the_cast_off_kit():
+    from mordheim_combat.modular.equipment import equipment_for_state
+    profile = 'hireling.hired-sword.wolf-priest-of-ulric-miracle-workers'
+    wolf = canonical('hirelings.hired-sword.2b', profile, 'weapon.dagger')
+    chosen = canonical('hirelings.hired-sword.2b', profile, 'weapon.dagger',
+        defence_ids=('defence.wolf-pelt-cloak',))
+    # The printed kit and the explicit selection deliver the one pelt, never two.
+    assert wolf.armour_save == chosen.armour_save == 6
+    pelt = next(piece for piece in wolf.mutation_equipment if piece.item_id == 'wolf_pelt_cloak')
+    assert (pelt.kind, pelt.effect.armour_save_bonus) == ('defence', 1)
+    for fighter in (wolf, chosen):
+        stripped = equipment_for_state(fighter, replace(
+            initialize_fighter(fighter, StrictDice([]), 'w'), equipment_cast_off=True),
+            first_round=False)
+        assert stripped.armour_save == 7
+        assert 'defence.wolf-pelt-cloak' not in stripped.global_effects.tags
+        # Only the cloak leaves: characteristics, Hatred and the dagger stay.
+        assert stripped.characteristics == fighter.characteristics
+        assert 'mechanic.ulric-intense-rivals' in stripped.global_effects.tags
+        assert stripped.main_weapon.tags == fighter.main_weapon.tags
 
 
 @pytest.mark.parametrize('rival,first_round', [(True, True), (True, False), (False, True)])
@@ -3401,3 +3542,19 @@ def test_supplied_hatred_condition_tests_any_enemy_in_the_first_round_only(first
     # Psychology immunity keeps cancelling Hatred, exactly as the operator reads.
     immune = enemy(condition_ids=('condition.hatred', 'condition.immune-to-psychology'))
     assert _hit_reroll(immune, foe, immune.main_weapon, immune.global_effects, True, False) is False
+
+
+def test_kasgal_dwarf_hard_head_and_hard_to_kill_bind_the_shared_injury_chart():
+    dwarf = canonical('adventurers-kaz', 'dwarf', 'weapon.fist')
+    assert 'concussion_immune' in dwarf.global_effects.tags
+    assert 'skill.hard-to-kill' in dwarf.global_effects.tags
+    dwarf = replace(dwarf, characteristics=replace(dwarf.characteristics, wounds=1))
+    # The mace of the control STUNS on a 2 through concussion; Hard Head keeps
+    # the ordinary 1-2 knocked-down band instead of stuning.
+    wizard = canonical('adventurers-kaz', 'wizard', 'weapon.fist')
+    assert 'concussion_immune' not in wizard.global_effects.tags
+    assert strike(enemy(strength=6), wizard, [('hit', 4), ('wound', 5), ('injury.0', 2)]).defender.condition == Condition.STUNNED
+    assert strike(enemy(strength=6), dwarf, [('hit', 4), ('wound', 5), ('injury.0', 2)]).defender.condition == Condition.KNOCKED_DOWN
+    # Hard to Kill narrows Out to a 6 while leaving the wider stunned band printed.
+    assert strike(enemy(strength=6), dwarf, [('hit', 4), ('wound', 5), ('injury.0', 5)]).defender.condition == Condition.STUNNED
+    assert strike(enemy(strength=6), dwarf, [('hit', 4), ('wound', 5), ('injury.0', 6)]).defender.condition == Condition.OUT

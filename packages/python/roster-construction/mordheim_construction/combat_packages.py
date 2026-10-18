@@ -38,6 +38,11 @@ def combat_packages(collection, root=None):
                     entry["mechanic_id"] = "weapon.double-handed-weapon"
             intrinsic = list(source.get("rules") or [])
             referenced = set((*source.get("rule_ids", ()), *source.get("special_skill_rule_ids", ())))
+            # The catalogue's general ownership clause reaches every hireling
+            # of its kind: its kit matcher is the consumer that refuses extra
+            # equipment, so the rule travels with each profile it governs.
+            referenced.add("hireling.hired-sword.rule.fixed-equipment" if kind == "hired-sword"
+                           else "hireling.dramatis.rule.fixed-equipment")
             for item in profile["hireling_equipment"].get("unique_equipment", ()):
                 referenced.update(rule_id for rule_id in item.get("rules", ()) if isinstance(rule_id, str))
             intrinsic.extend(rule for rule in catalogue.rules

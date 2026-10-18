@@ -583,15 +583,15 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.pit-fighters.band.free-the-slaves
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.hatred-slavers
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.hatred-slavers
   rule_ref: shared-rule.free-the-slaves
 - id: band--in-the-pit
   name: In the Pit!

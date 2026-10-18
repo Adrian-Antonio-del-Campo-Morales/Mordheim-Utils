@@ -21,6 +21,27 @@ conditions:
     - id: condition.unseen-charge
       scope: 'YES'
       binding: {kind: mechanic, id: condition.unseen-charge}
+- id: condition.summoned-this-turn
+  name: Summoned this turn
+  name_i18n: {es: Invocado este turno}
+  effect: >-
+    Supplied individual fact that this Malignant Spirit was released from the Requilary on the
+    current turn. By itself it grants nothing: Violent Entry pays its +1 to hit and +1 Strength only
+    when the bearer also charges on that turn. The summoning procedure is not simulated.
+  effect_i18n: {es: 'Hecho individual aportado de que este Espíritu Maligno fue liberado del Relicario en el turno actual. Por sí solo no concede nada: Entrada Violenta solo paga su +1 para impactar y +1 Fuerza si además carga en ese turno; no se simula la invocación.'}
+  source_refs:
+  - manual: broheim.net
+    printed_page: 4
+    section: 0-2 Malignant Spirits / Special Rules / Violent Entry
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: condition.summoned-this-turn
+      scope: 'YES'
+      binding: {kind: mechanic, id: condition.summoned-this-turn}
 - id: condition.large-target
   name: Large Target
   name_i18n: {es: Objetivo Grande}
@@ -464,11 +485,11 @@ conditions:
   name: Backley's Brew
   name_i18n:
     es: Backley's Brew
-  effect: -1 Strength and -1 Initiative until the supplied clearance of the Toughness test. The source
-    does not specify the test timing.
+  effect: -1 Strength and -1 Initiative until a Toughness test is passed. By project ruling, test once
+    at the start of each own turn until recovery; the source does not specify the timing.
   effect_i18n:
-    es: -1 Strength and -1 Initiative until the supplied clearance of the Toughness test. The source
-      does not specify the test timing.
+    es: -1 Fuerza e Iniciativa hasta superar un chequeo de Resistencia. Por decisión del proyecto,
+      se intenta al inicio de cada turno propio hasta recuperarse; la fuente no fija la cadencia.
   source_refs:
   - *id002
   runtime:
@@ -486,10 +507,12 @@ conditions:
   name_i18n:
     es: Alchemist Addiction
   effect: The supplied addicted Scientist cannot act until he rolls a 6 while brewing Aberrantius
-    Vigortia. The source does not define the brew attempt timing.
+    Vigortia. By project ruling, a standing Scientist attempts once at the start of each own turn;
+    success releases him and supplies the potion's Strength and Toughness bonus once.
   effect_i18n:
-    es: The supplied addicted Scientist cannot act until he rolls a 6 while brewing Aberrantius Vigortia.
-      The source does not define the brew attempt timing.
+    es: El Científico adicto no actúa hasta sacar un 6 elaborando Aberrantius Vigortia. Por decisión
+      del proyecto, si está de pie lo intenta al inicio de cada turno propio; el éxito lo libera y
+      concede una sola vez el bono de Fuerza y Resistencia de la poción.
   source_refs:
   - *id002
   runtime:
@@ -1066,6 +1089,66 @@ conditions:
       binding:
         kind: mechanic
         id: condition.bear-handler-nearby
+- id: condition.stupidity-exempt
+  name: Nearby exempting hero
+  name_i18n:
+    es: Nearby exempting hero
+  effect: The Rat Ogre has its actual qualifying Skaven Hero within 6 inches, so the printed Stupidity
+    exemption applies and no Stupidity test is taken. The caller supplies the exemption; the duel
+    neither simulates the surrounding warband nor measures table positions.
+  effect_i18n:
+    es: The Rat Ogre has its actual qualifying Skaven Hero within 6 inches, so the printed Stupidity
+      exemption applies and no Stupidity test is taken. The caller supplies the exemption; the duel
+      neither simulates the surrounding warband nor measures table positions.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Rat ogre / Special Rules / Stupidity
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: condition.stupidity-exempt
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.stupidity-exempt
+- id: condition.current-warband-leader
+  name: Current warband leader
+  name_i18n:
+    es: Líder actual de la banda
+  effect: >-
+    The caller supplies that this warrior is its warband's actual current leader. The position itself
+    carries the printed Leader rule, so any warband warrior within 6 inches may use this warrior's
+    Leadership. A band skill that widens the radius of that Leader rule widens the rule the position
+    already carries and grants no Leader rule of its own. How the position changed hands, and any
+    succession or election, is never simulated here.
+  effect_i18n:
+    es: >-
+      El llamador aporta que este guerrero es el líder actual de su banda. La propia posición lleva
+      la regla impresa de Líder, de modo que cualquier guerrero de la banda a 6" puede usar el
+      Liderazgo de este guerrero. Una habilidad de banda que amplía el radio de esa regla de Líder
+      amplía la que la posición ya lleva y no concede ninguna regla de Líder por sí misma. Cómo
+      cambió de manos la posición, y cualquier sucesión o elección, no se simula aquí.
+  source_refs:
+  - manual: lustria
+    printed_page: 108
+    section: Heroes / 1 Jarl / Leader
+  - manual: lustria
+    printed_page: 111
+    section: Norse Special Skills / Battle Tongue
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: condition.current-warband-leader
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.current-warband-leader
 - id: condition.adventurer-barbarian-leader
   name: Barbarian chosen as Leader
   name_i18n:
@@ -1246,6 +1329,728 @@ conditions:
       binding:
         kind: mechanic
         id: condition.goading-charge
+- id: condition.maintenance-1
+  name: Weaponsmith Maintenance Result 1
+  name_i18n: {es: 'Mantenimiento del Armero, resultado 1'}
+  effect: 'No improvement; the first result stands. Supplied first result for a Hero or the Weaponsmith; no table roll is simulated.'
+  effect_i18n: {es: 'Resultado 1 ya obtenido para un Héroe o el Armero; no se simula la tirada de la tabla.'}
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Weaponsmith / Maintenance
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: condition.maintenance-1
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-maintenance
+        parameters: {maintenance_result: 1}
+
+- id: condition.maintenance-2
+  name: Weaponsmith Maintenance Result 2
+  name_i18n: {es: 'Mantenimiento del Armero, resultado 2'}
+  effect: 'For this game, worn heavy armour saves on 4+ and light armour on 5+, before other modifiers. Supplied first result for a Hero or the Weaponsmith; no table roll is simulated.'
+  effect_i18n: {es: 'Resultado 2 ya obtenido para un Héroe o el Armero; no se simula la tirada de la tabla.'}
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Weaponsmith / Maintenance
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: condition.maintenance-2
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-maintenance
+        parameters: {maintenance_result: 2}
+
+- id: condition.maintenance-3
+  name: Weaponsmith Maintenance Result 3
+  name_i18n: {es: 'Mantenimiento del Armero, resultado 3'}
+  effect: 'For this game, a worn helmet also grants +1 armour save; its injury reaction is unchanged. Supplied first result for a Hero or the Weaponsmith; no table roll is simulated.'
+  effect_i18n: {es: 'Resultado 3 ya obtenido para un Héroe o el Armero; no se simula la tirada de la tabla.'}
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Weaponsmith / Maintenance
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: condition.maintenance-3
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-maintenance
+        parameters: {maintenance_result: 3}
+
+- id: condition.maintenance-4
+  name: Weaponsmith Maintenance Result 4
+  name_i18n: {es: 'Mantenimiento del Armero, resultado 4'}
+  effect: 'For this game, a worn buckler also grants +1 armour save. Supplied first result for a Hero or the Weaponsmith; no table roll is simulated.'
+  effect_i18n: {es: 'Resultado 4 ya obtenido para un Héroe o el Armero; no se simula la tirada de la tabla.'}
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Weaponsmith / Maintenance
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: condition.maintenance-4
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-maintenance
+        parameters: {maintenance_result: 4}
+
+- id: condition.maintenance-5
+  name: Weaponsmith Maintenance Result 5
+  name_i18n: {es: 'Mantenimiento del Armero, resultado 5'}
+  effect: 'For this game, a worn shield permits parrying like a buckler, retaining its armour save. Supplied first result for a Hero or the Weaponsmith; no table roll is simulated.'
+  effect_i18n: {es: 'Resultado 5 ya obtenido para un Héroe o el Armero; no se simula la tirada de la tabla.'}
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Weaponsmith / Maintenance
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: condition.maintenance-5
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-maintenance
+        parameters: {maintenance_result: 5}
+
+- id: condition.maintenance-6
+  name: Weaponsmith Maintenance Result 6
+  name_i18n: {es: 'Mantenimiento del Armero, resultado 6'}
+  effect: 'Only missile ranges improve; there is no effect in this close combat duel. Supplied first result for a Hero or the Weaponsmith; no table roll is simulated.'
+  effect_i18n: {es: 'Resultado 6 ya obtenido para un Héroe o el Armero; no se simula la tirada de la tabla.'}
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Weaponsmith / Maintenance
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: condition.maintenance-6
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-maintenance
+        parameters: {maintenance_result: 6}
+
+- id: condition.witch-debilitating
+  name: Witch Potion (debilitating)
+  name_i18n: {es: 'Poción de la Bruja (debilitating)'}
+  effect: 'Minus one Toughness until a 6 in own recovery clears the draught. Supplied potion result for one Hero, without simulating its grant or rolling the table.'
+  effect_i18n: {es: 'Resultado ya obtenido de la poción para un Héroe; no se simula su entrega ni la tirada de la tabla.'}
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Witch / Potions
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: condition.witch-debilitating
+      scope: 'YES'
+      binding: {kind: mechanic, id: condition.petru-debilitating}
+
+- id: condition.witch-strength
+  name: Witch Potion (strength)
+  name_i18n: {es: 'Poción de la Bruja (strength)'}
+  effect: 'Plus one Strength until a 1 in own recovery ends the draught. Supplied potion result for one Hero, without simulating its grant or rolling the table.'
+  effect_i18n: {es: 'Resultado ya obtenido de la poción para un Héroe; no se simula su entrega ni la tirada de la tabla.'}
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Witch / Potions
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: condition.witch-strength
+      scope: 'YES'
+      binding: {kind: mechanic, id: condition.petru-strength}
+
+- id: condition.witch-resilience
+  name: Witch Potion (resilience)
+  name_i18n: {es: 'Poción de la Bruja (resilience)'}
+  effect: 'Plus one Toughness until a 1 in own recovery ends the draught. Supplied potion result for one Hero, without simulating its grant or rolling the table.'
+  effect_i18n: {es: 'Resultado ya obtenido de la poción para un Héroe; no se simula su entrega ni la tirada de la tabla.'}
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Witch / Potions
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: condition.witch-resilience
+      scope: 'YES'
+      binding: {kind: mechanic, id: condition.petru-resilience}
+
+- id: condition.witch-fortitude
+  name: Witch Potion (fortitude)
+  name_i18n: {es: 'Poción de la Bruja (fortitude)'}
+  effect: 'One extra Wound for this battle; once lost it cannot be restored. Supplied potion result for one Hero, without simulating its grant or rolling the table.'
+  effect_i18n: {es: 'Resultado ya obtenido de la poción para un Héroe; no se simula su entrega ni la tirada de la tabla.'}
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Witch / Potions
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: condition.witch-fortitude
+      scope: 'YES'
+      binding: {kind: mechanic, id: condition.petru-fortitude}
+
+- id: condition.ye-give-way-refused
+  name: Ye Give Way (refused)
+  name_i18n: {es: 'Ye Give Way (refused)'}
+  effect: 'The Hero who refused a prior challenge has -1 to hit in melee until the end of the game, non-cumulative. Supplied prior result; no challenge or group combat is simulated.'
+  effect_i18n: {es: 'Resultado ya suministrado de Ye Give Way; no se simula el desafío ni combate entre grupos.'}
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Fallen Noble / Ye Give Way
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/mazzalupo
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: condition.ye-give-way-refused
+      scope: 'YES'
+      binding: {kind: mechanic, id: condition.ye-give-way-refused}
+- id: condition.ye-give-way-victorious
+  name: Ye Give Way (victorious)
+  name_i18n: {es: 'Ye Give Way (victorious)'}
+  effect: 'A Fallen Noble who put the challenged opponent Out of Action has +1 to hit in melee and +1 Strength until the end of the game, non-cumulative. Supplied prior result; no challenge or group combat is simulated.'
+  effect_i18n: {es: 'Resultado ya suministrado de Ye Give Way; no se simula el desafío ni combate entre grupos.'}
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Fallen Noble / Ye Give Way
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/mazzalupo
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: condition.ye-give-way-victorious
+      scope: 'YES'
+      binding: {kind: mechanic, id: condition.ye-give-way-victorious}
+    - id: condition.ye-give-way-victorious.strength
+      scope: 'YES'
+      binding: {kind: profile, id: profile.characteristics, parameters: {bonuses: {strength: 1}}}
+
+- id: condition.disability-1
+  name: Disability result 1
+  name_i18n: {es: 'Discapacidad: resultado 1'}
+  effect: 'Lame and arthritic: minus one Movement and Initiative. Permanent supplied result; no group creation or reroll.'
+  effect_i18n: {es: 'Resultado permanente suministrado de Discapacidad; no se crea ni sortea un grupo.'}
+  source_refs:
+  - manual: chaos-in-the-streets
+    printed_page: 149
+    section: Henchmen / Cripples / Disability
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: condition.disability-1
+      scope: 'YES'
+      binding: {kind: mechanic, id: condition.disability-1}
+    - id: condition.disability-1.characteristics
+      scope: 'YES'
+      binding: {kind: profile, id: profile.characteristics, parameters: {bonuses: {"movement": -1, "initiative": -1}}}
+- id: condition.disability-2
+  name: Disability result 2
+  name_i18n: {es: 'Discapacidad: resultado 2'}
+  effect: 'Parkinson: minus one Weapon Skill; cannot use two weapons or a weapon and shield. Permanent supplied result; no group creation or reroll.'
+  effect_i18n: {es: 'Resultado permanente suministrado de Discapacidad; no se crea ni sortea un grupo.'}
+  source_refs:
+  - manual: chaos-in-the-streets
+    printed_page: 149
+    section: Henchmen / Cripples / Disability
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: condition.disability-2
+      scope: 'YES'
+      binding: {kind: mechanic, id: condition.disability-2}
+    - id: condition.disability-2.characteristics
+      scope: 'YES'
+      binding: {kind: profile, id: profile.characteristics, parameters: {bonuses: {"weapon_skill": -1}}}
+    - id: condition.disability-2.weapons
+      scope: 'YES'
+      binding: {kind: profile, id: profile.equipment-restrictions, parameters: {max_active_one_handed_weapons: 1, forbids: [defence.shield, defence.kite-shield]}}
+- id: condition.disability-3
+  name: Disability result 3
+  name_i18n: {es: 'Discapacidad: resultado 3'}
+  effect: 'Poor eyesight: minus one Ballistic Skill; no shooting action is simulated. Permanent supplied result; no group creation or reroll.'
+  effect_i18n: {es: 'Resultado permanente suministrado de Discapacidad; no se crea ni sortea un grupo.'}
+  source_refs:
+  - manual: chaos-in-the-streets
+    printed_page: 149
+    section: Henchmen / Cripples / Disability
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: condition.disability-3
+      scope: 'YES'
+      binding: {kind: mechanic, id: condition.disability-3}
+- id: condition.disability-4
+  name: Disability result 4
+  name_i18n: {es: 'Discapacidad: resultado 4'}
+  effect: 'Sickly: minus one Toughness. Permanent supplied result; no group creation or reroll.'
+  effect_i18n: {es: 'Resultado permanente suministrado de Discapacidad; no se crea ni sortea un grupo.'}
+  source_refs:
+  - manual: chaos-in-the-streets
+    printed_page: 149
+    section: Henchmen / Cripples / Disability
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: condition.disability-4
+      scope: 'YES'
+      binding: {kind: mechanic, id: condition.disability-4}
+    - id: condition.disability-4.characteristics
+      scope: 'YES'
+      binding: {kind: profile, id: profile.characteristics, parameters: {bonuses: {"toughness": -1}}}
+- id: condition.disability-5
+  name: Disability result 5
+  name_i18n: {es: 'Discapacidad: resultado 5'}
+  effect: 'Weakness: minus one Strength. Permanent supplied result; no group creation or reroll.'
+  effect_i18n: {es: 'Resultado permanente suministrado de Discapacidad; no se crea ni sortea un grupo.'}
+  source_refs:
+  - manual: chaos-in-the-streets
+    printed_page: 149
+    section: Henchmen / Cripples / Disability
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: condition.disability-5
+      scope: 'YES'
+      binding: {kind: mechanic, id: condition.disability-5}
+    - id: condition.disability-5.characteristics
+      scope: 'YES'
+      binding: {kind: profile, id: profile.characteristics, parameters: {bonuses: {"strength": -1}}}
+- id: condition.disability-6
+  name: Disability result 6
+  name_i18n: {es: 'Discapacidad: resultado 6'}
+  effect: 'Head injury: Stupidity unless within six inches of a Hero. Permanent supplied result; no group creation or reroll.'
+  effect_i18n: {es: 'Resultado permanente suministrado de Discapacidad; no se crea ni sortea un grupo.'}
+  source_refs:
+  - manual: chaos-in-the-streets
+    printed_page: 149
+    section: Henchmen / Cripples / Disability
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: condition.disability-6
+      scope: 'YES'
+      binding: {kind: mechanic, id: condition.disability-6}
+- id: condition.disability-hero-nearby
+  name: Cripple within six inches of a Hero
+  name_i18n: {es: Lisiado a seis pulgadas de un Heroe}
+  effect: 'Qualified current nearby Hero fact exempts Head Injury Stupidity; not a permanent cure.'
+  effect_i18n: {es: 'Hecho actual suministrado de un Heroe cercano; no cura la lesion.'}
+  source_refs:
+  - manual: chaos-in-the-streets
+    printed_page: 149
+    section: Henchmen / Cripples / Disability
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: condition.disability-hero-nearby
+      scope: 'YES'
+      binding: {kind: mechanic, id: condition.disability-hero-nearby}
+- id: condition.troll-brew-fear-immunity
+  name: Strong Brew
+  name_i18n: {es: Cerveza Fuerte}
+  effect: 'A 1-2 brew result leaves the nominated Dwarf immune to fear for the duration of the battle.'
+  effect_i18n: {es: 'Con un resultado 1-2, el enano designado es inmune al miedo durante la batalla.'}
+  source_refs:
+  - &brewers_source
+    manual: broheim.net
+    printed_page: 25
+    section: Special Rules / Brewers
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: mechanic.fear-immunity
+      scope: 'YES'
+      binding: {kind: mechanic, id: mechanic.fear-immunity}
+- id: condition.troll-brew-frenzy
+  name: Troll Brew
+  name_i18n: {es: Cerveza de Troll}
+  effect: 'A 3-4 brew result subjects the nominated Dwarf to frenzy for the duration of the battle.'
+  effect_i18n: {es: 'Con un resultado 3-4, el enano designado queda sujeto a frenesí durante la batalla.'}
+  source_refs:
+  - *brewers_source
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: trait.frenzy
+      scope: 'YES'
+      binding: {kind: trait, id: trait.frenzy, parameters: {value: true}}
+- id: condition.troll-brew-special-brew
+  name: Special Brew
+  name_i18n: {es: Cerveza Especial}
+  effect: 'A 5-6 brew result raises the nominated Dwarf''s Weapon Skill and Strength by one for the battle,
+    never above 10.'
+  effect_i18n: {es: 'Con un resultado 5-6, la Habilidad de Armas y la Fuerza del enano designado aumentan
+      en 1 durante la batalla, nunca por encima de 10.'}
+  source_refs:
+  - *brewers_source
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: condition.troll-brew-special-brew
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.characteristics
+        parameters:
+          bonuses:
+            weapon_skill: 1
+            strength: 1
+          maximum:
+            weapon_skill: 10
+            strength: 10
+- id: condition.power-grab-majority
+  name: Power Grab — Majority Race
+  name_i18n: {es: Golpe de Poder — Raza Mayoritaria}
+  effect: The supplied race that outnumbers the other gains one Leadership at match start.
+  effect_i18n: {es: 'La raza suministrada que supera en número a la otra gana 1 de Liderazgo al inicio del
+      enfrentamiento.'}
+  source_refs:
+  - &power_grab_source
+    manual: broheim.net
+    printed_page: 1
+    section: Special Rules / Power Grab
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Underworld Alliance.pdf
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: condition.power-grab-majority
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.characteristics
+        parameters: {bonuses: {leadership: 1}}
+- id: condition.power-grab-minority
+  name: Power Grab — Minority Race
+  name_i18n: {es: Golpe de Poder — Raza Minoritaria}
+  effect: The supplied race that is outnumbered by the other loses one Leadership at match start.
+  effect_i18n: {es: 'La raza suministrada que es superada en número por la otra pierde 1 de Liderazgo al inicio
+      del enfrentamiento.'}
+  source_refs:
+  - *power_grab_source
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: condition.power-grab-minority
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.characteristics
+        parameters: {bonuses: {leadership: -1}}
+- id: condition.blessed-weapon
+  name: Blessed Weapon (Exploration Result 13)
+  name_i18n:
+    es: Arma Bendecida (Resultado 13 de Exploración)
+  effect: >-
+    One weapon the bearer names is blessed for this battle and wounds Undead and Possessed on 2+,
+    whatever the Strength gap; its to-hit roll, the defender's saves and the injury sequence are
+    unchanged. Supplied individual consequence of a blessing granted to Sisters of Sigmar and Witch
+    Hunters; the exploration roll and its gold income are excluded.
+  effect_i18n:
+    es: >-
+      Un arma designada por el portador queda bendecida durante esta batalla y hiere a No Muertos y
+      Poseídos con 2+, sea cual sea la diferencia de Fuerza; su tirada de impacto, las salvaciones del
+      defensor y la secuencia de heridas no cambian. Consecuencia individual suministrada de una
+      bendición concedida a Hermanas de Sigmar y Cazadores de Brujas; la tirada de exploración y su oro
+      quedan excluidos.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Income / Exploration / Result 13 / Blessed Weapon
+    url: https://mordheimer.net/docs/campaigns/income
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: condition.blessed-weapon
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.item-modifiers
+        parameters:
+          slot_fact: blessed_weapon_slots
+          eligibility: {max_items: 1, bearer_tags: [band.sisters-of-sigmar, band.witch-hunters]}
+          effect_parameters:
+            tags: [blessing.undead-possessed-on-two, attack.blessed]
+- id: condition.swordsmith-honing
+  name: Swordsmith Honing
+  name_i18n:
+    es: Afilado del Espadero
+  effect: >-
+    Up to three blades the warband carries, Dragon Swords included, gain the Cutting Edge special rule
+    for the next battle: an extra -1 save modifier on that weapon only. Supplied consequence of the
+    Swordsmith's between-battles service; the service is not simulated and its printed precondition is
+    the supplied fact that admits the honing.
+  effect_i18n:
+    es: >-
+      Hasta tres hojas que lleve la banda, Espadas de Dragón incluidas, ganan la regla especial
+      Innovador durante la próxima batalla: un modificador adicional de -1 a la salvación, solo en esa
+      arma. Consecuencia suministrada del servicio entre batallas del Espadero; el servicio no se
+      simula y su precondición impresa es el hecho suministrado que lo admite.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Swordsmith / Honing
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1c
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: condition.swordsmith-honing
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.item-modifiers
+        parameters:
+          slot_fact: honing_slots
+          eligibility: {tags: [weapon.sword, weapon.dragon-sword], max_items: 3}
+          effect_parameters:
+            tags: [rule.cutting-edge]
+            armour_penetration: 1
+- id: condition.master-craftsman-strength
+  name: Master Craftsman Strength Upgrade
+  name_i18n:
+    es: Mejora de Fuerza del Maestro Artesano
+  effect: >-
+    Supplied Master Craftsman modification result 1-2: the chosen physical weapon gains +1 Strength.
+    The bonus belongs to that weapon and ends when it is no longer used. The post-battle rolls and
+    the encounter with the Foole are not simulated.
+  effect_i18n:
+    es: El resultado suministrado 1-2 añade +1 Fuerza al arma elegida mientras se usa; sin tirada de campaña.
+  source_refs:
+  - manual: Fanatic Online89
+    printed_page: 3
+    section: The Foole / Master Craftsman / modification roll 1-2
+    url: https://broheim.net/downloads/fo/89RunnersUp.pdf
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: condition.master-craftsman-strength
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.item-modifiers
+        parameters:
+          slot_fact: craftsman_strength_slots
+          eligibility: {max_items: 1}
+          effect_parameters: {tags: [], strength_bonus: 1}
+- id: condition.master-craftsman-initiative
+  name: Master Craftsman Initiative Upgrade
+  name_i18n:
+    es: Mejora de Iniciativa del Maestro Artesano
+  effect: >-
+    Supplied Master Craftsman modification result 3-4: the chosen physical weapon adds +1 to its
+    wielder's Initiative while used. Other weapons do not receive the modification. The post-battle
+    rolls and the encounter with the Foole are not simulated.
+  effect_i18n:
+    es: El resultado suministrado 3-4 añade +1 Iniciativa al portador mientras usa el arma elegida.
+  source_refs:
+  - manual: Fanatic Online89
+    printed_page: 3
+    section: The Foole / Master Craftsman / modification roll 3-4
+    url: https://broheim.net/downloads/fo/89RunnersUp.pdf
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: condition.master-craftsman-initiative
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.item-modifiers
+        parameters:
+          slot_fact: craftsman_initiative_slots
+          eligibility: {max_items: 1}
+          effect_parameters: {tags: [], initiative_bonus: 1}
+- id: condition.giggle-juice-coating
+  name: Giggle Juice Coating (Master Craftsman)
+  name_i18n:
+    es: Recubrimiento de Zumo de Risas (Maestro Artesano)
+  effect: >-
+    The weapon the bearer names carries the printed Giggle Juice coating for this battle: +1 Strength
+    and +1 Injury with that weapon only, and a poison-immune defender meets the piece without it. The
+    coating parameters are the printed ones already declared by the poison.giggle-juice execution
+    entry; producing it, the post-battle random improvement roll and its two-battle supply are
+    excluded. The separate fixed-Strength spray stays with the Poison Ring.
+  effect_i18n:
+    es: >-
+      El arma designada por el portador lleva el recubrimiento impreso de Zumo de Risas durante esta
+      batalla: +1 Fuerza y +1 a Heridas solo con esa arma, y un defensor inmune al veneno se enfrenta a
+      la pieza sin el recubrimiento. Los parámetros son los impresos que ya declara la entrada de
+      ejecución poison.giggle-juice; producir el frasco, la tirada aleatoria posterior a la batalla y
+      su suministro de dos batallas quedan excluidos. El rociado fijo aparte sigue con el Anillo de
+      Veneno.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / The Foole / Master Craftsman
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-2a
+  - manual: Fanatic Online89
+    printed_page: 2
+    section: The Foole / Master Craftsman weapon modifications
+    url: https://broheim.net/downloads/fo/89RunnersUp.pdf
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: condition.giggle-juice-coating
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.item-modifiers
+        parameters:
+          slot_fact: coating_slots
+          eligibility: {max_items: 1}
+          poison_coating: true
+          effect_parameters:
+            tags: [poison.giggle-juice]
+            strength_bonus: 1
+            injury_modifier: 1
+
+- id: condition.massively-built-leadership-penalty
+  name: Massively Built — Distracted
+  name_i18n: {es: Complexión Masiva — Distraído}
+  effect: >-
+    A cult member who failed the supplied Massively Built check has one less Leadership for the
+    remainder of the battle.
+  effect_i18n:
+    es: >-
+      Un miembro del culto que falló la prueba de Complexión Masiva suministrada tiene un punto menos
+      de Liderazgo durante el resto de la batalla.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / “Busty” Gwen / Special Rules / Massively Built
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-2a
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: condition.massively-built-leadership-penalty
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.characteristics
+        parameters: {bonuses: {leadership: -1}}
+- id: condition.massively-built-lost-turn
+  name: Massively Built — Lost Turn
+  name_i18n: {es: Complexión Masiva — Turno Perdido}
+  effect: >-
+    The supplied target of a failed Massively Built check loses its entire next turn as it stands
+    dumbfounded. The shooting-phase check, its 12-inch range and the visible male target are
+    excluded; the caller supplies the failed outcome. The printed exemptions belong to that supplied
+    fact: females, Skaven, Orcs and other non-human races are immune, Vampires and Necromancers are
+    not, and Elves and Dwarves are affected.
+  effect_i18n:
+    es: >-
+      El objetivo suministrado de una prueba fallida de Complexión Masiva pierde su turno siguiente
+      completo, aturdido por su imponente volumen. La prueba en fase de disparo, su alcance de 12" y
+      el objetivo masculino visible quedan excluidos; el llamador aporta el resultado fallido. Las
+      excepciones impresas pertenecen a ese hecho suministrado: mujeres, Skaven, Orcos y otras razas
+      no humanas son inmunes, los Vampiros y Nigromantes no lo son, y Elfos y Enanos se ven
+      afectados.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / “Busty” Gwen / Special Rules / Massively Built
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-2a
+  - manual: Fanatic Online89
+    printed_page: 2
+    section: Dramatis Personae / “Busty” Gwen / Special Rules / Massively Built
+    url: https://broheim.net/downloads/fo/89RunnersUp.pdf
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: condition.massively-built-lost-turn
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.massively-built-lost-turn
 note: Structured conditions will be extended as combat and psychology mechanics are reviewed. The general
   ids (condition.*) declare canonical psychology conditions; the campaign ids (campaign.condition.*) cover
   the serious injury effects that apply them.

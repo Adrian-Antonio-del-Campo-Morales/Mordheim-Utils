@@ -1014,12 +1014,33 @@ def test_trading_post_restrictions_resolve_against_bands_and_groups():
     band_ids = {yaml.safe_load(path.read_text(encoding="utf-8")).get("id")
                 for path in BANDS.glob("*/*/band.yaml")}
     groups = {group["id"] for group in load("registry/warband-groups.yaml").get("groups", [])}
+    # The printed bearer a published `structure` names is a canonical profile id,
+    # so it resolves like a `band_ids` entry, and a bearer published next to a
+    # band scope must be a profile of that band.
+    profiles: dict[str, set[str]] = {}
+    for path in BANDS.glob("*/*/band.yaml"):
+        document = yaml.safe_load(path.read_text(encoding="utf-8"))
+        profiles[str(document.get("id"))] = {p["id"] for p in yaml.safe_load(
+            (path.parent / "profiles.yaml").read_text(encoding="utf-8")).get("profiles", [])}
+    known_profiles = hireling_profile_ids() | {profile for ids in profiles.values() for profile in ids}
     for item in items:
         for restriction in item.get("restrictions") or []:
             for group in restriction.get("groups") or []:
                 assert group in groups, f"{item['id']}: unknown group {group}"
             for band in restriction.get("band_ids") or []:
                 assert band in band_ids, f"{item['id']}: unknown band {band}"
+            structure = restriction.get("structure") or {}
+            published = list(structure.get("profile_ids") or ())
+            for profile_id in (*published, *(structure.get("excluded_profile_ids") or ())):
+                assert profile_id in known_profiles, f"{item['id']}: unknown profile {profile_id}"
+            for profile_type in structure.get("profile_types") or ():
+                assert profile_type in {"hero", "henchman", "animal", "summoned"}, (
+                    f"{item['id']}: unknown profile type {profile_type}")
+            bands_here = restriction.get("band_ids") or []
+            if bands_here and published:
+                assert any(profile_id in profiles.get(band, set())
+                           for band in bands_here for profile_id in published), (
+                    f"{item['id']}: published bearer {published} is not a profile of {bands_here}")
 
 
 def test_procedural_placeholders_stay_out_of_canonical_ids():

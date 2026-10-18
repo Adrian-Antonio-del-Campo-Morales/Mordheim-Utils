@@ -1,5 +1,68 @@
 # Modular engine implementation — agent guide
 
+## Mandatory implementation priority
+
+**Implementation is the main work. Research, classification, tests and tracking
+support it; they are not substitutes or reasons to stop with executable work left.**
+Implementation agents may use subagents within their assignment and should do so
+when it speeds up delivery. Assign disjoint files and concrete capabilities, keep
+one integrator, and reuse their evidence without repeating research or tests.
+Subagents inherit all limits and produce no separate reports or shared CSV writes.
+The [plan's mandatory execution rules](../knowledge/2a2b/REMAINING_MODULAR_ENGINE_WORK.md#0-reglas-obligatorias-implementar-no-prolongar-la-preparación)
+apply to every modular implementation dispatch, including delegated packages.
+
+- Check early whether the capability already works. Reuse sufficient evidence,
+  reconcile it briefly and move on; do not manufacture implementation or tests.
+- Investigate the specific unknown blocking the next edit. Reuse delegated searches
+  and preserved context rather than restarting exploration after compaction.
+- Start with selected affected cases, or at most three directly affected test files.
+  Broaden only for a newly identified failure or concrete uncovered shared-consumer
+  risk, stating that reason. Broad integration belongs to the final plan block.
+- Never rerun unchanged batteries to recover output or compare all failures with HEAD.
+  Save the first useful result; compare only a discriminating failing case if needed.
+- Identify a concurrent blocker once, then implement independent work. Do not repeatedly
+  poll it or build exclusion overlays to claim the shared checkout is validated.
+- Preserve an isolated package's exact starting state before edits; generate its own
+  incremental diff from that base, not a later mutable copy of the original checkout.
+- Continue until the assigned capabilities work or all independent work is blocked.
+  Report concrete before/after capabilities. A test-only reconciliation is not new
+  implementation and does not close a block with actionable work remaining.
+
+These limits do not weaken admission guards, source-derived expectations, mandatory
+contracts or CSV conservation/concurrency checks. Dispatch prompts must repeat the
+priority and operational limits, not merely link to this guide.
+
+### Operational stop rules
+
+- **E2E is entirely excluded by the user, including final integration.** Do not
+  execute, collect, investigate, repair or edit E2E tests, harnesses or corpus.
+  Do not launch umbrella commands that include them. E2E failures do not block
+  this assignment or its completion. This overrides historical E2E references.
+- Select the smallest relevant cases before running tests. Three files is an
+  initial ceiling, not permission to run a large parametrized corpus. Save useful
+  output outside the deliverable tree; filter that output instead of rerunning.
+  Cancel your own accidentally launched prohibited battery; do not investigate it.
+- No repeated global inventories or bulk semantic closure from binding/status flags.
+  An unknown must block a concrete next edit to justify further investigation.
+- Only the authorized CSV writer may integrate. Preserve a complete byte snapshot
+  before each integration; use column names and `(id, clause_id)` keys. Validate
+  all 4,556 keys, protected source fields, valid notes and untouched cells before
+  writing, and reject concurrent changes. Without this proof, do not write.
+  After damage, suspend CSV writes and notify the coordinator; never reconstruct
+  current cells from HEAD or older exports. Continue independent implementation.
+- Do not declare failures pre-existing from their names or volume. If provenance
+  is unknown, say so once rather than starting a comparison campaign.
+
+Every dispatch must reproduce these operational limits and state the concrete
+capability, ownership, minimal check and completion boundary. Use the mandatory
+prompt contract in plan section 0; a link alone is insufficient.
+
+
+CSV access must use `python -X utf8 tools/knowledge/t13_csv.py`: `query`,
+`prepare`, then `apply` (preview by default; `--write` only for the authorized
+writer). No direct CSV edits or alternative rewrite scripts. See plan section 0
+for commands and proposal format. Existing damage is not repaired by this tool.
+
 ## Purpose and governing scope
 
 Complete admitted Combat Lab effects in the **modular engine first**, while
@@ -41,7 +104,15 @@ Read the relevant sections, not the complete historical archive:
   implementation contracts.
 - Applicable clarifications (section 4), permanent rulings, source definitions,
   bindings and consumers cited by the assigned clauses. Consult the open
-  follow-up findings (section 6) where referenced.
+  [remaining implementation problems](../knowledge/2a2b/REMAINING_MODULAR_ENGINE_PROBLEMS.md)
+  and [human decisions](../knowledge/2a2b/REMAINING_HUMAN_DECISIONS.md) where referenced.
+
+During implementation, record a concrete problem you cannot resolve in
+[the problems register](../knowledge/2a2b/REMAINING_MODULAR_ENGINE_PROBLEMS.md),
+with the affected clause/path, evidence, attempted resolution, obstacle and
+resumption condition. Reuse existing entries and continue independent work.
+Ordinary unfinished tasks remain in the CSV; questions requiring human authority
+go in [the human register](../knowledge/2a2b/REMAINING_HUMAN_DECISIONS.md).
 
 Inspect the actual branch/worktree, applicable `AGENTS.md` and dirty files.
 Preserve parallel work. A dispatch controls ownership; an isolated checkout

@@ -174,6 +174,7 @@ rules:
       reason: >-
         Deferred subsystem: psychology or mounts.
 - id: band--remas-officer-leadership
+  kind: warband_variant
   name: Remas — Veteran Officers
   effect: >-
     The Mercenary Captain, Champions and Recruits in a Remas warband have +1 Leadership at all
@@ -195,15 +196,22 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
-    implemented: 'NO'
-    grant: band
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
     effects:
-    - id: unimplemented.lustria-tileans.band.remas-officer-leadership
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: profile.characteristics
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.characteristics
+        parameters:
+          profile_ids:
+          - mercenary-captain
+          - champions
+          - recruits
+          bonuses:
+            leadership: 1
 - id: band--trantio-wealth
   name: Trantio — Wealth
   effect: >-

@@ -171,8 +171,9 @@ rules:
       scope: LATER
       binding: null
       reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+        Group producer: counting the two races in the warband is outside the duel. The individual
+        match-start adjustment is supplied per duelist as condition.power-grab-majority (+1)
+        or condition.power-grab-minority (-1), resolved by the shared supplied-condition route.
   name: Power Grab
   effect: >-
     If there is more of one type of race than the other at the start of a match, the race with more
@@ -786,3 +787,32 @@ rules:
       como un ataque contaminado.
   applies_to:
     band: true
+- id: sewer-squigs--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+  name: Equipment Restrictions
+  effect: "Squigs never use or need weapons or armour; Movement is 2D6-1 inches on land and 2D6 in water."
+  source:
+    manual: broheim.net
+    printed_page: 4
+    section: "0-5 Sewer Squigs"
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Underworld Alliance.pdf
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "Los Squigs nunca usan ni necesitan armas ni armaduras; su Movimiento es de 2D6-1 pulgadas en tierra y de 2D6 pulgadas en el agua."
+  applies_to:
+    profile_ids:
+    - sewer-squigs

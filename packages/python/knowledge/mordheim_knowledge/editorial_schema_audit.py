@@ -243,11 +243,9 @@ JUSTIFIED_FINDINGS: dict[tuple[str, str, str], str | dict[str, str]] = {
         "unused_property",
         "#/$defs/unique_equipment",
     ): "equipment shape shared with the Hired Sword family, which uses it",
-    (
-        "hireling-profile-dramatis-personae.yaml.schema.json",
-        "dead_branch",
-        "#/$defs/unique_equipment.counts_as",
-    ): "counts_as accepts a plain id or the context object; the Hired Sword family uses the plain id",
+    # `#/$defs/unique_equipment.counts_as` is exercised by both families now: the
+    # Gravesman's Shovel in the Hired Sword catalogue and Maximilian's holy weapon
+    # in the Dramatis Personae one, so the former dead branch is live.
     # `#/$defs/unresolved_reference` of the Hired Sword schema is exercised: the
     # Halfling Knight's unmapped Cavalry Spear and its Hound companion are
     # declared there, so the former blanket justification is gone.

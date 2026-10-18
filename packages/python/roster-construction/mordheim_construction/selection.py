@@ -51,6 +51,14 @@ def _profile(build, root):
             for key in ("WS","S","T","W","I","A"):
                 value=c.get(key)
                 if isinstance(value,int):values[key]=value;continue
+                if key=="I" and value is None:
+                    # The source prints no Initiative at all for this profile
+                    # (the Necrarchs' Banshee).  It travels as an absent
+                    # characteristic, never as an invented number: the printed
+                    # combat order makes such a fighter strike last.  The other
+                    # five characteristics are still required, so a profile
+                    # with no fighter line stays refused.
+                    values[key]=None;continue
                 match=re.fullmatch(r"(\d*)D(\d+)(?:\+(\d+))?",str(value),re.IGNORECASE)
                 if not match:raise ValueError(f"profile {build.band_id}/{build.profile_id} is not an individual close-combat fighter")
                 dice=int(match.group(1) or 1);sides=int(match.group(2));bonus=int(match.group(3) or 0)

@@ -53,6 +53,7 @@ _SUPPLIED_FLAGS = {
     "lizardman": "Lizardman", "vampire": "Vampire",
     "righteous_charge_active": "Righteous Charge already qualified",
     "slave": "Slave qualified for Overseer Leadership",
+    "slaver": "Slaver opponent qualified for Hatred against Slavers",
     "scourge_armed": "Supplied Overseer carries a scourge",
     "devoted_vampire_down": "Devoted: nominated Vampire was knocked down in close combat",
     "devoted_vampire_killed": "Devoted: nominated Vampire was killed in close combat",

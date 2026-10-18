@@ -37,9 +37,11 @@ def test_modular_runtime_rejects_a_manually_injected_lance():
 
 
 def test_every_legal_profile_can_execute_a_complete_scalar_round():
-    # Profiles the runtime scope excludes (a vehicle, a watercraft and a creature
-    # whose printed line has no Initiative) never reach this pipeline; they are
-    # declared with their reason in registry/runtime-scope.yaml.
+    # Profiles the runtime scope excludes (a vehicle and a watercraft) never
+    # reach this pipeline; they are declared with their reason in
+    # registry/runtime-scope.yaml.  A creature whose printed line has no
+    # Initiative (the Necrarchs' Banshee) does reach it: the absence strikes
+    # last instead of keeping the profile out.
     exclusions = {
         (str(row["band_id"]), str(row["profile_id"]))
         for row in load_runtime_scope("mordheim").get("profile_exclusions") or ()
@@ -61,9 +63,10 @@ def test_every_legal_profile_can_execute_a_complete_scalar_round():
                 result = resolve_round(fighter, opponent, state, dice)
                 assert result.state.round_index == 1
                 executed += 1
-    # Every profile of both collections but the three declared exclusions
-    # (534 before T07 promoted the 2A/2B bands).
-    assert executed == 1063
+    # Every profile of both collections but the two declared exclusions
+    # (534 before T07 promoted the 2A/2B bands, +1 for the Banshee once its
+    # blank Initiative was represented as an absence).
+    assert executed == 1064
 
 
 def test_every_execution_mechanism_can_enter_the_scalar_round_pipeline():

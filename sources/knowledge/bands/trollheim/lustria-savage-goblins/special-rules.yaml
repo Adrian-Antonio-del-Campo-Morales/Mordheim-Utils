@@ -1,6 +1,31 @@
 schema_version: 2
 band_id: lustria-savage-goblins
 rules:
+- id: witch-doctor--compulsory-feather-headdress
+  name: Compulsory Feather Headdress
+  name_i18n:
+    es: Tocado de Plumas obligatorio
+  effect: The warband leader must wear the Feather Headdress; the Witch Doctor is the mandatory starting leader.
+  source:
+    manual: lustria
+    printed_page: 97
+    section: Savage Goblin Hero Equipment List / Feather Headdress
+  applies_to:
+    profile_ids:
+    - witch-doctor
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          required_kinds:
+          - feather_headdress
 - id: witch-doctor--leader
   name: Leader
   effect: >-

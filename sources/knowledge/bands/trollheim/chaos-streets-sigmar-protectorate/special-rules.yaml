@@ -352,3 +352,37 @@ rules:
       binding: null
       reason: >-
         Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+
+- id: protectorate-mastiff--natural-weapons
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+    - id: profile.natural-attacks
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.natural-attacks
+  name: Natural Weapons
+  effect: Mastiffs fight with jaws and brute force and never use or need weapons or armour.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 155
+    section: 0-5 Mastiffs
+  name_i18n:
+    es: Armas Naturales
+  effect_i18n:
+    es: Los Mastines luchan con mandíbulas y fuerza bruta y nunca usan ni necesitan armas ni armaduras.
+  applies_to:
+    profile_ids:
+    - protectorate-mastiff

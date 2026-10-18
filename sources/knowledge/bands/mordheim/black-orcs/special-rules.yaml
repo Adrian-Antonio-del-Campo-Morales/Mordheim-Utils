@@ -549,15 +549,21 @@ rules:
   rule_ref: shared-rule.large-target
 - id: band--let-the-goons-do-the-work
   runtime:
-    scope: LATER
-    implemented: 'NO'
-    grant: band
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
     effects:
-    - id: unimplemented.black-orcs.band.let-the-goons-do-the-work
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: mounts.
+    # A legality clause, not a mount implementation: the Black Orcs and the
+    # Black Orc Nuttaz refuse the supplied mounted state, while the normal Orcs
+    # of the warband keep the boar the same stanza grants them.
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - mounts
   name: Let the Goons Do the Work
   effect: >-
     Black Orcs do not ride mounts of any kind. Only normal Orcs in the warband may ride a boar or
@@ -574,18 +580,24 @@ rules:
       Los Orcos Negros no montan monturas de ningún tipo. Solo los orcos normales de la banda pueden
       montar un jabalí u otra montura permitida.
   applies_to:
-    band: true
+    profile_ids:
+    - black-orc-boss
+    - black-orcs
+    - orc-nuttaz
 - id: band--da-boss-is-dead
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.black-orcs.band.da-boss-is-dead
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: >-
-        Deferred subsystem: psychology.
+        The leader handover is published as campaign succession data
+        (`campaign.succession.black-orcs`), which names the Boss and the Black Orc successors the
+        campaign kernel reads. The automatic "Oi Behave!" grant has no executable consequence here:
+        that rule tests Animosity, a behaviour of unengaged models outside the one-against-one duel.
   name: Da Boss Is Dead!
   effect: >-
     If the Boss is killed, a Black Orc takes over leadership before any other warrior regardless of

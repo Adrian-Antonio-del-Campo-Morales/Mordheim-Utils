@@ -9,13 +9,19 @@ warband except the Sisters of Sigmar.
 """
 from __future__ import annotations
 
-from pathlib import Path
+from dataclasses import replace
 
+from mordheim_combat.modular.attacks import resolve_reference_attack
 from mordheim_combat.modular.contexts import _combined_effect, _hit_reroll
+from mordheim_combat.modular.state import initialize_fighter
+from mordheim_combat_lab.verification.dice import StrictDice
 from mordheim_construction.compiler import compile_fighter
 from mordheim_core.models import FighterBuild
+from mordheim_knowledge.loader import knowledge_root
 
-ROOT = Path("sources/knowledge")
+# The shared root resolves the documented knowledge overlay when one is exported,
+# so this family reads the same tree the rest of the construction suite reads.
+ROOT = knowledge_root()
 
 
 def canonical(band, profile, weapon="weapon.fist", *, collection="mordheim"):
@@ -123,3 +129,94 @@ def test_profound_hatred_covers_every_opposing_warband_except_the_sisters():
     assert rerolls(soul, sister) is False
     # The shared Hatred timing is first-round only.
     assert rerolls(soul, canonical("mercenaries", "warriors"), first_round=False) is False
+
+
+# --- Fanatical (Maximilian the Mad) ----------------------------------------
+
+MAXIMILIAN = "hireling.dramatis.maximilian-the-mad"
+
+
+def maximilian(**options):
+    """The source's own bearer, through his printed double-handed kit."""
+    return compile_fighter(FighterBuild("mordheim",
+        band_id="hirelings.dramatis-personae.1b", profile_id=MAXIMILIAN, collection="mordheim",
+        main_weapon_id="weapon.double-handed-weapon",
+        owned_item_ids=(f"{MAXIMILIAN}.item.double-handed-holy-weapon",), **options), ROOT)
+
+
+def test_fanatical_covers_every_printed_warband_category():
+    fanatic = maximilian()
+    assert "mechanic.fanatical-hatred" in fanatic.global_effects.tags
+    for band, profile in (("orc-mob", "orc-boss"),
+                          ("black-orcs", "black-orc-boss"),
+                          ("forest-goblins", "chieftain"),
+                          ("horned-hunters", "horned-hunter"),
+                          ("sisters-of-sigmar", "augur"),
+                          ("skaven-clan-eshin", "assassin-adept"),
+                          ("undead", "zombies"),
+                          ("beastmen-raiders", "beastmen-chieftain"),
+                          ("cult-of-the-possessed", "magister"),
+                          ("carnival-of-chaos", "carnival-master")):
+        assert rerolls(fanatic, canonical(band, profile)) is True, band
+    # "Middenheimers" is the Mercenary variant, not a species: the same band is
+    # eligible without it and hated with it.
+    assert rerolls(fanatic, canonical("mercenaries", "mercenary-captain")) is False
+    middenheim = compile_fighter(FighterBuild("mordheim", band_id="mercenaries",
+        profile_id="mercenary-captain", collection="mordheim",
+        special_rule_ids=("band--middenheim-physical-prowess",)), ROOT)
+    assert "mercenary-origin.middenheim" in middenheim.global_effects.tags
+    assert rerolls(fanatic, middenheim) is True
+    # An unlisted warband is never covered.
+    assert rerolls(fanatic, canonical("witch-hunters", "witch-hunters")) is False
+    # "Orcs and Goblins" is the canonical category the KB uses for that printed
+    # name, so every list inside it is named by the source's category.
+    assert rerolls(fanatic, canonical("night-goblins-web", "night-goblin-warriors")) is True
+    # The shared Hatred timing is first-round only.
+    assert rerolls(fanatic, canonical("carnival-of-chaos", "carnival-master"),
+                   first_round=False) is False
+
+
+def test_fanatical_still_takes_the_ordinary_hatred_exemptions():
+    """His own Frenzy and the shared gates suppress the printed Hatred."""
+    fanatic = maximilian()
+    assert fanatic.global_effects.frenzy  # the separate Religious Fervour clause
+    target = canonical("cult-of-the-possessed", "magister")
+    assert _hit_reroll(fanatic, target, fanatic.main_weapon,
+                       _combined_effect(fanatic, fanatic.main_weapon), True, False) is True
+    assert _hit_reroll(fanatic, target, fanatic.main_weapon,
+                       _combined_effect(fanatic, fanatic.main_weapon), True, False,
+                       frenzy=True) is False
+
+
+def test_fanatical_reaches_the_attack_tape_only_for_a_listed_warband():
+    """The canonical pipeline asks for the reroll, and only where the list says so.
+
+    A tape that is not consumed proves the opposite: the exemption keeps the
+    listed reroll out of the dice stream while Frenzy holds, and the unlisted
+    warband is never offered it at all.
+    """
+    fanatic = maximilian()
+    init = StrictDice([])
+    own = initialize_fighter(fanatic, init, "f")
+    init.finish()
+    assert own.frenzy
+    for band, profile, reroll in (("carnival-of-chaos", "carnival-master", False),
+                                  ("witch-hunters", "witch-hunters", False)):
+        target = canonical(band, profile)
+        tape = StrictDice([{"key": "f.hit", "value": 1}]
+                          + ([{"key": "f.hit.reroll", "value": 1}] if reroll else []))
+        result = resolve_reference_attack(fanatic, target, own, initialize_fighter(target, tape, "t"),
+                                          fanatic.main_weapon, tape, key="f", first_round=True)
+        tape.finish()
+        assert not result.hit
+    # With Frenzy not active the printed list is the only difference left.
+    calm = replace(own, frenzy=False)
+    for band, profile, reroll in (("carnival-of-chaos", "carnival-master", True),
+                                  ("witch-hunters", "witch-hunters", False)):
+        target = canonical(band, profile)
+        tape = StrictDice([{"key": "f.hit", "value": 1}]
+                          + ([{"key": "f.hit.reroll", "value": 1}] if reroll else []))
+        result = resolve_reference_attack(fanatic, target, calm, initialize_fighter(target, tape, "t"),
+                                          fanatic.main_weapon, tape, key="f", first_round=True)
+        tape.finish()
+        assert not result.hit

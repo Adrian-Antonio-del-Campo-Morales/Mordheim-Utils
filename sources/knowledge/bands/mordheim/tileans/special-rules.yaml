@@ -211,6 +211,7 @@ rules:
       reason: >-
         Deferred subsystem: psychology or mounts.
 - id: band--remasen-officer-leadership
+  kind: warband_variant
   name: Remasen — Steadfast Officers
   effect: >-
     The Captain, Champions and Youngbloods in a Remasen warband have +1 Leadership at all times.
@@ -227,16 +228,27 @@ rules:
       en todo momento.
   applies_to:
     band: true
+  eligibility:
+  - captain
+  - champions
+  - youngbloods
   runtime:
-    scope: LATER
-    implemented: 'NO'
-    grant: band
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
     effects:
-    - id: unimplemented.tileans.band.remasen-officer-leadership
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: profile.characteristics
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.characteristics
+        parameters:
+          profile_ids:
+          - captain
+          - champions
+          - youngbloods
+          bonuses:
+            leadership: 1
 - id: band--remasen-hired-sword-restriction
   name: Remasen — Hired Sword Restriction
   effect: A Remasen warband may not hire Dark Elf Hired Swords.

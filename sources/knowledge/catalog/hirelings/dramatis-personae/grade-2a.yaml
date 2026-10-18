@@ -220,6 +220,31 @@ profiles:
         Usa la regla de distracción de Liderazgo de la fuente contra objetivos elegibles.
     name_i18n:
       es: Complexión Masiva
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: massively-built-shooting-producer
+        scope: 'NO'
+        binding: null
+        reason: >-
+          The Leadership check is made in the shooting phase, with range and visibility; the duel
+          supplies no such activation and does not simulate shooting.
+      - id: leadership-distraction
+        scope: 'NO'
+        binding: null
+        reason: >-
+          The failed check leaves the target, not Gwen, without its next turn. The caller supplies
+          that individual outcome as condition.massively-built-lost-turn; the engine spends it once
+          in the target's own turn. The shooting-phase check, range and visibility are not produced.
+      - id: massively-built-optional-leadership
+        scope: 'NO'
+        binding: null
+        reason: >-
+          The optional residual penalty is a supplied target fact: the caller may add
+          condition.massively-built-leadership-penalty, which reduces Leadership by one for the
+          battle.  The failed check itself is not produced here.
   - id: hireling.dramatis.busty-gwen.rule.not-hired-muscle
     name: Not Hired Muscle
     effect: >-
@@ -230,6 +255,16 @@ profiles:
         resultado/pago de la fuente.
     name_i18n:
       es: No Es Músculo Alquilado
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: busty-gwen-not-hired-muscle
+        scope: 'NO'
+        binding: null
+        reason: Being found automatically, its special scenario and the outcome/payment procedure are
+          campaign consequences with no duel-time effect.
   source_notes:
   - The standard campaign rating is +40 plus experience according to Mordheimer; the one-off game rule
     instead uses 85 gc and +65 rating.
@@ -456,6 +491,18 @@ profiles:
         El jinete y la montura son inmunes al veneno.
     name_i18n:
       es: Inmune al Veneno
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: trait.poison-immune
+        scope: 'YES'
+        binding:
+          kind: trait
+          id: trait.poison-immune
+          parameters:
+            value: true
   - id: hireling.dramatis.the-headless-horseman.rule.faithful-steed
     name: Faithful Steed
     effect: May never dismount.
@@ -464,6 +511,16 @@ profiles:
         Nunca puede desmontar.
     name_i18n:
       es: Corcel Fiel
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: headless-horseman-faithful-steed
+        scope: 'NO'
+        binding: null
+        reason: The dismount restriction belongs to mounted movement, which the duel does not
+          evolve; the steed is not a participant.
   - id: hireling.dramatis.the-headless-horseman.rule.undead
     name: Undead
     effect: Horseman and steed count as Undead.
@@ -490,6 +547,16 @@ profiles:
         Cuenta como estático para disparar después de moverse.
     name_i18n:
       es: Jinete Experto
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: headless-horseman-expert-rider
+        scope: 'NO'
+        binding: null
+        reason: Counting as stationary for shooting is a missile-resolution benefit, and shooting is
+          outside the resolved duel.
   - id: hireling.dramatis.the-headless-horseman.rule.rapid-reload
     name: Rapid Reload
     effect: Can fire both duelling pistols each shooting phase.
@@ -498,6 +565,16 @@ profiles:
         Puede disparar ambas pistolas de duelo en cada fase de disparo.
     name_i18n:
       es: Recarga Rápida
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: headless-horseman-rapid-reload
+        scope: 'NO'
+        binding: null
+        reason: Firing both pistols in a shooting phase is the excluded missile subsystem; the
+          printed clause states no close-combat consequence.
   - id: hireling.dramatis.the-headless-horseman.rule.head-hewer
     name: Head Hewer
     effect: Source charge attacks with unique axe modify injury/critical results.
@@ -514,6 +591,16 @@ profiles:
         Solo permanece una batalla y no puede volver a contratarse inmediatamente.
     name_i18n:
       es: Errante
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: headless-horseman-wanderer
+        scope: 'NO'
+        binding: null
+        reason: Staying for one battle and the rehire interval are retention consequences settled on
+          the roster after the battle.
   unresolved_references:
   - kind: multi_profile_entity
     source_name: Horseman M- WS4 BS5 S4 T4 W2 I6 A2 Ld8; Steed M8 WS2 BS0 S3 T4 W2 I2 A1 Ld5
@@ -647,10 +734,17 @@ profiles:
         reason: Killing a captured prisoner and receiving equipment after battle are excluded.
   - id: hireling.dramatis.the-foole.rule.master-craftsman
     name: Master Craftsman
-    effect: May attempt a source random weapon improvement after battle.
+    effect: >-
+      After battle one warrior may offer one weapon. The first D6 gives no change on 1, a modification
+      on 2-5, or an encounter with the Foole on 6. The modification D6 gives +1 Strength to the weapon
+      on 1-2, +1 Initiative to its wielder on 3-4, or Giggle Juice on 5-6 (+1 weapon Strength and +1
+      Injury, enough for two battles). Current modifications are supplied on the chosen weapon;
+      neither post-battle rolls nor the special encounter are simulated.
     effect_i18n:
       es: >-
-        Puede intentar una mejora de arma aleatoria de la fuente después de la batalla.
+        Tras la batalla puede modificar un arma: +1 Fuerza (1-2), +1 Iniciativa al portador (3-4)
+        o Zumo de Risas (5-6: +1 Fuerza y +1 a Heridas, para dos batallas). Las modificaciones actuales
+        se suministran sobre el arma elegida; no se simulan las tiradas ni el encuentro posterior.
     name_i18n:
       es: Maestro Artesano
     runtime:
@@ -661,12 +755,10 @@ profiles:
       - id: hireling.dramatis.the-foole.rule.master-craftsman.campaign
         scope: 'NO'
         binding: null
-        reason: The post-battle random improvement producer and two-battle accounting are excluded. Supplied
-          current Giggle Juice coating is poison.giggle-juice; the spray remains a separate fixed-Strength
-          attack.
-  unresolved_references:
-  - kind: item_instance_modifier
-    source_name: Master Craftsman weapon modifications
+        reason: >-
+          Post-battle rolls, encounter and two-battle accounting are excluded. Supplied results use
+          condition.master-craftsman-strength, condition.master-craftsman-initiative and
+          condition.giggle-juice-coating on the chosen physical weapon. The Poison Ring spray stays separate.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -754,6 +846,18 @@ profiles:
         Inmune al veneno.
     name_i18n:
       es: Inmune al Veneno
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: trait.poison-immune
+        scope: 'YES'
+        binding:
+          kind: trait
+          id: trait.poison-immune
+          parameters:
+            value: true
   - id: hireling.dramatis.sigmund-spindle-the-harvester-of-flesh.rule.no-pain
     name: No Pain
     effect: Ignores Knocked Down and Stunned Injury results. He must lose his last Wound AND receive
@@ -842,6 +946,16 @@ profiles:
         +1 de la fuente, incluidas las pruebas de huida.
     name_i18n:
       es: Cantador
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: mechanic.songster
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.songster
   - id: hireling.dramatis.william-schakestange-master-bard.rule.pantomime-horse
     name: Pantomime Horse
     effect: Optional mount treated as Warhorse except it never bolts.
@@ -850,6 +964,16 @@ profiles:
         Montura opcional tratada como Corcel de Guerra, excepto porque nunca se desboca.
     name_i18n:
       es: Caballo de Mimoteca
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: william-pantomime-horse
+        scope: 'NO'
+        binding: null
+        reason: The optional mount is a separate steed profile with mounted movement the duel does
+          not field.
   - id: hireling.dramatis.william-schakestange-master-bard.rule.pages-of-couragio
     name: Pages of Couragio
     effect: >-
@@ -860,6 +984,16 @@ profiles:
         Experiencia extra en la postbatalla.
     name_i18n:
       es: Páginas de Couragio
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: william-pages-of-couragio
+        scope: 'NO'
+        binding: null
+        reason: Recording heroic acts and awarding extra post-battle Experience are campaign
+          consequences settled after the game.
   - id: hireling.dramatis.william-schakestange-master-bard.rule.campaign-eligibility
     name: Conditional Acceptance — Good-Aligned Employers
     effect: >-
@@ -871,6 +1005,16 @@ profiles:
         Cualquier otra banda alineada con el bien solo puede contratarlo con una tirada de D6 de 4+.
     name_i18n:
       es: Aceptación Condicional — Contratistas Buenos
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: william-campaign-eligibility
+        scope: 'NO'
+        binding: null
+        reason: The roster-composition and alignment acceptance roll is evaluated when the warband
+          is hired and has no duel-time consequence.
   unresolved_references:
   - kind: skill
     source_name: Ride Pantomime Horse

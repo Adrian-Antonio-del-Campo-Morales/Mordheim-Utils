@@ -520,3 +520,33 @@ rules:
   applies_to:
     profile_ids:
     - warhounds
+- id: drunken-gang--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - armour
+  name: Equipment Restrictions
+  effect: May select weapons from the Henchmen Equipment List; the profile entry does
+    not allow armour.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/horned-hunters
+    section: Henchmen / Drunken Gang
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: May select weapons from the Henchmen Equipment List; the profile entry does
+      not allow armour.
+  applies_to:
+    profile_ids:
+    - drunken-gang

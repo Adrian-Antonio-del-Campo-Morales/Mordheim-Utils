@@ -164,7 +164,10 @@ profiles:
     A: 1
     Ld: 8
   equipment_lists: []
-  fixed_equipment: []
+  fixed_equipment:
+  - sword
+  - dark_elf_blade_weapon_upgrade
+  - dagger
   equipment_restrictions:
   - Is a wizard and uses Dark Magic, as per TC 12, with 2 randomly determined spells; equipped with a dark elven blade and dagger.
   skill_access: []
@@ -199,7 +202,11 @@ profiles:
     A: 1
     Ld: 8
   equipment_lists: []
-  fixed_equipment: []
+  fixed_equipment:
+  - light_armour
+  - sword
+  - dark_elf_blade_weapon_upgrade
+  - beastlash
   equipment_restrictions:
   - Accompanied by two Cold One Beasthounds; equipped with light armour, a dark elven blade and a beastlash.
   skill_access: []
@@ -234,7 +241,11 @@ profiles:
     A: 1
     Ld: 8
   equipment_lists: []
-  fixed_equipment: []
+  fixed_equipment:
+  - sword
+  - sword
+  - dark_elf_blade_weapon_upgrade
+  - dark_venom
   equipment_restrictions:
   - Uses drugs and is therefore subject to frenzy; equipped with two dark elven blades coated in dark venom; 5+ save against all wounds suffered.
   skill_access: []
@@ -249,8 +260,10 @@ profiles:
   - Witch Elf
   name_i18n:
     es: Elfa Bruja
-  rule_ids: []
-  combat_traits: {}
+  rule_ids:
+  - witch-elf--drugs-frenzy
+  combat_traits:
+    natural_armour_save: 5
   equipment_restrictions_i18n:
     es: Usa drogas y por tanto está sujeto a frenesí; equipado con dos hojas elfos oscuras recubiertas de veneno oscuro; salvación de 5+ contra todas las heridas sufridas.
 - id: corsairs

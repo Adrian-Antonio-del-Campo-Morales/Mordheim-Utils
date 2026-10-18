@@ -342,6 +342,32 @@ rules:
   applies_to:
     band: true
 
+- id: witch-elf--drugs-frenzy
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.frenzy
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.frenzy
+        parameters:
+          value: true
+  name: Drugs
+  effect: "Uses drugs and is therefore subject to frenzy."
+  source:
+    manual: broheim.net
+    printed_page: 5
+    section: Heroes / 0-1 Specialist / Witch Elf
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Dark%20Elf%20Corsairs.pdf
+  name_i18n:
+    es: Drogas
+  applies_to:
+    profile_ids:
+    - witch-elf
+
 - id: corsairs--equipment-restrictions
   runtime:
     scope: 'YES'

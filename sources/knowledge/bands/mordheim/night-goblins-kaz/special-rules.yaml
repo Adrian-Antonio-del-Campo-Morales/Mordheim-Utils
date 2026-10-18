@@ -100,6 +100,55 @@ rules:
       mechanic.netter para el texto completo).
   applies_to:
     band: true
+# The list itself stays a compound record: Ded Shooty is a shooting modifier,
+# Sneaky Git a deployment mechanic and Infiltrate a cross-reference.  Netter is
+# the in-combat skill of the same stanza, so it carries its own record, exactly
+# like the sibling Night Goblins.
+- id: band--night-goblin-special-skills-netter
+  name: Netter
+  name_i18n:
+    es: Redador
+  effect: >-
+    The goblin is adept at using a net to disable his enemies; the technique he has mastered is
+    'chuck and charge' (see mechanic.netter for the full text).
+  effect_i18n:
+    es: >-
+      El goblin es experto en usar una red para inutilizar a sus enemigos; la técnica que ha
+      dominado es «lanzar y cargar» (ver mechanic.netter para el texto completo).
+  source:
+    manual: broheim.net
+    printed_page: 44
+    section: Night Goblin Special Skills / Netter
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    # The caught victim's own state is the clause's individually admitted
+    # consequence.  It is supplied expressly by the caller as the canonical
+    # condition.netted (catalog/rules/conditions.yaml), which the duel's state
+    # and recovery already consume; this row grants no technique of its own,
+    # so it is declared with no selectable grant: choosing it in a duel would
+    # have to produce the excluded throw, which is not simulated.
+    - id: condition.netted
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.netted
+    # The procedure the clause itself prints stays the excluded producer: a
+    # thrown net resolved by ballistic skill, the target's Strength escape test
+    # and the failed charge stopped short of contact are not simulated.
+    - id: band--night-goblin-special-skills-netter.net-charge-producer
+      scope: 'NO'
+      binding: null
+      reason: >-
+        The net charge is a throw resolved by ballistic skill followed by the target's Strength escape
+        test, and a miss or escape is a failed charge stopped short of contact; those producers and the
+        board placement remain outside the duel and are not simulated.  Only the caught victim's
+        individually admitted state applies, and the caller supplies it expressly as condition.netted.
 - id: band--cave-squig-limit
   runtime:
     scope: 'NO'

@@ -1,6 +1,8 @@
 """Special construction bindings."""
 from __future__ import annotations
 
+import pytest
+
 from mordheim_construction.compiler import compile_fighter
 from mordheim_core.models import FighterBuild
 
@@ -116,3 +118,137 @@ def test_remaining_selected_handlers_project_their_exact_combat_modifier():
     assert "rule.venom-glands" in venom.main_weapon.tags
     assert venom.main_weapon.target_armour_bonus == 1
     assert venom.main_weapon.injury_modifier == 1
+
+
+AQUATIC_POOL = (
+    "band--mutations-blackblood",
+    "band--mutations-great-claw",
+    "band--mutations-tentacle",
+    "band--mutations-prehensile-tail",
+    "band--mutations-beak",
+    "band--mutations-electrical-touch",
+    "band--mutations-mer-creature",
+    "band--mutations-suckers",
+    "band--mutations-eye-stalks",
+)
+
+
+def _aquatic(*extra, **kwargs):
+    return compile_fighter(build(
+        "shallows-beasts-mim", "buccaneer",
+        main_weapon_id="weapon.mace", **kwargs, special_rule_ids=extra,
+    ))
+
+
+def test_every_aquatic_mutants_pool_member_compiles_its_projected_state():
+    # The grant rule of `shallows-beasts-mim / band--aquatic-mutants` lets any
+    # Hero select one mutation from the printed pool; each member projects the
+    # consequence its own catalogue entry declares. Mer-Creature and Suckers
+    # keep their terrain and climbing content outside the duel: Mer-Creature
+    # only lowers its land Movement, Suckers compiles without a duel effect.
+    blackblood = _aquatic("band--mutations-blackblood")
+    great_claw = _aquatic("band--mutations-great-claw")
+    tentacle = _aquatic("band--mutations-tentacle")
+    tail = _aquatic("band--mutations-prehensile-tail")
+    beak = _aquatic("band--mutations-beak")
+    electrical = _aquatic("band--mutations-electrical-touch")
+    mer_creature = _aquatic("band--mutations-mer-creature")
+    suckers = _aquatic("band--mutations-suckers")
+    eye_stalks = _aquatic("band--mutations-eye-stalks")
+    assert "acid_blood" in blackblood.global_effects.tags
+    assert any("rule.great-claw" in attack.tags and attack.strength_bonus == 1
+               for attack in great_claw.extra_attacks)
+    assert ("rule.tentacle-grapple" in tentacle.global_effects.tags
+            and tentacle.global_effects.incoming_attacks_modifier == -1)
+    assert any("rule.prehensile-tail" in attack.tags for attack in tail.extra_attacks)
+    assert any("rule.strikes-last-bite" in attack.tags for attack in beak.extra_attacks)
+    assert "mechanic.electrical-touch" in electrical.global_effects.tags
+    assert "species.aquatic" in mer_creature.global_effects.tags
+    assert mer_creature.characteristics.movement == 3
+    assert sorted(suckers.global_effects.tags) == sorted(_aquatic().global_effects.tags)
+    assert "mechanic.causes-fear" in eye_stalks.global_effects.tags
+
+
+def test_aquatic_mutants_access_is_one_pool_member_per_hero():
+    grant = compile_fighter(FighterBuild(
+        "mordheim", band_id="shallows-beasts-mim", profile_id="buccaneer",
+        main_weapon_id="weapon.mace",
+    ))
+    # The selected rule is the only mutation access; without it nothing mutates.
+    assert not any(tag.startswith("band--") for tag in grant.global_effects.tags)
+    for member in AQUATIC_POOL:
+        assert _aquatic(member).construction_tags is not None
+    with pytest.raises(ValueError, match="at most one Aquatic mutation"):
+        _aquatic("band--mutations-blackblood", "band--mutations-beak")
+
+
+def test_aquatic_mutants_pool_is_closed_and_hero_only():
+    # Mutations outside the printed pool (a Possessed Extra Arm or Scorpion
+    # Tail) are not selectable, and a non-Hero cannot receive the grant.
+    for foreign in ("band--mutations-extra-arm", "band--mutations-scorpion-tail"):
+        with pytest.raises(ValueError, match="not available to shallows-beasts-mim"):
+            _aquatic(foreign)
+    with pytest.raises(ValueError, match="not available to shallows-beasts-mim/wreckers"):
+        compile_fighter(FighterBuild(
+            "mordheim", band_id="shallows-beasts-mim", profile_id="wreckers",
+            main_weapon_id="weapon.mace",
+            special_rule_ids=("band--mutations-blackblood",),
+        ))
+
+
+def test_extra_arm_and_great_claw_enforce_their_printed_arm_rules():
+    """Extra Arm: 'The mutant may use any single-handed weapon in the extra
+    arm...  Alternatively, he may carry a shield or a buckler in the extra arm.
+    If a Possessed chooses to do this, he gains an extra attack but still
+    cannot carry a weapon.'  Great Claw: 'He may carry no weapons in this arm.'
+    """
+    shield_arm = compile_fighter(build(
+        "cult-of-the-possessed", "mutants", extra_hand_id="defence.shield",
+        special_rule_ids=("band--mutations-extra-arm",),
+    ))
+    possessed = compile_fighter(build(
+        "cult-of-the-possessed", "the-possessed", extra_hand_id="defence.shield",
+        special_rule_ids=("band--mutations-extra-arm",),
+    ))
+    # Both alternative loadouts of the extra arm pay the extra attack, and the
+    # Possessed keeps his own 'never use weapons' restriction.
+    for fighter in (shield_arm, possessed):
+        assert any("weapon.natural-attacks" in attack.tags for attack in fighter.extra_attacks)
+    with pytest.raises(ValueError, match="one-handed weapon"):
+        compile_fighter(build(
+            "cult-of-the-possessed", "mutants", extra_hand_id="weapon.halberd",
+            special_rule_ids=("band--mutations-extra-arm",),
+        ))
+    with pytest.raises(ValueError, match="equipment is not available"):
+        compile_fighter(build(
+            "cult-of-the-possessed", "the-possessed", extra_hand_id="weapon.dagger",
+            special_rule_ids=("band--mutations-extra-arm",),
+        ))
+    # The claw arm carries nothing, so the mutant keeps one weapon at most and
+    # never a weapon that occupies both of its arms.
+    for illegal in (dict(main_weapon_id="weapon.sword", off_hand_id="weapon.sword"),
+                    dict(main_weapon_id="weapon.double-handed-weapon")):
+        with pytest.raises(ValueError, match="Great Claw arm may carry no weapon"):
+            compile_fighter(build(
+                "cult-of-the-possessed", "mutants",
+                special_rule_ids=("band--mutations-great-claw",), **illegal,
+            ))
+    legal = compile_fighter(build(
+        "cult-of-the-possessed", "mutants", main_weapon_id="weapon.sword",
+        off_hand_id="defence.shield", special_rule_ids=("band--mutations-great-claw",),
+    ))
+    assert any("rule.great-claw" in attack.tags and attack.strength_bonus == 1
+               for attack in legal.extra_attacks)
+    # The claw removes one weapon arm, not all arms beyond the original pair.
+    # An Extra Arm leaves two weapon-capable arms and a claw that may hold a shield.
+    combined = ("band--mutations-great-claw", "band--mutations-extra-arm")
+    legal_extra = compile_fighter(build(
+        "cult-of-the-possessed", "mutants", main_weapon_id="weapon.sword",
+        off_hand_id="weapon.dagger", extra_hand_id="defence.shield", special_rule_ids=combined,
+    ))
+    assert legal_extra.off_hand_attacks
+    with pytest.raises(ValueError, match="Great Claw arm may carry no weapon"):
+        compile_fighter(build(
+            "cult-of-the-possessed", "mutants", main_weapon_id="weapon.sword",
+            off_hand_id="weapon.dagger", extra_hand_id="weapon.mace", special_rule_ids=combined,
+        ))

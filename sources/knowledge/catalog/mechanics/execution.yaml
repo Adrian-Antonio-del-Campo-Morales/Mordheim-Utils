@@ -11,11 +11,41 @@ mechanics:
   trigger: attack
   application: attack
   stacking: stack
+- id: weapon.shortsword
+  handler: effect-set
+  parameters:
+    parry: true
+    target_armour_bonus: 1
+    tags:
+    - weapon.sword
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.count-of-ventimiglias-misericordia
+  handler: effect-set
+  parameters:
+    parry: true
+    tags:
+    - weapon.count-of-ventimiglias-misericordia
+    - weapon.sword
+  trigger: attack
+  application: attack
+  stacking: stack
 - id: weapon.mace
   handler: effect-set
   parameters:
     concussion: true
     tags:
+    - weapon.mace
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.club
+  handler: effect-set
+  parameters:
+    concussion: true
+    tags:
+    - weapon.club
     - weapon.mace
   trigger: attack
   application: attack
@@ -535,6 +565,26 @@ mechanics:
   trigger: attack
   application: attack
   stacking: stack
+- id: weapon.thinglash
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.thinglash
+    strength_bonus: 1
+    target_armour_bonus: 1
+    cannot_be_parried: true
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.thing-catcher
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.thing-catcher
+    two_handed: true
+  trigger: attack
+  application: attack
+  stacking: stack
 - id: weapon.sun-gauntlet
   handler: effect-set
   parameters:
@@ -586,6 +636,16 @@ mechanics:
     strength_bonus: 2
     priority: -1
     critical_injury_bonus: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.draich-druchii
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.draich-druchii
+    two_handed: true
+    strength_bonus: 2
   trigger: attack
   application: attack
   stacking: stack
@@ -752,6 +812,15 @@ mechanics:
     - weapon.quarter-staff
     two_handed: true
     parry: true
+    initiative_bonus: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.travel-staff
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.travel-staff
     initiative_bonus: 1
   trigger: attack
   application: attack
@@ -932,6 +1001,15 @@ mechanics:
   trigger: passive
   application: fighter
   stacking: stack
+- id: defence.sea-dragon-cloak-druchii
+  handler: effect-set
+  parameters:
+    armour_save_bonus: 1
+    tags:
+    - defence.sea-dragon-cloak-druchii
+  trigger: passive
+  application: fighter
+  stacking: stack
 - id: defence.cooking-pot-helmet
   handler: effect-set
   parameters:
@@ -949,6 +1027,15 @@ mechanics:
   trigger: passive
   application: fighter
   stacking: stack
+- id: defence.all-seeing-eye-of-numas
+  handler: effect-set
+  parameters:
+    tags:
+    - defence.all-seeing-eye-of-numas
+    ward_save: 6
+  trigger: passive
+  application: fighter
+  stacking: once
 - id: defence.kite-shield
   handler: effect-set
   parameters:
@@ -1057,11 +1144,38 @@ mechanics:
   trigger: duel_start
   application: fighter
   stacking: stack
+- id: preparation.warpaint
+  handler: effect-set
+  parameters:
+    tags:
+    - preparation.warpaint
+    ward_save: 6
+  trigger: duel_start
+  application: fighter
+  stacking: once
+- id: preparation.elven-wine
+  handler: effect-set
+  parameters:
+    tags:
+    - preparation.elven-wine
+    - mechanic.fear-immunity
+  trigger: duel_start
+  application: fighter
+  stacking: once
 - id: poison.black-lotus
   handler: effect-set
   parameters:
     tags:
     - poison.black-lotus
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: poison.garlic-black-lotus
+  handler: effect-set
+  parameters:
+    tags:
+    - poison.black-lotus
+    - poison.vampires-only
   trigger: attack
   application: attack
   stacking: stack
@@ -1168,6 +1282,18 @@ mechanics:
   trigger: passive
   application: fighter
   stacking: stack
+# Axe Mastery reuses the canonical Axe Expert operator (a missed to-hit roll with
+# an axe or dwarven axe is repeated in the turn the bearer charges) and keeps its
+# own provenance tag beside it.
+- id: skill.axe-mastery
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.axe-expert
+    - skill.axe-mastery
+  trigger: passive
+  application: fighter
+  stacking: stack
 - id: skill.bellowing-battle-roar
   handler: effect-set
   parameters:
@@ -1193,6 +1319,22 @@ mechanics:
   trigger: passive
   application: fighter
   stacking: stack
+- id: skill.deathblow
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.deathblow
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.deathwish
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.psychology-immunity
+  trigger: passive
+  application: fighter
+  stacking: once
 - id: skill.defensive-stance
   handler: effect-set
   parameters:
@@ -1564,6 +1706,7 @@ mechanics:
     tags:
     - skill.tough-as-steel
     out_of_action_threshold: 6
+    true_grit: true
   trigger: passive
   application: fighter
   stacking: stack
@@ -1758,6 +1901,14 @@ mechanics:
   trigger: passive
   application: fighter
   stacking: once
+- id: mechanic.deathblow
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.deathblow
+  trigger: passive
+  application: fighter
+  stacking: once
 - id: mechanic.disability
   handler: effect-set
   parameters:
@@ -1785,7 +1936,8 @@ mechanics:
 - id: mechanic.netter
   handler: effect-set
   parameters:
-    tags: []
+    tags:
+    - mechanic.netter
   trigger: passive
   application: fighter
   stacking: once
@@ -1896,6 +2048,15 @@ mechanics:
     parry: true
     tags:
     - weapon.pry-bar
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.iron-fan
+  handler: effect-set
+  parameters:
+    parry: true
+    tags:
+    - weapon.iron-fan
   trigger: attack
   application: attack
   stacking: stack
@@ -2101,6 +2262,39 @@ mechanics:
   parameters:
     tags:
     - mechanic.hatred-high-elves
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.holy-relic-frenzy
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.holy-relic-frenzy
+    frenzy: true
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.fear-immunity-undead-chargers
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.fear-immunity-undead-chargers
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.nominated-strike-first
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.nominated-strike-first
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.undead-foes-no-fear
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.undead-foes-no-fear
   trigger: passive
   application: fighter
   stacking: once
@@ -2357,6 +2551,14 @@ mechanics:
   trigger: passive
   application: fighter
   stacking: once
+- id: mechanic.scryer
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.scryer
+  trigger: passive
+  application: fighter
+  stacking: once
 - id: mechanic.wraith-touch
   handler: effect-set
   parameters:
@@ -2407,6 +2609,22 @@ mechanics:
   parameters:
     tags:
     - mechanic.ethereal-hit-save
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.hatred-slavers
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.hatred-slavers
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.vengeful-hatred
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.vengeful-hatred
   trigger: passive
   application: fighter
   stacking: once
@@ -2851,6 +3069,14 @@ mechanics:
   trigger: passive
   application: fighter
   stacking: once
+- id: condition.summoned-this-turn
+  handler: effect-set
+  parameters:
+    tags: [condition.summoned-this-turn]
+    charge_strength_bonus: 1
+  trigger: passive
+  application: fighter
+  stacking: once
 - id: condition.mouth-sewn
   handler: effect-set
   parameters:
@@ -3022,6 +3248,63 @@ mechanics:
   parameters:
     tags:
     - mechanic.greenskin-traitor
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.fear-beastmen
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.fear-beastmen
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.hatred-beastmen
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.hatred-beastmen
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.undead-construct
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.undead-construct
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.marianna-no-pain-jump-up
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.marianna-no-pain-jump-up
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.iron-fan
+  handler: effect-set
+  parameters:
+    initiative_bonus: 1
+    tags:
+    - mechanic.iron-fan
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.festooned-with-pistols
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.festooned-with-pistols
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.fighting-undead
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.fighting-undead
   trigger: passive
   application: fighter
   stacking: once
@@ -3262,6 +3545,14 @@ mechanics:
   trigger: attack
   application: attack
   stacking: stack
+- id: mechanic.mob-leadership
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.mob-leadership
+  trigger: passive
+  application: fighter
+  stacking: once
 - id: mechanic.own-leadership
   handler: effect-set
   parameters:
@@ -3379,6 +3670,14 @@ mechanics:
   parameters:
     tags:
     - condition.danse-macabre-controlled
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.massively-built-lost-turn
+  handler: effect-set
+  parameters:
+    tags:
+    - condition.massively-built-lost-turn
   trigger: passive
   application: fighter
   stacking: once
@@ -3580,6 +3879,14 @@ mechanics:
   trigger: passive
   application: fighter
   stacking: once
+- id: mechanic.fanatical-hatred
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.fanatical-hatred
+  trigger: passive
+  application: fighter
+  stacking: once
 - id: mechanic.giggle-juice-spray
   handler: effect-set
   parameters:
@@ -3742,6 +4049,14 @@ mechanics:
   trigger: passive
   application: fighter
   stacking: once
+- id: condition.stupidity-exempt
+  handler: effect-set
+  parameters:
+    tags:
+    - condition.stupidity-exempt
+  trigger: passive
+  application: fighter
+  stacking: once
 - id: mechanic.dim-witted-leader
   handler: effect-set
   parameters:
@@ -3751,6 +4066,14 @@ mechanics:
   application: fighter
   stacking: once
 - id: condition.adventurer-barbarian-leader
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.leader-six
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.current-warband-leader
   handler: effect-set
   parameters:
     tags:
@@ -3849,6 +4172,151 @@ mechanics:
   parameters:
     tags:
     - mechanic.wall-of-steel
+  trigger: passive
+  application: fighter
+  stacking: once
+
+- id: weapon.whip-tc14
+  handler: effect-set
+  parameters:
+    tags: [weapon.whip-tc14]
+    strength_bonus: -1
+    target_armour_bonus: 1
+    cannot_be_parried: true
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: mechanic.whip-master
+  handler: effect-set
+  parameters:
+    tags: [mechanic.whip-master]
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.fear-of-snakes
+  handler: effect-set
+  parameters:
+    tags: [mechanic.fear-of-snakes]
+  trigger: passive
+  application: fighter
+  stacking: once
+
+- id: weapon.icefang-axe
+  handler: effect-set
+  parameters:
+    tags: [weapon.icefang-axe, weapon.double-handed-weapon]
+    strength_bonus: 2
+    priority: -1
+    two_handed: true
+    parry: true
+    injury_modifier: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: defence.sabertooth-hide
+  handler: effect-set
+  parameters:
+    tags: [defence.sabertooth-hide]
+    armour_save_bonus: 1
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.drenok-berserker
+  handler: effect-set
+  parameters:
+    tags: [mechanic.drenok-berserker]
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: defence.eye-pendant
+  handler: effect-set
+  parameters:
+    tags: [defence.eye-pendant]
+    ward_save: 4
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.ye-give-way-refused
+  handler: effect-set
+  parameters:
+    tags: [condition.ye-give-way-refused]
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.ye-give-way-victorious
+  handler: effect-set
+  parameters:
+    tags: [condition.ye-give-way-victorious]
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.disability-1
+  handler: effect-set
+  parameters:
+    tags: [condition.disability-1]
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.disability-2
+  handler: effect-set
+  parameters:
+    tags: [condition.disability-2]
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.disability-3
+  handler: effect-set
+  parameters:
+    tags: [condition.disability-3]
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.disability-4
+  handler: effect-set
+  parameters:
+    tags: [condition.disability-4]
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.disability-5
+  handler: effect-set
+  parameters:
+    tags: [condition.disability-5]
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.disability-6
+  handler: effect-set
+  parameters:
+    tags: [condition.disability-6]
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.disability-hero-nearby
+  handler: effect-set
+  parameters:
+    tags: [condition.disability-hero-nearby]
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.man-hater
+  handler: effect-set
+  parameters:
+    tags: [mechanic.man-hater]
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.despise-despoilers
+  handler: effect-set
+  parameters:
+    tags: [mechanic.despise-despoilers]
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.ashamed-and-afraid
+  handler: effect-set
+  parameters:
+    tags: [mechanic.ashamed-and-afraid]
   trigger: passive
   application: fighter
   stacking: once

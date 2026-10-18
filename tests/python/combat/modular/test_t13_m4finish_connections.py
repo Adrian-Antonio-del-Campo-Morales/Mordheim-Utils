@@ -11,6 +11,7 @@ from __future__ import annotations
 
 from mordheim_combat.modular.leadership import resolve_local_leadership
 from mordheim_combat.modular.psychology import causes_fear, resolve_fear
+from mordheim_combat.modular.rounds import resolve_round
 from mordheim_combat.modular.state import initialize_duel
 from mordheim_combat_lab.verification.dice import StrictDecisions, StrictDice
 from mordheim_construction.compiler import compile_fighter
@@ -109,16 +110,17 @@ def test_the_promoted_knight_of_purity_auto_passes_a_required_test():
         "watchmen-mim", "sergeants").global_effects.tags
 
 
-def test_the_emissary_patron_states_are_the_supplied_branch():
-    # Fanatic Online 94: native equipment and one complete selected patron.
-    def emissary(patron):
-        return compile_fighter(FighterBuild(
-            "mordheim", band_id="hirelings.hired-sword.2a",
-            profile_id="hireling.hired-sword.emissary-of-chaos",
-            main_weapon_id="weapon.sword", armour_id="armour.chaos-armour",
-            off_hand_id="defence.shield", defence_ids=("defence.helmet",),
-            special_rule_ids=("hireling.hired-sword.emissary-of-chaos.patron." + patron,)))
+def emissary(patron):
+    """Fanatic Online 94: native equipment and one complete selected patron."""
+    return compile_fighter(FighterBuild(
+        "mordheim", band_id="hirelings.hired-sword.2a",
+        profile_id="hireling.hired-sword.emissary-of-chaos",
+        main_weapon_id="weapon.sword", armour_id="armour.chaos-armour",
+        off_hand_id="defence.shield", defence_ids=("defence.helmet",),
+        special_rule_ids=("hireling.hired-sword.emissary-of-chaos.patron." + patron,)))
 
+
+def test_the_emissary_patron_states_are_the_supplied_branch():
     khorne, nurgle = emissary("khorne"), emissary("nurgle")
     slaanesh, tzeentch = emissary("slaanesh"), emissary("tzeentch")
     assert khorne.global_effects.frenzy
@@ -130,6 +132,33 @@ def test_the_emissary_patron_states_are_the_supplied_branch():
     assert slaanesh.global_effects.incoming_hit_modifier == -1
     assert "identity.spellcaster" in tzeentch.global_effects.tags
     assert "poison.black-lotus" not in khorne.global_effects.tags
+
+
+def test_the_slaanesh_patron_penalty_lands_on_the_engaged_enemy():
+    # Printed clause: "those enemies that do engage the Emissary in close combat
+    # suffer -1 to their to-hit rolls." The enemy's own blow is one point harder
+    # against the Slaanesh branch than against the same Emissary with another
+    # patron, and the bearer's own blow is untouched.
+    enemy = bare()
+
+    def duel(patron):
+        bearer = emissary(patron)
+        state = initialize_duel(enemy, bearer, StrictDice([]), context=DuelContext(
+            charging=("second",), active_participant="second"))
+        dice = StrictDice([
+            {"key": "round.0.second.attack.0.hit", "value": 1},
+            {"key": "round.0.first.attack.0.hit", "value": 1}])
+        decisions = StrictDecisions([])
+        result = resolve_round(enemy, bearer, state, dice, decisions)
+        dice.finish()
+        decisions.finish()
+        return result
+
+    slaanesh, tzeentch = duel("slaanesh"), duel("tzeentch")
+    # attacks[0] is the charging Emissary's blow, attacks[1] the enemy's reply.
+    assert slaanesh.attacks[1].hit_target == tzeentch.attacks[1].hit_target + 1
+    assert not slaanesh.attacks[1].hit
+    assert slaanesh.attacks[0].hit_target == tzeentch.attacks[0].hit_target
 
 
 # --- The qualified Beast Hunter family -------------------------------------

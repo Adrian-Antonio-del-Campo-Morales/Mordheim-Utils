@@ -100,18 +100,12 @@ profiles:
         value: 1
   starting_skill_ids:
   - skill.mighty-blow
+  - skill.righteous-fury
   - skill.unstoppable-charge
   rule_ids:
   - hireling.dramatis.bertha-bestraufrung.rule.high-matriarch
   - hireling.dramatis.bertha-bestraufrung.rule.sigmars-handmaiden
   unresolved_references:
-  - kind: skill
-    source_name: Righteous Fury
-    note: Only a band-scoped rule exists in the supplied KB; no global canonical skill ID.
-    note_i18n:
-      es: >-
-        Solo existe una regla con alcance de banda en el KB suministrado; no hay un
-        identificador de habilidad canónico global.
   - kind: prayer_list
     source_name: Prayers of Sigmar
     note: No canonical prayer/spell catalogue exists in the supplied KB.
@@ -354,6 +348,16 @@ rules:
     url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
   name_i18n:
     es: Gran Matriarca
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: none
+    effects:
+    - id: bertha-high-matriarch
+      scope: 'NO'
+      binding: null
+      reason: Becoming the warband leader automatically is a roster position settled when she
+        joins; the duel's participants and any supplied nearby leader are given at construction.
 - id: hireling.dramatis.bertha-bestraufrung.rule.sigmars-handmaiden
   name: Sigmar's Handmaiden
   effect: Bertha receives +2 on rolls to determine whether her Prayers of Sigmar are granted.
@@ -367,6 +371,16 @@ rules:
     url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
   name_i18n:
     es: Sirvienta de Sigmar
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: none
+    effects:
+    - id: bertha-sigmars-handmaiden
+      scope: 'NO'
+      binding: null
+      reason: Granting Prayers of Sigmar belongs to the excluded prayer subsystem and carries no
+        consequence in a resolved duel.
 - id: hireling.dramatis.johann-the-knife.rule.poisoned-weapons
   name: Poisoned Weapons
   effect: Johann's weapons are always coated with Black Lotus.

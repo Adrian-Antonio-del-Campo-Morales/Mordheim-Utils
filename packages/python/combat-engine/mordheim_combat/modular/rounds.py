@@ -1,6 +1,7 @@
 """combat: Per-round state machine of the modular engine."""
 from __future__ import annotations
 from mordheim_combat import phases
+from mordheim_combat.modular.alchemy import alchemist_addicted, resolve_alchemist
 
 from dataclasses import dataclass, replace
 from mordheim_combat.modular.aftermath import _black_hunger
@@ -11,7 +12,7 @@ from mordheim_combat.modular.aftermath import _force_of_will
 from mordheim_combat.modular.aftermath import _spines
 from mordheim_combat.modular.aftermath import _start_round_state
 from mordheim_combat.modular.state import _refresh_random_characteristics, maximum_wounds, require_characteristics
-from mordheim_combat.modular.pools import _resolve_attack_pool, electrical_touch_weapon
+from mordheim_combat.modular.pools import _resolve_attack_pool, electrical_touch_weapon, pool_attack_weapons
 from mordheim_combat.modular.leadership import resolve_local_leadership
 from mordheim_combat.modular.psychology import causes_fear, resolve_fear, resolve_stupidity
 from mordheim_combat.modular.attacks import resolve_reference_attack
@@ -33,6 +34,28 @@ from mordheim_core.dice import DiceSource
 from mordheim_core.dice import RollRequest
 from mordheim_core.models import CompiledFighter
 from mordheim_core.models import EffectSet
+
+
+def _initiative_bonus(current, fighter) -> int:
+    """The Initiative a fighter gained over the value its profile prints.
+
+    A profile that prints no Initiative at all has no base to raise: the
+    compiler already refuses a bonus on an absent characteristic, so the delta
+    is zero and the comparison falls back to the printed tie roll instead of
+    inventing a base for it.
+    """
+    base = fighter.characteristics.initiative
+    if base is None or current.initiative is None:
+        return 0
+    return current.initiative - base
+
+
+def _strike_initiative(current, fighter):
+    """Initiative of an auxiliary strike, or ``None`` for an absent one."""
+    if current.initiative is None:
+        return None
+    return max(current.initiative_floor, current.initiative
+               + fighter.global_effects.initiative_bonus - current.initiative_penalty)
 
 
 SHADOW_DANCES = (
@@ -67,9 +90,9 @@ ANIMOSITY_SOURCES = ("mechanic.goblin-squabble", "mechanic.fungus-rowdy")
 JESTER_TRICK_STATES = ("dodge_trick_active", "banter_trick_active", "trip_trick_active")
 
 
-def _owned_roll(fighter, current, dice, decisions, request):
+def _owned_roll(fighter, current, dice, decisions, request, *, close_combat=False):
     from mordheim_combat.modular.contexts import OwnedRollDice
-    owned = OwnedRollDice(dice, fighter, current, decisions)
+    owned = OwnedRollDice(dice, fighter, current, decisions, close_combat=close_combat)
     value = owned.roll(request)
     return value, owned.state
 
@@ -211,7 +234,7 @@ def _burning_bodies(first, second, state, dice, decisions):
         if (own.active and victim.condition==Condition.STANDING
                 and has_tag(owner.global_effects,'mechanic.burning-body')):
             roll,own=_owned_roll(owner,own,dice,decisions,
-                RollRequest(f"round.{state.round_index}.{'first' if owner_first else 'second'}.burning-body"))
+                RollRequest(f"round.{state.round_index}.{'first' if owner_first else 'second'}.burning-body"), close_combat=True)
             if roll>=min(4,target.global_effects.caught_fire_threshold):
                 victim=replace(victim,on_fire=True)
             state=(replace(state,first=own,second=victim) if owner_first
@@ -240,6 +263,27 @@ def resolve_round(
 ) -> CombatRoundResult:
     """Resolve one complete scalar round through the fixed phase pipeline."""
     decisions = decisions or AlwaysAccept()
+    # Massively Built's supplied failed check costs the target its whole next
+    # turn, so no optional action of that turn is available either: the printed
+    # outcome is not limited to the attack pool.  Read that pending fact once,
+    # before any own-turn action is resolved; the state itself stays set until
+    # the attack step spends it, so every consumer below sees the same fact.
+    lost_turn = (state.first.massively_built_lost_turn if state.first_player_turn
+                 else state.second.massively_built_lost_turn)
+    # Drenok's Berserker is not the Slayer charging skill: while fighting at
+    # zero Wounds it requires a fresh 4+ each subsequent player turn.
+    if state.first.active and state.second.active:
+        for label, fighter in (('first', first), ('second', second)):
+            current = getattr(state, label)
+            if current.drenok_fighting and current.wounds > 0:
+                state = replace(state, **{label: replace(current, drenok_fighting=False)})
+            elif current.drenok_fighting and has_tag(fighter.global_effects, 'mechanic.drenok-berserker'):
+                roll, current = _owned_roll(fighter, current, dice, decisions,
+                    RollRequest(f'round.{state.round_index}.{label}.drenok-berserker'))
+                state = replace(state, **{label: replace(current, drenok_fighting=roll >= 4,
+                    condition=Condition.STANDING if roll >= 4 else Condition.OUT)})
+        if not state.first.active or not state.second.active:
+            return _without_combat(first, second, state, dice, decisions, advance=True)
     compiled_first,compiled_second=first,second
     if state.first.mutations or state.second.mutations:
         from .mutations import fighter_for_mutations
@@ -256,6 +300,7 @@ def resolve_round(
     if state.round_index == 0:
         for owner_first, fighter in ((True, first), (False, second)):
             if (has_tag(fighter.global_effects, 'condition.impetuous-charge')
+                    and not (lost_turn and owner_first == state.first_player_turn)
                     and decisions.choose(f"round.0.{'first' if owner_first else 'second'}.impetuous-avoid-compulsion", fighter)):
                 passed, current = resolve_local_leadership(fighter, state, dice, decisions,
                     f"round.0.{'first' if owner_first else 'second'}.impetuous-release",
@@ -309,6 +354,8 @@ def resolve_round(
     current = _revenant_recovery(fighter, getattr(state, label), owned,
                                 f"round.{state.round_index}.{label}.revenant")
     current = replace(current, resources_spent=current.resources_spent | owned.state.resources_spent)
+    current = resolve_alchemist(fighter, current, dice, decisions,
+                                f"round.{state.round_index}.{label}")
     state = replace(state, **{label: current})
     if has_tag(fighter.global_effects, 'mechanic.feral-instinct') and current.active:
         passed, current = resolve_local_leadership(fighter, state, dice, decisions,
@@ -340,7 +387,8 @@ def resolve_round(
             state = replace(state, first_charged=charges[0], second_charged=charges[1],
                 engaged=state.engaged and any(charges), failed_charges=state.failed_charges | {label})
     maximum = fighter.characteristics.wounds + int(has_tag(fighter.global_effects, "skill.monstrous"))
-    if (current.active and not (current.grappled or current.grappling or current.netted) and current.wounds < maximum
+    if (current.active and not lost_turn and not (current.grappled or current.grappling or current.netted)
+            and current.wounds < maximum
             and (has_tag(fighter.global_effects, "mechanic.herb-lore")
                  or not state.engaged and has_tag(fighter.global_effects, "mechanic.herb-lore-outside-combat"))
             and decisions.choose(f"round.{state.round_index}.{label}.herb-lore", fighter)):
@@ -352,7 +400,7 @@ def resolve_round(
     # The Sermon's self-bonus belongs to the active player's combat phase only.
     sermon_key = f"round.{state.round_index}.rousing-sermon"
     if (current.condition in (phases.Condition.STANDING, phases.Condition.KNOCKED_DOWN)
-            and not (current.grappled or current.grappling or current.netted)
+            and not lost_turn and not (current.grappled or current.grappling or current.netted)
             and has_tag(fighter.global_effects, "mechanic.rousing-sermon")
             and "rousing-sermon" not in current.resources_spent
             and decisions.choose(f"round.{state.round_index}.{label}.rousing-sermon", fighter)):
@@ -518,7 +566,8 @@ def resolve_round(
             continue
         if owner_first == state.first_player_turn:
             selected = None
-            if (current.condition == Condition.STANDING and owner_first not in freed_from_net
+            if (not lost_turn and current.condition == Condition.STANDING
+                    and owner_first not in freed_from_net
                     and not (current.grappled or current.grappling)):
                 selected = next((power for power in ('curse', 'luck')
                     if power != current.last_djinn_power and decisions.choose(
@@ -539,7 +588,7 @@ def resolve_round(
         if not released:
             key = f"round.{state.round_index}.{'second' if holder_first else 'first'}.grapple-escape"
             victim = require_characteristics(target, victim, dice, key, ('S',), decisions)
-            owned = OwnedRollDice(dice, target, victim, decisions)
+            owned = OwnedRollDice(dice, target, victim, decisions, close_combat=True)
             released = _characteristic_test(victim.strength-2, owned, key, six_fails=False,
                 reroll=has_tag(target.global_effects, 'skill.blessed-sight'))
             victim = replace(victim, resources_spent=victim.resources_spent | owned.state.resources_spent)
@@ -717,24 +766,26 @@ def resolve_round(
             excluded = excluded or (shanty == "mechanic.sea-shanty-psychology"
                 and (enemy.frenzy or has_tag(target.global_effects, "mechanic.psychology-immunity")))
             own_shanty_phase = shanty != 'mechanic.sea-shanty' or owner_first == state.first_player_turn
-            if shanty and own_shanty_phase and not excluded and decisions.choose(f"round.{state.round_index}.{label}.sea-shanty", owner):
+            lost_owner_turn = lost_turn and owner_first == state.first_player_turn
+            if (shanty and own_shanty_phase and not lost_owner_turn and not excluded
+                    and decisions.choose(f"round.{state.round_index}.{label}.sea-shanty", owner)):
                 passed, enemy = resolve_local_leadership(target,
                     replace(state, first=first_state if owner_first else enemy,
                             second=enemy if owner_first else second_state), dice, decisions,
                     f"round.{state.round_index}.{label}.sea-shanty.leadership",
-                    first=not owner_first, opponent=owner, return_state=True)
+                    first=not owner_first, opponent=owner, return_state=True, close_combat=True)
                 if not passed:
                     if owner_first: second_loss += 1
                     else: first_loss += 1
             if (has_tag(owner.global_effects, "mechanic.crude-belch-ogre")
-                    and "crude-belch-ogre" not in own.resources_spent
+                    and "crude-belch-ogre" not in own.resources_spent and not lost_owner_turn
                     and decisions.choose(f"round.{state.round_index}.{label}.crude-belch-ogre", owner)):
                 own = own.spend("crude-belch-ogre")
                 passed, enemy = resolve_local_leadership(target,
                     replace(state, first=first_state if owner_first else enemy,
                             second=enemy if owner_first else second_state), dice, decisions,
                     f"round.{state.round_index}.{label}.crude-belch-ogre.leadership",
-                    first=not owner_first, opponent=owner, return_state=True)
+                    first=not owner_first, opponent=owner, return_state=True, close_combat=True)
                 if not passed:
                     target = replace(target, global_effects=replace(target.global_effects,
                         hit_modifier=target.global_effects.hit_modifier-1))
@@ -757,7 +808,7 @@ def resolve_round(
                 replace(state, first=current if target_first else first_state,
                     second=second_state if target_first else current), dice, decisions,
                 f"round.{state.round_index}.{'first' if target_first else 'second'}.mesmerising-dance",
-                first=target_first, opponent=owner, return_state=True)
+                first=target_first, opponent=owner, return_state=True, close_combat=True)
             blocked = not passed
         if (has_tag(owner.global_effects, "mechanic.beauty-of-the-sea")
                 and has_tag(target.global_effects, "sex.male")
@@ -769,11 +820,23 @@ def resolve_round(
                 replace(state, first=current if target_first else first_state,
                     second=second_state if target_first else current), dice, decisions,
                 f"round.{state.round_index}.{'first' if target_first else 'second'}.beauty",
-                first=target_first, psychology=True, opponent=owner, return_state=True)
+                first=target_first, psychology=True, opponent=owner, return_state=True, close_combat=True)
             if passed:
                 current = current.spend("beauty.passed")
             else:
                 blocked = True
+        # This is an attack restriction, not Psychology: Undead immunity does
+        # not waive it, nor does a successful test persist into another turn.
+        if (state.engaged and owner_state.active and current.active
+                and current.condition == Condition.STANDING
+                and has_tag(owner.global_effects, "defence.eye-pendant")
+                and has_tag(target.global_effects, "nature.undead")):
+            passed, current = resolve_local_leadership(target,
+                replace(state, first=current if target_first else first_state,
+                    second=second_state if target_first else current), dice, decisions,
+                f"round.{state.round_index}.{'first' if target_first else 'second'}.eye-pendant",
+                first=target_first, opponent=owner, return_state=True, close_combat=True)
+            blocked = blocked or not passed
         auto_hit = False
         resource = "mark-of-shornaal.passed"
         if (owner_state.condition == Condition.STANDING and not owner_state.stupidity_failed
@@ -786,7 +849,7 @@ def resolve_round(
                 replace(state, first=current if target_first else first_state,
                     second=second_state if target_first else current), dice, decisions,
                 f"round.{state.round_index}.{'first' if target_first else 'second'}.shornaal",
-                first=target_first, psychology=True, discard_lowest=True, opponent=owner, return_state=True)
+                first=target_first, psychology=True, discard_lowest=True, opponent=owner, return_state=True, close_combat=True)
             if passed:
                 current = current.spend(resource)
             else:
@@ -814,7 +877,7 @@ def resolve_round(
                     replace(state, first=current if target_first else first_state,
                         second=second_state if target_first else current), dice, decisions,
                     f"round.{state.round_index}.{owner_label}.hypnotist", first=target_first,
-                    opponent=owner, return_state=True)
+                    opponent=owner, return_state=True, close_combat=True)
                 current = replace(current, entranced=not passed)
             if target_first:
                 first_state = current
@@ -873,13 +936,13 @@ def resolve_round(
                     replace(state, first=current if target_first else first_state,
                         second=second_state if target_first else current), dice, decisions,
                     f"round.{state.round_index}.{label}.{name}", first=target_first,
-                    psychology=True, return_state=True, own_value_only=True, opponent=owner)
+                    psychology=True, return_state=True, own_value_only=True, opponent=owner, close_combat=True)
             else:
                 passed, current = resolve_local_leadership(target,
                     replace(state, first=current if target_first else first_state,
                         second=second_state if target_first else current), dice, decisions,
                     f"round.{state.round_index}.{label}.{name}", first=target_first,
-                    psychology=True, return_state=True)
+                    psychology=True, return_state=True, close_combat=True)
             if not passed:
                 current = replace(current, charm_attack_blocked=True)
                 if power == "mechanic.lahmian-hypnotize":
@@ -970,7 +1033,7 @@ def resolve_round(
                         second=owner_state if target_first else current),
                     dice, decisions,
                     f"round.{state.round_index}.{owner_label}.{power.name}.own-test",
-                    first=not target_first, opponent=target, return_state=True)
+                    first=not target_first, opponent=target, return_state=True, close_combat=True)
                 first_state, second_state = (
                     (first_state, owner_state) if target_first
                     else (owner_state, second_state))
@@ -982,7 +1045,7 @@ def resolve_round(
                 replace(state, first=current if target_first else first_state,
                     second=second_state if target_first else current), dice, decisions,
                 key, first=target_first, psychology=True,
-                opponent=owner, return_state=True)
+                opponent=owner, return_state=True, close_combat=True)
             if not passed:
                 current = replace(current, charm_attack_blocked=True,
                     charm_auto_hit=current.charm_auto_hit or power.auto_hit)
@@ -1029,7 +1092,7 @@ def resolve_round(
         count = 1
         if charging:
             roll, own = _owned_roll(owner, own, dice, decisions,
-                RollRequest(f"round.0.{label}.impact-count"))
+                RollRequest(f"round.0.{label}.impact-count"), close_combat=True)
             count = (roll+1)//2
         morning_star = (has_tag(owner.global_effects, "wheelo.fitting.morning-star")
                         and "wheelo.first-impact" not in own.resources_spent)
@@ -1151,6 +1214,28 @@ def resolve_round(
     )
     first_attack_fighter = grapple_equipment(first_attack_fighter, True)
     second_attack_fighter = grapple_equipment(second_attack_fighter, False)
+    # Ferocious Charge prints that the Slayer "may" double his Attacks and
+    # "suffers" -1 To Hit that turn.  The doubling is a declaration, so the
+    # charge round asks before either half is applied; declining keeps the
+    # ordinary pool and to-hit.  Only this round's local copy loses the tag,
+    # so the compiled fighter keeps the skill and the choice expires with the
+    # charge.
+    def declare_ferocious_charge(fighter, charging, label):
+        if not (first_round and charging
+                and has_tag(fighter.global_effects, "skill.ferocious-charge")):
+            return fighter
+        if lost_turn and label == ("first" if state.first_player_turn else "second"):
+            return fighter
+        if decisions.choose(
+                f"round.{state.round_index}.{label}.ferocious-charge", fighter):
+            return fighter
+        return replace(fighter, global_effects=replace(fighter.global_effects,
+            tags=tuple(tag for tag in fighter.global_effects.tags
+                       if tag != "skill.ferocious-charge")))
+    first_attack_fighter = declare_ferocious_charge(
+        first_attack_fighter, first_charging, 'first')
+    second_attack_fighter = declare_ferocious_charge(
+        second_attack_fighter, second_charging, 'second')
     if has_tag(first_attack_fighter.main_weapon, "effect.serpent-staff-power"):
         first_state = replace(first_state, parries_remaining=0)
     if has_tag(second_attack_fighter.main_weapon, "effect.serpent-staff-power"):
@@ -1158,19 +1243,19 @@ def resolve_round(
     first_priority = phases.resolve_priority(PriorityContext(
         first_attack_fighter, second, first_round, first_charging, second_charging, first_stood,
         first_state.initiative_penalty,
-        initiative_bonus=first_state.initiative - first.characteristics.initiative,
+        initiative_bonus=_initiative_bonus(first_state, first),
         initiative_floor=first_state.initiative_floor,
     ))
     second_priority = phases.resolve_priority(PriorityContext(
         second_attack_fighter, first, first_round, second_charging, first_charging, second_stood,
         second_state.initiative_penalty,
-        initiative_bonus=second_state.initiative - second.characteristics.initiative,
+        initiative_bonus=_initiative_bonus(second_state, second),
         initiative_floor=second_state.initiative_floor,
     ))
     eligible = tuple(current.condition == Condition.STANDING and opponent.active
         and not (current.on_fire or current.animosity_failed or current.stupidity_failed or current.grappled or current.grappling
                  or current.charm_attack_blocked or current.danse_macabre_controlled
-                 or has_tag(fighter.global_effects, 'condition.alchemist-addicted'))
+                 or alchemist_addicted(fighter, current))
         for fighter, current, opponent in ((first, first_state, second_state),
                                          (second, second_state, first_state)))
     if all(eligible) and first_priority.priority == second_priority.priority:
@@ -1181,12 +1266,12 @@ def resolve_round(
         first_priority = phases.resolve_priority(PriorityContext(
             first_attack_fighter, second, first_round, first_charging, second_charging, first_stood,
             first_state.initiative_penalty,
-            initiative_bonus=first_state.initiative-first.characteristics.initiative,
+            initiative_bonus=_initiative_bonus(first_state, first),
             initiative_floor=first_state.initiative_floor))
         second_priority = phases.resolve_priority(PriorityContext(
             second_attack_fighter, first, first_round, second_charging, first_charging, second_stood,
             second_state.initiative_penalty,
-            initiative_bonus=second_state.initiative-second.characteristics.initiative,
+            initiative_bonus=_initiative_bonus(second_state, second),
             initiative_floor=second_state.initiative_floor))
     deferred_electrical_tie = (first_priority == second_priority and any(
         has_tag(fighter.global_effects, 'mechanic.electrical-touch')
@@ -1206,7 +1291,7 @@ def resolve_round(
     for owner_first, fighter, count in ((True, first_attack_fighter, first_count),
                                       (False, second_attack_fighter, second_count)):
         current = first_state if owner_first else second_state
-        owned = OwnedRollDice(dice, fighter, current, decisions)
+        owned = OwnedRollDice(dice, fighter, current, decisions, close_combat=True)
         count = resolve_spawn_attack_count(fighter, count, owned,
             f"round.{state.round_index}.{'first' if owner_first else 'second'}.spawn-attacks")
         current = replace(current, resources_spent=current.resources_spent | owned.state.resources_spent)
@@ -1219,10 +1304,10 @@ def resolve_round(
     # Add after Frenzy, before whole-warrior attack reductions. Split off only
     # this one attack below; ordinary attacks retain their original priority.
     if first_shifty and not (has_tag(first_attack_fighter.main_weapon, "weapon.fist")
-            and not phases.ignores_unarmed_penalties(first.global_effects)):
+            and phases.unarmed_attack_cap_applies(first.global_effects)):
         first_count += 1
     if second_shifty and not (has_tag(second_attack_fighter.main_weapon, "weapon.fist")
-            and not phases.ignores_unarmed_penalties(second.global_effects)):
+            and phases.unarmed_attack_cap_applies(second.global_effects)):
         second_count += 1
     first_count = apply_round_weapon_attack_modifiers(
         first, second, first_count, first_round=first_round,
@@ -1256,9 +1341,30 @@ def resolve_round(
             attack_forfeits['first' if owner_first else 'second'] = (0,)
         adjusted.append(remaining)
     first_count, second_count = adjusted
-    if first_state.on_fire or first_state.animosity_failed or first_state.stupidity_failed or first_state.charm_attack_blocked or first_state.danse_macabre_controlled or first_state.grappled or first_state.grappling or has_tag(first.global_effects, 'condition.alchemist-addicted') or first_state.condition != Condition.STANDING:
+    # Massively Built prints that the failed target loses "his entire next turn
+    # as he stands dumbfounded".  The one-against-one combat phase models that
+    # turn through the attacks it carries, so the supplied pending state spends
+    # itself here, on the target's own turn only: its whole contribution is
+    # gone for that phase and the state is cleared.  The other player's turn is
+    # untouched, so retaliation is never suppressed, and the target is never
+    # treated as Stunned or Knocked Down.
+    if lost_turn:
+        # Spend the supplied outcome once: every own-turn consumer above read
+        # the captured fact, and only the attack pool is left to silence.
+        if state.first_player_turn:
+            first_count = 0
+            first_state = replace(first_state, massively_built_lost_turn=False)
+        else:
+            second_count = 0
+            second_state = replace(second_state, massively_built_lost_turn=False)
+    # Printed Deathblow reads "the remainder of his attacks": the pool the
+    # phase allocated is captured here, before the bearer's own readiness can
+    # zero it, so a Slayer taken out of action later in this same phase reuses
+    # exactly this allocation instead of deriving a second one.
+    deathblow_pool = {'first': first_count, 'second': second_count}
+    if first_state.on_fire or first_state.animosity_failed or first_state.stupidity_failed or first_state.charm_attack_blocked or first_state.danse_macabre_controlled or first_state.grappled or first_state.grappling or alchemist_addicted(first, first_state) or first_state.condition != Condition.STANDING:
         first_count = 0
-    if second_state.on_fire or second_state.animosity_failed or second_state.stupidity_failed or second_state.charm_attack_blocked or second_state.danse_macabre_controlled or second_state.grappled or second_state.grappling or has_tag(second.global_effects, 'condition.alchemist-addicted') or second_state.condition != Condition.STANDING:
+    if second_state.on_fire or second_state.animosity_failed or second_state.stupidity_failed or second_state.charm_attack_blocked or second_state.danse_macabre_controlled or second_state.grappled or second_state.grappling or alchemist_addicted(second, second_state) or second_state.condition != Condition.STANDING:
         second_count = 0
     if grapple_selections.get(True): first_count = min(1, first_count)
     if grapple_selections.get(False): second_count = min(1, second_count)
@@ -1278,9 +1384,7 @@ def resolve_round(
                         off_hand_attacks=False, extra_attacks=(), main_hand_slot='natural',
                         main_weapon_without_poison=None, off_hand_without_poison=None)
                     current = first_state if is_first else second_state
-                    initiative = max(current.initiative_floor,
-                        current.initiative + attacker.global_effects.initiative_bonus
-                        - current.initiative_penalty)
+                    initiative = _strike_initiative(current, attacker)
                     last_attacks.append((bite, defender, is_first, 1,
                         phases.PriorityResult(-2, initiative), f'{label}.last-bite'))
     events = [
@@ -1326,6 +1430,63 @@ def resolve_round(
     # Ties belong to the two warriors at a given tier/Initiative, not to every
     # event. Reuse the ordinary tie when their bonus attacks share that tier.
     ties = {first_priority: first_acts} if first_priority == second_priority and not deferred_electrical_tie else {}
+    # Instinctual Violence: the bearer nominates which of his own allocated
+    # attacks takes the Strike First tier.  The offers follow the pool's own
+    # allocation -- the printed weapon choice, the Whipcrack bonus and the
+    # bearer's independent extra attacks, in the order the pool resolves them --
+    # so the nominated strike is a legal attack of a real weapon, keeps that
+    # weapon's profile and hand slot, and is never a weapon the pool did not
+    # allocate.  Declining every offer leaves the ordinary pool untouched.  The
+    # ordinary pool then resolves the very same allocation minus the nominated
+    # position: nothing is duplicated, no attack is lost, and the remainder
+    # keeps the allocation it was printed with.  Every other attack keeps its
+    # printed priority.
+    pool_allocations = {}
+    for owner_first in (True, False):
+        attacker = first_attack_fighter if owner_first else second_attack_fighter
+        if not has_tag(attacker.global_effects, "mechanic.nominated-strike-first"):
+            continue
+        label = 'first' if owner_first else 'second'
+        index = next((i for i, event in enumerate(events)
+                      if event[2] == owner_first and event[5] == label), None)
+        if index is None:
+            continue
+        event = events[index]
+        count = event[3]
+        if count <= 0 or grapple_selections.get(owner_first):
+            continue
+        allocated = pool_attack_weapons(
+            attacker, count, first_round=first_round,
+            charging=first_charging if owner_first else second_charging,
+            decisions=decisions, key=f'round.{state.round_index}.{label}')
+        pool_allocations[label] = allocated
+        nomination = next((position for position in range(len(allocated)) if decisions.choose(
+            f'round.{state.round_index}.{label}.strike-first.attack.{position}', attacker)), None)
+        if nomination is None:
+            continue
+        strike = _strike_first_fighter(attacker, allocated[nomination])
+        current = first_state if owner_first else second_state
+        strike_priority = phases.PriorityResult(1, _strike_initiative(current, attacker))
+        attack_forfeits[label] = (*attack_forfeits.get(label, ()), nomination)
+        bonus = (strike, event[1], owner_first, 1, strike_priority, f'{label}.strike-first')
+        position = len(events)
+        for candidate_index, candidate in enumerate(events):
+            candidate_priority = candidate[4]
+            if candidate_priority == strike_priority:
+                if candidate[2] == owner_first:
+                    before = True
+                else:
+                    if strike_priority not in ties:
+                        winner = phases.first_acts_before(strike_priority, candidate_priority, dice,
+                            key=f'round.{state.round_index}.{label}.strike-first-priority-tie')
+                        ties[strike_priority] = winner if owner_first else not winner
+                    before = ties[strike_priority] == owner_first
+            else:
+                before = phases.priority_order(strike_priority) > phases.priority_order(candidate_priority)
+            if before:
+                position = candidate_index
+                break
+        events.insert(position, bonus)
     for attacker, defender, is_first, active, stood, fighter_state in (
         (first, second, True, first_shifty, first_stood, first_state),
         (second, first, False, second_shifty, second_stood, second_state),
@@ -1337,7 +1498,7 @@ def resolve_round(
         bonus_priority = resolve_priority(PriorityContext(
             bonus_fighter, defender, first_round, first_charging if is_first else second_charging,
             second_charging if is_first else first_charging, stood, fighter_state.initiative_penalty,
-            initiative_bonus=fighter_state.initiative - attacker.characteristics.initiative,
+            initiative_bonus=_initiative_bonus(fighter_state, attacker),
             initiative_floor=fighter_state.initiative_floor,
         ))
         if bonus_priority.priority >= 0:
@@ -1360,8 +1521,7 @@ def resolve_round(
                         ties[bonus_priority] = winner if is_first else not winner
                     before = ties[bonus_priority] == is_first
             else:
-                before = (bonus_priority.priority, bonus_priority.initiative) > (
-                    candidate_priority.priority, candidate_priority.initiative)
+                before = phases.priority_order(bonus_priority) > phases.priority_order(candidate_priority)
             if before:
                 position = index
                 break
@@ -1374,8 +1534,7 @@ def resolve_round(
                 ("mechanic.taal-tranquil-fauna", "mechanic.animal-friendship", "animal_friendship")):
             continue
         current = first_state if is_first else second_state
-        priority = phases.PriorityResult(1, max(current.initiative_floor,
-            current.initiative + attacker.global_effects.initiative_bonus - current.initiative_penalty))
+        priority = phases.PriorityResult(1, _strike_initiative(current, attacker))
         for bird_index, weapon in enumerate(weapon for weapon in attacker.extra_attacks
                                            if has_tag(weapon, "rule.eagle-friend")):
             eagle = replace(attacker, main_weapon=weapon, off_hand=None, off_hand_attacks=False,
@@ -1394,7 +1553,7 @@ def resolve_round(
                             ties[priority] = winner if is_first else not winner
                         before = ties[priority] == is_first
                 else:
-                    before = (priority.priority, priority.initiative) > (candidate[4].priority, candidate[4].initiative)
+                    before = phases.priority_order(priority) > phases.priority_order(candidate[4])
                 if before:
                     position = index
                     break
@@ -1448,7 +1607,7 @@ def resolve_round(
             first_charging if owner_first else second_charging,
             second_charging if owner_first else first_charging,
             first_stood if owner_first else second_stood, current.initiative_penalty,
-            initiative_bonus=current.initiative-fighter.characteristics.initiative+1,
+            initiative_bonus=_initiative_bonus(current, fighter)+1,
             initiative_floor=current.initiative_floor))
         label = f"{'first' if owner_first else 'second'}.electrical-touch"
         position = len(events)
@@ -1465,8 +1624,7 @@ def resolve_round(
                         ties[jolt_priority] = winner if owner_first else not winner
                     before = ties[jolt_priority] == owner_first
             else:
-                before = (jolt_priority.priority, jolt_priority.initiative) > (
-                    candidate[4].priority, candidate[4].initiative)
+                before = phases.priority_order(jolt_priority) > phases.priority_order(candidate[4])
             if before:
                 position = index
                 break
@@ -1487,9 +1645,12 @@ def resolve_round(
             if priority not in ties:
                 ties[priority] = first_acts_before(priority, priority, dice,
                     key=f"round.{state.round_index}.priority-tie")
-        events.sort(key=lambda event: (event[4].priority, event[4].initiative,
+        events.sort(key=lambda event: (*phases.priority_order(event[4]),
             int(event[2] == ties.get(event[4], True))), reverse=True)
     already_attacked = {True: False, False: False}
+    # A nominated early attack does not exhaust the later ordinary pool.
+    # Its allocated slot is already excluded by attack_forfeits below.
+    deathblow_active = {True: False, False: False}
     # Seduction's printed release reads the round's own attacks: while a control
     # holds, its victim cannot strike, so the attack that can end it is the
     # Vampire's (see the release below the attack resolution).
@@ -1529,22 +1690,31 @@ def resolve_round(
             defender = equipment_for_state(original_second if is_first else original_first,
                 opposing, first_round=first_round)
         initial = before_first if is_first else before_second
-        if (label in ('first', 'second') and (first_shifty if is_first else second_shifty)
+        if (label in ('first', 'second')
                 and current.broken_hands != initial.broken_hands):
-            # Trap Blade can break the bonus's weapon before the ordinary hit
-            # rolls exist. Those later attacks must use the surviving equipment.
+            # Disarm or Trap Blade may remove a weapon before this ordinary
+            # activation. The reply uses surviving equipment, not the old pool.
             source = original_first if is_first else original_second
             usable = equipment_for_state(replace(source, global_effects=attacker.global_effects),
                 current, first_round=first_round)
             count = max(0, count - int(attacker.off_hand_attacks and not usable.off_hand_attacks))
-            if has_tag(usable.main_weapon, 'weapon.fist') and not phases.ignores_unarmed_penalties(usable.global_effects):
+            if has_tag(usable.main_weapon, 'weapon.fist') and phases.unarmed_attack_cap_applies(usable.global_effects):
                 count = min(count, 1)
             attacker = usable
         # Kusara's minimum belongs to the warrior's whole phase, including
         # separately timed Whipcrack attacks. Consume each suppression once.
         other_attacks = already_attacked[is_first] or any(
-            event[2] == is_first and event[3] > 0 for event in events[event_index + 1:])
+            event[2] == is_first and event[3] > len(attack_forfeits.get(event[5], ()))
+            for event in events[event_index + 1:])
         minimum_attacks = 0 if other_attacks else 1
+
+        if (label in ('first', 'second') and not deathblow_active[is_first]
+                and current.condition == Condition.OUT
+                and has_tag(attacker.global_effects, 'mechanic.deathblow')):
+            deathblow_active[is_first] = decisions.choose(
+                f"round.{state.round_index}.{label}.deathblow", attacker)
+        if deathblow_active[is_first] and count <= 0:
+            count = deathblow_pool['first' if is_first else 'second']
         if is_first:
             first_state, second_state, resolved = _resolve_attack_pool(
                 attacker, defender, first_state, second_state,
@@ -1556,7 +1726,9 @@ def resolve_round(
                 single_bonus=label.endswith(('.shifty', '.last-bite', '.stomp', '.electrical-touch', '.whipcrack')) or '.eagle.' in label,
                 miss_first_attack=first_misses, forfeit_index=electrical_forfeits.get(label),
                 forfeit_indices=attack_forfeits.get(label, ()),
+                allocated_weapons=pool_allocations.get(label),
                 grapple_declared=grapple_selections.get(is_first) if label in ('first','second') else False,
+                deathblow=deathblow_active[is_first],
             )
         else:
             second_state, first_state, resolved = _resolve_attack_pool(
@@ -1569,12 +1741,14 @@ def resolve_round(
                 single_bonus=label.endswith(('.shifty', '.last-bite', '.stomp', '.electrical-touch', '.whipcrack')) or '.eagle.' in label,
                 miss_first_attack=second_misses, forfeit_index=electrical_forfeits.get(label),
                 forfeit_indices=attack_forfeits.get(label, ()),
+                allocated_weapons=pool_allocations.get(label),
                 grapple_declared=grapple_selections.get(is_first) if label in ('first','second') else False,
+                deathblow=deathblow_active[is_first],
             )
         if resolved and label.endswith('.electrical-touch'):
             owner = first_state if is_first else second_state
             recharge, owner = _owned_roll(attacker, owner, dice, decisions,
-                RollRequest(f"round.{state.round_index}.{label}.recharge", sides=3))
+                RollRequest(f"round.{state.round_index}.{label}.recharge", sides=3), close_combat=True)
             owner = replace(owner, electrical_available_at=state.round_index+recharge)
             if is_first: first_state = owner
             else: second_state = owner
@@ -1676,6 +1850,24 @@ def select_shifty_weapon(
         off_hand_attacks=False, extra_attacks=())
 
 
+def _strike_first_fighter(fighter: CompiledFighter, weapon: EffectSet) -> CompiledFighter:
+    """Project one nominated allocated attack, preserving its own hand slot.
+
+    The nominated strike keeps the profile of the weapon the pool allocated for
+    it and the slot that weapon is carried in, so it never borrows the other
+    hand's characteristics and leaves no duplicate behind.
+    """
+    if weapon == fighter.main_weapon:
+        slot, clean = fighter.main_hand_slot, fighter.main_weapon_without_poison
+    elif fighter.off_hand is not None and weapon == fighter.off_hand:
+        slot, clean = fighter.off_hand_slot, fighter.off_hand_without_poison
+    else:
+        slot, clean = 'natural', None
+    return replace(fighter, main_weapon=weapon, main_hand_slot=slot,
+        main_weapon_without_poison=clean, off_hand=None, off_hand_without_poison=None,
+        off_hand_attacks=False, extra_attacks=())
+
+
 def select_attack_replacement(
     fighter: CompiledFighter, *, first_round: bool, charging: bool,
     decisions: DecisionPolicy, key: str,
@@ -1741,7 +1933,7 @@ def resolve_crude_belch(owner, enemy, state, dice, decisions, *, first: bool):
         return False, state
     passed, current = resolve_local_leadership(
         enemy, state, dice, decisions, key + '.leadership', first=not first,
-        opponent=owner, return_state=True)
+        opponent=owner, return_state=True, close_combat=True)
     return not passed, replace(state, **{"second" if first else "first": current})
 
 

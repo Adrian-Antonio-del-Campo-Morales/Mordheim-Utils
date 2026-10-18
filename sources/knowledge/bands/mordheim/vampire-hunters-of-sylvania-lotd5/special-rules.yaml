@@ -417,3 +417,38 @@ rules:
       aguzada intuición, ignora las penalizaciones por oscuridad.
   applies_to:
     band: true
+- id: priest-of-morr--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - armour
+          allowed_kinds:
+          - weapon.dagger
+          - weapon.scythe
+  name: Equipment Restrictions
+  effect: >-
+    As priests of Morr seldom engage in martial activities, they may only be armed with a Dagger
+    and a Scythe as weapons. Priests of Morr may never wear Armour.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes / 0-1 Priest of Morr
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/vampire-hunters-of-sylvania
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: >-
+      Como los sacerdotes de Morr rara vez participan en actividades marciales, solo pueden equiparse
+      con una Daga y una Guadaña como armas. Los Sacerdotes de Morr nunca pueden llevar armadura.
+  applies_to:
+    profile_ids:
+    - priest-of-morr

@@ -63,6 +63,16 @@ rules:
     url: https://mordheimer.net/docs/campaigns/hired-swords
   name_i18n:
     es: Equipo Fijo
+  runtime:
+    grant: profile
+    scope: 'YES'
+    implemented: 'YES'
+    effects:
+    - id: compiler.hireling-fixed-equipment
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.hireling-fixed-equipment
 - id: hireling.hired-sword.rule.unique-type
   name: One of Each Type
   effect: A warband may include at most one Hired Sword of each type.

@@ -814,13 +814,13 @@ profiles:
       quantity:
         kind: fixed
         value: 1
-    - item_id: wolfcloak
+    - item_id: wolf_cloak
       quantity:
         kind: fixed
         value: 1
-      notes: Wolf cloak — resolved to the KB `wolfcloak` item (Middenheim hunt cloak, +1 armour saves vs shooting) as the closest existing cloak item; the MiM source grants no effect for it. Review the equivalence at promotion (distinct from the MW White Wolf Pelt Cloak, which is a different 6+-save item).
+      notes: Wolf cloak — the MiM starting cloak (`wolf_cloak`, no printed game effect). It stays distinct from the KB `wolfcloak` (Middenheim hunt cloak, +1 armour save vs shooting) and from the MW White Wolf Pelt Cloak (6+ save); the trading-post entry names this profile as its only starting-equipment recipient.
       notes_i18n:
-        es: 'Capa de lobo: se resuelve como el objeto `wolfcloak` del KB (capa de caza de Middenheim, +1 a las salvaciones de armadura contra disparos) como el objeto de capa existente más cercano; la fuente de MiM no le concede ningún efecto. Revisar la equivalencia en la promoción (distinta de la Capa de Piel de Lobo Blanco de MW, que es otro objeto con salvación de 6+).'
+        es: 'Capa de lobo: la capa inicial de MiM (`wolf_cloak`, sin efecto de juego impreso). Permanece distinta del `wolfcloak` del KB (capa de caza de Middenheim, +1 a la salvación de armadura contra disparos) y de la Capa de Piel de Lobo Blanco de MW (salvación de 6+); la entrada del mercado de comercio nombra este perfil como único destinatario de equipo inicial.'
   skill_access:
   - combat
   - strength
@@ -2425,14 +2425,14 @@ profiles:
       scope: 'YES'
       implemented: 'YES'
       effects:
-      - id: profile.active-weapon-restrictions
+      - id: profile.equipment-restrictions
         scope: 'YES'
         binding:
           kind: profile
-          id: profile.active-weapon-restrictions
+          id: profile.equipment-restrictions
           parameters:
-            forbids:
-            - weapon.dagger
+            allowed_kinds:
+            - weapon.sword
   - id: hireling.hired-sword.priest-of-verena.rule.marks-of-verena
     name: Marks of Verena
     effect: 'Librarian: the Priest has studied forbidden tomes of the Unseen Library; whenever a prayer is successfully cast on an individual model, select another target within 3" of the original target to share in the Priest''s wisdom — roll again for the casting of the same prayer, applying +1 to the Difficulty (a further +1 each repeat, never exceeding 12). Owl Friend: the Priest attracts an owl companion; the controlling player may declare a warrior at the start of the shooting phase who may then re-roll any failed dice rolls to hit with missiles; the owl never settles on the same warrior twice in succession; if the Priest is taken out of action the owl flies away, returning after the battle; owls cannot be attacked or slain, but if the Priest is slain the owl is lost like any other equipment.'
@@ -2457,14 +2457,29 @@ profiles:
     name_i18n:
       es: Marcas de Solkan (Variante Sacerdote de Guerra)
     runtime:
-      scope: 'NO'
-      implemented: 'NO'
+      scope: 'YES'
+      implemented: 'YES'
       grant: none
       effects:
+      # 'War-Priests of Solkan may choose skills from the Strength skills list':
+      # the clause is the printed variant's access, so the binding names both
+      # its recipient and the supplied variant. A Priest of Verena that does
+      # not carry `deity.solkan` reads no strength table from this rule.
+      - id: profile.skill-access
+        scope: 'YES'
+        binding:
+          kind: profile
+          id: profile.skill-access
+          parameters:
+            category: strength
+            profile_ids:
+            - hireling.hired-sword.priest-of-verena
+            variant_ids:
+            - deity.solkan
       - id: solkan-marks-source-table
         scope: 'NO'
         reason: The individual chosen marks are separate selectable children; acquisition by a double
-          advancement and leaving-combat producer are excluded.
+          advancement, the leaving-combat producer and the prayer/casting clauses are excluded.
         binding: null
   - id: hireling.hired-sword.priest-of-verena.skill.witch-finder
     name: Witch-finder

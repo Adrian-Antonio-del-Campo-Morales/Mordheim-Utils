@@ -670,10 +670,11 @@ def test_every_catalogued_mechanic_can_be_compiled_in_its_legal_slot():
 def test_all_profiles_are_compilable_or_explicitly_outside_duel_scope():
     """Every promoted profile compiles, or is a declared limit of the runtime.
 
-    The only profiles outside the loop are the three `runtime-scope.yaml`
-    exclusions (the Gyrocopter, the River Boat and the Banshee, each with its
-    reason); every other profile of the active collection compiles with its
-    default construction.
+    The only profiles outside the loop are the two `runtime-scope.yaml`
+    exclusions (the Gyrocopter and the River Boat, each with its reason); every
+    other profile of the active collection compiles with its default
+    construction, the Necrarchs' Banshee included - its printed blank Initiative
+    travels as an absence instead of excluding the profile.
     """
     from mordheim_knowledge.loader import load_runtime_scope
     exclusions={(row["band_id"],row["profile_id"]) for row in load_runtime_scope("mordheim",ROOT)["profile_exclusions"]}
@@ -689,7 +690,7 @@ def test_all_profiles_are_compilable_or_explicitly_outside_duel_scope():
                 continue
             compiled+=1
     assert not refused, refused
-    assert compiled==835 and len(exclusions)==3
+    assert compiled==836 and len(exclusions)==2
 
 
 def test_fixed_equipment_and_natural_attacks_are_applied_by_profile():

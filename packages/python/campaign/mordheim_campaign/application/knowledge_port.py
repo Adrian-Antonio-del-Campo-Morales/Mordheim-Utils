@@ -451,7 +451,15 @@ class KnowledgePort:
 
     def warrior_equipment_restriction(self, warrior, item_id: str, *, collection: str,
                                      band_id: str, stage: str, amount: int = 1) -> str | None:
-        """Project assignment facts; the shared module owns the restriction table."""
+        """Project assignment facts; the shared module owns the restriction table.
+
+        The recipient the Trading Post publishes is decided here first, so the
+        printed bearer reaches the offering route and a direct selection alike
+        before the shared stage's own facts.
+        """
+        bearer = self.trading_post_bearer_issue(warrior, item_id)
+        if bearer is not None:
+            return bearer
         from mordheim_construction.eligibility import call
         profile_facts = None
         try:
@@ -556,8 +564,12 @@ class KnowledgePort:
         """Typed Trading Post restrictions of one item (first matching entry).
 
         Returns ``{'heroes_only': bool, 'limit_per_warband': int | None,
-        'notes': tuple[str, ...]}``. Prose-only ``condition``/``profile_only``
-        notes are carried as text; they stay data-transcription work.
+        'notes': tuple[str, ...], 'profile_ids': tuple[str, ...],
+        'profile_types': tuple[str, ...], 'excluded_profile_ids': tuple[str, ...],
+        'skill_ids': tuple[str, ...]}``. The printed bearer a
+        ``condition``/``profile_only`` clause names is read from the published
+        ``structure`` block whenever the entry carries one; a clause still kept as
+        prose stays in ``notes``.
         """
         trading = self.campaign_catalog().catalogue("trading-post.yaml")
         for entry in trading.get("items") or ():
@@ -572,6 +584,18 @@ class KnowledgePort:
                 r.get("type") == "profile_only" and str(r.get("note") or "").casefold().startswith("one ")
                 for r in restrictions
             )
+            structure = [r.get("structure") for r in restrictions
+                         if isinstance(r.get("structure"), dict)]
+
+            def published(key):
+                """Ordered union of one published bearer key across the entry."""
+                values = []
+                for block in structure:
+                    for value in block.get(key) or ():
+                        if str(value) not in values:
+                            values.append(str(value))
+                return tuple(values)
+
             return {
                 "heroes_only": any(r.get("type") == "heroes_only" for r in restrictions)
                 or any("heroes only" in note.casefold() for note in notes),
@@ -581,8 +605,41 @@ class KnowledgePort:
                     1 if inferred_one else None,
                 ),
                 "notes": notes,
+                **{key: published(key) for key in
+                   ("profile_ids", "profile_types", "excluded_profile_ids", "skill_ids")},
             }
-        return {"heroes_only": False, "limit_per_warband": None, "notes": ()}
+        return {"heroes_only": False, "limit_per_warband": None, "notes": (), "profile_ids": (),
+                "profile_types": (), "excluded_profile_ids": (), "skill_ids": ()}
+
+    def trading_post_bearer_issue(self, warrior, item_id: str) -> str | None:
+        """Whether the printed bearer of an entry excludes this warrior.
+
+        The published recipient is the same datum the market reads, so the
+        offering route and a direct selection cannot drift; the printed clause is
+        returned as the message when the entry carries one. ``None`` means the
+        entry publishes no recipient, or publishes this warrior.
+        """
+        restriction = self.trading_post_restriction(item_id)
+        profiles = restriction.get("profile_ids") or ()
+        kinds = restriction.get("profile_types") or ()
+        excluded = restriction.get("excluded_profile_ids") or ()
+        skills = restriction.get("skill_ids") or ()
+        if not (profiles or kinds or excluded or skills):
+            return None
+        profile_id = str(getattr(warrior, "profile_id", "") or "")
+        kind = str(getattr(warrior, "kind", "") or "")
+        held = {str((self.skill_by_name(name) or {}).get("id")) for name in
+                (getattr(warrior, "skills", ()) or ())}
+        refused = (
+            profile_id in excluded
+            or (profiles and profile_id not in profiles)
+            or (kinds and kind not in kinds)
+            or (skills and not held.intersection(skills))
+        )
+        if not refused:
+            return None
+        note = "; ".join(restriction.get("notes") or ())
+        return note or f"{self.item_name(item_id) or item_id} may only be carried by its printed bearer."
 
     def items_for_profile(self, profile: WarbandProfile) -> tuple[EquipmentOffer, ...]:
         """Offers applicable to a concrete profile (its equipment lists)."""
