@@ -9,7 +9,7 @@ from mordheim_combat_lab.application.analyses import (
 from mordheim_combat_lab.ui.widgets.checklist_popover import ChecklistPopover
 from mordheim_core.models import SimulationCancelled
 from mordheim_combat_lab.ui.widgets.progress import AnalysisProgress
-from mordheim_ui.i18n import tr
+from mordheim_combat_lab.ui.i18n import tr
 import threading as threading
 import tkinter as tk
 from tkinter import StringVar

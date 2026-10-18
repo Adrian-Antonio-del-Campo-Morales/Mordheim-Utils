@@ -747,7 +747,7 @@ def test_magic_lore_spell_lists_are_complete_per_roll():
         "lore.necromancy-restless-dead",
     }
     # `lore.dark-arts-strigos` (Survivors of Strigos Strigoi Vampire) prints a
-    # three-spell table, not six; provenance in sources/2A/promotion-merge-notes.md §4.
+    # three-spell table, not six, as preserved in the canonical lore.
     short_lists = {
         "lore.dark-arts-strigos",
     }

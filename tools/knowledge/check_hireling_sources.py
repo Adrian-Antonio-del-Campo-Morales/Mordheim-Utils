@@ -27,15 +27,11 @@ Dos lecturas, una por familia de documento
   es como la imprime la fuente— y con el desbordamiento de la página contigua cuando la
   entrada termina al pie (las reglas de Snorri están en la p63 y su perfil en la p62).
 
-Los dos catálogos que sirve
----------------------------
-``--tree kb`` (por defecto) coteja los catálogos publicados
-(``sources/knowledge/catalog/hirelings`` con el documento de contratación de la KB);
-``--tree 2b`` coteja el staging que se promociona a ellos
-(``sources/2B/catalog/hirelings`` con su ``hired-swords-and-dramatis-2b.yaml``). Cada
-catálogo declara su adjudicación propia —las etiquetas de regla que escribe y la fuente no
-imprime como etiqueta— y escribe su informe aparte. Cuando 2B se promueva, la orden de la KB
-cotejará también sus grados y la del staging desaparecerá.
+Catálogos publicados
+-------------------
+Coteja las dos familias de ``sources/knowledge/catalog/hirelings`` junto con
+el documento de contratación canónico. Las etiquetas editoriales de reglas
+se declaran como notas cuando la fuente no las imprime como etiquetas.
 
 Salida
 ------
@@ -48,7 +44,6 @@ nunca se compara contra una página vacía.
 Uso::
 
     python tools/knowledge/check_hireling_sources.py                  # la KB, todo
-    python tools/knowledge/check_hireling_sources.py --tree 2b        # el staging de 2B
     python tools/knowledge/check_hireling_sources.py "The Foole"      # un perfil
 """
 from __future__ import annotations
@@ -144,8 +139,8 @@ class Catalogue:
     def profiles(self) -> list[dict]:
         """Los perfiles del catálogo, con el fichero del que salen.
 
-        Cualquier YAML bajo la raíz: los hired swords de la KB viven en su subcarpeta y los
-        del staging planos, y los Dramatis Personae en ``dramatis-personae/``.
+        Cualquier YAML bajo la raíz: hired swords y Dramatis Personae viven
+        en sus respectivas subcarpetas del catálogo canónico.
         """
         out: list[dict] = []
         for path in sorted(self.root.rglob("*.yaml")):
@@ -164,12 +159,7 @@ CATALOGUES: dict[str, Catalogue] = {
         out=ROOT / "build/cache/hireling-sources/kb",
         editorial=EDITORIAL,
     ),
-    "2b": Catalogue(
-        name="2b",
-        root=ROOT / "sources/2B/catalog/hirelings",
-        campaign=ROOT / "sources/2B/catalog/hired-swords-and-dramatis-2b.yaml",
-        out=ROOT / "build/cache/hireling-sources/2b",
-    ),
+
 }
 
 # El registro declara qué documento imprime cada cita y dónde está su copia; el espejo del
@@ -370,11 +360,9 @@ def run(catalogue: Catalogue, names: Sequence[str] = ()) -> list[dict]:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Coteja los hirelings contra sus fuentes.")
-    parser.add_argument("--tree", choices=sorted(CATALOGUES), default="kb",
-                        help="catálogo a cotejar: la KB publicada (kb) o el staging de 2B (2b)")
     parser.add_argument("names", nargs="*", help="perfiles a cotejar (por defecto, todos)")
     args = parser.parse_args(argv)
-    run(CATALOGUES[args.tree], args.names)
+    run(CATALOGUES["kb"], args.names)
     return 0
 
 

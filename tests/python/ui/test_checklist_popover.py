@@ -7,7 +7,7 @@ from tkinter import ttk
 import pytest
 
 from mordheim_combat_lab.ui.widgets.checklist_popover import ChecklistPopover
-from mordheim_ui.lab_theme import COLORS
+from mordheim_combat_lab.ui.theme import COLORS
 
 
 @pytest.fixture(scope="module")
@@ -159,7 +159,7 @@ def test_combobox_popdown_shell_matches_the_dark_theme(root):
     """Regression: the popdown shell is a classic Tk toplevel and painted a
     white frame around the dark listbox (class ComboboxPopdown)."""
     import tkinter as tk
-    from mordheim_ui.lab_theme import apply_theme
+    from mordheim_combat_lab.ui.theme import apply_theme
 
     apply_theme(root)
     combo = ttk.Combobox(root, values=("Alpha", "Beta"), state="readonly")

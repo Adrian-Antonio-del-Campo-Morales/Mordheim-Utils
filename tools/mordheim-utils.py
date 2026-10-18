@@ -36,8 +36,6 @@ PACKAGE_ROOTS = (
     REPO_ROOT / "packages" / "python" / "roster-construction",
     REPO_ROOT / "packages" / "python" / "core",
     REPO_ROOT / "packages" / "python" / "knowledge",
-    REPO_ROOT / "packages" / "python" / "adapters" / "desktop-ui",
-    REPO_ROOT / "packages" / "python" / "campaign",
     REPO_ROOT / "apps" / "combat-lab",
 )
 
@@ -59,7 +57,6 @@ SCOPE_PATHS = {
     "deterministic": ("tests/python/combat/modular", "tests/python/combat/vectorized",
                       "tests/python/combat/test_phases.py", "tests/python/combat/test_duel_context.py",
                       "tests/python/verification/test_duel_replay.py", "tests/python/verification/test_parity.py"),
-    "campaign": ("tests/python/campaign", "tests/python/application"),
     "knowledge": ("tests/python/knowledge", "tests/specs"),
     "verification": ("tests/python/verification",),
     "construction": ("tests/python/construction",),
@@ -250,7 +247,7 @@ def run_ci_command(args: list[str]) -> int:
                     (sys.executable, str(KNOWLEDGE_GENERATOR), "--check")):
         if _run_in(REPO_ROOT, *command):
             return 1
-    if _run_module("pytest", "tests/python/web", "tests/python/contracts", "tests/python/campaign",
+    if _run_module("pytest", "tests/python/web", "tests/python/contracts",
                    "tests/python/architecture", "tests/python/knowledge",
                    "tests/python/construction/test_shared_eligibility.py", "-q"):
         return 1

@@ -1,7 +1,7 @@
 """ui: Status and error feedback widgets."""
 from __future__ import annotations
 
-from mordheim_ui.lab_theme import COLORS
+from mordheim_combat_lab.ui.theme import COLORS
 import tkinter as tk
 
 

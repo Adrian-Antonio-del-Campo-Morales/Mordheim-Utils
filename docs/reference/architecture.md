@@ -8,8 +8,6 @@ packages/python/core/mordheim_core          pure domain types, dice and effects
 packages/python/knowledge/mordheim_knowledge loaders, validation, paths and i18n
 packages/python/roster-construction         eligibility adapter and fighter compilation
 packages/python/combat-engine               phases plus modular, NumPy and native engines
-packages/python/adapters/desktop-ui         shared Tkinter theme and widgets
-packages/python/campaign                    campaign domain, application and persistence
 apps/combat-lab/mordheim_combat_lab         Combat Lab UI, CLI and verification
 apps/warband-manager-web                    React/Vite browser shell
 packages/typescript                         shared web domain, application and adapters
@@ -52,8 +50,10 @@ TypeScript domain/eligibility → browser domain/application adapters
   [phased-work boundary](eligibility.md#construction-boundary-for-phased-implementation).
 - `mordheim_combat` consumes compiled fighters and never loads YAML.
 - Combat Lab `application` is Tkinter-free; its `ui` owns windows, widgets and thread coordination.
-- Campaign `application` owns use cases and state transitions; campaign `ui` presents results and forwards actions.
-- UI layers do not load YAML. `tests/python/architecture/test_boundaries.py` enforces that rule, as well as the ban on Tkinter imports in campaign application/persistence.
+  Its theme and interface translations live in `mordheim_combat_lab.ui.theme`
+  and `mordheim_combat_lab.ui.i18n`.
+- TypeScript campaign `application` owns use cases and state transitions; the React UI presents results and forwards actions.
+- UI layers do not load YAML. `tests/python/architecture/test_boundaries.py` enforces that rule, and keeps Combat Lab application code independent of Tkinter.
 - The web app consumes generated JSON and does not use YAML, Python packages or browser storage for campaigns.
 
 ## Shared resources and entry points
@@ -67,6 +67,18 @@ Python entry points declared in `pyproject.toml`:
 The source-checkout launcher `tools/mordheim-utils.py` delegates to these modules and to the real web/pytest/generator commands.
 
 ## Combat engines
+
+### Modular duel scope
+
+Combat Lab resolves one combatant against one combatant. Group psychology,
+independent third parties, terrain/weather, shooting/casting, mounts and
+withdrawal ending an unresolved duel are excluded under the
+[permanent rulings](../decisions/design-rulings.md#combat-lab-remains-a-1v1-duel-simulator--2026-10-04).
+Supplied individual conditions, aura/command consequences and a mutation's
+combat modifiers may affect a duelist without simulating their external
+producer. Campaign member IDs, battle progression, mutation acquisition and
+roster withdrawal remain Warband Manager responsibilities. Combat Lab selects
+and compiles its own facts; it does not consume campaign `special_rules`.
 
 ### Modular oracle
 
@@ -94,7 +106,7 @@ The web shell lives in `apps/warband-manager-web/` and reuses the TypeScript dom
 
 ## Persistence boundary
 
-`.mordheim` files use format v5, defined by `contracts/campaign-file-v5/campaign-file-v5.schema.json`. Both Python and TypeScript readers/writers accept only v5, reject retired v1–v4 and future versions, and preserve open payload maps. Campaign files contain stable KB IDs and campaign state, never the rule catalogues themselves.
+`.mordheim` files use format v5, defined by `contracts/campaign-file-v5/campaign-file-v5.schema.json`. The TypeScript reader/writer accepts only v5, rejects retired v1–v4 and future versions, and preserves open payload maps. Campaign files contain stable KB IDs and campaign state, never the rule catalogues themselves.
 
 The web adapter is `packages/typescript/adapters/campaign-file/`; PDF export belongs to the web export feature.
 
@@ -120,7 +132,6 @@ The web knowledge artefact is generated under ignored `outputs/web-public/knowle
 | Python eligibility transport and duel compilation | `packages/python/roster-construction/` |
 | Combat behavior | `packages/python/combat-engine/` |
 | Combat Lab use case/UI | `apps/combat-lab/` |
-| Campaign domain/application/persistence | `packages/python/campaign/` |
 | Web domain/application/adapters | `packages/typescript/` |
 | Web shell and presentation | `apps/warband-manager-web/` |
 | Verification evidence | `tests/specs/`, `tests/python/verification/`, related test suites |

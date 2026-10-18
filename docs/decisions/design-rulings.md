@@ -86,7 +86,6 @@ its existing optional continuation. Each new hit has its own natural-die provena
 
 These are project composition/order rulings justified by the original Night Haint
 and general/Barrage sources, not quotations of an explicit combined rule.
-[Consolidated 2A/2B knowledge and ruling index](../knowledge/2a2b/2A2B-Knowledge.md).
 The accepted source interpretation does not itself certify canonical grants,
 every legal equipment composition or optimized execution. Spirit Knife/Q146
 requires separate recipient and source review.
@@ -122,8 +121,7 @@ The user accepted the independently reviewed S1–S4 recommendations on
   Halfling loadouts.
 
 These are accepted project composition/order interpretations, not quotations of
-an explicit combined source rule. [Consolidated 2A/2B knowledge](../knowledge/2a2b/2A2B-Knowledge.md)
-records the acceptance and its limits; they bind future activation/specifications and optimized ports. F003 closes at this
+an explicit combined source rule. These rulings bind future activation/specifications and optimized ports. F003 closes at this
 modular boundary; canonical Shifty activation, maintained poison witnesses,
 pistol-only allocation, Crude Belch implementation and optimized execution retain
 their separate evidence and ownership.
@@ -148,7 +146,7 @@ their separate evidence and ownership.
   `name_i18n` / `effect_i18n` hold only translations and carry no `en`
   mirror. A reviewed Spanish pass fills `name_i18n.es` / `effect_i18n.es`
   across the warbands and catalogues, following the translation glossary
-  ([translation glossary](../../docs/knowledge/translation-glossary.md)).
+  ([translation glossary](../reference/translation-glossary.md)).
 
 ## Campaign application
 
@@ -186,9 +184,8 @@ confirmed that it will be removed from the KB. The named Skull Busta/Basha
 4+ counterpart is therefore not an admitted implementation obligation.
 Do not invent a replacement item, access route or ordinary-helmet alias.
 Ordinary-helmet Basha remains implemented and unchanged.
-F063 no longer blocks L07 or modular completion. The pending KB removal and
-dependent reference/generated-data cleanup remain tracked in
-[F063](../knowledge/2a2b/2A2B-Knowledge.md#6-open-follow-up-findings).
+F063 no longer blocks L07 or modular completion. Any remaining references or
+generated data for the rejected counterpart must be removed with that KB entry.
 
 ## Combat Lab remains a 1v1 duel simulator — 2026-10-04
 
@@ -297,6 +294,29 @@ The discount and rarity/initial-purchase clauses are separate acquisition
 conditions; they neither grant nor remove eligibility to use the items.
 Preserve the printed prices and notes in the
 [equipment lists](../../sources/knowledge/bands/mordheim/wood-elves-of-athel-loren-web/equipment-access.yaml).
+
+### F074 source clarifications
+
+These accepted source interpretations retain their original audit IDs; they do
+not certify implementation. User rulings above take precedence. Revalidate a
+changed source before reusing an interpretation. Historical source URLs and
+per-origin text fingerprints remain available in Git.
+
+| Id | Scope | Decision |
+| --- | --- | --- |
+| `F074-brood-dagger` | YES | Printed dagger restricts the bearer to Henchmen; not merely a free-dagger price condition. |
+| `F074-crooked-moon-daggers` | YES | Poison Daggers belong to the Fanatic list; their appearance on the ordinary Night Goblin list does not grant them to ordinary Goblins. |
+| `F074-pirate-variants` | YES | Qualifiers select warband variants: Estalian adds rapier/heavy armour and removes crossbows; Wasteland adds handguns. Keep other prohibitions conjunctive. |
+| `F074-forest-bosspole` | YES | Bosspole recipients are Chieftain and Bosses, not every Hero; its spear contribution and Animosity immunity affect the duel. |
+| `F074-halfling-aliases` | YES | The Cook-only footnote is about parenthesized culinary aliases; it does not prohibit generic dagger/hammer/axe/sword/helmet for other list users. |
+| `F074-mare-lance` | YES | Knight-only in both tables; the Paragon has a separate explicit lance prohibition. |
+| `F074-mare-mounts` | NO | Barding/warhorse entries belong to excluded mount-equipment support. |
+| `F074-house-equipment` | YES | A House is selected for the whole warband; Fierezza/Halcon/Baluardo qualifiers are explicit. |
+| `F074-lizard-poisons` | YES | Skinks use these poisons only on missile weapons; Saurus may use them on melee weapons. |
+| `F074-reptile-venom` | NO | Belongs to Skink Henchmen missile weapons and lasts one battle; no admitted melee contribution. |
+| `F074-lizard-sacred-marks` | YES | Sacred Markings Hero-only, at most one; Oversized Jaws Saurus-only (modifies bite); Poison Glands Skink-only (replacement bite). |
+| `F074-sniper-equipment` | YES | Sniper is a chosen Modus Operandi of a Hero other than the Silent Master, not a missing profile. |
+| `F074-underworld-leaders` | YES | The warband has two leaders; Man Catcher is Leader-only on both faction lists, so Goblin Bully and Skaven Slum Lord qualify. |
 
 ## Cathayan longsword prints no armour penalty — 2026-10-14
 

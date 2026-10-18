@@ -1,9 +1,6 @@
 """T13.2d -- selectable rules and equipment: legal selection and compilation.
 
-Derived from the T13.2 partition of
-``docs/knowledge/2a2b/tasks/T13-obligations.csv``: 56 register origins whose
-canonical band rule declares ``runtime.grant: selectable`` and 95 equipment
-origins.  The suite exercises the real construction path (``FighterBuild`` ->
+The suite exercises the real construction path (``FighterBuild`` ->
 ``compile_fighter``) and the real availability surface
 (``available_special_rules``) for every origin the runtime is connected to, and
 pins the exact runtime gate that refuses the pending selectable origins with
@@ -17,13 +14,10 @@ or resolution effects; T13.3/T13.4 and T14 own those.
 """
 from __future__ import annotations
 
-import csv
-import json
 from functools import lru_cache
 from pathlib import Path
 
 import pytest
-import yaml
 
 from mordheim_construction.compiler import compile_fighter
 from mordheim_construction.selection import available_special_rules
@@ -32,7 +26,6 @@ from mordheim_knowledge.loader import load_bands
 
 ROOT = Path(__file__).resolve().parents[3]
 KNOWLEDGE = ROOT / "sources" / "knowledge"
-REGISTER = ROOT / "docs" / "knowledge" / "2a2b" / "tasks" / "T13-obligations.csv"
 
 #: Implemented selectable rules of the partition (Master
 #: of Blades contributes two origins) keyed by their canonical band and
@@ -143,41 +136,6 @@ def _runtime_reason(band_id: str, rule_id: str) -> str:
     reason = next((str(effect["reason"]) for effect in runtime.get("effects") or () if effect.get("reason")), "")
     assert reason, f"{rule_id} publishes no runtime reason; the gate must not fall back to a generic message"
     return reason
-
-
-# --- partition coverage -----------------------------------------------------
-
-
-def test_the_matrix_tables_cover_every_selectable_origin_of_the_t132_partition():
-    """Shifty, Crude Belch and the four acquired dances are selectable:
-    60 origins over 59 canonical rules; the 95 equipment origins are unchanged.
-    """
-    with REGISTER.open(encoding="utf-8-sig", newline="") as handle:
-        rows = list(csv.DictReader(handle))
-    t132 = [row for row in rows if "T13.2" in json.loads(row["lots"] or "[]")]
-    selectable: set[tuple[str, str]] = set()
-    selectable_origins = 0
-    equipment = 0
-    for row in t132:
-        if row["family"] == "item":
-            equipment += 1
-            continue
-        if row["family"] != "band-rule":
-            continue
-        document = yaml.safe_load((ROOT / row["canonical_file"]).read_text(encoding="utf-8"))
-        node = next((rule for rule in document.get("rules") or () if str(rule.get("id")) == row["canonical_id"]), None)
-        assert node is not None, f"{row['canonical_file']} publishes no rule {row['canonical_id']}"
-        if (node.get("runtime") or {}).get("grant") == "selectable":
-            selectable.add((Path(row["canonical_file"]).parent.name, row["canonical_id"]))
-            selectable_origins += 1
-    assert (selectable_origins, len(selectable), equipment) == (60, 59, 95)
-    tabled = {(band_id, rule_id) for band_id, _, rule_id in IMPLEMENTED}
-    tabled |= {(band_id, rule_id) for band_id, _, rule_id in PENDING}
-    tabled |= {(band_id, rule_id) for band_id, _, rule_id in PENDING_WITHOUT_AVAILABILITY_CHANNEL}
-    assert tabled == selectable, (
-        "the test tables must cover exactly the partition; missing: "
-        f"{sorted(selectable - tabled)}; unexpected: {sorted(tabled - selectable)}"
-    )
 
 
 # --- availability and recipients -------------------------------------------

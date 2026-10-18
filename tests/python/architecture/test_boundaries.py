@@ -13,7 +13,6 @@ PACKAGE_ROOTS = {
     "mordheim_construction": ROOT / "packages" / "python" / "roster-construction" / "mordheim_construction",
     "mordheim_combat": ROOT / "packages" / "python" / "combat-engine" / "mordheim_combat",
     "mordheim_combat_lab": ROOT / "apps" / "combat-lab" / "mordheim_combat_lab",
-    "mordheim_campaign": ROOT / "packages" / "python" / "campaign" / "mordheim_campaign",
 }
 PACKAGE_IMPORT_ROOTS = tuple(sorted({str(path.parent) for path in PACKAGE_ROOTS.values()}))
 
@@ -70,59 +69,3 @@ def test_importing_package_is_lazy_about_ui_and_verification():
                "assert 'mordheim_combat_lab.verification.audit' not in sys.modules"]
     environment = {**os.environ, "PYTHONPATH": os.pathsep.join(PACKAGE_IMPORT_ROOTS)}
     subprocess.run(command, cwd=ROOT, env=environment, check=True)
-
-
-def test_campaign_application_and_persistence_have_no_tkinter_dependency():
-    for area in ("application", "persistence"):
-        imports = imported_modules("mordheim_campaign", area)
-        assert not any(module.startswith("tkinter") for module in imports), area
-
-
-def test_campaign_domain_stays_pure():
-    """The campaign domain imports no UI, no locale singletons, no filesystem.
-
-The domain (models, builders, services) is reused by the web port. It must
-not depend on Tkinter/``mordheim_ui``, on the
-``mordheim_knowledge``/``mordheim_ui`` i18n singletons, or on ``pathlib``.
-KB access is injected (builders receive the KnowledgePort); the models
-never import it.
-"""
-    imports = imported_modules("mordheim_campaign", "domain")
-    forbidden = ("tkinter", "mordheim_ui", "pathlib", "mordheim_knowledge")
-    assert not any(module.startswith(forbidden) for module in imports), imports
-
-
-def test_campaign_domain_does_not_import_the_application_layer():
-    """Domain modules depend on the application only for typing (TYPE_CHECKING)."""
-    for path in (PACKAGE_ROOTS["mordheim_campaign"] / "domain").rglob("*.py"):
-        tree = ast.parse(path.read_text(encoding="utf-8"))
-        for node in ast.walk(tree):
-            if isinstance(node, ast.ImportFrom) and node.module and node.module.startswith(
-                ("mordheim_campaign.application", "mordheim_campaign.persistence", "mordheim_campaign.ui")
-            ):
-                # Only allowed inside ``if TYPE_CHECKING:`` blocks.
-                assert node.col_offset > 0 or _inside_type_checking(tree, node), (
-                    f"{path.name} imports {node.module} at runtime"
-                )
-
-
-def _inside_type_checking(tree: ast.AST, node: ast.AST) -> bool:
-    for top in ast.walk(tree):
-        if isinstance(top, ast.If) and (
-            isinstance(top.test, ast.Name) and top.test.id == "TYPE_CHECKING"
-            or isinstance(top.test, ast.Attribute) and top.test.attr == "TYPE_CHECKING"
-        ):
-            if any(child is node for child in ast.walk(top)):
-                return True
-    return False
-
-
-def test_campaign_ui_reads_kb_only_through_application():
-    imports = imported_modules("mordheim_campaign", "ui")
-    assert not any(module.startswith(("mordheim_knowledge", "mordheim_construction", "yaml")) for module in imports)
-
-
-def test_campaign_application_never_imports_ui():
-    for area in ("application", "persistence"):
-        imports = imported_modules("mordheim_campaign", area)
-        assert not any(module.startswith(("mordheim_campaign.ui", "tkinter")) for module in imports), area

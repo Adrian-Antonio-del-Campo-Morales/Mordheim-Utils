@@ -1,7 +1,7 @@
 """T10 campaigns: the KB publishes the data the campaign obligations consume.
 
 T09 handed four obligations to T10. Each one needs a *published* datum; this gate
-checks the datum in ``sources/knowledge`` (and its staging origin), so the
+checks the datum in ``sources/knowledge``, so the
 behavioural tests in ``tests/typescript`` cannot pass against invented data:
 
 1. the warband-creation roll of `imperial-noble--family-heirloom`
@@ -11,8 +11,7 @@ behavioural tests in ``tests/typescript`` cannot pass against invented data:
    recipients it strips from the warband's muster, and the generator materialises
    that as the per-profile `rout_test_exempt` fact;
 3. the market scope of `repeater_pistol_moh`: the printed clause is published as
-   a structured `condition` scope, in the canonical catalogue **and** in the
-   staging tree the promotion reads, and `runic_attlas_plate_mail` stays a
+   a structured `condition` scope in the canonical catalogue, and `runic_attlas_plate_mail` stays a
    unique find that is not sold;
 4. the canonical id of the exploration find: the magical-artefact row of
    `Att'la's Plate Mail` publishes the item id of the promoted catalogue row.
@@ -37,7 +36,6 @@ sys.path.insert(0, str(ROOT / "tools" / "knowledge"))
 from artefact_document import load_artefact_document  # noqa: E402
 
 KB = ROOT / "sources" / "knowledge"
-STAGING = ROOT / "sources"
 CONTRACTS = ROOT / "contracts" / "knowledge-editorial-v1"
 COLLECTION = "mordheim"
 
@@ -172,18 +170,6 @@ def test_repeater_pistol_market_scope_is_published_and_stays_out_of_construction
     }
     assert "repeater_pistol_moh" not in offered
 
-    # The staging tree the promotion reads carries the same scope, so promoting
-    # to the canonical KB stays a no-op.
-    staging = read_yaml(STAGING / "2A" / "catalog" / "trading-post-2a.yaml")
-    staged = next(
-        (row for row in staging["items"] if str(row.get("item_id")) == "repeater_pistol_moh"),
-        None,
-    )
-    assert staged is not None, "the staging tree must still publish the entry"
-    assert any(
-        row.get("type") == "condition" and row.get("band_ids") == [MASTERS]
-        for row in staged.get("restrictions") or ()
-    ), "the staging mirror must carry the structured scope"
 
 
 def test_unique_plate_mail_is_not_sold_and_reaches_the_warband_by_item_id():

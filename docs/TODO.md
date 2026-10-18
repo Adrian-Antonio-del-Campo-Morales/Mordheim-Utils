@@ -6,13 +6,37 @@ this page.
 
 ## Combat and verification
 
-- Modular implementation, bindings and required semantic interactions:
-  [Remaining modular engine problems](knowledge/2a2b/REMAINING_MODULAR_ENGINE_PROBLEMS.md),
-  with clause details in the semantic CSV and executable inventories.
-- Unresolved authority choices:
-  [Remaining human decisions](knowledge/2a2b/REMAINING_HUMAN_DECISIONS.md).
+- Complete the [modular integrated verification](reference/verification.md#modular-integration-closure).
+  Implementation clauses are closed; verification is still pending.
+- No unresolved human decisions are currently recorded. New questions belong
+  here; accepted answers belong in [Design rulings](decisions/design-rulings.md).
 - Keep NumPy and native candidates certified against the modular oracle before
   relying on them; their ports/certification are outside modular completion.
+
+### Web artefact regeneration — conflicting translated rule labels
+
+- **Latest delivered failure (C15, 2026-10-17):** `conflicting Spanish rule label
+  for 'No Missile Weapons'` in knights-of-the-bitter-moors-mim/special-rules.yaml:
+  `Sin armas de proyectil` versus `Sin Armas de Proyectil`. The web artefact still
+  exposes the old selectable Dwarf inheritance; canonical Python construction
+  and modular consumption are corrected. No coordinator generator rerun.
+- **Observed:** the real generator
+  `python tools/knowledge/generate_knowledge_web.py --output build/generated/knowledge-web/knowledge-web.json`
+  stops in `_build_rules_prose` with
+  `GenerationError: conflicting Spanish rule label for 'Mer-Creature'`.
+- **Evidence:** Crude Belch and Bull Charge fallbacks have been reconciled with
+  their existing canonical Spanish labels. The generator was rerun after the
+  Bull Charge correction and advanced to the next genuine collision, Mer-Creature.
+  The generator has not been weakened or bypassed. The failing output is retained
+  outside the deliverable tree (`modular-web-generation-after-bull-label.txt` in
+  the system temporary directory); do not repeat this unchanged generation.
+- **Impact:** the shared Python catalogue now loads without an exclusion overlay,
+  but the old web artefact cannot certify Aquatic Mutants' current web route.
+  Its functional TypeScript test was not rerun against a stale artefact.
+- **Resume/close:** reconcile the actual conflicting labels while preserving
+  source-specific prose, generate with the maintained tool, then execute
+  `tests/typescript/domain/campaign/mutations.test.ts` against the fresh artefact.
+  Do not hand-edit generated JSON or weaken validation just to make generation pass.
 
 ## Deferred product scope
 

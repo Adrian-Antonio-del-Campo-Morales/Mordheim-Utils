@@ -226,7 +226,7 @@ export function createHirelingsWorkflow(deps: HirelingsWorkflowDeps) {
           : eligible
             ? null
             : verdict.conditional
-              ? "Eligibility depends on a dynamic campaign rule (resolve it in the desktop or record the outcome manually)."
+              ? "Eligibility depends on a dynamic campaign rule (record the outcome manually)."
               : `Not available to ${campaign.identity.warband_name || campaign.identity.band_id}: band or warband group excluded.`,
       });
     }

@@ -8,7 +8,7 @@ Implementation agents may use subagents within their assignment and should do so
 when it speeds up delivery. Assign disjoint files and concrete capabilities, keep
 one integrator, and reuse their evidence without repeating research or tests.
 Subagents inherit all limits and produce no separate reports or shared CSV writes.
-The [plan's mandatory execution rules](../knowledge/2a2b/REMAINING_MODULAR_ENGINE_WORK.md#0-reglas-obligatorias-implementar-no-prolongar-la-preparación)
+The mandatory execution rules in this guide
 apply to every modular implementation dispatch, including delegated packages.
 
 - Check early whether the capability already works. Reuse sufficient evidence,
@@ -55,13 +55,19 @@ priority and operational limits, not merely link to this guide.
 
 Every dispatch must reproduce these operational limits and state the concrete
 capability, ownership, minimal check and completion boundary. Use the mandatory
-prompt contract in plan section 0; a link alone is insufficient.
+priority and operational rules above explicitly; a link alone is insufficient.
 
 
-CSV access must use `python -X utf8 tools/knowledge/t13_csv.py`: `query`,
+CSV access must use `python -X utf8 tools/knowledge/clause_registry.py`: `query`,
 `prepare`, then `apply` (preview by default; `--write` only for the authorized
-writer). No direct CSV edits or alternative rewrite scripts. See plan section 0
-for commands and proposal format. Existing damage is not repaired by this tool.
+writer). No direct CSV edits or alternative rewrite scripts. See the
+[CSV reference](../reference/knowledge-base.md#clause-register) for commands and proposal format. Existing damage is not repaired by this tool.
+
+Research starts in the KB and adopted rulings. Consult web/PDF sources only for
+an indispensable missing fact or a concrete unresolved contradiction, and only
+the relevant passage. Do not invent a rule to avoid a necessary source check.
+Dispatches may use subagents for disjoint implementation work, one writer per
+file; reuse their findings and evidence without separate inventories/reports.
 
 ## Purpose and governing scope
 
@@ -71,7 +77,7 @@ ports. Interpret each clause once; make that contract reusable rather than
 implementing three uncertain versions simultaneously.
 
 This is the active T13 implementation boundary. It complements the
-[remaining T13–T15 work](../knowledge/2a2b/2A2B-Knowledge.md) and
+[modular closure](../reference/verification.md#modular-integration-closure) and
 [general implementation guidance](implement-and-verify-rules.md). Optimized
 implementation and parity steps in general or historical guidance belong to
 later, separately authorized porting batches. **Do not start those ports in a
@@ -95,24 +101,21 @@ Read the relevant sections, not the complete historical archive:
   [verification](../reference/verification.md).
 - Your dispatch: revision, closed origin/clause set, authorized paths,
   reservations and output. The
-  [2A/2B consolidated knowledge](../knowledge/2a2b/2A2B-Knowledge.md)
-  governs coordination; this guide launches no agents or reserves files.
+  [agent instructions](../../AGENTS.md)
+  govern coordination; this guide launches no agents or reserves files.
 - The accepted clauses in
-  [T13-semantic-analysis.csv](../knowledge/2a2b/tasks/T13-semantic-analysis.csv),
-  plus the scope, clarifications and remaining work recorded in the
-  consolidated document. Unaccepted partials are review inputs, not approved
+  [clause-contracts.csv](../../sources/knowledge/verification/clause-contracts.csv),
+  plus [scope and accepted clarifications](../decisions/design-rulings.md). Unaccepted partials are review inputs, not approved
   implementation contracts.
-- Applicable clarifications (section 4), permanent rulings, source definitions,
-  bindings and consumers cited by the assigned clauses. Consult the open
-  [remaining implementation problems](../knowledge/2a2b/REMAINING_MODULAR_ENGINE_PROBLEMS.md)
-  and [human decisions](../knowledge/2a2b/REMAINING_HUMAN_DECISIONS.md) where referenced.
+- Applicable F074 source clarifications, permanent rulings, source definitions,
+  bindings and consumers cited by the assigned clauses. Consult the relevant [backlog entries](../TODO.md).
 
 During implementation, record a concrete problem you cannot resolve in
-[the problems register](../knowledge/2a2b/REMAINING_MODULAR_ENGINE_PROBLEMS.md),
+[the problems register](../TODO.md),
 with the affected clause/path, evidence, attempted resolution, obstacle and
 resumption condition. Reuse existing entries and continue independent work.
 Ordinary unfinished tasks remain in the CSV; questions requiring human authority
-go in [the human register](../knowledge/2a2b/REMAINING_HUMAN_DECISIONS.md).
+go in [the project backlog](../TODO.md); resolved answers belong in design rulings.
 
 Inspect the actual branch/worktree, applicable `AGENTS.md` and dirty files.
 Preserve parallel work. A dispatch controls ownership; an isolated checkout

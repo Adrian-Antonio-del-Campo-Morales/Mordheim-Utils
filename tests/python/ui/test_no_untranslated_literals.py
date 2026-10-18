@@ -14,9 +14,7 @@ from pathlib import Path
 
 import pytest
 
-PYTHON_ROOT = Path(__file__).resolve().parents[3] / "packages" / "python"
 UI_PACKAGES = (
-    PYTHON_ROOT / "campaign" / "mordheim_campaign" / "ui",
     Path(__file__).resolve().parents[3] / "apps" / "combat-lab" / "mordheim_combat_lab" / "ui",
 )
 

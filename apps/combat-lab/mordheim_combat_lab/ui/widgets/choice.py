@@ -6,7 +6,7 @@ the current *value*; ``ChoiceBox`` is the readonly combobox bound to it.
 """
 from __future__ import annotations
 
-from mordheim_ui.i18n import tr
+from mordheim_combat_lab.ui.i18n import tr
 
 import tkinter as tk
 from tkinter import ttk

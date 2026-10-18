@@ -23,7 +23,6 @@ PACKAGE_ROOTS = (
     ROOT / "packages" / "python" / "roster-construction",
     ROOT / "packages" / "python" / "core",
     ROOT / "packages" / "python" / "knowledge",
-    ROOT / "packages" / "python" / "campaign",
 )
 for package_root in reversed(PACKAGE_ROOTS):
     sys.path.insert(0, str(package_root))

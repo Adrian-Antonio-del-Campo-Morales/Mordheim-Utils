@@ -1361,7 +1361,7 @@ function processQueue(
     current = {
       ...current,
       queue,
-      messages: [...messages, `Pending unsupported desktop follow-up: ${kind}`],
+      messages: [...messages, `Pending unsupported follow-up: ${kind}`],
       pending: { kind: "external", label: `Resolve ${kind} at the table` },
     };
     break;

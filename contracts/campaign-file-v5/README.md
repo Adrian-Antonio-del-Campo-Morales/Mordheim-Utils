@@ -1,19 +1,16 @@
 # `.mordheim` campaign file — format v5
 
-**Status:** current interoperability contract for the desktop and web
-applications.
+**Status:** current persistence contract for Campaign Manager web.
 **Schema:** [`campaign-file-v5.schema.json`](./campaign-file-v5.schema.json)
 (JSON Schema draft 2020-12).
-**Fixtures:** [`fixtures/`](./fixtures/) — validated documents for tests and
-porting.
+**Fixtures:** [`fixtures/`](./fixtures/) — validated documents for contract tests.
 
 ## Purpose
 
-`.mordheim` v5 is the **neutral representation of campaign state** shared by
-the Python desktop application and the React/TypeScript web application. It is
-not a serialisation of Python dataclasses or React components: the structure is
-organised by responsibility (identity, configuration, resources, timeline
-entities) so both implementations read and write the same document.
+`.mordheim` v5 is the **neutral representation of campaign state** used by
+Campaign Manager web for import and export. It is not a serialisation of React
+components: the structure is organised by responsibility (identity,
+configuration, resources, timeline entities) and remains stable across exports.
 
 Applications write and read **only v5** and reject older versions with a clear
 message.
@@ -127,8 +124,8 @@ selection; a loader is free to normalise invalid selections.
 ## Ownership
 
 The schema and fixtures are the single source of truth for the format. The
-Python reader/writer (`packages/python/campaign/mordheim_campaign/persistence/campaigns.py`) and the TypeScript `campaign-file` adapter must implement this contract;
-neither side may introduce format extensions without updating the schema and
+TypeScript `campaign-file` adapter implements this contract;
+it may not introduce format extensions without updating the schema and
 fixtures first.
 
 ### Structured advance presentation
@@ -137,7 +134,7 @@ Web writers add `applied_result` to a pending advance's open payload. It is
 one of `{kind: "characteristic", characteristic, amount}`, `{kind: "skill", id}`,
 `{kind: "spell", id}`, `{kind: "duplicate-spell", id, modifier}`, or
 `{kind: "external"}`. IDs remain canonical and are resolved in the current
-presentation locale. `applied_label` remains for desktop interoperability;
+presentation locale. `applied_label` remains for compatibility with existing v5 files;
 web presentation prefers the structured result. Existing v5 documents without
 this field use the exact legacy-result adapter; unknown legacy prose is kept
 in the file but displayed as a localized unavailable notice. Unknown open
@@ -147,14 +144,14 @@ payload fields must survive round trips unchanged.
 `characteristic` and numeric `cap`, `henchmen-reroll` with numeric `total`,
 `hero-limit` with numeric `limit`, and `group-promoted` without parameters.
 Existing history is preserved as `{kind: "legacy", text}` when a web writer
-first appends a fact. `roll_history` is still written for desktop readers.
+first appends a fact. `roll_history` is still written for compatibility with existing v5 files.
 The web prefers `roll_history_events`; unknown or malformed facts display
 the localized unavailable notice without discarding the original payload.
 
 ### Structured event presentation
 
 The existing open `event_log` payloads also carry facts for localized web
-presentation. Legacy `description` remains unchanged for desktop readers.
+presentation. Legacy `description` remains unchanged for compatibility with existing v5 files.
 
 | Event type | Presentation facts |
 | --- | --- |

@@ -5,8 +5,7 @@ entrada**, y eso lo declara el registro de documentos fuente de la KB
 (``sources/knowledge/registry/source-documents.yaml``) con las citas del propio
 catálogo. Esta batería fija lo que lo hace permanente:
 
-1. **Completitud.** Ninguna cita con URL de los catálogos de hirelings —la KB y el
-   árbol de 2B que se promociona a ella— se queda sin documento declarado. Una
+1. **Completitud.** Ninguna cita con URL de los catálogos publicados de hirelings se queda sin documento declarado. Una
    cita nueva sin declarar falla aquí, en vez de degradar a un «sin fuente que
    cotejar» que se lee como «no hay nada que comparar».
 2. **Una cita, un documento.** Cada URL la declara un solo documento, y cada
@@ -34,14 +33,10 @@ if str(TOOLS) not in sys.path:
 
 sd = pytest.importorskip("source_documents")
 
-#: Los catálogos cuyas citas tienen que resolver. El árbol 2B entra mientras es el
-#: staging que se promociona a la KB: cuando se promocione, sus dos documentos
-#: ocupan el mismo sitio en ``sources/knowledge`` y esta lista se acorta sola.
+#: Catálogos publicados cuyas citas deben resolver en el registro canónico.
 CATALOGUES = (
     "sources/knowledge/catalog/hirelings",
     "sources/knowledge/catalog/campaign/hired-swords-and-dramatis.yaml",
-    "sources/2B/catalog/hirelings",
-    "sources/2B/catalog/hired-swords-and-dramatis-2b.yaml",
 )
 
 #: Las claves con las que los catálogos publican listas de registros.
@@ -101,7 +96,7 @@ def test_the_declared_manuals_are_registered_sources() -> None:
 
 
 def test_the_registry_declares_both_source_families() -> None:
-    """Los PDFs de 2B y las páginas de 2A cotejan por el mismo registro."""
+    """PDFs y páginas web se resuelven por el mismo registro canónico."""
     documents = sd.SourceDocuments.load()
     assert len(documents) >= 16
     assert {document.kind for document in documents} == {"pdf", "page"}

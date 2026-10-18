@@ -22,8 +22,6 @@ packages/python/knowledge/mordheim_knowledge KB loaders, validation and paths
 packages/python/roster-construction         shared-rule adapter and fighter compilation
 packages/typescript/domain/eligibility     shared equipment and skill decisions
 packages/python/combat-engine               phases, modular, NumPy and native engines
-packages/python/adapters/desktop-ui         shared Tkinter theme and widgets
-packages/python/campaign                    campaign domain, application and persistence
 apps/combat-lab                             Combat Lab application and CLI
 apps/warband-manager-web                    React/Vite web shell
 contracts/campaign-file-v5                  versioned campaign-file contract
@@ -47,11 +45,11 @@ The root [`package.json`](package.json) is an npm workspace over
 `packages/typescript` and `apps/warband-manager-web`: one `npm ci` at the root
 installs both and writes the single `package-lock.json`.
 
-The modular combat engine is the correctness oracle. NumPy and native backends are candidates certified against it. The campaign applications consume the same canonical IDs and the v5 campaign-file contract; rules are never serialized into campaign files.
+The modular combat engine is the correctness oracle. NumPy and native backends are candidates certified against it. Campaign Manager uses canonical KB IDs and the v5 campaign-file contract; rules are never serialized into campaign files.
 
 ## Requirements and installation
 
-- Python 3.10+ with Tkinter for the desktop applications.
+- Python 3.10+ with Tkinter for Combat Lab.
 - Node.js 20+ for the TypeScript packages and web application.
 
 The Python installation includes MiniRacer and the shared eligibility bundle. Running Combat Lab does not require Node.js. After editing shared eligibility rules, rebuild with `npm run build:eligibility` and verify with `npm run check:eligibility`.

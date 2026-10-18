@@ -1,8 +1,5 @@
 /**
- * Application-level RulesCatalogue — the web counterpart of the desktop
- * The browser read model mirrors the desktop campaign rules catalogue.
- * `adapters/knowledge-reader/rules_catalogue_parity.test.ts`; coverage:
- * `rules-catalogue.test.ts`).
+ * Application-level campaign rules catalogue.
  *
  * Read model for the RULES browser: browsable categories in display order,
  * localized entries, accent-insensitive search and profile cross-links.
@@ -71,7 +68,7 @@ function unaccentLower(text: string): string {
   return text.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLocaleLowerCase();
 }
 
-/** Desktop `str.title()`: "close-combat-weapon" -> "Close Combat Weapon". */
+/** Title-case labels: "close-combat-weapon" -> "Close Combat Weapon". */
 function titleCase(value: string): string {
   return value
     .replace(/[-_]+/g, " ")
@@ -148,7 +145,7 @@ export class RulesCatalogue {
 
   /**
    * Accent-insensitive search over names and effects, optionally scoped to a
-   * category. An empty query yields no hits (desktop parity).
+   * category. An empty query yields no hits.
    */
   search(
     query: string,

@@ -15,9 +15,9 @@ from mordheim_combat_lab.ui.editors import FighterEditor
 from mordheim_combat_lab.ui.tabs.equipment import EquipmentAnalysisTab
 from mordheim_combat_lab.ui.tabs.improvements import ImprovementAnalysisTab
 from mordheim_combat_lab.ui.tabs.weapons import WeaponAnalysisTab
-from mordheim_ui.i18n import current_locale
-from mordheim_ui.i18n import tr
-from mordheim_ui.lab_theme import apply_theme
+from mordheim_combat_lab.ui.i18n import current_locale
+from mordheim_combat_lab.ui.i18n import tr
+from mordheim_combat_lab.ui.theme import apply_theme
 from mordheim_combat_lab.ui.widgets.feedback import destroy_tooltips
 import os as os
 import time as time
@@ -62,7 +62,7 @@ class CombatLabApp(tk.Tk):
         # Display locale of KB names and interface strings: the saved
         # preference wins, otherwise MORDHEIM_LOCALE, otherwise English.
         from mordheim_knowledge.i18n import set_locale as set_kb_locale
-        from mordheim_ui.i18n import set_locale as set_ui_locale
+        from mordheim_combat_lab.ui.i18n import set_locale as set_ui_locale
         set_kb_locale(self._preferences.get("locale"))
         set_ui_locale(self._preferences.get("locale"))
         apply_theme(self)
@@ -337,7 +337,7 @@ class CombatLabApp(tk.Tk):
     def _apply_locale(self, locale: str) -> None:
         """Switch the interface language at runtime and rebuild the UI."""
         from mordheim_knowledge.i18n import set_locale as set_kb_locale
-        from mordheim_ui.i18n import set_locale as set_ui_locale
+        from mordheim_combat_lab.ui.i18n import set_locale as set_ui_locale
         if set_ui_locale(locale) != locale or set_kb_locale(locale) != locale:
             return  # unsupported selection keeps the current locale
         self._preferences["locale"] = locale

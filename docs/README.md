@@ -4,8 +4,9 @@ Reference material and procedures for the Mordheim Utils repository. Start
 with the [repository overview](../README.md) for installation and the common
 commands.
 
-Current modular follow-ups: [implementation problems](knowledge/2a2b/REMAINING_MODULAR_ENGINE_PROBLEMS.md)
-and [human decisions](knowledge/2a2b/REMAINING_HUMAN_DECISIONS.md).
+Current follow-ups are in [the backlog](TODO.md); the
+[modular verification sequence](reference/verification.md#modular-integration-closure)
+distinguishes implementation closure from certification.
 
 ## Reference — how the system is built
 
@@ -49,15 +50,11 @@ Contracts:
 
 ## Knowledge base — modelling documents
 
-- [2A/2B consolidated knowledge](knowledge/2a2b/2A2B-Knowledge.md) —
-  scope, product boundary, permanent rulings index, clarifications and
-  remaining work.
-
 The catalogue and registry rules of the canonical data:
 
 - [Campaign knowledge](guides/campaign-knowledge.md)
-- [Hirelings](knowledge/hirelings.md)
-- [Translation glossary](knowledge/translation-glossary.md)
+- [Hirelings](reference/knowledge-base.md#hirelings-and-campaign)
+- [Translation glossary](reference/translation-glossary.md)
 
 ## Where documents live
 
@@ -68,8 +65,6 @@ that owns it enforces:
   file the Windows installer packages.
 - `contracts/*/README.md` — `tests/python/knowledge/test_editorial_schemas.py`
   requires each contract README next to its schemas.
-- `sources/2A/*.md`, `sources/2B/*.md` — the active staging trees; their tools
-  read and write those verdict documents in place.
 - [`tests/specs/README.md`](../tests/specs/README.md) — the conventions of the
   verification corpus, published beside the corpus itself.
 

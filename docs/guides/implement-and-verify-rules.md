@@ -98,7 +98,7 @@ Profile traits, recorded unresolved concepts and dangling rule-list references
 also remain visible; resolved rule-list references reuse their definitions.
 Historical T13 dispositions cannot remove current KB candidates. This covers
 the supported source fields, not a semantic guarantee about arbitrary prose.
-The [source scope review](../knowledge/2a2b/tasks/T13-audit-scope-review.csv)
+The [source scope review](../../sources/knowledge/verification/source-scope-review.csv)
 classifies previously unclassified candidates and records the printed text,
 reason and category. The audit applies it only to still-unclassified records
 whose source file and text hash match; explicit KB scope takes precedence and

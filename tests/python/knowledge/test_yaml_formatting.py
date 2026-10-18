@@ -5,9 +5,6 @@ Wraps ``tools/knowledge/maintenance/format_yaml.py --check`` so the lexical form
 cap, semantic round-trip) is enforced on every test run, not only when someone
 remembers to run the tool by hand.
 
-The staging trees are held to the *same* policy as the active knowledge base:
-a band package must already look like a knowledge-base document, so promotion
-can never be the step that reflows, re-quotes or re-encodes its YAML.
 """
 from __future__ import annotations
 
@@ -15,16 +12,11 @@ import subprocess
 import sys
 from pathlib import Path
 
-import pytest
 import yaml
 
 ROOT = Path(__file__).resolve().parents[3]
 TOOL = ROOT / "tools" / "knowledge" / "maintenance" / "format_yaml.py"
-TREES = {
-    "knowledge": ROOT / "sources" / "knowledge",
-    "2A": ROOT / "sources" / "2A",
-    "2B": ROOT / "sources" / "2B",
-}
+KNOWLEDGE = ROOT / "sources" / "knowledge"
 
 #: A prose line longer than the 120 cap, of the kind a writer that emits one
 #: physical line per value leaves inside an otherwise canonical `>-` block.
@@ -34,11 +26,9 @@ LONG_LINE = (
 )
 
 
-@pytest.mark.parametrize("tree", sorted(TREES))
-def test_yaml_formatting_is_canonical(tree: str) -> None:
-    root = TREES[tree]
-    if not root.is_dir():
-        pytest.skip(f"{root} is absent")
+def test_yaml_formatting_is_canonical() -> None:
+    root = KNOWLEDGE
+    assert root.is_dir(), "Canonical KB directory is missing"
     result = subprocess.run(
         [sys.executable, str(TOOL), "--check", str(root)],
         cwd=ROOT,
@@ -47,11 +37,11 @@ def test_yaml_formatting_is_canonical(tree: str) -> None:
         encoding="utf-8",
     )
     assert result.returncode == 0, (
-        f"format_yaml --check failed on {tree}:\n" + (result.stdout or result.stderr)
+        "format_yaml --check failed on knowledge:\n" + (result.stdout or result.stderr)
     )
     summary = (result.stdout or "").strip().splitlines()[-1]
     assert "0 would change" in summary, (
-        f"{tree} YAML needs reformatting "
+        "Canonical YAML needs reformatting "
         f"(run: python tools/knowledge/maintenance/format_yaml.py --write {root.relative_to(ROOT)}):\n"
         + (result.stdout or result.stderr)
     )

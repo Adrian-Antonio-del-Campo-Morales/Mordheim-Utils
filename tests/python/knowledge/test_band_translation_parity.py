@@ -194,3 +194,17 @@ def test_equivalent_rules_share_the_same_spanish_name() -> None:
                         f"{previous[0]!r} ({previous[1]}) vs {es_name!r} ({band_dir.name}/{rule['id']})"
                     )
                 by_binding.setdefault(group, (es_name, f"{band_dir.name}/{rule['id']}"))
+
+
+def test_all_band_profile_and_rule_names_have_spanish_translations() -> None:
+    """Canonical names retain the completeness guard formerly limited to staging."""
+    checked = 0
+    for band_dir in _iter_band_dirs():
+        band = yaml.safe_load((band_dir / "band.yaml").read_text(encoding="utf-8")) or {}
+        for record in [band, *_iter_profiles(band_dir), *_iter_rules(band_dir)]:
+            if record.get("name"):
+                assert (record.get("name_i18n") or {}).get("es"), (
+                    f"{band_dir.name}/{record.get('id')}: missing Spanish name"
+                )
+                checked += 1
+    assert checked, "No canonical named records checked"

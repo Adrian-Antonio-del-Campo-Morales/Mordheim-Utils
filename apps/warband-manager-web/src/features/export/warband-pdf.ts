@@ -1,6 +1,5 @@
 /**
- * Printable warband roster sheet — port of the desktop exporter
- * (`packages/python/campaign/mordheim_campaign/persistence/warband_pdf.py`).
+ * Printable warband roster sheet.
  *
  * Renders the warband of one timeline moment as a sheet in the style of the
  * printed Mordheim warband rosters: one rounded parchment card per warrior
@@ -11,12 +10,10 @@
  *
  * A committed state renders its own snapshot (deep-copied at commit time), so
  * a historical moment exports exactly as it was; the draft (or any non-state
- * moment) renders the live roster. Layout units are millimetres and follow
- * the desktop constants (A4 210×297, 10 mm margins, 190 mm card width) so the
- * two exporters stay comparable.
+ * moment) renders the live roster. Layout units are millimetres (A4 210×297, 10 mm margins, 190 mm card width).
  *
- * Rendering uses the pdf-lib Times core fonts — the same Times family the
- * desktop used via fpdf2 — and transliterates glyphs outside WinAnsi so
+ * Rendering uses the pdf-lib Times core fonts and transliterates glyphs
+ * outside WinAnsi so
  * generation never crashes on campaign data.
  */
 import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from "pdf-lib";
@@ -42,7 +39,7 @@ import {
 type Locale = "es" | "en";
 type RGB = ReturnType<typeof rgb>;
 
-// --- Geometry (millimetres, matching the desktop constants) -----------------
+// --- Geometry (millimetres, A4 page and card layout) -----------------
 const PT = 72 / 25.4; // PDF points per millimetre
 const PAGE_W = 210;
 const PAGE_H = 297;
@@ -108,7 +105,7 @@ interface Fonts {
 
 type FontStyle = keyof Fonts;
 
-/** Locale labels, mirroring the desktop STRINGS catalogue for these keys. */
+/** Locale labels, for the roster sheet. */
 function buildLabels(locale: Locale) {
   return {
     draft: translate({ key: "pdf.draft" }, locale),

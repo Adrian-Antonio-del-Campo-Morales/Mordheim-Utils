@@ -40,7 +40,7 @@ jobs:
           python tools/knowledge/generate_knowledge_web.py --check
 
       - name: Run the Python regression net
-        run: python -m pytest tests/python/web tests/python/contracts tests/python/campaign tests/python/architecture tests/python/knowledge tests/python/construction/test_shared_eligibility.py -q
+        run: python -m pytest tests/python/web tests/python/contracts tests/python/architecture tests/python/knowledge tests/python/construction/test_shared_eligibility.py -q
 
       # The modular engine E2E battery is listed separately: the Python
       # regression net above deliberately excludes tests/E2E.  This step runs

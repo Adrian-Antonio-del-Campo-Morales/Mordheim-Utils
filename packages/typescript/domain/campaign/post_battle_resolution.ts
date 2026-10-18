@@ -1,10 +1,9 @@
 /**
- * Parity implementation of the desktop campaign post-battle resolution rules.
+ * Campaign post-battle resolution rules.
  * — the KB-backed post-battle resolver (serious injuries, exploration,
  * rarity searches). Every expectation is pinned to the web KB artefact
  * (`campaign.serious-injuries`, `campaign.exploration-and-income`,
- * `campaign.trading-and-rarity`, `campaign.trading-post`), mirroring the
- * desktop contract that no value is a Python constant.
+ * `campaign.trading-and-rarity`, `campaign.trading-post`), with values supplied by the canonical knowledge base.
  */
 
 import type { OpenPayload } from "./kernel/state";
@@ -64,7 +63,7 @@ function rollMatches(roll: string, d66: number): boolean {
   return Number(roll) === d66;
 }
 
-/** Human-readable effect text, mirroring the desktop's concrete phrasing. */
+/** Human-readable effect text, describing the resolved outcome. */
 function effectText(effect: OpenPayload): string {
   const type = String(effect["type"] ?? "");
   if (type === "roster.remove_warrior") return "The warrior is permanently removed from the roster.";

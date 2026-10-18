@@ -1,14 +1,14 @@
 /**
- * Parity implementation of the desktop campaign hire-eligibility rules.
+ * Campaign hire-eligibility rules.
  * — the 18 roster-dependent `*.rule.campaign-eligibility` rules.
  *
  * Facts come only from the web KB artefact: `campaign.hirelings.traits`
  * (canonical trait table) and `campaign.warband_groups` (band → groups).
- * The application-side heuristics (employer band sets, variant sets, profile
- * keyword lists) mirror the desktop constants exactly.
+ * Employer band sets, variant sets and profile keyword lists interpret
+ * the canonical eligibility contracts.
  *
  * Decisions never guess: a rule needing a fact the context lacks returns an
- * explicit `needs_variant`/`conditional` verdict (desktop semantics).
+ * explicit `needs_variant`/`conditional` verdict.
  */
 
 export type DecisionKind = "allowed" | "rejected" | "needs_variant" | "conditional";
@@ -17,7 +17,7 @@ export interface Decision {
   readonly kind: DecisionKind;
   readonly rule_id: string;
   readonly reason: string;
-  /** For `conditional`: minimum D6 roll for acceptance (desktop `roll_ge`). */
+  /** For `conditional`: minimum D6 roll for acceptance. */
   readonly roll_ge?: number;
 }
 
@@ -276,7 +276,7 @@ export function evaluateRule(ruleId: string, ctx: WarbandHireContext): Decision 
   throw new Error(`no evaluator registered for dynamic rule ${ruleId}`);
 }
 
-/** The 18 dynamic rule ids every hireling profile declares (desktop KNOWN_RULES). */
+/** The 18 dynamic rule ids declared by hireling profiles. */
 /** Profile's rule ids, either the `rule_ids` shortcut or inline `rules` rows. */
 function profileRuleIds(profile: { id: string; rule_ids?: readonly string[]; rules?: readonly { id: string }[] }): string[] {
   if (profile.rule_ids) return profile.rule_ids.map(String);

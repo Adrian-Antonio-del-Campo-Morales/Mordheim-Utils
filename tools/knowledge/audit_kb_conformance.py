@@ -2,8 +2,7 @@
 """Audit a knowledge tree's shape against the active KB patterns.
 
 Read-only, and permanent: point it at the active KB to prove the published
-documents still match the contract (0 deviations is the expected baseline), or
-at a staging tree to check it before promotion. Reports every deviation class
+documents still match the maintained editorial model. Reports every deviation class
 the KB contract defines, so a correction pass has one reproducible checklist
 instead of ad-hoc greps.
 
@@ -24,8 +23,7 @@ Checks
 Usage::
 
     python tools/knowledge/audit_kb_conformance.py                 # the active KB
-    python tools/knowledge/audit_kb_conformance.py --tree 2A       # a staging tree
-    python tools/knowledge/audit_kb_conformance.py --tree 2B --json
+    python tools/knowledge/audit_kb_conformance.py --json
 """
 from __future__ import annotations
 
@@ -319,13 +317,11 @@ def audit(tree: str) -> dict:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--tree', default='knowledge',
-                        help="tree under sources/ to audit (default: knowledge, the active KB)")
     parser.add_argument('--json', action='store_true')
     parser.add_argument('--show', type=int, default=8, help='examples per class')
     args = parser.parse_args()
 
-    report = audit(args.tree)
+    report = audit('knowledge')
     if args.json:
         print(json.dumps({k: len(v) for k, v in sorted(report.items())}, indent=2))
         return 0
@@ -333,7 +329,7 @@ def main() -> int:
     counted = {k: v for k, v in report.items() if k not in INFO_CLASSES}
     info = {k: v for k, v in report.items() if k in INFO_CLASSES}
     total = sum(len(v) for v in counted.values())
-    print(f'sources/{args.tree}: {total} deviation(s) across {len(counted)} class(es)'
+    print(f'sources/knowledge: {total} deviation(s) across {len(counted)} class(es)'
           f' (+{sum(len(v) for v in info.values())} informational)')
     for kind, items in sorted(counted.items()):
         print(f'\n## {kind} ({len(items)})')

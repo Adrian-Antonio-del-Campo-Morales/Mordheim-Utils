@@ -1,10 +1,10 @@
-"""external.test_i18n: shared UI string catalogue and translation behavior."""
+"""external.test_i18n: Combat Lab string catalogue and translation behavior."""
 from __future__ import annotations
 
 import pytest
 
-from mordheim_ui import i18n
-from mordheim_ui.i18n import CANONICAL_LOCALE, STRINGS, current_locale, set_locale, tr
+from mordheim_combat_lab.ui import i18n
+from mordheim_combat_lab.ui.i18n import CANONICAL_LOCALE, STRINGS, current_locale, set_locale, tr
 
 
 @pytest.fixture(autouse=True)
@@ -43,12 +43,13 @@ def test_translated_strings_have_a_spanish_entry_and_english_is_the_key():
         assert "en" not in entry or entry["en"] == key, key
 
 
-def test_post_battle_chrome_translates_under_spanish():
+def test_combat_lab_chrome_and_placeholders_translate_under_spanish():
     set_locale("es")
-    assert tr("RECOVERY") == "RECUPERACIÓN"
-    assert tr("STEP {} OF {}").format(2, 8) == "PASO 2 DE 8"
-    assert tr("Injuries").upper() == "HERIDAS"
-    assert tr("{} ACTIONS REMAIN").format(3) == "3 ACCIONES PENDIENTES"
+    assert tr("Mordheim Combat Lab") == "Laboratorio de Combate Mordheim"
+    assert tr("Skills ({} / {})").format(2, 8) == "Habilidades (2 / 8)"
+    assert tr("Comparing {} weapons with {} duels each…").format(3, 10) == (
+        "Comparando 3 armas con 10 duelos cada una…"
+    )
 
 
 def test_every_catalogue_key_translates_in_spanish():

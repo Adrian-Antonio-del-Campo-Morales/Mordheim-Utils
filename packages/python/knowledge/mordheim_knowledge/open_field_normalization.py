@@ -4,15 +4,14 @@ The contract types five fields loosely on purpose — ``band.yaml`` ``status`` a
 ``categories``, ``sources[].manual``, ``profiles[].source_path`` and the
 catalogue ``status`` — so an editorial value is never rejected for being new.
 A loose field is only safe while a *gate* keeps it aligned with the knowledge
-base it belongs to; ``staging_contract_audit`` measures the drift and this
-module removes it.
+base it belongs to; this module normalizes those canonical fields.
 
 Four vocabularies are closed here, each against the decision the KB already
 carries:
 
 - **``sources[].manual``** is a registered source id: ``registry/sources.yaml``
   says so and ``catalog-items.yaml.schema.json`` repeats it. Every manual of the
-  KB and of the staging trees is normalised to its registered id, and the ids
+  KB is normalised to its registered id, and the ids
   that were still missing (including the ones the *active* KB used without
   registering) are added to the registry.
 - **``band.yaml`` ``status``** is ``source-normalized`` — the only value the KB
@@ -44,7 +43,6 @@ import yaml
 
 CHECKOUT = Path(__file__).resolve().parents[4]
 KB_ROOT = Path("sources") / "knowledge"
-STAGING_TREES = ("2A", "2B")
 
 # --------------------------------------------------------------------------- #
 # The registered source vocabulary
@@ -249,9 +247,6 @@ def drop_key(text: str, key: str, *, root: bool = False) -> tuple[str, int]:
 # --------------------------------------------------------------------------- #
 
 
-def _staging_roots() -> Iterable[Path]:
-    for tree in STAGING_TREES:
-        yield Path("sources") / tree
 
 
 def _yaml_files(root: Path) -> Iterator[Path]:
@@ -514,7 +509,7 @@ def _verify_source_path(path: Path, before: dict, after: dict) -> None:
 
 
 def registry_document() -> str:
-    """The registry with every source id the KB and the staging trees use."""
+    """The registry with every declared source id used by the KB."""
     lines = ["schema_version: 2", "sources:"]
     for identifier, name in SOURCE_IDS:
         lines.append(f"- id: {identifier}")
@@ -548,11 +543,11 @@ PASSES: dict[str, Callable[[Path], list[Edit]]] = {
 
 
 def targets() -> list[Path]:
-    return [KB_ROOT, *_staging_roots()]
+    return [KB_ROOT]
 
 
 def edits(passes: Iterable[str] | None = None, roots: Iterable[Path] | None = None) -> Report:
-    """Every normalisation the open fields need, staging trees and KB alike.
+    """Every normalisation the canonical KB open fields need.
 
     A file rewritten by one pass is read back by the next one, so the report
     carries one entry per file with the changes of every pass that touched it.

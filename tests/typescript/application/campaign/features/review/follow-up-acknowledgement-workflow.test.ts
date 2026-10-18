@@ -1,11 +1,4 @@
-/**
- * Parity port of the desktop follow-up acknowledgement behaviour in
- * `mordheim_campaign/domain/models.py` (`acknowledge`, `is_acknowledged`,
- * `unacknowledged_follow_ups`) — no dedicated desktop test; ported from the
- * implementation. Exercised against the web
- * `canAcknowledgeFollowUp` / `followUpNeedsResolution` / `acknowledgeFollowUp`
- * seams in `follow-up-acknowledgement-workflow.ts` — no service, no React.
- */
+/** Follow-up acknowledgement through the web workflow, without React or services. */
 import { describe, expect, it } from "vitest";
 
 import type { CampaignDocument, OpenPayload } from "@domain/campaign/index";

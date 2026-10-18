@@ -14,7 +14,6 @@ gap is fixed.
 from __future__ import annotations
 
 import json
-import subprocess
 import sys
 from pathlib import Path
 
@@ -27,8 +26,6 @@ from artefact_document import load_artefact_document  # noqa: E402
 
 VECTORS = ROOT / "tests" / "fixtures" / "parity" / "vectors"
 ARTEFACT = ROOT / "outputs" / "web-public" / "knowledge" / "knowledge-web.json"
-MANIFEST = ROOT / "outputs" / "parity" / "test-manifests" / "campaign-test-manifest.json"
-MANIFEST_GENERATOR = ROOT / "tools" / "verification" / "make_test_manifest.py"
 
 # T12 fase D: the published artefact defers the campaign catalogue (equipment
 # + campaign sections); these parity vectors assert against the complete
@@ -201,17 +198,3 @@ def test_no_blocked_vectors_remain_in_any_vector_file() -> None:
         gap = data.get("gap") or {}
         if gap:
             assert gap.get("status") == "RESOLVED", name
-
-
-def test_vector_files_match_the_manifest_s_counts() -> None:
-    subprocess.run([sys.executable, str(MANIFEST_GENERATOR)], cwd=ROOT, check=True)
-    manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
-    for name, source, expected in (
-        ("malformed_save.json", "tests/python/campaign/test_malformed_save_matrix.py", 29),
-        ("rules_catalogue.json", "tests/python/campaign/test_rules_catalogue.py", 10),
-        ("knowledge_port.json", "tests/python/campaign/test_knowledge_port.py", 9),
-    ):
-        data = json.loads((VECTORS / name).read_text(encoding="utf-8"))
-        assert data["source_family"] == source
-        assert len(data["vectors"]) == expected
-        assert manifest["counts"].get("S", 0) >= sum((29, 10, 9))

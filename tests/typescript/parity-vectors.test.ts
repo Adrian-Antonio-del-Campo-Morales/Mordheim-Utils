@@ -1,8 +1,4 @@
-/**
- * TS mirror of the shared malformed-save parity vectors. Applies the same JSON-pointer mutations to the same base fixture
- * as tests/python/web/parity/vectors_python_test.py and expects the adapter to
- * agree with each vector's `expected` outcome.
- */
+/** Malformed campaign-file vectors apply mutations to fixtures and assert adapter acceptance. */
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";

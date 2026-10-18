@@ -1,18 +1,6 @@
-/**
- * Campaign-file interoperability matrix: the TypeScript side of the full
- * bidirectional round-trip matrix.
- *
- * Two duties:
- * 1. Pin the fixture loop in one place: Python-written fixture texts go
- *    parse → serialize → parse → serialize, with semantic equality (only
- *    `saved_at`/`view` volatile) between generations, for all four fixtures.
- * 2. Emit the P6.x workflow-generated documents (draft → commit → battle →
- *    post-battle steps, via the real kernel workflows) as a JSON artefact
- *    the Python harness (`tests/python/web/contract/test_p71_full_matrix.py`)
- *    loads through the desktop reader.
- */
+/** Campaign files retain semantic content across repeated saves and real workflows. */
 import { describe, expect, it } from "vitest";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 import {
@@ -40,7 +28,6 @@ function findRepoRoot(): string {
 
 const REPO_ROOT = findRepoRoot();
 const FIXTURES = join(REPO_ROOT, "contracts", "campaign-file-v5", "fixtures");
-const OUT_DIR = join(REPO_ROOT, "outputs", "campaign-file-interop");
 
 const FIXTURE_NAMES = [
   "draft.json",
@@ -184,21 +171,15 @@ describe("P7.1: fixture loop pinned (parse → serialize ×2)", () => {
   }
 });
 
-describe("P7.1: workflow documents emitted for the Python harness", () => {
-  it("emits the core progression documents", () => {
-    mkdirSync(OUT_DIR, { recursive: true });
+describe("workflow documents retain the campaign-file contract", () => {
+  it("round-trips the core progression documents", () => {
     const documents = workflowDocuments();
     expect(Object.keys(documents).sort()).toEqual([
       "after-battle",
       "committed-draft",
       "post-battle-progressed",
     ]);
-    writeFileSync(
-      join(OUT_DIR, "_p71-workflow-documents.json"),
-      JSON.stringify({ documents }, null, 1) + "\n",
-      "utf-8",
-    );
-    // Each emitted document must itself parse back through the adapter.
+    // Each workflow document must itself parse back through the adapter.
     for (const [name, document] of Object.entries(documents)) {
       const reparsed = parseCampaignFileDetailed(JSON.stringify(document));
       expect(reparsed.ok, name).toBe(true);

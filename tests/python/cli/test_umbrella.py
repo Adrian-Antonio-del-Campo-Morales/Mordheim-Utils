@@ -177,7 +177,7 @@ def test_run_ci_executes_the_ci_validation_gates(cli, monkeypatch):
     assert [command for _, command in calls] == [
         [sys.executable, str(cli.KNOWLEDGE_GENERATOR)],
         [sys.executable, str(cli.KNOWLEDGE_GENERATOR), "--check"],
-        [sys.executable, "-m", "pytest", "tests/python/web", "tests/python/contracts", "tests/python/campaign",
+        [sys.executable, "-m", "pytest", "tests/python/web", "tests/python/contracts",
          "tests/python/architecture", "tests/python/knowledge", "tests/python/construction/test_shared_eligibility.py", "-q"],
         [sys.executable, str(cli.KNOWLEDGE_GENERATOR), "--check"],
         ["npm", "run", "check:eligibility"],
@@ -220,7 +220,7 @@ def test_run_ci_help(cli, capsys, flag):
 
 def test_test_scope_paths_are_non_empty_and_known(cli):
     assert set(cli.SCOPE_PATHS) >= {
-        "all", "engines", "modular", "vectorized", "native", "campaign",
+        "all", "engines", "modular", "vectorized", "native",
         "knowledge", "verification", "construction", "ui", "cli", "architecture",
     }
     for paths in cli.SCOPE_PATHS.values():

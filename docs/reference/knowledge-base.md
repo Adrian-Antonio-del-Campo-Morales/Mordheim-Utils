@@ -241,9 +241,11 @@ So the layers of the same weapon are: item record (`items/`, snake_case id)
 
 ### hirelings/ and campaign/
 
-- `hirelings/` — `hired-swords/` and `dramatis-personae/` catalogues, with
-  their own README covering id conventions, the trait registry, out-of-scope
-  entities and the pending intrinsic references.
+- `hirelings/` — `hired-swords/` and `dramatis-personae/` catalogues own
+  intrinsic identity, characteristics, equipment, skills, rules and rating.
+  Hiring fees, upkeep, search and eligibility belong to
+  `campaign/hired-swords-and-dramatis.yaml`; reusable group facts belong to
+  `registry/warband-groups.yaml`.
 - `campaign/` — the persistent campaign rules: post-battle sequence, trading
   post, serious injuries, experience and advances, exploration and income,
   recruitment and veterans, warband rating, trading and rarity, scenarios,
@@ -252,6 +254,66 @@ So the layers of the same weapon are: item record (`items/`, snake_case id)
   policy and the loader contract, and its HOWTO explains how to query the
   catalogue from application code. Campaign entries reference canonical
   `item_id` values without copying item records.
+
+
+Profile IDs are `hireling.hired-sword.<slug>` or `hireling.dramatis.<slug>`;
+`campaign.hireling.<slug>` entries reference a `profile_id`. A matching name
+alone does not justify reusing a band profile or equating items/skills. Unknown
+concepts stay in the profile's `unresolved_references`; remove only references
+that resolve after adding the canonical catalogue/schema. Do not invent IDs.
+Campaign rolls, choices and rewards are runtime state, not KB facts. Dynamic
+roster/variant restrictions use `*.rule.campaign-eligibility` and canonical
+traits rather than application-maintained sets. Composite warriors, mounts or
+selectable personas remain `status: out_of_scope` until a schema can represent
+them without flattening their rules.
+
+`mordheim_knowledge.campaign.load_hirelings(ruleset)` is the authorized read
+path: it validates IDs, rule references and items; campaign loaders additionally
+resolve hiring `profile_id` references. Editorial schemas in
+`contracts/knowledge-editorial-v1/` validate structure before loader contracts;
+`tests/python/knowledge/test_campaign_loaders.py` covers the loader boundary.
+
+### Source provenance and catalogue comparison
+
+Records cite manuals, printed pages, sections and URLs through `source_refs`.
+`registry/source-documents.yaml` resolves each cited URL to its document and
+its offline copy under `build/cache/`; undeclared citations fail
+`tests/python/knowledge/test_source_documents.py`. Use
+`tools/knowledge/source_documents.py` to resolve a record's document and
+`tools/knowledge/printed_entries.py` to read the printed entry. Missing offline
+copies are reported as missing, never compared against an empty page.
+`tools/knowledge/check_hireling_sources.py` applies this comparison to both
+published hireling catalogues across all grades.
+
+Printed wording is evidence, not a global alias or permission to rename a
+canonical item. Preserve the following reviewed correspondences only in their
+stated source context (slugs identify the source warband):
+
+| Printed wording | Catalogue key | Source context |
+|---|---|---|
+| Double-handed weapon / Double handed weapon / Two-handed weapon | `great_weapon` | Rulebook and supplements. |
+| Holy Water | `blessed_water` | `protectorate-of-sigmar-lotd3`, Protectorate list; `vampire-hunters-of-sylvania-lotd5`, hero list. Miracle Workers separately prints Blessed water. |
+| Sigmarite Warhammer | `sigmarite_hammer` | `protectorate-of-sigmar-lotd3`, Protectorate list. |
+| Long Bow Heroes only | `long_bow` | `outlaws-of-stirwood-forest-redux-fbg`; Heroes only is availability, not part of the item name. |
+| Halbard | `halberd` | `forest-goblins-lus`; printed typo, not a general spelling. |
+| Wardog | `warhound` | `bretonnian-knights-errant-mou`. |
+| Double-handed weapon | `two_handed_weapon` | `channel-rats-mim`. |
+| Horsemens Hammer | `horsemans_hammer` | `knights-of-the-bitter-moors-mim`. |
+| Toughened leather | `toughened_leathers` | `silent-brotherhood-sc`. |
+| Rope and Hook | `rope_hook` | `guild-of-disgraced-engineers-mim`. |
+| Superiour Black Powder | `superior_blackpowder` | `guild-of-disgraced-engineers-mim`; printed typo. |
+| Ball and Chain | `ball_chain` | `underworld-alliance-mim`. |
+| Plague Censor | `plague_censer` | `skaven-of-clan-pestilens-lus` and `skaven-of-clan-pestilens-mou`; printed typo. |
+| Jezzail (175GC) | `jezzail` | `skaven-of-clan-skryre-kaz`. |
+| Warplock Pistol | `warp_pistol` | `skaven-of-clan-pestilens-lus`; paired by `campaign.trading-post.warplock-pistol`. |
+
+A source may delegate an equipment list instead of printing its rows. KAZ's
+Clan Mors and Clan Skryre say that all rulebook equipment lists apply; their
+`skaven-hero-equipment-list` rows therefore come from the rulebook list
+transcribed under `skaven-clan-eshin`. KAZ's Dwarf Guildsmen names the Dwarf
+Thunderers equipment list but prints no handgun price; use the rulebook's
+`thunderer-equipment-list` for that price. These are explicit delegations,
+not missing rows or invented source prices.
 
 ## Locale policy
 
@@ -274,7 +336,7 @@ canonical-English-fallback) — is wired into both applications, so a filled
 simply renders its canonical English.
 
 Canonical glossary terms and the resolved edge cases live in
-`docs/knowledge/translation-glossary.md`; new translations should
+[the translation glossary](translation-glossary.md); new translations should
 follow it (Caballero Andante = Questing Knight, Caballero Novel = Knight
 Errant, chequeo = test, 1D6 = D6) so Spanish stays consistent across the KB.
 
@@ -352,21 +414,68 @@ changes only formatting. Review its diff before committing.
 
 ## Contract guards
 
-These read-only tools measure the knowledge base and its schemas. Some accept
-`--tree` to apply the same checks to a staging tree.
+These read-only tools measure the canonical knowledge base and its schemas.
 
 ```powershell
 python tools/knowledge/audit_kb_conformance.py
-python tools/knowledge/derive_kb_contract.py
 python tools/knowledge/audit_schema_strictness.py
 python tools/knowledge/maintenance/format_yaml.py --check sources/knowledge
 ```
 
 The conformance audit checks document shapes, runtime classification,
 bindings and references, including rejecting `rule_ref` entries that duplicate
-shared prose. Contract derivation detects drift from canonical data; schema
-strictness finds loose or unused declarations. See
-[Repository tools](tools.md) for tool ownership and staging-only utilities.
+shared prose. Schema strictness finds loose or unused declarations. See
+[Repository tools](tools.md) for maintained tool ownership.
+
+## Clause register
+
+[The semantic CSV](../../sources/knowledge/verification/clause-contracts.csv) stores
+clause contracts, scope, consumers and evidence. Its 4,556 keys are
+`(id, clause_id)`, using current IDs; earlier IDs and pre-compaction data remain
+in Git (pre-compaction checkpoint `cee529cd`). `pending` omits defaults
+`work=none`, `review=reviewed`, `requires=[]`; `verification` retains inspection,
+executed or absent evidence separately. A closed row is not certification.
+[The source scope review](../../sources/knowledge/verification/source-scope-review.csv)
+feeds `verification/audit_export.py`; a source-text change invalidates an old
+review. Applications read exclusively from consolidated `sources/knowledge`.
+
+Access the semantic CSV only through `python -X utf8 tools/knowledge/clause_registry.py`:
+
+```powershell
+python -X utf8 tools/knowledge/clause_registry.py query --id "ID_EXACTO" --clause-id "CLAUSULA"
+python -X utf8 tools/knowledge/clause_registry.py query --pending --consumer contexts.py --limit 5
+python -X utf8 tools/knowledge/clause_registry.py prepare "$env:TEMP/t13-changes.json" --out "$env:TEMP/t13-prepared.json"
+python -X utf8 tools/knowledge/clause_registry.py apply "$env:TEMP/t13-prepared.json"
+# Authorized writer only, after reviewing the preview:
+python -X utf8 tools/knowledge/clause_registry.py apply "$env:TEMP/t13-prepared.json" --write
+```
+
+`--id`/`--clause-id` are exact; `--source`/`--consumer` match fragments;
+`--work`, `--review`, `--pending`, `--fields` and `--limit` narrow queries.
+Keep proposals/packages outside the repository. A proposal is a JSON array:
+
+```json
+[{"id":"ID_EXACTO","clause_id":"CLAUSULA","set":{"pending":{},"verification":["executed","path::test"]},"append_notes":"Explicit decision and evidence."}]
+```
+
+Structured cells take JSON objects/arrays, other cells take strings. Notes are
+append-only by default; `replace_note_references` permits explicit existing
+`completed.md` reference substitutions while preserving all other note text.
+Do not infer semantics or bulk-close rows from status flags.
+
+Before integration, preserve the complete current bytes outside the repository.
+`prepare` validates the candidate and records the snapshot hash and full before/
+after rows. `apply` previews by default; only the authorized writer uses
+`--write`. It preserves keys, protected source fields, unrelated cells and record
+line endings, creates a full temporary backup, acquires an exclusive `.csv.lock`
+and rechecks bytes immediately before replacement. Retain the backup until
+acceptance. Do not delete another writer's lock, alter packages to bypass checks,
+or force an obsolete snapshot: reload and prepare explicit decisions again.
+No direct CSV edits or alternative rewrite scripts. Failed conservation means
+no write; after damage, suspend writes and notify the coordinator, never rebuild
+from HEAD or old exports. The tool does not repair or certify earlier damage.
+Tool tests use synthetic CSVs: `python -X utf8 tools/knowledge/test_clause_registry.py`;
+do not rerun them for rule-only changes.
 
 ## Where is the evidence?
 

@@ -137,9 +137,8 @@ effects. `configuration_context` supplies canonical profile/band projections,
 ownership and active slots to the same batch operation used by
 `CombatCatalogue.validate_configuration`. The shared module keeps its existing
 blocking/informational policy; the catalogue exposes all reports. Unspecified
-kit compilation is not proof of mandatory owned equipment. Visible editing of
-these supplied facts belongs to the remaining L18 product integration, tracked in
-[the modular implementation plan](../knowledge/2a2b/REMAINING_MODULAR_ENGINE_WORK.md).
+kit compilation is not proof of mandatory owned equipment. Visible editing of supplied facts must preserve this same configuration
+contract. Unresolved concrete product defects belong in [the backlog](../TODO.md).
 
 Combat Lab's 2B hired-sword/Dramatis participant projection uses canonical
 hireling ids and the same shared eligibility engine, without campaign hiring.
@@ -153,8 +152,9 @@ change the generic dagger/staff catalogue. Native profiles with pending
 intrinsic duel clauses are refused before compilation; name-only entries stay
 in the source catalogue but are not offered as editable stat profiles.
 
-See the [2A/2B consolidated knowledge](../knowledge/2a2b/2A2B-Knowledge.md) for
-the source-backed recipients, marker contract and still-gated behaviors.
+See the [source clarifications](../decisions/design-rulings.md#f074-source-clarifications)
+for accepted recipient interpretations; current contracts and evidence remain
+in the [semantic CSV](../../sources/knowledge/verification/clause-contracts.csv).
 
 `EquipmentLimits.exempt_profile_ids` exempts a profile only from `required_tag`;
 `max_missile_weapons` still applies. For Outlaws, the Cleric may omit the bow
@@ -270,7 +270,7 @@ A legal but unsupported effect may be refused by Combat Lab's runtime gate.
 That refusal does not redefine the tabletop selection as illegal. Conversely,
 an injected effect tag proving a combat sequence does not prove canonical access.
 
-For [2A/2B integration](../knowledge/2a2b/2A2B-Knowledge.md), T09's accepted Web flows
+For 2A/2B integration, T09's accepted Web flows
 remain accepted. T13.2 is consumer reconciliation, binding/effect compilation
 and activation work using this existing module. F035 revalidates earlier evidence
 after extraction; it is not a task to implement the module again. Before

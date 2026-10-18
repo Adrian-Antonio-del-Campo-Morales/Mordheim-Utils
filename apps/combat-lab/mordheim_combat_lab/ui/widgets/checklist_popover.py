@@ -11,7 +11,7 @@ from __future__ import annotations
 import tkinter as tk
 from tkinter import ttk
 
-from mordheim_ui.lab_theme import COLORS
+from mordheim_combat_lab.ui.theme import COLORS
 
 
 class ChecklistPopover:

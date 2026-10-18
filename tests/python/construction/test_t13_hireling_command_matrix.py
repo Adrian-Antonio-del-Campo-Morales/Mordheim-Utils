@@ -1,43 +1,11 @@
-"""T13.2 hireling/Dramatis Personae rules and Mazzalupo Commands: trace matrix.
+"""Hireling and Mazzalupo Command contracts from canonical catalogues.
 
-Partition: ``docs/knowledge/2a2b/tasks/T13-obligations.csv`` read as UTF-8 with
-BOM, ``lots`` parsed as JSON; origins with ``T13.2`` in ``lots`` and
-``family`` in {``hireling``, ``spell``}: 62 hireling rule origins (55
-hired-sword + 7 dramatis-personae) and the 5 Mazzalupo Commands stored under
-``family=spell``.  The sixth Command (``spell.commands.pay-them-no-heed``) is
-``excluded`` with empty ``lots`` and stays outside this partition.
-
-What this suite proves, and what it does not:
-
-- Partition coverage by ``origin_key`` and by canonical id, and the register's
-  assigned ``T13-Q`` question identity per origin.
-- Canonical resolution: every origin resolves to a nested node of its
-  canonical YAML and to its published node in the maintained loaders
-  (``load_hirelings`` / ``load_campaign_catalog``).  This is **referential
-  integrity**, not construction or combat evidence.
-- Native hireling rules carry explicit runtime dispositions. They stay out
-  of the canonical band index; Combat Lab admits them through a separate
-  canonical participant projection with complete printed-kit validation.  The
-  free-selection probe only shows the profile rules do not leak into a custom
-  build; a custom build is **not** a canonical hireling construction.
-- The five Commands are orders, not battle spells: their lore carries roll and
-  difficulty, their band rules are declared ``scope: NO``/``implemented: NO``
-  with a null binding and a published reason, and the compiled canonical
-  Wandering Knight receives no Command effect.  Activation, difficulty rolls,
-  recipients, movement, escape and leadership consequences are **not**
-  implemented or proved here; T13-Q158 gates the common/individual range
-  reconciliation.
-
-Expectations are taken from the canonical rule text and the register, never
-from compiler output.
+Explicit rule tables preserve the assigned cases independently of retired
+development inventories. Construction and runtime assertions remain separate.
 """
 from __future__ import annotations
 
-import csv
-import json
-from collections import Counter
 from functools import lru_cache
-from pathlib import Path
 
 import pytest
 
@@ -45,23 +13,14 @@ from mordheim_construction.compiler import compile_fighter
 from mordheim_construction.selection import available_special_rules
 from mordheim_core.models import Characteristics, FighterBuild
 from mordheim_knowledge.campaign import load_campaign_catalog, load_hirelings
-from mordheim_knowledge.loader import load_bands, load_collections, read_yaml, runtime_bindings
-
-ROOT = Path(__file__).resolve().parents[3]
-REGISTER = ROOT / "docs" / "knowledge" / "2a2b" / "tasks" / "T13-obligations.csv"
-HIRED_SWORDS = "sources/knowledge/catalog/hirelings/hired-swords/grade-2b.yaml"
-DRAMATIS = "sources/knowledge/catalog/hirelings/dramatis-personae/grade-2b.yaml"
-MAGIC = "sources/knowledge/catalog/campaign/magic.yaml"
+from mordheim_knowledge.loader import load_bands, load_collections, runtime_bindings
 
 COLLECTION = "mordheim"
-PARTITION_FAMILIES = {"hireling", "spell"}
-EXPECTED_HIRELINGS = 62
-EXPECTED_COMMANDS = 5
 WANDERING_KNIGHT = "wandering-knight"
 
 #: ``(canonical rule id, owner profile id, assigned T13-Q)`` for every hireling
-#: origin of the partition.  The owner is the catalogue profile whose ``rules``
-#: declare the node; the question id comes from the register (empty = none).
+#: case. The owner is the catalogue profile whose ``rules`` declare the node;
+#: question ids retain historical provenance only.
 HIRELING_ORIGINS = (
     ("hireling.dramatis.aldred-fellblade.rule.righteous-fury-orcs-goblins", "hireling.dramatis.aldred-fellblade", "T13-Q159"),
     ("hireling.dramatis.aldred-fellblade.rule.fellblade", "hireling.dramatis.aldred-fellblade", "T13-Q160"),
@@ -137,32 +96,8 @@ COMMANDS = (
     ("spell.commands.art-thou-ready-to-die-fighting", "wandering-knight--command-art-thou-ready-to-die-fighting", "6", 8, 'within 4"'),
 )
 
-#: The sixth Command is a deliberate partition boundary: the register keeps it
-#: ``excluded`` (missile target selection only, X3) with empty ``lots``.
+#: The sixth Command affects missile target selection and is outside the melee matrix.
 EXCLUDED_COMMAND = "spell.commands.pay-them-no-heed"
-
-#: Register ``origin_owner`` provenance names that drop the ``-miracle-workers``
-#: variant suffix kept by the canonical catalogue and the nested rule prefixes
-#: (T13 identity rule).  They must not be merged with any other profile.
-MIRACLE_WORKERS_ALIASES = frozenset({
-    "hireling.hired-sword.priest-of-morr",
-    "hireling.hired-sword.warrior-priest-of-sigmar",
-    "hireling.hired-sword.wolf-priest-of-ulric",
-})
-
-
-def _partition_rows():
-    with REGISTER.open(encoding="utf-8-sig", newline="") as handle:
-        for row in csv.DictReader(handle):
-            lots = json.loads(row["lots"]) if row["lots"] else []
-            if "T13.2" in lots and row["family"] in PARTITION_FAMILIES:
-                row["_lots"] = lots
-                yield row
-
-
-def _register_by_canonical_id():
-    return {row["canonical_id"]: row for row in _partition_rows()}
-
 
 def _walk(node):
     if isinstance(node, dict):
@@ -213,73 +148,12 @@ def _mazzalupo_package():
 
 
 # ---------------------------------------------------------------------------
-# Partition coverage and register ownership
+# Canonical command boundary
 # ---------------------------------------------------------------------------
 
 
-def test_partition_matches_the_tables_and_the_register_assignments():
-    rows = list(_partition_rows())
-    families = Counter(row["family"] for row in rows)
-    assert families == {"hireling": EXPECTED_HIRELINGS, "spell": EXPECTED_COMMANDS}
-
-    keys = [row["origin_key"] for row in rows]
-    assert len(keys) == len(set(keys)) == EXPECTED_HIRELINGS + EXPECTED_COMMANDS
-
-    canonical = {row["canonical_id"] for row in rows}
-    assert canonical == {origin for origin, _owner, _q in HIRELING_ORIGINS} | {spell for spell, *_ in COMMANDS}
-
-    for origin, owner, question in HIRELING_ORIGINS:
-        row = next(candidate for candidate in rows if candidate["canonical_id"] == origin)
-        assert row["family"] == "hireling", origin
-        # The register may keep the prose provenance name without the
-        # variant suffix; the canonical owner asserted here always keeps it.
-        assert row["origin_owner"] in {owner, owner.removesuffix("-miracle-workers")}, origin
-        assert row["question_id"] == question, origin
-        assert row["disposition"] in {"included", "mixed", "construction"}, origin
-        expected_file = DRAMATIS if owner.startswith("hireling.dramatis.") else HIRED_SWORDS
-        assert row["canonical_file"] == expected_file, origin
-
-    for spell, _band_rule, _roll, _difficulty, _clause in COMMANDS:
-        row = next(candidate for candidate in rows if candidate["canonical_id"] == spell)
-        assert row["family"] == "spell", spell
-        assert row["canonical_file"] == MAGIC, spell
-        # The register keeps the effect owner as the spell node; the band owns
-        # the rule through ``wandering-knight`` (asserted from the KB below).
-        assert row["origin_owner"] == spell, spell
-        assert row["disposition"] == "included", spell
-        assert row["question_id"] == "T13-Q158", spell
-
-
-def test_register_owner_aliases_are_only_the_documented_miracle_workers_variants():
-    rows = list(_partition_rows())
-    mismatches = {
-        (row["canonical_id"], row["origin_owner"])
-        for row in rows
-        if row["family"] == "hireling"
-        and row["origin_owner"] != row["canonical_id"].split(".rule.")[0]
-    }
-    assert {register_owner for _origin, register_owner in mismatches} == MIRACLE_WORKERS_ALIASES
-    assert len(mismatches) == 11
-
-
-def test_sixth_command_stays_excluded_and_out_of_the_partition():
-    register = _register_by_canonical_id()
-    assert EXCLUDED_COMMAND not in register
-
-    with REGISTER.open(encoding="utf-8-sig", newline="") as handle:
-        excluded = [
-            row
-            for row in csv.DictReader(handle)
-            if row["canonical_id"] == EXCLUDED_COMMAND
-        ]
-    assert len(excluded) == 1
-    row = excluded[0]
-    assert row["family"] == "spell"
-    assert row["disposition"] == "excluded"
-    assert json.loads(row["lots"]) == []
-    summary = json.loads(row["clause_summary"])
-    assert "X3" in summary["excluded"]
-
+def test_sixth_command_stays_outside_the_melee_command_matrix():
+    assert EXCLUDED_COMMAND not in {spell for spell, *_ in COMMANDS}
     lore = _lore_commands()
     assert EXCLUDED_COMMAND in {spell["id"] for spell in lore["spells"]}
 
@@ -291,8 +165,7 @@ def test_sixth_command_stays_excluded_and_out_of_the_partition():
 
 @pytest.mark.parametrize(("origin", "owner", "_question"), HIRELING_ORIGINS)
 def test_hireling_origin_resolves_to_its_canonical_rule_node(origin, owner, _question):
-    register = _register_by_canonical_id()[origin]
-    document = read_yaml(ROOT / register["canonical_file"])
+    document = next(profile for profile in _catalogue().profiles if profile.get("id") == owner)
     node = _find_node(document, origin)
     assert node is not None, origin
     assert node["name"].strip(), origin

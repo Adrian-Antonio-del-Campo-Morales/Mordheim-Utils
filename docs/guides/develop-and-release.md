@@ -120,7 +120,7 @@ results and must be fixed before interpreting performance.
 
 ## Windows packaging
 
-Install the dev extra, verify the desktop dependencies/Tkinter, then run the
+Install the dev extra, verify Combat Lab dependencies/Tkinter, then run the
 relevant script:
 
 ```powershell
@@ -144,7 +144,7 @@ and MiniRacer's native library; installing Node on the target machine is unneces
 - [ ] Shared eligibility bundle matches its sources and both consumer suites pass when its rules change.
 - [ ] Engine changes have the required parity/coverage/mutation evidence.
 - [ ] No generated reports, `outputs/`, `dist/`, screenshots or temporary campaign files are staged.
-- [ ] Windows packages are smoke-tested when a desktop release is required.
+- [ ] Windows packages are smoke-tested when a Combat Lab release is required.
 
 See [Verification](../reference/verification.md) for what each gate can and
 cannot prove.

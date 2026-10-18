@@ -11,6 +11,38 @@ granularity; the statistical layer is demoted to what it can actually see
 (interaction between rules and joint drift), and every expensive pair must
 justify itself by covering something no deterministic test covers.
 
+## Modular integration closure
+
+As of 2026-10-18, the admitted implementation queue is closed: the semantic
+CSV retains 4,556 keys and no pending clauses. Implementation checkpoint:
+`57d7a8a1`; E2E checkpoint: `32a215b6`. This is implementation disposition,
+not certification. Catalogue contracts and admission/kit corrections have
+focused evidence; integrated verification remains outstanding.
+
+For this modular closure assignment, the following scope overrides the general
+multi-engine certification layers below: no E2E execution, collection,
+investigation or editing; no parity, statistical or coverage campaigns;
+no NumPy/native work and no T14 certification. E2E is not a closure requirement.
+
+1. Run the existing modular, construction and modular semantic checks together,
+   using an explicit selection that excludes E2E completely.
+2. Include the relevant type, generated eligibility bundle, editorial contract
+   and CSV conservation checks.
+3. Group failures by cause and consumer. Fix each common admitted cause once;
+   an older failure still counts if it prevents closure. Preserve positive tests
+   and admission controls.
+4. Rerun only affected groups after corrections, then run one final integrated
+   confirmation on the delivered state. Preserve useful output rather than
+   repeating unchanged checks.
+
+Closure requires accessible configuration, correct compilation and consumption
+for every admitted consequence, no known executable/composition defect, passing
+applicable integrated checks, and preserved CSV keys and traceability. A binding,
+closed row or test count alone proves none of these. Reuse existing tests; add
+only missing discriminators for behaviour, limits, consumption, expiry or
+composition. Record unresolved concrete defects in [the backlog](../TODO.md).
+A genuinely missing source must be identified exactly; do not invent a rule.
+
 ## The layers
 
 | Layer | Certifies | Artifacts / commands | Cost | Runs when |

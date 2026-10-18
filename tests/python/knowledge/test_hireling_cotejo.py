@@ -11,14 +11,13 @@ fija las tres:
    75/30 del Dark Jester y al Foole los 70/35 de Sigmund, y la columna vecina de un PDF
    daba al Fire-Eater el +30 de la hermana—;
 2. **el paquete que se separa de la fuente tiene que verse**: las mutaciones corren contra
-   copias de usar y tirar en ``tmp_path``, así que la KB y el staging sólo se leen;
+   copias de usar y tirar en ``tmp_path``, así que la KB sólo se lee;
 3. **cada entrada resuelve su documento**: la URL de sus ``source_refs`` resuelve en el
    registro de documentos fuente —el de la KB, no una tabla del tool— y el registro se
    exige completo sobre los catálogos de las dos familias.
 
-Las dos familias que cubre la orden de la KB (``hired-swords`` y ``dramatis-personae``) y
-el staging de 2B se cotejan con la misma lectura: es la misma herramienta con otro catálogo
-(``--tree kb`` por defecto, ``--tree 2b`` para el staging). Las pruebas de integración leen
+Las dos familias publicadas (``hired-swords`` y ``dramatis-personae``)
+se cotejan con la misma lectura del catálogo canónico. Las pruebas de integración leen
 las copias del espejo (``build/cache``, no versionadas) y se saltan cuando faltan, igual que
 las herramientas que guardan; los fixtures no necesitan nada cacheado.
 """
@@ -41,9 +40,8 @@ if str(TOOLS) not in sys.path:
 cotejo = pytest.importorskip("check_hireling_sources")
 source_documents = pytest.importorskip("source_documents")
 
-#: El catálogo publicado de la KB y el staging que se promociona a él.
+#: El catálogo publicado de la KB.
 KB = cotejo.CATALOGUES["kb"]
-STAGING = cotejo.CATALOGUES["2b"]
 
 # El registro declara los documentos; el espejo dice si la copia está descargada y dónde.
 DOCUMENTS = cotejo.SOURCE_DOCUMENTS
@@ -54,9 +52,9 @@ KARAK_AZGAL = DOCUMENTS.by_id("broheim.karak-azgal")
 KB_CACHED = pytest.mark.skipif(
     cotejo.MIRROR.reader(GRADE_2A_PAGE) is None,
     reason="mordheimer.net page snapshot is not cached (offline checkout)")
-STAGING_CACHED = pytest.mark.skipif(
+SOURCE_PDFS_CACHED = pytest.mark.skipif(
     cotejo.MIRROR.reader(SPECIALISTS) is None or cotejo.MIRROR.reader(KARAK_AZGAL) is None,
-    reason="2B source PDFs are not cached (offline checkout)")
+    reason="Source PDFs are not cached (offline checkout)")
 
 GRADE_2A = (
     "Aksho'akhash the Vile Dreadwing, Lord of the Carrion Throne",
@@ -94,7 +92,7 @@ def run_cotejo(tmp_path, monkeypatch, *, catalogue=KB, names=(), campaign=None,
         monkeypatch.setattr(catalogue, "campaign", campaign)
     if root is not None:
         monkeypatch.setattr(catalogue, "root", root)
-    assert cotejo.main(["--tree", catalogue.name, *names]) == 0
+    assert cotejo.main(list(names)) == 0
     return json.loads((catalogue.report).read_text(encoding="utf-8"))
 
 
@@ -149,43 +147,16 @@ def test_the_dramatis_personae_print_on_the_four_grade_pages() -> None:
                          "karak-azgal", "relics-of-the-crusades-2"}
 
 
-def test_every_staging_profile_resolves_through_the_registry() -> None:
-    """Y ningún perfil del staging de 2B cita un PDF que el registro no declare."""
-    profiles = STAGING.profiles()
-    assert len(profiles) == 28
-    for profile in profiles:
-        assert DOCUMENTS.undeclared(profile) == [], profile["name"]
-        assert DOCUMENTS.resolve(profile), profile["name"]
 
 
 def test_a_profile_takes_the_document_from_the_registry() -> None:
     """El Albino Stormvermin sale en el PDF de Specialists, con su copia del espejo."""
-    profiles = {profile["name"]: profile for profile in STAGING.profiles()}
+    profiles = {profile["name"]: profile for profile in KB.profiles()}
     resolved = DOCUMENTS.resolve(profiles["Albino Stormvermin"])
     assert [resolution.document.id for resolution in resolved] == [SPECIALISTS.id]
     assert resolved[0].document.mirror == SPECIALISTS.mirror
 
 
-def test_the_registry_keeps_the_2b_mirror_names() -> None:
-    """Los nombres de la copia local son los del manifest que la descargó.
-
-    El espejo de 2B guarda cada PDF bajo el id de la banda que lo descargó
-    (``build/cache/2b-pdfs/<banda>.pdf``) y el registro declara ese mismo nombre;
-    probarlo aquí deja la pareja URL→copia atada mientras el árbol exista.
-    """
-    manifest = yaml.safe_load((ROOT / "sources/2B/manifest.yaml").read_text(encoding="utf-8"))
-    bands: dict[str, list[str]] = {}
-    for band in manifest["bands"]:
-        bands.setdefault(source_documents.normalize_url(band["pdf_url"]), []).append(band["id"])
-    checked = 0
-    for document in DOCUMENTS:
-        for url in document.urls:
-            band_ids = bands.get(source_documents.normalize_url(url))
-            if not band_ids:
-                continue
-            checked += 1
-            assert Path(document.mirror).name in {f"{band_id}.pdf" for band_id in band_ids}, document.id
-    assert checked >= 3
 
 
 # --------------------------------------------------------------------------- #
@@ -324,11 +295,11 @@ def test_an_editorial_rule_label_is_a_note_and_not_a_finding(tmp_path, monkeypat
     assert any("Conditional Acceptance" in note for note in william["notes"])
 
 
-@STAGING_CACHED
+@SOURCE_PDFS_CACHED
 def test_adjudicated_cases_verify_every_check(tmp_path, monkeypatch) -> None:
     """Los siete casos adjudicados de 2B cotejan hoy sin hallazgos ni chequeos de menos."""
     report = {entry["name"]: entry
-              for entry in run_cotejo(tmp_path, monkeypatch, catalogue=STAGING,
+              for entry in run_cotejo(tmp_path, monkeypatch, catalogue=KB,
                                       names=sorted(ADJUDICATED))}
     assert set(report) == set(ADJUDICATED)
     for name, entry in report.items():
@@ -374,7 +345,7 @@ def test_a_stat_row_that_drifts_from_the_page_is_a_finding(tmp_path, monkeypatch
     assert any("444431417" in finding for finding in row["findings"])
 
 
-@STAGING_CACHED
+@SOURCE_PDFS_CACHED
 def test_currency_regression_is_a_finding(tmp_path, monkeypatch) -> None:
     """La mutación: devolver la tarifa del Albino a coronas exige el hallazgo.
 
@@ -382,7 +353,7 @@ def test_currency_regression_is_a_finding(tmp_path, monkeypatch) -> None:
     alguien vuelve a convertir la divisa impresa: la tarifa impresa son 75 *warp tokens*,
     no 75 coronas.
     """
-    document = yaml.safe_load(STAGING.campaign.read_text(encoding="utf-8"))
+    document = yaml.safe_load(KB.campaign.read_text(encoding="utf-8"))
     for entry in document["hired_swords"]:
         if entry["profile_id"] == "hireling.hired-sword.albino-stormvermin":
             entry["hiring_fee"]["resources"]["gold_crowns"]["cost"] = 75
@@ -390,7 +361,7 @@ def test_currency_regression_is_a_finding(tmp_path, monkeypatch) -> None:
     mutated = tmp_path / "campaign.yaml"
     mutated.write_text(yaml.safe_dump(document, allow_unicode=True, sort_keys=False),
                        encoding="utf-8")
-    report = run_cotejo(tmp_path, monkeypatch, catalogue=STAGING, names=["Albino Stormvermin"],
+    report = run_cotejo(tmp_path, monkeypatch, catalogue=KB, names=["Albino Stormvermin"],
                         campaign=mutated)
     assert report and "fee" not in report[0]["checks"]
     assert "warp tokens" in " ".join(report[0]["findings"])

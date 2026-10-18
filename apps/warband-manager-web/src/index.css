@@ -284,7 +284,7 @@ button:disabled[data-disabled-tooltip]:hover::after, button:disabled[data-disabl
 @media (max-width: 640px) { main { padding: 1rem; } }
 @media (pointer: coarse) { button, input, select { min-height: 44px; } }
 
-/* Desktop theme parity: values mirror mordheim_ui/theme.py. */
+/* Campaign theme palette. */
 :root {
   color: #eef1f4;
   background: #11151a;
@@ -377,7 +377,7 @@ tbody tr:nth-child(even) { background: var(--panel-deep); }
   .manual-dice label { width: 100%; max-width: none; }
 }
 
-/* Desktop composition: match the information architecture of the Tk app. */
+/* Campaign workspace composition. */
 @media (min-width: 1051px) {
   .topbar { min-height: 62px; gap: 0; padding: 0; flex-wrap: wrap; }
   .brand { flex: 0 0 425px; padding: 8px 15px; }
@@ -452,7 +452,7 @@ tbody tr:nth-child(even) { background: var(--panel-deep); }
 .post-battle-continue { flex: 0 0 auto; align-self: center; }
 .post-battle-sequence > header > .post-battle-continue { grid-column: 2; grid-row: 1; justify-self: center; max-width: 100%; }
 
-/* Desktop uses dense vertical records and side-by-side inventory panes. */
+/* Wide layouts use dense vertical records and side-by-side inventory panes. */
 .warrior-grid { grid-template-columns: 1fr; }
 .equipment-panel > h3 { margin-top: 0; font: 700 1rem Georgia, serif; text-transform: uppercase; }
 .exploration-dice { display: flex; flex-wrap: wrap; gap: .45rem; margin: .65rem 0; padding: 0; list-style: none; }

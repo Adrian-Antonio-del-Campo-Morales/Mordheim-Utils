@@ -6,7 +6,7 @@
  * never copied (the contract rule).
  */
 import { describe, expect, it } from "vitest";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 import {
@@ -261,36 +261,4 @@ describe("P3.2: serialization and round-trip", () => {
     }
   });
 
-  /**
-   * P3.2 ↔ P3.3 cross-check artefact: emit one serialized file per fixture
-   * plus a manifest. `tests/python/web/contract/test_p32_roundtrip.py` validates
-   * each file with the desktop (Python) reader — the plan's Python↔web
-   * round-trip acceptance.
-   */
-  it("emits cross-check artefacts for the Python contract harness", () => {
-    const manifest: {
-      round_tripped: string[];
-      serialized: Record<string, string>;
-    } = { round_tripped: [], serialized: {} };
-    for (const name of FIXTURE_NAMES) {
-      const parsed = parseCampaignFileDetailed(fixtureText(name));
-      expect(parsed.ok).toBe(true);
-      if (!parsed.ok) continue;
-      const serialized = port.serializeCampaign(parsed.campaign);
-      expect(serialized.ok).toBe(true);
-      if (!serialized.ok) continue;
-      const outName = `_p32-serialized-${name}`;
-      const outputDir = join(REPO_ROOT, "outputs", "campaign-file-interop");
-      mkdirSync(outputDir, { recursive: true });
-      writeFileSync(join(outputDir, outName), serialized.text, "utf-8");
-      manifest.round_tripped.push(name);
-      manifest.serialized[name] = outName;
-    }
-    writeFileSync(
-      join(REPO_ROOT, "outputs", "campaign-file-interop", "_ts-roundtrip-artefact.json"),
-      JSON.stringify(manifest, null, 1) + "\n",
-      "utf-8",
-    );
-    expect(manifest.round_tripped).toHaveLength(4);
-  });
 });

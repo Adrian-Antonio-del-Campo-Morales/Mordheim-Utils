@@ -359,6 +359,6 @@ equipment/weapon tabs and their Python UI tests; verify status again rather
 than assuming those are the only concurrent edits.
 
 Do not recreate the retired desktop app, alter recruitment/campaign mechanics,
-change persistence, touch `tools/ingestion/` for this feature, publish a site,
+change persistence or source-ingestion workflows, publish a site,
 push commits or create commits unless separately requested. Keep maintained
 documentation in English and the user-facing completion report in Spanish.

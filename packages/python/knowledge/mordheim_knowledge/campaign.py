@@ -1,9 +1,7 @@
 """knowledge.campaign: runtime loaders for the published campaign catalogues.
 
-Implements the loading contract of TODO.md section 5 (Campaign catalogue →
-runtime integration; the ingestion that produced ``catalog/hirelings/**`` and
-``catalog/campaign/hired-swords-and-dramatis.yaml`` is documented in
-``docs/knowledge/hirelings.md``).
+Implements the published catalogue loading contract documented in
+``docs/reference/knowledge-base.md#hirelings-and-campaign``.
 The KB campaign data under ``catalog/campaign/**`` is published and inert;
 these loaders are the authorised runtime read path and validate, at load
 time, the integrity a consumer can rely on:
@@ -18,8 +16,7 @@ time, the integrity a consumer can rely on:
   injuries and rarity documents.
 
 The loaders never decide rules and never hold campaign state: they return
-validated read models.  ``mordheim_campaign.application.knowledge_port`` is
-the intended consumer of the loading contract.
+validated read models for the web knowledge generator and catalogue consumers.
 """
 from __future__ import annotations
 

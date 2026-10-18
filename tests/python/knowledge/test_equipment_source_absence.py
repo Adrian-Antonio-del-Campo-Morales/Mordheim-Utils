@@ -1,23 +1,9 @@
-"""Executable record of the equipment visible-completeness decision.
+"""Canonical equipment description absence and magical-artefact locale guards.
 
-The dynamic visible-completeness gate
-(``tools/web/presentation-completeness-audit.mjs``, surface
-``rules-catalogue/equipment``) reported 72 generic-fallback findings covering 30
-objects. Twenty-four of them are canonical item rows whose source never
-published a rules description: they carry ``combat_status: out_of_scope`` and
-neither ``effect`` nor ``effect_i18n`` in the promoted KB, and no staging
-document declares them. Inventing an effect or a translation would be a data
-defect, so the product renders a specific localized absence notice instead of
-the generic fallback (``RulesCatalogue`` / ``sourceDescriptionUnavailableText``),
-and this test keeps the evidence executable.
-
-KB↔staging parity is therefore *not applicable* for those remaining rows, and the
-test asserts exactly that: if a row ever gains an effect, or a 2A/2B document
-ever starts declaring one, or the row ever leaves ``out_of_scope`` for a bound
-operator, the absence is no longer real and the decision must be revisited (the
-``yari`` revisit of 2026-10-16 is the third case). The mirror contract that *is* applicable — the six exploration
-magical artefacts, which must publish both locales for their names and effects
-in the canonical campaign catalogue — is checked too.
+An item without a printed rules description must stay out_of_scope without an
+invented effect or translation. If it acquires a documented effect or executable
+binding, revisit its specific absence notice instead of preserving a fallback.
+The six exploration magical artefacts must publish names/effects in both locales.
 """
 from __future__ import annotations
 
@@ -26,10 +12,6 @@ from pathlib import Path
 import yaml
 
 KB_ROOT = Path(__file__).resolve().parents[3] / "sources" / "knowledge"
-STAGING_ROOTS = (
-    Path(__file__).resolve().parents[3] / "sources" / "2A",
-    Path(__file__).resolve().parents[3] / "sources" / "2B",
-)
 CAMPAIGN = KB_ROOT / "catalog" / "campaign" / "exploration-and-income.yaml"
 
 #: The canonical rows whose source publishes no description (2026-09-29 gate).
@@ -80,7 +62,7 @@ def _kb_items() -> dict[str, dict]:
     return items
 
 
-def test_canonical_absence_is_real_and_has_no_staging_mirror() -> None:
+def test_canonical_absence_is_real() -> None:
     items = _kb_items()
     missing = sorted(ABSENT_ITEM_IDS - set(items))
     assert not missing, f"rows not found in the canonical KB: {missing}"
@@ -93,16 +75,6 @@ def test_canonical_absence_is_real_and_has_no_staging_mirror() -> None:
             "replaced by the real description"
         )
 
-    staged: list[str] = []
-    for root in STAGING_ROOTS:
-        for path in sorted(root.rglob("*.yaml")):
-            for row in _walk(yaml.safe_load(path.read_text(encoding="utf-8"))):
-                if row.get("id") in ABSENT_ITEM_IDS and (row.get("effect") or row.get("effect_i18n")):
-                    staged.append(f"{path.relative_to(root.parent)}#{row['id']}")
-    assert not staged, (
-        "staging publishes an effect for a row the KB leaves undocumented; the mirror "
-        f"contract now applies: {staged}"
-    )
 
 
 def test_magical_artefacts_publish_both_locales() -> None:

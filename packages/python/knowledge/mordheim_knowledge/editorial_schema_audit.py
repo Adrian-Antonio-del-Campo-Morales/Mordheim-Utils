@@ -270,7 +270,7 @@ JUSTIFIED_FINDINGS: dict[tuple[str, str, str], str | dict[str, str]] = {
         "unused_property",
         "#/$defs/rarity",
     ): "provenance is optional on the rarity table; the records below it carry their own",
-    # -- the shape the promotion of `sources/2B` asked for ----------------
+    # -- supported supplemental catalogue fields ----------------
     # `grade: 2b`, `fixed_item.notes`, the starting `experience` of a hireling
     # profile and the printed `eligibility.note` were justified here while the
     # audit could only measure the contract against the *committed* knowledge

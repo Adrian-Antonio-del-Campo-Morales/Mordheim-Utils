@@ -8,7 +8,7 @@ from mordheim_combat_lab.ui.widgets.choice import ChoiceBox
 from mordheim_combat_lab.ui.widgets.choice import ChoiceVar
 from mordheim_core.models import Characteristics
 from mordheim_core.models import FighterBuild
-from mordheim_ui.i18n import tr
+from mordheim_combat_lab.ui.i18n import tr
 from mordheim_combat_lab.ui.widgets.skills import SkillChecklist
 import re as re
 import tkinter as tk

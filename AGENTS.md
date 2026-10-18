@@ -47,9 +47,9 @@ evidence and blockers to the parent, which produces the single package delivery.
 
 ## Modular engine implementation: mandatory execution rules
 
-For modular-engine implementation, read and follow section 0 of
-`docs/knowledge/2a2b/REMAINING_MODULAR_ENGINE_WORK.md` and the mandatory priority
-section of `docs/guides/modular-engine-implementation.md` before starting work.
+For modular-engine implementation, follow the mandatory priority and operational
+limits in `docs/guides/modular-engine-implementation.md`. For integrated closure,
+use `docs/reference/verification.md#modular-integration-closure`.
 
 **IMPLEMENTATION IS THE PRIMARY WORK.** Research, classification, tests and CSV
 updates support implementation; they do not replace it or justify stopping while
@@ -79,15 +79,29 @@ column names and `(id, clause_id)` keys, candidate conservation validation and a
 concurrency check. No snapshot or failed validation means no write. After damage,
 suspend CSV writes and notify the coordinator; never reconstruct current cells from
 HEAD or historical exports. Continue independent implementation where possible.
-Prompts must repeat these limits explicitly, using the contract in plan section 0.
+Prompts must repeat these limits explicitly, including the capability, ownership, minimum proof and stop condition.
 
 
-CSV access must use `python -X utf8 tools/knowledge/t13_csv.py`: `query`,
+CSV access must use `python -X utf8 tools/knowledge/clause_registry.py`: `query`,
 `prepare`, then `apply` (preview by default; `--write` only for the authorized
-writer). No direct CSV edits or alternative rewrite scripts. See plan section 0
+writer). No direct CSV edits or alternative rewrite scripts. See `docs/reference/knowledge-base.md#clause-register`
 for commands and proposal format. Existing damage is not repaired by this tool.
 
 These instructions do not authorize commits, pushes, scope expansion
 or edits to files owned by other agents. Subagents are authorized within the
 assigned package under the ownership rules above. `tests/E2E/modular-engine/cases/grants`
 retains its external owner.
+
+## Pending problems and human decisions
+
+Use `docs/TODO.md` for concrete unresolved defects: affected rule/clause and path,
+observed discrepancy, useful evidence, attempted resolution, remaining obstacle
+and resumption condition. Reuse the same entry, continue independent work and
+remove resolved entries after retaining useful evidence in canonical files.
+Ordinary clause work remains in the semantic CSV, not a second inventory.
+
+Escalate only an unanswered authority/scope conflict that would override an
+adopted ruling or expand authorized scope. Include the exact question, conflicting
+evidence and what its answer unblocks. Missing data, source recovery, technical
+modelling or absent fixtures alone do not require human decisions. Record accepted
+answers in `docs/decisions/design-rulings.md`, then remove the pending question.

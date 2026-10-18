@@ -2,14 +2,13 @@
  * Campaign hirelings, exploration and trading: the application-facing
  * kernel pieces the feature block needs beyond the P3.5 base.
  *
- * Trading rule (ported from the desktop `Controller.buy_draft_stash_item`,
- * phase-agnostic): a purchase moves gold into inventory as a stash row —
+ * Phase-independent trading rule: a purchase moves gold into inventory as a stash row —
  * `owned` and `stash` rise together, `value` records the unit price actually
- * paid. Gold is *implicit* (Python `treasury` = starting gold − recruitment
+ * paid. Gold is *implicit* (`treasury` = starting gold − recruitment
  * − equipment), so a purchase only has to keep the valuation honest.
  * A sale reverses it: stock leaves `owned`/`stash`, and the sale price is
  * recorded as a battle-less income entry in the timeline's manual log —
- * the desktop books campaign income the same non-destructive way.
+ * campaign income remains recorded without altering earlier states.
  *
  * Availability and band restrictions are the application layer's job (the
  * eligibility rules live in `application/features/hirelings/`); this module
@@ -113,7 +112,7 @@ export function buyTradingItem(
 /**
  * Sells from the stash. Stock conservation holds (`owned = equipped + stash`
  * stays true per row; rows vanishing at zero owned are removed, mirroring
- * the desktop). The sale is booked in `manual_log` as an open payload —
+ * other inventory operations). The sale is booked in `manual_log` as an open payload —
  * income resolution itself is an exploration/post-battle matter, never
  * invented here.
  */

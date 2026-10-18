@@ -353,7 +353,7 @@ def build_audit_rows(knowledge: Path | None = None, specs: Path | None = None, *
                            scope="UNCLASSIFIED", reason="Source prose requires duel-scope classification.",
                            implemented=False, canonical_id="@" + target, effect_text=prose)
     result = tuple(sorted(rows, key=lambda row: (row.kind, row.source_file, row.id)))
-    review = project_root() / "docs/knowledge/2a2b/tasks/T13-audit-scope-review.csv"
+    review = project_root() / "sources/knowledge/verification/source-scope-review.csv"
     if root.resolve() == knowledge_root().resolve() and review.exists():
         result = _apply_scope_review(result, review)
     return result
@@ -545,9 +545,7 @@ def generate_audit(*, knowledge: Path | None = None, specs: Path | None = None,
                    family: str | None = None, work_status: str | None = None) -> tuple[Path, Path]:
     rows = (build_audit_rows(knowledge, specs, inventory_only=True) if inventory_only
             else build_audit_rows(knowledge, specs))
-    plan = (project_root() / "docs/knowledge/2a2b/tasks/T13-obligations.csv"
-            if knowledge is None or Path(knowledge).resolve() == knowledge_root().resolve() else None)
-    operational = combat_audit_rows(rows, plan)
+    operational = combat_audit_rows(rows)
     combat = filter_audit_rows(tuple(row for row in operational
         if (not t13 or row.t13_origin) and (family is None or family in
             (json.loads(row.development_family) if row.development_family else []))

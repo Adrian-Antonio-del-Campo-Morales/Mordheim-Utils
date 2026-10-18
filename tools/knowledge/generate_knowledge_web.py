@@ -20,8 +20,6 @@ PACKAGE_ROOTS = (
     REPO_ROOT / "packages" / "python" / "roster-construction",
     REPO_ROOT / "packages" / "python" / "core",
     REPO_ROOT / "packages" / "python" / "knowledge",
-    REPO_ROOT / "packages" / "python" / "adapters" / "desktop-ui",
-    REPO_ROOT / "packages" / "python" / "campaign",
 )
 for package_root in reversed(PACKAGE_ROOTS):
     sys.path.insert(0, str(package_root))
@@ -529,7 +527,7 @@ _EXPERIENCE_FORBIDDEN_RULE_REFS = frozenset({
 
 
 def _profile_can_gain_experience(package, profile: dict) -> bool:
-    """Materialize the same decision as desktop KnowledgePort.can_gain_experience."""
+    """Project the canonical experience eligibility decision."""
     profile_id = str(profile.get("id") or "")
     if str(profile.get("type") or "") == "animal":
         return False
@@ -607,7 +605,7 @@ def _build_profiles(ruleset: str) -> list[dict]:
                     )
                     if str(token).strip()
                 })
-                # The desktop resolves a profile's initial purchases through
+                # Initial purchases resolve a profile through
                 # its named equipment lists.  Materialise that relationship
                 # in the web artefact so UI readers can show both permitted
                 # equipment and reverse rule links without reopening YAML.

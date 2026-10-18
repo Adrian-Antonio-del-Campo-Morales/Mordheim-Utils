@@ -1,10 +1,10 @@
 """ui: Skill selection widgets."""
 from __future__ import annotations
 
-from mordheim_ui.lab_theme import COLORS
+from mordheim_combat_lab.ui.theme import COLORS
 from mordheim_combat_lab.ui.widgets.feedback import tooltip_manager
 import tkinter as tk
-from mordheim_ui.i18n import tr
+from mordheim_combat_lab.ui.i18n import tr
 
 
 class SkillChecklist(tk.Canvas):

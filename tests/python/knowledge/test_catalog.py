@@ -39,8 +39,7 @@ def test_runtime_contains_mordheim_and_trollheim_bands():
     collections={row["id"]:row for row in load_collections(ROOT)}
     assert set(collections)=={"mordheim","trollheim"}
     assert collections["trollheim"]["rulesets"]==["mordheim"]
-    # 48 bands before T07, which promoted the 19 packages of `sources/2A` and
-    # the 61 of `sources/2B` the staging trees held.
+    # Canonical collection membership, including the consolidated supplements.
     assert len(load_bands("mordheim",ROOT))==128
     trollheim=load_bands("trollheim",ROOT)
     assert len(trollheim)==33
