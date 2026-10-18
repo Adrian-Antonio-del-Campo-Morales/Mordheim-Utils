@@ -1,5 +1,5 @@
 /**
- * T10 — leader succession.
+ * Leader succession.
  *
  * The published case is `pirates-of-the-cathayan-sea-sar / band--succession`:
  * "If the Disgraced Warlord is killed, one of the Shanghai'ers will take over".
@@ -65,7 +65,7 @@ function document(warriors: readonly Warrior[], specialRules: readonly Record<st
   return { campaign: campaign(warriors, specialRules), view: {} };
 }
 
-describe.skipIf(!ARTEFACT_PATH)("T10 leader succession (generated artefact)", () => {
+describe.skipIf(!ARTEFACT_PATH)("Leader succession (generated artefact)", () => {
   const artefact = readArtefactDocument(ARTEFACT_PATH as string);
   const reader = ArtefactKnowledgeReader.from(artefact);
 

@@ -1,4 +1,4 @@
-"""Small, guarded query/prepare/apply interface for the maintained T13 register."""
+"""Small, guarded query/prepare/apply interface for the maintained clause register."""
 import argparse
 import csv
 import hashlib
@@ -162,7 +162,7 @@ def apply(path, package, write=False):
         if not package["changes"]:
             print("No changes")
             return
-        backup = Path(tempfile.mkdtemp(prefix="t13-csv-")) / path.name
+        backup = Path(tempfile.mkdtemp(prefix="clause-register-")) / path.name
         backup.write_bytes(raw)
         print(f"Backup: {backup}", flush=True)
         temp_path = None

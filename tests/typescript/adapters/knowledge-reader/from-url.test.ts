@@ -1,5 +1,5 @@
 /**
- * P5.2 acceptance — `ArtefactKnowledgeReader.fromUrl`: fetches the artefact,
+ * Acceptance — `ArtefactKnowledgeReader.fromUrl`: fetches the artefact,
  * validates it, and fails with typed actionable `KnowledgeReaderError`s
  * (network / HTTP / JSON / schema), never a raw Response or SyntaxError.
  */

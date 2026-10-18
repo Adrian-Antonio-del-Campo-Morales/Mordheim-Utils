@@ -26,13 +26,25 @@ ROOT=Path(__file__).resolve().parents[3]/"sources/knowledge"
 
 
 def profile_build(collection, band_id, profile_id):
+    # The printed choices a legal purchase must make: the Possessed Mutant's
+    # mutation, the Tainted One's blessing, the Trapper's single starting
+    # Special Skill, and the permanent Disability result a Cripple is created
+    # with (1D6 rolled once for the whole group).
     special_rule_ids = (("band--mutations-tentacle",)
                         if band_id in {"cult-of-the-possessed", "trollheim-cult-of-the-possessed"}
                         and profile_id == "mutants"
                         else ("band--blessings-of-nurgle-bloated-foulness",)
-                        if band_id == "carnival-of-chaos" and profile_id == "tainted-ones" else ())
+                        if band_id == "carnival-of-chaos" and profile_id == "tainted-ones"
+                        else ("band--ogre-hunting-skills-infiltration",)
+                        if band_id == "ogre-hunting-party-web" and profile_id == "trappers"
+                        else ("band--mutations-tentacle",)
+                        if band_id == "skaven-of-clan-moulder-web" and profile_id == "rat-ogres" else ())
+    condition_ids = (("condition.disability-1",)
+                     if band_id == "chaos-streets-mordheim-inhabitants" and profile_id == "cripples"
+                     else ())
     return FighterBuild("mordheim",band_id=band_id,profile_id=profile_id,
-                        collection=collection,special_rule_ids=special_rule_ids)
+                        collection=collection,special_rule_ids=special_rule_ids,
+                        condition_ids=condition_ids)
 
 
 def test_runtime_contains_mordheim_and_trollheim_bands():
@@ -292,7 +304,7 @@ def test_all_fixed_profiles_compile_with_stable_ids():
             if all(isinstance(c.get(key),int) for key in ("WS","S","T","W","I","A")):
                 fighter=compile_fighter(profile_build("mordheim",band.band["id"],profile["id"]),ROOT)
                 assert fighter.fighter_id.endswith(profile["id"]);compiled+=1
-    assert compiled==832  # 313 before T07
+    assert compiled==832  # 313 before the supplement promotion
 
 
 def test_profile_combat_traits_reference_mechanics_by_id():
@@ -336,10 +348,10 @@ def test_special_rule_runtime_metadata_is_canonical_and_binary():
             classified+=1
             assert runtime["implemented"] in {"YES","NO"}
             assert runtime["scope"] in {"YES","NO","LATER"}
-    # 1572 before T07; the promotion added the runtime blocks of every staged rule.
-    # 2901 + 7 profile-scoped "May not wear armour" restrictions added by the T13
+    # 1572 before the supplement promotion; it added the runtime blocks of every staged rule.
+    # 2901 + 7 profile-scoped "May not wear armour" restrictions added by the construction
     # reconciliation (six Sartosa/Nippon pirate bands plus clan-angrund-kep).
-    assert classified == 2908  # 1551 + 21 hidden profile restrictions + 1329 promoted
+    assert classified == 3109  # 2908 + the staged rules the completeness delivery classified
 
 
 def test_every_selectable_rule_has_an_explicit_selection_kind():
@@ -386,8 +398,16 @@ def test_every_runtime_binding_resolves_to_a_known_shared_contract():
                 else:
                     compiler_ids.add(binding["id"])
                     prefix,rule_id=binding["id"].split(".",1)
+                    # The compiler resolves a rule effect by the rule id after
+                    # the namespace: automatic profile grants in
+                    # PROFILE_RULE_EFFECTS and selectable rules in
+                    # SPECIAL_RULE_EFFECTS. The historic `special-rule.`
+                    # namespace also names automatic profile rules (the
+                    # Banshee's Cold Steel), so both tables admit it.
                     assert (binding["id"] in COMPILER_CONTRACTS
-                            or rule_id in (PROFILE_RULE_EFFECTS if prefix=="profile-rule" else SPECIAL_RULE_EFFECTS))
+                            or (prefix in {"special-rule", "profile-rule"}
+                                and (rule_id in SPECIAL_RULE_EFFECTS
+                                     or rule_id in PROFILE_RULE_EFFECTS)))
     assert compiler_ids
 
 
@@ -395,7 +415,9 @@ def test_first_500_previously_unclassified_rules_have_runtime_metadata():
     first=next(band for band in load_bands("mordheim",ROOT) if band.band["id"]=="amazons-lustria")
     last=next(band for band in load_bands("mordheim",ROOT) if band.band["id"]=="night-goblins-web")
     assert next(rule for rule in first.special_rules if rule["id"]=="serpent-priestess--leader")["runtime"]["scope"]=="YES"
-    assert next(rule for rule in last.special_rules if rule["id"]=="band--fear-elves")["runtime"]["scope"]=="LATER"
+    # Fear Elves is now an executable psychology mechanic, so its scope leaves
+    # LATER; the band's other promoted rules keep their declared scope.
+    assert next(rule for rule in last.special_rules if rule["id"]=="band--fear-elves")["runtime"]["scope"]=="YES"
     assert next(rule for rule in last.special_rules if rule["id"]=="band--distasteful-company")["runtime"]["scope"]=="NO"
 
 
@@ -579,7 +601,10 @@ def test_new_shared_bindings_replace_profile_trait_duplicates():
 def test_every_catalogue_item_has_a_resolved_simulation_mapping():
     item_ids={row["id"] for row in load_items("mordheim",ROOT)}
     mappings=load_simulation_mappings("mordheim",ROOT)["item_mappings"]
-    assert {row["item_id"] for row in mappings}==item_ids
+    # Every catalogue row is mapped. A hireling's printed kit item is a
+    # canonical object of its profile entry rather than a row of
+    # `catalog/items`, so it may carry a mapping without appearing here.
+    assert item_ids<={row["item_id"] for row in mappings}
     assert {row["status"] for row in mappings}<={"implemented","out_of_scope"}
     implemented=[row for row in mappings if row["status"]=="implemented"]
     assert all(row.get("engine_option") for row in implemented)
@@ -658,12 +683,24 @@ def test_every_catalogued_mechanic_can_be_compiled_in_its_legal_slot():
         compile_fighter(FighterBuild("mordheim",c,**kwargs),ROOT)
     for row in catalog["defences"]:
         kwargs={"off_hand_id":row["id"]} if row["id"] in {"defence.shield","defence.buckler","defence.kite-shield"} else {"defence_ids":(row["id"],)}
-        compile_fighter(FighterBuild("mordheim",c,**kwargs),ROOT)
+        # Some printed defences name their recipient (the Magic Acorn may only
+        # be carried by a Hero); declaring the legal recipient is a supplied
+        # fact of this fixture, not a relaxation of the contract.
+        compile_fighter(FighterBuild("mordheim",c,trait_overrides={"fighter_kind":"hero"},**kwargs),ROOT)
     for row in catalog["materials"]:compile_fighter(FighterBuild("mordheim",c,main_material_id=row["id"]),ROOT)
     for row in catalog["preparations"]:compile_fighter(FighterBuild("mordheim",c,preparation_ids=(row["id"],)),ROOT)
     for row in catalog["poisons"]:compile_fighter(FighterBuild("mordheim",c,main_poison_id=row["id"]),ROOT)
     for row in catalog["skills"]:
-        if row["id"] not in exclusions:compile_fighter(FighterBuild("mordheim",c,skill_ids=(row["id"],)),ROOT)
+        # Disability is a supplied current-state mechanic, not a standalone
+        # slot: its legal recipient is a Cripple carrying one printed result,
+        # and tests/python/construction/test_disability_supplied.py owns that
+        # contract.
+        if row["id"] == "mechanic.disability":
+            continue
+        # Snorri's printed pre-battle drinking table is supplied by the caller
+        # (result 1 means he does not take part); 2 is a legal result.
+        supplied={"trait_overrides":{"snorri_drunk_result":2}} if row["id"]=="mechanic.snorri-drunk" else {}
+        if row["id"] not in exclusions:compile_fighter(FighterBuild("mordheim",c,skill_ids=(row["id"],),**supplied),ROOT)
 
 
 def test_all_profiles_are_compilable_or_explicitly_outside_duel_scope():
@@ -702,7 +739,9 @@ def test_fixed_equipment_and_natural_attacks_are_applied_by_profile():
 def test_profile_access_and_runtime_scope_are_enforced():
     import pytest
     from mordheim_core.models import Characteristics
-    with pytest.raises(ValueError,match="not available"):
+    # A weapon the hound may not carry is refused either by the band's own
+    # prohibition (the message that fires first today) or by the access route.
+    with pytest.raises(ValueError,match="forbidden|not available"):
         compile_fighter(FighterBuild("mordheim",band_id="witch-hunters",profile_id="war-hounds",main_weapon_id="weapon.sword"),ROOT)
     troll=compile_fighter(FighterBuild("mordheim",band_id="orc-mob",profile_id="troll",main_weapon_id="weapon.vomit-attack"),ROOT)
     assert troll.main_weapon.automatic_hit and troll.main_weapon.fixed_strength==5 and troll.main_weapon.ignore_armour
@@ -716,7 +755,7 @@ def test_out_of_scope_general_skills_have_explicit_non_implementation_metadata()
     excluded={row["id"] for row in load_runtime_scope("mordheim",ROOT).get("mechanic_exclusions") or ()}
     skills={row["id"]:row for row in load_skills("mordheim",ROOT)}
     added={skill_id for skill_id in excluded if skill_id in skills and (skills[skill_id].get("runtime") or {}).get("scope")=="NO"}
-    # 23 until the L06-L14 batch made `skill.fearsome` executable and removed
+    # 23 until the local-skill batch made `skill.fearsome` executable and removed
     # its obsolete psychology exclusion.
     assert len(added)>=22
     for skill_id in added:

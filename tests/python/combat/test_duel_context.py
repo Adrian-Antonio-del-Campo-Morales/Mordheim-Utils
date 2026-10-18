@@ -1,4 +1,4 @@
-"""T13.1 contracts: canonical facts, local identity and real charge consumers."""
+"""Contracts: canonical facts, local identity and real charge consumers."""
 from dataclasses import replace
 import pickle
 import pytest

@@ -217,7 +217,7 @@ def _resolve_prepared_defences(
                 defender.global_effects, "rule.blood-dragon-sword-master")
                 and not _estalian_parry(defender)):
             # A natural six cannot be parried. With one available
-            # attempt it also closes the normal parry window (M03).
+            # attempt it also closes the normal parry window.
             # Exceptional two-parry capacity may still defend a lower hit.
             if defender_state.parries_remaining > 1:
                 continue

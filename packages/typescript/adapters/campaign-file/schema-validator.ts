@@ -1,5 +1,5 @@
 /**
- * P3.2: minimal JSON Schema (draft 2020-12) validator covering exactly the
+ * Minimal JSON Schema (draft 2020-12) validator covering exactly the
  * keyword subset the v5 contract schema uses — no third-party dependency in
  * the browser bundle. Errors carry the schema's JSON path, mirroring the
  * Python reader's reporting (e.g. `campaign.warriors[3].stats`).

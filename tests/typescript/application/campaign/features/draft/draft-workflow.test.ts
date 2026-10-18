@@ -20,7 +20,7 @@ import type {
 import { createDefaultUseCases } from "@domain/campaign/kernel/default-usecases";
 import { createDraftWorkflow } from "@app/campaign/features/draft/draft-workflow";
 
-/** Artefact-shaped rows for the fake reader (mirrors P4.2 output). */
+/** Artefact-shaped rows for the fake reader (mirrors output). */
 function makeKnowledge(): KnowledgeReader {
   const rows: Record<string, Record<string, unknown>> = {
     "band_id:sisters-of-sigmar": {
@@ -120,7 +120,7 @@ function makeKnowledge(): KnowledgeReader {
   };
 }
 
-/** Minimal in-memory file port mirroring the P3.2 adapter semantics. */
+/** Minimal in-memory file port mirroring the adapter semantics. */
 function makeFilePort(): CampaignFilePort {
   return {
     parseCampaignFile(text: string): ParseResult {
@@ -148,7 +148,7 @@ function makeWorkflow() {
   };
 }
 
-describe("P6.2 warband selection", () => {
+describe("Warband selection", () => {
   it("resolves KB band candidates into options, filtering unknown ids", () => {
     const { workflow } = makeWorkflow();
     const options = workflow.resolveWarbandOptions([
@@ -164,7 +164,7 @@ describe("P6.2 warband selection", () => {
   });
 });
 
-describe("P6.2 draft creation and composition", () => {
+describe("Draft creation and composition", () => {
   it("starts a legal draft with the mandatory hero and minimum models", () => {
     const { workflow } = makeWorkflow();
     const result = workflow.startDraft("sisters-of-sigmar", "My Campaign");
@@ -259,7 +259,7 @@ describe("P6.2 draft creation and composition", () => {
   });
 });
 
-describe("P6.2 commit and round-trip", () => {
+describe("Commit and round-trip", () => {
   it("commits a legal draft to State #0; rejects an illegal one", () => {
     const { workflow } = makeWorkflow();
     const started = workflow.startDraft("sisters-of-sigmar");

@@ -1,6 +1,6 @@
 /**
- * P3.5: hirelings and advances — implementing the frozen `hireHireling` and
- * `applyAdvance` use cases (bases for P6.7 and P6.6).
+ * Hirelings and advances — implementing the frozen `hireHireling` and
+ * `applyAdvance` use cases (bases for and ).
  *
  * Hirelings never consume roster capacity (Python
  * `draft_warband_member_count` rule) but add their rating; upkeep resources
@@ -49,7 +49,7 @@ export interface HireHirelingInput {
   /** Item ids selected from the profile's mandatory starting-equipment choice. */
   readonly chosen_item_ids?: readonly IdString[];
   /**
-   * Hiring fee in gold crowns from the catalogue offer (P6.7 listings). The
+   * Hiring fee in gold crowns from the catalogue offer (listings). The
    * profile row itself carries no fee — the offer does — so the application
    * passes the resolved fee here. Optional for callers without listings.
    */
@@ -95,7 +95,7 @@ export function hireHireling(
   if (campaign.warriors.some((w) => w.profile_id === input.profile_id)) {
     return rejected("conflict", `A ${displayName} is already hired.`);
   }
-  // Static eligibility of the campaign catalogue (T09 contract): a rejected
+  // Static eligibility of the campaign catalogue (construction contract): a rejected
   // band never reaches the roster. Roster-dependent clauses stay with the
   // application's dynamic rule evaluation, which the decision reports.
   const decision = hiringDecisionFor(knowledge, campaign.identity.band_id, input.profile_id);
@@ -265,7 +265,7 @@ export function hireHireling(
  * whose XP crossed the next threshold. `input.choice` is `stat:<KEY>` for a
  * characteristic point or `skill:<name>` for a skill. Records the advance on
  * the warrior (`stat_advances` / `skills`) — full advance-table rolls with
- * P6.6.
+ *.
  */
 export function applyAdvance(
   document: CampaignDocument,

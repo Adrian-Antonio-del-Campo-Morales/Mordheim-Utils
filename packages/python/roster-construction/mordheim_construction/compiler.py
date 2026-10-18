@@ -1235,6 +1235,13 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
         main_effect = replace(main_effect, charge_strength_bonus=main_effect.charge_strength_bonus + 1)
     if "mechanic.ogre-unarmed" in global_effects.tags and main_weapon_id in {"weapon.fist", "weapon.natural-attacks"}:
         main_effect = replace(effects["weapon.fist"].effect, strength_bonus=0)
+    if "compiler.zomblintua-blunt-attacks" in compiler_contracts:
+        # Blunt Attacks turns his natural attacks into blunt ones, so only the
+        # mace's Concussion carries over: the weapon's hand count and Strength
+        # stay the fighter's own and no second attack is added.
+        main_effect = replace(main_effect, concussion=True)
+        if main_without_poison is not None:
+            main_without_poison = replace(main_without_poison, concussion=True)
     if ("compiler.aldred-fellblade" in compiler_contracts
             and main_weapon_id == "weapon.double-handed-weapon"):
         # This printed sword can parry; no parry is granted to an empty hand.

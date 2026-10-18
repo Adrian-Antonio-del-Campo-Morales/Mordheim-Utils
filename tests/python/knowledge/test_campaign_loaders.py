@@ -19,6 +19,7 @@ from mordheim_knowledge.campaign import load_campaign_catalog
 from mordheim_knowledge.campaign import load_hirelings
 from mordheim_knowledge.campaign import load_post_battle_sequence
 from mordheim_knowledge.campaign import load_warband_groups
+from mordheim_knowledge.loader import load_mechanics
 from mordheim_knowledge.loader import load_skills
 
 
@@ -78,9 +79,7 @@ def _spoof(monkeypatch: pytest.MonkeyPatch, name: str, mutate):
     monkeypatch.setattr(campaign_module, "read_yaml", fake_read)
 
 
-# --------------------------------------------------------------------------- #
 # Post-battle sequence
-# --------------------------------------------------------------------------- #
 
 
 def test_post_battle_sequence_is_normative():
@@ -116,9 +115,7 @@ def test_post_battle_sequence_rejects_contiguous_order_breaks(monkeypatch):
         load_post_battle_sequence()
 
 
-# --------------------------------------------------------------------------- #
 # Campaign catalogue
-# --------------------------------------------------------------------------- #
 
 
 def test_campaign_catalog_loads_every_published_document():
@@ -202,9 +199,7 @@ def test_campaign_catalog_rejects_unknown_item_reference(monkeypatch):
         load_campaign_catalog()
 
 
-# --------------------------------------------------------------------------- #
 # Hireling catalogue and warband groups (shared resolution pools)
-# --------------------------------------------------------------------------- #
 
 
 def test_hireling_catalogue_profiles_resolve_across_catalog():
@@ -249,13 +244,17 @@ def test_hireling_catalogue_rejects_undeclared_rule_reference(monkeypatch):
 
 
 def test_hireling_catalogue_starting_skills_resolve_in_the_skill_catalogue():
-    """T13-F037: every declared starting skill resolves in the skill catalogue.
+    """F037: every declared starting skill resolves in the skill catalogue.
 
     The hireling loader validates rule and item references but not the
     ``starting_skill_ids`` yet; this regression locks the data contract so a
     dangling reference cannot reappear silently.
     """
     skills = {str(row["id"]) for row in load_skills("mordheim")}
+    # A printed skill may be published as an execution mechanic (`kind:
+    # profile`, e.g. the Art of Silent Death) instead of a general/warband
+    # catalogue row; both are canonical and both compile.
+    skills |= {str(row["id"]) for row in load_mechanics("mordheim")["skills"]}
     unresolved = sorted(
         (profile["id"], skill_id)
         for profile in load_hirelings().profiles
@@ -276,7 +275,7 @@ def test_hireling_catalogue_starting_skills_resolve_in_the_skill_catalogue():
 
 def test_warband_groups_registry_loads_and_resolves():
     groups = load_warband_groups()
-    assert len(groups) == 24
+    assert len(groups) == 25
     ids = [group["id"] for group in groups]
     assert len(set(ids)) == len(ids)
     assert all(group_id.startswith("warband-group.") for group_id in ids)

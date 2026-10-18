@@ -15,7 +15,7 @@ import { unavailableText, type ResolvedKbText } from "../../../../adapters/knowl
  *   `sellStashItem`, with offers resolved from the artefact's trading post.
  *
  * Listings are read through a structural `KnowledgeListings` interface so
- * the frozen `KnowledgeReader` port stays untouched; the P4.3 adapter
+ * The frozen `KnowledgeReader` port stays untouched; the knowledge-reader adapter
  * implements it additively and tests fake it.
  *
  * Purity: no React, no DOM, no filesystem.
@@ -32,7 +32,7 @@ import type { WarbandHireContext } from "../../../../domain/campaign/hire-eligib
 import { dynamicRulesForProfile, evaluateRule } from "../../../../domain/campaign/hire-eligibility";
 import type { ArtefactRow } from "../../../../adapters/knowledge-reader/artefact-types";
 
-/** What a listing-capable knowledge source provides (P4.3 adapter, or a fake). */
+/** What a listing-capable knowledge source provides (knowledge-reader adapter or a fake). */
 export interface KnowledgeListings {
   resolveKbText?(ref: import("../../../../adapters/knowledge-reader/presentation").TextReference, field: import("../../../../adapters/knowledge-reader/presentation").TextField, locale: "es" | "en"): import("../../../../adapters/knowledge-reader/presentation").TextResolution;
   recordText?(row: Readonly<Record<string, unknown>> | undefined, field: import("../../../../adapters/knowledge-reader/presentation").TextField, locale: "es" | "en"): ResolvedKbText;

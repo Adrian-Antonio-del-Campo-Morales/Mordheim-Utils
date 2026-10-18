@@ -212,7 +212,9 @@ rules:
     - id: excluded.norse-explorers-lustria.all-alone
       scope: 'NO'
       binding: null
-      reason: All Alone tests require multiple fighters and are outside Combat Lab 1v1 duels. The printed individual Fear clause is implemented separately.
+      reason: >-
+        All Alone tests require multiple fighters and are outside Combat Lab 1v1 duels. The printed
+        individual Fear clause is implemented separately.
   rule_ref: shared-rule.barbarian-courage
 - id: band--norse-special-skills-battle-tongue
   kind: warband_skill
@@ -352,7 +354,8 @@ rules:
           - weapons
           - armour
   name: Equipment Restrictions
-  effect: "May never use weapons or armour and suffers no penalty for fighting unarmed."
+  effect: >-
+    May never use weapons or armour and suffers no penalty for fighting unarmed.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -361,7 +364,8 @@ rules:
   name_i18n:
     es: Restricciones de Equipo
   effect_i18n:
-    es: "Nunca puede usar armas ni armaduras y no sufre penalización por luchar sin armas."
+    es: >-
+      Nunca puede usar armas ni armaduras y no sufre penalización por luchar sin armas.
   applies_to:
     profile_ids:
     - wulfen

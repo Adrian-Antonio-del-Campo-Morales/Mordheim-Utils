@@ -1,7 +1,7 @@
 /**
  * Public campaign use cases: frozen public use-case surface.
  * Operations return explicit results — rejected operations are values, not
- * thrown exceptions — so the application layer (P5.1) presents them without
+ * Thrown exceptions — so the application layer presents them without
  * try/catch discipline, and parallel feature blocks (P6.x) share one calling
  * convention.
  *
@@ -82,7 +82,7 @@ export interface AdvanceChoiceInput {
 }
 
 /**
- * Pure campaign use cases. Implementations live in P3.5 (kernel behaviour)
+ * Pure campaign use cases. Implementations live in the kernel
  * and P6.x feature blocks; every function is synchronous and returns a new
  * document, never mutating its input.
  */
@@ -105,25 +105,25 @@ export interface CampaignUseCases {
   /** Post-battle: navigate steps / resolve the active one. */
   resolvePostBattleStep(document: CampaignDocument, battleNumber: number, input: OpenPayloadInput): UseCaseResult;
 
-  /** Post-battle: apply a warrior advance choice (P6.6). */
+  /** Post-battle: apply a warrior advance choice. */
   applyAdvance(document: CampaignDocument, input: AdvanceChoiceInput): UseCaseResult;
 
-  /** Inventory: assign/withdraw equipment between stash and warriors (P6.3). */
+  /** Inventory: assign/withdraw equipment between stash and warriors. */
   assignEquipment(
     document: CampaignDocument,
     input: { warrior_id: IdString; item_id: IdString; quantity: number; direction: "equip" | "stash" },
   ): UseCaseResult;
 
-  /** Hirelings: resolve hiring eligibility and hire (P6.7). */
+  /** Hirelings: resolve hiring eligibility and hire. */
   hireHireling(document: CampaignDocument, input: { profile_id: IdString }, knowledge: KnowledgeReader): UseCaseResult;
 
-  /** Trading: buy an item into the stash (P6.7). */
+  /** Trading: buy an item into the stash. */
   buyTradingItem(document: CampaignDocument, input: BuyTradingItemInput): UseCaseResult;
 
-  /** Trading: sell from the stash, booking a manual-log entry (P6.7). */
+  /** Trading: sell from the stash, booking a manual-log entry. */
   sellStashItem(document: CampaignDocument, input: SellStashItemInput): UseCaseResult;
 
-  /** Export preparation: validate the whole state before serialization (P6.8). */
+  /** Export preparation: validate the whole state before serialization. */
   validateForExport(document: CampaignDocument): UseCaseResult;
 }
 
@@ -131,7 +131,7 @@ export interface OpenPayloadInput {
   readonly [key: string]: unknown;
 }
 
-/** P6.7 trading inputs (re-exported from the kernel implementation). */
+/** Trading inputs (re-exported from the kernel implementation). */
 export type { BuyTradingItemInput, SellStashItemInput } from "./trading";
 import type { BuyTradingItemInput, SellStashItemInput } from "./trading";
 

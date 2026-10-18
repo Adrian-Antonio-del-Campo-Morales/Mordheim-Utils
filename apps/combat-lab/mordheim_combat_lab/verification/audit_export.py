@@ -434,7 +434,7 @@ def write_csv(rows: tuple[AuditRow, ...], path: Path) -> None:
 
 
 def combat_audit_rows(rows: tuple[AuditRow, ...], plan: Path | None = None) -> tuple[AuditRow, ...]:
-    """Include executable obligations and separately labelled historical T13 candidates.
+    """Include executable obligations and separately labelled historical plan candidates.
 
     Planning data never changes canonical scope or constitutes execution evidence.
     Missing historical targets remain visible until their reconciliation is recorded.
@@ -464,9 +464,9 @@ def combat_audit_rows(rows: tuple[AuditRow, ...], plan: Path | None = None) -> t
                     identifier = f"planning/{origin['origin_key']}"
                     selected[identifier] = AuditRow(
                         id=identifier, kind="planning_effect", name=origin["canonical_id"],
-                        source_file=origin["canonical_file"], section="T13 historical origin",
+                        source_file=origin["canonical_file"], section="historical planning origin",
                         source_url="", scope="UNCLASSIFIED",
-                        scope_reason="Historical T13 target is absent from the current rule audit; reconcile its clauses and current scope.",
+                        scope_reason="Historical planning target is absent from the current rule audit; reconcile its clauses and current scope.",
                         implemented="UNKNOWN", binding="unbound", structural_status="unclassified",
                         semantic_status="unclassified", semantic_reason="Planning only; no execution evidence inferred.",
                         scenarios="", interactions="", ruling="", review_status="needs_classification",

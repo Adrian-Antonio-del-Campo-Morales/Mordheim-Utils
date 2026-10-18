@@ -1,5 +1,5 @@
 /**
- * T12 fase D — the deferred campaign catalogue.
+ * the deferred campaign catalogue.
  *
  * The published artefact keeps the initial document small (open the app, choose
  * a warband) and publishes the equipment catalogue plus the campaign sections as
@@ -103,7 +103,7 @@ function artefactServer(options: { fragment?: unknown; catalogueStatus?: number 
   };
 }
 
-describe("T12 fase D — deferred campaign catalogue", () => {
+describe("deferred campaign catalogue", () => {
   it("keeps the initial document usable and refuses to guess the deferred families", () => {
     const reader = ArtefactKnowledgeReader.from(initialDocument());
 

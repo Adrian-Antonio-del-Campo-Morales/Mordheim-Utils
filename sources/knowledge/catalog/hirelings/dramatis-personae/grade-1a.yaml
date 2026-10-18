@@ -93,12 +93,16 @@ profiles:
             value: true
   - id: hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.no-pain
     name: No Pain
-    effect: Stunned Injury results become Knocked Down through No Pain; the source expressly combines
-      her Jump Up skill with No Pain so those Knocked Down Injury results do not leave her prone. This
+    effect: >-
+      Stunned Injury results become Knocked Down through No Pain; the source expressly combines her
+      Jump Up skill with No Pain so those Knocked Down Injury results do not leave her prone. This
       exception does not prevent a separate Trip effect.
     effect_i18n:
       es: >-
-        Ignora Derribado/Aturdido según la fuente.
+        Los resultados de Herida de Aturdido se convierten en Derribado mediante Insensible al
+        Dolor; la fuente combina expresamente su habilidad de Levantarse Rápido con Insensible al
+        Dolor, de modo que esos resultados de Derribado no la dejan en el suelo. Esta excepción no
+        impide un efecto separado de Zancadilla.
     name_i18n:
       es: Sin Dolor
     runtime:
@@ -122,7 +126,7 @@ profiles:
           kind: mechanic
           id: mechanic.marianna-no-pain-jump-up
     source_refs:
-    - manual: Town Cryer 22
+    - manual: town-cryer-22
       printed_page: 12
       section: Revenge is Eternal / Marianna
       url: https://broheim.net/downloads/fo/62RevengeIsEternal.pdf
@@ -160,7 +164,9 @@ profiles:
       - id: marianna-serutat
         scope: 'NO'
         binding: null
-        reason: The Serutat retainer/upkeep rule governs hiring and payment in the campaign; the duel fields the assassin alone.
+        reason: >-
+          The Serutat retainer/upkeep rule governs hiring and payment in the campaign; the duel
+          fields the assassin alone.
   - id: hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.fighting-undead
     name: Fighting Undead
     effect: Uses the source anti-Undead rule.
@@ -179,7 +185,10 @@ profiles:
         binding:
           kind: mechanic
           id: mechanic.fighting-undead
-        reason: 'Target-imposed grant: the opposing Vampire, not this profile, is the recipient of the Hatred. Printed clause: the source grants Fighting Undead to all Vampires against Marianna.'
+        reason: >-
+          Target-imposed grant: the opposing Vampire, not this profile, is the recipient of the
+          Hatred. Printed clause: the source grants Fighting Undead to all Vampires against
+          Marianna.
   - id: hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.noctu
     name: Noctu
     effect: Applies the source shooting penalty.
@@ -196,7 +205,9 @@ profiles:
       - id: marianna-noctu
         scope: 'NO'
         binding: null
-        reason: Noctu is a shooting penalty; shooting resolution is outside the single close combat the duel resolves.
+        reason: >-
+          Noctu is a shooting penalty; shooting resolution is outside the single close combat the
+          duel resolves.
   - id: hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.garlic-coated-weapons
     name: Garlic-Coated Weapons
     effect: >-
@@ -258,6 +269,7 @@ profiles:
         es: Bastón de Mago Enorme
       counts_as:
         item_id: enormous_wizards_staff
+        context: rules
         quantity:
           kind: fixed
           value: 1
@@ -282,7 +294,9 @@ profiles:
       - id: nicodemus-cursed-wyrdstone-payment
         scope: 'NO'
         binding: null
-        reason: The printed clause is the wyrdstone payment owed when joining and after battles, an upkeep and post-battle cost with no consequence in a resolved duel.
+        reason: >-
+          The printed clause is the wyrdstone payment owed when joining and after battles, an upkeep
+          and post-battle cost with no consequence in a resolved duel.
   - id: hireling.dramatis.nicodemus-the-cursed-pilgrim.rule.wizard-s-staff
     name: Wizard's Staff
     effect: >-
@@ -322,7 +336,9 @@ profiles:
       - id: nicodemus-lesser-magic-spell-selection
         scope: 'NO'
         binding: null
-        reason: Knowing the six Lesser Magic spells grants a spell list; selecting and casting those spells is the excluded magic subsystem and leaves no consequence for a resolved duel.
+        reason: >-
+          Knowing the six Lesser Magic spells grants a spell list; selecting and casting those
+          spells is the excluded magic subsystem and leaves no consequence for a resolved duel.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -358,7 +374,9 @@ profiles:
       - id: ulli-wanderers-one-battle-retention
         scope: 'NO'
         binding: null
-        reason: The one-battle wanderer condition decides whether the pair stays with the warband after the game, a hiring and retention consequence settled outside the duel.
+        reason: >-
+          The one-battle wanderer condition decides whether the pair stays with the warband after
+          the game, a hiring and retention consequence settled outside the duel.
   - id: hireling.dramatis.ulli-and-marquand.rule.a-fistful-of-crowns
     name: A Fistful of Crowns
     effect: Uses source payment/behaviour rule.
@@ -375,7 +393,9 @@ profiles:
       - id: ulli-a-fistful-of-crowns-payment
         scope: 'NO'
         binding: null
-        reason: The printed clause is the pair's payment and behaviour rule, an upkeep consequence settled between games rather than in a resolved duel.
+        reason: >-
+          The printed clause is the pair's payment and behaviour rule, an upkeep consequence settled
+          between games rather than in a resolved duel.
   - id: hireling.dramatis.ulli-and-marquand.rule.where-s-the-money
     name: Where's the Money
     effect: Uses source post-battle rule.
@@ -392,7 +412,9 @@ profiles:
       - id: ulli-wheres-the-money-post-battle
         scope: 'NO'
         binding: null
-        reason: The printed clause is a post-battle rule over the warband's income and the pair's share of it, which a resolved duel does not settle.
+        reason: >-
+          The printed clause is a post-battle rule over the warband's income and the pair's share of
+          it, which a resolved duel does not settle.
   source_notes:
   - >-
     The pair keeps its joint identity and its `out_of_scope` adjudication. Each printed warrior line is

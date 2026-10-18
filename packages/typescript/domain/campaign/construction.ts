@@ -1,7 +1,7 @@
 /**
- * T09: construction and selection contracts for the Warband Manager Web.
+ * Construction and selection contracts for the Warband Manager Web.
  *
- * These are the shared entry points T10 (campaign) and T11 (interface) consume;
+ * These are the shared entry points the campaign and the interface consume;
  * they are also the decision surface the automated checks exercise. Every rule
  * is enforced in the domain — the web interface may only *present* the
  * verdicts, never decide them.
@@ -17,7 +17,7 @@
  *   `sources/knowledge/registry/{runtime-scope,bindings}.yaml` is gated by
  *   `tests/python/construction/test_construction_contract_tables.py`.
  *
- * Issue codes are stable: T10 and T11 branch on them, never on the message.
+ * Issue codes are stable: consumers branch on them, never on the message.
  *
  * Purity: no React, no DOM, no browser globals, no filesystem.
  */
@@ -74,7 +74,7 @@ export type ConstructionOwner = "T10" | "T11" | "T13" | "KB";
 
 /**
  * One construction verdict. `subject_ids` always carries the stable KB ids
- * involved so tests and T11 branch on ids, and `rule_id`/`binding_id` are
+ * involved so tests and the interface branch on ids, and `rule_id`/`binding_id` are
  * present exactly when the verdict comes from a declared KB clause.
  */
 export interface ConstructionIssue {
@@ -378,6 +378,7 @@ export function profileFactsOf(
       .map((entry) => ({
         rule_id: String(entry["rule_id"] ?? ""),
         kinds: strings(entry["kinds"]),
+        when_items: strings(entry["when_items"]),
         excludes: strings(entry["excludes"]),
       }))
       .filter((entry) => entry.rule_id !== "" && entry.kinds.length > 0),
@@ -719,7 +720,7 @@ export function pendingBindingsFor(profile: ProfileFacts): readonly PendingBindi
   );
 }
 
-/** Contract accepted by T09, with the mechanism family it closes. */
+/** Accepted construction contract, with the mechanism family it closes. */
 export interface OpenClauseTable {
   readonly rule_id: string;
   readonly band_id: string;
@@ -738,13 +739,13 @@ export interface TransferTable {
 }
 
 /**
- * Clauses owned by T09 whose KB record declares no executable structure: the
+ * Clauses whose KB record declares no executable structure: the
  * construction contract reports them instead of inventing a decision.
  */
 export const OPEN_CLAUSES: readonly OpenClauseTable[] =
   CLAUSES.open_clauses as readonly OpenClauseTable[];
 
-/** T09 obligations whose subsystem belongs to T10/T13; declared, never re-routed. */
+/** Obligations whose subsystem belongs to a later layer; declared, never re-routed. */
 export const TRANSFERS: readonly TransferTable[] = CLAUSES.transfers as readonly TransferTable[];
 
 /**
@@ -1442,7 +1443,7 @@ export function hiringDecisionFor(
 /**
  * Every construction verdict of a document, in one pass: roster composition,
  * equipment, skills, characteristic bounds, pending bindings and open clauses.
- * T10/T11 consume the list; nothing here mutates the document.
+ * Both consumers use the list; nothing here mutates the document.
  */
 export function constructionIssuesOf(
   reader: KnowledgeReader,

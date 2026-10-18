@@ -1,4 +1,4 @@
-"""P01/P02 focal discriminators: the printed Druchii-only kit variants.
+"""Focal discriminators: the printed Druchii-only kit variants.
 
 The Druchii local source prints its own Sea Dragon Cloak (a +1 close-combat
 save improvement, a 6+ save alone, combining with light armour and a shield
@@ -24,7 +24,7 @@ def druchii(**options):
     return compile_fighter(build(band_id="druchii-mic", profile_id="noble", **{**defaults, **options}))
 
 
-# --- P01: the printed Druchii Sea Dragon Cloak ------------------------------
+# --- The printed Druchii Sea Dragon Cloak ----------------------------------
 def test_druchii_sea_dragon_cloak_alone_is_a_6_plus_save():
     cloak = druchii(armour_id="armour.no-armour",
                     defence_ids=("defence.sea-dragon-cloak-druchii",))
@@ -55,7 +55,7 @@ def test_a_warrior_carries_one_sea_dragon_cloak_not_a_stack_of_variants():
         "defence.sea-dragon-cloak-druchii", "defence.sea-dragon-cloak-druchii"))
 
 
-# --- P02: the printed Druchii Draich ----------------------------------------
+# --- The printed Druchii Draich --------------------------------------------
 def test_druchii_draich_is_user_s_plus_2_two_handed_and_swift():
     draich = druchii(main_weapon_id="weapon.draich-druchii")
     assert draich.main_weapon.strength_bonus == 2

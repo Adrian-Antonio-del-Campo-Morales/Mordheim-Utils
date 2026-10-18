@@ -181,7 +181,7 @@ describe("desktop test_battle_creation.py → web recordBattle parity", () => {
 
   it("recorded battle survives save/load is covered by the file port matrix", () => {
     // Desktop's save/load round-trip for battles maps to the campaign-file
-    // adapter matrix (P3.2, 17 tests) + `out_of_action_tracking.test.ts`
+    // Adapter matrix (, 17 tests) + `out_of_action_tracking.test.ts`
     // round-trip; the open-payload battle fields travel verbatim.
     const document = settled();
     const recorded = recordBattle(document, recordInput({ notes: "Near the ruined bell tower." }), knowledge);

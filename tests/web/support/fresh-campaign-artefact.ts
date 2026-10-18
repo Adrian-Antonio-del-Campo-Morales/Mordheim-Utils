@@ -1,15 +1,15 @@
 /**
- * T11/T12 test support: the produced campaign artefact.
+ * Test support: the produced campaign artefact.
  *
- * The versioned artefact under `outputs/web-public/knowledge` is pre-T09 and
- * publishes neither the 2A/2B bands nor the T10 campaign tables (creation
+ * The versioned artefact under `outputs/web-public/knowledge` predates the
+ * campaign contract and publishes neither the supplement bands nor the campaign tables (creation
  * decisions, lifecycle/succession/advance-access clauses, mutation grants,
- * structured market restrictions). The Web product flows of T11 therefore read
+ * structured market restrictions). The Web product flows therefore read
  * the **freshly generated** artefact in `build/generated/knowledge-web`, which is
  * produced (never edited) by `tools/knowledge/generate_knowledge_web.py` and
  * is not committed.
  *
- * T12 regenerated the published artefact and split it: `knowledge-web.json` is
+ * The generator splits the published artefact: `knowledge-web.json` is
  * now the initial document and the campaign catalogue (equipment + campaign
  * sections) travels as a fragment. `readArtefactDocument` merges whatever
  * fragments the directory publishes, so this helper works with both layouts.
@@ -32,7 +32,7 @@ export function freshArtefactPath(): string | null {
 }
 
 export const MISSING_ARTEFACT_NOTE =
-  "The freshly generated campaign artefact (build/generated/knowledge-web) is absent: T10 campaign flows are covered by T10's suites and re-run by T12 after regenerating.";
+  "The freshly generated campaign artefact (build/generated/knowledge-web) is absent: campaign flows are covered by their suites and re-run after regenerating.";
 
 /**
  * Merged rows of the fresh artefact exactly as the app loads them (initial rows

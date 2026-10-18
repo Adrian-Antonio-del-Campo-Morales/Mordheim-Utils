@@ -1,7 +1,7 @@
 import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 import { locatorStep, presentationEntries, type PresentationEntry } from "@adapters/knowledge-reader/presentation";
 /**
- * P6.4 component tests: the battle panel records a battle against a real
+ * Component tests: the battle panel records a battle against a real
  * committed campaign document (built through the draft workflow) and walks
  * the pending post-battle; rejections surface in role=alert.
  */
@@ -67,7 +67,7 @@ function renderBattle(document: CampaignDocument, knowledge?: Parameters<typeof 
   return render(<CampaignAppProvider service={idleService}><BattlePanel document={document} knowledge={presentationReader(knowledge)} /></CampaignAppProvider>);
 }
 
-describe("P6.4 BattlePanel", () => {
+describe("BattlePanel", () => {
   it("renders the battle form with availability checkboxes", async () => {
     await act(async () => { renderBattle(makeCommittedDocument()); });
     expect(screen.getByLabelText(/scenario/i)).toBeTruthy();

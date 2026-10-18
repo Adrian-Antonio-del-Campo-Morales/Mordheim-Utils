@@ -65,6 +65,27 @@ JUSTIFIED_FINDINGS: dict[tuple[str, str, str], str | dict[str, str]] = {
         "unused_enum_value",
         "#/$defs/mechanic.stacking",
     ): "stacking values of the effect-set compiler; no mechanic stacks by best today",
+    # Three documents reference that same parameters block instead of declaring
+    # their own: the mutation chart and the binding parameters both `$ref`
+    # `catalog-mechanics-execution .../mechanic/properties/parameters`. The audit
+    # resolves the reference, so the EffectSet vocabulary is reported again at
+    # each referencing path; the declaration being justified is the one above,
+    # and these entries keep the reference site from widening it.
+    (
+        "campaign-mutations.yaml.schema.json",
+        "unused_property",
+        "$.random_mutation_chart[].effect_parameters",
+    ): "$ref to catalog-mechanics-execution mechanic.parameters, the EffectSet vocabulary justified there",
+    (
+        "campaign-mutations.yaml.schema.json",
+        "unused_property",
+        "$.random_mutation_chart[].extra_attack_parameters[]",
+    ): "$ref to catalog-mechanics-execution mechanic.parameters, the EffectSet vocabulary justified there",
+    (
+        "defs.schema.json",
+        "unused_property",
+        "#/$defs/runtime_binding.parameters.effect_parameters",
+    ): "$ref to catalog-mechanics-execution mechanic.parameters, the EffectSet vocabulary justified there",
     # `profiles.yaml` combat traits are executable: the schema mirrors TRAIT_TYPES,
     # so a trait no profile carries is still a trait the compiler implements.
     (
@@ -72,6 +93,14 @@ JUSTIFIED_FINDINGS: dict[tuple[str, str, str], str | dict[str, str]] = {
         "unused_property",
         "#/$defs/profile.combat_traits",
     ): "mirror of the TRAIT_TYPES registry, guarded by its own test",
+    (
+        "profiles.yaml.schema.json",
+        "unused_enum_value",
+        "#/$defs/profile.combat_traits.species",
+    ): {
+        "str:serpent": "compile_fighter accepts this species (compiler.py:931) and emits its cold-blooded tag",
+        "str:snake": "compile_fighter accepts this species (compiler.py:931) and emits its cold-blooded tag",
+    },
     (
         "profiles.yaml.schema.json",
         "unused_enum_value",
@@ -274,8 +303,8 @@ JUSTIFIED_FINDINGS: dict[tuple[str, str, str], str | dict[str, str]] = {
     # `grade: 2b`, `fixed_item.notes`, the starting `experience` of a hireling
     # profile and the printed `eligibility.note` were justified here while the
     # audit could only measure the contract against the *committed* knowledge
-    # base: the staging trees carried them, the KB did not. T07 promoted those
-    # trees, so every one of the four is exercised by a committed document now
+    # base: the staging trees carried them, the KB did not. The promotion moved
+    # those trees into the KB, so every one of the four is exercised by a committed document now
     # and its justification is gone — keeping one would hide the next real gap,
     # which is exactly what `test_no_strictness_justification_has_gone_stale`
     # refused.

@@ -50,7 +50,7 @@ function fixtureJson(name: (typeof FIXTURE_NAMES)[number]): Record<string, unkno
   return JSON.parse(fixtureText(name)) as Record<string, unknown>;
 }
 
-describe("P3.2: fixtures parse and validate", () => {
+describe("Fixtures parse and validate", () => {
   for (const name of FIXTURE_NAMES) {
     it(`parses ${name}`, () => {
       const result = parseCampaignFileDetailed(fixtureText(name));
@@ -76,7 +76,7 @@ describe("P3.2: fixtures parse and validate", () => {
   });
 });
 
-describe("P3.2: rejection ladder", () => {
+describe("Rejection ladder", () => {
   const port = new CampaignFileV5Adapter();
 
   it("rejects invalid JSON", () => {
@@ -157,7 +157,7 @@ describe("P3.2: rejection ladder", () => {
   });
 });
 
-describe("P3.2: serialization and round-trip", () => {
+describe("Serialization and round-trip", () => {
   const port = new CampaignFileV5Adapter();
 
   it("round-trips every fixture with only saved_at differing", () => {

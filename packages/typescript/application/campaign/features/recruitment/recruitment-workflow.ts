@@ -69,7 +69,7 @@ export function recruitBandProfile(document:CampaignDocument,reader:KnowledgeRea
   if(taken+quantity>maximum||quantity>groupMaximum)return{ok:false,message:"Roster or group limit reached for this recruit."};
   if(memberCount(document.campaign.warriors)+quantity>effectiveMaximumModels(document.campaign))return{ok:false,message:`Cannot exceed ${effectiveMaximumModels(document.campaign)} warband members.`};
   if(kind==="hero"&&heroCount(document.campaign.warriors)+1>document.campaign.configuration.hero_limit)return{ok:false,message:`Cannot exceed ${document.campaign.configuration.hero_limit} heroes.`};
-  // T10: a printed lifecycle clause can require a member the roster lost before
+  // A printed lifecycle clause can require a member the roster lost before
   // anything else is recruited; the profiles the clause names are exactly the
   // ones it lets through, so recruiting the replacement discharges it.
   const gate=recruitmentGateIssueFor(document,reader,input.profile_id);

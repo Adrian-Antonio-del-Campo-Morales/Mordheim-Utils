@@ -96,11 +96,11 @@ Rules of engagement:
 Extend this table band by band; when a new band translation fixes a term,
 add it here in the same commit so later bands inherit it.
 
-### Promoted supplements (T07): one Spanish name per English text
+### Promoted supplements: one Spanish name per English text
 
-The promotion of the staged 2A/2B supplements put each new band next to the
+The promotion of the staged supplement books put each new band next to the
 historical ones, and the same English name arrived in two Spanish forms in 162
-places. `tests/python/knowledge/test_translation_consistency.py` allows exactly
+places. `tests/python/knowledge/test_knowledge_pipeline_guards.py` allows exactly
 one Spanish text per English text, so the reconciliation kept a single one:
 
 - where the KB already carried the name, **the KB's own translation wins** and

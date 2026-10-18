@@ -107,7 +107,7 @@ async function serviceWithCampaign(campaign: Campaign, knowledge: KnowledgeReade
   return service;
 }
 
-describe("P5.1 campaign application service", () => {
+describe("Campaign application service", () => {
   it("imports a valid file, exposes the document and starts clean", async () => {
     const { service } = makeService();
     const result = await service.importCampaign({ text: "OK" });
@@ -281,7 +281,7 @@ describe("P5.1 campaign application service", () => {
   });
 
   it("translates domain rejections into typed values without throwing", async () => {
-    // P3.5 ported assignEquipment for real, so a KB miss now exercises the
+    // Ported assignEquipment for real, so a KB miss now exercises the
     // same rejection-as-value convention the not-ported stub used to.
     const { service } = makeService();
     await service.importCampaign({ text: "OK" });

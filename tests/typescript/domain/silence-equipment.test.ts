@@ -1,5 +1,5 @@
 /**
- * T13-F019 — The Silence's prohibition tokens must reach the bound-equipment stage.
+ * F019 — The Silence's prohibition tokens must reach the bound-equipment stage.
  *
  * The canonical rule `silent-brotherhood-sc/band--the-silence` publishes
  * `profile.equipment-restrictions` with `forbids: [blackpowder, animal]`.
@@ -8,7 +8,7 @@
  * live KB by the Python suite) and the accepted F035 dispositions; they never
  * come from `buildRestriction` output. The H5 source check (2026-10-04)
  * classifies `crossbow_pistol` as `crossbow`, not `blackpowder`; provenance in
- * `docs/knowledge/2a2b/tasks/T13-silence-equipment.md` section 12.
+ * The blackpowder prohibition recorded in the clause register.
  */
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
@@ -76,7 +76,7 @@ function neutral(forbids: readonly string[]): ProfileFacts {
   };
 }
 
-describe("T13-F019 blackpowder at the bound-equipment stage", () => {
+describe("F019 blackpowder at the bound-equipment stage", () => {
   it("refuses a blackpowder mechanic through its canonical item aliases", () => {
     const message = buildRestriction(context({ build: { main_weapon_id: "weapon.pistol" } }), "boundEquipment");
     expect(message).toBe(`"blackpowder" is forbidden for ${WHO}.`);
@@ -108,7 +108,7 @@ describe("T13-F019 blackpowder at the bound-equipment stage", () => {
   it("keeps the printed crossbow pistol legal", () => {
     // H5 source check: the rulebook prints it under Missile Weapons and the
     // brotherhood list sells it at 35 gc, so it is a crossbow, not blackpowder.
-    // Provenance: docs/knowledge/2a2b/tasks/T13-silence-equipment.md section 12.
+    // Provenance: the blackpowder prohibition recorded in the clause register.
     expect(items["crossbow_pistol"]!.tags).toEqual(["crossbow"]);
     expect(buildRestriction(context({ build: { extra_hand_id: "crossbow_pistol" } }), "boundEquipment")).toBeNull();
     expect(buildRestriction(context({ build: { armour_id: "crossbow_pistol" } }), "boundEquipment")).toBeNull();
@@ -127,7 +127,7 @@ describe("T13-F019 blackpowder at the bound-equipment stage", () => {
   });
 });
 
-describe("T13-F019 preservation of the stage's earlier contract", () => {
+describe("F019 preservation of the stage's earlier contract", () => {
   it("keeps the five legacy tokens, their diagnostics and their order", () => {
     expect(buildRestriction(context({ forbidden: ["armour"], build: { armour_id: "armour.light-armour" } }), "boundEquipment"))
       .toBe(`armour is forbidden for ${WHO}`);

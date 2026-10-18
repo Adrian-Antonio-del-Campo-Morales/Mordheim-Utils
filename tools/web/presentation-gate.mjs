@@ -14,7 +14,7 @@
  * Exit code: non-zero when any phase fails or infrastructure breaks.
  *
  * Phases, in report order:
- * 1. Detector self-tests (`node:test` over the four detector suites).
+ * 1. Detector self-tests (`node:test` over the shared classifier suite).
  * 2. Static GUI text audit (`presentation-audit.mjs --strict --deep --check`).
  * 3. Dynamic visible-completeness audit (`presentation-completeness-audit.mjs`).
  */
@@ -39,9 +39,6 @@ export function definePhases(root = REPO_ROOT, cwd = APP_DIR) {
       command: process.execPath,
       args: [
         "--test",
-        resolve(root, "tests", "web", "tools", "presentation-audit.test.mjs"),
-        resolve(root, "tests", "web", "tools", "presentation-types.test.mjs"),
-        resolve(root, "tests", "web", "tools", "presentation-flow-audit.test.mjs"),
         resolve(root, "tests", "web", "tools", "presentation-completeness-detector.test.mjs"),
       ],
       cwd,
@@ -68,10 +65,8 @@ export function definePhases(root = REPO_ROOT, cwd = APP_DIR) {
   ];
 }
 
-// ---------------------------------------------------------------------------
 // Output parsers: each phase prints one summary line. A phase that exits
 // non-zero without one is treated as an infrastructure fault, not as findings.
-// ---------------------------------------------------------------------------
 
 /** Read `ℹ <label> <n>` (node:test; older versions print `# <label> <n>`). */
 function tapCount(output, label) {

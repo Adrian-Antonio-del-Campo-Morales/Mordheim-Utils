@@ -1,5 +1,5 @@
 /**
- * T10: advancement-time skill-list access.
+ * Advancement-time skill-list access.
  *
  * Some printed band rules widen the skill tables a profile may choose from when
  * it rolls a specific advance. The published case is

@@ -1,5 +1,5 @@
 /**
- * T10: the campaign side of the Rout test.
+ * The campaign side of the Rout test.
  *
  * The actual game's Rout test is resolved at the table, not by Combat Lab.
  * What the campaign owns is the

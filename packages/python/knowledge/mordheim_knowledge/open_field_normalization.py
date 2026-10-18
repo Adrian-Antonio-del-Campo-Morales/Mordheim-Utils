@@ -44,13 +44,12 @@ import yaml
 CHECKOUT = Path(__file__).resolve().parents[4]
 KB_ROOT = Path("sources") / "knowledge"
 
-# --------------------------------------------------------------------------- #
 # The registered source vocabulary
-# --------------------------------------------------------------------------- #
 
 #: Registered ids and their display name, in registry order. The first four were
 #: already used by the KB without being registered; the rest come from the
-#: staging sources, whose printed manual names are not ids.
+#: staging sources, whose printed manual names are not ids, and from the printed
+#: books and magazine issues the promoted supplements cite.
 SOURCE_IDS: tuple[tuple[str, str], ...] = (
     ("mordheimer.net", "mordheimer.net"),
     ("chaos-in-the-streets", "Chaos in the Streets"),
@@ -64,6 +63,27 @@ SOURCE_IDS: tuple[tuple[str, str], ...] = (
     ("mordheim-facebook-group", "Mordheim Facebook Group"),
     ("broheim.net", "broheim.net"),
     ("liber-malefic", "Liber Malefic (Miracle Workers, Werekin)"),
+    ("amazons", "Amazons"),
+    ("border-town-burning", "Border Town Burning"),
+    ("chaos-fury", "Chaos Fury"),
+    ("empire-in-flames", "Empire in Flames"),
+    ("fanatic-magazine-6-hired-sword-compendium",
+     "Fanatic Magazine 6 / Hired Sword Compendium"),
+    ("fanatic-online-89", "Fanatic Online89"),
+    ("fanatic-online-94", "Fanatic Online 94"),
+    ("mazzalupo", "Mazzalupo"),
+    ("mutiny-in-marienburg", "Mutiny in Marienburg"),
+    ("mutiny-in-marienburg-militiant-mootlanders",
+     "Mutiny in Marienburg / Militiant Mootlanders"),
+    ("nemesis-crown-supplement", "Nemesis Crown Supplement"),
+    ("night-goblin-special-skills", "Night Goblin special skills"),
+    ("sylvania-sigmund-spindle", "Sylvania / Sigmund Spindle"),
+    ("town-cryer-19", "Town Cryer 19"),
+    ("town-cryer-21", "Town Cryer 21"),
+    ("town-cryer-21-khemri", "Town Cryer21 / Khemri"),
+    ("town-cryer-22", "Town Cryer 22"),
+    ("town-cryer-28", "Town Cryer 28"),
+    ("tuomas-pirinen-brutal-deluxe", "Tuomas Pirinen / Brutal Deluxe"),
 )
 
 #: ``manual`` values that are not ids yet, mapped to the id that replaces them.
@@ -74,6 +94,29 @@ MANUAL_VALUES: dict[str, str] = {
     "Broheim": "broheim.net",
     "Liber Malefic (Miracle Workers, Werekin)": "liber-malefic",
     "Mordheim Rulebook": "mordheim-rulebook",
+    # Printed titles the promoted supplements cite. They are registered under
+    # their slug so a source_ref names the book rather than repeating its title.
+    "Amazons": "amazons",
+    "Border Town Burning": "border-town-burning",
+    "Chaos Fury": "chaos-fury",
+    "Empire in Flames": "empire-in-flames",
+    "Fanatic Magazine 6 / Hired Sword Compendium":
+        "fanatic-magazine-6-hired-sword-compendium",
+    "Fanatic Online89": "fanatic-online-89",
+    "Fanatic Online 94": "fanatic-online-94",
+    "Lustria": "lustria",
+    "Mazzalupo": "mazzalupo",
+    "Mutiny in Marienburg": "mutiny-in-marienburg",
+    "Mutiny in Marienburg / Militiant Mootlanders":
+        "mutiny-in-marienburg-militiant-mootlanders",
+    "Nemesis Crown Supplement": "nemesis-crown-supplement",
+    "Night Goblin special skills": "night-goblin-special-skills",
+    "Sylvania / Sigmund Spindle": "sylvania-sigmund-spindle",
+    "Town Cryer 19": "town-cryer-19",
+    "Town Cryer21 / Khemri": "town-cryer-21-khemri",
+    "Town Cryer 22": "town-cryer-22",
+    "Town Cryer 28": "town-cryer-28",
+    "Tuomas Pirinen / Brutal Deluxe": "tuomas-pirinen-brutal-deluxe",
 }
 
 #: The editorial status a band package declares. The KB carries exactly one.
@@ -129,9 +172,7 @@ class Report:
         return "\n".join(lines)
 
 
-# --------------------------------------------------------------------------- #
 # Lexical helpers
-# --------------------------------------------------------------------------- #
 
 
 def _lines(text: str) -> list[str]:
@@ -242,9 +283,7 @@ def drop_key(text: str, key: str, *, root: bool = False) -> tuple[str, int]:
     return "".join(out), dropped
 
 
-# --------------------------------------------------------------------------- #
 # Passes
-# --------------------------------------------------------------------------- #
 
 
 
@@ -530,9 +569,7 @@ def sync_registry() -> Edit | None:
     return Edit(path, [f"registered {identifier!r}" for identifier in added], wanted, text)
 
 
-# --------------------------------------------------------------------------- #
 # Entry point
-# --------------------------------------------------------------------------- #
 
 PASSES: dict[str, Callable[[Path], list[Edit]]] = {
     "endings": normalize_line_endings,
@@ -573,9 +610,7 @@ def edits(passes: Iterable[str] | None = None, roots: Iterable[Path] | None = No
     return Report(list(merged.values()))
 
 
-# --------------------------------------------------------------------------- #
 # Lexical primitives other passes share
-# --------------------------------------------------------------------------- #
 
 #: The promotion pass edits the same kind of YAML and reuses this layer rather
 #: than growing a second, subtly different one.

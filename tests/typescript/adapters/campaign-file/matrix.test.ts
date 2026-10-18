@@ -40,7 +40,7 @@ function fixtureText(name: (typeof FIXTURE_NAMES)[number]): string {
   return readFileSync(join(FIXTURES, name), "utf-8");
 }
 
-/** Artefact-shaped rows mirroring the P4.2 generator output. */
+/** Artefact-shaped rows mirroring the generator output. */
 function makeKnowledge(): KnowledgeReader {
   const rows: Record<string, Record<string, unknown>> = {
     "band_id:sisters-of-sigmar": {
@@ -142,7 +142,7 @@ function workflowDocuments(): Record<string, Record<string, unknown>> {
   return documents;
 }
 
-describe("P7.1: fixture loop pinned (parse → serialize ×2)", () => {
+describe("Fixture loop pinned (parse → serialize ×2)", () => {
   const port = new CampaignFileV5Adapter();
 
   for (const name of FIXTURE_NAMES) {

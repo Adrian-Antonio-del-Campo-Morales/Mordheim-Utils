@@ -202,8 +202,9 @@ rules:
     - id: knights-errant--impetuous.producer
       scope: 'NO'
       binding: null
-      reason: Movement, compelled target selection and range are excluded. Supply condition.impetuous-charge
-        for its individual charge psychology consequence.
+      reason: >-
+        Movement, compelled target selection and range are excluded. Supply
+        condition.impetuous-charge for its individual charge psychology consequence.
   name: Impetuous
   effect: >-
     During each Movement Phase, after declaring charges, a Knight Errant that is not in combat and
@@ -699,7 +700,10 @@ rules:
           forbids:
           - defence.holy-relic
   name: Equipment Restrictions
-  effect: "May use weapons and armour from the Pilgrims and Bowmen Equipment Lists. May not take the Holy Relic entry, which is Pilgrim only. May not ride a horse unless the Questing Knight and every Knight Errant in the warband are riding warhorses."
+  effect: >-
+    May use weapons and armour from the Pilgrims and Bowmen Equipment Lists. May not take the Holy
+    Relic entry, which is Pilgrim only. May not ride a horse unless the Questing Knight and every
+    Knight Errant in the warband are riding warhorses.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -708,7 +712,10 @@ rules:
   name_i18n:
     es: Restricciones de Equipo
   effect_i18n:
-    es: "es"
+    es: >-
+      Pueden usar armas y armaduras de las listas de equipo de Peregrinos y Arqueros. No pueden tomar la
+      entrada de Reliquia Sagrada, que es exclusiva de los Peregrinos. No pueden montar a caballo salvo que
+      el Caballero de la Búsqueda y todos los Caballeros Errante de la banda monten caballos de guerra.
   applies_to:
     profile_ids:
     - squires

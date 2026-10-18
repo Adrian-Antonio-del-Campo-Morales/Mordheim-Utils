@@ -277,7 +277,7 @@ resolve hiring `profile_id` references. Editorial schemas in
 
 Records cite manuals, printed pages, sections and URLs through `source_refs`.
 `registry/source-documents.yaml` resolves each cited URL to its document and
-its offline copy under `build/cache/`; undeclared citations fail
+its offline copy under `sources/origins/`; undeclared citations fail
 `tests/python/knowledge/test_source_documents.py`. Use
 `tools/knowledge/source_documents.py` to resolve a record's document and
 `tools/knowledge/printed_entries.py` to read the printed entry. Missing offline
@@ -444,10 +444,10 @@ Access the semantic CSV only through `python -X utf8 tools/knowledge/clause_regi
 ```powershell
 python -X utf8 tools/knowledge/clause_registry.py query --id "ID_EXACTO" --clause-id "CLAUSULA"
 python -X utf8 tools/knowledge/clause_registry.py query --pending --consumer contexts.py --limit 5
-python -X utf8 tools/knowledge/clause_registry.py prepare "$env:TEMP/t13-changes.json" --out "$env:TEMP/t13-prepared.json"
-python -X utf8 tools/knowledge/clause_registry.py apply "$env:TEMP/t13-prepared.json"
+python -X utf8 tools/knowledge/clause_registry.py prepare "$env:TEMP/clause-changes.json" --out "$env:TEMP/clause-prepared.json"
+python -X utf8 tools/knowledge/clause_registry.py apply "$env:TEMP/clause-prepared.json"
 # Authorized writer only, after reviewing the preview:
-python -X utf8 tools/knowledge/clause_registry.py apply "$env:TEMP/t13-prepared.json" --write
+python -X utf8 tools/knowledge/clause_registry.py apply "$env:TEMP/clause-prepared.json" --write
 ```
 
 `--id`/`--clause-id` are exact; `--source`/`--consumer` match fragments;

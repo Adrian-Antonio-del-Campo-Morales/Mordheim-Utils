@@ -1,5 +1,5 @@
 /**
- * T13-F017 — automatic band grants must honour their recipient filters.
+ * F017 — automatic band grants must honour their recipient filters.
  *
  * Expectations come from the canonical KB (sources/knowledge/bands/mordheim/
  * adventurers-kaz/special-rules.yaml, profiles.yaml) and the accepted F035
@@ -17,13 +17,13 @@ const cases: Case[] = JSON.parse(readFileSync(
   new URL("../../fixtures/eligibility/band-rule-recipients.json", import.meta.url), "utf8",
 )).cases;
 
-describe("T13-F017 shared band-rule recipient contract", () => {
+describe("F017 shared band-rule recipient contract", () => {
   for (const row of cases) it(row.name, () => {
     expect(applicableRules(row.package, row.profile).map((rule) => rule.id)).toEqual(row.expected_rule_ids);
   });
 });
 
-describe("T13-F017 canonical adventurers-kaz tables", () => {
+describe("F017 canonical adventurers-kaz tables", () => {
   // Facts copied from sources/knowledge/bands/mordheim/adventurers-kaz/
   // special-rules.yaml (id, applies_to, runtime.grant per rule) and profiles.yaml
   // (dwarf declares dwarf--hard-to-kill in rule_ids).  The four tables name

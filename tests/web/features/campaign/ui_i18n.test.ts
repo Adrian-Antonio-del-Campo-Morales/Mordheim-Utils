@@ -35,7 +35,7 @@ let raw: RawArtefact;
 let reader: ArtefactKnowledgeReader;
 
 beforeAll(() => {
-  // T12 fase D: the published artefact defers the campaign catalogue; the
+  // the published artefact defers the campaign catalogue; the
   // shared helper merges prose, presentation and the deferred catalogue.
   raw = readArtefactDocument(resolve(repoRoot(), ARTEFACT_PATH)) as RawArtefact;
   reader = ArtefactKnowledgeReader.from(raw);

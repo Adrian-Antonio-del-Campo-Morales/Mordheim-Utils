@@ -49,7 +49,7 @@ def _family_binding(rule: dict, kind: str, family_id: str, member: str = "member
     ``mechanic.*`` or ``trait.*``): the catalogue is the membership contract of
     that binding, not an inventory of every binding a member rule carries.
     Construction obligations (``profile.*``) belong to warband construction and
-    have their own owners (T06 effect matrix, T09 contracts), so an additional
+    have their own owners (the effect matrix and construction contracts), so an additional
     profile binding next to the family binding is legitimate — but it can never
     substitute or shadow the family's own executable binding.
     """
@@ -161,7 +161,7 @@ def test_bow_discipline_keeps_both_of_its_declared_bindings():
     """Bow Discipline owns a combat contract and a construction obligation.
 
     The compiler binding (``compiler.bow-discipline``) is the family's own
-    executable contract — the one T13's Combat Simulator consumes; the profile
+    executable contract — the one the Combat Simulator consumes; the profile
     binding (``profile.equipment-restrictions``) carries the printed band-wide
     equipment restriction (at most one missile weapon, it must be a bow, the
     Cleric is exempt) consumed by warband construction. Neither can replace the

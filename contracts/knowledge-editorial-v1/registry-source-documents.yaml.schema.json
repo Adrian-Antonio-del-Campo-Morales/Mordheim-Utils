@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://mordheim-utils.invalid/contracts/knowledge-editorial-v1/registry-source-documents.yaml.schema.json",
   "title": "Mordheim KB registry — registry/source-documents.yaml",
-  "description": "The source documents the catalogues cite, one entry per document. A record's `source_refs` name the record inside its document — `manual`, `printed_page` and `section` — and its `url` resolves here, which is what lets a cotejo go from a catalogue record to the document that prints it without knowing anything about the tree it runs in. `mirror` is where the offline mirror (`build/cache/`) keeps the downloaded copy; a document without a copy there is a declared gap the cotejo reports, not a registry error.",
+  "description": "The source documents the catalogues cite, one entry per document. A record's `source_refs` name the record inside its document — `manual`, `printed_page` and `section` — and its `url` resolves here, which is what lets a cotejo go from a catalogue record to the document that prints it without knowing anything about the tree it runs in. `mirror` is where the offline mirror (`sources/origins/`) keeps the downloaded copy; a document without a copy there is a declared gap the cotejo reports, not a registry error.",
   "type": "object",
   "required": ["schema_version", "documents"],
   "additionalProperties": false,

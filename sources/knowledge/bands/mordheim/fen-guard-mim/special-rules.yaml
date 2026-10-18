@@ -631,7 +631,9 @@ rules:
     - id: unimplemented.fen-guard-mim.dryads.root-walk
       scope: 'NO'
       binding: null
-      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
+      reason: >-
+        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
+        prose is retained; this is an exclusion, not deferred modular implementation.
   name: Root Walk
   effect: >-
     Dryads may only run in swamp, dirt or forest terrain; on any city terrain a dryad may only walk
@@ -659,7 +661,10 @@ rules:
     - id: unimplemented.fen-guard-mim.dryads.tanglevine
       scope: 'NO'
       binding: null
-      reason: 'Outside the established 1v1 melee scope: group Rout, All Alone or combat against multiple opponents. Source prose is retained; this is an exclusion, not deferred modular implementation.'
+      reason: >-
+        Outside the established 1v1 melee scope: group Rout, All Alone or combat against multiple
+        opponents. Source prose is retained; this is an exclusion, not deferred modular
+        implementation.
   name: Tanglevine
   effect: >-
     For each Dryad a warrior is in combat with after the first, they lose 1 attack, to a minimum of
@@ -737,7 +742,9 @@ rules:
     - id: unimplemented.fen-guard-mim.treekin.may-not-run
       scope: 'NO'
       binding: null
-      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
+      reason: >-
+        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
+        prose is retained; this is an exclusion, not deferred modular implementation.
   name: May Not Run
   source:
     manual: broheim.net
@@ -875,7 +882,8 @@ rules:
           forbids:
           - weapons
   name: Equipment Restrictions
-  effect: "Treekin cannot use weapons and fight unarmed without penalty."
+  effect: >-
+    Treekin cannot use weapons and fight unarmed without penalty.
   source:
     manual: broheim.net
     printed_page: 5
@@ -884,7 +892,8 @@ rules:
   name_i18n:
     es: Restricciones de Equipo
   effect_i18n:
-    es: "Los Hombres Árbol no pueden usar armas y luchan sin armas y sin penalización."
+    es: >-
+      Los Hombres Árbol no pueden usar armas y luchan sin armas y sin penalización.
   applies_to:
     profile_ids:
     - treekin

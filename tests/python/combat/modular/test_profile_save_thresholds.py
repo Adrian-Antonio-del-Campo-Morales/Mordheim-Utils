@@ -1,8 +1,8 @@
-"""T13-F011/T13-F012: compiled save thresholds consumed by the modular engine.
+"""Compiled save thresholds consumed by the modular engine.
 
 Canonical profiles are compiled with the maintained ``FighterBuild``/
 ``compile_fighter`` API; no trait is injected by hand.  The same clauses as in
-``tests/python/construction/test_t13_profile_save_thresholds.py`` are exercised
+``tests/python/construction/test_profile_save_thresholds.py`` are exercised
 here through the real attack pipeline, the isolated phase preparers and the
 whole-round duel driver:
 
@@ -72,9 +72,7 @@ def attack(attacker, defender, rolls, **options):
     return result
 
 
-# ---------------------------------------------------------------------------
 # Fimir Warriors: 5+ natural save inside the band-wide clauses
-# ---------------------------------------------------------------------------
 @pytest.mark.parametrize("face,saved,damage", [(5, True, 0), (4, False, 1)])
 def test_fimir_warriors_only_save_on_the_printed_five(face, saved, damage):
     # To-wound target is 6 (S3 against T5), so a natural six wounds without a
@@ -163,9 +161,7 @@ def test_fimir_has_no_ward_or_regeneration_contribution():
     assert context.regeneration_blocked is False
 
 
-# ---------------------------------------------------------------------------
 # Boglars: regeneration 5+ with the fire prohibition
-# ---------------------------------------------------------------------------
 @pytest.mark.parametrize("face,saved,damage", [(5, True, 0), (4, False, 1)])
 def test_boglar_regeneration_only_saves_on_five_or_more(face, saved, damage):
     # S3 against T3 asks for 4+ to wound, so 4 wounds without a critical and
@@ -226,9 +222,7 @@ def test_boglar_magical_tag_is_not_a_fire_block():
     assert context.regeneration_blocked is False
 
 
-# ---------------------------------------------------------------------------
 # cross-profile controls in the same process
-# ---------------------------------------------------------------------------
 def test_warpstone_troll_still_saves_on_four_while_boglars_needs_five():
     troll_saved = attack(mace(), profile(WARPSTONE_TROLL), [roll("a.hit", 6), roll("a.wound", 5), roll("a.special.regeneration", 4)])
     assert troll_saved.saved is True and troll_saved.damage == 0
@@ -248,9 +242,7 @@ def test_control_compilations_do_not_change_between_boglar_attacks():
     assert profile(BOGLAR).global_effects.regeneration_save == 5
 
 
-# ---------------------------------------------------------------------------
 # whole-round driver (real duel)
-# ---------------------------------------------------------------------------
 def duel_context():
     return DuelContext(charging=("first",), active_participant="first")
 

@@ -423,7 +423,7 @@ conditions:
 - id: condition.alchemist-resilience
   name: Potion of Resilience
   name_i18n:
-    es: Potion of Resilience
+    es: "Potion Of Resilience"
   effect: +1 Toughness for the duration of the battle.
   effect_i18n:
     es: +1 Toughness for the duration of the battle.
@@ -446,7 +446,7 @@ conditions:
 - id: condition.alchemist-strength
   name: Brew of Strength
   name_i18n:
-    es: Brew of Strength
+    es: "Brew Of Strength"
   effect: +1 Strength for the duration of the battle.
   effect_i18n:
     es: +1 Strength for the duration of the battle.
@@ -466,7 +466,8 @@ conditions:
   name: Aberrantius Vigortia
   name_i18n:
     es: Aberrantius Vigortia
-  effect: +1 Strength and +1 Toughness for the battle. Post-battle addiction acquisition is excluded.
+  effect: >-
+    +1 Strength and +1 Toughness for the battle. Post-battle addiction acquisition is excluded.
   effect_i18n:
     es: +1 Strength and +1 Toughness for the battle. Post-battle addiction acquisition is excluded.
   source_refs:
@@ -485,11 +486,13 @@ conditions:
   name: Backley's Brew
   name_i18n:
     es: Backley's Brew
-  effect: -1 Strength and -1 Initiative until a Toughness test is passed. By project ruling, test once
-    at the start of each own turn until recovery; the source does not specify the timing.
+  effect: >-
+    -1 Strength and -1 Initiative until a Toughness test is passed. By project ruling, test once at
+    the start of each own turn until recovery; the source does not specify the timing.
   effect_i18n:
-    es: -1 Fuerza e Iniciativa hasta superar un chequeo de Resistencia. Por decisión del proyecto,
-      se intenta al inicio de cada turno propio hasta recuperarse; la fuente no fija la cadencia.
+    es: >-
+      -1 Fuerza e Iniciativa hasta superar un chequeo de Resistencia. Por decisión del proyecto, se
+      intenta al inicio de cada turno propio hasta recuperarse; la fuente no fija la cadencia.
   source_refs:
   - *id002
   runtime:
@@ -506,11 +509,13 @@ conditions:
   name: Alchemist Addiction
   name_i18n:
     es: Alchemist Addiction
-  effect: The supplied addicted Scientist cannot act until he rolls a 6 while brewing Aberrantius
+  effect: >-
+    The supplied addicted Scientist cannot act until he rolls a 6 while brewing Aberrantius
     Vigortia. By project ruling, a standing Scientist attempts once at the start of each own turn;
     success releases him and supplies the potion's Strength and Toughness bonus once.
   effect_i18n:
-    es: El Científico adicto no actúa hasta sacar un 6 elaborando Aberrantius Vigortia. Por decisión
+    es: >-
+      El Científico adicto no actúa hasta sacar un 6 elaborando Aberrantius Vigortia. Por decisión
       del proyecto, si está de pie lo intenta al inicio de cada turno propio; el éxito lo libera y
       concede una sola vez el bono de Fuerza y Resistencia de la poción.
   source_refs:
@@ -529,12 +534,14 @@ conditions:
   name: Danse Macabre Controlled
   name_i18n:
     es: Danse Macabre Controlled
-  effect: The supplied cursed target may not attack the controlling Piper and takes a Leadership
-    test in its own recovery; success clears the effect. Shooting activation, distances, movement
-    and retargeting external models are excluded.
+  effect: >-
+    The supplied cursed target may not attack the controlling Piper and takes a Leadership test in
+    its own recovery; success clears the effect. Shooting activation, distances, movement and
+    retargeting external models are excluded.
   effect_i18n:
-    es: The supplied cursed target may not attack the controlling Piper and takes a Leadership test
-      in its own recovery; success clears the effect. Shooting activation, distances, movement and
+    es: >-
+      The supplied cursed target may not attack the controlling Piper and takes a Leadership test in
+      its own recovery; success clears the effect. Shooting activation, distances, movement and
       retargeting external models are excluded.
   source_refs:
   - manual: mordheimer.net
@@ -674,11 +681,13 @@ conditions:
   name: Compelled Impetuous charge
   name_i18n:
     es: Compelled Impetuous charge
-  effect: Supplied compelled charge automatically passes psychology tests that would prevent that
-    charge; choosing movement or retargeting is excluded.
+  effect: >-
+    Supplied compelled charge automatically passes psychology tests that would prevent that charge;
+    choosing movement or retargeting is excluded.
   effect_i18n:
-    es: Supplied compelled charge automatically passes psychology tests that would prevent that charge;
-      choosing movement or retargeting is excluded.
+    es: >-
+      Supplied compelled charge automatically passes psychology tests that would prevent that
+      charge; choosing movement or retargeting is excluded.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -698,13 +707,15 @@ conditions:
   name: Executioner’s Hood worn
   name_i18n:
     es: Executioner’s Hood worn
-  effect: Always frenzied even if knocked down or stunned; +1 Strength in close combat. Combat escape
-    and multi-target movement are excluded.
+  effect: >-
+    Always frenzied even if knocked down or stunned; +1 Strength in close combat. Combat escape and
+    multi-target movement are excluded.
   effect_i18n:
-    es: Always frenzied even if knocked down or stunned; +1 Strength in close combat. Combat escape
+    es: >-
+      Always frenzied even if knocked down or stunned; +1 Strength in close combat. Combat escape
       and multi-target movement are excluded.
   source_refs:
-  - manual: Mordheim Rulebook
+  - manual: mordheim-rulebook
     printed_page: 145
     section: Magical Artefacts / Executioner’s Hood
   runtime:
@@ -721,15 +732,18 @@ conditions:
   name: Rememberer support dwarf-slayers-kaz
   name_i18n:
     es: Rememberer support dwarf-slayers-kaz
-  effect: The Rememberer's task is to record the doom of each of the slayers. When he is close by,
-    the slayers will fight even harder to make their death more honourable. Once per game, any Slayer
-    Hero fighting against a large creature (such as a troll or ogre) and within 6\" of the Rememberer,
-    may re-roll any failed To Hit rolls once only.
+  effect: >-
+    The Rememberer's task is to record the doom of each of the slayers. When he is close by, the
+    slayers will fight even harder to make their death more honourable. Once per game, any Slayer
+    Hero fighting against a large creature (such as a troll or ogre) and within 6\" of the
+    Rememberer, may re-roll any failed To Hit rolls once only.
   effect_i18n:
-    es: The Rememberer's task is to record the doom of each of the slayers. When he is close by,
-      the slayers will fight even harder to make their death more honourable. Once per game, any
-      Slayer Hero fighting against a large creature (such as a troll or ogre) and within 6\" of the
-      Rememberer, may re-roll any failed To Hit rolls once only.
+    es: >-
+      La tarea del Memoralista es registrar la perdición de cada uno de los Matatrolles. Cuando está
+      cerca, los Matatrolles lucharán aún con más ahínco para hacer su muerte más honorable. Una vez
+      por partida, cualquier Héroe Matatrolles que luche contra una criatura grande (como un troll o
+      un ogro) y que esté a 6" del Memoralista puede repetir una sola vez cualquier tirada por
+      impactar fallida.
   source_refs:
   - manual: broheim.net
     printed_page: 34
@@ -749,15 +763,18 @@ conditions:
   name: Rememberer support dwarf-slayer-cult-web
   name_i18n:
     es: Rememberer support dwarf-slayer-cult-web
-  effect: The Rememberer's task is to record the doom of each of the slayers. When he is close by,
-    the slayers will fight even harder to make their death more honourable. Once per game, any Slayer
+  effect: >-
+    The Rememberer's task is to record the doom of each of the slayers. When he is close by, the
+    slayers will fight even harder to make their death more honourable. Once per game, any Slayer
     Hero fighting against a Large creature or a creature with Toughness 5 or greater, and is within
     6" of the Rememberer, may re-roll any failed To Hit rolls once only.
   effect_i18n:
-    es: The Rememberer's task is to record the doom of each of the slayers. When he is close by,
-      the slayers will fight even harder to make their death more honourable. Once per game, any
-      Slayer Hero fighting against a Large creature or a creature with Toughness 5 or greater, and
-      is within 6" of the Rememberer, may re-roll any failed To Hit rolls once only.
+    es: >-
+      La tarea del Memoralista es registrar el destino de cada uno de los Matatrolles. Cuando está
+      cerca, los Matatrolles lucharán con más ahínco para hacer su muerte más honorable. Una vez por
+      partida, cualquier Héroe Matatroll que luche contra una criatura Grande o una criatura con
+      Resistencia 5 o superior, y esté a 6" del Memoralista, puede repetir una sola vez cualquier
+      tirada fallida por impactar.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -840,13 +857,15 @@ conditions:
   name: Tomb Robber knows Dodge
   name_i18n:
     es: Tomb Robber knows Dodge
-  effect: This Tomb Robber has learned Dodge; Excellent Reflexes improves to 4+ against attacks.
-    The shooting action of Dodge is excluded.
+  effect: >-
+    This Tomb Robber has learned Dodge; Excellent Reflexes improves to 4+ against attacks. The
+    shooting action of Dodge is excluded.
   effect_i18n:
-    es: This Tomb Robber has learned Dodge; Excellent Reflexes improves to 4+ against attacks. The
+    es: >-
+      This Tomb Robber has learned Dodge; Excellent Reflexes improves to 4+ against attacks. The
       shooting action of Dodge is excluded.
   source_refs:
-  - manual: Town Cryer 19
+  - manual: town-cryer-19
     printed_page: 21
     section: Tomb Robber / Excellent Reflexes
     url: https://broheim.net/downloads/towncryer/TownCryer19.pdf
@@ -864,13 +883,15 @@ conditions:
   name: Compulsory Witch-finder charge
   name_i18n:
     es: Compulsory Witch-finder charge
-  effect: The selected Solkan Witch-finder is making the actual compulsory charge against the supplied
+  effect: >-
+    The selected Solkan Witch-finder is making the actual compulsory charge against the supplied
     eligible reachable opponent.
   effect_i18n:
-    es: The selected Solkan Witch-finder is making the actual compulsory charge against the supplied
+    es: >-
+      The selected Solkan Witch-finder is making the actual compulsory charge against the supplied
       eligible reachable opponent.
   source_refs:
-  - manual: Mutiny in Marienburg
+  - manual: mutiny-in-marienburg
     printed_page: 224
     section: Clerics of Law / Marks of Solkan
     url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20in%20Marienburg.pdf
@@ -888,14 +909,17 @@ conditions:
   name: Rune of Iron (already inscribed)
   name_i18n:
     es: Runa de Hierro (ya grabada)
-  effect: A previously inscribed Rune of Iron grants a 6+ ward save from the specified eligible armour
-    item, for this battle. One Rune per item.
-    per item. No inscription roll, manufacturing failure, learning or post-battle durability is simulated.
+  effect: >-
+    A previously inscribed Rune of Iron grants a 6+ ward save from the specified eligible armour
+    item, for this battle. One Rune per item. per item. No inscription roll, manufacturing failure,
+    learning or post-battle durability is simulated.
   effect_i18n:
-    es: La Runa de Hierro ya grabada concede salvación especial de 6+ desde la armadura indicada durante
-      esta batalla; una runa por objeto.
+    es: >-
+      Una Runa de Hierro ya inscrita concede una salvación especial de 6+ desde el objeto de
+      armadura elegible indicado, para esta batalla. Una runa por objeto. No se simulan la tirada de
+      inscripción, el fallo de fabricación, el aprendizaje ni la durabilidad posterior a la batalla.
   source_refs:
-  - manual: Nemesis Crown Supplement
+  - manual: nemesis-crown-supplement
     printed_page: 0
     section: Runesmith Journeyman / Rune Use (PDF page 62)
     url: https://broheim.net/downloads/campaigns/nemesiscrown/Nemesis%20Crown%20Complete.pdf
@@ -918,14 +942,15 @@ conditions:
   name: Rune of Stone (already inscribed)
   name_i18n:
     es: Runa de Piedra (ya grabada)
-  effect: A previously inscribed Rune of Stone improves the specified eligible armour item's armour
-    save by 1, for this battle. One Rune per item.
-    is simulated.
+  effect: >-
+    A previously inscribed Rune of Stone improves the specified eligible armour item's armour save
+    by 1, for this battle. One Rune per item. is simulated.
   effect_i18n:
-    es: La Runa de Piedra ya grabada mejora en 1 la salvación de la armadura indicada durante esta
+    es: >-
+      La Runa de Piedra ya grabada mejora en 1 la salvación de la armadura indicada durante esta
       batalla; una runa por objeto.
   source_refs:
-  - manual: Nemesis Crown Supplement
+  - manual: nemesis-crown-supplement
     printed_page: 0
     section: Runesmith Journeyman / Rune Use (PDF page 62)
     url: https://broheim.net/downloads/campaigns/nemesiscrown/Nemesis%20Crown%20Complete.pdf
@@ -948,14 +973,15 @@ conditions:
   name: Rune of Fury (already inscribed)
   name_i18n:
     es: Runa de Furia (ya grabada)
-  effect: A previously inscribed Rune of Fury grants one additional Attack with the specified eligible
-    weapon, for this battle. One Rune per item.
-    is simulated.
+  effect: >-
+    A previously inscribed Rune of Fury grants one additional Attack with the specified eligible
+    weapon, for this battle. One Rune per item. is simulated.
   effect_i18n:
-    es: La Runa de Furia ya grabada concede un ataque adicional con el arma indicada durante esta batalla;
-      una runa por objeto.
+    es: >-
+      La Runa de Furia ya grabada concede un ataque adicional con el arma indicada durante esta
+      batalla; una runa por objeto.
   source_refs:
-  - manual: Nemesis Crown Supplement
+  - manual: nemesis-crown-supplement
     printed_page: 0
     section: Runesmith Journeyman / Rune Use (PDF page 62)
     url: https://broheim.net/downloads/campaigns/nemesiscrown/Nemesis%20Crown%20Complete.pdf
@@ -978,14 +1004,15 @@ conditions:
   name: Rune of Striking (already inscribed)
   name_i18n:
     es: Runa de Golpeo (ya grabada)
-  effect: A previously inscribed Rune of Striking grants +1 Weapon Skill for attacks with the specified
-    eligible weapon, for this battle. One Rune per item.
-    is simulated.
+  effect: >-
+    A previously inscribed Rune of Striking grants +1 Weapon Skill for attacks with the specified
+    eligible weapon, for this battle. One Rune per item. is simulated.
   effect_i18n:
-    es: La Runa de Impacto ya grabada concede +1 HA al atacar con el arma indicada durante esta batalla;
-      una runa por objeto.
+    es: >-
+      La Runa de Impacto ya grabada concede +1 HA al atacar con el arma indicada durante esta
+      batalla; una runa por objeto.
   source_refs:
-  - manual: Nemesis Crown Supplement
+  - manual: nemesis-crown-supplement
     printed_page: 0
     section: Runesmith Journeyman / Rune Use (PDF page 62)
     url: https://broheim.net/downloads/campaigns/nemesiscrown/Nemesis%20Crown%20Complete.pdf
@@ -1008,14 +1035,15 @@ conditions:
   name: Rune of Speed (already inscribed)
   name_i18n:
     es: Runa de Velocidad (ya grabada)
-  effect: A previously inscribed Rune of Speed grants +1 Initiative with the specified eligible weapon,
-    for this battle. One Rune per item.
-    is simulated.
+  effect: >-
+    A previously inscribed Rune of Speed grants +1 Initiative with the specified eligible weapon,
+    for this battle. One Rune per item. is simulated.
   effect_i18n:
-    es: La Runa de Velocidad ya grabada concede +1 Iniciativa con el arma indicada durante esta batalla;
-      una runa por objeto.
+    es: >-
+      La Runa de Velocidad ya grabada concede +1 Iniciativa con el arma indicada durante esta
+      batalla; una runa por objeto.
   source_refs:
-  - manual: Nemesis Crown Supplement
+  - manual: nemesis-crown-supplement
     printed_page: 0
     section: Runesmith Journeyman / Rune Use (PDF page 62)
     url: https://broheim.net/downloads/campaigns/nemesiscrown/Nemesis%20Crown%20Complete.pdf
@@ -1038,14 +1066,15 @@ conditions:
   name: Rune of Cleaving (already inscribed)
   name_i18n:
     es: Runa de Corte (ya grabada)
-  effect: A previously inscribed Rune of Cleaving grants +1 Strength with the specified eligible weapon,
-    for this battle. One Rune per item.
-    is simulated.
+  effect: >-
+    A previously inscribed Rune of Cleaving grants +1 Strength with the specified eligible weapon,
+    for this battle. One Rune per item. is simulated.
   effect_i18n:
-    es: La Runa de Corte ya grabada concede +1 Fuerza con el arma indicada durante esta batalla; una
+    es: >-
+      La Runa de Corte ya grabada concede +1 Fuerza con el arma indicada durante esta batalla; una
       runa por objeto.
   source_refs:
-  - manual: Nemesis Crown Supplement
+  - manual: nemesis-crown-supplement
     printed_page: 0
     section: Runesmith Journeyman / Rune Use (PDF page 62)
     url: https://broheim.net/downloads/campaigns/nemesiscrown/Nemesis%20Crown%20Complete.pdf
@@ -1069,10 +1098,12 @@ conditions:
   name: Nearby Bear Tamer
   name_i18n:
     es: Nearby Bear Tamer
-  effect: The Trained Bear has its actual friendly Bear Tamer within 6 inches. This exempts Stupidity;
-    an Out of Action Tamer does not qualify.
+  effect: >-
+    The Trained Bear has its actual friendly Bear Tamer within 6 inches. This exempts Stupidity; an
+    Out of Action Tamer does not qualify.
   effect_i18n:
-    es: The Trained Bear has its actual friendly Bear Tamer within 6 inches. This exempts Stupidity;
+    es: >-
+      The Trained Bear has its actual friendly Bear Tamer within 6 inches. This exempts Stupidity;
       an Out of Action Tamer does not qualify.
   source_refs:
   - manual: mordheimer.net
@@ -1093,11 +1124,13 @@ conditions:
   name: Nearby exempting hero
   name_i18n:
     es: Nearby exempting hero
-  effect: The Rat Ogre has its actual qualifying Skaven Hero within 6 inches, so the printed Stupidity
+  effect: >-
+    The Rat Ogre has its actual qualifying Skaven Hero within 6 inches, so the printed Stupidity
     exemption applies and no Stupidity test is taken. The caller supplies the exemption; the duel
     neither simulates the surrounding warband nor measures table positions.
   effect_i18n:
-    es: The Rat Ogre has its actual qualifying Skaven Hero within 6 inches, so the printed Stupidity
+    es: >-
+      The Rat Ogre has its actual qualifying Skaven Hero within 6 inches, so the printed Stupidity
       exemption applies and no Stupidity test is taken. The caller supplies the exemption; the duel
       neither simulates the surrounding warband nor measures table positions.
   source_refs:
@@ -1153,11 +1186,13 @@ conditions:
   name: Barbarian chosen as Leader
   name_i18n:
     es: Barbarian chosen as Leader
-  effect: This native Adventurer Barbarian is the actual chosen warband Leader. Dim-witted changes
-    only his Leadership lent to friends within 6 inches, not his own Leadership.
+  effect: >-
+    This native Adventurer Barbarian is the actual chosen warband Leader. Dim-witted changes only
+    his Leadership lent to friends within 6 inches, not his own Leadership.
   effect_i18n:
-    es: This native Adventurer Barbarian is the actual chosen warband Leader. Dim-witted changes
-      only his Leadership lent to friends within 6 inches, not his own Leadership.
+    es: >-
+      This native Adventurer Barbarian is the actual chosen warband Leader. Dim-witted changes only
+      his Leadership lent to friends within 6 inches, not his own Leadership.
   source_refs:
   - manual: broheim.net
     printed_page: 22
@@ -1177,13 +1212,15 @@ conditions:
   name: Victorious Leader praised in Poetry
   name_i18n:
     es: Victorious Leader praised in Poetry
-  effect: The actual Leader of this Ghutani, Muzil or Turjuk band won its previous battle and receives
-    +1 Leadership for its first actual Leadership test this scenario. Rerolls use that same threshold;
+  effect: >-
+    The actual Leader of this Ghutani, Muzil or Turjuk band won its previous battle and receives +1
+    Leadership for its first actual Leadership test this scenario. Rerolls use that same threshold;
     this is not a bonus to Leadership lent to friends.
   effect_i18n:
-    es: The actual Leader of this Ghutani, Muzil or Turjuk band won its previous battle and receives
-      +1 Leadership for its first actual Leadership test this scenario. Rerolls use that same threshold;
-      this is not a bonus to Leadership lent to friends.
+    es: >-
+      The actual Leader of this Ghutani, Muzil or Turjuk band won its previous battle and receives
+      +1 Leadership for its first actual Leadership test this scenario. Rerolls use that same
+      threshold; this is not a bonus to Leadership lent to friends.
   source_refs:
   - manual: broheim.net
     printed_page: 4
@@ -1203,12 +1240,14 @@ conditions:
   name: Inspired by Poetry
   name_i18n:
     es: Inspired by Poetry
-  effect: The supplied friendly recipient within 6 inches of its Poet receives +1 Weapon Skill and
-    +1 Attack for this initial player turn only. Prior victory is not required for this separate
+  effect: >-
+    The supplied friendly recipient within 6 inches of its Poet receives +1 Weapon Skill and +1
+    Attack for this initial player turn only. Prior victory is not required for this separate
     inspiration.
   effect_i18n:
-    es: The supplied friendly recipient within 6 inches of its Poet receives +1 Weapon Skill and
-      +1 Attack for this initial player turn only. Prior victory is not required for this separate
+    es: >-
+      The supplied friendly recipient within 6 inches of its Poet receives +1 Weapon Skill and +1
+      Attack for this initial player turn only. Prior victory is not required for this separate
       inspiration.
   source_refs:
   - manual: broheim.net
@@ -1229,15 +1268,17 @@ conditions:
   name: Raise Our Insignia active
   name_i18n:
     es: Raise Our Insignia active
-  effect: The supplied eligible friendly recipient may reroll Leadership during the current Recovery/Movement
-    period. This command expires at the beginning of the next Shooting phase, before the ensuing
-    close combat. The command/casting and other models are not produced.
+  effect: >-
+    The supplied eligible friendly recipient may reroll Leadership during the current
+    Recovery/Movement period. This command expires at the beginning of the next Shooting phase,
+    before the ensuing close combat. The command/casting and other models are not produced.
   effect_i18n:
-    es: The supplied eligible friendly recipient may reroll Leadership during the current Recovery/Movement
-      period. This command expires at the beginning of the next Shooting phase, before the ensuing
-      close combat. The command/casting and other models are not produced.
+    es: >-
+      The supplied eligible friendly recipient may reroll Leadership during the current
+      Recovery/Movement period. This command expires at the beginning of the next Shooting phase,
+      before the ensuing close combat. The command/casting and other models are not produced.
   source_refs:
-  - manual: Mazzalupo
+  - manual: mazzalupo
     printed_page: 0
     section: Commands / Raise Our Insignia
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/mazzalupo
@@ -1255,17 +1296,19 @@ conditions:
   name: Caught in a net
   name_i18n:
     es: Caught in a net
-  effect: The supplied victim caught in a net counts as Knocked Down and is hit automatically in
-    combat; the attacker must still wound. In its next own Recovery, unless Stunned or Out of Action,
-    it cuts free, performs no other action and strikes last as if it stood up. No shooting or charge
+  effect: >-
+    The supplied victim caught in a net counts as Knocked Down and is hit automatically in combat;
+    the attacker must still wound. In its next own Recovery, unless Stunned or Out of Action, it
+    cuts free, performs no other action and strikes last as if it stood up. No shooting or charge
     producer is simulated.
   effect_i18n:
-    es: The supplied victim caught in a net counts as Knocked Down and is hit automatically in combat;
+    es: >-
+      The supplied victim caught in a net counts as Knocked Down and is hit automatically in combat;
       the attacker must still wound. In its next own Recovery, unless Stunned or Out of Action, it
       cuts free, performs no other action and strikes last as if it stood up. No shooting or charge
       producer is simulated.
   source_refs:
-  - manual: Night Goblin special skills
+  - manual: night-goblin-special-skills
     printed_page: 0
     section: Netter / caught victim
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/night-goblins
@@ -1283,11 +1326,13 @@ conditions:
   name: Required Nuttaz charge
   name_i18n:
     es: Required Nuttaz charge
-  effect: This native Orc Nuttaz is making its actual compulsory charge against the supplied nearest
-    visible reachable enemy. The caller supplies target qualification; no movement, visibility search
-    or run is produced.
+  effect: >-
+    This native Orc Nuttaz is making its actual compulsory charge against the supplied nearest
+    visible reachable enemy. The caller supplies target qualification; no movement, visibility
+    search or run is produced.
   effect_i18n:
-    es: This native Orc Nuttaz is making its actual compulsory charge against the supplied nearest
+    es: >-
+      This native Orc Nuttaz is making its actual compulsory charge against the supplied nearest
       visible reachable enemy. The caller supplies target qualification; no movement, visibility
       search or run is produced.
   source_refs:
@@ -1309,11 +1354,13 @@ conditions:
   name: Charge caused by Goading
   name_i18n:
     es: Charge caused by Goading
-  effect: This supplied Moulder beast is actually charging as the result of successful Goading. Such
-    a charge bypasses Hypnotic Musk. Goading rolls, movement and other results are not produced.
+  effect: >-
+    This supplied Moulder beast is actually charging as the result of successful Goading. Such a
+    charge bypasses Hypnotic Musk. Goading rolls, movement and other results are not produced.
   effect_i18n:
-    es: This supplied Moulder beast is actually charging as the result of successful Goading. Such
-      a charge bypasses Hypnotic Musk. Goading rolls, movement and other results are not produced.
+    es: >-
+      This supplied Moulder beast is actually charging as the result of successful Goading. Such a
+      charge bypasses Hypnotic Musk. Goading rolls, movement and other results are not produced.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1332,7 +1379,9 @@ conditions:
 - id: condition.maintenance-1
   name: Weaponsmith Maintenance Result 1
   name_i18n: {es: 'Mantenimiento del Armero, resultado 1'}
-  effect: 'No improvement; the first result stands. Supplied first result for a Hero or the Weaponsmith; no table roll is simulated.'
+  effect: >-
+    No improvement; the first result stands. Supplied first result for a Hero or the Weaponsmith; no
+    table roll is simulated.
   effect_i18n: {es: 'Resultado 1 ya obtenido para un Héroe o el Armero; no se simula la tirada de la tabla.'}
   source_refs:
   - manual: mordheimer.net
@@ -1354,8 +1403,11 @@ conditions:
 - id: condition.maintenance-2
   name: Weaponsmith Maintenance Result 2
   name_i18n: {es: 'Mantenimiento del Armero, resultado 2'}
-  effect: 'For this game, worn heavy armour saves on 4+ and light armour on 5+, before other modifiers. Supplied first result for a Hero or the Weaponsmith; no table roll is simulated.'
-  effect_i18n: {es: 'Resultado 2 ya obtenido para un Héroe o el Armero; no se simula la tirada de la tabla.'}
+  effect: >-
+    For this game, worn heavy armour saves on 4+ and light armour on 5+, before other modifiers.
+    Supplied first result for a Hero or the Weaponsmith; no table roll is simulated.
+  effect_i18n: {es: "Para esta partida, la armadura pesada llevada salva con 4+ y la armadura ligera con 5+, antes de otros modificadores. Primer resultado suministrado para un Héroe o el Armero; no se simula la tirada de la tabla."
+}
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1376,8 +1428,11 @@ conditions:
 - id: condition.maintenance-3
   name: Weaponsmith Maintenance Result 3
   name_i18n: {es: 'Mantenimiento del Armero, resultado 3'}
-  effect: 'For this game, a worn helmet also grants +1 armour save; its injury reaction is unchanged. Supplied first result for a Hero or the Weaponsmith; no table roll is simulated.'
-  effect_i18n: {es: 'Resultado 3 ya obtenido para un Héroe o el Armero; no se simula la tirada de la tabla.'}
+  effect: >-
+    For this game, a worn helmet also grants +1 armour save; its injury reaction is unchanged.
+    Supplied first result for a Hero or the Weaponsmith; no table roll is simulated.
+  effect_i18n: {es: "Para esta partida, un casco llevado concede además +1 a la salvación de armadura; su reacción a las heridas no cambia. Primer resultado suministrado para un Héroe o el Armero; no se simula la tirada de la tabla."
+}
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1398,8 +1453,11 @@ conditions:
 - id: condition.maintenance-4
   name: Weaponsmith Maintenance Result 4
   name_i18n: {es: 'Mantenimiento del Armero, resultado 4'}
-  effect: 'For this game, a worn buckler also grants +1 armour save. Supplied first result for a Hero or the Weaponsmith; no table roll is simulated.'
-  effect_i18n: {es: 'Resultado 4 ya obtenido para un Héroe o el Armero; no se simula la tirada de la tabla.'}
+  effect: >-
+    For this game, a worn buckler also grants +1 armour save. Supplied first result for a Hero or
+    the Weaponsmith; no table roll is simulated.
+  effect_i18n: {es: "Para esta partida, un broquel llevado concede además +1 a la salvación de armadura. Primer resultado suministrado para un Héroe o el Armero; no se simula la tirada de la tabla."
+}
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1420,8 +1478,11 @@ conditions:
 - id: condition.maintenance-5
   name: Weaponsmith Maintenance Result 5
   name_i18n: {es: 'Mantenimiento del Armero, resultado 5'}
-  effect: 'For this game, a worn shield permits parrying like a buckler, retaining its armour save. Supplied first result for a Hero or the Weaponsmith; no table roll is simulated.'
-  effect_i18n: {es: 'Resultado 5 ya obtenido para un Héroe o el Armero; no se simula la tirada de la tabla.'}
+  effect: >-
+    For this game, a worn shield permits parrying like a buckler, retaining its armour save.
+    Supplied first result for a Hero or the Weaponsmith; no table roll is simulated.
+  effect_i18n: {es: "Para esta partida, un escudo llevado permite parar como un broquel, conservando su salvación de armadura. Primer resultado suministrado para un Héroe o el Armero; no se simula la tirada de la tabla."
+}
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1442,8 +1503,11 @@ conditions:
 - id: condition.maintenance-6
   name: Weaponsmith Maintenance Result 6
   name_i18n: {es: 'Mantenimiento del Armero, resultado 6'}
-  effect: 'Only missile ranges improve; there is no effect in this close combat duel. Supplied first result for a Hero or the Weaponsmith; no table roll is simulated.'
-  effect_i18n: {es: 'Resultado 6 ya obtenido para un Héroe o el Armero; no se simula la tirada de la tabla.'}
+  effect: >-
+    Only missile ranges improve; there is no effect in this close combat duel. Supplied first result
+    for a Hero or the Weaponsmith; no table roll is simulated.
+  effect_i18n: {es: "Solo mejoran los alcances a distancia; no hay efecto en este duelo cuerpo a cuerpo. Primer resultado suministrado para un Héroe o el Armero; no se simula la tirada de la tabla."
+}
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1464,8 +1528,11 @@ conditions:
 - id: condition.witch-debilitating
   name: Witch Potion (debilitating)
   name_i18n: {es: 'Poción de la Bruja (debilitating)'}
-  effect: 'Minus one Toughness until a 6 in own recovery clears the draught. Supplied potion result for one Hero, without simulating its grant or rolling the table.'
-  effect_i18n: {es: 'Resultado ya obtenido de la poción para un Héroe; no se simula su entrega ni la tirada de la tabla.'}
+  effect: >-
+    Minus one Toughness until a 6 in own recovery clears the draught. Supplied potion result for one
+    Hero, without simulating its grant or rolling the table.
+  effect_i18n: {es: "-1 Resistencia hasta que un 6 en la recuperación propia elimine la pócima. Resultado de poción suministrado para un Héroe, sin simular su concesión ni la tirada de la tabla."
+}
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1483,8 +1550,11 @@ conditions:
 - id: condition.witch-strength
   name: Witch Potion (strength)
   name_i18n: {es: 'Poción de la Bruja (strength)'}
-  effect: 'Plus one Strength until a 1 in own recovery ends the draught. Supplied potion result for one Hero, without simulating its grant or rolling the table.'
-  effect_i18n: {es: 'Resultado ya obtenido de la poción para un Héroe; no se simula su entrega ni la tirada de la tabla.'}
+  effect: >-
+    Plus one Strength until a 1 in own recovery ends the draught. Supplied potion result for one
+    Hero, without simulating its grant or rolling the table.
+  effect_i18n: {es: "+1 Fuerza hasta que un 1 en la recuperación propia termine con la pócima. Resultado de poción suministrado para un Héroe, sin simular su concesión ni la tirada de la tabla."
+}
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1502,8 +1572,11 @@ conditions:
 - id: condition.witch-resilience
   name: Witch Potion (resilience)
   name_i18n: {es: 'Poción de la Bruja (resilience)'}
-  effect: 'Plus one Toughness until a 1 in own recovery ends the draught. Supplied potion result for one Hero, without simulating its grant or rolling the table.'
-  effect_i18n: {es: 'Resultado ya obtenido de la poción para un Héroe; no se simula su entrega ni la tirada de la tabla.'}
+  effect: >-
+    Plus one Toughness until a 1 in own recovery ends the draught. Supplied potion result for one
+    Hero, without simulating its grant or rolling the table.
+  effect_i18n: {es: "+1 Resistencia hasta que un 1 en la recuperación propia termine con la pócima. Resultado de poción suministrado para un Héroe, sin simular su concesión ni la tirada de la tabla."
+}
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1521,8 +1594,11 @@ conditions:
 - id: condition.witch-fortitude
   name: Witch Potion (fortitude)
   name_i18n: {es: 'Poción de la Bruja (fortitude)'}
-  effect: 'One extra Wound for this battle; once lost it cannot be restored. Supplied potion result for one Hero, without simulating its grant or rolling the table.'
-  effect_i18n: {es: 'Resultado ya obtenido de la poción para un Héroe; no se simula su entrega ni la tirada de la tabla.'}
+  effect: >-
+    One extra Wound for this battle; once lost it cannot be restored. Supplied potion result for one
+    Hero, without simulating its grant or rolling the table.
+  effect_i18n: {es: "Una Herida adicional para esta batalla; una vez perdida no puede recuperarse. Resultado de poción suministrado para un Héroe, sin simular su concesión ni la tirada de la tabla."
+}
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1540,8 +1616,11 @@ conditions:
 - id: condition.ye-give-way-refused
   name: Ye Give Way (refused)
   name_i18n: {es: 'Ye Give Way (refused)'}
-  effect: 'The Hero who refused a prior challenge has -1 to hit in melee until the end of the game, non-cumulative. Supplied prior result; no challenge or group combat is simulated.'
-  effect_i18n: {es: 'Resultado ya suministrado de Ye Give Way; no se simula el desafío ni combate entre grupos.'}
+  effect: >-
+    The Hero who refused a prior challenge has -1 to hit in melee until the end of the game,
+    non-cumulative. Supplied prior result; no challenge or group combat is simulated.
+  effect_i18n: {es: "El Héroe que rechazó un desafío previo tiene -1 a impactar en cuerpo a cuerpo hasta el final de la partida, sin acumularse. Resultado previo suministrado; no se simula el desafío ni el combate entre grupos."
+}
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1558,8 +1637,12 @@ conditions:
 - id: condition.ye-give-way-victorious
   name: Ye Give Way (victorious)
   name_i18n: {es: 'Ye Give Way (victorious)'}
-  effect: 'A Fallen Noble who put the challenged opponent Out of Action has +1 to hit in melee and +1 Strength until the end of the game, non-cumulative. Supplied prior result; no challenge or group combat is simulated.'
-  effect_i18n: {es: 'Resultado ya suministrado de Ye Give Way; no se simula el desafío ni combate entre grupos.'}
+  effect: >-
+    A Fallen Noble who put the challenged opponent Out of Action has +1 to hit in melee and +1
+    Strength until the end of the game, non-cumulative. Supplied prior result; no challenge or group
+    combat is simulated.
+  effect_i18n: {es: "Un Noble Caído que dejó Fuera de Combate al oponente desafiado tiene +1 a impactar en cuerpo a cuerpo y +1 Fuerza hasta el final de la partida, sin acumularse. Resultado previo suministrado; no se simula el desafío ni el combate entre grupos."
+}
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1580,7 +1663,9 @@ conditions:
 - id: condition.disability-1
   name: Disability result 1
   name_i18n: {es: 'Discapacidad: resultado 1'}
-  effect: 'Lame and arthritic: minus one Movement and Initiative. Permanent supplied result; no group creation or reroll.'
+  effect: >-
+    Lame and arthritic: minus one Movement and Initiative. Permanent supplied result; no group
+    creation or reroll.
   effect_i18n: {es: 'Resultado permanente suministrado de Discapacidad; no se crea ni sortea un grupo.'}
   source_refs:
   - manual: chaos-in-the-streets
@@ -1600,8 +1685,11 @@ conditions:
 - id: condition.disability-2
   name: Disability result 2
   name_i18n: {es: 'Discapacidad: resultado 2'}
-  effect: 'Parkinson: minus one Weapon Skill; cannot use two weapons or a weapon and shield. Permanent supplied result; no group creation or reroll.'
-  effect_i18n: {es: 'Resultado permanente suministrado de Discapacidad; no se crea ni sortea un grupo.'}
+  effect: >-
+    Parkinson: minus one Weapon Skill; cannot use two weapons or a weapon and shield. Permanent
+    supplied result; no group creation or reroll.
+  effect_i18n: {es: "Parkinson: -1 Habilidad de Arma; no puede usar dos armas ni un arma y escudo. Resultado permanente suministrado; no se crea ni sortea un grupo."
+}
   source_refs:
   - manual: chaos-in-the-streets
     printed_page: 149
@@ -1623,8 +1711,11 @@ conditions:
 - id: condition.disability-3
   name: Disability result 3
   name_i18n: {es: 'Discapacidad: resultado 3'}
-  effect: 'Poor eyesight: minus one Ballistic Skill; no shooting action is simulated. Permanent supplied result; no group creation or reroll.'
-  effect_i18n: {es: 'Resultado permanente suministrado de Discapacidad; no se crea ni sortea un grupo.'}
+  effect: >-
+    Poor eyesight: minus one Ballistic Skill; no shooting action is simulated. Permanent supplied
+    result; no group creation or reroll.
+  effect_i18n: {es: "Vista pobre: -1 Habilidad de Proyectiles; no se simula la acción de disparo. Resultado permanente suministrado; no se crea ni sortea un grupo."
+}
   source_refs:
   - manual: chaos-in-the-streets
     printed_page: 149
@@ -1640,7 +1731,8 @@ conditions:
 - id: condition.disability-4
   name: Disability result 4
   name_i18n: {es: 'Discapacidad: resultado 4'}
-  effect: 'Sickly: minus one Toughness. Permanent supplied result; no group creation or reroll.'
+  effect: >-
+    Sickly: minus one Toughness. Permanent supplied result; no group creation or reroll.
   effect_i18n: {es: 'Resultado permanente suministrado de Discapacidad; no se crea ni sortea un grupo.'}
   source_refs:
   - manual: chaos-in-the-streets
@@ -1660,7 +1752,8 @@ conditions:
 - id: condition.disability-5
   name: Disability result 5
   name_i18n: {es: 'Discapacidad: resultado 5'}
-  effect: 'Weakness: minus one Strength. Permanent supplied result; no group creation or reroll.'
+  effect: >-
+    Weakness: minus one Strength. Permanent supplied result; no group creation or reroll.
   effect_i18n: {es: 'Resultado permanente suministrado de Discapacidad; no se crea ni sortea un grupo.'}
   source_refs:
   - manual: chaos-in-the-streets
@@ -1680,7 +1773,9 @@ conditions:
 - id: condition.disability-6
   name: Disability result 6
   name_i18n: {es: 'Discapacidad: resultado 6'}
-  effect: 'Head injury: Stupidity unless within six inches of a Hero. Permanent supplied result; no group creation or reroll.'
+  effect: >-
+    Head injury: Stupidity unless within six inches of a Hero. Permanent supplied result; no group
+    creation or reroll.
   effect_i18n: {es: 'Resultado permanente suministrado de Discapacidad; no se crea ni sortea un grupo.'}
   source_refs:
   - manual: chaos-in-the-streets
@@ -1697,7 +1792,8 @@ conditions:
 - id: condition.disability-hero-nearby
   name: Cripple within six inches of a Hero
   name_i18n: {es: Lisiado a seis pulgadas de un Heroe}
-  effect: 'Qualified current nearby Hero fact exempts Head Injury Stupidity; not a permanent cure.'
+  effect: >-
+    Qualified current nearby Hero fact exempts Head Injury Stupidity; not a permanent cure.
   effect_i18n: {es: 'Hecho actual suministrado de un Heroe cercano; no cura la lesion.'}
   source_refs:
   - manual: chaos-in-the-streets
@@ -1714,7 +1810,8 @@ conditions:
 - id: condition.troll-brew-fear-immunity
   name: Strong Brew
   name_i18n: {es: Cerveza Fuerte}
-  effect: 'A 1-2 brew result leaves the nominated Dwarf immune to fear for the duration of the battle.'
+  effect: >-
+    A 1-2 brew result leaves the nominated Dwarf immune to fear for the duration of the battle.
   effect_i18n: {es: 'Con un resultado 1-2, el enano designado es inmune al miedo durante la batalla.'}
   source_refs:
   - &brewers_source
@@ -1733,7 +1830,8 @@ conditions:
 - id: condition.troll-brew-frenzy
   name: Troll Brew
   name_i18n: {es: Cerveza de Troll}
-  effect: 'A 3-4 brew result subjects the nominated Dwarf to frenzy for the duration of the battle.'
+  effect: >-
+    A 3-4 brew result subjects the nominated Dwarf to frenzy for the duration of the battle.
   effect_i18n: {es: 'Con un resultado 3-4, el enano designado queda sujeto a frenesí durante la batalla.'}
   source_refs:
   - *brewers_source
@@ -1748,8 +1846,9 @@ conditions:
 - id: condition.troll-brew-special-brew
   name: Special Brew
   name_i18n: {es: Cerveza Especial}
-  effect: 'A 5-6 brew result raises the nominated Dwarf''s Weapon Skill and Strength by one for the battle,
-    never above 10.'
+  effect: >-
+    A 5-6 brew result raises the nominated Dwarf's Weapon Skill and Strength by one for the battle,
+    never above 10.
   effect_i18n: {es: 'Con un resultado 5-6, la Habilidad de Armas y la Fuerza del enano designado aumentan
       en 1 durante la batalla, nunca por encima de 10.'}
   source_refs:
@@ -1894,9 +1993,12 @@ conditions:
     The bonus belongs to that weapon and ends when it is no longer used. The post-battle rolls and
     the encounter with the Foole are not simulated.
   effect_i18n:
-    es: El resultado suministrado 1-2 añade +1 Fuerza al arma elegida mientras se usa; sin tirada de campaña.
+    es: >-
+      Resultado 1-2 de modificación suministrado de Maestro Artesano: el arma física elegida gana +1
+      Fuerza. La bonificación pertenece a esa arma y termina cuando deja de usarse. No se simulan
+      las tiradas posteriores a la batalla ni el encuentro con el Bufón.
   source_refs:
-  - manual: Fanatic Online89
+  - manual: fanatic-online-89
     printed_page: 3
     section: The Foole / Master Craftsman / modification roll 1-2
     url: https://broheim.net/downloads/fo/89RunnersUp.pdf
@@ -1923,9 +2025,12 @@ conditions:
     wielder's Initiative while used. Other weapons do not receive the modification. The post-battle
     rolls and the encounter with the Foole are not simulated.
   effect_i18n:
-    es: El resultado suministrado 3-4 añade +1 Iniciativa al portador mientras usa el arma elegida.
+    es: >-
+      Resultado 3-4 de modificación suministrado de Maestro Artesano: el arma física elegida añade
+      +1 a la Iniciativa de su portador mientras se usa. Otras armas no reciben la modificación. No
+      se simulan las tiradas posteriores a la batalla ni el encuentro con el Bufón.
   source_refs:
-  - manual: Fanatic Online89
+  - manual: fanatic-online-89
     printed_page: 3
     section: The Foole / Master Craftsman / modification roll 3-4
     url: https://broheim.net/downloads/fo/89RunnersUp.pdf
@@ -1966,7 +2071,7 @@ conditions:
     printed_page: 0
     section: Dramatis Personae / The Foole / Master Craftsman
     url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-2a
-  - manual: Fanatic Online89
+  - manual: fanatic-online-89
     printed_page: 2
     section: The Foole / Master Craftsman weapon modifications
     url: https://broheim.net/downloads/fo/89RunnersUp.pdf
@@ -2037,7 +2142,7 @@ conditions:
     printed_page: 0
     section: Dramatis Personae / “Busty” Gwen / Special Rules / Massively Built
     url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-2a
-  - manual: Fanatic Online89
+  - manual: fanatic-online-89
     printed_page: 2
     section: Dramatis Personae / “Busty” Gwen / Special Rules / Massively Built
     url: https://broheim.net/downloads/fo/89RunnersUp.pdf

@@ -62,7 +62,7 @@ function violationsIn(files: readonly string[], patterns: readonly [RegExp, stri
   return violations;
 }
 
-describe("P7.3 architecture: UI and adapter boundaries", () => {
+describe("Architecture: UI and adapter boundaries", () => {
   it("UI sources never load YAML directly", () => {
     const violations = violationsIn(
       walk(SRC, [".ts", ".tsx"]).filter((file) => !file.endsWith(".test.ts") && !file.endsWith(".test.tsx")),
@@ -105,7 +105,7 @@ describe("P7.3 architecture: UI and adapter boundaries", () => {
   });
 });
 
-describe("P7.3 bundle guardrails (post-build)", () => {
+describe("Bundle guardrails (post-build)", () => {
   const distExists = existsSync(DIST);
 
   it.skipIf(!distExists)("the built bundle excludes desktop-only tech", () => {

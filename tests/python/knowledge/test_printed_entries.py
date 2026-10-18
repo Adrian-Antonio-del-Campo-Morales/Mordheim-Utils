@@ -36,9 +36,7 @@ if str(TOOLS) not in sys.path:
 pe = pytest.importorskip("printed_entries")
 
 
-# --------------------------------------------------------------------------- #
 # La geometría de una página web
-# --------------------------------------------------------------------------- #
 
 FIGHTER = """<!doctype html><html><body>
 <div class="nav">Grade 2A Dramatis Personae</div>
@@ -112,13 +110,9 @@ def test_a_two_digit_characteristic_is_kept() -> None:
     assert pe.stat_rows(entry) == ["4534335210"]
 
 
-# --------------------------------------------------------------------------- #
 # Una entrada de texto plano, con su ancla
-# --------------------------------------------------------------------------- #
 
-# --------------------------------------------------------------------------- #
 # La estructura de un documento cualquiera: encabezados, tramos y tablas
-# --------------------------------------------------------------------------- #
 
 DOCUMENT = """<!doctype html><html><body>
 <h2>Druchii Equipment Lists</h2>
@@ -169,9 +163,7 @@ def test_document_finds_a_heading_by_level_and_text() -> None:
     assert doc.text(*doc.heading_span_of(2, "Special Rules")) == "Special Rules Nothing here."
 
 
-# --------------------------------------------------------------------------- #
 # La tabla de características de un documento
-# --------------------------------------------------------------------------- #
 
 # Las páginas de 2A imprimen sus perfiles de las dos formas: con el nombre en la
 # primera columna de la tabla (los Outlaws de Stirwood) o sin él, colgando del
@@ -240,9 +232,7 @@ def test_stat_header_reads_the_table_that_titles_its_columns() -> None:
     assert not pe.stat_header([(0, 0, word) for word in "weapons armour".split()])
 
 
-# --------------------------------------------------------------------------- #
 # La línea física y sus celdas: lo que leen las tablas y las listas de precios
-# --------------------------------------------------------------------------- #
 
 def physical(*texts: str, top: int = 0) -> dict:
     """Una línea física: cada texto, una celda, con la extensión que ocupa."""
@@ -322,9 +312,7 @@ def test_list_rows_read_a_multiplier_and_not_the_column_headers() -> None:
                                                     ("Ithilmar armour *", "60 gc")]
 
 
-# --------------------------------------------------------------------------- #
 # La cobertura de un cotejo con muchas unidades
-# --------------------------------------------------------------------------- #
 
 def test_ledger_declares_what_it_compared() -> None:
     """La línea dice unidades, valores, fallos, lo no comparable y el detalle."""
@@ -378,9 +366,7 @@ def test_text_entries_start_at_the_declared_anchor(tmp_path) -> None:
     assert pe.stat_rows(entries[0]) == ["444431417"]
 
 
-# --------------------------------------------------------------------------- #
 # Cómo se comparan los cuatro datos
-# --------------------------------------------------------------------------- #
 
 def entry(text: str = "", **line_words) -> dict:
     return {"heading": "", "lines": [text], "line_words": line_words.get("line_words") or [],
@@ -490,9 +476,7 @@ def test_merge_is_the_identity_for_one_source() -> None:
     assert pe.merge([single]).report() == single.report()
 
 
-# --------------------------------------------------------------------------- #
 # La tarifa que el paquete declara y el índice del documento
-# --------------------------------------------------------------------------- #
 
 def test_package_fee_reads_the_printed_expression() -> None:
     """El contrato guarda la expresión impresa cuando no se cobra en coronas."""

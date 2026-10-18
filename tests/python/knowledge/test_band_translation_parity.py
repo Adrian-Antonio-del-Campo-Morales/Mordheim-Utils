@@ -62,7 +62,7 @@ _NAMES_WHOSE_SPANISH_IS_IDENTICAL = (
     "Dramatis Personae", "Esaul", "Streltsi", "Animal", "Berserker", "Instructor", "Verminkin", "Liche",
     "Magister", "Hobgoblins", "Troll", "Trolls", "Snotlings", "Jarl", "Wulfen", "Ghouls", "Clan Pestilens",
     "Miniath", "Norse", "Berserkers", "Kroxigor", "Zomblins", "Zomblintua",
-    # The promoted supplements (T07) keep these names untranslated: warband and
+    # The promoted supplements keep these names untranslated: warband and
     # hero titles (Rais, Emir, Askar, Thaggi, Domnu, Hatamoto, Shinobi, Ashigaru,
     # Onnabushi, Globadier), ethnic and creature names (Poltergeists, Mourngul,
     # Nosferatu, Boglars, Strigany), place and clan names (Clan Angrund, Ghutani,

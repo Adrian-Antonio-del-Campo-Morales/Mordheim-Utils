@@ -27,7 +27,7 @@ from artefact_document import load_artefact_document  # noqa: E402
 VECTORS = ROOT / "tests" / "fixtures" / "parity" / "vectors"
 ARTEFACT = ROOT / "outputs" / "web-public" / "knowledge" / "knowledge-web.json"
 
-# T12 fase D: the published artefact defers the campaign catalogue (equipment
+# the published artefact defers the campaign catalogue (equipment
 # + campaign sections); these parity vectors assert against the complete
 # artefact, so they merge every fragment the same directory publishes.
 ARTEFACT_DICT: dict = load_artefact_document(ARTEFACT)

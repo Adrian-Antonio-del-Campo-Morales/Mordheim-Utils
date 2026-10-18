@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 """Lector único de **entradas impresas** para el cotejo de fuentes.
 
-Herramienta permanente del utillaje de la KB (`tools/knowledge`): nació en la fase de
-ingesta de 2A/2B y se promocionó aquí con sus tests (`test_printed_entries.py`), porque
+Herramienta permanente del utillaje de la KB (`tools/knowledge`): nació durante la
+ingesta de los suplementos y se promocionó aquí con sus tests (`test_printed_entries.py`), porque
 el cotejo de catálogo contra fuentes sobrevive a esa fase —la KB tiene catálogo de
 hired swords y Dramatis Personae de todos los grados—.
 
-Los cotejos de catálogo —hirelings de 2B y Dramatis Personae de 2A hoy, el que resuelva
+Los cotejos de catálogo —hirelings y Dramatis Personae hoy, el que resuelva
 la KB mañana— comparan lo que una fuente imprime con lo que el paquete declara. Antes
 cada uno leía la fuente a su manera, y el de 2A no la leía por entradas: partía del
 texto aplanado y atribuía a un personaje la tarifa y el rating del vecino de columna
@@ -56,9 +56,7 @@ import yaml
 # línea de cobertura.
 CHECKS = ("block", "fee", "stats", "rating", "rules")
 
-# --------------------------------------------------------------------------- #
 # Tipografía y texto
-# --------------------------------------------------------------------------- #
 
 # Los encabezados de display de los suplementos de 2B salen del extractor en la
 # zona de uso privado de Unicode (la fuente mapea sus glifos ahí).
@@ -129,9 +127,7 @@ def normalize(text: str) -> str:
     )
 
 
-# --------------------------------------------------------------------------- #
 # Dinero
-# --------------------------------------------------------------------------- #
 
 # Divisas que estos suplementos imprimen. ``gold coins`` y ``cold crowns`` son las
 # variantes que el propio árbol ya reconoce en los costes de héroe.
@@ -259,9 +255,7 @@ def fee_index(path: Path) -> dict[str, dict]:
     return out
 
 
-# --------------------------------------------------------------------------- #
 # Entradas
-# --------------------------------------------------------------------------- #
 
 STEP = 10  # separación con la que se sintetiza la geometría de una página web
 
@@ -388,9 +382,7 @@ def entries(lines: Sequence[dict], separator=None) -> list[dict]:
     return out
 
 
-# --------------------------------------------------------------------------- #
 # Fila de características y rating
-# --------------------------------------------------------------------------- #
 
 # Encabezado de la fila de características. Los Dramatis de Karak Azgal no
 # imprimen la palabra 'Profile': su tabla empieza directamente en las columnas, y
@@ -499,9 +491,7 @@ def rule_terms(name: str) -> list[str]:
     return re.findall(r"[A-Za-z']{4,}", name)[:2]
 
 
-# --------------------------------------------------------------------------- #
 # Corpus: las tres formas de leer una fuente
-# --------------------------------------------------------------------------- #
 
 # Un tramo de puntos dentro de una palabra. La capa de texto de varios suplementos
 # —los de Ricco's Eternal Life, y páginas sueltas de los KAZ— escribe los espacios
@@ -612,9 +602,7 @@ def pieces(row: list[tuple[int, int, float, str]],
     return [piece for piece in out if piece]
 
 
-# --------------------------------------------------------------------------- #
 # De la geometría a la celda, la fila y la lista de precios
-# --------------------------------------------------------------------------- #
 
 # Hueco (pt) a partir del cual una línea imprime dos columnas. Medido sobre las
 # páginas de los dos árboles: la prosa separa sus palabras con menos de 2 pt y
@@ -1607,9 +1595,7 @@ class TextCorpus:
         return [dict(entry) for entry in self._entries]
 
 
-# --------------------------------------------------------------------------- #
 # Comparación y cobertura
-# --------------------------------------------------------------------------- #
 
 @dataclass(frozen=True)
 class Package:

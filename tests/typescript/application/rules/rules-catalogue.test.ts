@@ -23,7 +23,7 @@ const rawRelation: ProfileLink["relation"] = "unreviewed";
 void [rawCatalogueText, rawEntryName, rawCategoryLabel, rawRelation];
 
 const ARTEFACT_PATH = resolve(__dirname, "../../../../outputs/web-public/knowledge/knowledge-web.json");
-// T12 fase D: the helper merges prose, presentation and the deferred campaign
+// the helper merges prose, presentation and the deferred campaign
 // catalogue from the same directory the artefact is published in.
 const ARTEFACT = readArtefactDocument(ARTEFACT_PATH) as Record<string, unknown>;
 

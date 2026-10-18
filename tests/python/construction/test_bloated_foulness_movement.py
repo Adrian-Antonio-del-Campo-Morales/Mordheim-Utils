@@ -1,4 +1,4 @@
-"""T13.2b -- Bloated Foulness compiles its Movement reduction.
+"""Bloated Foulness compiles its Movement reduction.
 
 Source: Carnival of Chaos / Blessings of Nurgle / Bloated Foulness, 40 gc.
 "The Tainted One is a huge, disgusting mass of diseased, flabby folds. It gains

@@ -1,7 +1,7 @@
 /**
- * T10 — withdrawal of the members that left the table.
+ * Withdrawal of the members that left the table.
  *
- * The domain operation receives the ids T13 will hand it and applies the roster
+ * The domain operation receives the ids the battle layer hands it and applies the roster
  * consequence of "Blimey/Got Away": a hero or one-member group is removed, a
  * henchman group loses one member, the last member removes the group, an audit
  * entry is written once and a repeated call cannot remove a member twice.
@@ -66,7 +66,7 @@ function roundtrip(state: CampaignDocument): CampaignDocument {
   return { campaign: parsed.campaign, view: parsed.view };
 }
 
-describe("T10 withdrawal (campaign consequence)", () => {
+describe("Withdrawal (campaign consequence)", () => {
   it("removes a hero and records the audit entry", () => {
     const result = withdrawLeftTableMembers(document([warrior("warlord", "disgraced-warlord", "hero"), warrior("mate", "shanghaires", "hero")]), {
       member_ids: ["mate"],

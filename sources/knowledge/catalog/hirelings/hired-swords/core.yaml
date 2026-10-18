@@ -540,7 +540,8 @@ rules:
     - id: hireling.hired-sword.elf-ranger.rule.seeker.excluded
       scope: 'NO'
       binding: null
-      reason: Changing an Exploration die is a campaign action.
+      reason: >-
+        Changing an Exploration die is a campaign action.
 - id: hireling.hired-sword.elf-ranger.rule.excellent-sight
   name: Excellent Sight
   effect: The Elf Ranger detects Hidden enemies at twice the normal Initiative-based distance.
@@ -563,7 +564,8 @@ rules:
     - id: hireling.hired-sword.elf-ranger.rule.excellent-sight.excluded
       scope: 'NO'
       binding: null
-      reason: Spotting Hidden models requires visibility and is outside the duel.
+      reason: >-
+        Spotting Hidden models requires visibility and is outside the duel.
 - id: hireling.hired-sword.elf-ranger.skill.fey
   name: Fey
   kind: special-skill-option
@@ -586,7 +588,8 @@ rules:
     - id: elf-fey-spells
       scope: 'NO'
       binding: null
-      reason: The 4+ protection affects only hostile spells; casting and spell resolution are excluded.
+      reason: >-
+        The 4+ protection affects only hostile spells; casting and spell resolution are excluded.
 - id: hireling.hired-sword.elf-ranger.skill.luck
   name: Luck
   kind: warband_skill
@@ -640,7 +643,8 @@ rules:
     - id: hireling.hired-sword.halfling-scout.rule.cook.campaign
       scope: 'NO'
       binding: null
-      reason: Warband size and Hero limit are campaign/group formation outside the duel.
+      reason: >-
+        Warband size and Hero limit are campaign/group formation outside the duel.
 - id: hireling.hired-sword.ogre-bodyguard.rule.fear
   name: Fear
   effect: The Ogre Bodyguard causes fear.
@@ -708,5 +712,6 @@ rules:
     - id: warlock-spellcasting
       scope: 'NO'
       binding: null
-      reason: Spell generation and casting are excluded; the separate canonical spellcaster identity
+      reason: >-
+        Spell generation and casting are excluded; the separate canonical spellcaster identity
         remains available to actual duel consumers.

@@ -1,6 +1,6 @@
 /**
- * P5.2 final acceptance (KB bundling decision): the shell upgrades from the
- * synchronous fake composition to the real P4.3 reader once
+ * Final acceptance (KB bundling decision): the shell upgrades from the
+ * Synchronous fake composition to the real reader once
  * `knowledge/knowledge-web.json` fetches and validates. Degradation on
  * fetch failure is a *status notice*, never an alert in the user-action
  * error seam.
@@ -43,7 +43,7 @@ function stubFetchWith(body: unknown, status = 200): void {
   );
 }
 
-describe("P5.2 acceptance — real KB loading", () => {
+describe("Acceptance — real KB loading", () => {
   it("fetches the artefact URL and enables the shell", async () => {
     stubFetchWith(artefact);
     render(<ProductApp />);

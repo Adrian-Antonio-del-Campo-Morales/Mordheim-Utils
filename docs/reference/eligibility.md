@@ -14,14 +14,14 @@ The participant projection borrows the existing Sisters table, preserving
 Matriarch-only eligibility. Protection of Sigmar is a valid starting choice with
 an explicitly excluded magic effect; it grants no spell behavior in Combat Lab.
 
-L06 Skull Busta uses one shared active-loadout predicate in specialist and batch
+Skull Busta uses one shared active-loadout predicate in specialist and batch
 queries: mounted use and other weapons are refused; shields are allowed.
 `BuildFacts.mounted` and `ConstructionOperationContext.mounted` are supplied facts
 defaulting to false. Owning a holstered item does not mean using it. Canonical
 Savage Gobbo Boyz access is excluded in the common profile projection; adapters
 transport facts without repeating these decisions.
 
-L05 extends the existing projections, not their ownership. Published named
+These clauses extend the existing projections, not their ownership. Published named
 `profile.skill-access` tables govern both offering and final membership;
 source-URL inference is only a fallback when no table exists. A published empty
 table remains an explicit knowledge gap. Combat Lab displays unsupported named
@@ -138,7 +138,7 @@ ownership and active slots to the same batch operation used by
 `CombatCatalogue.validate_configuration`. The shared module keeps its existing
 blocking/informational policy; the catalogue exposes all reports. Unspecified
 kit compilation is not proof of mandatory owned equipment. Visible editing of supplied facts must preserve this same configuration
-contract. Unresolved concrete product defects belong in [the backlog](../TODO.md).
+contract. Unresolved concrete product defects belong in [the backlog](../../TODO.md).
 
 Combat Lab's 2B hired-sword/Dramatis participant projection uses canonical
 hireling ids and the same shared eligibility engine, without campaign hiring.
@@ -162,7 +162,7 @@ but may not carry two missile weapons.
 
 Consumer centralization is complete for the previously supported equipment and
 skill workflows. The contracts, consumer behavior and retained responsibilities
-below describe the implemented baseline; new T13 combat effects and product
+below describe the implemented baseline; new combat effects and product
 inputs keep their own delivery boundaries.
 
 ## Batch construction contract
@@ -270,9 +270,9 @@ A legal but unsupported effect may be refused by Combat Lab's runtime gate.
 That refusal does not redefine the tabletop selection as illegal. Conversely,
 an injected effect tag proving a combat sequence does not prove canonical access.
 
-For 2A/2B integration, T09's accepted Web flows
-remain accepted. T13.2 is consumer reconciliation, binding/effect compilation
-and activation work using this existing module. F035 revalidates earlier evidence
+The accepted Web flows remain accepted. Consumer reconciliation,
+binding/effect compilation and activation use this existing module. F035
+revalidates earlier evidence
 after extraction; it is not a task to implement the module again. Before
 repairing an older finding, classify it as already resolved, missing canonical
 fact/binding, adapter defect, reproduced shared-decision defect, unsupported

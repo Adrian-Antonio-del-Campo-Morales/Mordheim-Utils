@@ -1,6 +1,6 @@
 import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 /**
- * P6.8 component tests: the review panel renders the pre-export summary,
+ * Component tests: the review panel renders the pre-export summary,
  * surfaces pending work through the status seam, and triggers the auxiliary
  * text downloads — pure projections of the document.
  */

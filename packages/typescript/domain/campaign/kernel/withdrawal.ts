@@ -1,5 +1,5 @@
 /**
- * T10: the campaign half of "the warband withdrew".
+ * The campaign half of "the warband withdrew".
  *
  * Several printed band rules withdraw a warrior from the *roster* once he has
  * already left the table and the warband routs — for example the Pirate Swabbies

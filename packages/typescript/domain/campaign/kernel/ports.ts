@@ -1,7 +1,7 @@
 /**
  * Public knowledge ports: frozen public knowledge and
  * file ports. These are the seams that let domain, application, UI and the
- * adapters (P3.2, P4.3) be developed and tested in parallel against fakes.
+ * Adapters (file and knowledge-reader) be developed and tested in parallel against fakes.
  *
  * Contracts honoured by every implementation:
  * - `queryKnowledge` returns canonical KB records keyed by stable ids; a
@@ -13,7 +13,7 @@
 
 import type { Campaign, OpenPayload } from "./state";
 
-/** Discriminator for the canonical KB record kinds (P4.1 inventory). */
+/** Discriminator for the canonical KB record kinds (canonical inventory). */
 export type KnowledgeKind =
   | "band"
   | "profile"
@@ -32,7 +32,7 @@ export type KnowledgeKind =
 export type Locale = "en" | "es";
 
 /**
- * Canonical KB record. The web KB artefact (P4.2/P4.3) materializes records in
+ * Canonical KB record. The web KB artefact (generator and adapter) materializes records in
  * this shape; the domain never sees YAML.
  */
 export interface KnowledgeRecord {
@@ -48,7 +48,7 @@ export interface KnowledgeRecord {
 /** Stable id reference — a tagged union so callers cannot mix id spaces.
  *
  *  The kind discriminators cover every `KnowledgeKind` family emitted by the
- *  P4.2 generator (verified against the real artefact). Field mapping in the raw
+ * Generator (verified against the real artefact). Field mapping in the raw
  *  artefact: `items` rows use `item_id`; every other family uses `id`.
  */
 export type Id =
@@ -95,7 +95,7 @@ export type KnowledgeResult =
   | { readonly ok: false; readonly reason: "not_found" };
 
 /**
- * The knowledge read model of the domain. Implemented by the P4.3 adapter
+ * The knowledge read model of the domain. Implemented by the knowledge-reader adapter
  * over the generated artefact; faked in tests. No YAML ever reaches callers.
  */
 export interface KnowledgeReader {
@@ -152,7 +152,7 @@ export type SerializeResult =
   | CampaignFileError;
 
 /**
- * File adapter port (implemented by P3.2). The application uses only this —
+ * File adapter port (implemented by the file adapter). The application uses only this —
  * never JSON.parse on campaign text directly.
  */
 export interface CampaignFilePort {

@@ -47,7 +47,7 @@ function walk(dir: string): string[] {
   return out;
 }
 
-describe("P3.4 architecture: domain/application purity", () => {
+describe("Architecture: domain/application purity", () => {
   it("no source file in domain/ or application/ imports UI, browser or storage", () => {
     const violations: string[] = [];
     for (const layer of LAYERS) {

@@ -21,7 +21,7 @@ function context(promoted = false): ConstructionContext {
     skills: {}, slots: { main_weapon_id: "sword" }, possession: ["sword", "staff"] };
 }
 
-describe("L05 shared configured recipient and active-position contract", () => {
+describe("Shared configured recipient and active-position contract", () => {
   it("uses Skull Busta's shared active-loadout restrictions in batch decisions", () => {
     const input: ConstructionContext = { ...context(),
       profile: { ...context().profile, active_weapon_limit: undefined, equipment_access: null, equipment_forbids: [] },

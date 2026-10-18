@@ -166,7 +166,7 @@ export function stateMoment(number: number): MomentSelection {
 }
 
 /**
- * Structural invariants shared with the Python writer's checks (P5.1's
+ * Structural invariants shared with the Python writer's checks ('s
  * `validateForExport` delegates here so rule blocks and export agree).
  */
 export function validateStructure(document: CampaignDocument): UseCaseResult {

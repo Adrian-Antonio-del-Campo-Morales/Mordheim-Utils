@@ -1,4 +1,4 @@
-"""Load the generated web KB artefact completely (T12 fase D).
+"""Load the generated web KB artefact completely.
 
 The generator publishes the artefact as an initial document plus fragments:
 

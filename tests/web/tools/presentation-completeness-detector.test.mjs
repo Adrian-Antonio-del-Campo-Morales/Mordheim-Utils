@@ -1,7 +1,7 @@
 /**
  * Self-tests of the dynamic visible-completeness detector: the negative cases
  * (the detector must flag) and the positive cases (it must not flag) required
- * by the 2A2B plan. These run inside `check:presentation` (step 1), before the
+ * by the presentation plan. These run inside `check:presentation` (step 1), before the
  * static and dynamic audits, with node:test like their siblings.
  *
  * The detector is the shared classifier for every completeness layer: the
@@ -15,9 +15,7 @@ import { classifyVisibleText, classifyCategoryRow, CATEGORY_COMPOSITION, FINDING
 const ES = { locale: "es", surface: "test/es" };
 const EN = { locale: "en", surface: "test/en" };
 
-// ---------------------------------------------------------------------------
 // Negative cases: every problem class must be detected.
-// ---------------------------------------------------------------------------
 
 test("flags a name equal to its id (technical-id)", () => {
   const finding = classifyVisibleText("shared-rule.fear", { ...ES, field: "name", ref: { kind: "rule", id: "shared-rule.fear" } });

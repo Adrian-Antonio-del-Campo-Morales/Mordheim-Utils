@@ -1,4 +1,4 @@
-"""T09 contract parity: the shared tables stay true to the promoted KB.
+"""Contract parity: the shared tables stay true to the promoted KB.
 
 ``packages/typescript/domain/campaign/construction-tables.json`` carries the two
 facts the Web domain cannot derive from the generated artefact: the
@@ -6,9 +6,9 @@ facts the Web domain cannot derive from the generated artefact: the
 KB rules that declare a binding while ``runtime.implemented != YES``.  This gate
 projects both straight from ``sources/knowledge``, so the table cannot drift.
 
-``construction-clauses.json`` is the T09 ledger of the accepted T06 matrix: the
+``construction-clauses.json`` is the construction ledger of the accepted obligations: the
 ``open_clauses`` whose KB record publishes no executable shape (owner KB) and
-the ``transfers`` whose subsystem belongs to T10/T13.  Every entry is resolved
+the ``transfers`` whose subsystem belongs to a later layer.  Every entry is resolved
 against the promoted KB here, and the reconciliation totals are pinned so that
 absorbing a clause is a deliberate edit instead of silent drift.
 
@@ -191,7 +191,7 @@ def test_every_non_covered_obligation_carries_a_review_category():
         "system-excluded",
     }, sorted(categories)
     assert categories.get("blocker", 0) == 0, (
-        "T09 must not close with an open blocker: absorb it (KB + contract + test) or it stays a "
+        "The construction contract must not close with an open blocker: absorb it (KB + contract + test) or it stays a "
         "construction-validity defect"
     )
     assert sum(categories.values()) == (
@@ -310,7 +310,7 @@ def test_the_125_obligations_are_reconciled_totals_in_the_table():
     reconciliation = clauses["reconciliation"]
     review = clauses["review"]
     assert reconciliation["total_obligations"] == 125, (
-        "the accepted T06 matrix routes 125 obligations to T09; regenerate the ledger "
+        "the accepted matrix routes 125 obligations to construction; regenerate the ledger "
         "(python build/cache/t09/t09-classify.py) instead of editing this number"
     )
     assert reconciliation["open_clauses"] == len(clauses["open_clauses"])

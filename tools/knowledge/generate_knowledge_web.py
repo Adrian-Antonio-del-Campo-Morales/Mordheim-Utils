@@ -49,7 +49,7 @@ RULES_PROSE_FILENAME = "rules-prose.json"
 DISPLAY_TEXT_FILENAME = "display-text.json"
 #: Deferred campaign catalogue (items + campaign sections). Not part of the
 #: initial download: the browser fetches it on demand through the reader's
-#: `ensureCatalogue("items" | "campaign")` operation (see T12 fase D).
+#: `ensureCatalogue("items" | "campaign")` operation.
 CATALOGUE_FILENAME = "knowledge-catalogue.json"
 
 #: Item kinds consumed by the browser Campaign Manager.
@@ -373,8 +373,15 @@ def _profile_restriction_data(package, profile) -> tuple[list[dict], list[dict]]
             parameters = binding.get("parameters") or {}
             kinds = [str(value) for value in parameters.get("required_kinds") or () if str(value).strip()]
             if kinds:
+                when_items = [str(value) for value in parameters.get("when_items") or ()
+                              if str(value).strip()]
                 required.append({
                     "rule_id": str(rule["id"]), "kinds": kinds,
+                    # A requirement conditioned on carried items (the Censer the
+                    # Fog Warpstone Fragments oblige) only obliges while one of
+                    # them is in the kit; the consumer reads the same member the
+                    # binding publishes, never an unconditional obligation.
+                    **({"when_items": when_items} if when_items else {}),
                     "excludes": [str(value) for value in parameters.get("required_excludes") or ()
                                  if str(value).strip()],
                 })
@@ -1107,7 +1114,7 @@ def main(argv: list[str] | None = None) -> int:
     artefact["rules_prose_url"] = RULES_PROSE_FILENAME
     artefact["display_text_url"] = DISPLAY_TEXT_FILENAME
     artefact["display_text_digest"] = hashlib.sha256(json.dumps(display_text, ensure_ascii=False, separators=(",", ":")).encode()).hexdigest()
-    # T12 fase D: the campaign catalogue (equipment catalogue + campaign
+    # The campaign catalogue (equipment catalogue + campaign
     # sections) is published as a deferred fragment. The initial document keeps
     # only the core needed to open the application and choose a warband: bands,
     # profiles, skills, mechanics, prose and the presentation index. The

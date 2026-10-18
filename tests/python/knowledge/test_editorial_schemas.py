@@ -388,9 +388,7 @@ def test_no_strictness_justification_has_gone_stale():
     assert not stale, stale
 
 
-# --------------------------------------------------------------------------- #
 # Staged warbands: the contract applies before promotion
-# --------------------------------------------------------------------------- #
 
 def test_every_manual_of_the_kb_is_a_registered_source():
     registered = {entry["id"] for entry in read(REGISTRY / "sources.yaml")["sources"]}

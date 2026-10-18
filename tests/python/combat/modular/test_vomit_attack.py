@@ -1,4 +1,4 @@
-"""L02: canonical optional Vomit Attack and whole-pool replacement witnesses.
+"""Canonical optional Vomit Attack and whole-pool replacement witnesses.
 
 The Warpstone Troll source (Underworld Alliance, p. 5) specifies one automatic
 S5 hit instead of normal attacks, ignoring armour. The maintained mechanic

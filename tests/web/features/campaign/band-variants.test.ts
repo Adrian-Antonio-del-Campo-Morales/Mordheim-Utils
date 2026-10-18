@@ -6,7 +6,7 @@ import { activeBandRuleIds, warbandVariants } from "@domain/campaign/band-varian
 import { createService } from "@src/features/campaign/default-deps";
 
 function knowledge() {
-  // T12 fase D: complete artefact (initial document + deferred catalogue).
+  // complete artefact (initial document + deferred catalogue).
   return readArtefactReader(resolve(process.cwd(), "../../outputs/web-public/knowledge/knowledge-web.json"));
 }
 

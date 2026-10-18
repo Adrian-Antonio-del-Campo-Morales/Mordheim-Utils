@@ -1,4 +1,4 @@
-"""Small independently authored, real-driver T13.1 replay proofs."""
+"""Small independently authored, real-driver duel replay proofs."""
 from dataclasses import replace
 import pytest
 from mordheim_combat_lab.verification.parity._replay import ReplayRng, replay_duel

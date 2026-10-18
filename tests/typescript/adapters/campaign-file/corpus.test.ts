@@ -54,7 +54,7 @@ const NOISE_PATTERNS: readonly { test(value: string): boolean }[] = [
   { test: (value) => /traceback/i.test(value) },
 ];
 
-describe("P7.2: TS adapter rejects every corrupt document with the manifest reason", () => {
+describe("TS adapter rejects every corrupt document with the manifest reason", () => {
   const port = new CampaignFileV5Adapter();
 
   it("corpus is complete: every manifest entry has a file on disk", () => {

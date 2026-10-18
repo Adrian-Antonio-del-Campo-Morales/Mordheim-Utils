@@ -184,13 +184,14 @@ confirmed that it will be removed from the KB. The named Skull Busta/Basha
 4+ counterpart is therefore not an admitted implementation obligation.
 Do not invent a replacement item, access route or ordinary-helmet alias.
 Ordinary-helmet Basha remains implemented and unchanged.
-F063 no longer blocks L07 or modular completion. Any remaining references or
+F063 no longer blocks modular completion. Any remaining references or
 generated data for the rejected counterpart must be removed with that KB entry.
 
 ## Combat Lab remains a 1v1 duel simulator — 2026-10-04
 
 The user reaffirmed that Combat Lab simulates one combatant against one
-combatant. T13 must not expand it into group combat or a warband battle engine.
+combatant. The modular engine must not expand it into group combat or a
+warband battle engine.
 Warband Rout tests, group casualties/psychology, All Alone enemy counting,
 multi-target resolution and independently simulated third participants are
 outside this product scope. Their absence does not block modular completion.
@@ -206,9 +207,10 @@ Commands are considered only for their supplied effects on the duel, not a
 group emission/hearing/recipient subsystem. Preserve complete KB rule text and
 split individual consequences from excluded group clauses.
 
-This decision supersedes broader group/routing requirements in historical
-T13 inventories, deliveries and follow-ups. L21 reconciles those records and
-scope data using this boundary; T14 certifies the admitted 1v1 clauses only.
+This decision supersedes broader group/routing requirements recorded in
+historical implementation inventories, deliveries and follow-ups. Those
+records and their scope data are reconciled against this boundary; optimized
+ports are certified only for the admitted 1v1 clauses.
 
 The user additionally excluded map/terrain rules on 2026-10-04: fog, Mystic
 Mist protection, water/aquatic combat, swamps and similar environmental
@@ -338,7 +340,7 @@ scenarios live in the `dodge-exception` clause of the starsword ficha.
 
 ## Supplied Weaponsmith maintenance affects the physical equipment — 2026-10-15
 
-The recovered Maintenance table in T13 is rolled before each game; its first result
+The recovered Maintenance table is rolled before each game; its first result
 stands even without eligible equipment. Only its already obtained individual result
 is supplied to the duel. Recipients are Heroes and the Weaponsmith. Result 2 gives
 heavy armour 4+ and light armour 5+ before other modifiers. The extra +1 save for

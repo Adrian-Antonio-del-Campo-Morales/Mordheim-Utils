@@ -1,5 +1,5 @@
 /**
- * T10 — Born Marksmen (`axe-hurlers--born-marksmen`).
+ * Born Marksmen (`axe-hurlers--born-marksmen`).
  *
  * "If an Axe Hurler rolls a 'That Lad's Got Talent' as an advancement, he may
  * always choose Shooting skills as one of his two skill list choices. He may do

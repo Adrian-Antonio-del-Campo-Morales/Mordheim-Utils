@@ -444,7 +444,6 @@ def available_backends() -> tuple[str, ...]:
     return ("native", "numpy") if hasattr(_combat_native, "simulate_duel") and compatible else ("numpy",)
 
 # Per-batch stream derivation for the NumPy driver.
-#
 # The native backend seeds one stream per batch, which makes its batches
 # independent, reproducible work units.  The NumPy driver used to carry a
 # single Generator across the whole sample, so its batches were not

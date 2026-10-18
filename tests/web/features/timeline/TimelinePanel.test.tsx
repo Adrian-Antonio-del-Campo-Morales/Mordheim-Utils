@@ -4,7 +4,7 @@ import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
  * panel enumerates the document's moments, navigates through selectMoment
  * without dirtying the document, and shows the current vs selected moment.
  * The service beneath is the real application service with the real file
- * port and a neutral KB reader — same pattern as the P6.1 service tests.
+ * Port and a neutral KB reader — same pattern as the service tests.
  */
 import { describe, expect, it } from "vitest";
 import { useState } from "react";
@@ -131,7 +131,7 @@ function Harness({ service }: { service: CampaignAppService }) {
   return <TimelinePanel knowledge={presentationKnowledge} document={doc} onSelect={select} />;
 }
 
-describe("P6.1 TimelinePanel", () => {
+describe("TimelinePanel", () => {
   it("enumerates draft, states and battles in timeline order", async () => {
     const service = await loadedService();
     const doc = service.current()!;
@@ -168,7 +168,7 @@ describe("P6.1 TimelinePanel", () => {
     expect(fresh).toHaveAttribute("aria-current", "true");
     expect(screen.getByRole("button", { name: /Initial warband.*draft/i })).not.toHaveAttribute("aria-current");
 
-    // Selection never dirties the document (P6.1 contract).
+ // Selection never dirties the document (contract).
     expect(service.isDirty()).toBe(false);
     expect(service.current()?.view.selected_moment).toBe("state:2");
   });

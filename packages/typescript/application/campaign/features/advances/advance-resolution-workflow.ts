@@ -130,8 +130,8 @@ export function commitAdvanceChoice(document: CampaignDocument, reader: Catalogu
     const skill=input.skill_id ? reader.queryKnowledge({id:{kind:"skill_id",value:input.skill_id}}):null; if(!skill?.ok||!offered.some((item)=>item["kind"]==="choose_skill")) return {ok:false,message:"That skill is not offered."};
     const category=String(skill.record.data["category"]??""); if(!skillCategoryAllowed(warrior.skill_access??[],category)) return {ok:false,message:"That skill is outside this Hero's skill tables."};
     const name=String(skill.record.names["en"]??input.skill_id); if(warrior.skills.includes(name)) return {ok:false,message:"The warrior already knows that skill."};
-    // T10: a `special` table is bounded by the printed member list the band
-    // publishes (T09 `skill_lists`). A skill off the list is refused; a list
+    // A `special` table is bounded by the printed member list the band
+    // publishes (`skill_lists`). A skill off the list is refused; a list
     // still published as prose is reported on the row instead of silently
     // granting the whole special catalogue.
     const facts=warrior.profile_id?profileFactsOf(reader,document.campaign.identity.band_id,warrior.profile_id):null;
@@ -146,7 +146,7 @@ export function commitAdvanceChoice(document: CampaignDocument, reader: Catalogu
     // A band special-skill list still published as prose has no members to be a
     // member of: the choice is refused with the code that names the gap, so the
     // whole special catalogue is never granted by accident. The flow opens by
-    // itself as soon as the canonical list is published (T09 `skill_lists`).
+    // itself as soon as the canonical list is published (`skill_lists`).
     if(verdict?.code==="skill_pending_special_list") return {ok:false,message:verdict.message,reason:verdict.code,...(verdict.subject_ids?{subject_ids:verdict.subject_ids}:{})};
     const post=document.campaign.post_battles.find((item)=>!item.complete)!; const committed={...row,committed:true,applied_result:{kind:"skill",id:input.skill_id},applied_label:`Skill: ${name}`};
     return {ok:true,document:update(document,post.battle_number,post.pending_advances!.map((item)=>item===row?committed:item),document.campaign.warriors.map((item)=>item.id===warrior.id?{...item,skills:[...item.skills,name]}:item))};
@@ -181,7 +181,7 @@ export function promoteHenchman(document: CampaignDocument, reader: CatalogueRea
   const {post,warrior,row}=context(document,input.warrior_id,input.threshold); if(!post||!warrior||!row) return {ok:false,message:"No matching pending promotion."};
   const offered=((row["advance_options"]??[]) as OpenPayload[]).some((item)=>item["kind"]==="promote_henchman");
   if(!offered||warrior.kind!=="henchman") return {ok:false,message:"The Lad's Got Talent is not offered for this warrior."};
-  // T10: a printed lifecycle clause can turn the promotion itself into the
+  // A printed lifecycle clause can turn the promotion itself into the
   // removal of the promoted member (`skaven-slaves--doomed`). The clause fires
   // regardless of the Hero quota, so it is checked before the limit below.
   const doomed=promotionRemovalClauseFor(reader,document.campaign.identity.band_id,warrior.profile_id??null);

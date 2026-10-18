@@ -8,7 +8,7 @@
  * browser APIs, no filesystem. Stable KB ids are references; display text is
  * volatile locale snapshot and never used for identity.
  *
- * All mutation happens through the use cases (P3.5/P5.1) returning new
+ * All mutation happens through the use cases returning new
  * states; these types are structural and free of methods.
  */
 

@@ -1,6 +1,6 @@
 """web.p7_5.kb-artefact-performance: the KB artefact stays web-deliverable.
 
-T12 fase D split the published artefact into two downloads:
+The published artefact is split into two downloads:
 
 * ``knowledge-web.json`` is the **initial document** the browser fetches at
   startup: bands, profiles, skills, mechanics, prose and the presentation index,
@@ -40,8 +40,8 @@ CATALOGUE = INITIAL.with_name("knowledge-catalogue.json")
 # Delivery budget for the **initial download**:
 # the artefact must stay under 350 kB gzipped so GitHub Pages serves it in
 # well under one second on a mid-range connection. Measured today: 209 kB for
-# the pre-2A/2B catalogue; the merged document of the 2A/2B delivery measured
-# 641.5 kB gzip, so T12 fase D partitioned it instead of raising the budget:
+# the pre-supplement catalogue; the merged document measured
+# 641.5 kB gzip, so it was partitioned instead of raising the budget:
 # the initial document now measures 282.6 kB gzip and the deferred campaign
 # catalogue 360.6 kB gzip (paid on demand). The combined 643.2 kB is 1.7 kB
 # over the unsplit document: the cost of splitting, not of new content.
@@ -132,7 +132,7 @@ class TestKbArtefactPerformance:
         )
 
     def test_size_metrics_are_stable_and_reported(self) -> None:
-        """The generator output size is deterministic run to run (P4.2)."""
+        """The generator output size is deterministic run to run."""
         artefact = _load(INITIAL)
         catalogue = _load(CATALOGUE)
         counts = {
@@ -144,14 +144,16 @@ class TestKbArtefactPerformance:
         }
         # Reference stats from the last accepted delivery; a change here is a
         # deliberate KB/catalogue change and must update this test. Updated by
-        # T12 for the 2A/2B catalogue delivery (campaign bands, variants and the
+        # the supplement catalogue delivery (campaign bands, variants and the
         # promoted campaign contracts) and split across the initial document and
-        # the deferred campaign catalogue. `items` is 388 since the campaign
-        # inventory fix published `holy_relic` as a catalogue item (387 + 1).
+        # the deferred campaign catalogue. The hireling and campaign-completeness
+        # delivery moved the shared skill set to 87 and the deferred catalogue to
+        # 464 unique items and 17 campaign sections; every id is unique in the
+        # source and in the artefact, so the growth is content, not duplication.
         assert counts == {
             "bands": 161,
             "profiles": 1056,
-            "skills": 82,
-            "items": 388,
-            "campaign_sections": 16,
+            "skills": 87,
+            "items": 464,
+            "campaign_sections": 17,
         }

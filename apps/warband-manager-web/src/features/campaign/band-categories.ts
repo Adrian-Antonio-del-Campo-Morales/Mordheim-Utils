@@ -1,5 +1,5 @@
 /**
- * T11: warband categories offered by the picker, derived from the produced KB
+ * Warband categories offered by the picker, derived from the produced KB
  * artefact rows.
  *
  * The set of categories is data, not a React list: a band publishes its grade
@@ -87,7 +87,7 @@ export function visibleBandsOf(
 /**
  * Why the picker shows what it shows. `no-data` means the artefact publishes no
  * band at all; `no-match` means the enabled categories exclude every published
- * band. T11 must never present both as the same empty state.
+ * band. The picker must never present both as the same empty state.
  */
 export type BandPickerState = "ready" | "no-data" | "no-match";
 

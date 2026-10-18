@@ -102,7 +102,7 @@ const knowledge: KnowledgeReader = {
 };
 
 /**
- * The commit gate always takes a reader, and it evaluates the whole T09
+ * The commit gate always takes a reader, and it evaluates the whole
  * construction contract over the roster (an unknown band cannot commit). The
  * economy suite commits rosters built from fixtures (`sorcerer`, `crew`), so it
  * supplies the matching construction facts: the band the fixture names and the
@@ -192,7 +192,7 @@ describe("desktop test_economy_sequence_matrix.py → web draft economy parity",
     for (const item_id of ["light_armour", "shield", "buckler"]) {
       const result = buyDraftEquipment(doc, { warrior_id: "h1", item_id, unit_price: 1 }, knowledge);
       expect(result.ok).toBe(false);
-      // The T09 construction contract phrases the verdict now: the purchase is
+      // The construction contract phrases the verdict now: the purchase is
       // refused by the published prohibition, not by a second table of tokens.
       if (!result.ok) expect(result.message).toContain("is forbidden for");
     }

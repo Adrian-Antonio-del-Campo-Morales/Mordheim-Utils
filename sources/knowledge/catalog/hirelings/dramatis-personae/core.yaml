@@ -265,7 +265,9 @@ rules:
     - id: aenur.wanderer.non-duel
       scope: 'NO'
       binding: null
-      reason: Hiring, searching and campaign attendance are excluded; this rule grants no in-duel withdrawal.
+      reason: >-
+        Hiring, searching and campaign attendance are excluded; this rule grants no in-duel
+        withdrawal.
 - id: hireling.dramatis.aenur.item.ienh-khain.rule.parry
   name: 'Ienh-Khain: Parry'
   effect: Ienh-Khain can parry.
@@ -356,8 +358,9 @@ rules:
     - id: bertha-high-matriarch
       scope: 'NO'
       binding: null
-      reason: Becoming the warband leader automatically is a roster position settled when she
-        joins; the duel's participants and any supplied nearby leader are given at construction.
+      reason: >-
+        Becoming the warband leader automatically is a roster position settled when she joins; the
+        duel's participants and any supplied nearby leader are given at construction.
 - id: hireling.dramatis.bertha-bestraufrung.rule.sigmars-handmaiden
   name: Sigmar's Handmaiden
   effect: Bertha receives +2 on rolls to determine whether her Prayers of Sigmar are granted.
@@ -379,7 +382,8 @@ rules:
     - id: bertha-sigmars-handmaiden
       scope: 'NO'
       binding: null
-      reason: Granting Prayers of Sigmar belongs to the excluded prayer subsystem and carries no
+      reason: >-
+        Granting Prayers of Sigmar belongs to the excluded prayer subsystem and carries no
         consequence in a resolved duel.
 - id: hireling.dramatis.johann-the-knife.rule.poisoned-weapons
   name: Poisoned Weapons
@@ -448,18 +452,21 @@ rules:
     - id: hireling.dramatis.johann-the-knife.rule.knife-fighter-extraordinaire.shooting
       scope: 'NO'
       binding: null
-      reason: Combines two shooting skills only; shooting is excluded.
+      reason: >-
+        Combines two shooting skills only; shooting is excluded.
 - id: hireling.dramatis.veskit.rule.integrated-warplock-pistols
   name: Integrated Warplock Pistols
-  effect: Both Eshin Fighting Claws have integral Warplock Pistols. In close combat Veskit uses fixed
-    Strength 5 with a total -3 armour-save modifier. The extra Attack is already included in his printed
-    A4. The claws retain their parry and failed-parry reroll under the adopted paired-claw convention;
-    shooting is excluded.
+  effect: >-
+    Both Eshin Fighting Claws have integral Warplock Pistols. In close combat Veskit uses fixed
+    Strength 5 with a total -3 armour-save modifier. The extra Attack is already included in his
+    printed A4. The claws retain their parry and failed-parry reroll under the adopted paired-claw
+    convention; shooting is excluded.
   effect_i18n:
     es: >-
-      Las garras de combate de Veskit incorporan Pistolas Warplock; su Ataque extra indicado ya está
-      incluido en el perfil y sus ataques de garra usan las reglas especiales de Fuerza y modificador de
-      salvación de su entrada.
+      Ambas Garras de Combate Eshin incorporan Pistolas Warplock. En combate cuerpo a cuerpo Veskit
+      usa Fuerza fija 5 con un modificador total de -3 a la salvación de armadura. El Ataque extra
+      ya está incluido en su A4 impreso. Las garras conservan su parada y la repetición tras una
+      parada fallida según la convención adoptada de garras emparejadas; el disparo queda excluido.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -546,7 +553,8 @@ rules:
     - id: veskit-spotting
       scope: 'NO'
       binding: null
-      reason: Finding Hidden enemies requires visibility and spotting, outside the duel.
+      reason: >-
+        Finding Hidden enemies requires visibility and spotting, outside the duel.
 - id: hireling.dramatis.veskit.rule.metallic-body
   name: Metallic Body
   effect: Veskit has a 3+ armour save from his mechanical body.

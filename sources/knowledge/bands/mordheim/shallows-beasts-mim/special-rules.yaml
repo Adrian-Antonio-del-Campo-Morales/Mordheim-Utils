@@ -386,7 +386,9 @@ rules:
     - id: unimplemented.shallows-beasts-mim.swampers.marsh-born
       scope: 'NO'
       binding: null
-      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
+      reason: >-
+        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
+        prose is retained; this is an exclusion, not deferred modular implementation.
   name: Marsh Born
   effect: >-
     Dense areas of watery fenland and log causeways are called home by Swampers. Swampers re-roll
@@ -455,8 +457,9 @@ rules:
         parameters:
           value: true
   name: Blackblood
-  effect: 'If the model loses a wound in close combat, anyone in base contact with the model suffers
-    a Strength 3 hit (no critical hits) from the spurting corrosive blood. Cost: 30 gold crowns'
+  effect: >-
+    If the model loses a wound in close combat, anyone in base contact with the model suffers a
+    Strength 3 hit (no critical hits) from the spurting corrosive blood. Cost: 30 gold crowns
   source:
     manual: broheim.net
     printed_page: 1
@@ -465,9 +468,10 @@ rules:
   name_i18n:
     es: Sangre Negra
   effect_i18n:
-    es: 'Si la miniatura pierde una herida en combate cuerpo a cuerpo, cualquiera en contacto base
-      con la miniatura sufre un impacto de Fuerza 3 (sin golpes críticos) de la sangre corrosiva
-      a chorro. Coste: 30 coronas de oro.'
+    es: >-
+      Si la miniatura pierde una herida en combate cuerpo a cuerpo, cualquiera en contacto base con
+      la miniatura sufre un impacto de Fuerza 3 (sin golpes críticos) de la sangre corrosiva a
+      chorro. Coste: 30 coronas de oro.
   applies_to:
     profile_types:
     - hero
@@ -484,9 +488,9 @@ rules:
         kind: compiler
         id: special-rule.band--mutations-great-claw
   name: Great Claw
-  effect: 'One of the mutant’s arms ends in a great, crab-like claw. He may carry no weapons in this
-    arm, but gains an extra attack in hand-to-hand combat with a +1 Strength bonus. Cost: 50 gold
-    crowns.'
+  effect: >-
+    One of the mutant’s arms ends in a great, crab-like claw. He may carry no weapons in this arm,
+    but gains an extra attack in hand-to-hand combat with a +1 Strength bonus. Cost: 50 gold crowns.
   source:
     manual: broheim.net
     printed_page: 1
@@ -495,9 +499,10 @@ rules:
   name_i18n:
     es: Garra Enorme
   effect_i18n:
-    es: 'Uno de los brazos del mutante termina en una gran garra parecida a la de un cangrejo. No
-      puede llevar armas en este brazo, pero gana un ataque extra en combate cuerpo a cuerpo con
-      un bonus de +1 de Fuerza. Coste: 50 coronas de oro.'
+    es: >-
+      Uno de los brazos del mutante termina en una gran garra parecida a la de un cangrejo. No puede
+      llevar armas en este brazo, pero gana un ataque extra en combate cuerpo a cuerpo con un bonus
+      de +1 de Fuerza. Coste: 50 coronas de oro.
   applies_to:
     profile_types:
     - hero
@@ -514,9 +519,10 @@ rules:
         kind: compiler
         id: special-rule.band--mutations-tentacle
   name: Tentacle
-  effect: 'One of the mutant’s arms ends in a tentacle. He may grapple his opponent in close combat
-    to reduce his attacks by -1, down to a minimum of 1. The mutant may decide which attack his opponent
-    loses. Cost: 35 gold crowns'
+  effect: >-
+    One of the mutant’s arms ends in a tentacle. He may grapple his opponent in close combat to
+    reduce his attacks by -1, down to a minimum of 1. The mutant may decide which attack his
+    opponent loses. Cost: 35 gold crowns
   source:
     manual: broheim.net
     printed_page: 1
@@ -525,9 +531,10 @@ rules:
   name_i18n:
     es: Tentáculo
   effect_i18n:
-    es: 'Uno de los brazos del mutante termina en un tentáculo. Puede atrapar a su oponente en combate
+    es: >-
+      Uno de los brazos del mutante termina en un tentáculo. Puede atrapar a su oponente en combate
       cuerpo a cuerpo para reducir sus ataques en -1, hasta un mínimo de 1. El mutante puede decidir
-      qué ataque pierde su oponente. Coste: 35 coronas de oro.'
+      qué ataque pierde su oponente. Coste: 35 coronas de oro.
   applies_to:
     profile_types:
     - hero
@@ -535,16 +542,18 @@ rules:
   kind: mutation
   name: Prehensile Tail
   name_i18n:
-    es: Prehensile Tail
-  effect: Unless it already possesses a tail, gains one tail attack; may equip one single-handed
-    weapon or shield/buckler in that tail. Choosing an equipped prehensile tail excludes every other
-    tail attack for that hand-to-hand phase. Unable-to-use-weapons restriction persists.
+    es: "Cola Prehensil"
+  effect: >-
+    Unless it already possesses a tail, gains one tail attack; may equip one single-handed weapon or
+    shield/buckler in that tail. Choosing an equipped prehensile tail excludes every other tail
+    attack for that hand-to-hand phase. Unable-to-use-weapons restriction persists.
   effect_i18n:
-    es: Unless it already possesses a tail, gains one tail attack; may equip one single-handed weapon
-      or shield/buckler in that tail. Choosing an equipped prehensile tail excludes every other tail
-      attack for that hand-to-hand phase. Unable-to-use-weapons restriction persists.
+    es: >-
+      Si no posee ya una cola, gana un ataque de cola; puede equipar un arma a una mano o un
+      escudo/broquel en esa cola. Elegir una cola prensil equipada excluye cualquier otro ataque de
+      cola en esa fase de cuerpo a cuerpo. La restricción de no poder usar armas se mantiene.
   source:
-    manual: Mutiny in Marienburg
+    manual: mutiny-in-marienburg
     printed_page: 160
     section: Corrupted Characters / Prehensile Tail
     url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
@@ -565,14 +574,17 @@ rules:
   kind: mutation
   name: Beak
   name_i18n:
-    es: Beak
-  effect: Unless it already possesses a bite, gains one additional close-combat bite at own Strength
-    with no unarmed penalty. Always strikes after double-handed weapons, regardless of charge.
+    es: "Pico"
+  effect: >-
+    Unless it already possesses a bite, gains one additional close-combat bite at own Strength with
+    no unarmed penalty. Always strikes after double-handed weapons, regardless of charge.
   effect_i18n:
-    es: Unless it already possesses a bite, gains one additional close-combat bite at own Strength
-      with no unarmed penalty. Always strikes after double-handed weapons, regardless of charge.
+    es: >-
+      Si no posee ya un mordisco, gana un mordisco adicional en combate cuerpo a cuerpo con su
+      propia Fuerza y sin penalización por luchar desarmado. Golpea siempre después de las armas a
+      dos manos, independientemente de la carga.
   source:
-    manual: Mutiny in Marienburg
+    manual: mutiny-in-marienburg
     printed_page: 162
     section: Corrupted Characters / Beak
     url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
@@ -593,14 +605,17 @@ rules:
   kind: mutation
   name: Electrical Touch
   name_i18n:
-    es: Electrical Touch
-  effect: 'May forfeit one close-combat attack to jolt at +1 Initiative: automatic Strength3 hit,
-    ignores all armour; Strength5 against metal armour. Recharge D3 turns after use.'
+    es: "Toque Eléctrico"
+  effect: >-
+    May forfeit one close-combat attack to jolt at +1 Initiative: automatic Strength3 hit, ignores
+    all armour; Strength5 against metal armour. Recharge D3 turns after use.
   effect_i18n:
-    es: 'May forfeit one close-combat attack to jolt at +1 Initiative: automatic Strength3 hit, ignores
-      all armour; Strength5 against metal armour. Recharge D3 turns after use.'
+    es: >-
+      Puede renunciar a un ataque de combate cuerpo a cuerpo para descargar una sacudida con +1
+      Iniciativa: impacto automático de Fuerza 3 que ignora toda armadura; Fuerza 5 contra armadura
+      metálica. Recarga tras D3 turnos de uso.
   source:
-    manual: Mutiny in Marienburg
+    manual: mutiny-in-marienburg
     printed_page: 162
     section: Corrupted Characters / Electrical Touch
     url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
@@ -621,14 +636,16 @@ rules:
   kind: mutation
   name: Mer-Creature
   name_i18n:
-    es: Mer-Creature
-  effect: Aquatic terrain and submersion are excluded; when moving on land the Hero has Movement
-    reduced by one.
+    es: Criatura Marina
+  effect: >-
+    Aquatic terrain and submersion are excluded; when moving on land the Hero has Movement reduced
+    by one.
   effect_i18n:
-    es: Aquatic terrain and submersion are excluded; when moving on land the Hero has Movement reduced
-      by one.
+    es: >-
+      El terreno acuático y la inmersión quedan excluidos; al moverse en tierra el Héroe tiene el
+      Movimiento reducido en uno.
   source:
-    manual: Mutiny in Marienburg
+    manual: mutiny-in-marienburg
     printed_page: 162
     section: Corrupted Characters / Mer-Creature
     url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
@@ -656,18 +673,20 @@ rules:
     - id: band--mutations-mer-creature.terrain
       scope: 'NO'
       binding: null
-      reason: Terrain, submersion and climbing are outside the supplied melee duel; the source choice
+      reason: >-
+        Terrain, submersion and climbing are outside the supplied melee duel; the source choice
         remains an owned initial configuration fact.
 - id: band--mutations-suckers
   kind: mutation
   name: Suckers
   name_i18n:
-    es: Suckers
+    es: "Ventosas"
   effect: Automatically passes Initiative tests when climbing. Climbing is outside the duel.
   effect_i18n:
-    es: Automatically passes Initiative tests when climbing. Climbing is outside the duel.
+    es: >-
+      Supera automáticamente las pruebas de Iniciativa al trepar. Trepar queda fuera del duelo.
   source:
-    manual: Mutiny in Marienburg
+    manual: mutiny-in-marienburg
     printed_page: 164
     section: Corrupted Characters / Suckers
     url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
@@ -687,18 +706,20 @@ rules:
     - id: band--mutations-suckers.terrain
       scope: 'NO'
       binding: null
-      reason: Terrain, submersion and climbing are outside the supplied melee duel; the source choice
+      reason: >-
+        Terrain, submersion and climbing are outside the supplied melee duel; the source choice
         remains an owned initial configuration fact.
 - id: band--mutations-eye-stalks
   kind: mutation
   name: Eye Stalks
   name_i18n:
-    es: Eye Stalks
+    es: "Ojos Pedunculados"
   effect: Crab-like stalked eyes cause Fear (counts as Hideous).
   effect_i18n:
-    es: Crab-like stalked eyes cause Fear (counts as Hideous).
+    es: >-
+      Sus ojos pedunculados, semejantes a los de un cangrejo, causan Miedo (cuenta como Horrible).
   source:
-    manual: Mutiny in Marienburg
+    manual: mutiny-in-marienburg
     printed_page: 159
     section: Corrupted Characters / Eye Stalks
     url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf

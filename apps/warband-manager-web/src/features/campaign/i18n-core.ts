@@ -9,7 +9,7 @@ const messages = {
   "shell.band-set-1a": { es: "1A", en: "1A" },
   "shell.band-set-1b": { es: "1B", en: "1B" },
   "shell.band-set-1c": { es: "1C", en: "1C" },
-  // T11: the 2A/2B families are published by the KB artefact (`grade`), so the
+  // The supplement families are published by the KB artefact (`grade`), so the
   // picker derives its toggles from data and only the labels live here.
   "shell.band-set-2a": { es: "2A", en: "2A" },
   "shell.band-set-2b": { es: "2B", en: "2B" },
@@ -19,7 +19,7 @@ const messages = {
   "shell.language-es": { es: "Español", en: "Español" },
   "shell.language-en": { es: "English", en: "English" },
   "shell.imported": { es: "Importada", en: "Imported" },
-  // T12 fase D: the equipment catalogue and the campaign sections travel in a
+  // The equipment catalogue and the campaign sections travel in a
   // deferred fragment; a flow that needs them reports the wait in the locale.
   "shell.loading-catalogue": { es: "Cargando el catálogo de campaña…", en: "Loading the campaign catalogue…" },
   "shell.ok": { es: "Aceptar", en: "OK" },
@@ -68,14 +68,14 @@ const messages = {
   "error.no-pending": { es: "No hay ninguna resolución pendiente para esta acción.", en: "There is no pending resolution for this action." },
   "error.previous-step": { es: "Falta resolver algún paso anterior de la postbatalla.", en: "Resolve the preceding post-battle steps first." },
   "error.selection": { es: "La selección o el valor introducido no es válido para esta acción.", en: "The selection or entered value is invalid for this action." },
-  // T11: verdicts returned by the T09 construction/variant contract.
+  // Verdicts returned by the construction/variant contract.
   "error.variant-required": { es: "Elige una variante de banda antes de continuar.", en: "Choose a warband variant before continuing." },
   "error.variant-locked": { es: "La variante de banda queda fijada en cuanto se elige.", en: "The warband variant is locked once it is chosen." },
   "error.variant-unknown": { es: "Esa variante no pertenece a esta banda. Elige una de las opciones publicadas.", en: "That variant does not belong to this warband. Choose one of the published options." },
   "error.variant-options-missing": { es: "La banda exige una variante, pero la base de conocimiento todavía no publica sus opciones. No es una elección tuya pendiente: es un dato que falta.", en: "The warband demands a variant, but the knowledge base does not publish its options yet. It is a missing fact, not a choice you owe." },
   "error.variant-not-published": { es: "Esta banda no publica variantes de banda.", en: "This warband publishes no variants." },
   "error.already-resolved": { es: "Esta acción ya se había resuelto anteriormente.", en: "This action has already been resolved." },
-  // T11: generic verdicts of the T10 campaign contracts. The specific sentence
+  // Generic verdicts of the campaign contracts. The specific sentence
   // is chosen from the stable `reason` code, and every parameter is resolved
   // from the knowledge base (never an id, never the English diagnostic).
   "campaign.error-prerequisite": { es: "Falta un paso o un dato obligatorio antes de esta acción.", en: "A mandatory step or datum is still missing before this action." },
@@ -1086,7 +1086,7 @@ const parameterMessages = {
     es: ({ name, modifier }: SpellArgs) => `Hechizo duplicado: ${name} (dificultad ${modifier})`,
     en: ({ name, modifier }: SpellArgs) => `Duplicated spell: ${name} (difficulty ${modifier})`,
   },
-  // T11: the T09 contract names the member and the chosen option; both are
+  // The construction contract names the member and the chosen option; both are
   // solved from the KB, never printed from the message payload.
   "error.variant-member-forbidden": {
     es: ({ name, option }: { name: PresentationValue; option: PresentationValue }) => `${name} no está disponible con la variante ${option}.`,

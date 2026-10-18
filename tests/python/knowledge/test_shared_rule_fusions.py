@@ -6,8 +6,8 @@ from mordheim_knowledge.loader import load_bands, load_shared_rules
 
 
 #: How many band rules reference each fused id. The counts pin the consolidation:
-#: the promoted 2A/2B packages add references to these ids (and only to these), so
-#: the numbers are the pre-promotion pins plus the references T07 published.
+#: the promoted supplement packages add references to these ids (and only to these), so
+#: the numbers are the pre-promotion pins plus the references published with them.
 FUSED_REFERENCE_COUNTS = {
     "shared-rule.animal": 16,
     "shared-rule.burn-the-witch": 2,

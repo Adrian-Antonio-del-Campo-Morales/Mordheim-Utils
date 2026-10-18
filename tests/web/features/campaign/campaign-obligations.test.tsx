@@ -1,10 +1,10 @@
 /**
- * T11 — campaign obligations of the produced T10 contracts, on the real route.
+ * Campaign obligations of the produced campaign contracts, on the real route.
  *
  * Every case loads its campaign the way the product does (the browser service
  * plus the real v5 file adapter) and then drives the components the campaign
  * route mounts. The subject of these tests is the *interface contract*, not the
- * domain rule (T10's suites own that):
+ * domain rule (the campaign suites own that):
  *
  * 1. the stable code and its parameters reach the presentation — no English
  *    diagnostic is parsed, no technical id is printed, no name is invented;
@@ -16,7 +16,7 @@
  * What JSDOM proves: the rendered tree, accessible names and roles, the stable
  * codes travelling through the shell, the persistence round trip. What it does
  * not prove: real focus order, screen-reader behaviour, zoom and narrow
- * viewports (declared in the T11 delivery).
+ * viewports (declared in the interface delivery).
  */
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -99,16 +99,14 @@ type Locale = "es" | "en";
 const adapter = new CampaignFileV5Adapter();
 const es = (key: Parameters<typeof translate>[0]["key"]) => presentationOutput(translate({ key } as never, "es"));
 
-// ---------------------------------------------------------------------------
 // Crafted campaign files. They carry state the product only reaches by playing
 // (a pending post-battle, a lost leader, a printed grant) and enter through the
 // same import path the app uses for a real file.
-// ---------------------------------------------------------------------------
 
 function baseCampaign(overrides: Partial<Campaign> & { band?: string }): Campaign {
   const { band, ...rest } = overrides;
   return {
-    identity: { campaign_name: "T11", warband_name: "Band", warband_type: "Band", band_id: band ?? KAZ, mercenary_variant: null },
+    identity: { campaign_name: "Test campaign", warband_name: "Band", warband_type: "Band", band_id: band ?? KAZ, mercenary_variant: null },
     configuration: { is_draft: false, starting_gold: 500, minimum_models: 1, maximum_models: 15, hero_limit: 5 },
     resources: { stash_value: 0, rare_finds: 0, treasures: 0, campaign_points: 0 },
     current_state_number: 1,
@@ -200,7 +198,7 @@ async function loadService(campaign: Campaign, reader: ArtefactKnowledgeReader):
  */
 async function kazDraft(reader: ArtefactKnowledgeReader): Promise<CampaignAppService> {
   const service = createService(reader);
-  const created = await service.createCampaign({ band_id: KAZ, campaign_name: "T11 campaign", warband_name: "Banda" });
+  const created = await service.createCampaign({ band_id: KAZ, campaign_name: "Test campaign", warband_name: "Banda" });
   expect(created.ok, created.ok ? "" : created.message).toBe(true);
   const composed = await service.run("composeDraft", {
     band_id: KAZ,
@@ -291,11 +289,11 @@ function rowWith(text: string): HTMLElement {
   return row!;
 }
 
-describe.skipIf(freshArtefactPath() === null)("campaign obligations (T10 contracts on the Web route)", () => {
+describe.skipIf(freshArtefactPath() === null)("campaign obligations (campaign contracts on the Web route)", () => {
   const reader = freshCampaignKnowledge();
 
   // -------------------------------------------------------------------------
-  // 1. Mandatory creation decision (contracts T10-1 and T10-2)
+  // 1. Mandatory creation decision (contracts 1 and 2)
   // -------------------------------------------------------------------------
 
   it("mounts the obligations on the campaign route and records the compulsory creation roll", async () => {
@@ -400,7 +398,7 @@ describe.skipIf(freshArtefactPath() === null)("campaign obligations (T10 contrac
   });
 
   // -------------------------------------------------------------------------
-  // 2. Restricted market (contract T10-3)
+  // 2. Restricted market (contract 3)
   // -------------------------------------------------------------------------
 
   it("lets the named warband buy the printed Trading Post item and refuses every other warband", async () => {
@@ -481,12 +479,12 @@ describe.skipIf(freshArtefactPath() === null)("campaign obligations (T10 contrac
   });
 
   // -------------------------------------------------------------------------
-  // 2b. An advance verdict published as a code (contract T10-5)
+  // 2b. An advance verdict published as a code (contract 5)
   // -------------------------------------------------------------------------
 
   it("phrases the pending band special-skill list the advance contract refuses with", async () => {
     // `house-guard-sc` publishes a hero with `special` skill access and no
-    // members for its special list, so the T10 advance contract refuses the
+    // members for its special list, so the advance contract refuses the
     // choice with its own code instead of granting the whole special catalogue.
     const special = reader.list("skill").find((row) => row["category"] === "special")!;
     expect(special, "the artefact publishes no special skill").toBeDefined();
@@ -625,7 +623,7 @@ describe.skipIf(freshArtefactPath() === null)("campaign obligations (T10 contrac
   });
 
   // -------------------------------------------------------------------------
-  // 4. Roster lifecycle and Rout facts (contracts T10-4 and T10-5)
+  // 4. Roster lifecycle and Rout facts (contracts 4 and 5)
   // -------------------------------------------------------------------------
 
   it("requires the printed mandatory member before any other recruit and keeps it satisfied after reopen", async () => {
@@ -692,7 +690,7 @@ describe.skipIf(freshArtefactPath() === null)("campaign obligations (T10 contrac
   });
 
   // -------------------------------------------------------------------------
-  // 5. Withdrawals reported by the battle (T10's consequence, T13's trigger)
+  // 5. Withdrawals reported by the battle (the campaign consequence, the battle trigger)
   // -------------------------------------------------------------------------
 
   it("applies the withdrawal the battle reported, audits it, and keeps the typed consumer", async () => {
@@ -739,7 +737,7 @@ describe.skipIf(freshArtefactPath() === null)("campaign obligations (T10 contrac
   });
 
   // -------------------------------------------------------------------------
-  // 6. Leader succession (contract T10-4)
+  // 6. Leader succession (contract 4)
   // -------------------------------------------------------------------------
 
   it("seats the published successor only once the leader is gone and explains its source limit", async () => {
@@ -802,7 +800,7 @@ describe.skipIf(freshArtefactPath() === null)("campaign obligations (T10 contrac
   });
 
   // -------------------------------------------------------------------------
-  // 7. Mutations (contract T10-3)
+  // 7. Mutations (contract 3)
   // -------------------------------------------------------------------------
 
   it("buys a published mutation while recruiting, prices it, and refuses the rest", async () => {
@@ -884,7 +882,7 @@ describe.skipIf(freshArtefactPath() === null)("campaign obligations (T10 contrac
   });
 
   // -------------------------------------------------------------------------
-  // 8. Born Marksmen on the real advance flow (contract T10-5)
+  // 8. Born Marksmen on the real advance flow (contract 5)
   // -------------------------------------------------------------------------
 
   it("offers the printed Shooting list to the named profile only, on the advance flow", async () => {

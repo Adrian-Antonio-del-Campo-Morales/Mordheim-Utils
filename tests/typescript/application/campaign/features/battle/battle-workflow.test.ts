@@ -1,6 +1,6 @@
 import { unavailableText } from "@adapters/knowledge-reader/presentation";
 /**
- * P6.4 acceptance tests: the battle workflow drives readiness → record →
+ * Acceptance tests: the battle workflow drives readiness → record →
  * post-battle steps through the real kernel use cases with an
  * artefact-shaped fake KnowledgeReader — plain Node, no React/DOM.
  */
@@ -112,7 +112,7 @@ const WIN = {
   out_of_action_ids: [] as readonly string[],
 };
 
-describe("P6.4 scenario options and readiness", () => {
+describe("Scenario options and readiness", () => {
   it("offers only KB-resolved scenarios", () => {
     const { document, knowledge } = makeCommitted();
     const battle = makeBattleWorkflow(knowledge);
@@ -145,7 +145,7 @@ describe("P6.4 scenario options and readiness", () => {
   });
 });
 
-describe("P6.4 recording battles", () => {
+describe("Recording battles", () => {
   it("awards the victory bonus to the Hero with the Leader rule", () => {
     const { document } = makeCommitted();
     const ordinaryHero = { ...document.campaign.warriors[0], id: "hero-first", skills: [] };
@@ -223,7 +223,7 @@ describe("P6.4 recording battles", () => {
   });
 });
 
-describe("P6.4 post-battle navigation", () => {
+describe("Post-battle navigation", () => {
   it("resolves the eight steps forward and completes the sequence", () => {
     const { document, knowledge } = makeCommitted();
     const battle = makeBattleWorkflow(knowledge);

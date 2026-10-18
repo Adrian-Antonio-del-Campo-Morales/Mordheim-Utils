@@ -1,5 +1,5 @@
 /**
- * T10: campaign mutations.
+ * Campaign mutations.
  *
  * The canonical catalogue lives in `campaign.mutations` and already publishes
  * the purchase rules ("only when they are recruited"; the first mutation at

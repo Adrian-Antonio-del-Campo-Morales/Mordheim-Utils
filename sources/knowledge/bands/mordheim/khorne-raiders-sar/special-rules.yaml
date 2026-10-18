@@ -53,7 +53,9 @@ rules:
     - id: reference.hellblade
       scope: 'NO'
       binding: null
-      reason: 'Equipment reference: selected Hellblade item executes weapon.hellblade; no independent band-wide weapon bonus.'
+      reason: >-
+        Equipment reference: selected Hellblade item executes weapon.hellblade; no independent
+        band-wide weapon bonus.
   name: Hellblade
   effect: >-
     Cost 35 gc, Availability Rare 8. A rare blade charged with the power of Khorne himself. Range:
@@ -230,7 +232,10 @@ rules:
     - id: excluded.khorne-raiders-sar.cannibal-boys--frenzy.board-charge
       scope: 'NO'
       binding: null
-      reason: Compulsory charge range, movement and target selection on a board are outside the 1v1 duel. In-contact attack doubling, psychology exemption and loss after knockdown/stun use the existing Frenzy operator.
+      reason: >-
+        Compulsory charge range, movement and target selection on a board are outside the 1v1 duel.
+        In-contact attack doubling, psychology exemption and loss after knockdown/stun use the
+        existing Frenzy operator.
   name: Frenzy (Cannibal Boys)
   effect: Cannibal Boys suffer the rules for Frenzy as described in the Psychology section.
   source:
@@ -259,7 +264,8 @@ rules:
     - id: campaign.madbrains.leader-promotion
       scope: 'NO'
       binding: null
-      reason: Leader promotion belongs to campaign progression, outside the 1v1 duel.
+      reason: >-
+        Leader promotion belongs to campaign progression, outside the 1v1 duel.
   name: Immune to Psychology (Madbrains)
   effect: >-
     Madbrains pass any Leadership test they are required to take. They cannot be promoted to Leader.
@@ -481,7 +487,10 @@ rules:
           forbids:
           - weapons
   name: Equipment Restrictions
-  effect: "May not use any weapons other than their Hooks. May only use armour from the Madbrain Equipment list; the Hooks are fixed (see Hooks). The Armour section is available to Quartermasters and Flayerkin only."
+  effect: >-
+    May not use any weapons other than their Hooks. May only use armour from the Madbrain Equipment
+    list; the Hooks are fixed (see Hooks). The Armour section is available to Quartermasters and
+    Flayerkin only.
   source:
     manual: broheim.net
     printed_page: 3
@@ -490,7 +499,10 @@ rules:
   name_i18n:
     es: Restricciones de Equipo
   effect_i18n:
-    es: "es"
+    es: >-
+      No pueden usar más armas que sus Ganchos. Solo pueden usar armadura de la lista de Equipo de
+      los Cerebros Locos; los Ganchos son fijos (véanse Ganchos). La sección de Armadura solo está
+      disponible para Intendentes y Pieles Desolladas.
   applies_to:
     profile_ids:
     - flayerkin
@@ -509,7 +521,8 @@ rules:
           forbids:
           - armour
   name: Equipment Restrictions
-  effect: "The Armour section is available to Quartermasters and Flayerkin only."
+  effect: >-
+    The Armour section is available to Quartermasters and Flayerkin only.
   source:
     manual: broheim.net
     printed_page: 3
@@ -518,7 +531,8 @@ rules:
   name_i18n:
     es: Restricciones de Equipo
   effect_i18n:
-    es: "es"
+    es: >-
+      La sección de Armadura solo está disponible para Intendentes y Pieles Desolladas.
   applies_to:
     profile_ids:
     - madbrains

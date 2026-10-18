@@ -471,7 +471,7 @@ def resolve_round(
             second = fighter
     # Lunatics prints EACH turn, so the producer runs every player turn.
     # Preserve the recovered consumer's accumulated Frenzy/Stupidity state;
-    # duration/stacking is still an explicit source question in T13, not a
+    # duration/stacking is still an explicit open source question, not a
     # settled interpretation inferred from these compatibility checks.
     # This profile's own grants are not cancelled by its Psychology immunity;
     # ordinary Frenzy still skips Stupidity while held.

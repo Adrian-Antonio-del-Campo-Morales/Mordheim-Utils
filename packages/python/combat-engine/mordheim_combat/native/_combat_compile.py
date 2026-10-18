@@ -60,10 +60,8 @@ def _constructed(tags=(), **values) -> EffectSet:
     return EffectSet(tags=tuple(tags), **values)
 
 
-# ---------------------------------------------------------------------------
 # Per-attack-source compile.  ``attacker``/``defender`` are CompiledFighters;
 # ``weapon`` is an EffectSet that will be handed to ``_resolve_weapon``.
-# ---------------------------------------------------------------------------
 
 
 @lru_cache(maxsize=4096)
@@ -236,9 +234,7 @@ def compile_source(attacker: CompiledFighter, defender: CompiledFighter,
     }
 
 
-# ---------------------------------------------------------------------------
 # Fighter-level compile (both roles: attacker of ``foe`` and defender).
-# ---------------------------------------------------------------------------
 
 
 def _parry_flags(me: CompiledFighter) -> dict:
@@ -458,9 +454,7 @@ def _compile_fighter(me: CompiledFighter, foe: CompiledFighter) -> dict:
     return result
 
 
-# ---------------------------------------------------------------------------
 # Duel-level compile
-# ---------------------------------------------------------------------------
 
 
 def compile_duel(first: CompiledFighter, second: CompiledFighter) -> dict:

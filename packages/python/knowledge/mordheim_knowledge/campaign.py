@@ -56,9 +56,7 @@ _REQUIRED_CAMPAIGN_STEMS = frozenset({
 })
 
 
-# --------------------------------------------------------------------------- #
 # Small read models returned by the loaders
-# --------------------------------------------------------------------------- #
 
 
 @dataclass(frozen=True, slots=True)
@@ -128,9 +126,7 @@ class HirelingCatalogue:
         return frozenset(str(row.get("id") or "") for row in self.profiles)
 
 
-# --------------------------------------------------------------------------- #
 # Generic tree helpers
-# --------------------------------------------------------------------------- #
 
 
 def _declared_ids(node) -> list[str]:
@@ -214,9 +210,7 @@ def _check_header(
             )
 
 
-# --------------------------------------------------------------------------- #
 # Canonical pools shared by the validation passes
-# --------------------------------------------------------------------------- #
 
 
 def _canonical_band_data(base: Path, ruleset: str):
@@ -254,9 +248,7 @@ def _document_stems(base: Path) -> set[str]:
     return {path.stem for path in (base / CAMPAIGN_CATALOGUE_DIR).glob("*.yaml")}
 
 
-# --------------------------------------------------------------------------- #
 # Per-document integrity passes
-# --------------------------------------------------------------------------- #
 
 
 def _sequence_from_document(document: dict) -> PostBattleSequence:
@@ -444,9 +436,7 @@ def _validate_rarity_document(
             )
 
 
-# --------------------------------------------------------------------------- #
 # Hireling catalogue (profile resolution for the shared loaders)
-# --------------------------------------------------------------------------- #
 
 
 @lru_cache(maxsize=None)
@@ -587,9 +577,7 @@ def load_hireling_traits(
     return rows
 
 
-# --------------------------------------------------------------------------- #
 # Campaign catalogue loaders
-# --------------------------------------------------------------------------- #
 
 
 def _load_all_campaign_documents(ruleset: str, root: Path) -> dict[str, dict]:

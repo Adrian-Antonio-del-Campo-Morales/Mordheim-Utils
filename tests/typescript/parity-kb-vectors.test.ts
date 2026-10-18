@@ -26,7 +26,7 @@ interface VectorFile {
 }
 
 const hasArtefact = existsSync(ARTEFACT_PATH);
-// T12 fase D: merge the deferred campaign catalogue (equipment + campaign
+// merge the deferred campaign catalogue (equipment + campaign
 // sections) so the vectors keep asserting against the complete artefact.
 const artefact: any = hasArtefact ? readArtefactDocument(ARTEFACT_PATH) : null;
 const vectorsRoot = resolve(ROOT, "tests/fixtures/parity/vectors");

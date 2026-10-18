@@ -1,6 +1,6 @@
 /**
- * P6.3 acceptance tests: the equipment feature workflow over the real
- * application service (real P3.2 file port, neutral KB) — inventory read
+ * Acceptance tests: the equipment feature workflow over the real
+ * Application service (real file port, neutral KB) — inventory read
  * model with equipped/stash splits, assign/withdraw conserving
  * `owned = equipped + stash`, rejections as typed values.
  */
@@ -115,7 +115,7 @@ async function loadedService(): Promise<CampaignAppService> {
   return service;
 }
 
-describe("P6.3: equipment overview read model", () => {
+describe("Equipment overview read model", () => {
   it("lists rows with the equipped/stash split and warrior entries", async () => {
     const service = await loadedService();
     const overview = equipmentOverview(service.current()!);
@@ -140,7 +140,7 @@ describe("P6.3: equipment overview read model", () => {
   });
 });
 
-describe("P6.3: assign & withdraw via the service", () => {
+describe("Assign & withdraw via the service", () => {
   it("equips from the stash conserving owned = equipped + stash and dirties", async () => {
     const service = await loadedService();
     const result = await service.run("assignEquipment", {

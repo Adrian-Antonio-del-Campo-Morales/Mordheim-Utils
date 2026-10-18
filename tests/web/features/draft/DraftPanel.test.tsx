@@ -1,7 +1,7 @@
 import { I18nContext } from "@src/features/campaign/i18n-context";
 import { translate } from "@src/features/campaign/i18n-core";
 /**
- * P6.2 component tests: the draft panel composes a warband draft through the
+ * Component tests: the draft panel composes a warband draft through the
  * real kernel workflow with the artefact-shaped fake knowledge reader:
  * - the warband picker lists only KB-resolvable candidates;
  * - starting a draft shows the live composition status;
@@ -17,7 +17,7 @@ import type { CampaignDocument } from "@domain/campaign/index";
 
 afterEach(cleanup);
 
-describe("P6.2 DraftPanel", () => {
+describe("DraftPanel", () => {
   it("updates the legacy draft route and KB options when locale changes", () => {
     const view = (locale: "es" | "en") => <I18nContext.Provider value={{ locale, t: (message) => translate(message, locale) }}><DraftPanel onCommitted={() => undefined} /></I18nContext.Provider>;
     const { rerender } = render(view("es"));

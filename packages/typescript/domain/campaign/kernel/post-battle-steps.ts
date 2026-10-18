@@ -1,5 +1,5 @@
 /**
- * P3.5: post-battle step navigation — the pure port of the Python
+ * Post-battle step navigation — the pure port of the Python
  * `domain/timeline_service` step rules, narrowed to what the frozen port
  * surface expresses (`resolvePostBattleStep`).
  *

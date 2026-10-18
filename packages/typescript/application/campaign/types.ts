@@ -1,6 +1,6 @@
 /**
- * P3.4: frozen public interface of the application service (implemented by
- * P5.1). The UI (P5.2) depends only on this — it never touches the file port,
+ * Frozen public interface of the application service (implemented by
+ * the service layer). The UI depends only on this — it never touches the file port,
  * the KB adapter or JSON directly.
  *
  * The service keeps everything in memory: no browser storage of any kind
@@ -85,7 +85,7 @@ export interface CampaignAppService {
   current(): CampaignDocument | null;
 }
 
-/** Dependencies injected by composition (P5.2 wires the real ones). */
+/** Dependencies injected by composition (wires the real ones). */
 export interface CampaignAppDeps {
   readonly files: CampaignFilePort;
   readonly knowledge: KnowledgeReader;

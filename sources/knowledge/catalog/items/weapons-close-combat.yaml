@@ -535,12 +535,13 @@ items:
   name: Cathayan Longsword
   name_i18n:
     es: Espada Larga de Cathay
-  effect: A close combat weapon using the wielder's Strength, with Parry, Cutting Edge (an additional
-    -1 armour save modifier), and Mastercrafted (+1 Weapon Skill and +1 Initiative for attacks with
-    this sword).
-    this sword).
+  effect: >-
+    A close combat weapon using the wielder's Strength, with Parry, Cutting Edge (an additional -1
+    armour save modifier), and Mastercrafted (+1 Weapon Skill and +1 Initiative for attacks with
+    this sword). this sword).
   effect_i18n:
-    es: Arma cuerpo a cuerpo de Fuerza del usuario, Parada, Filo Cortante (-1 adicional a la armadura)
+    es: >-
+      Arma cuerpo a cuerpo de Fuerza del usuario, Parada, Filo Cortante (-1 adicional a la armadura)
       y Maestría Artesanal (+1 HA e Iniciativa con la espada).
   source_refs:
   - &id023
@@ -553,7 +554,7 @@ items:
     printed_page: 0
     section: Ogre Equipment List
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/maneaters
-  - manual: Border Town Burning
+  - manual: border-town-burning
     printed_page: 30
     section: Cathayan Longsword
     url: https://broheim.net/downloads/campaigns/bordertownburning/Border%20Town%20Burning.pdf
@@ -1422,7 +1423,7 @@ items:
   kind: close-combat-weapon
   name: Main Gauche
   name_i18n:
-    es: Main Gauche
+    es: "Daga Izquierda"
   effect: >-
     Range: Close Combat Strength: As user Parry : Can parry enemy blows
   effect_i18n:
@@ -1834,14 +1835,16 @@ items:
   name: Starsword
   name_i18n:
     es: Espada Estelar
-  effect: A close combat weapon giving +1 Strength and Parry. Its attacks ignore armour saves; ward
-    and Dodge saves are expressly retained.
+  effect: >-
+    A close combat weapon giving +1 Strength and Parry. Its attacks ignore armour saves; ward and
+    Dodge saves are expressly retained.
   effect_i18n:
-    es: Arma cuerpo a cuerpo con +1 Fuerza y Parada. Ignora las salvaciones de armadura; se conservan
+    es: >-
+      Arma cuerpo a cuerpo con +1 Fuerza y Parada. Ignora las salvaciones de armadura; se conservan
       expresamente las especiales y de Esquivar.
   source_refs:
   - *id015
-  - manual: Lustria
+  - manual: lustria
     printed_page: 0
     section: Amazons / Starsword
     url: https://mordheimer.net/docs/testwarbands/grade-1b-warbands/amazons-lustria
@@ -1882,16 +1885,18 @@ items:
   name: Sun Gauntlet
   name_i18n:
     es: Guantelete Solar
-  effect: A ranged Strength 4 weapon with range 12 inches and no long-range hit penalty. In close combat
+  effect: >-
+    A ranged Strength 4 weapon with range 12 inches and no long-range hit penalty. In close combat
     it may be combined with another weapon for one additional Strength 4 attack each turn; no armour
     save is permitted.
   effect_i18n:
-    es: Arma a distancia de Fuerza 4 y alcance 12 pulgadas sin penalizador por larga distancia. En
+    es: >-
+      Arma a distancia de Fuerza 4 y alcance 12 pulgadas sin penalizador por larga distancia. En
       cuerpo a cuerpo se combina con otra arma y concede un ataque adicional de Fuerza 4 cada turno,
       sin salvación por armadura.
   source_refs:
   - *id009
-  - manual: Amazons
+  - manual: amazons
     printed_page: 0
     section: Sun Gauntlet
     url: https://mordheimer.net/docs/testwarbands/grade-1b-warbands/amazons
@@ -2734,9 +2739,13 @@ items:
   name: Ceremonial Scythe
   name_i18n:
     es: Guadaña Ceremonial
-  effect: 'Range: Close combat. Strength: As user +1. Difficult to use, Two-handed: cannot use a second weapon, shield or buckler while wielding it.'
+  effect: >-
+    Range: Close combat. Strength: As user +1. Difficult to use, Two-handed: cannot use a second
+    weapon, shield or buckler while wielding it.
   effect_i18n:
-    es: 'Alcance: Combate cuerpo a cuerpo. Fuerza: como el usuario +1. Difícil de usar, A dos manos: no puede usar una segunda arma, escudo o rodela mientras la empuña.'
+    es: >-
+      Alcance: Combate cuerpo a cuerpo. Fuerza: como el usuario +1. Difícil de usar, A dos manos: no
+      puede usar una segunda arma, escudo o rodela mientras la empuña.
   source_refs:
   - manual: liber-malefic
     printed_page: 5
@@ -2748,7 +2757,11 @@ items:
   kind: close-combat-weapon
   name: Whip (Town Cryer 14)
   name_i18n: {es: Látigo (Town Cryer 14)}
-  effect: 'Range 4 inches; Strength as user -1. Cannot be parried, reach, disarm, +1 enemy armour save. Disarm replaces the wound roll with one opponent parry to hold the weapon, regardless of equipment; a dropped weapon is unavailable for this combat. The user then fights with backup equipment or unarmed. Ranged use and post-combat retrieval/loss are excluded.'
+  effect: >-
+    Range 4 inches; Strength as user -1. Cannot be parried, reach, disarm, +1 enemy armour save.
+    Disarm replaces the wound roll with one opponent parry to hold the weapon, regardless of
+    equipment; a dropped weapon is unavailable for this combat. The user then fights with backup
+    equipment or unarmed. Ranged use and post-combat retrieval/loss are excluded.
   effect_i18n: {es: 'Alcance 4 pulgadas; Fuerza del usuario -1. No permite paradas, alcance, desarmar y +1 armadura enemiga. Desarmar sustituye herir por una parada del adversario para retener el arma, sin exigir equipo. El arma soltada no se usa durante el combate; usa equipo de repuesto o lucha desarmado. Se excluyen disparo y recuperación o pérdida tras el combate.'}
   source_refs:
   - manual: broheim.net
@@ -2762,7 +2775,8 @@ items:
   kind: close-combat-weapon
   name: Axe of Icefang
   name_i18n: {es: 'Hacha de Colmillo de Hielo'}
-  effect: 'Double-handed weapon, with Parry and +1 to injury rolls.'
+  effect: >-
+    Double-handed weapon, with Parry and +1 to injury rolls.
   effect_i18n: {es: 'Arma a dos manos con Parada y +1 a las heridas.'}
   source_refs:
   - manual: broheim.net

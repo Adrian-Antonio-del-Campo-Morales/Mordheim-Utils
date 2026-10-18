@@ -51,10 +51,10 @@ bindings:
       Death Blow replaces a fighter's attacks with one attack at +1 to hit/wound/injury;
       Spectral Touch leaves the attack profile untouched and only adds a wound on a 6.
   notes: >-
-    T07 promoted `call-of-the-night-haint-mim`, so the KB carries this vocabulary: the rule
-    `spirit-hosts--spectral-touch` declares the binding at scope YES / implemented NO, which is
-    the state the loader gives a pending rule — `runtime_bindings` withholds it from compiler and
-    engine consumers until the executable contract exists. `TRAIT_TYPES` has no `spectral_touch`
-    entry and the damage step is not implemented; both belong to the Warband Manager (T09) and
-    Combat Simulator (T13) phases, and this registry entry stays as the record of what the
-    binding means until they land.
+    The supplement promotion added `call-of-the-night-haint-mim`, so the KB carries this
+    vocabulary: the rule `spirit-hosts--spectral-touch` declares the binding at scope YES /
+    implemented NO, which is the state the loader gives a pending rule — `runtime_bindings`
+    withholds it from compiler and engine consumers until the executable contract exists.
+    `TRAIT_TYPES` has no `spectral_touch` entry and the damage step is not implemented; both
+    belong to the Warband Manager and the Combat Simulator, and this registry entry stays as
+    the record of what the binding means until they land.

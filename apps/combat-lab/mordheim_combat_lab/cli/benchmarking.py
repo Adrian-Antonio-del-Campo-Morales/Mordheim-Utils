@@ -73,11 +73,9 @@ ENGINE_LABELS = {"modular": "Modular", "numpy": "Vectorized", "native": "Native"
 
 
 
-# ---------------------------------------------------------------------------
 # Scenario definitions (pure data) live in `scenarios.py`; this module
 # re-exports them so every historical import path keeps working
 # (`benchmarking.DEEP_SCENARIOS`, ...).
-# ---------------------------------------------------------------------------
 from mordheim_combat_lab.cli.scenarios import (  # noqa: E402
     DEEP_SCENARIOS,
     DEEP_SCENARIO_SET_IDS,
@@ -281,13 +279,11 @@ def run_benchmark(
     )
 
 
-# ---------------------------------------------------------------------------
 # Time-to-solution (--tts): the workload is fixed and whole execution
 # strategies are compared by the wall time of solving it completely —
 # throughput rows diagnose *why* one strategy wins, this mode decides *which*
 # one to use. Every strategy runs the same per-batch streams, so the
 # deterministic win/loss/unresolved totals double as a correctness gate.
-# ---------------------------------------------------------------------------
 
 
 @dataclass(frozen=True, slots=True)

@@ -1,5 +1,5 @@
 /**
- * P6.7 acceptance tests: hireling eligibility, exploration read model and
+ * Acceptance tests: hireling eligibility, exploration read model and
  * trading orchestration — plain Node, real kernel use cases, an
  * artefact-shaped fake listings source (no React/DOM/filesystem).
  *
@@ -214,7 +214,7 @@ function makeCommitted(): CampaignDocument {
   return committed.state;
 }
 
-describe("P6.7 hireling offers and eligibility", () => {
+describe("Hireling offers and eligibility", () => {
   it("resolves static eligibility through warband groups (allow/forbid)", () => {
     const workflow = createHirelingsWorkflow({ listings, useCases: createDefaultUseCases(makeKnowledge() as never) });
     const document = makeCommitted();
@@ -262,7 +262,7 @@ describe("P6.7 hireling offers and eligibility", () => {
   });
 });
 
-describe("P6.7 exploration read model", () => {
+describe("Exploration read model", () => {
   it("projects dice per surviving hero plus the win bonus, capped", () => {
     const workflow = createHirelingsWorkflow({ listings, useCases: createDefaultUseCases() });
     const document = makeCommitted();
@@ -308,7 +308,7 @@ describe("P6.7 exploration read model", () => {
   });
 });
 
-describe("P6.7 trading", () => {
+describe("Trading", () => {
   it("buys into the stash honouring the treasury guard", () => {
     const useCases = createDefaultUseCases();
     const workflow = createHirelingsWorkflow({ listings, useCases });

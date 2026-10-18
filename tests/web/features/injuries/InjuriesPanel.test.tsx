@@ -1,6 +1,6 @@
 import { translate, type UiText } from "@src/features/campaign/i18n-core";
 /**
- * P6.5 component tests: the injuries panel renders the read model and
+ * Component tests: the injuries panel renders the read model and
  * dispatches recovery/follow-up actions through the shared CampaignAppView
  * seam (mocked here; the default-deps composition is covered by the slice
  * tests). Rejections surface via the seam's error, never thrown.

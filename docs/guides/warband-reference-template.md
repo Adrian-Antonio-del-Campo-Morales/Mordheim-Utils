@@ -178,9 +178,9 @@ publishes their scoped relationships without duplicating shared prose.
 - `rule_refs`: local rule ID, referenced shared-rule ID, declared scope and
   selectable kind when present. Resolve the shared rule's name/effect through
   the shared catalogue; do not duplicate its prose.
-- Future extension: `profile_restrictions`, scoped textual equipment restrictions, retaining
-  source text and explicit translations where they are not already available
-  through a declared localized rule.
+- `profile_restrictions`: scoped textual equipment restrictions, with source
+  text and explicit translations, published only where no declared localized
+  rule owns the restriction.
 
 This additive section needs no persistence migration or schema-version bump.
 Existing consumers can ignore it. Older artefacts without it must still
@@ -221,10 +221,11 @@ components or in generated output directories.
 
 ## Generator example for review
 
-The GUI template and read model are implemented; the generator extension is
-not. A preliminary generator-only draft was removed because it depended on a
-translation file that did not exist. The following preserves its useful design
-idea as an example, not a tested implementation:
+The GUI template, the read model and the generator extension are implemented:
+`_build_warband_reference` in `tools/knowledge/generate_knowledge_web.py`
+publishes the deferred `campaign["warband-reference"]` section. The preliminary
+draft that preceded it is gone. The following preserves its design idea as
+documentation of the published shape, not as code to copy:
 
 ```python
 def build_warband_reference(packages):

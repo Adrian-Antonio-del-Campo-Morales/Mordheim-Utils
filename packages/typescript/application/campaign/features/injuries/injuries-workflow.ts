@@ -15,10 +15,10 @@
  *  - `recordFollowUp` — park an unresolved roll on the pending post-battle
  *    so the document stays resumable across save/load;
  *  - `recover` — decrement missed games and clear the absence (and a fully
- *    recovered warrior's injury condition), lifting the P6.4 readiness
+ * Recovered warrior's injury condition), lifting the readiness
  *    restriction that reads `games_to_miss`.
  *
- * Step navigation itself stays in P6.4's `resolveStep`; this module only
+ * Step navigation itself stays in `resolveStep`; this module only
  * fills the payloads the sequence carries.
  *
  * Purity: no React, no DOM, no filesystem, no KnowledgeReader dependency.

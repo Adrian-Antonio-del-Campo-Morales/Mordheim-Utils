@@ -8,7 +8,7 @@ import { loadKnowledge } from "@src/features/campaign/default-deps";
 import { bandCategoriesOf, bandCategoryKey, bandPickerState } from "@src/features/campaign/band-categories";
 import { translate } from "@src/features/campaign/i18n-core";
 
-// T12 fase D: only the composition functions are stubbed; the real
+// only the composition functions are stubbed; the real
 // `ensureCampaignCatalogue` is kept so the deferred-catalogue gate runs as in
 // the product.
 vi.mock("@src/features/campaign/default-deps", async (importOriginal) => ({
@@ -19,7 +19,7 @@ vi.mock("@src/features/campaign/default-deps", async (importOriginal) => ({
 
 /**
  * Categories come from the artefact rows, so the fixture publishes the same
- * shape the generator writes: `collection` plus `grade` (2A/2B included).
+ * shape the generator writes: `collection` plus `grade` (supplement bands included).
  */
 const bands = [
   { id: "mercenaries", names: { en: "Mercenaries", es: "Mercenarios" }, collection: "mordheim", grade: "core", variants: [{ id: "reikland", names: { en: "Reikland", es: "Reikland" }, rule_ids: [] }] },
@@ -38,7 +38,7 @@ function mockKnowledge(rows: readonly unknown[]) {
       const band = rows.find((row) => (row as { id: string }).id === id.value);
       return band ? { ok: true, record: { data: band } } : { ok: false, reason: "not_found" };
     },
-    // T12 fase D: the stand-in reader publishes both catalogue families.
+    // the stand-in reader publishes both catalogue families.
     isCatalogueLoaded: () => true,
     ensureCatalogue: async () => {},
   } as never);
@@ -49,7 +49,7 @@ describe("warband categories", () => {
     mockKnowledge(bands);
   });
 
-  it("derives the published categories from the artefact, 2A/2B included", () => {
+  it("derives the published categories from the artefact, supplement bands included", () => {
     expect(bandCategoriesOf(bands, "es").map((category) => category.key).sort()).toEqual(["1a", "1b", "2a", "2b", "core", "trollheim"]);
     const core = bandCategoriesOf(bands, "en").find((category) => category.key === "core");
     const coreEs = bandCategoriesOf(bands, "es").find((category) => category.key === "core");

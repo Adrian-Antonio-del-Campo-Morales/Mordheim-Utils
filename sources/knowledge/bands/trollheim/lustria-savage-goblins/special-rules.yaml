@@ -5,7 +5,13 @@ rules:
   name: Compulsory Feather Headdress
   name_i18n:
     es: Tocado de Plumas obligatorio
-  effect: The warband leader must wear the Feather Headdress; the Witch Doctor is the mandatory starting leader.
+  effect: >-
+    The warband leader must wear the Feather Headdress; the Witch Doctor is the mandatory starting
+    leader.
+  effect_i18n:
+    es: >-
+      El líder de la banda debe llevar el Tocado de Plumas; el Médico Brujo es el líder inicial
+      obligatorio.
   source:
     manual: lustria
     printed_page: 97
@@ -596,6 +602,11 @@ rules:
       binding:
         kind: mechanic
         id: weapon.mace
+    - id: compiler.zomblintua-blunt-attacks
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.zomblintua-blunt-attacks
   name: Blunt Attacks
   effect: All of Zomblintua's attacks count as if they were made with a blunt weapon.
   source:
@@ -936,7 +947,10 @@ rules:
           forbids:
           - sacrifice_dagger
   name: Equipment Restrictions
-  effect: "May not select the Sacrifice Dagger; it is Witch Doctor only. May not buy the Feather Headdress at creation because the Witch Doctor is the mandatory leader; if leadership later passes to the Big Boss, the source says the headdress is inherited automatically."
+  effect: >-
+    May not select the Sacrifice Dagger; it is Witch Doctor only. May not buy the Feather Headdress
+    at creation because the Witch Doctor is the mandatory leader; if leadership later passes to the
+    Big Boss, the source says the headdress is inherited automatically.
   source:
     manual: lustria
     printed_page: 100
@@ -944,7 +958,10 @@ rules:
   name_i18n:
     es: Restricciones de Equipo
   effect_i18n:
-    es: "es"
+    es: >-
+      No puede elegir la Daga de Sacrificio; es exclusiva del Médico Brujo. No puede comprar el
+      Tocado de Plumas en la creación porque el Médico Brujo es el líder obligatorio; si el
+      liderazgo pasa después al Gran Jefe, la fuente dice que el tocado se hereda automáticamente.
   applies_to:
     profile_ids:
     - big-boss
@@ -964,7 +981,10 @@ rules:
           - non-thrown-ranged
           - sacrifice_dagger
   name: Equipment Restrictions
-  effect: "May not use missile weapons unless they have the Thrown Weapon rule. May not select the Sacrifice Dagger; it is Witch Doctor only. May not select the Feather Headdress unless this model somehow becomes the warband leader."
+  effect: >-
+    May not use missile weapons unless they have the Thrown Weapon rule. May not select the
+    Sacrifice Dagger; it is Witch Doctor only. May not select the Feather Headdress unless this
+    model somehow becomes the warband leader.
   source:
     manual: lustria
     printed_page: 101
@@ -972,7 +992,10 @@ rules:
   name_i18n:
     es: Restricciones de Equipo
   effect_i18n:
-    es: "es"
+    es: >-
+      No puede usar armas a distancia a menos que tengan la regla Arma Arrojadiza. No puede elegir
+      la Daga de Sacrificio; es exclusiva del Médico Brujo. No puede elegir el Tocado de Plumas a
+      menos que este modelo llegue a ser de algún modo el líder de la banda.
   applies_to:
     profile_ids:
     - red-teeth
@@ -991,7 +1014,11 @@ rules:
           forbids:
           - sacrifice_dagger
   name: Equipment Restrictions
-  effect: "The starting Rope and Hook and Bolas may not be sold or transferred and are replaced automatically before the next battle if lost. May not select the Sacrifice Dagger; it is Witch Doctor only. May not select the Feather Headdress unless this model somehow becomes the warband leader."
+  effect: >-
+    The starting Rope and Hook and Bolas may not be sold or transferred and are replaced
+    automatically before the next battle if lost. May not select the Sacrifice Dagger; it is Witch
+    Doctor only. May not select the Feather Headdress unless this model somehow becomes the warband
+    leader.
   source:
     manual: lustria
     printed_page: 101
@@ -999,7 +1026,11 @@ rules:
   name_i18n:
     es: Restricciones de Equipo
   effect_i18n:
-    es: "es"
+    es: >-
+      La Cuerda y el Gancho y las Bolas iniciales no pueden venderse ni transferirse y se reponen
+      automáticamente antes de la siguiente batalla si se pierden. No puede elegir la Daga de
+      Sacrificio; es exclusiva del Médico Brujo. No puede elegir el Tocado de Plumas a menos que
+      este modelo llegue a ser de algún modo el líder de la banda.
   applies_to:
     profile_ids:
     - trackers

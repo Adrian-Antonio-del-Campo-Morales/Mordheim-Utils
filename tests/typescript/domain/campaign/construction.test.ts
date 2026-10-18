@@ -1,5 +1,5 @@
 /**
- * T09 construction and selection contracts.
+ * Construction and selection contracts.
  *
  * One case per mechanism over a fake KnowledgeReader shaped like the real
  * artefact (`equipment_access` rows, `equipment_forbids` tokens, band roster

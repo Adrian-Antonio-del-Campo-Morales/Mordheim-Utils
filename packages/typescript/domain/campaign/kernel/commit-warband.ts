@@ -1,5 +1,5 @@
 /**
- * P3.5: commit the initial warband — the pure port of the Python
+ * Commit the initial warband — the pure port of the Python
  * `domain/warband_service.commit_initial_warband`.
  *
  * Draft → State #0: freezes the construction limits into the first immutable
@@ -85,7 +85,7 @@ function foldEquipmentIntoInventory(campaign: Campaign): InventoryItem[] {
  * Commit the draft as State #0. Rejects when the draft is already committed
  * or illegal (with the specific violation, mirroring `draft_is_legal`).
  *
- * The reader is mandatory: the whole T09 construction contract is evaluated over
+ * The reader is mandatory: the whole construction contract is evaluated over
  * the composed draft — declared minimums and henchman group sizes, runtime-scope
  * exclusions, the mandatory variant choice, the per-item equipment verdicts and
  * the complete kit of every member (compulsory family, missile-weapon cap,

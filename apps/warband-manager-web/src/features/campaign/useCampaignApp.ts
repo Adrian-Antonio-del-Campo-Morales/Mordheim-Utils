@@ -2,7 +2,7 @@ import { textNumber, textSymbol, type PresentationValue } from "./presentation-v
 import { localizedLabel } from "./presentation-enums";
 import { useLocale } from "./i18n-context";
 /**
- * P5.2 vertical slice: React wiring of the P5.1 application service.
+ * Vertical slice: React wiring of the application service.
  * This is the only place the shell touches service internals; components
  * consume the hook and stay presentational.
  *
@@ -28,7 +28,7 @@ import { campaignIssueSignal, campaignIssueText, type CampaignIssueCode, type Ca
 /**
  * Name resolvers the shell injects so domain diagnostics never print an id.
  * `bandName`/`variantName` are additive: a caller that omits them gets the
- * shared unavailable message instead of a leaked identifier (T11).
+ * shared unavailable message instead of a leaked identifier.
  * `obligationNames` resolves campaign-catalogue names (decisions, clauses,
  * items) so a rejection can be phrased from its stable code and parameters.
  */
@@ -77,15 +77,15 @@ export interface CampaignAppView {
   errorIssue: CampaignIssueSignal | null;
   /** True when there are unexported campaign changes. */
   dirty: boolean;
-  /** P5.2 acceptance: true while the real KB artefact is being fetched. */
+ /** Acceptance: true while the real KB artefact is being fetched. */
   kbLoading: boolean;
-  /** P5.2 acceptance: degraded-KB notice (fetch failed; fake data in use). */
+ /** Acceptance: degraded-KB notice (fetch failed; fake data in use). */
   kbError: PresentationValue | null;
   importFile(file: File): Promise<void>;
   confirmReplace(): Promise<void>;
   exportFile(): Promise<void>;
   runAction(action: string, input: Record<string, unknown>): Promise<boolean>;
-  /** P6.1: move the timeline selection (never dirties the document). */
+  /** Move the timeline selection (never dirties the document). */
   selectMoment(moment: MomentSelection): void;
   clearError(): void;
 }
@@ -159,9 +159,9 @@ export function localizeErrorMessage(message: string, locale: "es" | "en", profi
   } as const;
   if (Object.hasOwn(exact, message)) return translate({ key: exact[message as keyof typeof exact] }, locale);
 
-  // T09 construction/variant verdicts. The domain returns a diagnostic naming
+  // Construction/variant verdicts. The domain returns a diagnostic naming
   // internal ids; the interface resolves them or restates the verdict, so no
-  // technical id ever reaches a person (T11).
+  // technical id ever reaches a person.
   if (message === "Choose a valid warband variant.") return translate({ key: "error.variant-required" }, locale);
   if (message === "This warband has no variants.") return translate({ key: "error.variant-not-published" }, locale);
   if (message === "The warband variant is locked after selection.") return translate({ key: "error.variant-locked" }, locale);
@@ -255,8 +255,8 @@ function messageOf(err: AppError, locale: "es" | "en", profileName?: (id: string
   if (isUiMessageKey(err.message_key)) {
     return translate({ key: err.message_key }, locale);
   }
-  // T10 contract: the stable code plus its parameters come first. The English
-  // diagnostic is only a fallback for paths that publish no code (T11).
+  // Campaign contract: the stable code plus its parameters come first. The English
+  // diagnostic is only a fallback for paths that publish no code.
   const signal = campaignIssueSignal(err);
   if (signal.code) {
     const structured = names.obligationNames ? campaignIssueText(signal, names.obligationNames, locale) : null;
@@ -293,7 +293,7 @@ export function useCampaignApp(service?: CampaignAppService): CampaignAppView {
   service ??= shared?.service;
   const locale = useLocale(shared?.locale);
   const profileName = shared?.profileName;
-  // P5.2 acceptance: when no service is injected, start on the synchronous
+ // Acceptance: when no service is injected, start on the synchronous
   // fake-composed service (tests and first paint) and upgrade to the real
   // KB reader once the artefact fetch resolves. A load failure surfaces
   // through the error seam; the fake stays active so the app degrades
@@ -431,7 +431,7 @@ export function useCampaignApp(service?: CampaignAppService): CampaignAppView {
     [app],
   );
 
-  // P6.1: view selection only — refreshes the document snapshot in state;
+  // View selection only — refreshes the document snapshot in state;
   // the service guarantees no campaign mutation and no dirty flag.
   const selectMoment = useCallback(
     (moment: MomentSelection) => {

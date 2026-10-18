@@ -1,4 +1,4 @@
-"""T13-F042/F043: regression ledger for the catalogue contract repairs.
+"""F042/F043: regression ledger for the catalogue contract repairs.
 
 Both findings were contract/check mismatches, not product defects:
 
@@ -22,8 +22,7 @@ Contract evidence is not product behaviour. The localized eligibility notes are
 editorial data: the loader and campaign eligibility consumers do not read
 `eligibility.note_i18n`, while the maintained publication path preserves it
 in the catalogue and display-text artefacts. The trace, including the
-Albino Stormvermin note, is recorded in
-`docs/knowledge/2a2b/tasks/T13-catalogue-contracts.md`.
+Albino Stormvermin note, is covered by this regression ledger.
 """
 from __future__ import annotations
 
@@ -77,9 +76,7 @@ def document_with_eligibility(eligibility: dict | None) -> dict:
     return document
 
 
-# ---------------------------------------------------------------------------
 # F042 — racial-maximum references stay resolved
-# ---------------------------------------------------------------------------
 def test_f042_sisters_of_sigmar_links_the_human_maximum():
     effect = sisters_effect()
     assert HUMAN_MAXIMUM in catalog_tests.racial_maximum_ids()
@@ -159,9 +156,7 @@ def test_f042_a_warband_size_maximum_is_not_a_racial_maximum():
     ) == []
 
 
-# ---------------------------------------------------------------------------
 # F043 — the eligibility gate reads the editorial contract
-# ---------------------------------------------------------------------------
 def test_f043_the_maintained_key_set_comes_from_the_contract():
     keys = catalog_tests.eligibility_keys()
     assert {"allow_band_ids", "allow_groups", "forbid_band_ids", "forbid_groups",

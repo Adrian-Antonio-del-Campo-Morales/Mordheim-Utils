@@ -1,5 +1,5 @@
 /**
- * T10: leader succession.
+ * Leader succession.
  *
  * Printed band rules hand the warband to a named successor when its leader is
  * lost — the Cathayan Pirates ("Succession"): "If the Disgraced Warlord is

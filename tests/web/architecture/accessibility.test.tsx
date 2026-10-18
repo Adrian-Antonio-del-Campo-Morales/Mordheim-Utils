@@ -23,7 +23,7 @@ import "@testing-library/jest-dom/vitest";
 import { ProductApp } from "@src/ProductApp";
 import { createService, loadKnowledge } from "@src/features/campaign/default-deps";
 
-// T12 fase D: only the composition functions are stubbed; the real
+// only the composition functions are stubbed; the real
 // `ensureCampaignCatalogue` is kept so the deferred-catalogue gate runs as in
 // the product.
 vi.mock("@src/features/campaign/default-deps", async (importOriginal) => ({
@@ -57,7 +57,7 @@ function source(relative: string): string {
   return readFileSync(join(SRC_FEATURES, relative), "utf8");
 }
 
-describe("P7.4 static accessibility audit", () => {
+describe("Static accessibility audit", () => {
   it("every panel section is a labelled landmark", () => {
     for (const panel of PANELS) {
       const text = readFileSync(panel, "utf8");
@@ -130,9 +130,9 @@ describe("P7.4 static accessibility audit", () => {
   });
 });
 
-describe("P7.4 keyboard & announcement behaviour", () => {
+describe("Keyboard & announcement behaviour", () => {
   beforeEach(() => {
-    // T12 fase D: the stand-in reader publishes both catalogue families, so the
+    // the stand-in reader publishes both catalogue families, so the
     // shell has nothing to defer.
     vi.mocked(loadKnowledge).mockResolvedValue({ list: () => [], isCatalogueLoaded: () => true, ensureCatalogue: async () => {} } as never);
     vi.mocked(createService).mockReturnValue({

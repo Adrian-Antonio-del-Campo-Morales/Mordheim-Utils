@@ -94,8 +94,9 @@ profiles:
       - id: djinn-master-lamp-rolls
         scope: 'NO'
         binding: null
-        reason: The Lamp of the Djinn and its roll procedure are a magic-item subsystem the duel
-          does not cast, so the modification has no consequence here.
+        reason: >-
+          The Lamp of the Djinn and its roll procedure are a magic-item subsystem the duel does not
+          cast, so the modification has no consequence here.
   - id: hireling.dramatis.abdul-alhazred-the-mad-sorcerer.rule.master-wizard
     name: Master Wizard
     effect: Knows Elemental and Necromancy spell lists, but remembers spells randomly each phase.
@@ -113,8 +114,9 @@ profiles:
       - id: master-wizard-spell-lists
         scope: 'NO'
         binding: null
-        reason: Spell-list selection and random spell memory belong to the excluded casting
-          subsystem and produce no duel consequence.
+        reason: >-
+          Spell-list selection and random spell memory belong to the excluded casting subsystem and
+          produce no duel consequence.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -271,8 +273,9 @@ profiles:
       - id: dark-emissary-wizard-spells
         scope: 'NO'
         binding: null
-        reason: Knowing four Lore of Darkness spells is spell selection in the excluded casting
-          subsystem, with no consequence in a resolved duel.
+        reason: >-
+          Knowing four Lore of Darkness spells is spell selection in the excluded casting subsystem,
+          with no consequence in a resolved duel.
   - id: hireling.dramatis.dark-emissary.rule.evil-alignment
     name: Evil Alignment
     effect: Uses source alignment restrictions.
@@ -289,8 +292,9 @@ profiles:
       - id: dark-emissary-evil-alignment
         scope: 'NO'
         binding: null
-        reason: The alignment restriction governs which warbands may hire the Emissary and
-          whether he stays; it states no individual duel consequence.
+        reason: >-
+          The alignment restriction governs which warbands may hire the Emissary and whether he
+          stays; it states no individual duel consequence.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -378,8 +382,9 @@ profiles:
       - id: dijin-katal-excellent-sight
         scope: 'NO'
         binding: null
-        reason: The sight rule extends missile spotting range, which belongs to the excluded
-          shooting subsystem in a resolved duel.
+        reason: >-
+          The sight rule extends missile spotting range, which belongs to the excluded shooting
+          subsystem in a resolved duel.
   - id: hireling.dramatis.dijin-katal-the-renegade-assassin.rule.shadows-embrace
     name: Shadows Embrace
     effect: Uses source concealment rule.
@@ -396,8 +401,9 @@ profiles:
       - id: dijin-katal-shadows-embrace
         scope: 'NO'
         binding: null
-        reason: Concealment covers hiding and hidden deployment, procedures the duel does not
-          evolve; the printed rule states no close-combat consequence.
+        reason: >-
+          Concealment covers hiding and hidden deployment, procedures the duel does not evolve; the
+          printed rule states no close-combat consequence.
   - id: hireling.dramatis.dijin-katal-the-renegade-assassin.rule.perfect-killer
     name: Perfect Killer
     effect: Uses source Perfect Killer rule.
@@ -434,8 +440,9 @@ profiles:
       - id: dijin-katal-renegade
         scope: 'NO'
         binding: null
-        reason: Hiring and retention are campaign consequences settled on the roster, not in a
-          resolved duel.
+        reason: >-
+          Hiring and retention are campaign consequences settled on the roster, not in a resolved
+          duel.
   - id: hireling.dramatis.dijin-katal-the-renegade-assassin.rule.campaign-eligibility
     name: Dynamic Hiring Eligibility — Elven Hired Sword Incompatibility
     effect: >-
@@ -454,8 +461,9 @@ profiles:
       - id: dijin-katal-campaign-eligibility
         scope: 'NO'
         binding: null
-        reason: The roster-composition restriction on Elven Hired Swords is evaluated when the
-          warband is hired and has no duel-time consequence.
+        reason: >-
+          The roster-composition restriction on Elven Hired Swords is evaluated when the warband is
+          hired and has no duel-time consequence.
   unresolved_references:
   - kind: equipment_mapping
     source_name: Repeater Crossbow
@@ -509,10 +517,13 @@ profiles:
   rules:
   - id: hireling.dramatis.drenok-johansen-wielder-of-the-great-axe.rule.berserker
     name: Berserker
-    effect: At zero Wounds a 4+ lets Drenok stand fighting for this turn without restoring a Wound; roll every subsequent turn or go Out of Action.
+    effect: >-
+      At zero Wounds a 4+ lets Drenok stand fighting for this turn without restoring a Wound; roll
+      every subsequent turn or go Out of Action.
     effect_i18n:
       es: >-
-        Usa la regla Berserker de la fuente.
+        Con cero Heridas, un 4+ permite a Drenok seguir luchando este turno sin recuperar una
+        Herida; tira en cada turno posterior o queda Fuera de Combate.
     name_i18n:
       es: Berserker
     runtime:
@@ -530,7 +541,7 @@ profiles:
     effect: Same as a double-handed weapon, plus Parry and +1 to injury rolls.
     effect_i18n:
       es: >-
-        Usa reglas propias de su hacha.
+        Igual que un arma a dos manos, además de Parada y +1 a las tiradas de heridas.
     name_i18n:
       es: Hacha de Colmillo de Hielo
     runtime:
@@ -546,7 +557,8 @@ profiles:
     effect: Worn hide grants a 6+ save in close combat; its 5+ missile save is excluded.
     effect_i18n:
       es: >-
-        Usa reglas propias de su piel.
+        La piel llevada concede una salvación de 6+ en combate cuerpo a cuerpo; su salvación de 5+
+        contra proyectiles queda excluida.
     name_i18n:
       es: Piel de Tigre Dientes de Sable
     runtime:
@@ -560,7 +572,8 @@ profiles:
       - id: drenok-hide-missile-save
         scope: 'NO'
         binding: null
-        reason: The printed 5+ save against missile fire belongs to excluded shooting resolution.
+        reason: >-
+          The printed 5+ save against missile fire belongs to excluded shooting resolution.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -636,14 +649,16 @@ profiles:
       - id: heinrich-tomb-explorer
         scope: 'NO'
         binding: null
-        reason: Tomb exploration is a post-battle campaign procedure with no consequence in a
-          resolved duel.
+        reason: >-
+          Tomb exploration is a post-battle campaign procedure with no consequence in a resolved
+          duel.
   - id: hireling.dramatis.heinrich-altdorf-schmidt.rule.whip-master
     name: Whip Master
     effect: May reroll each hit roll using the whip once, accepting the second result even if worse.
     effect_i18n:
       es: >-
-        Usa la regla de látigo de la fuente.
+        Puede repetir cada tirada para impactar con el látigo una vez, aceptando el segundo
+        resultado aunque sea peor.
     name_i18n:
       es: Maestro del Látigo
     runtime:
@@ -704,8 +719,9 @@ profiles:
       - id: heinrich-whip-swing
         scope: 'NO'
         binding: null
-        reason: Swinging on the whip is a movement and terrain-traversal procedure the duel does
-          not evolve.
+        reason: >-
+          Swinging on the whip is a movement and terrain-traversal procedure the duel does not
+          evolve.
   - id: hireling.dramatis.heinrich-altdorf-schmidt.rule.no-time-for-you
     name: No Time for You
     effect: Uses source combat rule.
@@ -722,8 +738,9 @@ profiles:
       - id: heinrich-no-time-for-you-excluded
         scope: 'NO'
         binding: null
-        reason: The pistol shot resolves in the shooting phase and depends on a third
-          model obstructing the charge path.
+        reason: >-
+          The pistol shot resolves in the shooting phase and depends on a third model obstructing
+          the charge path.
   - id: hireling.dramatis.heinrich-altdorf-schmidt.rule.treasure-payment
     name: Treasure Payment
     effect: Takes source-defined treasures rather than gold.
@@ -740,8 +757,9 @@ profiles:
       - id: heinrich-treasure-payment
         scope: 'NO'
         binding: null
-        reason: Payment in treasures instead of gold is a recruitment and post-battle income
-          consequence, not a duel-time effect.
+        reason: >-
+          Payment in treasures instead of gold is a recruitment and post-battle income consequence,
+          not a duel-time effect.
   unresolved_references:
   - kind: equipment_mapping
     source_name: Lantern
@@ -819,7 +837,7 @@ profiles:
           kind: mechanic
           id: mechanic.djinn-ethereal
     source_refs:
-    - manual: Town Cryer21 / Khemri
+    - manual: town-cryer-21-khemri
       printed_page: 17
       section: Khar-Mel / Powers
       url: https://broheim.net/downloads/campaigns/khemri/Khemri%20Dramatis%20Personae.pdf
@@ -839,7 +857,8 @@ profiles:
       - id: hireling.dramatis.khar-mel-the-djinn.rule.elemental-magic.casting
         scope: 'NO'
         binding: null
-        reason: Casting and random spell generation are excluded.
+        reason: >-
+          Casting and random spell generation are excluded.
   - id: hireling.dramatis.khar-mel-the-djinn.rule.whirlwind
     name: Whirlwind
     effect: Uses source movement/power mode.
@@ -856,16 +875,21 @@ profiles:
       - id: hireling.dramatis.khar-mel-the-djinn.rule.whirlwind.departure
         scope: 'NO'
         binding: null
-        reason: Whirlwind prevents contact/charging and attacks; movement modes leaving the duel unresolved
-          are excluded.
+        reason: >-
+          Whirlwind prevents contact/charging and attacks; movement modes leaving the duel
+          unresolved are excluded.
   - id: hireling.dramatis.khar-mel-the-djinn.rule.djinn-s-curse
     name: Djinn's Curse
-    effect: At own Recovery may choose one power until next own Recovery, never the same power on consecutive
-      turns. Curse imposes -1 to all enemy hit rolls and saves within4 inches. The supplied duel is in
-      base contact; shooting and radius producers are excluded.
+    effect: >-
+      At own Recovery may choose one power until next own Recovery, never the same power on
+      consecutive turns. Curse imposes -1 to all enemy hit rolls and saves within4 inches. The
+      supplied duel is in base contact; shooting and radius producers are excluded.
     effect_i18n:
       es: >-
-        Aplica las penalizaciones de la fuente a las miniaturas cercanas.
+        En su propia Recuperación puede elegir un poder hasta la siguiente Recuperación propia,
+        nunca el mismo poder en turnos consecutivos. La Maldición impone -1 a todas las tiradas para
+        impactar de los enemigos y a sus salvaciones a 4 pulgadas o menos. El duelo suministrado es
+        en contacto con la peana; los productores de disparo y de radio quedan excluidos.
     name_i18n:
       es: Maldición del Genio
     runtime:
@@ -879,17 +903,22 @@ profiles:
           kind: mechanic
           id: mechanic.djinns-curse
     source_refs:
-    - manual: Town Cryer21 / Khemri
+    - manual: town-cryer-21-khemri
       printed_page: 17
       section: Khar-Mel / Powers
       url: https://broheim.net/downloads/campaigns/khemri/Khemri%20Dramatis%20Personae.pdf
   - id: hireling.dramatis.khar-mel-the-djinn.rule.djinn-s-luck
     name: Djinn's Luck
-    effect: At own Recovery may choose one power until next own Recovery, never the same power on consecutive
-      turns. Luck grants a4+ Ward when an ordinary save applies, otherwise6+ (including magical weapons).
+    effect: >-
+      At own Recovery may choose one power until next own Recovery, never the same power on
+      consecutive turns. Luck grants a4+ Ward when an ordinary save applies, otherwise6+ (including
+      magical weapons).
     effect_i18n:
       es: >-
-        Usa el modo de salvación de Guarda de la fuente.
+        En su propia Recuperación puede elegir un poder hasta la siguiente Recuperación propia,
+        nunca el mismo poder en turnos consecutivos. La Suerte concede una Salvación Especial de 4+
+        cuando se aplica una salvación ordinaria, o de 6+ en caso contrario (incluidas las armas
+        mágicas).
     name_i18n:
       es: Suerte del Genio
     runtime:
@@ -903,7 +932,7 @@ profiles:
           kind: mechanic
           id: mechanic.djinns-curse
     source_refs:
-    - manual: Town Cryer21 / Khemri
+    - manual: town-cryer-21-khemri
       printed_page: 17
       section: Khar-Mel / Powers
       url: https://broheim.net/downloads/campaigns/khemri/Khemri%20Dramatis%20Personae.pdf
@@ -1045,10 +1074,10 @@ profiles:
       - id: maximilian-campaign-eligibility
         scope: 'NO'
         binding: null
-        reason: Hiring eligibility is a campaign consequence evaluated on the selected Mercenary
-          variant by the campaign hire rules
-          (packages/typescript/domain/campaign/hire-eligibility.ts); an isolated duel has no hiring
-          step, and the rule states no individual combat consequence.
+        reason: >-
+          Hiring eligibility is a campaign consequence evaluated on the selected Mercenary variant
+          by the campaign hire rules (packages/typescript/domain/campaign/hire-eligibility.ts); an
+          isolated duel has no hiring step, and the rule states no individual combat consequence.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1171,7 +1200,7 @@ profiles:
     effect: Hatred of human males, determined by the individual opponent, not their warband.
     effect_i18n:
       es: >-
-        Usa la regla misántropa de la fuente.
+        Odio a los varones humanos, determinado por el oponente individual, no por su banda.
     name_i18n:
       es: Misántropo
     runtime:
@@ -1186,7 +1215,7 @@ profiles:
           id: mechanic.man-hater
   - id: hireling.dramatis.penthesilea-mark-of-the-serpent.rule.concealment
     name: Concealment
-    name_i18n: {es: Ocultacion}
+    name_i18n: {es: "Ocultación"}
     effect: Hidden in jungle terrain, enemy spotting range is halved (Town Cryer 15 p23).
     effect_i18n: {es: Oculta en selva reduce a la mitad la distancia de deteccion enemiga.}
     runtime:
@@ -1197,11 +1226,15 @@ profiles:
       - id: concealment.jungle-spotting
         scope: 'NO'
         binding: null
-        reason: 'Town Cryer 15 p23 defines jungle hiding and spotting range only; terrain and detection are outside this resolved close-combat duel.'
+        reason: >-
+          Town Cryer 15 p23 defines jungle hiding and spotting range only; terrain and detection are
+          outside this resolved close-combat duel.
   - id: hireling.dramatis.penthesilea-mark-of-the-serpent.rule.weapon-master
     name: Weapon Master
     name_i18n: {es: Adiestramiento en Armas}
-    effect: 'Project ruling 2026-10-15: Weapons Training grants access to melee weapons, with no additional combat bonus and no grant of physical copies.'
+    effect: >-
+      Project ruling 2026-10-15: Weapons Training grants access to melee weapons, with no additional
+      combat bonus and no grant of physical copies.
     effect_i18n: {es: 'Decision humana 2026-10-15: equivale a Adiestramiento en Armas, acceso a armas cuerpo a cuerpo sin bonos adicionales ni ejemplares gratuitos.'}
     runtime:
       scope: 'YES'
@@ -1280,8 +1313,9 @@ profiles:
       - id: truthsayer-wizard-spells
         scope: 'NO'
         binding: null
-        reason: Knowing three Lore of Light spells is spell selection in the excluded casting
-          subsystem, with no consequence in a resolved duel.
+        reason: >-
+          Knowing three Lore of Light spells is spell selection in the excluded casting subsystem,
+          with no consequence in a resolved duel.
   - id: hireling.dramatis.truthsayer.rule.good-alignment
     name: Good Alignment
     effect: Uses source alignment restrictions.
@@ -1298,8 +1332,9 @@ profiles:
       - id: truthsayer-good-alignment
         scope: 'NO'
         binding: null
-        reason: The alignment restriction governs which warbands may hire the Truthsayer; it
-          states no individual duel consequence.
+        reason: >-
+          The alignment restriction governs which warbands may hire the Truthsayer; it states no
+          individual duel consequence.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0

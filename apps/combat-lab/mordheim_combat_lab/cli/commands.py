@@ -1150,8 +1150,9 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
     audit_paths.add_argument("--specs", metavar="PATH",
                              help="override the specifications directory")
     audit.add_argument("--inventory-only", action="store_true", help="read development inventory without executing semantic tests")
-    audit.add_argument("--t13", action="store_true", help="restrict to historical T13 origins")
-    audit.add_argument("--family", help="filter by a T13 mechanism family")
+    audit.add_argument("--historical-origins", "--t13", dest="t13", action="store_true",
+                       help="restrict to historical plan origins (the legacy --t13 spelling is still accepted)")
+    audit.add_argument("--family", help="filter by a mechanism family")
     audit.add_argument("--work-status", choices=("needs_target_reconciliation", "needs_classification", "excluded", "deferred_scope_review", "needs_ruling", "needs_question_review", "implementation_required", "implemented_pending_verification", "verified_modular"))
     audit_filters = audit.add_argument_group("filters")
     audit_filters.add_argument("--scope", choices=("YES", "NO", "LATER", "UNCLASSIFIED"),

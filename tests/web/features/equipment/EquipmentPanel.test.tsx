@@ -1,6 +1,6 @@
 import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 /**
- * P6.3 acceptance tests at the component level: the equipment panel renders
+ * Acceptance tests at the component level: the equipment panel renders
  * the stash/equipped split, the assign action moves units through the real
  * service (real file port, neutral KB), and the withdraw action returns
  * them — rejections surface, never throw.
@@ -133,7 +133,7 @@ function Harness({ service }: { service: CampaignAppService }) {
   );
 }
 
-describe("P6.3 EquipmentPanel", () => {
+describe("EquipmentPanel", () => {
   it("lists stash rows and assigns through the service, conserving the split", async () => {
     const user = userEvent.setup();
     const service = await loadedService();

@@ -1,5 +1,5 @@
 /**
- * T09 §6 blockers: the construction clauses that used to reject a legal choice
+ * Construction blockers: the construction clauses that used to reject a legal choice
  * or allow an invalid one.
  *
  * Seven cases, all of them construction/selection contracts:
@@ -59,7 +59,7 @@ const CANDIDATES = OVERRIDE
   ? [OVERRIDE]
   : [
       // The build output first: the published `outputs/` copy is still the
-      // pre-T09 artefact T12 regenerates, and T10 verified these blockers
+      // stale artefact the generator replaces, and the campaign layer verified these blockers
       // against the freshly generated one (`MORDHEIM_KNOWLEDGE_ARTEFACT`
       // overrides both).
       join(REPO_ROOT, "build", "generated", "knowledge-web", "knowledge-web.json"),
@@ -151,7 +151,7 @@ function campaignDocument(bandId: string): CampaignDocument {
   return document as CampaignDocument;
 }
 
-describe.skipIf(!ARTEFACT_PATH)("T09 §6 blockers (generated artefact)", () => {
+describe.skipIf(!ARTEFACT_PATH)("Construction blockers (generated artefact)", () => {
   const artefact = readArtefactDocument(ARTEFACT_PATH as string);
   const reader: KnowledgeReader = ArtefactKnowledgeReader.from(artefact);
 
@@ -218,7 +218,6 @@ describe.skipIf(!ARTEFACT_PATH)("T09 §6 blockers (generated artefact)", () => {
       // H5 source check (2026-10-04): the rulebook prints the crossbow pistol
       // under Missile Weapons and the brotherhood list sells it at 35 gc, so
       // the catalogue tags it as a crossbow, not as blackpowder. Provenance:
-      // docs/knowledge/2a2b/tasks/T13-silence-equipment.md section 12.
       expect(itemFactsOf(reader, "crossbow_pistol")?.tags).toEqual(["crossbow"]);
       expect(itemFactsOf(reader, "pistol")?.tags).toContain("blackpowder");
     });
@@ -498,7 +497,12 @@ describe.skipIf(!ARTEFACT_PATH)("T09 §6 blockers (generated artefact)", () => {
     it("carries the printed Slayer vow as a structured prohibition", () => {
       const slayer = profileFactsOf(reader, "dwarf-slayers-kaz", "troll-slayers")!;
       const clansman = profileFactsOf(reader, "dwarf-slayers-kaz", "clansmen")!;
-      expect(slayer.equipment_forbids).toEqual(["armour", "ranged-weapons"]);
+      // The vow keeps both families and the two specific witnesses the source
+      // prints beside them: the constant-save cloak (armour) and the
+      // non-thrown missile weapons.
+      expect(slayer.equipment_forbids).toEqual([
+        "armour", "constant-save-cloak", "non-thrown-ranged", "ranged-weapons",
+      ]);
       for (const itemId of ["light_armour", "shield", "helmet", "pistol"] as const) {
         expect(equipmentIssueFor(reader, slayer, itemId)?.code, itemId).toBe("equipment_forbidden");
       }

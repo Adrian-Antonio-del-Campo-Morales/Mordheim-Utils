@@ -9,9 +9,11 @@ This document retains the authoring/execution procedure, not another issue queue
 The independent test battery lives under the [implementation plan](plan.md).
 The reusable support, modular combat loop, declarative corpus loading and
 pytest collection, inventory reconciliation and a CI execution step exist.
-The current milestone is source-derived corpus authoring: do not execute the
-engine while its implementation is unfinished. New scenarios are authored from
-scratch, with a single authorized exception: the one-time move of the already
+Source-derived authoring, semantic review and execution are separate stages.
+Executing this battery is part of
+[modular integration validation](../../../docs/reference/verification.md#modular-integration-closure).
+New scenarios are authored from scratch, with a single authorized exception:
+the one-time move of the already
 developed pilot scenarios into their per-ID files (*Migrated pilot scenarios*
 below). Declarations and empty files do not certify semantic coverage.
 

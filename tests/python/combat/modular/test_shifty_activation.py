@@ -1,4 +1,4 @@
-"""L04: selected canonical Halfling heroes use the accepted Shifty round contract.
+"""Selected canonical Halfling heroes use the accepted Shifty round contract.
 
 The printed profiles and legal mace/dagger choices are unmodified. Free duel
 opponents are labelled controls; no foreign skill/loadout is attributed to a
@@ -179,6 +179,6 @@ def test_low_level_optimized_entries_refuse_without_losing_other_guards(opponent
             call()
     # The Elder now has an innate modular-only Leader contract, independently
     # of selected Shifty. A Cook without either contract remains supported.
-    with pytest.raises(ValueError, match='T13 local modifier.*modular'):
+    with pytest.raises(ValueError, match='Local modifier.*modular'):
         compile_duel_plan(hero(selected=False), opponent)
     compile_duel_plan(hero(profile='halfling-cook', selected=False), opponent)

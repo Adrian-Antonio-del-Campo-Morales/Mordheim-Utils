@@ -1,9 +1,9 @@
-"""F060 — source-derived Shifty poisoned-hand transport witnesses.
+"""Source-derived Shifty poisoned-hand transport witnesses.
 
 The cases run the real ``initialize_duel`` -> ``resolve_round`` modular
 pipeline on explicit synthetic ``CompiledFighter`` inputs. They never call
 ``compile_fighter`` or any construction helper: the concurrent
-warrior-construction centralization owns that frontier, and this lot proves
+warrior-construction centralization owns that frontier, and this suite proves
 engine composition, not legal access.
 
 Accepted contract (permanent rulings, Shifty S2 and Poison timing):
@@ -24,7 +24,7 @@ Synthetic input provenance (engine composition only, not canonical legality):
     weapon minus that tag, mirroring the compiler's contextual-poison
     contract (see the ``CompiledFighter`` field comment);
   * ``skill.shifty`` injected as a tag — the accepted pilot binding; canonical
-    activation is F004 and is not claimed here;
+    activation is not claimed here;
   * no armour or ward save (7) and no defence ids, so no extra die enters a
     tape; every wound roll fails (S3 vs T3 needs 4) so no injury interrupts
     the observed sequence.

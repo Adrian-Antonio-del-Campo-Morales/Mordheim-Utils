@@ -1,5 +1,5 @@
 /**
- * T10 (post-review): the one place where the frozen T09 construction contract is
+ * The one place where the frozen construction contract is
  * applied to a concrete equipment change.
  *
  * The construction contract answers "may this member hold this kit?" for a
@@ -56,7 +56,7 @@ export function equipmentCopiesOf(warrior: Warrior, itemId: IdString): number {
 }
 
 /**
- * Verdict of one equipment change of one member against the T09 contract.
+ * Verdict of one equipment change of one member against the construction contract.
  *
  * - `added_item_ids` are the ids the change introduces; each one is evaluated
  *   per item, together with the item kind and tags, the band-wide and

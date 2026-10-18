@@ -22,7 +22,7 @@ import {
 } from "./campaign-obligations";
 
 /**
- * T11: campaign obligations of the produced campaign contracts (T10).
+ * Campaign obligations of the produced campaign contracts.
  *
  * Every section reads the facts the domain resolves (creation decisions,
  * lifecycle clauses, succession, mutations, Rout facts, withdrawal audit, unique

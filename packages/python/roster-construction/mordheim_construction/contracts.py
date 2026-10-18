@@ -105,6 +105,7 @@ COMPILER_CONTRACTS = {
     "compiler.assassin-poisoner",
     "compiler.woodsmen-quarterstaff",
     "compiler.aldred-fellblade",
+    "compiler.zomblintua-blunt-attacks",
     "compiler.no-blackpowder-weapons",
     "compiler.ignore-difficult-to-use-restrictions",
     "compiler.censer-bearer-loadout",

@@ -1,5 +1,5 @@
 /**
- * T10: warband-creation decisions.
+ * Warband-creation decisions.
  *
  * Some printed band rules ask for a roll while the warband is being created
  * (`imperial-noble--family-heirloom`: "When creating the warband roll a D6 to

@@ -24,7 +24,7 @@ The same walk guards the other half of the contract: an `effect` without an
 to slip through because the truncation branch simply skipped nodes whose
 Spanish text was absent. Every one of the 4,305 nodes that carry an `effect`
 today also carries `effect_i18n.es`, so the rule is stated as an invariant:
-if a node has English rule prose it must have the Spanish counterpart (the T08
+if a node has English rule prose it must have the Spanish counterpart (an earlier
 audit found 80 promoted items that were missing it).
 """
 from __future__ import annotations

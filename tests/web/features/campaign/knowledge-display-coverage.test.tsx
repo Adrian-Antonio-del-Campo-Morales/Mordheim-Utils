@@ -11,7 +11,7 @@ type HintKind = "item" | "skill" | "rule" | "injury";
 type Entry = { readonly kind: HintKind; readonly id: string; readonly profileId?: string; readonly bandId?: string };
 
 function reader(): ArtefactKnowledgeReader {
-  // T12 fase D: complete artefact (initial document + deferred catalogue).
+  // complete artefact (initial document + deferred catalogue).
   return readArtefactReader(resolve(process.cwd(), "../../outputs/web-public/knowledge/knowledge-web.json"));
 }
 

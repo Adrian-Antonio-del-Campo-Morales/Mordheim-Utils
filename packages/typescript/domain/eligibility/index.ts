@@ -482,7 +482,7 @@ export function skillIssue(profile: ProfileFacts, skill: SkillFacts, strictEmpty
   if (skill.category === "special") {
     const lists = profile.skill_lists.filter((list) => list.category === "special");
     // A special list with no transcribed members is the prose-only state of
-    // the printed table (T09/T10): report it as pending exactly like the
+    // the printed table: report it as pending exactly like the
     // absent-list case, instead of refusing the whole catalogue as if the
     // table had been published empty.
     if (lists.length === 0 || lists.every((list) => list.skills.length === 0)) return {

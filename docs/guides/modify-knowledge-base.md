@@ -45,35 +45,35 @@ evidence is reviewed or explicitly pending. See
 [Implement and verify rules](implement-and-verify-rules.md) for the evidence
 side.
 
-## Fusionar reglas equivalentes
+## Merging equivalent rules
 
-Una coincidencia de nombre o de redacción no basta para fusionar reglas. Antes
-de tocar los IDs, revisa por separado estos tres niveles:
+A matching name or wording is not enough to merge rules. Before touching IDs,
+review these three levels separately:
 
-1. **Identidad editorial:** confirma que cada variante conserva exactamente el
-   mismo efecto, alcance, destinatario y excepciones. Las reglas que aplican un
-   efecto a otra categoría (por ejemplo, «todos los No muertos») no se fusionan
-   con las reglas que describen directamente a su portador.
-2. **Identidad mecánica:** compara todos los `runtime.effects[].binding`. Dos
-   reglas equivalentes deben compartir `kind`, `id` y `parameters`; el runtime
-   permanece en la regla local de cada banda y nunca se mueve al catálogo de
-   texto compartido.
-3. **Identidad persistida:** busca el ID en bandas, aplicaciones, artefactos,
-   campañas guardadas y pruebas. El procedimiento normal conserva los IDs y
-   comparte solo el binding. Eliminar IDs es una migración destructiva y exige
-   una nueva versión del formato persistido o aliases compatibles explícitos.
+1. **Editorial identity:** confirm that every variant keeps exactly the same
+   effect, scope, recipient and exceptions. Rules that apply an effect to
+   another category (for example, "all Undead") do not merge with the rules that
+   describe their bearer directly.
+2. **Mechanical identity:** compare every `runtime.effects[].binding`. Two
+   equivalent rules must share `kind`, `id` and `parameters`; the runtime stays
+   in each band's local rule and never moves to the shared text catalogue.
+3. **Persisted identity:** search for the ID in bands, applications, artefacts,
+   saved campaigns and tests. The normal procedure preserves IDs and shares
+   only the binding. Removing IDs is a destructive migration and requires a new
+   persisted-format version or explicit compatible aliases.
 
-Para una fusión destructiva autorizada:
+For an authorized destructive merge:
 
-- elige un único `shared-rule.*` canónico y reemplaza todos los `rule_ref`;
-- conserva las reglas locales, `applies_to`, `grant`, alcance y bindings;
-- escribe texto compartido neutral, sin nombres de perfiles concretos;
-- actualiza consumidores que comparen IDs directamente y regenera los
-  artefactos derivados, sin editarlos a mano;
-- documenta qué IDs se retiran y qué versiones de campaña se aceptan;
-- prueba ausencia de IDs retirados, resolución de referencias, destinatarios,
-  bindings, reglas de campaña afectadas y lectura/escritura del formato;
-- ejecuta formato, `verify --structural`, evidencia semántica y paridad antes de publicar.
+- choose one canonical `shared-rule.*` and replace every `rule_ref`;
+- keep the local rules, `applies_to`, `grant`, scope and bindings;
+- write neutral shared text, without concrete profile names;
+- update consumers that compare IDs directly and regenerate derived artefacts,
+  never editing them by hand;
+- document which IDs are retired and which campaign versions are accepted;
+- test the absence of retired IDs, reference resolution, recipients, bindings,
+  affected campaign rules and read/write of the format;
+- run formatting, `verify --structural`, semantic evidence and parity before
+  publishing.
 
-No fusiones si cambia el destinatario, existe una excepción contextual, los
-parámetros del binding difieren o la compatibilidad de datos no está decidida.
+Do not merge when the recipient changes, a contextual exception exists, the
+binding parameters differ or data compatibility is undecided.

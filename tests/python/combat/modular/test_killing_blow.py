@@ -1,4 +1,4 @@
-"""L06: printed Blood Dragon Killing Blow through canonical attacks and pools."""
+"""Printed Blood Dragon Killing Blow through canonical attacks and pools."""
 from dataclasses import replace
 
 import pytest

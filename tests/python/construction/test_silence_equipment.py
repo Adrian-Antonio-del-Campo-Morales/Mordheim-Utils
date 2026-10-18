@@ -1,4 +1,4 @@
-"""T13-F019 — The Silence's tokens reach the real bound-equipment stage.
+"""F019 — The Silence's tokens reach the real bound-equipment stage.
 
 Levels exercised: the embedded bundle through the maintained transport
 (``validate``/``call``), the maintained compiler/seam route, and the canonical
@@ -91,7 +91,6 @@ def test_every_bound_position_and_the_animal_boundary_are_checked():
     # H5 (2026-10-04): the crossbow pistol is printed under Missile Weapons, not
     # Blackpowder, and the brotherhood list sells it at 35 gc; the stage keeps
     # it legal in every bound position. Source provenance:
-    # docs/knowledge/2a2b/tasks/T13-silence-equipment.md section 12.
     assert call("buildRestriction", embedded_context(
         silence_build(main_weapon_id="weapon.sword", extra_hand_id="crossbow_pistol")),
         "boundEquipment") is None

@@ -1,5 +1,5 @@
 /**
- * T10 — warband-creation decisions.
+ * Warband-creation decisions.
  *
  * The published case is `adventurers-kaz / imperial-noble--family-heirloom`:
  * "When creating the warband roll a D6 to see what its power is". The roll is a
@@ -36,8 +36,8 @@ const OVERRIDE = process.env.MORDHEIM_KNOWLEDGE_ARTEFACT;
 const CANDIDATES = OVERRIDE
   ? [OVERRIDE]
   : [
-      // The build output first: T10's evidence is the freshly generated
-      // artefact, while `outputs/` still holds the pre-T10 copy T12 regenerates.
+      // The build output first: the campaign evidence is the freshly generated
+      // artefact, while `outputs/` still holds the stale copy the generator replaces.
       join(REPO_ROOT, "build", "generated", "knowledge-web", "knowledge-web.json"),
       join(REPO_ROOT, "outputs", "web-public", "knowledge", "knowledge-web.json"),
     ];
@@ -97,7 +97,7 @@ function roundtrip(document: CampaignDocument): CampaignDocument {
   return { campaign: parsed.campaign, view: parsed.view };
 }
 
-describe.skipIf(!ARTEFACT_PATH)("T10 creation decisions (generated artefact)", () => {
+describe.skipIf(!ARTEFACT_PATH)("Warband-creation decisions (generated artefact)", () => {
   const artefact = readArtefactDocument(ARTEFACT_PATH as string);
   const reader = ArtefactKnowledgeReader.from(artefact);
 

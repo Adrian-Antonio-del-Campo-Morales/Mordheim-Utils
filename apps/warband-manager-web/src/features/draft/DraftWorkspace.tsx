@@ -6,7 +6,7 @@ import { useCampaignApp, useCloseOnCampaignError } from "../campaign/useCampaign
 import { abilityNameText, knowledgeName, localizedLabel, warriorAbilities, warriorAbilityRef, warriorName, resourceAmount, variantName } from "../campaign/displayText";
 import { presentationOutput } from "../campaign/presentation-output";
 import { textJoin, textNumber, textSymbol, warbandPersonalName, warriorCharacteristic, warriorPersonalName } from "../campaign/presentation-values";
-// T09 construction contract: the interface presents the variant frame the
+// Construction contract: the interface presents the variant frame the
 // domain resolves; it never decides which slot an option opens.
 import { bandFactsOf, variantFrameOf, variantGatesOf, variantRequirementOf } from "@domain/campaign/index";
 import type { CampaignDocument } from "../campaign/types";

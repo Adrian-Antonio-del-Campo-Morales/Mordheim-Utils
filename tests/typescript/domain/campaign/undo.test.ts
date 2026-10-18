@@ -4,7 +4,7 @@
  * `web_target: tests/typescript/domain/campaign/undo.test.ts`.
  *
  * Desktop semantics live in `AppController.perform_undoable`; the web
- * equivalent is the P5.1 application service undo stack (plain document
+ * Equivalent is the application service undo stack (plain document
  * history, verbatim restore, fixed cap — desktop caps at 20, web at 50).
  * Behavioural equivalence, not mechanical translation.
  *

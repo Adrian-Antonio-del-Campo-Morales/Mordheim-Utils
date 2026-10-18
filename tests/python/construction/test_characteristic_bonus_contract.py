@@ -1,4 +1,4 @@
-"""T13.2a -- characteristic bonus contract of the combat compiler.
+"""Characteristic bonus contract of the combat compiler.
 
 These cases pin how ``stat_bonuses`` are built and applied.  A binding may only
 target the canonical characteristics, and a bonus must be an integer:

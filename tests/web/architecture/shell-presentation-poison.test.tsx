@@ -4,7 +4,7 @@ import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 import { ProductApp } from "@src/ProductApp";
 import { loadKnowledge, createService } from "@src/features/campaign/default-deps";
 
-// T12 fase D: only the composition functions are stubbed; the real
+// only the composition functions are stubbed; the real
 // `ensureCampaignCatalogue` is kept so the deferred-catalogue gate runs as in
 // the product.
 vi.mock("@src/features/campaign/default-deps", async (importOriginal) => ({

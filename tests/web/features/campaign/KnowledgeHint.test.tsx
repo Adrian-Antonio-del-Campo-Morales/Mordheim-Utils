@@ -17,7 +17,7 @@ const knowledge = ArtefactKnowledgeReader.from({
 });
 
 function loadReader() {
-  // T12 fase D: the published artefact defers the campaign catalogue; the
+  // the published artefact defers the campaign catalogue; the
   // shared helper merges every fragment the directory publishes.
   return readArtefactReader(resolve(process.cwd(), "../../outputs/web-public/knowledge/knowledge-web.json"));
 }

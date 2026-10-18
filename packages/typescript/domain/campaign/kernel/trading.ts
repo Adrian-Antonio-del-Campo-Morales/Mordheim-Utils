@@ -1,6 +1,6 @@
 /**
  * Campaign hirelings, exploration and trading: the application-facing
- * kernel pieces the feature block needs beyond the P3.5 base.
+ * Kernel pieces the feature block needs beyond the kernel base.
  *
  * Phase-independent trading rule: a purchase moves gold into inventory as a stash row —
  * `owned` and `stash` rise together, `value` records the unit price actually

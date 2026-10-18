@@ -50,7 +50,7 @@ export async function loadKnowledge(
 }
 
 /**
- * T12 fase D — load the deferred campaign catalogue (equipment + campaign
+ * Load the deferred campaign catalogue (equipment + campaign
  * sections) on demand. The initial document publishes neither, so every flow
  * that builds or equips a warband, prices a market, moves equipment, prices the
  * campaign inventory, resolves an item/campaign name or writes the PDF calls

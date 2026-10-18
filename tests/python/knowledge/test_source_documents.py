@@ -64,9 +64,7 @@ def registered_sources() -> set[str]:
     return {str(entry["id"]) for entry in payload.get("sources") or []}
 
 
-# --------------------------------------------------------------------------- #
 # El registro completo
-# --------------------------------------------------------------------------- #
 
 def test_every_cited_url_is_declared() -> None:
     """Ningún catálogo cita un documento que el registro no declare."""
@@ -106,9 +104,7 @@ def test_the_registry_path_is_the_one_in_the_knowledge_base() -> None:
     assert sd.registry_path() == ROOT / "sources/knowledge/registry/source-documents.yaml"
 
 
-# --------------------------------------------------------------------------- #
 # Una cita, un documento, una copia
-# --------------------------------------------------------------------------- #
 
 def test_a_url_is_claimed_by_one_document() -> None:
     """Dos documentos no pueden pelearse la misma cita: el registro lo rechaza."""
@@ -145,34 +141,32 @@ def test_the_mirror_names_are_relative_and_unique() -> None:
     documents = sd.SourceDocuments.load()
     mirrors = [document.mirror for document in documents]
     assert len(set(mirrors)) == len(mirrors), mirrors
-    mirror = sd.SourceMirror(ROOT / "build/cache")
+    mirror = sd.SourceMirror(sd.ORIGINS)
     for document in documents:
         path = PurePosixPath(document.mirror)
         assert not path.is_absolute() and ".." not in path.parts, document.id
-        assert mirror.declared(document) == ROOT / "build/cache" / document.mirror
+        assert mirror.declared(document) == sd.ORIGINS / document.mirror
 
 
 def test_the_dramatis_page_of_a_grade_is_the_documented_snapshot() -> None:
     """La página del grado se lee del snapshot cacheado y, a falta de él, de su texto.
 
     Es la copia con la que el cotejo de 2A venía leyendo (``dramatis-<grado>.html``
-    bajo ``build/cache/2a-dp/``), y el respaldo de texto plano el mismo gemelo que
+    bajo ``sources/origins/2a-dp/``), y el respaldo de texto plano el mismo gemelo que
     antes se buscaba a mano.
     """
     document = sd.SourceDocuments.load().by_id("mordheimer.net.dramatis-personae.grade-2a")
     assert document.kind == "page" and document.mirror == "2a-dp/dramatis-grade-2a.html"
-    mirror = sd.SourceMirror(ROOT / "build/cache")
+    mirror = sd.SourceMirror(sd.ORIGINS)
     html, text = mirror.candidates(document)
-    assert html == ROOT / "build/cache/2a-dp/dramatis-grade-2a.html"
+    assert html == sd.ORIGINS / "2a-dp/dramatis-grade-2a.html"
     assert text == html.with_suffix(".txt")
     # Sin caché no hay copia: se declara el hueco, no se falla, y sin copia no hay lector.
     assert mirror.path(document) in (None, html, text)
     assert (mirror.reader(document) is None) is (mirror.path(document) is None)
 
 
-# --------------------------------------------------------------------------- #
 # La resolución de una entrada
-# --------------------------------------------------------------------------- #
 
 def test_resolution_keeps_the_citation_order_and_reads_a_document_once() -> None:
     """Dos formas de citar el mismo PDF son un documento, y la primera es la cita."""

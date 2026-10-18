@@ -1,9 +1,9 @@
 import { warriorEquipmentRestriction } from "../../domain/eligibility/index";
 /**
  * Campaign application service: application service implementing
- * the frozen `CampaignAppService` interface (P3.4). Orchestrates the file
- * port (P3.2), the knowledge reader (P4.3) and the domain use cases
- * (P3.5/P6.x) — the UI never touches JSON, ports or domain internals.
+ * the frozen `CampaignAppService` interface. Orchestrates the file
+ * port, the knowledge reader and the domain use cases
+ * — the UI never touches JSON, ports or domain internals.
  *
  * Rules honoured here:
  * - everything in memory: no browser storage or implicit filesystem persistence;
@@ -11,7 +11,7 @@ import { warriorEquipmentRestriction } from "../../domain/eligibility/index";
  *   undo stack of documents and restores them verbatim;
  * - file-port and use-case failures become `AppError` values with stable
  *   reasons — no exceptions cross this boundary to the UI;
- * - ports are injected via `CampaignAppDeps` (composition in P5.2).
+ * - ports are injected via `CampaignAppDeps` (composition in the composition root).
  */
 
 import type {
@@ -88,7 +88,7 @@ function equipmentViolation(document: CampaignDocument, knowledge: CampaignAppDe
 }
 
   /**
-   * T09 construction verdict of an equipment change that already happened in a
+   * Construction verdict of an equipment change that already happened in a
    * candidate document. Every warrior the change touches is judged on the kit
    * it holds afterwards: the item being added against its prohibitions and the
    * complete set against the band's whole-set limits. The contract lives in the
@@ -173,7 +173,7 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
    * A rejection keeps its stable `reason` **and** the ids the use case
    * identified (`subject_ids`): the interface resolves names from them instead
    * of parsing the English diagnostic, so the technical id never reaches a
-   * person and the English sentence is never the only representation (T11).
+   * person and the English sentence is never the only representation.
    */
   function applyResult(result: UseCaseResult): AppResult {
     if (!result.ok) {
@@ -191,7 +191,7 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
     return { ok: true, document: result.state };
   }
 
-  /** Same state discipline for injuries-workflow results (P6.5). */
+  /** Same state discipline for injuries-workflow results. */
   function applyInjuries(result: InjuriesWorkflowResult): AppResult {
     if (!result.ok) {
       // The frozen AppErrorReason keeps `rejected`; the specific workflow
@@ -257,7 +257,7 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
         campaign: parsed.document.campaign as unknown as CampaignDocument["campaign"],
         view: (parsed.document.view ?? {}) as CampaignDocument["view"],
       };
-      // Validate before handing it to the UI (P6.8 semantics, applied early).
+      // Validate before handing it to the UI (semantics, applied early).
       const validated = useCases.validateForExport(document);
       if (!validated.ok) {
         return error("file_error", `Campaign rejected by domain validation: ${validated.message}`, {

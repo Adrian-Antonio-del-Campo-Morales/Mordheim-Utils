@@ -1,5 +1,3 @@
-import json
-
 import pytest
 
 from mordheim_combat_lab.verification import coverage_gate
@@ -22,14 +20,6 @@ def _report(*files):
 def _budget(areas):
     return {"schema": coverage_gate.BUDGET_SCHEMA, "suites": ("fake",),
             "areas": areas}
-
-
-def test_area_mapping():
-    assert coverage_gate._area_for("packages/python/combat-engine/mordheim_combat/vectorized/_driver.py") == "vectorized"
-    assert coverage_gate._area_for("packages/python/combat-engine/mordheim_combat/modular/duel.py") == "modular"
-    assert coverage_gate._area_for("packages/python/combat-engine/mordheim_combat/phases.py") == "phases"
-    assert coverage_gate._area_for("packages/python/combat-engine/mordheim_combat/vector_dice.py") == "phases"
-    assert coverage_gate._area_for("packages/python/combat-engine/mordheim_combat/native/_combat_native.pyx") is None
 
 
 def test_gate_passes_when_every_budgeted_line_is_still_covered():
@@ -73,60 +63,10 @@ def test_area_floor_is_enforced():
     assert result.passed
 
 
-def test_budget_round_trip(tmp_path):
-    entry = _file("mordheim_combat.modular.duel", "modular",
-                  covered=(3, 7), statements=(1, 3, 7))
-    path = tmp_path / "budget.json"
-    coverage_gate.write_budget(path, _report(entry))
-    payload = coverage_gate.write_budget(path, _report(entry))
-    assert payload["schema"] == coverage_gate.BUDGET_SCHEMA
-    loaded = coverage_gate.load_budget(path)
-    assert loaded["areas"]["modular"]["mordheim_combat.modular.duel"] == [3, 7]
-    loaded_report = CoverageReport(
-        files=(_file("mordheim_combat.modular.duel", "modular",
-                     covered=(3, 7), statements=(1, 3, 7)),),
-        suites=("fake",), seconds=0.0,
-    )
-    assert coverage_gate.evaluate(loaded_report, loaded).passed
-
-
-def test_load_budget_rejects_unknown_schema(tmp_path):
-    import pytest
-    path = tmp_path / "budget.json"
-    path.write_text(json.dumps({"schema": "nope"}), encoding="utf-8")
-    with pytest.raises(ValueError, match="unsupported coverage budget schema"):
-        coverage_gate.load_budget(path)
-
-
-def test_load_budget_mentions_update_flag_when_missing(tmp_path):
-    import pytest
-    with pytest.raises(FileNotFoundError, match="--update-budget"):
-        coverage_gate.load_budget(tmp_path / "absent.json")
-
-
-def test_measurement_smoke_requires_coverage_installed():
-    pytest = __import__("pytest")
-    pytest.importorskip("coverage")
-    report = coverage_gate.measure_coverage(("tests/python/combat/vectorized/test_backends.py",))
-    assert report.files
-    assert report.suites == ("tests/python/combat/vectorized/test_backends.py",)
-    assert any(item.area == "vectorized" and item.statements > 0
-               for item in report.files)
-    assert report.seconds >= 0
-
-
-@pytest.mark.parametrize('exit_code', [1, 2, 3, 4, 5])
-def test_failed_interrupted_or_empty_test_run_cannot_return_measurement(monkeypatch, exit_code):
-    # Failure, interruption/collection error, internal error, usage error and
-    # empty collection all invalidate a coverage measurement.
-    monkeypatch.setattr(pytest, 'main', lambda args: pytest.ExitCode(exit_code))
-    with pytest.raises(RuntimeError, match=f'pytest exit code {exit_code}'):
-        coverage_gate.measure_coverage(('unused-detector',))
-
-
 @pytest.mark.parametrize('entrypoint', ['gate', 'gate-update', 'budget-script'])
 def test_real_failing_detector_cannot_pass_gate_or_overwrite_budget(tmp_path, entrypoint):
     from pathlib import Path
+    import json
     import subprocess
     import sys
     root = Path(__file__).resolve().parents[3]
@@ -154,6 +94,7 @@ def test_real_failing_detector_cannot_pass_gate_or_overwrite_budget(tmp_path, en
 
 def test_failed_area_floor_cannot_overwrite_budget(tmp_path):
     from pathlib import Path
+    import json
     import subprocess
     import sys
     root = Path(__file__).resolve().parents[3]

@@ -1,7 +1,7 @@
 /**
- * T10 — trading-post availability.
+ * Trading-post availability.
  *
- * Two market obligations arrived from T09:
+ * Two market obligations came from construction:
  * - `repeater_pistol_moh` is a `common` entry of the Masters of Horror whose
  *   printed clause is "Masters of Horror only. Cost 25 + 3D6 gc." Publishing the
  *   clause's scope lets that warband buy it while every other warband keeps being
@@ -26,8 +26,8 @@ const OVERRIDE = process.env.MORDHEIM_KNOWLEDGE_ARTEFACT;
 const CANDIDATES = OVERRIDE
   ? [OVERRIDE]
   : [
-      // The build output first: T10's evidence is the freshly generated
-      // artefact, while `outputs/` still holds the pre-T10 copy T12 regenerates.
+      // The build output first: the campaign evidence is the freshly generated
+      // artefact, while `outputs/` still holds the stale copy the generator replaces.
       join(REPO_ROOT, "build", "generated", "knowledge-web", "knowledge-web.json"),
       join(REPO_ROOT, "outputs", "web-public", "knowledge", "knowledge-web.json"),
     ];
@@ -36,7 +36,7 @@ const ARTEFACT_PATH = CANDIDATES.find((path) => existsSync(path));
 const MASTERS = "masters-of-horror-sylv";
 const OTHER = "adventurers-kaz";
 
-describe("T10 market availability verdict", () => {
+describe("Market availability verdict", () => {
   it("evaluates a scoped `condition` like a warband restriction", () => {
     const offer = {
       availability: { kind: "common" },
@@ -184,7 +184,7 @@ describe("T10 market availability verdict", () => {
   });
 });
 
-describe.skipIf(!ARTEFACT_PATH)("T10 market obligations against the published catalogue", () => {
+describe.skipIf(!ARTEFACT_PATH)("Market obligations against the published catalogue", () => {
   const artefact = readArtefactDocument(ARTEFACT_PATH as string);
   const reader = ArtefactKnowledgeReader.from(artefact);
   const offers = (artefact.campaign?.["trading-post"]?.items ?? []) as Readonly<Record<string, unknown>>[];
@@ -232,6 +232,7 @@ describe.skipIf(!ARTEFACT_PATH)("T10 market obligations against the published ca
       "bearcloak",
       "blessed_bolts",
       "chainsaw_sword",
+      "chaos_steed",
       "chest_talon",
       "darksteel_blade",
       "electric_trident",
@@ -239,6 +240,7 @@ describe.skipIf(!ARTEFACT_PATH)("T10 market obligations against the published ca
       "nightmare",
       "pigback_mount",
       "pry_bar",
+      "sharp_stuff",
       "shield_of_sigmar",
       "silver_tip_stake",
       "slingshot",
@@ -255,16 +257,15 @@ describe.skipIf(!ARTEFACT_PATH)("T10 market obligations against the published ca
       "black_lotus",
       "blessed_water",
       "blowpipe",
-      "chaos_steed",
       "dark_elf_blade_weapon_upgrade",
       "dark_venom",
       "temple_dog",
       "thingcatcher",
     ]);
-    // The two whose printed clause has no vocabulary yet (a second-copy price,
-    // a weapon-upgrade price) are refused with `market_condition_unstructured`:
-    // reported to the KB, never silently ignored.
-    expect([...refused].sort()).toEqual(["poisoned_weapon", "sharp_stuff"]);
+    // The printed clause with no vocabulary yet (a weapon-upgrade price) is
+    // refused with `market_condition_unstructured`: reported to the KB, never
+    // silently ignored.
+    expect([...refused].sort()).toEqual(["poisoned_weapon"]);
     expect(structured.length + blocked.length + refused.length).toBe(31);
   });
 

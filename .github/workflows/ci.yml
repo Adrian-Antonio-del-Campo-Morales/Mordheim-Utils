@@ -5,6 +5,15 @@ name: CI
 # the TypeScript tests or the web build must block the pipeline. Publishing
 # is a separate, gated workflow (deploy-pages.yml) that runs only after this
 # one succeeds on the default branch.
+#
+# The deep artefact audits and the bilingual parity vectors of
+# `tests/python/web` are not part of this pipeline: they re-parse the 3 MB
+# generated artefact once per test and took more than half of the Python job's
+# wall clock (5:54 of 12:05), while the generation step here and the bundle
+# guardrails in the TypeScript job already protect the artefact the application
+# ships. Run them locally with `python tools/mordheim-utils.py run-ci` or
+# `python -m pytest tests/python/web` after touching the KB, the generator or
+# the contracts.
 
 on:
   push:
@@ -39,8 +48,11 @@ jobs:
           python tools/knowledge/generate_knowledge_web.py
           python tools/knowledge/generate_knowledge_web.py --check
 
+      # The fast net: contracts, architecture, the knowledge catalogue and the
+      # shared eligibility bridge. The artefact audits and parity vectors of
+      # `tests/python/web` are deliberately excluded (see the header).
       - name: Run the Python regression net
-        run: python -m pytest tests/python/web tests/python/contracts tests/python/architecture tests/python/knowledge tests/python/construction/test_shared_eligibility.py -q
+        run: python -m pytest tests/python/contracts tests/python/architecture tests/python/knowledge tests/python/construction/test_shared_eligibility.py -q
 
       # The modular engine E2E battery is listed separately: the Python
       # regression net above deliberately excludes tests/E2E.  This step runs

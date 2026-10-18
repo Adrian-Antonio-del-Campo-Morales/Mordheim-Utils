@@ -52,6 +52,7 @@
           "minItems": 1,
           "items": { "$ref": "#/$defs/mechanic" }
         },
+        "eligibility": { "description": "Canonical profiles allowed to select this rule.", "$ref": "defs.schema.json#/$defs/id_list" },
         "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
       }
     },

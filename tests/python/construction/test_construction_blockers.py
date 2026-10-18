@@ -1,6 +1,6 @@
-"""T09 §6 blockers: the KB publishes the datum the construction contract reads.
+"""§6 blockers: the KB publishes the datum the construction contract reads.
 
-The seven clauses T09 had to close by itself are gated here, straight from
+The seven clauses the construction contract had to close by itself are gated here, straight from
 ``sources/knowledge``:
 
 1-3. `adventurers-kaz` special-skill tables: each rule names its recipients and

@@ -107,7 +107,7 @@ const ROWS: Record<string, Record<string, unknown>> = {
     name: "Raid",
     names: { en: "Raid" },
   },
-  // P6.7: hireling profile records the use case resolves by stable id.
+  // Hireling profile records the use case resolves by stable id.
   "hireling_id:hireling.hired-sword.warrior-undead-hunter": {
     id: "hireling.hired-sword.warrior-undead-hunter",
     name: "Undead Hunter",
@@ -157,7 +157,7 @@ export class FakeKnowledgeReader implements KnowledgeReader {
     return queries.map((q) => this.queryKnowledge(q));
   }
 
-  // P6.7 listings (KnowledgeListings structural interface; the real P4.3
+  // Listings (KnowledgeListings structural interface; the real
   // adapter reads these from the artefact's campaign section).
   private static readonly LISTING_ROWS: Record<string, readonly Record<string, unknown>[]> = {
     warband_groups: [

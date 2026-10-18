@@ -94,7 +94,7 @@ interface CampaignMaps {
 };
 
 /**
- * Families published by the deferred campaign catalogue (T12 fase D): the
+ * Families published by the deferred campaign catalogue: the
  * equipment catalogue and the campaign sections. Both travel in one fragment;
  * `ensureCatalogue` names the family the calling flow actually needs.
  */
@@ -492,12 +492,12 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
     const validation = validateArtefact(document);
     if (!validation.ok) throw new KnowledgeReaderError(validation.message);
     // The deferred catalogue is never fetched here: the first flow that needs
-    // items or campaign sections calls `ensureCatalogue` (T12 fase D).
+    // items or campaign sections calls `ensureCatalogue`.
     return new ArtefactKnowledgeReader(document, { url, fetchFn });
   }
 
   /**
-   * T12 fase D — deferred campaign catalogue.
+   * Deferred campaign catalogue.
    *
    * The published artefact keeps the initial document small (open the app,
    * choose a warband) and publishes the equipment catalogue and the campaign
@@ -934,7 +934,7 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
   }
 
   // ------------------------------------------------------------------
-  // P6.7 listings (additive, not part of the frozen KnowledgeReader port).
+ // Listings (additive, not part of the frozen KnowledgeReader port).
   // Offers/collections live in the artefact's `campaign` section as raw
   // rows; the feature layer (application/features/hirelings) applies the
   // eligibility rules. Listings return the raw row plus resolved display

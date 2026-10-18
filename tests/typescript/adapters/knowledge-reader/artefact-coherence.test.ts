@@ -1,11 +1,11 @@
 /**
  * Coherence test: the frozen ports must stay compatible with
  * the real artefact produced by `tools/knowledge/generate_knowledge_web.py`
- * (P4.2). If the generator's output shape drifts, this test fails — fix the
+ *. If the generator's output shape drifts, this test fails — fix the
  * drift at the contract level,
  * not by loosening this file.
  *
- * T12 fase D split the artefact: `knowledge-web.json` is the initial document
+ * The artefact is split: `knowledge-web.json` is the initial document
  * and `knowledge-catalogue.json` carries the equipment catalogue plus the
  * campaign sections, addressed by `catalogue_url` + `catalogue_digest`. Shape
  * assertions run on the published initial document; content assertions run on
@@ -39,7 +39,7 @@ interface Artefact {
   indexes: Record<string, unknown>;
 }
 
-describe.skipIf(!existsSync(ARTEFACT_PATH))("P4.2 artefact ↔ P3.4 ports coherence", () => {
+describe.skipIf(!existsSync(ARTEFACT_PATH))("Artefact ↔ ports coherence", () => {
   const initial: Artefact = JSON.parse(readFileSync(ARTEFACT_PATH, "utf8"));
   const artefact: Artefact = readArtefactDocument(ARTEFACT_PATH) as unknown as Artefact;
 

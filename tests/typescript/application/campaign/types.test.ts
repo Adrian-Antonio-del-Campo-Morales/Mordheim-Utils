@@ -11,7 +11,7 @@ import type { CampaignAppService } from "@app/campaign/index";
 import type { Campaign } from "@domain/campaign/index";
 
 /**
- * P3.4 acceptance criterion: domain, application and UI tasks can compile
+ * Acceptance criterion: domain, application and UI tasks can compile
  * against these interfaces using fakes — in plain Node, no React/DOM.
  */
 
@@ -98,7 +98,7 @@ const fakeApp: CampaignAppService = {
   current: () => document,
 };
 
-describe("P3.4 frozen interfaces", () => {
+describe("Frozen interfaces", () => {
   it("domain fakes compile and run in plain Node", () => {
     const result = fakeUseCases.selectMoment(document, "state:0");
     expect(result.ok).toBe(true);

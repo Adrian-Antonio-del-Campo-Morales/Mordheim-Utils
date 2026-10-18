@@ -38,7 +38,7 @@ Salida
 ``build/cache/hireling-sources/<catálogo>/check.json`` con las verificaciones, los hallazgos y
 la **cobertura por chequeo** —un «0 hallazgos» sin filas comparadas no es lo mismo que un «0
 comprobado»—, y las entradas extraídas en ``…/blocks/`` para lectura manual. Que la copia del
-documento no esté descargada en el espejo (``build/cache``) se declara con la ruta que falta,
+documento no esté descargada en el espejo (``sources/origins``) se declara con la ruta que falta,
 nunca se compara contra una página vacía.
 
 Uso::
@@ -79,6 +79,7 @@ from printed_entries import (  # noqa: F401
     write_report,
 )
 from source_documents import (  # noqa: F401
+    ORIGINS,
     DocumentReader,
     SourceDocuments,
     SourceMirror,
@@ -163,18 +164,16 @@ CATALOGUES: dict[str, Catalogue] = {
 }
 
 # El registro declara qué documento imprime cada cita y dónde está su copia; el espejo del
-# checkout es ``build/cache`` y las cachés de página del lector viven con los informes.
+# checkout es ``sources/origins`` y las cachés de página del lector viven con los informes.
 SOURCE_DOCUMENTS = SourceDocuments.load()
 MIRROR = SourceMirror(
-    ROOT / "build/cache",
+    ORIGINS,
     words=ROOT / "build/cache/hireling-sources/words",
     texts=ROOT / "build/cache/hireling-sources/text",
 )
 
 
-# --------------------------------------------------------------------------- #
 # El paquete y la entrada impresa
-# --------------------------------------------------------------------------- #
 
 def printed_name_candidates(name: str) -> list[str]:
     """Formas con las que la entrada puede nombrar al personaje.
@@ -286,9 +285,7 @@ def locate(profile: dict, reader: DocumentReader,
     return None, locate_entry(profile, reader.corpus.entries())
 
 
-# --------------------------------------------------------------------------- #
 # El cotejo
-# --------------------------------------------------------------------------- #
 
 def check_one(profile: dict, campaign: dict, catalogue: Catalogue,
               tree_names: Sequence[str]) -> dict:

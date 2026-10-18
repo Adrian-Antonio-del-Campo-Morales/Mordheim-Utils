@@ -1,5 +1,5 @@
 /**
- * P3.5: record a battle — the pure port of the Python
+ * Record a battle — the pure port of the Python
  * `domain/battle_service.record_battle` core (validation, snapshot numbers,
  * battle node, pending post-battle with hireling-upkeep follow-ups).
  *
@@ -277,7 +277,7 @@ export function recordBattle(
 }
 
 /**
- * The snapshot helpers a full post-battle engine (P6.5) will need; kept here
+ * The snapshot helpers a full post-battle engine will need; kept here
  * so the mutable-state discipline stays in one module.
  */
 export function snapshotForNextState(document: CampaignDocument): CampaignDocument {

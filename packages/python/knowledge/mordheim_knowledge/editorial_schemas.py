@@ -74,8 +74,8 @@ HIRELING_DOCUMENTS: tuple[tuple[str, str], ...] = tuple(
 #: the contract, and the test fails when an entry goes stale.
 UNCOVERED_DOCUMENTS: dict[str, str] = {
     "registry/bindings.yaml": (
-        "the binding registry of the 2A/2B ingestion workflow, gated by its own "
-        "tests/python/knowledge/test_binding_registry.py: it is edited by hand, never "
+        "the binding registry of the supplement ingestion workflow, gated by its own "
+        "tests/python/knowledge/test_knowledge_pipeline_guards.py: it is edited by hand, never "
         "written by a promotion, so the editorial contract does not claim it"
     ),
 }

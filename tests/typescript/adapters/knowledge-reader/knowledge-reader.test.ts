@@ -1,5 +1,5 @@
 /**
- * P4.3 tests: the KnowledgeReader adapter against the *real* generated
+ * Tests: the KnowledgeReader adapter against the *real* generated
  * artefact (when present) and against synthetic fixtures (always), covering:
  * - stable-id resolution and typed absence (`not_found`, never a guess);
  * - locale resolution chain (requested -> en -> any -> id);

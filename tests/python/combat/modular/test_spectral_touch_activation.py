@@ -1,4 +1,4 @@
-"""L03: canonical Spirit Host compilation reaches the accepted modular consumer.
+"""Canonical Spirit Host compilation reaches the accepted modular consumer.
 
 The host is the actual KB profile, with its default natural attacks. Opponents
 are explicit free-selection duel controls, not purported Night Haint loadouts.

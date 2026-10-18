@@ -1,6 +1,6 @@
-"""T10 campaigns: the KB publishes the data the campaign obligations consume.
+"""Campaigns: the KB publishes the data the campaign obligations consume.
 
-T09 handed four obligations to T10. Each one needs a *published* datum; this gate
+Four construction obligations belong to the campaign layer. Each one needs a *published* datum; this gate
 checks the datum in ``sources/knowledge``, so the
 behavioural tests in ``tests/typescript`` cannot pass against invented data:
 
@@ -18,7 +18,7 @@ behavioural tests in ``tests/typescript`` cannot pass against invented data:
 
 The behavioural side lives in
 `tests/typescript/domain/campaign/{creation-decisions,rout-test,market}.test.ts`
-and `tests/typescript/application/campaign/t10-obligations-flow.test.ts`.
+and `tests/typescript/application/campaign/obligations-flow.test.ts`.
 """
 from __future__ import annotations
 
@@ -65,7 +65,7 @@ def _artefact() -> dict:
     path = ROOT / "build" / "generated" / "knowledge-web" / "knowledge-web.json"
     if not path.exists():
         pytest.skip("run tools/knowledge/generate_knowledge_web.py to check the artefact side")
-    # T12 fase D: merge the deferred campaign catalogue exactly as the product
+    # Merge the deferred campaign catalogue exactly as the product
     # does, so this gate keeps asserting against the complete artefact.
     return load_artefact_document(path)
 
@@ -341,7 +341,7 @@ def test_campaign_catalogue_schemas_publish_the_new_fields():
     assert "band_ids" in restriction["properties"]
     assert "groups" in restriction["properties"]
 
-    # T10 second pass: succession, advancement access and mutation grants.
+    # Succession, advancement access and mutation grants.
     assert "succession_clauses" in recruitment["properties"]
     assert "advance_access_clauses" in recruitment["properties"]
     assert "succession_clause" in recruitment["$defs"]

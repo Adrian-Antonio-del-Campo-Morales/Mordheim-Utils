@@ -174,7 +174,6 @@ LARGE_BATTERY_UNIT_SIMULATIONS = 1_000_000
 # native, while numpy plateaus near 4x on memory bandwidth. The helpers below
 # stay on the conservative side of those measurements: they decide, they never
 # promise.
-#
 # Overhead and margin are deliberately small: the retune came from a 30-pair
 # study (see the doc) where a 10ms per-battery overhead erased the whole
 # per-fighter saving of light duels and pushed the crossover to 2-4x the ideal
@@ -183,7 +182,6 @@ LARGE_BATTERY_UNIT_SIMULATIONS = 1_000_000
 # conservatism only bought misses. That curve is superseded per machine when a
 # calibration profile is installed: ``measured_pool_speedups`` derives the
 # speedup curve from the profile's raw worker sweep.
-#
 # Native workers: a sweep at app pool shapes (200k duels, batch 5k, two duel
 # types) peaks at 14 — 12 -> 14 buys 9-15%, 16 is level, 18-20 regress. Run
 # noise on cheap pairs is 3-30%, so the 12-16 plateau is flat within noise and

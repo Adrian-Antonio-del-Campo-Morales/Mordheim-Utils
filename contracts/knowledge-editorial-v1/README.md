@@ -64,7 +64,7 @@ Every maintained YAML document of `sources/knowledge/` is claimed: the test
 suite fails when a new file appears without a schema, and when a document is
 claimed by two schemas. One document is declared outside the contract
 (`registry/bindings.yaml`, a legacy binding registry gated by
-`tests/python/knowledge/test_binding_registry.py`); the exception is
+`tests/python/knowledge/test_knowledge_pipeline_guards.py`); the exception is
 listed in `editorial_schemas.UNCOVERED_DOCUMENTS` and the suite fails if it goes
 stale.
 

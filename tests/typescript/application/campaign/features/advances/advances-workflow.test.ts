@@ -1,6 +1,6 @@
 /**
- * P6.6 acceptance tests: the advances feature over the real application
- * service (real P3.2 file port, neutral KB) — pending read model, applying
+ * Acceptance tests: the advances feature over the real application
+ * Service (real file port, neutral KB) — pending read model, applying
  * stat/skill choices, typed rejections, and export round-trip of the
  * advanced warrior snapshot.
  */
@@ -119,7 +119,7 @@ async function loadedService(): Promise<CampaignAppService> {
   return service;
 }
 
-describe("P6.6: pending-advance read model", () => {
+describe("Pending-advance read model", () => {
   it("computes earned/taken/pending per warrior from XP and the ledger", async () => {
     const service = await loadedService();
     const overview = advancesOverview(service.current()!);
@@ -141,7 +141,7 @@ describe("P6.6: pending-advance read model", () => {
   });
 });
 
-describe("P6.6: applying choices via the service", () => {
+describe("Applying choices via the service", () => {
   it("applies a stat advance: stats +1 and ledger updated, dirty set", async () => {
     const service = await loadedService();
     const result = await service.run("applyAdvance", {
@@ -219,7 +219,7 @@ describe("P6.6: applying choices via the service", () => {
   });
 });
 
-describe("P6.6: export round-trip preserves the advanced snapshot", () => {
+describe("Export round-trip preserves the advanced snapshot", () => {
   it("stat advances survive export → reimport verbatim", async () => {
     const service = await loadedService();
     expect(

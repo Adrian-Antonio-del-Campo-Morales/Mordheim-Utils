@@ -1,5 +1,5 @@
 /**
- * P4.3: raw shapes of the generated KB web artefact.
+ * Raw shapes of the generated KB web artefact.
  *
  * The artefact is produced by `tools/knowledge/generate_knowledge_web.py` into
  * `outputs/web-public/knowledge/knowledge-web.json`. These types describe
@@ -27,7 +27,7 @@ export interface KnowledgeArtefact {
   readonly presentation_digest?: string;
   readonly rules_prose_digest?: string;
   readonly display_text_digest?: string;
-  /** T12 fase D: URL of the deferred campaign catalogue (items + campaign). */
+  /** URL of the deferred campaign catalogue (items + campaign). */
   readonly catalogue_url?: string;
   readonly catalogue_digest?: string;
   readonly schema_version: number;
@@ -80,7 +80,7 @@ export function validateArtefact(value: unknown): ArtefactValidation {
     }
   }
   // The equipment catalogue travels inline, or deferred behind `catalogue_url`
-  // (T12 fase D); it may never be simply absent.
+  // It may never be simply absent.
   if (artefact.catalogue_url !== undefined && (typeof artefact.catalogue_url !== "string" || !artefact.catalogue_url)) {
     return { ok: false, reason: "missing_section", message: "KB artefact catalogue_url is not a usable URL" };
   }

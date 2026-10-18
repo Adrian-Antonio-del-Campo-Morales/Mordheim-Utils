@@ -1,4 +1,4 @@
-"""L06 canonical items: source-derived effects through the real modular consumer."""
+"""Canonical items: source-derived effects through the real modular consumer."""
 from functools import lru_cache
 
 import pytest

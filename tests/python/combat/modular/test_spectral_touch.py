@@ -1,6 +1,6 @@
 """Q019 human-accepted expectations on the real modular pipeline.
 
-Synthetic composition fixtures inject the trait; L03 also proves its canonical grant.
+Synthetic composition fixtures inject the trait; the canonical Spirit Host also proves its grant.
 """
 from dataclasses import replace
 

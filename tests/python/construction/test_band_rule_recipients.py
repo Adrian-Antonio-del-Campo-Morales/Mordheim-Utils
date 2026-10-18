@@ -1,4 +1,4 @@
-"""T13-F017 — automatic band grants must honour their recipient filters.
+"""Automatic band grants must honour their recipient filters.
 
 Shared contract cases run through the real embedded runtime; the canonical
 adventurers-kaz tables are read live from the KB and checked through both the

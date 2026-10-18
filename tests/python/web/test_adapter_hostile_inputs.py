@@ -1,4 +1,4 @@
-"""Hostile-input probes for the P4.3 KnowledgeReader adapter (Python mirror).
+"""Hostile-input probes for the KnowledgeReader adapter (Python mirror).
 
 The TypeScript adapter (`packages/typescript/adapters/knowledge-reader/`) is
 the web-side consumer, but the *contract* it implements is verified here from

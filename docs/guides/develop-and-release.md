@@ -25,9 +25,9 @@ They run from the repository root and fan out to the npm workspaces; the
 per-workspace forms (`npm test --workspace campaign-web-core`) still work when a
 single suite is what changed.
 
-Narrower Python scopes: `tests --scope campaign`, `knowledge`, `construction`,
-`ui`, `cli`, `architecture`. `tests --scope all` runs the complete Python
-suite; anything after the scope is forwarded to pytest.
+Narrower Python scopes: `knowledge`, `verification`, `construction`, `ui`,
+`cli`, `architecture`. `tests --scope all` runs the whole `tests/` tree,
+including `tests/E2E`; anything after the scope is forwarded to pytest.
 
 For shared equipment/skill decisions, edit the [eligibility module](../reference/eligibility.md), then run from the repository root:
 
@@ -64,8 +64,12 @@ python tools/mordheim-utils.py run-ci
 Runs the knowledge generator/check, the Python contract/campaign/architecture/
 knowledge/web tests and shared eligibility transport tests, the eligibility
 bundle freshness check, the TypeScript typecheck/tests and the web
-typecheck/lint/tests/build plus the post-build bundle guard — the same steps as
-`.github/workflows/ci.yml`.
+typecheck/lint/tests/build plus the post-build bundle guard — the steps of
+`.github/workflows/ci.yml` plus `tests/python/web`. That directory is the
+slowest gate (it re-parses the 3 MB generated artefact per test and took 5:54 of
+the Python job's 12:05), so CI leaves it out; run it here, or directly with
+`python -m pytest tests/python/web`, whenever you touch the KB, the generator or
+the contracts.
 
 ## Verification and certification
 

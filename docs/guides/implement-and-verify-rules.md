@@ -4,7 +4,7 @@ Prerequisites: [Architecture](../reference/architecture.md) (the path of a
 rule, engine layers) and [Verification](../reference/verification.md) (what
 each layer certifies).
 
-For current T13 implementation, follow the
+For current modular implementation, follow the
 [modular implementation guide](modular-engine-implementation.md). Implement
 only the modular behavior; the optimized ports and broad certification steps
 below belong to later, separately authorized batches.
@@ -33,13 +33,14 @@ limits and architecture tests pass.
 For routine planning, generate the current inventory without running the semantic corpus:
 
 ```powershell
-python tools/mordheim-utils.py report rules --inventory-only --t13 --output outputs/audit/development
+python tools/mordheim-utils.py report rules --inventory-only --historical-origins --output outputs/audit/development
 ```
 
 Use `combat-audit.csv` as the operational list. Filter `--work-status implementation_required`
-for admitted effects needing implementation; `--family <mechanism>` groups related T13 effects.
+for admitted effects needing implementation; `--family <mechanism>` groups related effects.
 `development_family` uses the existing origin register's mechanism names. All filters apply
-to both CSVs. Remove `--t13` to inspect effects not recorded in that historical plan.
+to both CSVs. Remove `--historical-origins` to inspect effects not recorded in that
+historical plan; the legacy `--t13` spelling is still accepted.
 
 | combat_work_status | Next step |
 | --- | --- |
@@ -88,7 +89,7 @@ The command generates two Excel-friendly CSVs under `outputs/audit/`, with
 the same timestamp: `combat-audit-<timestamp>.csv` contains core combat rules
 and mechanics, editorial effects (including unimplemented, excluded and
 unclassified effects), item effects and printed effects in other catalogue/band files,
-plus historical T13 combat candidates requiring reconciliation.
+plus historical combat candidates requiring reconciliation.
 The inventory scans every KB YAML file recursively, including nested entries in
 files already represented by their main catalogue. Anonymous effects use a
 file/local-path identity; `rule_ref` text is resolved when available. Equipment
@@ -96,7 +97,7 @@ notes, descriptions and restriction prose remain explicit `UNCLASSIFIED`
 candidates until reviewed, rather than being guessed into or out of duel scope.
 Profile traits, recorded unresolved concepts and dangling rule-list references
 also remain visible; resolved rule-list references reuse their definitions.
-Historical T13 dispositions cannot remove current KB candidates. This covers
+Historical dispositions cannot remove current KB candidates. This covers
 the supported source fields, not a semantic guarantee about arbitrary prose.
 The [source scope review](../../sources/knowledge/verification/source-scope-review.csv)
 classifies previously unclassified candidates and records the printed text,
@@ -107,11 +108,11 @@ this review from canonical runtime metadata. `scope_category=construction`
 means legal kit/access/projection, not a new combat operator. Inclusion neither
 activates a binding nor asserts implementation: unknown execution remains
 `needs_target_reconciliation`, to locate/reuse existing behavior first.
-On 2026-10-05 the 3,394 candidates partition into 1,365 included (1,015
-construction, 243 combat, 91 participant facts, 13 supplied consequences and
-3 definition references), 1,966 excluded and 63 requiring full source/interpretation
-review. Mixed records include only their individual consequence; acquisition,
-casting, areas/groups, terrain, flight and post-duel procedures remain excluded.
+The partition is live, not a number kept here: run
+`python tools/mordheim-utils.py report rules` and read `scope`, `review_status`
+and `semantic_reason` per row. Mixed records include only their individual
+consequence; acquisition, casting, areas/groups, terrain, flight and post-duel
+procedures remain excluded.
 `rules-audit-<timestamp>.csv` contains the source records from warbands,
 skills, items and other catalogues. The reports intentionally overlap: a rule's editorial
 classification and its combat implementation are separate concerns. IDs and
@@ -122,20 +123,23 @@ NumPy or native parity. Limitable with `--scope YES`, `--status pending` and
 It is read-only with respect to the KB, the specifications and the code.
 
 `combat_work_status` distinguishes implementation work from semantic evidence
-and historical scope/target reconciliation. The `t13_origin`, `t13_disposition`,
-`t13_lots` and `t13_question_id` columns trace candidates to the existing T13
-origin register. Planning dispositions are historical, not execution evidence
+and historical scope/target reconciliation. The legacy `t13_origin`,
+`t13_disposition`, `t13_lots` and `t13_question_id` columns are retained for
+compatibility with earlier exports and are empty for current rows; they trace
+candidates to the retired origin register. Planning dispositions are
+historical, not execution evidence
 or current admission: the governing 1v1 scope decision can supersede them.
 Their canonical `scope` and semantic status remain unchanged. If a historical
 target no longer exists in the audit, a `planning_effect` row keeps the origin
 visible as `needs_target_reconciliation`, with implementation `UNKNOWN`.
-Reconcile against current source clauses and T13 decisions before implementing.
-Custom KBs are not joined to the repository's T13 plan.
+Reconcile against current source clauses and adopted decisions before
+implementing. Custom KBs were never joined to that retired plan.
 
 The combat report conservatively retains unclassified printed effects: absence
 of an executable binding cannot establish that a rule is irrelevant to combat.
-Pure campaign/data-only origins explicitly classified in T13 are omitted unless
-they currently have an included effect or binding. Mixed origins stay visible.
+Pure campaign/data-only origins explicitly classified in the historical plan
+are omitted unless they currently have an included effect or binding. Mixed
+origins stay visible.
 Items use their canonical `combat_status`, `mechanic_id` and explicit simulation
 mappings; a mapping is not independent evidence that every item clause works.
 Other catalogue effects without runtime metadata remain `UNCLASSIFIED`, never

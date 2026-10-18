@@ -16,6 +16,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[3] / "sources" / "knowledge"
 ITEMS = ROOT / "catalog" / "items"
+HIRELINGS = ROOT / "catalog" / "hirelings"
 
 
 def canonical_item_ids() -> dict[str, Path]:
@@ -23,6 +24,23 @@ def canonical_item_ids() -> dict[str, Path]:
     for path in sorted(ITEMS.glob("*.yaml")):
         for item in yaml.safe_load(path.read_text(encoding="utf-8")).get("items", []):
             ids.setdefault(item["id"], path)
+    return ids
+
+
+def hireling_item_ids() -> set[str]:
+    """Kit ids the hireling catalogue publishes (``hireling.*.item.*``).
+
+    A hireling's printed kit is an object of its own profile entry, not a row
+    of ``catalog/items``: the id is still canonical and referable, so a
+    ``simulation-mappings`` entry naming it resolves instead of dangling.
+    """
+    ids: set[str] = set()
+    for path in sorted(HIRELINGS.rglob("*.yaml")):
+        document = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+        for value in collect(document, "id"):
+            if isinstance(value, str) and value.startswith("hireling.") \
+                    and ".item." in value and ".rule." not in value:
+                ids.add(value)
     return ids
 
 
@@ -55,13 +73,13 @@ def test_no_duplicate_item_ids() -> None:
 #: for *one* object. These three are not: each pair is two records of two
 #: different sources that happen to share a printed name, and merging one of
 #: them would have dropped the prose, the price or the special rules of the
-#: other. T07 promoted them, so they are declared here.
+#: other. The promotion moved them, so they are declared here.
 PUBLISHED_NAME_COLLISIONS = {
-    # The KB's trollheim record and the MiM variant T05 declared (ITEM_VARIANTS).
+    # The KB's trollheim record and the MiM variant (ITEM_VARIANTS).
     "familiar": ("familiar", "society_familiar"),
     # 2A Clan Moulder (Strength +1, Iron Grip) vs 2B Clan Pristekk (Capture).
     "thingcatcher": ("thingcatcher", "thing_catcher"),
-    # The 2B variant T05 declared vs the KB's own out-of-scope record.
+    # The 2B variant vs the KB's own out-of-scope record.
     "wolfcloak": ("wolf_cloak", "wolfcloak"),
 }
 
@@ -85,7 +103,7 @@ def test_no_two_items_share_a_normalized_name() -> None:
 
 
 def test_every_item_id_reference_in_the_kb_resolves() -> None:
-    ids = canonical_item_ids()
+    ids = set(canonical_item_ids()) | hireling_item_ids()
     dangling: list[tuple[str, str]] = []
     references = 0
     for path in ROOT.rglob("*.yaml"):

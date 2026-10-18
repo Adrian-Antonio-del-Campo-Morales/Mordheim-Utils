@@ -172,7 +172,9 @@ rules:
     - id: unimplemented.channel-rats-mim.band.charms-and-hexes
       scope: 'NO'
       binding: null
-      reason: 'Outside the established 1v1 melee scope: shooting, casting or escape without resolving the duel. Source prose is retained; this is an exclusion, not deferred modular implementation.'
+      reason: >-
+        Outside the established 1v1 melee scope: shooting, casting or escape without resolving the
+        duel. Source prose is retained; this is an exclusion, not deferred modular implementation.
   name: Charms & Hexes
   effect: >-
     Charms and Hexes are the magic of witchcraft. They involve copious amounts of spell ingredients
@@ -429,7 +431,10 @@ rules:
     - id: unimplemented.channel-rats-mim.tinker.rigger
       scope: 'NO'
       binding: null
-      reason: 'Outside the established 1v1 melee scope: campaign, recruitment, progression or post-duel aftermath. Source prose is retained; this is an exclusion, not deferred modular implementation.'
+      reason: >-
+        Outside the established 1v1 melee scope: campaign, recruitment, progression or post-duel
+        aftermath. Source prose is retained; this is an exclusion, not deferred modular
+        implementation.
   name: Rigger
   effect: >-
     The Tinker is skilled in fixing minor damage to watercraft. If the boat or barge is stationary
@@ -463,7 +468,9 @@ rules:
     - id: unimplemented.channel-rats-mim.truant.spry
       scope: 'NO'
       binding: null
-      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
+      reason: >-
+        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
+        prose is retained; this is an exclusion, not deferred modular implementation.
   name: Spry
   effect: >-
     A Truant is used to climbing in and out of portholes, as well as running along rooftops with
@@ -491,7 +498,9 @@ rules:
     - id: unimplemented.channel-rats-mim.truant.taunt
       scope: 'NO'
       binding: null
-      reason: 'Outside the established 1v1 melee scope: shooting, casting or escape without resolving the duel. Source prose is retained; this is an exclusion, not deferred modular implementation.'
+      reason: >-
+        Outside the established 1v1 melee scope: shooting, casting or escape without resolving the
+        duel. Source prose is retained; this is an exclusion, not deferred modular implementation.
   name: Taunt
   effect: >-
     During the Shooting phase, the Truant may choose to taunt one enemy instead of shooting with a
@@ -525,7 +534,9 @@ rules:
     - id: unimplemented.channel-rats-mim.dead-eye.dead-eye-shot
       scope: 'NO'
       binding: null
-      reason: 'Outside the established 1v1 melee scope: shooting, casting or escape without resolving the duel. Source prose is retained; this is an exclusion, not deferred modular implementation.'
+      reason: >-
+        Outside the established 1v1 melee scope: shooting, casting or escape without resolving the
+        duel. Source prose is retained; this is an exclusion, not deferred modular implementation.
   name: Dead Eye Shot
   effect: >-
     The Dead-Eye has the eyes of an eagle and can hit the smallest target. He ignores to hit
@@ -553,7 +564,9 @@ rules:
     - id: unimplemented.channel-rats-mim.dead-eye.target-practice
       scope: 'NO'
       binding: null
-      reason: 'Outside the established 1v1 melee scope: shooting, casting or escape without resolving the duel. Source prose is retained; this is an exclusion, not deferred modular implementation.'
+      reason: >-
+        Outside the established 1v1 melee scope: shooting, casting or escape without resolving the
+        duel. Source prose is retained; this is an exclusion, not deferred modular implementation.
   name: Target Practice
   effect: >-
     The warrior can fire a single missile attack when being charged. Models that stand and shoot
@@ -710,6 +723,11 @@ rules:
   effect: >-
     During the Exploration phase, if the Hero was not taken out of action, you may re-roll one
     dice, keeping the second result even if it is worse.
+
+  effect_i18n:
+    es: >-
+      Durante la fase de Exploración, si el Héroe no quedó Fuera de Combate, puedes repetir una
+      tirada, aceptando el segundo resultado aunque sea peor.
   source:
     manual: broheim.net
     printed_page: 181
@@ -741,6 +759,12 @@ rules:
     When he charges, the Hero may attempt to knock down his opponent rather than making his normal
     attacks; roll to hit once with a +1 to hit modifier, though no roll to wound is necessary; if
     the warrior hits with this attack, the opposing model is knocked down.
+
+  effect_i18n:
+    es: >-
+      Cuando carga, el Héroe puede intentar derribar a su oponente en lugar de realizar sus ataques
+      normales; tira una vez para impactar con +1 a impactar, sin necesidad de tirar para herir; si
+      el guerrero impacta con este ataque, el modelo oponente queda Derribado.
   source:
     manual: broheim.net
     printed_page: 181
@@ -772,13 +796,18 @@ rules:
   effect: >-
     Any friendly model within 6" of the Hero may re-roll any failed Leadership test with a +1 to
     Leadership; this includes rout tests.
+
+  effect_i18n:
+    es: >-
+      Cualquier modelo amigo a 6" o menos del Héroe puede repetir cualquier prueba de Liderazgo
+      fallida con +1 al Liderazgo; esto incluye las pruebas de huida.
   source:
     manual: broheim.net
     printed_page: 181
     section: Strigany Special Skills
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Channel Rats.pdf
   name_i18n:
-    es: Cantor
+    es: "Cantador"
   eligibility:
   - domnu
   - petru
@@ -803,6 +832,10 @@ rules:
   effect: >-
     The Hero suffers no penalties whatsoever for fighting unarmed and receives +1 Attack when
     doing so.
+
+  effect_i18n:
+    es: >-
+      El Héroe no sufre penalización alguna por luchar desarmado y recibe +1 Ataque cuando lo hace.
   source:
     manual: broheim.net
     printed_page: 181
@@ -835,6 +868,12 @@ rules:
     The Hero can control up to five animals using Strigany charms provided that they remain
     within 6" of him; if an animal is not within 6" of the Animal Charmer in the Movement phase,
     they will move D6" in a random direction.
+
+  effect_i18n:
+    es: >-
+      El Héroe puede controlar hasta cinco animales mediante los encantamientos Estrigany siempre
+      que permanezcan a 6" o menos de él; si un animal no está a 6" o menos del Encantador en la
+      fase de Movimiento, se moverá D6" en una dirección aleatoria.
   source:
     manual: broheim.net
     printed_page: 181
@@ -867,6 +906,13 @@ rules:
     can be placed anywhere on the table as long as it is out of sight of the opposing warband and
     more than 12" away from any enemy model; if both players have models which infiltrate, roll a
     D6 for each, and the lowest roll sets up first.
+
+  effect_i18n:
+    es: >-
+      Un Estrigany con esta habilidad se despliega siempre después de la banda oponente y puede
+      colocarse en cualquier punto de la mesa siempre que quede fuera de la vista de la banda
+      contraria y a más de 12" de cualquier modelo enemigo; si ambos jugadores tienen modelos que se
+      infiltran, tira un D6 por cada uno y el resultado más bajo se despliega primero.
   source:
     manual: broheim.net
     printed_page: 181

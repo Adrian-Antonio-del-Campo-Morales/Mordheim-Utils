@@ -1,6 +1,6 @@
 /**
  * Battle workflow: battle recording feature —
- * application-layer orchestration over the P3.5 kernel `recordBattle` and
+ * Application-layer orchestration over the kernel `recordBattle` and
  * `resolvePostBattleStep` use cases.
  *
  * Owns the *workflow* of playing a battle:
@@ -12,7 +12,7 @@
  *     payloads are preserved verbatim (contract open-payload policy).
  *
  * The UI never calls domain use cases directly; everything flows through
- * this workflow so the P5.1 service keeps undo/history and the dirty flag.
+ * this workflow so the campaign service keeps undo/history and the dirty flag.
  * All results are values — no exceptions cross layers.
  *
  * Purity: no React, no DOM, no filesystem. The KB is read through the
@@ -63,11 +63,11 @@ export interface RecordBattleRequest {
   readonly notes?: string;
 }
 
-/** Dependencies of the battle workflow (a slice of the P5.1 service world). */
+/** Dependencies of the battle workflow (a slice of the campaign service world). */
 export interface BattleWorkflowDeps {
   readonly knowledge: KnowledgeReader;
   readonly useCases: CampaignUseCases;
-  /** Canonical scenario ids offered by the picker (P8.1 generates this). */
+  /** Canonical scenario ids offered by the picker (the generator publishes them). */
   readonly scenarioCandidates?: readonly IdString[];
 }
 

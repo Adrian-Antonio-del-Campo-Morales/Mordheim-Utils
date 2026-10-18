@@ -13,7 +13,7 @@ from pathlib import Path
 import re
 
 ROOT = Path(__file__).resolve().parents[3]
-REGISTER = ROOT / "docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv"
+REGISTER = ROOT / "sources/knowledge/verification/clause-contracts.csv"
 KNOWLEDGE_ROOT = ROOT / "sources/knowledge"
 CASES = Path(__file__).parent / "cases"
 FOLDERS = {"core": "core", "mechanic": "mechanics", "rule": "grants"}

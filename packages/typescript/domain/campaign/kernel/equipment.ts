@@ -1,6 +1,6 @@
 /**
- * P3.5: equipment assignment between stash and warriors — the basis for the
- * P6.3 block, implementing the frozen `assignEquipment` use case.
+ * Equipment assignment between stash and warriors — the basis for the
+ * Block, implementing the frozen `assignEquipment` use case.
  *
  * Conservation rule: `owned = equipped + stash` per inventory row; moving
  * equipment to a warrior increments `equipped` (and the warrior's entry),
@@ -222,18 +222,34 @@ export function buyDraftEquipment(
   if (!warrior || warrior.kind === "hireling" || !warrior.profile_id) {
     return rejected("not_found", "Draft warrior is not eligible for creation equipment.");
   }
-  const profile = knowledge.queryKnowledge({ id: { kind: "profile_id", value: warrior.profile_id } });
-  if (!profile.ok || (typeof profile.record.data["band_id"] === "string" && profile.record.data["band_id"] !== document.campaign.identity.band_id)) {
+  // Profiles are band-scoped and an id is not unique across the catalogue
+  // (`knights-errant` is printed by five bands), so the draft's own band
+  // resolves the row first: a bare id lookup would refuse the purchase of a
+  // warrior the draft just built.
+  const catalogue = knowledge as KnowledgeReader & {
+    list?(kind: "profile"): readonly Readonly<Record<string, unknown>>[];
+  };
+  const bandId = document.campaign.identity.band_id;
+  const scopedProfile = catalogue.list?.("profile").find(
+    (row) => row["id"] === warrior.profile_id && row["band_id"] === bandId,
+  );
+  const profileRow = scopedProfile ?? (() => {
+    const result = knowledge.queryKnowledge({ id: { kind: "profile_id", value: warrior.profile_id } });
+    if (!result.ok) return null;
+    const data = result.record.data as Readonly<Record<string, unknown>>;
+    return typeof data["band_id"] !== "string" || data["band_id"] === bandId ? data : null;
+  })();
+  if (!profileRow) {
     return rejected("not_found", `Unknown profile id: ${warrior.profile_id}.`);
   }
-  // Permission is the T09 construction contract's, not this route's: whether the
+  // Permission is the construction contract's, not this route's: whether the
   // item is on an active list (band lists, the lists the selected variant
   // activates) and whether a prohibition or a whole-set limit blocks it are
   // decided below by `equipmentChangeRejectionFor`, so no second table of
   // tokens or of raw access rows can disagree with it. The published access row
   // is read here only for the listed creation price.
-  const access = Array.isArray(profile.record.data["equipment_access"])
-    ? profile.record.data["equipment_access"] as Readonly<Record<string, unknown>>[]
+  const access = Array.isArray(profileRow["equipment_access"])
+    ? profileRow["equipment_access"] as Readonly<Record<string, unknown>>[]
     : [];
   const offer = access.find((row) => row["item_id"] === input.item_id);
   const listedPrice = offer?.["cost"];
@@ -253,7 +269,7 @@ export function buyDraftEquipment(
   const equipment: EquipmentEntry[] = existing
     ? warrior.equipment.map((entry) => entry === existing ? { ...entry, quantity: entry.quantity + quantity, acquisition_costs: [...copyCosts(entry), ...Array(quantity).fill(price)] } : entry)
     : [...warrior.equipment, { item_id: input.item_id, name, quantity, acquisition: "purchase", unit_cost: price, per_model: true, acquisition_costs: Array(quantity).fill(price) }];
-  // The T09 construction contract decides the purchase: the item against its
+  // The construction contract decides the purchase: the item against its
   // prohibitions and the member's complete kit against the whole-set limits.
   const verdict = equipmentChangeRejectionFor({
     document,

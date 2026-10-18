@@ -1,11 +1,11 @@
 /**
- * P3.5: rewire the application-facing default use cases to the real kernel
- * behaviour. Replaces the P5.1 `notPorted` stubs; the frozen
+ * Rewire the application-facing default use cases to the real kernel
+ * Behaviour. Replaces the earlier `notPorted` stubs; the frozen
  * `CampaignUseCases` surface is unchanged.
  *
  * `createDefaultUseCases` accepts an optional `KnowledgeReader` so the
  * KB-dependent use cases that the frozen surface calls without a reader
- * (`composeDraft`) still resolve profiles through the port — P5.1's service
+ * (`composeDraft`) still resolve profiles through the port — the campaign service
  * constructs this factory with `deps.knowledge`.
  */
 

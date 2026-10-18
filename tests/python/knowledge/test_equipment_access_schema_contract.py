@@ -92,9 +92,7 @@ def clone_schema(monkeypatch) -> dict:
     return clone
 
 
-# --------------------------------------------------------------------------- #
 # Disposition: the two reported findings, justified member by member
-# --------------------------------------------------------------------------- #
 
 
 def test_the_reported_findings_are_justified_member_by_member():
@@ -140,9 +138,7 @@ def test_the_canonical_profiles_exercise_every_recipient_kind():
     assert {"animal", "henchman", "summoned"} <= used, sorted(used)
 
 
-# --------------------------------------------------------------------------- #
 # The declarations themselves: shapes and closed vocabularies
-# --------------------------------------------------------------------------- #
 
 
 def test_a_list_note_and_its_translation_validate():
@@ -189,9 +185,7 @@ def test_undeclared_or_malformed_recipient_blocks_are_rejected():
         assert any("applies_to" in problem for problem in reported), (extra, reported)
 
 
-# --------------------------------------------------------------------------- #
 # Precision: the member scope covers nothing else, in the same path or outside
-# --------------------------------------------------------------------------- #
 
 
 def test_a_new_property_in_the_justified_definition_or_outside_it_is_a_finding(monkeypatch):
@@ -228,9 +222,7 @@ def test_a_new_recipient_value_is_a_finding(monkeypatch):
     assert entry in audit.unjustified_findings(findings)
 
 
-# --------------------------------------------------------------------------- #
 # Staleness: an exercised member must be removed from the justification
-# --------------------------------------------------------------------------- #
 
 
 def documented_list(**extra) -> dict:

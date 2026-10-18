@@ -45,63 +45,6 @@ instead of repeating their investigation or checks. Subagents do not write the
 shared CSV or create separate completion documents; return changes, focused
 evidence and blockers to the parent, which produces the single package delivery.
 
-## Modular engine implementation: mandatory execution rules
-
-For modular-engine implementation, follow the mandatory priority and operational
-limits in `docs/guides/modular-engine-implementation.md`. For integrated closure,
-use `docs/reference/verification.md#modular-integration-closure`.
-
-**IMPLEMENTATION IS THE PRIMARY WORK.** Research, classification, tests and CSV
-updates support implementation; they do not replace it or justify stopping while
-assigned executable work remains. If a capability already works, reconcile it
-briefly and move to a genuinely incomplete one; never manufacture changes.
-
-Use selected affected cases or initially at most three directly affected test files.
-Expand only for a new failure or explicit uncovered consumer risk. No broad suites
-before final integration, no unchanged reruns to recover output, no full HEAD
-comparisons, no repeated investigation of an identified concurrent blocker.
-Preserve the exact initial base of isolated work before editing. Report capabilities
-implemented, not test counts as progress. Preserve source correctness, admission
-controls, concurrent ownership and mandatory CSV conservation checks.
-
-**E2E IS COMPLETELY EXCLUDED, INCLUDING FINAL INTEGRATION.** Do not execute,
-collect, investigate, repair or edit E2E tests, harnesses or corpus. Do not use
-umbrella commands that include them or treat their failures as blockers. This
-user instruction overrides historical plan references. Cancel your own accidentally
-started prohibited battery; do not wait for or investigate its results.
-
-Select minimal affected cases; a large parametrized file is still a broad battery.
-Save useful output once outside the deliverable tree; filter it instead of rerunning.
-Do not repeat global inventories or close clauses from binding/status flags alone.
-
-CSV writes require authorized ownership, a complete byte snapshot before integration,
-column names and `(id, clause_id)` keys, candidate conservation validation and a final
-concurrency check. No snapshot or failed validation means no write. After damage,
-suspend CSV writes and notify the coordinator; never reconstruct current cells from
-HEAD or historical exports. Continue independent implementation where possible.
-Prompts must repeat these limits explicitly, including the capability, ownership, minimum proof and stop condition.
-
-
-CSV access must use `python -X utf8 tools/knowledge/clause_registry.py`: `query`,
-`prepare`, then `apply` (preview by default; `--write` only for the authorized
-writer). No direct CSV edits or alternative rewrite scripts. See `docs/reference/knowledge-base.md#clause-register`
-for commands and proposal format. Existing damage is not repaired by this tool.
-
-These instructions do not authorize commits, pushes, scope expansion
-or edits to files owned by other agents. Subagents are authorized within the
-assigned package under the ownership rules above. `tests/E2E/modular-engine/cases/grants`
-retains its external owner.
-
 ## Pending problems and human decisions
 
-Use `docs/TODO.md` for concrete unresolved defects: affected rule/clause and path,
-observed discrepancy, useful evidence, attempted resolution, remaining obstacle
-and resumption condition. Reuse the same entry, continue independent work and
-remove resolved entries after retaining useful evidence in canonical files.
-Ordinary clause work remains in the semantic CSV, not a second inventory.
-
-Escalate only an unanswered authority/scope conflict that would override an
-adopted ruling or expand authorized scope. Include the exact question, conflicting
-evidence and what its answer unblocks. Missing data, source recovery, technical
-modelling or absent fixtures alone do not require human decisions. Record accepted
-answers in `docs/decisions/design-rulings.md`, then remove the pending question.
+Use `TODO.md` for concrete unresolved defects and problems.

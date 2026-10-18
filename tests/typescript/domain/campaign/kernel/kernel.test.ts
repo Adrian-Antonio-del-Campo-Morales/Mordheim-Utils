@@ -24,7 +24,7 @@ import {
 } from "@domain/campaign/kernel/document";
 import { createDraft } from "@domain/campaign/kernel/create-draft";
 
-/** Artefact-shaped rows for the fake reader (mirrors P4.2 output). */
+/** Artefact-shaped rows for the fake reader (mirrors output). */
 function makeKnowledge(): KnowledgeReader {
   const rows: Record<string, Record<string, unknown>> = {
     "band_id:sisters-of-sigmar": {
@@ -114,7 +114,7 @@ function makeKnowledge(): KnowledgeReader {
       id: "warrior-undead-hunter",
       name: "Undead Hunter",
       names: { en: "Undead Hunter" },
-      // P6.7: artefact hireling profiles carry a `warband_rating` block
+      // Artefact hireling profiles carry a `warband_rating` block
       // (fixed value or base+experience), not a flat rating field.
       warband_rating: { kind: "fixed", value: 15 },
       characteristics: { M: 4, WS: 3, BS: 3, S: 3, T: 3, W: 1, I: 3, A: 1, Ld: 7 },
@@ -147,7 +147,7 @@ function makeKnowledgeOf(): KnowledgeReader {
   return makeKnowledge();
 }
 
-describe("P3.5 document helpers", () => {
+describe("Document helpers", () => {
   it("computes rating, member count and treasury like the Python domain", () => {
     const warriors = [
       { id: "a#1", name: "A", profile_name: "A", kind: "hero" as const, stats: {}, equipment: [], skills: [], experience: 8, cost: 35, quantity: 1 },
@@ -159,7 +159,7 @@ describe("P3.5 document helpers", () => {
   });
 });
 
-describe("P3.5 createDraft", () => {
+describe("CreateDraft", () => {
   it("builds a legal starter draft from the KB roster (mandatory heroes, cheapest henchmen fill)", () => {
     const knowledge = makeKnowledgeOf();
     const result = createDraft("sisters-of-sigmar", knowledge);
@@ -189,7 +189,7 @@ describe("P3.5 createDraft", () => {
   });
 });
 
-describe("P3.5 commitInitialWarband", () => {
+describe("CommitInitialWarband", () => {
   function makeCommittedDraft(): CampaignDocument {
     const knowledge = makeKnowledgeOf();
     const result = createDraft("sisters-of-sigmar", knowledge);
@@ -233,7 +233,7 @@ describe("P3.5 commitInitialWarband", () => {
   });
 });
 
-describe("P3.5 recordBattle and post-battle navigation", () => {
+describe("RecordBattle and post-battle navigation", () => {
   function makeActiveCampaign(): { document: CampaignDocument; knowledge: KnowledgeReader } {
     const knowledge = makeKnowledgeOf();
     const draft = createDraft("sisters-of-sigmar", knowledge);
@@ -343,7 +343,7 @@ describe("P3.5 recordBattle and post-battle navigation", () => {
   });
 });
 
-describe("P3.5 equipment, hirelings and advances", () => {
+describe("Equipment, hirelings and advances", () => {
   function makeCommitted(): { useCases: ReturnType<typeof createDefaultUseCases>; state: CampaignDocument; knowledge: KnowledgeReader } {
     const knowledge = makeKnowledgeOf();
     const draft = createDraft("sisters-of-sigmar", knowledge);
@@ -412,7 +412,7 @@ describe("P3.5 equipment, hirelings and advances", () => {
   });
 });
 
-describe("P3.5 export validation invariants", () => {
+describe("Export validation invariants", () => {
   it("catches unordered timelines, duplicate warriors and broken drafts", () => {
     const knowledge = makeKnowledgeOf();
     const draft = createDraft("sisters-of-sigmar", knowledge);

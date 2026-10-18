@@ -356,7 +356,12 @@ rules:
         parameters:
           value: true
   name: Drugs
-  effect: "Uses drugs and is therefore subject to frenzy."
+  effect: >-
+    Uses drugs and is therefore subject to frenzy.
+
+  effect_i18n:
+    es: >-
+      Consume drogas y por ello está sujeto a Frenesí.
   source:
     manual: broheim.net
     printed_page: 5
@@ -383,7 +388,8 @@ rules:
           forbids:
           - ranged-weapons
   name: Equipment Restrictions
-  effect: "No missile weapons."
+  effect: >-
+    No missile weapons.
   source:
     manual: broheim.net
     printed_page: 6
@@ -392,7 +398,8 @@ rules:
   name_i18n:
     es: Restricciones de Equipo
   effect_i18n:
-    es: "es"
+    es: >-
+      es
   applies_to:
     profile_ids:
     - corsairs

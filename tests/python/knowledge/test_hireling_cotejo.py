@@ -18,7 +18,7 @@ fija las tres:
 
 Las dos familias publicadas (``hired-swords`` y ``dramatis-personae``)
 se cotejan con la misma lectura del catálogo canónico. Las pruebas de integración leen
-las copias del espejo (``build/cache``, no versionadas) y se saltan cuando faltan, igual que
+las copias del espejo (``sources/origins``, no versionadas) y se saltan cuando faltan, igual que
 las herramientas que guardan; los fixtures no necesitan nada cacheado.
 """
 from __future__ import annotations
@@ -100,9 +100,7 @@ def grade_2a(rows: list[dict]) -> dict[str, dict]:
     return {row["name"]: row for row in rows if row["name"] in GRADE_2A}
 
 
-# --------------------------------------------------------------------------- #
 # De la entrada al documento fuente: el registro, no una tabla del tool
-# --------------------------------------------------------------------------- #
 
 def test_the_public_catalogue_has_both_families() -> None:
     """El cotejo permanente cubre las dos familias y todos los grados del catálogo.
@@ -159,9 +157,7 @@ def test_a_profile_takes_the_document_from_the_registry() -> None:
 
 
 
-# --------------------------------------------------------------------------- #
 # La lectura del lector compartido, sin documento delante
-# --------------------------------------------------------------------------- #
 
 def test_flat_undoes_the_dotted_filler() -> None:
     """Relics imprime el punto del formulario entre las palabras de la tarifa."""
@@ -230,9 +226,7 @@ def test_stat_row_without_the_word_profile() -> None:
     assert cotejo.stat_rows(entry) == ["464442428"]
 
 
-# --------------------------------------------------------------------------- #
 # La lectura del documento real
-# --------------------------------------------------------------------------- #
 
 @KB_CACHED
 def test_the_page_is_read_one_entry_per_printed_block() -> None:
@@ -307,9 +301,7 @@ def test_adjudicated_cases_verify_every_check(tmp_path, monkeypatch) -> None:
         assert set(entry["checks"]) == set(cotejo.CHECKS), name
 
 
-# --------------------------------------------------------------------------- #
 # El cotejo tiene que poder fallar
-# --------------------------------------------------------------------------- #
 
 @KB_CACHED
 def test_a_fee_that_drifts_from_the_page_is_a_finding(tmp_path, monkeypatch) -> None:

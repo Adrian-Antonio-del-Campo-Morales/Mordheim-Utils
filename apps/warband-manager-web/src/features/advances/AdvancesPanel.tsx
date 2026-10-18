@@ -19,7 +19,7 @@ function PromotionOffer({ warriorId, threshold, locale }: { warriorId: string; t
 }
 
 function PromotionSetup({ document, knowledge, warriorId, locale }: { document: CampaignDocument; knowledge: ArtefactKnowledgeReader; warriorId: string; locale:"es"|"en" }) {
-  // T10: the promoted profile's own tables, including the printed grant
+  // The promoted profile's own tables, including the printed grant
   // (`axe-hurlers--born-marksmen` opens Shooting). The domain picks the set; the
   // interface only renders it.
   const app=useCampaignApp(); const [selected,setSelected]=useState<string[]>([]); const tables=promotionTablesForWarrior(document,knowledge,warriorId);
@@ -45,7 +45,7 @@ export function AdvancesPanel({ document, knowledge, locale: requestedLocale }: 
     const needsSpells = choices.some((choice) => choice["kind"] === "generate_spell"); const loreId = needsSpells && warrior ? wizardLore(knowledge, document, warrior) : null; const lore = loreId ? knowledge.queryKnowledge({ id: { kind: "lore_id", value: loreId } }) : null; const spells = lore?.ok ? (lore.record.data["spells"] ?? []) as readonly Record<string, unknown>[] : [];
     const storedHistory = row["roll_history_events"] ?? row["roll_history"] ?? []; const history = Array.isArray(storedHistory) ? storedHistory : [undefined];
     const result = advanceResultDetails(row["applied_result"] ?? row["applied_label"] ?? t.committed, knowledge, locale);
-    // T10 contract at rest: a row that carries the persisted mark — written
+    // Campaign contract at rest: a row that carries the persisted mark — written
     // while the contract marked the row instead of refusing — says the band
     // special-skill list is still prose. The final contract refuses the choice
     // with `skill_pending_special_list` instead, which the shell phrases from

@@ -1,5 +1,5 @@
 /**
- * T12 fase D — the shell downloads the campaign catalogue on demand.
+ * the shell downloads the campaign catalogue on demand.
  *
  * Product-level proof over the **published** artefact (the same files
  * `outputs/web-public/knowledge` serves, read through a counting fetch stub):
@@ -59,7 +59,7 @@ const labels = {
   pdf: translate({ key: "ui.4a2705e83df4" }, "es"),
 };
 
-describe.skipIf(!hasArtefact)("T12 fase D — lazy campaign catalogue in the shell", () => {
+describe.skipIf(!hasArtefact)("lazy campaign catalogue in the shell", () => {
   it(
     "loads only the initial document at startup and the catalogue on the first flow that needs it",
     async () => {

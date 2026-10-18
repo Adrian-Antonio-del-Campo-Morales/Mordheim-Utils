@@ -298,15 +298,12 @@ def test_corpus_is_importable_without_combat():
     assert result.returncode == 0, result.stdout + result.stderr
 
 
-#
 # --- Structural validator (validate_corpus.py) contract --------------
-#
 # The validator is engine-free too: its unit tests below import it through the
 # same package and feed it small synthetic corpora; nothing inside ``cases``
 # is read or mutated by them.  It must reuse the loader above - never a second
 # parser - and must report authoring-metadata conflicts without turning
 # coverage gaps into scenario failures (exit codes 0 / 1 / 2 only).
-#
 import contextlib
 import importlib
 import io

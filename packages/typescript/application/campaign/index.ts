@@ -1,4 +1,4 @@
 /**
- * Public surface of the campaign application layer (P3.4 freeze).
+ * Public surface of the campaign application layer (frozen contract).
  */
 export * from "./types";

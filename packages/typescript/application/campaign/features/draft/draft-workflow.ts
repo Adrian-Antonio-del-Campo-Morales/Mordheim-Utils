@@ -1,6 +1,6 @@
 /**
  * Draft workflow: draft & initial composition
- * feature — application-layer orchestration over the P3.5 kernel use cases.
+ * Feature — application-layer orchestration over the kernel use cases.
  *
  * Owns the *workflow* of building a warband draft:
  *  1. `startDraft` — create a draft for a warband selected from the KB;
@@ -8,7 +8,7 @@
  *     gold/model/hero limits per batch);
  *  3. `commit` — draft → State #0.
  *
- * The UI never calls domain use cases directly: it talks to the P5.1
+ * The UI never calls domain use cases directly: it talks to the
  * service through this workflow so every change flows through undo/history
  * and the dirty flag. All results are values — no exceptions cross layers.
  *
@@ -77,7 +77,7 @@ export function resolveWarbandOptions(
   return options;
 }
 
-/** Dependencies of the draft workflow (a slice of the P5.1 service world). */
+/** Dependencies of the draft workflow (a slice of the campaign service world). */
 export interface DraftWorkflowDeps {
   readonly knowledge: KnowledgeReader;
   readonly useCases: CampaignUseCases;

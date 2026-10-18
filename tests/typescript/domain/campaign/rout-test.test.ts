@@ -1,9 +1,9 @@
 /**
- * T10 — the campaign side of the Rout test (`raw-recruits--dont-mind-them`).
+ * The campaign side of the Rout test (`raw-recruits--dont-mind-them`).
  *
  * The printed clause: "Any Raw Recruits who are running away or have been taken
  * out of action do not count towards the need to take a Rout test for the
- * warband." The battle-time test is combat (T13); the campaign owns the roster
+ * warband." The battle-time test is combat; the campaign owns the roster
  * fact, so `routTestFactsFor` reports which recorded participants count.
  *
  * The exemption itself is published data: the band rule names its recipients and
@@ -24,8 +24,8 @@ const OVERRIDE = process.env.MORDHEIM_KNOWLEDGE_ARTEFACT;
 const CANDIDATES = OVERRIDE
   ? [OVERRIDE]
   : [
-      // The build output first: T10's evidence is the freshly generated
-      // artefact, while `outputs/` still holds the pre-T10 copy T12 regenerates.
+      // The build output first: the campaign evidence is the freshly generated
+      // artefact, while `outputs/` still holds the stale copy the generator replaces.
       join(REPO_ROOT, "build", "generated", "knowledge-web", "knowledge-web.json"),
       join(REPO_ROOT, "outputs", "web-public", "knowledge", "knowledge-web.json"),
     ];
@@ -79,7 +79,7 @@ function withBattle(outOfAction: readonly string[], participants?: readonly stri
   return document as CampaignDocument;
 }
 
-describe.skipIf(!ARTEFACT_PATH)("T10 Rout-test roster facts (generated artefact)", () => {
+describe.skipIf(!ARTEFACT_PATH)("Rout-test roster facts (generated artefact)", () => {
   const artefact = JSON.parse(readFileSync(ARTEFACT_PATH as string, "utf8"));
   const reader = ArtefactKnowledgeReader.from(artefact);
 

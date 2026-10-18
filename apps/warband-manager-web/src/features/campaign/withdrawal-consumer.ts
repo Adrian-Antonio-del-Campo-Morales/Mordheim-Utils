@@ -1,5 +1,5 @@
 /**
- * T11: the Warband Manager adapter for "these members left the table".
+ * The Warband Manager adapter for "these members left the table".
  *
  * The Warband Manager caller supplies the recorded table facts. This adapter
  * forwards the ordered roster-row ids to the campaign service and returns the
@@ -17,7 +17,7 @@
  *   `not_permitted_in_draft`.
  *
  * The consequence itself (roster removal, per-model equipment write-off, audit
- * trail) belongs to T10 and is not reproduced here.
+ * trail) belongs to the campaign layer and is not reproduced here.
  */
 
 import type { AppResult, CampaignAppService } from "./types";

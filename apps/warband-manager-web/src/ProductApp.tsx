@@ -103,7 +103,7 @@ export function ProductApp() {
   // Categories the picker hides. Stored as exclusions so a category a later KB
   // release publishes is enabled by default instead of silently disappearing.
   const [excludedCategories, setExcludedCategories] = useState<ReadonlySet<string>>(() => new Set());
-  // T12 fase D: reader whose deferred campaign catalogue is loaded.
+  // Reader whose deferred campaign catalogue is loaded.
   const [catalogueReader, setCatalogueReader] = useState<ArtefactKnowledgeReader | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const createButtonRef = useRef<HTMLButtonElement>(null);
@@ -129,7 +129,7 @@ export function ProductApp() {
     return next;
   });
 
-  // T12 fase D: the equipment catalogue and the campaign sections may travel in
+  // The equipment catalogue and the campaign sections may travel in
   // a deferred fragment. It is requested only by a flow that needs it — an open
   // campaign, the rules catalogue page, construction, import or PDF export —
   // never at startup, and the reader coalesces concurrent calls into one hop.

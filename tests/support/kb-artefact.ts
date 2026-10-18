@@ -1,5 +1,5 @@
 /**
- * T12 fase D — test/tool support: load the generated KB artefact completely.
+ * test/tool support: load the generated KB artefact completely.
  *
  * The published artefact (`outputs/web-public/knowledge/knowledge-web.json`)
  * carries only the initial document: bands, profiles, skills, mechanics, prose

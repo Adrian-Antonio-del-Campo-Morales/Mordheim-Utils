@@ -198,7 +198,7 @@ export function HirelingsPanel({ document, listings, locale: requestedLocale, mo
               <td data-label={presentationOutput(t.price)}>{presentationOutput(good.price_dice ? textJoin([textJoin([textNumber(good.price_base, locale), textSymbol("+"), textDice(...good.price_dice, locale)], ""), translate({ key: "unit.gold" }, locale)]) : good.base_price === null ? t.dice : textJoin([textNumber(good.base_price, locale), translate({ key: "unit.gold" }, locale)]))}</td>
               <td data-label={presentationOutput(t.availability)}>{(() => {
                 if (good.availability !== "common") return presentationOutput(unavailableText(locale));
-                // T10 verdict, phrased by the interface. The service keeps the
+                // Campaign verdict, phrased by the interface. The service keeps the
                 // authority: the buy action stays available and a printed
                 // scope that refuses it returns its own stable code.
                 const verdict = marketAvailabilityFacts(document, listings ?? {}, good.item_id, locale);

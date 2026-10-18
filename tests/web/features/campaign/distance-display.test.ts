@@ -73,7 +73,7 @@ describe("adaptDistanceText", () => {
   });
 
   it("finds no unadapted imperial distances in KB effect text", () => {
-    // The published artefact is split (T12 fase D): the equipment rows and the
+    // The published artefact is split (the deferred catalogue): the equipment rows and the
     // campaign sections travel in the deferred catalogue. This sweep must see
     // their effect text, so it merges that fragment — the one family Fase D
     // moved out of the document. The prose and presentation artifacts were

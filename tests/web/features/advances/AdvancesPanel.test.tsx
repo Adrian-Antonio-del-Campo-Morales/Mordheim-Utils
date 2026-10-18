@@ -1,5 +1,5 @@
 /**
- * P6.6 acceptance tests at the component level: the advances panel renders
+ * Acceptance tests at the component level: the advances panel renders
  * the pending ledger and applies choices through the real service (real
  * file port, neutral KB) — rejections surface, never throw.
  */
@@ -181,7 +181,7 @@ function AdvancesPanelShell({
   );
 }
 
-describe("P6.6 AdvancesPanel", () => {
+describe("AdvancesPanel", () => {
   it("lists eligible warriors and applies a stat choice through the service", async () => {
     const user = userEvent.setup();
     const service = await loadedService();

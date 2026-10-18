@@ -1,4 +1,4 @@
-"""F056 — Spectral Touch mixed-hit provenance witnesses on the real modular pool.
+"""Spectral Touch mixed-hit provenance witnesses on the real modular pool.
 
 The accepted Q019 contract (R1–R4) gives every successful attack its own
 natural-die provenance: only the attack whose *final* hit die is a natural six
@@ -16,10 +16,10 @@ activation, equipment legality or product construction.
 
 Synthetic input provenance (engine composition only):
   * profile shape ``Characteristics(3, 3, 3, 4, 3, 1)`` — WS3/S3/T3/W4/I3/A1,
-    mirroring the F007 review probe;
+    mirroring the earlier review probe;
   * main ``weapon.axe``, no off hand, no extra attacks;
   * the attacker carries the pilot ``trait.spectral-touch`` tag; canonical
-    Spirit Host activation is F008 and is not claimed here;
+    Spirit Host activation is not claimed here;
   * no armour (save 7), no natural save, no ward/regeneration, no parry
     capacity and no reaction traits, so no die can hide the difference;
   * hit faces 6/5 both beat the WS3-vs-WS3 target of 4; both ordinary wound
@@ -129,7 +129,7 @@ def test_mixed_hits_without_spectral_touch_add_no_extra_wound(faces):
 def _pooled_provenance_mutant():
     """In-memory copy of ``pools.py`` where every prepared hit shares the flag.
 
-    The single-token substitution is the registered F1/F056 reproducer:
+    The single-token substitution is the registered reproducer:
     ``natural_hit_six=any(p.natural_hit_six for _, p in prepared_attacks)``.
     No live engine file is edited; the namespace is discarded on return.
     """

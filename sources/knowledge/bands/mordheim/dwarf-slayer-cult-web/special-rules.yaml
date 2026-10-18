@@ -82,8 +82,9 @@ rules:
         kind: mechanic
         id: mechanic.hatred-orcs-goblins
   name: Hatred
-  effect: The Rememberer, Stubbles, and Axe Hurlers all Hate Orcs and Goblins. This is ignored if the warrior later becomes
-    Immune to Psychology.
+  effect: >-
+    The Rememberer, Stubbles, and Axe Hurlers all Hate Orcs and Goblins. This is ignored if the
+    warrior later becomes Immune to Psychology.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -92,8 +93,9 @@ rules:
   name_i18n:
     es: Odio
   effect_i18n:
-    es: El Memoralista, los Barbas Nacientes y los Lanzahachas odian a los Orcos y a los Goblins. Esto se ignora si el guerrero
-      se vuelve posteriormente Inmune a la Psicología.
+    es: >-
+      El Memoralista, los Barbas Nacientes y los Lanzahachas odian a los Orcos y a los Goblins. Esto
+      se ignora si el guerrero se vuelve posteriormente Inmune a la Psicología.
   applies_to:
     profile_ids:
     - rememberer
@@ -128,8 +130,9 @@ rules:
     - id: unimplemented.dwarf-slayer-cult-web.band.slayer-campaign
       scope: 'NO'
       binding: null
-      reason: Postgame injury rerolls, exploration, advancement and learning magic are outside the
-        duel; Rememberer is expressly not a Slayer.
+      reason: >-
+        Postgame injury rerolls, exploration, advancement and learning magic are outside the duel;
+        Rememberer is expressly not a Slayer.
     - id: mechanic.slayer-identity
       scope: 'YES'
       binding:
@@ -239,9 +242,10 @@ rules:
     - id: rememberer--rememberer.provider
       scope: 'NO'
       binding: null
-      reason: The independent Rememberer provider and radius are excluded. Its qualified Slayer Hero
-        recipient supplies condition.rememberer-web-support; the Large-only and Large-or-T5+ variants
-        remain distinct.
+      reason: >-
+        The independent Rememberer provider and radius are excluded. Its qualified Slayer Hero
+        recipient supplies condition.rememberer-web-support; the Large-only and Large-or-T5+
+        variants remain distinct.
   name: Rememberer
   effect: >-
     The Rememberer's task is to record the doom of each of the slayers. When he is close by, the
@@ -391,7 +395,9 @@ rules:
     - id: unimplemented.dwarf-slayer-cult-web.axe-hurlers.strong-arm
       scope: 'NO'
       binding: null
-      reason: 'Outside the established 1v1 melee scope: shooting, casting or escape without resolving the duel. Source prose is retained; this is an exclusion, not deferred modular implementation.'
+      reason: >-
+        Outside the established 1v1 melee scope: shooting, casting or escape without resolving the
+        duel. Source prose is retained; this is an exclusion, not deferred modular implementation.
   name: Strong Arm
   effect: >-
     The Axe Hurler can use his strength to hurl thrown weapons farther still. When throwing weapons,

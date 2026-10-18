@@ -87,9 +87,7 @@ def hireling_profile_ids() -> set[str]:
     return set(ids)
 
 
-# --------------------------------------------------------------------------
 # Headers, ingestion state and absence of fictitious examples
-# --------------------------------------------------------------------------
 
 def test_campaign_catalogs_have_headers_and_declare_status():
     for path in campaign_files():
@@ -118,9 +116,7 @@ def test_ingested_catalogs_removed_fictitious_examples():
         assert "examples" not in document, f"{path.name} still carries fictitious examples"
 
 
-# --------------------------------------------------------------------------
 # Canonical conditions
-# --------------------------------------------------------------------------
 
 def test_conditions_catalog_is_canonical():
     conditions = load("catalog/rules/conditions.yaml").get("conditions", [])
@@ -139,6 +135,86 @@ def test_conditions_catalog_is_canonical():
         "condition.animosity",
         "condition.immune-to-psychology",
         "condition.cold-blooded",
+    } | {
+        # Supplied current-state conditions: serious-injury results, supplies,
+        # runes, brews and the printed leader/dodge facts. They are published
+        # here because a battle or a campaign state supplies them by id.
+        "campaign.condition.amputated-arm",
+        "campaign.condition.chest-wound",
+        "campaign.condition.hand-injury",
+        "campaign.condition.nervous-condition",
+        "condition.adventurer-barbarian-leader",
+        "condition.alchemist-aberrantius-vigortia",
+        "condition.alchemist-addicted",
+        "condition.alchemist-backleys-brew",
+        "condition.alchemist-resilience",
+        "condition.alchemist-strength",
+        "condition.bear-handler-nearby",
+        "condition.blessed-weapon",
+        "condition.command.raise-our-insignia",
+        "condition.current-warband-leader",
+        "condition.danse-macabre-controlled",
+        "condition.disability-1",
+        "condition.disability-2",
+        "condition.disability-3",
+        "condition.disability-4",
+        "condition.disability-5",
+        "condition.disability-6",
+        "condition.disability-hero-nearby",
+        "condition.executioners-hood",
+        "condition.fungus-brew-belligerent",
+        "condition.fungus-brew-dizzy",
+        "condition.fungus-brew-fearless",
+        "condition.fungus-brew-loony",
+        "condition.fungus-brew-numbed",
+        "condition.fungus-brew-rowdy",
+        "condition.giggle-juice-coating",
+        "condition.goading-charge",
+        "condition.impetuous-charge",
+        "condition.large-target",
+        "condition.maintenance-1",
+        "condition.maintenance-2",
+        "condition.maintenance-3",
+        "condition.maintenance-4",
+        "condition.maintenance-5",
+        "condition.maintenance-6",
+        "condition.massively-built-leadership-penalty",
+        "condition.massively-built-lost-turn",
+        "condition.master-craftsman-initiative",
+        "condition.master-craftsman-strength",
+        "condition.netted",
+        "condition.nuttaz-charge",
+        "condition.petru-debilitating",
+        "condition.petru-fortitude",
+        "condition.petru-resilience",
+        "condition.petru-strength",
+        "condition.poetry-inspired",
+        "condition.poetry-victorious-leader",
+        "condition.power-grab-majority",
+        "condition.power-grab-minority",
+        "condition.rememberer-kaz-support",
+        "condition.rememberer-web-support",
+        "condition.rune-cleaving",
+        "condition.rune-fury",
+        "condition.rune-iron",
+        "condition.rune-speed",
+        "condition.rune-stone",
+        "condition.rune-striking",
+        "condition.stupidity-exempt",
+        "condition.summoned-this-turn",
+        "condition.swordsmith-honing",
+        "condition.tomb-robber-dodge-known",
+        "condition.troll-brew-fear-immunity",
+        "condition.troll-brew-frenzy",
+        "condition.troll-brew-special-brew",
+        "condition.unseen-charge",
+        "condition.witch-debilitating",
+        "condition.witch-finder-charge",
+        "condition.witch-fortitude",
+        "condition.witch-resilience",
+        "condition.witch-strength",
+        "condition.ye-give-way-refused",
+        "condition.ye-give-way-victorious",
     }
     assert all(c.get("name") for c in conditions)
     assert all(c.get("effect") for c in conditions)
@@ -146,15 +222,13 @@ def test_conditions_catalog_is_canonical():
     assert len({c["id"] for c in conditions}) == len(conditions)
 
 
-# --------------------------------------------------------------------------
 # Trading Post
-# --------------------------------------------------------------------------
 
 def test_trading_post_ingestion_state():
     items = campaign("trading-post.yaml")["items"]
     entry_ids = [item["id"] for item in items]
-    # 338 curated entries plus the 135 market entries the 2A/2B promotion added
-    # (T07: market new 135, nothing removed).
+    # 338 curated entries plus the 135 market entries the supplement promotion added
+    # (market: new 135, nothing removed).
     assert len(items) == 473
     assert len(entry_ids) == len(set(entry_ids))
     assert all(item_id.startswith("campaign.trading-post.") for item_id in entry_ids)
@@ -235,9 +309,7 @@ def test_trading_post_restricted_variants_share_item_id_deliberately():
                      entry["availability"].get("rarity")) for entry in entries}) > 1, item_id
 
 
-# --------------------------------------------------------------------------
 # Serious injuries
-# --------------------------------------------------------------------------
 
 def test_serious_injuries_tables_state():
     tables = {t["id"]: t for t in campaign("serious-injuries.yaml")["tables"]}
@@ -290,9 +362,7 @@ def test_serious_injuries_conditions_land_on_canonical_rolls():
                     "campaign.condition.causes-fear"}
 
 
-# --------------------------------------------------------------------------
 # Experience and advances
-# --------------------------------------------------------------------------
 
 def test_experience_awards_and_underdog_state():
     document = campaign("experience-and-advances.yaml")
@@ -378,15 +448,12 @@ def test_racial_maximum_values_match_band_rules_that_used_to_inline_them():
             assert by_profile[profile][key] == value, f"{profile}.{key}"
 
 
-# --------------------------------------------------------------------------
 # Catalogue contract checks shared with the F042/F043 regression ledger
-#
 # The editorial contract in `contracts/knowledge-editorial-v1` is the authority
 # on the keys a block may carry and on how its localized text is shaped; the
 # helpers below read it instead of copying it, so a contract change cannot leave
 # these checks behind.  `test_catalogue_contract_regressions.py` exercises them
 # with synthetic documents, positive and negative.
-# --------------------------------------------------------------------------
 
 HIRED_SWORDS_SCHEMA = "campaign-hired-swords-and-dramatis.yaml.schema.json"
 RACIAL_MAXIMUM_REFERENCE = re.compile(r"campaign\.limit\.racial-maximum\.[a-z0-9-]+")
@@ -489,9 +556,7 @@ def test_band_rules_reference_racial_maximums_without_inlining_statlines():
     assert set(referenced) <= maximum_ids
 
 
-# --------------------------------------------------------------------------
 # Exploration and income
-# --------------------------------------------------------------------------
 
 def test_exploration_dice_and_shards_chart():
     exploration = campaign("exploration-and-income.yaml")["exploration"]
@@ -532,9 +597,7 @@ def test_wyrdstone_sale_and_magical_artefacts_state():
     assert all(artefact["effect"] for artefact in artefacts)
 
 
-# --------------------------------------------------------------------------
 # Recruitment, veterans, rating and rarity
-# --------------------------------------------------------------------------
 
 def test_recruitment_and_veterans_state():
     document = campaign("recruitment-and-veterans.yaml")
@@ -594,9 +657,7 @@ def test_post_battle_sequence_has_ten_steps():
     ]
 
 
-# --------------------------------------------------------------------------
 # Scenarios
-# --------------------------------------------------------------------------
 
 def test_scenarios_state_and_selection_tables():
     document = campaign("scenarios.yaml")
@@ -705,9 +766,7 @@ def test_every_material_scenario_reward_has_an_executable_entry():
     assert covered == expected
 
 
-# --------------------------------------------------------------------------
 # Magic
-# --------------------------------------------------------------------------
 
 def test_magic_assignment_table_covers_lores_and_pending_lores():
     document = campaign("magic.yaml")
@@ -789,16 +848,14 @@ def test_casting_rules_are_declarative():
     assert casting["source_refs"]
 
 
-# --------------------------------------------------------------------------
 # Mutations
-# --------------------------------------------------------------------------
 
 def test_mutations_ingestion_state():
     document = campaign("mutations.yaml")
     assert document["rules"]["purchase"]
     mutations = document["mutations"]
-    assert len(mutations) == 9
-    assert len({mutation["id"] for mutation in mutations}) == 9
+    assert len(mutations) == 15
+    assert len({mutation["id"] for mutation in mutations}) == 15
     for mutation in mutations:
         assert mutation["id"].startswith("campaign.mutation.")
         assert mutation["name"]
@@ -807,9 +864,7 @@ def test_mutations_ingestion_state():
         assert mutation["source_refs"]
 
 
-# --------------------------------------------------------------------------
 # Mercenaries (Hired Swords and Dramatis Personae) — schema v2
-# --------------------------------------------------------------------------
 
 def test_hired_swords_campaign_catalog_state():
     """The mercenary catalogue is published with schema v2 and its canonical
@@ -819,7 +874,7 @@ def test_hired_swords_campaign_catalog_state():
     assert document["schema_version"] == 2
     assert {entry["id"] for entry in document["hired_swords"]}
     # 72 + 26 curated entries plus the promotion's 23 hired swords and 3 dramatis
-    # personae (T07: hirelings new 23, redirect 3; nothing removed).
+    # personae (hirelings: new 23, redirect 3; nothing removed).
     assert len(document["hired_swords"]) == 95
     assert len(document["dramatis_personae"]) == 29
     entries = document["hired_swords"] + document["dramatis_personae"]
@@ -983,9 +1038,7 @@ def test_hired_swords_no_pending_spell_list_references():
     assert pending == [], f"unlinked spell_list: {pending}"
 
 
-# --------------------------------------------------------------------------
 # Reference integrity of the campaign catalogues
-# --------------------------------------------------------------------------
 
 def test_campaign_references_resolve_against_canonical_catalogs():
     item_ids = canonical_item_ids()

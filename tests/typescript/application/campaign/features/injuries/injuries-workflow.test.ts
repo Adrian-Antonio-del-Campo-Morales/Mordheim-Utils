@@ -1,5 +1,5 @@
 /**
- * P6.5 acceptance tests: the injuries & recovery workflow over the immutable
+ * Acceptance tests: the injuries & recovery workflow over the immutable
  * document helpers — driven from the shapes the `pending-post-battle.json`
  * contract fixture and the desktop post-battle engine produce.
  *

@@ -11,7 +11,7 @@ const unsafeProperties = new Set(["id", "item_id", "profile_id", "band_id", "tag
 // returns branded text on every path, so its lookup keys are not visible values.
 // `variantName` returns `ResolvedKbText` from `recordText` (or the unavailable
 // message); it was missing here, which made a non-GUI sink that takes a band id
-// through it look like raw system text (T12, §presentación).
+// through it look like raw system text (§presentación).
 // `abilityNameText`/`warriorAbilityName`/`conditionDetailText` are the same kind
 // of resolver for captured v5 ability labels and condition details: each returns
 // a resolved `ResolvedKbText` or the reader's specific unknown-reference notice,

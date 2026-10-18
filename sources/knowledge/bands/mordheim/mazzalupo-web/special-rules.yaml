@@ -472,7 +472,10 @@ rules:
     - id: ye-give-way-challenge-producer
       scope: 'NO'
       binding: null
-      reason: 'Only supplied prior results apply in a resolved duel. Challenge declaration/refusal cancels this duel; other warriors, area effects and later opponents are excluded. Select one result through condition_ids; these are not automatic grants.'
+      reason: >-
+        Only supplied prior results apply in a resolved duel. Challenge declaration/refusal cancels
+        this duel; other warriors, area effects and later opponents are excluded. Select one result
+        through condition_ids; these are not automatic grants.
   name: Ye Give Way
   effect: >-
     When the Fallen noble declares a charge against a Hero, they may challenge the target to yield
@@ -671,7 +674,8 @@ rules:
           - weapons
           - armour
   name: Equipment Restrictions
-  effect: "Weapons/Armour: none."
+  effect: >-
+    Weapons/Armour: none.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -680,7 +684,8 @@ rules:
   name_i18n:
     es: Restricciones de Equipo
   effect_i18n:
-    es: "es"
+    es: >-
+      es
   applies_to:
     profile_ids:
     - black-sheep

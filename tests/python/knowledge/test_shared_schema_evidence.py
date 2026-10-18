@@ -41,9 +41,7 @@ TWO_STRING_PROPERTIES = {"pair_a": {"type": "string"}, "pair_b": {"type": "strin
 THREE_STRING_PROPERTIES = {**TWO_STRING_PROPERTIES, "pair_c": {"type": "string"}}
 
 
-# --------------------------------------------------------------------------- #
 # In-memory probes: two document schemas reaching one shared definition
-# --------------------------------------------------------------------------- #
 
 
 def shared_schema(properties: dict[str, dict], *, local: bool = False) -> dict:
@@ -129,9 +127,7 @@ def justified(monkeypatch, value) -> tuple[str, str, str]:
     return entry
 
 
-# --------------------------------------------------------------------------- #
 # The defect: complementary use must silence the shared declaration
-# --------------------------------------------------------------------------- #
 
 
 def test_complementary_documents_pool_into_one_shared_declaration(monkeypatch):
@@ -215,9 +211,7 @@ def test_a_local_definition_keeps_its_own_schema(monkeypatch):
     assert unexercised[0][2] == "declared property never present: kept"
 
 
-# --------------------------------------------------------------------------- #
 # The order of schemas and documents must not change the result
-# --------------------------------------------------------------------------- #
 
 
 def test_the_pooled_result_is_stable_in_any_order(monkeypatch):
@@ -255,9 +249,7 @@ def test_the_pooled_result_is_stable_in_any_order(monkeypatch):
     )
 
 
-# --------------------------------------------------------------------------- #
 # Every kind the audit pools: properties, types, enum values and branches
-# --------------------------------------------------------------------------- #
 
 
 def test_detail_and_members_agree_for_every_pooled_kind(monkeypatch):
@@ -321,9 +313,7 @@ def test_detail_and_members_agree_for_every_pooled_kind(monkeypatch):
             ), finding
 
 
-# --------------------------------------------------------------------------- #
 # The allowlist: member scope, staleness and the legacy text entries
-# --------------------------------------------------------------------------- #
 
 
 def test_a_member_mapping_covers_only_the_members_it_names(monkeypatch):
@@ -416,9 +406,7 @@ def test_pooling_never_hides_the_looseness_findings(monkeypatch):
     assert [finding for finding in findings if finding.schema == DEFINITIONS] == []
 
 
-# --------------------------------------------------------------------------- #
 # The committed corpus: what the repair has to keep there
-# --------------------------------------------------------------------------- #
 
 
 @lru_cache(maxsize=None)
@@ -458,6 +446,66 @@ def test_the_shared_definition_findings_are_pooled_and_unchanged():
             "str:Ld",
             "str:M",
             "str:W",
+        ),
+        # `runtime_binding.parameters.effect_parameters` is a `$ref` to the
+        # mechanic parameters block, so the pooled evidence is the EffectSet
+        # vocabulary the compiler accepts rather than a declaration this file
+        # owns. The finding is justified next to that block; this pin records
+        # exactly which members the documents still do not exercise.
+        ("unused_property", "#/$defs/runtime_binding.parameters.effect_parameters"): (
+            "armour_cannot_be_ignored",
+            "armour_save_floor",
+            "armour_strength_modifier",
+            "automatic_hit",
+            "bear_hug",
+            "cannot_be_parried",
+            "caught_fire_threshold",
+            "charge_attacks_bonus",
+            "charge_reroll_hits",
+            "charge_strength_bonus",
+            "charge_ws_bonus",
+            "concussion",
+            "critical_injury_bonus",
+            "critical_threshold",
+            "damage",
+            "damage_die_sides",
+            "energy_focus_attacks",
+            "ethereal_hit_save",
+            "first_round_attacks_bonus",
+            "first_round_charge_attacks_bonus",
+            "first_round_strength_bonus",
+            "fixed_strength",
+            "frenzy",
+            "hit_modifier",
+            "ignition_threshold",
+            "ignore_armour",
+            "ignore_armour_against_knocked_down",
+            "ignore_armour_except_shield_and_skills",
+            "incoming_attacks_modifier",
+            "incoming_hit_modifier",
+            "incoming_strength_modifier",
+            "maximum_wound_target",
+            "natural_armour_negated_by_fire",
+            "natural_armour_negated_by_magic",
+            "out_of_action_threshold",
+            "paired",
+            "parry",
+            "poison_immunity",
+            "priority",
+            "regeneration_blocked_by_blessed",
+            "regeneration_blocked_by_fire",
+            "regeneration_save",
+            "reroll_hits",
+            "reroll_wounds",
+            "step_aside",
+            "strongman",
+            "target_armour_bonus",
+            "thick_skull",
+            "toughness_bonus",
+            "true_grit",
+            "two_handed",
+            "ward_save_mundane_only",
+            "wound_modifier",
         ),
     }, shared
 

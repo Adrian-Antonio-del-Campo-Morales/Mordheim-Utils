@@ -71,5 +71,5 @@ Keep a tool only when it is owned by a current documented workflow, a test or
 CI gate, the central launcher, or a repeatable operation over active data.
 Permanent audits own invariants after a migration: `audit_kb_conformance.py`
 rejects duplicated `rule_ref` prose, while schemas and
-`test_rule_prose_keys.py` reject the retired `summary` key. Remove one-off
+the knowledge pipeline guards reject the retired `summary` key. Remove one-off
 migrations and diagnostics after their result is materialized.

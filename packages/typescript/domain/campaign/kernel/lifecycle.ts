@@ -1,5 +1,5 @@
 /**
- * T10: roster-lifecycle clauses.
+ * Roster-lifecycle clauses.
  *
  * Some printed band rules operate on a warband *after* it was built: the Dame of
  * the Mare must be replaced before anything else is recruited, and a Skaven

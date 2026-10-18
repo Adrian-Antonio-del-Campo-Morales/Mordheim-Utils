@@ -1,5 +1,5 @@
 /**
- * P3.5: draft creation and composition — the pure port of the Python
+ * Draft creation and composition — the pure port of the Python
  * `domain/builders.py` draft path and the composition rules of
  * `CampaignVM.draft_is_legal`.
  *
@@ -296,7 +296,7 @@ export function createDraft(
     );
   }
   // A band whose mandatory roster needs a profile the runtime-scope excludes
-  // cannot produce a legal draft (T09: an exclusion is never turned into a
+  // cannot produce a legal draft (an exclusion is never turned into a
   // normal profile, and never into a generic allowlist).
   const declaredRoster =
     bandRecord.data["roster"] && typeof bandRecord.data["roster"] === "object"

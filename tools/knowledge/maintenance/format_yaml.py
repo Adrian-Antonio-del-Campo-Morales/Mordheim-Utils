@@ -16,7 +16,7 @@ wrapping (multi-line quoted scalars, content beyond the target width, or a
 physical line past the 120 maximum) and short values keep their single-line
 quotes.
 Rule prose lives under exactly one key — `effect` (never `summary`); the
-editorial schemas and `test_rule_prose_keys.py` enforce that invariant. Parsed
+editorial schemas and the knowledge pipeline guards enforce that invariant. Parsed
 values are checked for semantic equivalence after whitespace normalization.
 """
 from __future__ import annotations

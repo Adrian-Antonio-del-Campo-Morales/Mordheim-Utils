@@ -56,8 +56,8 @@ def register_view(baseline: dict) -> tuple[dict[str, set[str]], str]:
         rows = list(csv.DictReader(handle))
     admitted: dict[str, set[str]] = {}
     for row in rows:
-        if row["clause_scope"] == IN_SCOPE and row["current_id"].startswith(ADMITTED_PREFIXES):
-            admitted.setdefault(row["current_id"], set()).add(row["clause_id"])
+        if row["clause_scope"] == IN_SCOPE and row["id"].startswith(ADMITTED_PREFIXES):
+            admitted.setdefault(row["id"], set()).add(row["clause_id"])
     return admitted, hashlib.sha256(path.read_bytes()).hexdigest()
 
 

@@ -1,5 +1,5 @@
 /**
- * T10 — campaign mutations.
+ * Campaign mutations.
  *
  * The published case is `shallows-beasts-mim / band--aquatic-mutants`: "Any Hero
  * may start the campaign with a single mutation ... if they pay the appropriate
@@ -65,7 +65,7 @@ function draft(warriors: readonly Warrior[]): CampaignDocument {
   return { campaign: campaign(warriors, true), view: { selected_moment: "draft:0" } };
 }
 
-describe.skipIf(!ARTEFACT_PATH)("T10 mutations (generated artefact)", () => {
+describe.skipIf(!ARTEFACT_PATH)("Campaign mutations (generated artefact)", () => {
   const artefact = readArtefactDocument(ARTEFACT_PATH as string);
   const reader = ArtefactKnowledgeReader.from(artefact);
 

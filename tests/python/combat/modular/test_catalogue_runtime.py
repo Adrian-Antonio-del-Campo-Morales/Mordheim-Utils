@@ -64,7 +64,7 @@ def test_every_legal_profile_can_execute_a_complete_scalar_round():
                 assert result.state.round_index == 1
                 executed += 1
     # Every profile of both collections but the two declared exclusions
-    # (534 before T07 promoted the 2A/2B bands, +1 for the Banshee once its
+    # (534 before the supplement bands were promoted, +1 for the Banshee once its
     # blank Initiative was represented as an absence).
     assert executed == 1064
 
@@ -105,6 +105,6 @@ def test_every_execution_mechanism_can_enter_the_scalar_round_pipeline():
             state = initialize_duel(fighter, opponent, dice)
             assert resolve_round(fighter, opponent, state, dice).state.round_index == 1
             executed += 1
-    # L04 adds Shifty; L06/L07 add local profiles and source-specific variants.
+    # Promoted local rules add Shifty, local profiles and source-specific variants.
     # Crude Belch needs known enemy Leadership; the generic opponent supplies it.
     assert executed == 246

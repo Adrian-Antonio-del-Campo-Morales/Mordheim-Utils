@@ -13,19 +13,27 @@ justify itself by covering something no deterministic test covers.
 
 ## Modular integration closure
 
-As of 2026-10-18, the admitted implementation queue is closed: the semantic
-CSV retains 4,556 keys and no pending clauses. Implementation checkpoint:
-`57d7a8a1`; E2E checkpoint: `32a215b6`. This is implementation disposition,
-not certification. Catalogue contracts and admission/kit corrections have
-focused evidence; integrated verification remains outstanding.
+As of 2026-10-18, the admitted implementation queue is closed. This is
+implementation disposition, not certification. The register itself is the
+authority on admitted keys and pending work: read it through
+`python -X utf8 tools/knowledge/clause_registry.py query --pending`, which
+prints an empty list when no clause is pending. Catalogue contracts and
+admission/kit corrections have focused evidence; integrated verification
+remains outstanding.
 
-For this modular closure assignment, the following scope overrides the general
-multi-engine certification layers below: no E2E execution, collection,
-investigation or editing; no parity, statistical or coverage campaigns;
-no NumPy/native work and no T14 certification. E2E is not a closure requirement.
+Modular integration closure includes the E2E battery in
+`tests/E2E/modular-engine/`: declared scenarios, coverage inventory and
+accepted-evidence non-regression checks. Run it with
+`python -m pytest tests/E2E/modular-engine -q` on the same integrated revision
+as the other modular checks. Source-derived authoring and semantic review
+remain separate from execution; static corpus validation alone is insufficient.
 
-1. Run the existing modular, construction and modular semantic checks together,
-   using an explicit selection that excludes E2E completely.
+The multi-engine certification layers below are subsequent work. Modular closure
+does not include optimized-backend parity, statistical or engine coverage
+campaigns, NumPy/native implementation or optimized-port certification.
+
+1. Run the existing modular, construction, modular semantic and modular E2E
+   checks together on one integrated revision.
 2. Include the relevant type, generated eligibility bundle, editorial contract
    and CSV conservation checks.
 3. Group failures by cause and consumer. Fix each common admitted cause once;
@@ -37,10 +45,11 @@ no NumPy/native work and no T14 certification. E2E is not a closure requirement.
 
 Closure requires accessible configuration, correct compilation and consumption
 for every admitted consequence, no known executable/composition defect, passing
-applicable integrated checks, and preserved CSV keys and traceability. A binding,
+applicable integrated checks including the modular E2E battery, and preserved
+CSV keys and traceability. A binding,
 closed row or test count alone proves none of these. Reuse existing tests; add
 only missing discriminators for behaviour, limits, consumption, expiry or
-composition. Record unresolved concrete defects in [the backlog](../TODO.md).
+composition. Record unresolved concrete defects in [the backlog](../../TODO.md).
 A genuinely missing source must be identified exactly; do not invent a rule.
 
 ## The layers
@@ -75,7 +84,7 @@ For phased integration, apply the
 Reuse accepted evidence whose inputs still match; revalidate affected adapters
 and both consumers when a shared decision changes. A legal choice, an exactly-once
 compiled effect and correct battle behavior require distinct evidence. F035
-classifies historical T13 construction findings against the current implementation;
+classifies historical construction findings against the current implementation;
 it does not require rebuilding the shared module or repeating accepted Web phases.
 
 Run deterministic suites for ordinary changes. Deep parity, truncation,

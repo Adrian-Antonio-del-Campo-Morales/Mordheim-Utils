@@ -72,7 +72,7 @@ def test_structural_audit_covers_the_current_implemented_catalogue_snapshot():
 
     The three profiles the duel runtime cannot carry (the Gyrocopter, the River
     Boat and the Banshee) are declared exclusions of `runtime-scope.yaml` with
-    their reason. L03 Spectral Touch and L04 Shifty now compile canonically;
+    their reason. Spectral Touch and Shifty now compile canonically;
     their optimized support guards do not weaken this structural audit.
     """
     report = audit_phase_verification()
@@ -84,7 +84,7 @@ def test_structural_audit_covers_the_current_implemented_catalogue_snapshot():
     # Counts describe structural projection only, not semantic certification.
     assert report.execution_mechanics == 310
     assert report.projected_mechanics == 307  # three declared exclusions
-    assert report.projected_trait_bindings == 38  # L03 Spectral: 37 -> 38
+    assert report.projected_trait_bindings == 38  # Spectral Touch binding: 37 -> 38
     assert report.evidenced_profile_bindings == 7  # active use whitelist, separate from ownership
     assert report.projected_automatic_compiler_bindings == 37
     assert report.evidenced_selectable_compiler_bindings == 8
@@ -99,11 +99,11 @@ def test_structural_audit_covers_the_current_implemented_catalogue_snapshot():
     assert len(MODULAR_FIELD_CONSUMERS) == len(set(MODULAR_FIELD_CONSUMERS))
     assert report.modular_execution_mechanics == 310
     # 420 base records + 2 forbid-skill-categories profile rules + the
-    # implemented records of the promoted bands, including L03/L04 activation.
+    # implemented records of the promoted bands, including Spectral Touch and Shifty.
     # Derived from the knowledge base instead of pinning a number: it moves with
     # legitimately promoted rules and fails on any silent drift.
     assert report.implemented_rule_records == _implemented_rule_records()
-    # 1009 + 7 profile-scoped "May not wear armour" restrictions added by the T13
+    # 1009 + 7 profile-scoped "May not wear armour" restrictions added by the construction
     # reconciliation (six Sartosa/Nippon pirate bands plus clan-angrund-kep).
     assert report.implemented_rule_records == 1016  # includes individual Leadership rerolls and Fear skills
     assert report.canonical_bindings == 264

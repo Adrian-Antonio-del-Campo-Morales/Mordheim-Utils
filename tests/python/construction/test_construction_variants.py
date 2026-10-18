@@ -1,4 +1,4 @@
-"""T09 mandatory-variant parity: the published options stay true to the KB.
+"""Mandatory-variant parity: the published options stay true to the KB.
 
 ``roster.requires_variant_selection`` demands a choice the application must ask
 for before the warband is usable, and ``band.yaml`` ``variants`` publishes the

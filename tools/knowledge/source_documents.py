@@ -62,6 +62,11 @@ def registry_path() -> Path:
     )
 
 
+#: Raíz del espejo local con las copias descargadas de los documentos fuente.
+#: Vive junto al registro y no se versiona: son documentos de terceros, muy grandes.
+ORIGINS = registry_path().parents[2] / "origins"
+
+
 def normalize_url(url: str) -> str:
     """Forma canónica de una cita, para que dos formas de citar un documento coincidan.
 
@@ -236,7 +241,7 @@ class SourceDocuments:
 class SourceMirror:
     """Las copias descargadas de los documentos fuente, bajo la raíz del espejo.
 
-    ``build/cache`` es el espejo del checkout, y el registro dice qué ruta ocupa cada
+    ``sources/origins`` es el espejo del checkout, y el registro dice qué ruta ocupa cada
     documento. Un ``pdf`` se lee con el corpus de geometría —que además busca la copia en
     la subcarpeta ``extra`` del espejo— y una ``page`` con el HTML que trae la estructura o,
     a falta de él, con su gemelo de texto plano.

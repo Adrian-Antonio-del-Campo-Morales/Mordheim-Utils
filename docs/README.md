@@ -4,7 +4,7 @@ Reference material and procedures for the Mordheim Utils repository. Start
 with the [repository overview](../README.md) for installation and the common
 commands.
 
-Current follow-ups are in [the backlog](TODO.md); the
+Current follow-ups are in [the backlog](../TODO.md); the
 [modular verification sequence](reference/verification.md#modular-integration-closure)
 distinguishes implementation closure from certification.
 
@@ -23,6 +23,8 @@ distinguishes implementation closure from certification.
   directory that owns each one.
 - [Web presentation](reference/web-presentation.md) — localization, provenance
   and output-boundary rules.
+- [Development codes](reference/development-codes.md) — what was removed from
+  the retired phase/plan vocabulary and what still needs a decision.
 
 Contracts:
 
@@ -37,8 +39,12 @@ Contracts:
 - [Modify the knowledge base](guides/modify-knowledge-base.md)
 - [Implement and verify rules](guides/implement-and-verify-rules.md)
 - [Modular engine implementation](guides/modular-engine-implementation.md) —
-  active T13 scope and reusable semantic contracts for later optimized ports.
+  the active modular-engine scope and reusable semantic contracts for later
+  optimized ports.
 - [Modify an application](guides/modify-application.md)
+- [Implement the warband reference template](guides/warband-reference-template.md)
+  — the Rules → Warbands sheet: read model, fixed section order and the
+  generator metadata it reads.
 - [Use and extend campaign knowledge](guides/campaign-knowledge.md)
 - [Develop and release](guides/develop-and-release.md) — the fast loop, the
   release gates, measured performance optima and per-machine calibration.
@@ -58,15 +64,26 @@ The catalogue and registry rules of the canonical data:
 
 ## Where documents live
 
-Every document lives under `docs/`; the exceptions, each for a reason the tool
-that owns it enforces:
+Most maintained documentation lives under `docs/`. Project-level entry
+points and documents owned by a specific artefact live beside them:
 
 - [`README.md`](../README.md) at the repository root — the entry point, and the
   file the Windows installer packages.
+- [`TODO.md`](../TODO.md) at the repository root — unresolved project defects,
+  verification work and deferred capabilities.
+- [`AGENTS.md`](../AGENTS.md) — repository instructions, which agents read from
+  the checkout root.
 - `contracts/*/README.md` — `tests/python/knowledge/test_editorial_schemas.py`
   requires each contract README next to its schemas.
 - [`tests/specs/README.md`](../tests/specs/README.md) — the conventions of the
   verification corpus, published beside the corpus itself.
+- `tests/E2E/modular-engine/README.md`, `tests/E2E/modular-engine/plan.md` and
+  `tests/E2E/modular-engine/cases/grants/INVENTORY.md` — the E2E battery's own
+  contract, procedure notes and grant inventory, owned with the corpus they
+  describe.
+
+Only the contract READMEs are checked by a test; the installer consumes the root
+README, and the rest are placed by the subtree that owns them.
 
 ## Conventions
 
@@ -75,7 +92,7 @@ that owns it enforces:
   behaviour and status; reference pages do not copy volatile test counts,
   benchmark results or audit totals — they name the command that produces the
   live report.
-- Unresolved product scope belongs in [TODO](TODO.md).
+- Unresolved product scope belongs in [TODO](../TODO.md).
 - Generated material (`outputs/`, web `dist/`, staged
   knowledge JSON) is working data produced by commands: never hand-edit or
   commit it. The generated eligibility bundle is an exception: it is a

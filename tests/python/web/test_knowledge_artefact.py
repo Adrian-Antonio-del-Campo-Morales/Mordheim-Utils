@@ -1,4 +1,4 @@
-"""web.knowledge-artefact: the P4.2 generator is deterministic and complete.
+"""Web.knowledge-artefact: the generator is deterministic and complete.
 
 Tests the YAML → JSON web generator (`tools/knowledge/generate_knowledge_web.py`)
 against the Knowledge Base inventory:
@@ -117,7 +117,11 @@ def test_profiles_flatten_list_valued_forbids() -> None:
     artefact = _artefact()
     profiles = {(str(row["collection"]), str(row["band_id"]), str(row["id"])): row
                 for row in artefact["profiles"]}
-    assert profiles[("mordheim", "black-orcs", "orc-nuttaz")]["equipment_forbids"] == ["armour", "ranged-weapons"]
+    # The vow keeps the two families and the band-wide mount clause
+    # ("Let the Goons Do the Work") that also reaches this bearer.
+    assert profiles[("mordheim", "black-orcs", "orc-nuttaz")]["equipment_forbids"] == [
+        "armour", "mounts", "ranged-weapons",
+    ]
     assert profiles[("mordheim", "ghost-pirates-sar", "gibbets")]["equipment_forbids"] == ["armour-suit"]
 
 

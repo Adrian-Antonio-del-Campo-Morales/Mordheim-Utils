@@ -1,5 +1,5 @@
 /**
- * P5.2 acceptance — test-environment setup.
+ * Acceptance — test-environment setup.
  *
  * The production shell upgrades to the real KB reader by fetching
  * `knowledge/knowledge-web.json`. jsdom has no serving layer, so every test

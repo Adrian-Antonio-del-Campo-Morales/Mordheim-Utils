@@ -1,7 +1,7 @@
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vitest/config";
 
-// P3.4: domain/application packages must run in plain Node — no DOM.
+// Domain/application packages must run in plain Node — no DOM.
 // The suite lives in the repository's tests/typescript tree (support code stays
 // out of the packages); the aliases are the same vocabulary the web app uses.
 // Dependencies resolve through the npm workspace root.

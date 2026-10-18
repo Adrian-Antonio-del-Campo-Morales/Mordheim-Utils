@@ -1,5 +1,5 @@
 /**
- * T09 mandatory warband variants: published options, their construction
+ * Mandatory warband variants: published options, their construction
  * consequences and their persistence.
  *
  * The fixtures mirror the two shapes the promoted KB publishes:

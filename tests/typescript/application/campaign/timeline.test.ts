@@ -7,7 +7,7 @@
  * - export → reimport preserves the timeline (states and battles verbatim)
  *   and the selected moment survives as reconstructible view state.
  *
- * Uses the REAL P3.2 file port (round-trip acceptance lives here too) with
+ * Uses the REAL file port (round-trip acceptance lives here too) with
  * a neutral knowledge reader — no React, no browser.
  */
 import { describe, expect, it } from "vitest";
@@ -180,7 +180,7 @@ function enumerateMoments(c: Campaign): MomentSelection[] {
   return moments;
 }
 
-describe("P6.1: moment enumeration", () => {
+describe("Moment enumeration", () => {
   it("lists draft, every state, every battle and pending post-battle in order", async () => {
     const service = await importCampaign();
     const doc = service.current();
@@ -197,7 +197,7 @@ describe("P6.1: moment enumeration", () => {
   });
 });
 
-describe("P6.1: selection never mutates the campaign", () => {
+describe("Selection never mutates the campaign", () => {
   it("selectMoment updates only the view and never dirties", async () => {
     const service = await importCampaign();
     const before = service.current()!.campaign;
@@ -219,7 +219,7 @@ describe("P6.1: selection never mutates the campaign", () => {
   });
 });
 
-describe("P6.1: export & reimport preserves the timeline (acceptance)", () => {
+describe("Export & reimport preserves the timeline (acceptance)", () => {
   it("states and battles survive verbatim; selected moment survives in view", async () => {
     // Import carries the view section through the real port; the selected
     // moment must come back on reimport (reconstructible view state).

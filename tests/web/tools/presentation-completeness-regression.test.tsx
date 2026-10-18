@@ -3,7 +3,7 @@
  * "Reglas compartidas" tab through the real `RulesCatalogue` against the REAL
  * generated artefacts (no data filtering, no fixtures).
  *
- * The requirement (2A2B plan): the shared rules category must contain exactly
+ * The requirement: the shared rules category must contain exactly
  * the 68 real shared rules (`shared-rule.*`) — no band-local copy — and every
  * entry's name and effect must resolve in ES and EN with zero generic fallbacks
  * and zero ids shown as text.

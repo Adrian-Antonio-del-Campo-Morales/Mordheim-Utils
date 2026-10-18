@@ -712,7 +712,7 @@ interface ObligationGroup {
 }
 
 /**
- * The campaign contracts T10/T11 persist, phrased with the same resolvers and
+ * The campaign contracts persist, phrased with the same resolvers and
  * message catalogue the interface uses. Nothing is re-implemented here: the
  * module reads the published rows through the campaign-obligation facts and
  * prints names, never ids. Returns no group when the campaign records none, so

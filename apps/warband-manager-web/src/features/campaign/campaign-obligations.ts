@@ -1,10 +1,10 @@
 /**
- * T11: campaign obligations of the produced campaign contracts (T10).
+ * Campaign obligations of the produced campaign contracts.
  *
  * This module is the only place the interface turns a campaign verdict into
  * presentation. Two rules hold everywhere here:
  *
- * 1. **No rule is re-implemented.** Every fact comes from the T10 domain
+ * 1. **No rule is re-implemented.** Every fact comes from the campaign domain
  *    contract (creation decisions, lifecycle clauses, succession, mutations,
  *    Rout facts, withdrawals, market availability). The module reads published
  *    rows and phrases values; it never decides legality.
@@ -46,9 +46,9 @@ export type CampaignIssueCode =
   | "not_permitted_when_committed"
   | "lifecycle_member_required"
   | "market_creation_only"
-  /** T09 construction contract: the skill is outside the profile's tables. */
+  /** Construction contract: the skill is outside the profile's tables. */
   | "skill_not_permitted"
-  /** T09/T10 advance contract: a `special` list still published as prose. */
+  /** Advance contract: a `special` list still published as prose. */
   | "skill_pending_special_list"
   | MarketIssueCode;
 
@@ -695,7 +695,7 @@ export interface MarketReader {
 
 /**
  * Availability of one Trading Post offer for the loaded warband. The verdict
- * comes from the T10 domain contract; the interface only phrases it, and the
+ * comes from the campaign domain contract; the interface only phrases it, and the
  * service remains the authority when the purchase is attempted.
  */
 export function marketAvailabilityFacts(document: CampaignDocument, reader: MarketReader, itemId: IdString, locale: Locale): MarketAvailabilityFacts {

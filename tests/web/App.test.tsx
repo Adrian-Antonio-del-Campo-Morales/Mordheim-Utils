@@ -5,7 +5,7 @@ import "@testing-library/jest-dom/vitest";
 
 import { App } from "@src/App";
 
-describe("App shell (P3.1)", () => {
+describe("App shell ", () => {
   it("renders the empty shell without importing domain code", async () => {
     render(<App />);
     await screen.findByRole("alert");

@@ -162,7 +162,7 @@ describe("warband PDF exporter (desktop parity port)", () => {
     }
   });
 
-  // T12: the campaign fields T11 transferred to the writer. The sheet must show
+  // The campaign fields the interface transferred to the writer. The sheet must show
   // the option the band chose, the mandatory creation decision with its result,
   // who leads (or the succession still owed), the mutations bought, the advance
   // tables a printed clause grants and the members a withdrawal removed — all
@@ -253,7 +253,7 @@ describe("warband PDF exporter (desktop parity port)", () => {
   it.each(campaignCases)("prints $name in both languages", async ({ band, variant, warriors, rules, log, expected, forbidden }) => {
     if (!freshArtefactPath()) return;
     const knowledge = freshCampaignKnowledge();
-    // T12 fase D: the PDF writer only runs on a loaded catalogue — the deferred
+    // the PDF writer only runs on a loaded catalogue — the deferred
     // families are the ones it resolves equipment and campaign text from.
     expect(knowledge.isCatalogueLoaded("items")).toBe(true);
     expect(knowledge.isCatalogueLoaded("campaign")).toBe(true);

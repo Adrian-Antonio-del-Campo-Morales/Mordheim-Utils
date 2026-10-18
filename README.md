@@ -1,134 +1,166 @@
 # Mordheim Utils
 
-Mordheim Utils is a Python/TypeScript monorepo for Mordheim campaign management and close-combat simulation. It has a Combat Lab application, a web campaign manager, a shared knowledge base, and a versioned campaign-file contract.
+Tools for managing Mordheim campaigns and exploring one-on-one close combat. This Python/TypeScript monorepo contains two applications backed by a shared, structured knowledge base.
 
-Both applications use one [warrior eligibility module](docs/reference/eligibility.md) for equipment and skill decisions. Warband Manager imports its TypeScript source; Combat Lab executes the generated JavaScript inside Python through MiniRacer.
+**[Open the published Campaign Manager](https://mordheim-warband-manager.win/)** — use the web application directly in your browser, with no local installation required.
 
-## What is implemented
+| Application | What you can do |
+| --- | --- |
+| **Campaign Manager** · web | Build and manage warbands, record battles and post-battle progression, browse rules and statistics, import/export `.mordheim` campaigns, and export warband PDFs. |
+| **Combat Lab** · desktop and CLI | Configure duelists, simulate close-combat duels, analyse results, and run engine verification, parity checks and benchmarks. |
 
-| Surface | Package / entry point | Purpose |
-| --- | --- | --- |
-| **Combat Lab** | `mordheim-combat-lab` or `python -m mordheim_combat_lab` | Tkinter simulator and CLI for compiled 1-vs-1 close-combat duels, analysis, parity, verification and benchmarks. |
-| **Campaign Manager — web** | `apps/warband-manager-web` | React/Vite application with the campaign workflow, rules browser, statistics, `.mordheim` import/export and PDF export. Campaigns remain in memory until exported. |
+The applications share canonical knowledge and [equipment and skill eligibility](docs/reference/eligibility.md). Each manages its own participants and state; Combat Lab does not import Campaign Manager rosters.
 
-The active runtime scope of the duel engine is **one-against-one close combat**. Shooting, movement, psychology, mounts and magic are classified in the knowledge base but are not duel-engine features.
+[Quick start](#quick-start) · [Common commands](#common-commands) · [Development](#development) · [Documentation](docs/README.md)
 
-## Repository layout
+## Quick start
 
-```text
-sources/knowledge/                         canonical YAML knowledge base
-packages/python/core/mordheim_core          pure domain types and dice
-packages/python/knowledge/mordheim_knowledge KB loaders, validation and paths
-packages/python/roster-construction         shared-rule adapter and fighter compilation
-packages/typescript/domain/eligibility     shared equipment and skill decisions
-packages/python/combat-engine               phases, modular, NumPy and native engines
-apps/combat-lab                             Combat Lab application and CLI
-apps/warband-manager-web                    React/Vite web shell
-contracts/campaign-file-v5                  versioned campaign-file contract
-contracts/knowledge-editorial-v1             JSON Schemas of the KB documents (bands, catalogue, registry)
-tests/python                                Python suites, one directory per package, app or contract
-tests/web                                   web app suite (Vitest + Testing Library), mirrors the app's `src/`
-tests/typescript                            TypeScript package suite, mirrors `packages/typescript`
-tests/fixtures                              shared versioned fixtures: parity vectors and campaign corpus
-tests/specs                                 the semantic verification corpus
-docs                                        reference, guides, decisions, module pages and KB modelling docs
-tools                                       every support script: KB passes, verification, web audits, ingestion, launcher
-```
+To run the applications locally or work on the project, follow the steps below. Run commands from the repository root, preferably inside a Python virtual environment.
 
-Support code lives in `tools/` (runnable scripts), `docs/` (prose) and `tests/`
-(the suites and the shared fixtures they read); the application and package
-directories carry product code only. `tools/` is grouped by what the script
-works on — `kb/`, `verification/`, `web/`, `knowledge/`, `ingestion/`,
-`windows/` — and the tests mirror the tree they exercise:
-`tests/python/<package|app|contract>/`, `tests/web/` and `tests/typescript/`.
-The root [`package.json`](package.json) is an npm workspace over
-`packages/typescript` and `apps/warband-manager-web`: one `npm ci` at the root
-installs both and writes the single `package-lock.json`.
+### Requirements
 
-The modular combat engine is the correctness oracle. NumPy and native backends are candidates certified against it. Campaign Manager uses canonical KB IDs and the v5 campaign-file contract; rules are never serialized into campaign files.
+- **Python 3.10+**; CI uses Python 3.12.
+- **Tkinter** for the Combat Lab desktop interface. Check availability with `python -m tkinter`.
+- **Node.js 20 (20.19+) or 22.12+** and npm for the web application and TypeScript development. CI uses Node.js 22.
 
-## Requirements and installation
+Combat Lab uses the checked-in eligibility JavaScript through MiniRacer, so it does not need Node.js at runtime. A C compiler is optional: installation skips the native combat backend when no compatible compiler is available.
 
-- Python 3.10+ with Tkinter for Combat Lab.
-- Node.js 20+ for the TypeScript packages and web application.
-
-The Python installation includes MiniRacer and the shared eligibility bundle. Running Combat Lab does not require Node.js. After editing shared eligibility rules, rebuild with `npm run build:eligibility` and verify with `npm run check:eligibility`.
+### Install
 
 ```powershell
 python -m pip install -e ".[dev]"
-npm ci                          # from the repository root: installs both npm workspaces
-```
-
-The Python package uses the source layout declared in `pyproject.toml`; editable installation is the supported way to make all packages importable.
-
-## Central launcher
-
-`tools/mordheim-utils.py` is a source-checkout launcher. It delegates to the real application parsers, pytest, the knowledge generator or the native build instead of maintaining duplicate option definitions.
-
-```powershell
-python tools/mordheim-utils.py --help
+npm ci
 python tools/mordheim-utils.py doctor
-python tools/mordheim-utils.py combat-lab
-python tools/mordheim-utils.py verify        # KB gate: --structural for structure only
-python tools/mordheim-utils.py report rules  # or `report tests` for the test CSVs
-python tools/mordheim-utils.py parity --require-complete
-python tools/mordheim-utils.py calibrate     # measure this machine's optima
-python tools/mordheim-utils.py tests --scope deterministic
-python tools/mordheim-utils.py run-ci
 ```
 
-The commands are grouped by task (applications, knowledge base, engines,
-repository); `--help` lists them and `<command> --help` opens the delegated
-parser.
+The editable Python install makes the packages in this source checkout importable. `npm ci` installs both npm workspaces from the root lockfile. For Combat Lab alone, omit `npm ci`.
 
-## Validation and development loop
+### Run Campaign Manager locally
 
-Fast checks for a change:
+Generate the browser's knowledge data before the first launch:
 
 ```powershell
-python tools/mordheim-utils.py verify --structural
-python tools/mordheim-utils.py tests --scope deterministic
-npm run typecheck               # TypeScript packages and web app
-npm test                        # both Vitest suites (packages/typescript and tests/web)
-npm run lint                    # ESLint over the workspace + the presentation gate
-cd apps/warband-manager-web && npm run build   # typecheck + Vite build
+python tools/knowledge/generate_knowledge_web.py
+python tools/mordheim-utils.py campaign-manager
 ```
 
-The npm commands run from the repository root and fan out to the workspaces;
-`npm test` covers `tests/typescript/` and `tests/web/`, so the web suite needs
-the generated KB artefact (`outputs/web-public/knowledge/`) as described below.
+Open the local URL printed by Vite. To choose a port, append `--port 5199 --strictPort`. Stop the server with `Ctrl+C`.
 
-Release-oriented checks are described in [Develop and release](docs/guides/develop-and-release.md). The expensive parity/deep, coverage and mutation commands are intentional point-in-time gates, not the default edit loop.
+**Export your campaign before refreshing or closing the page.** Campaigns live in memory; they are not automatically saved to browser storage. Import the exported `.mordheim` file to resume later.
 
-The web knowledge artefact is generated, never hand-edited:
+### Open Combat Lab
+
+```powershell
+python tools/mordheim-utils.py combat-lab
+```
+
+The installed `mordheim-combat-lab` entry point and `python -m mordheim_combat_lab` also expose the application CLI. Use `python -m mordheim_combat_lab --help` to explore its commands.
+
+## Combat scope and verification
+
+The duel engine resolves **one combatant against one combatant in close combat**. Group combat, terrain/weather, shooting, spellcasting and independently simulated mounts or companions are outside its scope. Supplied individual conditions and combat modifiers can affect a duelist without simulating their external producer. See the [architecture](docs/reference/architecture.md#modular-duel-scope) for the precise boundary.
+
+The modular engine is the correctness oracle. NumPy and optional native backends are candidates checked against it by the parity tools. A rule's presence in the knowledge base does not establish runtime support or certification; consult the [verification strategy](docs/reference/verification.md) and [current backlog](TODO.md) for the acceptance boundaries and pending work.
+
+## Common commands
+
+The source-checkout launcher delegates to application commands and repository tools. Run `python tools/mordheim-utils.py --help` for the full list, or append `--help` to a command for its options.
+
+| Task | Command |
+| --- | --- |
+| Check the local environment | `python tools/mordheim-utils.py doctor` |
+| Validate KB structure | `python tools/mordheim-utils.py verify --structural` |
+| Validate the KB and semantic specifications | `python tools/mordheim-utils.py verify` |
+| Generate the rule inventory | `python tools/mordheim-utils.py report rules` |
+| Generate test reports | `python tools/mordheim-utils.py report tests` |
+| Run deterministic engine checks | `python tools/mordheim-utils.py tests --scope deterministic` |
+| Check engine parity | `python tools/mordheim-utils.py parity --require-complete` |
+| Measure local engine optima | `python tools/mordheim-utils.py calibrate` |
+| Run the web presentation checks | `python tools/mordheim-utils.py check-presentation` |
+| Run the local CI validation gates | `python tools/mordheim-utils.py run-ci` |
+
+Reports and local working artefacts belong under ignored `outputs/`.
+
+## Development
+
+### Knowledge data and shared eligibility
+
+The browser reads generated JSON from `outputs/web-public/knowledge/`, served by Vite as public assets. Regenerate it after changing canonical knowledge or its generator, and check that the output is current:
 
 ```powershell
 python tools/knowledge/generate_knowledge_web.py
 python tools/knowledge/generate_knowledge_web.py --check
 ```
 
-It is generated into `outputs/web-public/knowledge/`; Vite serves that directory as its public assets. Generated output is ignored.
+Never hand-edit generated browser assets. Campaign files store canonical IDs under the [v5 contract](contracts/campaign-file-v5/README.md); they do not embed rule definitions.
+
+After editing `packages/typescript/domain/eligibility/`, rebuild and check the Python runtime bundle:
+
+```powershell
+npm run build:eligibility
+npm run check:eligibility
+```
+
+Unlike browser assets, the generated `_eligibility.js` is versioned and must be committed with its maintained TypeScript source. Both applications consume the same eligibility rules: the browser imports TypeScript directly, while Python executes the bundle through MiniRacer.
+
+### Checks and web build
+
+Choose checks for the area you changed. Python test scopes include `modular`, `construction`, `knowledge`, `ui`, `cli` and `architecture`; extra pytest arguments are forwarded, for example `tests --scope construction -q`.
+
+Run npm commands from the repository root after generating the browser knowledge data:
+
+```powershell
+npm run typecheck
+npm test
+npm run lint
+npm run build
+```
+
+`npm test` runs the TypeScript package and web suites. `npm run lint` includes the presentation gate; `npm run build` typechecks and builds the web application into `apps/warband-manager-web/dist/`.
+
+See [Develop and release](docs/guides/develop-and-release.md) for release checks, coverage, mutation testing, benchmarks and calibration. Expensive parity and certification runs are separate from the focused edit loop.
+
+## Repository layout
+
+| Path | Contents |
+| --- | --- |
+| `apps/combat-lab/` | Combat Lab desktop interface, CLI and application services |
+| `apps/warband-manager-web/` | React/Vite Campaign Manager |
+| `packages/python/` | Core types, knowledge loaders, fighter construction and combat engines |
+| `packages/typescript/` | Campaign domain, application services, adapters and shared eligibility |
+| `sources/knowledge/` | Canonical YAML knowledge base |
+| `contracts/` | Campaign-file and knowledge editorial schemas |
+| `tests/python/`, `tests/typescript/`, `tests/web/` | Package and application test suites |
+| `tests/specs/`, `tests/E2E/`, `tests/fixtures/` | Semantic specifications, E2E corpus and shared fixtures |
+| `tools/` | Launcher, knowledge generation, verification, web checks and Windows packaging |
+| `docs/` | References, guides, design decisions and backlog |
 
 ## Documentation
 
-- [Documentation index](docs/README.md)
-- [Architecture and package boundaries](docs/reference/architecture.md)
-- [Shared warrior eligibility](docs/reference/eligibility.md)
-- [Knowledge-base reference](docs/reference/knowledge-base.md)
-- [Verification strategy](docs/reference/verification.md)
-- [Campaign-file v5 contract](contracts/campaign-file-v5/README.md)
-- [Guides](docs/guides/)
-- [Permanent design rulings](docs/decisions/design-rulings.md)
-- [Current backlog](docs/TODO.md)
+Start with the [documentation index](docs/README.md), or go directly to a task:
 
-Generated reports belong under ignored `outputs/`; they are regenerated from code and are not documentation or release assets. Screenshots, temporary campaign files and local build products are not part of the repository.
+- [Understand the architecture](docs/reference/architecture.md)
+- [Modify an application](docs/guides/modify-application.md)
+- [Modify the knowledge base](docs/guides/modify-knowledge-base.md)
+- [Implement and verify rules](docs/guides/implement-and-verify-rules.md)
+- [Work with campaign knowledge](docs/guides/campaign-knowledge.md)
+- [Maintain shared eligibility](docs/reference/eligibility.md)
+- [Follow web presentation conventions](docs/reference/web-presentation.md)
+- [Find repository tools](docs/reference/tools.md)
+- [Consult permanent design rulings](docs/decisions/design-rulings.md)
+- [Find pending problems and decisions](TODO.md)
 
 ## Windows packaging
 
-The supported build scripts are:
+After installing the Python dev dependencies, build a single-file Combat Lab executable or its installer:
 
 ```powershell
 tools\windows\build_MordheimCombatLab_ONEFILE.bat
+tools\windows\build_MordheimCombatLab_INSTALLER.bat
 ```
 
-They build the current package layout and bundle `sources/knowledge/`, the generated eligibility JavaScript and MiniRacer's native runtime. Regenerate and check the eligibility bundle before packaging after a rule-source change. These are Windows-only packaging helpers; CI publishes the web application separately through GitHub Pages.
+The packages bundle the knowledge base, generated eligibility JavaScript and MiniRacer runtime. Rebuild and check the eligibility bundle before packaging changes to its source. See [Develop and release](docs/guides/develop-and-release.md#windows-packaging) for the packaging procedure. The web application is published separately through the [GitHub Pages workflow](.github/workflows/deploy-pages.yml).
+
+## License
+
+See [LICENSE](LICENSE) for the project's MIT license.

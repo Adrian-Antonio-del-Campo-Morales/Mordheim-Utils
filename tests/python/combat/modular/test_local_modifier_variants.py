@@ -1,4 +1,4 @@
-"""Source-specific L06/L07 clauses through canonical compilation and real attacks."""
+"""Source-specific local modifier clauses through canonical compilation and real attacks."""
 from dataclasses import replace
 
 import pytest

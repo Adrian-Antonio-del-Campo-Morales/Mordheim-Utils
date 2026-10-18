@@ -1,5 +1,5 @@
 /**
- * T10 (post-review): trading-post availability verdict.
+ * Trading-post availability verdict.
  *
  * The KB publishes each market entry with an `availability` kind and a list of
  * typed `restrictions`. This module turns those into one stable verdict, in the
@@ -10,11 +10,11 @@
  * `contracts/knowledge-editorial-v1/campaign-trading-post.yaml.schema.json`):
  * - `warband_only` / `warband_forbidden` always name the bands or groups they
  *   scope, and are evaluated;
- * - `condition` carries the source wording in `note` and, since T10, may also
+ * - `condition` carries the source wording in `note` and may also
  *   name the `band_ids`/`groups` the printed clause scopes
  *   (`Masters of Horror only`). A scoped `condition` is evaluated exactly like
  *   `warband_only`;
- * - since the T10 review, an **unscoped** `condition` is never ignored, even
+ * - an **unscoped** `condition` is never ignored, even
  *   when another restriction on the same entry already carries a scope: without
  *   a published `structure` it refuses the purchase
  *   (`market_condition_unstructured`). A published `structure` makes the clause
