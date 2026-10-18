@@ -77,7 +77,7 @@ points and documents owned by a specific artefact live beside them:
   requires each contract README next to its schemas.
 - [`tests/specs/README.md`](../tests/specs/README.md) — the conventions of the
   verification corpus, published beside the corpus itself.
-- `tests/E2E/modular-engine/README.md`, `tests/E2E/modular-engine/plan.md` and
+- `tests/E2E/modular-engine/README.md` and
   `tests/E2E/modular-engine/cases/grants/INVENTORY.md` — the E2E battery's own
   contract, procedure notes and grant inventory, owned with the corpus they
   describe.

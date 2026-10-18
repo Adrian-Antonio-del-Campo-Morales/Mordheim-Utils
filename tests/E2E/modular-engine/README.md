@@ -1,20 +1,18 @@
 # Modular engine E2E tests
 
-Problems encountered during implementation that agents cannot resolve are recorded in
-[Remaining modular engine problems](../../../docs/knowledge/2a2b/REMAINING_MODULAR_ENGINE_PROBLEMS.md);
-unresolved authority choices in
-[Remaining human decisions](../../../docs/knowledge/2a2b/REMAINING_HUMAN_DECISIONS.md).
+Unresolved defects and authority questions are recorded in the
+[project backlog](../../../TODO.md); accepted rule interpretations belong in
+[Design rulings](../../../docs/decisions/design-rulings.md).
 This document retains the authoring/execution procedure, not another issue queue.
 
-The independent test battery lives under the [implementation plan](plan.md).
+This directory contains the modular engine E2E battery and its corpus.
 The reusable support, modular combat loop, declarative corpus loading and
 pytest collection, inventory reconciliation and a CI execution step exist.
 Source-derived authoring, semantic review and execution are separate stages.
 Executing this battery is part of
 [modular integration validation](../../../docs/reference/verification.md#modular-integration-closure).
 New scenarios are authored from scratch, with a single authorized exception:
-the one-time move of the already
-developed pilot scenarios into their per-ID files (*Migrated pilot scenarios*
+the one-time move of the already developed pilot scenarios into their per-ID files (*Migrated pilot scenarios*
 below). Declarations and empty files do not certify semantic coverage.
 
 ## Current files
