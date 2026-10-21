@@ -31,6 +31,7 @@ def build(*, attacks=1, strength=3, toughness=3, wounds=1, **changes):
     return compile_fighter(FighterBuild(**options))
 
 
+@pytest.mark.parity
 def test_steel_whip_charge_bonus_matches_modular_round_modifier():
     from mordheim_combat.modular.rounds import apply_round_weapon_attack_modifiers
     from mordheim_combat.vectorized import round_weapon_attack_count
@@ -84,11 +85,13 @@ def test_steel_whip_charge_bonus_matches_modular_round_modifier():
         "weapon.boar-spear",
     ),
 )
+@pytest.mark.eligibility
 def test_restricted_weapons_reject_an_illegal_second_weapon(weapon):
     with pytest.raises(ValueError, match="cannot be combined"):
         build(main_weapon_id=weapon, off_hand_id="weapon.dagger")
 
 
+@pytest.mark.eligibility
 def test_restricted_weapons_and_toughened_leathers_keep_legal_combinations():
     assert build(main_weapon_id="weapon.spear", off_hand_id="defence.buckler").off_hand is not None
     assert build(main_weapon_id="weapon.broadsword", off_hand_id="defence.shield").off_hand is not None
@@ -98,6 +101,7 @@ def test_restricted_weapons_and_toughened_leathers_keep_legal_combinations():
         build(armour_id="armour.toughened-leathers", off_hand_id="defence.shield")
 
 
+@pytest.mark.rule_behavior
 def test_frenzy_persists_and_pistols_only_fire_in_the_first_round():
     from mordheim_combat.vectorized import attack_count
 
@@ -116,6 +120,7 @@ def test_frenzy_persists_and_pistols_only_fire_in_the_first_round():
     assert attack_count(sword_and_pistol, flags, first_round=False).tolist() == [2]
 
 
+@pytest.mark.rule_behavior
 def test_frantic_priority_score_does_not_overflow_int8():
     """Regression: priority() returns int8, and the driver's event score used
     to multiply it by 100 *in int8*, so Frantic's tier 10 wrapped to -24 and
@@ -151,6 +156,7 @@ def test_frantic_priority_score_does_not_overflow_int8():
     assert 410 <= second_wins <= 450, (first_wins, second_wins)
 
 
+@pytest.mark.rule_behavior
 def test_frenzy_doubling_is_gated_on_the_live_state_not_the_effect():
     """Regression: the driver always passes the frenzy *state* array, so an
     all-False state must not double even when the fighter carries a constant
@@ -171,6 +177,7 @@ def test_frenzy_doubling_is_gated_on_the_live_state_not_the_effect():
     ).tolist() == [2]
 
 
+@pytest.mark.rule_behavior
 def test_pistol_and_sword_allocate_attacks_to_the_correct_weapon(monkeypatch):
     import mordheim_combat.vectorized as engine
     import mordheim_combat.vectorized._attacks as engine_attacks
@@ -200,6 +207,7 @@ def test_pistol_and_sword_allocate_attacks_to_the_correct_weapon(monkeypatch):
     assert len(seen) == 3
 
 
+@pytest.mark.rule_behavior
 def test_resilient_and_reptile_venom_do_not_change_armour_strength():
     from mordheim_combat.vectorized import _new_state
     from mordheim_combat.vectorized import _prepare_weapon_attack
@@ -227,6 +235,7 @@ def test_resilient_and_reptile_venom_do_not_change_armour_strength():
     assert reptile_attack.armour_strength.tolist() == [3]
 
 
+@pytest.mark.rule_behavior
 def test_lotus_failed_critical_attempt_keeps_the_wound():
     from mordheim_combat.vectorized import _new_state
     from mordheim_combat.vectorized import _resolve_weapon
@@ -244,6 +253,7 @@ def test_lotus_failed_critical_attempt_keeps_the_wound():
     assert not attacker_state.critical_used[0]
 
 
+@pytest.mark.rule_behavior
 def test_duplicate_wounds_can_claim_only_one_critical_per_row():
     from mordheim_combat.vectorized import _claim_criticals
     from mordheim_combat.vectorized import _new_state
@@ -253,6 +263,7 @@ def test_duplicate_wounds_can_claim_only_one_critical_per_row():
     assert claimed.tolist() == [True, False]
 
 
+@pytest.mark.rule_behavior
 def test_simultaneous_injuries_keep_the_highest_roll_instead_of_auto_finishing():
     from mordheim_combat.vectorized import KNOCKED_DOWN
     from mordheim_combat.vectorized import _new_state
@@ -269,6 +280,7 @@ def test_simultaneous_injuries_keep_the_highest_roll_instead_of_auto_finishing()
     assert defender_state.condition.tolist() == [KNOCKED_DOWN]
 
 
+@pytest.mark.rule_behavior
 def test_sword_and_buckler_rerolls_a_failed_parry():
     from mordheim_combat.vectorized import _new_state
     from mordheim_combat.vectorized import _parry_hits
@@ -283,6 +295,7 @@ def test_sword_and_buckler_rerolls_a_failed_parry():
     assert blocked.tolist() == [0]
 
 
+@pytest.mark.rule_behavior
 def test_natural_six_closes_parry_capacity_without_a_roll():
     """The highest natural six precludes attempting to parry a lower hit."""
     from mordheim_combat.vectorized import _new_state
@@ -301,6 +314,7 @@ def test_natural_six_closes_parry_capacity_without_a_roll():
     assert state.parry_remaining.tolist() == [0]
 
 
+@pytest.mark.rule_behavior
 def test_parry_cannot_substitute_a_lower_hit_for_a_natural_six():
     """With hits [6, 4], both survive without a parry die."""
     from mordheim_combat.vectorized import _new_state
@@ -318,6 +332,7 @@ def test_parry_cannot_substitute_a_lower_hit_for_a_natural_six():
     assert state.parry_remaining.tolist() == [0]
 
 
+@pytest.mark.rule_behavior
 def test_multi_hit_pool_resolves_both_hits_when_the_highest_is_six():
     """Close Combat / Parrying: the highest hit governs the whole pool."""
     from mordheim_combat.vectorized import KNOCKED_DOWN
@@ -339,6 +354,7 @@ def test_multi_hit_pool_resolves_both_hits_when_the_highest_is_six():
     assert defender_state.parry_remaining.tolist() == [0]
 
 
+@pytest.mark.rule_behavior
 def test_nightshade_applies_one_initiative_penalty_per_damage():
     from mordheim_combat.vectorized import _new_state
     from mordheim_combat.vectorized import _resolve_weapon
@@ -356,6 +372,7 @@ def test_nightshade_applies_one_initiative_penalty_per_damage():
     assert defender_state.initiative_penalty.tolist() == [2]
 
 
+@pytest.mark.rule_behavior
 def test_mark_of_old_ones_converts_failed_armour_save():
     from mordheim_combat.vectorized import VectorAttackObservation
     from mordheim_combat.vectorized import _new_state
@@ -380,6 +397,7 @@ def test_mark_of_old_ones_converts_failed_armour_save():
     assert defender_state.mark_of_old_ones_used.tolist() == [True]
 
 
+@pytest.mark.rule_behavior
 def test_luck_rerolls_failed_armour_save():
     from mordheim_combat.vectorized import VectorAttackObservation
     from mordheim_combat.vectorized import _new_state
@@ -404,6 +422,7 @@ def test_luck_rerolls_failed_armour_save():
     assert defender_state.luck_used.tolist() == [True]
 
 
+@pytest.mark.rule_behavior
 def test_same_warrior_cannot_finish_a_defender_stunned_by_its_previous_attack():
     """Close Combat: same-warrior follow-ups still need wound/Injury rolls."""
     from mordheim_combat.vectorized import STUNNED
@@ -423,6 +442,7 @@ def test_same_warrior_cannot_finish_a_defender_stunned_by_its_previous_attack():
     assert defender_state.wounds.tolist() == [0]
 
 
+@pytest.mark.rule_behavior
 def test_offhand_axe_master_and_starblade_use_their_special_parries():
     from mordheim_combat.vectorized import _new_state
     from mordheim_combat.vectorized import _parry_hits
@@ -444,6 +464,7 @@ def test_offhand_axe_master_and_starblade_use_their_special_parries():
     assert remaining.size == 0 and blocked.tolist() == [0]
 
 
+@pytest.mark.rule_behavior
 def test_thick_skull_with_a_helmet_replaces_instead_of_stacking_with_helmet_save():
     from mordheim_combat.vectorized import STUNNED
     from mordheim_combat.vectorized import _new_state
@@ -460,6 +481,7 @@ def test_thick_skull_with_a_helmet_replaces_instead_of_stacking_with_helmet_save
     assert defender_state.condition.tolist() == [STUNNED]
 
 
+@pytest.mark.rule_behavior
 def test_luck_is_consumed_after_its_first_failed_hit_reroll():
     from mordheim_combat.vectorized import _new_state
     from mordheim_combat.vectorized import _prepare_weapon_attack
@@ -484,6 +506,7 @@ def test_luck_is_consumed_after_its_first_failed_hit_reroll():
     assert attacker_state.luck_used.tolist() == [True]
 
 
+@pytest.mark.rule_behavior
 def test_death_blow_bonuses_require_a_profile_with_at_least_two_attacks():
     from mordheim_combat.vectorized import _new_state
     from mordheim_combat.vectorized import _prepare_weapon_attack
@@ -510,6 +533,7 @@ def test_death_blow_bonuses_require_a_profile_with_at_least_two_attacks():
     assert attack_count(two_attacks, flags).tolist() == [1]
 
 
+@pytest.mark.rule_behavior
 def test_strongman_cancels_strike_last_for_heavy_weapons_and_broadsword():
     from mordheim_combat.vectorized import priority
 
@@ -520,6 +544,7 @@ def test_strongman_cancels_strike_last_for_heavy_weapons_and_broadsword():
     assert priority(great_weapon, build(), False, flags, flags, flags).tolist() == [0]
 
 
+@pytest.mark.compilation
 def test_shield_strike_is_an_independent_user_strength_attack():
     attacker = build(
         main_weapon_id="weapon.axe", off_hand_id="defence.shield",
@@ -533,6 +558,7 @@ def test_shield_strike_is_an_independent_user_strength_attack():
     assert strike.target_armour_bonus == 0
 
 
+@pytest.mark.rule_behavior
 def test_sigmarite_hammer_gets_its_conditional_wound_bonus():
     from mordheim_combat.vectorized import _new_state
     from mordheim_combat.vectorized import _resolve_weapon
@@ -556,6 +582,7 @@ def test_sigmarite_hammer_gets_its_conditional_wound_bonus():
     assert undead_state.wounds.tolist() == [1]
 
 
+@pytest.mark.compilation
 def test_bear_hug_is_granted_automatically_by_the_trained_bear_profile():
     bear = compile_fighter(FighterBuild(
         "mordheim", band_id="kislevites", profile_id="trained-bear",
@@ -563,6 +590,7 @@ def test_bear_hug_is_granted_automatically_by_the_trained_bear_profile():
     assert bear.global_effects.bear_hug
 
 
+@pytest.mark.rule_behavior
 def test_mandrake_toughness_bonus_is_present_in_runtime_characteristic_tests():
     from mordheim_combat.vectorized import _new_state
 
@@ -571,6 +599,7 @@ def test_mandrake_toughness_bonus_is_present_in_runtime_characteristic_tests():
     assert state.toughness.tolist() == [4, 4]
 
 
+@pytest.mark.rule_behavior
 def test_off_hand_material_contributes_to_effective_initiative():
     from mordheim_combat.vectorized import _new_state
     from mordheim_combat.vectorized import effective_initiative
@@ -588,6 +617,7 @@ def test_off_hand_material_contributes_to_effective_initiative():
     ]
 
 
+@pytest.mark.rule_behavior
 def test_poisonous_injury_belongs_to_attacker_and_respects_immunity():
     from mordheim_combat.vectorized import KNOCKED_DOWN
     from mordheim_combat.vectorized import STUNNED
@@ -620,6 +650,7 @@ def test_poisonous_injury_belongs_to_attacker_and_respects_immunity():
     assert immune_state.condition.tolist() == [KNOCKED_DOWN]
 
 
+@pytest.mark.rule_behavior
 def test_amazon_isolationists_recognise_trollheim_lustria_lizardmen():
     from mordheim_combat.vectorized import _new_state
     from mordheim_combat.vectorized import _prepare_weapon_attack
@@ -634,6 +665,7 @@ def test_amazon_isolationists_recognise_trollheim_lustria_lizardmen():
     assert prepared.hit_rows.tolist() == [0]
 
 
+@pytest.mark.interaction
 def test_optional_phase_plan_only_enables_reachable_stateful_phases():
     from mordheim_combat.vectorized import _optional_phase_plan
 

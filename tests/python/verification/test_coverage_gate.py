@@ -5,6 +5,9 @@ from mordheim_combat_lab.verification.coverage_gate import CoverageFile
 from mordheim_combat_lab.verification.coverage_gate import CoverageReport
 
 
+pytestmark = pytest.mark.test_infrastructure
+
+
 def _file(module: str, area: str, covered: tuple[int, ...], statements: tuple[int, ...]):
     return CoverageFile(
         module=module, area=area, statements=len(statements),

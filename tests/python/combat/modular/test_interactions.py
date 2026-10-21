@@ -15,6 +15,10 @@ from mordheim_combat.phases import resolve_special_save
 from mordheim_combat.phases import resolve_wound
 from mordheim_core.dice import ScriptedDice
 from mordheim_core.dice import exact_distribution
+import pytest
+
+
+pytestmark = pytest.mark.interaction
 
 
 def test_hit_bonus_and_reroll_compose_without_changing_natural_d6_domain():

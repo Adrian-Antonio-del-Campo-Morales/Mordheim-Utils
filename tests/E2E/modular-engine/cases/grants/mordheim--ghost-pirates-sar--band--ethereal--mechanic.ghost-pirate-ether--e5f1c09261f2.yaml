@@ -153,17 +153,19 @@
   fighters:
     first:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
     second:
       collection: mordheim
       band_id: ghost-pirates-sar
       profile_id: screaming-ghosts
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
   initial_state:
     second: {attacks: 0}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.first.attack.0.special.ward, value: 4}
@@ -177,17 +179,19 @@
   fighters:
     first:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
     second:
       collection: mordheim
       band_id: ghost-pirates-sar
       profile_id: screaming-ghosts
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
   initial_state:
     second: {attacks: 0}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.first.attack.0.special.ward, value: 3}
@@ -203,17 +207,19 @@
     first:
       main_weapon_id: weapon.mace
       trait_overrides: {magical_attacks: true}
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
     second:
       collection: mordheim
       band_id: ghost-pirates-sar
       profile_id: screaming-ghosts
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
   initial_state:
     second: {attacks: 0}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
   expect_rounds:
@@ -228,17 +234,19 @@
     first:
       main_weapon_id: weapon.mace
       main_material_id: material.gromril
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
     second:
       collection: mordheim
       band_id: ghost-pirates-sar
       profile_id: screaming-ghosts
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
   initial_state:
     second: {attacks: 0}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
   expect_rounds:

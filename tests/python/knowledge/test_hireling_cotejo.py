@@ -102,6 +102,7 @@ def grade_2a(rows: list[dict]) -> dict[str, dict]:
 
 # De la entrada al documento fuente: el registro, no una tabla del tool
 
+@pytest.mark.knowledge_integrity
 def test_the_public_catalogue_has_both_families() -> None:
     """El cotejo permanente cubre las dos familias y todos los grados del catálogo.
 
@@ -115,6 +116,7 @@ def test_the_public_catalogue_has_both_families() -> None:
     assert len(KB.profiles()) >= 102
 
 
+@pytest.mark.evidence
 def test_every_kb_profile_resolves_through_the_registry() -> None:
     """Ningún perfil del catálogo publicado cita un documento que el registro no declare.
 
@@ -129,6 +131,7 @@ def test_every_kb_profile_resolves_through_the_registry() -> None:
         assert DOCUMENTS.resolve(profile), profile["name"]
 
 
+@pytest.mark.evidence
 def test_the_dramatis_personae_print_on_the_four_grade_pages() -> None:
     """El registro declara las cuatro páginas de grado que cita la familia de Dramatis.
 
@@ -147,6 +150,7 @@ def test_the_dramatis_personae_print_on_the_four_grade_pages() -> None:
 
 
 
+@pytest.mark.evidence
 def test_a_profile_takes_the_document_from_the_registry() -> None:
     """El Albino Stormvermin sale en el PDF de Specialists, con su copia del espejo."""
     profiles = {profile["name"]: profile for profile in KB.profiles()}
@@ -159,12 +163,14 @@ def test_a_profile_takes_the_document_from_the_registry() -> None:
 
 # La lectura del lector compartido, sin documento delante
 
+@pytest.mark.data_transport
 def test_flat_undoes_the_dotted_filler() -> None:
     """Relics imprime el punto del formulario entre las palabras de la tarifa."""
     assert cotejo.fees_in("Hire Fee: .85.dinars.to.hire;.+.45.dinars.upkeep.cost .") \
         == [(85, "dinars", 45, "dinars")]
 
 
+@pytest.mark.data_transport
 def test_fees_in_reads_both_printed_forms() -> None:
     assert cotejo.fees_in("75 warp tokens to hire +30 warp tokens upkeep") \
         == [(75, "warp tokens", 30, "warp tokens")]
@@ -174,11 +180,13 @@ def test_fees_in_reads_both_printed_forms() -> None:
         == [(30, "gold crowns", 15, None)]
 
 
+@pytest.mark.data_transport
 def test_unit_of_sees_the_unit_glued_to_the_amount() -> None:
     assert cotejo.unit_of("Hire Fee : 40GC") == "gold crowns"
     assert cotejo.unit_of("75 warp tokens") == "warp tokens"
 
 
+@pytest.mark.data_transport
 def test_entries_keep_the_neighbour_column_out() -> None:
     """Dos entradas a dos columnas: cada una con su tarifa y su rating."""
     def block(left: int, name: str, fee: str, rating: str) -> list[dict]:
@@ -200,6 +208,7 @@ def test_entries_keep_the_neighbour_column_out() -> None:
     assert "30 gold crowns" not in found[1]["text"]
 
 
+@pytest.mark.data_transport
 def test_stat_row_is_read_in_table_order() -> None:
     """El Fire-Eater imprime ``4(6)`` y el extractor suelta la fila en dos líneas."""
     entry = {"line_words": [
@@ -214,6 +223,7 @@ def test_stat_row_is_read_in_table_order() -> None:
     assert cotejo.stat_rows(entry) == ["423342217"]
 
 
+@pytest.mark.data_transport
 def test_stat_row_without_the_word_profile() -> None:
     """Los Dramatis de Karak Azgal empiezan la tabla directamente en las columnas."""
     entry = {"line_words": [
@@ -229,6 +239,7 @@ def test_stat_row_without_the_word_profile() -> None:
 # La lectura del documento real
 
 @KB_CACHED
+@pytest.mark.data_transport
 def test_the_page_is_read_one_entry_per_printed_block() -> None:
     """Cada personaje con su tarifa y su fila, sin la del vecino de columna."""
     reader = cotejo.MIRROR.reader(GRADE_2A_PAGE)
@@ -247,6 +258,7 @@ def test_the_page_is_read_one_entry_per_printed_block() -> None:
 
 
 @KB_CACHED
+@pytest.mark.knowledge_integrity
 def test_the_seven_grade_2a_entries_verify_without_findings(tmp_path, monkeypatch) -> None:
     rows = grade_2a(run_cotejo(tmp_path, monkeypatch))
     assert set(rows) == set(GRADE_2A)
@@ -257,6 +269,7 @@ def test_the_seven_grade_2a_entries_verify_without_findings(tmp_path, monkeypatc
 
 
 @KB_CACHED
+@pytest.mark.evidence
 def test_the_report_declares_its_coverage(tmp_path, monkeypatch) -> None:
     """Un «0 hallazgos» sin filas comparadas no es un «0 comprobado»."""
     rows = run_cotejo(tmp_path, monkeypatch)
@@ -269,6 +282,7 @@ def test_the_report_declares_its_coverage(tmp_path, monkeypatch) -> None:
 
 
 @KB_CACHED
+@pytest.mark.evidence
 def test_the_profile_without_a_modelled_table_is_not_compared(tmp_path, monkeypatch) -> None:
     """El Horseman es jinete y montura y el catálogo lo deja sin tabla: se anota."""
     horseman = grade_2a(run_cotejo(tmp_path, monkeypatch))["The Headless Horseman"]
@@ -280,6 +294,7 @@ def test_the_profile_without_a_modelled_table_is_not_compared(tmp_path, monkeypa
 
 
 @KB_CACHED
+@pytest.mark.evidence
 def test_an_editorial_rule_label_is_a_note_and_not_a_finding(tmp_path, monkeypatch) -> None:
     """La etiqueta que el árbol escribe para un hecho que la fuente imprime aparte."""
     william = grade_2a(run_cotejo(tmp_path, monkeypatch))[
@@ -290,6 +305,7 @@ def test_an_editorial_rule_label_is_a_note_and_not_a_finding(tmp_path, monkeypat
 
 
 @SOURCE_PDFS_CACHED
+@pytest.mark.knowledge_integrity
 def test_adjudicated_cases_verify_every_check(tmp_path, monkeypatch) -> None:
     """Los siete casos adjudicados de 2B cotejan hoy sin hallazgos ni chequeos de menos."""
     report = {entry["name"]: entry
@@ -304,6 +320,7 @@ def test_adjudicated_cases_verify_every_check(tmp_path, monkeypatch) -> None:
 # El cotejo tiene que poder fallar
 
 @KB_CACHED
+@pytest.mark.test_infrastructure
 def test_a_fee_that_drifts_from_the_page_is_a_finding(tmp_path, monkeypatch) -> None:
     """La mutación: cambiar la tarifa de Sigmund en el contrato exige el hallazgo."""
     document = yaml.safe_load(KB.campaign.read_text(encoding="utf-8"))
@@ -321,6 +338,7 @@ def test_a_fee_that_drifts_from_the_page_is_a_finding(tmp_path, monkeypatch) -> 
 
 
 @KB_CACHED
+@pytest.mark.test_infrastructure
 def test_a_stat_row_that_drifts_from_the_page_is_a_finding(tmp_path, monkeypatch) -> None:
     """Y una fila de stats: la del Foole contra la de su vecino."""
     document = yaml.safe_load((KB.root / "dramatis-personae/grade-2a.yaml").read_text(
@@ -338,6 +356,7 @@ def test_a_stat_row_that_drifts_from_the_page_is_a_finding(tmp_path, monkeypatch
 
 
 @SOURCE_PDFS_CACHED
+@pytest.mark.test_infrastructure
 def test_currency_regression_is_a_finding(tmp_path, monkeypatch) -> None:
     """La mutación: devolver la tarifa del Albino a coronas exige el hallazgo.
 

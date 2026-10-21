@@ -74,7 +74,6 @@
       band_id: orc-mob
       profile_id: orc-boss
       special_rule_ids: [band--orc-special-skills-ard-ead]
-      main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
   initial_state: {second: {attacks: 0}}
   duel_context: {charging: [first], active_participant: first}
@@ -83,6 +82,9 @@
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.first.attack.0.injury.0, value: 4}
+    # The stun reaction is a sub-roll of the attack, not of the injury die: the
+    # shared contract keys it as `<attack>.thick-skull` (as the black-orc and
+    # catalogue Thick Skull tapes do), so it follows the injury result directly.
     - {key: round.0.first.attack.0.thick-skull, value: 3}
   expect_rounds:
     0: {state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
@@ -101,7 +103,6 @@
       band_id: orc-mob
       profile_id: orc-boss
       special_rule_ids: [band--orc-special-skills-ard-ead]
-      main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
   initial_state: {second: {attacks: 0}}
   duel_context: {charging: [first], active_participant: first}
@@ -128,7 +129,6 @@
       band_id: orc-mob
       profile_id: orc-boss
       special_rule_ids: [band--orc-special-skills-ard-ead]
-      main_weapon_id: weapon.mace
       defence_ids: [defence.helmet]
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
   initial_state: {second: {attacks: 0}}
@@ -158,7 +158,6 @@
       band_id: orc-mob
       profile_id: orc-boss
       special_rule_ids: [band--orc-special-skills-ard-ead]
-      main_weapon_id: weapon.mace
       defence_ids: [defence.helmet]
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
   initial_state: {second: {attacks: 0}}

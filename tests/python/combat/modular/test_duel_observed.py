@@ -4,6 +4,10 @@ from mordheim_combat.modular.duel import simulate_duel_reference
 from mordheim_combat_lab.cli.benchmarking import benchmark_scenarios
 from mordheim_construction.compiler import compile_fighter
 import numpy as np
+import pytest
+
+
+pytestmark = pytest.mark.parity
 
 
 def _pair(scenario_id: str = "basic"):

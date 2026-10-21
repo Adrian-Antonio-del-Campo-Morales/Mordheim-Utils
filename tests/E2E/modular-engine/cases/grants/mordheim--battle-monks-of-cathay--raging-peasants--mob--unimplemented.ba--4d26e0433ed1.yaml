@@ -19,12 +19,11 @@
 #   and passes only once the printed +1 per allied Peasant within 3 inches is supplied.  In the bonus tape two
 #   allied Peasants are supplied as admitted nearby participants of the same band at 1 and 2 inches, and the
 #   declared seven passes, so the round resolves with both attack dice.  In its control the same declared
-#   seven fails with no ally supplied, so the charge is cancelled and the round ends disengaged.  The allies
-#   are supplied facts, never simulated: they appear only through duel_context.nearby and distances,
-#   contribute no attack of their own, and are the printed producer the register excludes.  What is absent is
-#   the consumer that reads a supplied per-ally bonus: modular/leadership.py::resolve_local_leadership takes
-#   a supplied value only through fighter.stupidity_leadership and its bonus, so these tapes detect exactly
-#   that gap.  REVIEWED still requires manual semantic review.
+#   seven fails with no ally supplied, so the received charge clamps its hits to sixes.  The allies
+#   are supplied facts, never simulated: they appear only through duel_context.nearby and distances and
+#   contribute no attack of their own; the count itself travels as the admitted mob_allies fact the printed
+#   rule names, which leadership.resolve_local_leadership adds to every test of the carrier.
+#   REVIEWED still requires manual semantic review.
 # origin_id:
 #   rule/mordheim/battle-monks-of-cathay/raging-peasants--mob/unimplemented.battle-monks-of-cathay.raging-peasants.mob
 # analysis_status:
@@ -57,11 +56,11 @@
 #   fixture supplies the aura the old note called missing: the band's own Emissary (printed Leadership 8, the
 #   profile whose rule_ids carry emissary--leader) stands four inches from the recipient as an admitted nearby
 #   participant with its declared distance.  The charged Raging Peasant still tests on its own printed
-#   Leadership 6, so the declared seven fails and the charge is cancelled; the control is a Soldiers band-mate
+#   Leadership 6, so the declared seven fails and the received charge clamps its hits; the control is a Soldiers band-mate
 #   (printed Leadership 7) with the same supplied Emissary, which does borrow, and its declared eight passes.
-#   What is absent is the honouring tag for a peasant-level no-leader-benefit condition in
-#   leadership.resolve_local_leadership, which the pair of tapes detects.  REVIEWED still requires manual
-#   semantic review.
+#   The peasant-level denial travels as the profile's own mechanic.own-leadership tag, which
+#   leadership.resolve_local_leadership honours by never offering the supplied leader; the pair of tapes
+#   detects exactly that.  REVIEWED still requires manual semantic review.
 # origin_id:
 #   rule/mordheim/battle-monks-of-cathay/raging-peasants--mob/unimplemented.battle-monks-of-cathay.raging-peasants.mob
 # analysis_status:
@@ -124,8 +123,9 @@
 # Leadership test this setup can force; the charger is a hand-built fixture that declares its own facts, and the
 # nearby allies and leader are supplied participants, never simulated fighters with turns of their own.
 
-# The printed bonus: two allied Peasants within 3 inches supply +1 Ld each, so the Raging Peasant's printed
-# Leadership 6 becomes 8 and the declared 3+4 passes.
+# The printed bonus: two allied Peasants within 3 inches supply +1 Ld each, so the carrier's printed
+# Leadership 6 becomes 8 and the declared 3+4 passes.  The count travels as the admitted mob_allies fact the
+# printed rule names, supplied here together with the two allies the caller counted.
 - audit_id: rule/mordheim/battle-monks-of-cathay/raging-peasants--mob/unimplemented.battle-monks-of-cathay.raging-peasants.mob
   id: two-supplied-allied-peasants-raise-the-test-that-passes
   covers: [individual-leadership-bonus]
@@ -134,7 +134,11 @@
       trait_overrides: {causes_fear: true}
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
-    second: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: raging-peasants}
+    second:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: raging-peasants
+      trait_overrides: {mob_allies: 2}
   duel_context:
     first_id: first
     second_id: second
@@ -157,11 +161,11 @@
   - {key: round.0.first.attack.0.hit, value: 1}
   - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
-    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING}
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING, state.second.fear_hit_sixes: false}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
-# The control for the same declared seven with no ally supplied: the Peasant's own Leadership 6 fails it, so the
-# charge is cancelled and no attack die is allocated.
+# The control for the same declared seven with no allied Peasant supplied: the carrier's own Leadership 6 fails
+# it, so the received charge clamps its hits to sixes instead of passing the test.
 - audit_id: rule/mordheim/battle-monks-of-cathay/raging-peasants--mob/unimplemented.battle-monks-of-cathay.raging-peasants.mob
   id: without-a-supplied-ally-the-same-seven-fails
   covers: [individual-leadership-bonus]
@@ -176,12 +180,15 @@
   rolls:
   - {key: round.0.second.fear.charged.0, value: 3}
   - {key: round.0.second.fear.charged.1, value: 4}
+  - {key: round.0.first.attack.0.hit, value: 1}
+  - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
-    0: {attacks: [], state.first_charged: false, state.engaged: false}
-  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING, state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 # The printed denial: the same warrior with the band's Emissary supplied at four inches still tests on its own
-# Leadership 6, so the seven fails even though the supplied leader's 8 would pass it.
+# Leadership 6, so the seven fails and the received charge clamps its hits, even though the supplied leader's 8
+# would pass it.  The strict decision tape proves the denial itself: no borrow is offered at all.
 - audit_id: rule/mordheim/battle-monks-of-cathay/raging-peasants--mob/unimplemented.battle-monks-of-cathay.raging-peasants.mob
   id: the-supplied-leader-is-not-a-source-for-a-raging-peasant
   covers: [no-leader-benefit]
@@ -206,9 +213,11 @@
   rolls:
   - {key: round.0.second.fear.charged.0, value: 3}
   - {key: round.0.second.fear.charged.1, value: 4}
+  - {key: round.0.first.attack.0.hit, value: 1}
+  - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
-    0: {attacks: [], state.first_charged: false, state.engaged: false}
-  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING, state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 # The control that the supplied leader is a real source for a warrior that does not carry the denial: the same
 # fixture with a Soldiers band-mate (printed Leadership 7) passes the declared 4+4 only through the Emissary's 8.
@@ -232,6 +241,8 @@
       side_id: second
       condition: standing
       fighter: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: emissary}
+  decisions:
+  - {key: round.0.second.fear.charged.leader.leader, value: true}
   maximum_rounds: 1
   rolls:
   - {key: round.0.second.fear.charged.0, value: 4}
@@ -239,5 +250,5 @@
   - {key: round.0.first.attack.0.hit, value: 1}
   - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
-    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING}
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING, state.second.fear_hit_sixes: false}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

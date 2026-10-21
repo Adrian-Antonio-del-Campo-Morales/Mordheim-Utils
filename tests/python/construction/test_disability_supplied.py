@@ -15,7 +15,7 @@ def cripple(result, **options):
     conditions = (f'condition.disability-{result}',) if result else ()
     return compile_fighter(FighterBuild('mordheim', collection='trollheim',
         band_id='chaos-streets-mordheim-inhabitants', profile_id='cripples',
-        main_weapon_id='weapon.mace', condition_ids=conditions, **options))
+        main_weapon_id='weapon.club', condition_ids=conditions, **options))
 
 
 def foe():
@@ -24,6 +24,7 @@ def foe():
 
 @pytest.mark.parametrize('result,expected', [(1,(3,2,2,3,3,2)),(2,(4,3,1,3,3,2)),
     (3,(4,3,2,3,3,1)),(4,(4,3,2,3,2,2)),(5,(4,3,2,2,3,2)),(6,(4,3,2,3,3,2))])
+@pytest.mark.compilation
 def test_each_source_result_is_compiled_once_and_initializes_without_a_table_roll(result, expected):
     owner = cripple(result)
     stats = owner.characteristics
@@ -37,15 +38,18 @@ def test_each_source_result_is_compiled_once_and_initializes_without_a_table_rol
 
 
 @pytest.mark.parametrize('offhand', ['weapon.dagger','defence.shield'])
+@pytest.mark.eligibility
 def test_parkinson_rejects_a_second_weapon_or_shield(offhand):
     with pytest.raises(ValueError, match='at most|forbidden'):
         cripple(2, off_hand_id=offhand)
 
 
+@pytest.mark.compilation
 def test_non_parkinson_result_does_not_inherit_the_restriction():
     assert cripple(5, off_hand_id='weapon.dagger').off_hand_attacks
 
 
+@pytest.mark.eligibility
 def test_table_result_is_required_unique_and_recipient_specific():
     with pytest.raises(ValueError, match='permanent supplied result'):
         cripple(None)
@@ -56,6 +60,7 @@ def test_table_result_is_required_unique_and_recipient_specific():
         compile_fighter(FighterBuild('mordheim', Characteristics(2,3,3,2,2,1), condition_ids=('condition.disability-2',)))
 
 
+@pytest.mark.rule_behavior
 def test_head_injury_hero_proximity_is_current_and_has_a_qualified_recipient():
     owner = compile_fighter(FighterBuild('mordheim', Characteristics(2,3,3,2,2,1,leadership=7),
         skill_ids=('mechanic.disability',),
@@ -78,6 +83,7 @@ def test_head_injury_hero_proximity_is_current_and_has_a_qualified_recipient():
 
 @pytest.mark.parametrize('distance,side,condition,exempt', [(6,'first','standing',True),
     (6.01,'first','standing',False),(6,'second','standing',False),(6,'first','out',False)])
+@pytest.mark.rule_behavior
 def test_head_injury_reads_the_six_inch_boundary_side_and_active_hero(distance, side, condition, exempt):
     from mordheim_core.models import LocalParticipant
     owner = cripple(6)

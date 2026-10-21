@@ -430,6 +430,8 @@ rules:
         id: profile.skill-access
         parameters:
           category: shooting
+          variant_ids:
+          - promotion.hero
           skills:
           - skill.eagle-eyes
           - skill.hunter
@@ -447,6 +449,14 @@ rules:
         parameters:
           allowed_skill_lists:
           - shooting
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - non-thrown-ranged
   name: Born Marksmen
   effect: >-
     If an Axe Hurler rolls a "That Lad's Got Talent" as an advancement, he may always choose
@@ -469,8 +479,6 @@ rules:
   applies_to:
     profile_ids:
     - axe-hurlers
-    profile_types:
-    - hero
 - id: axe-hurlers--skittish
   runtime:
     scope: LATER

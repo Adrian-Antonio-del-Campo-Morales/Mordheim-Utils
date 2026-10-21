@@ -62,12 +62,17 @@
       characteristics: &d-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
+  # The broadsword is a two-handed weapon, so its bearer strikes last however the
+  # printed Initiatives read; the defender opens the round and the tape follows the
+  # pool's real order.
   rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 3}
-    - {key: round.0.second.attack.0.hit, value: 1}
+  # The defender strikes first, so its own attack is the first entry of the round: the
+  # broadsword's wound is the second one, and it is the one the boosted Strength lands.
   expect_rounds:
-    0: {attacks.0.damage: 1, state.second.wounds: 1}
+    0: {attacks.0.damage: 0, attacks.1.damage: 1, state.second.wounds: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 # One face below the boosted wound target.
 
@@ -83,10 +88,13 @@
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
+  # The broadsword is a two-handed weapon, so its bearer strikes last however the
+  # printed Initiatives read; the defender opens the round and the tape follows the
+  # pool's real order.
   rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 2}
-    - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.damage: 0, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

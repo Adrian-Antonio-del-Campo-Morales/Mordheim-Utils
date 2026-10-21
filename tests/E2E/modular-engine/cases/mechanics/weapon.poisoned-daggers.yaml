@@ -90,6 +90,7 @@
     - {key: round.0.first.attack.0.lotus-critical, value: false}
   rolls:
     - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.first.attack.1.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.damage: 1, state.second.wounds: 1}
@@ -112,9 +113,10 @@
     - {key: round.0.first.attack.0.lotus-critical, value: true}
   rolls:
     - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.first.attack.1.hit, value: 1}
     - {key: round.0.first.attack.0.wound, value: 6}
     - {key: round.0.first.attack.0.critical, value: 1}
-    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.injury.0, value: 3}
   expect_rounds:
     0: {attacks.0.critical: True, attacks.0.damage: 2, state.second.wounds: 0}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

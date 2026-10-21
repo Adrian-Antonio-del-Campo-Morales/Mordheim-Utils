@@ -46,8 +46,8 @@
 # --- Authored scenarios ---
 # The bearer carries No Pain, which would otherwise turn a Stunned injury result
 # into Knocked Down.  Squishy suppresses that flag, so the printed Stunned result
-# stands and the bearer's own attack is still scheduled by the round, which is why
-# its declared miss is part of the tape.
+# stands.  A Stunned warrior makes no attack of its own, so the tape closes on
+# the injury die.
 - audit_id: mechanic/rule.squishy
   id: no-pain-cannot-quiet-the-stun-under-squishy
   covers: [squishy-overrides-no-pain]
@@ -65,7 +65,6 @@
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.first.attack.0.injury.0, value: 3}
-    - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {state.second.condition: STUNNED, state.second.wounds: 0}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
@@ -88,7 +87,6 @@
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.first.attack.0.injury.0, value: 3}
-    - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {state.second.condition: KNOCKED_DOWN, state.second.wounds: 0}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

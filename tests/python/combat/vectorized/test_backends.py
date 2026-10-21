@@ -17,6 +17,7 @@ def request():
     return DuelRequest(fighter, fighter, 20, seed=7)
 
 
+@pytest.mark.parity
 def test_auto_and_numpy_use_the_same_available_backend():
     assert "numpy" in available_backends()
     if available_backends()[0] == "numpy":
@@ -25,6 +26,7 @@ def test_auto_and_numpy_use_the_same_available_backend():
         )
 
 
+@pytest.mark.data_contract
 def test_backend_selection_rejects_unknown_or_unavailable_backends():
     with pytest.raises(ValueError, match="unknown combat backend"):
         simulate_duel(request(), backend="gpu")

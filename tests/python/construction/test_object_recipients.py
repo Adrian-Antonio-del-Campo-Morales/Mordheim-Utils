@@ -25,6 +25,11 @@ from mordheim_construction.eligibility import build_facts, call, desktop_call
 from mordheim_core.models import FighterBuild
 from mordheim_knowledge.loader import load_bands
 
+
+# Every case decides a declared recipient against its lawful control, so the
+# primary category is admission, not the projection that carries it.
+pytestmark = pytest.mark.eligibility
+
 ROOT = Path(__file__).resolve().parents[3]
 KNOWLEDGE = ROOT / "sources" / "knowledge"
 PACKAGES = {

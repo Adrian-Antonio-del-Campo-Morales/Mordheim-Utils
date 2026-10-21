@@ -261,18 +261,31 @@
     active_participant: first
   maximum_rounds: 1
   rolls:
+  # The bearer of the clause is the devoted warrior (``second``), so the Hatred reroll belongs to
+  # its own first-round miss against the killer, not to the killer's attack.  The first miss is
+  # rerolled above the printed To Hit target and the rerolled face lands; the second printed
+  # attack misses and its own reroll misses too.  The killer's single attack misses, so the
+  # bearer keeps both of its Wounds.
   - key: round.0.first.attack.0.hit
-    value: 1
-  - key: round.0.first.attack.0.hit.reroll
-    value: 4
-  - key: round.0.first.attack.0.wound
     value: 1
   - key: round.0.second.attack.0.hit
     value: 1
+  - key: round.0.second.attack.0.hit.reroll
+    value: 4
+  - key: round.0.second.attack.1.hit
+    value: 1
+  - key: round.0.second.attack.1.hit.reroll
+    value: 1
+  # The engine resolves every attack's To Hit count first, then the wounds of the attacks that
+  # connected, so the wound die of the rerolled hit comes last.  The face of one misses.
+  - key: round.0.second.attack.0.wound
+    value: 1
   expect_rounds:
     0:
-      state.second.wounds: 2
-      attacks.0.hit: true
+      state.second.wounds: 1
+      attacks.0.hit: false
+      attacks.1.hit: true
+      attacks.1.wounded: false
   expect_final:
     rounds_executed: 1
     termination_reason: horizon

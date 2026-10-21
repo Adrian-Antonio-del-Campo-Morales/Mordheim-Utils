@@ -61,6 +61,7 @@ def options(collection: str, band: str, profile_id: str) -> set[str]:
                             profile=row(collection, band, profile_id)))
 
 
+@pytest.mark.eligibility
 @pytest.mark.parametrize("band,profile_id", [
     ("chaos-streets-undead-bloodlines", "ghoul"),
     ("chaos-streets-undead-bloodlines", "necromancer"),
@@ -80,6 +81,7 @@ def test_the_preparation_offer_and_the_compiled_fighter_agree(band, profile_id):
         assert accepted is (preparation in offered), preparation
 
 
+@pytest.mark.eligibility
 def test_a_printed_no_equipment_clause_removes_the_offer_and_the_grant():
     """The Strigoi may not use items at all: neither route admits a consumable."""
     assert options("trollheim", "chaos-streets-undead-bloodlines", "strigoi-vampire") == set()
@@ -88,6 +90,7 @@ def test_a_printed_no_equipment_clause_removes_the_offer_and_the_grant():
                               "strigoi-vampire", MANDRAKE))
 
 
+@pytest.mark.eligibility
 def test_an_any_equipment_vow_removes_the_offer_and_the_grant():
     """'may never have any equipment' admits only its printed exceptions."""
     band = "nipponese-expedition-web"
@@ -96,6 +99,7 @@ def test_an_any_equipment_vow_removes_the_offer_and_the_grant():
         compile_fighter(build("mordheim", band, "vim-to-mage", MANDRAKE))
 
 
+@pytest.mark.eligibility
 @pytest.mark.parametrize("profile_id", ["shadow-master", "shadow-warrior"])
 def test_a_drug_prohibition_removes_only_the_drug_class(profile_id):
     """'May not use poisons or drugs' keeps the non-drug preparation legal."""
@@ -107,6 +111,9 @@ def test_a_drug_prohibition_removes_only_the_drug_class(profile_id):
     assert TEARS in survivor.global_effects.tags
 
 
+# Primary: immunity suppresses the carried effect. The offer staying open is
+# the secondary guarantee that suppression is not a prohibition.
+@pytest.mark.rule_behavior
 def test_drug_immunity_is_not_a_prohibition():
     """A Construct still carries the root; only its effect is suppressed."""
     unit = compile_fighter(build("mordheim", "clockworkers-sc", "clockwork-fiend", MANDRAKE))

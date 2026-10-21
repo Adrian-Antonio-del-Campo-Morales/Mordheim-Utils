@@ -38,15 +38,14 @@ rules:
 - id: band--hate-stunties
   runtime:
     scope: 'YES'
-    implemented: 'NO'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.night-goblins-kaz.band.hate-stunties
+    - id: mechanic.hatred-dwarfs
       scope: 'YES'
-      binding: null
-      reason: >-
-        Included individual duel effect, not implemented: Dwarf-qualified first-round Hatred for
-        explicit Night Goblin recipients excluding Fanatics; this canonical grant is not activated.
+      binding:
+        kind: mechanic
+        id: mechanic.hatred-dwarfs
   name: Hate Stunties
   effect: >-
     Night Goblins are subject to hatred towards Dwarfs. This only affects Night Goblins, not any
@@ -65,6 +64,11 @@ rules:
       afectados.
   applies_to:
     band: true
+    profile_ids:
+    - big-boss
+    - shaman
+    - bosses
+    - night-goblins
 - id: band--night-goblin-special-skills
   runtime:
     scope: LATER

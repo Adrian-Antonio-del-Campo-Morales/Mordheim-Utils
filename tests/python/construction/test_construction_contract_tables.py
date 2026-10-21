@@ -19,6 +19,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
+
 from mordheim_knowledge.loader import (
     load_bands,
     load_items,
@@ -26,6 +28,8 @@ from mordheim_knowledge.loader import (
     read_yaml,
     runtime_bindings,
 )
+
+pytestmark = pytest.mark.evidence
 
 ROOT = Path(__file__).resolve().parents[3]
 KB = ROOT / "sources" / "knowledge"

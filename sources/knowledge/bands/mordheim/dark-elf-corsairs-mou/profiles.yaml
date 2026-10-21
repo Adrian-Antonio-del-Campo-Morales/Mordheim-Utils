@@ -40,7 +40,8 @@ profiles:
   - captain--leader
   - captain--hardened
   - captain--slaver
-  combat_traits: {}
+  combat_traits:
+    elf_kind: dark
 - id: reavers
   name: Reavers
   type: hero
@@ -76,7 +77,8 @@ profiles:
   name_i18n:
     es: Salteadores
   rule_ids: []
-  combat_traits: {}
+  combat_traits:
+    elf_kind: dark
 - id: blood-blade
   name: Blood Blade
   type: hero
@@ -112,7 +114,8 @@ profiles:
   name_i18n:
     es: Hoja de Sangre
   rule_ids: []
-  combat_traits: {}
+  combat_traits:
+    elf_kind: dark
 - id: assassin
   name: Assassin
   type: hero
@@ -145,7 +148,8 @@ profiles:
   name_i18n:
     es: Asesino
   rule_ids: []
-  combat_traits: {}
+  combat_traits:
+    elf_kind: dark
   equipment_restrictions_i18n:
     es: Igual que la Espada a Sueldo de TC 12; coste de reemplazo 90 gc.
 - id: sorceress
@@ -169,7 +173,9 @@ profiles:
   - dark_elf_blade_weapon_upgrade
   - dagger
   equipment_restrictions:
-  - Is a wizard and uses Dark Magic, as per TC 12, with 2 randomly determined spells; equipped with a dark elven blade and dagger.
+  - >-
+      Is a wizard and uses Dark Magic, as per TC 12, with 2 randomly determined spells; equipped
+      with a dark elven blade and dagger.
   skill_access: []
   source:
     manual: broheim.net
@@ -183,9 +189,12 @@ profiles:
   name_i18n:
     es: Hechicera
   rule_ids: []
-  combat_traits: {}
+  combat_traits:
+    elf_kind: dark
   equipment_restrictions_i18n:
-    es: Es una hechicera y usa Magia Oscura, según TC 12, con 2 conjuros determinados al azar; equipada con una hoja elfa oscura y una daga.
+    es: >-
+          Es una hechicera y usa Magia Oscura, según TC 12, con 2 conjuros determinados al azar;
+          equipada con una hoja elfa oscura y una daga.
 - id: beastmaster
   name: Beastmaster
   type: hero
@@ -222,9 +231,12 @@ profiles:
   name_i18n:
     es: Maestro de Bestias
   rule_ids: []
-  combat_traits: {}
+  combat_traits:
+    elf_kind: dark
   equipment_restrictions_i18n:
-    es: Acompañado de dos Sabuesos de Sangre Fría; equipado con armadura ligera, una hoja elfa oscura y un látigo de señor de las bestias.
+    es: >-
+          Acompañado de dos Sabuesos de Sangre Fría; equipado con armadura ligera, una hoja elfa
+          oscura y un látigo de señor de las bestias.
 - id: witch-elf
   name: Witch Elf
   type: hero
@@ -247,7 +259,9 @@ profiles:
   - dark_elf_blade_weapon_upgrade
   - dark_venom
   equipment_restrictions:
-  - Uses drugs and is therefore subject to frenzy; equipped with two dark elven blades coated in dark venom; 5+ save against all wounds suffered.
+  - >-
+      Uses drugs and is therefore subject to frenzy; equipped with two dark elven blades coated in
+      dark venom; 5+ save against all wounds suffered.
   skill_access: []
   source:
     manual: broheim.net
@@ -263,9 +277,12 @@ profiles:
   rule_ids:
   - witch-elf--drugs-frenzy
   combat_traits:
+    elf_kind: dark
     natural_armour_save: 5
   equipment_restrictions_i18n:
-    es: Usa drogas y por tanto está sujeto a frenesí; equipado con dos hojas elfos oscuras recubiertas de veneno oscuro; salvación de 5+ contra todas las heridas sufridas.
+    es: >-
+          Usa drogas y por tanto está sujeto a frenesí; equipado con dos hojas elfos oscuras
+          recubiertas de veneno oscuro; salvación de 5+ contra todas las heridas sufridas.
 - id: corsairs
   name: Corsairs
   type: henchman
@@ -298,7 +315,8 @@ profiles:
   name_i18n:
     es: Corsarios
   rule_ids: []
-  combat_traits: {}
+  combat_traits:
+    elf_kind: dark
   equipment_restrictions_i18n:
     es: Sin armas de proyectil.
 - id: shades
@@ -333,4 +351,5 @@ profiles:
     es: Sombras (Shades)
   rule_ids:
   - shades--elite
-  combat_traits: {}
+  combat_traits:
+    elf_kind: dark

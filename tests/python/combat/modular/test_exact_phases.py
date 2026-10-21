@@ -16,6 +16,9 @@ from mordheim_core.dice import exact_distribution
 import pytest as pytest
 
 
+pytestmark = pytest.mark.operator
+
+
 @pytest.mark.parametrize("target", range(2, 7))
 def test_every_armour_target_enumerates_all_d6_faces(target):
     distribution = exact_distribution(

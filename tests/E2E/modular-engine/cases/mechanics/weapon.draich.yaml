@@ -173,10 +173,12 @@
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
+  # The two-attack pool rolls both To Hit dice before any defence is offered, so the
+  # parry of the first attack comes after the second attack's die.
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.parry, value: 5}
     - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.parry, value: 5}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.parried: True, state.second.wounds: 2, state.first.wounds: 2}
@@ -219,14 +221,16 @@
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
+  # Printed Initiative 5 lets the mace strike first, so its attack is the first entry
+  # of the round and the second fighter's reply is the second.
   rolls:
-    - {key: round.0.second.attack.0.hit, value: 1}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 6}
     - {key: round.0.first.attack.0.critical, value: 2}
     - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
-    0: {attacks.1.critical: True, attacks.1.saved: True, attacks.1.damage: 0, state.second.wounds: 3}
+    0: {attacks.0.critical: True, attacks.0.saved: True, attacks.0.damage: 0, state.second.wounds: 3}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 # The printed two-handed occupancy is declared as a refusal.
 

@@ -104,14 +104,18 @@
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
     second: {collection: trollheim, band_id: chaos-streets-dwarf-treasure-hunters, profile_id: dwarf-noble}
   initial_state: {first: {attacks: 0}, second: {resources_spent: [disability.6]}}
-  duel_context: {charging: [], active_participant: second}
+  # Stupidity is tested at the start of the bearer's own player turn, so the
+  # non-immune band-mate is the charging side, exactly as the accepted Head
+  # Injury case declares it; the doubled six fails its printed Leadership.
+  duel_context: {charging: [second], active_participant: second}
   maximum_rounds: 1
   rolls:
-    - {key: round.0.second.stupidity.0, value: 1}
-    - {key: round.0.second.stupidity.1, value: 1}
+    - {key: round.0.second.stupidity.0, value: 6}
+    - {key: round.0.second.stupidity.1, value: 6}
   expect_rounds:
-    0: {state.first.wounds: 3, state.second.wounds: 1, state.second.stupidity_failed: true, state.second.condition: STANDING}
-  expect_final: {rounds_executed: 1, termination_reason: horizon}
+    0: {state.engaged: false, state.failed_charges: ['second'], state.second.stupidity_failed: true,
+        state.second.condition: STANDING, state.second_charged: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
 
 - audit_id: rule/trollheim/chaos-streets-dwarf-treasure-hunters/dwarf-troll-slayers--death-oath/unimplemented.chaos-streets-dwarf-treasure-hunters.dwarf-troll-slayers.death-oath
   id: the-immune-warrior-is-not-tested-for-fear

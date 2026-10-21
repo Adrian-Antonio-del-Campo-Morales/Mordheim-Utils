@@ -112,12 +112,13 @@ def duel(first, second, *, dice=None, choices=None, context=None):
 
 # --- the mechanic records exist verbatim -------------------------------------
 
+@pytest.mark.compilation
 def test_canonical_bindings_and_honest_admission():
     packages = {p.band['id']: p for p in combat_packages('mordheim')}
     jester = compile_fighter(FighterBuild('mordheim',
         band_id='hirelings.dramatis-personae.2a',
         profile_id='hireling.dramatis.the-dark-jester-in-mordheim',
-        main_weapon_id='weapon.mace'))
+        main_weapon_id='weapon.club'))
     assert {'mechanic.confound-and-confuse', 'mechanic.dodge-sidestepper',
             'mechanic.babbling-banter'} <= set(jester.global_effects.tags)
     dice = Tape({'round.0.first.attack.0.hit': [6],
@@ -173,6 +174,7 @@ def test_canonical_bindings_and_honest_admission():
     assert 'skill.backstabber' in poisoned.global_effects.tags
 
 
+@pytest.mark.knowledge_integrity
 def test_every_record_declares_the_canonical_tag():
     document = yaml.safe_load((ROOT / EXECUTION).read_text(encoding="utf-8"))
     effects = {effect["id"]: effect["parameters"]["tags"]
@@ -203,6 +205,7 @@ TRIP_OFFERS = {f"round.0.first.jester-trick.{slot}": face for slot, face in (
     ("trip_trick_active", True))}
 
 
+@pytest.mark.rule_behavior
 def test_trip_replaces_the_wound_roll_with_a_two_plus_knockdown():
     owner, victim = fighter("mechanic.confound-and-confuse"), fighter()
     dice = Tape({"round.0.first.attack.0.hit": [6],
@@ -217,6 +220,7 @@ def test_trip_replaces_the_wound_roll_with_a_two_plus_knockdown():
     choices.finish()
 
 
+@pytest.mark.rule_behavior
 def test_trip_roll_of_one_leaves_the_victim_standing():
     owner, victim = fighter("mechanic.confound-and-confuse"), fighter()
     dice = Tape({"round.0.first.attack.0.hit": [6],
@@ -231,6 +235,7 @@ def test_trip_roll_of_one_leaves_the_victim_standing():
     choices.finish()
 
 
+@pytest.mark.rule_behavior
 def test_a_declined_trip_rolls_the_ordinary_wound_die():
     owner, victim = fighter("mechanic.confound-and-confuse"), fighter()
     dice = Tape({"round.0.first.attack.0.hit": [6],
@@ -250,6 +255,7 @@ def test_a_declined_trip_rolls_the_ordinary_wound_die():
     choices.finish()
 
 
+@pytest.mark.rule_behavior
 def test_trip_is_not_offered_without_its_chosen_slot():
     owner, victim = fighter("mechanic.confound-and-confuse"), fighter()
     dice = Tape({"round.0.first.attack.0.hit": [6],
@@ -271,6 +277,7 @@ def test_trip_is_not_offered_without_its_chosen_slot():
 DODGE_OFFERS = {"round.0.second.jester-trick.dodge_trick_active": True}
 
 
+@pytest.mark.rule_behavior
 def test_sidestepper_deflects_a_wounding_hit_on_the_unmodifiable_four_plus():
     dodge, bearer = "mechanic.dodge-sidestepper", "mechanic.confound-and-confuse"
     owner, victim = fighter(), fighter(dodge, bearer)
@@ -287,6 +294,7 @@ def test_sidestepper_deflects_a_wounding_hit_on_the_unmodifiable_four_plus():
     choices.finish()
 
 
+@pytest.mark.rule_behavior
 def test_sidestepper_fails_on_a_three():
     dodge, bearer = "mechanic.dodge-sidestepper", "mechanic.confound-and-confuse"
     owner, victim = fighter(), fighter(dodge, bearer)
@@ -302,6 +310,7 @@ def test_sidestepper_fails_on_a_three():
     choices.finish()
 
 
+@pytest.mark.rule_behavior
 def test_sidestepper_declined_draws_no_dodge():
     dodge, bearer = "mechanic.dodge-sidestepper", "mechanic.confound-and-confuse"
     owner, victim = fighter(), fighter(dodge, bearer)
@@ -324,6 +333,7 @@ def test_sidestepper_declined_draws_no_dodge():
 # --- Babbling Banter ----------------------------------------------------------
 
 
+@pytest.mark.rule_behavior
 def test_banter_lowers_the_banterer_and_raises_attacks_against_it():
     banter, bearer = "mechanic.babbling-banter", "mechanic.confound-and-confuse"
     owner, victim = fighter(banter, bearer), fighter()
@@ -343,6 +353,7 @@ def test_banter_lowers_the_banterer_and_raises_attacks_against_it():
     choices.finish()
 
 
+@pytest.mark.rule_behavior
 def test_the_banter_pair_needs_its_chosen_slot():
     banter, bearer = "mechanic.babbling-banter", "mechanic.confound-and-confuse"
     owner, victim = fighter(banter, bearer), fighter()
@@ -367,6 +378,7 @@ def test_the_banter_pair_needs_its_chosen_slot():
 # --- Mantle of Crows ------------------------------------------------------------
 
 
+@pytest.mark.rule_behavior
 def test_mantle_of_crows_resolves_one_pre_attack_strength_2_hit():
     owner, victim = fighter("mechanic.mantle-of-crows"), fighter()
     dice = Tape({"round.0.second.mantle-of-crows.wound": [5]})
@@ -378,6 +390,7 @@ def test_mantle_of_crows_resolves_one_pre_attack_strength_2_hit():
     dice.finish()
 
 
+@pytest.mark.rule_behavior
 def test_without_the_mantle_no_pre_attack_hit_is_resolved():
     owner, victim = fighter(), fighter()
     dice = Tape()
@@ -395,6 +408,7 @@ def damageless_pre_hits(dice):
 # --- Backstabber -----------------------------------------------------------------
 
 
+@pytest.mark.rule_behavior
 def test_backstabber_charging_bonus_applies_in_the_first_round():
     stealth = "skill.backstabber"
     owner, victim = fighter(stealth, "condition.unseen-charge"), fighter()
@@ -412,6 +426,7 @@ def test_backstabber_charging_bonus_applies_in_the_first_round():
 # --- Thin Flesh -----------------------------------------------------------------
 
 
+@pytest.mark.rule_behavior
 def test_thin_flesh_lowers_only_the_close_combat_wound_resolution():
     victim = fighter("rule.thin-flesh")
     attacker = fighter(strength=3)
@@ -430,6 +445,7 @@ def test_thin_flesh_lowers_only_the_close_combat_wound_resolution():
 # --- Slay Large Creature ----------------------------------------------------------
 
 
+@pytest.mark.rule_behavior
 def test_tricks_expire_and_trip_is_one_nominated_attack_per_turn():
     owner = fighter('mechanic.confound-and-confuse')
     owner = replace(owner, characteristics=replace(owner.characteristics, attacks=2))
@@ -454,6 +470,7 @@ def test_tricks_expire_and_trip_is_one_nominated_attack_per_turn():
     choices.finish()
 
 
+@pytest.mark.rule_behavior
 def test_trip_can_be_nominated_after_an_earlier_hit_is_declined():
     owner = fighter('mechanic.confound-and-confuse')
     owner = replace(owner, characteristics=replace(owner.characteristics, attacks=2))
@@ -471,6 +488,7 @@ def test_trip_can_be_nominated_after_an_earlier_hit_is_declined():
     choices.finish()
 
 
+@pytest.mark.rule_behavior
 def test_selection_stops_after_acceptance_and_default_policy_can_simulate():
     choices = ScriptedChoices({'round.0.first.jester-trick.dodge_trick_active': True})
     owner, victim = fighter('mechanic.confound-and-confuse'), fighter()
@@ -485,6 +503,7 @@ def test_selection_stops_after_acceptance_and_default_policy_can_simulate():
     assert result.simulations == 1
 
 
+@pytest.mark.interaction
 def test_dodge_and_banter_selection_changes_without_leaking_between_turns():
     owner, victim = fighter('mechanic.confound-and-confuse'), fighter()
     choices = ScriptedChoices({f'round.0.first.jester-trick.{slot}': slot == 'banter_trick_active'
@@ -513,6 +532,7 @@ def test_dodge_and_banter_selection_changes_without_leaking_between_turns():
     (True, True, True, True), (True, True, False, False),
     (True, False, True, False), (False, True, True, False),
 ])
+@pytest.mark.rule_behavior
 def test_backstabber_hit_and_injury_share_trigger_and_expiry(first_round, charging, unseen, expected):
     owner = fighter('skill.backstabber', *(['condition.unseen-charge'] if unseen else []))
     victim = fighter()
@@ -529,6 +549,7 @@ def test_backstabber_hit_and_injury_share_trigger_and_expiry(first_round, chargi
     dice.finish()
 
 
+@pytest.mark.interaction
 def test_mantle_is_a_melee_hit_with_thin_flesh_and_selected_dodge():
     owner, victim = fighter('mechanic.mantle-of-crows'), fighter('rule.thin-flesh', 'mechanic.confound-and-confuse')
     choices = ScriptedChoices(DODGE_OFFERS)
@@ -543,6 +564,7 @@ def test_mantle_is_a_melee_hit_with_thin_flesh_and_selected_dodge():
     choices.finish()
 
 
+@pytest.mark.rule_behavior
 def test_mantle_repeats_each_phase_at_fixed_strength_without_bearer_damage():
     owner, victim = fighter('mechanic.mantle-of-crows'), fighter()
     owner = replace(owner, global_effects=replace(owner.global_effects, strength_bonus=4, damage=3))
@@ -560,6 +582,7 @@ def test_mantle_repeats_each_phase_at_fixed_strength_without_bearer_damage():
     dice.finish()
 
 
+@pytest.mark.rule_behavior
 def test_thin_flesh_does_not_change_profile_or_non_melee_toughness():
     owner, victim = fighter(), fighter('rule.thin-flesh')
     own = initialize_fighter(owner, Tape(), 'first')
@@ -580,6 +603,7 @@ def test_thin_flesh_does_not_change_profile_or_non_melee_toughness():
     (True, True, True, 5), (True, True, False, 4),
     (True, False, True, 3), (False, True, True, 3),
 ])
+@pytest.mark.interaction
 def test_slay_large_creature_stacks_with_weapon_charge_and_expires(first_round, charging, large, expected):
     owner = fighter('rule.slay-large-creature')
     victim = fighter(*(['size.large'] if large else []))
@@ -594,6 +618,7 @@ def test_slay_large_creature_stacks_with_weapon_charge_and_expires(first_round, 
     assert armour.strength == expected
 
 
+@pytest.mark.rule_behavior
 def test_sidestepper_remains_unmodifiable_for_strong_magical_attacks():
     owner, victim = fighter(strength=5), fighter('mechanic.confound-and-confuse')
     owner = replace(owner, main_weapon=replace(owner.main_weapon,
@@ -608,6 +633,7 @@ def test_sidestepper_remains_unmodifiable_for_strong_magical_attacks():
     choices.finish()
 
 
+@pytest.mark.compilation
 def test_supplied_charge_and_size_reach_compiled_consumers():
     owner = compile_fighter(FighterBuild('mordheim', Characteristics(3, 3, 3, 2, 3, 1),
         trait_overrides={'starting_skills': ['skill.backstabber', 'rule.slay-large-creature']},
@@ -642,6 +668,7 @@ def fragile(*tags: str, weapon: str = "weapon.mace"):
         tags=(*base.global_effects.tags, *tags)))
 
 
+@pytest.mark.rule_behavior
 def test_needle_and_thread_sews_the_mouth_of_the_opponent_it_stuns():
     owner, victim = fragile("mechanic.needle-and-thread"), fragile()
     # The mace prints 2-4 as stunned, so the recorded 4 is the printed stun that
@@ -686,6 +713,7 @@ def borrow(provider):
     return state, dice, recipient
 
 
+@pytest.mark.interaction
 def test_a_sewn_leader_cannot_lend_its_leadership_ability():
     # The duel sews the mouth of an opponent it stuns; a Leader is used as a
     # supplied non-combatant fact, so the printed denial reaches the borrow loop
@@ -710,6 +738,7 @@ def test_a_sewn_leader_cannot_lend_its_leadership_ability():
 # --- Lycanthrope ---------------------------------------------------------------
 
 
+@pytest.mark.rule_behavior
 def test_lycanthrope_transforms_on_a_four_plus_and_keeps_the_wolf_form():
     owner, beast = fragile(), fragile("mechanic.hillman-lycanthrope")
     dice = Tape({"round.0.first.attack.0.hit": [6],
@@ -732,6 +761,7 @@ def test_lycanthrope_transforms_on_a_four_plus_and_keeps_the_wolf_form():
     second.finish()
 
 
+@pytest.mark.rule_behavior
 def test_a_failed_lycanthrope_roll_keeps_the_printed_injury_penalty():
     # A plain sword, not the mace: the mace's own concussion mapping would mask
     # the printed -1 by turning the modified 2 back into a stun.
@@ -756,6 +786,7 @@ def test_a_failed_lycanthrope_roll_keeps_the_printed_injury_penalty():
     dice.finish()
 
 
+@pytest.mark.compilation
 def test_the_wolf_form_discards_the_kit_and_keeps_the_bite_attack():
     beast = fragile("mechanic.hillman-lycanthrope")
     man = initialize_fighter(beast, Tape(), "second")
@@ -773,6 +804,7 @@ def test_the_wolf_form_discards_the_kit_and_keeps_the_bite_attack():
     assert kept.main_weapon is not None and kept.main_weapon.tags != discarded.main_weapon.tags
 
 
+@pytest.mark.rule_behavior
 def test_slay_large_creature_grants_one_strength_on_the_charged_large_target():
     slayer = fighter("rule.slay-large-creature")
     victim = fighter("size.large")

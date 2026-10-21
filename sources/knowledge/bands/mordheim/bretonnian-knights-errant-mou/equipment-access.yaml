@@ -4,6 +4,14 @@ equipment_lists:
 - id: knights-errant-equipment-list
   name: Knights Errant Equipment List
   items:
+  # The base game grants every recruit a free dagger (catalog/campaign/
+  # recruitment-and-veterans.yaml::campaign.recruitment.free-dagger) and the
+  # sheet's own clause names it ("a simple dagger is not acceptable"), so the
+  # bearer may carry one; the obligation, not the access, is what the clause
+  # restricts.
+  - item_id: dagger
+    cost: 2
+    notes: 1st free/2 gc
   - item_id: mace
     cost: 3
   - item_id: hammer

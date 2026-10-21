@@ -51,18 +51,21 @@ def lahmia_vampire():
                    special_rule_ids=("band--lahmia-power-lost-innocence",))
 
 
+@pytest.mark.compilation
 def test_the_shared_skill_is_the_operator_both_rules_bind():
     effect = effect_index("mordheim")["skill.always-strikes-first"].effect
     assert "skill.always-strikes-first" in effect.tags
     assert effect.priority == 1
 
 
+@pytest.mark.compilation
 def test_the_fanatic_compiles_the_printed_always_strikes_first_tag():
     compiled = fanatic()
     assert "skill.always-strikes-first" in compiled.global_effects.tags
     assert compiled.global_effects.priority == 1
 
 
+@pytest.mark.rule_behavior
 def test_the_operator_raises_priority_above_the_ordinary_order():
     compiled = fanatic()
     ordinary = fighter()
@@ -70,6 +73,7 @@ def test_the_operator_raises_priority_above_the_ordinary_order():
     assert priority(ordinary, compiled).priority == 0
 
 
+@pytest.mark.rule_behavior
 def test_two_bearers_of_the_skill_tie_and_the_roll_breaks_it():
     # A spear shares the strike-first tier, so the ability ties and the order
     # falls to Initiative, exactly as the retained spec case records.
@@ -79,6 +83,7 @@ def test_two_bearers_of_the_skill_tie_and_the_roll_breaks_it():
     assert priority(spear, compiled, first_round=True).priority == 1
 
 
+@pytest.mark.rule_behavior
 def test_the_fanatic_keeps_strike_first_when_standing_up():
     compiled = fanatic()
     plain = fighter()
@@ -87,6 +92,7 @@ def test_the_fanatic_keeps_strike_first_when_standing_up():
     assert priority(plain, plain, first_round=False, stood_up=True).priority == -1
 
 
+@pytest.mark.eligibility
 def test_lost_innocence_is_selectable_for_the_lahmia_vampire_alone():
     vampire = lahmia_vampire()
     assert "skill.always-strikes-first" in vampire.global_effects.tags
@@ -96,6 +102,7 @@ def test_lost_innocence_is_selectable_for_the_lahmia_vampire_alone():
                 special_rule_ids=("band--lahmia-power-lost-innocence",))
 
 
+@pytest.mark.rule_behavior
 def test_no_ordinary_initiative_advantage_defeats_lost_innocence():
     vampire = lahmia_vampire()
     quick = fighter(initiative=10)

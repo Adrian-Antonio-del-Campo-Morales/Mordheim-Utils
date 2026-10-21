@@ -127,10 +127,13 @@
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
+  # The pool resolves every To Hit die before any To Wound die: the frenzy-doubled
+  # pair of mace attacks rolls its two hits first, then the two wounds in the same
+  # allocation order, and only then the defender's reply.
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.first.attack.1.wound, value: 4}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:

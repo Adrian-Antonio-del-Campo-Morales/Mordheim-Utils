@@ -598,9 +598,16 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
             printed=_printed_kit(build, profile, mechanics, root)
             if any(mid.startswith(("material.", "poison.")) for _, mid in printed):
                 build, weapon_ids = _printed_compound_kit(build, printed, mechanics)
+                if weapon_ids:main_weapon_id=weapon_ids[0]
             else:
                 weapon_ids=sorted(mid for mid in allowed if mid.startswith("weapon."))
-            if weapon_ids:main_weapon_id=weapon_ids[0]
+                if weapon_ids:
+                    # An explicit dagger is a real selection and must reach the
+                    # construction contract that judges it; only an omitted choice
+                    # falls back to the first weapon the access admits.  A dagger
+                    # the profile does not admit keeps the old substitution.
+                    main_weapon_id=("weapon.dagger" if not main_weapon_omitted and "weapon.dagger" in allowed
+                                    else weapon_ids[0])
         elif not profile.get("equipment_lists"):
             main_weapon_id="weapon.natural-attacks"
         elif ("weapon.dagger" not in allowed
@@ -621,13 +628,13 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
         # attack, just like the default dagger selection above. Explicit
         # profile.fist contracts retain their own unarmed semantics.
         main_weapon_id = "weapon.natural-attacks"
-    if ((build.main_poison_id and main_weapon_id in {"weapon.fist", "weapon.natural-attacks"})
-            or (build.off_poison_id and (not (build.off_hand_id or "").startswith("weapon.")
-                                        or build.off_hand_id in {"weapon.fist", "weapon.natural-attacks"}))):
-        # A coating needs a weapon to carry it.  The selection layer offers no
-        # poison to a fighter with no weapon, so the direct path refuses one
-        # instead of quietly poisoning a fist or a claw.
-        raise ValueError("a poison needs a carried weapon in the hand it coats")
+    # A bought coating needs a carried weapon in the same hand. Intrinsic
+    # venom on natural attacks is supplied by its own source binding instead.
+    poisoned_hands = ((build.main_poison_id, main_weapon_id),
+                      (build.off_poison_id, build.off_hand_id))
+    for poison_id, weapon_id in poisoned_hands:
+        if poison_id and weapon_id in {None, "weapon.fist", "weapon.natural-attacks"}:
+            raise ValueError("a poison needs a carried weapon in the hand it coats")
     selected = [main_weapon_id,build.armour_id,build.main_material_id,*build.defence_ids,*build.skill_ids,*build.preparation_ids]
     selected += [x for x in (build.off_hand_id,build.off_material_id,build.main_poison_id,build.off_poison_id,build.extra_hand_id) if x]
     unknown = [x for x in selected if x not in mechanics and x not in excluded]
@@ -706,9 +713,15 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
     elif supplied.profile_bindings:
         validate("boundEquipment", build, root, main_weapon_id=main_weapon_id,
                  profile_bindings=supplied.profile_bindings)
-    if package is not None and build.owned_item_ids is not None:
-        facts = configuration_context(build, package, profile, root=root, possession=build.owned_item_ids,
-            profile_bindings=supplied.profile_bindings,
+    if package is not None and (build.owned_item_ids is not None
+                                or build.main_poison_id or build.off_poison_id):
+        # A supplied kit and a coated weapon are the two inputs the set-level
+        # facts judge, so those are the selections that reach this layer.
+        # The construction facts read the same bindings the selection stage
+        # judged: a chosen selectable clause (Master of Throwing Weapons) states
+        # its allowance on the profile, not on the supplied kit.
+        facts = configuration_context(build, package, profile, root=root, possession=build.owned_item_ids or (),
+            profile_bindings=(*supplied.profile_bindings, *selected_profile_bindings),
             slots={"main_weapon_id": main_weapon_id, "off_hand_id": build.off_hand_id,
                    "extra_hand_id": build.extra_hand_id, "armour_id": build.armour_id,
                    "defence_ids": list(build.defence_ids),
@@ -717,6 +730,12 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
         blocked = [issue["message"] for issue in issues if not call("issueIsInformational", issue["code"])]
         if blocked:
             raise ValueError("; ".join(blocked))
+    # A carried non-weapon first reaches any printed poison-application clause
+    # above, so that clause supplies its specific refusal. With no such clause,
+    # shields and other non-weapons still cannot carry a bought coating.
+    if any(poison_id and not (weapon_id or "").startswith("weapon.")
+           for poison_id, weapon_id in poisoned_hands):
+        raise ValueError("a poison needs a carried weapon in the hand it coats")
     requested=set(build.skill_ids)|set(build.preparation_ids)|set(build.defence_ids)
     if build.main_weapon_id:requested.add(build.main_weapon_id)
     if build.off_hand_id:requested.add(build.off_hand_id)
@@ -736,8 +755,8 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
     for key,value in build.trait_overrides.items():
         if not isinstance(value,TRAIT_TYPES[key]):raise TypeError(f"invalid combat trait value for {key}: {value!r}")
     traits.update(build.trait_overrides)
-    if "elf_kind" in traits and traits["elf_kind"] not in ("high", "dark", "other"):
-        raise ValueError("elf_kind must be high, dark or other")
+    if "elf_kind" in traits and traits["elf_kind"] not in ("high", "dark", "wood", "other"):
+        raise ValueError("elf_kind must be high, dark, wood or other")
     for key in ("stupidity_leadership", "stupidity_leadership_bonus", "mob_allies"):
         if key in traits and (type(traits[key]) is not int or traits[key] < 0):
             raise ValueError(f"{key} must be a non-negative integer")
@@ -890,6 +909,13 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
         trait_tags = (*trait_tags, "species.vampire")
     if traits.get("lizardman"):
         trait_tags = (*trait_tags, "species.lizardman")
+    undead_kind = traits.get("undead_kind")
+    if undead_kind is not None:
+        # The printed Accustomed to Fear clause names three Undead kinds; only
+        # the sources that print one of those kinds carry the marker.
+        if undead_kind not in {"skeleton", "spirit"}:
+            raise ValueError(f"unknown undead_kind: {undead_kind}")
+        trait_tags = (*trait_tags, f"undead-kind.{undead_kind}")
     nature = traits.get("creature_kind")
     if nature is not None:
         if nature not in {"living", "undead", "daemon", "possessed"}:
@@ -1020,8 +1046,10 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
         trait_tags = (*trait_tags, "condition.flesh-peddler-mark")
     if traits.get("normal_animal"):
         trait_tags = (*trait_tags, "species.normal-animal", "species.animal")
-    if traits.get("elf_kind") in ("high", "dark"):
-        trait_tags=(*trait_tags,f"species.{traits['elf_kind']}-elf")
+    if traits.get("elf_kind"):
+        trait_tags = (*trait_tags, "species.elf")
+        if traits["elf_kind"] != "other":
+            trait_tags = (*trait_tags, f"species.{traits['elf_kind']}-elf")
     if traits.get("magical_attacks"):
         trait_tags=(*trait_tags,"attack.magical")
     fauna_kind = traits.get("fauna_animal_kind")
@@ -1042,6 +1070,11 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
     fighter_kind = source_kind or fighter_kind
     if fighter_kind is not None:
         trait_tags = (*trait_tags, f"fighter-kind.{fighter_kind}")
+        # An animal is a species fact as well as a construction kind: the duel
+        # reads `species.animal` (Tranquil Fauna, Animal Handler) whichever way
+        # the recipient was declared.
+        if fighter_kind == "animal":
+            trait_tags = (*trait_tags, "species.animal")
     disability_results = set(supplied.condition_ids).intersection(
         {f"condition.disability-{result}" for result in range(1, 7)})
     if "mechanic.disability" in global_effects.tags and not disability_results:
@@ -1050,6 +1083,9 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
         raise ValueError("Disability result requires a Cripple with Disability")
     if "condition.disability-hero-nearby" in supplied.condition_ids and "condition.disability-6" not in disability_results:
         raise ValueError("Nearby Hero exemption requires Head Injury result 6")
+    if ("mechanic.curse-of-the-revenant" in build.skill_ids
+            and "mechanic.great-thirster" not in global_effects.tags):
+        raise ValueError("Curse of the Revenant requires Great Thirster")
     if "condition.ye-give-way-refused" in supplied.condition_ids and fighter_kind != "hero":
         raise ValueError("Ye Give Way refusal requires the challenged Hero recipient")
     if "condition.ye-give-way-victorious" in supplied.condition_ids and (

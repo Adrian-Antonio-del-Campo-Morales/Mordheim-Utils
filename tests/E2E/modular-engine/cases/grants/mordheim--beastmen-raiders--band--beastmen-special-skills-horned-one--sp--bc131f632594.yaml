@@ -76,8 +76,8 @@
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.first.attack.1.wound, value: 1}
   expect_rounds:
     0: {attacks.0.hit: True, attacks.0.wounded: True, attacks.1.hit: True, attacks.1.wounded: False, state.second.wounds: 2, state.second.condition: STANDING}

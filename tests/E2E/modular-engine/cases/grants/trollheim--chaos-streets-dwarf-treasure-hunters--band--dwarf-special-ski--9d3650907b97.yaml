@@ -51,10 +51,12 @@
 
 # --- Authored scenarios ---
 # Derived from the printed sentence and the recorded chart (1-3 knocked down, 4-5 stunned, 6 out of action);
-# no engine output was consulted.  The bearer starts the duel at one wound and the attacker's plain mace
-# adds no injury modifier, so the declared injury die is the injury total itself; the attacker's higher
-# Initiative and the uncharged context let it strike first, and the bearer declares no attack of its own
-# because every scenario leaves it Stunned, Knocked Down or Out of Action in this round.
+# no engine output was consulted.  The bearer starts the duel at one wound and the attacker's weapon adds
+# no injury modifier, so the declared injury die is the injury total itself; the two total-three scenarios
+# use a plain axe because the mace's Concussion would turn the knocked-down result into Stunned and hide the
+# chart difference.  The attacker's higher Initiative and the uncharged context let it strike first, and the
+# bearer declares no attack of its own because every scenario leaves it Stunned, Knocked Down or Out of
+# Action in this round.
 - audit_id: rule/trollheim/chaos-streets-dwarf-treasure-hunters/band--dwarf-special-skills-true-grit/skill.tough-as-steel
   id: an-injury-total-of-five-stuns-instead-of-removing-the-bearer
   covers: [whole]
@@ -98,7 +100,7 @@
   covers: [whole]
   fighters:
     first:
-      main_weapon_id: weapon.mace
+      main_weapon_id: weapon.axe
       characteristics: *tg-attacker
     second:
       main_weapon_id: weapon.mace
@@ -119,7 +121,7 @@
   covers: [whole]
   fighters:
     first:
-      main_weapon_id: weapon.mace
+      main_weapon_id: weapon.axe
       characteristics: *tg-attacker
     second:
       main_weapon_id: weapon.mace

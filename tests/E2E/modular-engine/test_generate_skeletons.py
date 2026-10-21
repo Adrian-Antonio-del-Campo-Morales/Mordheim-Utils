@@ -10,6 +10,12 @@ from tempfile import TemporaryDirectory
 import unittest
 
 import yaml
+import pytest
+
+# The scaffold generator's guarantee is the provenance of authoring evidence:
+# one admitted identity per file, preserved bytes, source digests and pending
+# state.  Contract rejections and CLI safety are part of that same tool contract.
+pytestmark = pytest.mark.evidence
 
 if __package__:
     from . import generate_skeletons as generator

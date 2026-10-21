@@ -46,7 +46,9 @@
 # mechanic/poison.nightshade - authored from the printed rule and the
 # admitted `whole` clause, never from engine output.
 # One point of damage that passes the saves lowers the target's Initiative by one;
-# the accumulated penalty respects the printed floor of 1.
+# the accumulated penalty respects the printed floor of 1.  Both warriors print
+# Initiative 5, so the round opens with the printed priority tie roll, declared
+# here as a 4 that puts the poisoned bearer first.
 - audit_id: mechanic/poison.nightshade
   id: an-unsaved-wound-lowers-initiative-by-one
   covers: [whole]
@@ -61,6 +63,7 @@
   duel_context: &ns-context {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.priority-tie, value: 4}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.second.attack.0.hit, value: 1}

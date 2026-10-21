@@ -474,7 +474,7 @@ or force an obsolete snapshot: reload and prepare explicit decisions again.
 No direct CSV edits or alternative rewrite scripts. Failed conservation means
 no write; after damage, suspend writes and notify the coordinator, never rebuild
 from HEAD or old exports. The tool does not repair or certify earlier damage.
-Tool tests use synthetic CSVs: `python -X utf8 tools/knowledge/test_clause_registry.py`;
+Tool tests use synthetic CSVs: `python -m pytest tests/python/knowledge/test_clause_registry.py -q`;
 do not rerun them for rule-only changes.
 
 ## Where is the evidence?

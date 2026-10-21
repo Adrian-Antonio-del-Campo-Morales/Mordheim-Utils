@@ -49,12 +49,16 @@
 # defender then takes an injury roll: the declared face of two becomes the three that
 # Stuns him only through the printed +1 against the undead.  A Stunned warrior makes no
 # attack of his own, so the tape closes after the injury die.
+# The attacker strikes with the plain sword: its printed line is only "Strength: As user"
+# and "Parry", so the injury table alone decides between the two scenarios.  A mace would
+# not isolate the clause, because its printed Concussion converts a 2-4 into Stunned on
+# its own and the control could never only knock the same defender down.
 - audit_id: mechanic/mechanic.blessing-of-morr
   id: the-bonus-lifts-the-injury-roll-to-a-stun
   covers: [whole]
   fighters:
     first:
-      main_weapon_id: weapon.mace
+      main_weapon_id: weapon.sword
       skill_ids: [mechanic.blessing-of-morr]
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
@@ -77,7 +81,7 @@
   covers: [whole]
   fighters:
     first:
-      main_weapon_id: weapon.mace
+      main_weapon_id: weapon.sword
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
       main_weapon_id: weapon.mace

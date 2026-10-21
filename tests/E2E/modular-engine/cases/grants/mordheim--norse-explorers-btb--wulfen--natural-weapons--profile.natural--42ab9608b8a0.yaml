@@ -66,37 +66,43 @@
       characteristics: {weapon_skill: 3, strength: 4, toughness: 4, wounds: 2, initiative: 5, attacks: 2}
     second:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 0}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
+  # The printed Wulfen also causes Fear (wulfen--fear), and it is the charger, so the charged
+  # warrior takes the compulsory round-0 Fear test first; its Leadership is therefore supplied.
+  # The two faces total its Leadership exactly, which is a passed test: a failed one would
+  # force the warrior to hit on sixes, so the pair is not a double and the flag stays false.
   rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 3}
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 3}
     - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 3}
   expect_rounds:
-    0: {attacks.0.damage: 1, state.second.wounds: 1}
+    0: {attacks.0.damage: 1, state.second.wounds: 1, state.second.fear_hit_sixes: false}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
-# The same profile and the same declared faces without the row: the unarmed penalty the printed rule
-# waives is what the difference isolates, so the three no longer wounds the Toughness 3 target.
+# The same declared faces through the ordinary fist instead of the granted natural attacks: the
+# unarmed penalty the printed rule waives is what the difference isolates, so the three no longer
+# wounds the Toughness 3 target.  The fist's own one-attack cap leaves the single declared attack.
 - audit_id: rule/mordheim/norse-explorers-btb/wulfen--natural-weapons/profile.natural-attacks
   id: without-the-row-the-unarmed-penalty-leaves-the-same-roll-unwounded
   covers: [whole]
   fighters:
     first:
-      collection: mordheim
-      band_id: norse-explorers-btb
-      profile_id: wulfen
+      main_weapon_id: weapon.fist
       characteristics: {weapon_skill: 3, strength: 4, toughness: 4, wounds: 2, initiative: 5, attacks: 2}
     second:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 0}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 3}
-    - {key: round.0.first.attack.1.hit, value: 1}
   expect_rounds:
     0: {attacks.0.wounded: False, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

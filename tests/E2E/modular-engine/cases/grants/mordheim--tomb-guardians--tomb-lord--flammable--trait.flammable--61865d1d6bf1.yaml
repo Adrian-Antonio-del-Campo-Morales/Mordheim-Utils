@@ -72,6 +72,7 @@
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.priority-tie, value: 1}
     - {key: round.0.first.attack.0.hit, value: 5}
     - {key: round.0.first.attack.0.ignition, value: 1}
     - {key: round.0.first.attack.0.wound, value: 5}
@@ -96,6 +97,7 @@
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.priority-tie, value: 1}
     - {key: round.0.first.attack.0.hit, value: 5}
     - {key: round.0.first.attack.0.wound, value: 5}
   expect_rounds:

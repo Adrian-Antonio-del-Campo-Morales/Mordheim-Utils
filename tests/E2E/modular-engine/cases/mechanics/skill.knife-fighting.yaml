@@ -64,6 +64,7 @@
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
     - {key: round.0.first.attack.0.injury.0, value: 2}
   expect_rounds:
     0: {attacks.0.damage: 1, state.second.condition: STUNNED}
@@ -85,6 +86,7 @@
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
     - {key: round.0.first.attack.0.injury.0, value: 2}
   expect_rounds:
     0: {state.second.condition: KNOCKED_DOWN}

@@ -14,7 +14,8 @@
 #
 # Clause: whole (scope: YES)
 # AUTHORED[whole]: 2 scenarios show the performed dance raising an Injury roll
-#   of 5 to Out of Action while the same roll stays Stunned without the dance.
+#   of 4 to the 5 that is Out of Action while the same roll stays Stunned
+#   without the dance.
 # origin_id:
 #   mechanic/dance.whirling-death
 # analysis_status:
@@ -70,12 +71,12 @@
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
-    - {key: round.0.first.attack.0.injury.0, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 4}
   expect_rounds:
     0: {attacks.0.damage: 1, state.second.condition: OUT}
   expect_final: {rounds_executed: 1, termination_reason: second_out}
 
-# Control: without the dance the same injury die of 5 leaves the defender Stunned,
+# Control: without the dance the same injury die of 4 leaves the defender Stunned,
 # so the printed +1 is the dance's own contribution.
 - audit_id: mechanic/dance.whirling-death
   id: the-same-injury-die-stuns-without-the-dance
@@ -92,8 +93,7 @@
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
-    - {key: round.0.first.attack.0.injury.0, value: 5}
-    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.injury.0, value: 4}
   expect_rounds:
     0: {attacks.0.damage: 1, state.second.condition: STUNNED}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -1268,6 +1268,16 @@ skills:
       Un Elfo con Celeridad Feérica evita ataques cuerpo a cuerpo o de misil con una tirada de 6;
       con Echarse a un lado o Esquiva la salvación correspondiente sube a 4+.
   kind: warband
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: skill.fey-quickness
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.fey-quickness
   source_refs:
   - manual: broheim.net
     printed_page: 21

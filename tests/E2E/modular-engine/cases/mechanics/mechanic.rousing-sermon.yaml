@@ -89,10 +89,13 @@
   maximum_rounds: 1
   decisions:
     - {key: round.0.first.rousing-sermon, value: true}
+  # The whole pool's hit rolls are resolved before any wound step: the sermon's
+  # second attack is rolled first, then the first attack's To Wound die, then the
+  # enemy's own blow.
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {state.first.resources_spent: ['round.0.rousing-sermon', 'rousing-sermon'],

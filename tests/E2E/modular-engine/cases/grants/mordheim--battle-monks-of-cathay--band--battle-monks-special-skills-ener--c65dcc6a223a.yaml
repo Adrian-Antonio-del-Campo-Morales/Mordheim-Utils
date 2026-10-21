@@ -57,9 +57,11 @@
 # --- Authored scenarios ---
 # Mirrors cases/mechanics/mechanic.energy-focus.yaml (same printed clause, same operator): the
 # declared count of sacrificed attacks is supplied as energy_focus_attacks, which the executor
-# reads as both the pool reduction and the equal Strength gain.  Strength 5 against Toughness 3
-# wounds on a 2+, Strength 4 on a 3+, so the declared wound face of two separates the exchange
-# from its control; the declared tape length pins the pool size in both directions.
+# reads as both the pool reduction and the equal Strength gain.  The base profile has Attacks 2
+# and Unarmed Fighting adds one, so one sacrifice leaves two attacks; Strength 3 becomes 4 and
+# the Toughness 3 target drops from 4+ to 3+.  The same wound face of three therefore wounds on
+# every attack with the sacrifice and on none without it, which separates the exchange from its
+# control while the declared tape length pins the pool size in both directions.
 - audit_id: rule/mordheim/battle-monks-of-cathay/band--battle-monks-special-skills-energy-focus/compiler.energy-focus
   id: the-sacrifice-trades-one-attack-for-one-strength
   covers: [whole]
@@ -78,8 +80,8 @@
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 6}
-    - {key: round.0.first.attack.0.wound, value: 2}
     - {key: round.0.first.attack.1.hit, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 3}
     - {key: round.0.first.attack.1.wound, value: 3}
   expect_rounds:
     0: {attacks.0.damage: 1, attacks.1.damage: 1, state.second.wounds: 1}
@@ -102,13 +104,13 @@
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 6}
-    - {key: round.0.first.attack.0.wound, value: 2}
     - {key: round.0.first.attack.1.hit, value: 6}
-    - {key: round.0.first.attack.1.wound, value: 3}
     - {key: round.0.first.attack.2.hit, value: 6}
-    - {key: round.0.first.attack.2.wound, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.1.wound, value: 3}
+    - {key: round.0.first.attack.2.wound, value: 3}
   expect_rounds:
-    0: {attacks.0.damage: 0, attacks.1.damage: 1, attacks.2.damage: 0, state.second.wounds: 2}
+    0: {attacks.0.damage: 0, attacks.1.damage: 0, attacks.2.damage: 0, state.second.wounds: 3}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 - audit_id: rule/mordheim/battle-monks-of-cathay/band--battle-monks-special-skills-energy-focus/compiler.energy-focus

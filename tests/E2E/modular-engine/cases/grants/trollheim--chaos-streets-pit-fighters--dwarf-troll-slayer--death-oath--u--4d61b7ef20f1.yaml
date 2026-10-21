@@ -99,19 +99,27 @@
   id: a-band-mate-without-the-immunity-is-tested-for-stupidity
   covers: [psychology-immunity]
   fighters:
+    # The contrast is a band-mate that is NOT immune to Psychology, so it is the
+    # printed pit-fighter and not the Psychology-immune pit-king.
     first:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: pit-fighters
+    second:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
-    second: {collection: trollheim, band_id: chaos-streets-pit-fighters, profile_id: pit-king}
-  initial_state: {first: {attacks: 0}, second: {resources_spent: [disability.6]}}
-  duel_context: {charging: [], active_participant: second}
+  initial_state: {first: {resources_spent: [disability.6]}, second: {attacks: 0}}
+  # Stupidity is tested at the start of the bearer's own player turn, so the
+  # non-immune band-mate is the charging side.
+  duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
-    - {key: round.0.second.stupidity.0, value: 1}
-    - {key: round.0.second.stupidity.1, value: 1}
+    - {key: round.0.first.stupidity.0, value: 6}
+    - {key: round.0.first.stupidity.1, value: 6}
   expect_rounds:
-    0: {state.first.wounds: 3, state.second.wounds: 1, state.second.stupidity_failed: true, state.second.condition: STANDING}
-  expect_final: {rounds_executed: 1, termination_reason: horizon}
+    0: {state.engaged: false, state.failed_charges: ['first'], state.first.stupidity_failed: true,
+        state.first.condition: STANDING, state.first_charged: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
 
 - audit_id: rule/trollheim/chaos-streets-pit-fighters/dwarf-troll-slayer--death-oath/unimplemented.chaos-streets-pit-fighters.dwarf-troll-slayer.death-oath
   id: the-immune-warrior-is-not-tested-for-fear

@@ -153,6 +153,16 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+    - id: mechanic.leader-four
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-four
+    - id: mechanic.leader-fallback
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-fallback
 - id: red-teeth--frenzy
   runtime:
     scope: 'YES'
@@ -931,6 +941,14 @@ rules:
       binding:
         kind: compiler
         id: compiler.master-of-throwing-weapons
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          max_missile_weapons: 5
+          baseline_max_missile_weapons: 2
 
 - id: big-boss--equipment-restrictions
   runtime:

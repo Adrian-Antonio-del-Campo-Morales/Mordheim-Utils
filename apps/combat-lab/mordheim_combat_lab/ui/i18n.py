@@ -52,6 +52,7 @@ STRINGS: dict[str, dict[str, str]] = {'Causes Fear (already active)': {'es': 'Ca
  'High Elf': {'es': 'Alto Elfo'},
  'Dark Elf': {'es': 'Elfo Oscuro'},
  'Neither High nor Dark Elf': {'es': 'Ni Alto Elfo ni Elfo Oscuro'},
+ 'Wood Elf': {'es': 'Elfo Silvano'},
  'Acquired Stupidity': {'es': 'Estupidez adquirida'},
  'Stupidity exemption already active': {'es': 'Exención de Estupidez ya activa'},
  'Previous Stupidity test failed': {'es': 'Chequeo anterior de Estupidez fallido'},

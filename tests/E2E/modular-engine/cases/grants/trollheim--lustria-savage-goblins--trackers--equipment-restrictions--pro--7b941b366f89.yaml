@@ -12,7 +12,7 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: whole (scope: YES)
-# AUTHORED[whole]: 2 scenarios evidence the declared item ban on the construction route the record names. 'sacrifice_dagger' is a carried item id of the catalogue (sources/knowledge/catalog/items/trollheim.yaml), so the bound profile.equipment-restrictions binding this band declares (grant: profile, implemented YES) reaches it through the shared eligibility stage: a Tracker build carrying the Sacrifice Dagger is refused with '"sacrifice_dagger" is forbidden for lustria-savage-goblins/trackers.' and the identical build without it is accepted at construction. The Feather Headdress half of the printed sentence is conditional on later leadership and the fixed Rope and Hook/Bolas kit ownership is a separate origin, so neither is asserted here. REVIEWED still requires manual semantic review.
+# AUTHORED[whole]: 2 scenarios evidence the declared item ban on the construction route the record names. 'sacrifice_dagger' is a carried item id of the catalogue (sources/knowledge/catalog/items/trollheim.yaml), so the bound profile.equipment-restrictions binding this band declares (grant: profile, implemented YES) reaches it through the shared eligibility stage: a Tracker build carrying the Sacrifice Dagger is refused with '"sacrifice_dagger" is not on any equipment list of lustria-savage-goblins/trackers.' and the identical build without it is accepted at construction. The Feather Headdress half of the printed sentence is conditional on later leadership and the fixed Rope and Hook/Bolas kit ownership is a separate origin, so neither is asserted here. REVIEWED still requires manual semantic review.
 # origin_id:
 #   rule/trollheim/lustria-savage-goblins/trackers--equipment-restrictions/profile.equipment-restrictions
 # analysis_status:
@@ -54,7 +54,7 @@
       band_id: lustria-savage-goblins
       profile_id: trackers
       owned_item_ids: [sacrifice_dagger]
-  expect_error: '"sacrifice_dagger" is forbidden for lustria-savage-goblins/trackers.'
+  expect_error: '"sacrifice_dagger" is not on any equipment list of lustria-savage-goblins/trackers.'
 
 - audit_id: rule/trollheim/lustria-savage-goblins/trackers--equipment-restrictions/profile.equipment-restrictions
   id: trackers-without-the-sacrifice-dagger-is-accepted-at-construction

@@ -27,7 +27,11 @@ import json
 import re
 from pathlib import Path
 
+import pytest
+
 from mordheim_knowledge.loader import load_bands, load_items, read_yaml
+
+pytestmark = pytest.mark.knowledge_integrity
 
 ROOT = Path(__file__).resolve().parents[3]
 KB = ROOT / "sources" / "knowledge"

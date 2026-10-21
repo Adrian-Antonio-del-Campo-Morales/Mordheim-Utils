@@ -51,8 +51,8 @@
 
 # --- Authored scenarios ---
 # Derived from the printed sentence and the recorded chart (1-3 knocked down, 4-5 stunned, 6 out of action);
-# no engine output was consulted.  The bearer starts the duel at one wound and the attacker's plain mace
-# adds no injury modifier, so the declared injury die is the injury total itself; the attacker's higher
+# no engine output was consulted.  The bearer starts the duel at one wound and the attacker's plain sword
+# adds neither Concussion nor an injury modifier, so the declared injury die is the injury total itself; the attacker's higher
 # Initiative and the uncharged context let it strike first, and the bearer declares no attack of its own
 # because every scenario leaves it Stunned, Knocked Down or Out of Action in this round.
 - audit_id: rule/mordheim/dwarf-rangers/band--dwarf-special-skills-true-grit/skill.tough-as-steel
@@ -60,7 +60,7 @@
   covers: [whole]
   fighters:
     first:
-      main_weapon_id: weapon.mace
+      main_weapon_id: weapon.sword
       characteristics: &tg-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
       main_weapon_id: weapon.mace
@@ -81,7 +81,7 @@
   covers: [whole]
   fighters:
     first:
-      main_weapon_id: weapon.mace
+      main_weapon_id: weapon.sword
       characteristics: *tg-attacker
     second:
       main_weapon_id: weapon.mace
@@ -98,7 +98,7 @@
   covers: [whole]
   fighters:
     first:
-      main_weapon_id: weapon.mace
+      main_weapon_id: weapon.sword
       characteristics: *tg-attacker
     second:
       main_weapon_id: weapon.mace
@@ -119,7 +119,7 @@
   covers: [whole]
   fighters:
     first:
-      main_weapon_id: weapon.mace
+      main_weapon_id: weapon.sword
       characteristics: *tg-attacker
     second:
       main_weapon_id: weapon.mace
@@ -136,7 +136,7 @@
   covers: [whole]
   fighters:
     first:
-      main_weapon_id: weapon.mace
+      main_weapon_id: weapon.sword
       characteristics: *tg-attacker
     second:
       main_weapon_id: weapon.mace

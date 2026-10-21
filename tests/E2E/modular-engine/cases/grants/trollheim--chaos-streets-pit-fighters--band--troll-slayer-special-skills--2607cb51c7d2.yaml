@@ -70,16 +70,18 @@
       band_id: chaos-streets-pit-fighters
       profile_id: dwarf-troll-slayer
       special_rule_ids: [band--troll-slayer-special-skills-ferocious-charge]
-      main_weapon_id: weapon.dagger
+      main_weapon_id: weapon.axe
     second:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.ferocious-charge, value: true}
   rolls:
     - {key: round.0.first.attack.0.hit, value: 5}
-    - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.hit: true, attacks.0.damage: 1, attacks.1.hit: false, state.second.wounds: 2}
@@ -94,7 +96,7 @@
       band_id: chaos-streets-pit-fighters
       profile_id: dwarf-troll-slayer
       special_rule_ids: [band--troll-slayer-special-skills-ferocious-charge]
-      main_weapon_id: weapon.dagger
+      main_weapon_id: weapon.axe
     second:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1}
@@ -116,7 +118,7 @@
       collection: trollheim
       band_id: chaos-streets-pit-fighters
       profile_id: dwarf-troll-slayer
-      main_weapon_id: weapon.dagger
+      main_weapon_id: weapon.axe
     second:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1}

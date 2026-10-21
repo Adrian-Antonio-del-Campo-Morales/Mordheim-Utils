@@ -48,6 +48,9 @@
 # opponent (I2, A1, mace), so the opponent's reply is the same declared miss in
 # every scenario and the bearer's Strength 3 wounds Toughness 3 on 4+.
 # The spent resource is the `luck` entry of the bearer's resources_spent set.
+# The bearer chooses whether to spend Luck on each of his own rolls before the
+# second die is taken, so every own roll carries that declaration: declining it
+# spends nothing, and the once-per-battle resource closes the offer afterwards.
 # The printed exclusion of another warrior's roll has no observation here: a
 # duel models one opponent and no teammate, so it is structural, not asserted.
 - audit_id: mechanic/skill.luck
@@ -63,6 +66,8 @@
       characteristics: &luck-opponent {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
   duel_context: &luck-context {charging: [], active_participant: first}
   maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.hit.luck, value: true}
   rolls:
     - {key: round.0.first.attack.0.hit, value: 2}
     - {key: round.0.first.attack.0.hit.reroll, value: 4}
@@ -85,6 +90,9 @@
       characteristics: *luck-opponent
   duel_context: *luck-context
   maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.hit.luck, value: false}
+    - {key: round.0.first.attack.0.wound.luck, value: true}
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 1}
@@ -107,6 +115,8 @@
       characteristics: *luck-opponent
   duel_context: *luck-context
   maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.hit.luck, value: true}
   rolls:
     - {key: round.0.first.attack.0.hit, value: 2}
     - {key: round.0.first.attack.0.hit.reroll, value: 4}

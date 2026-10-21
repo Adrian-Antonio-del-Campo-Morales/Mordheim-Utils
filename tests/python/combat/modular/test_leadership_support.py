@@ -94,6 +94,7 @@ def leadership_test(recipient, providers, faces, decisions=None, reroll_faces=()
 
 # --- Dim-Witted ------------------------------------------------------------
 
+@pytest.mark.rule_behavior
 def test_dim_witted_leader_lends_his_seven_within_six_inches():
     leader = canonical("adventurers-kaz", "barbarian", "weapon.fist")
     assert {"mechanic.leader-six", "mechanic.dim-witted-leader"} <= set(leader.global_effects.tags)
@@ -110,6 +111,7 @@ def test_dim_witted_leader_lends_his_seven_within_six_inches():
 
 # --- Dark Majesty ----------------------------------------------------------
 
+@pytest.mark.rule_behavior
 def test_dark_majesty_widens_the_supplied_leader_radius_to_twelve():
     vampire = canonical("chaos-streets-undead-bloodlines", "von-carstein-vampire",
                         "weapon.fist", collection="trollheim", special_rule_ids=(DARK_MAJESTY,))
@@ -127,6 +129,7 @@ def test_dark_majesty_widens_the_supplied_leader_radius_to_twelve():
 
 # --- Mob -------------------------------------------------------------------
 
+@pytest.mark.rule_behavior
 def test_mob_adds_the_supplied_ally_count_and_denies_the_leader_rule():
     peasant = led("battle-monks-of-cathay", "raging-peasants", 5,
                   trait_overrides={"mob_allies": 2})
@@ -143,6 +146,7 @@ def test_mob_adds_the_supplied_ally_count_and_denies_the_leader_rule():
 
 # --- Songster --------------------------------------------------------------
 
+@pytest.mark.rule_behavior
 def test_songster_rerolls_one_failed_leadership_test_at_plus_one():
     bard = canonical("dwarf-slayer-cult-web", "rememberer", "weapon.fist",
                      special_rule_ids=(SONGSTER,))
@@ -166,6 +170,7 @@ def test_songster_rerolls_one_failed_leadership_test_at_plus_one():
 
 # --- Poetry ----------------------------------------------------------------
 
+@pytest.mark.rule_behavior
 def test_supplied_victorious_poetry_raises_the_leaders_first_test_once():
     # The Scholar produces the campaign qualification; it does not receive
     # the leader's supplied bonus automatically on its own profile.
@@ -209,6 +214,7 @@ def test_supplied_victorious_poetry_raises_the_leaders_first_test_once():
 
 # --- Shared conditional Stupidity ------------------------------------------
 
+@pytest.mark.rule_behavior
 def test_a_supplied_exempting_hero_skips_the_conditional_stupidity_test():
     ogre = canonical("skaven-clan-eshin", "rat-ogre", "weapon.fist",
                      condition_ids=("condition.stupidity-exempt",))
@@ -234,6 +240,7 @@ def test_a_supplied_exempting_hero_skips_the_conditional_stupidity_test():
 
 # --- Battle Tongue ---------------------------------------------------------
 
+@pytest.mark.eligibility
 def test_battle_tongue_reaches_only_the_current_leader_and_widens_to_twelve():
     jarl = canonical("lustria-norse", "jarl", "weapon.fist", collection="trollheim",
                      special_rule_ids=(BATTLE_TONGUE,))
@@ -253,6 +260,7 @@ def test_battle_tongue_reaches_only_the_current_leader_and_widens_to_twelve():
     assert leadership_test(member, (("jarl", jarl, 13),), (3, 4)) is False
 
 
+@pytest.mark.eligibility
 def test_battle_tongue_reaches_another_hero_supplied_as_the_current_leader():
     """The printed recipient is a state, not a profile: another eligible Norse
     Hero the caller supplies as the actual current leader takes the skill."""
@@ -279,6 +287,7 @@ def test_battle_tongue_reaches_another_hero_supplied_as_the_current_leader():
                   special_rule_ids=(BATTLE_TONGUE,))
 
 
+@pytest.mark.eligibility
 def test_battle_tongue_is_not_selectable_by_a_member_who_is_not_the_leader():
     # A Berserker is a profile that holds the band's other Norse skills; the
     # printed clause reserves this one to the current Leader alone, so the
@@ -289,6 +298,7 @@ def test_battle_tongue_is_not_selectable_by_a_member_who_is_not_the_leader():
                       special_rule_ids=(BATTLE_TONGUE,))
 
 
+@pytest.mark.eligibility
 def test_battle_tongue_is_offered_only_while_the_leader_state_is_supplied():
     """The offer list reads the same supplied state the compiler does."""
     for profile in ("berserkers", "bondsmen", "wulfen"):

@@ -14,6 +14,7 @@ from mordheim_combat.modular.state import initialize_duel
 from mordheim_combat_lab.verification.dice import StrictDecisions, StrictDice
 from mordheim_construction.compiler import compile_fighter
 from mordheim_core.models import Characteristics, DuelContext, FighterBuild
+import pytest
 
 
 def canonical(band, profile, *, collection="mordheim", rules=(), **options):
@@ -30,6 +31,7 @@ def bare(**options):
 
 # --- Fear and its immunity --------------------------------------------------
 
+@pytest.mark.compilation
 def test_causes_fear_reaches_the_compiler():
     troll = canonical("chaos-streets-greenskins", "troll", collection="trollheim")
     assert "mechanic.causes-fear" in troll.global_effects.tags
@@ -40,6 +42,7 @@ def test_causes_fear_reaches_the_compiler():
     assert "mechanic.causes-fear" not in orc.global_effects.tags
 
 
+@pytest.mark.rule_behavior
 def test_causes_fear_charges_the_opponent_for_a_die():
     troll = canonical("chaos-streets-greenskins", "troll", collection="trollheim")
     plain = bare()
@@ -53,6 +56,7 @@ def test_causes_fear_charges_the_opponent_for_a_die():
     assert not result.engaged and result.failed_charges == frozenset({"first"})
 
 
+@pytest.mark.compilation
 def test_psychology_immunity_and_fear_immunity_are_distinct_recipients():
     golem = canonical("khemri-tomb-guardians", "stone-golem", collection="trollheim")
     assert "mechanic.psychology-immunity" in golem.global_effects.tags
@@ -67,6 +71,7 @@ def test_psychology_immunity_and_fear_immunity_are_distinct_recipients():
     assert "mechanic.psychology-immunity" not in scorpion.global_effects.tags
 
 
+@pytest.mark.rule_behavior
 def test_fear_immunity_waives_the_fear_die_for_its_recipient():
     golem = canonical("khemri-tomb-guardians", "stone-golem", collection="trollheim")
     attacker = bare(trait_overrides={"causes_fear": True})
@@ -78,6 +83,7 @@ def test_fear_immunity_waives_the_fear_die_for_its_recipient():
     assert result.engaged and not result.failed_charges
 
 
+@pytest.mark.compilation
 def test_selectable_fear_immunity_needs_its_selection():
     skill = "band--pit-fighter-skill-grizzled-veteran"
     selected = canonical("pit-fighters", "pit-king", rules=(skill,))
@@ -88,6 +94,7 @@ def test_selectable_fear_immunity_needs_its_selection():
 
 # --- Stupidity, Frenzy, automatic and handler Leadership --------------------
 
+@pytest.mark.compilation
 def test_stupidity_and_frenzy_land_on_their_profiles():
     troll = canonical("chaos-streets-greenskins", "troll", collection="trollheim")
     assert "mechanic.stupidity" in troll.global_effects.tags
@@ -96,6 +103,7 @@ def test_stupidity_and_frenzy_land_on_their_profiles():
     assert not canonical("forest-goblins-lus", "forest-goblins").global_effects.frenzy
 
 
+@pytest.mark.rule_behavior
 def test_automatic_leadership_auto_passes_a_required_test():
     ruffian = canonical("ostlanders", "ruffians")
     assert "mechanic.automatic-leadership" in ruffian.global_effects.tags
@@ -110,6 +118,7 @@ def test_automatic_leadership_auto_passes_a_required_test():
     assert "mechanic.automatic-leadership" not in canonical("ostlanders", "jaeger").global_effects.tags
 
 
+@pytest.mark.compilation
 def test_handler_leadership_and_cold_blooded_reach_their_bands():
     monkey = canonical("lustrian-reavers", "barbary-monkey")
     assert "mechanic.handler-leadership" in monkey.global_effects.tags
@@ -121,6 +130,7 @@ def test_handler_leadership_and_cold_blooded_reach_their_bands():
 
 # --- Hatred, the Undead composite and the Leader radius ---------------------
 
+@pytest.mark.compilation
 def test_hatred_and_isolationists_reach_their_bands():
     slayer = canonical("pit-fighters", "dwarf-troll-slayer")
     assert "mechanic.hatred-orcs-goblins" in slayer.global_effects.tags
@@ -128,6 +138,7 @@ def test_hatred_and_isolationists_reach_their_bands():
     assert "mechanic.amazon-isolationists" in amazon.global_effects.tags
 
 
+@pytest.mark.compilation
 def test_undead_composite_and_its_living_negative_control():
     skeletons = canonical("khemri-lahmian-brotherhood", "skeleton-warriors",
                           collection="trollheim")
@@ -141,6 +152,7 @@ def test_undead_composite_and_its_living_negative_control():
     assert "mechanic.causes-fear" not in jackals.global_effects.tags
 
 
+@pytest.mark.compilation
 def test_leader_range_skills_widen_only_their_selected_bearer():
     power = "band--von-carstein-power-dark-majesty"
     assert "mechanic.leader-twelve" in canonical(

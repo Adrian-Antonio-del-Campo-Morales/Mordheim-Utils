@@ -1,7 +1,6 @@
 """calibrate: measure this machine's optima and install a calibration profile.
 
-Sweeps the deep scenario matrix — every duel type the certification suite
-knows — across the three configuration axes the Combat Lab resolves at run
+Sweeps the optimized-compatible part of the deep scenario matrix across the three configuration axes the Combat Lab resolves at run
 time, for both engines, and writes ``calibration.json`` next to the user
 preferences. The app loads that profile at startup
 (:func:`mordheim_combat_lab.application.settings.apply_calibration`), so the
@@ -45,6 +44,7 @@ import time
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
+from mordheim_combat.kernel import require_optimized_support
 from mordheim_combat.vectorized import available_backends
 from mordheim_combat.vectorized import batch_plan
 from mordheim_combat.vectorized import simulate_duel
@@ -229,7 +229,21 @@ def run_calibration(pair_set: str = "full", *, seed: int = 7,
     native_available = "native" in backends
     numpy_set = "mini" if pair_set == "mini" else "fast"
     sets = {"native": pair_set, "numpy": numpy_set if native_available else pair_set}
-    pairs = {backend: _pairs(name) for backend, name in sets.items()}
+    pairs = {}
+    excluded_pairs = {}
+    for backend, name in sets.items():
+        pairs[backend] = []
+        excluded_pairs[backend] = {}
+        for pair in _pairs(name):
+            try:
+                require_optimized_support(pair[0], pair[1])
+            except ValueError as error:
+                excluded_pairs[backend][pair[3]] = str(error)
+                log(f"{backend}: excluding {pair[3]}: {error}")
+            else:
+                pairs[backend].append(pair)
+        if not pairs[backend]:
+            raise ValueError(f"pair set {name!r} has no optimized-compatible calibration duels")
     candidates = {
         "sequential_batch": sequential_batches or SEQUENTIAL_BATCH_CANDIDATES,
         "pooled_batch": pooled_batches or POOLED_BATCH_CANDIDATES,
@@ -340,6 +354,7 @@ def run_calibration(pair_set: str = "full", *, seed: int = 7,
         },
         "method": {
             "pair_sets": sets,
+            "excluded_pairs": {backend: excluded_pairs[backend] for backend in order},
             "pair_ids": {backend: [row[3] for row in pairs[backend]] for backend in order},
             "samples": samples,
             "candidates": {key: {backend: list(value[backend]) for backend in order}

@@ -56,7 +56,9 @@
 # --- Authored scenarios ---
 # Derived from the recovered definition recorded in this file's contract and the printed band record;
 # no engine output was consulted.  The mace is the concussion weapon of the sibling injury-chart cases,
-# the fixture's Initiative lets it strike first, and the bearer starts at its printed single wound.
+# the fixture's Initiative lets it strike first, and the bearer starts at its printed single wound.  Strength 8
+# wounds Toughness 3 on 2+, so the wound face is 2: a natural 6 would force a critical roll whose injury
+# bonus belongs to a different test, and these scenarios isolate the Hard to Kill band.
 
 - audit_id: rule/mordheim/adventurers-kaz/dwarf--hard-to-kill/skill.hard-to-kill
   id: a-five-only-stuns-the-adventurer-dwarf
@@ -71,7 +73,7 @@
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 2}
     - {key: round.0.first.attack.0.injury.0, value: 5}
   expect_rounds:
     0: {state.second.wounds: 0, state.second.condition: STUNNED}
@@ -90,7 +92,7 @@
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 2}
     - {key: round.0.first.attack.0.injury.0, value: 6}
   expect_rounds:
     0: {state.second.condition: OUT}
@@ -111,7 +113,7 @@
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 2}
     - {key: round.0.first.attack.0.injury.0, value: 5}
   expect_rounds:
     0: {state.second.condition: OUT}

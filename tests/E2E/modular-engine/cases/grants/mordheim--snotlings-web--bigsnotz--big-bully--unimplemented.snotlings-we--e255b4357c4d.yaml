@@ -108,19 +108,20 @@
       collection: mordheim
       band_id: snotlings-web
       profile_id: bigsnotz
-      main_weapon_id: weapon.mace
+      main_weapon_id: weapon.sword
       characteristics: {weapon_skill: 2, strength: 2, toughness: 3, wounds: 1, initiative: 3, attacks: 1, leadership: 5}
     second:
       collection: mordheim
       band_id: snotlings-web
       profile_id: snotling-mobs
-      main_weapon_id: weapon.mace
+      main_weapon_id: weapon.club
       characteristics: {weapon_skill: 2, strength: 2, toughness: 3, wounds: 1, initiative: 3, attacks: 1, leadership: 5}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
-    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.priority-tie, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.hit: false, attacks.1.hit: false}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

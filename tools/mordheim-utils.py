@@ -52,6 +52,7 @@ SCOPE_PATHS = {
     "modular": ("tests/python/combat/modular",),
     "vectorized": ("tests/python/combat/vectorized",),
     "native": ("tests/python/combat/native",),
+    "e2e": ("tests/E2E/modular-engine",),
     # The per-change engine gate: the deterministic suites that certify rule
     # behaviour without statistical noise (mirrors the coverage-gate budget).
     "deterministic": ("tests/python/combat/modular", "tests/python/combat/vectorized",
@@ -95,6 +96,7 @@ COMMANDS = (
     ("coverage-gate", "measure deterministic engine coverage and check the drift budget"),
     ("calibrate", "measure this machine's engine optima and install the calibration profile"),
     ("tests", "run the pytest suites, filtered by --scope"),
+    ("test-sequence", "run classified Python tests in conservative causal order (pytest options)"),
     ("check-presentation", "test the GUI text detector and run the strict, deep and dynamic completeness audits"),
     ("run-ci", "run the local equivalent of the CI validation gates before Pages publishing"),
     ("doctor", "report the environment, installed engines and KB location"),
@@ -105,7 +107,7 @@ COMMAND_GROUPS = (
     ("Applications", ("combat-lab", "campaign-manager")),
     ("Knowledge base", ("verify", "report")),
     ("Engines", ("benchmark", "parity", "coverage-gate", "calibrate")),
-    ("Repository", ("tests", "check-presentation", "run-ci", "doctor")),
+    ("Repository", ("tests", "test-sequence", "check-presentation", "run-ci", "doctor")),
 )
 
 KNOWLEDGE_GENERATOR = REPO_ROOT / "tools" / "knowledge" / "generate_knowledge_web.py"
@@ -203,12 +205,89 @@ def report_command(args: list[str]) -> int:
     return lab_command(REPORT_KINDS[kind], forwarded)
 
 
-def tests_command(args: list[str]) -> int:
+def tests_command(args: list[str], *, ordered: bool = False) -> int:
+    own_args = args[:args.index("--")] if "--" in args else args
+    if ordered and any(arg in ("-h", "--help") for arg in own_args):
+        print("usage: python tools/mordheim-utils.py test-sequence [options] [pytest args ...]")
+        print("""
+Run classified Python tests in conservative causal order, with one pytest
+collection and session. The default continues after failures, returning an
+unsuccessful exit status if any test fails. Use -x to stop at the first failure.
+
+Options:
+  --steps                 List numbered phases without collecting tests.
+  --step N / -stepN       Execute only phase N; earlier phases are not run.
+  --workers N            Use N processes within each phase (default: 1).
+                          With N > 1, complete each phase before starting the next.
+  --scope NAME            Select an existing Python component (default: all).
+  --sequence-plan         Collect and display the ordered selection; run no tests.
+  --sequence-from STAGE   Start at CATEGORY or optimized/CATEGORY; earlier stages
+                          are omitted, not validated from a previous run.
+  --sequence-keep-going   Explicit alias for the default continuation behaviour.
+                          Cannot combine with -x/--maxfail.
+  -x / --maxfail N        Stop after one failure, or after N failures.
+  -m EXPRESSION           Select primary categories using pytest markers.
+  -k EXPRESSION           Further filter test names using pytest.
+  -q / -qq               Reduce output; -qq is useful for large collection plans.
+  -h, --help             Show this help without collecting or executing tests.
+  -- --help              Show the complete pytest and sequence-plugin help.
+""")
+        print("Scopes: " + ", ".join(SCOPE_PATHS))
+        print("""
+Examples:
+  python tools/mordheim-utils.py test-sequence --steps
+  python tools/mordheim-utils.py test-sequence -step1 -q
+  python tools/mordheim-utils.py test-sequence -step1 --workers 4 -q
+  python tools/mordheim-utils.py test-sequence --workers 4 -q
+  python tools/mordheim-utils.py test-sequence --step 3 --scope construction -q
+  python tools/mordheim-utils.py test-sequence --sequence-plan -qq
+  python tools/mordheim-utils.py test-sequence --scope construction -q
+  python tools/mordheim-utils.py test-sequence -m "eligibility or compilation" -q
+  python tools/mordheim-utils.py test-sequence --sequence-from rule_behavior -q
+  python tools/mordheim-utils.py test-sequence --sequence-from optimized/compilation -q
+  python tools/mordheim-utils.py test-sequence --sequence-keep-going -q
+
+Limits:
+  Python only: Vitest and node:test are not included. Scopes and filters do not
+  automatically add prerequisites. Generated inputs/builds must be prepared
+  separately. Ordering is by categories and backend components, not an inferred
+  per-test dependency graph. Parallel mode uses xdist/loadfile: no ordering
+  between files within a phase. Each phase/worker repeats collection.
+  --workers 1 retains a single sequential pytest session. Parallel mode does not
+  support --sequence-from; use --step to select a phase. Plans stay sequential.
+  Plan mode imports modules and loads test data. Skips do not prove correctness;
+  successful selected tests do not imply full certification. No success is cached.
+  Category/phase filtering happens after module import. Use --scope to avoid
+  collecting unrelated components; --steps is the fast static phase list.
+
+Reference: docs/reference/test-sequence.md
+""")
+        return 0
+    if ordered and "--steps" in args:
+        if args != ["--steps"]:
+            print("test-sequence: --steps is a static list; use it without other options", file=sys.stderr)
+            return 2
+        return _run_module("tools.verification.test_sequence", "--steps")
+    if ordered:
+        args = ["--step=" + arg[5:] if arg.startswith("-step") and arg[5:].isdigit()
+                else arg for arg in args]
     scope = "all"
+    workers = 1
     forwarded: list[str] = []
     index = 0
     while index < len(args):
         arg = args[index]
+        if ordered and (arg == "--workers" or arg.startswith("--workers=")):
+            value = arg.split("=", 1)[1] if "=" in arg else (args[index + 1] if index + 1 < len(args) else "")
+            try:
+                workers = int(value)
+                if workers < 1:
+                    raise ValueError
+            except ValueError:
+                print("test-sequence: --workers requires a positive integer", file=sys.stderr)
+                return 2
+            index += 1 if "=" in arg else 2
+            continue
         if arg == "--scope":
             if index + 1 >= len(args):
                 print("tests: --scope requires a value", file=sys.stderr)
@@ -231,7 +310,11 @@ def tests_command(args: list[str]) -> int:
         return 2
     if forwarded and forwarded[0] == "--":
         forwarded.pop(0)
-    return _run_module("pytest", *SCOPE_PATHS[scope], *forwarded)
+    if ordered and workers > 1:
+        return _run_module("tools.verification.test_sequence", "--workers", str(workers),
+                           "--", *SCOPE_PATHS[scope], *forwarded)
+    plugins = ("-p", "tools.verification.test_sequence") if ordered else ()
+    return _run_module("pytest", *plugins, *SCOPE_PATHS[scope], *forwarded)
 
 
 def run_ci_command(args: list[str]) -> int:
@@ -348,6 +431,9 @@ def _help_text() -> str:
         "",
         "Common tasks:",
         "    doctor                              check the environment first",
+        "    test-sequence --help                ordered Python tests: options and examples",
+        "    test-sequence --steps               list numbered phases without collecting",
+        "    test-sequence --sequence-plan -qq    preview the order without running tests",
         "    tests --scope deterministic         the per-change engine gate",
         "    verify                              knowledge base before touching rules",
         "    report rules                        per-rule implementation inventory",
@@ -386,6 +472,8 @@ def main(argv: list[str] | None = None) -> int:
         return report_command(args)
     if name == "tests":
         return tests_command(args)
+    if name == "test-sequence":
+        return tests_command(args, ordered=True)
     if name == "check-presentation":
         return check_presentation_command(args)
     if name == "run-ci":

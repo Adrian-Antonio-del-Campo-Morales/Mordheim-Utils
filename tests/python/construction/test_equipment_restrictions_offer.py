@@ -16,6 +16,8 @@ from mordheim_construction.eligibility import (
 from mordheim_core.models import FighterBuild
 from mordheim_knowledge.loader import load_bands, runtime_bindings
 
+pytestmark = pytest.mark.eligibility
+
 ROOT = Path(__file__).resolve().parents[3] / "sources" / "knowledge"
 PACKAGES = {str(package.band["id"]): package for package in load_bands("mordheim", ROOT)}
 FORBIDDEN_CODES = {"equipment_forbidden", "equipment_combination_forbidden"}

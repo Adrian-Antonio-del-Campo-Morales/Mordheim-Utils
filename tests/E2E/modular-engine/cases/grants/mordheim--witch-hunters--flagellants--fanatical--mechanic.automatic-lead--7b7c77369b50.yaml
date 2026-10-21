@@ -170,8 +170,13 @@
       profile_id: flagellants
     second:
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  initial_state:
+    first: {attacks: 0}
+    second: {attacks: 0}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
   expect_rounds:
     0: {state.first.danse_macabre_controlled: false}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

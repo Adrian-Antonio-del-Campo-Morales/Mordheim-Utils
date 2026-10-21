@@ -10,6 +10,10 @@ Specialized scripts are grouped by purpose, not language or caller.
 |---|---|
 | `tools/mordheim-utils.py` | Launch applications and centralize tests, local CI, verification, reports, benchmarks, parity and diagnostics. |
 
+The [test classification reference](test-sequence.md) defines the proposed
+categories and repair order. Classification and an ordered launcher have not
+yet been implemented; existing test commands remain the execution entry points.
+
 ## Knowledge base
 
 Permanent validation and generation:

@@ -49,6 +49,7 @@ def run(enemy, rolls, *, choose=True, context=None, state=None, bonus=False, lea
 @pytest.mark.parametrize('leadership_rolls,choose,enemy_attacks', [
     ((3, 3), True, True), ((6, 6), True, False), ((), False, True),
 ])
+@pytest.mark.rule_behavior
 def test_pass_includes_equality_failure_removes_only_attack_and_decline_skips_test(
         leadership_rolls, choose, enemy_attacks):
     rolls = [(f'round.0.first.crude-belch.leadership.{i}', n) for i, n in enumerate(leadership_rolls)]
@@ -60,6 +61,7 @@ def test_pass_includes_equality_failure_removes_only_attack_and_decline_skips_te
     assert result.attacks[-1].hit_roll == (1 if enemy_attacks else None)
 
 
+@pytest.mark.rule_behavior
 def test_first_missed_attack_does_not_switch_the_surviving_hand():
     result = run(opponent(off=True), [
         ('round.0.first.crude-belch.leadership.0', 6),
@@ -72,6 +74,7 @@ def test_first_missed_attack_does_not_switch_the_surviving_hand():
     assert result.attacks[-1].hit and result.attacks[-1].hit_target == 3
 
 
+@pytest.mark.rule_behavior
 def test_no_repeat_on_later_round():
     enemy = opponent()
     result = run(enemy, [
@@ -85,6 +88,7 @@ def test_no_repeat_on_later_round():
     assert all(attack.hit_roll == 1 for attack in later.attacks)
 
 
+@pytest.mark.rule_behavior
 def test_explicit_no_contact_skips_decision_and_leadership():
     halfling, enemy = owner(), opponent()
     dice, decisions = StrictDice([]), StrictDecisions([])
@@ -95,6 +99,7 @@ def test_explicit_no_contact_skips_decision_and_leadership():
     dice.finish(); decisions.finish()
 
 
+@pytest.mark.rule_behavior
 def test_unknown_leadership_and_additional_enemies_fail_before_attack_dice():
     with pytest.raises(ValueError, match='explicit.*Leadership'):
         run(opponent(leadership=None), [])
@@ -109,6 +114,7 @@ def test_unknown_leadership_and_additional_enemies_fail_before_attack_dice():
     dice.finish(); decisions.finish()
 
 
+@pytest.mark.rule_behavior
 def test_timed_shifty_bonus_misses_once_and_ordinary_attack_survives():
     result = run(opponent(off=True, shifty=True), [
         ('round.0.first.crude-belch.leadership.0', 6),
@@ -121,9 +127,9 @@ def test_timed_shifty_bonus_misses_once_and_ordinary_attack_survives():
     assert [attack.hit_roll for attack in result.attacks] == [1, None, 1, 1]
 
 
-def canonical(profile, band='cult-of-the-possessed'):
+def canonical(profile, band='cult-of-the-possessed', weapon='weapon.mace'):
     return compile_fighter(FighterBuild('mordheim', band_id=band,
-        profile_id=profile, main_weapon_id='weapon.mace'))
+        profile_id=profile, main_weapon_id=weapon))
 
 
 def leader_context(leader, *, distance=6, condition='standing', side='second'):
@@ -143,6 +149,7 @@ def leader_context(leader, *, distance=6, condition='standing', side='second'):
     (None, 6, 'standing', 'first', False, False),
     (None, 6, 'standing', 'second', True, False),
 ])
+@pytest.mark.rule_behavior
 def test_canonical_leader_changes_the_actual_crude_belch_test(
         choose, distance, condition, side, foreign, passes):
     enemy = canonical('brethren')  # Ld7; Magister Ld8, tested at equality.
@@ -158,6 +165,7 @@ def test_canonical_leader_changes_the_actual_crude_belch_test(
     assert result.attacks[-1].hit_roll == (1 if passes else None)
 
 
+@pytest.mark.rule_behavior
 def test_missing_provider_facts_fail_before_leadership_dice_and_decline_keeps_own_value():
     enemy, leader = canonical('brethren'), canonical('magister')
     with pytest.raises(ValueError, match='missing distance'):
@@ -175,6 +183,7 @@ def test_missing_provider_facts_fail_before_leadership_dice_and_decline_keeps_ow
     assert result.attacks[-1].hit_roll == 1
 
 
+@pytest.mark.rule_behavior
 def test_canonical_darksoul_auto_pass_skips_dice_and_provider_facts():
     enemy = canonical('darksouls')
     assert 'mechanic.automatic-leadership' in enemy.global_effects.tags
@@ -186,14 +195,15 @@ def test_canonical_darksoul_auto_pass_skips_dice_and_provider_facts():
     assert all(attack.hit_roll == 1 for attack in result.attacks)
 
 
-@pytest.mark.parametrize('band,leader,recipient', [
-    ('halflings-mic', 'halfling-elder', 'halfling-thief'),
-    ('shallows-beasts-mim', 'buccaneer', 'renegades'),
+@pytest.mark.parametrize('band,leader,recipient,weapon', [
+    ('halflings-mic', 'halfling-elder', 'halfling-thief', 'weapon.mace'),
+    ('shallows-beasts-mim', 'buccaneer', 'renegades', 'weapon.club'),
 ])
-def test_additional_canonical_leader_recipients(band, leader, recipient):
+@pytest.mark.rule_behavior
+def test_additional_canonical_leader_recipients(band, leader, recipient, weapon):
     # Canonical compilation supplies both membership and the source-bound tag.
     from mordheim_combat.modular.rounds import resolve_crude_belch
-    enemy, provider = canonical(recipient, band), canonical(leader, band)
+    enemy, provider = canonical(recipient, band, weapon), canonical(leader, band, weapon)
     assert 'mechanic.leader-six' in provider.global_effects.tags
     assert 'mechanic.leader-six' not in enemy.global_effects.tags
     dice = StrictDice([{'key': 'round.0.first.crude-belch.leadership.0', 'value': 4},

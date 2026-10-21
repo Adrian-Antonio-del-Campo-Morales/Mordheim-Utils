@@ -51,10 +51,11 @@
 
 # --- Authored scenarios ---
 # Derived from the printed sentence and the recorded contract; no engine output was consulted.  The bearer
-# starts the duel at one wound and the attacker's plain mace adds no injury modifier, so the declared injury
+# starts the duel at one wound and the attacker's weapon adds no injury modifier, so the declared injury
 # die is the injury total itself; the attacker's higher Initiative and the uncharged context let it strike
 # first, and the bearer declares no attack of its own because every scenario leaves it Stunned, Knocked Down
-# or Out of Action in this round.
+# or Out of Action in this round.  The total-of-three pair uses a sword: a mace's Concussion treats faces 2-4
+# as Stunned and would override the very Tough as Steel band under test (contract: stunned_from 4).
 - audit_id: rule/catalog/warband/skill.tough-as-steel/skill.tough-as-steel
   id: an-injury-total-of-five-stuns-instead-of-removing-the-bearer
   covers: [out-of-action-only-on-six]
@@ -98,7 +99,7 @@
   covers: [out-of-action-only-on-six]
   fighters:
     first:
-      main_weapon_id: weapon.mace
+      main_weapon_id: weapon.sword
       characteristics: *tas-attacker
     second:
       main_weapon_id: weapon.mace
@@ -119,7 +120,7 @@
   covers: [out-of-action-only-on-six]
   fighters:
     first:
-      main_weapon_id: weapon.mace
+      main_weapon_id: weapon.sword
       characteristics: *tas-attacker
     second:
       main_weapon_id: weapon.mace

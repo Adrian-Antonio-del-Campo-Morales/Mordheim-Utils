@@ -17,7 +17,7 @@
 #
 # Clause: psychology-immunity (scope: YES)
 # AUTHORED[psychology-immunity]: the bearer pit-veterans is the declared recipient, built from its printed profile (W1 A1); the opponent is a hand-built fixture that declares its own facts.
-#   3 scenario(s) cover the clause: the Stupid bearer resolves no Stupidity test at all: its declared Lead test never happens, so the tape holds only its own attack; the same Stupid state does request the two-dice test for pit-king, which does not carry the rule, and the failed test takes its attack away; the fear-causing charger reaches the bearer, which would be tested and is not, so the tape holds only the two attack pools.
+#   3 scenario(s) cover the clause: the Stupid bearer resolves no Stupidity test at all: its declared Lead test never happens, so the tape holds only its own attack; the same Stupid state does request the two-dice test for a Pit Fighter of the same band, which does not carry the rule, and the failed test takes its attack away; the fear-causing charger reaches the bearer, which would be tested and is not, so the tape holds only the two attack pools.
 #   Every strike is declared as a natural 1, so each round reports the Fear or Stupidity request under test and nothing else.
 #   REVIEWED still requires manual semantic review.
 # origin_id:
@@ -73,13 +73,17 @@
     first:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
-    second: {collection: trollheim, band_id: chaos-streets-pit-fighters, profile_id: pit-king}
+    second:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: pit-fighters
+      main_weapon_id: weapon.axe
   initial_state: {first: {attacks: 0}, second: {resources_spent: [disability.6]}}
   duel_context: {charging: [], active_participant: second}
   maximum_rounds: 1
   rolls:
-    - {key: round.0.second.stupidity.0, value: 1}
-    - {key: round.0.second.stupidity.1, value: 1}
+    - {key: round.0.second.stupidity.0, value: 6}
+    - {key: round.0.second.stupidity.1, value: 6}
   expect_rounds:
     0: {state.first.wounds: 3, state.second.wounds: 1, state.second.stupidity_failed: true, state.second.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

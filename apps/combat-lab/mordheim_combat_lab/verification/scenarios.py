@@ -57,7 +57,8 @@ def _build(values: dict, root: Path):
         values["characteristics"] = Characteristics(**values["characteristics"])
     elif not values.get("profile_id"):
         values["characteristics"] = Characteristics(3, 3, 3, 3, 3, 1)
-    for name in ("defence_ids", "skill_ids", "preparation_ids", "special_rule_ids", "variant_ids"):
+    for name in ("defence_ids", "skill_ids", "preparation_ids", "special_rule_ids", "variant_ids",
+                 "condition_ids"):
         if name in values:
             values[name] = tuple(values[name])
     return compile_fighter(FighterBuild("mordheim", **values), root)
@@ -166,9 +167,10 @@ def execute_case(case: dict, root: Path, dice: DiceSource,
                 _build({**build, "profile_id": profile["id"],
                         "special_rule_ids": [*prerequisites, rule_id]}, root)
             except ValueError as error:
+                if rule_id.startswith("band--mutations-") and "mutations are available only" in str(error):
+                    continue
                 unavailable_prerequisite = bool(build.get("skill_ids")) and "skills are not available" in str(error)
-                forbidden_mutation = rule_id.startswith("band--mutations-") and "mutations are available only" in str(error)
-                if "special rule is not available" not in str(error) and not unavailable_prerequisite and not forbidden_mutation:
+                if "special rule is not available" not in str(error) and not unavailable_prerequisite:
                     raise
             else:
                 recipients.append(profile["id"])

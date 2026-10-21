@@ -3,7 +3,13 @@ from __future__ import annotations
 
 import json
 
+import pytest
+
 from mordheim_combat_lab.persistence import calibration
+
+# The whole file proves stored-state handling: path, round trip, corruption and
+# unwritable storage.
+pytestmark = pytest.mark.persistence
 
 
 def test_path_sits_next_to_the_preferences(tmp_path, monkeypatch):

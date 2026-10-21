@@ -76,6 +76,7 @@
   rolls:
     - {key: round.0.first.stupidity.0, value: 6}
     - {key: round.0.first.stupidity.1, value: 6}
+    - {key: round.0.first.stupidity.2, value: 6}
   expect_rounds:
     0: {state.first.stupidity_failed: true, state.first.condition: STANDING, state.first.wounds: 3, state.second.wounds: 3}
   expect_final: {rounds_executed: 1, termination_reason: disengaged}
@@ -97,8 +98,13 @@
   rolls:
     - {key: round.0.first.stupidity.0, value: 1}
     - {key: round.0.first.stupidity.1, value: 1}
+    - {key: round.0.first.stupidity.2, value: 5}
+    - {key: round.0.second.fear.charged.0, value: 5}
+    - {key: round.0.second.fear.charged.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.1.hit, value: 1}
     - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {state.first.stupidity_failed: false, state.first.condition: STANDING, state.second.wounds: 2}
@@ -121,10 +127,15 @@
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.second.fear.charged.0, value: 5}
+    - {key: round.0.second.fear.charged.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 5}
-    - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.first.attack.1.hit, value: 5}
+    - {key: round.0.first.attack.2.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 1}
     - {key: round.0.first.attack.1.wound, value: 5}
+    - {key: round.0.first.attack.1.armour, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {state.first.stupidity_failed: false, state.first.frenzy: true, state.second.wounds: 1}

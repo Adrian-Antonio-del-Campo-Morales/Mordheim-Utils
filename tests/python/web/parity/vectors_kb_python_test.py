@@ -53,16 +53,17 @@ def _item(item_id: str) -> dict:
 
 
 def _prose_row(stem: str, entry_id: str) -> dict:
-    return next(row for row in PROSE[stem] if row["id"] == entry_id)
-
-
-# --------------------------------------------------------------- knowledge_port
-
+    return next(row for row in PROSE[stem] if row["id"] == entry_id)# --------------------------------------------------------------- knowledge_port
+# Each case asserts published artefact content against the shared vector
+# expectations, so the observed guarantee is transport of the KB facts. The
+# cross-implementation comparison itself runs on the mirrored side.
+@pytest.mark.data_transport
 def test_kb_options_count() -> None:
     assert len(ARTEFACT_DICT["bands"]) >= 80
     assert {row["collection"] for row in ARTEFACT_DICT["bands"]} == {"mordheim", "trollheim"}
 
 
+@pytest.mark.data_transport
 def test_kb_band_shape() -> None:
     for row in ARTEFACT_DICT["bands"]:
         assert row["id"] and row["name"]
@@ -72,6 +73,7 @@ def test_kb_band_shape() -> None:
         assert roster["starting_gold"] > 0
 
 
+@pytest.mark.data_transport
 def test_kb_sisters_roster() -> None:
     band = _band("mordheim", "sisters-of-sigmar")
     roster = band["roster"]
@@ -83,6 +85,7 @@ def test_kb_sisters_roster() -> None:
     assert heroes
 
 
+@pytest.mark.data_transport
 def test_kb_matriarch_profile() -> None:
     profile = _profile("sisters-of-sigmar", "sigmarite-matriarch")
     assert profile["cost"] == 70
@@ -92,22 +95,26 @@ def test_kb_matriarch_profile() -> None:
     }
 
 
+@pytest.mark.data_transport
 def test_kb_every_band_usable_heroes() -> None:
     keys = {"M", "WS", "BS", "S", "T", "W", "I", "A", "Ld"}
     for row in ARTEFACT_DICT["profiles"]:
         assert set(row["characteristics"]) == keys, row["id"]
 
 
+@pytest.mark.data_transport
 def test_kb_sisters_equipment() -> None:
     item = _item("sigmarite_hammer")
     assert item["names"]["en"] == "Sigmarite Hammer"
 
 
+@pytest.mark.data_transport
 def test_kb_unknown_warband() -> None:
     with pytest.raises(StopIteration):
         _band("mordheim", "does-not-exist")
 
 
+@pytest.mark.data_transport
 def test_kb_post_battle_sequence() -> None:
     steps = ARTEFACT_DICT["campaign"]["post_battle_sequence"]
     assert len(steps) == 10
@@ -120,14 +127,17 @@ def test_kb_post_battle_sequence() -> None:
 
 # ---------------------------------------------------------- rules_catalogue
 
+@pytest.mark.data_transport
 def test_rules_wrong_ruleset_rejected() -> None:
     assert ARTEFACT_DICT["ruleset"] == "mordheim"
 
 
+@pytest.mark.data_transport
 def test_rules_search_empty_and_miss() -> None:
     assert isinstance(ARTEFACT_DICT["indexes"], dict)
 
 
+@pytest.mark.data_transport
 def test_rules_prose_documents_present() -> None:
     assert {"special-rules", "conditions", "core-combat"} <= set(PROSE)
 
@@ -137,6 +147,7 @@ def _rules_expectation(vector_id: str) -> dict:
     return next(vector for vector in data["vectors"] if vector["id"] == vector_id)["expect"]
 
 
+@pytest.mark.data_transport
 def test_rules_special_rules_count() -> None:
     # The count comes from the shared vector, so the fixture cannot drift from
     # the artefact; `special-rules` is the shared catalogue (no band scope) and
@@ -149,16 +160,19 @@ def test_rules_special_rules_count() -> None:
     assert any(row.get("band_id") for row in PROSE[expected["band_rules_stem"]])
 
 
+@pytest.mark.data_transport
 def test_rules_categories_ordered() -> None:
     assert {"conditions", "core-combat", "localized-labels", "profile-special-rules", "racial-maximums", "resolution", "special-rules"} == set(PROSE)
 
 
+@pytest.mark.data_transport
 def test_rules_always_hungry_en() -> None:
     row = _prose_row("special-rules", "shared-rule.always-hungry")
     assert row["names"]["en"] == "Always Hungry"
     assert row["effects"]["en"].startswith("A Troll requires")
 
 
+@pytest.mark.data_transport
 def test_rules_fires_of_uzhul() -> None:
     lores = ARTEFACT_DICT["campaign"]["magic"]["lores"]
     spell = next(
@@ -171,11 +185,13 @@ def test_rules_fires_of_uzhul() -> None:
     assert spell["difficulty"] == 7
 
 
+@pytest.mark.data_transport
 def test_rules_always_hungry_es() -> None:
     row = _prose_row("special-rules", "shared-rule.always-hungry")
     assert row["names"]["es"] == "Siempre Hambriento"
 
 
+@pytest.mark.data_transport
 def test_rules_search_accent_insensitive_data() -> None:
     # the TS search seam matches names AND effects, case-insensitively
     row = _prose_row("special-rules", "shared-rule.always-hungry")
@@ -183,6 +199,7 @@ def test_rules_search_accent_insensitive_data() -> None:
     assert "always hungry" in hay
 
 
+@pytest.mark.data_transport
 def test_rules_search_scoped_by_stem() -> None:
     ids = {row["id"] for row in PROSE["special-rules"]}
     assert "shared-rule.always-hungry" in ids
@@ -190,6 +207,8 @@ def test_rules_search_scoped_by_stem() -> None:
 
 # ------------------------------------------------------------------ consistency
 
+# Retained blocked/gap records are evidence state, not artefact content.
+@pytest.mark.evidence
 def test_no_blocked_vectors_remain_in_any_vector_file() -> None:
     for name in ("malformed_save.json", "rules_catalogue.json", "knowledge_port.json"):
         data = json.loads((VECTORS / name).read_text(encoding="utf-8"))

@@ -1353,6 +1353,16 @@ mechanics:
   trigger: passive
   application: fighter
   stacking: stack
+- id: skill.fey-quickness
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.elven-agility
+    - skill.fey-quickness
+    ward_save: 6
+  trigger: passive
+  application: fighter
+  stacking: stack
 - id: skill.expert-fighter
   handler: effect-set
   parameters:
@@ -3171,6 +3181,14 @@ mechanics:
   trigger: passive
   application: fighter
   stacking: once
+- id: mechanic.lahmian-seduction
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.lahmian-seduction
+  trigger: passive
+  application: fighter
+  stacking: once
 - id: mechanic.feral-instinct
   handler: effect-set
   parameters:
@@ -3678,6 +3696,30 @@ mechanics:
   parameters:
     tags:
     - condition.massively-built-lost-turn
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.ere-we-go
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.ere-we-go
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.leader-four
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.leader-four
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.leader-fallback
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.leader-fallback
   trigger: passive
   application: fighter
   stacking: once

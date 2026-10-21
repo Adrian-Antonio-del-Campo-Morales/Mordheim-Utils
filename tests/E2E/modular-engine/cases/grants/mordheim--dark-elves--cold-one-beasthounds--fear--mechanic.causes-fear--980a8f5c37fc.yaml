@@ -71,7 +71,11 @@
   initial_state: {second: {attacks: 0}}
   duel_context: {charging: [second], active_participant: second}
   maximum_rounds: 1
+  # The charging Fear-causer is itself subject to Stupidity, so its own turn opens with that
+  # two-dice Leadership test before the charged model is tested for Fear.
   rolls:
+    - {key: round.0.second.stupidity.0, value: 1}
+    - {key: round.0.second.stupidity.1, value: 1}
     - {key: round.0.first.fear.charged.0, value: 5}
     - {key: round.0.first.fear.charged.1, value: 4}
     - {key: round.0.first.attack.0.hit, value: 4}
@@ -90,11 +94,19 @@
   initial_state: {second: {attacks: 0}}
   duel_context: {charging: [second], active_participant: second}
   maximum_rounds: 1
+  # The charging Fear-causer is itself subject to Stupidity, so its own turn opens with that
+  # two-dice Leadership test before the charged model is tested for Fear.
   rolls:
+    - {key: round.0.second.stupidity.0, value: 1}
+    - {key: round.0.second.stupidity.1, value: 1}
     - {key: round.0.first.fear.charged.0, value: 3}
     - {key: round.0.first.fear.charged.1, value: 3}
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 6}
+    # A three wounds an S8 attack against T3 without being the critical six, which
+    # keeps this scenario on the Fear penalty alone.
+    - {key: round.0.first.attack.0.wound, value: 3}
+    # Scaly Skin is a 6+ natural armour save on the wound, and a one fails it.
+    - {key: round.0.first.attack.0.armour, value: 1}
     - {key: round.0.first.attack.0.injury.0, value: 1}
   expect_rounds:
     0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}

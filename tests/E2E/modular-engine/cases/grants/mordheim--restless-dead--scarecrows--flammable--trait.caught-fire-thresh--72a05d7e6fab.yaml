@@ -60,7 +60,10 @@
 # --- Authored scenarios ---
 # Derived from the printed sentence, the recorded contract and the accepted specification; no engine
 # output was consulted.  The bearer is the band's printed scarecrow, whose own profile row supplies the
-# threshold; the ignition face is declared below the printed three in the boundary case.
+# threshold; the ignition face is declared below the printed three in the boundary case.  Both fighters
+# have Initiative 3, so the round opens with the priority-tie die and a four gives the striker the
+# first action.  Flammable doubles the damage, so the injury step takes one die per damage point and
+# both declared five faces take the one-wound bearer out.
 
 - audit_id: rule/mordheim/restless-dead/scarecrows--flammable/trait.caught-fire-threshold
   id: the-scarecrow-catches-fire-on-a-declared-three
@@ -78,9 +81,12 @@
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.priority-tie, value: 4}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.ignition, value: 3}
     - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+    - {key: round.0.first.attack.0.injury.1, value: 5}
   expect_rounds:
     0: {state.second.on_fire: True, state.second.condition: OUT}
   expect_final: {rounds_executed: 1, termination_reason: second_out}
@@ -104,9 +110,12 @@
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.priority-tie, value: 4}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.ignition, value: 2}
     - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+    - {key: round.0.first.attack.0.injury.1, value: 5}
   expect_rounds:
     0: {state.second.on_fire: False, state.second.condition: OUT}
   expect_final: {rounds_executed: 1, termination_reason: second_out}

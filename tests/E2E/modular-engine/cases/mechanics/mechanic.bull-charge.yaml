@@ -70,6 +70,7 @@
     0: {attacks.0.hit: True, state.second.condition: KNOCKED_DOWN, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
   expect_events:
+    - {kind: decision, key: round.0.first.bull-charge, value: true}
     - {kind: roll, key: round.0.first.bull-charge.hit, sides: 6, value: 3}
 
 # The recorded reading of the printed "if successful": an armour save stops the
@@ -119,8 +120,8 @@
     - {key: round.0.first.bull-charge, value: false}
   rolls:
     - {key: round.0.first.attack.0.hit, value: 1}
-    - {key: round.0.first.attack.1.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
   expect_rounds:
     0: {state.second.condition: STANDING, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

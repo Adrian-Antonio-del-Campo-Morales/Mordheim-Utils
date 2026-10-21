@@ -19,9 +19,13 @@
 # AUTHORED[minus-one-to-hit]: 2 scenarios separate the printed incoming melee modifier from the
 # ordinary to-hit table by one face: an attacker whose Weapon Skill is far higher needs a three, so
 # a declared three misses against the bearer that prints the -1 and hits a band-mate that does not.
-# The bearer is the printed Bullied Goblin profile; the attacker's Weapon Skill, Strength, Toughness
-# and Initiative are hand-built fixture facts, not profile values, and the control defender is the
-# band's printed Snotling Mob profile, which prints no such modifier.  The bearer and the control
+# The printed text is (Snotlings Only), and the band's own record of the skill names its recipients as
+# the BigSnotz, Scouts and Shaman profiles - the Bullied Goblin is explicitly NOT a Snotling (its own
+# record says so), so the bearer is the BigSnotz with the selectable skill chosen; the attacker's
+# Weapon Skill, Strength, Toughness and Initiative are hand-built fixture facts, not profile values,
+# and the control defender is the band's printed Snotling Mob profile, which carries no such modifier.
+# The Snotlings' printed Dodgy save is a 6+ ward, so the control tape declares the ward die one face
+# short of it and the declared hit alone decides the modifier under test.  The bearer and the control
 # both declare no attack of their own, so each tape holds only the attacker's dice.  The printed
 # Hidden/Initiative sentence is the out-of-scope clause of this same record and is retained as
 # context, not asserted.  REVIEWED still requires manual semantic review.
@@ -92,7 +96,8 @@
     first:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
-    second: {collection: mordheim, band_id: snotlings-web, profile_id: bullied-goblin}
+    second: {collection: mordheim, band_id: snotlings-web, profile_id: bigsnotz,
+             special_rule_ids: [bullied-goblin--frustratingly-tiny]}
   initial_state: {second: {attacks: 0}}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
@@ -118,6 +123,7 @@
   rolls:
     - {key: round.0.first.attack.0.hit, value: 3}
     - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 1}
   expect_rounds:
     0: {attacks.0.hit: true, attacks.0.damage: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

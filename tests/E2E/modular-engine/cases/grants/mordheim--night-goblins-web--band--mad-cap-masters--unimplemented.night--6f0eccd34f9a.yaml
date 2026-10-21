@@ -69,7 +69,10 @@
 # clears the Frenzy.
 
 # Under the Mad Caps the printed composition holds the Frenzy, so no Stupidity die is asked for and
-# the bearer strikes with its doubled pool.
+# the bearer strikes with its doubled pool.  The doubled pool is resolved as one pool: both To Hit
+# dice are requested before the wound die of the attack that hit (tests/E2E/modular-engine/README.md,
+# cases/mechanics/mechanic.black-hunger.yaml), and the hand-built opponent wears no armour, so no
+# armour die exists to declare even though the wound carries one point of damage.
 - audit_id: rule/mordheim/night-goblins-web/band--mad-cap-masters/unimplemented.night-goblins-web.band.mad-cap-masters
   id: the-mad-capped-bearer-rolls-no-stupidity-die-while-its-frenzy-holds
   covers: [mad-cap-masters]
@@ -84,11 +87,16 @@
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
   duel_context: {charging: [second], active_participant: first}
   maximum_rounds: 1
+  # The bearer carries no weapon in this fixture, so the printed one-attack cap of an unarmed
+  # attack limits its pool to a single die even while Frenzy doubles the count: the doubled pool
+  # is read from the surviving `frenzy` flag below, not from a second declared To Hit die.
+  # The same unarmed profile hands the defender its +1 armour save, so the failing armour
+  # die (five against the printed six) is part of the printed unarmed attack, not the clause.
   rolls:
     - {key: round.0.second.attack.0.hit, value: 1}
     - {key: round.0.first.attack.0.hit, value: 5}
     - {key: round.0.first.attack.0.wound, value: 5}
-    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.armour, value: 5}
   expect_rounds:
     0: {state.first.frenzy: true, state.first.stupidity_failed: false, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
@@ -113,7 +121,7 @@
     - {key: round.0.second.attack.0.hit, value: 4}
     - {key: round.0.second.attack.0.wound, value: 4}
     - {key: round.0.second.attack.0.injury.0, value: 1}
-    - {key: round.1.second.attack.0.hit, value: 1}
+    - {key: round.1.second.attack.0.wound, value: 1}
     - {key: round.2.first.stupidity.0, value: 6}
     - {key: round.2.first.stupidity.1, value: 6}
     - {key: round.2.second.attack.0.hit, value: 1}

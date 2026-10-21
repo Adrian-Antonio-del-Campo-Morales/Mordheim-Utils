@@ -244,7 +244,7 @@
     first:
       main_weapon_id: weapon.mace
       skill_ids: [mechanic.killing-blow]
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
     second:
       collection: trollheim
       band_id: chaos-streets-undead-bloodlines
@@ -255,6 +255,8 @@
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 6}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
@@ -270,7 +272,7 @@
   fighters:
     first:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
     second:
       collection: trollheim
       band_id: chaos-streets-undead-bloodlines
@@ -281,6 +283,8 @@
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 6}
     - {key: round.0.first.attack.0.parry, value: 6}
     - {key: round.0.second.attack.0.hit, value: 1}

@@ -74,10 +74,11 @@
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
   duel_context: {charging: [first], active_participant: first}
+  decisions:
+    - {key: round.0.first.attack.0.lotus-critical, value: false}
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 6}
-    - {key: round.0.first.attack.0.wound, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.damage: 1, state.second.wounds: 1}

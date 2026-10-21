@@ -9,6 +9,8 @@ from pathlib import Path
 import sys as sys
 import yaml as yaml
 
+# Keep the same safe constructors; use LibYAML when the installed wheel has it.
+SAFE_YAML_LOADER = getattr(yaml, "CSafeLoader", yaml.SafeLoader)
 
 RUNTIME_SCOPES = frozenset({"YES", "NO", "LATER"})
 
@@ -49,7 +51,7 @@ def knowledge_root() -> Path:
 
 
 def read_yaml(path: Path) -> dict:
-    value = yaml.safe_load(path.read_text(encoding="utf-8"))
+    value = yaml.load(path.read_text(encoding="utf-8"), Loader=SAFE_YAML_LOADER)
     if not isinstance(value, dict): raise ValueError(f"expected a mapping in {path}")
     return value
 

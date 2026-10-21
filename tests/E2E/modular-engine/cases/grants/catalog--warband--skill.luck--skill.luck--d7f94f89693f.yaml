@@ -65,6 +65,8 @@
     - {key: round.0.first.attack.0.hit.reroll, value: 4}
     - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.second.attack.0.hit, value: 1}
+  decisions:
+    - {key: round.0.first.attack.0.hit.luck, value: true}
   expect_rounds:
     0: {attacks.0.hit: True, attacks.0.wounded: True, attacks.0.damage: 1, state.second.wounds: 1, state.first.resources_spent: [luck]}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
@@ -86,6 +88,9 @@
     - {key: round.0.first.attack.0.wound, value: 1}
     - {key: round.0.first.attack.0.wound.reroll, value: 5}
     - {key: round.0.second.attack.0.hit, value: 1}
+  decisions:
+    - {key: round.0.first.attack.0.hit.luck, value: false}
+    - {key: round.0.first.attack.0.wound.luck, value: true}
   expect_rounds:
     0: {attacks.0.wounded: True, attacks.0.damage: 1, state.second.wounds: 1, state.first.resources_spent: [luck]}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
@@ -107,6 +112,8 @@
     - {key: round.0.first.attack.0.hit.reroll, value: 4}
     - {key: round.0.first.attack.0.wound, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
+  decisions:
+    - {key: round.0.first.attack.0.hit.luck, value: true}
   expect_rounds:
     0: {attacks.0.wounded: False, attacks.0.damage: 0, state.second.wounds: 2, state.first.resources_spent: [luck]}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

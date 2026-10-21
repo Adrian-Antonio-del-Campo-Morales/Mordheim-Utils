@@ -17,6 +17,10 @@ from __future__ import annotations
 from pathlib import Path
 
 import yaml
+import pytest
+
+
+pytestmark = pytest.mark.knowledge_integrity
 
 ROOT = Path(__file__).resolve().parents[4]
 CATALOGUE = ROOT / "sources/knowledge/catalog/hirelings"
@@ -43,6 +47,8 @@ HATRED_EXACT = (
     "mechanic.profound-hatred",
     "mechanic.ulric-intense-rivals",
     "mechanic.amazon-isolationists",
+    "mechanic.man-hater",
+    "mechanic.gaoler-hatred",
 )
 
 
@@ -121,7 +127,10 @@ def test_undead_ulric_and_isolationist_bindings():
     assert "mechanic.ulric-intense-rivals" in _operators("hireling.hired-sword.wolf-priest-of-ulric")
     penthesilea = "hireling.dramatis.penthesilea-mark-of-the-serpent"
     assert "mechanic.amazon-isolationists" in _operators(penthesilea)
-    assert "mechanic.hatred-human-warband" in _operators(penthesilea)
+    assert "mechanic.man-hater" in _operators(penthesilea)
+    # The printed clause is the individual human male, not the wider
+    # human-warband category, which stays bound only where the source prints it.
+    assert "mechanic.hatred-human-warband" not in _hatred_operators(penthesilea)
     # Negative controls: each printed category stays on its own recipient.
     assert "mechanic.hatred-undead" not in _hatred_operators(
         "hireling.hired-sword.dwarf-pathfinder")
@@ -134,14 +143,19 @@ def test_undead_ulric_and_isolationist_bindings():
 # --- The Gaoler's bounded comparison ----------------------------------------
 
 def test_gaoler_keeps_the_exact_undead_half_only():
-    """The warband-level Chaotic category is not the printed per-model identity."""
+    """Regression: the Gaoler must not keep the obsolete undead-only half.
+
+    The printed clause lists Skaven, Possessed, Beastmen, Carnival of Chaos and
+    Undead warbands, so it is one canonical operator; neither the Undead-only
+    operator nor the warband-level Chaotic shortcut stands in for it.
+    """
     operators = _operators("hireling.hired-sword.gaoler")
-    assert "mechanic.hatred-undead" in operators
+    assert "mechanic.gaoler-hatred" in operators
+    assert "mechanic.hatred-undead" not in operators
     assert "mechanic.hatred-chaotic-warband" not in operators
     record = _record("hireling.hired-sword.gaoler", "hatred")
-    unbound = [effect for effect in record["runtime"]["effects"] if effect.get("binding") is None]
-    assert len(unbound) == 1
-    assert "Chaos" in unbound[0]["reason"]
+    bound = [effect.get("binding") for effect in record["runtime"]["effects"]]
+    assert bound == [{"kind": "mechanic", "id": "mechanic.gaoler-hatred"}]
 
 
 # --- Clauses that must stay unbound on their bearer -------------------------

@@ -114,12 +114,14 @@ def assert_mixed_provenance(faces, *, spectral):
     return defender_state, outcomes
 
 
+@pytest.mark.interaction
 @pytest.mark.parametrize('faces', HIT_FACES)
 def test_mixed_successful_hits_keep_per_hit_natural_six_provenance(faces):
     """Faces 6/5: only the hit whose own die is six adds the extra wound."""
     assert_mixed_provenance(faces, spectral=True)
 
 
+@pytest.mark.interaction
 @pytest.mark.parametrize('faces', HIT_FACES)
 def test_mixed_hits_without_spectral_touch_add_no_extra_wound(faces):
     """The same faces without the trait hit twice and add nothing."""
@@ -153,6 +155,7 @@ def _pooled_provenance_mutant():
     return namespace['_resolve_attack_pool']
 
 
+@pytest.mark.test_infrastructure
 @pytest.mark.parametrize('faces', HIT_FACES)
 def test_pooled_provenance_mutant_is_rejected_by_the_mixed_witness(monkeypatch, faces):
     """The maintained witness passes on the engine and fails under the mutant."""

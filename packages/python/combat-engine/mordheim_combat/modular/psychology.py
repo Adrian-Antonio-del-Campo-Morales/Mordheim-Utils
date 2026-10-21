@@ -23,7 +23,8 @@ def causes_fear(fighter: CompiledFighter, enemy: CompiledFighter) -> bool:
                     ("species.snake", "species.serpent"))):
         return True
     if (phases.has_tag(enemy.global_effects, "mechanic.fear-of-elves")
-            and any(phases.has_tag(fighter.global_effects, tag) for tag in ("species.high-elf", "species.dark-elf", "species.wood-elf"))):
+            and any(phases.has_tag(fighter.global_effects, tag) for tag in
+                    ("species.elf", "species.high-elf", "species.dark-elf", "species.wood-elf"))):
         return True
     if (phases.has_tag(fighter.global_effects, "mechanic.fear-beastmen")
             and phases.has_tag(enemy.global_effects, "species.beastman")):
@@ -74,6 +75,25 @@ def resolve_stupidity(first, second, state, dice, decisions):
             passed = any(record.side_id == side and record.condition != "out"
                 and context.distance(participant, record.participant_id) <= 6 for record in heroes)
         passed = passed or supplied_hero and not heroes
+    # The printed Rat Ogre exemption: a Skaven Hero supplied within six inches
+    # exempts the bearer, with no Stupidity test at all.  The nearby records and
+    # distances are caller-supplied duel facts; the clause never simulates the
+    # surrounding warband or a board.  The bearer's own warband group scopes the
+    # concession to the Skaven warriors that print it, so another stupid
+    # creature standing beside a supplied Skaven Hero does not borrow it.
+    if (not passed and phases.has_tag(fighter.global_effects, "mechanic.stupidity")
+            and phases.has_tag(fighter.global_effects, "warband-group.skaven")):
+        exempting = ()
+        if state.context is not None:
+            context = state.context
+            participant = context.facts.first_id if is_first else context.facts.second_id
+            side = context.participant(participant).side_id
+            exempting = tuple(record for record in context.facts.nearby
+                if record.side_id == side and record.condition != "out"
+                and phases.has_tag(record.fighter.global_effects, "fighter-kind.hero")
+                and phases.has_tag(record.fighter.global_effects, "species.skaven"))
+            passed = any(context.distance(participant, record.participant_id) <= 6
+                         for record in exempting)
     if not passed and phases.has_tag(fighter.global_effects, 'mechanic.bear-handler-recipient'):
         supplied = phases.has_tag(fighter.global_effects, 'condition.bear-handler-nearby')
         providers = ()
@@ -181,7 +201,8 @@ def resolve_fear(
         if charges[index] and phases.has_tag(fighters[index].global_effects, "condition.impetuous-charge"):
             return False
         if (phases.has_tag(fighters[index].global_effects, "mechanic.accustomed-to-fear")
-                and any(phases.has_tag(enemy.global_effects, tag) for tag in ("identity.zombie", "identity.skeleton", "identity.vampire"))):
+                and any(phases.has_tag(enemy.global_effects, tag) for tag in
+                        ("species.vampire", "undead-kind.skeleton", "undead-kind.spirit"))):
             return False
         if morrs_servant(index):
             # This source expressly overrides Undead Psychology exemptions.

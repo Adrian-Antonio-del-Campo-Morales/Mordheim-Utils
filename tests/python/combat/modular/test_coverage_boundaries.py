@@ -12,6 +12,7 @@ from mordheim_construction.compiler import compile_fighter
 from mordheim_core.models import Characteristics, FighterBuild
 
 
+@pytest.mark.rule_behavior
 @pytest.mark.parametrize('removed', ['attacker', 'defender'])
 def test_removed_participant_cannot_start_an_attack_or_consume_requests(removed):
     fighter = compile_fighter(FighterBuild('mordheim', Characteristics(3, 3, 3, 2, 3, 1),
@@ -29,9 +30,10 @@ def test_removed_participant_cannot_start_an_attack_or_consume_requests(removed)
     assert result.damage == result.damage_already_reacted == 0
 
 
+@pytest.mark.test_infrastructure
 def test_removed_participant_witness_detects_guard_removal(monkeypatch):
     source = Path(attacks.__file__).read_text(encoding='utf-8')
-    guard = ('    if not attacker_state.active or not defender_state.active:\n'
+    guard = ('    if not defender_state.active or (not attacker_state.active and not deathblow):\n'
              '        return AttackOutcome(attacker_state, defender_state)\n')
     assert source.count(guard) == 1
     namespace = {'__name__': 'inactive_attack_guard_mutant'}

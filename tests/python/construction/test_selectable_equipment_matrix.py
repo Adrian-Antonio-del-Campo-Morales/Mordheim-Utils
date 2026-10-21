@@ -67,26 +67,19 @@ IMPLEMENTED = (
 #: to.  The refusal must name the rule and carry the reason published by the
 #: rule's own runtime block.
 PENDING = (
-    ("dreamwalkers-cult-of-morr-fbg", "dreamer", "band--special-skill-inspiring-presence"),
     ("dreamwalkers-cult-of-morr-fbg", "dreamer", "band--special-skill-fanatical"),
-    ("dreamwalkers-cult-of-morr-fbg", "dreamer", "band--special-skill-inured-to-horror"),
     ("grave-robbers-sylv", "graver", "band--special-skill-darkstalker"),
-    ("grave-robbers-sylv", "graver", "band--special-skill-instinctual-violence"),
     ("grave-robbers-sylv", "graver", "band--special-skill-de-animator"),
     ("necrarchs-the-soul-stealers-lotd1", "necrarch-vampire", "band--special-skill-pull-of-undeath"),
-    ("vampire-hunters-of-sylvania-lotd5", "vampire-hunter", "band--special-skill-thirst-for-vengeance"),
-    ("vampire-hunters-of-sylvania-lotd5", "vampire-hunter", "band--special-skill-blessing-of-morr"),
     ("wood-elves-of-athel-loren-web", "hunt-master", "band--skill-elven-luck"),
     ("brood-of-ghurash-the-sc", "broodmother", "band--skill-the-terror"),
     ("brood-of-ghurash-the-sc", "broodmother", "band--skill-ground-pounder"),
-    ("brood-of-ghurash-the-sc", "broodmother", "band--skill-titanic-strength"),
     ("brood-of-ghurash-the-sc", "broodmother", "band--skill-hurl"),
     ("call-of-the-night-haint-mim", "cairn-wraith", "band--skill-wight-walk"),
     ("clockworkers-sc", "master-of-clocks", "band--skill-puppeteer"),
     ("clockworkers-sc", "master-of-clocks", "band--skill-rogue-control"),
     ("clockworkers-sc", "master-of-clocks", "band--skill-gift-of-sentience"),
     ("knights-of-the-bitter-moors-mim", "questing-knight", "band--virtue-of-discipline"),
-    ("knights-of-the-bitter-moors-mim", "questing-knight", "band--virtue-of-noble-disdain"),
     ("knights-of-the-bitter-moors-mim", "questing-knight", "band--virtue-of-the-impetuous"),
     ("lizardmen-lus", "saurus-totem-warriors", "band--lizardmen-special-skills-saurus-only-toughened-hide"),
     ("silent-brotherhood-sc", "silent-master", "band--skill-hit-and-run"),
@@ -98,17 +91,29 @@ PENDING = (
 )
 
 #: The remaining pending origins refuse with the same runtime gate, but their
-#: current warband-skill availability API omits them. Eight lack its access/
+#: current warband-skill availability API omits them. Three lack its access/
 #: eligibility route; bloodline explicitly names vampire as its recipient but is
 #: a profile ability, excluded by the API's kind filter. Source legality is not
 #: adjudicated here. The missing API channel is a recorded discrepancy; the
 #: runtime refusal below is real either way.
 PENDING_WITHOUT_AVAILABILITY_CHANNEL = (
-    ("protectorate-of-sigmar-lotd3", "warrior-priest", "band--special-skill-unshakeable-faith"),
     ("protectorate-of-sigmar-lotd3", "warrior-priest", "band--special-skill-utter-determination"),
-    ("protectorate-of-sigmar-lotd3", "warrior-priest", "band--special-skill-rousing-sermon"),
     ("araby-smugglers-sar", "rais", "band--skill-pious-fury"),
     ("strigoi-kaz", "vampire", "vampire--bloodline"),
+)
+
+#: The canonical KB moved these origins from the pending selectable table to the
+#: executable runtime: each `runtime.implemented` is 'YES' and every bound
+#: operator is declared in `catalog/mechanics/execution.yaml`. They are selected
+#: through the same path and deliver the operator their own binding names.
+NOW_EXECUTABLE = (
+    ("dreamwalkers-cult-of-morr-fbg", "dreamer", "band--special-skill-inspiring-presence", "mechanic.leader-twelve"),
+    ("dreamwalkers-cult-of-morr-fbg", "dreamer", "band--special-skill-inured-to-horror", "mechanic.fear-immunity"),
+    ("grave-robbers-sylv", "graver", "band--special-skill-instinctual-violence", "mechanic.fear-immunity-undead-chargers"),
+    ("vampire-hunters-of-sylvania-lotd5", "vampire-hunter", "band--special-skill-blessing-of-morr", "mechanic.blessing-of-morr"),
+    ("brood-of-ghurash-the-sc", "broodmother", "band--skill-titanic-strength", "mechanic.titanic-strength"),
+    ("knights-of-the-bitter-moors-mim", "questing-knight", "band--virtue-of-noble-disdain", "mechanic.noble-disdain"),
+    ("protectorate-of-sigmar-lotd3", "warrior-priest", "band--special-skill-rousing-sermon", "mechanic.rousing-sermon"),
 )
 
 
@@ -140,6 +145,7 @@ def _runtime_reason(band_id: str, rule_id: str) -> str:
 # --- availability and recipients -------------------------------------------
 
 
+@pytest.mark.eligibility
 def test_available_special_rules_offers_each_selectable_rule_to_its_recipients():
     assert _rule("clan-angrund-kep", "band--dwarf-special-skills-master-of-blades").get("runtime", {}).get("grant") == "selectable"
     dwarf_noble = set(available_special_rules(build("clan-angrund-kep", "dwarf-noble"), None))
@@ -165,6 +171,7 @@ def test_available_special_rules_offers_each_selectable_rule_to_its_recipients()
     assert "band--lizardmen-special-skills-saurus-only-bellowing-battle-roar" in saurus
 
 
+@pytest.mark.eligibility
 @pytest.mark.parametrize("band_id,profile_id,rule_id", PENDING)
 def test_pending_selectable_origins_refuse_with_their_published_source_reason(band_id, profile_id, rule_id):
     # The rule is visible for selection (available_special_rules offers it) but
@@ -180,6 +187,7 @@ def test_pending_selectable_origins_refuse_with_their_published_source_reason(ba
     assert _runtime_reason(band_id, rule_id) in message
 
 
+@pytest.mark.eligibility
 @pytest.mark.parametrize("band_id,profile_id,rule_id", PENDING_WITHOUT_AVAILABILITY_CHANNEL)
 def test_pending_selectable_origins_without_channel_still_refuse_with_their_source_reason(band_id, profile_id, rule_id):
     # Only the runtime gate is asserted here: the current warband-skill API
@@ -192,9 +200,46 @@ def test_pending_selectable_origins_without_channel_still_refuse_with_their_sour
     assert _runtime_reason(band_id, rule_id) in message
 
 
+# --- origins the runtime executes -------------------------------------------
+
+
+@pytest.mark.compilation
+@pytest.mark.parametrize("band_id,profile_id,rule_id,tag", NOW_EXECUTABLE)
+def test_executable_selectable_origins_deliver_their_declared_operator(band_id, profile_id, rule_id, tag):
+    # The selection is admitted and its own binding reaches the compiled fighter:
+    # the operator is the rule's declared effect, not a generic side effect.
+    selected = compile_fighter(build(band_id, profile_id, special_rule_ids=(rule_id,)))
+    assert tag in selected.global_effects.tags
+
+
+@pytest.mark.compilation
+def test_thirst_for_vengeance_adds_its_declared_charge_attack():
+    # The operator's parameter is the source's '+1 Attack on the charge', not a
+    # second tag: the tag alone is the band's shared Hatred of the Undead.
+    selected = compile_fighter(build("vampire-hunters-of-sylvania-lotd5", "vampire-hunter",
+        special_rule_ids=("band--special-skill-thirst-for-vengeance",)))
+    assert selected.global_effects.charge_attacks_bonus == 1
+
+
+@pytest.mark.eligibility
+def test_unshakeable_faith_is_executable_but_the_warband_skill_channel_omits_it():
+    # Recorded discrepancy: the rule's runtime is implemented, but it publishes
+    # no recipient and the Warrior Priest declares no 'special' skill access, so
+    # the canonical route refuses it through the concrete recipient gate.  The
+    # refusal names the rule instead of being a generic exception.
+    with pytest.raises(ValueError, match=(
+            "special rule is not available to "
+            "protectorate-of-sigmar-lotd3/warrior-priest: band--special-skill-unshakeable-faith")):
+        compile_fighter(build("protectorate-of-sigmar-lotd3", "warrior-priest",
+            special_rule_ids=("band--special-skill-unshakeable-faith",)))
+
+
 # --- implemented selectable rules ------------------------------------------
 
 
+# Primary: the rule reaches its recipients and refuses the others. The compiled
+# immunity flags are the secondary guarantee of the admitted selection.
+@pytest.mark.eligibility
 def test_hardy_constitution_grants_poison_immunity_and_refuses_non_recipients():
     control = compile_fighter(build("grave-robbers-sylv", "graver"))
     selected = compile_fighter(build(
@@ -211,6 +256,7 @@ def test_hardy_constitution_grants_poison_immunity_and_refuses_non_recipients():
         ))
 
 
+@pytest.mark.compilation
 def test_master_of_blades_projects_both_shared_mechanics_and_the_parry_variant():
     fighter = compile_fighter(build(
         "clan-angrund-kep", "dwarf-noble",
@@ -221,6 +267,7 @@ def test_master_of_blades_projects_both_shared_mechanics_and_the_parry_variant()
     assert {"skill.unbeatable-warrior", "skill.sword-master", "rule.dwarf-axe-parry-reroll"} <= set(fighter.global_effects.tags)
 
 
+@pytest.mark.compilation
 def test_clan_angrund_selectable_skills_use_their_printed_operators_not_the_automatic_grants():
     # clan-angrund-kep grants Hard to Kill (1-2 Knocked Down) and Hard Head
     # (concussion immunity) band-wide. True Grit (1-3 Knocked Down) and Thick
@@ -243,6 +290,7 @@ def test_clan_angrund_selectable_skills_use_their_printed_operators_not_the_auto
     assert thick_skull.global_effects.thick_skull is True
 
 
+@pytest.mark.eligibility
 @pytest.mark.parametrize("rule_id,tag", [
     ("band--slayer-special-skills-ferocious-charge", "skill.ferocious-charge"),
     ("band--slayer-special-skills-monster-slayer", "skill.monster-slayer"),
@@ -259,6 +307,7 @@ def test_slayer_skills_reach_the_slayer_and_refuse_the_other_records(rule_id, ta
         compile_fighter(build("clan-angrund-kep", "ironbreaker", special_rule_ids=(rule_id,)))
 
 
+@pytest.mark.eligibility
 def test_bellowing_battle_roar_reaches_saurus_and_refuses_skinks():
     selected = compile_fighter(build(
         "lizardmen-lus", "saurus-totem-warriors",
@@ -272,6 +321,7 @@ def test_bellowing_battle_roar_reaches_saurus_and_refuses_skinks():
         ))
 
 
+@pytest.mark.eligibility
 def test_vomit_attack_is_selectable_only_for_the_warpstone_troll():
     # The selected rule supplies a separate optional attack. The normal hand
     # remains equipped until the modular policy chooses the replacement.
@@ -293,6 +343,7 @@ def test_vomit_attack_is_selectable_only_for_the_warpstone_troll():
 # --- equipment --------------------------------------------------------------
 
 
+@pytest.mark.compilation
 def test_duelling_pistol_is_selectable_in_both_hand_slots_with_its_published_close_combat_profile():
     main = compile_fighter(build(
         "mercenaries", "mercenary-captain", main_weapon_id="weapon.duelling-pistol",
@@ -315,6 +366,7 @@ def test_duelling_pistol_is_selectable_in_both_hand_slots_with_its_published_clo
         ))
 
 
+@pytest.mark.compilation
 def test_gromril_material_route_prices_the_supported_material_and_refuses_foreign_bands():
     # Keep this Gromril route distinct from the source-backed Darksteel Blade:
     # its armour penetration does not certify that item's critical/injury rules.

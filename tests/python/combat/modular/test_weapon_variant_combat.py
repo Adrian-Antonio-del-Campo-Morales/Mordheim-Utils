@@ -20,6 +20,10 @@ from mordheim_construction.compiler import compile_fighter
 from mordheim_construction.contracts import effect_index
 from mordheim_core.models import Characteristics, FighterBuild
 from mordheim_knowledge.loader import load_items
+import pytest
+
+
+pytestmark = pytest.mark.rule_behavior
 
 
 def build(main_weapon_id, armour_id="armour.no-armour", off_hand_id=None, **options):

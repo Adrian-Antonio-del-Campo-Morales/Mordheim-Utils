@@ -56,6 +56,7 @@ def plain_fighter():
 
 # --- the offered grades ------------------------------------------------------
 
+@pytest.mark.eligibility
 def test_every_normalized_grade_is_offered_including_core():
     assert sorted(package.band["id"] for package in PACKAGES) == [
         "hirelings.dramatis-personae.1a", "hirelings.dramatis-personae.1b",
@@ -70,6 +71,7 @@ def test_every_normalized_grade_is_offered_including_core():
     assert "hireling.hired-sword.crimashin" in BAND_OF
 
 
+@pytest.mark.eligibility
 def test_a_core_grade_profile_compiles_and_fights():
     """The core kit is a printed "choose two weapons" group, not a crash."""
     bodyguard = compile_hireling("hireling.hired-sword.ogre-bodyguard",
@@ -79,6 +81,7 @@ def test_a_core_grade_profile_compiles_and_fights():
     assert state is not None
 
 
+@pytest.mark.eligibility
 def test_a_profile_with_pending_intrinsic_clauses_is_refused_by_name():
     """A profile is still refused by name while one printed clause has no runtime."""
     with pytest.raises(ValueError, match="intrinsic duel clauses are pending"):
@@ -89,6 +92,7 @@ def test_a_profile_with_pending_intrinsic_clauses_is_refused_by_name():
     assert "mechanic.drenok-berserker" in drenok.global_effects.tags
 
 
+@pytest.mark.eligibility
 def test_the_resolved_clauses_admit_the_previously_refused_profiles():
     """The batch that classified the printed clauses admits the same profiles.
 
@@ -109,6 +113,7 @@ def test_the_resolved_clauses_admit_the_previously_refused_profiles():
         compile_hireling("hireling.dramatis.dark-emissary")
 
 
+@pytest.mark.compilation
 def test_the_bone_goliath_intrinsic_clauses_now_reach_the_duel():
     """Undead Construct and No Pain are delivered, so the refusal is gone.
 
@@ -122,6 +127,7 @@ def test_the_bone_goliath_intrinsic_clauses_now_reach_the_duel():
     assert "mechanic.causes-fear" in goliath.global_effects.tags
 
 
+@pytest.mark.compilation
 def test_belandysh_printed_random_profile_and_complete_kit_compile():
     fighter = compile_hireling("hireling.dramatis.belandysh-condemned-champion-of-chen",
         main_weapon_id="weapon.broadsword-of-damnation", armour_id="armour.chaos-armour",
@@ -137,6 +143,7 @@ def test_belandysh_printed_random_profile_and_complete_kit_compile():
 
 # --- the printed unique object ----------------------------------------------
 
+@pytest.mark.compilation
 def test_the_declared_equivalence_reaches_the_duel():
     """The Holy Man's staff counts as a double-handed weapon, so it fights as one."""
     holy_man = compile_hireling("hireling.hired-sword.holy-man",
@@ -152,6 +159,7 @@ def test_the_declared_equivalence_reaches_the_duel():
     assert gravesman.main_weapon.two_handed
 
 
+@pytest.mark.eligibility
 def test_an_item_whose_own_rules_are_excluded_cannot_be_a_weapon():
     """A garment declared out of the duel is not a weapon in an active slot."""
     with pytest.raises(ValueError, match="non-duel unique equipment cannot occupy an active combat position"):
@@ -160,6 +168,7 @@ def test_an_item_whose_own_rules_are_excluded_cannot_be_a_weapon():
             main_weapon_id="hireling.dramatis.snerik-night-goblin-scout.item.camouflage-cloak")
 
 
+@pytest.mark.compilation
 def test_source_unique_equivalences_reach_their_actual_active_slots():
     johann = compile_hireling("hireling.dramatis.johann-the-knife", main_weapon_id="weapon.sword",
                              off_hand_id="weapon.sword")
@@ -177,6 +186,7 @@ def test_source_unique_equivalences_reach_their_actual_active_slots():
         compile_hireling("hireling.hired-sword.ninja-gnoblar", main_weapon_id="weapon.double-handed-weapon")
 
 
+@pytest.mark.compilation
 def test_the_printed_shovel_and_pry_bar_reach_the_gravesman():
     """The shovel counts as a halberd and the pry bar as a club that parries."""
     shovel = "hireling.hired-sword.gravesman.item.shovel"
@@ -203,6 +213,7 @@ def test_the_printed_shovel_and_pry_bar_reach_the_gravesman():
     assert "weapon.double-handed-weapon" in holy_man.main_weapon.tags
 
 
+@pytest.mark.eligibility
 def test_a_printed_unique_quantity_is_retained_and_missing_copy_is_refused():
     """Johann's two Long Daggers count as two Swords, with one throwing knife kit."""
     daggers = "hireling.dramatis.johann-the-knife.item.long-daggers"
@@ -215,6 +226,7 @@ def test_a_printed_unique_quantity_is_retained_and_missing_copy_is_refused():
             main_weapon_id="weapon.sword", owned_item_ids=(daggers, "throwing_knives"))
 
 
+@pytest.mark.compilation
 def test_aenur_unique_weapon_strength_is_not_granted_twice_by_its_intrinsic_rules():
     fighter = compile_hireling("hireling.dramatis.aenur", main_weapon_id="weapon.ienh-khain")
     assert fighter.main_weapon.strength_bonus == 1
@@ -224,6 +236,7 @@ def test_aenur_unique_weapon_strength_is_not_granted_twice_by_its_intrinsic_rule
 
 # --- the prepared trait facts, with a live consequence ------------------------
 
+@pytest.mark.compilation
 def test_the_prepared_trait_facts_reach_admitted_hirelings():
     bodyguard = compile_hireling("hireling.hired-sword.ogre-bodyguard",
                                  main_weapon_id="weapon.double-handed-weapon")
@@ -238,6 +251,7 @@ def test_the_prepared_trait_facts_reach_admitted_hirelings():
     assert "mechanic.despise-despoilers" in mage.global_effects.tags
 
 
+@pytest.mark.compilation
 def test_the_fanatic_reaches_the_duel_with_his_printed_weapon():
     """Maximilian's two intrinsic clauses resolve: leadership and the list.
 
@@ -257,6 +271,7 @@ def test_the_fanatic_reaches_the_duel_with_his_printed_weapon():
 
 
 @pytest.mark.parametrize("carrier", TRAIT_CARRIERS)
+@pytest.mark.rule_behavior
 def test_a_hired_fear_causer_charges_the_opponent_for_a_die(carrier):
     """The consequence: an enemy charging the hireling spends a die and fails.
 
@@ -279,6 +294,7 @@ def test_a_hired_fear_causer_charges_the_opponent_for_a_die(carrier):
     assert result.failed_charges == frozenset({"first"})
 
 
+@pytest.mark.rule_behavior
 def test_the_fear_causer_refuses_the_charge_through_the_round_pipeline():
     """One representative full-round case through initialize_duel → resolve_round.
 
@@ -299,6 +315,7 @@ def test_the_fear_causer_refuses_the_charge_through_the_round_pipeline():
     assert result.state.failed_charges == frozenset({"first"})
 
 
+@pytest.mark.eligibility
 def test_trait_carriers_that_stay_out_are_refused_for_a_named_reason():
     """The carriers that remain out name their own blocker, not a trait fact."""
     for carrier in ("hireling.hired-sword.witch", "hireling.hired-sword.swordsmith"):
@@ -310,6 +327,7 @@ def test_trait_carriers_that_stay_out_are_refused_for_a_named_reason():
 
 # --- the supplied profile input a printed rule demands ------------------------
 
+@pytest.mark.compilation
 def test_a_hireling_with_a_supplied_configuration_compiles():
     """Snorri and the hired are admitted once their printed input is supplied."""
     snorri = compile_hireling("hireling.dramatis.snorri-nosebiter",
@@ -328,6 +346,7 @@ def test_a_hireling_with_a_supplied_configuration_compiles():
     assert "weapon.sigmarite-hammer" in sister.main_weapon.tags
 
 
+@pytest.mark.eligibility
 def test_a_blocked_equivalence_names_its_own_blocker():
     """A printed equivalence with no admitted bearer is recorded, not accepted."""
     # Drenok's printed rules are implemented: the unique Axe of Icefang is the
@@ -344,6 +363,7 @@ def test_a_blocked_equivalence_names_its_own_blocker():
         compile_hireling("hireling.hired-sword.halfling-knight", main_weapon_id="weapon.lance")
 
 
+@pytest.mark.eligibility
 def test_a_printed_drinking_result_outside_the_table_is_refused():
     """Result 1 removes Snorri from the battle, so no participant compiles."""
     with pytest.raises(ValueError, match="drinking result 2-6"):
@@ -359,6 +379,7 @@ def test_a_printed_drinking_result_outside_the_table_is_refused():
     assert "condition.snorri-frenzy" in snorri.global_effects.tags
 
 
+@pytest.mark.eligibility
 def test_an_inequivalent_unique_weapon_triggers_a_named_blocker():
     """Refused-without-invention: each blocker names the exact missing input."""
     # The wheelbarrow is a real out-of-duel tool whose own record the module
@@ -381,6 +402,7 @@ def test_an_inequivalent_unique_weapon_triggers_a_named_blocker():
     "hireling.hired-sword.chaos-fury",
     "hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne",
 ])
+@pytest.mark.compilation
 def test_daemonic_flesh_is_armour_and_innate_attacks_are_not_owned_weapons(profile_id):
     daemon = compile_hireling(profile_id)
     assert daemon.natural_armour_save == 5
@@ -395,6 +417,7 @@ def test_daemonic_flesh_is_armour_and_innate_attacks_are_not_owned_weapons(profi
         assert "mechanic.psychology-immunity" not in daemon.global_effects.tags
 
 
+@pytest.mark.compilation
 def test_solkan_marks_are_chosen_only_for_the_printed_variant():
     options = dict(main_weapon_id="weapon.dagger", variant_ids=("deity.solkan",),
                    special_rule_ids=("hireling.hired-sword.priest-of-verena.skill.inquisitor",))
@@ -414,6 +437,7 @@ def test_solkan_marks_are_chosen_only_for_the_printed_variant():
     ("hireling.hired-sword.ninja-gnoblar", "weapon.bo"),
     ("hireling.dramatis.crow-master-the", "weapon.quarter-staff"),
 ])
+@pytest.mark.compilation
 def test_printed_kit_default_distinguishes_omitted_from_explicit_dagger(profile_id, printed_weapon):
     # The printed kit, not alphabetic sorting or the model's old dagger default,
     # supplies an omitted choice. None is the public representation of omission.
@@ -427,6 +451,7 @@ def test_printed_kit_default_distinguishes_omitted_from_explicit_dagger(profile_
             compile_hireling(profile_id, main_weapon_id=illegal)
 
 
+@pytest.mark.compilation
 def test_omitted_weapon_keeps_the_plain_fighter_dagger_default():
     from mordheim_core.models import Characteristics
     fighter = compile_fighter(FighterBuild("mordheim", Characteristics(3, 3, 3, 1, 3, 1)))
@@ -488,6 +513,7 @@ CHARGER_WOUNDS = [roll("round.0.second.attack.0.hit", 6),
                   roll("round.0.second.attack.0.armour", 1)]
 
 
+@pytest.mark.knowledge_integrity
 def test_the_pair_keeps_its_joint_identity_and_marquand_gains_no_campaign_hire():
     """The composite entry stays as published and no individual hiring opens.
 
@@ -516,6 +542,7 @@ def test_the_pair_keeps_its_joint_identity_and_marquand_gains_no_campaign_hire()
     assert PAIR not in offered and MARQUAND not in offered
 
 
+@pytest.mark.compilation
 def test_marquand_compiles_with_his_printed_kit_and_only_his_admitted_skills():
     """Selection and compilation of the individual participant."""
     fighter = marquand()
@@ -531,6 +558,7 @@ def test_marquand_compiles_with_his_printed_kit_and_only_his_admitted_skills():
         marquand(main_weapon_id="weapon.mace")
 
 
+@pytest.mark.rule_behavior
 def test_lightning_reflexes_strikes_first_against_the_charge_that_hits_him():
     """The same Initiative decides it: only the printed skill changes the tier."""
     fighter, charger = marquand(), slower_charger()
@@ -550,6 +578,7 @@ def test_lightning_reflexes_strikes_first_against_the_charge_that_hits_him():
     assert not phases.first_acts_before(charged(control), charging(control), StrictDice([]))
 
 
+@pytest.mark.rule_behavior
 def test_step_aside_saves_the_close_combat_wound_only_on_the_printed_five():
     """The ward is his own printed save, with the control asked for no die."""
     saved = defended_round(marquand(), defender_misses() + CHARGER_WOUNDS + [
@@ -575,6 +604,7 @@ def ulli(**options):
     return compile_hireling(ULLI, **{**kit, **options})
 
 
+@pytest.mark.knowledge_integrity
 def test_the_pair_keeps_its_joint_identity_and_ulli_gains_no_campaign_hire():
     """The composite entry stays as published and no individual hiring opens.
 
@@ -600,6 +630,7 @@ def test_the_pair_keeps_its_joint_identity_and_ulli_gains_no_campaign_hire():
     assert ULLI not in offered
 
 
+@pytest.mark.compilation
 def test_ulli_compiles_with_his_printed_kit_and_only_his_admitted_skills():
     """Selection and compilation of the second individual participant."""
     fighter = ulli()
@@ -617,6 +648,7 @@ def test_ulli_compiles_with_his_printed_kit_and_only_his_admitted_skills():
         ulli(main_weapon_id="weapon.sword")
 
 
+@pytest.mark.rule_behavior
 def test_strongman_removes_the_double_handed_strike_last_penalty_for_ulli():
     """The printed Strongman raises the printed double-handed weapon's tier.
 

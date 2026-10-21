@@ -109,10 +109,11 @@
 # --- Authored scenarios ---
 # mechanic/mechanic.disability — every expectation below comes from the printed
 # rule (roll D6 once for the group and apply the result permanently) and the
-# recorded contract, never from engine output.  The duel-time projection of the
-# between-battles roll is the die taken when the fighter is initialized, which
-# chooses the applied characteristic penalty, and result 6 leaves the bearer
-# taking the ordinary start-of-turn Stupidity test.
+# recorded contract, never from engine output.  The accepted ruling of
+# 2026-10-15 makes the duel consume exactly one supplied permanent result
+# (condition.disability-1..6) once at compilation and never roll group creation
+# again, so each scenario declares the result its name prints instead of a die;
+# result 6 leaves the bearer taking the ordinary start-of-turn Stupidity test.
 #
 # Result 6: a failed Stupidity test costs the turn's attack, which the printed
 # clause shares with the canonical Stupidity clause the duel already carries.
@@ -123,6 +124,7 @@
     first:
       main_weapon_id: weapon.mace
       skill_ids: [mechanic.disability]
+      condition_ids: [condition.disability-6]
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
     second:
       main_weapon_id: weapon.mace
@@ -130,7 +132,6 @@
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
-    - {key: first.disability, value: 6}
     - {key: round.0.first.stupidity.0, value: 6}
     - {key: round.0.first.stupidity.1, value: 6}
   expect_rounds:
@@ -146,6 +147,7 @@
     first:
       main_weapon_id: weapon.mace
       skill_ids: [mechanic.disability]
+      condition_ids: [condition.disability-6]
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
     second:
       main_weapon_id: weapon.mace
@@ -153,7 +155,6 @@
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
-    - {key: first.disability, value: 6}
     - {key: round.0.first.stupidity.0, value: 1}
     - {key: round.0.first.stupidity.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 1}
@@ -163,8 +164,10 @@
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 # Result 1 (Lame and Arthritic): the bearer ends the round with an Initiative
-# one point lower, which is also why the Initiative 3 opponent is offered the
-# opening attack of the round.
+# one point lower.  The printed penalty is read as the characteristic, which is
+# one point below the supplied three; the phase order stays the declared player
+# turn (the duel alternates player turns, it does not re-derive that order from
+# Initiative), so the bearer's own pool resolves first.
 - audit_id: mechanic/mechanic.disability
   id: a-roll-of-one-lowers-initiative-by-one
   covers: [permanent-characteristic-penalty]
@@ -172,21 +175,25 @@
     first:
       main_weapon_id: weapon.mace
       skill_ids: [mechanic.disability]
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1}
+      condition_ids: [condition.disability-1]
+      # The printed result lowers both Initiative and Movement, so the supplied
+      # profile has to state the base Movement the penalty applies to.
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1, movement: 3}
     second:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
+  # The printed one is a permanent Initiative AND Movement penalty, so the crippled
+  # warrior's effective Initiative falls below the opponent's and the opponent opens
+  # the round: the tape's order is that observation, not a convention.
   rolls:
-    - {key: first.disability, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
     - {key: round.0.first.attack.0.hit, value: 1}
   expect_rounds:
     0: {state.first.initiative: 2, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
   expect_events:
-    - {kind: roll, key: first.disability, sides: 6, value: 1}
     - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
     - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
 
@@ -199,14 +206,17 @@
     first:
       main_weapon_id: weapon.mace
       skill_ids: [mechanic.disability]
+      condition_ids: [condition.disability-2]
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      # Weapon Skill 5 separates the bands: the unharmed 3 hits on 4+, the
+      # crippled 2 needs 5+, so the same declared four misses only with the
+      # permanent penalty.  (Weapon Skill 3 against 3 would need the same 4+.)
+      characteristics: {weapon_skill: 5, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
-    - {key: first.disability, value: 2}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
@@ -236,7 +246,8 @@
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 # Result 4 (Sickly): the bearer's Toughness is one point lower, so the same
-# Strength 3 attack wounds a Toughness 4 target on a three instead of a four.
+# Strength 3 attack wounds the reduced Toughness 2 on a three, one face easier
+# than the same attack against an uncrippled Toughness 3 bearer.
 - audit_id: mechanic/mechanic.disability
   id: a-roll-of-four-lowers-toughness-of-the-bearer
   covers: [permanent-characteristic-penalty]
@@ -247,11 +258,11 @@
     second:
       main_weapon_id: weapon.mace
       skill_ids: [mechanic.disability]
+      condition_ids: [condition.disability-4]
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
-    - {key: second.disability, value: 4}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 3}
     - {key: round.0.second.attack.0.hit, value: 1}
@@ -268,6 +279,7 @@
     first:
       main_weapon_id: weapon.mace
       skill_ids: [mechanic.disability]
+      condition_ids: [condition.disability-5]
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
       main_weapon_id: weapon.mace
@@ -275,7 +287,6 @@
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
-    - {key: first.disability, value: 5}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.second.attack.0.hit, value: 1}
@@ -294,15 +305,14 @@
       main_weapon_id: weapon.mace
       off_hand_id: weapon.dagger
       skill_ids: [mechanic.disability]
+      condition_ids: [condition.disability-2]
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
-  rolls:
-    - {key: first.disability, value: 2}
-  expect_error: "may not use two weapons"
+  expect_error: 'may use at most 1 one-handed weapon at a time.'
 - audit_id: mechanic/mechanic.disability
   id: a-parkinson-s-roll-refuses-a-weapon-and-a-shield
   covers: [no-two-weapons-or-weapon-and-shield]
@@ -311,15 +321,14 @@
       main_weapon_id: weapon.mace
       off_hand_id: defence.shield
       skill_ids: [mechanic.disability]
+      condition_ids: [condition.disability-2]
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
-  rolls:
-    - {key: first.disability, value: 2}
-  expect_error: "may not use a weapon and a shield"
+  expect_error: '"defence.shield" is forbidden for custom/custom.'
 # The accepting control: the same rolled result 2 with a single-weapon group (the
 # only remaining loadout) fights normally, so the two refusals and this acceptance
 # read as the whole of the printed prohibition.
@@ -330,6 +339,7 @@
     first:
       main_weapon_id: weapon.mace
       skill_ids: [mechanic.disability]
+      condition_ids: [condition.disability-2]
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
     second:
       main_weapon_id: weapon.mace
@@ -337,7 +347,6 @@
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
-    - {key: first.disability, value: 2}
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:

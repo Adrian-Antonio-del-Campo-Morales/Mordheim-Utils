@@ -72,6 +72,13 @@
 # Derived from the printed rule, this band's printed binding and the shared netter operator; no engine
 # output was consulted.  The netter fixture is the printed Night Goblin profile that carries the rule,
 # with its own characteristics declared except Ballistic Skill, which the profile supplies.
+#
+# Known gap (recorded, not worked around): the band row band--night-goblin-special-skills-netter is a
+# warband_skill whose net-charge producer is declared scope 'NO' (only condition.netted is admitted),
+# so the engine raises no round.N.<side>.netter.hit / .escape request at all and the declared net dice
+# stay unused; the tape owns the printed expectation (net hit, failed Strength escape, knocked-down
+# automatic hit with its wound roll) and is expected to fail until that producer is implemented.  The
+# control below, resolved without the band rule, is unaffected.
 - audit_id: rule/mordheim/night-goblins-mic/band--night-goblin-special-skills-netter/mechanic.netter
   id: a-hit-net-knocks-the-target-down-and-the-charge-strikes-home
   covers: [whole]
@@ -81,7 +88,7 @@
       band_id: night-goblins-mic
       profile_id: bosses
       special_rule_ids: [band--night-goblin-special-skills-netter]
-      main_weapon_id: weapon.mace
+      main_weapon_id: weapon.club
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
       main_weapon_id: weapon.mace
@@ -91,6 +98,7 @@
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.first.animosity, value: 4}
     - {key: round.0.first.netter.hit, value: 4}
     - {key: round.0.first.netter.escape, value: 4}
     - {key: round.0.first.attack.0.wound, value: 6}
@@ -99,6 +107,7 @@
         state.second.wounds: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
   expect_events:
+    - {kind: roll, key: round.0.first.animosity, sides: 6, value: 4}
     - {kind: roll, key: round.0.first.netter.hit, sides: 6, value: 4}
     - {kind: roll, key: round.0.first.netter.escape, sides: 6, value: 4}
     - {kind: roll, key: round.0.first.attack.0.wound, sides: 6, value: 6}
@@ -110,7 +119,7 @@
       collection: mordheim
       band_id: night-goblins-mic
       profile_id: bosses
-      main_weapon_id: weapon.mace
+      main_weapon_id: weapon.club
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
       main_weapon_id: weapon.mace
@@ -120,10 +129,12 @@
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.first.animosity, value: 4}
     - {key: round.0.first.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.hit: false, attacks.0.knocked_down_target: false, state.second.condition: STANDING,
         state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
   expect_events:
+    - {kind: roll, key: round.0.first.animosity, sides: 6, value: 4}
     - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}

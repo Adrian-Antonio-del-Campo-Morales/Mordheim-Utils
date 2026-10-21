@@ -778,15 +778,15 @@ rules:
 - id: band--black-orc-special-skills-ere-we-go
   kind: warband_skill
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.black-orcs.band.black-orc-special-skills-ere-we-go
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.ere-we-go
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.ere-we-go
   name: ’Ere We Go!
   source:
     manual: mordheimer.net

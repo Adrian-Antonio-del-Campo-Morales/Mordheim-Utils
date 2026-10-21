@@ -59,7 +59,9 @@
 # --- Authored scenarios ---
 # Derived from the printed sentence, the recorded contract and the accepted specification; no engine
 # output was consulted.  The scarecrow is the band's printed construct, so its own row supplies the
-# re-roll, and the striker's Weapon Skill and Strength fix the hit and wound thresholds.
+# re-roll, and the striker's Weapon Skill and Strength fix the hit and wound thresholds.  The striker's
+# Initiative 4 is a fixture fact above the scarecrow's printed 3: it fixes the striker as the first to
+# act instead of leaving the pair to the equal-Initiative tie roll, which is not the clause under test.
 
 - audit_id: rule/mordheim/restless-dead/scarecrows--construct/trait.injury-reroll-out
   id: the-construct-rerolls-an-injury-result-that-would-take-it-out
@@ -67,7 +69,7 @@
   fighters:
     first:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 4, attacks: 1}
     second:
       collection: mordheim
       band_id: restless-dead
@@ -96,7 +98,7 @@
   fighters:
     first:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 4, attacks: 1}
     second:
       collection: mordheim
       band_id: restless-dead
@@ -116,9 +118,11 @@
   expect_final: {rounds_executed: 1, termination_reason: second_out}
 
 # The printed exception: a wound caused by fire is not re-rolled.  The ignition face of one is below
-# the scarecrow's own caught-fire threshold, so only the fire attack's doubling acts; the wound leaves
-# the bearer standing and the injury result of five is the printed Out of Action, and neither the
-# re-roll choice nor a second injury die is declared, so either would fail the case.
+# the scarecrow's own caught-fire threshold, so only the fire attack's doubling acts.  The printed
+# profile has one wound, so the doubled damage crosses zero and the attack resolves one Injury die for
+# each lost Wound: two dice, the first the printed Out of Action and the second the band-1 Knocked
+# Down, whose worse result stands.  No re-roll choice is declared, so the engine offering one - or
+# rolling a re-roll die - fails the case: that decline is the printed exception on this tape.
 
 - audit_id: rule/mordheim/restless-dead/scarecrows--construct/trait.injury-reroll-out
   id: a-wound-caused-by-fire-is-not-rerolled
@@ -126,7 +130,7 @@
   fighters:
     first:
       main_weapon_id: weapon.brazier-iron
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 4, attacks: 1}
     second:
       collection: mordheim
       band_id: restless-dead
@@ -140,6 +144,7 @@
     - {key: round.0.first.attack.0.ignition, value: 1}
     - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.first.attack.0.injury.0, value: 5}
+    - {key: round.0.first.attack.0.injury.1, value: 1}
   expect_rounds:
     0: {attacks.0.damage: 2, state.second.condition: OUT}
   expect_final: {rounds_executed: 1, termination_reason: second_out}

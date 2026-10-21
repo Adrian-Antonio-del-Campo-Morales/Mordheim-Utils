@@ -55,6 +55,7 @@ operator_fields:
   damage: [injury]
   regeneration_save: [special_save]
   out_of_action_threshold: [injury]
+  true_grit: [injury]
   maximum_wound_target: [wound]
   armour_save_floor: [armour]
   armour_cannot_be_ignored: [armour]
@@ -127,6 +128,7 @@ semantic_evidence:
     compiler.master-of-throwing-weapons: baseline-and-expanded-limit
     compiler.proven-warrior: eligible-and-ineligible-profile
     compiler.renowned-virtue: missing-and-exact-selection
+    compiler.twistkin-single-mutation-at-recruitment: accepted-and-rejected-single-mutation
   special_compiler_bindings:
     profile-rule.centigors--trample: compiled-extra-attack
     profile-rule.fanatics--frantic: compiled-priority
@@ -148,6 +150,8 @@ semantic_evidence:
     special-rule.band--necromantic-modification-multiple-limbs: compiled-attacks
     special-rule.band--necromantic-modification-putrid-stench: compiled-hit-modifier
     special-rule.band--sacred-mark-venom-glands: compiled-replacement-attack
+    special-rule.band--marauder-special-skills-chosen-of-chaos: accepted-and-rejected-capability
+    special-rule.banshee--cold-steel: compiled-defensive-tag
 
 complex_rules:
   trained-bear--bear-hug:

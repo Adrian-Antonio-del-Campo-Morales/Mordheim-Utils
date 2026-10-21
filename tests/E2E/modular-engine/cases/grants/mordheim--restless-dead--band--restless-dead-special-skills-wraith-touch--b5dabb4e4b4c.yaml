@@ -78,15 +78,25 @@
 #   Band origin for the shared wraith-touch operator. The printed text repeats the canonical clause of the shared operator without adding a term, so the band origin creates no second runtime contribution. Surface reuse candidate: {"family":"mechanic.wraith-touch","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the printed target, recipient and exact individual restriction. Keep healing, attack replacement and prohibitions separate; Shallya healing is not self-healing or opponent healing. Do not synthesize independent friendly animals.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
 # --- Authored scenarios ---
-# The bearer is the band's own Liche with a lost wound (its printed total is four).  It
-# declares the Wraith Touch, so its pool is one unarmed attack that wounds automatically:
-# the tape carries the To Hit die and no To Wound die at all, and the Liche's own wound
-# is restored by one.
+# The bearer is the band's own Liche with a lost wound (its printed total is four).  Wraith
+# Touch is a selectable band skill, not a printed profile rule, so the Liche build selects
+# the band's own row; the compiled mechanic is what the round operator reads to replace the
+# pool.  It declares the Wraith Touch, so its pool is one unarmed attack that wounds
+# automatically: the tape carries the To Hit die and no To Wound die at all.  Because all rules
+# that apply to unarmed attacks apply, the target keeps the unarmed attack's +1 armour save,
+# so a save die follows the hit and is declared failing (five against the printed six); the
+# printed +1 Strength penalty and this save come from the same unarmed profile.  A Liche that
+# wounds chooses the printed regain, so that second choice is declared where it can be
+# offered (the bearer is below its starting total).
 - audit_id: rule/mordheim/restless-dead/band--restless-dead-special-skills-wraith-touch/mechanic.wraith-touch
   id: the-declared-wraith-touch-wounds-automatically-and-the-liche-regains-a-wound
   covers: [whole]
   fighters:
-    first: {collection: mordheim, band_id: restless-dead, profile_id: liche}
+    first:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: liche
+      special_rule_ids: [band--restless-dead-special-skills-wraith-touch]
     second:
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
   initial_state: {first: {wounds: 1}, second: {attacks: 0}}
@@ -94,19 +104,26 @@
   maximum_rounds: 1
   decisions:
     - {key: round.0.first.wraith-touch, value: true}
+    - {key: round.0.first.attack.0.wraith-heal, value: true}
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
   expect_rounds:
     0: {attacks.0.wounded: True, attacks.0.damage: 1, state.second.wounds: 2,
         state.first.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 # The printed cap: the same Liche at its full printed four wounds still wounds the
-# defender, but the regain may not take it beyond its starting total.
+# defender, but the regain may not take it beyond its starting total.  At the starting
+# total the engine does not even offer the regain, so no choice is declared here.
 - audit_id: rule/mordheim/restless-dead/band--restless-dead-special-skills-wraith-touch/mechanic.wraith-touch
   id: the-liche-heal-may-not-take-it-beyond-its-starting-total
   covers: [whole]
   fighters:
-    first: {collection: mordheim, band_id: restless-dead, profile_id: liche}
+    first:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: liche
+      special_rule_ids: [band--restless-dead-special-skills-wraith-touch]
     second:
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
   initial_state: {second: {attacks: 0}}
@@ -116,6 +133,7 @@
     - {key: round.0.first.wraith-touch, value: true}
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
   expect_rounds:
     0: {attacks.0.wounded: True, state.second.wounds: 2, state.first.wounds: 4}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

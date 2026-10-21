@@ -13,8 +13,10 @@ from mordheim_combat_lab.cli.benchmarking import deep_test_scenarios
 from mordheim_construction.compiler import compile_fighter
 from mordheim_core.models import Characteristics
 from mordheim_core.models import FighterBuild
+import pytest
 
 
+@pytest.mark.parity
 def test_vectorized_parity_inventory_is_complete_and_exact_checks_pass():
     report = verify_vectorized_parity()
     assert report.pending == ()
@@ -27,6 +29,7 @@ def test_vectorized_parity_inventory_is_complete_and_exact_checks_pass():
     }
 
 
+@pytest.mark.evidence
 def test_parity_inventory_covers_fields_tags_and_complex_sequences():
     report = verify_vectorized_parity()
     kinds = {item.kind for item in report.obligations}
@@ -34,6 +37,7 @@ def test_parity_inventory_covers_fields_tags_and_complex_sequences():
     assert all(item.evidence for item in report.obligations)
 
 
+@pytest.mark.parity
 def test_semantic_specs_are_reused_as_a_case_level_parity_inventory():
     report = verify_specification_parity()
     assert len(report.cases) == 3743
@@ -50,6 +54,7 @@ def test_semantic_specs_are_reused_as_a_case_level_parity_inventory():
     )
 
 
+@pytest.mark.parity
 def test_statistical_parity_reports_three_outcomes_and_six_sigma_tolerances():
     fighter = compile_fighter(FighterBuild(
         "mordheim", Characteristics(3, 3, 3, 1, 3, 1),
@@ -60,6 +65,7 @@ def test_statistical_parity_reports_three_outcomes_and_six_sigma_tolerances():
     assert all(tolerance >= .0025 for tolerance in result.tolerances)
 
 
+@pytest.mark.parity
 def test_statistical_samples_record_per_engine_wall_times():
     pair = _single_deep_pair()
     result = compare_statistical_parity(
@@ -83,6 +89,7 @@ def test_statistical_samples_record_per_engine_wall_times():
     assert replayed.candidate_seconds > 0
 
 
+@pytest.mark.workflow
 def test_payload_and_markdown_record_total_elapsed_time():
     report = ParityReport(complete=True, obligations=(), verified=(),
                           pending=(), divergences=(), exact_checks=())
@@ -96,6 +103,7 @@ def test_payload_and_markdown_record_total_elapsed_time():
     assert "not recorded" in parity_report_markdown(untimed)
 
 
+@pytest.mark.workflow
 def test_deep_payload_rows_expose_per_engine_wall_times():
     pair = _single_deep_pair()
     samples, _ = certify_deep(
@@ -118,6 +126,7 @@ def test_deep_payload_rows_expose_per_engine_wall_times():
     assert "- Pair set: `fast`" in markdown
 
 
+@pytest.mark.workflow
 def test_report_distinguishes_smoke_samples_from_certification_samples():
     report = verify_vectorized_parity()
     payload = parity_report_payload(report)
@@ -128,6 +137,7 @@ def test_report_distinguishes_smoke_samples_from_certification_samples():
     assert "## Deterministic checks" in markdown
 
 
+@pytest.mark.workflow
 def test_report_exposes_semantic_case_statuses_and_couples_completion_to_them():
     report = verify_vectorized_parity()
     specifications = verify_specification_parity()
@@ -152,6 +162,7 @@ def _single_deep_pair():
     return DeepPair("basic", first, second, scenario.maximum_rounds)
 
 
+@pytest.mark.parity
 def test_certify_deep_matrix_stays_within_the_modular_budget():
     pair = _single_deep_pair()
     samples, modular_duels = certify_deep(
@@ -167,6 +178,7 @@ def test_certify_deep_matrix_stays_within_the_modular_budget():
     assert isinstance(samples[0].passed, bool)
 
 
+@pytest.mark.parity
 def test_certify_deep_pooled_oracle_matches_the_sequential_path():
     pair = _single_deep_pair()
     kwargs = dict(simulations=200, cross_simulations=100, seed=3,
@@ -182,6 +194,7 @@ def test_certify_deep_pooled_oracle_matches_the_sequential_path():
     assert fields(pooled) == fields(sequential)
 
 
+@pytest.mark.parity
 def test_certify_deep_supports_per_pair_oracle_sample_sizes():
     pair = _single_deep_pair()
     pairs = (
@@ -198,6 +211,7 @@ def test_certify_deep_supports_per_pair_oracle_sample_sizes():
     }
 
 
+@pytest.mark.parity
 def test_certify_deep_cross_rows_require_the_native_backend():
     from mordheim_combat.vectorized import available_backends
     pair = _single_deep_pair()
@@ -216,6 +230,7 @@ def test_certify_deep_cross_rows_require_the_native_backend():
         assert cross == []
 
 
+@pytest.mark.parity
 def test_certify_deep_covers_the_full_archetype_matrix():
     pairs = tuple(
         DeepPair(scenario.id, *(
@@ -231,6 +246,7 @@ def test_certify_deep_covers_the_full_archetype_matrix():
     assert {row.scenario for row in samples} == {f"matrix:{s.label}" for s in pairs}
 
 
+@pytest.mark.workflow
 def test_deep_payload_exposes_samples_and_passes_only_when_all_pass():
     pair = _single_deep_pair()
     samples, _ = certify_deep(
@@ -294,6 +310,7 @@ def _prepared_matrix():
     return prepared, samples
 
 
+@pytest.mark.parity
 def test_escalation_plan_marks_suspicious_and_unresolved_pairs():
     prepared, samples = _prepared_matrix()
     plan = escalation_plan(
@@ -310,6 +327,7 @@ def test_escalation_plan_marks_suspicious_and_unresolved_pairs():
     assert [item.label for item, _ in plan] == ["border", "grind"]
 
 
+@pytest.mark.parity
 def test_escalation_plan_respects_the_modular_ceiling():
     prepared, samples = _prepared_matrix()
     plan = escalation_plan(
@@ -320,6 +338,7 @@ def test_escalation_plan_respects_the_modular_ceiling():
     assert [item.label for item, _ in plan] == ["border"]
 
 
+@pytest.mark.parity
 def test_certify_deep_escalates_and_clamps_to_the_ceiling():
     pair = _single_deep_pair()
     pairs = tuple(
@@ -351,6 +370,7 @@ def test_certify_deep_escalates_and_clamps_to_the_ceiling():
     assert row["escalated"] is True
 
 
+@pytest.mark.parity
 def test_certify_deep_does_not_escalate_by_default():
     pair = _single_deep_pair()
     samples, modular_duels = certify_deep(

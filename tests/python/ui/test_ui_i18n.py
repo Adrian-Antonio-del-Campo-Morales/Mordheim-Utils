@@ -6,6 +6,9 @@ import pytest
 from mordheim_combat_lab.ui import i18n
 from mordheim_combat_lab.ui.i18n import CANONICAL_LOCALE, STRINGS, current_locale, set_locale, tr
 
+# The whole file proves the visible string catalogue and locale behaviour.
+pytestmark = pytest.mark.presentation
+
 
 @pytest.fixture(autouse=True)
 def _restore_locale():

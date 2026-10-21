@@ -63,6 +63,7 @@ def two_weapons():
     return build(main_weapon_id="weapon.sigmarite-hammer", off_hand_id="weapon.mace")
 
 
+@pytest.mark.compilation
 def test_the_compiled_mutation_publishes_the_grapple_tag():
     fighter = mutant()
     assert fighter.global_effects.incoming_attacks_modifier == -1
@@ -72,6 +73,7 @@ def test_the_compiled_mutation_publishes_the_grapple_tag():
     assert trollheim.global_effects.incoming_attacks_modifier == -1
 
 
+@pytest.mark.rule_behavior
 def test_the_default_nomination_keeps_the_off_hand_attack():
     """The flat modifier already dropped the allocation's first entry."""
     attacker, defender = two_weapons(), mutant()
@@ -85,6 +87,7 @@ def test_the_default_nomination_keeps_the_off_hand_attack():
     assert outcomes[0].wounded is False
 
 
+@pytest.mark.rule_behavior
 def test_the_nomination_can_take_the_main_weapon_instead():
     attacker, defender = two_weapons(), mutant()
     _, outcomes = pool(attacker, defender, ScriptedDecisions({
@@ -96,6 +99,7 @@ def test_the_nomination_can_take_the_main_weapon_instead():
     assert outcomes[0].wounded is True
 
 
+@pytest.mark.rule_behavior
 def test_declining_every_offer_keeps_the_whole_pool():
     attacker, defender = two_weapons(), mutant()
     _, outcomes = pool(attacker, defender, ScriptedDecisions({
@@ -105,6 +109,7 @@ def test_declining_every_offer_keeps_the_whole_pool():
     assert [outcome.hit for outcome in outcomes] == [False, False]
 
 
+@pytest.mark.rule_behavior
 def test_a_lone_attack_is_never_taken():
     """The printed minimum of one attack survives the recomposition."""
     attacker = build(main_weapon_id="weapon.mace")
@@ -116,6 +121,7 @@ def test_a_lone_attack_is_never_taken():
     assert decisions.keys == []
 
 
+@pytest.mark.rule_behavior
 def test_the_nomination_precedes_every_attack_roll():
     events: list[str] = []
 
@@ -152,6 +158,7 @@ class RecordingDecisions:
         return True
 
 
+@pytest.mark.rule_behavior
 def test_declining_grapple_does_not_create_an_attack_for_a_lone_attacker():
     attacker, defender = build(), mutant()
 
@@ -167,6 +174,7 @@ def test_declining_grapple_does_not_create_an_attack_for_a_lone_attacker():
     assert len(outcomes) == 1
 
 
+@pytest.mark.interaction
 @pytest.mark.parametrize("attacks,charging,shifty", [
     (1, ("first",), False),
     (2, ("second",), False),

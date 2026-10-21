@@ -44,6 +44,7 @@ def hireling_kit(band_id, profile_id, **options):
 
 # --- Dark Elf Corsairs: the shared printed kits ------------------------------
 
+@pytest.mark.compilation
 def test_the_sorceress_offers_and_carries_her_dark_elven_blade_and_dagger():
     assert offers("dark-elf-corsairs-mou", "sorceress") >= {
         "weapon.sword", "weapon.dagger", "material.dark-elf-blade"}
@@ -54,6 +55,7 @@ def test_the_sorceress_offers_and_carries_her_dark_elven_blade_and_dagger():
     assert sorceress.off_hand.tags == ("weapon.dagger", "material.normal")
 
 
+@pytest.mark.compilation
 def test_the_beastmaster_offers_light_armour_blade_and_beastlash():
     assert offers("dark-elf-corsairs-mou", "beastmaster") >= {
         "armour.light-armour", "weapon.sword", "weapon.beastlash", "material.dark-elf-blade"}
@@ -67,6 +69,9 @@ def test_the_beastmaster_offers_light_armour_blade_and_beastlash():
 
 # --- printed equipment choices ----------------------------------------------
 
+# Primary: each printed option compiles as a whole kit. The refusal of a mixed
+# loadout is the secondary guarantee of the same kit contract.
+@pytest.mark.compilation
 def test_each_black_orc_option_compiles_as_a_whole_kit_and_the_alternatives_do_not_mix():
     axes = compile_fighter(fighter(
         band_id="hirelings.hired-sword.1b", profile_id="hireling.hired-sword.black-orc-overseer"))
@@ -81,6 +86,7 @@ def test_each_black_orc_option_compiles_as_a_whole_kit_and_the_alternatives_do_n
             off_hand_id="weapon.double-handed-weapon"))
 
 
+@pytest.mark.compilation
 def test_each_gaoler_option_compiles_and_two_flails_are_not_the_printed_pair():
     flail = compile_fighter(fighter(
         band_id="hirelings.hired-sword.1b", profile_id="hireling.hired-sword.gaoler"))
@@ -97,6 +103,7 @@ def test_each_gaoler_option_compiles_and_two_flails_are_not_the_printed_pair():
             off_hand_id="weapon.flail"))
 
 
+@pytest.mark.compilation
 def test_each_centaur_option_compiles_and_sword_does_not_mix_with_spear():
     sword = compile_fighter(fighter(
         band_id="hirelings.hired-sword.1c", profile_id="hireling.hired-sword.chaos-centaur"))
@@ -111,6 +118,7 @@ def test_each_centaur_option_compiles_and_sword_does_not_mix_with_spear():
             main_weapon_id="weapon.sword", off_hand_id="weapon.spear"))
 
 
+@pytest.mark.compilation
 def test_the_witch_hunter_kit_offers_either_pistol_and_carries_the_garlic():
     default = hireling_kit("hirelings.hired-sword.1b", "hireling.hired-sword.witch-hunter")
     assert "duelling_pistol" in default and "garlic" in default
@@ -125,6 +133,7 @@ def test_the_witch_hunter_kit_offers_either_pistol_and_carries_the_garlic():
 
 # --- Johann: optional drug and the automatic coating ------------------------
 
+@pytest.mark.compilation
 def test_johanns_crimson_shade_is_optional_and_does_not_duplicate_the_lotus():
     plain = compile_fighter(fighter(
         band_id="hirelings.dramatis-personae.core", profile_id="hireling.dramatis.johann-the-knife"))
@@ -144,6 +153,7 @@ def test_johanns_crimson_shade_is_optional_and_does_not_duplicate_the_lotus():
 
 # --- Countess Marianna: garlic coating against Vampires only ----------------
 
+@pytest.mark.rule_behavior
 def test_the_garlic_coating_wounds_a_vampire_on_a_natural_six_and_no_one_else():
     countess = compile_fighter(fighter(
         band_id="hirelings.dramatis-personae.1a",
@@ -170,6 +180,7 @@ def nicodemus(**options):
         profile_id="hireling.dramatis.nicodemus-the-cursed-pilgrim", **options))
 
 
+@pytest.mark.compilation
 def test_the_staff_two_handed_mode_is_a_concussive_club_with_a_buckler_parry():
     staff = nicodemus()
     assert staff.main_weapon.tags[0] == "weapon.wizards-staff"
@@ -179,6 +190,7 @@ def test_the_staff_two_handed_mode_is_a_concussive_club_with_a_buckler_parry():
         nicodemus(off_hand_id="weapon.dagger")
 
 
+@pytest.mark.compilation
 def test_the_left_hand_mode_is_an_ordinary_one_handed_club_without_parry():
     club = nicodemus(main_weapon_id="weapon.club")
     assert club.main_weapon.tags[:2] == ("weapon.club", "weapon.mace")
@@ -187,6 +199,7 @@ def test_the_left_hand_mode_is_an_ordinary_one_handed_club_without_parry():
 
 # --- particular objects -----------------------------------------------------
 
+@pytest.mark.compilation
 def test_the_ceremonial_scythe_is_the_priests_fixed_weapon_with_its_printed_grip():
     scythe = compile_fighter(fighter(
         band_id="hirelings.hired-sword.2b",
@@ -201,6 +214,7 @@ def test_the_ceremonial_scythe_is_the_priests_fixed_weapon_with_its_printed_grip
             main_weapon_id="weapon.ceremonial-scythe", off_hand_id="weapon.dagger"))
 
 
+@pytest.mark.rule_behavior
 def test_the_beastlash_causes_fear_in_animals_and_not_in_other_opponents():
     hunter = compile_fighter(fighter(
         band_id="hirelings.hired-sword.2b", profile_id="hireling.hired-sword.bog-hunter"))
@@ -213,6 +227,7 @@ def test_the_beastlash_causes_fear_in_animals_and_not_in_other_opponents():
         compile_fighter(fighter(main_weapon_id="weapon.sword")), animal)
 
 
+@pytest.mark.compilation
 def test_the_candle_tree_relic_is_the_sisters_own_arcane_candelabrum():
     sister = compile_fighter(fighter(
         band_id="hirelings.hired-sword.2b", profile_id="hireling.hired-sword.sister-of-sigmar",
@@ -222,6 +237,9 @@ def test_the_candle_tree_relic_is_the_sisters_own_arcane_candelabrum():
     assert "arcane_candelabrum" in {entry.item_id for entry in sister.mutation_equipment}
 
 
+# Primary: the canonical item record and its declared recipient. The compiled
+# carry and save below are the secondary guarantee that reaches the fighter.
+@pytest.mark.knowledge_integrity
 def test_the_bearman_starting_cloak_is_the_no_effect_mim_item_only_for_him():
     items = {row["id"]: row for row in load_items("mordheim")}
     assert items["wolf_cloak"].get("mechanic_id") is None
@@ -242,6 +260,7 @@ def test_the_bearman_starting_cloak_is_the_no_effect_mim_item_only_for_him():
 
 # --- personas and general fixed equipment -----------------------------------
 
+@pytest.mark.knowledge_integrity
 def test_luthors_selectable_persona_is_the_separate_normalized_looter_profile():
     rows = {row["id"]: row for row in package("hirelings.dramatis-personae.1c").profiles}
     wolfenbaum, looter = rows["hireling.dramatis.luthor-wolfenbaum"], rows["hireling.dramatis.luthor-the-looter"]
@@ -255,6 +274,7 @@ def test_luthors_selectable_persona_is_the_separate_normalized_looter_profile():
         main_weapon_id="weapon.sword", armour_id="armour.heavy-armour")).main_weapon.tags[0] == "weapon.sword"
 
 
+@pytest.mark.knowledge_integrity
 def test_the_pair_keeps_its_identity_and_the_individual_warriors_are_their_own_profiles():
     rows = {row["id"]: row for row in package("hirelings.dramatis-personae.1a").profiles}
     pair = rows["hireling.dramatis.ulli-and-marquand"]
@@ -264,6 +284,7 @@ def test_the_pair_keeps_its_identity_and_the_individual_warriors_are_their_own_p
     assert rows["hireling.dramatis.marquand"]["normalization_status"] == "normalized"
 
 
+@pytest.mark.knowledge_integrity
 def test_the_horseman_is_not_dismounted_into_an_invented_profile():
     horseman = next(row for row in package("hirelings.dramatis-personae.2a").profiles
                     if row["id"] == "hireling.dramatis.the-headless-horseman")
@@ -272,6 +293,7 @@ def test_the_horseman_is_not_dismounted_into_an_invented_profile():
     assert "rider-and-mount" in horseman["out_of_scope_reason"]
 
 
+@pytest.mark.compilation
 def test_fixed_equipment_reaches_every_hireling_and_refuses_extra_ownership():
     warrior = compile_fighter(fighter(
         band_id="hirelings.hired-sword.2b", profile_id="hireling.hired-sword.priest-of-morr-miracle-workers",

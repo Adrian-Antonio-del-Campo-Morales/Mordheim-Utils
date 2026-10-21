@@ -67,7 +67,7 @@
     first:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
-    second: {collection: mordheim, band_id: tomb-guardians, profile_id: skeleton-warriors}
+    second: {collection: mordheim, band_id: tomb-guardians, profile_id: skeleton-warriors, characteristics: {weapon_skill: 2, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 5}}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
@@ -84,7 +84,7 @@
     first:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
-    second: {collection: mordheim, band_id: tomb-guardians, profile_id: skeleton-warriors}
+    second: {collection: mordheim, band_id: tomb-guardians, profile_id: skeleton-warriors, characteristics: {weapon_skill: 2, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 5}}
   initial_state:
     second: {attacks: 0}
   duel_context: {charging: [first], active_participant: first}
@@ -143,7 +143,7 @@
     first:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
-    second: {collection: mordheim, band_id: tomb-guardians, profile_id: skeleton-warriors}
+    second: {collection: mordheim, band_id: tomb-guardians, profile_id: skeleton-warriors, characteristics: {weapon_skill: 2, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 5}}
   initial_state:
     second: {wounds: 1, attacks: 0}
   duel_context: {charging: [], active_participant: first}
@@ -164,7 +164,7 @@
       main_weapon_id: weapon.mace
       main_poison_id: poison.nightshade
       characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
-    second: {collection: mordheim, band_id: tomb-guardians, profile_id: skeleton-warriors}
+    second: {collection: mordheim, band_id: tomb-guardians, profile_id: skeleton-warriors, characteristics: {weapon_skill: 2, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 5}}
   initial_state:
     second: {wounds: 2, attacks: 0}
   duel_context: {charging: [], active_participant: first}

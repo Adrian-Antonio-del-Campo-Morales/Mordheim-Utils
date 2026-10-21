@@ -44,8 +44,10 @@ cdef enum:
     OUT = 4
 
 
-# Effect value layout: index order MUST equal kernel.EFFECT_VALUE_FIELDS
-# (verified at import time against the runtime kernel tuple).
+# Effect value layout: index order MUST equal kernel.EFFECT_VALUE_FIELDS.
+# ``N_EFFECT_FIELDS`` is compared against that runtime tuple by
+# ``vectorized._driver`` before the native backend may be selected; a new
+# EffectSet field must therefore be appended here in the same position.
 cdef enum Field:
     F_STRENGTH_BONUS = 0
     F_FIRST_ROUND_STRENGTH_BONUS = 1
@@ -92,18 +94,25 @@ cdef enum Field:
     F_DAMAGE = 42
     F_REGENERATION_SAVE = 43
     F_OUT_OF_ACTION_THRESHOLD = 44
-    F_DAMAGE_DIE_SIDES = 45
-    F_MAXIMUM_WOUND_TARGET = 46
-    F_ARMOUR_SAVE_FLOOR = 47
-    F_ARMOUR_CANNOT_BE_IGNORED = 48
-    F_WARD_SAVE_MUNDANE_ONLY = 49
-    F_NATURAL_ARMOUR_NEGATED_BY_MAGIC = 50
-    F_REGENERATION_BLOCKED_BY_FIRE = 51
-    F_REGENERATION_BLOCKED_BY_BLESSED = 52
-    F_IGNITION_THRESHOLD = 53
-    F_CAUGHT_FIRE_THRESHOLD = 54
+    F_TRUE_GRIT = 45
+    F_DAMAGE_DIE_SIDES = 46
+    F_MAXIMUM_WOUND_TARGET = 47
+    F_ARMOUR_SAVE_FLOOR = 48
+    F_ARMOUR_CANNOT_BE_IGNORED = 49
+    F_WARD_SAVE_MUNDANE_ONLY = 50
+    F_NATURAL_ARMOUR_NEGATED_BY_MAGIC = 51
+    F_REGENERATION_BLOCKED_BY_FIRE = 52
+    F_REGENERATION_BLOCKED_BY_BLESSED = 53
+    F_IGNITION_THRESHOLD = 54
+    F_CAUGHT_FIRE_THRESHOLD = 55
+    F_IGNORE_ARMOUR_AGAINST_KNOCKED_DOWN = 56
+    F_IGNORE_ARMOUR_EXCEPT_SHIELD_AND_SKILLS = 57
+    F_CRITICAL_THRESHOLD = 58
+    F_ETHEREAL_HIT_SAVE = 59
+    F_NATURAL_ARMOUR_NEGATED_BY_FIRE = 60
+    F_EFFECT_FIELD_COUNT = 61
 
-N_EFFECT_FIELDS = 55
+N_EFFECT_FIELDS = <int>F_EFFECT_FIELD_COUNT
 CONTEXT_VERSION = 1
 
 # Capacity gates (kept in sync with _combat_compile).  Compile-time
@@ -204,7 +213,7 @@ cdef inline int rng_draw_safe(Rng* r, int low, int high) except -1:
 # ---------------------------------------------------------------------------
 
 cdef struct EffectC:
-    int v[55]
+    int v[F_EFFECT_FIELD_COUNT]
 
 
 cdef struct SourceC:

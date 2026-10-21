@@ -24,6 +24,8 @@ from typing import Iterable
 
 import yaml
 
+SAFE_YAML_LOADER = getattr(yaml, "CSafeLoader", yaml.SafeLoader)
+
 CASES_DIRECTORY = Path(__file__).parent / "cases"
 
 #: Fields added by the corpus on top of the runner's case vocabulary.
@@ -243,7 +245,7 @@ def load_corpus(cases_directory: Path | None = None) -> list[Scenario]:
     declared: dict[str, str] = {}
     for path in sorted(directory.rglob("*.yaml")):
         source = path.relative_to(directory).as_posix()
-        documents = yaml.safe_load(path.read_text(encoding="utf-8"))
+        documents = yaml.load(path.read_text(encoding="utf-8"), Loader=SAFE_YAML_LOADER)
         if documents is None:
             documents = []
         if not isinstance(documents, list):

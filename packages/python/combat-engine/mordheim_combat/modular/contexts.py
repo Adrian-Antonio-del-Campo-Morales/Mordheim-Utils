@@ -486,6 +486,10 @@ def prepare_hit_context(
     if first_round and charging:
         ws += effect.charge_ws_bonus
     modifier = effect.hit_modifier + defender.global_effects.incoming_hit_modifier
+    # Hypnotize: every attack directed against the failed target gains +1 To Hit
+    # for that combat phase; the tag is projected by the round consumer.
+    if melee_attack and has_tag(defender.global_effects, "condition.hypnotized"):
+        modifier += 1
     if melee_attack:
         modifier += int(has_tag(effect, "condition.ye-give-way-victorious"))
         modifier -= int(has_tag(effect, "condition.ye-give-way-refused"))

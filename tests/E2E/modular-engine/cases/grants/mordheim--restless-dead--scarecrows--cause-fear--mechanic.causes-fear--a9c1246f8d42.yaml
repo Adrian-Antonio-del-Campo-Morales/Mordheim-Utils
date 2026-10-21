@@ -21,7 +21,9 @@
 #   on its ordinary target.  Toughness 3 and 1 wound(s) are read from the printed
 #   profile, so the wound reaches the injury table and the printed band-1 result leaves the causer
 #   knocked down; the corpus's established shape for a warrior knocked down by the attack it
-#   takes declares no die for its own strike back, and this file follows it.
+#   takes declares no die for its own strike back, and this file follows it.  The construct's own
+#   printed Injury re-roll clause offers a choice on every Injury result, so the passing tape
+#   declares that choice as declined and keeps the band-1 Knocked Down result.
 #   The opponent's Leadership 7, Weapon Skill 8 and Strength 8 are hand-built fixture facts, not
 #   profile values.  The cancelled voluntary charge, the one-test-per-pairing rule and the listed
 #   exceptions (an opponent that causes Fear, is immune to Psychology or Fear, or is Frenzied) are
@@ -60,9 +62,10 @@
 # Derived from the printed rule and the recorded semantic contract; no engine output was
 # consulted.  The causer charges, so the opponent is the warrior the Fear clause tests and
 # its two Leadership dice are declared first, summed against the Leadership 7 the fixture
-# opponent declares.  The strict tape consumes exactly the declared dice, so a Fear test
-# that never happens or a sixes-only clamp that never lifts both fail the case rather than
-# passing quietly.
+# opponent declares.  The causer's own printed attacks (A2) follow the test and are scripted as
+# natural 1s, misses, so the round reports the Fear consequence and nothing else.  The strict tape
+# consumes exactly the declared dice, so a Fear test that never happens or a sixes-only clamp that
+# never lifts both fail the case rather than passing quietly.
 
 - audit_id: rule/mordheim/restless-dead/scarecrows--cause-fear/mechanic.causes-fear
   id: a-charged-opponent-that-fails-its-fear-test-hits-only-with-sixes
@@ -77,6 +80,8 @@
   rolls:
     - {key: round.0.first.fear.charged.0, value: 5}
     - {key: round.0.first.fear.charged.1, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
     - {key: round.0.first.attack.0.hit, value: 4}
   expect_rounds:
     0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1}
@@ -92,9 +97,13 @@
     second: {collection: mordheim, band_id: restless-dead, profile_id: scarecrows}
   duel_context: {charging: [second], active_participant: second}
   maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.injury.0.reroll-choice, value: false}
   rolls:
     - {key: round.0.first.fear.charged.0, value: 3}
     - {key: round.0.first.fear.charged.1, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 3}
     - {key: round.0.first.attack.0.injury.0, value: 1}

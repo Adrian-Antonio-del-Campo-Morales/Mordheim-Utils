@@ -754,6 +754,7 @@ rules:
         kind: mechanic
         id: mechanic.body-slam
 - id: band--pit-fighter-skill-grizzled-veteran
+  kind: warband_skill
   name: Grizzled Veteran
   effect: The warrior is immune to all psychology.
   source:
@@ -768,7 +769,7 @@ rules:
   applies_to:
     band: true
   runtime:
-    grant: band
+    grant: selectable
     scope: 'YES'
     implemented: 'YES'
     effects:

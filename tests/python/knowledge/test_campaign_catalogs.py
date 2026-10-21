@@ -19,6 +19,8 @@ from pathlib import Path
 import re
 import yaml
 
+import pytest
+
 from mordheim_knowledge import editorial_schemas
 
 ROOT = Path(__file__).resolve().parents[3] / "sources/knowledge"
@@ -89,6 +91,7 @@ def hireling_profile_ids() -> set[str]:
 
 # Headers, ingestion state and absence of fictitious examples
 
+@pytest.mark.data_contract
 def test_campaign_catalogs_have_headers_and_declare_status():
     for path in campaign_files():
         document = yaml.safe_load(path.read_text(encoding="utf-8"))
@@ -98,6 +101,7 @@ def test_campaign_catalogs_have_headers_and_declare_status():
         assert document.get("catalog") == f"campaign-{path.stem}", path.name
 
 
+@pytest.mark.data_contract
 def test_campaign_catalogs_all_published_and_hired_swords_is_schema_v2():
     statuses = {path.stem: yaml.safe_load(path.read_text(encoding="utf-8")).get("status")
                 for path in campaign_files()}
@@ -110,6 +114,7 @@ def test_campaign_catalogs_all_published_and_hired_swords_is_schema_v2():
     assert campaign("hired-swords-and-dramatis.yaml").get("schema_version") == 2
 
 
+@pytest.mark.knowledge_integrity
 def test_ingested_catalogs_removed_fictitious_examples():
     for path in campaign_files():
         document = yaml.safe_load(path.read_text(encoding="utf-8"))
@@ -118,6 +123,7 @@ def test_ingested_catalogs_removed_fictitious_examples():
 
 # Canonical conditions
 
+@pytest.mark.knowledge_integrity
 def test_conditions_catalog_is_canonical():
     conditions = load("catalog/rules/conditions.yaml").get("conditions", [])
     assert {c["id"] for c in conditions} == {
@@ -224,6 +230,7 @@ def test_conditions_catalog_is_canonical():
 
 # Trading Post
 
+@pytest.mark.knowledge_integrity
 def test_trading_post_ingestion_state():
     items = campaign("trading-post.yaml")["items"]
     entry_ids = [item["id"] for item in items]
@@ -239,6 +246,7 @@ def test_trading_post_ingestion_state():
     assert dict(kinds) == {"common": 131, "rare": 244, "not_sold": 98}
 
 
+@pytest.mark.data_contract
 def test_trading_post_price_and_availability_shapes():
     items = campaign("trading-post.yaml")["items"]
     no_price = sorted(item["id"] for item in items if item.get("price") is None)
@@ -283,6 +291,7 @@ def test_trading_post_price_and_availability_shapes():
                 assert "dice" in variable, item["id"]
 
 
+@pytest.mark.knowledge_integrity
 def test_trading_post_canonical_prices():
     by_id = {item["item_id"]: item for item in campaign("trading-post.yaml")["items"]}
     assert by_id["sword"]["price"]["base_gc"] == 10
@@ -295,6 +304,7 @@ def test_trading_post_canonical_prices():
     assert mordheim_map["availability"] == {"kind": "rare", "rarity": 9}
 
 
+@pytest.mark.knowledge_integrity
 def test_trading_post_restricted_variants_share_item_id_deliberately():
     items = campaign("trading-post.yaml")["items"]
     by_item_id: dict[str, list[dict]] = {}
@@ -311,6 +321,7 @@ def test_trading_post_restricted_variants_share_item_id_deliberately():
 
 # Serious injuries
 
+@pytest.mark.knowledge_integrity
 def test_serious_injuries_tables_state():
     tables = {t["id"]: t for t in campaign("serious-injuries.yaml")["tables"]}
     assert set(tables) == {"campaign.serious-injuries.hero", "campaign.serious-injuries.henchman"}
@@ -328,6 +339,7 @@ def test_serious_injuries_tables_state():
     assert [str(r["roll"]) for r in henchman["results"]] == ["1-2", "3-6"]
 
 
+@pytest.mark.knowledge_integrity
 def test_serious_injuries_canonical_outcomes():
     hero = next(t for t in campaign("serious-injuries.yaml")["tables"] if t["id"].endswith(".hero"))
     by_roll = {str(r["roll"]): r for r in hero["results"]}
@@ -346,6 +358,7 @@ def test_serious_injuries_canonical_outcomes():
     assert set(multiple["reroll_ids"]) <= result_ids
 
 
+@pytest.mark.knowledge_integrity
 def test_serious_injuries_conditions_land_on_canonical_rolls():
     hero = next(t for t in campaign("serious-injuries.yaml")["tables"] if t["id"].endswith(".hero"))
     roll_conditions: dict[str, set[str]] = {}
@@ -364,6 +377,7 @@ def test_serious_injuries_conditions_land_on_canonical_rolls():
 
 # Experience and advances
 
+@pytest.mark.knowledge_integrity
 def test_experience_awards_and_underdog_state():
     document = campaign("experience-and-advances.yaml")
     assert [award["id"] for award in document["awards"]] == [
@@ -375,6 +389,7 @@ def test_experience_awards_and_underdog_state():
     assert len(document["underdog_bonus"]["bands"]) == 6
 
 
+@pytest.mark.knowledge_integrity
 def test_advance_tables_cover_2_to_12_without_gaps():
     tables = {t["id"]: t for t in campaign("experience-and-advances.yaml")["advancement_tables"]}
     assert set(tables) == {"campaign.advance.hero", "campaign.advance.henchman"}
@@ -392,6 +407,7 @@ def test_advance_tables_cover_2_to_12_without_gaps():
             assert branch["result"]["type"], table_id
 
 
+@pytest.mark.knowledge_integrity
 def test_racial_maximums_live_in_the_shared_catalog():
     # Single source of truth: catalog/rules/racial-maximums.yaml. The campaign
     # catalogue does not duplicate the block (`limits` must not reappear there).
@@ -414,6 +430,7 @@ def test_racial_maximums_live_in_the_shared_catalog():
         assert limit["source_refs"]
 
 
+@pytest.mark.knowledge_integrity
 def test_racial_maximum_values_match_band_rules_that_used_to_inline_them():
     # Canonical values fixed by the source (mordheimer.net /docs/campaigns/experience);
     # warband rules reference these ids instead of inlining statlines. The Troll
@@ -529,6 +546,7 @@ def campaign_schema_problems(document: dict) -> list[str]:
     return editorial_schemas.validate_document(HIRED_SWORDS_SCHEMA, document)
 
 
+@pytest.mark.knowledge_integrity
 def test_band_rules_reference_racial_maximums_without_inlining_statlines():
     # Warband rules do not inline racial-maximum statlines: they reference the
     # canonical entries (campaign.limit.racial-maximum.*) and every mention of
@@ -558,6 +576,7 @@ def test_band_rules_reference_racial_maximums_without_inlining_statlines():
 
 # Exploration and income
 
+@pytest.mark.knowledge_integrity
 def test_exploration_dice_and_shards_chart():
     exploration = campaign("exploration-and-income.yaml")["exploration"]
     assert [row["id"] for row in exploration["dice_allocation"]] == [
@@ -576,6 +595,7 @@ def test_exploration_dice_and_shards_chart():
         assert isinstance(cell["shards"], int)
 
 
+@pytest.mark.knowledge_integrity
 def test_exploration_results_chart_is_ingested():
     results = campaign("exploration-and-income.yaml")["exploration"]["results"]
     assert len(results) == 30
@@ -587,6 +607,7 @@ def test_exploration_results_chart_is_ingested():
         assert row["follow_up"]
 
 
+@pytest.mark.knowledge_integrity
 def test_wyrdstone_sale_and_magical_artefacts_state():
     document = campaign("exploration-and-income.yaml")
     sale = document["income"]["wyrdstone_sale"]
@@ -599,6 +620,7 @@ def test_wyrdstone_sale_and_magical_artefacts_state():
 
 # Recruitment, veterans, rating and rarity
 
+@pytest.mark.knowledge_integrity
 def test_recruitment_and_veterans_state():
     document = campaign("recruitment-and-veterans.yaml")
     assert [policy["id"] for policy in document["recruitment_policy"]] == [
@@ -615,6 +637,7 @@ def test_recruitment_and_veterans_state():
     assert entry["incremental_cost"] == {"per_experience_point_gc": 2}
 
 
+@pytest.mark.knowledge_integrity
 def test_warband_rating_formula_state():
     formula = campaign("warband-rating.yaml")["formula"]
     assert [component["id"] for component in formula["components"]] == [
@@ -625,6 +648,7 @@ def test_warband_rating_formula_state():
     assert isinstance(formula["exclusions"], list)
 
 
+@pytest.mark.knowledge_integrity
 def test_trading_and_rarity_state():
     document = campaign("trading-and-rarity.yaml")
     tests = document["rarity"]["tests"]
@@ -640,6 +664,7 @@ def test_trading_and_rarity_state():
     ]
 
 
+@pytest.mark.knowledge_integrity
 def test_post_battle_sequence_has_ten_steps():
     sequence = campaign("post-battle-sequence.yaml")["sequence"]
     assert sequence["id"] == "campaign.post-battle"
@@ -659,6 +684,7 @@ def test_post_battle_sequence_has_ten_steps():
 
 # Scenarios
 
+@pytest.mark.knowledge_integrity
 def test_scenarios_state_and_selection_tables():
     document = campaign("scenarios.yaml")
     scenarios = document["scenarios"]
@@ -669,6 +695,7 @@ def test_scenarios_state_and_selection_tables():
     assert all(scenario.get("name") for scenario in scenarios)
 
 
+@pytest.mark.knowledge_integrity
 def test_scenario_selection_references_resolve():
     document = campaign("scenarios.yaml")
     scenario_ids = {scenario["id"] for scenario in document["scenarios"]}
@@ -688,6 +715,7 @@ def test_scenario_selection_references_resolve():
     }
 
 
+@pytest.mark.knowledge_integrity
 def test_scenario_progression_ingested_for_selection_table_scenarios():
     """The 16 scenarios of the official selection tables have progression."""
     document = campaign("scenarios.yaml")
@@ -702,6 +730,7 @@ def test_scenario_progression_ingested_for_selection_table_scenarios():
         assert progression.get("experience"), f"{scenario_id} needs experience awards"
 
 
+@pytest.mark.knowledge_integrity
 def test_scenario_progression_shape_and_reference_integrity():
     document = campaign("scenarios.yaml")
     scenarios = document["scenarios"]
@@ -754,6 +783,7 @@ def test_scenario_progression_shape_and_reference_integrity():
             assert all(isinstance(note, str) and note for note in progression["notes"])
 
 
+@pytest.mark.knowledge_integrity
 def test_every_material_scenario_reward_has_an_executable_entry():
     scenarios = campaign("scenarios.yaml")["scenarios"]
     rewards = campaign("scenario-rewards.yaml")["scenarios"]
@@ -768,6 +798,7 @@ def test_every_material_scenario_reward_has_an_executable_entry():
 
 # Magic
 
+@pytest.mark.knowledge_integrity
 def test_magic_assignment_table_covers_lores_and_pending_lores():
     document = campaign("magic.yaml")
     rows = document["lore_assignments"]["rows"]
@@ -792,6 +823,7 @@ def test_magic_assignment_table_covers_lores_and_pending_lores():
     assert len({row["profile_id"] for row in hireling_rows}) == 20
 
 
+@pytest.mark.knowledge_integrity
 def test_magic_lore_spell_lists_are_complete_per_roll():
     document = campaign("magic.yaml")
     spells = [spell for lore in document["lores"] for spell in lore.get("spells", [])]
@@ -826,6 +858,7 @@ def test_magic_lore_spell_lists_are_complete_per_roll():
     assert sum(1 for spell in spells if spell["difficulty"] == "auto") == 8
 
 
+@pytest.mark.knowledge_integrity
 def test_magic_profile_references_resolve():
     document = campaign("magic.yaml")
     band_profiles = band_profile_ids()
@@ -840,6 +873,7 @@ def test_magic_profile_references_resolve():
             assert profile_id in band_profiles[band], f"{row['wizard']}: {profile_id} not in {band}"
 
 
+@pytest.mark.knowledge_integrity
 def test_casting_rules_are_declarative():
     casting = campaign("magic.yaml")["casting_rules"]
     assert casting["id"] == "campaign.magic.casting"
@@ -850,6 +884,7 @@ def test_casting_rules_are_declarative():
 
 # Mutations
 
+@pytest.mark.knowledge_integrity
 def test_mutations_ingestion_state():
     document = campaign("mutations.yaml")
     assert document["rules"]["purchase"]
@@ -866,6 +901,7 @@ def test_mutations_ingestion_state():
 
 # Mercenaries (Hired Swords and Dramatis Personae) — schema v2
 
+@pytest.mark.knowledge_integrity
 def test_hired_swords_campaign_catalog_state():
     """The mercenary catalogue is published with schema v2 and its canonical
     counts: 95 Hired Swords + 29 Dramatis Personae = 124 unique entries."""
@@ -889,6 +925,7 @@ def test_hired_swords_campaign_catalog_state():
     # random profile), documented in catalog/hirelings/README.md.
 
 
+@pytest.mark.knowledge_integrity
 def test_hired_swords_profile_ids_resolve_against_hirelings_catalog():
     document = campaign("hired-swords-and-dramatis.yaml")
     known = hireling_profile_ids()
@@ -896,6 +933,7 @@ def test_hired_swords_profile_ids_resolve_against_hirelings_catalog():
     assert all(entry["profile_id"] in known for entry in entries)
 
 
+@pytest.mark.data_contract
 def test_hired_swords_availability_and_cost_shapes():
     """Schema v2 shapes: availability procedures, allowed kinds and canonical
     cost resources (gold_crowns, wyrdstone_fragments, treasures,
@@ -924,6 +962,7 @@ def test_hired_swords_availability_and_cost_shapes():
                          "campaign_points"}, resources
 
 
+@pytest.mark.eligibility
 def test_hired_swords_eligibility_resolves_and_grammar_is_valid():
     """Eligibility: simple lists or a boolean expression; warbands and groups
     resolve against band.yaml and registry/warband-groups.yaml, and every block
@@ -974,6 +1013,7 @@ def check_expression(node, leaf_keys, band_ids, groups, where):
         assert node["group_id"] in groups, f"{where}: unknown group {node['group_id']}"
 
 
+@pytest.mark.eligibility
 def test_hired_swords_dynamic_eligibility_rules_are_declared():
     """The 18 dynamic eligibility rules (roster-, mercenary-variant- or
     conditional-roll-dependent) are declared in catalog/hirelings; entries
@@ -1009,6 +1049,7 @@ def test_hired_swords_dynamic_eligibility_rules_are_declared():
     assert len(static_less) == 6
 
 
+@pytest.mark.eligibility
 def test_hired_swords_goblin_lantern_bearer_is_unrestricted():
     """Documented ingestion decision: the Goblin Lantern Bearer can be hired
     by any warband (no static restriction)."""
@@ -1023,6 +1064,7 @@ def test_hired_swords_goblin_lantern_bearer_is_unrestricted():
     assert "expression" not in eligibility
 
 
+@pytest.mark.knowledge_integrity
 def test_hired_swords_no_pending_spell_list_references():
     """The 15 ``spell_list`` references of hired sword and dramatis personae
     profiles are linked to the canonical ``lore_id`` values of magic.yaml
@@ -1040,6 +1082,7 @@ def test_hired_swords_no_pending_spell_list_references():
 
 # Reference integrity of the campaign catalogues
 
+@pytest.mark.knowledge_integrity
 def test_campaign_references_resolve_against_canonical_catalogs():
     item_ids = canonical_item_ids()
     skill_ids = canonical_skill_ids()
@@ -1062,6 +1105,7 @@ def test_campaign_references_resolve_against_canonical_catalogs():
         assert all(ref in skill_ids for ref in skill_refs), path.name
 
 
+@pytest.mark.eligibility
 def test_trading_post_restrictions_resolve_against_bands_and_groups():
     items = campaign("trading-post.yaml")["items"]
     band_ids = {yaml.safe_load(path.read_text(encoding="utf-8")).get("id")
@@ -1096,6 +1140,7 @@ def test_trading_post_restrictions_resolve_against_bands_and_groups():
                     f"{item['id']}: published bearer {published} is not a profile of {bands_here}")
 
 
+@pytest.mark.knowledge_integrity
 def test_procedural_placeholders_stay_out_of_canonical_ids():
     # Context variables (prefix "$") are used only in procedures; the generic
     # validator must not treat them as canonical ids.

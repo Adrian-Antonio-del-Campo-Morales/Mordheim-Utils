@@ -13,7 +13,11 @@ import importlib.util
 import json
 from pathlib import Path
 
+import pytest
+
 from mordheim_knowledge import editorial_schema_audit as audit
+
+pytestmark = pytest.mark.workflow
 
 ROOT = Path(__file__).resolve().parents[3]
 SPEC = importlib.util.spec_from_file_location(

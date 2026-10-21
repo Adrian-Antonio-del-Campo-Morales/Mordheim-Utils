@@ -12,7 +12,7 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: whole (scope: YES)
-# AUTHORED[whole]: 3 scenarios evidence both declared item tokens on the construction route the record names. 'scourge' and 'pirate_flag' are the catalogue's own carried item ids (sources/knowledge/catalog/items/trollheim.yaml), so the bound profile.equipment-restrictions binding this band declares (grant: profile, implemented YES) reaches each through the shared eligibility stage: a Boatswain build carrying either entry is refused with '"scourge" is forbidden for lustria-pirates/boatswains.' or '"pirate_flag" is forbidden for lustria-pirates/boatswains.' verbatim, and the identical build without them is accepted at construction. The third printed sentence (the starting Rope and Hook may not be sold) is the campaign clause the register excludes and is not asserted. REVIEWED still requires manual semantic review.
+# AUTHORED[whole]: 3 scenarios evidence both declared item tokens on the construction route the record names. 'scourge' and 'pirate_flag' are the catalogue's own carried item ids (sources/knowledge/catalog/items/trollheim.yaml), so the bound profile.equipment-restrictions binding this band declares (grant: profile, implemented YES) reaches each through the shared eligibility stage: a Boatswain build carrying either entry is refused with '"scourge" is not on any equipment list of lustria-pirates/boatswains.' or '"pirate_flag" is not on any equipment list of lustria-pirates/boatswains.' verbatim, and the identical build without them is accepted at construction. The third printed sentence (the starting Rope and Hook may not be sold) is the campaign clause the register excludes and is not asserted. REVIEWED still requires manual semantic review.
 # origin_id:
 #   rule/trollheim/lustria-pirates/boatswains--equipment-restrictions/profile.equipment-restrictions
 # analysis_status:
@@ -55,7 +55,7 @@
       band_id: lustria-pirates
       profile_id: boatswains
       owned_item_ids: [scourge]
-  expect_error: '"scourge" is forbidden for lustria-pirates/boatswains.'
+  expect_error: '"scourge" is not on any equipment list of lustria-pirates/boatswains.'
 
 - audit_id: rule/trollheim/lustria-pirates/boatswains--equipment-restrictions/profile.equipment-restrictions
   id: boatswains-with-the-pirate-flag-is-refused
@@ -67,7 +67,7 @@
       band_id: lustria-pirates
       profile_id: boatswains
       owned_item_ids: [pirate_flag]
-  expect_error: '"pirate_flag" is forbidden for lustria-pirates/boatswains.'
+  expect_error: '"pirate_flag" is not on any equipment list of lustria-pirates/boatswains.'
 
 - audit_id: rule/trollheim/lustria-pirates/boatswains--equipment-restrictions/profile.equipment-restrictions
   id: boatswains-without-the-banned-entries-is-accepted-at-construction

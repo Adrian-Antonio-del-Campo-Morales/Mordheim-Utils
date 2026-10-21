@@ -77,11 +77,15 @@ def _profile(build, root):
 
 
 def _applicable_profile_rules(package, profile):
+    if package is None:
+        return ()
     ids = {row["id"] for row in call("applicableProfileRules", package_facts(package), profile)}
     return tuple(rule for rule in package.special_rules if rule.get("id") in ids)
 
 
 def _applicable_rules(package, profile):
+    if package is None:
+        return ()
     ids = [row["id"] for row in call("applicableRules", package_facts(package), profile)]
     by_id = {rule.get("id"): rule for rule in package.special_rules}
     return tuple(by_id[rule_id] for rule_id in ids)

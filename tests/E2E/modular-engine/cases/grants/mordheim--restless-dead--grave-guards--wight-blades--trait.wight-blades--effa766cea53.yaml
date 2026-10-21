@@ -21,8 +21,10 @@
 # declared six to hit stands against a declared To Wound roll of two, which is below the printed
 # Toughness 3 target, and the defender still loses a wound; in the control the same declared To Wound
 # roll of two follows an ordinary hit of four and wounds nothing, so the wound in the trigger can
-# only come from the printed six.  The bearer is a hand-built Grave Guard fixture with the printed
-# heavy armour and hand weapon, and the defender's Toughness 3 and wounds are fixture facts.  The
+# only come from the printed six.  The defender is supplied three wounds, so the wound in the trigger
+# leaves it standing and the case reads the lost wound rather than an Injury result.  The bearer is a hand-built Grave Guard fixture supplied the printed
+# trait through the declared-facts channel (trait_overrides.wight_blades, which compiles the effect
+# tag the wound step reads), and the defender's Toughness 3 and wounds are fixture facts.  The
 # printed sentence allowing the To Wound roll to determine a critical hit is recorded, not asserted:
 # a critical hit asks for the critical-table die whose outcome belongs to the core critical-hits
 # cases, and the automatic-wound half is what this clause's closure names.  REVIEWED still requires
@@ -57,14 +59,16 @@
 # --- Authored scenarios ---
 # The natural six to hit is the printed trigger: the declared To Wound roll of two would
 # normally fail against Toughness 3, but the six has already made the wound automatic, so
-# the defender loses a wound and the injury table is reached as usual.
+# the defender loses a wound.  The defender is supplied three wounds, so one point of damage
+# leaves it standing: its condition and its remaining wound count are both read here, and no
+# Injury die belongs to this attack.
 - audit_id: rule/mordheim/restless-dead/grave-guards--wight-blades/trait.wight-blades
   id: a-natural-six-to-hit-wounds-even-when-the-wound-roll-fails
   covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
-      skill_ids: [trait.wight-blades]
+      trait_overrides: {wight_blades: true}
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
       main_weapon_id: weapon.mace
@@ -75,10 +79,9 @@
   rolls:
     - {key: round.0.first.attack.0.hit, value: 6}
     - {key: round.0.first.attack.0.wound, value: 2}
-    - {key: round.0.first.attack.0.injury.0, value: 1}
   expect_rounds:
     0: {attacks.0.wounded: True, attacks.0.damage: 1, state.second.wounds: 2,
-        state.second.condition: KNOCKED_DOWN}
+        state.second.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 # The control: the identical failed To Wound roll of two follows an ordinary hit of four, so
 # the printed six is the only thing that can make the difference, and no wound is caused.
@@ -88,7 +91,7 @@
   fighters:
     first:
       main_weapon_id: weapon.mace
-      skill_ids: [trait.wight-blades]
+      trait_overrides: {wight_blades: true}
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
       main_weapon_id: weapon.mace

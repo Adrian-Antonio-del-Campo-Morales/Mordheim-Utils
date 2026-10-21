@@ -19,6 +19,8 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
+import pytest
+
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "tools" / "knowledge"))
 PACKAGE_ROOTS = (
@@ -31,6 +33,10 @@ for package_root in reversed(PACKAGE_ROOTS):
     sys.path.insert(0, str(package_root))
 
 import generate_knowledge_web as generator  # noqa: E402
+
+# The whole file probes the generated artefact's row shapes: malformations the
+# TypeScript reader would silently shadow, not game choices or rule effects.
+pytestmark = pytest.mark.data_transport
 
 
 def _artefact() -> dict:

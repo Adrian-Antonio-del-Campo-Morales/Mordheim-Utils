@@ -49,7 +49,11 @@
 # boundary: the lowered threshold belongs to the fists, so a carried weapon keeps
 # the ordinary natural-six threshold.
 # A critical doubles the damage to two, so the one-wound opponent rolls one injury
-# die per point of damage beyond his last wound and is left Knocked Down.
+# die per point of damage beyond his last wound and is left Knocked Down.  The
+# fist's own printed save applies before that damage: the unarmoured defender is
+# allowed a 6+ armour save, and the declared face of one fails it, so the wound
+# still lands.  The same saved step follows the plain wound of the second
+# scenario, whose face of six was required and is therefore no critical.
 - audit_id: mechanic/skill.unarmed-critical-strikes
   id: an-unarmed-wound-on-a-five-or-six-is-critical
   covers: [whole]
@@ -67,6 +71,7 @@
     - {key: round.0.first.attack.0.hit, value: 6}
     - {key: round.0.first.attack.0.wound, value: 6}
     - {key: round.0.first.attack.0.critical, value: 1}
+    - {key: round.0.first.attack.0.armour, value: 1}
     - {key: round.0.first.attack.0.injury.0, value: 1}
     - {key: round.0.first.attack.0.injury.1, value: 1}
   expect_rounds:
@@ -89,6 +94,7 @@
   rolls:
     - {key: round.0.first.attack.0.hit, value: 6}
     - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.armour, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.critical: False, attacks.0.damage: 1, state.second.wounds: 1}

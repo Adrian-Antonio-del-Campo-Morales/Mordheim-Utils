@@ -45,6 +45,7 @@ def embedded_context(build: FighterBuild, items=ITEMS, forbidden=("blackpowder",
     return payload
 
 
+@pytest.mark.data_transport
 def test_fixture_item_facts_match_the_live_kb_and_the_projection():
     live = {str(row["id"]): row for row in load_items("mordheim", KB)}
     projected = _catalogue("mordheim", "mordheim", KB)["items"]
@@ -57,12 +58,14 @@ def test_fixture_item_facts_match_the_live_kb_and_the_projection():
         assert projected[item_id] == facts, item_id
 
 
+@pytest.mark.eligibility
 def test_silence_refusal_comes_from_the_rule_through_the_real_transport():
     with pytest.raises(ValueError, match='"blackpowder" is forbidden'):
         validate("boundEquipment", silence_build(), KB,
                  main_weapon_id="weapon.pistol", profile_bindings=BINDINGS)
 
 
+@pytest.mark.eligibility
 def test_blackpowder_verdict_stays_at_the_stage_and_keeps_lists_incidental():
     """The stage refuses by rule before the equipment list is even consulted."""
     message = call("buildRestriction", embedded_context(silence_build()), "boundEquipment")
@@ -78,6 +81,7 @@ def test_blackpowder_verdict_stays_at_the_stage_and_keeps_lists_incidental():
                 "boundEquipment") is None
 
 
+@pytest.mark.eligibility
 def test_every_bound_position_and_the_animal_boundary_are_checked():
     # The main hand carries a legal weapon, so every witness proves the stage
     # scans the position it names instead of inheriting the main hand's verdict.
@@ -103,6 +107,7 @@ def test_every_bound_position_and_the_animal_boundary_are_checked():
         silence_build(main_weapon_id="weapon.sword", defence_ids=("warhound",))), "boundEquipment")
 
 
+@pytest.mark.eligibility
 def test_alias_collisions_keep_the_prohibition_in_both_orders():
     untagged = {"kind": "ranged-weapon", "mechanic_id": "weapon.pistol", "tags": []}
     tagged = {"kind": "ranged-weapon", "mechanic_id": "weapon.pistol", "tags": ["blackpowder"]}
@@ -111,6 +116,7 @@ def test_alias_collisions_keep_the_prohibition_in_both_orders():
         assert message == BLACKPOWDER_MESSAGE
 
 
+@pytest.mark.eligibility
 def test_legacy_tokens_and_their_diagnostics_are_preserved():
     armour = call("buildRestriction", embedded_context(silence_build(armour_id="armour.light-armour"),
                                                        forbidden=("armour",)), "boundEquipment")
@@ -120,6 +126,7 @@ def test_legacy_tokens_and_their_diagnostics_are_preserved():
     assert missiles == f"missile weapons are forbidden for {BAND}/{PROFILE}"
 
 
+@pytest.mark.eligibility
 def test_maintained_routes_attribute_the_refusal_to_the_rule():
     build = silence_build()
     with pytest.raises(ValueError, match='"blackpowder" is forbidden'):
@@ -150,6 +157,15 @@ def _isolated_kb(tmp_path: Path) -> Path:
         }]},
         "catalog/mechanics/close-combat.yaml": {"ruleset": "mordheim"},
         "catalog/mechanics/simulation-mappings.yaml": {"ruleset": "mordheim", "item_mappings": []},
+        # The hiring catalogue is a mandatory catalogue of a mordheim KB, so the
+        # minimal root publishes one valid hireling; an isolated root is still a
+        # complete root, never a reason for the transport to read the default one.
+        "catalog/hirelings/contract.yaml": {
+            "schema_version": 1, "ruleset": "mordheim",
+            "profiles": [{"id": "hireling.contract", "kind": "hired-sword",
+                          "rules": [{"id": "hireling.contract.rule"}]}],
+        },
+        "catalog/hirelings/traits.yaml": {"schema_version": 1, "ruleset": "mordheim", "traits": []},
         "catalog/items/contract.yaml": {"ruleset": "mordheim", "items": [{
             "id": "pistol", "kind": "ranged-weapon", "tags": [], "mechanic_id": "weapon.pistol",
             "combat_status": "out_of_scope",
@@ -162,6 +178,7 @@ def _isolated_kb(tmp_path: Path) -> Path:
     return tmp_path
 
 
+@pytest.mark.data_transport
 def test_transport_uses_the_callers_root_and_isolates_catalogues(tmp_path):
     binding = [{"kind": "profile", "id": "profile.equipment-restrictions",
                 "parameters": {"forbids": ["blackpowder"]}}]

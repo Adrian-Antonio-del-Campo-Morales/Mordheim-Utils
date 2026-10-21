@@ -46,9 +46,11 @@
 # reads as both the pool reduction and the equal Strength gain.  The unarmed penalty caps an
 # unarmed pool at one attack, so the first two scenarios also carry the printed Unarmed Fighting
 # skill whose only role here is to lift that floor and leave a pool the sacrifice can reduce;
-# its own +1 attack is part of the arithmetic below (A2 + 1 = 3).  Strength 5 against Toughness 3
-# wounds on a 2+, Strength 4 on a 3+, so the declared wound face of two separates them, and the
-# declared tape length pins the pool size in both directions.
+# its own +1 attack is part of the arithmetic below (A2 + 1 = 3).  Strength 3 raised by the one
+# sacrificed attack is Strength 4 against Toughness 3, which wounds on a 3+, while the same pool
+# without the sacrifice stays at Strength 3 and needs a 4+: the declared wound faces of three and
+# two separate the two readings, and the declared tape length pins the pool size in both
+# directions.
 - audit_id: mechanic/mechanic.energy-focus
   id: the-sacrifice-trades-one-attack-for-one-strength
   covers: [whole]
@@ -65,13 +67,16 @@
     second: {wounds: 3, attacks: 0}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
+  # The reduced pool rolls every To Hit die before the first attack resolves, and each
+  # attack then takes its own To Wound face in allocation order: three wounds at Strength 4
+  # and two does not.
   rolls:
     - {key: round.0.first.attack.0.hit, value: 6}
-    - {key: round.0.first.attack.0.wound, value: 2}
     - {key: round.0.first.attack.1.hit, value: 6}
-    - {key: round.0.first.attack.1.wound, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.1.wound, value: 2}
   expect_rounds:
-    0: {attacks.0.damage: 1, attacks.1.damage: 1, state.second.wounds: 1}
+    0: {attacks.0.damage: 1, attacks.1.damage: 0, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 # The control for the clause: the same fighter with no attack sacrificed keeps the whole pool
 # at the lower Strength, so the declared wound face of two no longer reaches the wound target.
@@ -90,15 +95,19 @@
     second: {wounds: 3, attacks: 0}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
+  # Same three attacks as the sacrifice case above, with the whole pool's To Hit dice
+  # resolved first and the three To Wound faces afterwards.  At Strength 3 the declared
+  # three and two both fall short of the 4+ target that would have wounded without the
+  # sacrifice, so no attack of the larger pool lands.
   rolls:
     - {key: round.0.first.attack.0.hit, value: 6}
-    - {key: round.0.first.attack.0.wound, value: 2}
     - {key: round.0.first.attack.1.hit, value: 6}
-    - {key: round.0.first.attack.1.wound, value: 3}
     - {key: round.0.first.attack.2.hit, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.1.wound, value: 2}
     - {key: round.0.first.attack.2.wound, value: 1}
   expect_rounds:
-    0: {attacks.0.damage: 0, attacks.1.damage: 1, attacks.2.damage: 0, state.second.wounds: 2}
+    0: {attacks.0.damage: 0, attacks.1.damage: 0, attacks.2.damage: 0, state.second.wounds: 3}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 # The printed rule leaves the number of sacrificed attacks to the warrior, but an unarmed
 # fighter without a printed unarmed skill is already limited to one attack: sacrificing it

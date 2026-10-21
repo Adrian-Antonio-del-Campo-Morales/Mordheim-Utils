@@ -36,6 +36,7 @@ def plain(strength=3):
         main_weapon_id="weapon.fist"))
 
 
+@pytest.mark.knowledge_integrity
 def test_the_profile_rule_publishes_the_shared_operator():
     from mordheim_construction.combat_packages import combat_packages
 
@@ -51,18 +52,25 @@ def test_the_profile_rule_publishes_the_shared_operator():
     assert "skill.unarmed-fighting" not in plain().global_effects.tags
 
 
+@pytest.mark.rule_behavior
 def test_the_unarmed_monk_resolves_one_attack_more_than_its_profile_value():
     monk = build()
     assert monk.characteristics.attacks == 1
     assert build_attacks(AttackPoolContext(monk)).attacks == 2
     # The bonus belongs to the printed "when doing so": armed, the monk keeps A1.
-    assert build_attacks(AttackPoolContext(build(weapon="weapon.dagger"))).attacks == 1
+    # Use the staff printed in the Monk Equipment List; the unlisted free dagger
+    # is represented as an empty hand for this profile.
+    armed = build(weapon="weapon.quarter-staff")
+    assert "weapon.quarter-staff" in armed.main_weapon.tags
+    assert build_attacks(AttackPoolContext(armed)).attacks == 1
 
 
+@pytest.mark.rule_behavior
 def test_another_unarmed_fighter_keeps_the_single_attack_clamp():
     assert build_attacks(AttackPoolContext(build("shanghaires"))).attacks == 1
 
 
+@pytest.mark.rule_behavior
 def test_the_unarmed_monk_suffers_neither_the_fist_strength_penalty_nor_its_armour_bonus():
     monk, foe = build(), plain()
     control = build("shanghaires")
@@ -76,6 +84,7 @@ def test_the_unarmed_monk_suffers_neither_the_fist_strength_penalty_nor_its_armo
                             control_effect, False, False)[0] == control.characteristics.strength - 1
 
 
+@pytest.mark.eligibility
 def test_the_printed_armour_ban_keeps_its_executed_consequence():
     with pytest.raises(ValueError, match="armour"):
         build(armour_id="armour.light-armour")

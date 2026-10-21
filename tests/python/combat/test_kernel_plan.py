@@ -1,5 +1,7 @@
 from dataclasses import fields
 
+import pytest
+
 from mordheim_combat.kernel import EFFECT_VALUE_FIELDS
 from mordheim_combat.kernel import compile_duel_plan
 from mordheim_construction.compiler import compile_fighter
@@ -14,6 +16,7 @@ def fighter(**changes):
     return compile_fighter(FighterBuild(**values))
 
 
+@pytest.mark.compilation
 def test_kernel_plan_contains_every_numeric_effect_field_and_stable_tag_masks():
     first = fighter(main_weapon_id="weapon.sword", off_hand_id="weapon.dagger")
     second = fighter(skill_ids=("skill.regeneration",))
@@ -27,6 +30,7 @@ def test_kernel_plan_contains_every_numeric_effect_field_and_stable_tag_masks():
     assert plan.optimization_eligible
 
 
+@pytest.mark.compilation
 def test_uncertified_tags_keep_a_plan_out_of_optimized_backends():
     first = fighter(main_weapon_id="weapon.sword")
     second = fighter()

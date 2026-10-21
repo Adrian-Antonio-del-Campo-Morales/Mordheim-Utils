@@ -25,9 +25,10 @@
 #   damage of a fire attack against a flammable bearer (attacks.py), which matches the wound-level
 #   reading of this printing ("count as being flammable") exactly as the accepted Khemri sibling case
 #   reads its own; the declared wound face of four sits below a natural six, so no critical die is
-#   requested.  The bearer is supplied enough Wounds before the ordinary-weapon control so the single
-#   damage that is not doubled leaves it standing, which is what makes the two damage figures
-#   comparable within one phase.
+#   requested.  Both fighters have Initiative 3, so the round opens with the priority-tie die and a
+#   four gives the striker the first action.  The printed bearer has a single Wound, so the doubling
+#   is read from the declared damage figure: the fire attack causes two Wounds and the identical
+#   ordinary weapon one, and each tape resolves the injury rolls its own damage forces.
 # origin_id:
 #   rule/mordheim/restless-dead/scarecrows--flammable/trait.flammable
 # analysis_status:
@@ -76,9 +77,12 @@
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.priority-tie, value: 4}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.ignition, value: 1}
     - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+    - {key: round.0.first.attack.0.injury.1, value: 5}
   expect_rounds:
     0: {attacks.0.damage: 2, state.second.condition: OUT}
   expect_final: {rounds_executed: 1, termination_reason: second_out}
@@ -109,7 +113,9 @@
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 # And the printed bearer takes one Wound from the identical unsaved blow of an ordinary weapon, so the
-# doubling is the fire attack's own contribution and not a property of the bearer's injury chart.
+# doubling is the fire attack's own contribution and not a property of the bearer's injury chart.  The
+# printed bearer has a single Wound, and a supplied starting state is clamped to that profile maximum
+# (rounds.py), so the unsaved ordinary wound reaches zero and the injury die leaves it knocked down.
 
 - audit_id: rule/mordheim/restless-dead/scarecrows--flammable/trait.flammable
   id: the-same-unsaved-wound-from-an-ordinary-weapon-is-not-doubled
@@ -123,12 +129,16 @@
       band_id: restless-dead
       profile_id: scarecrows
   initial_state:
-    second: {attacks: 0, wounds: 3}
+    second: {attacks: 0}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.injury.0.reroll-choice, value: false}
   rolls:
+    - {key: round.0.priority-tie, value: 4}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
   expect_rounds:
-    0: {attacks.0.damage: 1, state.second.wounds: 2}
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

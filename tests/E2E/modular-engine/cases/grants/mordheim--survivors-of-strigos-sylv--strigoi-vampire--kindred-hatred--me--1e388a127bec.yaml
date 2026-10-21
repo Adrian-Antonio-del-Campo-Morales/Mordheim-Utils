@@ -71,14 +71,16 @@
       band_id: survivors-of-strigos-sylv
       profile_id: strigoi-vampire
       main_weapon_id: weapon.natural-attacks
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
     second:
       main_weapon_id: weapon.natural-attacks
       trait_overrides: {vampire: true, vampire_bloodline: lahmian}
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 2}
     - {key: round.0.first.attack.0.hit.reroll, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
@@ -97,14 +99,16 @@
       band_id: survivors-of-strigos-sylv
       profile_id: strigoi-vampire
       main_weapon_id: weapon.natural-attacks
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
     second:
       main_weapon_id: weapon.natural-attacks
       trait_overrides: {vampire: true, vampire_bloodline: strigoi}
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 2}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
@@ -122,14 +126,16 @@
       band_id: survivors-of-strigos-sylv
       profile_id: strigoi-vampire
       main_weapon_id: weapon.natural-attacks
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
     second:
       main_weapon_id: weapon.natural-attacks
       trait_overrides: {vampire: true, vampire_bloodline: lahmian}
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 2
   rolls:
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 2}
     - {key: round.0.first.attack.0.hit.reroll, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
@@ -152,16 +158,18 @@
       band_id: survivors-of-strigos-sylv
       profile_id: strigoi-vampire
       main_weapon_id: weapon.natural-attacks
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
     second:
       main_weapon_id: weapon.natural-attacks
       trait_overrides: {vampire: true, vampire_bloodline: lahmian}
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
   initial_state:
     first: {frenzy: true}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 2}
     - {key: round.0.first.attack.1.hit, value: 2}
     - {key: round.0.second.attack.0.hit, value: 1}

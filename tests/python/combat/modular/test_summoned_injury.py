@@ -5,6 +5,10 @@ from mordheim_combat.phases import Condition
 from mordheim_construction.compiler import compile_fighter
 from mordheim_core.models import Characteristics, FighterBuild
 from mordheim_combat_lab.verification.dice import StrictDice
+import pytest
+
+
+pytestmark = pytest.mark.rule_behavior
 
 
 def test_bat_survives_first_wound_then_disappears_without_injury_roll():

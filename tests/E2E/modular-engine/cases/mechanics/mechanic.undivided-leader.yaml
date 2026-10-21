@@ -74,9 +74,13 @@
 #   leadership.resolve_local_leadership sets supplied_reroll for a nearby severed provider carrying mechanic.undivided-leader; the mark's Gors/spell clauses are construction and magic, outside the duel. Scope review integration: {"clause_id":"undivided-leader","review_clause_id":"roster-and-campaign","source_state":"matched","review_status":"reviewed","scope_reason":"The extra Gors against the warband maximum, the rerolled Lad's Got Talent results and the unmodelled spell details are roster and campaign content, excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"A leader with this mark lets warband members within the leader radius reroll failed Leadership tests. Observable: the supplied marked leader grants a Leadership reroll to a nearby same-side warrior.","effect_id":"mechanic.undivided-leader","relation":"equivalent","parameters":"{}","conditions":"{\"trigger\":\"a supplied marked leader within the radius\",\"resolution\":\"supplied reroll in leadership.resolve_local_leadership\",\"recipient\":\"warband members\",\"exceptions\":\"the mark's warband-composition and spell clauses are excluded\"}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"C07-leadership-rerolls","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\"]"},"inherited_clause_text":"A marked leader allows all warband members within the Leader radius to re-roll failed Leadership tests. If the Seer has this mark, the warband may include 0-3 Gors counting toward the normal warband maximum; The Lad's Got Talent results for those Gors are re-rolled. Spell details are not modelled here.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
 
 # --- Authored scenarios ---
-# # The marked leader stands four inches away in the same band, so the failed individual
-# # Leadership test is rerolled under his aura: the leader's own value is declined and the
-# # aura reroll is taken instead.
+# The printed clause belongs to the Marauders of Chaos mark, and the source list its
+# `applies_to.profile_ids` names is the Marauder Chieftain, so the supplied provider is
+# that leader carrying `band--mark-of-chaos-undivided`; the tested warrior is another
+# model of the same band, which is the "warband members" the clause names.  The marked
+# leader stands four inches away in the same band, so the failed individual Leadership
+# test is rerolled under his aura: the leader's own value is declined and the aura
+# reroll is taken instead.
 - audit_id: mechanic/mechanic.undivided-leader
   id: the-marked-leader-s-aura-rerolls-the-failed-test
   covers: [undivided-leader--scope--leadership-reroll-aura]
@@ -85,8 +89,8 @@
       main_weapon_id: weapon.mace
       trait_overrides: {stupidity: true}
       collection: mordheim
-      band_id: carnival-of-chaos
-      profile_id: brethren
+      band_id: marauders-of-chaos
+      profile_id: chaos-marauders
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 3}
     second:
       main_weapon_id: weapon.mace
@@ -96,9 +100,9 @@
   duel_context: {first_id: first, second_id: second, charging: [first], active_participant: first,
     distances: [[first, marked-leader, 4]],
     nearby: [{participant_id: marked-leader, side_id: first, condition: standing,
-              fighter: {collection: mordheim, band_id: carnival-of-chaos, profile_id: brethren,
-                        skill_ids: [mechanic.undivided-leader],
-                        characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 8}}}]}
+              fighter: {collection: mordheim, band_id: marauders-of-chaos, profile_id: marauder-chieftain,
+                        special_rule_ids: [band--mark-of-chaos-undivided],
+                        characteristics: {weapon_skill: 4, strength: 4, toughness: 3, wounds: 1, initiative: 4, attacks: 1, leadership: 8}}}]}
   maximum_rounds: 1
   decisions:
     - {key: round.0.first.stupidity.leader.marked-leader, value: false}

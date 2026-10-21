@@ -74,6 +74,7 @@
       collection: mordheim
       band_id: tileans
       profile_id: captain
+      special_rule_ids: [band--remasen-officer-leadership]
     second:
       characteristics: &tilean-fixture {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
   duel_context: &tilean-uncharged {charging: [], active_participant: first}
@@ -82,7 +83,7 @@
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.first.attack.1.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
-  expect_initial: {first.leadership: 9}
+  expect_fighters: {first.characteristics.leadership: 9}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 # The same recipient without the printed rule: the printed Leadership 8 stands, so the ninth point
@@ -103,7 +104,7 @@
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.first.attack.1.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
-  expect_initial: {first.leadership: 8}
+  expect_fighters: {first.characteristics.leadership: 8}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 # The Champions are the second printed recipient set (printed Leadership 7).
@@ -115,6 +116,7 @@
       collection: mordheim
       band_id: tileans
       profile_id: champions
+      special_rule_ids: [band--remasen-officer-leadership]
     second:
       characteristics: *tilean-fixture
   duel_context: *tilean-uncharged
@@ -122,7 +124,7 @@
   rolls:
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
-  expect_initial: {first.leadership: 8}
+  expect_fighters: {first.characteristics.leadership: 8}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 # The Youngbloods are the third printed recipient set (printed Leadership 6).
@@ -134,6 +136,7 @@
       collection: mordheim
       band_id: tileans
       profile_id: youngbloods
+      special_rule_ids: [band--remasen-officer-leadership]
     second:
       characteristics: *tilean-fixture
   duel_context: *tilean-uncharged
@@ -141,7 +144,7 @@
   rolls:
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
-  expect_initial: {first.leadership: 7}
+  expect_fighters: {first.characteristics.leadership: 7}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 # A profile the printed sentence does not name keeps no bonus and is refused the rule itself, which
@@ -154,5 +157,6 @@
       collection: mordheim
       band_id: tileans
       profile_id: warriors
+      special_rule_ids: [band--remasen-officer-leadership]
   expect_error: "special rule is not available to tileans/warriors"
 

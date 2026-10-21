@@ -5,6 +5,10 @@ from mordheim_combat.modular.state import initialize_duel
 from mordheim_combat_lab.verification.dice import StrictDice, StrictDecisions
 from mordheim_construction.compiler import compile_fighter
 from mordheim_core.models import Characteristics, DuelContext, FighterBuild
+import pytest
+
+
+pytestmark = pytest.mark.rule_behavior
 
 
 def scientist(*conditions, **options):

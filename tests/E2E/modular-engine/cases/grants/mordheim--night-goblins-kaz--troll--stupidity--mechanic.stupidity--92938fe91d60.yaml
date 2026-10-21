@@ -97,6 +97,8 @@
   rolls:
     - {key: round.0.first.stupidity.0, value: 1}
     - {key: round.0.first.stupidity.1, value: 1}
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 3}
     - {key: round.0.first.attack.0.hit, value: 5}
     - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.second.attack.0.hit, value: 1}
@@ -120,10 +122,15 @@
     first: {frenzy: true}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
+  # The supplied frenzy doubles the bearer's printed single Attack, so its pool holds two attacks.
+  # Every hit die of the pool is requested before the wound step begins, hence the two To Hit
+  # dice precede the two wound dice; both attacks wound and the defender keeps one of its wounds.
   rolls:
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 3}
     - {key: round.0.first.attack.0.hit, value: 5}
-    - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.first.attack.1.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.first.attack.1.wound, value: 5}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:

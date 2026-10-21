@@ -9,7 +9,7 @@ from pathlib import Path
 from threading import RLock
 
 from mordheim_construction.combat_packages import combat_packages
-from mordheim_knowledge.campaign import load_campaign_catalog
+from mordheim_knowledge.campaign import CAMPAIGN_CATALOGUE_DIR, load_campaign_catalog
 from mordheim_knowledge.loader import (
     knowledge_root, load_bands, load_collections, load_items, load_mechanics, load_simulation_mappings,
     load_skills, runtime_bindings,
@@ -95,6 +95,7 @@ def _catalogue(collection, ruleset, root):
     foreign = packages if collection == "mordheim" else {
         str(pack.band["id"]): package_facts(pack) for pack in combat_packages("mordheim", root)
     }
+    recipients, band_scope = _market_scope(root)
     return {
         "packages": packages, "foreign_packages": foreign,
         "mechanics": mechanics, "mappings": mappings,
@@ -102,16 +103,37 @@ def _catalogue(collection, ruleset, root):
                    for row in load_skills(ruleset, root)},
         "items": {str(row["id"]): {"kind": str(row.get("kind") or ""), "mechanic_id": row.get("mechanic_id"),
                                    "tags": [str(tag) for tag in row.get("tags") or ()],
-                                   "alternate_mechanic_ids": [str(value)
-                                                              for value in row.get("alternate_mechanic_ids") or ()]}
+                                   # Published only when the record declares further
+                                   # printable grips, exactly like the canonical row;
+                                   # the shared module already treats the key as
+                                   # optional (`?? []`).
+                                   **({"alternate_mechanic_ids": [str(value)
+                                      for value in row["alternate_mechanic_ids"]]}
+                                      if row.get("alternate_mechanic_ids") else {})}
                   for row in load_items(ruleset, root)},
         "free_rules": {str(rule["id"]): rule for collection_row in load_collections(root)
                        if ruleset in collection_row.get("rulesets", ())
                        for pack in combat_packages(str(collection_row["id"]), root)
                        for rule in package_facts(pack)["special_rules"]},
-        "market_recipients": market_recipients(root),
-        "market_band_scope": market_band_scope(root),
+        "market_recipients": recipients,
+        "market_band_scope": band_scope,
     }
+
+
+def _market_scope(root):
+    """Printed market scope, or an empty projection for a root without one.
+
+    A caller root that does not publish ``catalog/campaign`` is still a valid
+    KB for construction transport: the bands, their rules and the item facts
+    are the only data an equipment decision reads, and the shared module
+    already treats both market maps as optional. A root that does publish the
+    catalogue is validated in full, so a partial or broken campaign catalogue
+    still fails loudly instead of silently dropping its clauses.
+    """
+    resolved = Path(root) if root is not None else knowledge_root()
+    if not (resolved / CAMPAIGN_CATALOGUE_DIR).is_dir():
+        return {}, {}
+    return market_recipients(resolved), market_band_scope(resolved)
 
 
 def market_recipients(root=None):

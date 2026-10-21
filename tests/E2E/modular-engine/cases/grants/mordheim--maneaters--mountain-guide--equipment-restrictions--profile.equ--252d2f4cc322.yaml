@@ -12,7 +12,7 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: whole (scope: YES)
-# AUTHORED[whole]: the declared prohibition is evidenced as a construction refusal: the recipient build where carrying weapon.dagger in main_weapon_id is refused with ""weapon.dagger" is forbidden for maneaters/mountain-guide.", and the same recipient without the item is accepted at construction. One refusal is declared per printed recipient of the rule. Consumer: the shared eligibility stage (packages/python/roster-construction/mordheim_construction/_eligibility.js).
+# AUTHORED[whole]: the declared prohibition is evidenced as a construction refusal: the recipient build where carrying weapon.dagger in off_hand_id is refused with ""weapon.dagger" is forbidden for maneaters/mountain-guide.", and the same recipient without the item is accepted at construction. One refusal is declared per printed recipient of the rule. Consumer: the shared eligibility stage (packages/python/roster-construction/mordheim_construction/_eligibility.js).
 # origin_id:
 #   rule/mordheim/maneaters/mountain-guide--equipment-restrictions/profile.equipment-restrictions
 # analysis_status:
@@ -52,7 +52,8 @@
       collection: mordheim
       band_id: maneaters
       profile_id: mountain-guide
-      main_weapon_id: weapon.dagger
+      main_weapon_id: weapon.sword
+      off_hand_id: weapon.dagger
   expect_error: '"weapon.dagger" is forbidden for maneaters/mountain-guide.'
 
 - audit_id: rule/mordheim/maneaters/mountain-guide--equipment-restrictions/profile.equipment-restrictions

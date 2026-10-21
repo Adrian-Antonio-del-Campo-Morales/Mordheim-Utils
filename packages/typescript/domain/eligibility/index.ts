@@ -210,7 +210,7 @@ export const NATURAL_ATTACK_ID = "weapon.natural-attacks";
 export function tokenForbids(token: string, itemId: string, item: ItemFacts | null): boolean {
   if (token === itemId || token === item?.mechanic_id) return true;
   if (itemId === NATURAL_ATTACK_ID || item?.mechanic_id === NATURAL_ATTACK_ID) return false;
-  if (token === "non-thrown-ranged") return item?.kind === "ranged-weapon" && !item.tags.includes("thrown");
+  if (token === "non-thrown-ranged") return itemIsMissile(item) && !item?.tags?.includes("thrown");
   // `equipment` is the printed 'no equipment' clause. The caller has already
   // returned for the neutral ids (an empty hand or no armour) and for the
   // profile's own fixed kit, so nothing here is the absence of a choice.
@@ -235,7 +235,7 @@ export function tokenForbids(token: string, itemId: string, item: ItemFacts | nu
   // 'may not use double-handed weapons' are the same printed fact: the weapon
   // occupies both hands.
   if (token === "two-handed-weapons") return (item.hands ?? 0) >= 2;
-  return token === "ranged-weapons" && item.kind === "ranged-weapon";
+  return token === "ranged-weapons" && itemIsMissile(item);
 }
 
 /**
@@ -432,7 +432,7 @@ export function equipmentIssue(args: {
 function itemIsMissile(item: ItemFacts | null): boolean {
   if (!item) return false;
   if (item.kind === "ranged-weapon") return true;
-  return ["bow", "crossbow", "blackpowder", "thrown"].some((tag) => item.tags.includes(tag));
+  return ["bow", "crossbow", "blackpowder", "thrown"].some((tag) => item.tags?.includes(tag));
 }
 
 /**
@@ -534,7 +534,7 @@ export function equipmentSetIssues(args: {
     });
   }
   if (limits) {
-    const carried = items.filter((entry) => entry.item?.kind === "ranged-weapon");
+    const carried = items.filter((entry) => itemIsMissile(entry.item));
     if (typeof limits.max_missile_weapons === "number" && carried.length > limits.max_missile_weapons) issues.push({
       code: "equipment_limit_exceeded", subject_ids: [...subject, ...carried.map((entry) => entry.item_id)],
       ...(limits.rule_id ? { rule_id: limits.rule_id } : {}),
@@ -1143,17 +1143,22 @@ function loadoutItems(value: unknown): string[] {
 /* Tokens the specialist bound-equipment stage already interprets from its own selection lists. */
 const BOUND_STAGE_TOKENS = ["armour", "ranged-weapons", "heavy-armour", "weapon.lance", "defence.helmet"];
 /* Canonical facts of a selected equipment id, merged across every alias of its mechanic. */
-export function carriedItemFacts(catalogue: Pick<Catalogue, "items">, id: string): ItemFacts | null {
+export function carriedItemFacts(catalogue: Pick<Catalogue, "items"> & Partial<Pick<Catalogue, "mechanics">>, id: string): ItemFacts | null {
   if (!id) return null;
   const items = catalogue.items ?? {};
   const direct = items[id];
-  if (direct) return direct;
+  if (direct) {
+    const hands = catalogue.mechanics?.[direct.mechanic_id ?? ""]?.["hands"];
+    return { ...direct, ...(typeof hands === "number" ? { hands } : {}) };
+  }
   const aliases = Object.values(items).filter((item) => item.mechanic_id === id
     || (item.alternate_mechanic_ids ?? []).includes(id));
   if (!aliases.length) return null;
   const kinds = Array.from(new Set(aliases.map((item) => item.kind)));
+  const hands = catalogue.mechanics?.[id]?.["hands"];
   return { kind: kinds.length === 1 ? kinds[0]! : "", mechanic_id: id,
-    tags: Array.from(new Set(aliases.flatMap((item) => item.tags))) };
+    tags: Array.from(new Set(aliases.flatMap((item) => item.tags))),
+    ...(typeof hands === "number" ? { hands } : {}) };
 }
 
 /**
@@ -1757,7 +1762,7 @@ export function buildRestriction(context: BuildContext, stage: string): string |
   }
   if (has("compiler.haughty") && containsAny(equipment, ["material.gromril", "material.obsidian", "armour.gromril-armour"])) return `Dwarf-made equipment is forbidden for ${who}`;
   if (has("compiler.chaos-engineer") && Array.from(equipment).some((id) => id.includes("chaos"))) return `Chaos armour is forbidden for ${who}`;
-  if (has("compiler.saurus-skill-prohibitions") && ["saurus-totem-warrior", "saurus-braves"].includes(p.id) && containsAny(hands, MISSILE_WEAPONS)) return "missile weapons are forbidden for Saurus";
+  if (has("compiler.saurus-skill-prohibitions") && ["saurus-totem-warrior", "saurus-totem-warriors", "saurus-braves"].includes(p.id) && containsAny(hands, MISSILE_WEAPONS)) return "missile weapons are forbidden for Saurus";
   // A preparation is decided by the bearer's own printed clause through the
   // same `preparationIssue` the picker reads, never by the band list the
   // neutral profile models below: a short weapon list is not a preparation ban.
@@ -1781,7 +1786,7 @@ export function buildRestriction(context: BuildContext, stage: string): string |
     if (promoted.includes("strength")) return `Strength skill list is forbidden for ${who}`;
     if (promoted.length > 2) return "a promoted Hero may choose at most two skill lists";
   }
-  if (has("compiler.saurus-skill-prohibitions") && ["saurus-totem-warrior", "saurus-braves"].includes(p.id)) {
+  if (has("compiler.saurus-skill-prohibitions") && ["saurus-totem-warrior", "saurus-totem-warriors", "saurus-braves"].includes(p.id)) {
     const ids = forbiddenSkills((id) => c.skills[id]?.category === "academic");
     if (ids.length) return `Academic skills are forbidden for Saurus: ${pythonList(ids)}`;
   }
@@ -2042,6 +2047,7 @@ function activeWeaponIssues(context: ConstructionContext): EligibilityIssue[] {
     const poisonId = context.slots?.[poisonKey];
     const weaponId = context.slots?.[weaponKey];
     if (!poisonId || !weaponId || NEUTRAL_ITEM_IDS.includes(weaponId)) continue;
+    if (!itemFactsFor(context, weaponId)) continue;
     const poisonIssue = poisonApplicationIssue({ profile: context.profile, poison_id: poisonId,
       poison: itemFactsFor(context, poisonId), weapon_id: weaponId, weapon: itemFactsFor(context, weaponId) });
     if (poisonIssue) return [poisonIssue];
@@ -2401,6 +2407,20 @@ export function profileFactsProjection(args: {
   const conditionalForbids: NonNullable<ProfileFacts["conditional_equipment_forbids"]>[number][] = [];
   const poisonApplication: PoisonApplication[] = [];
   const missileWeaponLimit: MissileWeaponLimit[] = [];
+  // A selectable allowance can print the ordinary bound it replaces. Project
+  // that baseline for its eligible bearer while the allowance is unselected.
+  for (const rule of pack.special_rules) {
+    if (rule.runtime?.grant !== "selectable" || ruleActiveForBuild(rule, args.build)
+        || !ruleRecipientsAdmit(rule, profile, args.build ?? undefined)) continue;
+    for (const binding of rule.bindings ?? []) {
+      const baseline = binding.parameters?.["baseline_max_missile_weapons"];
+      if (binding.id !== "profile.equipment-restrictions" || baseline === undefined) continue;
+      if (typeof baseline !== "number" || !Number.isInteger(baseline) || baseline < 0)
+        throw new Error("invalid baseline missile weapon limit");
+      missileWeaponLimit.push({ rule_id: rule.id, maximum: baseline,
+        exempt_item_ids: strings(binding.parameters?.["exempt_item_ids"]) });
+    }
+  }
   const projectedRules = [...applicableRules(pack, profile).filter(rule =>
     (!isBlackGuardsman(args.build) || rule.id !== `${MORR_PRIEST}.rule.strictures`) && ruleActiveForBuild(rule, args.build)),
     ...(isBlackGuardsman(args.build) ? pack.special_rules.filter(rule =>

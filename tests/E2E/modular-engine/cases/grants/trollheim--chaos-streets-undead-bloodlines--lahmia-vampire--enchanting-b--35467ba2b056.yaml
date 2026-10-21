@@ -78,13 +78,12 @@
       main_weapon_id: weapon.mace
       skill_ids: [mechanic.stupidity]
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
-  duel_context: {charging: [], active_participant: first}
+  duel_context: {charging: [], active_participant: second}
   maximum_rounds: 1
   rolls:
     - {key: round.0.second.stupidity.0, value: 3}
     - {key: round.0.second.stupidity.1, value: 4}
     - {key: round.0.first.attack.0.hit, value: 1}
-    - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {state.second.stupidity_failed: true}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
@@ -102,7 +101,7 @@
       main_weapon_id: weapon.mace
       skill_ids: [mechanic.stupidity]
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
-  duel_context: {charging: [], active_participant: first}
+  duel_context: {charging: [], active_participant: second}
   maximum_rounds: 1
   rolls:
     - {key: round.0.second.stupidity.0, value: 3}
@@ -125,9 +124,10 @@
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 8}
     second:
       main_weapon_id: weapon.mace
-      skill_ids: [nature.undead, mechanic.stupidity]
+      trait_overrides: {creature_kind: undead}
+      skill_ids: [mechanic.stupidity]
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
-  duel_context: {charging: [], active_participant: first}
+  duel_context: {charging: [], active_participant: second}
   maximum_rounds: 1
   rolls:
     - {key: round.0.second.stupidity.0, value: 3}

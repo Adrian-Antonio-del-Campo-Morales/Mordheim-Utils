@@ -74,12 +74,13 @@
       main_poison_id: poison.nightshade
       characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
     second: {collection: mordheim, band_id: blood-dragons-mou, profile_id: wights}
-  initial_state: {second: {wounds: 2, attacks: 0}}
+  initial_state: {second: {attacks: 0}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
   expect_rounds:
-    0: {attacks.0.damage: 1, state.second.wounds: 1, state.second.initiative_penalty: 0}
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN, state.second.initiative_penalty: 0}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

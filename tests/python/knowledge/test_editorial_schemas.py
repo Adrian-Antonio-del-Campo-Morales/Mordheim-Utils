@@ -52,6 +52,7 @@ def catalogue_documents() -> list[tuple[str, str]]:
     return editorial_schemas.document_schemas(KNOWLEDGE)
 
 
+@pytest.mark.data_contract
 def test_contract_declares_one_schema_per_document():
     assert DOCUMENTS == ("band.yaml", "profiles.yaml", "equipment-access.yaml", "special-rules.yaml")
     directory = editorial_schemas.contract_directory()
@@ -61,10 +62,12 @@ def test_contract_declares_one_schema_per_document():
 
 
 @pytest.mark.parametrize("schema_path", SCHEMA_FILES)
+@pytest.mark.data_contract
 def test_schema_is_valid_draft_2020_12(schema_path):
     Draft202012Validator.check_schema(editorial_schemas.schema_for(schema_path))
 
 
+@pytest.mark.data_contract
 def test_every_catalogue_and_registry_document_is_covered_exactly_once():
     """A new catalogue file must be claimed by a schema, not validated by nobody."""
     claimed = [document for document, _ in catalogue_documents()]
@@ -80,12 +83,14 @@ def test_every_catalogue_and_registry_document_is_covered_exactly_once():
     assert covered == sorted(claimed), set(covered) ^ set(claimed)
 
 
+@pytest.mark.data_contract
 def test_no_declared_exception_has_gone_stale():
     """An exception kept for a document that is gone hides a real coverage gap."""
     for document in editorial_schemas.UNCOVERED_DOCUMENTS:
         assert (KNOWLEDGE / document).is_file(), document
 
 
+@pytest.mark.data_contract
 def test_both_collections_are_covered_by_the_contract():
     by_collection = {collection: 0 for collection in editorial_schemas.COLLECTIONS}
     for path in band_packages():
@@ -94,6 +99,7 @@ def test_both_collections_are_covered_by_the_contract():
 
 
 @pytest.mark.parametrize("band_yaml", band_packages(), ids=lambda path: path.parent.name)
+@pytest.mark.data_contract
 def test_band_package_matches_the_editorial_schemas(band_yaml):
     problems = editorial_schemas.validate_band_package(band_yaml.parent)
     assert not problems, "\n".join(problems)
@@ -104,17 +110,20 @@ def test_band_package_matches_the_editorial_schemas(band_yaml):
     catalogue_documents(),
     ids=lambda value: value if isinstance(value, str) else None,
 )
+@pytest.mark.data_contract
 def test_catalogue_document_matches_its_editorial_schema(document, schema_path):
     problems = editorial_schemas.problems_of(schema_path, read(KNOWLEDGE / document))
     assert not problems, "\n".join(problems)
 
 
+@pytest.mark.data_contract
 def test_every_band_package_carries_the_four_documents():
     for band_yaml in band_packages():
         for document in DOCUMENTS:
             assert (band_yaml.parent / document).is_file(), f"{band_yaml.parent.name}/{document}"
 
 
+@pytest.mark.data_contract
 def test_combat_traits_definition_matches_the_compiler_registry():
     """`profiles.yaml` combat traits are executable: the schema mirrors TRAIT_TYPES."""
     combat_traits = editorial_schemas.schema_for(BAND_SCHEMAS["profiles.yaml"])["$defs"]["profile"]["properties"]["combat_traits"]
@@ -138,12 +147,14 @@ def test_combat_traits_definition_matches_the_compiler_registry():
         ))
 
 
+@pytest.mark.data_contract
 def test_supported_combat_traits_are_compiler_traits():
     """The runtime-scope policy can only support traits the compiler knows."""
     scope = read(REGISTRY / "runtime-scope.yaml")
     assert set(scope["supported_combat_traits"]) <= set(TRAIT_TYPES)
 
 
+@pytest.mark.data_contract
 def test_execution_parameters_are_effect_set_fields():
     """Every parameter of the execution contract is a field of EffectSet."""
     execution = read(CATALOG / "mechanics" / "execution.yaml")
@@ -156,6 +167,7 @@ def test_execution_parameters_are_effect_set_fields():
     ]
 
 
+@pytest.mark.data_contract
 def test_the_execution_parameter_vocabulary_is_closed_and_exact():
     """The schema of `parameters` declares every field of EffectSet and nothing else."""
     parameters = editorial_schemas.schema_for("catalog-mechanics-execution.yaml.schema.json")[
@@ -175,6 +187,7 @@ def test_the_execution_parameter_vocabulary_is_closed_and_exact():
     assert declared == expected, set(declared) ^ set(expected)
 
 
+@pytest.mark.data_contract
 def test_runtime_enums_match_the_registry_contract():
     registry = read(REGISTRY / "runtime-schema.yaml")
     definitions = editorial_schemas.schema_for(BAND_SCHEMAS["special-rules.yaml"])["$defs"]
@@ -192,6 +205,7 @@ def test_runtime_enums_match_the_registry_contract():
     )
 
 
+@pytest.mark.data_contract
 def test_a_stray_band_key_is_rejected():
     payload = read(BANDS / "mordheim" / "orc-mob" / "band.yaml")
     payload["summary"] = "legacy prose key"
@@ -199,6 +213,7 @@ def test_a_stray_band_key_is_rejected():
     assert any("summary" in problem and "Additional properties" in problem for problem in problems)
 
 
+@pytest.mark.data_contract
 def test_a_missing_characteristic_is_rejected():
     payload = read(BANDS / "mordheim" / "orc-mob" / "profiles.yaml")
     del payload["profiles"][0]["characteristics"]["Ld"]
@@ -206,6 +221,7 @@ def test_a_missing_characteristic_is_rejected():
     assert any(problem.startswith("profiles/0/characteristics") for problem in problems), problems
 
 
+@pytest.mark.data_contract
 def test_a_rule_without_text_or_shared_reference_is_rejected():
     payload = read(BANDS / "mordheim" / "orc-mob" / "special-rules.yaml")
     rule = next(item for item in payload["rules"] if item.get("effect"))
@@ -215,6 +231,7 @@ def test_a_rule_without_text_or_shared_reference_is_rejected():
     assert any(problem.startswith(f"rules/{payload['rules'].index(rule)}") for problem in problems)
 
 
+@pytest.mark.data_contract
 def test_an_implemented_item_without_a_mechanic_is_rejected():
     payload = read(CATALOG / "items" / "weapons-close-combat.yaml")
     item = next(row for row in payload["items"] if row["combat_status"] == "implemented")
@@ -223,6 +240,7 @@ def test_an_implemented_item_without_a_mechanic_is_rejected():
     assert any("mechanic_id" in problem and "required" in problem for problem in problems), problems
 
 
+@pytest.mark.data_contract
 def test_a_stray_catalogue_key_is_rejected():
     payload = read(CATALOG / "skills" / "general.yaml")
     payload["skills"][0]["summary"] = "legacy prose key"
@@ -230,6 +248,7 @@ def test_a_stray_catalogue_key_is_rejected():
     assert any("summary" in problem and "Additional properties" in problem for problem in problems)
 
 
+@pytest.mark.data_contract
 def test_band_id_must_match_the_directory(tmp_path):
     directory = tmp_path / "not-orc-mob"
     directory.mkdir()
@@ -238,6 +257,7 @@ def test_band_id_must_match_the_directory(tmp_path):
     assert any("does not match the directory" in problem for problem in problems), problems
 
 
+@pytest.mark.data_contract
 def test_an_unknown_document_is_reported_instead_of_raising():
     problems = editorial_schemas.validate_document("roster.yaml", {})
     assert len(problems) == 1 and problems[0].startswith("Unknown document schema 'roster.yaml'"), problems
@@ -247,6 +267,7 @@ def campaign_document(name: str) -> dict:
     return read(CATALOG / "campaign" / f"{name}.yaml")
 
 
+@pytest.mark.data_contract
 def test_every_post_battle_step_resolves_a_document_of_its_directory():
     """The `resolves` of a step is a file that must exist, so a step cannot name one that is gone."""
     sequence = campaign_document("post-battle-sequence")["sequence"]
@@ -260,6 +281,7 @@ def test_every_post_battle_step_resolves_a_document_of_its_directory():
     assert set(resolved_enum) == available, set(resolved_enum) ^ available
 
 
+@pytest.mark.data_contract
 def test_the_hireling_traits_schema_matches_the_trait_registry():
     """The trait vocabulary is closed: the schema lists exactly the traits the catalogue uses."""
     schema = editorial_schemas.schema_for("hirelings-traits.yaml.schema.json")
@@ -269,6 +291,7 @@ def test_the_hireling_traits_schema_matches_the_trait_registry():
     assert declared == sorted(used), set(declared) ^ used
 
 
+@pytest.mark.knowledge_integrity
 def test_hireling_skill_lists_are_a_subset_of_the_band_vocabulary():
     """A hireling may only be offered skill lists the bands themselves use."""
     band_lists = {
@@ -286,6 +309,7 @@ def test_hireling_skill_lists_are_a_subset_of_the_band_vocabulary():
     assert hireling_lists <= band_lists, hireling_lists - band_lists
 
 
+@pytest.mark.data_contract
 def test_a_stray_campaign_key_is_rejected():
     payload = campaign_document("mutations")
     payload["mutations"][0]["summary"] = "legacy prose key"
@@ -293,6 +317,7 @@ def test_a_stray_campaign_key_is_rejected():
     assert any("summary" in problem and "Additional properties" in problem for problem in problems)
 
 
+@pytest.mark.data_contract
 def test_a_scenario_award_without_ref_or_effect_is_rejected():
     """An Experience row declares the canonical award or the source text, never neither and never both."""
     payload = campaign_document("scenarios")
@@ -304,6 +329,7 @@ def test_a_scenario_award_without_ref_or_effect_is_rejected():
     assert any("experience/0" in problem for problem in problems), problems
 
 
+@pytest.mark.data_contract
 def test_a_rare_item_without_a_rarity_is_rejected():
     payload = campaign_document("trading-post")
     entry = next(row for row in payload["items"] if row["availability"]["kind"] == "rare")
@@ -312,6 +338,7 @@ def test_a_rare_item_without_a_rarity_is_rejected():
     assert any("availability" in problem and "rarity" in problem for problem in problems), problems
 
 
+@pytest.mark.data_contract
 def test_an_out_of_scope_dramatis_entry_must_say_why():
     payload = read(CATALOG / "hirelings" / "dramatis-personae" / "grade-1c.yaml")
     entry = next(row for row in payload["profiles"] if row["normalization_status"] == "out_of_scope")
@@ -320,6 +347,7 @@ def test_an_out_of_scope_dramatis_entry_must_say_why():
     assert any("out_of_scope_reason" in problem for problem in problems), problems
 
 
+@pytest.mark.data_contract
 def test_a_hired_sword_may_not_be_published_out_of_scope():
     """A Hired Sword that cannot be modelled has no status to hide in: only Dramatis entries may be out of scope."""
     payload = read(CATALOG / "hirelings" / "hired-swords" / "core.yaml")
@@ -328,6 +356,7 @@ def test_a_hired_sword_may_not_be_published_out_of_scope():
     assert any("normalization_status" in problem for problem in problems), problems
 
 
+@pytest.mark.data_contract
 def test_a_nested_eligibility_expression_validates():
     """The expression grammar nests, so the boolean form covers what the allow/forbid lists cannot."""
     expression = {
@@ -344,6 +373,7 @@ def test_a_nested_eligibility_expression_validates():
     assert not problems, "\n".join(problems)
 
 
+@pytest.mark.data_contract
 def test_the_eligibility_expression_operators_are_closed():
     """An expression uses one operator or leaf per node; anything else is a contract error."""
     payload = campaign_document("hired-swords-and-dramatis")
@@ -352,6 +382,7 @@ def test_the_eligibility_expression_operators_are_closed():
     assert any("eligibility" in problem for problem in problems), problems
 
 
+@pytest.mark.data_contract
 def test_a_campaign_document_is_validated_with_its_own_schema():
     """The campaign catalogue shares the envelope but not the shape: each document has its own schema."""
     schemas = dict(catalogue_documents())
@@ -367,6 +398,7 @@ def test_a_campaign_document_is_validated_with_its_own_schema():
         assert not problems, "\n".join(problems)
 
 
+@pytest.mark.data_contract
 def test_the_contract_is_strict_about_the_committed_documents():
     """No schema admits data the KB does not have, and every unused declaration is classified.
 
@@ -382,6 +414,7 @@ def test_the_contract_is_strict_about_the_committed_documents():
     assert not unjustified, "\n".join(str(finding) for finding in unjustified)
 
 
+@pytest.mark.data_contract
 def test_no_strictness_justification_has_gone_stale():
     """A justification kept for a declaration the data now exercises hides a real gap."""
     stale = audit.stale_justifications(audit.audit_strictness(KNOWLEDGE))
@@ -390,15 +423,18 @@ def test_no_strictness_justification_has_gone_stale():
 
 # Staged warbands: the contract applies before promotion
 
+@pytest.mark.evidence
 def test_every_manual_of_the_kb_is_a_registered_source():
     registered = {entry["id"] for entry in read(REGISTRY / "sources.yaml")["sources"]}
     assert normalization.manual_values(KNOWLEDGE) <= registered
 
 
+@pytest.mark.test_infrastructure
 def test_open_field_normalization_targets_only_the_canonical_kb():
     assert normalization.targets() == [normalization.KB_ROOT]
 
 
+@pytest.mark.test_infrastructure
 def test_the_audit_reports_the_looseness_it_looks_for(monkeypatch):
     """The strictness gate is not vacuous: it flags an open object and an unused declaration."""
     schema = {

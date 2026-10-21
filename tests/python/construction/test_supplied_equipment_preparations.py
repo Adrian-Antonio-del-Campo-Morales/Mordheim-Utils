@@ -24,6 +24,7 @@ def tape(*rolls):
     return StrictDice([{'key': key, 'value': value} for key, value in rolls])
 
 
+@pytest.mark.rule_behavior
 @pytest.mark.parametrize('result,options,save', [
     (2, {'armour_id': 'armour.heavy-armour'}, 4),
     (2, {'armour_id': 'armour.light-armour'}, 5),
@@ -44,6 +45,7 @@ def test_maintenance_save_reaches_an_actual_attack(result, options, save):
     assert outcome.saved and outcome.defender.wounds == 2
 
 
+@pytest.mark.rule_behavior
 @pytest.mark.parametrize('main,rolls', [
     ('weapon.mace', [('r.hit', 4), ('r.parry', 5)]),
     ('weapon.sword', [('r.hit', 4), ('r.parry', 3), ('r.parry.reroll', 5)]),
@@ -59,6 +61,7 @@ def test_improved_shield_parries_like_buckler_including_sword_composition(main, 
     assert owner.armour_save == 6
 
 
+@pytest.mark.rule_behavior
 @pytest.mark.parametrize('condition,off,bonus', [
     ('condition.maintenance-4', 'defence.buckler', 1),
     ('condition.maintenance-5', 'defence.shield', 1),
@@ -74,6 +77,7 @@ def test_broken_improved_piece_loses_save_identity_and_parry(condition, off, bon
     assert equipment_for_state(effective, current, first_round=True) == effective
 
 
+@pytest.mark.interaction
 def test_rune_and_maintenance_stay_on_one_physical_shield_and_leave_together():
     owner = hero('condition.maintenance-5', 'condition.rune-stone',
                  off_hand_id='defence.shield', trait_overrides={'rune_stone_slots': ['off']})
@@ -87,6 +91,7 @@ def test_rune_and_maintenance_stay_on_one_physical_shield_and_leave_together():
     assert discarded.armour_save == 7 and discarded.helmet_save == 7
 
 
+@pytest.mark.rule_behavior
 @pytest.mark.parametrize('result', [1, 2, 3, 4, 5, 6])
 def test_first_result_stands_without_relevant_equipment(result):
     owner = hero(f'condition.maintenance-{result}')
@@ -94,6 +99,7 @@ def test_first_result_stands_without_relevant_equipment(result):
     initialize_fighter(owner, tape(), 'd')  # no invented table roll or reroll
 
 
+@pytest.mark.eligibility
 def test_recipient_and_one_table_result_are_enforced():
     with pytest.raises(ValueError, match='only one supplied result'):
         hero('condition.maintenance-2', 'condition.maintenance-3')
@@ -103,6 +109,7 @@ def test_recipient_and_one_table_result_are_enforced():
                 main_weapon_id='weapon.mace', condition_ids=(condition,)))
 
 
+@pytest.mark.rule_behavior
 @pytest.mark.parametrize('suffix,stat,value,expiry', [
     ('debilitating', 'toughness', 2, 6), ('strength', 'strength', 4, 1),
     ('resilience', 'toughness', 4, 1),
@@ -131,6 +138,7 @@ def test_witch_draught_uses_the_existing_operator_and_own_recovery(suffix, stat,
 
 
 
+@pytest.mark.compilation
 def test_witch_fortitude_and_alias_deduplication():
     owner = hero('condition.witch-fortitude', 'condition.petru-fortitude')
     assert initialize_fighter(owner, tape(), 'a').wounds == 3
@@ -140,6 +148,7 @@ def test_witch_fortitude_and_alias_deduplication():
         hero('condition.witch-strength', 'condition.petru-resilience')
 
 
+@pytest.mark.eligibility
 @pytest.mark.parametrize("condition", ['condition.maintenance-2', 'condition.witch-strength'])
 def test_supplied_custom_hero_uses_the_shared_recipient_identity(condition):
     fighter = compile_fighter(FighterBuild('mordheim', Characteristics(3, 3, 3, 2, 3, 1),

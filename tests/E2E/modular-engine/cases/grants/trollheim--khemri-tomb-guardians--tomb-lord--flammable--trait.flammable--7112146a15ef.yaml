@@ -69,15 +69,17 @@
       collection: trollheim
       band_id: khemri-tomb-guardians
       profile_id: tomb-lord
-  initial_state: {second: {wounds: 6, attacks: 0}}
+  initial_state: {second: {attacks: 0}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 5}
     - {key: round.0.first.attack.0.ignition, value: 4}
     - {key: round.0.first.attack.0.wound, value: 5}
+    # The doubled damage takes the last printed Wound, so the printed Injury table is rolled.
+    - {key: round.0.first.attack.0.injury.0, value: 1}
   expect_rounds:
-    0: {attacks.0.damage: 2, state.second.wounds: 4}
+    0: {attacks.0.damage: 2, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 - audit_id: rule/trollheim/khemri-tomb-guardians/tomb-lord--flammable/trait.flammable
@@ -91,14 +93,15 @@
       collection: trollheim
       band_id: khemri-tomb-guardians
       profile_id: tomb-lord
-  initial_state: {second: {wounds: 6, attacks: 0}}
+  initial_state: {second: {attacks: 0}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 5}
     - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
-    0: {attacks.0.damage: 1, state.second.wounds: 5}
+    0: {attacks.0.damage: 1, state.second.wounds: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 - audit_id: rule/trollheim/khemri-tomb-guardians/tomb-lord--flammable/trait.flammable
@@ -107,10 +110,11 @@
   fighters:
     first:
       main_weapon_id: weapon.brazier-iron
-      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
     second:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 6, initiative: 1, attacks: 0}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 6, initiative: 1, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:

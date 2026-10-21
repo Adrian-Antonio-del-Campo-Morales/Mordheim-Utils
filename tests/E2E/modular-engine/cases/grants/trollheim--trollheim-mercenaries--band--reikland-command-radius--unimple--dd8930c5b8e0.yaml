@@ -2,12 +2,13 @@
 # audit_id: rule/trollheim/trollheim-mercenaries/band--reikland-command-radius/unimplemented.trollheim-mercenaries.band.reikland-command-radius
 # scaffold_fingerprint: 9bad651e6cdc76211cd33202ba78ec02786811b0b282a20d5bea85e138c1e68e
 # authoring_status: AUTHORED
-# authoring_progress: the admitted leader-twelve clause carries 3 authored scenarios derived from
-# the printed twelve-inch Military Discipline radius and the delivered mechanic.leader-twelve
-# connection recorded in this file's own register notes: a same-band borrower adopts the supplied
-# Captain's Leadership at twelve inches and passes with it, a supplied captain past twelve inches
-# supplies nothing, and a same-band warrior who does not print the Leader rule supplies nothing.
-# REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# authoring_progress: the admitted leader-twelve clause keeps 2 authored controls derived from the
+# delivered mechanic.leader-six connection recorded in this file's own register notes: a supplied captain
+# past twelve inches supplies nothing, and a same-band warrior who does not print the Leader rule supplies
+# nothing.  The positive twelve-inch borrow is excluded from the active corpus: the band rule is declared
+# scope LATER, implemented NO and binding null in its current source, so the scenario that required the
+# widened radius is archived in the queue FIX (nodeid preserved), not weakened.  REVIEWED still requires
+# manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -18,12 +19,16 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: leader-twelve (scope: YES)
-# AUTHORED[leader-twelve]: 3 scenarios evidence the printed twelve-inch radius.  The borrower is
-#   the band's printed warriors profile and the supplied leader is the printed mercenary-captain,
-#   the profile the band grant restricts the radius to; both Leadership values are supplied fixture
-#   facts (8 for the captain, 3 for the borrower), so the same dice separate a borrowed pass from an
-#   own-value failure.  The borrower's required test is the Fear test of the charge it receives,
-#   whose printed consequence is state.second.fear_hit_sixes.
+# AUTHORED[leader-twelve]: 2 controls remain evidence of the delivered six-inch Leader connection.  The
+#   printed twelve-inch radius is excluded from the active corpus: the governing source declares
+#   band--reikland-command-radius scope LATER, implemented NO and binding null, so no compiled effect
+#   widens the radius and the engine never offers the borrow at twelve inches.  The excluded scenario is
+#   archived in the queue FIX with its nodeid; no distance is shortened or simulated here.
+#   The borrower is the band's printed warriors profile and the supplied leader is the printed
+#   mercenary-captain, the profile the captain's own Leader rule restricts the radius to; both Leadership
+#   values are supplied fixture facts (8 for the captain, 3 for the borrower), so the same dice separate a
+#   borrowed pass from an own-value failure.  The borrower's required test is the Fear test of the charge it
+#   receives, whose printed consequence is state.second.fear_hit_sixes.
 # origin_id:
 #   rule/trollheim/trollheim-mercenaries/band--reikland-command-radius/unimplemented.trollheim-mercenaries.band.reikland-command-radius
 # analysis_status:
@@ -52,49 +57,12 @@
 #   12-inch radius variant; the consumer's fixed 6-inch check must be parameterised. Surface reuse candidate: {"family":"M-LEADER-SIX","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare supplied provider, same side/band, standing status, recipient, distance, range upgrades and borrowing/reroll effects. Do not simulate another fighter or erase handler/leader restrictions; a range upgrade is not another aura.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #   
 #   [M4-psychology 2026-10-08] delivered. The Trollheim Mercenary copy of Military Discipline binds the same `mechanic.leader-twelve` contract with the same Captain-only recipient restriction. No residual.
+#   [source-check 2026-10-20] The current special-rules.yaml:61-84 no longer carries that binding:
+#   scope LATER, implemented NO, binding null.  The claim above is historical, not the current state.
 
 # --- Authored scenarios ---
 # The supplied leader is a nearby participant of the borrower's own side and band: the Trollheim
 # Mercenary Captain, the profile the band grant restricts the twelve-inch radius to.
-- audit_id: rule/trollheim/trollheim-mercenaries/band--reikland-command-radius/unimplemented.trollheim-mercenaries.band.reikland-command-radius
-  id: a-supplied-captain-at-twelve-inches-lends-his-leadership
-  covers: [leader-twelve]
-  fighters:
-    first:
-      trait_overrides: {causes_fear: true}
-      main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 8, attacks: 1, leadership: 7}
-    second:
-      collection: trollheim
-      band_id: trollheim-mercenaries
-      profile_id: warriors
-      main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1, leadership: 3}
-  duel_context:
-    charging: [first]
-    active_participant: first
-    nearby:
-      - participant_id: leader
-        side_id: second
-        condition: standing
-        fighter:
-          collection: trollheim
-          band_id: trollheim-mercenaries
-          profile_id: mercenary-captain
-          characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1, leadership: 8}
-    distances:
-      - [second, leader, 12]
-  decisions:
-    - {key: round.0.second.fear.charged.leader.leader, value: true}
-  maximum_rounds: 1
-  rolls:
-    - {key: round.0.second.fear.charged.0, value: 4}
-    - {key: round.0.second.fear.charged.1, value: 4}
-    - {key: round.0.first.attack.0.hit, value: 1}
-    - {key: round.0.second.attack.0.hit, value: 1}
-  expect_rounds:
-    0: {state.first.wounds: 3, state.second.wounds: 2, state.second.fear_hit_sixes: false}
-  expect_final: {rounds_executed: 1, termination_reason: horizon}
 # Past the printed twelve inches no use is offered at all, which the strict decision tape itself
 # proves.
 - audit_id: rule/trollheim/trollheim-mercenaries/band--reikland-command-radius/unimplemented.trollheim-mercenaries.band.reikland-command-radius

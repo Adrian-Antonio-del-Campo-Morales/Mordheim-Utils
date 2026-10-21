@@ -72,10 +72,9 @@
   id: the-immunity-skips-stupidity-suppresses-frenzy-and-denies-the-hatred-reroll
   covers: [psychology-immunity]
   fighters:
-    first: {main_weapon_id: weapon.mace, skill_ids: [mechanic.stupidity, mechanic.hatred-undead, mechanic.psychology-immunity], characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}}
+    first: {main_weapon_id: weapon.mace, skill_ids: [mechanic.stupidity, mechanic.hatred-undead, mechanic.psychology-immunity], characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}, trait_overrides: {frenzy: true}}
     second: {collection: mordheim, band_id: undead, profile_id: zombies}
-  initial_state: {first: {frenzy: true}}
-  expect_initial: {first: {frenzy: False}}
+  expect_initial: {first.frenzy: False}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:

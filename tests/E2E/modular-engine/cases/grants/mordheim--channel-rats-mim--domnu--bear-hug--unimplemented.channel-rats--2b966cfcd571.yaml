@@ -156,7 +156,7 @@
     0: {state.second.wounds: 3, state.second.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
-# The armed control: the printed precondition is that both hits are unarmed, so the mace-armed Domnu
+# The armed control: the printed precondition is that both hits are unarmed, so the axe-armed Domnu
 # is offered no Bear Hug decision at all and its two ordinary hits resolve.  StrictDecisions holds no
 # scripted answer, so a request that should not happen fails the case.
 - audit_id: rule/mordheim/channel-rats-mim/domnu--bear-hug/unimplemented.channel-rats-mim.domnu.bear-hug
@@ -167,7 +167,7 @@
       collection: mordheim
       band_id: channel-rats-mim
       profile_id: domnu
-      main_weapon_id: weapon.mace
+      main_weapon_id: weapon.axe
       characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 3, initiative: 5, attacks: 2}
     second:
       main_weapon_id: weapon.mace

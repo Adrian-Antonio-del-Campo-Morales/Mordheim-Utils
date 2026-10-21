@@ -5,6 +5,7 @@ import json
 import re
 from pathlib import Path
 
+import pytest
 import yaml
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -53,12 +54,15 @@ def _kb_sources() -> dict[str, list[Path]]:
     return result
 
 
+# The first two cases check the maintained required-source inventory itself.
+@pytest.mark.evidence
 def test_every_required_catalogue_exists() -> None:
     sources = _kb_sources()
     missing_files = {pattern for pattern, paths in sources.items() if not paths}
     assert not missing_files, f"inventory patterns matching no files: {sorted(missing_files)}"
 
 
+@pytest.mark.evidence
 def test_inventory_covers_campaign_sections_read_by_the_web_adapter() -> None:
     reader = ROOT / "packages/typescript/adapters/knowledge-reader/index.ts"
     consumed = set(re.findall(r'campaign\["([a-z_\-]+)"\]', reader.read_text(encoding="utf-8")))
@@ -74,6 +78,7 @@ def test_inventory_covers_campaign_sections_read_by_the_web_adapter() -> None:
     assert not missing, f"web campaign catalogues missing from the KB inventory: {sorted(missing)}"
 
 
+@pytest.mark.knowledge_integrity
 def test_every_band_used_by_v5_fixtures_resolves_against_the_kb() -> None:
     band_ids = set()
     for band_file in (KB / "bands").glob("*/*/band.yaml"):
@@ -91,5 +96,6 @@ def test_every_band_used_by_v5_fixtures_resolves_against_the_kb() -> None:
     assert not dangling, f"fixture bands missing from the KB: {dangling}"
 
 
+@pytest.mark.architecture
 def test_excluded_combat_lab_surfaces_are_not_inputs() -> None:
     assert not any(surface in pattern for surface in EXCLUDED_SURFACES for pattern in REQUIRED_CATALOGUES)

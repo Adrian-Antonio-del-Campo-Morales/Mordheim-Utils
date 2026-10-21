@@ -33,6 +33,8 @@ from jsonschema import Draft202012Validator
 from mordheim_knowledge import editorial_schemas
 from mordheim_knowledge.editorial_schemas import EditorialSchemaError, knowledge_root
 
+SAFE_YAML_LOADER = getattr(yaml, "CSafeLoader", yaml.SafeLoader)
+
 #: Finding kinds that mean the schema is looser than the data, or declares a
 #: definition nothing can reach. The contract is strict when this list is empty.
 HARD_FINDINGS = ("tautology", "open_object", "undeclared_key", "dead_definition")
@@ -875,7 +877,7 @@ def dead_definitions() -> list[Finding]:
 
 def _read(path: Path) -> dict:
     try:
-        payload = yaml.safe_load(path.read_text(encoding="utf-8"))
+        payload = yaml.load(path.read_text(encoding="utf-8"), Loader=SAFE_YAML_LOADER)
     except (OSError, yaml.YAMLError) as exc:  # pragma: no cover - the loader reports this first
         raise EditorialSchemaError(f"Cannot read {path}: {exc}") from exc
     if not isinstance(payload, dict):

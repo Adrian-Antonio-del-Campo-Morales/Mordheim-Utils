@@ -54,6 +54,7 @@ def morr_bearer():
 
 # --- Tomb Scorpions: living, and therefore not Undead ----------------------
 
+@pytest.mark.compilation
 def test_tomb_scorpions_are_living_and_not_undead_in_both_printings():
     for band, collection in (("tomb-guardians", "mordheim"),
                             ("khemri-tomb-guardians", "trollheim")):
@@ -64,6 +65,7 @@ def test_tomb_scorpions_are_living_and_not_undead_in_both_printings():
         assert "mechanic.psychology-immunity" not in scorpion.global_effects.tags, band
 
 
+@pytest.mark.rule_behavior
 def test_the_living_identity_stops_the_undead_foe_exemption_covering_scorpions():
     # The admitted consumer of the living/Undead classification: the
     # Dreamwalkers' Fear exemption names the opponent's Undead identity.
@@ -74,6 +76,7 @@ def test_the_living_identity_stops_the_undead_foe_exemption_covering_scorpions()
     assert undead_foes_fear_immunity(bearer, canonical("undead", "zombies")) is True
 
 
+@pytest.mark.compilation
 def test_stone_golem_is_animated_and_carries_no_undead_identity():
     # Reconciliation: the printed "animated being and is not Undead" already
     # holds; nothing in the record claims a creature kind for the construct.
@@ -84,6 +87,7 @@ def test_stone_golem_is_animated_and_carries_no_undead_identity():
 
 # --- Gnoblars count as Greenskins -----------------------------------------
 
+@pytest.mark.compilation
 def test_gnoblars_count_as_greenskins_for_the_canonical_hatred():
     for profile in ("gnoblar-fighters", "flingers"):
         tags = canonical("ogre-hunting-party-web", profile).global_effects.tags
@@ -106,11 +110,12 @@ SKILL = "band--special-skill-instinctual-violence"
 
 
 def graver(**options):
-    return canonical("grave-robbers-sylv", "graver", "weapon.mace", **options)
+    return canonical("grave-robbers-sylv", "graver", "weapon.club", **options)
 
 
 # --- Instinctual Violence: both admitted halves ----------------------------
 
+@pytest.mark.compilation
 def test_the_selected_skill_grants_the_undead_charger_exemption_and_one_strike():
     selected = graver(special_rule_ids=(SKILL,))
     assert "mechanic.fear-immunity-undead-chargers" in selected.global_effects.tags
@@ -120,6 +125,7 @@ def test_the_selected_skill_grants_the_undead_charger_exemption_and_one_strike()
     assert selected.global_effects.priority == 0
 
 
+@pytest.mark.rule_behavior
 def test_the_fear_exemption_needs_an_undead_charger():
     bearer = graver(special_rule_ids=(SKILL,))
     zombie = canonical("undead", "zombies")
@@ -168,6 +174,7 @@ def scheduled(first, second, rolls, decisions=()):
     return result
 
 
+@pytest.mark.rule_behavior
 def test_only_the_nominated_attack_strikes_first():
     # Fixture: the foe's charge already takes the Strike First tier and a higher
     # Initiative would otherwise decide, so only the nomination can lift the
@@ -190,6 +197,7 @@ def test_only_the_nominated_attack_strikes_first():
     assert len(result.attacks) == 3
 
 
+@pytest.mark.interaction
 def test_declining_nomination_keeps_the_prepared_secondary_majority_once():
     bearer = synthetic(initiative=5, attacks=2, nominated=True, off_hand="weapon.dagger")
     result = scheduled(bearer, synthetic(initiative=3),
@@ -201,6 +209,7 @@ def test_declining_nomination_keeps_the_prepared_secondary_majority_once():
     assert len(result.attacks) == 4
 
 
+@pytest.mark.interaction
 def test_the_nominated_attack_leaves_the_ordinary_pool_without_duplicating_it():
     """The nominated slot leaves the pool; the remaining allocation is kept.
 
@@ -244,6 +253,7 @@ def test_the_nominated_attack_leaves_the_ordinary_pool_without_duplicating_it():
     assert not [request.key for request in dice.requests if request.key.endswith(".armour")]
 
 
+@pytest.mark.compilation
 def test_the_nominated_strike_keeps_the_allocated_weapons_profile_and_slot():
     # The offers follow the pool's own allocation, so the nominated strike is one
     # of the bearer's real allocated attacks and keeps that weapon's provenance.
@@ -306,6 +316,7 @@ def _allocation_versus_resolved(monkeypatch, unit, *, majority, nomination, char
     return Counter(seen), Counter(weapon_tag(weapon) for weapon in allocation)
 
 
+@pytest.mark.interaction
 def test_the_nominated_attack_and_the_remainder_share_the_pools_own_allocation(monkeypatch):
     """One allocation governs the choice, the named strike and the remainder.
 
@@ -342,6 +353,7 @@ def watchman(profile="watch-captain", **options):
     return canonical("watchmen-mim", profile, **options)
 
 
+@pytest.mark.compilation
 def test_fanatical_auto_pass_follows_the_supplied_promotion_only():
     promoted = watchman(trait_overrides={"crusader_of_law": True})
     assert "mechanic.automatic-leadership" in promoted.global_effects.tags
@@ -366,6 +378,7 @@ def test_fanatical_auto_pass_follows_the_supplied_promotion_only():
 BRANCHNYMPH = ("fen-guard-mim", "branchnymph")
 
 
+@pytest.mark.rule_behavior
 def test_the_psychology_immune_bearer_still_takes_the_fear_of_fire_rider():
     """"Note that Fear of Fire still applies" limits the immunity it is printed next to."""
     nymph = canonical(*BRANCHNYMPH, "weapon.mace")
@@ -426,6 +439,7 @@ def slaver(profile="slave-merchant"):
     return canonical(SLAVERS, profile)
 
 
+@pytest.mark.rule_behavior
 def test_free_the_slaves_targets_the_opponents_own_slaver_identity():
     fighter = pit_fighter()
     assert "mechanic.hatred-slavers" in fighter.global_effects.tags
@@ -467,6 +481,7 @@ def pilgrim(**options):
         main_weapon_id="weapon.mace", **options), ROOT)
 
 
+@pytest.mark.compilation
 def test_the_holy_relic_grants_frenzy_only_while_it_is_owned():
     owner = pilgrim(owned_item_ids=(RELIC,))
     assert owner.global_effects.frenzy is True
@@ -482,6 +497,7 @@ def test_the_holy_relic_grants_frenzy_only_while_it_is_owned():
     assert "defence.holy-relic" in owner.global_effects.tags
 
 
+@pytest.mark.interaction
 def test_a_frenzied_relic_bearer_is_immune_to_his_own_hatred():
     owner = pilgrim(owned_item_ids=(RELIC,))
     foe = canonical("undead", "zombies")
@@ -492,8 +508,9 @@ def test_a_frenzied_relic_bearer_is_immune_to_his_own_hatred():
     assert _hit_reroll(owner, foe, owner.main_weapon, effect, True, False, frenzy=True) is False
 
 
+@pytest.mark.eligibility
 def test_knight_of_purity_autopass_requires_a_supplied_hero_promotion():
-    knight = canonical('watchmen-mim', 'sergeants', 'weapon.mace',
+    knight = canonical('watchmen-mim', 'sergeants', 'weapon.club',
                        trait_overrides={'crusader_of_law': True})
     state = initialize_duel(knight, knight, StrictDice([]),
                             context=DuelContext(charging=(), active_participant='first'))
@@ -501,12 +518,12 @@ def test_knight_of_purity_autopass_requires_a_supplied_hero_promotion():
     assert resolve_local_leadership(knight, state, dice, StrictDecisions([]),
                                     'knight', first=True, fear=False) is True
     dice.finish()
-    ordinary = canonical('watchmen-mim', 'sergeants', 'weapon.mace')
+    ordinary = canonical('watchmen-mim', 'sergeants', 'weapon.club')
     assert 'mechanic.automatic-leadership' not in ordinary.global_effects.tags
     with pytest.raises(ValueError, match='Hero of the Watch'):
-        canonical('watchmen-mim', 'officers', 'weapon.mace',
+        canonical('watchmen-mim', 'officers', 'weapon.club',
                   trait_overrides={'crusader_of_law': True})
-    promoted = canonical('watchmen-mim', 'officers', 'weapon.mace',
+    promoted = canonical('watchmen-mim', 'officers', 'weapon.club',
                          variant_ids=('promotion.hero',), trait_overrides={'crusader_of_law': True})
     assert 'mechanic.automatic-leadership' in promoted.global_effects.tags
 
@@ -537,6 +554,7 @@ def instance_of(band, profile, instance, warband_instance, *, collection="mordhe
     return fighter
 
 
+@pytest.mark.rule_behavior
 def test_vengeful_hatred_individual_selects_only_the_identified_warrior():
     """Two warriors of the same profile: only the identified one is hated."""
     bearer = injured("individual", "zombie-3")
@@ -558,6 +576,7 @@ def test_vengeful_hatred_individual_selects_only_the_identified_warrior():
     assert rerolls(plain, named) is False
 
 
+@pytest.mark.rule_behavior
 def test_vengeful_hatred_warband_selects_only_the_identified_warband():
     """Two warbands of one type: the concrete branch matches only its own."""
     bearer = injured("warband", "roster-a")
@@ -575,6 +594,7 @@ def test_vengeful_hatred_warband_selects_only_the_identified_warband():
     assert rerolls(bearer, canonical("mercenaries", "warriors")) is False
 
 
+@pytest.mark.rule_behavior
 def test_vengeful_hatred_warband_type_covers_every_warband_of_that_type():
     """The only category branch: every warband of the type, whatever its roster."""
     bearer = injured("warband-type", "undead")
@@ -590,6 +610,7 @@ def test_vengeful_hatred_warband_type_covers_every_warband_of_that_type():
     assert rerolls(bearer, canonical("night-goblins-web", "night-goblin-warriors")) is False
 
 
+@pytest.mark.rule_behavior
 def test_vengeful_hatred_leader_is_the_identified_instance_that_holds_the_rule():
     """Leader names the determined individual, so the skill alone never grants."""
     bearer = injured("leader", "leader-1")
@@ -608,6 +629,7 @@ def test_vengeful_hatred_leader_is_the_identified_instance_that_holds_the_rule()
     assert rerolls(bearer, former_leader) is True
 
 
+@pytest.mark.data_contract
 def test_vengeful_hatred_refuses_a_half_supplied_or_empty_target():
     with pytest.raises(ValueError, match="target kind and its concrete identity together"):
         canonical("mercenaries", "warriors", trait_overrides={"enmity_kind": "warband"})

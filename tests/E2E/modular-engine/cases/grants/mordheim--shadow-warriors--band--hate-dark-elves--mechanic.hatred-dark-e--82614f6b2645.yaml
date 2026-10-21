@@ -192,17 +192,17 @@
 
 # The same contract suppresses the benefit for a Psychology-immune warrior, so a bearer carrying the
 # canonical Immunity to Psychology takes no taken-again die even against the qualifying identity: the
-# natural 2 stands while the identity is supplied exactly as in the granting tape.
+# natural 2 stands while the identity is supplied exactly as in the granting tape.  The bearer is a
+# hand-built fixture here because a profile build refuses this canonical mechanic in its skill list;
+# it therefore carries the same two grants explicitly (Hatred against Dark Elves and Immunity to
+# Psychology) that the printed profile build receives.
 - audit_id: rule/mordheim/shadow-warriors/band--hate-dark-elves/mechanic.hatred-dark-elves
   id: a-psychology-immune-bearer-takes-no-hatred-reroll
   covers: [hatred]
   fighters:
     first:
-      collection: mordheim
-      band_id: shadow-warriors
-      profile_id: shadow-warrior
-      skill_ids: [mechanic.psychology-immunity]
-      main_weapon_id: weapon.natural-attacks
+      skill_ids: [mechanic.hatred-dark-elves, mechanic.psychology-immunity]
+      main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
       main_weapon_id: weapon.natural-attacks

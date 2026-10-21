@@ -27,6 +27,7 @@ def tape(*rolls):
     return StrictDice([{'key': key, 'value': value} for key, value in rolls])
 
 
+@pytest.mark.eligibility
 def test_black_guard_offering_projection_and_compilation_share_the_selected_mark():
     selected = build(HAUNTED, main_weapon_id='weapon.sword', armour_id='armour.heavy-armour',
                      owned_item_ids=('sword', 'heavy_armour'))
@@ -43,11 +44,13 @@ def test_black_guard_offering_projection_and_compilation_share_the_selected_mark
 
 
 @pytest.mark.parametrize('marks', [(), (AUGUR,)])
+@pytest.mark.eligibility
 def test_priest_and_augur_keep_their_original_kit_strictures(marks):
     with pytest.raises(ValueError, match='printed kit|not available|forbidden'):
         compile_fighter(build(*marks, main_weapon_id='weapon.sword', armour_id='armour.heavy-armour'))
 
 
+@pytest.mark.eligibility
 def test_black_guard_does_not_grant_foreign_unique_equipment_or_missing_physical_copies():
     with pytest.raises(ValueError, match='ordinary human access|not available'):
         compile_fighter(build(HAUNTED, main_weapon_id='weapon.starsword', owned_item_ids=('starsword',)))
@@ -56,6 +59,9 @@ def test_black_guard_does_not_grant_foreign_unique_equipment_or_missing_physical
                               owned_item_ids=('sword',)))
 
 
+# Primary: only one Mark is admitted. The Augur's compiled Strength and
+# psychology immunity are the secondary guarantee of the admitted choice.
+@pytest.mark.eligibility
 def test_two_marks_are_refused_and_augur_reduces_strength_once():
     with pytest.raises(ValueError, match='only one Mark'):
         compile_fighter(build(AUGUR, HAUNTED))
@@ -65,6 +71,7 @@ def test_two_marks_are_refused_and_augur_reduces_strength_once():
     assert 'mechanic.psychology-immunity' in augur.global_effects.tags
 
 
+@pytest.mark.rule_behavior
 def test_black_guard_combat_and_strength_skills_reach_the_real_round():
     owner = compile_fighter(build(HAUNTED, main_weapon_id='weapon.sword', armour_id='armour.heavy-armour',
         skill_ids=('skill.expert-swordsman', 'skill.mighty-blow')))
@@ -79,6 +86,7 @@ def test_black_guard_combat_and_strength_skills_reach_the_real_round():
     assert result.attacks[0].wounded and result.state.second.wounds == 1
 
 
+@pytest.mark.rule_behavior
 def test_augur_one_roll_resource_is_shared_across_attacks_and_not_reset():
     owner = compile_fighter(build(AUGUR))
     foe = compile_fighter(FighterBuild('mordheim', Characteristics(3, 3, 3, 2, 2, 1), main_weapon_id='weapon.mace'))
@@ -97,6 +105,7 @@ def test_augur_one_roll_resource_is_shared_across_attacks_and_not_reset():
     assert not second_attack.hit
 
 
+@pytest.mark.rule_behavior
 def test_augur_psychology_immunity_skips_a_real_living_fear_causer_without_spending_reroll():
     augur, plain = compile_fighter(build(AUGUR)), compile_fighter(build())
     foe = compile_fighter(FighterBuild('mordheim', Characteristics(3, 3, 3, 2, 2, 1),

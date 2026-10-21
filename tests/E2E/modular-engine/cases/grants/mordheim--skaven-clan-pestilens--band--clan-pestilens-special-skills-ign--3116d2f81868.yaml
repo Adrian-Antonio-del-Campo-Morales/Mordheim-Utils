@@ -108,6 +108,10 @@
       collection: mordheim
       band_id: skaven-clan-pestilens
       profile_id: plague-monks
+      # The printed Ignore Pain is a band skill the recipient selects, together with
+      # the printed Resilient prerequisite; neither is an automatic profile trait.
+      skill_ids: [skill.resilient]
+      special_rule_ids: [band--clan-pestilens-special-skills-ignore-pain]
   initial_state:
     second:
       wounds: 1

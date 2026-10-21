@@ -322,7 +322,7 @@ Legitimately retained by each product:
 2. Run `npm run build:eligibility` to generate `packages/python/roster-construction/mordheim_construction/_eligibility.js`. Do not edit that file directly.
 3. Run `npm run check:eligibility` and the affected maintained cases through direct TypeScript and embedded Python execution. Add cases only for uncovered behavior or a concrete regression risk. Projection or transport changes also check the affected UI/campaign consumer paths; broader suites run at stable integration checkpoints. Reuse existing fixtures rather than duplicate the same expectations across layers.
 
-CI checks bundle freshness and both consumers. The Python freshness test compares the bundle's source digest with the maintained TypeScript files. Regeneration is required when either `index.ts` or `bridge.ts` changes. Python installation declares `mini-racer==0.14.1`; this is a runtime dependency, not an optional fallback to duplicated Python decisions.
+CI checks bundle freshness and both consumers. The Python freshness test runs the maintained generator in check mode, which rebuilds the bundle in memory and compares the whole artifact, so a body edit that preserves the banner digest still fails. Regeneration is required when either `index.ts` or `bridge.ts` changes. Python installation declares `mini-racer==0.14.1`; this is a runtime dependency, not an optional fallback to duplicated Python decisions.
 
 The local `python tools/mordheim-utils.py run-ci` gate includes the same bundle
 check and Python transport tests. Windows packaging collects the JavaScript

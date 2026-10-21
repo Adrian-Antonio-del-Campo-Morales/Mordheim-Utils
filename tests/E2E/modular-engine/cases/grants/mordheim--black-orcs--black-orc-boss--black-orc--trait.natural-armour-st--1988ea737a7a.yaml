@@ -67,13 +67,16 @@
 
 # --- Authored scenarios ---
 # Derived from the printed sentence and the recorded contract; no engine output was consulted.
+# The attacker's mace carries no armour-save modifier, so the shield's improvement is read as the
+# printed 5+; its Concussion conversion stays outside this evidence because the failed save declares
+# the injury die 1, below the printed 2-4 band.
 
 - audit_id: rule/mordheim/black-orcs/black-orc-boss--black-orc/trait.natural-armour-stacks
   id: the-carried-shield-improves-the-natural-save-to-five
   covers: [whole]
   fighters:
     first:
-      main_weapon_id: weapon.axe
+      main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 4, strength: 3, toughness: 4, wounds: 3, initiative: 4, attacks: 1}
     second:
       collection: mordheim
@@ -86,7 +89,7 @@
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.first.attack.0.armour, value: 5}
   expect_rounds:
     0: {attacks.0.wounded: True, attacks.0.saved: True, state.second.wounds: 1, state.second.condition: STANDING}
@@ -97,7 +100,7 @@
   covers: [whole]
   fighters:
     first:
-      main_weapon_id: weapon.axe
+      main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 4, strength: 3, toughness: 4, wounds: 3, initiative: 4, attacks: 1}
     second:
       collection: mordheim
@@ -110,9 +113,9 @@
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.first.attack.0.armour, value: 4}
-    - {key: round.0.first.attack.0.injury.0, value: 2}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
   expect_rounds:
     0: {attacks.0.wounded: True, attacks.0.saved: False, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

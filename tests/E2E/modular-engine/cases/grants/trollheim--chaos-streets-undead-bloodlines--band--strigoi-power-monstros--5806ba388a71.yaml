@@ -62,16 +62,19 @@
   fighters:
     first:
       main_weapon_id: weapon.natural-attacks
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 0}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
     second:
       collection: trollheim
       band_id: chaos-streets-undead-bloodlines
       profile_id: strigoi-vampire
       special_rule_ids: [band--strigoi-power-monstrosity]
       main_weapon_id: weapon.natural-attacks
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 0}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
   expect_initial: {second.wounds: 4}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
@@ -81,14 +84,17 @@
   fighters:
     first:
       main_weapon_id: weapon.natural-attacks
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 0}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
     second:
       collection: trollheim
       band_id: chaos-streets-undead-bloodlines
       profile_id: strigoi-vampire
       main_weapon_id: weapon.natural-attacks
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 0}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
   expect_initial: {second.wounds: 3}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

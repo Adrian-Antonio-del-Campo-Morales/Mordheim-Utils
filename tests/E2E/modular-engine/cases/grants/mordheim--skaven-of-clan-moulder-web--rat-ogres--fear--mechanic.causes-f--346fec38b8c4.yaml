@@ -56,7 +56,10 @@
 # Derived from the printed rule, the recorded cause-fear contract and the printed profile;
 # no engine output was consulted.  The causer charges, so the warrior it charged is the
 # Fear-tested warrior and its two Leadership dice are declared first against the fixture's
-# Leadership 7.  This scenario is about the Fear test alone, so the causer contributes no
+# Leadership 7.  The Rat Ogres' printed recruitment clause requires exactly one Mutation, so
+# the build declares the inert Extra Arm entry; it adds no duel effect to this causer, whose
+# attack pool is declared empty.  The causer also prints Stupidity, so its own start-of-turn
+# test is declared first (passed on 1+1) before the Fear test the charged warrior owes.  This scenario is about the Fear test alone, so the causer contributes no
 # attacks of its own (initial_state) and the only attack die is the charged warrior's own.
 
 - audit_id: rule/mordheim/skaven-of-clan-moulder-web/rat-ogres--fear/mechanic.causes-fear
@@ -66,11 +69,14 @@
     first:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
-    second: {collection: mordheim, band_id: skaven-of-clan-moulder-web, profile_id: rat-ogres}
+    second: {collection: mordheim, band_id: skaven-of-clan-moulder-web, profile_id: rat-ogres,
+             special_rule_ids: [band--mutations-extra-arm]}
   initial_state: {second: {attacks: 0}}
   duel_context: {charging: [second], active_participant: second}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.second.stupidity.0, value: 1}
+    - {key: round.0.second.stupidity.1, value: 1}
     - {key: round.0.first.fear.charged.0, value: 5}
     - {key: round.0.first.fear.charged.1, value: 4}
     - {key: round.0.first.attack.0.hit, value: 4}
@@ -85,11 +91,14 @@
     first:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
-    second: {collection: mordheim, band_id: skaven-of-clan-moulder-web, profile_id: rat-ogres}
+    second: {collection: mordheim, band_id: skaven-of-clan-moulder-web, profile_id: rat-ogres,
+             special_rule_ids: [band--mutations-extra-arm]}
   initial_state: {second: {attacks: 0}}
   duel_context: {charging: [second], active_participant: second}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.second.stupidity.0, value: 1}
+    - {key: round.0.second.stupidity.1, value: 1}
     - {key: round.0.first.fear.charged.0, value: 3}
     - {key: round.0.first.fear.charged.1, value: 3}
     - {key: round.0.first.attack.0.hit, value: 4}

@@ -58,7 +58,10 @@
 
 # --- Authored scenarios ---
 # Family model (conditional Stupidity): the bearer is the printed recipient of this record, built
-# from its band profile, so the granted mechanic.stupidity is what the scenarios exercise.  Its
+# from its band profile (with the one Mutation its recruitment clause requires, the inert Extra
+# Arm entry), so the granted mechanic.stupidity is what the scenarios exercise.  While this
+# causer's charge stands, the warrior it charged owes the printed Fear test, so that test is
+# declared in the scenarios where contact survives.  Its
 # physical characteristics are supplied as fixture facts (WS3 S3 T3 W3 I2 A1) so the dice thresholds
 # and the strike order are fixed, while its printed Leadership stays in place: a total of twelve is a
 # certain failure (no catalogue Leadership reaches twelve) and a total of two a certain pass.  The
@@ -81,6 +84,7 @@
       collection: mordheim
       band_id: skaven-of-clan-moulder-web
       profile_id: rat-ogres
+      special_rule_ids: [band--mutations-extra-arm]
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
     second:
       main_weapon_id: weapon.mace
@@ -104,6 +108,7 @@
       collection: mordheim
       band_id: skaven-of-clan-moulder-web
       profile_id: rat-ogres
+      special_rule_ids: [band--mutations-extra-arm]
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
     second:
       main_weapon_id: weapon.mace
@@ -113,6 +118,8 @@
   rolls:
     - {key: round.0.first.stupidity.0, value: 1}
     - {key: round.0.first.stupidity.1, value: 1}
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 5}
     - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.second.attack.0.hit, value: 1}
@@ -130,6 +137,7 @@
       collection: mordheim
       band_id: skaven-of-clan-moulder-web
       profile_id: rat-ogres
+      special_rule_ids: [band--mutations-extra-arm]
       trait_overrides: {stupidity_exempt: true}
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
     second:
@@ -138,6 +146,8 @@
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 5}
     - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.second.attack.0.hit, value: 1}
@@ -160,6 +170,7 @@
       collection: mordheim
       band_id: skaven-of-clan-moulder-web
       profile_id: rat-ogres
+      special_rule_ids: [band--mutations-extra-arm]
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
     second:
       main_weapon_id: weapon.mace
@@ -170,6 +181,8 @@
               fighter: {collection: mordheim, band_id: skaven-of-clan-moulder-web, profile_id: packmaster}}]}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 5}
     - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.second.attack.0.hit, value: 1}

@@ -103,6 +103,7 @@ def drop(fighter, tag):
 
 # --- Devoted to the Vampire: sharing and the supplied facts ----------------
 
+@pytest.mark.eligibility
 def test_devoted_is_granted_to_both_printed_recipients_and_to_no_other_profile():
     for profile in ("beloved", "lackeys"):
         fighter = lahmain(profile)
@@ -114,6 +115,7 @@ def test_devoted_is_granted_to_both_printed_recipients_and_to_no_other_profile()
         assert HATRED not in fighter.global_effects.tags, profile
 
 
+@pytest.mark.compilation
 def test_the_supplied_vampire_condition_projects_only_for_a_recipient():
     assert "condition.devoted-vampire-down" in lahmain("beloved", down=True).global_effects.tags
     assert "condition.devoted-vampire-killed" in lahmain("lackeys", killed=True).global_effects.tags
@@ -129,6 +131,7 @@ def test_the_supplied_vampire_condition_projects_only_for_a_recipient():
 
 # --- Devoted to the Vampire: Frenzy while she is down ----------------------
 
+@pytest.mark.rule_behavior
 def test_devoted_frenzy_lasts_until_the_supplied_vampire_stands_up():
     bearer = lahmain("beloved", down=True)
     foe = bare()
@@ -148,6 +151,7 @@ def test_devoted_frenzy_lasts_until_the_supplied_vampire_stands_up():
     assert not after.state.first.frenzy and len(after.attacks) == 2
 
 
+@pytest.mark.rule_behavior
 def test_devoted_frenzy_is_not_granted_without_its_supplied_condition():
     bearer = lahmain("beloved")
     foe = bare()
@@ -161,6 +165,7 @@ def test_devoted_frenzy_is_not_granted_without_its_supplied_condition():
 
 # --- Devoted to the Vampire: Hatred against her killer --------------------
 
+@pytest.mark.rule_behavior
 def test_devoted_hatred_rerolls_a_first_round_miss_against_the_killer():
     bearer = lahmain("beloved", killed=True)
     killer = bare()
@@ -180,6 +185,7 @@ def test_devoted_hatred_rerolls_a_first_round_miss_against_the_killer():
     assert result.attacks[0].hit_roll == 1 and not result.attacks[0].hit
 
 
+@pytest.mark.rule_behavior
 def test_devoted_hatred_and_frenzy_end_after_the_killer_dies():
     bearer = lahmain("beloved", killed=True)
     killer = bare()
@@ -197,6 +203,7 @@ def test_devoted_hatred_and_frenzy_end_after_the_killer_dies():
 
 # --- The Bitten: activation, persistence and the combat exception ---------
 
+@pytest.mark.rule_behavior
 def test_the_bitten_transforms_on_six_and_persists_without_rolling_in_combat():
     mutant = bitten()
     foe = bare()
@@ -225,6 +232,7 @@ def test_the_bitten_transforms_on_six_and_persists_without_rolling_in_combat():
     assert "round.2.first.bitten" not in dice.requests
 
 
+@pytest.mark.rule_behavior
 def test_the_bitten_reverts_to_human_form_on_a_roll_of_one():
     mutant = bitten()
     foe = bare()
@@ -241,6 +249,7 @@ def test_the_bitten_reverts_to_human_form_on_a_roll_of_one():
     assert not result.attacks
 
 
+@pytest.mark.rule_behavior
 def test_the_bitten_acts_normally_on_two_to_five():
     mutant = bitten()
     foe = bare()
@@ -255,6 +264,7 @@ def test_the_bitten_acts_normally_on_two_to_five():
 
 # --- The Bitten: Madness lasts this turn only -----------------------------
 
+@pytest.mark.rule_behavior
 def test_the_bitten_madness_is_a_this_turn_stupidity():
     mutant = bitten()
     foe = bare()
@@ -285,6 +295,7 @@ def test_the_bitten_madness_is_a_this_turn_stupidity():
     assert len(after.attacks) == 2
 
 
+@pytest.mark.rule_behavior
 def test_the_bitten_madness_never_tests_another_model():
     mutant = bitten()
     foe = bare()
@@ -297,6 +308,7 @@ def test_the_bitten_madness_never_tests_another_model():
 
 # --- The Bitten: cast-off equipment and unarmed penalties -----------------
 
+@pytest.mark.rule_behavior
 def test_transforming_retires_the_wound_a_discarded_item_folded_into_the_profile():
     """Armour is physical: the extra Wound it grants goes with it.
 
@@ -318,6 +330,7 @@ def test_transforming_retires_the_wound_a_discarded_item_folded_into_the_profile
     assert 'weapon.dagger' in kept.main_weapon.tags and kept.characteristics.wounds == 3
 
 
+@pytest.mark.rule_behavior
 def test_the_round_holds_the_current_wounds_within_the_surviving_maximum():
     bearer = bare(wounds=3, armour='armour.attlas-plate-mail')
     foe = bare()
@@ -331,6 +344,7 @@ def test_the_round_holds_the_current_wounds_within_the_surviving_maximum():
     assert result.state.first.wounds == 3
 
 
+@pytest.mark.rule_behavior
 def test_transforming_casts_off_everything_except_a_dagger():
     armed = bare(weapon="weapon.sword", off_hand_id="defence.shield", armour="armour.light-armour")
     assert armed.armour_save < 7 and armed.off_hand is not None
@@ -347,6 +361,7 @@ def test_transforming_casts_off_everything_except_a_dagger():
     assert equipment_for_state(dagger, FighterState(wounds=1), first_round=True) == dagger
 
 
+@pytest.mark.rule_behavior
 def test_transforming_casts_off_the_shield_but_never_a_skill():
     # "cast off all equipment": a shield's save and a shield's parry are
     # equipment and go with it, while a skill's own save or parry is not
@@ -365,6 +380,7 @@ def test_transforming_casts_off_the_shield_but_never_a_skill():
     assert without.shield_and_skill_effects.armour_save_bonus == 0
 
 
+@pytest.mark.rule_behavior
 def test_transformed_equipment_loss_is_never_recovered_by_the_reversion():
     mutant = bitten(weapon="weapon.sword")
     foe = bare()
@@ -392,6 +408,7 @@ def test_transformed_equipment_loss_is_never_recovered_by_the_reversion():
     assert len(after.attacks) == 2 and not after.state.first.transformed
 
 
+@pytest.mark.rule_behavior
 def test_a_transformed_bitten_suffers_no_penalty_for_fighting_unarmed():
     mutant = bitten(weapon="weapon.fist")
     # Toughness 3 makes the printed -1 to Strength the discriminator; two wounds

@@ -82,13 +82,14 @@
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
-    - {key: round.0.first.attack.0.injury.0, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 4}
   expect_rounds:
     0: {attacks.0.damage: 1, state.second.condition: OUT}
   expect_final: {rounds_executed: 1, termination_reason: second_out}
 
-# Control: without the dance the same injury die leaves the target Stunned, so the printed +1 is
-# the dance's own contribution.
+# Control: without the dance the same injury die (four) leaves the target Stunned, so the printed +1
+# is the dance's own contribution.  Four, not five: the ordinary chart already puts five Out of
+# Action, so only a face in the Stunned band separates the dance from the plain strike.
 - audit_id: rule/mordheim/sea-ghosts-mim/band--dance-whirling-death/dance.whirling-death
   id: the-same-injury-die-stuns-without-the-dance
   covers: [whole]
@@ -104,8 +105,7 @@
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
-    - {key: round.0.first.attack.0.injury.0, value: 5}
-    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.injury.0, value: 4}
   expect_rounds:
     0: {attacks.0.damage: 1, state.second.condition: STUNNED}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

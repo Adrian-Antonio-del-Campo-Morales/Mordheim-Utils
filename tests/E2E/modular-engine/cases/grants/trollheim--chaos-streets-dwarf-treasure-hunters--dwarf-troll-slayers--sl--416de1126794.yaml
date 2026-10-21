@@ -64,7 +64,7 @@
       collection: trollheim
       band_id: chaos-streets-dwarf-treasure-hunters
       profile_id: dwarf-troll-slayers
-      skill_ids: [skill.ferocious-charge]
+      special_rule_ids: [band--slayer-special-skills-ferocious-charge]
       main_weapon_id: weapon.mace
     second:
       main_weapon_id: weapon.mace
@@ -72,6 +72,10 @@
   initial_state: {first: {attacks: 0}, second: {attacks: 0}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
+  rolls:
+    # With both pools suppressed the two Initiatives still tie, so the engine
+    # asks for its priority-tie die; the declared face lets the first act.
+    - {key: round.0.priority-tie, value: 1}
   expect_final: {rounds_executed: 1}
 
 - audit_id: rule/trollheim/chaos-streets-dwarf-treasure-hunters/dwarf-troll-slayers--slayer-skills/profile.skill-access

@@ -28,11 +28,13 @@ class SequenceRng:
         return np.full(size if size is not None else (), value, dtype=dtype or np.int64)
 
 
+@pytest.mark.evidence
 def test_no_scope_yes_rules_remain_without_an_implementation_family():
     implemented = yaml.safe_load((ROOT / "catalog/rules/implemented-canonical-families.yaml").read_text(encoding="utf-8"))
     assert implemented["counts"] == {"families": 66, "rules": 101, "kinds": {"compiler": 41, "mechanic": 20, "trait": 5}}
 
 
+@pytest.mark.eligibility
 def test_mandatory_mutations_and_blessings_are_enforced():
     unmutated_possessed = compile_fighter(
         build("trollheim-cult-of-the-possessed", "the-possessed", collection="trollheim"), ROOT
@@ -53,6 +55,7 @@ def test_mandatory_mutations_and_blessings_are_enforced():
     assert blessed.characteristics.toughness == 4
 
 
+@pytest.mark.compilation
 def test_construction_contracts_validate_and_expand_legal_builds():
     dwarf = compile_fighter(build("dwarf-rangers", "dwarf-clansmen"), ROOT)
     marksman = compile_fighter(build("gunnery-school-of-nuln", "marksmen"), ROOT)
@@ -72,6 +75,7 @@ def test_construction_contracts_validate_and_expand_legal_builds():
         compile_fighter(build("battle-monks-of-cathay", "dragon-monks", armour_id="armour.light-armour"), ROOT)
 
 
+@pytest.mark.eligibility
 def test_proven_warrior_renowned_virtue_and_sacred_marks_are_validated():
     proven = compile_fighter(build(
         "black-orcs", "younguns", main_weapon_id="weapon.double-handed-weapon",
@@ -96,6 +100,7 @@ def test_proven_warrior_renowned_virtue_and_sacred_marks_are_validated():
         ), ROOT)
 
 
+@pytest.mark.compilation
 def test_scaly_skin_spawn_amazons_and_untiring_compile_to_combat_effects():
     skink = compile_fighter(build("lizardmen", "skink-priest"), ROOT)
     saurus = compile_fighter(build("lizardmen", "saurus-totem-warrior"), ROOT)
@@ -114,6 +119,7 @@ def test_scaly_skin_spawn_amazons_and_untiring_compile_to_combat_effects():
     assert untiring.global_effects.armour_cannot_be_ignored
 
 
+@pytest.mark.rule_behavior
 def test_spider_infested_penalizes_misses_and_amazons_reroll_against_lizardmen():
     spider = compile_fighter(build(
         "lustria-savage-goblins", "big-boss", collection="trollheim",

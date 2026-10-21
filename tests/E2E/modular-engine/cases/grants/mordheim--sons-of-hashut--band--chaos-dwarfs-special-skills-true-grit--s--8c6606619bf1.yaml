@@ -97,8 +97,11 @@
   id: an-injury-total-of-three-leaves-the-bearer-knocked-down
   covers: [injury-table-1-3-4-5-6]
   fighters:
+    # An axe isolates the printed chart: a mace's own concussion rule would stun a two-to-four
+    # result regardless of Tough as Steel, and its Stunned band would hide the Knocked Down
+    # result the scenario asserts.
     first:
-      main_weapon_id: weapon.mace
+      main_weapon_id: weapon.axe
       characteristics: *tg-attacker
     second:
       main_weapon_id: weapon.mace

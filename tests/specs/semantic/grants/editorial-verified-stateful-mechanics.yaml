@@ -137,8 +137,9 @@ specifications:
     digest: 8649571949023091b4d911f4e2e9bfbf77dceef211143467d5cb3b6d9f0ca69e
   depends_on:
   - mechanic/mechanic.disability
-  interpretation: Disability is granted only to the Cripples profile and causes, at its initialisation,
-    the persistent roll already verified by the canonical mechanism.
+  interpretation: Disability is granted only to the Cripples profile. The caller supplies exactly one
+    permanent condition.disability-1..6 as the group-creation result; compilation applies its
+    statistics once and initialisation retains the same result without rolling again.
   cases:
   - id: recipient
     roles:
@@ -150,6 +151,8 @@ specifications:
       collection: trollheim
       band_id: chaos-streets-mordheim-inhabitants
       profile_id: cripples
+      condition_ids:
+      - condition.disability-1
     context:
       rule_id: cripples--disability
     expect:
@@ -163,9 +166,8 @@ specifications:
       collection: trollheim
       band_id: chaos-streets-mordheim-inhabitants
       profile_id: cripples
-    rolls:
-    - key: a.disability
-      value: 5
+      condition_ids:
+      - condition.disability-5
     expect:
       result.attacker.strength: 2
       result.attacker.resources_spent:

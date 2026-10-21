@@ -271,10 +271,12 @@ def resolve_local_leadership(
     if opponent is None and context is not None:
         enemy_id = context.facts.second_id if first else context.facts.first_id
         opponent = context.participant(enemy_id).fighter
-    if (contacting and opponent is not None
-            and phases.has_tag(opponent.global_effects, "mechanic.enchanting-beauty")
-            and not any(phases.has_tag(fighter.global_effects, tag) for tag in ("nature.undead", "nature.daemon"))
-            and value is not None):
+    # Enchanting Beauty is the opponent's fact projected onto this fighter by
+    # `apply_opponent_leadership`; the condition already carries the printed
+    # Undead/Daemon exemption. Only base contact applies it, so a charge's own
+    # out-of-contact test is untouched.
+    if (contacting and value is not None
+            and phases.has_tag(fighter.global_effects, "condition.enchanting-beauty")):
         value -= 1
     # Ghostly Howl: the tested enemy's Leadership drops by D6 on a fear test
     # while the howling bearer faces it.  The duel supplies the proximity of its

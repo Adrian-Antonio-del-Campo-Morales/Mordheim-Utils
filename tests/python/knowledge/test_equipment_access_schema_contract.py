@@ -24,6 +24,7 @@ import copy
 from functools import lru_cache
 from pathlib import Path
 
+import pytest
 import yaml
 
 from mordheim_knowledge import editorial_schema_audit as audit
@@ -95,6 +96,7 @@ def clone_schema(monkeypatch) -> dict:
 # Disposition: the two reported findings, justified member by member
 
 
+@pytest.mark.data_contract
 def test_the_reported_findings_are_justified_member_by_member():
     """The allowlist names exactly the members the audit reports, nothing wider."""
     findings = real_findings()
@@ -110,6 +112,7 @@ def test_the_reported_findings_are_justified_member_by_member():
     assert [entry for entry in audit.stale_justifications(findings) if entry[0] == SCHEMA] == []
 
 
+@pytest.mark.data_contract
 def test_the_rest_of_the_allowlist_still_covers_the_real_audit():
     """Unrelated declarations keep their own justifications; none is widened."""
     findings = real_findings()
@@ -117,6 +120,7 @@ def test_the_rest_of_the_allowlist_still_covers_the_real_audit():
     assert audit.stale_justifications(findings) == []
 
 
+@pytest.mark.data_contract
 def test_the_recipient_vocabulary_is_the_profile_kind_vocabulary():
     """A recipient is a profile kind: both schemas declare the same four values."""
     recipients = editorial_schemas.schema_for(SCHEMA)["$defs"]["equipment_list"]["properties"][
@@ -128,6 +132,7 @@ def test_the_recipient_vocabulary_is_the_profile_kind_vocabulary():
     assert recipients == kinds == ["hero", "henchman", "animal", "summoned"]
 
 
+@pytest.mark.data_contract
 def test_the_canonical_profiles_exercise_every_recipient_kind():
     """The three values the audit cannot see in equipment-access are live data."""
     used = {
@@ -141,11 +146,13 @@ def test_the_canonical_profiles_exercise_every_recipient_kind():
 # The declarations themselves: shapes and closed vocabularies
 
 
+@pytest.mark.data_contract
 def test_a_list_note_and_its_translation_validate():
     payload = equipment_access(notes="Fixture note.", notes_i18n={"es": "Nota sintética."})
     assert problems(payload) == []
 
 
+@pytest.mark.data_contract
 def test_malformed_list_note_blocks_are_rejected():
     for extra in (
         {"notes": ""},
@@ -159,6 +166,7 @@ def test_malformed_list_note_blocks_are_rejected():
         assert any("notes" in problem for problem in reported), (extra, reported)
 
 
+@pytest.mark.data_contract
 def test_every_declared_recipient_kind_validates():
     schema = editorial_schemas.schema_for(SCHEMA)
     profile_kinds = editorial_schemas.schema_for(PROFILES_SCHEMA)["$defs"]["profile"]["properties"]["type"]["enum"]
@@ -172,6 +180,7 @@ def test_every_declared_recipient_kind_validates():
         assert problems(entry) == [], kind
 
 
+@pytest.mark.data_contract
 def test_undeclared_or_malformed_recipient_blocks_are_rejected():
     for extra in (
         {"applies_to": {"profile_types": ["dragon"]}},
@@ -188,6 +197,7 @@ def test_undeclared_or_malformed_recipient_blocks_are_rejected():
 # Precision: the member scope covers nothing else, in the same path or outside
 
 
+@pytest.mark.test_infrastructure
 def test_a_new_property_in_the_justified_definition_or_outside_it_is_a_finding(monkeypatch):
     clone = clone_schema(monkeypatch)
     clone["$defs"]["equipment_list"]["properties"]["illustration"] = {"$ref": "#/$defs/display_text"}
@@ -204,6 +214,7 @@ def test_a_new_property_in_the_justified_definition_or_outside_it_is_a_finding(m
     assert unrelated in audit.unjustified_findings(findings)
 
 
+@pytest.mark.test_infrastructure
 def test_a_new_recipient_value_is_a_finding(monkeypatch):
     clone = clone_schema(monkeypatch)
     clone["$defs"]["equipment_list"]["properties"]["applies_to"]["properties"]["profile_types"][
@@ -235,6 +246,7 @@ def documented_list(**extra) -> dict:
     )
 
 
+@pytest.mark.test_infrastructure
 def test_a_note_in_the_documents_turns_the_justification_stale(tmp_path):
     """One isolated synthetic package: `notes` is exercised, so its member goes stale."""
     package = tmp_path / "bands" / "mordheim" / "fixture-band"

@@ -134,8 +134,8 @@
   # declared (4 hits), the forced second result is declared on that attack's own `.hit.reroll` die (1, a miss),
   # and the asserted outcome is the printed one - the attack is lost, so the corrupting duelist takes no wound.
   # The re-roll die belongs to the enemy attack's key under the enemy side's prefix, the mirror of the key the
-  # accepted hit-re-roll tapes of this corpus declare; the tape fails on an unrequested die until the forced
-  # re-take has a consumer, which is the PENDING implementation defect, not a withheld requirement.
+  # accepted hit-re-roll tapes of this corpus declare.  The bribe itself is declared as the corruption
+  # decision, so the forced re-take is accepted on that enemy attack.
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -150,6 +150,8 @@
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.hit.reroll, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
+  decisions:
+    - {key: round.0.first.attack.0.corruption, value: true}
   expect_rounds:
     0: {attacks.0.hit: False, attacks.0.damage: 0}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

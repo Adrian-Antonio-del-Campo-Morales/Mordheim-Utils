@@ -2,7 +2,11 @@
 
 from collections import Counter
 
+import pytest
+
 from mordheim_knowledge.loader import load_bands, load_shared_rules
+
+pytestmark = pytest.mark.knowledge_integrity
 
 
 #: How many band rules reference each fused id. The counts pin the consolidation:

@@ -40,6 +40,16 @@ def has_tag(effect: EffectSet, tag: str) -> bool:
     return tag in effect.tags
 
 
+#: Whips whose printed strike-first belongs to the whipcrack bonus attack, not
+#: to the bearer's ordinary attacks.  A whip's declared ``priority`` is the
+#: bonus tier the round operator schedules; it is never borrowed by the
+#: ordinary pool.
+WHIPCRACK_WEAPON_TAGS = frozenset({
+    "weapon.steel-whip", "weapon.beastlash", "weapon.pirate-scourge",
+    "weapon.serpent-whip", "weapon.barbed-whip", "weapon.thinglash",
+})
+
+
 def black_lotus_wounds(effect: EffectSet, defender_effects: EffectSet) -> bool:
     """Whether this attack carries the Black Lotus wound guarantee.
 
@@ -226,6 +236,11 @@ def first_acts_before(first: PriorityResult, second: PriorityResult,
 def resolve_priority(context: PriorityContext) -> PriorityResult:
     fighter, opponent = context.fighter, context.opponent
     weapon_priority = fighter.main_weapon.priority
+    if any(has_tag(fighter.main_weapon, tag) for tag in WHIPCRACK_WEAPON_TAGS):
+        # Only the whipcrack bonus strikes first; the ordinary attacks resolve
+        # in the bearer's own order instead of inheriting the bonus tier the
+        # weapon declares.
+        weapon_priority = 0
     if fighter.global_effects.strongman and weapon_priority < 0 and (
         fighter.main_weapon.two_handed or has_tag(fighter.main_weapon, "weapon.broadsword")
     ):
@@ -338,7 +353,9 @@ def build_attacks(context: AttackPoolContext) -> AttackPoolResult:
         has_tag(fighter.main_weapon, tag) for tag in ("weapon.fist", "weapon.natural-attacks")
     ):
         attacks += 1
-    if has_tag(effect, "skill.art-of-silent-death") and any(
+    # Ippan Shu's Bare-Handed Fighting and Art of Silent Death both count his
+    # empty hands as two weapons; the same second weapon is not counted twice.
+    elif has_tag(effect, "skill.art-of-silent-death") and any(
         has_tag(fighter.main_weapon, tag)
         for tag in ("weapon.fist", "weapon.fighting-claws")
     ):

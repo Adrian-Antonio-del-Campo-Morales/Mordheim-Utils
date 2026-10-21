@@ -44,8 +44,10 @@
 
 # --- Authored scenarios ---
 # The catalog warband skill list prints the canonical strength-of-steel wording: the
-# bonus belongs to the charging turn only, so the pair uses the opponent's higher
-# Weapon Skill to make the raised Strength the difference.
+# bonus belongs to the charging turn only, so the pair shares the same dice and the
+# Strength 4 versus Toughness 3 target (3+) is the difference. A wound face of 3
+# therefore wounds on the charge and fails without it; the identical 4 to hit lands
+# under the printed 4+ table for Weapon Skill 3 against 4.
 - audit_id: rule/catalog/warband/skill.strength-of-steel/skill.strength-of-steel
   id: the-charging-turn-gains-the-bonus
   covers: [whole]
@@ -61,7 +63,7 @@
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.damage: 1, state.second.wounds: 1}
@@ -81,7 +83,8 @@
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
-    0: {attacks.0.hit: False, attacks.0.damage: 0, state.second.wounds: 2}
+    0: {attacks.0.hit: True, attacks.0.damage: 0, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -76,7 +76,8 @@
   initial_state: {first: {attacks: 0}, second: {attacks: 0}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
-  rolls: []
+  rolls:
+    - {key: round.0.priority-tie, value: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 # The dwarf list is one of the three joined lists, so the same recipient carries its row alone without
@@ -96,7 +97,8 @@
   initial_state: {first: {attacks: 0}, second: {attacks: 0}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
-  rolls: []
+  rolls:
+    - {key: round.0.priority-tie, value: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 # The control: the band's ordinary Pit Fighters profile is not the recipient the printed clause names, so

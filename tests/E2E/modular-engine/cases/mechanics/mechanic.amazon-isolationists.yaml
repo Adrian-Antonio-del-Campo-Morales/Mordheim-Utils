@@ -61,15 +61,18 @@
       band_id: lizardmen
       profile_id: skink-braves
   initial_state:
-    second: {wounds: 3, attacks: 0}
+    second: {attacks: 0}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 1}
-    - {key: round.0.first.attack.0.hit.reroll, value: 6}
-    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.hit.reroll, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 1}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
   expect_rounds:
-    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 0,
+        state.second.condition: KNOCKED_DOWN}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 # The printed list names the Norse as well as the Lizardmen, and the second band supplies only
 # the other identity, so the same first-round reroll is offered there too.
@@ -86,15 +89,17 @@
       band_id: norse-explorers-lustria
       profile_id: jarl
   initial_state:
-    second: {wounds: 3, attacks: 0}
+    second: {attacks: 0}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.first.attack.0.hit.reroll, value: 6}
-    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
   expect_rounds:
-    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 0,
+        state.second.condition: KNOCKED_DOWN}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 # The control for the clause: an opponent carrying no printed target identity leaves the same
 # declared miss standing, and no reroll die is requested.

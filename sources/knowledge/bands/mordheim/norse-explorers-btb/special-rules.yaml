@@ -260,15 +260,15 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.norse-explorers-btb.band.norse-special-skills-battle-tongue
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.leader-twelve
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-twelve
   rule_ref: shared-rule.battle-tongue
 - id: band--norse-special-skills-berserk-charge
   kind: warband_skill

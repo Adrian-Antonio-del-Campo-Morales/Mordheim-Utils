@@ -67,7 +67,14 @@ def _binding_contract_error(binding: dict, execution_ids: set[str]) -> str | Non
     elif kind == "compiler":
         known = (
             identifier in COMPILER_CONTRACTS
-            or identifier.startswith("special-rule.") and identifier.removeprefix("special-rule.") in SPECIAL_RULE_EFFECTS
+            # A profile rule selected by the build keeps the ``special-rule.``
+            # binding namespace (the Bear, Cold Steel); its executable contract
+            # lives in PROFILE_RULE_EFFECTS. Both maintained compiler tables
+            # remain authoritative for that binding namespace.
+            or identifier.startswith("special-rule.") and (
+                identifier.removeprefix("special-rule.") in SPECIAL_RULE_EFFECTS
+                or identifier.removeprefix("special-rule.") in PROFILE_RULE_EFFECTS
+            )
             or identifier.startswith("profile-rule.") and identifier.removeprefix("profile-rule.") in PROFILE_RULE_EFFECTS
         )
     else:
@@ -150,11 +157,17 @@ def _projection_errors(ruleset: str, root: Path | None) -> tuple[int, list[str]]
             else:
                 kwargs = {"skill_ids": (mechanic_id,)}
 
-            # This existing mechanic requires an explicit caller-supplied result.
+            # These existing mechanics require explicit caller-supplied facts.
             # Result 3 is the source's neutral participating result, not a default
-            # added to production construction or a bypass of its refusal.
+            # added to production construction or a bypass of its refusal; the
+            # other two name the printed recipient and the supplied permanent
+            # disability result the construct itself refuses to guess.
             if mechanic_id == "mechanic.snorri-drunk":
                 kwargs["trait_overrides"] = {"snorri_drunk_result": 3}
+            elif mechanic_id == "defence.magic-acorn":
+                kwargs["trait_overrides"] = {"fighter_kind": "hero"}
+            elif mechanic_id == "mechanic.disability":
+                kwargs["condition_ids"] = ("condition.disability-2",)
 
             try:
                 fighter = compile_fighter(FighterBuild(ruleset, characteristics, **kwargs), root)
@@ -221,12 +234,29 @@ def _trait_projection_errors(
 
 
 def _required_profile_build(collection: str, band_id: str, profile_id: str) -> FighterBuild:
+    """Supply each profile's printed mandatory initial choice.
+
+    These are construction facts the source requires before the member exists,
+    not production defaults: these fixtures choose Tentacle for a mutant,
+    Bloated Foulness for a Tainted One, one Veteran Tracker skill for a Trapper,
+    one mutation for a Rat Ogre and one disability result for a Cripple. The
+    profiles whose printed line requires a choice receive one.
+    """
     special_rule_ids = (
         ("band--mutations-tentacle",)
         if band_id in {"cult-of-the-possessed", "trollheim-cult-of-the-possessed"}
         and profile_id in {"mutants", "the-possessed"}
         else ("band--blessings-of-nurgle-bloated-foulness",)
         if band_id == "carnival-of-chaos" and profile_id == "tainted-ones"
+        else ("band--ogre-hunting-skills-netter",)
+        if band_id == "ogre-hunting-party-web" and profile_id == "trappers"
+        else ("band--mutations-tentacle",)
+        if band_id == "skaven-of-clan-moulder-web" and profile_id == "rat-ogres"
+        else ()
+    )
+    condition_ids = (
+        ("condition.disability-2",)
+        if band_id == "chaos-streets-mordheim-inhabitants" and profile_id == "cripples"
         else ()
     )
     return FighterBuild(
@@ -235,6 +265,7 @@ def _required_profile_build(collection: str, band_id: str, profile_id: str) -> F
         profile_id=profile_id,
         collection=collection,
         special_rule_ids=special_rule_ids,
+        condition_ids=condition_ids,
     )
 
 

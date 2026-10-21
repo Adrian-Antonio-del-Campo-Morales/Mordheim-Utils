@@ -20,6 +20,7 @@ from mordheim_knowledge.loader import load_skills
 from mordheim_knowledge.loader import runtime_bindings
 from pathlib import Path
 import yaml as yaml
+import pytest
 
 
 ROOT=Path(__file__).resolve().parents[3]/"sources/knowledge"
@@ -47,6 +48,7 @@ def profile_build(collection, band_id, profile_id):
                         condition_ids=condition_ids)
 
 
+@pytest.mark.knowledge_integrity
 def test_runtime_contains_mordheim_and_trollheim_bands():
     collections={row["id"]:row for row in load_collections(ROOT)}
     assert set(collections)=={"mordheim","trollheim"}
@@ -58,6 +60,7 @@ def test_runtime_contains_mordheim_and_trollheim_bands():
     assert all(band.collection=="trollheim" and band.ruleset=="mordheim" for band in trollheim)
 
 
+@pytest.mark.compilation
 def test_trollheim_collection_uses_the_mordheim_combat_ruleset():
     fighter=compile_fighter(FighterBuild(
         "mordheim",band_id="trollheim-mercenaries",profile_id="mercenary-captain",
@@ -65,6 +68,7 @@ def test_trollheim_collection_uses_the_mordheim_combat_ruleset():
     assert fighter.fighter_id=="trollheim-mercenaries:mercenary-captain"
 
 
+@pytest.mark.compilation
 def test_every_trollheim_profile_compiles_under_mordheim_rules():
     compiled=0
     for band in load_bands("trollheim",ROOT):
@@ -74,6 +78,7 @@ def test_every_trollheim_profile_compiles_under_mordheim_rules():
     assert compiled==218
 
 
+@pytest.mark.eligibility
 def test_collection_and_ruleset_are_independent_and_validated():
     import pytest
     with pytest.raises(ValueError,match="uses ruleset mordheim, not trollheim"):
@@ -84,6 +89,7 @@ def test_collection_and_ruleset_are_independent_and_validated():
         load_bands("invented",ROOT)
 
 
+@pytest.mark.compilation
 def test_simple_trollheim_rules_reuse_shared_runtime_traits():
     def compiled(band_id,profile_id):
         return compile_fighter(FighterBuild(
@@ -101,6 +107,7 @@ def test_simple_trollheim_rules_reuse_shared_runtime_traits():
     assert ethereal.global_effects.ward_save==5
 
 
+@pytest.mark.compilation
 def test_trollheim_innate_armour_profiles_compile_to_shared_natural_saves():
     expected={
         ("khemri-mages","mechanical-beast"):5,
@@ -118,6 +125,7 @@ def test_trollheim_innate_armour_profiles_compile_to_shared_natural_saves():
         assert fighter.natural_armour_save==save
 
 
+@pytest.mark.knowledge_integrity
 def test_reusable_optional_trollheim_rules_are_bound_but_not_granted():
     expected={
         "band--dwarf-special-skills-true-grit":"skill.tough-as-steel",
@@ -134,6 +142,7 @@ def test_reusable_optional_trollheim_rules_are_bound_but_not_granted():
     assert {rule_id:found.get(rule_id) for rule_id in expected}==expected
 
 
+@pytest.mark.compilation
 def test_profile_special_rules_with_mechanic_ids_are_granted_automatically():
     cases=(
         ("battle-monks-of-cathay", "dragon-monks", "skill.unarmed-critical-strikes"),
@@ -145,6 +154,7 @@ def test_profile_special_rules_with_mechanic_ids_are_granted_automatically():
         assert mechanic_id in fighter.global_effects.tags
 
 
+@pytest.mark.compilation
 def test_selected_nurgle_blessings_apply_stats_and_traits():
     fighter=compile_fighter(FighterBuild(
         "mordheim",band_id="carnival-of-chaos",profile_id="tainted-ones",
@@ -155,6 +165,7 @@ def test_selected_nurgle_blessings_apply_stats_and_traits():
     assert fighter.global_effects.poison_immunity
 
 
+@pytest.mark.compilation
 def test_selected_mutation_and_vampiric_powers_compile():
     mutant=compile_fighter(FighterBuild(
         "mordheim",band_id="cult-of-the-possessed",profile_id="mutants",
@@ -171,6 +182,7 @@ def test_selected_mutation_and_vampiric_powers_compile():
     assert vampire.global_effects.reroll_hits
 
 
+@pytest.mark.compilation
 def test_new_necromantic_modifications_mutations_and_huge_jaws_compile():
     base_abomination=compile_fighter(FighterBuild(
         "mordheim",collection="trollheim",band_id="khemri-necromancers",
@@ -205,6 +217,7 @@ def test_new_necromantic_modifications_mutations_and_huge_jaws_compile():
     assert bite.strength_bonus==1
 
 
+@pytest.mark.eligibility
 def test_special_rule_eligibility_and_unsupported_parts_are_explicit():
     import pytest
     with pytest.raises(ValueError,match="not available"):
@@ -217,6 +230,7 @@ def test_special_rule_eligibility_and_unsupported_parts_are_explicit():
     assert len(claw.extra_attacks)==1 and claw.extra_attacks[0].strength_bonus==1
 
 
+@pytest.mark.compilation
 def test_mutant_skill_grants_one_cross_band_mutation_per_selection():
     fighter=compile_fighter(FighterBuild(
         "mordheim",band_id="beastmen-raiders",profile_id="beastmen-chieftain",
@@ -225,6 +239,7 @@ def test_mutant_skill_grants_one_cross_band_mutation_per_selection():
     assert fighter.global_effects.incoming_attacks_modifier==-1
 
 
+@pytest.mark.compilation
 def test_profile_special_rules_can_grant_runtime_traits():
     bearer=compile_fighter(FighterBuild("mordheim",band_id="carnival-of-chaos",profile_id="plague-bearers"),ROOT)
     zombie=compile_fighter(FighterBuild("mordheim",band_id="undead",profile_id="zombies"),ROOT)
@@ -271,6 +286,7 @@ def test_profile_special_rules_can_grant_runtime_traits():
     assert "concussion_immune" in ranger.global_effects.tags
 
 
+@pytest.mark.knowledge_integrity
 def test_every_catalogue_mechanic_has_an_executable_definition():
     assert validate_execution_contract("mordheim",ROOT)==[]
     catalog=load_mechanics("mordheim",ROOT); execution=load_execution_contract("mordheim",ROOT)
@@ -282,6 +298,7 @@ def test_every_catalogue_mechanic_has_an_executable_definition():
     assert all(row["application"] == ("attack" if row["trigger"] == "attack" else "fighter") for row in execution["mechanics"])
 
 
+@pytest.mark.operator
 def test_execution_metadata_controls_effect_context_and_stacking():
     from mordheim_core.effects import ExecutionEffect
     from mordheim_core.effects import apply_execution_effects
@@ -296,6 +313,7 @@ def test_execution_metadata_controls_effect_context_and_stacking():
     assert apply_execution_effects(EffectSet(), ("attack", "once", "once", "best"), effects, "attack", "attack").strength_bonus == 5
 
 
+@pytest.mark.compilation
 def test_all_fixed_profiles_compile_with_stable_ids():
     compiled=0
     for band in load_bands("mordheim",ROOT):
@@ -307,6 +325,7 @@ def test_all_fixed_profiles_compile_with_stable_ids():
     assert compiled==832  # 313 before the supplement promotion
 
 
+@pytest.mark.knowledge_integrity
 def test_profile_combat_traits_reference_mechanics_by_id():
     for band in (*load_bands("mordheim",ROOT),*load_bands("trollheim",ROOT)):
         for profile in band.profiles:
@@ -314,6 +333,7 @@ def test_profile_combat_traits_reference_mechanics_by_id():
                 assert skill_id.startswith("skill.")
 
 
+@pytest.mark.knowledge_integrity
 def test_trollheim_package_and_item_references_are_closed():
     item_ids=set()
     for path in (ROOT/"catalog/items").glob("*.yaml"):
@@ -336,6 +356,7 @@ def test_trollheim_package_and_item_references_are_closed():
                 assert binding["id"] in mechanic_ids
 
 
+@pytest.mark.knowledge_integrity
 def test_special_rule_runtime_metadata_is_canonical_and_binary():
     legacy={"mechanic_id","runtime_grant","runtime_band_grant","runtime_traits"}
     classified=0
@@ -354,6 +375,7 @@ def test_special_rule_runtime_metadata_is_canonical_and_binary():
     assert classified == 3109  # 2908 + the staged rules the completeness delivery classified
 
 
+@pytest.mark.knowledge_integrity
 def test_every_selectable_rule_has_an_explicit_selection_kind():
     expected={
         "warband_skill", "mutation", "blessing", "virtue", "mark",
@@ -371,6 +393,7 @@ def test_every_selectable_rule_has_an_explicit_selection_kind():
     assert {rule.get("kind") for rule in selectable}==expected
 
 
+@pytest.mark.knowledge_integrity
 def test_equivalent_no_pain_rules_share_one_runtime_mechanic():
     bindings=[]
     for band in (*load_bands("mordheim",ROOT),*load_bands("trollheim",ROOT)):
@@ -381,6 +404,7 @@ def test_equivalent_no_pain_rules_share_one_runtime_mechanic():
     assert set(bindings)=={"skill.ignore-pain"}
 
 
+@pytest.mark.knowledge_integrity
 def test_every_runtime_binding_resolves_to_a_known_shared_contract():
     mechanics=load_mechanics("mordheim",ROOT)
     mechanic_ids={row["id"] for family in ("weapons","armours","defences","materials","preparations","poisons","skills") for row in mechanics[family]}
@@ -411,6 +435,7 @@ def test_every_runtime_binding_resolves_to_a_known_shared_contract():
     assert compiler_ids
 
 
+@pytest.mark.knowledge_integrity
 def test_first_500_previously_unclassified_rules_have_runtime_metadata():
     first=next(band for band in load_bands("mordheim",ROOT) if band.band["id"]=="amazons-lustria")
     last=next(band for band in load_bands("mordheim",ROOT) if band.band["id"]=="night-goblins-web")
@@ -421,6 +446,7 @@ def test_first_500_previously_unclassified_rules_have_runtime_metadata():
     assert next(rule for rule in last.special_rules if rule["id"]=="band--distasteful-company")["runtime"]["scope"]=="NO"
 
 
+@pytest.mark.knowledge_integrity
 def test_second_500_previously_unclassified_rules_have_runtime_metadata():
     first=next(band for band in load_bands("mordheim",ROOT) if band.band["id"]=="night-goblins-web")
     last=next(band for band in load_bands("trollheim",ROOT) if band.band["id"]=="khemri-lahmian-brotherhood")
@@ -429,6 +455,7 @@ def test_second_500_previously_unclassified_rules_have_runtime_metadata():
     assert next(rule for rule in last.special_rules if rule["id"]=="jackals--animal")["runtime"]["scope"]=="NO"
 
 
+@pytest.mark.knowledge_integrity
 def test_every_special_rule_is_now_classified():
     pending=[]
     for band in (*load_bands("mordheim",ROOT),*load_bands("trollheim",ROOT)):
@@ -436,6 +463,7 @@ def test_every_special_rule_is_now_classified():
     assert pending==[]
 
 
+@pytest.mark.knowledge_integrity
 def test_body_slam_canonical_binding_is_now_executable():
     bands={band.band["id"]:band for band in (*load_bands("mordheim",ROOT),*load_bands("trollheim",ROOT))}
     rule=next(rule for rule in bands["pit-fighters"].special_rules if rule["id"]=="band--pit-fighter-skill-body-slam")
@@ -443,6 +471,7 @@ def test_body_slam_canonical_binding_is_now_executable():
     assert {binding["id"] for binding in runtime_bindings(rule)}=={"mechanic.body-slam"}
 
 
+@pytest.mark.knowledge_integrity
 def test_final_batch_profile_backed_rules_have_explicit_contracts():
     expected={
         ("khemri-necromancers","nehekharan-vultures--fragile"):{"trait.injury-profile"},
@@ -460,6 +489,7 @@ def test_final_batch_profile_backed_rules_have_explicit_contracts():
         assert {binding["id"] for binding in runtime_bindings(rule)}==binding_ids
 
 
+@pytest.mark.compilation
 def test_revision_specific_defences_and_regeneration_compile_with_their_conditions():
     ethereal=compile_fighter(FighterBuild(
         "mordheim",band_id="lustria-pygmies",profile_id="silent-walker",collection="trollheim"),ROOT)
@@ -474,6 +504,7 @@ def test_revision_specific_defences_and_regeneration_compile_with_their_conditio
     assert zomblintua.global_effects.regeneration_blocked_by_fire
 
 
+@pytest.mark.knowledge_integrity
 def test_normalized_compiler_families_keep_their_parameters():
     bands={
         band.band["id"]:band
@@ -493,6 +524,7 @@ def test_normalized_compiler_families_keep_their_parameters():
         assert list((binding.get("parameters") or {}).values())[0]==parameters
 
 
+@pytest.mark.knowledge_integrity
 def test_second_batch_common_rules_use_shared_runtime_bindings():
     expected={
         ("mordheim","orc-mob","troll--regeneration"):("mechanic","skill.regeneration"),
@@ -507,6 +539,7 @@ def test_second_batch_common_rules_use_shared_runtime_bindings():
         assert (binding["kind"],binding["id"])==binding_expected
 
 
+@pytest.mark.compilation
 def test_semantically_equivalent_rules_reuse_executable_contracts():
     blood_dragon=compile_fighter(FighterBuild(
         "mordheim",band_id="chaos-streets-undead-bloodlines",profile_id="blood-dragon-vampire",
@@ -539,6 +572,7 @@ def test_semantically_equivalent_rules_reuse_executable_contracts():
     assert pestilens.global_effects.poison_immunity
 
 
+@pytest.mark.compilation
 def test_black_dwarf_hard_to_kill_excludes_informers():
     dwarf=compile_fighter(FighterBuild("mordheim",band_id="black-dwarfs",profile_id="sorcerer"),ROOT)
     informer=compile_fighter(FighterBuild("mordheim",band_id="black-dwarfs",profile_id="informers"),ROOT)
@@ -546,6 +580,7 @@ def test_black_dwarf_hard_to_kill_excludes_informers():
     assert "skill.hard-to-kill" not in informer.global_effects.tags
 
 
+@pytest.mark.compilation
 def test_powerful_build_variants_share_strength_skill_access():
     builds=(
         FighterBuild("mordheim",band_id="dark-elves",profile_id="high-born",
@@ -560,12 +595,14 @@ def test_powerful_build_variants_share_strength_skill_access():
     assert all(compile_fighter(build,ROOT).global_effects.strength_bonus==1 for build in builds)
 
 
+@pytest.mark.compilation
 def test_wight_blades_rule_uses_the_existing_profile_trait():
     grave_guard=compile_fighter(FighterBuild(
         "mordheim",band_id="restless-dead",profile_id="grave-guards"),ROOT)
     assert "wight_blades" in grave_guard.global_effects.tags
 
 
+@pytest.mark.compilation
 def test_biggest_boss_rule_uses_existing_strength_access_profile_contract():
     boss=compile_fighter(FighterBuild(
         "mordheim",band_id="night-goblins-web",profile_id="boss",
@@ -573,6 +610,7 @@ def test_biggest_boss_rule_uses_existing_strength_access_profile_contract():
     assert boss.global_effects.strength_bonus==1
 
 
+@pytest.mark.compilation
 def test_middenheim_variants_share_the_characteristic_contract():
     mordheim=compile_fighter(FighterBuild(
         "mordheim",band_id="mercenaries",profile_id="mercenary-captain",
@@ -587,6 +625,7 @@ def test_middenheim_variants_share_the_characteristic_contract():
     assert reikland.characteristics.strength==3
 
 
+@pytest.mark.compilation
 def test_new_shared_bindings_replace_profile_trait_duplicates():
     ranger=compile_fighter(FighterBuild("mordheim",band_id="dwarf-rangers",profile_id="dwarf-clansmen"),ROOT)
     troll=compile_fighter(FighterBuild("mordheim",band_id="night-goblins-web",profile_id="troll"),ROOT)
@@ -598,6 +637,7 @@ def test_new_shared_bindings_replace_profile_trait_duplicates():
     assert "fragile_halflings" in halfling.global_effects.tags
 
 
+@pytest.mark.knowledge_integrity
 def test_every_catalogue_item_has_a_resolved_simulation_mapping():
     item_ids={row["id"] for row in load_items("mordheim",ROOT)}
     mappings=load_simulation_mappings("mordheim",ROOT)["item_mappings"]
@@ -619,6 +659,7 @@ def test_every_catalogue_item_has_a_resolved_simulation_mapping():
     assert by_item["eshin_assassin_clothes"]["mechanic_id"]=="armour.eshin-assassin-robes"
 
 
+@pytest.mark.compilation
 def test_derived_trollheim_item_mappings_feed_profile_equipment_access():
     pirate=compile_fighter(FighterBuild(
         "mordheim",band_id="lustria-pirates",profile_id="pirate-captain",
@@ -631,6 +672,7 @@ def test_derived_trollheim_item_mappings_feed_profile_equipment_access():
     assert "armour.mage-robes" in mage.global_effects.tags
 
 
+@pytest.mark.eligibility
 def test_compiler_rejects_names_and_illegal_hands():
     import pytest
     from mordheim_core.models import Characteristics
@@ -640,6 +682,7 @@ def test_compiler_rejects_names_and_illegal_hands():
     with pytest.raises(ValueError):compile_fighter(FighterBuild("mordheim",c,defence_ids=("defence.shield",)),ROOT)
 
 
+@pytest.mark.compilation
 def test_representative_effects_compile_in_every_mechanic_family():
     from mordheim_core.models import Characteristics
     c=Characteristics(3,3,3,1,3,1)
@@ -661,6 +704,7 @@ def test_representative_effects_compile_in_every_mechanic_family():
     assert defended.armour_save==5
 
 
+@pytest.mark.compilation
 def test_every_catalogued_mechanic_can_be_compiled_in_its_legal_slot():
     from mordheim_core.models import Characteristics
     c=Characteristics(3,3,3,1,3,1);catalog=load_mechanics("mordheim",ROOT)
@@ -700,9 +744,14 @@ def test_every_catalogued_mechanic_can_be_compiled_in_its_legal_slot():
         # Snorri's printed pre-battle drinking table is supplied by the caller
         # (result 1 means he does not take part); 2 is a legal result.
         supplied={"trait_overrides":{"snorri_drunk_result":2}} if row["id"]=="mechanic.snorri-drunk" else {}
-        if row["id"] not in exclusions:compile_fighter(FighterBuild("mordheim",c,skill_ids=(row["id"],),**supplied),ROOT)
+        # Curse of the Revenant explicitly requires the Great Thirster skill
+        # (Survivors of Strigos, Strigoi special skills). Keep that legal
+        # prerequisite in the fixture rather than excluding the mechanic.
+        prerequisites=("mechanic.great-thirster",) if row["id"]=="mechanic.curse-of-the-revenant" else ()
+        if row["id"] not in exclusions:compile_fighter(FighterBuild("mordheim",c,skill_ids=(*prerequisites,row["id"]),**supplied),ROOT)
 
 
+@pytest.mark.compilation
 def test_all_profiles_are_compilable_or_explicitly_outside_duel_scope():
     """Every promoted profile compiles, or is a declared limit of the runtime.
 
@@ -729,6 +778,7 @@ def test_all_profiles_are_compilable_or_explicitly_outside_duel_scope():
     assert compiled==836 and len(exclusions)==2
 
 
+@pytest.mark.compilation
 def test_fixed_equipment_and_natural_attacks_are_applied_by_profile():
     kroxigor=compile_fighter(FighterBuild("mordheim",band_id="lizardmen",profile_id="kroxigor"),ROOT)
     wolf=compile_fighter(FighterBuild("mordheim",band_id="witch-hunters",profile_id="war-hounds"),ROOT)
@@ -736,6 +786,7 @@ def test_fixed_equipment_and_natural_attacks_are_applied_by_profile():
     assert "weapon.natural-attacks" in wolf.main_weapon.tags
 
 
+@pytest.mark.eligibility
 def test_profile_access_and_runtime_scope_are_enforced():
     import pytest
     from mordheim_core.models import Characteristics
@@ -751,6 +802,7 @@ def test_profile_access_and_runtime_scope_are_enforced():
         compile_fighter(FighterBuild("mordheim",Characteristics(3,3,3,1,3,1),trait_overrides={"invented_trait":True}),ROOT)
 
 
+@pytest.mark.knowledge_integrity
 def test_out_of_scope_general_skills_have_explicit_non_implementation_metadata():
     excluded={row["id"] for row in load_runtime_scope("mordheim",ROOT).get("mechanic_exclusions") or ()}
     skills={row["id"]:row for row in load_skills("mordheim",ROOT)}

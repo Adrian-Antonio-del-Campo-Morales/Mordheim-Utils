@@ -66,6 +66,7 @@ def registered_sources() -> set[str]:
 
 # El registro completo
 
+@pytest.mark.evidence
 def test_every_cited_url_is_declared() -> None:
     """Ningún catálogo cita un documento que el registro no declare."""
     documents = sd.SourceDocuments.load()
@@ -76,6 +77,7 @@ def test_every_cited_url_is_declared() -> None:
     assert undeclared == []
 
 
+@pytest.mark.evidence
 def test_every_citation_names_the_manual_of_its_document() -> None:
     """La cita dice de dónde viene el texto y el documento dónde se lee: el mismo manual."""
     documents = sd.SourceDocuments.load()
@@ -87,12 +89,14 @@ def test_every_citation_names_the_manual_of_its_document() -> None:
             assert citation.manual == document.manual, f"{name}: {citation.url}"
 
 
+@pytest.mark.evidence
 def test_the_declared_manuals_are_registered_sources() -> None:
     """Un documento pertenece a un manual registrado, no a una cadena suelta."""
     manuals = {document.manual for document in sd.SourceDocuments.load()}
     assert manuals and manuals <= registered_sources()
 
 
+@pytest.mark.evidence
 def test_the_registry_declares_both_source_families() -> None:
     """PDFs y páginas web se resuelven por el mismo registro canónico."""
     documents = sd.SourceDocuments.load()
@@ -100,12 +104,14 @@ def test_the_registry_declares_both_source_families() -> None:
     assert {document.kind for document in documents} == {"pdf", "page"}
 
 
+@pytest.mark.evidence
 def test_the_registry_path_is_the_one_in_the_knowledge_base() -> None:
     assert sd.registry_path() == ROOT / "sources/knowledge/registry/source-documents.yaml"
 
 
 # Una cita, un documento, una copia
 
+@pytest.mark.evidence
 def test_a_url_is_claimed_by_one_document() -> None:
     """Dos documentos no pueden pelearse la misma cita: el registro lo rechaza."""
     url = "https://example.invalid/a.pdf"
@@ -117,6 +123,7 @@ def test_a_url_is_claimed_by_one_document() -> None:
         ])
 
 
+@pytest.mark.data_transport
 def test_a_document_may_declare_the_same_url_twice() -> None:
     """Repetir una forma de citar el mismo documento es inocuo."""
     url = "https://example.invalid/a.pdf"
@@ -127,6 +134,7 @@ def test_a_document_may_declare_the_same_url_twice() -> None:
     assert documents.document_for(url).id == "a"
 
 
+@pytest.mark.data_contract
 def test_an_unknown_kind_is_refused() -> None:
     """Un documento que el cotejo no sepa leer se declara, no se adivina."""
     with pytest.raises(ValueError, match="kind 'scan'"):
@@ -136,6 +144,7 @@ def test_an_unknown_kind_is_refused() -> None:
         ])
 
 
+@pytest.mark.data_contract
 def test_the_mirror_names_are_relative_and_unique() -> None:
     """Cada documento ocupa una copia distinta del espejo, dentro de su raíz."""
     documents = sd.SourceDocuments.load()
@@ -148,6 +157,7 @@ def test_the_mirror_names_are_relative_and_unique() -> None:
         assert mirror.declared(document) == sd.ORIGINS / document.mirror
 
 
+@pytest.mark.data_transport
 def test_the_dramatis_page_of_a_grade_is_the_documented_snapshot() -> None:
     """La página del grado se lee del snapshot cacheado y, a falta de él, de su texto.
 
@@ -168,6 +178,7 @@ def test_the_dramatis_page_of_a_grade_is_the_documented_snapshot() -> None:
 
 # La resolución de una entrada
 
+@pytest.mark.data_transport
 def test_resolution_keeps_the_citation_order_and_reads_a_document_once() -> None:
     """Dos formas de citar el mismo PDF son un documento, y la primera es la cita."""
     documents = sd.SourceDocuments.load()
@@ -189,6 +200,7 @@ def test_resolution_keeps_the_citation_order_and_reads_a_document_once() -> None
     assert resolved[0].citation.where == "A"
 
 
+@pytest.mark.data_transport
 def test_the_singular_source_of_a_band_record_resolves() -> None:
     """Los perfiles y reglas de banda declaran su cita con ``source``, no ``source_refs``.
 
@@ -202,6 +214,7 @@ def test_the_singular_source_of_a_band_record_resolves() -> None:
         ("mordheimer.net.dramatis-personae.grade-1a", "Aenur")]
 
 
+@pytest.mark.data_transport
 def test_a_citation_with_an_unknown_url_is_reported() -> None:
     """Una cita que el registro no declare se dice, no se ignora."""
     documents = sd.SourceDocuments.load()
@@ -211,11 +224,13 @@ def test_a_citation_with_an_unknown_url_is_reported() -> None:
     assert documents.resolve(record) == []
 
 
+@pytest.mark.data_transport
 def test_a_record_without_provenance_resolves_to_nothing() -> None:
     documents = sd.SourceDocuments.load()
     assert documents.resolve({}) == [] and documents.undeclared({}) == []
 
 
+@pytest.mark.data_transport
 def test_the_canonical_form_folds_the_citation_spellings() -> None:
     """La ruta descodificada y sin barra final: dos formas de la misma cita coinciden."""
     documents = sd.SourceDocuments.load()

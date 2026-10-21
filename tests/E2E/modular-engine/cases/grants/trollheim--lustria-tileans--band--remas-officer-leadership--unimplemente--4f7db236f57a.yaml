@@ -55,6 +55,7 @@
       collection: trollheim
       band_id: lustria-tileans
       profile_id: mercenary-captain
+      special_rule_ids: [band--remas-officer-leadership]
       main_weapon_id: weapon.mace
     second:
       main_weapon_id: weapon.mace
@@ -64,7 +65,7 @@
   rolls:
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
-  expect_initial: {first.leadership: 9}
+  expect_fighters: {first.characteristics.leadership: 9}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 # The same recipient without the printed rule: the printed Leadership 8 stands, so the bonus
@@ -86,7 +87,7 @@
   rolls:
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
-  expect_initial: {first.leadership: 8}
+  expect_fighters: {first.characteristics.leadership: 8}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 # The Champions are the second printed recipient set (printed Leadership 7).
@@ -98,6 +99,7 @@
       collection: trollheim
       band_id: lustria-tileans
       profile_id: champions
+      special_rule_ids: [band--remas-officer-leadership]
       main_weapon_id: weapon.mace
     second:
       main_weapon_id: weapon.mace
@@ -107,7 +109,7 @@
   rolls:
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
-  expect_initial: {first.leadership: 8}
+  expect_fighters: {first.characteristics.leadership: 8}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 # A profile the printed sentence does not name keeps no bonus and is refused the rule itself,

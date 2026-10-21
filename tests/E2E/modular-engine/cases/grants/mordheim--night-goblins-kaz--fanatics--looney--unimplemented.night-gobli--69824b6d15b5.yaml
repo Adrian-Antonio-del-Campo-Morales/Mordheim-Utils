@@ -86,9 +86,11 @@
 # it receives, and loses Frenzy when an injury knocks it down; standing up does not
 # regrant it.  Attack order follows core/combat-order: a charge and any strike-first
 # effect share the top tier before ordinary Initiative, and a warrior that stood up
-# strikes last in that turn only.  This profile declares no strike-first ability, so the
-# charging opponent resolves before the bearer.  The band's Animosity rule is recorded
-# unimplemented, so no own-turn squabble die is declared here.
+# strikes last in that turn only.  This band's Frantic record compiles the shared
+# strike-first tier, so the fanatic shares the charger's tier and its printed Initiative
+# already resolves first; the fixture therefore resolves the bearer's doubled pool before the
+# charger's single attack.  The band's Animosity rule is recorded unimplemented, so no
+# own-turn squabble die is declared here.
 
 - audit_id: rule/mordheim/night-goblins-kaz/fanatics--looney/unimplemented.night-goblins-kaz.fanatics.looney
   id: a-frenzied-looney-strikes-twice-with-its-single-profile-attack
@@ -98,15 +100,15 @@
       trait_overrides: {causes_fear: true}
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
-    second: {collection: mordheim, band_id: night-goblins-kaz, profile_id: fanatics}
+    second: {collection: mordheim, band_id: night-goblins-kaz, profile_id: fanatics, main_weapon_id: weapon.ball-and-chain}
   initial_state:
     second: {attacks: 1}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
-    - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
     - {key: round.0.second.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
   expect_rounds:
     0: {state.second.frenzy: true, attacks.2.wounded: false}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
@@ -119,15 +121,15 @@
       trait_overrides: {causes_fear: true}
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
-    second: {collection: mordheim, band_id: night-goblins-kaz, profile_id: fanatics}
+    second: {collection: mordheim, band_id: night-goblins-kaz, profile_id: fanatics, main_weapon_id: weapon.ball-and-chain}
   initial_state:
     second: {attacks: 1}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
-    - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
     - {key: round.0.second.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
   expect_rounds:
     0: {state.second.frenzy: true, state.second.fear_hit_sixes: false, attacks.2.wounded: false}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
@@ -136,7 +138,7 @@
   id: a-frenzied-looney-auto-passes-the-head-injury-stupidity-test
   covers: [frenzy]
   fighters:
-    first: {collection: mordheim, band_id: night-goblins-kaz, profile_id: fanatics}
+    first: {collection: mordheim, band_id: night-goblins-kaz, profile_id: fanatics, main_weapon_id: weapon.ball-and-chain}
     second:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
@@ -159,17 +161,19 @@
     first:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 8, strength: 8, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
-    second: {collection: mordheim, band_id: night-goblins-kaz, profile_id: fanatics}
+    second: {collection: mordheim, band_id: night-goblins-kaz, profile_id: fanatics, main_weapon_id: weapon.ball-and-chain}
   initial_state:
     second: {attacks: 1}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 2
   rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.first.attack.0.injury.0, value: 1}
-    - {key: round.1.first.attack.0.hit, value: 1}
     - {key: round.1.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 1}
   expect_rounds:
     0: {state.second.frenzy: false, state.second.condition: KNOCKED_DOWN}
     1: {state.second.frenzy: false, state.second.condition: STANDING}

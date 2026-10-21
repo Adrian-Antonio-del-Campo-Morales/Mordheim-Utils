@@ -66,14 +66,16 @@
   fighters:
     first:
       trait_overrides: {causes_fear: true}
-      main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
-    second: {collection: trollheim, band_id: lustria-pygmies, profile_id: wild-lunatics, main_weapon_id: weapon.mace}
+    second: {collection: trollheim, band_id: lustria-pygmies, profile_id: wild-lunatics}
   initial_state:
     second: {attacks: 1, frenzy: true}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
+    # The printed Lunatics die precedes the round: 1-3 grants Frenzy, so the bearer keeps the supplied
+    # frenzy state this tape is about.
+    - {key: round.0.second.lunatics, value: 1}
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
     - {key: round.0.second.attack.1.hit, value: 1}
@@ -87,14 +89,14 @@
   fighters:
     first:
       trait_overrides: {causes_fear: true}
-      main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
-    second: {collection: trollheim, band_id: lustria-pygmies, profile_id: wild-lunatics, main_weapon_id: weapon.mace}
+    second: {collection: trollheim, band_id: lustria-pygmies, profile_id: wild-lunatics}
   initial_state:
     second: {attacks: 1, frenzy: true}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.second.lunatics, value: 1}
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
     - {key: round.0.second.attack.1.hit, value: 1}
@@ -110,15 +112,16 @@
   id: the-frenzied-wild-lunatic-auto-passes-the-stupidity-test-a-head-injury-forces
   covers: [frenzy]
   fighters:
-    first: {collection: trollheim, band_id: lustria-pygmies, profile_id: wild-lunatics, main_weapon_id: weapon.mace}
+    first: {collection: trollheim, band_id: lustria-pygmies, profile_id: wild-lunatics}
     second:
-      main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
   initial_state:
     first: {attacks: 1, resources_spent: [disability.6]}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
+    # The printed Lunatics die is what grants this bearer its Frenzy at the start of the turn.
+    - {key: round.0.first.lunatics, value: 1}
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.first.attack.1.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}

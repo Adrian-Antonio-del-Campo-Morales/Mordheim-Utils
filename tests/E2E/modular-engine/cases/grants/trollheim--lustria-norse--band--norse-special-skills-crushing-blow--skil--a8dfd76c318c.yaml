@@ -75,6 +75,7 @@
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 1}
     - {key: round.0.first.attack.0.wound, value: 4}
   expect_rounds:
     0: {attacks.0.parried: false, state.second.wounds: 1}
@@ -98,6 +99,7 @@
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 1}
     - {key: round.0.first.attack.0.parry, value: 5}
   expect_rounds:
     0: {attacks.0.parried: true, state.second.wounds: 2}

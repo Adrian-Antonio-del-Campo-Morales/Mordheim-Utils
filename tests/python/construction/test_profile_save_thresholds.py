@@ -53,6 +53,7 @@ def band_profiles(band_id: str, collection: str = "mordheim") -> set[str]:
 
 
 # source publication
+@pytest.mark.knowledge_integrity
 def test_scaly_skin_rule_publishes_the_band_cap_and_the_fimir_warriors_clause():
     text = " ".join(str(rule(LORDS_OF_THE_MARSH, "band--scaly-skin")["effect"]).split())
     assert "Fimir have a 6+ armour save that cannot be modified beyond 6 by Strength" in text
@@ -62,6 +63,7 @@ def test_scaly_skin_rule_publishes_the_band_cap_and_the_fimir_warriors_clause():
     assert rule(LORDS_OF_THE_MARSH, "band--scaly-skin")["applies_to"]["band"] is True
 
 
+@pytest.mark.knowledge_integrity
 def test_boglar_rule_publishes_the_five_or_more_and_the_fire_prohibition():
     text = " ".join(str(rule(UNDERWORLD_ALLIANCE, "boglars--regeneration")["effect"]).split())
     assert "on a result of 5 or more the wound is ignored" in text
@@ -69,6 +71,7 @@ def test_boglar_rule_publishes_the_five_or_more_and_the_fire_prohibition():
     assert rule(UNDERWORLD_ALLIANCE, "boglars--regeneration")["applies_to"]["profile_ids"] == ["boglars"]
 
 
+@pytest.mark.knowledge_integrity
 def test_fimir_override_names_only_real_fimir_warriors_recipients():
     binding = runtime_bindings(rule(LORDS_OF_THE_MARSH, "band--scaly-skin"), "compiler")[0]
     assert binding["id"] == "compiler.lizardmen-scaly-skin"
@@ -80,18 +83,21 @@ def test_fimir_override_names_only_real_fimir_warriors_recipients():
     assert "young-nobles" not in parameters["profile_ids"]
 
 
+@pytest.mark.knowledge_integrity
 def test_boglar_binding_points_at_the_printed_five_plus_mechanic():
     effect = rule(UNDERWORLD_ALLIANCE, "boglars--regeneration")["runtime"]["effects"][0]
     assert effect["binding"] == {"kind": "mechanic", "id": "skill.regeneration-5-plus"}
 
 
 # Fimir Warriors: printed 5+ under the band-wide 6+ floor
+@pytest.mark.compilation
 def test_fimir_warriors_compile_the_printed_five_plus():
     compiled = compile_band("lords-of-the-marsh-mim", "fimir-warriors")
     assert compiled.natural_armour_save == 5
     assert "compiler.lizardmen-scaly-skin" in compiled.construction_tags
 
 
+@pytest.mark.compilation
 def test_fimir_warriors_keep_the_band_strength_floor_of_six():
     compiled = compile_band("lords-of-the-marsh-mim", "fimir-warriors")
     # "cannot be modified beyond 6 by Strength": the compiled floor stays the
@@ -99,12 +105,14 @@ def test_fimir_warriors_keep_the_band_strength_floor_of_six():
     assert compiled.natural_armour_worst_save == 6
 
 
+@pytest.mark.compilation
 def test_fimir_warriors_do_not_apply_the_band_and_species_values_twice():
     compiled = compile_band("lords-of-the-marsh-mim", "fimir-warriors")
     # 5 (species) + 6 (band) or 4 (Kroxigor-style) would mean a double contract.
     assert compiled.natural_armour_save not in {10, 11, 4, 6}
 
 
+@pytest.mark.compilation
 def test_young_nobles_keep_the_band_six_plus():
     compiled = compile_band("lords-of-the-marsh-mim", "young-nobles")
     assert compiled.natural_armour_save == 6
@@ -112,6 +120,7 @@ def test_young_nobles_keep_the_band_six_plus():
     assert "compiler.lizardmen-scaly-skin" in compiled.construction_tags
 
 
+@pytest.mark.compilation
 def test_fimir_warriors_accept_light_armour_without_changing_the_natural_value():
     # "Light armour adds +1" is a composition clause; the natural contribution
     # itself stays 5+.
@@ -127,6 +136,7 @@ REMAINING_BAND_PROFILES = (
 )
 
 
+@pytest.mark.compilation
 @pytest.mark.parametrize(("collection", "band_id", "profile_id", "expected"), REMAINING_BAND_PROFILES)
 def test_band_wide_six_plus_stays_for_other_fimir_profiles(collection, band_id, profile_id, expected):
     assert compile_band(band_id, profile_id, collection).natural_armour_save == expected
@@ -148,6 +158,7 @@ LIZARDMEN_SPECIES_SAVES = (
 )
 
 
+@pytest.mark.compilation
 @pytest.mark.parametrize(("collection", "band_id", "profile_id", "expected"), LIZARDMEN_SPECIES_SAVES)
 def test_lizardmen_scaly_skin_species_values_are_untouched(collection, band_id, profile_id, expected):
     compiled = compile_band(band_id, profile_id, collection)
@@ -156,6 +167,7 @@ def test_lizardmen_scaly_skin_species_values_are_untouched(collection, band_id, 
     assert "compiler.lizardmen-scaly-skin" in compiled.construction_tags
 
 
+@pytest.mark.compilation
 def test_a_profile_without_the_contract_keeps_no_natural_save():
     compiled = compile_band("underworld-alliance-mim", "goblin-bully")
     assert compiled.natural_armour_save == 7
@@ -163,6 +175,7 @@ def test_a_profile_without_the_contract_keeps_no_natural_save():
 
 
 # Boglars: printed 5+ with the fire prohibition; Warpstone Troll keeps 4+
+@pytest.mark.compilation
 def test_boglars_compile_the_printed_five_plus_with_the_fire_prohibition():
     compiled = compile_band("underworld-alliance-mim", "boglars")
     assert compiled.global_effects.regeneration_save == 5
@@ -170,6 +183,7 @@ def test_boglars_compile_the_printed_five_plus_with_the_fire_prohibition():
     assert "skill.regeneration-5-plus" in compiled.global_effects.tags
 
 
+@pytest.mark.compilation
 def test_boglars_do_not_also_keep_the_generic_four_plus_contribution():
     # The composition keeps the best save: a surviving 4+ contribution would
     # lower the compiled value back to 4.
@@ -178,6 +192,7 @@ def test_boglars_do_not_also_keep_the_generic_four_plus_contribution():
     assert "skill.regeneration" not in compiled.global_effects.tags
 
 
+@pytest.mark.compilation
 def test_warpstone_troll_keeps_the_printed_four_plus():
     compiled = compile_band("underworld-alliance-mim", "warpstone-troll")
     assert compiled.global_effects.regeneration_save == 4
@@ -187,6 +202,7 @@ def test_warpstone_troll_keeps_the_printed_four_plus():
     assert binding["id"] == "skill.regeneration"
 
 
+@pytest.mark.compilation
 @pytest.mark.parametrize("profile_id", ("goblin-bully", "sewer-squigs"))
 def test_boglar_regeneration_stays_absent_from_valid_controls(profile_id):
     compiled = compile_band("underworld-alliance-mim", profile_id)
@@ -195,6 +211,7 @@ def test_boglar_regeneration_stays_absent_from_valid_controls(profile_id):
 
 
 # shared effects, recipients and cross-compilation contamination
+@pytest.mark.knowledge_integrity
 def test_shared_regeneration_mechanic_effects_are_not_altered():
     effects = effect_index("mordheim")
     assert effects["skill.regeneration"].effect.regeneration_save == 4
@@ -203,6 +220,7 @@ def test_shared_regeneration_mechanic_effects_are_not_altered():
     assert effects["skill.regeneration-5-plus"].effect.regeneration_blocked_by_fire is True
 
 
+@pytest.mark.compilation
 def test_compiling_boglars_does_not_mutate_the_cached_mechanic_effects():
     before = {name: effect.effect for name, effect in effect_index("mordheim").items()}
     compile_band("underworld-alliance-mim", "boglars")
@@ -210,6 +228,7 @@ def test_compiling_boglars_does_not_mutate_the_cached_mechanic_effects():
     assert after == before
 
 
+@pytest.mark.compilation
 def test_controls_are_stable_before_and_after_boglars_in_one_process():
     troll_before = compile_band("underworld-alliance-mim", "warpstone-troll")
     boglar = compile_band("underworld-alliance-mim", "boglars")
@@ -224,6 +243,7 @@ def test_controls_are_stable_before_and_after_boglars_in_one_process():
     assert fimir.natural_armour_save == 5
 
 
+@pytest.mark.compilation
 def test_reverse_order_recompilation_is_identical():
     order = (
         ("underworld-alliance-mim", "warpstone-troll"),

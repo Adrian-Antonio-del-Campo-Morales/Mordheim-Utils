@@ -75,6 +75,8 @@
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.first.stupidity.0, value: 1}
+    - {key: round.0.first.stupidity.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.first.attack.0.injury.0, value: 2}
@@ -99,6 +101,8 @@
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.first.stupidity.0, value: 1}
+    - {key: round.0.first.stupidity.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.first.attack.0.injury.0, value: 1}
@@ -113,7 +117,7 @@
   covers: [whole]
   fighters:
     first:
-      main_weapon_id: weapon.mace
+      main_weapon_id: weapon.dagger
       characteristics: {weapon_skill: 10, strength: 5, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
     second:
       main_weapon_id: weapon.mace

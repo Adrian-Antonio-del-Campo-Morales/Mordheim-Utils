@@ -78,8 +78,11 @@
       characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
+  # Weapon Skill 3 against Weapon Skill 4 hits on the declared 4+; the charging
+  # turn's printed bonus is what turns a declared 3 into a hit, so the same face
+  # chosen here misses without the charge.  The four is not a miss on its own.
   rolls:
-    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 3}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.hit: false, attacks.0.damage: 0, state.second.wounds: 2}

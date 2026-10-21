@@ -12,6 +12,10 @@ from mordheim_construction.compiler import compile_fighter
 from mordheim_core.models import Characteristics
 from mordheim_core.models import FighterBuild
 import numpy as np
+import pytest
+
+
+pytestmark = pytest.mark.rule_behavior
 
 
 class ScriptedRng:

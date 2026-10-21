@@ -48,6 +48,8 @@
 # Derived from the printed rule and the printed profile; no engine output was consulted.
 # The fixture's Initiative is higher and the bearer contributes no attacks of its own (initial_state),
 # so the die of 3 at the injury table is Stunned, converted to Knocked Down by the bearer's rule.
+# The Mourngul is Ethereal, so the fixture must also declare the hit save the engine requests after
+# the hit; Haunter of the Dark improves it to 3+, and a 1 fails it so the wound and injury dice resolve.
 - audit_id: rule/mordheim/call-of-the-night-haint-mim/mourngul--no-pain/skill.ignore-pain
   id: a-stunned-result-becomes-knocked-down
   covers:
@@ -77,6 +79,8 @@
   rolls:
   - key: round.0.first.attack.0.hit
     value: 4
+  - key: round.0.first.attack.0.ethereal
+    value: 1
   - key: round.0.first.attack.0.wound
     value: 5
   - key: round.0.first.attack.0.injury.0

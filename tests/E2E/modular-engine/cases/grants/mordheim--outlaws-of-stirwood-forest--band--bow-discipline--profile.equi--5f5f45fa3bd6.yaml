@@ -70,7 +70,7 @@
       band_id: outlaws-of-stirwood-forest
       profile_id: outlaws
       owned_item_ids: [crossbow]
-  expect_error: '"crossbow" is forbidden for outlaws-of-stirwood-forest/outlaws.'
+  expect_error: '"crossbow" is not on any equipment list of outlaws-of-stirwood-forest/outlaws.'
 
 - audit_id: rule/mordheim/outlaws-of-stirwood-forest/band--bow-discipline/profile.equipment-restrictions
   id: a-crossbow-is-refused-for-a-bandit-leader
@@ -82,7 +82,7 @@
       band_id: outlaws-of-stirwood-forest
       profile_id: bandit-leader
       owned_item_ids: [crossbow]
-  expect_error: '"crossbow" is forbidden for outlaws-of-stirwood-forest/bandit-leader.'
+  expect_error: '"crossbow" is not on any equipment list of outlaws-of-stirwood-forest/bandit-leader.'
 
 # Acceptance control: a printed recipient carrying a bow satisfies the clause and is admitted; the participant
 # is declared out at the outset with no instruction and no randomiser, so no round can resolve.  The tape shape

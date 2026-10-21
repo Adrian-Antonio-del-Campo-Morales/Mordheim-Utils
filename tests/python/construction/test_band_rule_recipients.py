@@ -16,6 +16,8 @@ from mordheim_construction.eligibility import call, package_facts
 from mordheim_construction.selection import _applicable_rules
 from mordheim_knowledge.loader import load_bands
 
+pytestmark = pytest.mark.eligibility
+
 ROOT = Path(__file__).resolve().parents[3]
 CASES = json.loads((ROOT / "tests/fixtures/eligibility/band-rule-recipients.json").read_text(encoding="utf-8"))["cases"]
 PACK = next(pack for pack in load_bands("mordheim", ROOT / "sources" / "knowledge")

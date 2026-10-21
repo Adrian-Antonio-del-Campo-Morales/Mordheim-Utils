@@ -126,9 +126,9 @@
   rolls:
     - {key: round.0.first.paralysis, value: 6}
     - {key: round.0.first.paralysis.reroll, value: 6}
-    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.wound, value: 1}
   expect_rounds:
-    0: {attacks.0.hit: False, state.first.condition: PARALYZED, state.second.wounds: 2}
+    0: {attacks.0.hit: True, attacks.0.damage: 0, state.first.condition: PARALYZED, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 - audit_id: rule/mordheim/sisters-of-sigmar/augur--blessed-sight/skill.blessed-sight
   id: blessed-sight-rerolls-a-missed-to-hit-roll

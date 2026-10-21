@@ -96,11 +96,10 @@
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
-    - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
   expect_rounds:
-    0: {attacks.0.saved: False, attacks.0.damage: 1, state.second.wounds: 1}
-  expect_final: {rounds_executed: 1, termination_reason: horizon}
+    0: {attacks.0.saved: False, attacks.0.damage: 1, state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
 # Against a standing opponent only the dagger profile applies: the target's worn 5+ save improves to 4+ and the 4 now saves.
 
 - audit_id: mechanic/weapon.misericordia

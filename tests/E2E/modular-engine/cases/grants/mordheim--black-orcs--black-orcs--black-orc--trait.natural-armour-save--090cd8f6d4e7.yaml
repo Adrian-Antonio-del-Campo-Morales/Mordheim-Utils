@@ -83,9 +83,10 @@
 # Derived from the printed rule, the recorded contract of each clause and the printed profile; no
 # engine output was consulted.  The attacker is a hand-built fixture (Weapon Skill 10 and Initiative
 # 10 are fixture facts, not profile values) and the bearer is the band profile that prints the rule.
-# The duel is uncharged and the bearer starts at two wounds and contributes no attacks of its own,
-# so the single incoming mace swing is the whole tape; the wound face is kept below a natural six so
-# no critical die is part of this evidence.
+# The duel is uncharged and the bearer contributes no attacks of its own, so the single incoming mace
+# swing is the whole tape; the wound face is kept below a natural six so no critical die is part of
+# this evidence.  The Black Orc prints a single Wound, so a wound its save fails is resolved through
+# the injury table and that die is declared.
 
 - audit_id: rule/mordheim/black-orcs/black-orcs--black-orc/trait.natural-armour-save
   id: the-black-orcs-hide-saves-on-six
@@ -95,7 +96,7 @@
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
     second: {collection: mordheim, band_id: black-orcs, profile_id: black-orcs}
-  initial_state: {second: {wounds: 2, attacks: 0}}
+  initial_state: {second: {attacks: 0}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
@@ -103,7 +104,7 @@
     - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.first.attack.0.armour, value: 6}
   expect_rounds:
-    0: {attacks.0.saved: true, state.second.wounds: 2, state.second.condition: STANDING}
+    0: {attacks.0.saved: true, state.second.wounds: 1, state.second.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 - audit_id: rule/mordheim/black-orcs/black-orcs--black-orc/trait.natural-armour-save
@@ -114,15 +115,16 @@
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
     second: {collection: mordheim, band_id: black-orcs, profile_id: black-orcs}
-  initial_state: {second: {wounds: 2, attacks: 0}}
+  initial_state: {second: {attacks: 0}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
   expect_rounds:
-    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1, state.second.condition: STANDING}
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 - audit_id: rule/mordheim/black-orcs/black-orcs--black-orc/trait.natural-armour-save
@@ -153,7 +155,7 @@
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
     second: {collection: mordheim, band_id: black-orcs, profile_id: black-orcs, off_hand_id: defence.shield}
-  initial_state: {second: {wounds: 2, attacks: 0}}
+  initial_state: {second: {attacks: 0}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
@@ -161,7 +163,7 @@
     - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.first.attack.0.armour, value: 5}
   expect_rounds:
-    0: {attacks.0.saved: true, state.second.wounds: 2, state.second.condition: STANDING}
+    0: {attacks.0.saved: true, state.second.wounds: 1, state.second.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 - audit_id: rule/mordheim/black-orcs/black-orcs--black-orc/trait.natural-armour-save
@@ -172,7 +174,7 @@
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
     second: {collection: mordheim, band_id: black-orcs, profile_id: black-orcs, armour_id: armour.light-armour}
-  initial_state: {second: {wounds: 2, attacks: 0}}
+  initial_state: {second: {attacks: 0}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
@@ -180,5 +182,5 @@
     - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.first.attack.0.armour, value: 5}
   expect_rounds:
-    0: {attacks.0.saved: true, state.second.wounds: 2, state.second.condition: STANDING}
+    0: {attacks.0.saved: true, state.second.wounds: 1, state.second.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

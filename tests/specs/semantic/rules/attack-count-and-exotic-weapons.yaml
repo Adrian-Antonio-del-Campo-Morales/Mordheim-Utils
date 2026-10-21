@@ -20,11 +20,8 @@ specifications:
       attacker.global_effects.tags:
       - mechanic.spawn-special-attacks
     expect:
-      attacker.random_characteristics:
-      - - A
-        - 1
-        - 6
-        - 1
+      # The phase operator owns D6+1; initialization must not roll A as well.
+      attacker.random_characteristics: []
   - id: minimum
     roles:
     - active
@@ -38,8 +35,6 @@ specifications:
     context:
       ordinary_count: 4
     rolls:
-    - key: a.characteristic.A.0
-      value: 1
     - key: spawn-attacks
       value: 1
     expect:
@@ -57,8 +52,6 @@ specifications:
     context:
       ordinary_count: 4
     rolls:
-    - key: a.characteristic.A.0
-      value: 1
     - key: spawn-attacks
       value: 6
     expect:
@@ -114,8 +107,6 @@ specifications:
     context:
       ordinary_count: 4
     rolls:
-    - key: a.characteristic.A.0
-      value: 1
     - key: spawn-attacks
       value: 3
     expect:

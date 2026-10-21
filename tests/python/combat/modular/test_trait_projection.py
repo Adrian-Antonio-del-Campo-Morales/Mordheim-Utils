@@ -11,6 +11,7 @@ from __future__ import annotations
 from mordheim_combat.modular.contexts import weapon_against_opponent
 from mordheim_construction.compiler import compile_fighter
 from mordheim_core.models import FighterBuild
+import pytest
 
 
 def canonical(band, profile, *, collection="mordheim", rules=(), **options):
@@ -26,6 +27,7 @@ CONSTRUCTS = ("clockwork-soldiers", "clockwork-fiend")
 HUMANS = ("master-of-clocks", "dwarf-engineer")
 
 
+@pytest.mark.compilation
 def test_the_constructs_reach_the_poison_and_no_pain_connections():
     for profile in CONSTRUCTS:
         compiled = canonical("clockworkers-sc", profile)
@@ -34,6 +36,7 @@ def test_the_constructs_reach_the_poison_and_no_pain_connections():
         assert "skill.ignore-pain" in compiled.global_effects.tags, profile
 
 
+@pytest.mark.compilation
 def test_the_bands_human_heroes_stay_without_the_construct_consequences():
     for profile in HUMANS:
         compiled = canonical("clockworkers-sc", profile)
@@ -42,6 +45,7 @@ def test_the_bands_human_heroes_stay_without_the_construct_consequences():
         assert "skill.ignore-pain" not in compiled.global_effects.tags, profile
 
 
+@pytest.mark.rule_behavior
 def test_construct_poison_immunity_drops_the_poisoned_contribution():
     poisoned = compile_fighter(FighterBuild(
         "mordheim", band_id="ghost-pirates-sar", profile_id="skeleton-mates",

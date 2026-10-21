@@ -98,9 +98,11 @@
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
+    # The whole pool of the active fighter declares its hit rolls before any wound
+    # die, so both mace attacks are hit first and then resolved in index order.
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.first.attack.1.wound, value: 4}
     - {key: round.0.second.attack.0.hit, value: 1}
     - {key: round.0.first.black-hunger.hits, sides: 3, value: 1}

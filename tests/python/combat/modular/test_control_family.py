@@ -79,6 +79,7 @@ def duel(owner, victim, dice, *, state=None):
 
 # --- the canonical records carry their printed binding ----------------------
 
+@pytest.mark.knowledge_integrity
 def test_the_printed_records_declare_their_canonical_mechanic():
     checks = (
         ("sources/knowledge/bands/trollheim/lustria-amazons/special-rules.yaml",
@@ -98,6 +99,24 @@ def test_the_printed_records_declare_their_canonical_mechanic():
         assert [effect["binding"]["id"] for effect in runtime["effects"]] == [mechanic], rule_id
 
 
+@pytest.mark.eligibility
+def test_khemrian_seduction_reaches_the_legal_selected_recipient_and_round():
+    rule = "band--lahmian-special-skills-seduction"
+    build = dict(band_id="khemri-lahmian-brotherhood", collection="trollheim")
+    plain = compile_fighter(FighterBuild(
+        "mordheim", profile_id="lahmian-vampire", **build))
+    selected = compile_fighter(FighterBuild(
+        "mordheim", profile_id="lahmian-vampire", special_rule_ids=(rule,), **build))
+    assert "mechanic.lahmian-seduction" not in plain.global_effects.tags
+    assert "mechanic.lahmian-seduction" in selected.global_effects.tags
+    with pytest.raises(ValueError, match="special rule is not available"):
+        compile_fighter(FighterBuild(
+            "mordheim", profile_id="skeleton-warriors", special_rule_ids=(rule,), **build))
+    result = duel(selected, synthetic(), ControlDice("round.0.second.lahmian-seduction"))
+    assert result.state.second.charm_attack_blocked
+
+
+@pytest.mark.rule_behavior
 def test_the_control_table_keeps_each_printed_qualifier_separate():
     table = {power.tag: power for power in CONTROL_POWERS}
     gaze, lahmia, lahmian = (table["mechanic.hypnotic-gaze"],
@@ -112,6 +131,7 @@ def test_the_control_table_keeps_each_printed_qualifier_separate():
     assert len(SEDUCTION_RESOURCES) == 2
 
 
+@pytest.mark.eligibility
 def test_the_lahmia_vampire_reaches_its_own_bloodline_power():
     vampire = band_profile_with_rule(BAND, "lahmia-vampire--enchanting-beauty")
     build = dict(band_id="chaos-streets-undead-bloodlines", profile_id=vampire,
@@ -135,6 +155,7 @@ def test_the_lahmia_vampire_reaches_its_own_bloodline_power():
 
 # --- Hypnotic Gaze ----------------------------------------------------------
 
+@pytest.mark.rule_behavior
 def test_hypnotic_gaze_bars_the_target_and_makes_attacks_automatic():
     owner, victim = synthetic("mechanic.hypnotic-gaze"), synthetic()
     result = duel(owner, victim, ControlDice("round.0.second.hypnotic-gaze"))
@@ -153,6 +174,7 @@ def test_hypnotic_gaze_bars_the_target_and_makes_attacks_automatic():
     assert [attack.hit_roll for attack in ordinary.attacks] == [2, 2]
 
 
+@pytest.mark.rule_behavior
 def test_the_gaze_needs_its_printed_selection():
     result = duel(synthetic(), synthetic(), ControlDice())
     assert not result.state.second.charm_attack_blocked
@@ -160,6 +182,7 @@ def test_the_gaze_needs_its_printed_selection():
     assert [attack.hit for attack in result.attacks] == [False, False]
 
 
+@pytest.mark.rule_behavior
 def test_the_gaze_spares_a_psychology_immune_target():
     owner = synthetic("mechanic.hypnotic-gaze")
     result = duel(owner, synthetic("mechanic.psychology-immunity"),
@@ -170,6 +193,7 @@ def test_the_gaze_spares_a_psychology_immune_target():
 
 # --- the two Seduction copies ----------------------------------------------
 
+@pytest.mark.rule_behavior
 def test_lahmia_seduction_controls_only_the_printed_male_recipient():
     owner = synthetic("mechanic.lahmia-seduction")
     victim = synthetic("sex.male")
@@ -189,6 +213,7 @@ def test_lahmia_seduction_controls_only_the_printed_male_recipient():
         duel(owner, synthetic(), ControlDice())
 
 
+@pytest.mark.rule_behavior
 def test_lahmia_control_survives_a_missed_round_and_ends_in_the_recovery_test():
     owner, victim = synthetic("mechanic.lahmia-seduction"), synthetic("sex.male")
     established = duel(owner, victim, ControlDice("round.0.second.lahmia-seduction"))
@@ -201,6 +226,7 @@ def test_lahmia_control_survives_a_missed_round_and_ends_in_the_recovery_test():
     assert len(later.attacks) == 2
 
 
+@pytest.mark.rule_behavior
 def test_lahmian_seduction_needs_the_vampires_own_test_first():
     owner, victim = synthetic("mechanic.lahmian-seduction"), synthetic()
     # The Vampire's own test passes and the victim's own test fails: the control

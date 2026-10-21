@@ -121,7 +121,7 @@
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
       main_weapon_id: weapon.mace
-      armour_id: armour.heavy-armour
+      armour_id: armour.gromril-armour
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
@@ -144,7 +144,7 @@
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
       main_weapon_id: weapon.mace
-      armour_id: armour.heavy-armour
+      armour_id: armour.gromril-armour
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
@@ -173,6 +173,9 @@
   rolls:
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
+    # The spent pistol is an ordinary club in the second round, so the bearer
+    # still strikes before the slower defender.
+    - {key: round.1.first.attack.0.hit, value: 1}
     - {key: round.1.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {state.second.wounds: 2, state.first.wounds: 2}
@@ -181,5 +184,6 @@
   expect_events:
     - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
     - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.1.first.attack.0.hit, sides: 6, value: 1}
     - {kind: roll, key: round.1.second.attack.0.hit, sides: 6, value: 1}
 

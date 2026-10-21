@@ -28,6 +28,7 @@ def canonical(band, profile, *, collection="mordheim", **options):
 
 # --- Brewers: the fifth and sixth result of the same supplied table ---------
 
+@pytest.mark.rule_behavior
 def test_the_special_brew_raises_both_characteristics_and_stops_at_ten():
     plain = canonical(BREWER, "master-craftsman")
     drinker = canonical(BREWER, "master-craftsman",
@@ -45,6 +46,7 @@ def test_the_special_brew_raises_both_characteristics_and_stops_at_ten():
     assert (advanced.characteristics.weapon_skill, advanced.characteristics.strength) == (10, 10)
 
 
+@pytest.mark.eligibility
 def test_one_brew_is_drawn_per_battle_and_only_a_guildsmen_dwarf_drinks_it():
     with pytest.raises(ValueError, match="only one"):
         canonical(BREWER, "master-craftsman", condition_ids=(
@@ -60,6 +62,7 @@ def test_one_brew_is_drawn_per_battle_and_only_a_guildsmen_dwarf_drinks_it():
 
 # --- Remas and Remasen officers --------------------------------------------
 
+@pytest.mark.eligibility
 def test_remas_and_remasen_officers_keep_their_printed_recipients():
     remasen = canonical("tileans", "captain")
     assert canonical("tileans", "captain",
@@ -78,6 +81,7 @@ def test_remas_and_remasen_officers_keep_their_printed_recipients():
 
 # --- The Necromantic Abomination's Paladin of Horror ------------------------
 
+@pytest.mark.eligibility
 def test_paladin_of_horror_reaches_the_abomination_only():
     plain = canonical("khemri-necromancers", "necromantic-abomination", collection="trollheim")
     modified = canonical("khemri-necromancers", "necromantic-abomination", collection="trollheim",
@@ -90,6 +94,7 @@ def test_paladin_of_horror_reaches_the_abomination_only():
 
 # --- Power Grab: the supplied race-majority state ---------------------------
 
+@pytest.mark.rule_behavior
 def test_power_grab_adjusts_the_supplied_race_once():
     plain = canonical("underworld-alliance-mim", "goblin-bully")
     majority = canonical("underworld-alliance-mim", "goblin-bully",
@@ -108,6 +113,7 @@ def test_power_grab_adjusts_the_supplied_race_once():
 
 # --- One selected bonus, however the caller names it -----------------------
 
+@pytest.mark.compilation
 def test_a_repeated_selection_applies_its_bonus_once():
     once = canonical("tileans", "captain", special_rule_ids=(REMASSEN,))
     assert canonical("tileans", "captain",
@@ -128,6 +134,7 @@ def test_a_repeated_selection_applies_its_bonus_once():
 
 # --- The shared Middenheim origin -------------------------------------------
 
+@pytest.mark.eligibility
 def test_the_middenheim_variant_raises_only_its_two_printed_profiles():
     # The printed clause is the absolute "Strength 4 instead of Strength 3"; the
     # KB prints 3 for both profiles of both bands, so the shared +1 bonus and the
@@ -145,6 +152,9 @@ def test_the_middenheim_variant_raises_only_its_two_printed_profiles():
 
 # --- The supplied Human Rememberer -----------------------------------------
 
+# Primary: the supplied override compiles the printed Human line and switches
+# the equipment list. The paired refusals are the secondary guarantee.
+@pytest.mark.compilation
 def test_the_human_rememberer_uses_its_printed_line_and_the_mercenary_list():
     human = {"trait_overrides": {"species": "human"}}
     dwarf = canonical("dwarf-slayers-kaz", "rememberer")

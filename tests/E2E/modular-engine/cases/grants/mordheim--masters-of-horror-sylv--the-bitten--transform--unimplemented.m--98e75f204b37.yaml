@@ -379,8 +379,8 @@
   rolls:
     - {key: round.0.first.bitten, value: 6}
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 3}
     - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 3}
   expect_rounds:
     0: {attacks.0.damage: 1, state.second.wounds: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

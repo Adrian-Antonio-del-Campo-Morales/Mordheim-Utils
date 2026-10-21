@@ -14,7 +14,7 @@
 # Clause: whole (scope: YES)
 # AUTHORED[whole]: the printed prohibition is evidenced as a construction refusal on the printed
 #   recipient: the build black-orcs/orc-boyz carrying weapon.crossbow in main_weapon_id is refused with
-#   `"crossbow" is forbidden for black-orcs/orc-boyz.` while the profile the sentence reserves it to,
+#   `"crossbow" is not on any equipment list of black-orcs/orc-boyz.` while the profile the sentence reserves it to,
 #   black-orcs/orc-shootaz, is accepted at construction with the same weapon (the band's own equipment
 #   access gates the crossbow entry with applies_to.profile_ids [orc-shootaz], so the reservation is
 #   visible from both sides).  The refusal is the shared stage's tag-token branch: boundEquipment filters
@@ -63,7 +63,7 @@
       band_id: black-orcs
       profile_id: orc-boyz
       owned_item_ids: [crossbow]
-  expect_error: '"crossbow" is forbidden for black-orcs/orc-boyz.'
+  expect_error: '"crossbow" is not on any equipment list of black-orcs/orc-boyz.'
 
 - audit_id: rule/mordheim/black-orcs/orc-boyz--equipment-restrictions/profile.equipment-restrictions
   id: orc-boy-without-a-crossbow-is-accepted-at-construction

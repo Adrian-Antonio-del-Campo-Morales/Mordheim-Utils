@@ -45,7 +45,9 @@
 # --- Authored scenarios ---
 # The warband skill list prints the canonical knife-fighting wording: while using a
 # Dagger or Yambiya the bearer gains +1 WS and +1 on the Injury roll, with the
-# weapon's normal armour-save modifier untouched.
+# weapon's normal armour-save modifier untouched. The dagger therefore offers the
+# unarmoured target its 6+ save, which must be taped (a 1 fails it) before the
+# injury roll.
 - audit_id: rule/catalog/warband/skill.knife-fighting/skill.knife-fighting
   id: the-dagger-adds-one-to-the-injury-roll
   covers: [knife-fighting-bonus]
@@ -62,6 +64,7 @@
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 1}
     - {key: round.0.first.attack.0.injury.0, value: 2}
   expect_rounds:
     0: {attacks.0.damage: 1, state.second.condition: STUNNED}
@@ -81,6 +84,7 @@
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 1}
     - {key: round.0.first.attack.0.injury.0, value: 2}
   expect_rounds:
     0: {state.second.condition: KNOCKED_DOWN}

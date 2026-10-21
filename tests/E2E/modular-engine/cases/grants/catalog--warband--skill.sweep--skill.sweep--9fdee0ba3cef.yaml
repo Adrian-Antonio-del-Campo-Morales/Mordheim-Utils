@@ -58,8 +58,9 @@
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 3}
     second:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 0}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
   duel_context: {charging: [], active_participant: first}
+  initial_state: {second: {attacks: 0}}
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.sweep, value: 5}
@@ -78,8 +79,9 @@
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 3}
     second:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 6, attacks: 0}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 6, attacks: 1}
   duel_context: {charging: [], active_participant: first}
+  initial_state: {second: {attacks: 0}}
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.sweep, value: 5}

@@ -624,15 +624,15 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.orc-mob.band.orc-special-skills-ere-we-go
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.ere-we-go
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.ere-we-go
   rule_ref: shared-rule.ere-we-go
 - id: band--orc-special-skills-da-cunnin-plan
   kind: warband_skill

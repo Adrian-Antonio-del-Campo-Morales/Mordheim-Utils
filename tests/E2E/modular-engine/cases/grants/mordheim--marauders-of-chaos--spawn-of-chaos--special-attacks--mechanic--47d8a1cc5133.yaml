@@ -71,10 +71,12 @@
       characteristics: {weapon_skill: 3, strength: 4, toughness: 5, wounds: 3, initiative: 2, attacks: 3, leadership: 10}
     second:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
     - {key: round.0.first.spawn-attacks, value: 1}
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.first.attack.1.hit, value: 1}

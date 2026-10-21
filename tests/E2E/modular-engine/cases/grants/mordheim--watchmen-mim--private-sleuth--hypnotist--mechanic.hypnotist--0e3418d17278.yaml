@@ -75,6 +75,7 @@
   maximum_rounds: 1
   decisions:
     - {key: round.0.second.hypnotist, value: true}
+    - {key: round.0.second.attack.0.wound.scryer, value: false}
   rolls:
     - {key: round.0.second.hypnotist.0, value: 6}
     - {key: round.0.second.hypnotist.1, value: 6}
@@ -102,6 +103,7 @@
   maximum_rounds: 1
   decisions:
     - {key: round.0.second.hypnotist, value: true}
+    - {key: round.0.second.attack.0.hit.scryer, value: false}
   rolls:
     - {key: round.0.second.hypnotist.0, value: 1}
     - {key: round.0.second.hypnotist.1, value: 1}
@@ -130,6 +132,7 @@
   maximum_rounds: 1
   decisions:
     - {key: round.0.second.hypnotist, value: false}
+    - {key: round.0.second.attack.0.hit.scryer, value: false}
   rolls:
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}

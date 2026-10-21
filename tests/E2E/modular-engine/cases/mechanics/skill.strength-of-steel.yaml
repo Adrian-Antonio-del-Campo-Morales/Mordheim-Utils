@@ -78,10 +78,17 @@
       characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
+  # The printed bonus is Strength, not To Hit: the same declared impact of four
+  # hits in both scenarios (Weapon Skill 3 against 4 needs 4+), so the pair is
+  # decided by the To Wound step alone.  Without the charging turn the bearer
+  # keeps Strength 3, and Strength 3 against Toughness 3 needs the declared
+  # four; the three scripted here is the face the charging turn's Strength 4
+  # would have turned into a wound.
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
-    0: {attacks.0.hit: false, attacks.0.damage: 0, state.second.wounds: 2}
+    0: {attacks.0.hit: true, attacks.0.wounded: false, attacks.0.damage: 0, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 

@@ -23,6 +23,8 @@ class Obligation:
     source: dict
     text: str
     dependencies: tuple[str, ...] = ()
+    # Band documents folded into ``source_digest`` for grant obligations.
+    context_files: tuple[str, ...] = ()
 
 
 def binding_key(binding: dict | None) -> str:
@@ -79,9 +81,11 @@ def inventory(root: Path | None = None) -> tuple[Obligation, ...]:
         collection = path.parent.parent.name if "bands" in path.parts else "catalog"
         owner = path.parent.name if collection != "catalog" else path.stem
         related = {}
+        context_files = ()
         if collection != "catalog":
             for name in ("profiles.yaml", "equipment-access.yaml", "band.yaml"):
                 related[name] = read_yaml(path.parent / name)
+            context_files = tuple(sorted(related))
         for row in document.get("rules", document.get("skills", [])):
             runtime = row.get("runtime") or {}
             for effect in runtime.get("effects") or []:
@@ -96,7 +100,7 @@ def inventory(root: Path | None = None) -> tuple[Obligation, ...]:
                     binding_key(binding), fingerprint({"rule": row, "context": related}),
                     {"file": path.relative_to(root).as_posix(), "id": row["id"],
                      "effect": effect["id"], **(row.get("source") or {})},
-                    text, dependency,
+                    text, dependency, context_files,
                 ))
     ids = [item.id for item in result]
     if len(ids) != len(set(ids)):

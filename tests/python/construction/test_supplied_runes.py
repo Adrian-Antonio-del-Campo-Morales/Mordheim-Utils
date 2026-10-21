@@ -25,6 +25,7 @@ def tape(*rolls):
     return StrictDice([{'key': key, 'value': value} for key, value in rolls])
 
 
+@pytest.mark.rule_behavior
 @pytest.mark.parametrize('rune,hit,wound', [('striking', 3, 4), ('cleaving', 4, 3)])
 def test_weapon_rune_changes_its_printed_hit_or_wound_boundary(rune, hit, wound):
     owner = inscribed(rune, ['main'], off_hand_id='weapon.mace')
@@ -45,6 +46,7 @@ def test_weapon_rune_changes_its_printed_hit_or_wound_boundary(rune, hit, wound)
     assert not other.wounded
 
 
+@pytest.mark.rule_behavior
 @pytest.mark.parametrize('rune,armour_roll,special_roll', [('stone', 4, None), ('iron', 1, 6)])
 def test_armour_rune_changes_the_actual_save(rune, armour_roll, special_roll):
     owner = inscribed(rune, ['armour'], armour_id='armour.heavy-armour')
@@ -60,6 +62,7 @@ def test_armour_rune_changes_the_actual_save(rune, armour_roll, special_roll):
     assert result.saved and result.defender.wounds == 2
 
 
+@pytest.mark.interaction
 def test_fury_and_speed_reach_the_round_without_inscription_or_expiry_rolls():
     owner = compile_fighter(build(condition_ids=('condition.rune-fury', 'condition.rune-speed'),
         off_hand_id='weapon.mace',
@@ -78,6 +81,7 @@ def test_fury_and_speed_reach_the_round_without_inscription_or_expiry_rolls():
         state = result.state
 
 
+@pytest.mark.eligibility
 @pytest.mark.parametrize('conditions,facts,options,message', [
     (('condition.rune-fury', 'condition.rune-cleaving'),
      {'rune_fury_slots': ['main'], 'rune_cleaving_slots': ['main']}, {}, 'Only one Rune'),
@@ -90,6 +94,7 @@ def test_source_rune_limits_reject_invalid_item_assignments(conditions, facts, o
         compile_fighter(build(condition_ids=conditions, trait_overrides=facts, **options))
 
 
+@pytest.mark.compilation
 def test_two_durable_stone_runes_remain_on_two_distinct_physical_items():
     owner = inscribed('stone', ['armour', 'off'], armour_id='armour.light-armour',
                        off_hand_id='defence.shield')

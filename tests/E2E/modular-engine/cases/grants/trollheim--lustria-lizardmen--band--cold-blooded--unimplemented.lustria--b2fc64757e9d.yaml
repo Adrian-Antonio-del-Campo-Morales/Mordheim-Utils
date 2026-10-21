@@ -118,10 +118,10 @@
 # whole band, so a printed member of the band stands for the recipient and carries its own
 # printed Leadership.  The fear-causing opponent is the hand-built fixture the sibling
 # mechanics case uses, so the Fear test is the individual Psychology test the clause names;
-# the fire test is the printed non-Psychology Leadership test, and the unmarked warrior of
-# the same Leadership is the absence control.  Reviewers: the register records the connection
-# from this band rule to mechanic.cold-blooded-psychology as pending implementation work, so
-# these expectations fail until that connection exists.
+# the supplied Danse Macabre recovery is a non-Psychology Leadership test, and the unmarked
+# warrior of the same Leadership is the absence control. The negative scope case keeps the
+# actual band/profile recipient, so it also detects an incorrect Leadership-wide band binding.
+# The external curse is a supplied canonical condition, not an illegally selected profile skill.
 
 - audit_id: rule/trollheim/lustria-lizardmen/band--cold-blooded/unimplemented.lustria-lizardmen.band.cold-blooded
   id: a-psychology-test-of-the-band-keeps-the-lowest-two-of-three-dice
@@ -156,19 +156,20 @@
       collection: trollheim
       band_id: lustria-lizardmen
       profile_id: skink-priest
-      skill_ids: [mechanic.fears-fire]
+      condition_ids: [condition.danse-macabre-controlled]
       main_weapon_id: weapon.stone-axe
     second:
-      main_weapon_id: weapon.brazier-iron
+      main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
-  duel_context: {charging: [first], active_participant: first}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
-    - {key: round.0.first.fear.charge.0, value: 6}
-    - {key: round.0.first.fear.charge.1, value: 6}
+    - {key: round.0.first.danse-macabre.0, value: 6}
+    - {key: round.0.first.danse-macabre.1, value: 6}
   expect_rounds:
-    0: {attacks: [], state.first_charged: False, state.failed_charges: [first], state.engaged: False}
-  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+    0: {attacks: [], state.first.danse_macabre_controlled: True, state.engaged: True}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 - audit_id: rule/trollheim/lustria-lizardmen/band--cold-blooded/unimplemented.lustria-lizardmen.band.cold-blooded
   id: the-same-fear-test-without-the-band-rule-rolls-two-dice-and-fails

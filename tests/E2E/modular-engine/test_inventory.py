@@ -1,6 +1,6 @@
 """Canonical audit-ID coverage: reconciliation, report and completeness gate.
 
-The register (``docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv``) is read
+The register (``sources/knowledge/verification/clause-contracts.csv``) is read
 as the canonical source of audit identities and clauses and is never rewritten
 here.  A scenario may only reference an admitted ``core/``, ``mechanic/`` or
 ``rule/`` identity and an in-scope clause of that identity; sharing a binding
@@ -26,7 +26,7 @@ import pytest
 from mordheim_modular_e2e.corpus import Scenario, group_by_audit, load_corpus
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[3]
-REGISTER = REPOSITORY_ROOT / "docs" / "knowledge" / "2a2b" / "tasks" / "T13-semantic-analysis.csv"
+REGISTER = REPOSITORY_ROOT / "sources" / "knowledge" / "verification" / "clause-contracts.csv"
 ADMITTED_PREFIXES = ("core/", "mechanic/", "rule/")
 IN_SCOPE = "YES"
 REQUIRE_COMPLETE_ENV = "MORDHEIM_E2E_REQUIRE_COMPLETE"
@@ -120,6 +120,7 @@ def coverage(scenarios: Iterable[Scenario] | None = None) -> Coverage:
     return Coverage(len(scenarios), covered, admitted, frozenset(admitted_ids))
 
 
+@pytest.mark.evidence
 def test_corpus_references_admitted_identities_and_clauses():
     declared, admitted, admitted_ids = read_register()
     for scenario in CORPUS:
@@ -133,6 +134,7 @@ def test_corpus_references_admitted_identities_and_clauses():
                 f"{scenario.audit_id}")
 
 
+@pytest.mark.evidence
 def test_coverage_report_reconciliation():
     report = coverage()
     print(report.render())
@@ -141,6 +143,7 @@ def test_coverage_report_reconciliation():
     assert set(report.uncovered()) <= set(report.admitted_ids)
 
 
+@pytest.mark.evidence
 def test_completeness_gate():
     """Fail the full gate only when completeness is explicitly requested.
 

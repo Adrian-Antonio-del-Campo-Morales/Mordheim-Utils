@@ -7,10 +7,13 @@ from mordheim_core.models import FighterBuild
 from mordheim_knowledge.loader import load_bands
 
 
+pytestmark = pytest.mark.eligibility
+
+
 def test_kumfy_gear_rejects_both_forbidden_combinations_in_owned_and_active_equipment():
     def build(items, armour="armour.no-armour"):
         return FighterBuild("mordheim", band_id="savage-orcs-kaz", profile_id="boss",
-                            main_weapon_id="weapon.mace", owned_item_ids=items,
+                            main_weapon_id="weapon.club", owned_item_ids=items,
                             armour_id=armour)
 
     assert compile_fighter(build(("kumfy_gear",)))

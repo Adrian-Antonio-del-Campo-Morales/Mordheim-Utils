@@ -19,6 +19,7 @@ from __future__ import annotations
 from functools import lru_cache
 from pathlib import Path
 
+import pytest
 import yaml
 
 from mordheim_knowledge import editorial_schema_audit as audit
@@ -130,6 +131,7 @@ def justified(monkeypatch, value) -> tuple[str, str, str]:
 # The defect: complementary use must silence the shared declaration
 
 
+@pytest.mark.test_infrastructure
 def test_complementary_documents_pool_into_one_shared_declaration(monkeypatch):
     """Schema A exercises `pair_a` and schema B `pair_b`: neither is unused.
 
@@ -158,6 +160,7 @@ def test_complementary_documents_pool_into_one_shared_declaration(monkeypatch):
         assert unexercised[0][3] == (missing,)
 
 
+@pytest.mark.test_infrastructure
 def test_a_member_used_by_any_schema_is_not_reported_by_another(monkeypatch):
     """One schema exercising every member and another exercising none: no finding."""
     documents = {
@@ -168,6 +171,7 @@ def test_a_member_used_by_any_schema_is_not_reported_by_another(monkeypatch):
     assert findings == [], [str(finding) for finding in findings]
 
 
+@pytest.mark.test_infrastructure
 def test_a_member_no_document_observes_is_reported_once_with_its_own_detail(monkeypatch):
     """The global evidence decides; detail and members describe the same member."""
     documents = {
@@ -184,6 +188,7 @@ def test_a_member_no_document_observes_is_reported_once_with_its_own_detail(monk
     assert declared.documents == ("mordheim/alpha/band.yaml", "mordheim/beta/band.yaml")
 
 
+@pytest.mark.test_infrastructure
 def test_a_shared_definition_only_one_schema_reaches_reads_like_before(monkeypatch):
     """Pooling with one contributor keeps the finding and its documents."""
     documents = {SCHEMA_A: [document("mordheim/alpha/band.yaml", {"pair_a": "used"})]}
@@ -195,6 +200,7 @@ def test_a_shared_definition_only_one_schema_reaches_reads_like_before(monkeypat
     assert declared.documents == ("mordheim/alpha/band.yaml",)
 
 
+@pytest.mark.test_infrastructure
 def test_a_local_definition_keeps_its_own_schema(monkeypatch):
     """Only the definitions of ``defs.schema.json`` are pooled."""
     schema = shared_schema(TWO_STRING_PROPERTIES, local=True)
@@ -214,6 +220,7 @@ def test_a_local_definition_keeps_its_own_schema(monkeypatch):
 # The order of schemas and documents must not change the result
 
 
+@pytest.mark.test_infrastructure
 def test_the_pooled_result_is_stable_in_any_order(monkeypatch):
     """Reversing the schemas and the documents of each schema changes nothing."""
     properties = {**TWO_STRING_PROPERTIES, "pair_c": {"type": "string"}}
@@ -252,6 +259,7 @@ def test_the_pooled_result_is_stable_in_any_order(monkeypatch):
 # Every kind the audit pools: properties, types, enum values and branches
 
 
+@pytest.mark.test_infrastructure
 def test_detail_and_members_agree_for_every_pooled_kind(monkeypatch):
     """Complementary documents back the shared types, values and branches."""
     properties = {
@@ -316,6 +324,7 @@ def test_detail_and_members_agree_for_every_pooled_kind(monkeypatch):
 # The allowlist: member scope, staleness and the legacy text entries
 
 
+@pytest.mark.test_infrastructure
 def test_a_member_mapping_covers_only_the_members_it_names(monkeypatch):
     """A mapping that omits a member leaves the finding unjustified."""
     justified(monkeypatch, {"pair_c": "kept for the synthetic contract"})
@@ -332,6 +341,7 @@ def test_a_member_mapping_covers_only_the_members_it_names(monkeypatch):
     assert declared not in audit.unjustified_findings(findings)
 
 
+@pytest.mark.test_infrastructure
 def test_a_member_added_later_is_not_covered_by_an_old_mapping(monkeypatch):
     """A new property of the same shared definition is a finding of its own."""
     justified(monkeypatch, {"pair_b": "kept", "pair_c": "kept"})
@@ -344,6 +354,7 @@ def test_a_member_added_later_is_not_covered_by_an_old_mapping(monkeypatch):
     assert declared in audit.unjustified_findings(findings)
 
 
+@pytest.mark.test_infrastructure
 def test_a_member_any_schema_exercises_makes_the_global_mapping_stale(monkeypatch):
     """`pair_b` is exercised by schema B, so it cannot stay justified as unused."""
     entry = justified(monkeypatch, {"pair_b": "kept", "pair_c": "kept"})
@@ -362,6 +373,7 @@ def test_a_member_any_schema_exercises_makes_the_global_mapping_stale(monkeypatc
     assert declared not in audit.unjustified_findings(findings)
 
 
+@pytest.mark.test_infrastructure
 def test_a_text_justification_still_covers_every_member_of_its_path(monkeypatch):
     """The legacy single-string entry keeps its behaviour, pooled or not."""
     entry = justified(monkeypatch, "the synthetic contract keeps this declaration alive")
@@ -374,6 +386,7 @@ def test_a_text_justification_still_covers_every_member_of_its_path(monkeypatch)
     assert entry in audit.JUSTIFIED_FINDINGS
 
 
+@pytest.mark.test_infrastructure
 def test_pooling_never_hides_the_looseness_findings(monkeypatch):
     """Hard findings and local findings stay with the schema that carries them."""
     schema = {
@@ -415,6 +428,7 @@ def real_findings() -> tuple[audit.Finding, ...]:
     return tuple(audit.audit_strictness(KNOWLEDGE))
 
 
+@pytest.mark.data_contract
 def test_the_committed_audit_still_tells_one_story_per_finding():
     """No hard, unjustified or stale finding, and detail matching members."""
     findings = list(real_findings())
@@ -431,6 +445,7 @@ def test_the_committed_audit_still_tells_one_story_per_finding():
         )
 
 
+@pytest.mark.data_contract
 def test_the_shared_definition_findings_are_pooled_and_unchanged():
     """The remaining shared findings keep their identity and their members."""
     shared = {
@@ -510,6 +525,7 @@ def test_the_shared_definition_findings_are_pooled_and_unchanged():
     }, shared
 
 
+@pytest.mark.data_contract
 def test_the_grant_vocabulary_has_no_unused_member_left():
     """F051 in the real corpus: every `rule_runtime.grant` value is exercised.
 
@@ -543,6 +559,7 @@ def test_the_grant_vocabulary_has_no_unused_member_left():
     ] == []
 
 
+@pytest.mark.data_contract
 def test_the_equipment_access_mappings_of_f044_are_preserved():
     """The repair does not touch the two accepted local declarations."""
     equipment = {

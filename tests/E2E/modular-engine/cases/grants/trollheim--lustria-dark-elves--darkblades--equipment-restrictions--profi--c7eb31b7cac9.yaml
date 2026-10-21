@@ -12,7 +12,7 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: whole (scope: YES)
-# AUTHORED[whole]: 2 scenarios evidence the declared prohibition on the construction route the record names. The token 'beastmaster_whip' is a carried item id of the catalogue (sources/knowledge/catalog/items/trollheim.yaml), so the bound profile.equipment-restrictions binding declared by this band's own special-rules.yaml (grant: profile, implemented YES) reaches it through the shared eligibility stage: a Darkblade build carrying the item is refused with '"beastmaster_whip" is forbidden for lustria-dark-elves/darkblades.' and the identical build without the item is accepted at construction. REVIEWED still requires manual semantic review.
+# AUTHORED[whole]: 2 scenarios evidence the declared prohibition on the construction route the record names. The token 'beastmaster_whip' is a carried item id of the catalogue (sources/knowledge/catalog/items/trollheim.yaml), so the bound profile.equipment-restrictions binding declared by this band's own special-rules.yaml (grant: profile, implemented YES) reaches it through the shared eligibility stage: a Darkblade build carrying the item is refused with '"beastmaster_whip" is not on any equipment list of lustria-dark-elves/darkblades.' and the identical build without the item is accepted at construction. REVIEWED still requires manual semantic review.
 # origin_id:
 #   rule/trollheim/lustria-dark-elves/darkblades--equipment-restrictions/profile.equipment-restrictions
 # analysis_status:
@@ -56,7 +56,7 @@
       band_id: lustria-dark-elves
       profile_id: darkblades
       owned_item_ids: [beastmaster_whip]
-  expect_error: '"beastmaster_whip" is forbidden for lustria-dark-elves/darkblades.'
+  expect_error: '"beastmaster_whip" is not on any equipment list of lustria-dark-elves/darkblades.'
 
 - audit_id: rule/trollheim/lustria-dark-elves/darkblades--equipment-restrictions/profile.equipment-restrictions
   id: darkblades-without-the-beastmasters-whip-is-accepted-at-construction

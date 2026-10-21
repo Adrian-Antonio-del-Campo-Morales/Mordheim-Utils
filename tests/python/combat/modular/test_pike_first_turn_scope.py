@@ -20,6 +20,7 @@ from __future__ import annotations
 from mordheim_combat.phases import PriorityContext, resolve_priority
 from mordheim_construction.compiler import compile_fighter
 from mordheim_core.models import Characteristics, FighterBuild
+import pytest
 
 
 def fighter(weapon="weapon.mace", initiative=3):
@@ -31,12 +32,14 @@ def priority(attacker, defender, **options):
     return resolve_priority(PriorityContext(attacker, defender, **options))
 
 
+@pytest.mark.compilation
 def test_the_pike_compiles_the_printed_priority_and_two_hands():
     pike = fighter("weapon.pike")
     assert pike.main_weapon.priority == 1
     assert pike.main_weapon.two_handed
 
 
+@pytest.mark.rule_behavior
 def test_the_pike_strikes_first_in_the_first_turn():
     pike = fighter("weapon.pike", initiative=1)
     ordinary = fighter("weapon.mace", initiative=6)
@@ -44,6 +47,7 @@ def test_the_pike_strikes_first_in_the_first_turn():
     assert priority(ordinary, pike, first_round=True).priority == 0
 
 
+@pytest.mark.rule_behavior
 def test_the_pike_follows_ordinary_order_after_the_first_turn():
     pike = fighter("weapon.pike", initiative=1)
     ordinary = fighter("weapon.mace", initiative=6)
@@ -55,6 +59,7 @@ def test_the_pike_follows_ordinary_order_after_the_first_turn():
             > priority(pike, ordinary, first_round=False).initiative)
 
 
+@pytest.mark.rule_behavior
 def test_the_spear_shares_the_same_turn_scope():
     spear = fighter("weapon.spear", initiative=1)
     ordinary = fighter("weapon.mace", initiative=6)

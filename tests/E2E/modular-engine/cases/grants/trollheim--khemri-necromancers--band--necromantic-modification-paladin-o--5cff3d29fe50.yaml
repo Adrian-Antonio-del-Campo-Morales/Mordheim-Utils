@@ -72,15 +72,17 @@
       collection: trollheim
       band_id: khemri-necromancers
       profile_id: necromantic-abomination
+      special_rule_ids: [band--necromantic-modification-paladin-of-horror]
     second:
       characteristics: &khemri-fixture {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
   duel_context: &khemri-uncharged {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.priority-tie, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.first.attack.1.hit, value: 1}
-    - {key: round.0.second.attack.0.hit, value: 1}
-  expect_initial: {first.leadership: 7}
+  expect_fighters: {first.characteristics.leadership: 7}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 # The same recipient without the printed row: the printed Leadership 6 stands, so the seventh point is what
@@ -98,10 +100,11 @@
   duel_context: *khemri-uncharged
   maximum_rounds: 1
   rolls:
+    - {key: round.0.priority-tie, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.first.attack.1.hit, value: 1}
-    - {key: round.0.second.attack.0.hit, value: 1}
-  expect_initial: {first.leadership: 6}
+  expect_fighters: {first.characteristics.leadership: 6}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 # A profile the row's eligibility does not name keeps no bonus and is refused the row itself, which is the

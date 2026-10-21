@@ -479,9 +479,9 @@ specifications:
   sources:
   - target: rule/mordheim/marauders-of-chaos/condemned--inconsistency/profile.random-characteristics
     digest: 8201b95bfe3d5d1bd8ee7ca69736148bf27d5d4dea7706455df5055e64220b33
-  interpretation: Marauders of Chaos / Condemned / Inconsistency rolls D6 per turn for WS, S and T, and
-    D3 for A. Modular initialisation consumes those four rolls, and each subsequent combat turn refreshes
-    the same values before priority and attack resolution. I remains 4, and minima and maxima are preserved.
+  interpretation: Inconsistency rolls each variable characteristic only when needed, once per turn. Initialization
+    consumes no unused values; a new turn invalidates the cached values. WS, S and T use D6, A uses D3,
+    and I remains 4.
   cases:
   - id: recipient
     roles:
@@ -525,55 +525,81 @@ specifications:
     - active
     - sequence
     - consumption
-    operation: initialize
+    operation: round
     attacker:
       band_id: marauders-of-chaos
       profile_id: condemned
     rolls:
-    - key: a.characteristic.WS.0
-      sides: 6
-      value: 1
-    - key: a.characteristic.S.0
-      sides: 6
-      value: 1
-    - key: a.characteristic.T.0
-      sides: 6
-      value: 1
-    - key: a.characteristic.A.0
+    - key: round.0.first.characteristic.A.0
       sides: 3
       value: 1
+    - key: round.0.first.attack.0.attacker.characteristic.WS.0
+      value: 1
+    - key: round.0.first.attack.0.hit
+      value: 6
+    - key: round.0.first.attack.0.attacker.characteristic.S.0
+      value: 1
+    - key: round.0.first.attack.0.wound
+      value: 1
+    - key: round.0.second.attack.0.hit
+      value: 6
+    - key: round.0.second.attack.0.defender.characteristic.T.0
+      value: 1
+    - key: round.0.second.attack.0.wound
+      value: 1
     expect:
-      result.attacker.weapon_skill: 1
-      result.attacker.strength: 1
-      result.attacker.toughness: 1
-      result.attacker.initiative: 4
-      result.attacker.attacks: 1
+      result.state.first.weapon_skill: 1
+      result.state.first.strength: 1
+      result.state.first.toughness: 1
+      result.state.first.initiative: 4
+      result.state.first.attacks: 1
+    defender:
+      skill_ids:
+      - mechanic.psychology-immunity
+    context:
+      round_index: 0
+      first_charged: true
   - id: maximum-values
     roles:
     - boundary
-    operation: initialize
+    operation: round
     attacker:
       band_id: marauders-of-chaos
       profile_id: condemned
     rolls:
-    - key: a.characteristic.WS.0
-      sides: 6
-      value: 6
-    - key: a.characteristic.S.0
-      sides: 6
-      value: 6
-    - key: a.characteristic.T.0
-      sides: 6
-      value: 6
-    - key: a.characteristic.A.0
+    - key: round.0.first.characteristic.A.0
       sides: 3
       value: 3
+    - key: round.0.first.attack.0.attacker.characteristic.WS.0
+      value: 6
+    - key: round.0.first.attack.0.hit
+      value: 6
+    - key: round.0.first.attack.1.hit
+      value: 1
+    - key: round.0.first.attack.2.hit
+      value: 1
+    - key: round.0.first.attack.0.attacker.characteristic.S.0
+      value: 6
+    - key: round.0.first.attack.0.wound
+      value: 1
+    - key: round.0.second.attack.0.hit
+      value: 6
+    - key: round.0.second.attack.0.defender.characteristic.T.0
+      value: 6
+    - key: round.0.second.attack.0.wound
+      value: 1
     expect:
-      result.attacker.weapon_skill: 6
-      result.attacker.strength: 6
-      result.attacker.toughness: 6
-      result.attacker.initiative: 4
-      result.attacker.attacks: 3
+      result.state.first.weapon_skill: 6
+      result.state.first.strength: 6
+      result.state.first.toughness: 6
+      result.state.first.initiative: 4
+      result.state.first.attacks: 3
+    defender:
+      skill_ids:
+      - mechanic.psychology-immunity
+    context:
+      round_index: 0
+      first_charged: true
   - id: refreshes-on-next-turn
     roles:
     - active
@@ -584,51 +610,50 @@ specifications:
       band_id: marauders-of-chaos
       profile_id: condemned
     defender:
-      characteristics:
-        weapon_skill: 3
-        strength: 3
-        toughness: 3
-        wounds: 3
-        initiative: 3
-        attacks: 1
-    attacker_state:
-      condition: OUT
-    defender_state:
-      condition: OUT
+      skill_ids:
+      - mechanic.psychology-immunity
     context:
       round_index: 1
       first_charged: true
     rolls:
-    - key: a.characteristic.WS.0
-      sides: 6
-      value: 1
-    - key: a.characteristic.S.0
-      sides: 6
-      value: 1
-    - key: a.characteristic.T.0
-      sides: 6
-      value: 1
-    - key: a.characteristic.A.0
-      sides: 3
-      value: 1
-    - key: round.1.first.characteristic.WS.0
-      sides: 6
-      value: 6
-    - key: round.1.first.characteristic.S.0
-      sides: 6
-      value: 6
-    - key: round.1.first.characteristic.T.0
-      sides: 6
-      value: 6
     - key: round.1.first.characteristic.A.0
       sides: 3
       value: 3
+    - key: round.1.first.attack.0.attacker.characteristic.WS.0
+      value: 6
+    - key: round.1.first.attack.0.hit
+      value: 6
+    - key: round.1.first.attack.1.hit
+      value: 1
+    - key: round.1.first.attack.2.hit
+      value: 1
+    - key: round.1.first.attack.0.attacker.characteristic.S.0
+      value: 6
+    - key: round.1.first.attack.0.wound
+      value: 1
+    - key: round.1.second.attack.0.hit
+      value: 6
+    - key: round.1.second.attack.0.defender.characteristic.T.0
+      value: 6
+    - key: round.1.second.attack.0.wound
+      value: 1
     expect:
       result.state.first.weapon_skill: 6
       result.state.first.strength: 6
       result.state.first.toughness: 6
       result.state.first.initiative: 4
       result.state.first.attacks: 3
+    attacker_state:
+      random_rolled:
+      - WS
+      - S
+      - T
+      - A
+      random_round: 0
+      weapon_skill: 1
+      strength: 1
+      toughness: 1
+      attacks: 1
   - id: ordinary-profile-inactive
     roles:
     - inactive
@@ -641,6 +666,16 @@ specifications:
       result.attacker.toughness: 3
       result.attacker.initiative: 3
       result.attacker.attacks: 1
+  - id: initialization-defers-unused-values
+    roles:
+    - inactive
+    - sequence
+    operation: initialize
+    attacker:
+      band_id: marauders-of-chaos
+      profile_id: condemned
+    expect:
+      result.attacker.random_rolled: []
   mutations:
   - id: remove-random-characteristics
     path: attacker.random_characteristics

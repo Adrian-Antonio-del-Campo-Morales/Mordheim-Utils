@@ -149,6 +149,8 @@
   rolls:
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.2.hit, value: 1}
+    - {key: round.0.first.attack.3.hit, value: 1}
   expect_rounds:
     0: {state.second.wounds: 3, state.second.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
@@ -171,6 +173,7 @@
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
   expect_rounds:
     0: {state.second.wounds: 3, state.second.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
@@ -195,7 +198,9 @@
   rolls:
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
+    # The bearer's printed pool carries a second attack, so its second To Hit die is declared.
+    - {key: round.0.second.attack.1.hit, value: 1}
   expect_rounds:
-    0: {state.second.fear_hit_sixes: False, state.first.wounds: 2, state.second.wounds: 2}
+    0: {state.second.fear_hit_sixes: False, state.first.wounds: 2, state.second.wounds: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 

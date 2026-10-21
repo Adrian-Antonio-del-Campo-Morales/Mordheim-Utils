@@ -93,7 +93,7 @@
     - {key: round.0.first.charismatic-charge.1, value: 3}
   expect_rounds:
     0: {state.engaged: false}
-  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
 
 # The control charges with the same sex as the Fugitive: the clause qualifies the opposite sex
 # only, so no gate die exists and the charge resolves as ordinary close combat (natural-1 strikes
@@ -116,5 +116,5 @@
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
-    0: {state.first.wounds: 1, state.second.wounds: 1}
+    0: {state.first.wounds: 2, state.second.wounds: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

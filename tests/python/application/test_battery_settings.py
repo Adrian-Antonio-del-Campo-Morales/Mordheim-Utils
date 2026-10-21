@@ -12,6 +12,10 @@ from mordheim_combat_lab.application.settings import (
     split_battery,
 )
 
+# The whole file proves the execution service's battery plan (splitting,
+# seeding and pooling), not a rule or a compiled value.
+pytestmark = pytest.mark.workflow
+
 # Sequential wall seconds per battery measured on the reference machine
 # (native batch 5k; numpy batch 100k — crossover table in
 # docs/guides/develop-and-release.md). The pool policy is tested against

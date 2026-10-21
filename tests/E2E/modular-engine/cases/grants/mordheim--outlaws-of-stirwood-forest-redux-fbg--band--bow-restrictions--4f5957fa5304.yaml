@@ -70,7 +70,7 @@
       band_id: outlaws-of-stirwood-forest-redux-fbg
       profile_id: outlaws
       owned_item_ids: [crossbow]
-  expect_error: '"crossbow" is forbidden for outlaws-of-stirwood-forest-redux-fbg/outlaws.'
+  expect_error: '"crossbow" is not on any equipment list of outlaws-of-stirwood-forest-redux-fbg/outlaws.'
 
 - audit_id: rule/mordheim/outlaws-of-stirwood-forest-redux-fbg/band--bow-restrictions/profile.equipment-restrictions
   id: a-crossbow-is-refused-for-the-bandit-leader
@@ -82,7 +82,7 @@
       band_id: outlaws-of-stirwood-forest-redux-fbg
       profile_id: bandit-leader
       owned_item_ids: [crossbow]
-  expect_error: '"crossbow" is forbidden for outlaws-of-stirwood-forest-redux-fbg/bandit-leader.'
+  expect_error: '"crossbow" is not on any equipment list of outlaws-of-stirwood-forest-redux-fbg/bandit-leader.'
 
 # The Cleric's printed exemption covers only the bow obligation (exempt_profile_ids in the binding feeds the
 # required_tag check alone), so the crossbow refusal is declared for the Cleric too: it is the printed
@@ -98,7 +98,7 @@
       band_id: outlaws-of-stirwood-forest-redux-fbg
       profile_id: cleric
       owned_item_ids: [crossbow]
-  expect_error: '"crossbow" is forbidden for outlaws-of-stirwood-forest-redux-fbg/cleric.'
+  expect_error: '"crossbow" is not on any equipment list of outlaws-of-stirwood-forest-redux-fbg/cleric.'
 
 # Acceptance control: a printed recipient whose bow satisfies the clause is admitted at construction and its
 # duel runs with no eligibility refusal.  The randomiser for that build and every instruction to the defender

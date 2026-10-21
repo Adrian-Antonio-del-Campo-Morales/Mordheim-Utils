@@ -95,6 +95,7 @@ def offers(band: str, profile_id: str) -> set:
     return {str(entry["item_id"]) for entry in facts.get("equipment_access") or ()}
 
 
+@pytest.mark.rule_behavior
 @pytest.mark.parametrize("band,profile", WEAPONLESS)
 def test_a_creature_with_no_weapon_fights_with_its_printed_natural_attack(band, profile):
     """The printed S and A travel; no fictitious piece is offered or accepted."""
@@ -116,6 +117,7 @@ def test_a_creature_with_no_weapon_fights_with_its_printed_natural_attack(band, 
         compiled(band, profile, armour_id="armour.light-armour")
 
 
+@pytest.mark.compilation
 @pytest.mark.parametrize("band,profile", ARMED_WITHOUT_DAGGER)
 def test_an_armed_profile_that_lacks_the_free_dagger_keeps_an_empty_hand(band, profile):
     """A list without a dagger is not a printed 'no weapons' clause."""
@@ -127,6 +129,7 @@ def test_an_armed_profile_that_lacks_the_free_dagger_keeps_an_empty_hand(band, p
     assert any(item.startswith("weapon.") for item in offers(band, profile))
 
 
+@pytest.mark.compilation
 @pytest.mark.parametrize("band,profile", PUBLISHED_NATURAL)
 def test_a_published_natural_weapon_grant_dresses_the_fighter(band, profile):
     """The band declares `profile.natural-attacks`; the compiler consumes it."""
@@ -152,6 +155,7 @@ def test_a_published_natural_weapon_grant_dresses_the_fighter(band, profile):
         compiled(band, profile, armour_id="armour.light-armour")
 
 
+@pytest.mark.knowledge_integrity
 def test_the_shared_natural_weapons_declaration_reaches_every_band_that_cites_it():
     cited = 0
     for collection in ("mordheim", "trollheim"):
@@ -165,6 +169,7 @@ def test_the_shared_natural_weapons_declaration_reaches_every_band_that_cites_it
     assert cited >= 2
 
 
+@pytest.mark.compilation
 def test_the_printed_bones_are_read_as_each_source_writes_them():
     """Cannibal Dwarfs count as Clubs; the Ghouls' bones are not equipment."""
     dwarfs = compiled("khemri-cursed-of-karak-zorn", "cannibal-dwarfs")
@@ -181,6 +186,7 @@ def test_the_printed_bones_are_read_as_each_source_writes_them():
         compiled("trollheim-undead", "ghouls", main_weapon_id="weapon.club")
 
 
+@pytest.mark.rule_behavior
 def test_the_dire_wolves_charge_is_the_printed_second_attack():
     """One Attack normally, two when charging, and the round rolls both."""
     wolf = compiled("trollheim-undead", "dire-wolves")
@@ -204,6 +210,7 @@ def test_the_dire_wolves_charge_is_the_printed_second_attack():
     choices.finish()
 
 
+@pytest.mark.compilation
 def test_the_tomb_scorpion_sting_rides_its_own_natural_attack():
     """The printed sting is the creature's attack, not a bought poison."""
     scorpion = compiled("khemri-tomb-guardians", "tomb-scorpions")
@@ -211,6 +218,7 @@ def test_the_tomb_scorpion_sting_rides_its_own_natural_attack():
     assert "poison.black-lotus" in scorpion.main_weapon.tags
 
 
+@pytest.mark.eligibility
 def test_a_weaponless_fighter_refuses_a_poison_with_no_weapon_to_coat():
     """The offer never grants one, and the direct path agrees."""
     with pytest.raises(ValueError):
@@ -221,6 +229,19 @@ def test_a_weaponless_fighter_refuses_a_poison_with_no_weapon_to_coat():
     assert "poison.black-lotus" in vampire.main_weapon.tags
 
 
+@pytest.mark.eligibility
+@pytest.mark.parametrize("hand", ["main", "off"])
+@pytest.mark.parametrize("weapon", ["weapon.fist", "weapon.natural-attacks"])
+def test_a_coating_requires_a_carried_weapon_in_either_hand(hand, weapon):
+    loadout = {"main_weapon_id": "weapon.sword"}
+    loadout["main_weapon_id" if hand == "main" else "off_hand_id"] = weapon
+    loadout[f"{hand}_poison_id"] = "poison.black-lotus"
+    with pytest.raises(ValueError, match="weapon in the hand it coats"):
+        compile_fighter(FighterBuild(
+            "mordheim", Characteristics(3, 3, 3, 1, 3, 1), **loadout))
+
+
+@pytest.mark.eligibility
 def test_poison_requires_a_weapon_in_its_own_hand():
     for off_hand in (None, "defence.shield"):
         with pytest.raises(ValueError, match="weapon in the hand it coats"):

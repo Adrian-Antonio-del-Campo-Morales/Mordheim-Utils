@@ -12,7 +12,10 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
+import pytest
 import yaml
+
+pytestmark = pytest.mark.knowledge_integrity
 
 ROOT = Path(__file__).resolve().parents[3] / "sources" / "knowledge"
 ITEMS = ROOT / "catalog" / "items"

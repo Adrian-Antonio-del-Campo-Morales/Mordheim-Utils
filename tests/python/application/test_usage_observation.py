@@ -9,6 +9,10 @@ from mordheim_combat_lab.application.analyses import ComparisonCandidate, compar
 from mordheim_combat_lab.application.settings import DuelExecutionSettings
 from mordheim_core.models import Characteristics, FighterBuild, SimulationCancelled
 
+# The whole file proves the comparison service's telemetry payloads (resolution,
+# timings, cancellation), not the duels it measures.
+pytestmark = pytest.mark.workflow
+
 
 def build(weapon="weapon.dagger"):
     return FighterBuild("mordheim", Characteristics(3, 3, 3, 1, 3, 1), main_weapon_id=weapon)

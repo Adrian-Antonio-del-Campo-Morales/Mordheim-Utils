@@ -7,6 +7,7 @@ from mordheim_combat.modular.state import initialize_duel
 from mordheim_construction.compiler import compile_fighter
 from mordheim_core.dice import KeyedDice
 from mordheim_core.models import Characteristics
+from mordheim_core.models import DuelContext
 from mordheim_core.models import FighterBuild
 from mordheim_knowledge.loader import load_bands
 from mordheim_knowledge.loader import load_mechanics
@@ -23,12 +24,28 @@ def profile_build(collection, band_id, profile_id):
         if band_id == "carnival-of-chaos" and profile_id == "tainted-ones"
         else ()
     )
+    if band_id == "ogre-hunting-party-web" and profile_id == "trappers":
+        mandatory = ("band--ogre-hunting-skills-netter",)
+    elif band_id == "skaven-of-clan-moulder-web" and profile_id == "rat-ogres":
+        mandatory = ("band--mutations-tentacle",)
+    overrides = {}
+    if band_id == "channel-rats-mim" and profile_id == "fugitives":
+        overrides["sex"] = "male"
+    if band_id == "house-guard-sc":
+        overrides["house_guard_house"] = "fierezza"
+    conditions = (
+        ("condition.disability-2",)
+        if band_id == "chaos-streets-mordheim-inhabitants" and profile_id == "cripples"
+        else ()
+    )
     return FighterBuild(
         "mordheim", band_id=band_id, profile_id=profile_id,
         collection=collection, special_rule_ids=mandatory,
+        trait_overrides=overrides, condition_ids=conditions,
     )
 
 
+@pytest.mark.eligibility
 def test_modular_runtime_rejects_a_manually_injected_lance():
     fighter = compile_fighter(FighterBuild("mordheim", Characteristics(3, 3, 3, 1, 3, 1)))
     lance = replace(fighter, main_weapon=replace(fighter.main_weapon, tags=("weapon.lance",)))
@@ -36,6 +53,7 @@ def test_modular_runtime_rejects_a_manually_injected_lance():
         initialize_duel(lance, fighter, KeyedDice(1))
 
 
+@pytest.mark.end_to_end
 def test_every_legal_profile_can_execute_a_complete_scalar_round():
     # Profiles the runtime scope excludes (a vehicle and a watercraft) never
     # reach this pipeline; they are declared with their reason in
@@ -48,6 +66,7 @@ def test_every_legal_profile_can_execute_a_complete_scalar_round():
     }
     opponent = compile_fighter(FighterBuild(
         "mordheim", Characteristics(3, 3, 3, 1, 3, 1, leadership=7),
+        trait_overrides={"sex": "male", "fighter_kind": "henchman"},
     ))
     executed = 0
     for collection in ("mordheim", "trollheim"):
@@ -66,14 +85,39 @@ def test_every_legal_profile_can_execute_a_complete_scalar_round():
     # Every profile of both collections but the two declared exclusions
     # (534 before the supplement bands were promoted, +1 for the Banshee once its
     # blank Initiative was represented as an absence).
-    assert executed == 1064
+    assert executed == 1054
 
 
+def _witch_finder_charge(opponent):
+    """The Solkan mark is the only bearer; the charge must name its enemy."""
+    fighter = compile_fighter(FighterBuild(
+        "mordheim", band_id="hirelings.hired-sword.2b",
+        profile_id="hireling.hired-sword.priest-of-verena",
+        variant_ids=("deity.solkan",),
+        special_rule_ids=("hireling.hired-sword.priest-of-verena.skill.witch-finder",),
+        condition_ids=("condition.witch-finder-charge",),
+    ))
+    target = replace(opponent, global_effects=replace(
+        opponent.global_effects,
+        tags=(*opponent.global_effects.tags, "identity.warlock"),
+    ))
+    return fighter, target
+
+
+@pytest.mark.end_to_end
 def test_every_execution_mechanism_can_enter_the_scalar_round_pipeline():
     characteristics = Characteristics(3, 3, 3, 2, 3, 1, leadership=7)
-    opponent = compile_fighter(FighterBuild("mordheim", characteristics))
+    opponent = compile_fighter(FighterBuild(
+        "mordheim", characteristics,
+        trait_overrides={"sex": "male", "fighter_kind": "henchman"},
+    ))
     excluded = {
         row["id"] for row in load_runtime_scope("mordheim").get("mechanic_exclusions") or ()
+    }
+    charge_attempt = {
+        "condition.impetuous-charge": "first",
+        "condition.nuttaz-charge": "first",
+        "mechanic.opposite-sex-charge-test": "second",
     }
     executed = 0
     for family in ("weapons", "armours", "defences", "materials", "preparations", "poisons", "skills"):
@@ -100,11 +144,30 @@ def test_every_execution_mechanism_can_enter_the_scalar_round_pipeline():
                 options = {"main_poison_id": mechanic_id}
             else:
                 options = {"skill_ids": (mechanic_id,)}
-            fighter = compile_fighter(FighterBuild("mordheim", characteristics, **options))
+            context = (DuelContext(charging=(charge_attempt[mechanic_id],),
+                                   active_participant="first")
+                       if mechanic_id in charge_attempt else None)
+            target = opponent
+            if mechanic_id == "condition.witch-finder-charge":
+                fighter, target = _witch_finder_charge(opponent)
+                context = DuelContext(charging=("first",), active_participant="first")
+            else:
+                # These rows name a recipient or supply a pre-battle/current fact.
+                facts = {
+                    "defence.magic-acorn": {"trait_overrides": {"fighter_kind": "hero"}},
+                    "mechanic.disability": {"condition_ids": ("condition.disability-2",)},
+                    "mechanic.snorri-drunk": {"trait_overrides": {"snorri_drunk_result": 2}},
+                    "mechanic.dueling-pride": {"trait_overrides": {
+                        "house_guard_house": "fierezza", "fighter_kind": "hero"}},
+                    "mechanic.opposite-sex-charge-test": {"trait_overrides": {"sex": "female"}},
+                }.get(mechanic_id, {})
+                fighter = compile_fighter(FighterBuild(
+                    "mordheim", characteristics, **options, **facts))
             dice = KeyedDice(10_000 + executed)
-            state = initialize_duel(fighter, opponent, dice)
-            assert resolve_round(fighter, opponent, state, dice).state.round_index == 1
+            state = initialize_duel(fighter, target, dice, context=context)
+            assert resolve_round(fighter, target, state, dice).state.round_index == 1
             executed += 1
     # Promoted local rules add Shifty, local profiles and source-specific variants.
     # Crude Belch needs known enemy Leadership; the generic opponent supplies it.
-    assert executed == 246
+    # Fey Quickness adds one source-backed melee avoidance operator.
+    assert executed == 502

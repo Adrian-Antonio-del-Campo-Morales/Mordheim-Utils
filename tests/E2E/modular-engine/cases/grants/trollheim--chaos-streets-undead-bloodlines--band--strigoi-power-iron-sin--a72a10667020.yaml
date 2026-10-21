@@ -64,17 +64,19 @@
   fighters:
     first:
       main_weapon_id: weapon.natural-attacks
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1, leadership: 7}
     second:
       collection: trollheim
       band_id: chaos-streets-undead-bloodlines
       profile_id: strigoi-vampire
       special_rule_ids: [band--strigoi-power-iron-sinews]
       main_weapon_id: weapon.natural-attacks
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 4}
     - {key: round.0.second.attack.0.wound, value: 3}
@@ -88,16 +90,18 @@
   fighters:
     first:
       main_weapon_id: weapon.natural-attacks
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1, leadership: 7}
     second:
       collection: trollheim
       band_id: chaos-streets-undead-bloodlines
       profile_id: strigoi-vampire
       main_weapon_id: weapon.natural-attacks
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 4}
     - {key: round.0.second.attack.0.wound, value: 3}

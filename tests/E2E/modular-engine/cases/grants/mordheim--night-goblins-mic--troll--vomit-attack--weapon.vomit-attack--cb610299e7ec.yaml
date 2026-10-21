@@ -57,6 +57,9 @@
 
 # --- Authored scenarios ---
 # Derived from the printed rule and this band's printed rule binding; no engine output was consulted.
+# This band's row is `grant: selectable`, so the printed ability must be selected on the build for the
+# constructor to materialise the replacement; without the selection no vomit-attack decision or
+# automatic hit exists and the bearer resolves its ordinary pool instead.
 - audit_id: rule/mordheim/night-goblins-mic/troll--vomit-attack/weapon.vomit-attack
   id: the-declared-vomit-attack-is-one-automatic-strength-five-hit-ignoring-armour
   covers: [whole]
@@ -65,6 +68,7 @@
       collection: mordheim
       band_id: night-goblins-mic
       profile_id: troll
+      special_rule_ids: [troll--vomit-attack]
     second:
       main_weapon_id: weapon.sword
       armour_id: armour.plate-armour

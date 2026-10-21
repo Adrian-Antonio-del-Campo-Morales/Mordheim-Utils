@@ -31,6 +31,8 @@ from pathlib import Path
 
 import yaml
 
+SAFE_YAML_LOADER = getattr(yaml, "CSafeLoader", yaml.SafeLoader)
+
 HERE = Path(__file__).resolve().parent
 PACKAGE_NAME = "mordheim_modular_e2e"
 AUTHORING_STATUSES = ("TODO", "PARTIAL", "AUTHORED", "REVIEWED")
@@ -84,7 +86,7 @@ def load_strictly(corpus, directory: Path):
     for path in files:
         source = path.relative_to(directory).as_posix()
         try:
-            documents = yaml.safe_load(path.read_text(encoding="utf-8"))
+            documents = yaml.load(path.read_text(encoding="utf-8"), Loader=SAFE_YAML_LOADER)
         except (OSError, UnicodeDecodeError) as error:
             findings.append(Finding("integrity", f"unreadable file: {error}", source))
             continue

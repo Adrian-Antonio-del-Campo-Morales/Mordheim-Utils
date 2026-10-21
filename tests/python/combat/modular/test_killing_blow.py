@@ -13,6 +13,8 @@ from mordheim_core.models import Characteristics, FighterBuild
 
 TAG = 'mechanic.killing-blow'
 
+pytestmark = pytest.mark.rule_behavior
+
 
 def fighter(profile):
     return compile_fighter(FighterBuild('mordheim', band_id='blood-dragons-mou',

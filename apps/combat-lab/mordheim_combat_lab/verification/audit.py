@@ -37,14 +37,25 @@ def verify_semantics(root: Path | None = None, specs_root: Path | None = None) -
     for spec in load_fixtures(specs_root):
         targets = tuple(source["target"] for source in spec.get("sources", []))
         local_errors = []
-        if spec.get("scope_digest") != scope_digest:
-            local_errors.append("scope changed or scope review missing")
+        declared_scope = spec.get("scope_digest")
+        if declared_scope != scope_digest:
+            # Keep the historic prefix; a review is missing either because the pin
+            # is stale or because the specification never pinned one. Report both
+            # digests so the corpus can be reconciled without re-deriving them.
+            local_errors.append(
+                "scope changed or scope review missing: "
+                f"pinned {declared_scope or 'none'}, observed {scope_digest}")
         for source in spec.get("sources", []):
             item = indexed.get(source["target"])
             if item is None:
                 local_errors.append(f"unknown target {source['target']}")
             elif item.source_digest != source.get("digest"):
-                local_errors.append(f"source changed: {item.id}")
+                context = (f" [digest covers {', '.join(item.context_files)}]"
+                           if item.context_files else "")
+                local_errors.append(
+                    f"source changed: {item.id} ({item.source['file']}{context}; "
+                    f"pinned {source.get('digest') or 'none'}, "
+                    f"observed {item.source_digest})")
         extra_dependencies = set(spec.get("depends_on", []))
         if extra_dependencies - set(indexed):
             local_errors.append(f"unknown semantic dependencies: {sorted(extra_dependencies - set(indexed))}")

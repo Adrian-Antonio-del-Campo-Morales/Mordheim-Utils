@@ -58,7 +58,9 @@
 # Derived from the printed rule and the recorded semantic contract; no engine output was
 # consulted.  The causer is the active participant and charges, so the opponent is the
 # warrior the Fear clause tests, and its two Leadership dice are declared first, summed
-# against the Leadership 7 the fixture opponent declares.  The opponent's Weapon Skill 8
+# against the Leadership 7 the fixture opponent declares.  The causer's own unarmed attack
+# (A1) follows the test, in the charger's Strike First tier, and is scripted as a natural 1.
+# The opponent's Weapon Skill 8
 # and Strength 8 are fixture facts chosen so its hit roll of 4 beats its ordinary target and
 # its Strength wounds every Toughness in this band; the strict tape consumes exactly the
 # declared dice, so a Fear test that never happens or a sixes-only clamp that never lifts
@@ -77,8 +79,8 @@
   rolls:
     - {key: round.0.first.fear.charged.0, value: 5}
     - {key: round.0.first.fear.charged.1, value: 4}
-    - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
   expect_rounds:
     0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 4}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
@@ -96,9 +98,9 @@
   rolls:
     - {key: round.0.first.fear.charged.0, value: 3}
     - {key: round.0.first.fear.charged.1, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 3}
-    - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 3}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

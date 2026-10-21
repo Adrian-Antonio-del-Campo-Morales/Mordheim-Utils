@@ -15,6 +15,10 @@ from mordheim_combat.modular.state import initialize_duel
 from mordheim_combat_lab.verification.dice import StrictDecisions, StrictDice
 from mordheim_construction.compiler import compile_fighter
 from mordheim_core.models import Characteristics, DuelContext, FighterBuild, LocalParticipant
+import pytest
+
+
+pytestmark = pytest.mark.rule_behavior
 
 INSPIRING_PRESENCE = "band--special-skill-inspiring-presence"
 

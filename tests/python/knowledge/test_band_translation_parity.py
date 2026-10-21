@@ -20,6 +20,8 @@ from pathlib import Path
 import pytest
 import yaml
 
+pytestmark = pytest.mark.knowledge_integrity
+
 BANDS_ROOT = Path(__file__).resolve().parents[3] / "sources" / "knowledge" / "bands"
 
 PILOT_BAND = "mordheim/bretonnian-knights"

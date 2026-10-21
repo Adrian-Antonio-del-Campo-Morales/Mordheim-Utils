@@ -328,8 +328,8 @@ specifications:
   sources:
   - target: mechanic/mechanic.disability
     digest: 65c75520776cd864bce8a8c8ee7da9e29a969fc2f946d978471b2324bc1d6c29
-  interpretation: The simulation rolls the Disability D6 once per row and applies the representable combat
-    effects of each face, keeping the consumed face in the state.
+  interpretation: Disability is rolled once when the group is created. The duel receives one
+    permanent supplied result and applies its combat effects without rolling the table again.
   cases:
   - id: compiled
     roles:
@@ -339,8 +339,11 @@ specifications:
       collection: trollheim
       band_id: chaos-streets-mordheim-inhabitants
       profile_id: cripples
+      condition_ids: [condition.disability-1]
     expect:
       attacker.characteristics.weapon_skill: 2
+      attacker.characteristics.initiative: 2
+      attacker.characteristics.movement: 3
     expect_contains:
       attacker.global_effects.tags:
       - mechanic.disability
@@ -348,16 +351,13 @@ specifications:
     roles:
     - active
     - sequence
-    - consumption
     - boundary
     operation: initialize
     attacker:
       collection: trollheim
       band_id: chaos-streets-mordheim-inhabitants
       profile_id: cripples
-    rolls:
-    - key: a.disability
-      value: 1
+      condition_ids: [condition.disability-1]
     expect:
       result.attacker.initiative: 2
       result.attacker.weapon_skill: 2
@@ -371,9 +371,7 @@ specifications:
       collection: trollheim
       band_id: chaos-streets-mordheim-inhabitants
       profile_id: cripples
-    rolls:
-    - key: a.disability
-      value: 2
+      condition_ids: [condition.disability-2]
     expect:
       result.attacker.weapon_skill: 1
       result.attacker.resources_spent:
@@ -386,9 +384,7 @@ specifications:
       collection: trollheim
       band_id: chaos-streets-mordheim-inhabitants
       profile_id: cripples
-    rolls:
-    - key: a.disability
-      value: 3
+      condition_ids: [condition.disability-3]
     expect:
       result.attacker.resources_spent:
       - disability.3
@@ -400,9 +396,7 @@ specifications:
       collection: trollheim
       band_id: chaos-streets-mordheim-inhabitants
       profile_id: cripples
-    rolls:
-    - key: a.disability
-      value: 4
+      condition_ids: [condition.disability-4]
     expect:
       result.attacker.toughness: 2
       result.attacker.resources_spent:
@@ -415,9 +409,7 @@ specifications:
       collection: trollheim
       band_id: chaos-streets-mordheim-inhabitants
       profile_id: cripples
-    rolls:
-    - key: a.disability
-      value: 5
+      condition_ids: [condition.disability-5]
     expect:
       result.attacker.strength: 2
       result.attacker.resources_spent:
@@ -430,9 +422,7 @@ specifications:
       collection: trollheim
       band_id: chaos-streets-mordheim-inhabitants
       profile_id: cripples
-    rolls:
-    - key: a.disability
-      value: 6
+      condition_ids: [condition.disability-6]
     expect:
       result.attacker.resources_spent:
       - disability.6

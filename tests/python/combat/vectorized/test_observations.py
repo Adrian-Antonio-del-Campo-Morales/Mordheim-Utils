@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import numpy as np
+import pytest
 
 from mordheim_combat.vectorized import simulate_batch_observed
 from mordheim_construction.compiler import compile_fighter
@@ -14,6 +15,7 @@ def fighter():
     ))
 
 
+@pytest.mark.data_transport
 def test_observed_batch_preserves_per_row_terminal_state():
     result = simulate_batch_observed(
         fighter(), fighter(), 64, np.random.default_rng(9), maximum_rounds=10,

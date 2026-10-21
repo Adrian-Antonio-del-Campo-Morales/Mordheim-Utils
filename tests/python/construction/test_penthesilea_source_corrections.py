@@ -23,6 +23,7 @@ def package_and_profile():
     return package, next(p for p in package.profiles if p['id'] == PID)
 
 
+@pytest.mark.compilation
 def test_full_profile_admits_printed_weapons_without_invented_combat_bonuses():
     owner = compile_fighter(build(main_weapon_id='weapon.starsword', off_hand_id='weapon.starblade',
         defence_ids=('defence.enchanted-skins',)))
@@ -33,6 +34,7 @@ def test_full_profile_admits_printed_weapons_without_invented_combat_bonuses():
     assert 'weapon.starblade' in owner.off_hand.tags
 
 
+@pytest.mark.knowledge_integrity
 def test_source_concealment_is_explicitly_terrain_only_and_mark_already_in_profile():
     _, profile = package_and_profile()
     rules = {r['id'].split('.rule.')[-1]: r for r in profile['rules']}
@@ -42,6 +44,9 @@ def test_source_concealment_is_explicitly_terrain_only_and_mark_already_in_profi
     assert rules['man-hater']['runtime']['effects'][0]['binding']['id'] == 'mechanic.man-hater'
 
 
+# Primary: the two printed pieces are consumed exactly once. The real round
+# below is the secondary guarantee that the compiled pair reaches combat.
+@pytest.mark.compilation
 def test_printed_two_weapon_configuration_consumes_one_of_each_and_no_duplicate_copy():
     package, profile = package_and_profile()
     selected = build(main_weapon_id='weapon.starsword',off_hand_id='weapon.starblade')
@@ -63,6 +68,7 @@ def test_printed_two_weapon_configuration_consumes_one_of_each_and_no_duplicate_
     assert len(result.attacks) == 5
 
 
+@pytest.mark.rule_behavior
 @pytest.mark.parametrize('tags,expected', [
     (('species.human','sex.male'),True),
     (('species.human','sex.female','warband-group.human'),False),
@@ -78,6 +84,7 @@ def test_man_hater_uses_individual_human_male_identity(tags,expected):
     assert not _hit_reroll(owner,foe,owner.main_weapon,effect,True,False,frenzy=True)
 
 
+@pytest.mark.eligibility
 def test_weapons_training_allows_owned_melee_equipment_but_not_free_copies():
     owner = compile_fighter(build(main_weapon_id='weapon.mace', owned_item_ids=('mace',)))
     assert 'weapon.mace' in owner.main_weapon.tags
@@ -89,18 +96,21 @@ def test_weapons_training_allows_owned_melee_equipment_but_not_free_copies():
     assert doubled.off_hand_attacks
 
 
+@pytest.mark.eligibility
 @pytest.mark.parametrize('item,weapon', [('pistol','weapon.pistol'),('bow','weapon.bow')])
 def test_weapons_training_does_not_grant_ranged_weapons(item,weapon):
     with pytest.raises(ValueError,match='does not grant ranged'):
         compile_fighter(build(main_weapon_id=weapon,owned_item_ids=(item,)))
 
 
+@pytest.mark.eligibility
 def test_weapon_knowledge_of_one_character_does_not_leak_to_other_profiles():
     with pytest.raises(ValueError,match='legal printed kit'):
         compile_fighter(FighterBuild('mordheim',band_id='hirelings.dramatis-personae.1b',
             profile_id='hireling.dramatis.maximilian-the-mad',main_weapon_id='weapon.mace'))
 
 
+@pytest.mark.eligibility
 @pytest.mark.parametrize('item,weapon', [
     ('weapon.vomit-attack','weapon.vomit-attack'),
     ('hireling.dramatis.drenok-johansen-wielder-of-the-great-axe.item.axe-of-icefang','weapon.icefang-axe')])

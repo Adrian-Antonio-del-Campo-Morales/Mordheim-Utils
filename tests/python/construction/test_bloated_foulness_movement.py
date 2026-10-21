@@ -12,9 +12,13 @@ immunity).
 """
 from __future__ import annotations
 
+import pytest
+
 from mordheim_construction.compiler import compile_fighter
 from mordheim_core.models import FighterBuild
 from mordheim_knowledge.loader import load_bands
+
+pytestmark = pytest.mark.compilation
 
 
 BLESSING = "band--blessings-of-nurgle-bloated-foulness"

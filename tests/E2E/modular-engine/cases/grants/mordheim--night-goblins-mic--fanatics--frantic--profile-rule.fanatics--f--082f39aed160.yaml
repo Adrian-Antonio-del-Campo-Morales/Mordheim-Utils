@@ -66,7 +66,7 @@
   id: the-frantic-fanatic-opens-the-round-against-a-charger-with-the-higher-initiative
   covers: [whole]
   fighters:
-    first: {collection: mordheim, band_id: night-goblins-mic, profile_id: fanatics}
+    first: {collection: mordheim, band_id: night-goblins-mic, profile_id: fanatics, main_weapon_id: weapon.ball-and-chain}
     second:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
@@ -75,13 +75,15 @@
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
-    0: {attacks.0.hit: false, state.first.wounds: 3, state.first.condition: STANDING,
+    0: {attacks.0.hit: false, state.first.wounds: 1, state.first.condition: STANDING,
         state.second.wounds: 3, state.second.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
   expect_events:
     - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.1.hit, sides: 6, value: 1}
     - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
 - audit_id: rule/mordheim/night-goblins-mic/fanatics--frantic/profile-rule.fanatics--frantic
   id: the-shared-strike-first-tier-alone-loses-the-opening-attack-to-the-charger

@@ -20,8 +20,9 @@
 # AUTHORED[injury-roll-of-two-is-stunned]: 2 scenarios read the printed conversion on the real injury
 #   route: the declared injury face of two is the Knocked Down band of the ordinary chart, so the bearer
 #   of the rule leaves its victim Stunned while the identical attack without the rule leaves it Knocked
-#   Down.  The bearer is the printed Mootlander profile with the band row selected and its own pool
-#   declared empty, so the tape holds only the striker's dice.
+#   Down.  The bearer is the printed Mootlander profile with the band row selected, so the tape holds
+#   only the striker's dice: the injured warrior is Stunned or Knocked Down before its own pool, and a
+#   warrior who is not Standing makes no attack.
 # origin_id:
 #   rule/mordheim/mootlanders/band--fragile-halflings/trait.fragile-halflings
 # analysis_status:
@@ -53,21 +54,25 @@
 # Derived from the printed sentence, the recorded contract and the band row the audit id names; no
 # engine output was consulted.  The striker is hand-built (Weapon Skill 3, Strength 3) and hits at equal
 # Weapon Skill on four-or-better, so the declared four hits in both scenarios and only the injury
-# mapping differs.  Halfling Toughness 2 is supplied from the printed profile.
+# mapping differs.  Halfling Toughness 2 is supplied from the printed profile.  The striker carries a
+# sword, not a mace or club: those print Concussion (a total of 2-4 is Stunned on its own), which
+# would mask the band row under test.  The Halfling's own pool is zeroed so the pair differs only in
+# the row.
 
 - audit_id: rule/mordheim/mootlanders/band--fragile-halflings/trait.fragile-halflings
   id: a-halfling-injury-total-of-two-is-stunned
   covers: [injury-roll-of-two-is-stunned]
   fighters:
     first:
-      main_weapon_id: weapon.mace
+      main_weapon_id: weapon.sword
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
       collection: mordheim
       band_id: mootlanders
       profile_id: warriors
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 1, initiative: 2, attacks: 0}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
@@ -81,16 +86,21 @@
 - audit_id: rule/mordheim/mootlanders/band--fragile-halflings/trait.fragile-halflings
   id: without-the-band-row-the-same-total-knocks-the-halfling-down
   covers: [injury-roll-of-two-is-stunned]
+  # The band row is granted to every Mootlander profile by its own source, so the control keeps the
+  # same printed profile and withdraws the row on the supplied fact side (trait_overrides) instead of
+  # swapping in a different duelist: nothing but the row differs between the pair.
   fighters:
     first:
-      main_weapon_id: weapon.mace
+      main_weapon_id: weapon.sword
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
       collection: mordheim
       band_id: mootlanders
       profile_id: warriors
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 1, initiative: 2, attacks: 0}
+      trait_overrides: {fragile_halflings: false}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:

@@ -67,6 +67,9 @@
       characteristics: &luck-opponent {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
   duel_context: &luck-context {charging: [], active_participant: first}
   maximum_rounds: 1
+  decisions:
+    # The printed skill is spent through its declared decision; the resource is the `luck` entry.
+    - {key: round.0.first.attack.0.hit.luck, value: true}
   rolls:
     - {key: round.0.first.attack.0.hit, value: 2}
     - {key: round.0.first.attack.0.hit.reroll, value: 4}
@@ -89,6 +92,9 @@
       characteristics: *luck-opponent
   duel_context: *luck-context
   maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.hit.luck, value: false}
+    - {key: round.0.first.attack.0.wound.luck, value: true}
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 1}
@@ -111,6 +117,8 @@
       characteristics: *luck-opponent
   duel_context: *luck-context
   maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.hit.luck, value: true}
   rolls:
     - {key: round.0.first.attack.0.hit, value: 2}
     - {key: round.0.first.attack.0.hit.reroll, value: 4}

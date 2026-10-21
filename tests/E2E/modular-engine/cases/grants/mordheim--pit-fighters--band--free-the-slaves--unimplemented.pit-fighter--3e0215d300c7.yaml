@@ -105,9 +105,12 @@
 # grant is not `selectable` ("special rule is not selectable: band--free-the-slaves"), so the declared
 # selection channel could never reach this clause and no tape through it would evidence it.  The bearer
 # is therefore a printed band build (pit-fighters/pit-fighters) that receives the band rule
-# automatically, and the rule's own missing piece is the recorded placeholder binding
-# (`unimplemented.pit-fighters.band.free-the-slaves`, binding null, implemented NO), which is what these
-# tapes fail on until it exists; no construction refusal stands in front of them.  The bearer's weapon is
+# automatically; no construction refusal stands in front of them.  (The earlier note that the band
+# binding was still a placeholder is superseded: `contexts._hit_reroll` now carries the accepted
+# `mechanic.hatred-slavers` filter over the supplied `identity.slaver` fact, so the tape below records
+# the offered reroll and its outcome.  The bearer's first-round wound now scripts its Injury die
+# explicitly, because the printed first wound takes the W1 Overseer to zero and the round ends with the
+# defender out.)  The bearer's weapon is
 # the printed axe of the pit-fighter-equipment-list (the printed mace is not on that list), one-handed
 # and Strength 3 like the mace it replaces, so the declared wound threshold is unchanged.
 # Derived from the printed rule and the recorded semantic contract; no engine output was consulted.
@@ -137,10 +140,10 @@
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.first.attack.0.hit.reroll, value: 6}
     - {key: round.0.first.attack.0.wound, value: 5}
-    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.injury.0, value: 6}
   expect_rounds:
     0: {state.second.wounds: 0, state.second.condition: OUT}
-  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
 
 - audit_id: rule/mordheim/pit-fighters/band--free-the-slaves/unimplemented.pit-fighters.band.free-the-slaves
   id: the-same-miss-against-a-non-slaver-is-not-rerolled

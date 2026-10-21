@@ -125,12 +125,12 @@
     first:
       main_weapon_id: weapon.mace
       skill_ids: [mechanic.psychology-immunity]
+      trait_overrides: {frenzy: true}
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
     second:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
-  initial_state: {first: {frenzy: true}}
-  expect_initial: {first: {frenzy: False}}
+  expect_initial: {first.frenzy: False}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
@@ -153,7 +153,6 @@
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 2}
-    - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.damage: 0}

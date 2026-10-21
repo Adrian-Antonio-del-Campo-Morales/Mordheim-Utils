@@ -1157,17 +1157,27 @@ specifications:
   bindings:
   - '{"id": "poison.bloodroot", "kind": "mechanic", "parameters": {}}'
   - '{"id": "special-rule.trained-bear--bear-hug", "kind": "compiler", "parameters": {}}'
-  interpretation: Bloodroot doubles wounds caused by ordinary attacks; a chosen bear hug is its own automatic
-    wound (fixed damage 1), so the poison only doubles damage when the hug is declined and the original
-    attacks resolve.
+  interpretation: This synthetic mechanism composition supplies Bear Hug and a carried weapon coated with
+    Bloodroot; it is not a legal Trained Bear loadout, since that profile carries no weapon to coat.
+    Bloodroot doubles wounds caused by the ordinary weapon attacks; the chosen hug is its own single
+    automatic wound, so the coating only doubles damage when the hug is declined.
   cases:
   - id: composition
     roles:
     - composition
     operation: pool
     attacker: &id032
-      band_id: kislevites
-      profile_id: trained-bear
+      # Synthetic operator bearer, not the canonical Trained Bear recipient.
+      characteristics:
+        weapon_skill: 3
+        strength: 5
+        toughness: 5
+        wounds: 2
+        initiative: 2
+        attacks: 2
+      trait_overrides:
+        bear_hug: true
+      main_weapon_id: weapon.club
       main_poison_id: poison.bloodroot
     defender: &id033
       characteristics:

@@ -56,8 +56,9 @@
 # Derived from the printed rule, the recorded cause-fear contract and the printed profile;
 # no engine output was consulted.  The causer charges, so the warrior it charged is the
 # Fear-tested warrior and its two Leadership dice are declared first against the fixture's
-# Leadership 7.  This scenario is about the Fear test alone, so the causer contributes no
-# attacks of its own (initial_state) and the only attack die is the charged warrior's own.
+# Leadership 7.  This scenario is about the Fear test alone: the causer's own two attacks (its
+# printed charge rule replaces A1 with A2) are declared as misses, so only the charged warrior's
+# attack can change the state.
 
 - audit_id: rule/mordheim/ogre-hunting-party-web/sabretusks--fear/mechanic.causes-fear
   id: a-charged-opponent-that-fails-its-fear-test-hits-only-with-sixes
@@ -73,6 +74,8 @@
   rolls:
     - {key: round.0.first.fear.charged.0, value: 5}
     - {key: round.0.first.fear.charged.1, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
     - {key: round.0.first.attack.0.hit, value: 4}
   expect_rounds:
     0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING}
@@ -92,6 +95,8 @@
   rolls:
     - {key: round.0.first.fear.charged.0, value: 3}
     - {key: round.0.first.fear.charged.1, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 3}
     - {key: round.0.first.attack.0.injury.0, value: 1}

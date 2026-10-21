@@ -20,6 +20,10 @@ from mordheim_combat.modular.state import initialize_fighter
 from mordheim_combat_lab.verification.dice import StrictDice
 from mordheim_construction.compiler import compile_fighter
 from mordheim_core.models import Characteristics, FighterBuild
+import pytest
+
+
+pytestmark = pytest.mark.rule_behavior
 
 
 def tape(*rolls):

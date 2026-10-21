@@ -920,15 +920,15 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.khemri-lahmian-brotherhood.band.lahmian-special-skills-seduction
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.lahmian-seduction
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.lahmian-seduction
 - id: band--lahmian-special-skills-creature-of-the-night
   kind: warband_skill
   name: Creature of the Night

@@ -126,8 +126,10 @@
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 3}
-    - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.first.attack.1.hit, value: 1}
+    # A two on the wound die fails against Toughness 3, which keeps this scenario on
+    # the to-hit half the skill reads.
+    - {key: round.0.first.attack.0.wound, value: 2}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.hit: true, attacks.0.hit_target: 3, attacks.0.wounded: false, state.second.wounds: 2}
@@ -150,10 +152,9 @@
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.1.hit, value: 1}
     - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.first.attack.0.injury.0, value: 2}
-    - {key: round.0.first.attack.1.hit, value: 1}
-    - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.hit: true, attacks.0.wounded: true, attacks.0.damage: 1,
         state.second.condition: STUNNED}

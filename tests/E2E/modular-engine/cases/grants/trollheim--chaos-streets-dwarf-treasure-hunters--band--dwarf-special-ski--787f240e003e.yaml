@@ -130,14 +130,14 @@
   fighters:
     first:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
     second:
       collection: trollheim
       band_id: chaos-streets-dwarf-treasure-hunters
       profile_id: dwarf-noble
       special_rule_ids: [band--dwarf-special-skills-master-of-blades]
       main_weapon_id: weapon.sword
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
   initial_state: {second: {attacks: 0}}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
@@ -156,13 +156,13 @@
   fighters:
     first:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
     second:
       collection: trollheim
       band_id: chaos-streets-dwarf-treasure-hunters
       profile_id: dwarf-noble
       main_weapon_id: weapon.sword
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
   initial_state: {second: {attacks: 0}}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
@@ -182,7 +182,7 @@
   fighters:
     first:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
     second:
       collection: trollheim
       band_id: chaos-streets-dwarf-treasure-hunters
@@ -190,7 +190,7 @@
       special_rule_ids: [band--dwarf-special-skills-master-of-blades]
       main_weapon_id: weapon.dwarf-axe
       off_hand_id: weapon.dwarf-axe
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
   initial_state: {second: {attacks: 0}}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
@@ -198,6 +198,9 @@
     - {key: round.0.first.attack.0.hit, value: 5}
     - {key: round.0.first.attack.0.parry, value: 4}
     - {key: round.0.first.attack.0.parry.reroll, value: 5}
+    # The two axes are also the bearer's off hand, which contributes its own
+    # attack; it is declared and misses.
+    - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.parried: true, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
@@ -210,14 +213,14 @@
   fighters:
     first:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
     second:
       collection: trollheim
       band_id: chaos-streets-dwarf-treasure-hunters
       profile_id: dwarf-noble
       special_rule_ids: [band--dwarf-special-skills-master-of-blades]
       main_weapon_id: weapon.dwarf-axe
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
   initial_state: {second: {attacks: 0}}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
@@ -236,7 +239,7 @@
   fighters:
     first:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2, leadership: 7}
     second:
       collection: trollheim
       band_id: chaos-streets-dwarf-treasure-hunters
@@ -244,7 +247,7 @@
       special_rule_ids: [band--dwarf-special-skills-master-of-blades]
       main_weapon_id: weapon.sword
       off_hand_id: weapon.sword
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
   initial_state: {second: {attacks: 0}}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
@@ -253,6 +256,8 @@
     - {key: round.0.first.attack.1.hit, value: 4}
     - {key: round.0.first.attack.0.parry, value: 5}
     - {key: round.0.first.attack.1.parry, value: 5}
+    # The second sword is also the bearer's off hand, whose own attack misses.
+    - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.parried: true, attacks.1.parried: true, state.second.parries_remaining: 0, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
@@ -265,14 +270,14 @@
   fighters:
     first:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2, leadership: 7}
     second:
       collection: trollheim
       band_id: chaos-streets-dwarf-treasure-hunters
       profile_id: dwarf-noble
       special_rule_ids: [band--dwarf-special-skills-master-of-blades]
       main_weapon_id: weapon.sword
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
   initial_state: {second: {attacks: 0}}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1

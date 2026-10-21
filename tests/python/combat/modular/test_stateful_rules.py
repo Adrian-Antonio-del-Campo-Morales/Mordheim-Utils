@@ -20,6 +20,7 @@ from mordheim_core.dice import RollRequest
 from mordheim_core.models import Characteristics
 from mordheim_core.models import EffectSet
 from mordheim_core.models import FighterBuild
+import pytest
 
 
 class ConstantDice:
@@ -46,8 +47,10 @@ class RecordingTurnDice:
 
     def roll(self, request: RollRequest):
         self.keys.append(request.key)
-        if request.key.startswith("round.1.first.characteristic."):
+        if "round.1." in request.key and ".characteristic." in request.key:
             return min(6, request.sides)
+        if request.key.endswith(".hit"):
+            return 6
         return 1
 
 
@@ -65,6 +68,7 @@ def states(attacker, defender):
     )
 
 
+@pytest.mark.rule_behavior
 def test_reference_luck_and_mark_are_persistent_consumable_resources():
     ordinary = fighter()
     lucky = replace(ordinary, global_effects=EffectSet(tags=("skill.luck",)))
@@ -78,6 +82,7 @@ def test_reference_luck_and_mark_are_persistent_consumable_resources():
     assert mark.hit and "mark-of-the-old-ones" in mark.attacker.resources_spent
 
 
+@pytest.mark.rule_behavior
 def test_reference_luck_can_reroll_a_failed_armour_save_once():
     attacker = fighter()
     defender = fighter(armour_id="armour.light-armour", skill_ids=("skill.luck",))
@@ -89,6 +94,7 @@ def test_reference_luck_can_reroll_a_failed_armour_save_once():
     assert result.saved and "luck" in result.defender.resources_spent
 
 
+@pytest.mark.rule_behavior
 def test_reference_mark_can_convert_a_failed_armour_save_once():
     attacker = fighter()
     defender = fighter(armour_id="armour.light-armour",
@@ -101,6 +107,7 @@ def test_reference_mark_can_convert_a_failed_armour_save_once():
     assert result.saved and "mark-of-the-old-ones" in result.defender.resources_spent
 
 
+@pytest.mark.rule_behavior
 def test_reference_luck_can_reroll_a_failed_wound_once():
     attacker = replace(fighter(), global_effects=EffectSet(tags=("skill.luck",)))
     defender = fighter(wounds=3)
@@ -114,6 +121,7 @@ def test_reference_luck_can_reroll_a_failed_wound_once():
 
 
 
+@pytest.mark.rule_behavior
 def test_reference_parry_and_critical_capacity_are_consumed_in_state():
     attacker = fighter(ws=6, strength=4)
     defender = fighter(wounds=3)
@@ -134,6 +142,7 @@ def test_reference_parry_and_critical_capacity_are_consumed_in_state():
     assert not critical.attacker.critical_available
 
 
+@pytest.mark.rule_behavior
 def test_condemned_rerolls_variable_characteristics_each_new_turn():
     condemned = compile_fighter(FighterBuild(
         "mordheim", band_id="marauders-of-chaos", profile_id="condemned",
@@ -145,30 +154,36 @@ def test_condemned_rerolls_variable_characteristics_each_new_turn():
         initialize_fighter(opponent, dice, "second"),
         first_charged=True,
     )
+    # Inconsistency rolls a characteristic only when an operation needs it.
+    assert not state.first.random_rolled
+    assert [key for key in dice.keys if ".characteristic." in key] == []
 
     state = resolve_round(condemned, opponent, state, dice).state
     assert state.first.weapon_skill == 1
     assert state.first.strength == 1
     assert state.first.toughness == 1
     assert state.first.attacks == 1
+    assert state.first.random_rolled == frozenset({"WS", "S", "T", "A"})
 
     state = resolve_round(condemned, opponent, state, dice).state
     assert state.first.weapon_skill == 6
     assert state.first.strength == 6
     assert state.first.toughness == 6
     assert state.first.attacks == 3
+    assert state.first.random_rolled == frozenset({"WS", "S", "T", "A"})
     assert [key for key in dice.keys if ".characteristic." in key] == [
-        "first.characteristic.WS.0",
-        "first.characteristic.S.0",
-        "first.characteristic.T.0",
-        "first.characteristic.A.0",
-        "round.1.first.characteristic.WS.0",
-        "round.1.first.characteristic.S.0",
-        "round.1.first.characteristic.T.0",
+        "round.0.first.characteristic.A.0",
+        "round.0.first.attack.0.attacker.characteristic.WS.0",
+        "round.0.first.attack.0.attacker.characteristic.S.0",
+        "round.0.second.attack.0.defender.characteristic.T.0",
         "round.1.first.characteristic.A.0",
+        "round.1.first.attack.0.attacker.characteristic.WS.0",
+        "round.1.first.attack.0.attacker.characteristic.S.0",
+        "round.1.second.attack.0.defender.characteristic.T.0",
     ]
 
 
+@pytest.mark.rule_behavior
 def test_double_bladed_sword_initializes_two_parry_attempts():
     defender = compile_fighter(FighterBuild(
         "mordheim", characteristics=Characteristics(3, 3, 3, 3, 3, 1),
@@ -177,6 +192,7 @@ def test_double_bladed_sword_initializes_two_parry_attempts():
     assert initialize_fighter(defender, ConstantDice(1), "defender").parries_remaining == 2
 
 
+@pytest.mark.rule_behavior
 def test_double_bladed_sword_can_parry_two_hits_in_one_pool():
     attacker = fighter(attacks=2)
     defender = compile_fighter(FighterBuild(
@@ -194,6 +210,7 @@ def test_double_bladed_sword_can_parry_two_hits_in_one_pool():
 
 
 
+@pytest.mark.rule_behavior
 def test_unbeatable_warrior_keeps_second_parry_after_natural_six():
     attacker = fighter(attacks=2)
     defender = compile_fighter(FighterBuild(
@@ -212,6 +229,7 @@ def test_unbeatable_warrior_keeps_second_parry_after_natural_six():
     assert final_defender.parries_remaining == 1
 
 
+@pytest.mark.rule_behavior
 def test_attack_pool_parries_the_highest_hit_roll_not_the_first_hit():
     attacker = fighter(ws=6, attacks=2)
     defender = replace(
@@ -228,6 +246,7 @@ def test_attack_pool_parries_the_highest_hit_roll_not_the_first_hit():
     assert final_defender.parries_remaining == 0
 
 
+@pytest.mark.interaction
 def test_lucky_charm_save_releases_parry_for_next_highest_hit():
     attacker = fighter(ws=6, attacks=2)
     defender = replace(
@@ -245,6 +264,7 @@ def test_lucky_charm_save_releases_parry_for_next_highest_hit():
     assert final_defender.parries_remaining == 0
 
 
+@pytest.mark.interaction
 def test_bull_charge_does_not_knock_down_a_hit_stopped_by_lucky_charm():
     attacker = replace(fighter(), global_effects=EffectSet(tags=("mechanic.bull-charge",)))
     defender = replace(fighter(), global_effects=EffectSet(tags=("defence.lucky-charm",)))
@@ -259,6 +279,7 @@ def test_bull_charge_does_not_knock_down_a_hit_stopped_by_lucky_charm():
 
 
 
+@pytest.mark.rule_behavior
 def test_reference_force_of_will_rescues_once_and_sustains_per_round():
     base = fighter(toughness=3)
     force = replace(base, global_effects=EffectSet(tags=("mechanic.force-of-will",)))
@@ -270,6 +291,7 @@ def test_reference_force_of_will_rescues_once_and_sustains_per_round():
     assert _force_of_will(force, failed, ConstantDice(1), "force.again").condition == Condition.OUT
 
 
+@pytest.mark.rule_behavior
 def test_reference_netter_covers_miss_escape_and_capture():
     base = fighter(strength=3)
     netter = replace(base, global_effects=EffectSet(tags=("mechanic.netter",)), ballistic_skill=3)
@@ -279,6 +301,7 @@ def test_reference_netter_covers_miss_escape_and_capture():
     assert _netter(netter, base, n, target, TapeDice(6, 6), "net.catch").condition == Condition.KNOCKED_DOWN
 
 
+@pytest.mark.rule_behavior
 def test_reference_fire_persists_until_recovery_succeeds():
     victim, opponent = fighter(wounds=2), fighter()
     v, o = states(victim, opponent)
@@ -289,6 +312,7 @@ def test_reference_fire_persists_until_recovery_succeeds():
     assert not extinguished.on_fire
 
 
+@pytest.mark.interaction
 def test_reference_spines_acid_blood_and_contagious_are_real_reactions():
     ordinary = fighter(wounds=2)
     spined = replace(ordinary, global_effects=EffectSet(tags=("spines",)))
@@ -316,6 +340,7 @@ def test_reference_spines_acid_blood_and_contagious_are_real_reactions():
     assert outcome.defender.condition == Condition.OUT and reacted.attacker.wounds == 1
 
 
+@pytest.mark.interaction
 def test_reference_spines_are_simultaneous_even_when_both_hits_are_lethal():
     base = fighter()
     spined = replace(base, global_effects=EffectSet(tags=("spines",)))
@@ -325,6 +350,7 @@ def test_reference_spines_are_simultaneous_even_when_both_hits_are_lethal():
     assert result.state.second.condition == Condition.OUT
 
 
+@pytest.mark.rule_behavior
 def test_reference_black_hunger_resolves_d3_self_hits():
     base = fighter(wounds=2)
     hungry = replace(base, global_effects=EffectSet(tags=("mechanic.black-hunger",)))
@@ -334,6 +360,7 @@ def test_reference_black_hunger_resolves_d3_self_hits():
     assert outcomes
 
 
+@pytest.mark.rule_behavior
 def test_reference_bear_hug_replaces_two_hits_before_wound_resolution():
     bear = compile_fighter(FighterBuild(
         "mordheim", band_id="kislevites", profile_id="trained-bear",
@@ -351,6 +378,7 @@ def test_reference_bear_hug_replaces_two_hits_before_wound_resolution():
     assert t.condition == Condition.OUT
 
 
+@pytest.mark.rule_behavior
 def test_reference_disability_uses_the_permanent_supplied_result_without_reroll():
     disabled = compile_fighter(FighterBuild("mordheim", Characteristics(3, 3, 4, 1, 3, 1),
         skill_ids=("mechanic.disability",), condition_ids=("condition.disability-4",)))

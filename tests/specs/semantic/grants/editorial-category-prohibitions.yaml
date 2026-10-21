@@ -34,6 +34,7 @@ specifications:
       collection: mordheim
       band_id: battle-monks-of-cathay
       profile_id: dragon-monks
+      main_weapon_id: weapon.sword
     context:
       choices:
         ordinary: {}
@@ -56,6 +57,7 @@ specifications:
       collection: mordheim
       band_id: battle-monks-of-cathay
       profile_id: warrior-monks
+      main_weapon_id: weapon.sword
     context:
       choices:
         ordinary: {}
@@ -197,7 +199,10 @@ specifications:
   interpretation: 'Prohibition band--black-powder-weapons: recipients cross-checked against the text and
     profiles of dark-elves. An explicit rejection for the forbidden category is required, not merely the
     absence of the equipment from a list. Each recipient keeps its ordinary build. Projectiles: the two
-    pistols represented in the duel runtime are tested, not shooting or other excluded subsystems.'
+    pistols represented in the duel runtime are tested, not shooting or other excluded subsystems. A
+    recipient whose printed profile already forbids every weapon reports that stronger printed
+    prohibition; the band contract remains evidenced by the other recipients and the suppression
+    mutation.'
   cases:
   - id: recipients
     roles:
@@ -388,8 +393,8 @@ specifications:
       result.accepted:
       - ordinary
       result.rejected:
-        pistol: blackpowder weapons are forbidden for dark-elves/cold-one-beasthounds
-        duelling-pistol: blackpowder weapons are forbidden for dark-elves/cold-one-beasthounds
+        pistol: '"weapons" is forbidden for dark-elves/cold-one-beasthounds.'
+        duelling-pistol: '"weapons" is forbidden for dark-elves/cold-one-beasthounds.'
   - id: unrestricted-custom-control
     roles:
     - accepted
@@ -1147,7 +1152,10 @@ specifications:
   interpretation: 'Prohibition band--ancestral-customs: recipients cross-checked against the text and
     profiles of lustria-dark-elves. An explicit rejection for the forbidden category is required, not
     merely the absence of the equipment from a list. Each recipient keeps its ordinary build. Projectiles:
-    the two pistols represented in the duel runtime are tested, not shooting or other excluded subsystems.'
+    the two pistols represented in the duel runtime are tested, not shooting or other excluded subsystems.
+    A recipient whose printed profile already forbids every weapon reports that stronger printed
+    prohibition; the band contract remains evidenced by the other recipients and the suppression
+    mutation.'
   cases:
   - id: recipients
     roles:
@@ -1338,8 +1346,8 @@ specifications:
       result.accepted:
       - ordinary
       result.rejected:
-        pistol: blackpowder weapons are forbidden for lustria-dark-elves/cold-ones
-        duelling-pistol: blackpowder weapons are forbidden for lustria-dark-elves/cold-ones
+        pistol: '"weapons" is forbidden for lustria-dark-elves/cold-ones.'
+        duelling-pistol: '"weapons" is forbidden for lustria-dark-elves/cold-ones.'
   - id: unrestricted-custom-control
     roles:
     - accepted
@@ -1644,7 +1652,10 @@ specifications:
   interpretation: 'Prohibition band--ancestral-customs: recipients cross-checked against the text and
     profiles of lustria-high-elves. An explicit rejection for the forbidden category is required, not
     merely the absence of the equipment from a list. Each recipient keeps its ordinary build. Projectiles:
-    the two pistols represented in the duel runtime are tested, not shooting or other excluded subsystems.'
+    the two pistols represented in the duel runtime are tested, not shooting or other excluded subsystems.
+    A recipient whose printed profile already forbids every missile weapon reports that stronger printed
+    prohibition; the band contract remains evidenced by the other recipients and the suppression
+    mutation.'
   cases:
   - id: recipients
     roles:
@@ -1710,9 +1721,9 @@ specifications:
       result.accepted:
       - ordinary
       result.rejected:
-        pistol: blackpowder weapons are forbidden for lustria-high-elves/sword-guardians
-        duelling-pistol: blackpowder weapons are forbidden for lustria-high-elves/sword-guardians
-        off-hand-pistol: blackpowder weapons are forbidden for lustria-high-elves/sword-guardians
+        pistol: missile weapons are forbidden for lustria-high-elves/sword-guardians
+        duelling-pistol: missile weapons are forbidden for lustria-high-elves/sword-guardians
+        off-hand-pistol: missile weapons are forbidden for lustria-high-elves/sword-guardians
   - id: choices-explorers
     roles:
     - accepted

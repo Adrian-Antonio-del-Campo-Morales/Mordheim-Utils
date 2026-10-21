@@ -421,6 +421,7 @@ def _resolve_reference_attack_body(
         return AttackOutcome(
             attacker_state, defender_state, hit=True, hit_roll=hit.roll,
             hit_target=hit.target, trace=trace,
+            natural_hit_six=natural_hit_six,
         )
     if (melee_attack and has_tag(attacker.global_effects, "mechanic.plague-carrier")
             and "plague-carrier-infected" not in attacker_state.resources_spent):
@@ -453,7 +454,7 @@ def _resolve_reference_attack_body(
         if not attacker_state.active or not defender_state.active:
             return AttackOutcome(attacker_state, defender_state, hit=True,
                 hit_roll=hit.roll, hit_target=hit.target, trace=trace,
-                reactions_resolved=True)
+                natural_hit_six=natural_hit_six, reactions_resolved=True)
     # Bull Charge substitutes the wound step: an undefended hit is consumed by
     # the pool handler to knock the target down without a To Wound roll.
     if (phases.has_tag(effect, "mechanic.bull-charge")
@@ -461,6 +462,7 @@ def _resolve_reference_attack_body(
         return AttackOutcome(
             attacker_state, defender_state, hit=True, hit_roll=hit.roll,
             hit_target=hit.target, trace=trace,
+            natural_hit_six=natural_hit_six,
         )
     if phases.has_tag(weapon, "weapon.kusara-kama") and hit.roll >= 5:
         hand = defender.main_hand_slot
@@ -515,7 +517,8 @@ def _resolve_reference_attack_body(
         attacker_state, defender_state = extra.attacker, extra.defender
         attacker_dice.state, defender_dice.state = attacker_state, defender_state
         if not attacker_state.active or not defender_state.active:
-            return AttackOutcome(attacker_state, defender_state, hit=True, reactions_resolved=True)
+            return AttackOutcome(attacker_state, defender_state, hit=True,
+                natural_hit_six=natural_hit_six, reactions_resolved=True)
     if (phases.has_tag(effect, "poison.spider-spittle") and not poison_blocked
             and defender_state.condition == Condition.STANDING
             and not phases._characteristic_test(
@@ -567,7 +570,8 @@ def _resolve_reference_attack_body(
             defender_state = replace(defender_state, condition=Condition.KNOCKED_DOWN,
                 frenzy=defender_state.frenzy and has_tag(defender.global_effects, "mechanic.persistent-frenzy"))
         return AttackOutcome(attacker_state, defender_state, hit=True,
-            hit_roll=hit.roll, hit_target=hit.target, trace=trace)
+            hit_roll=hit.roll, hit_target=hit.target, trace=trace,
+            natural_hit_six=natural_hit_six)
     attacker_state = replace(attacker_state,
         resources_spent=attacker_state.resources_spent | attacker_dice.state.resources_spent)
     defender_state = replace(defender_state,
@@ -600,9 +604,11 @@ def _resolve_reference_attack_body(
             defender_state = replace(defender_state, condition=Condition.KNOCKED_DOWN,
                 frenzy=defender_state.frenzy and has_tag(defender.global_effects, "mechanic.persistent-frenzy"))
         return AttackOutcome(attacker_state, defender_state, hit=True, trace=trace,
+            natural_hit_six=natural_hit_six,
             barrage_available=phases.has_tag(weapon, "weapon.rapier"))
     if phases.has_tag(effect, "poison.manbane") and not poison_blocked and wound.roll == 1:
-        return AttackOutcome(attacker_state, defender_state, hit=True, trace=trace)
+        return AttackOutcome(attacker_state, defender_state, hit=True, trace=trace,
+            natural_hit_six=natural_hit_six)
     if (phases.has_tag(weapon, "effect.wraith-touch") and attacker.fighter_id == "restless-dead:liche"
             and attacker_state.wounds < attacker.characteristics.wounds
             and decisions is not None and decisions.choose(f"{key}.wraith-heal", attacker)):
@@ -626,7 +632,7 @@ def _resolve_reference_attack_body(
         resources_spent=attacker_state.resources_spent | attacker_dice.state.resources_spent)
     defender_state = replace(defender_state,
         resources_spent=defender_state.resources_spent | defender_dice.state.resources_spent)
-    return _resolve_wound_damage(
+    result = _resolve_wound_damage(
         attacker, defender, attacker_state, defender_state, weapon, effect,
         wound, critical, dice, key=key, first_round=first_round, charging=charging,
         helpless_at_start=helpless_at_start, decisions=decisions, trace=trace,
@@ -634,6 +640,7 @@ def _resolve_reference_attack_body(
         self_attack=self_attack,
         single_wound=single_wound,
     )
+    return replace(result, natural_hit_six=natural_hit_six)
 
 
 def _resolve_wound_damage(attacker, defender, attacker_state, defender_state, weapon, effect,

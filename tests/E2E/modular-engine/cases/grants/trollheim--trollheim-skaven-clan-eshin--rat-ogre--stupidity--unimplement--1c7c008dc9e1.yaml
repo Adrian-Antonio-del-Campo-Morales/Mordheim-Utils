@@ -16,7 +16,7 @@
 #   note prescribes; the band's printed Assassin hero (Leadership 7,
 #   bands/trollheim/trollheim-skaven-clan-eshin/profiles.yaml) is the provider it stands for.
 #   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED; no
-#   behavioral result is claimed. The printed proximity concession is authored below.  Documented difference (AUTHORED vs implementation): every requirement of the clause has a written scenario, so AUTHORED is the correct header; what remains pending is the motor side only - the consumer that maps the declarable supplied nearby-Hero (duel_context.nearby) onto condition.stupidity-exempt does not exist yet, so the nearby-provider scenario is expected to fail until that branch lands [B], not an authoring gap.
+#   behavioral result is claimed. The printed proximity concession is authored below.  Documented difference (AUTHORED vs implementation): every requirement of the clause has a written scenario, so AUTHORED is the correct header; the motor side is connected: the consumer that maps the declarable supplied nearby-Hero (duel_context.nearby) onto condition.stupidity-exempt is psychology.resolve_stupidity, which measures the supplied same-side standing Skaven Hero at six inches or less; the nearby-provider scenario exercises that branch, not an authoring gap.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -32,8 +32,8 @@
 #   and it strikes normally, and the printed Skaven-Hero exemption supplied as the admitted
 #   condition.stupidity-exempt fact skips the test with no die requested.
 # Clause face - printed proximity concession (evidenced by the scenario below, which covers the admitted clause `stupidity`): the scenario below declares the concession's own configuration instead of the caller-supplied exemption.
-#   Documented difference (AUTHORED vs implementation): every requirement of the clause has a written scenario, so AUTHORED is the correct header; what remains pending is the motor side only - a consumer that maps the declarable supplied nearby same-band Hero (duel_context.nearby) onto condition.stupidity-exempt does not exist yet, so the nearby-provider scenario is expected to fail until that branch lands [B]; that failure is the evidence of the printed requirement, not an authoring gap.
-#   Original pending note, kept for the record: not asserted here. The printed exemption is a concession awarded by nearby company (the printed rule states it as a Hero within 6"), not a property of the bearer: no consumer in the runtime derives an exemption from a nearby provider, so the authored scenario supplies the exemption as the admitted condition.stupidity-exempt fact and evidences the reaction to the exemption alone. The documented route for a supplied nearby provider is the duel context's `nearby` participant, which mechanic.leader-six uses for the Leadership borrow; the concession itself stays pending until a consumer maps a nearby hero provider onto condition.stupidity-exempt.
+#   Documented difference (AUTHORED vs implementation): every requirement of the clause has a written scenario, so AUTHORED is the correct header; the motor side is connected: psychology.resolve_stupidity maps the declarable supplied nearby same-band Hero (duel_context.nearby) onto condition.stupidity-exempt, so the nearby-provider scenario exercises the printed concession rather than an authoring gap.
+#   Original pending note, kept for the record: not asserted here. The printed exemption is a concession awarded by nearby company (the printed rule states it as a Hero within 6"), not a property of the bearer: the authored scenario supplies the exemption as the admitted condition.stupidity-exempt fact and evidences the reaction to the exemption alone. The supplied nearby provider travels through the duel context's `nearby` participant and `distances`, which psychology.resolve_stupidity now measures for a same-side standing Skaven Hero at six inches or less.
 # origin_id:
 #   rule/trollheim/trollheim-skaven-clan-eshin/rat-ogre--stupidity/unimplemented.trollheim-skaven-clan-eshin.rat-ogre.stupidity
 # analysis_status:
@@ -118,6 +118,8 @@
   rolls:
     - {key: round.0.first.stupidity.0, value: 1}
     - {key: round.0.first.stupidity.1, value: 1}
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 5}
     - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.second.attack.0.hit, value: 1}
@@ -143,6 +145,8 @@
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 5}
     - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.second.attack.0.hit, value: 1}
@@ -154,9 +158,9 @@
 # declared configuration - the band's printed Assassin Adept hero (assassin-adept) stands within the
 # printed six inches - and no condition.stupidity-exempt is supplied by hand, so the strict tape
 # declares no stupidity die at all and the bearer's charge stands.  The scenario is the concession's own declarable configuration (duel_context.nearby); the motor-side
-# consumer that maps the supplied nearby same-band Hero onto condition.stupidity-exempt does not exist
-# yet, so this scenario is expected to fail until that branch lands - that failure, not an authoring
-# gap, is the remaining pending requirement [B].
+# consumer that maps the supplied nearby same-band Hero onto condition.stupidity-exempt is
+# psychology.resolve_stupidity: the scenario exercises that branch with no Stupidity die, so it does
+# not borrow the hero's Leadership nor perform a test.
 - audit_id: rule/trollheim/trollheim-skaven-clan-eshin/rat-ogre--stupidity/unimplemented.trollheim-skaven-clan-eshin.rat-ogre.stupidity
   id: a-nearby-hero-within-six-inches-exempts-the-bearer
   covers: [stupidity]
@@ -175,6 +179,8 @@
               fighter: {collection: trollheim, band_id: trollheim-skaven-clan-eshin, profile_id: assassin-adept}}]}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 5}
     - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.second.attack.0.hit, value: 1}

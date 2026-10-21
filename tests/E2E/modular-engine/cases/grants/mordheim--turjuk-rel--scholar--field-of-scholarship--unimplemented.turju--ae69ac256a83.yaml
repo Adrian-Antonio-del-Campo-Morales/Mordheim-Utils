@@ -140,7 +140,11 @@
       trait_overrides: {causes_fear: true}
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
-    second: {collection: mordheim, band_id: turjuk-rel, profile_id: emir}
+    second:
+      collection: mordheim
+      band_id: turjuk-rel
+      profile_id: emir
+      condition_ids: [condition.poetry-victorious-leader]
   duel_context:
     charging: [first]
     active_participant: first

@@ -31,5 +31,6 @@ export default defineConfig(() => ({
     globals: true,
     setupFiles: [fileURLToPath(new URL("../../tests/web/setup.ts", import.meta.url))],
     include: [fileURLToPath(new URL("../../tests/web/**/*.test.{ts,tsx}", import.meta.url)).replaceAll("\\", "/")],
+    reporters: ["default"],
   },
 }));

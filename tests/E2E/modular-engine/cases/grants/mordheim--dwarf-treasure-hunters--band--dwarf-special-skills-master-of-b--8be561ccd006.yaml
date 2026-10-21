@@ -199,6 +199,7 @@
     - {key: round.0.first.attack.0.hit, value: 5}
     - {key: round.0.first.attack.0.parry, value: 4}
     - {key: round.0.first.attack.0.parry.reroll, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.parried: true, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
@@ -254,6 +255,7 @@
     - {key: round.0.first.attack.1.hit, value: 4}
     - {key: round.0.first.attack.0.parry, value: 5}
     - {key: round.0.first.attack.1.parry, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.parried: true, attacks.1.parried: true, state.second.parries_remaining: 0, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

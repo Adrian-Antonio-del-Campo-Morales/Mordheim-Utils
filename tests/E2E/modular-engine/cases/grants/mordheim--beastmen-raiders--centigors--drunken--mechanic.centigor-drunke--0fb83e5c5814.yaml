@@ -102,9 +102,9 @@
   rolls:
     - {key: round.0.first.drunken, value: 6}
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.first.attack.1.hit, value: 1}
     - {key: round.0.first.attack.2.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
   expect_rounds:
     0: {attacks.0.damage: 1, state.second.wounds: 2, state.first.frenzy: True, state.first.stupidity_failed: False}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
@@ -129,8 +129,8 @@
   rolls:
     - {key: round.0.first.drunken, value: 3}
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
   expect_rounds:
     0: {attacks.0.damage: 1, state.second.wounds: 2, state.first.frenzy: False, state.first.stupidity_failed: False}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

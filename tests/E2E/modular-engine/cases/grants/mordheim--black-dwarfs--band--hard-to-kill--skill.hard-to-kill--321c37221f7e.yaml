@@ -83,7 +83,8 @@
 # --- Authored scenarios ---
 # Derived from the printed rule and the printed band record; no engine output was consulted.
 # The mace is the concussion weapon of the sibling injury-chart cases, the fixture's Initiative
-# lets it strike first, and the bearers start at their printed single wound.
+# lets it strike first, and the bearers start at their printed single wound.  The wound die stays
+# below a natural six, so no critical die is part of this evidence.
 
 - audit_id: rule/mordheim/black-dwarfs/band--hard-to-kill/skill.hard-to-kill
   id: a-five-only-stuns-the-chaos-dwarf
@@ -98,7 +99,7 @@
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.first.attack.0.injury.0, value: 5}
   expect_rounds:
     0: {state.second.wounds: 0, state.second.condition: STUNNED}
@@ -117,7 +118,7 @@
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.first.attack.0.injury.0, value: 6}
   expect_rounds:
     0: {state.second.condition: OUT}
@@ -140,7 +141,7 @@
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.first.attack.0.injury.0, value: 5}
   expect_rounds:
     0: {state.second.condition: OUT}

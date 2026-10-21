@@ -11,9 +11,11 @@ import glob
 import os
 import subprocess
 import sys
+import warnings
 from collections import defaultdict
 from pathlib import Path
 
+import pytest
 import yaml
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -24,6 +26,7 @@ CAMPAIGN = KB_ROOT / "catalog" / "campaign" / "exploration-and-income.yaml"
 # ---------------------------------------------------------------------------
 # Capitalization policy
 # ---------------------------------------------------------------------------
+@pytest.mark.knowledge_integrity
 def test_kb_names_are_normalized() -> None:
     tool = ROOT / "tools" / "knowledge" / "maintenance" / "normalize_names.py"
     result = subprocess.run(
@@ -56,6 +59,7 @@ def _keys(node) -> set:
     return set()
 
 
+@pytest.mark.knowledge_integrity
 def test_no_summary_key_survives_in_the_knowledge_base() -> None:
     offenders: list[str] = []
     for path in sorted(KB_ROOT.rglob("*.yaml")):
@@ -73,6 +77,7 @@ def test_no_summary_key_survives_in_the_knowledge_base() -> None:
 # ---------------------------------------------------------------------------
 # Pinned spec digests must match the live KB inventory
 # ---------------------------------------------------------------------------
+@pytest.mark.evidence
 def test_spec_digest_pins_are_fresh() -> None:
     tool = ROOT / "tools" / "verification" / "refresh_spec_digests.py"
     result = subprocess.run(
@@ -144,6 +149,7 @@ class _FamilyTracker:
                 self.en_untranslated.setdefault(key, f"{origin} ({label})")
 
 
+@pytest.mark.knowledge_integrity
 def test_same_english_text_always_gets_the_same_spanish_translation() -> None:
     trackers = [_FamilyTracker(field, i18n_field) for field, i18n_field in FIELD_FAMILIES]
 
@@ -179,6 +185,7 @@ LONG_LINE = (
 )
 
 
+@pytest.mark.knowledge_integrity
 def test_yaml_formatting_is_canonical() -> None:
     tool = ROOT / "tools" / "knowledge" / "maintenance" / "format_yaml.py"
     assert KB_ROOT.is_dir(), "Canonical KB directory is missing"
@@ -192,6 +199,9 @@ def test_yaml_formatting_is_canonical() -> None:
     assert result.returncode == 0, (
         "format_yaml --check failed on knowledge:\n" + (result.stdout or result.stderr)
     )
+    for line in (result.stdout or "").splitlines():
+        if line.startswith("WARN ") and ": non-LF line endings " in line:
+            warnings.warn(line, UserWarning)
     summary = (result.stdout or "").strip().splitlines()[-1]
     assert "0 would change" in summary, (
         "Canonical YAML needs reformatting "
@@ -211,6 +221,30 @@ def run_tool(*arguments: str) -> subprocess.CompletedProcess:
     )
 
 
+@pytest.mark.test_infrastructure
+@pytest.mark.parametrize("ending", ["\r\n", "\r", "mixed"])
+@pytest.mark.parametrize("other_change", [False, True])
+def test_line_endings_warn_without_hiding_other_formatting(tmp_path: Path, ending: str, other_change: bool) -> None:
+    path = tmp_path / "endings.yaml"
+    document = "id: example\neffect: A short effect.\n"
+    original = document.replace("\n", "\r\n", 1) if ending == "mixed" else document.replace("\n", ending)
+    if other_change:
+        original = original.replace("id: example", "id: example  ")
+    path.write_bytes(original.encode("utf-8"))
+
+    checked = run_tool("--check", str(path))
+    assert checked.returncode == 0, checked.stdout + checked.stderr
+    assert "WARN " in checked.stdout and ": non-LF line endings " in checked.stdout
+    assert f"{int(other_change)} would change" in checked.stdout
+    assert path.read_bytes() == original.encode("utf-8")
+
+    written = run_tool("--write", str(path))
+    assert written.returncode == 0, written.stdout + written.stderr
+    assert path.read_bytes() == document.encode("utf-8")
+    assert "0 would change" in run_tool("--check", str(path)).stdout
+
+
+@pytest.mark.test_infrastructure
 def test_a_folded_block_written_as_one_line_is_rewrapped(tmp_path: Path) -> None:
     path = tmp_path / "staged.yaml"
     path.write_text(
@@ -236,7 +270,8 @@ def test_a_folded_block_written_as_one_line_is_rewrapped(tmp_path: Path) -> None
     assert "0 would change" in run_tool("--check", str(path)).stdout
 
 
-def test_a_folded_block_that_keeps_paragraphs_is_left_alone(tmp_path: Path) -> None:
+@pytest.mark.test_infrastructure
+def test_a_folded_block_keeps_paragraphs_when_wrapped(tmp_path: Path) -> None:
     path = tmp_path / "paragraphs.yaml"
     document = (
         "lores:\n"
@@ -250,7 +285,50 @@ def test_a_folded_block_that_keeps_paragraphs_is_left_alone(tmp_path: Path) -> N
 
     written = run_tool("--write", str(path))
     assert written.returncode == 0, written.stdout + written.stderr
-    assert path.read_text(encoding="utf-8") == document
+    formatted = path.read_text(encoding="utf-8")
+    assert yaml.safe_load(formatted) == yaml.safe_load(document)
+    assert max(map(len, formatted.splitlines())) <= 120
+    assert "0 would change" in run_tool("--check", str(path)).stdout
+
+
+@pytest.mark.test_infrastructure
+@pytest.mark.parametrize("document", [
+    f"notes: {LONG_LINE}\n",
+    f"notes_i18n:\n  es: {LONG_LINE}\n",
+    f"notes:\n- {LONG_LINE}\n",
+    f"effect_i18n: {{es: '{LONG_LINE}'}}\n",
+    f'notes_i18n:\n  es: "{LONG_LINE}      preserved spaces\\nAnother paragraph."\n',
+    f"binding: {{kind: profile, parameters: {{description: '{LONG_LINE}', enabled: true}}}}\n",
+])
+def test_remaining_long_yaml_values_are_wrapped_without_changing_data(tmp_path: Path, document: str) -> None:
+    path = tmp_path / "long-values.yaml"
+    path.write_bytes(document.encode("utf-8"))
+    written = run_tool("--write", str(path))
+    assert written.returncode == 0, written.stdout + written.stderr
+    formatted = path.read_text(encoding="utf-8")
+    assert yaml.safe_load(formatted) == yaml.safe_load(document)
+    assert max(map(len, formatted.splitlines())) <= 120
+    assert "0 would change" in run_tool("--check", str(path)).stdout
+
+
+@pytest.mark.test_infrastructure
+def test_wrapping_preserves_anchors_aliases_and_comments(tmp_path: Path) -> None:
+    document = (
+        f"original: &prose '{LONG_LINE}'\n"
+        "copy: *prose\n"
+        "settings: {enabled: true, # Keep this comment.\n"
+        f"  description: '{LONG_LINE}'}}\n"
+        f"notes: {LONG_LINE} # Keep this comment too.\n"
+    )
+    path = tmp_path / "comments.yaml"
+    path.write_bytes(document.encode("utf-8"))
+    written = run_tool("--write", str(path))
+    assert written.returncode == 0, written.stdout + written.stderr
+    formatted = path.read_text(encoding="utf-8")
+    assert yaml.safe_load(formatted) == yaml.safe_load(document)
+    assert "&prose" in formatted and "*prose" in formatted
+    assert "# Keep this comment." in formatted
+    assert "# Keep this comment too." in formatted
 
 
 # ---------------------------------------------------------------------------
@@ -341,6 +419,7 @@ def binding_kinds() -> set[str]:
     return found
 
 
+@pytest.mark.data_contract
 def test_registry_is_well_formed() -> None:
     kinds = binding_kinds()
     for binding_id, entry in load_registry().items():
@@ -357,6 +436,7 @@ def test_registry_is_well_formed() -> None:
         )
 
 
+@pytest.mark.knowledge_integrity
 def test_every_staged_binding_is_registered() -> None:
     registered = set(load_registry())
     known = kb_binding_ids() | registered
@@ -371,6 +451,7 @@ def test_every_staged_binding_is_registered() -> None:
     )
 
 
+@pytest.mark.knowledge_integrity
 def test_registry_entries_resolve_and_are_not_stale() -> None:
     duplicates = [row for row in staged_bindings() if row["binding"] in load_registry()]
     kb_ids = kb_binding_ids()
@@ -433,6 +514,7 @@ def _kb_items() -> dict[str, dict]:
     return items
 
 
+@pytest.mark.knowledge_integrity
 def test_canonical_absence_is_real() -> None:
     items = _kb_items()
     missing = sorted(ABSENT_ITEM_IDS - set(items))
@@ -447,6 +529,7 @@ def test_canonical_absence_is_real() -> None:
         )
 
 
+@pytest.mark.knowledge_integrity
 def test_magical_artefacts_publish_both_locales() -> None:
     rows = {
         row["id"]: row

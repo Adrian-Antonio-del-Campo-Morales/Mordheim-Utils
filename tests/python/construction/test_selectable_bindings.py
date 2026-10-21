@@ -13,6 +13,7 @@ def build(band_id, profile_id, *, collection="mordheim", **kwargs):
     )
 
 
+@pytest.mark.eligibility
 def test_berserker_accepts_alone_and_rejects_ferocious_charge():
     berserker = "band--troll-slayer-special-skills-berserker"
     ferocious = "band--troll-slayer-special-skills-ferocious-charge"
@@ -27,6 +28,7 @@ def test_berserker_accepts_alone_and_rejects_ferocious_charge():
         ))
 
 
+@pytest.mark.eligibility
 def test_censer_bearer_rejects_missing_prerequisite_and_accepts_exact_loadout():
     censer_bearer = "band--clan-pestilens-special-skills-censer-bearer"
     with pytest.raises(ValueError, match="requires Black Hunger"):
@@ -44,6 +46,7 @@ def test_censer_bearer_rejects_missing_prerequisite_and_accepts_exact_loadout():
     assert "compiler.censer-bearer-loadout" in accepted.construction_tags
 
 
+@pytest.mark.compilation
 def test_chaos_engineer_is_an_explicit_positive_only_duel_contract():
     # Chaos Armour and rarity rolls are outside the 1v1 catalogue.  Selection
     # is still observable, but there is no legal in-scope forbidden item from
@@ -55,6 +58,7 @@ def test_chaos_engineer_is_an_explicit_positive_only_duel_contract():
     assert "compiler.chaos-engineer" in engineer.construction_tags
 
 
+@pytest.mark.eligibility
 def test_arms_master_lifts_the_two_handed_offhand_restriction():
     kwargs = dict(main_weapon_id="weapon.flail", off_hand_id="weapon.dagger")
     with pytest.raises(ValueError, match="occupies both hands"):
@@ -67,6 +71,7 @@ def test_arms_master_lifts_the_two_handed_offhand_restriction():
     assert "compiler.ignore-difficult-to-use-restrictions" in accepted.construction_tags
 
 
+@pytest.mark.eligibility
 def test_master_of_arms_lifts_the_same_restriction_for_maneaters():
     kwargs = dict(
         main_weapon_id="weapon.double-handed-weapon", off_hand_id="weapon.sword",
@@ -81,6 +86,7 @@ def test_master_of_arms_lifts_the_same_restriction_for_maneaters():
     assert "compiler.master-of-arms" in accepted.construction_tags
 
 
+@pytest.mark.compilation
 def test_master_of_throwing_weapons_changes_the_compiled_limit():
     ordinary = compile_fighter(build(
         "lustria-savage-goblins", "trackers", collection="trollheim",
@@ -93,6 +99,7 @@ def test_master_of_throwing_weapons_changes_the_compiled_limit():
     assert master.missile_weapon_limit == 5
 
 
+@pytest.mark.eligibility
 def test_proven_warrior_accepts_younguns_and_rejects_other_profiles():
     rule = "band--black-orc-special-skills-proven-warrior"
     accepted = compile_fighter(build(
@@ -106,6 +113,7 @@ def test_proven_warrior_accepts_younguns_and_rejects_other_profiles():
         ))
 
 
+@pytest.mark.eligibility
 def test_renowned_virtue_requires_exactly_one_foreign_virtue():
     renowned = "band--renowned-virtue"
     with pytest.raises(ValueError, match="exactly one"):

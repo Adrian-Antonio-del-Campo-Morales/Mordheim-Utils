@@ -31,6 +31,8 @@ from jsonschema.exceptions import SchemaError
 
 from mordheim_knowledge.loader import knowledge_root
 
+SAFE_YAML_LOADER = getattr(yaml, "CSafeLoader", yaml.SafeLoader)
+
 #: Directory of the editorial contract inside ``contracts/``.
 CONTRACT_DIRECTORY = "knowledge-editorial-v1"
 
@@ -260,7 +262,7 @@ def validate_document(schema_path: str, payload: Any) -> list[str]:
 def _read_document(path: Path) -> tuple[dict | None, list[str]]:
     """Parsed YAML document plus the problems found while reading it."""
     try:
-        payload = yaml.safe_load(path.read_text(encoding="utf-8"))
+        payload = yaml.load(path.read_text(encoding="utf-8"), Loader=SAFE_YAML_LOADER)
     except (OSError, yaml.YAMLError) as exc:
         return None, [f"cannot read the document: {exc}"]
     if not isinstance(payload, dict):

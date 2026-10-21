@@ -33,6 +33,7 @@ def state(fighter):
     return initialize_fighter(fighter, tape(), 'init')
 
 
+@pytest.mark.compilation
 def test_printed_unique_kit_uses_its_own_defaults_and_no_slayer_berserker():
     owner = drenok()
     assert 'weapon.icefang-axe' in owner.main_weapon.tags
@@ -48,6 +49,7 @@ def test_printed_unique_kit_uses_its_own_defaults_and_no_slayer_berserker():
     assert not result.hit  # equal WS still needs 4; no Slayer charging +1.
 
 
+@pytest.mark.rule_behavior
 def test_icefang_parry_and_injury_bonus_reach_actual_attacks():
     owner, foe = drenok(), enemy(wounds=1)
     dice = tape(('a.hit', 4), ('a.wound', 4), ('a.injury.0', 4))
@@ -62,6 +64,7 @@ def test_icefang_parry_and_injury_bonus_reach_actual_attacks():
     assert result.parried
 
 
+@pytest.mark.rule_behavior
 def test_hide_six_saves_before_step_aside_and_does_not_supply_the_missile_face():
     owner, foe = drenok(), enemy()
     dice = tape(('a.hit', 4), ('a.parry', 1), ('a.wound', 5), ('a.armour', 6))
@@ -75,6 +78,7 @@ def test_hide_six_saves_before_step_aside_and_does_not_supply_the_missile_face()
 
 
 @pytest.mark.parametrize('roll,fighting', [(3, False), (4, True)])
+@pytest.mark.rule_behavior
 def test_last_wound_uses_its_four_plus_instead_of_injury_without_restoring_health(roll, fighting):
     owner, foe = drenok(), enemy(strength=8)
     current = replace(state(owner), wounds=1)
@@ -88,6 +92,7 @@ def test_last_wound_uses_its_four_plus_instead_of_injury_without_restoring_healt
     assert result.wounded and not result.saved
 
 
+@pytest.mark.rule_behavior
 def test_additional_wound_in_the_same_turn_does_not_repeat_or_roll_an_injury():
     owner, foe = drenok(), enemy(strength=8)
     current = replace(state(owner), wounds=0, drenok_fighting=True)
@@ -98,6 +103,7 @@ def test_additional_wound_in_the_same_turn_does_not_repeat_or_roll_an_injury():
     assert result.defender.active and result.defender.wounds == 0
 
 
+@pytest.mark.rule_behavior
 def test_zero_wound_drenok_fights_then_renews_in_both_player_turns_and_failure_ends_duel():
     owner, foe = drenok(), enemy()
     initial = initialize_duel(owner, foe, tape(), context=DuelContext(

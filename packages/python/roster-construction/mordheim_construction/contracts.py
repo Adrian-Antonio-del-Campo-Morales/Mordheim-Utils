@@ -27,7 +27,7 @@ TRAIT_TYPES = {
     "eagle_friends": int,
     "fauna_animal_kind": str, "animal_handler_leadership": int,
     "house_guard_house": str, "fighter_kind": str, "vampire_bloodline": str,
-    "mercenary_origin": str, "elf_kind": str, "creature_kind": str, "active_command": str, "righteous_charge_active": bool, "wheelo_fitting": str, "sex": str, "species": str, "lit_item": bool, "vampire": bool, "normal_animal": bool, "lizardman": bool,
+    "mercenary_origin": str, "elf_kind": str, "undead_kind": str, "creature_kind": str, "active_command": str, "righteous_charge_active": bool, "wheelo_fitting": str, "sex": str, "species": str, "lit_item": bool, "vampire": bool, "normal_animal": bool, "lizardman": bool,
     "stupidity": bool, "stupidity_exempt": bool, "stupidity_initial_failed": bool,
     "stupidity_leadership": int, "stupidity_leadership_bonus": int,
     # Printed Mob: how many other allied Peasants the caller supplies within

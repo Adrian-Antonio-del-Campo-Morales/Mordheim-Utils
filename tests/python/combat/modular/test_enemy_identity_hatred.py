@@ -18,6 +18,10 @@ from mordheim_combat_lab.verification.dice import StrictDice
 from mordheim_construction.compiler import compile_fighter
 from mordheim_core.models import FighterBuild
 from mordheim_knowledge.loader import knowledge_root
+import pytest
+
+
+pytestmark = pytest.mark.rule_behavior
 
 # The shared root resolves the documented knowledge overlay when one is exported,
 # so this family reads the same tree the rest of the construction suite reads.

@@ -113,14 +113,15 @@
 # grant; the fixture's characteristics are hand-built facts (the profile is never read for them
 # here) and the bearer contributes no attacks, so the incoming mace swing is the only one.
 #
-# The save holds on the printed 4 and no wound die follows: the save intercepts the hit.
+# The Mourngul's Haunter of the Dark improves the Ethereal save to 3+, so the save holds on the
+# printed 3 and no wound die follows: the save intercepts the hit.
 - audit_id: rule/mordheim/call-of-the-night-haint-mim/mourngul--ethereal/mechanic.ethereal-hit-save
   id: the-ethereal-save-holds-on-four
   covers: [ethereal-save]
   fighters:
     first:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
     second:
       collection: mordheim
       band_id: call-of-the-night-haint-mim
@@ -131,19 +132,21 @@
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.ethereal, value: 4}
+    - {key: round.0.first.attack.0.ethereal, value: 3}
   expect_rounds:
     0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
-# One face below the printed save lets the attack continue to the wound roll.
+# One face below the printed 3+ save lets the attack continue to the wound roll.
 - audit_id: rule/mordheim/call-of-the-night-haint-mim/mourngul--ethereal/mechanic.ethereal-hit-save
   id: one-face-below-the-ethereal-save-lets-the-wound-through
   covers: [ethereal-save]
   fighters:
     first:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
     second:
       collection: mordheim
       band_id: call-of-the-night-haint-mim
@@ -154,8 +157,10 @@
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.ethereal, value: 3}
+    - {key: round.0.first.attack.0.ethereal, value: 2}
     - {key: round.0.first.attack.0.wound, value: 4}
   expect_rounds:
     0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
@@ -169,7 +174,7 @@
     first:
       main_weapon_id: weapon.mace
       trait_overrides: {magical_attacks: true}
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
     second:
       collection: mordheim
       band_id: call-of-the-night-haint-mim
@@ -180,6 +185,8 @@
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
   expect_rounds:

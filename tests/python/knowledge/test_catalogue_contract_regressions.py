@@ -77,6 +77,7 @@ def document_with_eligibility(eligibility: dict | None) -> dict:
 
 
 # F042 — racial-maximum references stay resolved
+@pytest.mark.knowledge_integrity
 def test_f042_sisters_of_sigmar_links_the_human_maximum():
     effect = sisters_effect()
     assert HUMAN_MAXIMUM in catalog_tests.racial_maximum_ids()
@@ -87,6 +88,7 @@ def test_f042_sisters_of_sigmar_links_the_human_maximum():
     ) == []
 
 
+@pytest.mark.knowledge_integrity
 def test_f042_the_linked_maximum_covers_the_band_groups():
     """The linked entry is the one the band's registry groups declare."""
     maximums = {row["id"]: row for row in catalog_tests.load("catalog/rules/racial-maximums.yaml")["racial_maximums"]}
@@ -101,6 +103,7 @@ def test_f042_the_linked_maximum_covers_the_band_groups():
     assert band_groups & set(maximums[HUMAN_MAXIMUM].get("groups") or ()) == {"warband-group.human"}
 
 
+@pytest.mark.knowledge_integrity
 def test_f042_every_committed_band_rule_resolves_its_references():
     maximum_ids = catalog_tests.racial_maximum_ids()
     problems: list[str] = []
@@ -118,6 +121,7 @@ def test_f042_every_committed_band_rule_resolves_its_references():
     assert rules_with_maximums >= 20
 
 
+@pytest.mark.test_infrastructure
 def test_f042_a_missing_reference_is_still_reported():
     problems = catalog_tests.racial_maximum_reference_problems(
         "Sisters of Sigmar are Humans and use the Human racial maximum profile.",
@@ -127,6 +131,7 @@ def test_f042_a_missing_reference_is_still_reported():
     assert problems == ["synthetic: mentions a max profile without ref"]
 
 
+@pytest.mark.test_infrastructure
 def test_f042_an_unknown_maximum_reference_is_still_reported():
     problems = catalog_tests.racial_maximum_reference_problems(
         "The warband uses the maximum profile (campaign.limit.racial-maximum.dragon).",
@@ -136,6 +141,7 @@ def test_f042_an_unknown_maximum_reference_is_still_reported():
     assert problems == ["synthetic: unknown racial maximum campaign.limit.racial-maximum.dragon"]
 
 
+@pytest.mark.test_infrastructure
 def test_f042_an_inlined_statline_is_still_reported():
     problems = catalog_tests.racial_maximum_reference_problems(
         "The maximum characteristics profile (campaign.limit.racial-maximum.human) is "
@@ -146,6 +152,7 @@ def test_f042_an_inlined_statline_is_still_reported():
     assert problems == ["synthetic: inlines a statline"]
 
 
+@pytest.mark.test_infrastructure
 def test_f042_a_warband_size_maximum_is_not_a_racial_maximum():
     # A roster rule that mentions the maximum *warband size* is printed source
     # prose: it stays outside the reference contract, numbers included.
@@ -157,6 +164,7 @@ def test_f042_a_warband_size_maximum_is_not_a_racial_maximum():
 
 
 # F043 — the eligibility gate reads the editorial contract
+@pytest.mark.data_contract
 def test_f043_the_maintained_key_set_comes_from_the_contract():
     keys = catalog_tests.eligibility_keys()
     assert {"allow_band_ids", "allow_groups", "forbid_band_ids", "forbid_groups",
@@ -165,12 +173,14 @@ def test_f043_the_maintained_key_set_comes_from_the_contract():
         assert unknown not in keys
 
 
+@pytest.mark.data_contract
 def test_f043_the_committed_catalogue_matches_the_contract():
     assert catalog_tests.campaign_schema_problems(
         catalog_tests.campaign("hired-swords-and-dramatis.yaml")
     ) == []
 
 
+@pytest.mark.knowledge_integrity
 def test_f043_albino_stormvermin_keeps_its_localized_note():
     document = catalog_tests.campaign("hired-swords-and-dramatis.yaml")
     entry = next(row for row in document["hired_swords"] if row["id"] == ALBINO)
@@ -187,6 +197,7 @@ def test_f043_albino_stormvermin_keeps_its_localized_note():
     assert catalog_tests.campaign_schema_problems(document_with_eligibility(dict(eligibility))) == []
 
 
+@pytest.mark.data_contract
 def test_f043_a_valid_localized_note_is_accepted():
     assert catalog_tests.campaign_schema_problems(
         document_with_eligibility(dict(VALID_ELIGIBILITY))
@@ -195,6 +206,7 @@ def test_f043_a_valid_localized_note_is_accepted():
     assert catalog_tests.campaign_schema_problems(document_with_eligibility(None)) == []
 
 
+@pytest.mark.data_contract
 def test_f043_an_unknown_eligibility_key_is_still_rejected():
     block = {**VALID_ELIGIBILITY, "note_en": "Set in English."}
     assert catalog_tests.eligibility_reference_problems(
@@ -211,12 +223,14 @@ def test_f043_an_unknown_eligibility_key_is_still_rejected():
     "Just a string.",                                  # not a mapping
     {},                                                # missing the required `es`
 ])
+@pytest.mark.data_contract
 def test_f043_a_malformed_localized_note_is_still_rejected(note_i18n):
     block = {**VALID_ELIGIBILITY, "note_i18n": note_i18n}
     problems = catalog_tests.campaign_schema_problems(document_with_eligibility(block))
     assert problems, f"the contract accepted a malformed note_i18n: {note_i18n!r}"
 
 
+@pytest.mark.knowledge_integrity
 def test_f043_invalid_band_and_group_references_are_still_rejected():
     block = {
         **VALID_ELIGIBILITY,
@@ -231,6 +245,7 @@ def test_f043_invalid_band_and_group_references_are_still_rejected():
     ]
 
 
+@pytest.mark.data_contract
 def test_f043_expression_grammar_is_still_enforced():
     band_ids = catalog_tests.canonical_band_ids()
     groups = catalog_tests.warband_group_ids()
@@ -256,6 +271,7 @@ def test_f043_expression_grammar_is_still_enforced():
             catalog_tests.check_expression(broken, leaf_keys, band_ids, groups, "synthetic")
 
 
+@pytest.mark.data_contract
 def test_f043_the_contract_rejects_expression_next_to_allow_band_ids():
     # The schema declares `expression` and `allow_band_ids` mutually exclusive.
     block = {**VALID_ELIGIBILITY, "expression": {"band_id": SISTERS_BAND}}

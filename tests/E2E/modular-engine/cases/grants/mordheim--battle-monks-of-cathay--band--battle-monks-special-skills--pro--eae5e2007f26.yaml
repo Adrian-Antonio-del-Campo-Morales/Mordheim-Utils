@@ -214,13 +214,17 @@
   covers: [whole]
   # The table's printed permission: the Monks may use this list, so its published member
   # must be a legal selection for its printed recipient and the engagement must start.
+  # Both fighters carry a sword so the declared zero Attacks is not replaced by the
+  # printed unarmed attack; the observation stays the access itself.
   fighters:
     first:
       collection: mordheim
       band_id: battle-monks-of-cathay
       profile_id: dragon-monks
       special_rule_ids: [band--battle-monks-special-skills-energy-focus]
+      main_weapon_id: weapon.sword
     second:
+      main_weapon_id: weapon.sword
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
   initial_state: {first: {attacks: 0}, second: {attacks: 0}}
   duel_context: {charging: [], active_participant: first}
@@ -253,7 +257,7 @@
       band_id: battle-monks-of-cathay
       profile_id: emissary
       skill_ids: [skill.monster-slayer]
-      main_weapon_id: weapon.mace
+      main_weapon_id: weapon.sword
   expect_error: "skills are not available to battle-monks-of-cathay/emissary: ['skill.monster-slayer']"
 
 - audit_id: rule/mordheim/battle-monks-of-cathay/band--battle-monks-special-skills/profile.skill-access

@@ -94,6 +94,7 @@
     - {key: round.0.first.fear.charge.0, value: 3}
     - {key: round.0.first.fear.charge.1, value: 3}
     - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
@@ -112,6 +113,7 @@
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {state.second.wounds: 3, state.first.condition: STANDING, state.second.condition: STANDING}
@@ -167,12 +169,13 @@
       characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
     second: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: skeleton-warriors}
   initial_state:
-    second: {wounds: 2, attacks: 0}
+    second: {attacks: 0}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
   expect_rounds:
-    0: {attacks.0.damage: 1, state.second.wounds: 1, state.second.initiative_penalty: 0}
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN, state.second.initiative_penalty: 0}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

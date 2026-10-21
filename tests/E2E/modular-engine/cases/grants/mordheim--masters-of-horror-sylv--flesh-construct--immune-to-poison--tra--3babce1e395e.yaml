@@ -77,7 +77,7 @@
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 4}
   expect_rounds:
     0: {attacks.0.damage: 1, state.second.wounds: 1, state.second.initiative_penalty: 0}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

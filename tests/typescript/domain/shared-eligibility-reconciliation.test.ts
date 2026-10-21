@@ -11,10 +11,14 @@
 import { describe, expect, it } from "vitest";
 import {
   applicableRules,
+  carriedItemFacts,
+  profileFactsProjection,
+  tokenForbids,
   equipmentIssue,
   equipmentSetIssues,
   skillIssue,
   type BandPackage,
+  type BuildFacts,
   type Catalogue,
   type EditorialProfile,
   type ItemFacts,
@@ -24,6 +28,54 @@ import {
 const EMPTY_CATALOGUE: Catalogue = {
   packages: {}, foreign_packages: {}, mechanics: {}, mappings: {}, skills: {},
 };
+
+describe("selected weapon mechanics preserve restriction facts", () => {
+  it("retains the active grip's hands and the missile family across catalogue aliases", () => {
+    const catalogue: Catalogue = { ...EMPTY_CATALOGUE,
+      mechanics: { "weapon.halberd": { hands: 2 }, "weapon.pistol": { hands: 1 } },
+      items: {
+        halberd: { kind: "close-combat-weapon", mechanic_id: "weapon.halberd", tags: [] },
+        pistol: { kind: "ranged-weapon", mechanic_id: "weapon.pistol", tags: ["blackpowder"] },
+        pistol_brace: { kind: "trollheim-equipment", mechanic_id: "weapon.pistol", tags: ["blackpowder"] },
+      },
+    };
+    expect(tokenForbids("two-handed-weapons", "weapon.halberd", carriedItemFacts(catalogue, "weapon.halberd"))).toBe(true);
+    expect(tokenForbids("two-handed-weapons", "halberd", carriedItemFacts(catalogue, "halberd"))).toBe(true);
+    expect(tokenForbids("non-thrown-ranged", "weapon.pistol", carriedItemFacts(catalogue, "weapon.pistol"))).toBe(true);
+    expect(tokenForbids("two-handed-weapons", "weapon.pistol", carriedItemFacts(catalogue, "weapon.pistol"))).toBe(false);
+  });
+});
+
+describe("printed baseline of a selectable missile allowance", () => {
+  const rule = "band--savage-goblin-special-skills-master-of-throwing-weapons";
+  const pack: BandPackage = { band: { id: "lustria-savage-goblins" }, profiles: [], equipment_lists: [],
+    special_rules: [{ id: rule, eligibility: ["trackers"], applies_to: { band: true },
+      runtime: { grant: "selectable", implemented: "YES" },
+      bindings: [{ id: "profile.equipment-restrictions", parameters: {
+        max_missile_weapons: 5, baseline_max_missile_weapons: 2,
+      } }],
+    }],
+  };
+  const build = (selected: boolean): BuildFacts => ({
+    band_id: pack.band.id, profile_id: "trackers", main_weapon_id: "weapon.dagger",
+    armour_id: "armour.no-armour", main_material_id: "material.normal", off_material_id: "material.normal",
+    defence_ids: [], skill_ids: [], preparation_ids: [], special_rule_ids: selected ? [rule] : [], variant_ids: [],
+  });
+
+  it("uses the printed ordinary two and selected five without intersecting them", () => {
+    for (const [selected, maximum] of [[false, 2], [true, 5]] as const) {
+      const facts = profileFactsProjection({ pack, profile: { id: "trackers", type: "hero" }, build: build(selected),
+        additional_bindings: selected ? pack.special_rules[0]!.bindings : [] });
+      expect(facts.missile_weapon_limit?.map(bound => bound.maximum)).toEqual([maximum]);
+      expect(facts.missile_weapon_limit?.[0]?.exempt_item_ids).toEqual([]);
+    }
+  });
+
+  it("does not grant the baseline to a non-recipient", () => {
+    const facts = profileFactsProjection({ pack, profile: { id: "big-boss", type: "hero" }, build: build(false) });
+    expect(facts.missile_weapon_limit).toBeUndefined();
+  });
+});
 
 function profile(overrides: Partial<ProfileFacts> = {}): ProfileFacts {
   return {

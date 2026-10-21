@@ -97,7 +97,7 @@
     second:
       main_weapon_id: weapon.mace
       trait_overrides: {survivor: true}
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 0}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
@@ -117,7 +117,7 @@
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 0}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
@@ -139,8 +139,8 @@
     second:
       main_weapon_id: weapon.mace
       trait_overrides: {survivor: true}
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 0}
-  initial_state: {second: {condition: KNOCKED_DOWN, attacks: 0}}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {condition: KNOCKED_DOWN, attacks: 1}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:

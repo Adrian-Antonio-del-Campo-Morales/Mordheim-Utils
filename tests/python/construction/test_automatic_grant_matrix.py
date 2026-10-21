@@ -25,6 +25,8 @@ import pytest
 from mordheim_construction.compiler import compile_fighter
 from mordheim_core.models import FighterBuild
 
+pytestmark = pytest.mark.compilation
+
 COLLECTION = "mordheim"
 
 
@@ -373,6 +375,35 @@ def test_saurus_skill_prohibitions_are_scoped_to_the_eligible_profiles():
     assert "compiler.saurus-skill-prohibitions" not in skink.construction_tags
 
 
+@pytest.mark.parametrize(
+    ("band_id", "profile_id"),
+    (
+        ("lizardmen", "saurus-totem-warrior"),
+        ("lizardmen-lus", "saurus-totem-warriors"),
+        ("lizardmen", "saurus-braves"),
+        ("lizardmen-lus", "saurus-braves"),
+    ),
+)
+def test_saurus_prohibitions_reach_every_supported_origin(band_id, profile_id):
+    # "Saurus can never receive Academic skills and can never use missile
+    # weapons." Both printed origins share the compiler contract but name the
+    # Saurus profile with a different number.
+    with pytest.raises(ValueError, match="Academic skills are forbidden for Saurus"):
+        compile_band(band_id, profile_id, skill_ids=("skill.arcane-lore",))
+    with pytest.raises(ValueError, match="missile weapons are forbidden for Saurus"):
+        compile_band(band_id, profile_id, main_weapon_id="weapon.pistol")
+
+
+@pytest.mark.parametrize("band_id", ("lizardmen", "lizardmen-lus"))
+def test_saurus_prohibitions_do_not_leak_to_skinks(band_id):
+    with pytest.raises(ValueError) as academic:
+        compile_band(band_id, "skink-priest", skill_ids=("skill.arcane-lore",))
+    assert "forbidden for Saurus" not in str(academic.value)
+    with pytest.raises(ValueError) as missile:
+        compile_band(band_id, "skink-priest", main_weapon_id="weapon.pistol")
+    assert "forbidden for Saurus" not in str(missile.value)
+
+
 def test_bow_restrictions_limit_missile_weapons_for_the_whole_band():
     # "may be equipped with only one missile weapon at any time".
     outlaw = compile_band("outlaws-of-stirwood-forest-redux-fbg", "bandit-leader")
@@ -383,6 +414,8 @@ def test_bow_restrictions_limit_missile_weapons_for_the_whole_band():
 
 
 # profile equipment restrictions with a consumed consumption token
+# (the refusal is the compiled restriction's consumer; the primary guarantee is
+# that the printed restriction reaches the compiled fighter).
 def test_teeny_hands_forbids_armour_for_the_runts():
     bare = compile_band("snotlings-web", "runts")
     assert bare.armour_save == 7  # armour.no-armour compiles

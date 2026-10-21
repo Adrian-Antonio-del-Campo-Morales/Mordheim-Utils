@@ -72,6 +72,8 @@
   duel_context: {charging: [second], active_participant: second}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.second.stupidity.0, value: 1}
+    - {key: round.0.second.stupidity.1, value: 1}
     - {key: round.0.first.fear.charged.0, value: 5}
     - {key: round.0.first.fear.charged.1, value: 4}
     - {key: round.0.first.attack.0.hit, value: 4}
@@ -91,10 +93,13 @@
   duel_context: {charging: [second], active_participant: second}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.second.stupidity.0, value: 1}
+    - {key: round.0.second.stupidity.1, value: 1}
     - {key: round.0.first.fear.charged.0, value: 3}
     - {key: round.0.first.fear.charged.1, value: 3}
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.regeneration, value: 1}
   expect_rounds:
     0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 2, state.second.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

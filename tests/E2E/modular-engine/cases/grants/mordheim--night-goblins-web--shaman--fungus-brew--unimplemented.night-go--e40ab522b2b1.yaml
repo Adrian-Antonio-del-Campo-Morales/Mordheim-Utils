@@ -112,9 +112,9 @@
 # AUTHORED[fungus-dizzy]: 1 scenario.  The supplied input the previous note called missing is the compiler's
 #   own supplied-trait key: compiler.py maps `fungus_brew_dizzy` to condition.fungus-brew-dizzy
 #   (catalog/rules/conditions.yaml binds that condition to trait.fungus-brew-dizzy) and applies the printed
-#   "2 Dizzy = -1 Initiative" as initiative = max(1, initiative - 1).  The scenario supplies the trait through
-#   the fixture's trait_overrides device on a hand-built duelist declaring Initiative 4 and observes 3, with the
-#   opponent already out so no die of any kind is consumed.  The attack order that follows from the adjusted
+#   "2 Dizzy = -1 Initiative" as initiative = max(1, initiative - 1).  The scenario supplies the canonical
+#   condition.fungus-brew-dizzy through FighterBuild.condition_ids on a hand-built duelist declaring
+#   Initiative 4 and observes 3, with the opponent already out so no die of any kind is consumed.  The attack order that follows from the adjusted
 #   value is a consequence of the same datum and is not separately asserted.  REVIEWED still requires manual
 #   semantic review.
 # origin_id:
@@ -334,7 +334,7 @@
   fighters:
     first:
       main_weapon_id: weapon.mace
-      trait_overrides: {fungus_brew_dizzy: true}
+      condition_ids: [condition.fungus-brew-dizzy]
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 4, attacks: 1, leadership: 6}
     second:
       main_weapon_id: weapon.mace
@@ -346,8 +346,7 @@
     second:
       condition: OUT
   expect_initial:
-    first:
-      initiative: 3
+    first.initiative: 3
     second.condition: OUT
   expect_final:
     rounds_executed: 0
@@ -476,8 +475,8 @@
   rolls:
   - {key: round.0.second.attack.0.hit, value: 1}
   - {key: round.0.first.attack.0.hit, value: 5}
-  - {key: round.0.first.attack.0.wound, value: 5}
   - {key: round.0.first.attack.1.hit, value: 1}
+  - {key: round.0.first.attack.0.wound, value: 5}
   expect_rounds:
     0: {state.first.frenzy: true, state.first.stupidity_failed: false, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
@@ -503,7 +502,7 @@
   - {key: round.0.second.attack.0.hit, value: 4}
   - {key: round.0.second.attack.0.wound, value: 4}
   - {key: round.0.second.attack.0.injury.0, value: 1}
-  - {key: round.1.second.attack.0.hit, value: 1}
+  - {key: round.1.second.attack.0.wound, value: 1}
   - {key: round.2.first.stupidity.0, value: 6}
   - {key: round.2.first.stupidity.1, value: 6}
   - {key: round.2.second.attack.0.hit, value: 1}

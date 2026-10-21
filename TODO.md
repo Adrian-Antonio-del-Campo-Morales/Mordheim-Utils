@@ -15,6 +15,7 @@ implementation queue does not establish integrated correctness.
 | [Modular integration](#close-modular-integrated-verification) | Implementation queue closed; integrated verification pending | Run the scoped closure procedure on one integrated revision. |
 | [Web artefacts](#regenerate-the-web-artefacts) | Generation failures reported; current tree not rechecked | Reconcile translated labels and validate freshly generated data. |
 | [Combat Lab popover](#combat-lab-checklist-popover-closes-during-layout) | Failure observed; cause unknown | Reproduce the focused case and establish why the popover closes. |
+| [Test classification](#test-classification-coverage) | Every maintained Python suite classified and guarded; TypeScript/web pending | Give the TypeScript and web suites a runner-supported category; validate the new executor separately. |
 | [Optimized engines](#subsequent-vectorized-and-native-engine-work) | Follow-on work to scope | Complete modular verification before defining the porting delta. |
 | [Knowledge and translations](#knowledge-gaps) | Open follow-ups | Use canonical references and the live review queues. |
 
@@ -43,6 +44,66 @@ verification is still pending. Follow the
 - Rerun affected groups after fixes, then perform one final integrated
   confirmation on the delivered revision. Reuse valid output instead of
   repeating unchanged checks.
+- Reconcile the two reported `a-band-mate-without-the-immunity-is-tested-for-stupidity`
+  E2E scenarios (Mordheim and Trollheim Grizzled Veteran): the external delivery
+  reproduces their failures both before and after its patch. Check the supplied
+  Stupidity state and source-derived expectations; do not weaken the assertions.
+- Review Grizzled Veteran in
+  `sources/knowledge/bands/trollheim/chaos-streets-pit-fighters/special-rules.yaml`:
+  it still uses `grant: band` although its printed origin presents a selectable
+  Hero skill. Reconcile its construction and E2E recipients, as done for the
+  Mordheim origin, with focused proof.
+- Reconcile Battle Tongue's general runtime exclusion and the deferred
+  `norse-explorers-lustria` copy with the executable Norse special-skill variant;
+  preserve source-specific recipients and source-backed scope decisions.
+- Replace stale verification references to the absent
+  `test_t13_psychology_leadership.py` in the clause register using the maintained
+  registry utility and current executed evidence. Keep clause identities intact.
+- Reconcile the semantic scope/source digests of
+  `access-nagarythe-already-strength` after the construction-scenario integration.
+  The focused coordinator selection passes 39 checks; only
+  `test_redundant_access_mutation_is_justified_not_counted_as_detected` fails,
+  reporting stale scope and Powerful Build source digests. Review the actual
+  scope/source changes with the verifier work before updating the pins; do not
+  bypass provenance validation or infer global semantic closure.
+- Reconcile the wider semantic corpus against the maintained scope and sources.
+  The verifier integration improves stale-pin diagnostics but deliberately does
+  not renew evidence. Review scope changes, changed rule rows, band-context-only
+  changes and revised catalogue mechanics separately; update pins only after
+  the affected interpretations and witnesses have been checked. In particular,
+  preserve the reviewed dispositions for Inconsistency, Spectral Touch, Netter,
+  Energy Focus and Sea Dragon Cloak. Do not use a corpus-wide digest refresh as
+  semantic acceptance. The four focused verifier controls pass after integration;
+  the full semantic audit remains unresolved and was not rerun by the coordinator.
+- Complete the published warband-skill table route through `skill_ids` for
+  Amazons Lustria, Battle Monks of Cathay and Arabian Tomb Raiders
+  (E2E_0027, E2E_0032 and E2E_0031). The first two still fail with unknown
+  band-member mechanic IDs after their independent fixture corrections.
+  Reconcile table membership, canonical resolution and execution support in
+  the maintained TypeScript eligibility source and Python construction path;
+  regenerate the eligibility bundle instead of editing it directly. Preserve
+  the positive list-route scenarios and their out-of-table rejection controls.
+
+- Resolve the Noble special-skill admission contract (E2E_0022): its positive
+  scenario selects campaign-only `skill.trading-flair`, whereas construction
+  deliberately rejects legal named skills without a duel operator. Decide how
+  out-of-duel selections are represented before changing the scenario or
+  construction contract; do not add a fictitious close-combat no-op or turn the
+  positive admission claim into an incidental-error assertion.
+
+- Review the remaining Knights Feats members Combat Charge, Lancer and Armour
+  Specialist against their own source-specific contracts before admitting their
+  execution. The Sword Master list route is verified; it does not certify the
+  other feats, and partial placeholder operators were not integrated.
+- Complete the remaining E2E_0355 assignment: its two excluded Netter scenarios
+  are archived, while seven other scenarios remain active and were not verified
+  as a package here. Preserve their independent queue ownership.
+- Resolve admitted E2E coverage gaps under `MORDHEIM_E2E_REQUIRE_COMPLETE=1`
+  before global closure. Passing ordinary inventory checks after justified
+  exclusions does not establish completeness or positive semantic evidence.
+- Carry the modular whipcrack priority correction into optimized-backend parity
+  work. The vectorized proposal was deferred; this integration verifies only
+  the modular path and does not establish optimized parity.
 
 **Close when:** the applicable integrated checks, including the modular E2E
 battery, pass on the delivered revision,
@@ -93,6 +154,71 @@ lifecycle or the test's focus setup as appropriate.
 
 **Close when:** the existing focused case passes with the theme and width
 assertions preserved.
+
+### Test classification coverage
+
+**Status:** the eighteen primary categories are registered as pytest markers in
+`pyproject.toml` (with `--strict-markers`), per
+[the sequence contract](docs/reference/test-sequence.md#implementation), and
+`tests/conftest.py` rejects a
+collected item under a classified root that carries no primary category, several,
+or a marker that is not a category. The classified roots are
+`tests/python/{architecture,contracts,knowledge,construction,application,persistence,ui,cli,web,combat,verification}`
+and `tests/E2E/modular-engine`. On 2026-10-20 the full suite collected 12,959
+items, none outside those roots and none with zero or several categories; a
+temporary probe confirmed the guard rejects a missing and a doubled category and
+that `--strict-markers` rejects an unregistered marker. No functional test was
+executed for the annotations.
+
+An ordered entry point now exists (`tools/verification/test_sequence.py`, invoked
+as `python tools/mordheim-utils.py test-sequence`), added by a concurrent slice.
+Its seven self-tests under `tests/python/cli/test_test_sequence.py` are collected
+as `test_infrastructure`; the plugin itself lives under `tools/` and is therefore
+not a collected suite (`testpaths = ["tests"]`). Its ordering has not been
+validated here.
+
+The E2E corpus reconciles today: 1,779 case files declare 5,171 scenarios, all
+with unique `audit_id::id` identities, the loader collects 5,171 parameters, and
+`HEAD` declares the same 5,171. The readings of 5,183 and 5,174 reported by the
+concurrent delivery, and the 5,174 measured here mid-session, were transient
+working-tree states: the three declarations that existed then and are gone now
+are the carnival-of-chaos plague-cart `the-same-face-leaves-a-stunned-result-
+without-the-modifier` scenario and the ogre-hunting-party-web
+`a-declared-net-charge-knocks-the-enemy-down-and-the-charge-strikes-home` and
+`without-the-netter-rule-the-charge-asks-for-no-net-die` scenarios. No mechanism
+produces a nine-identity offset (no duplicate ids, no loader skip).
+
+**Pending:**
+
+- Classify the TypeScript and web suites executably, or keep the limitation
+  stated where they run. The installed runners have no per-test category tag
+  (`vitest --help` exposes `--testNamePattern`, `--project` and `--dir`;
+  `node:test` exposes `--test-name-pattern`), so a category has to live in the
+  file name or the test name. Native `test.projects` with wildcard `include`
+  selects cleanly (verified: 518 + 275 + 118 = 911 of 961 TypeScript items across
+  three directory projects). The minimal real change is a
+  `<name>.<category>.test.ts` token plus eighteen `**/*.<category>.test.ts`
+  projects, splitting only the five mixed files; it renames 158 files and changes
+  every Vitest report identity, so its consumers need a reviewable mapping first.
+- Keep the web suite invoked from `apps/warband-manager-web`: `tests/web/**`
+  resolves the generated artefacts from `process.cwd()`, so a repository-root
+  invocation collects with `ENOENT` one directory above the checkout even though
+  `outputs/web-public/knowledge/`, `build/generated/knowledge-web` and
+  `contracts/campaign-file-v5/fixtures` exist.
+- Re-collect after any concurrent edit that adds tests to a classified root: a
+  new test without a marker fails collection by design, and the guard covers
+  only the roots listed above.
+- Review the mixed files that are classified per function when a split would
+  improve selection. This pass moved no file, so several construction and
+  knowledge files carry four or five categories by case.
+- Validate the executor's ordering and failure policy on an integrated revision.
+  That belongs to the slice that added it; annotations and a plan printout do not
+  establish that a prerequisite runs before its consumers.
+
+**Close when:** every maintained executable test carries exactly one primary
+category and a runner-supported selection key, collection over the full suite
+reports no unclassified item in a classified root, and any remaining runner
+limitation is stated where it applies.
 
 ## Subsequent vectorized and native engine work
 

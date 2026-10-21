@@ -59,9 +59,7 @@
       trait_overrides: {causes_fear: true}
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
-    second: {collection: trollheim, band_id: chaos-streets-mordheim-inhabitants, profile_id: lunatics, main_weapon_id: weapon.mace}
-  initial_state:
-    second: {attacks: 1}
+    second: {collection: trollheim, band_id: chaos-streets-mordheim-inhabitants, profile_id: lunatics, main_weapon_id: weapon.club}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
@@ -80,9 +78,7 @@
       trait_overrides: {causes_fear: true}
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
-    second: {collection: trollheim, band_id: chaos-streets-mordheim-inhabitants, profile_id: lunatics, main_weapon_id: weapon.mace}
-  initial_state:
-    second: {attacks: 1}
+    second: {collection: trollheim, band_id: chaos-streets-mordheim-inhabitants, profile_id: lunatics, main_weapon_id: weapon.club}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
@@ -97,12 +93,12 @@
   id: a-frenzied-lunatic-auto-passes-the-head-injury-stupidity-test
   covers: [frenzy]
   fighters:
-    first: {collection: trollheim, band_id: chaos-streets-mordheim-inhabitants, profile_id: lunatics, main_weapon_id: weapon.mace}
+    first: {collection: trollheim, band_id: chaos-streets-mordheim-inhabitants, profile_id: lunatics, main_weapon_id: weapon.club}
     second:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
   initial_state:
-    first: {attacks: 1, resources_spent: [disability.6]}
+    first: {resources_spent: [disability.6]}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
@@ -120,9 +116,7 @@
     first:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 8, strength: 8, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
-    second: {collection: trollheim, band_id: chaos-streets-mordheim-inhabitants, profile_id: lunatics, main_weapon_id: weapon.mace}
-  initial_state:
-    second: {attacks: 1}
+    second: {collection: trollheim, band_id: chaos-streets-mordheim-inhabitants, profile_id: lunatics, main_weapon_id: weapon.club}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 2
   rolls:

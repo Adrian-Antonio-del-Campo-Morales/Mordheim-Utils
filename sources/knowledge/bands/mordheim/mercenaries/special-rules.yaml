@@ -64,15 +64,15 @@ rules:
     - swordsmen
 - id: band--reikland-command-radius
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.mercenaries.band.reikland-command-radius
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-twelve
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-twelve
   name: Reikland — Military Discipline
   effect: >-
     Reikland fighters may use their Captain's Leadership while within 12" instead of the normal 6".
@@ -89,6 +89,8 @@ rules:
       6" habituales.
   applies_to:
     band: true
+    profile_ids:
+    - mercenary-captain
 - id: band--reikland-marksman-training
   runtime:
     scope: 'NO'

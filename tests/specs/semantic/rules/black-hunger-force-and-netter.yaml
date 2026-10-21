@@ -12,7 +12,7 @@ specifications:
   - id: attack-bonus
     roles:
     - compiled
-    - active
+    - inactive
     - consumer
     - boundary
     operation: attacks
@@ -21,11 +21,36 @@ specifications:
       skill_ids:
       - mechanic.black-hunger
     expect:
-      attacker.global_effects.attacks_bonus: 1
-      result.attacks: 2
+      # Invocation belongs to the owner's turn, not the compiled passive set.
+      attacker.global_effects.attacks_bonus: 0
+      result.attacks: 1
     expect_contains:
       attacker.global_effects.tags:
       - mechanic.black-hunger
+  - id: own-turn-attack-bonus
+    roles:
+    - active
+    - sequence
+    - consumption
+    - boundary
+    operation: round
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - mechanic.black-hunger
+    context:
+      first_charged: true
+    rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.black-hunger.hits, sides: 3, value: 1}
+    - {key: round.0.first.black-hunger.hit.0.wound, value: 1}
+    expect:
+      result.attacks.0.hit: false
+      result.attacks.1.hit: false
+      result.attacks.2.hit: false
+      result.attacks.3.wounded: false
   - id: one-backlash-hit
     roles:
     - active
@@ -89,6 +114,7 @@ specifications:
     path: attacker.global_effects.tags
     value: []
     cases:
+    - own-turn-attack-bonus
     - one-backlash-hit
 - id: mechanic-force-of-will
   scope_digest: ea4090654a79e79bb19b0855371a062c6a9a10c1ab40f7d8abdb42634a425b97
@@ -368,19 +394,30 @@ specifications:
   - id: selected-effect
     roles:
     - accepted
-    operation: attacks
+    operation: round
     attacker:
       band_id: skaven-clan-eshin
       profile_id: assassin-adept
       special_rule_ids:
       - band--skaven-special-skills-black-hunger
+    context:
+      first_charged: true
+    rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.black-hunger.hits, sides: 3, value: 1}
+    - {key: round.0.first.black-hunger.hit.0.wound, value: 1}
     expect:
-      attacker.global_effects.attacks_bonus: 1
-      result.attacks: 2
+      attacker.global_effects.attacks_bonus: 0
+      result.attacks.0.hit: false
+      result.attacks.1.hit: false
+      result.attacks.2.hit: false
+      result.attacks.3.wounded: false
   mutations:
   - id: omit-black-hunger
-    path: attacker.global_effects.attacks_bonus
-    value: 0
+    path: attacker.global_effects.tags
+    value: []
     cases:
     - selected-effect
 - id: editorial-force-of-will-variants

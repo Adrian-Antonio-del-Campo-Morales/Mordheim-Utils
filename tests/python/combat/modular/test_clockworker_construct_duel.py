@@ -34,6 +34,7 @@ def mortal(**options):
                                         main_weapon_id="weapon.mace", **options))
 
 
+@pytest.mark.compilation
 def test_both_constructs_carry_their_admitted_immunities():
     for profile_id in CONSTRUCTS:
         fighter = construct(profile_id)
@@ -43,6 +44,7 @@ def test_both_constructs_carry_their_admitted_immunities():
         assert fighter.global_effects.poison_immunity
 
 
+@pytest.mark.rule_behavior
 def test_no_pain_downgrades_a_stunned_result_through_the_injury_consumer():
     # 1-2 knocked down, 3-4 stunned, 5+ out of action on the printed chart.
     stunned_total = 3
@@ -52,6 +54,7 @@ def test_no_pain_downgrades_a_stunned_result_through_the_injury_consumer():
     assert phases.injury_condition(stunned_total, mortal_context) == phases.Condition.STUNNED
 
 
+@pytest.mark.rule_behavior
 def test_a_poisoned_weapon_leaves_the_construct_unpoisoned():
     poisoner = mortal(main_poison_id="poison.black-lotus")
     assert "poison.black-lotus" in poisoner.main_weapon.tags
@@ -61,12 +64,14 @@ def test_a_poisoned_weapon_leaves_the_construct_unpoisoned():
     assert "poison.black-lotus" in kept.tags
 
 
+@pytest.mark.compilation
 def test_a_drug_does_not_reach_the_construct_and_still_reaches_the_hero():
     drug = "preparation.mad-cap-mushrooms"
     assert drug not in construct("clockwork-soldiers", preparation_ids=(drug,)).global_effects.tags
     assert drug in mortal(preparation_ids=(drug,)).global_effects.tags
 
 
+@pytest.mark.rule_behavior
 def test_the_construct_takes_no_fear_test_when_charged_by_a_fear_causer():
     fear_causer = construct("clockwork-fiend")
     assert psychology.causes_fear(fear_causer, mortal())
@@ -83,6 +88,7 @@ def test_the_construct_takes_no_fear_test_when_charged_by_a_fear_causer():
         psychology.resolve_fear(fear_causer, mortal(), mortal_state, ScriptedDice({}), AlwaysAccept())
 
 
+@pytest.mark.rule_behavior
 def test_the_construct_is_not_immune_to_being_disarmed():
     """The in-built clause bars a roster removal, not a disarm in the duel."""
     attacker = compile_fighter(FighterBuild("mordheim", Characteristics(4, 3, 3, 1, 4, 1),

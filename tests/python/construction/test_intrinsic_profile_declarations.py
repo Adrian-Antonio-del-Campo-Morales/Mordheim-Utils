@@ -89,6 +89,7 @@ DRAGON_MONK = ("pirates-of-the-cathayan-sea-sar", "dragon-monk")
 
 
 @pytest.mark.parametrize("band,profile,refused,strength,attacks,carried", C01B)
+@pytest.mark.compilation
 def test_every_profile_fights_with_its_printed_intrinsic_attack(
     band, profile, refused, strength, attacks, carried,
 ):
@@ -120,6 +121,7 @@ def test_every_profile_fights_with_its_printed_intrinsic_attack(
 
 
 @pytest.mark.parametrize("band,profile,refused,strength,attacks,carried", C01B)
+@pytest.mark.eligibility
 def test_every_profile_refuses_what_its_printed_line_refuses(
     band, profile, refused, strength, attacks, carried,
 ):
@@ -155,6 +157,7 @@ def test_every_profile_refuses_what_its_printed_line_refuses(
 
 
 @pytest.mark.parametrize("band,profile,refused,strength,attacks,carried", C01B)
+@pytest.mark.eligibility
 def test_the_selection_layer_offers_no_piece_the_printed_line_refuses(
     band, profile, refused, strength, attacks, carried,
 ):
@@ -172,6 +175,7 @@ def test_the_selection_layer_offers_no_piece_the_printed_line_refuses(
         assert offered_weapons <= kit, f"{band}/{profile} offers {offered_weapons - kit}"
 
 
+@pytest.mark.compilation
 def test_the_declared_intrinsic_consequences_reach_the_compiled_fighter():
     """The rules beside each line bind the operator the modular engine reads."""
     expectations = {
@@ -190,6 +194,7 @@ SCORPION = ("tomb-guardians", "tomb-scorpions")
 WITCH_ELVES = ("druchii-mic", "witch-elves")
 
 
+@pytest.mark.compilation
 def test_the_sting_applies_black_lotus_without_equipping_it():
     """The rider stays on the body attack and never becomes a carried flask."""
     scorpion = compiled(*SCORPION)
@@ -201,6 +206,7 @@ def test_the_sting_applies_black_lotus_without_equipping_it():
         compiled(*SCORPION, main_poison_id="poison.black-lotus")
 
 
+@pytest.mark.eligibility
 def test_the_intrinsic_rule_grants_no_equipment_access():
     """Neither the offer nor the canonical verdict reads the rider as a grant."""
     assert "poison.black-lotus" not in offered(*SCORPION)
@@ -214,6 +220,7 @@ def test_the_intrinsic_rule_grants_no_equipment_access():
     assert ("equipment_not_permitted", "poison.black-lotus") in blocked
 
 
+@pytest.mark.eligibility
 def test_a_profile_with_printed_access_keeps_its_purchased_poison():
     """The distinction is the declaration's, not a blanket poison filter."""
     assert "poison.black-lotus" in offered(*WITCH_ELVES)
@@ -222,6 +229,7 @@ def test_a_profile_with_printed_access_keeps_its_purchased_poison():
     assert "poison.black-lotus" in witch.main_weapon.tags
 
 
+@pytest.mark.rule_behavior
 def test_the_dragon_monks_unarmed_mastery_follows_the_body_attack():
     """'+1 Attack when doing so' is the body attack; the quarterstaff keeps A1."""
     monk = compiled("pirates-of-the-cathayan-sea-sar", "dragon-monk")
@@ -231,12 +239,14 @@ def test_the_dragon_monks_unarmed_mastery_follows_the_body_attack():
     assert phases.build_attacks(phases.AttackPoolContext(fighter=armed)).attacks == 1
 
 
+@pytest.mark.eligibility
 def test_the_dragon_monk_refuses_poison_on_his_legal_weapon():
     for poison in ("poison.black-lotus", "poison.black-venom"):
         with pytest.raises(ValueError, match="poison"):
             compiled(*DRAGON_MONK, main_weapon_id="weapon.quarter-staff", main_poison_id=poison)
 
 
+@pytest.mark.rule_behavior
 def test_the_dragon_monk_critical_threshold_belongs_only_to_body_attacks():
     from mordheim_combat.modular.attacks import _combined_effect
     from mordheim_combat.modular.contexts import prepare_wound_context
@@ -255,6 +265,7 @@ def test_the_dragon_monk_critical_threshold_belongs_only_to_body_attacks():
         dice.finish()
 
 
+@pytest.mark.rule_behavior
 def test_the_sabretusk_charge_replaces_its_single_attack():
     """The printed charge is A2, not a generic bonus on the A1 line."""
     sabretusk = compiled("ogre-hunting-party-web", "sabretusks")
@@ -263,6 +274,7 @@ def test_the_sabretusk_charge_replaces_its_single_attack():
         fighter=sabretusk, charging=True)).attacks == 2
 
 
+@pytest.mark.rule_behavior
 def test_the_spawn_rolls_its_attacks_in_a_real_round():
     """The Spawn's D6+1 is resolved by the duel, not only by a binding."""
     spawn = compiled("marauders-of-chaos", "spawn-of-chaos")

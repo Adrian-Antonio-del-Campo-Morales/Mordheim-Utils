@@ -64,6 +64,10 @@
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
+    # The Possessed causes Fear, so the warrior it charged tests first and passes.
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

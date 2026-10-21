@@ -86,11 +86,11 @@
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.parry, value: 5}
-    - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
-    0: {attacks.0.parried: True, attacks.0.wounded: False, state.second.wounds: 2}
+    0: {attacks.1.parried: True, attacks.1.wounded: False, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 - audit_id: mechanic/weapon.yari-two-handed
   id: yari-two-handed-occupies-both-hands-so-an-off-hand-weapon-is-refused
@@ -98,10 +98,10 @@
   fighters:
     first:
       main_weapon_id: weapon.yari-two-handed
+      off_hand_id: weapon.dagger
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
       main_weapon_id: weapon.mace
-      off_hand_id: weapon.dagger
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1

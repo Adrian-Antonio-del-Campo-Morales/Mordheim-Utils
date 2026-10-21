@@ -75,17 +75,20 @@ def strike(atk, dfn, rolls):
 
 # Chosen of the White Tower: parry without a buckler or a sword, and re-roll
 # that parry once the Elf is armed with a parrying weapon.
+@pytest.mark.rule_behavior
 def test_chosen_of_the_white_tower_parries_without_a_parrying_weapon():
     elf = canonical("adventurers-kaz", "elf", "weapon.dagger", skill_ids=WHITE_TOWER)
     assert _parry_capacity(elf) == 1
     assert strike(attacker(), elf, [("hit", 4), ("parry", 5)]).parried
 
 
+@pytest.mark.rule_behavior
 def test_an_unchosen_elf_gets_no_parry_from_the_shared_skill_table():
     plain = canonical("adventurers-kaz", "elf", "weapon.dagger")
     assert _parry_capacity(plain) == 0
 
 
+@pytest.mark.rule_behavior
 def test_chosen_of_the_white_tower_rerolls_only_a_sword_or_buckler_parry():
     unarmed = canonical("adventurers-kaz", "elf", "weapon.dagger", skill_ids=WHITE_TOWER)
     armed = canonical("adventurers-kaz", "elf", "weapon.sword", skill_ids=WHITE_TOWER)
@@ -99,6 +102,7 @@ def test_chosen_of_the_white_tower_rerolls_only_a_sword_or_buckler_parry():
     assert _parry_context(buckler, state(buckler), buckler.main_weapon, 3, 4, "p").reroll is True
 
 
+@pytest.mark.rule_behavior
 def test_chosen_of_the_white_tower_grants_no_reroll_to_another_parrying_weapon():
     # The skill still grants the parry itself, but its own re-roll is printed
     # only "if he is already armed in that way": a trident is a parrying weapon
@@ -112,6 +116,7 @@ def test_chosen_of_the_white_tower_grants_no_reroll_to_another_parrying_weapon()
     assert _parry_context(trident, state(trident), trident.main_weapon, 3, 4, "p").reroll is False
 
 
+@pytest.mark.rule_behavior
 def test_miniath_reroll_is_independent_of_the_chosen_skill():
     # Miniath (the canonical Lustria/High Elf band rule) keeps its own motive (a
     # native parrying weapon) and is not disturbed by separating the Chosen
@@ -128,6 +133,7 @@ def test_miniath_reroll_is_independent_of_the_chosen_skill():
 
 # Instinctive Warrior: the double-handed weapon parries as an ordinary sword
 # rather than becoming a parry with any weapon.
+@pytest.mark.rule_behavior
 def test_instinctive_warrior_parries_with_the_double_handed_weapon():
     barbarian = canonical(
         "adventurers-kaz", "barbarian", "weapon.double-handed-weapon", skill_ids=DOUBLE_HANDED)
@@ -135,16 +141,19 @@ def test_instinctive_warrior_parries_with_the_double_handed_weapon():
     assert strike(attacker(), barbarian, [("hit", 4), ("parry", 5)]).parried
 
 
+@pytest.mark.rule_behavior
 def test_instinctive_warrior_grants_nothing_to_a_one_handed_weapon():
     dagger = canonical("adventurers-kaz", "barbarian", "weapon.dagger", skill_ids=DOUBLE_HANDED)
     assert _parry_capacity(dagger) == 0
 
 
+@pytest.mark.rule_behavior
 def test_a_double_handed_weapon_alone_does_not_parry():
     plain = canonical("adventurers-kaz", "barbarian", "weapon.double-handed-weapon")
     assert _parry_capacity(plain) == 0
 
 
+@pytest.mark.rule_behavior
 def test_instinctive_warrior_keeps_the_ordinary_sword_parry_without_a_reroll():
     barbarian = canonical(
         "adventurers-kaz", "barbarian", "weapon.double-handed-weapon", skill_ids=DOUBLE_HANDED)
@@ -157,6 +166,7 @@ def test_instinctive_warrior_keeps_the_ordinary_sword_parry_without_a_reroll():
 # Dwarfs printed Parry: two Dwarf axes, or a Dwarf axe with a sword in either
 # hand order, give up the second parry and gain a single failed-parry reroll.
 # Two ordinary swords keep no reroll, and the parry limit stays at one.
+@pytest.mark.rule_behavior
 def test_two_dwarf_axes_re_roll_a_failed_parry():
     axes = bare("dwarf-slayers-kaz", "slayers", main_weapon_id="weapon.dwarf-axe",
                 off_hand_id="weapon.dwarf-axe")
@@ -164,6 +174,7 @@ def test_two_dwarf_axes_re_roll_a_failed_parry():
     assert _parry_context(axes, state(axes), axes.main_weapon, 3, 4, "p").reroll is True
 
 
+@pytest.mark.rule_behavior
 def test_a_dwarf_axe_and_a_sword_re_roll_the_parry_in_both_hand_orders():
     main_axe = bare("dwarf-slayers-kaz", "slayers", main_weapon_id="weapon.dwarf-axe",
                     off_hand_id="weapon.sword")
@@ -174,6 +185,7 @@ def test_a_dwarf_axe_and_a_sword_re_roll_the_parry_in_both_hand_orders():
     assert _parry_context(main_sword, state(main_sword), main_sword.main_weapon, 3, 4, "p").reroll is True
 
 
+@pytest.mark.rule_behavior
 def test_two_ordinary_swords_gain_no_failed_parry_reroll():
     swords = bare("dwarf-slayers-kaz", "slayers", main_weapon_id="weapon.sword",
                   off_hand_id="weapon.sword")
@@ -181,15 +193,18 @@ def test_two_ordinary_swords_gain_no_failed_parry_reroll():
     assert _parry_context(swords, state(swords), swords.main_weapon, 3, 4, "p").reroll is False
 
 
+@pytest.mark.rule_behavior
 def test_trickster_priest_ducks_hits_on_six():
     assert strike(attacker(), trickster(special_rule_ids=(MARKS,)),
                   [("hit", 6), ("marks-of-ranald", 6)]).saved
 
 
+@pytest.mark.rule_behavior
 def test_trickster_priest_without_the_mark_has_no_save():
     assert prepare_special_save_context(trickster(), EffectSet()).ward_save == 7
 
 
+@pytest.mark.rule_behavior
 def test_trickster_priest_duck_precedes_the_wound_and_the_critical():
     # The duck intercepts a landed hit before the To Wound roll, so no wound die
     # (and therefore no critical) is ever requested.  ``strike`` calls
@@ -201,6 +216,7 @@ def test_trickster_priest_duck_precedes_the_wound_and_the_critical():
     assert result.attacker.critical_available is True
 
 
+@pytest.mark.rule_behavior
 def test_trickster_priest_duck_consumes_no_resource_and_leaves_no_second_save():
     priest = trickster(special_rule_ids=(MARKS,))
     result = strike(attacker(), priest, [("hit", 6), ("marks-of-ranald", 6)])
@@ -211,6 +227,7 @@ def test_trickster_priest_duck_consumes_no_resource_and_leaves_no_second_save():
     assert prepare_special_save_context(priest, EffectSet()).ward_save == 7
 
 
+@pytest.mark.rule_behavior
 def test_trickster_priest_failing_duck_falls_through_to_the_wound_chain():
     result = strike(attacker(), trickster(special_rule_ids=(MARKS,)),
                     [("hit", 4), ("marks-of-ranald", 5), ("wound", 4), ("injury.0", 1)])
@@ -218,6 +235,7 @@ def test_trickster_priest_failing_duck_falls_through_to_the_wound_chain():
     assert result.defender.wounds == 0
 
 
+@pytest.mark.rule_behavior
 def test_trickster_priest_duck_is_unmodified_by_magical_attacks():
     # The printed clause covers every source "including magical attacks"; the
     # hellblade is the canonical magical producer and ducks exactly as usual.
@@ -239,6 +257,7 @@ def armour(attacker_strength, defender, weapon="weapon.mace", incoming=None):
     return phases.armour_target(context), context
 
 
+@pytest.mark.rule_behavior
 def test_fen_guard_bark_skin_caps_the_strength_penalty_at_six():
     dryads = canonical("fen-guard-mim", "dryads", "weapon.mace")
     assert armour(3, dryads)[0] == 6
@@ -246,6 +265,7 @@ def test_fen_guard_bark_skin_caps_the_strength_penalty_at_six():
     assert armour(6, dryads)[0] == 6
 
 
+@pytest.mark.rule_behavior
 def test_fen_guard_bark_skin_cutting_edge_is_exempt_from_the_strength_cap():
     dryads = canonical("fen-guard-mim", "dryads", "weapon.mace")
     # The printed exception ("except by weapons with the Cutting Edge rule"):
@@ -255,6 +275,7 @@ def test_fen_guard_bark_skin_cutting_edge_is_exempt_from_the_strength_cap():
     assert armour(6, dryads, "weapon.axe")[0] == 7
 
 
+@pytest.mark.rule_behavior
 def test_fen_guard_bark_skin_cutting_edge_denies_the_die_on_a_real_attack():
     dryads = canonical("fen-guard-mim", "dryads", "weapon.mace")
     # The same Strength 6 attack: the capped mace still asks for a 6+ hide die
@@ -268,6 +289,7 @@ def test_fen_guard_bark_skin_cutting_edge_denies_the_die_on_a_real_attack():
     assert axe.saved is False and axe.damage == 1
 
 
+@pytest.mark.rule_behavior
 def test_fen_guard_bark_skin_fire_ignores_only_the_hide_save():
     dryads = canonical("fen-guard-mim", "dryads", "weapon.mace")
     assert armour(3, dryads)[0] == 6
@@ -278,6 +300,7 @@ def test_fen_guard_bark_skin_fire_ignores_only_the_hide_save():
     assert armour(3, fimir, incoming=EffectSet(tags=("attack.fire",)))[0] == 5
 
 
+@pytest.mark.rule_behavior
 def test_fen_guard_bark_skin_fire_weapon_denies_the_die_on_a_real_attack():
     dryads = canonical("fen-guard-mim", "dryads", "weapon.mace")
     # brazier-iron is the canonical fire producer; the 6+ hide die is skipped
@@ -287,6 +310,7 @@ def test_fen_guard_bark_skin_fire_weapon_denies_the_die_on_a_real_attack():
     assert result.saved is False and result.damage == 1
 
 
+@pytest.mark.rule_behavior
 def test_halfling_layers_of_fat_ignores_enemy_strength():
     elder = canonical("halflings-mic", "halfling-elder", "weapon.mace")
     target, context = armour(6, elder)
@@ -294,6 +318,7 @@ def test_halfling_layers_of_fat_ignores_enemy_strength():
     assert target == 6
 
 
+@pytest.mark.rule_behavior
 def test_companion_filly_odd_covering_is_a_five_plus_save_negated_by_magic():
     filly = bare("order-of-the-mare-web", "companion-filly")
     mundane, context = armour(6, filly)
@@ -303,6 +328,7 @@ def test_companion_filly_odd_covering_is_a_five_plus_save_negated_by_magic():
     assert armour(6, filly, incoming=EffectSet(tags=("attack.magical",)))[0] == 7
 
 
+@pytest.mark.rule_behavior
 def test_companion_filly_covering_matches_the_dame_precedent():
     dame = bare("order-of-the-mare-web", "dame-of-the-mare")
     target, context = armour(6, dame)
@@ -311,6 +337,7 @@ def test_companion_filly_covering_matches_the_dame_precedent():
 
 # Connections to existing defence operators: the pending step was the
 # construction data that routes the printed item/note, not new behaviour.
+@pytest.mark.compilation
 def test_silent_brotherhood_cloak_is_the_buckler_item_it_names():
     master = bare("silent-brotherhood-sc", "silent-master", off_hand_id="defence.buckler")
     assert _parry_capacity(master) == 1
@@ -320,6 +347,7 @@ def test_silent_brotherhood_cloak_is_the_buckler_item_it_names():
         bare("silent-brotherhood-sc", "thugs", off_hand_id="defence.buckler")
 
 
+@pytest.mark.compilation
 def test_snerik_short_sword_is_the_kb_sword_item():
     snerik = bare("hirelings.dramatis-personae.2b", "hireling.dramatis.snerik-night-goblin-scout")
     assert _parry_capacity(snerik) == 0
@@ -328,11 +356,13 @@ def test_snerik_short_sword_is_the_kb_sword_item():
     assert sword.main_weapon.parry and _parry_capacity(sword) == 1
 
 
+@pytest.mark.rule_behavior
 def test_trident_parry_payload_is_consumed():
     trident = attacker(weapon="weapon.trident")
     assert trident.main_weapon.parry and _parry_capacity(trident) == 1
 
 
+@pytest.mark.compilation
 def test_white_wolf_pelt_resolves_to_the_six_plus_saving_throw():
     priest = bare("hirelings.hired-sword.2b",
                   "hireling.hired-sword.wolf-priest-of-ulric-miracle-workers")
@@ -340,11 +370,13 @@ def test_white_wolf_pelt_resolves_to_the_six_plus_saving_throw():
     assert "defence.wolf-pelt-cloak" in priest.global_effects.tags
 
 
+@pytest.mark.compilation
 def test_pristekk_shock_rod_is_consumed_as_a_shock_weapon():
     chieftain = bare("skaven-of-clan-pristekk-sc", "chieftain", main_weapon_id="weapon.shock-rod")
     assert _injury_context(chieftain, chieftain.main_weapon, "i").shock is True
 
 
+@pytest.mark.rule_behavior
 def test_mourngul_three_plus_ethereal_save_has_the_printed_threshold_and_magic_exception():
     unit = bare("call-of-the-night-haint-mim", "mourngul")
     assert unit.global_effects.ethereal_hit_save == 3
@@ -358,6 +390,7 @@ def test_mourngul_three_plus_ethereal_save_has_the_printed_threshold_and_magic_e
 
 
 @pytest.mark.parametrize("curse", [False, True])
+@pytest.mark.interaction
 def test_pooled_ranald_ducks_every_hit_and_skips_a_hit_already_saved_by_ethereal(curse):
     # Composition witness: it does not establish a canonical Ethereal Priest.
     atk = attacker()
@@ -385,6 +418,7 @@ def test_pooled_ranald_ducks_every_hit_and_skips_a_hit_already_saved_by_ethereal
     dice.finish()
 
 
+@pytest.mark.rule_behavior
 def test_ranald_plus_changes_one_own_hit_and_preserves_natural_face():
     unit = trickster(special_rule_ids=(MARKS,))
     target = attacker()
@@ -405,6 +439,7 @@ def test_ranald_plus_changes_one_own_hit_and_preserves_natural_face():
     decisions.finish()
 
 
+@pytest.mark.rule_behavior
 def test_ranald_minus_is_optional_and_the_resource_follows_the_owner_across_sites():
     unit = trickster(special_rule_ids=(MARKS,))
     dice = StrictDice([{"key": "own.test", "value": 5}, {"key": "own.hit", "value": 2}])
@@ -419,6 +454,7 @@ def test_ranald_minus_is_optional_and_the_resource_follows_the_owner_across_site
     decisions.finish()
 
 
+@pytest.mark.rule_behavior
 def test_oracle_reroll_is_shared_across_hit_and_wound_and_never_rerolls_a_reroll():
     # Local resource witness; the canonical selected Oracle is separately compiled.
     unit = attacker()
@@ -447,6 +483,7 @@ def test_oracle_reroll_is_shared_across_hit_and_wound_and_never_rerolls_a_reroll
     decisions.finish()
 
 
+@pytest.mark.rule_behavior
 def test_aenur_fixed_hit_threshold_retains_modifiers_and_automatic_hit_provenance():
     unit = bare("hirelings.dramatis-personae.core", "hireling.dramatis.aenur",
                 main_weapon_id="weapon.ienh-khain")
@@ -476,6 +513,7 @@ def test_aenur_fixed_hit_threshold_retains_modifiers_and_automatic_hit_provenanc
     ("hireling.hired-sword.priest-of-morr-miracle-workers.skill.augur",
      "hireling.hired-sword.priest-of-morr-miracle-workers"),
 ])
+@pytest.mark.rule_behavior
 def test_selected_oracle_and_augur_own_one_reroll_then_keep_it_spent_when_defending(mark, profile):
     unit = bare("hirelings.hired-sword.2b", profile, special_rule_ids=(mark,))
     target = attacker()
@@ -494,6 +532,7 @@ def test_selected_oracle_and_augur_own_one_reroll_then_keep_it_spent_when_defend
     dice.finish()
 
 
+@pytest.mark.rule_behavior
 def test_andanti_roll_under_ws_parry_has_strict_boundary_and_retains_strength_limit():
     unit = bare("dreamwalkers-cult-of-morr-fbg", "andanti",
                 main_weapon_id="weapon.rapier", off_hand_id="weapon.main-gauche")
@@ -509,6 +548,7 @@ def test_andanti_roll_under_ws_parry_has_strict_boundary_and_retains_strength_li
         attacker_strength=2 * context.defender_strength), StrictDice([])).attempted
 
 
+@pytest.mark.rule_behavior
 def test_greenskin_traitor_grants_hatred_to_the_enemy_only_with_psychology_and_first_round_limits():
     scout = bare("hirelings.hired-sword.1c", "hireling.hired-sword.hobgoblin-scout")
     greenskin = attacker()
@@ -527,6 +567,7 @@ def test_greenskin_traitor_grants_hatred_to_the_enemy_only_with_psychology_and_f
     assert not reroll(immune, scout)
 
 
+@pytest.mark.rule_behavior
 def test_djinn_curse_modifies_enemy_melee_hits_and_each_ordinary_save_once():
     # Only the selected, still active power contributes penalties.
     unit, target = attacker(), attacker()
@@ -546,6 +587,7 @@ def test_djinn_curse_modifies_enemy_melee_hits_and_each_ordinary_save_once():
     assert (special.ward_save, special.regeneration_save) == (6, 5)
 
 
+@pytest.mark.rule_behavior
 def test_corruption_can_force_one_eligible_successful_hit_to_reroll_without_rerolling_a_reroll():
     unit, target = attacker(), attacker()
     target = replace(target, global_effects=replace(target.global_effects,
@@ -566,6 +608,7 @@ def test_corruption_can_force_one_eligible_successful_hit_to_reroll_without_rero
     dice.finish()
 
 
+@pytest.mark.rule_behavior
 def test_rememberer_uses_one_selected_pool_with_variant_recipient_and_expiry_limits():
     unit = canonical("dwarf-slayers-kaz", "giant-slayer", "weapon.mace",
         condition_ids=("condition.rememberer-kaz-support",))
@@ -605,6 +648,7 @@ def test_rememberer_uses_one_selected_pool_with_variant_recipient_and_expiry_lim
     decisions.finish()
 
 
+@pytest.mark.rule_behavior
 def test_shaggy_hide_combines_normal_armour_but_respects_the_specific_leather_exception():
     unit = canonical("beastmen-raiders", "beastmen-chieftain", "weapon.mace",
         armour_id="armour.light-armour", off_hand_id="defence.shield",
@@ -618,6 +662,7 @@ def test_shaggy_hide_combines_normal_armour_but_respects_the_specific_leather_ex
     assert armour(3, free)[0] == 6
 
 
+@pytest.mark.interaction
 def test_achilles_heel_criticals_when_needing_six_and_stampede_denies_only_charge_armour():
     unit, target = attacker(), attacker()
     unit = replace(unit, global_effects=replace(unit.global_effects,
@@ -644,6 +689,7 @@ def test_achilles_heel_criticals_when_needing_six_and_stampede_denies_only_charg
     dice.finish()
 
 
+@pytest.mark.rule_behavior
 def test_darting_steel_requires_both_under_ws_and_no_more_than_the_highest_hit_roll():
     unit = compile_fighter(FighterBuild("mordheim", Characteristics(4, 3, 3, 2, 3, 1, leadership=7),
         main_weapon_id="weapon.sword", off_hand_id="defence.buckler"))
@@ -661,6 +707,7 @@ def test_darting_steel_requires_both_under_ws_and_no_more_than_the_highest_hit_r
     dice.finish()
 
 
+@pytest.mark.rule_behavior
 def test_persistent_frenzy_survives_the_immediate_stunned_injury_transition():
     unit, target = attacker(), attacker()
     target = replace(target, global_effects=replace(target.global_effects,
@@ -673,6 +720,7 @@ def test_persistent_frenzy_survives_the_immediate_stunned_injury_transition():
     dice.finish()
 
 
+@pytest.mark.rule_behavior
 def test_self_backlash_has_one_roll_resource_owner_across_wound_and_save():
     unit = attacker()
     unit = replace(unit, global_effects=replace(unit.global_effects,
@@ -690,6 +738,7 @@ def test_self_backlash_has_one_roll_resource_owner_across_wound_and_save():
     decisions.finish()
 
 
+@pytest.mark.rule_behavior
 def test_inconsistency_rolls_only_the_characteristics_needed_after_a_hit_and_caches_them():
     unit, target = attacker(), attacker()
     unit = replace(unit, global_effects=replace(unit.global_effects,
@@ -712,6 +761,7 @@ def test_inconsistency_rolls_only_the_characteristics_needed_after_a_hit_and_cac
     dice.finish()
 
 
+@pytest.mark.rule_behavior
 def test_an_indestructible_weapon_can_be_parried_without_a_trap_blade_break_roll():
     unit, target = attacker(weapon="weapon.sword"), attacker(weapon="weapon.sword-breaker")
     unit = replace(unit, main_weapon=replace(unit.main_weapon,
@@ -720,6 +770,7 @@ def test_an_indestructible_weapon_can_be_parried_without_a_trap_blade_break_roll
     assert result.parried and not result.attacker.broken_hands
 
 
+@pytest.mark.interaction
 def test_ranald_modified_six_keeps_its_physical_five_for_pooled_equal_parry():
     unit = trickster(special_rule_ids=(MARKS,))
     target = attacker(weapon="weapon.sword")
@@ -735,6 +786,7 @@ def test_ranald_modified_six_keeps_its_physical_five_for_pooled_equal_parry():
     decisions.finish()
 
 
+@pytest.mark.interaction
 def test_ethereal_and_step_aside_do_not_combine_but_magical_attacks_can_use_step_aside():
     target = attacker()
     target = replace(target, global_effects=replace(target.global_effects,
@@ -747,6 +799,7 @@ def test_ethereal_and_step_aside_do_not_combine_but_magical_attacks_can_use_step
 
 
 @pytest.mark.parametrize("persistent", [False, True])
+@pytest.mark.interaction
 def test_direct_titanic_knockdown_ends_ordinary_frenzy_only(persistent):
     unit, target = attacker(), attacker()
     unit = replace(unit, global_effects=replace(unit.global_effects,
@@ -762,6 +815,7 @@ def test_direct_titanic_knockdown_ends_ordinary_frenzy_only(persistent):
     assert result.defender.frenzy == persistent
 
 
+@pytest.mark.rule_behavior
 def test_djinn_passive_capability_has_no_curse_and_active_luck_respects_missing_intrinsic_save():
     unit = attacker()
     unit = replace(unit, global_effects=replace(unit.global_effects,
@@ -779,6 +833,7 @@ def test_djinn_passive_capability_has_no_curse_and_active_luck_respects_missing_
 
 @pytest.mark.parametrize("injury,damage,condition", [(1, 0, phases.Condition.STANDING),
     (2, 1, phases.Condition.KNOCKED_DOWN), (4, 1, phases.Condition.STUNNED)])
+@pytest.mark.rule_behavior
 def test_inured_to_pain_ignores_zero_injury_damage_and_keeps_other_boundaries(injury, damage, condition):
     target = attacker()
     target = replace(target, characteristics=replace(target.characteristics, wounds=1),
@@ -790,6 +845,7 @@ def test_inured_to_pain_ignores_zero_injury_damage_and_keeps_other_boundaries(in
 
 
 @pytest.mark.parametrize("strength_roll,held", [(1, False), (2, True)])
+@pytest.mark.rule_behavior
 def test_gaoler_grapple_replaces_all_attacks_and_uses_strict_under_strength_minus_one(strength_roll, held):
     unit = canonical("hirelings.hired-sword.1b", "hireling.hired-sword.gaoler", "weapon.flail",
         owned_item_ids=("flail",))
@@ -804,6 +860,7 @@ def test_gaoler_grapple_replaces_all_attacks_and_uses_strict_under_strength_minu
     dice.finish(); decisions.finish()
 
 
+@pytest.mark.rule_behavior
 def test_giggle_juice_replaces_one_attack_with_strength_two_and_consumes_one_battle_resource():
     unit = bare("hirelings.dramatis-personae.2a", "hireling.dramatis.the-foole")
     target = attacker()
@@ -823,6 +880,7 @@ def test_giggle_juice_replaces_one_attack_with_strength_two_and_consumes_one_bat
     dice.finish(); decisions.finish()
 
 
+@pytest.mark.rule_behavior
 def test_electrical_forfeit_removes_only_nominated_offhand_and_no_sole_stunned_finisher():
     unit = compile_fighter(FighterBuild("mordheim", Characteristics(3, 3, 3, 1, 3, 1),
         main_weapon_id="weapon.mace", off_hand_id="weapon.dagger"))
@@ -845,6 +903,7 @@ def test_electrical_forfeit_removes_only_nominated_offhand_and_no_sole_stunned_f
 
 @pytest.mark.parametrize("last,damage,remaining,condition", [
     (1, 0, 1, phases.Condition.STANDING), (4, 1, 0, phases.Condition.STUNNED)])
+@pytest.mark.rule_behavior
 def test_inured_zero_cancels_each_multiwound_injury_and_its_nightshade_penalty(last, damage, remaining, condition):
     unit, target = attacker(), attacker()
     unit = replace(unit, global_effects=replace(unit.global_effects,
@@ -860,6 +919,7 @@ def test_inured_zero_cancels_each_multiwound_injury_and_its_nightshade_penalty(l
 
 @pytest.mark.parametrize("tag", ["nature.undead", "nature.daemon", "nature.dead",
     "mechanic.pain-immunity", "size.large"])
+@pytest.mark.eligibility
 def test_gaoler_does_not_offer_grapple_to_an_excluded_recipient(tag):
     unit, target = attacker(), attacker()
     unit = replace(unit, global_effects=replace(unit.global_effects,
@@ -872,6 +932,7 @@ def test_gaoler_does_not_offer_grapple_to_an_excluded_recipient(tag):
     dice.finish(); decisions.finish()
 
 
+@pytest.mark.interaction
 def test_giggle_poison_immunity_cancels_the_whole_spray_and_the_once_battle_resource_stays_spent():
     unit = bare("hirelings.dramatis-personae.2a", "hireling.dramatis.the-foole")
     target = attacker()
@@ -890,6 +951,7 @@ def test_giggle_poison_immunity_cancels_the_whole_spray_and_the_once_battle_reso
 
 
 @pytest.mark.parametrize("condition", [phases.Condition.KNOCKED_DOWN, phases.Condition.STUNNED])
+@pytest.mark.rule_behavior
 def test_electrical_fixed_strength_hit_still_rolls_to_wound_a_helpless_target(condition):
     from mordheim_combat.modular.pools import electrical_touch_weapon
     unit, target = attacker(), attacker()
@@ -903,6 +965,7 @@ def test_electrical_fixed_strength_hit_still_rolls_to_wound_a_helpless_target(co
     dice.finish()
 
 
+@pytest.mark.interaction
 def test_trip_roll_belongs_to_the_jester_and_uses_no_wound_die():
     unit, target = attacker(), attacker()
     unit = replace(unit, global_effects=replace(unit.global_effects,
@@ -922,6 +985,7 @@ def test_trip_roll_belongs_to_the_jester_and_uses_no_wound_die():
     dice.finish(); decisions.finish()
 
 
+@pytest.mark.rule_behavior
 def test_excellent_reflexes_has_one_special_save_with_a_source_bound_dodge_upgrade():
     unit = canonical('hirelings.hired-sword.1b','hireling.hired-sword.tomb-robber','weapon.sword')
     incoming = EffectSet(tags=("attack.magical",))
@@ -936,6 +1000,7 @@ def test_excellent_reflexes_has_one_special_save_with_a_source_bound_dodge_upgra
 
 
 @pytest.mark.parametrize('upgraded,roll',[(False,5),(True,4)])
+@pytest.mark.rule_behavior
 def test_native_tomb_robber_special_save_resolves_actual_magical_wound(upgraded,roll):
     target = canonical('hirelings.hired-sword.1b','hireling.hired-sword.tomb-robber','weapon.sword',
         condition_ids=('condition.tomb-robber-dodge-known',) if upgraded else ())
@@ -946,6 +1011,7 @@ def test_native_tomb_robber_special_save_resolves_actual_magical_wound(upgraded,
 
 
 @pytest.mark.parametrize('incoming_tag',[None,'attack.magical','attack.blessed'])
+@pytest.mark.rule_behavior
 def test_native_chaos_fury_natural_armour_and_printed_denials(incoming_tag):
     target = canonical('hirelings.hired-sword.2a','hireling.hired-sword.chaos-fury','weapon.natural-attacks')
     assert phases.has_tag(target.global_effects,'attack.magical')
@@ -958,6 +1024,7 @@ def test_native_chaos_fury_natural_armour_and_printed_denials(incoming_tag):
     assert result.saved == (incoming_tag is None)
 
 
+@pytest.mark.rule_behavior
 def test_native_magic_acorn_automatically_replaces_only_one_actual_first_round_miss():
     unit = compile_fighter(FighterBuild('mordheim',Characteristics(3,3,3,2,3,2),
         main_weapon_id='weapon.mace',defence_ids=('defence.magic-acorn',),
@@ -973,6 +1040,7 @@ def test_native_magic_acorn_automatically_replaces_only_one_actual_first_round_m
     dice.finish()
 
 
+@pytest.mark.eligibility
 def test_magic_acorn_is_hero_only_and_does_not_replace_later_round_misses():
     with pytest.raises(ValueError,match='Hero|hero'):
         compile_fighter(FighterBuild('mordheim',Characteristics(3,3,3,2,3,1),
@@ -992,6 +1060,7 @@ def veskit():
 
 @pytest.mark.parametrize('injury,condition',[(1,phases.Condition.STANDING),
     (3,phases.Condition.STANDING),(5,phases.Condition.OUT)])
+@pytest.mark.rule_behavior
 def test_native_veskit_ignores_injury_states_without_healing_or_skipping_out(injury,condition):
     unit,target = attacker(strength=6),veskit()
     dice = StrictDice([{'key':'x.hit','value':6},{'key':'x.wound','value':3},
@@ -1003,6 +1072,7 @@ def test_native_veskit_ignores_injury_states_without_healing_or_skipping_out(inj
     dice.finish()
 
 
+@pytest.mark.compilation
 def test_native_veskit_keeps_four_attacks_and_uses_fixed_strength_five_total_penetration_three():
     from mordheim_combat.modular.contexts import _attack_strength
     unit,target = veskit(),attacker()
@@ -1013,6 +1083,7 @@ def test_native_veskit_keeps_four_attacks_and_uses_fixed_strength_five_total_pen
     assert unit.natural_armour_save == 3 and not unit.natural_armour_unmodified
 
 
+@pytest.mark.rule_behavior
 def test_native_veskit_claws_follow_the_adopted_one_parry_and_failed_reroll():
     target = veskit()
     assert _parry_capacity(target) == 1
@@ -1024,6 +1095,7 @@ def lucky_ranger():
         special_rule_ids=('hireling.hired-sword.elf-ranger.skill.luck',))
 
 
+@pytest.mark.rule_behavior
 def test_native_ranger_luck_can_spend_the_shared_resource_on_own_leadership_then_not_a_hit():
     from mordheim_combat.modular.leadership import resolve_local_leadership
     from mordheim_combat.modular.state import DuelState
@@ -1041,6 +1113,7 @@ def test_native_ranger_luck_can_spend_the_shared_resource_on_own_leadership_then
     dice.finish()
 
 
+@pytest.mark.rule_behavior
 def test_native_ranger_may_reroll_a_successful_own_wound_and_must_keep_the_worse_second_roll():
     unit,target = lucky_ranger(),attacker()
     dice = StrictDice([{'key':'x.hit','value':6},{'key':'x.wound','value':4},{'key':'x.wound.reroll','value':1}])
@@ -1054,6 +1127,7 @@ def test_native_ranger_may_reroll_a_successful_own_wound_and_must_keep_the_worse
     ('hireling.dramatis.countess-marianna-chevaux-vampire-assassin','hirelings.dramatis-personae.1a','weapon.rapier'),
     ('hireling.dramatis.sigmund-spindle-the-harvester-of-flesh','hirelings.dramatis-personae.2a','weapon.scythe')])
 @pytest.mark.parametrize('injury,condition',[(1,phases.Condition.STANDING),(3,phases.Condition.STANDING),(5,phases.Condition.OUT)])
+@pytest.mark.rule_behavior
 def test_native_marianna_and_sigmund_source_distinct_no_pain_compositions(profile,band,weapon,injury,condition):
     unit,target = attacker(strength=6),canonical(band,profile,weapon)
     dice = StrictDice([{'key':'x.hit','value':6},{'key':'x.wound','value':3},
@@ -1066,6 +1140,7 @@ def test_native_marianna_and_sigmund_source_distinct_no_pain_compositions(profil
 
 @pytest.mark.parametrize('magic,save,condition',[(False,4,phases.Condition.STANDING),
     (False,3,phases.Condition.KNOCKED_DOWN),(True,None,phases.Condition.KNOCKED_DOWN)])
+@pytest.mark.rule_behavior
 def test_native_bone_goliath_ignores_injury_only_on_four_and_magic_denies_it(magic,save,condition):
     unit = attacker(strength=6)
     if magic: unit = replace(unit,global_effects=replace(unit.global_effects,tags=(*unit.global_effects.tags,'attack.magical')))
@@ -1079,6 +1154,7 @@ def test_native_bone_goliath_ignores_injury_only_on_four_and_magic_denies_it(mag
     dice.finish()
 
 
+@pytest.mark.operator
 def test_the_highest_of_several_injury_results_applies():
     unit, target = attacker(), attacker()
     unit = replace(unit, global_effects=replace(unit.global_effects, damage=2))
@@ -1092,6 +1168,7 @@ def test_the_highest_of_several_injury_results_applies():
     assert survived.defender.condition == phases.Condition.STUNNED
 
 
+@pytest.mark.rule_behavior
 def test_bone_goliath_checks_each_injury_and_keeps_the_unignored_result():
     unit,target = attacker(strength=6),canonical('hirelings.hired-sword.1c','hireling.hired-sword.bone-goliath','weapon.natural-attacks')
     unit = replace(unit,main_weapon=replace(unit.main_weapon,damage=2))
@@ -1105,6 +1182,7 @@ def test_bone_goliath_checks_each_injury_and_keeps_the_unignored_result():
 
 
 @pytest.mark.parametrize("luck", [False, True])
+@pytest.mark.interaction
 def test_intrinsic_djinn_save_is_unmodifiable_but_luck_replacement_is_an_ordinary_ward(luck):
     unit, target = attacker(), attacker()
     tags = ("mechanic.djinn-ethereal", "mechanic.ranalds-luck")
@@ -1128,6 +1206,7 @@ def test_intrinsic_djinn_save_is_unmodifiable_but_luck_replacement_is_an_ordinar
     ("mechanic.djinn-ethereal", "x.special.ward", 5),
 ])
 @pytest.mark.parametrize("passes", [False, True])
+@pytest.mark.interaction
 def test_active_curse_preserves_the_printed_unmodifiable_save(source, key, face, passes):
     unit, target = attacker(), attacker()
     unit = replace(unit, global_effects=replace(unit.global_effects,
@@ -1150,6 +1229,7 @@ def test_active_curse_preserves_the_printed_unmodifiable_save(source, key, face,
 
 
 @pytest.mark.parametrize("face,saved", [(4, False), (5, True)])
+@pytest.mark.interaction
 def test_curse_preserves_daemonic_flesh_face_and_its_roll_is_unmodifiable(face, saved):
     unit = attacker()
     unit = replace(unit, global_effects=replace(unit.global_effects,
@@ -1169,6 +1249,7 @@ def test_curse_preserves_daemonic_flesh_face_and_its_roll_is_unmodifiable(face, 
 
 
 @pytest.mark.parametrize("luck,ordinary_face", [(True, 5), (False, 4)])
+@pytest.mark.interaction
 def test_curse_keeps_a_stronger_ordinary_djinn_ward_modifiable(luck, ordinary_face):
     unit, target = attacker(), attacker()
     unit = replace(unit, global_effects=replace(unit.global_effects,
@@ -1191,6 +1272,7 @@ def test_curse_keeps_a_stronger_ordinary_djinn_ward_modifiable(luck, ordinary_fa
 
 
 @pytest.mark.parametrize("incoming_tag", [None, "attack.magical", "attack.blessed"])
+@pytest.mark.rule_behavior
 def test_daemonic_flesh_is_unmodifiable_natural_armour_with_both_printed_denials(incoming_tag):
     unit = attacker(strength=6)
     if incoming_tag:
@@ -1212,6 +1294,7 @@ def test_daemonic_flesh_is_unmodifiable_natural_armour_with_both_printed_denials
     dice.finish(); decisions.finish()
 
 
+@pytest.mark.rule_behavior
 def test_native_gaoler_zero_injury_preserves_its_current_last_wound():
     unit = attacker(strength=4)
     target = canonical("hirelings.hired-sword.1b", "hireling.hired-sword.gaoler", "weapon.flail",
@@ -1225,6 +1308,7 @@ def test_native_gaoler_zero_injury_preserves_its_current_last_wound():
     dice.finish()
 
 
+@pytest.mark.rule_behavior
 def test_native_centaur_adds_one_trample_without_its_spear_charge_bonus():
     unit = canonical("hirelings.hired-sword.1c", "hireling.hired-sword.chaos-centaur", "weapon.spear",
         off_hand_id="defence.shield", owned_item_ids=("throwing_axe", "shield", "spear"))
@@ -1239,6 +1323,7 @@ def test_native_centaur_adds_one_trample_without_its_spear_charge_bonus():
 
 
 @pytest.mark.parametrize("tag,eligible", [(None, True), ("attack.magical", True), ("attack.fire", False)])
+@pytest.mark.rule_behavior
 def test_native_belandysh_uses_four_plus_wound_regeneration_except_fire(tag, eligible):
     target = bare("hirelings.dramatis-personae.1c", "hireling.dramatis.belandysh-condemned-champion-of-chen",
         main_weapon_id="weapon.broadsword-of-damnation", armour_id="armour.chaos-armour",
@@ -1251,6 +1336,7 @@ def test_native_belandysh_uses_four_plus_wound_regeneration_except_fire(tag, eli
     dice.finish()
 
 
+@pytest.mark.rule_behavior
 def test_plague_carrier_retries_after_resistance_then_infects_that_enemy_only_once():
     unit, target = attacker(), attacker()
     unit = replace(unit, global_effects=replace(unit.global_effects,
@@ -1271,6 +1357,7 @@ def test_plague_carrier_retries_after_resistance_then_infects_that_enemy_only_on
 
 
 @pytest.mark.parametrize("nature", ["nature.undead", "nature.daemon", "nature.possessed"])
+@pytest.mark.rule_behavior
 def test_plague_carrier_has_no_borrowed_rot_immunity_and_infects_before_an_armour_save(nature):
     unit, target = attacker(), attacker()
     unit = replace(unit, global_effects=replace(unit.global_effects,
@@ -1286,6 +1373,7 @@ def test_plague_carrier_has_no_borrowed_rot_immunity_and_infects_before_an_armou
     dice.finish()
 
 
+@pytest.mark.rule_behavior
 def test_plague_carrier_does_not_test_on_a_miss_or_parried_hit():
     unit = attacker()
     unit = replace(unit, global_effects=replace(unit.global_effects,
@@ -1300,6 +1388,7 @@ def test_plague_carrier_does_not_test_on_a_miss_or_parried_hit():
     assert not result.hit and not result.defender.initiative_penalty
 
 
+@pytest.mark.rule_behavior
 def test_mim_regeneration_heals_full_ordinary_maximum_and_preserves_real_multiwound_reactions():
     unit, target = attacker(), attacker()
     unit = replace(unit, global_effects=replace(unit.global_effects, damage_die_sides=3))
@@ -1322,6 +1411,7 @@ def test_mim_regeneration_heals_full_ordinary_maximum_and_preserves_real_multiwo
     dice.finish(); decisions.finish()
 
 
+@pytest.mark.rule_behavior
 def test_mim_regeneration_decline_does_not_exhaust_but_first_failure_prevents_later_attempts():
     unit, target = attacker(), attacker()
     target = replace(target, characteristics=replace(target.characteristics, wounds=5),
@@ -1344,6 +1434,7 @@ def test_mim_regeneration_decline_does_not_exhaust_but_first_failure_prevents_la
 
 
 @pytest.mark.parametrize("helpless", [False, True])
+@pytest.mark.rule_behavior
 def test_mim_regeneration_precedes_automatic_out_from_an_established_wound_and_allows_fire(helpless):
     unit, target = attacker(), attacker()
     unit = replace(unit, global_effects=replace(unit.global_effects,
@@ -1374,6 +1465,7 @@ def dwarf_combatant(main_weapon, off_hand):
                      off_hand_id=off_hand)
 
 
+@pytest.mark.rule_behavior
 def test_dwarf_axe_with_sword_gains_the_printed_failed_parry_reroll():
     for combo in (("weapon.dwarf-axe", "weapon.sword"), ("weapon.sword", "weapon.dwarf-axe")):
         fighter = dwarf_combatant(*combo)
@@ -1382,6 +1474,7 @@ def test_dwarf_axe_with_sword_gains_the_printed_failed_parry_reroll():
         assert context.reroll is True, combo
 
 
+@pytest.mark.rule_behavior
 def test_dwarf_axe_pair_keeps_the_reroll_and_two_swords_get_none():
     pair = dwarf_combatant("weapon.dwarf-axe", "weapon.dwarf-axe")
     assert _parry_context(pair, state(pair), pair.main_weapon, 3, 4, "p").reroll is True

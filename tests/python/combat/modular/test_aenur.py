@@ -16,6 +16,7 @@ from mordheim_combat.phases import resolve_wound
 from mordheim_combat_lab.verification.dice import StrictDice
 from mordheim_construction.compiler import compile_fighter
 from mordheim_core.models import Characteristics, FighterBuild
+import pytest
 
 BAND = "hirelings.dramatis-personae.core"
 PROFILE = "hireling.dramatis.aenur"
@@ -42,6 +43,7 @@ def wound_context(unit, foe):
         _combined_effect(unit, unit.main_weapon), key="wound")
 
 
+@pytest.mark.compilation
 def test_the_kit_resolves_ienh_khain_and_applies_its_strength_once():
     unit = aenur()
     assert "weapon.ienh-khain" in unit.main_weapon.tags
@@ -57,6 +59,7 @@ def test_the_kit_resolves_ienh_khain_and_applies_its_strength_once():
     assert strength == 6
 
 
+@pytest.mark.rule_behavior
 def test_the_sword_critical_starts_at_five_and_keeps_the_ordinary_limits():
     unit, foe = aenur(), opponent()
     context = wound_context(unit, foe)

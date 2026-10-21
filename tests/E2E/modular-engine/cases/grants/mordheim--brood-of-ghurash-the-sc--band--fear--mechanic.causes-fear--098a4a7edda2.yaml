@@ -58,8 +58,9 @@
 # Derived from the printed rule, the recorded cause-fear contract and the printed profile;
 # no engine output was consulted.  The causer charges, so the warrior it charged is the
 # Fear-tested warrior and its two Leadership dice are declared first against the fixture's
-# Leadership 7.  These scenarios are about the Fear test alone, so the causer contributes no
-# attacks of its own (initial_state) and the only attack die is the charged warrior's own.
+# Leadership 7.  These scenarios are about the Fear test alone: the charging causer declares no
+# base attacks (initial_state) and its single charge-bonus attack is declared as a natural 1, so
+# the only other attack die is the charged warrior's own.
 #   The printed clause covers all Heroes, so the fixture uses the band's firstborns Hero.
 
 - audit_id: rule/mordheim/brood-of-ghurash-the-sc/band--fear/mechanic.causes-fear
@@ -74,8 +75,11 @@
   duel_context: {charging: [second], active_participant: second}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.second.stupidity.0, value: 1}
+    - {key: round.0.second.stupidity.1, value: 1}
     - {key: round.0.first.fear.charged.0, value: 5}
     - {key: round.0.first.fear.charged.1, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
     - {key: round.0.first.attack.0.hit, value: 4}
   expect_rounds:
     0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 3, state.second.condition: STANDING}
@@ -93,10 +97,13 @@
   duel_context: {charging: [second], active_participant: second}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.second.stupidity.0, value: 1}
+    - {key: round.0.second.stupidity.1, value: 1}
     - {key: round.0.first.fear.charged.0, value: 3}
     - {key: round.0.first.fear.charged.1, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 5}
   expect_rounds:
     0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 2, state.second.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

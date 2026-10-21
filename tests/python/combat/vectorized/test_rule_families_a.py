@@ -34,12 +34,14 @@ def build(band, profile, *, collection="mordheim", **kwargs):
     return FighterBuild("mordheim", band_id=band, profile_id=profile, collection=collection, **kwargs)
 
 
+@pytest.mark.evidence
 def test_first_25_pending_families_moved_to_the_executable_catalogue():
     implemented = yaml.safe_load((ROOT / "catalog/rules/implemented-canonical-families.yaml").read_text(encoding="utf-8"))
     assert implemented["counts"]["families"] == 66
     assert implemented["counts"]["rules"] == 101
 
 
+@pytest.mark.eligibility
 def test_animal_friendship_and_contagious_traits_are_selectable_and_enforce_prerequisites():
     friend = compile_fighter(build(
         "horned-hunters", "horned-hunter",
@@ -62,6 +64,7 @@ def test_animal_friendship_and_contagious_traits_are_selectable_and_enforce_prer
     assert "contagious" in contagious.global_effects.tags
 
 
+@pytest.mark.compilation
 def test_anvil_head_death_blow_energy_focus_and_mark_are_executable_combat_choices():
     anvil = compile_fighter(build(
         "khemri-necromancers", "necromantic-abomination", collection="trollheim",
@@ -91,6 +94,7 @@ def test_anvil_head_death_blow_energy_focus_and_mark_are_executable_combat_choic
     assert death.global_effects.hit_modifier == death.global_effects.wound_modifier == death.global_effects.injury_modifier == 1
 
 
+@pytest.mark.rule_behavior
 def test_disability_guardian_unarmed_and_onogal_have_observable_runtime_effects():
     cripple = compile_fighter(build(
         "chaos-streets-mordheim-inhabitants", "cripples", collection="trollheim",
@@ -110,6 +114,7 @@ def test_disability_guardian_unarmed_and_onogal_have_observable_runtime_effects(
     assert marked.global_effects.poison_immunity
 
 
+@pytest.mark.eligibility
 def test_construction_contracts_enforce_access_restrictions_and_limits():
     outlaw = compile_fighter(build("outlaws-of-stirwood-forest", "bandit-leader"), ROOT)
     tracker = compile_fighter(build(
@@ -133,6 +138,7 @@ def test_construction_contracts_enforce_access_restrictions_and_limits():
         ), ROOT)
 
 
+@pytest.mark.compilation
 def test_pirate_mercenary_access_master_of_arms_and_mutation_contracts():
     pirate = compile_fighter(build(
         "lustria-pirates", "pirate-captain", collection="trollheim",
@@ -155,6 +161,7 @@ def test_pirate_mercenary_access_master_of_arms_and_mutation_contracts():
     assert possessed.global_effects.incoming_attacks_modifier == -1
 
 
+@pytest.mark.compilation
 def test_remaining_meta_contracts_compile_for_their_legal_profiles():
     builds = (
         build("carnival-of-chaos", "tainted-ones", special_rule_ids=("band--blessings-of-nurgle-bloated-foulness",)),
@@ -167,6 +174,7 @@ def test_remaining_meta_contracts_compile_for_their_legal_profiles():
     assert all(compile_fighter(candidate, ROOT) for candidate in builds)
 
 
+@pytest.mark.rule_behavior
 def test_animal_friendship_prevents_normal_animals_from_attacking_in_the_duel():
     friend = compile_fighter(build(
         "horned-hunters", "horned-hunter",
@@ -181,6 +189,7 @@ def test_animal_friendship_prevents_normal_animals_from_attacking_in_the_duel():
     assert result.second_wins == 0
 
 
+@pytest.mark.rule_behavior
 def test_contagious_retaliates_and_mark_of_old_ones_is_spent_only_once():
     contagious = compile_fighter(build(
         "lustria-clan-pestilens", "plague-priest", collection="trollheim",

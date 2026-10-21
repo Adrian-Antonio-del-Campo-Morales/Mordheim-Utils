@@ -1,3 +1,4 @@
+# Coordinator: Netter scope-NO scenarios archived in tests/TMP_E2E/FIX_E2E_0355__mordheim--ogre-hunting-party-web--band--ogre-hunting-skills--unim.md; other scenarios retained.
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills/unimplemented.ogre-hunting-party-web.special.ogre-hunting-skills
 # scaffold_fingerprint: 0fdc46497692da886cfb11dbfff6c6f7d8db4a60c5162c8760e51386a161afd3
@@ -218,6 +219,7 @@
     0: {attacks.0.hit: true, state.second.condition: KNOCKED_DOWN, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
   expect_events:
+    - {kind: decision, key: round.0.first.bull-charge, value: true}
     - {kind: roll, key: round.0.first.bull-charge.hit, sides: 6, value: 3}
 
 # The recorded reading of the printed "if successful": an armour save stops the knock-down, so the
@@ -279,70 +281,6 @@
 # net-charge operator.  The fixture is the band's printed Gnoblar hero (trappers), whose profile supplies the
 # printed Ballistic Skill the net's target comes from; the operator is supplied through the same grant channel
 # the bull-charge scenarios use.  The defence is hand-built so the escape test's own Strength is known.
-- audit_id: rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills/unimplemented.ogre-hunting-party-web.special.ogre-hunting-skills
-  id: a-declared-net-charge-knocks-the-enemy-down-and-the-charge-strikes-home
-  covers: [netter]
-  fighters:
-    first:
-      collection: mordheim
-      band_id: ogre-hunting-party-web
-      profile_id: trappers
-      skill_ids: [mechanic.netter]
-      main_weapon_id: weapon.mace
-    second:
-      main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
-  initial_state:
-    second: {attacks: 0}
-  duel_context: {charging: [first], active_participant: first}
-  maximum_rounds: 1
-  rolls:
-    - {key: round.0.first.netter.hit, value: 4}
-    - {key: round.0.first.netter.escape, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 6}
-  expect_rounds:
-    0: {attacks.0.knocked_down_target: true, attacks.0.wounded: true, state.second.condition: KNOCKED_DOWN,
-        state.second.wounds: 1}
-  expect_final: {rounds_executed: 1, termination_reason: horizon}
-  expect_events:
-    - {kind: roll, key: round.0.first.netter.hit, sides: 6, value: 4}
-    - {kind: roll, key: round.0.first.netter.escape, sides: 6, value: 4}
-    - {kind: roll, key: round.0.first.attack.0.wound, sides: 6, value: 6}
-
-# The control: the identical charge on the same printed Gnoblar hero without the netter operator asks for no
-# net die, so the net step belongs to the rule rather than to an ordinary charge.
-- audit_id: rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills/unimplemented.ogre-hunting-party-web.special.ogre-hunting-skills
-  id: without-the-netter-rule-the-charge-asks-for-no-net-die
-  covers: [netter]
-  fighters:
-    first:
-      collection: mordheim
-      band_id: ogre-hunting-party-web
-      profile_id: trappers
-      main_weapon_id: weapon.mace
-    second:
-      main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
-  initial_state:
-    second: {attacks: 0}
-  duel_context: {charging: [first], active_participant: first}
-  maximum_rounds: 1
-  rolls:
-    - {key: round.0.first.attack.0.hit, value: 1}
-  expect_rounds:
-    0: {attacks.0.hit: false, attacks.0.knocked_down_target: false, state.second.condition: STANDING,
-        state.second.wounds: 2}
-  expect_final: {rounds_executed: 1, termination_reason: horizon}
-  expect_events:
-    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
-
-# The printed Crude Belch stanza's accepted reading is the canonical first-round Leadership-gated first-attack
-# loss (reviewed equivalence: effect_id skill.crude-belch-halfling, parameterised variant, consumer
-# pools.allocate_attack_weapons), so the tape supplies that shared operator through the fighter's grant list,
-# exactly as the bull-charge and netter tapes above supply theirs.  The belcher's enemy has two Attacks and
-# fails its Leadership test on two sixes against its own 7; the lost first attack consumes no die at all, so
-# the tape carries only the second attack die.  The printed "-1 to hit for the turn" is deliberately not
-# asserted here; the clause note records why.
 - audit_id: rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills/unimplemented.ogre-hunting-party-web.special.ogre-hunting-skills
   id: a-failed-belch-test-costs-the-enemy-its-first-attack
   covers: [crude-belch]

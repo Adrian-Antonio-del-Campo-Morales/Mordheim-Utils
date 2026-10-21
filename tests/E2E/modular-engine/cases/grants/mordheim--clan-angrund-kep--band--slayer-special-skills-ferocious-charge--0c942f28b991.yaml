@@ -76,10 +76,16 @@
       characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
+  # The printed doubling is a declaration, so the pool only grows when it is taken.
+  decisions:
+    - {key: round.0.first.ferocious-charge, value: true}
+  # The pool rolls both To Hit dice before any To Wound die, and the dagger leaves the
+  # opponent a 6+ save after the wound.
   rolls:
     - {key: round.0.first.attack.0.hit, value: 5}
-    - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.hit: true, attacks.0.damage: 1, attacks.1.hit: false, state.second.wounds: 2}
@@ -100,9 +106,12 @@
       characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
+  # The troll slayer's dagger lets the opponent save at 6+ (`target_armour_bonus` 1 over
+  # the unarmoured 7), so the declared wound is followed by that save die.
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
@@ -122,9 +131,12 @@
       characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
+  # The troll slayer's dagger lets the opponent save at 6+ (`target_armour_bonus` 1 over
+  # the unarmoured 7), so the declared wound is followed by that save die.
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}

@@ -58,11 +58,13 @@ def strike(atk, dfn, rolls, decisions):
     return result
 
 
+@pytest.mark.compilation
 def test_the_sleuth_project_her_scryer_binding_and_rerolls_her_own_hit_die():
     hers = sleuth()
     assert "mechanic.scryer" in hers.global_effects.tags
 
 
+@pytest.mark.rule_behavior
 def test_initialisation_and_preparations_never_request_a_scryer_decision():
     # A real initialisation that actually rolls a die (the Crimson Shade
     # preparation roll) runs through the OwnedRollDice wrapper as well, but a
@@ -77,6 +79,7 @@ def test_initialisation_and_preparations_never_request_a_scryer_decision():
     choices.finish()
 
 
+@pytest.mark.rule_behavior
 def test_scryer_reroll_needs_the_players_choice_and_sends_no_resources():
     hers = sleuth()
     result = strike(hers, opponent(), [("hit", 1), ("hit.scryer.reroll", 5),
@@ -86,12 +89,14 @@ def test_scryer_reroll_needs_the_players_choice_and_sends_no_resources():
     assert "scryer" not in result.attacker.resources_spent
 
 
+@pytest.mark.rule_behavior
 def test_declining_the_choice_keeps_the_first_roll():
     hers = sleuth()
     result = strike(hers, opponent(), [("hit", 1)], [("hit.scryer", False)])
     assert not result.hit
 
 
+@pytest.mark.rule_behavior
 def test_the_second_result_must_be_accepted_even_when_it_is_worse():
     hers = sleuth()
     result = strike(hers, opponent(), [("hit", 5), ("hit.scryer.reroll", 1)],
@@ -99,6 +104,7 @@ def test_the_second_result_must_be_accepted_even_when_it_is_worse():
     assert not result.hit
 
 
+@pytest.mark.rule_behavior
 def test_the_sleuth_rerolls_her_own_parry_die_but_not_the_attackers_dice():
     # The attacking opponent's dice belong to the opponent: the defending
     # Sleuth never receives a scryer decision on them, and her own parry die
@@ -110,6 +116,7 @@ def test_the_sleuth_rerolls_her_own_parry_die_but_not_the_attackers_dice():
     assert result.parried
 
 
+@pytest.mark.interaction
 def test_a_roll_already_rerolled_is_never_rerolled_again():
     # The oracle reroll consumes the attack's once-per-battle reroll and its
     # .reroll key; the Scryer must not duplicate it on the same die, so the
@@ -125,23 +132,26 @@ def test_a_roll_already_rerolled_is_never_rerolled_again():
     assert result.hit and result.wounded
 
 
+@pytest.mark.interaction
 @pytest.mark.parametrize('melee', [True, False])
 def test_contagious_reaction_keeps_the_originating_combat_scope(melee):
     hers, foe = sleuth(), opponent()
     foe = replace(foe, global_effects=replace(foe.global_effects,
         tags=(*foe.global_effects.tags, 'contagious')))
     outcome = AttackOutcome(state(hers), replace(state(foe), condition=phases.Condition.OUT),
-                            melee_attack=melee)
-    rolls = [{'key': 'x.contagious', 'value': 6}]
+                            damage=1, melee_attack=melee)
+    rolls = []
     if melee:
+        rolls.append({'key': 'x.contagious', 'value': 6})
         rolls.append({'key': 'x.contagious.scryer.reroll', 'value': 1})
     dice = StrictDice(rolls)
     decisions = StrictDecisions([{'key': 'x.contagious.scryer', 'value': True}] if melee else [])
     result = _react_to_wound(hers, foe, outcome, dice, 'x', decisions=decisions)
     dice.finish(); decisions.finish()
-    assert result.attacker.wounds == outcome.attacker.wounds - int(not melee)
+    assert result.attacker.wounds == outcome.attacker.wounds
 
 
+@pytest.mark.interaction
 @pytest.mark.parametrize('melee', [True, False])
 def test_immediate_force_of_will_keeps_the_originating_combat_scope(melee):
     hers, foe = sleuth(), opponent()
@@ -159,6 +169,7 @@ def test_immediate_force_of_will_keeps_the_originating_combat_scope(melee):
     assert result.defender.force_of_will_active is melee
 
 
+@pytest.mark.interaction
 @pytest.mark.parametrize('phase', ['hit', 'wound'])
 def test_an_ordinary_reroll_must_accept_scryers_second_result(phase):
     hers = sleuth()
@@ -172,6 +183,7 @@ def test_an_ordinary_reroll_must_accept_scryers_second_result(phase):
     assert not (result.hit if phase == 'hit' else result.wounded)
 
 
+@pytest.mark.interaction
 def test_scryer_can_repeat_the_defenders_gaoler_grapple_strength_test():
     hers, gaoler = sleuth(), opponent()
     gaoler = replace(gaoler, global_effects=replace(gaoler.global_effects,
@@ -192,6 +204,7 @@ def test_scryer_can_repeat_the_defenders_gaoler_grapple_strength_test():
     assert not first.grappling and not second.grappled
 
 
+@pytest.mark.interaction
 def test_scryer_reaches_the_canonical_crude_belch_leadership_test():
     hers = sleuth()
     elder = compile_fighter(FighterBuild('mordheim', band_id='halflings-mic',
@@ -215,6 +228,7 @@ def test_scryer_reaches_the_canonical_crude_belch_leadership_test():
     assert not misses and after.second.resources_spent == initial.second.resources_spent
 
 
+@pytest.mark.interaction
 @pytest.mark.parametrize('receiving', [True, False])
 def test_scryer_distinguishes_fear_in_melee_from_the_precontact_charge_test(receiving):
     hers, foe = sleuth(), opponent(skill_ids=('mechanic.causes-fear',))

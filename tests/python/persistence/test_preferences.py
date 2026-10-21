@@ -1,8 +1,12 @@
 """external.test_preferences: Preferences persistence tests."""
 from __future__ import annotations
 
+import pytest
+
 from mordheim_combat_lab.persistence.preferences import load_preferences
 from mordheim_combat_lab.persistence.preferences import save_preferences
+
+pytestmark = pytest.mark.persistence
 
 
 def test_preferences_round_trip_arbitrary_ui_values(tmp_path, monkeypatch):

@@ -85,7 +85,6 @@
       collection: mordheim
       band_id: dwarf-slayers-kaz
       profile_id: giant-slayer
-      special_rule_ids: [band--town-crier-6-inheritance]
       skill_ids: [skill.thick-skull]
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1}
@@ -94,10 +93,9 @@
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 1}
-    - {key: round.0.first.attack.0.wound, value: 1}
-    - {key: round.0.second.attack.0.hit, value: 1}
-    - {key: round.0.second.attack.0.wound, value: 1}
-  expect_error: "skills are not available to dwarf-slayers-kaz/giant-slayer: ['skill.thick-skull']"
+  expect_fighters:
+    second.global_effects.tags: [skill.thick-skull, mechanic.leader-six, identity.slayer, skill.hard-to-kill, mechanic.hatred-orcs-goblins, armour.no-armour, concussion_immune, fighter-kind.hero, band.dwarf-slayers-kaz]
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
 # Clause: inherited-exclusions (scope: NO)
 # PARTIAL[inherited-exclusions]: [E] accepted scope disposition, not an authoring gap: the register
 #   records this clause as clause_scope NO (movement penalties, hiring/progression bookkeeping and

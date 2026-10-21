@@ -19,8 +19,8 @@
 # Clause: whole (scope: YES)
 # AUTHORED[whole]: 2 scenarios cover the printed permission (Chaos Dwarfs may use the band special
 #   skill list instead of the standard lists).  The admission scenario builds the recipient with
-#   skill.thick-skull, the skill this band's own Chaos Dwarf special-skill rule binds for Thick
-#   Skull, and records that the duel ran unrefused; the closure scenario shows a special skill
+#   this band's own Chaos Dwarf special-skill member for Thick Skull (whose binding carries
+#   skill.thick-skull), and records that the duel ran unrefused; the closure scenario shows a special skill
 #   outside the printed table refused.  The band's binding declares only the category, so the full
 #   member list stays the KB's to publish; the one member asserted here is the band's own bound
 #   identity.  REVIEWED still requires manual semantic review.
@@ -54,8 +54,8 @@
 # --- Authored scenarios ---
 # Derived from the printed rule, the recorded semantic contract and this band's own Chaos Dwarf
 # special-skill bindings; no engine output was consulted.  Both fighters are given zero attacks so
-# the round resolves without dice and the observation is about admission, not about the member's
-# mechanics.
+# the round resolves without attack dice and the observation is about admission, not about the
+# member's mechanics; the one declared die is the initiative tie their equal Initiative forces.
 
 - audit_id: rule/mordheim/black-dwarfs/band--chaos-dwarf-special-skills/profile.skill-access
   id: a-printed-table-member-is-admitted-to-the-recipient
@@ -65,7 +65,7 @@
       collection: mordheim
       band_id: black-dwarfs
       profile_id: sorcerer
-      skill_ids: [skill.thick-skull]
+      special_rule_ids: [band--chaos-dwarf-special-skills-thick-skull]
       main_weapon_id: weapon.mace
     second:
       main_weapon_id: weapon.mace
@@ -73,6 +73,8 @@
   initial_state: {first: {attacks: 0}, second: {attacks: 0}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
+  rolls:
+    - {key: round.0.priority-tie, value: 1}
   expect_final: {rounds_executed: 1}
 
 - audit_id: rule/mordheim/black-dwarfs/band--chaos-dwarf-special-skills/profile.skill-access

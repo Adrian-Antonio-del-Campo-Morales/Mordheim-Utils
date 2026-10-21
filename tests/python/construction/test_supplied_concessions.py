@@ -47,6 +47,9 @@ def offers(collection, band, profile_id):
     return {str(entry["item_id"]) for entry in facts.get("equipment_access") or ()}
 
 
+# Primary: the canonical band compiles the supplied command. The non-recipient
+# refusal is the secondary guarantee of the same clause.
+@pytest.mark.compilation
 @pytest.mark.parametrize("command", COMMANDS)
 def test_the_canonical_mazzalupo_band_reaches_both_supplied_commands(command):
     # The promoted package id is `mazzalupo-web`; the printed warband is its
@@ -62,6 +65,7 @@ def test_the_canonical_mazzalupo_band_reaches_both_supplied_commands(command):
              trait_overrides={"active_command": command})
 
 
+@pytest.mark.compilation
 def test_snotling_teams_are_one_printed_participant_without_extra_attacks():
     for profile_id, wounds, attacks in (("shoota-teams", 2, 2), ("snotling-mobs", 3, 3)):
         row = profile_row("mordheim", "snotlings-web", profile_id)
@@ -76,6 +80,7 @@ def test_snotling_teams_are_one_printed_participant_without_extra_attacks():
         assert rule["runtime"]["effects"][0]["id"] == "profile.single-model-projection"
 
 
+@pytest.mark.compilation
 def test_wheelo_crew_kit_is_the_printed_dagger_and_pebble_on_one_vehicle():
     row = profile_row("mordheim", "snotlings-web", "wheelo")
     assert row["fixed_equipment"] == ["dagger", "small_pebble"]
@@ -87,6 +92,7 @@ def test_wheelo_crew_kit_is_the_printed_dagger_and_pebble_on_one_vehicle():
     assert wheelo.extra_attacks == ()
 
 
+@pytest.mark.compilation
 def test_machine_ogre_fights_with_its_own_natural_attack_and_no_kit():
     profile = profile_row("mordheim", "metal-mongers-mim", "machine-ogre")
     assert profile["equipment_lists"] == [] and profile["fixed_equipment"] == []
@@ -102,6 +108,7 @@ def test_machine_ogre_fights_with_its_own_natural_attack_and_no_kit():
     assert chart["runtime"]["effects"][0]["binding"] is None
 
 
+@pytest.mark.eligibility
 @pytest.mark.parametrize("band,profile_id,armour", [
     ("chaos-streets-mordheim-inhabitants", "prophet", "toughened_leathers"),
     ("outlaws-of-stirwood-forest", "cleric", "light_armour"),

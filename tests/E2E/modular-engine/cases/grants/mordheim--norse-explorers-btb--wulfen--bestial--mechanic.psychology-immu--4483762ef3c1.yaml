@@ -26,12 +26,12 @@
 # AUTHORED[psychology-immunity]: the contract's remaining variants are now written below as one
 #   combined fixture - the corpus's own devices supply every missing grant: 'skill_ids' carries
 #   mechanic.stupidity, mechanic.hatred-undead and mechanic.psychology-immunity on the same
-#   hand-built warrior and initial_state supplies the frenzy flag, exactly as the canonical
+#   hand-built warrior and trait_overrides supplies the frenzy flag before initialization, exactly as the canonical
 #   mechanic.* cases and the already-authored immune-to-psychology siblings of this family do.
 #   The absent stupidity, frenzy and reroll dice are the assertion; the strict tape rejects any
 #   undeclared request.  Resolved-pending note: the combined fixture (skill_ids carries
 #   mechanic.stupidity, mechanic.hatred-undead and mechanic.psychology-immunity on the same
-#   hand-built warrior and initial_state supplies the frenzy flag) already evidences the operator
+#   hand-built warrior and trait_overrides supplies the frenzy flag before initialization) already evidences the operator
 #   pairing in the scenario the-immunity-skips-stupidity-suppresses-frenzy-and-denies-the-hatred-reroll
 #   of this file, so the earlier "these variants stay unobserved" is superseded: the hand-built
 #   fixture is the accepted route (the exact device the canonical mechanic.* tapes use), so no
@@ -153,10 +153,9 @@
   id: the-immunity-skips-stupidity-suppresses-frenzy-and-denies-the-hatred-reroll
   covers: [psychology-immunity]
   fighters:
-    first: {main_weapon_id: weapon.mace, skill_ids: [mechanic.stupidity, mechanic.hatred-undead, mechanic.psychology-immunity], characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}}
+    first: {trait_overrides: {frenzy: true}, main_weapon_id: weapon.mace, skill_ids: [mechanic.stupidity, mechanic.hatred-undead, mechanic.psychology-immunity], characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}}
     second: {collection: mordheim, band_id: undead, profile_id: zombies}
-  initial_state: {first: {frenzy: true}}
-  expect_initial: {first: {frenzy: False}}
+  expect_initial: {first.frenzy: false}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:

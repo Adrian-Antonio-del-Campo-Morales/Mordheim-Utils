@@ -128,9 +128,10 @@
 # engine output was consulted.  The bearer is the band's Chieftain with the printed skill selected
 # (a warband skill of this band, so the grant belongs to the selection and not to the profile) and
 # the attacker is a hand-built fixture, whose Weapon Skill 10 and Initiative 10 are fixture facts.
-# The duel is uncharged and the bearer starts at two wounds and contributes no attacks of its own,
-# so the single incoming swing is the whole tape; the wound face stays below a natural six so no
-# critical die is part of this evidence.
+# The duel is uncharged and the bearer contributes no attacks of its own, so the single incoming
+# swing is the whole tape; the wound face stays below a natural six so no critical die is part of
+# this evidence.  The Chieftain prints a single Wound, so a wound the save fails is resolved through
+# the injury table and the tapes declare that die (a one is Knocked Down for this profile).
 
 - audit_id: rule/mordheim/beastmen-raiders/band--beastmen-special-skills-shaggy-hide/trait.natural-armour-save
   id: the-shaggy-hide-saves-on-six
@@ -143,9 +144,9 @@
       collection: mordheim
       band_id: beastmen-raiders
       profile_id: beastmen-chieftain
-      main_weapon_id: weapon.sword
+      main_weapon_id: weapon.mace
       special_rule_ids: [band--beastmen-special-skills-shaggy-hide]
-  initial_state: {second: {wounds: 2, attacks: 0}}
+  initial_state: {second: {attacks: 0}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
@@ -153,7 +154,7 @@
     - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.first.attack.0.armour, value: 6}
   expect_rounds:
-    0: {attacks.0.saved: true, state.second.wounds: 2, state.second.condition: STANDING}
+    0: {attacks.0.saved: true, state.second.wounds: 1, state.second.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 - audit_id: rule/mordheim/beastmen-raiders/band--beastmen-special-skills-shaggy-hide/trait.natural-armour-save
@@ -167,17 +168,18 @@
       collection: mordheim
       band_id: beastmen-raiders
       profile_id: beastmen-chieftain
-      main_weapon_id: weapon.sword
+      main_weapon_id: weapon.mace
       special_rule_ids: [band--beastmen-special-skills-shaggy-hide]
-  initial_state: {second: {wounds: 2, attacks: 0}}
+  initial_state: {second: {attacks: 0}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
   expect_rounds:
-    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1, state.second.condition: STANDING}
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 - audit_id: rule/mordheim/beastmen-raiders/band--beastmen-special-skills-shaggy-hide/trait.natural-armour-save
@@ -191,15 +193,16 @@
       collection: mordheim
       band_id: beastmen-raiders
       profile_id: beastmen-chieftain
-      main_weapon_id: weapon.sword
-  initial_state: {second: {wounds: 2, attacks: 0}}
+      main_weapon_id: weapon.mace
+  initial_state: {second: {attacks: 0}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
   expect_rounds:
-    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1, state.second.condition: STANDING}
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 - audit_id: rule/mordheim/beastmen-raiders/band--beastmen-special-skills-shaggy-hide/trait.natural-armour-save
@@ -213,10 +216,10 @@
       collection: mordheim
       band_id: beastmen-raiders
       profile_id: beastmen-chieftain
-      main_weapon_id: weapon.sword
+      main_weapon_id: weapon.mace
       off_hand_id: defence.shield
       special_rule_ids: [band--beastmen-special-skills-shaggy-hide]
-  initial_state: {second: {wounds: 2, attacks: 0}}
+  initial_state: {second: {attacks: 0}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
@@ -224,7 +227,7 @@
     - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.first.attack.0.armour, value: 5}
   expect_rounds:
-    0: {attacks.0.saved: true, state.second.wounds: 2, state.second.condition: STANDING}
+    0: {attacks.0.saved: true, state.second.wounds: 1, state.second.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 - audit_id: rule/mordheim/beastmen-raiders/band--beastmen-special-skills-shaggy-hide/trait.natural-armour-save
@@ -238,10 +241,10 @@
       collection: mordheim
       band_id: beastmen-raiders
       profile_id: beastmen-chieftain
-      main_weapon_id: weapon.sword
+      main_weapon_id: weapon.mace
       armour_id: armour.light-armour
       special_rule_ids: [band--beastmen-special-skills-shaggy-hide]
-  initial_state: {second: {wounds: 2, attacks: 0}}
+  initial_state: {second: {attacks: 0}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
@@ -249,7 +252,7 @@
     - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.first.attack.0.armour, value: 5}
   expect_rounds:
-    0: {attacks.0.saved: true, state.second.wounds: 2, state.second.condition: STANDING}
+    0: {attacks.0.saved: true, state.second.wounds: 1, state.second.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 - audit_id: rule/mordheim/beastmen-raiders/band--beastmen-special-skills-shaggy-hide/trait.natural-armour-save
@@ -263,16 +266,17 @@
       collection: mordheim
       band_id: beastmen-raiders
       profile_id: beastmen-chieftain
-      main_weapon_id: weapon.sword
+      main_weapon_id: weapon.mace
       armour_id: armour.light-armour
       special_rule_ids: [band--beastmen-special-skills-shaggy-hide]
-  initial_state: {second: {wounds: 2, attacks: 0}}
+  initial_state: {second: {attacks: 0}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.first.attack.0.armour, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
   expect_rounds:
-    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1, state.second.condition: STANDING}
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

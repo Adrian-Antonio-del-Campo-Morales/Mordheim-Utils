@@ -65,16 +65,21 @@
       collection: trollheim
       band_id: chaos-streets-deathbringers
       profile_id: shadow-blade
-      main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
     second:
-      main_weapon_id: weapon.mace
+      main_weapon_id: weapon.sword
       armour_id: armour.heavy-armour
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 4}
+    # The defender's sword is a parrying weapon, so the offered parry is declared
+    # and fails before the wound is resolved.
+    - {key: round.0.first.attack.0.parry, value: 1}
     - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.first.attack.0.armour, value: 5}
     - {key: round.0.second.attack.0.hit, value: 1}
@@ -90,16 +95,24 @@
       collection: trollheim
       band_id: chaos-streets-deathbringers
       profile_id: shadow-blade
-      main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      # The printed row is a profile grant, so the contrast removes the trait
+      # rather than the profile's identity.
+      trait_overrides: {perfect_killer: false}
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
     second:
-      main_weapon_id: weapon.mace
+      main_weapon_id: weapon.sword
       armour_id: armour.heavy-armour
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 4}
+    # The defender's sword is a parrying weapon, so the offered parry is declared
+    # and fails before the wound is resolved.
+    - {key: round.0.first.attack.0.parry, value: 1}
     - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.first.attack.0.armour, value: 5}
     - {key: round.0.second.attack.0.hit, value: 1}

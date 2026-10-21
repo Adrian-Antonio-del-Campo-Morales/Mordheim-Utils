@@ -56,7 +56,7 @@
 
 # --- Authored scenarios ---
 # Derived from the printed rule, the recorded contract and the printed profile; no engine output was
-# consulted.  The bearer attacks with a plain mace, so the printed Strength is the only modifier on both
+# consulted.  The bearer attacks with the printed wooden club, so the printed Strength is the only modifier on both
 # its own attack and the bite; the defender is hand-built and its single declared die is a natural one, a
 # miss.  Every wound face stays below a natural six, so no critical die is part of this evidence.
 
@@ -68,7 +68,9 @@
       collection: mordheim
       band_id: shallows-beasts-mim
       profile_id: mutant-priest
-      main_weapon_id: weapon.mace
+      # The band list prints Club/Mace/Staff as the club item; the mace catalogue id is
+      # not on the printed list, so the same printed weapon is selected as weapon.club.
+      main_weapon_id: weapon.club
     second:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 2, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
@@ -100,7 +102,10 @@
   rolls:
     - {key: round.0.second.attack.0.hit, value: 1}
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 2}
+    # The same face of three wounds with the double-handed weapon (S5 against T4, 3+)
+    # and fails for the bite, which uses the priest's own S3 (5+): that contrast is the
+    # printed "uses the Priest's own strength to wound".
+    - {key: round.0.first.attack.0.wound, value: 3}
     - {key: round.0.first.last-bite.attack.0.hit, value: 4}
     - {key: round.0.first.last-bite.attack.0.wound, value: 3}
   expect_rounds:

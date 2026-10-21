@@ -18,6 +18,10 @@ from mordheim_combat_lab.application.settings import (
 )
 from mordheim_combat_lab.cli import calibration
 
+# Most cases prove the calibration command's flow (sweep, evidence curve,
+# installation); the two that only assert the files written or removed carry
+# their own persistence marker.
+
 
 @pytest.fixture(autouse=True)
 def _reference_defaults():
@@ -40,6 +44,7 @@ def payload():
     )
 
 
+@pytest.mark.workflow
 def test_sweep_reports_winners_inside_the_candidates(payload):
     assert payload["schema"] == CALIBRATION_SCHEMA
     assert payload["method"]["pair_sets"]["native"] == "mini"
@@ -50,6 +55,18 @@ def test_sweep_reports_winners_inside_the_candidates(payload):
         assert payload["pooled_batch_sizes"][backend] in (5_000, 10_000)
         assert payload["pool_workers"][backend] == 2
         assert payload["spawn_seconds"][backend] > 0
+        # Unsupported modular-only duels are disclosed, never measured as if
+        # the optimized engines implemented them.
+        measured = set(payload["method"]["pair_ids"][backend])
+        excluded = payload["method"]["excluded_pairs"][backend]
+        requested = {row[3] for row in calibration._pairs("mini")}
+        assert measured
+        assert measured.isdisjoint(excluded)
+        assert measured | set(excluded) == requested
+        assert all(excluded.values())
+        for first, second, _, pair_id in calibration._pairs("mini"):
+            if pair_id in measured:
+                calibration.require_optimized_support(first, second)
         evidence = payload["evidence"][backend]
         assert evidence["sequential_batch"]["scores"]
         assert evidence["pooled_workers"]["seconds"]
@@ -57,6 +74,7 @@ def test_sweep_reports_winners_inside_the_candidates(payload):
             payload["method"]["pair_ids"][backend])
 
 
+@pytest.mark.workflow
 def test_sweep_derives_a_pool_speedup_curve_from_its_own_evidence(payload):
     curves = measured_pool_speedups(payload)
 
@@ -67,6 +85,7 @@ def test_sweep_derives_a_pool_speedup_curve_from_its_own_evidence(payload):
                    for segments, speedup in points.items())
 
 
+@pytest.mark.workflow
 def test_installed_profile_is_the_applied_one(payload, tmp_path, monkeypatch, capsys):
     monkeypatch.setenv("LOCALAPPDATA", str(tmp_path))
     monkeypatch.setattr(calibration, "run_calibration", lambda *_args, **_kwargs: payload)
@@ -85,6 +104,8 @@ def test_installed_profile_is_the_applied_one(payload, tmp_path, monkeypatch, ca
     assert "restart the Combat Lab" in output
 
 
+# Saved state: the installed profile and the optional report copy are files.
+@pytest.mark.persistence
 def test_output_flag_writes_a_second_copy(payload, tmp_path, monkeypatch):
     monkeypatch.setenv("LOCALAPPDATA", str(tmp_path))
     monkeypatch.setattr(calibration, "run_calibration", lambda *_args, **_kwargs: payload)
@@ -98,6 +119,7 @@ def test_output_flag_writes_a_second_copy(payload, tmp_path, monkeypatch):
     assert (tmp_path / "Mordheim Combat Lab" / "calibration.json").exists()
 
 
+@pytest.mark.persistence
 def test_reset_removes_the_installed_profile(payload, tmp_path, monkeypatch):
     monkeypatch.setenv("LOCALAPPDATA", str(tmp_path))
     monkeypatch.setattr(calibration, "run_calibration", lambda *_args, **_kwargs: payload)

@@ -27,6 +27,7 @@ def hero(*conditions):
         main_weapon_id='weapon.mace', condition_ids=conditions, trait_overrides={'fighter_kind': 'hero'}))
 
 
+@pytest.mark.rule_behavior
 @pytest.mark.parametrize('conditions,hit,wounded,strength', [((), False, False, 3),
     ((WON,), True, True, 4), ((WON, WON), True, True, 4)])
 def test_source_hit_and_strength_boundaries_without_stacking(conditions, hit, wounded, strength):
@@ -39,6 +40,7 @@ def test_source_hit_and_strength_boundaries_without_stacking(conditions, hit, wo
     assert result.hit is hit and result.wounded is wounded
 
 
+@pytest.mark.rule_behavior
 def test_refusal_is_non_stacking_persistent_and_does_not_cancel_later_duels():
     owner, foe = hero(REFUSED, REFUSED), hero()
     assert owner.characteristics.strength == 3
@@ -60,6 +62,7 @@ def test_refusal_is_non_stacking_persistent_and_does_not_cancel_later_duels():
     assert attack.hit and combined.characteristics.strength == 4
 
 
+@pytest.mark.rule_behavior
 @pytest.mark.parametrize('condition', [REFUSED, WON])
 def test_modifiers_do_not_leak_into_non_melee_contexts(condition):
     owner, foe = (noble(condition) if condition == WON else hero(condition)), hero()
@@ -70,6 +73,7 @@ def test_modifiers_do_not_leak_into_non_melee_contexts(condition):
     assert context.modifier == 0
 
 
+@pytest.mark.eligibility
 def test_recipient_guards_and_unselected_noble_has_no_award():
     with pytest.raises(ValueError, match='Hero recipient'):
         compile_fighter(FighterBuild('mordheim', Characteristics(3,3,3,2,2,1), condition_ids=(REFUSED,)))

@@ -108,6 +108,7 @@
 - audit_id: rule/mordheim/mootlanders/moot-elder--halfling-list/weapon.pistol
   id: the-printed-pistol-purchase-is-admitted-for-the-moot-elder
   covers: [whole--scope--halfling-list-access]
+  # The catalogue weapon id is the channel: the closure below uses the same form.
   # pistol is on neither published list of this band (the Halfling Equipment List carries dagger, spear,
   # sword, mace, bow, short_bow, sling, light_armour, shield, cooking_pot_helmet; the Master Chef List carries
   # kitchen_knife, cleaver, ladle, tenderiser), so carrying it is exactly what the printed additional purchase
@@ -118,7 +119,7 @@
       band_id: mootlanders
       profile_id: moot-elder
       main_weapon_id: weapon.mace
-      owned_item_ids: [pistol]
+      owned_item_ids: [weapon.pistol]
     second:
       collection: mordheim
       band_id: mootlanders
@@ -146,5 +147,5 @@
       collection: mordheim
       band_id: mootlanders
       profile_id: moot-elder
-      owned_item_ids: [crossbow]
-  expect_error: '"crossbow" is not on any equipment list of mootlanders/moot-elder.'
+      owned_item_ids: [weapon.crossbow]
+  expect_error: '"weapon.crossbow" is not on any equipment list of mootlanders/moot-elder.'

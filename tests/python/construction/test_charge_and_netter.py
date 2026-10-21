@@ -84,6 +84,7 @@ def attacks_while(*, charging: bool) -> int:
         fighter=fighter, first_round=charging, charging=charging)).attacks
 
 
+@pytest.mark.rule_behavior
 def test_animal_fury_composes_fear_immunity_with_the_charge_attack():
     fury = compiled("lustria-amazons", "amazon-priestess", ANIMAL_FURY, collection="trollheim")
     # One selection, both printed consequences: the psychology state and the
@@ -94,6 +95,7 @@ def test_animal_fury_composes_fear_immunity_with_the_charge_attack():
     assert attacks_while(charging=True) == attacks_while(charging=False) + 1
 
 
+@pytest.mark.eligibility
 def test_animal_fury_stays_a_selectable_special_skill_of_its_printed_recipients():
     assert ANIMAL_FURY in available_special_rules(
         build("lustria-amazons", "amazon-priestess", collection="trollheim"), KNOWLEDGE)
@@ -117,6 +119,7 @@ def band_rule(band: str, rule_id: str) -> dict:
 
 
 @pytest.mark.parametrize(("band", "rule_id", "recipients"), NETTER_RECORDS)
+@pytest.mark.knowledge_integrity
 def test_the_netter_clauses_reach_the_supplied_caught_victim_and_not_the_helper(band, rule_id, recipients):
     rule = band_rule(band, rule_id)
     runtime = rule["runtime"]
@@ -139,6 +142,7 @@ def test_the_netter_clauses_reach_the_supplied_caught_victim_and_not_the_helper(
     ("crooked-moon-kep", "big-boss"),
     ("ogre-hunting-party-web", "trappers"),
 ))
+@pytest.mark.knowledge_integrity
 def test_the_netter_clauses_declare_the_supplied_caught_victim_and_grant_no_technique(band, profile):
     rule_id = OGRE_NETTER if band == "ogre-hunting-party-web" else NETTER
     rule = band_rule(band, rule_id)
@@ -153,18 +157,21 @@ def test_the_netter_clauses_declare_the_supplied_caught_victim_and_grant_no_tech
         piece = next(row for row in load_items("mordheim", KNOWLEDGE) if row.get("id") == "net")
         assert piece.get("combat_status") == "out_of_scope" and not piece.get("mechanic_id")
         with pytest.raises(ValueError, match="not on any equipment list"):
-            compiled(band, profile, owned_item_ids=("net", "net", "net"))
+            compiled(band, profile, rule_id, owned_item_ids=("net", "net", "net"))
+        # Veteran Tracker records Netter as the Trapper's required starting
+        # choice without executing its excluded supply clause.
+        fighter = compiled(band, profile, rule_id)
+        assert "mechanic.netter" not in fighter.global_effects.tags
     else:
         # The admitted consequence is the caught victim itself, supplied to the
         # duel through the canonical condition the runtime already consumes.
         assert bound == {"condition.netted"}
         assert runtime["grant"] == "none"
-    # Choosing the clause in a duel can neither simulate the excluded throw nor
-    # hand out a technique nobody executes: the supply clause is refused with
-    # its own recorded reason, and the two declared skills are not offered as
-    # selectable choices at all.
+    # Outside the Trapper's construction-only starting choice, the excluded
+    # clauses remain unavailable to the duel.
+    rejected_profile = "sabre-baiter" if band == "ogre-hunting-party-web" else profile
     with pytest.raises(ValueError, match="not selectable|outside the executable duel runtime"):
-        compiled(band, profile, rule_id)
+        compiled(band, rejected_profile, rule_id)
     if band == "ogre-hunting-party-web":
         assert rule_id in available_special_rules(
             FighterBuild("mordheim", Characteristics(3, 3, 3, 1, 3, 1, leadership=7),
@@ -175,6 +182,7 @@ def test_the_netter_clauses_declare_the_supplied_caught_victim_and_grant_no_tech
                          band_id=band, profile_id=profile), KNOWLEDGE)
 
 
+@pytest.mark.rule_behavior
 def test_the_supplied_caught_victim_consequence_is_configurable_and_consumed_by_the_duel():
     caught_fighter = compile_fighter(FighterBuild(
         "mordheim", Characteristics(3, 3, 3, 1, 3, 1, leadership=7),
@@ -212,6 +220,7 @@ BERSERK_RECIPIENTS = (
 
 
 @pytest.mark.parametrize(("band", "profile"), BERSERK_RECIPIENTS)
+@pytest.mark.rule_behavior
 def test_berserk_charge_reaches_its_recipients_and_only_rerolls_a_charging_saxon_blow(band, profile):
     opponent = compile_fighter(FighterBuild(
         "mordheim", Characteristics(3, 3, 3, 1, 3, 1, leadership=7)))
@@ -235,6 +244,7 @@ DIRE_WOLF_ORIGINS = (
 
 
 @pytest.mark.parametrize(("band", "profile", "collection"), DIRE_WOLF_ORIGINS)
+@pytest.mark.rule_behavior
 def test_dire_wolf_charge_adds_its_printed_second_attack_only_when_charging(band, profile, collection):
     wolf = compiled(band, profile, collection=collection)
     assert wolf.global_effects.charge_attacks_bonus == 1
@@ -244,6 +254,7 @@ def test_dire_wolf_charge_adds_its_printed_second_attack_only_when_charging(band
         fighter=wolf, first_round=False, charging=False)).attacks == 1
 
 
+@pytest.mark.rule_behavior
 def test_ogre_bull_charge_reuses_the_pool_substitution_for_its_selection():
     attacker = compiled("ogre-hunting-party-web", "ogre-hunter", OGRE_BULL_CHARGE)
     target = compile_fighter(FighterBuild(
@@ -261,6 +272,7 @@ def test_ogre_bull_charge_reuses_the_pool_substitution_for_its_selection():
     assert outcomes[0].hit and final_defender.condition == Condition.KNOCKED_DOWN
 
 
+@pytest.mark.rule_behavior
 def test_bull_charge_carries_its_printed_to_hit_modifier_and_only_knocks_down_on_success():
     attacker = compiled("ogre-hunting-party-web", "ogre-hunter", OGRE_BULL_CHARGE)
     ordinary = compiled("ogre-hunting-party-web", "ogre-hunter")

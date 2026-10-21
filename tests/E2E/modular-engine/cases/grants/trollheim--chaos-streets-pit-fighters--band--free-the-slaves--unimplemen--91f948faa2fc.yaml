@@ -137,10 +137,11 @@
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.first.attack.0.hit.reroll, value: 6}
     - {key: round.0.first.attack.0.wound, value: 5}
-    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+  # The slaver is taken out by that wound, so its own reply never asks for a die.
   expect_rounds:
     0: {state.second.wounds: 0, state.second.condition: OUT}
-  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
 
 - audit_id: rule/trollheim/chaos-streets-pit-fighters/band--free-the-slaves/unimplemented.chaos-streets-pit-fighters.band.free-the-slaves
   id: the-same-miss-against-a-non-slaver-is-not-rerolled

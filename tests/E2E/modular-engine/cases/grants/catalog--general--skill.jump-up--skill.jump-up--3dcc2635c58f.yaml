@@ -78,6 +78,8 @@
 # ordinary Knocked Down and the printed No Pain exclusion.
 # The printed one-two band is Knocked Down, and this skill ignores that result: the
 # warrior is still standing and the ordinary chart face never lands.
+# The mace's Concussion covers injury faces 2-4, so the plain Knocked Down face is 1;
+# rolling 2 here would test a Stunned result the skill must not cancel.
 - audit_id: rule/catalog/general/skill.jump-up/skill.jump-up
   id: a-knocked-down-result-leaves-him-standing
   covers: [ignores-knocked-down-results]
@@ -94,7 +96,8 @@
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
-    - {key: round.0.first.attack.0.injury.0, value: 2}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.damage: 1, state.second.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

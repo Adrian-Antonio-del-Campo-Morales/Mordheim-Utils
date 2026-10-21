@@ -4,6 +4,8 @@ import pytest
 from mordheim_construction.compiler import compile_fighter
 from mordheim_core.models import FighterBuild
 
+pytestmark = pytest.mark.eligibility
+
 
 def test_fog_fragments_require_a_censer_only_when_carried():
     def build(items, weapon="weapon.dagger"):

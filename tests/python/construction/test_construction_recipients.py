@@ -31,6 +31,10 @@ from mordheim_construction.eligibility import (call, configuration_context, cons
 from mordheim_core.models import FighterBuild
 from mordheim_knowledge.loader import load_bands
 
+# Printed recipients decide who is offered, admitted or refused a line. The two
+# tests that read a compiled kit assert the same admission at its consumer.
+pytestmark = pytest.mark.eligibility
+
 ROOT = Path(__file__).resolve().parents[3]
 KNOWLEDGE = ROOT / "sources" / "knowledge"
 PACKAGES = {
@@ -709,15 +713,18 @@ def test_the_chaos_steed_prints_the_same_requirement_and_no_band_list_offers_it(
 def test_the_canonical_construction_route_refuses_the_wrong_market_bearer():
     """`compile_fighter` meets the offer's verdict and names the printed clause."""
     wrong = [
-        ("ogre-hunting-party-web", "trappers", "sharp_stuff", ()),
+        # The Trapper's printed starting skill is an unrelated obligation of the
+        # same build, supplied so the market clause is the refusal under test.
+        ("ogre-hunting-party-web", "trappers", "sharp_stuff",
+         ("band--ogre-hunting-skills-netter",)),
         # Weapon Knowledge reaches the Sister of Sigmar's unique candelabrum;
         # a concession is no alias around the printed bearer.
         ("hochland-bandits", "duelist", "arcane_candelabrum", ()),
     ]
-    for band_id, profile_id, item_id, variants in wrong:
+    for band_id, profile_id, item_id, special_rules in wrong:
         with pytest.raises(ValueError, match="printed trading-post clause"):
             compile_fighter(FighterBuild("mordheim", band_id=band_id, profile_id=profile_id,
-                                         owned_item_ids=(item_id,), variant_ids=variants))
+                                         owned_item_ids=(item_id,), special_rule_ids=special_rules))
     assert compile_fighter(FighterBuild("mordheim", band_id="shadow-warriors", profile_id="shadow-weaver",
                                         owned_item_ids=("elven_runestones",),
                                         variant_ids=("equipment.post-creation",)))

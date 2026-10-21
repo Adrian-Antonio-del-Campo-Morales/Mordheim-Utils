@@ -10,7 +10,11 @@ from mordheim_core.models import SimulationCancelled
 import pytest as pytest
 from threading import Event
 
+# The whole file proves the execution settings service builds and validates a
+# runtime request, including cancellation delivery.
 
+
+@pytest.mark.workflow
 def test_execution_settings_build_a_runtime_request():
     fighter = compile_fighter(FighterBuild("mordheim", Characteristics(3, 3, 3, 1, 3, 1)))
     cancel_event = Event()
@@ -22,11 +26,14 @@ def test_execution_settings_build_a_runtime_request():
     assert request.cancel_event is cancel_event
 
 
+# The settings object rejects an invalid request shape before it is used.
+@pytest.mark.data_contract
 def test_execution_settings_reject_non_positive_runtime_limits():
     with pytest.raises(ValueError):
         DuelExecutionSettings(0, 0, 100, 25)
 
 
+@pytest.mark.workflow
 def test_execution_settings_passes_cancellation_to_the_runtime():
     fighter = compile_fighter(FighterBuild("mordheim", Characteristics(3, 3, 3, 1, 3, 1)))
     cancel_event = Event()

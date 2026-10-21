@@ -4,6 +4,8 @@ from dataclasses import replace
 
 import pytest
 
+pytestmark = pytest.mark.rule_behavior
+
 from mordheim_combat import phases
 from mordheim_combat.modular.contexts import _parry_context
 from mordheim_combat.modular.contexts import _combined_effect, prepare_armour_context
@@ -515,7 +517,7 @@ def test_disease_dagger_respects_rotten_body_but_keeps_ordinary_wound():
     attacker = fighter(main_weapon_id='weapon.disease-dagger')
     defender = compile_fighter(FighterBuild(
         'mordheim', band_id='skaven-clan-pestilens', profile_id='monk-initiates',
-        main_weapon_id='weapon.mace',
+        main_weapon_id='weapon.club',
         special_rule_ids=('band--clan-pestilens-special-skills-rotten-body',),
     ))
     result = resolve_reference_attack(

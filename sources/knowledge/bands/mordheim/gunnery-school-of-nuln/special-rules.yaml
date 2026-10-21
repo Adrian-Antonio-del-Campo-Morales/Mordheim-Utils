@@ -3,15 +3,20 @@ band_id: gunnery-school-of-nuln
 rules:
 - id: senior-gunnery-officer--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.gunnery-school-of-nuln.senior-gunnery-officer.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
+    - id: mechanic.leader-twelve
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-twelve
   name: Leader
   effect: >-
     Any models in the warband within 12” of the Senior Gunnery Officer may use his Leadership value

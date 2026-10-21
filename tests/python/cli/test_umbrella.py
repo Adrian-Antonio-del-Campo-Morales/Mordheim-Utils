@@ -23,6 +23,10 @@ COMMANDS = (
 
 LAB_COMMANDS = ("benchmark", "parity", "coverage-gate", "verify", "calibrate")
 
+# Most cases prove the launcher routes each command (and its flags) to the
+# right entry point; the help-listing case is the visible surface, so it is
+# marked separately.
+
 
 @pytest.fixture()
 def cli():
@@ -44,6 +48,7 @@ def _record_run(cli, monkeypatch):
     return calls
 
 
+@pytest.mark.presentation
 def test_help_lists_every_command(cli, capsys):
     assert cli.main(["--help"]) == 0
     output = capsys.readouterr().out
@@ -52,17 +57,20 @@ def test_help_lists_every_command(cli, capsys):
     assert "mordheim-utils.py" in output
 
 
+@pytest.mark.workflow
 def test_unknown_command_is_rejected(cli, capsys):
     assert cli.main(["does-not-exist"]) == 2
     assert "unknown command" in capsys.readouterr().err
 
 
+@pytest.mark.workflow
 def test_combat_lab_launches_the_lab_ui(cli, monkeypatch):
     calls = _record_run(cli, monkeypatch)
     assert cli.main(["combat-lab"]) == 0
     assert calls == [[sys.executable, "-m", "mordheim_combat_lab", "ui"]]
 
 
+@pytest.mark.workflow
 @pytest.mark.parametrize("name", LAB_COMMANDS)
 def test_lab_commands_are_forwarded_to_the_lab_cli(cli, monkeypatch, name):
     calls = _record_run(cli, monkeypatch)
@@ -70,12 +78,14 @@ def test_lab_commands_are_forwarded_to_the_lab_cli(cli, monkeypatch, name):
     assert calls == [[sys.executable, "-m", "mordheim_combat_lab", name]]
 
 
+@pytest.mark.workflow
 def test_tests_forwards_pytest_flags_after_double_dash(cli, monkeypatch):
     calls = _record_run(cli, monkeypatch)
     assert cli.main(["tests", "--scope", "cli", "--", "-q", "-p", "no:cacheprovider"]) == 0
     assert calls == [[sys.executable, "-m", "pytest", "tests/python/cli", "-q", "-p", "no:cacheprovider"]]
 
 
+@pytest.mark.workflow
 def test_tests_default_scope_is_all(cli, monkeypatch):
     calls = _record_run(cli, monkeypatch)
     assert cli.main(["tests"]) == 0

@@ -24,6 +24,8 @@ from mordheim_construction.compiler import (
 from mordheim_core.models import Characteristics
 from mordheim_core.models import FighterBuild
 
+pytestmark = pytest.mark.compilation
+
 
 #: Real selectable, executable rules used as hosts for fabricated bindings.
 HOST_RULE = "warpstone-troll--vomit-attack"

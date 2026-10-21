@@ -36,7 +36,8 @@ profiles:
     es: Maestro de las Sombras
   rule_ids:
   - shadow-master--leader
-  combat_traits: {}
+  combat_traits:
+    elf_kind: high
 - id: shadow-weaver
   name: Shadow Weaver
   type: hero
@@ -73,9 +74,12 @@ profiles:
   rule_ids:
   - shadow-weaver--wizard
   - shadow-weaver--no-armoured-casting
-  combat_traits: {}
+  combat_traits:
+    elf_kind: high
   equipment_restrictions_i18n:
-    es: Puede seleccionar armas y armaduras de la Lista de equipo de los guerreros de las sombras, pero no puede lanzar conjuros mientras lleva armadura.
+    es: >-
+          Puede seleccionar armas y armaduras de la Lista de equipo de los guerreros de las sombras,
+          pero no puede lanzar conjuros mientras lleva armadura.
 - id: shadow-walker
   name: Shadow Walker
   type: hero
@@ -109,7 +113,8 @@ profiles:
   name_i18n:
     es: Caminante de Sombras
   rule_ids: []
-  combat_traits: {}
+  combat_traits:
+    elf_kind: high
 - id: shadow-warrior
   name: Shadow Warriors
   type: henchman
@@ -140,7 +145,8 @@ profiles:
   name_i18n:
     es: Guerreros de las Sombras
   rule_ids: []
-  combat_traits: {}
+  combat_traits:
+    elf_kind: high
 - id: shadow-warrior-novices
   name: Shadow Warrior Novices
   type: henchman
@@ -171,4 +177,5 @@ profiles:
   name_i18n:
     es: Novicios Guerreros de las Sombras
   rule_ids: []
-  combat_traits: {}
+  combat_traits:
+    elf_kind: high

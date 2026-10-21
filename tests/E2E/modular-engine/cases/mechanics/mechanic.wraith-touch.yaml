@@ -75,8 +75,11 @@
   maximum_rounds: 1
   decisions:
     - {key: round.0.first.wraith-touch, value: true}
+  # The replacement is an unarmed attack, so the printed unarmed rules apply: an
+  # unarmoured defender still keeps the six-plus save the unarmed attack grants.
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.wounded: true, attacks.0.damage: 1, state.second.wounds: 1}
@@ -151,6 +154,7 @@
     - {key: round.0.first.attack.0.wraith-heal, value: true}
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 1}
   expect_rounds:
     0: {attacks.0.wounded: true, attacks.0.damage: 1, state.second.wounds: 2,
         state.first.wounds: 2}
@@ -173,6 +177,7 @@
     - {key: round.0.first.wraith-touch, value: true}
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 1}
   expect_rounds:
     0: {attacks.0.wounded: true, state.second.wounds: 2, state.first.wounds: 4}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
@@ -224,8 +229,11 @@
   maximum_rounds: 1
   decisions:
     - {key: round.0.first.wraith-touch, value: false}
+  # Declining the declaration keeps the profile's two attacks: both To Hit dice are
+  # rolled before the first attack's wound step, and the second blow misses.
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 1}
     - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.first.attack.0.armour, value: 4}
     - {key: round.0.second.attack.0.hit, value: 1}

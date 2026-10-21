@@ -64,17 +64,22 @@
 # dependencies:
 #   []
 # Register notes (context only, not behavioral authority):
-#   Same open leather question as G005; no separate behaviour of its own. Surface reuse candidate: {"family":"T-NAT-ARM","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact threshold, armour versus special save, Strength/magic/blessed modification, combination/replacement, per-profile recipients and save stage. Equal thresholds do not establish equivalence; 3+ Ethereal is not 4+, and daemonic armour need not be unmodifiable.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
-
-# --- Authored scenarios ---
+#   Same open leather question as G005; no separate behaviour of its own. Surface reuse candidate: {"family":"T-NAT-ARM","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact threshold, armour versus special save, Strength/magic/blessed modification, combination/replacement, per-profile recipients and save stage. Equal thresholds do not establish equivalence; 3+ Ethereal is not 4+, and daemonic armour need not be unmodifiable.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}  # --- Authored scenarios ---
 # Derived from the printed sentence and the recorded contract; no engine output was consulted.
+
+# The shield raises the printed natural 6+ to a combined 5+, so a wound that would otherwise save only on
+# 6 is now saved on 5; the same improved face still fails on 4, which is the observable contrast the two
+# scenarios share. The attacker carries a mace, which applies no armour-save modifier, so the declared
+# armour die really measures the combined 5+ threshold; an axe (-1 armour save) would move it to 6+ and
+# the five could not show the improvement. The boss wears the printed axe and shield, so its own kit is
+# untouched and every declared die is consumed on the resolution path.
 
 - audit_id: rule/mordheim/black-orcs/black-orcs--black-orc/trait.natural-armour-stacks
   id: the-carried-shield-improves-the-natural-save-to-five
   covers: [whole]
   fighters:
     first:
-      main_weapon_id: weapon.axe
+      main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 4, strength: 3, toughness: 4, wounds: 3, initiative: 4, attacks: 1}
     second:
       collection: mordheim
@@ -87,7 +92,7 @@
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.first.attack.0.armour, value: 5}
   expect_rounds:
     0: {attacks.0.wounded: True, attacks.0.saved: True, state.second.wounds: 1, state.second.condition: STANDING}
@@ -98,7 +103,7 @@
   covers: [whole]
   fighters:
     first:
-      main_weapon_id: weapon.axe
+      main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 4, strength: 3, toughness: 4, wounds: 3, initiative: 4, attacks: 1}
     second:
       collection: mordheim
@@ -111,9 +116,9 @@
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.first.attack.0.armour, value: 4}
-    - {key: round.0.first.attack.0.injury.0, value: 2}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
   expect_rounds:
     0: {attacks.0.wounded: True, attacks.0.saved: False, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

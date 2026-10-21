@@ -77,7 +77,7 @@ class FighterEditor(ttk.Frame):
         self.energy_focus_attacks = tk.IntVar(value=0)
         self.eagle_friends = tk.StringVar(value="")
         self.elf_kind = ChoiceVar(None, master=self)
-        self.elf_kind.set_options({None: "Use profile identity", "high": "High Elf", "dark": "Dark Elf", "other": "Neither High nor Dark Elf"})
+        self.elf_kind.set_options({None: "Use profile identity", "high": "High Elf", "dark": "Dark Elf", "wood": "Wood Elf", "other": "Neither High nor Dark Elf"})
         self.sex = ChoiceVar(None, master=self)
         self.sex.set_options({None: "Use profile identity", "male": "Male", "female": "Female"})
         self.causes_fear = tk.BooleanVar(value=False)
@@ -517,8 +517,8 @@ class FighterEditor(ttk.Frame):
             raise ValueError("invalid Condemned fixed characteristics")
         if "sex" in build.trait_overrides and build.trait_overrides["sex"] not in ("male", "female"):
             raise ValueError("sex must be male or female")
-        if "elf_kind" in build.trait_overrides and build.trait_overrides["elf_kind"] not in ("high", "dark", "other"):
-            raise ValueError("elf_kind must be high, dark or other")
+        if "elf_kind" in build.trait_overrides and build.trait_overrides["elf_kind"] not in ("high", "dark", "wood", "other"):
+            raise ValueError("elf_kind must be high, dark, wood or other")
         for key, (_label, options) in _SUPPLIED_CHOICES.items():
             if key in build.trait_overrides and build.trait_overrides[key] not in options:
                 raise ValueError(f"invalid supplied {key}")

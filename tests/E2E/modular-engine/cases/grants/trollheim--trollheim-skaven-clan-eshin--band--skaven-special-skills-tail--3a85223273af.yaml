@@ -117,7 +117,7 @@
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
-  expect_error: an extra hand requires Extra Arm or Tail Fighting
+  expect_error: an extra hand requires Extra Arm, Tail Fighting, or Prehensile Tail
 
 - audit_id: rule/trollheim/trollheim-skaven-clan-eshin/band--skaven-special-skills-tail-fighting/special-rule.band--skaven-special-skills-tail-fighting
   id: a-tail-shield-improves-the-worn-save-by-one-step
@@ -137,6 +137,7 @@
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 1}
     - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.first.attack.0.armour, value: 5}
   expect_rounds:
@@ -159,6 +160,7 @@
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 1}
     - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.first.attack.0.armour, value: 5}
   expect_rounds:

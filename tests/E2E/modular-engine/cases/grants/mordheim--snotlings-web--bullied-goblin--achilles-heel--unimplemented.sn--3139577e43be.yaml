@@ -106,8 +106,8 @@
   # the required To-Wound target six against the declared Toughness 5 - exactly the case the core contract
   # excludes from criticals and this printed rule re-admits.  The strict tape declares the wound face of
   # six and the critical-chart die; a basic chart result of one leaves the printed damage of two.
-  # PENDING[B] the consumer that re-admits the natural six as a critical when the required target is
-  # already six (the row's binding mechanic.achilles-heel is present, so the gap is behaviour).
+  # The re-admission is asserted by the requested critical-chart die itself: the strict tape declares
+  # exactly one, so an ordinary wound (no re-admission) would leave it unused and fail the case.
   fighters:
     first:
       collection: mordheim
@@ -123,6 +123,7 @@
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 6}
     - {key: round.0.first.attack.0.critical, value: 1}
+    - {key: round.0.first.attack.0.armour, value: 1}
   expect_rounds:
     0: {attacks.0.critical: True, attacks.0.damage: 2, state.second.wounds: 1, state.second.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
@@ -147,6 +148,7 @@
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.armour, value: 1}
   expect_rounds:
     0: {attacks.0.critical: False, attacks.0.damage: 1, state.second.wounds: 2, state.second.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

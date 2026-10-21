@@ -12,7 +12,7 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: whole (scope: YES)
-# AUTHORED[whole]: 4 scenarios evidence all three declared item tokens on the construction route the record names. 'scourge', 'parrot' and 'pirate_flag' are the catalogue's own carried item ids (sources/knowledge/catalog/items/trollheim.yaml), so the bound profile.equipment-restrictions binding this band declares (grant: profile, implemented YES) reaches each through the shared eligibility stage: a Crew build carrying any one of them is refused with '"scourge" is forbidden for lustria-pirates/crew.', '"parrot" is forbidden for lustria-pirates/crew.' or '"pirate_flag" is forbidden for lustria-pirates/crew.' verbatim, and the identical build without them is accepted at construction. REVIEWED still requires manual semantic review.
+# AUTHORED[whole]: 4 scenarios evidence all three declared item tokens on the construction route the record names. 'scourge', 'parrot' and 'pirate_flag' are the catalogue's own carried item ids (sources/knowledge/catalog/items/trollheim.yaml), so the bound profile.equipment-restrictions binding this band declares (grant: profile, implemented YES) reaches each through the shared eligibility stage: a Crew build carrying any one of them is refused with '"scourge" is not on any equipment list of lustria-pirates/crew.', '"parrot" is not on any equipment list of lustria-pirates/crew.' or '"pirate_flag" is not on any equipment list of lustria-pirates/crew.' verbatim, and the identical build without them is accepted at construction. REVIEWED still requires manual semantic review.
 # origin_id:
 #   rule/trollheim/lustria-pirates/crew--equipment-restrictions/profile.equipment-restrictions
 # analysis_status:
@@ -55,7 +55,7 @@
       band_id: lustria-pirates
       profile_id: crew
       owned_item_ids: [scourge]
-  expect_error: '"scourge" is forbidden for lustria-pirates/crew.'
+  expect_error: '"scourge" is not on any equipment list of lustria-pirates/crew.'
 
 - audit_id: rule/trollheim/lustria-pirates/crew--equipment-restrictions/profile.equipment-restrictions
   id: crew-with-the-parrot-is-refused
@@ -67,7 +67,7 @@
       band_id: lustria-pirates
       profile_id: crew
       owned_item_ids: [parrot]
-  expect_error: '"parrot" is forbidden for lustria-pirates/crew.'
+  expect_error: '"parrot" is not on any equipment list of lustria-pirates/crew.'
 
 - audit_id: rule/trollheim/lustria-pirates/crew--equipment-restrictions/profile.equipment-restrictions
   id: crew-with-the-pirate-flag-is-refused
@@ -79,7 +79,7 @@
       band_id: lustria-pirates
       profile_id: crew
       owned_item_ids: [pirate_flag]
-  expect_error: '"pirate_flag" is forbidden for lustria-pirates/crew.'
+  expect_error: '"pirate_flag" is not on any equipment list of lustria-pirates/crew.'
 
 - audit_id: rule/trollheim/lustria-pirates/crew--equipment-restrictions/profile.equipment-restrictions
   id: crew-without-the-banned-entries-is-accepted-at-construction

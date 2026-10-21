@@ -94,22 +94,25 @@
   covers: [five-plus-ward-against-mundane]
   fighters:
     first:
-      main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      # A carried sword carries no armour modifier, so the bearer's special save is the only one.
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
     second:
       collection: trollheim
       band_id: lustria-pygmies
       profile_id: silent-walker
-      main_weapon_id: weapon.mace
-  initial_state: {second: {wounds: 2, attacks: 0}}
+  initial_state: {second: {attacks: 0}}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
+    # The charging attacker must first pass the Fear test the bearer's printed rule forces; 1 passes.
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 3}
     - {key: round.0.first.attack.0.special.ward, value: 5}
   expect_rounds:
-    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 - audit_id: rule/trollheim/lustria-pygmies/silent-walker--ethereal/trait.ward-save
@@ -117,21 +120,28 @@
   covers: [negated-by-magic]
   fighters:
     first:
-      main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      # A carried sword carries no armour modifier, so the bearer's special save is the only one.
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
       trait_overrides: {magical_attacks: true}
     second:
       collection: trollheim
       band_id: lustria-pygmies
       profile_id: silent-walker
-      main_weapon_id: weapon.mace
-  initial_state: {second: {wounds: 2, attacks: 0}}
+  initial_state: {second: {attacks: 0}}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
+    # The charging attacker must first pass the Fear test the bearer's printed rule forces; 1 passes.
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 3}
+    # The unsaved wound is the last of the bearer's single printed Wound, so the printed
+    # Injury table is rolled: 1 leaves it Knocked Down.
+    - {key: round.0.first.attack.0.injury.0, value: 1}
   expect_rounds:
-    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 0,
+        state.second.condition: KNOCKED_DOWN}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 

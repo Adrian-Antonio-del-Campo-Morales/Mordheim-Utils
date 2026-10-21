@@ -70,6 +70,17 @@
 # printed Cave Squigs profile and the Leadership test is supplied as the fixture condition the rule speaks
 # about; the Squig Herder's printed Leadership 6 is supplied as its value and the warband Boss as an admitted
 # nearby participant, never simulated.
+#
+# Construction blocker (recorded, not worked around): the supplied value is read by
+# leadership.resolve_local_leadership only when the tested fighter carries the mechanic.handler-leadership
+# tag ("handler_only"), and compile_fighter refuses a supplied stupidity_leadership without it ("Handler
+# Leadership requires a handler-only Leadership rule").  A Cave Squig cannot carry the tag today: the
+# declaration below selects the mechanic through skill_ids, which admits only skills the recipient's printed
+# access allows -- cave-squigs prints no skill_access, so the build is refused with "skills are not available
+# to ...: ['mechanic.handler-leadership']" -- and this band's row (special-rules.yaml,
+# squig-herder--handle-animal-squig, grant profile, binding mechanic.handler-leadership) applies_to
+# squig-herder, the provider, not cave-squigs.  The two scenarios keep the printed expectation; the missing
+# step is the KB connection the register note names, not a tape or expectation error.
 
 - audit_id: rule/mordheim/night-goblins-web/squig-herder--handle-animal-squig/unimplemented.night-goblins-web.squig-herder.handle-animal-squig
   id: the-supplied-herders-value-is-the-one-tested

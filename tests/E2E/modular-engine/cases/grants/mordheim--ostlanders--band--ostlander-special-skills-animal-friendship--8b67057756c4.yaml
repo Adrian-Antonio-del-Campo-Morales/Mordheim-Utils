@@ -25,8 +25,8 @@
 # "Animals" is the attacker's own kind: the supplied normal-animal trait is the fact the protection
 # reads and it is held constant in both scenarios, so the bearer's trait is the only difference.  The
 # bearer is given no attack of its own, so the whole tape is the animal's pool and its removal is the
-# observation; in the control the same animal attacks a warrior without the lasting condition and its
-# declared sixes wound him.  REVIEWED still requires manual semantic review.
+# observation; in the control the same animal attacks a warrior without the lasting condition and lands
+# its declared wound.  REVIEWED still requires manual semantic review.
 # origin_id:
 #   rule/mordheim/ostlanders/band--ostlander-special-skills-animal-friendship/mechanic.animal-friendship
 # analysis_status:
@@ -99,7 +99,7 @@
       profile_id: elder
       special_rule_ids: [band--ostlander-special-skills-animal-friendship]
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 0}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
   initial_state:
     second: {wounds: 3, attacks: 0}
   duel_context: {charging: [first], active_participant: first}
@@ -117,14 +117,17 @@
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 0}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
   initial_state:
     second: {wounds: 3, attacks: 0}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
+  # Strength 3 against Toughness 3 hits and wounds on a 4+, so the declared faces are ordinary successes.
+  # They are deliberately not sixes: a natural six to hit opens the critical die before the damage step,
+  # which would put an unrelated request between the animal's hit and the wound this control reads.
   rolls:
-    - {key: round.0.first.attack.0.hit, value: 6}
-    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 5}
   expect_rounds:
     0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

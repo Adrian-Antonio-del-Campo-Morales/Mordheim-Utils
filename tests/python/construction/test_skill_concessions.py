@@ -28,6 +28,11 @@ from mordheim_construction.eligibility import desktop_call
 from mordheim_core.models import FighterBuild
 from mordheim_knowledge.loader import load_bands, knowledge_root
 
+
+# The concession is the offer: every case decides what the member may select,
+# and the compiled tag only follows an admitted choice.
+pytestmark = pytest.mark.eligibility
+
 ROOT = knowledge_root()
 COLLECTION = "mordheim"
 BIG_BULLY = "bigsnotz--big-bully"

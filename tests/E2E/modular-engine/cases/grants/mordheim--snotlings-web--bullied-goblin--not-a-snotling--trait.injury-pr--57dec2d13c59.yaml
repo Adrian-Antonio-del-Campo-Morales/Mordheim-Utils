@@ -55,10 +55,11 @@
 # Derived from the printed sentence and the recorded contract; no engine output was consulted.  The
 # bearer prints that it is not a Snotling, starts the duel at one Wound and contributes no attacks of
 # its own, so round 0 carries only the attacker's dice and the wound that lands is the one that
-# reaches the injury table.  The blow is an ordinary mace: at Weapon Skill 10 against this bearer's
-# printed Weapon Skill it needs a 3, and Strength 8 against its Toughness needs a 2, so the declared
-# 5 and 5 both pass.  Five is deliberately below a natural six, which would be a critical hit and add
-# a further critical die and an injury modifier.  The normal table takes a fighter out of action on a
+# reaches the injury table.  The blow is an ordinary sword - chosen precisely because it prints no
+# concussion rule, so the injury face alone decides the chart the clause is about: at Weapon Skill 10
+# against this bearer's printed Weapon Skill it needs a 3, and Strength 8 against its Toughness needs
+# a 2, so the declared 5 and 5 both pass.  Five is deliberately below a natural six, which would be a
+# critical hit and add a further critical die and an injury modifier.  The normal table takes a fighter out of action on a
 # 5, so both declared faces leave the bearer in the duel and no further die is consumed beyond the
 # injury die itself.
 
@@ -67,7 +68,7 @@
   covers: [exempt-from-snotling-rules]
   fighters:
     first:
-      main_weapon_id: weapon.mace
+      main_weapon_id: weapon.sword
       characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
     second: {collection: mordheim, band_id: snotlings-web, profile_id: bullied-goblin}
   initial_state: {second: {wounds: 1, attacks: 0}}
@@ -89,7 +90,7 @@
   covers: [exempt-from-snotling-rules]
   fighters:
     first:
-      main_weapon_id: weapon.mace
+      main_weapon_id: weapon.sword
       characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
     second: {collection: mordheim, band_id: snotlings-web, profile_id: bullied-goblin}
   initial_state: {second: {wounds: 1, attacks: 0}}

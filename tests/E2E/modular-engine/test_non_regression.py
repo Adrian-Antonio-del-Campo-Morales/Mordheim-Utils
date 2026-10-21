@@ -29,6 +29,7 @@ from pathlib import Path
 import yaml
 
 from mordheim_modular_e2e.corpus import Scenario, group_by_audit, load_corpus
+import pytest
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[3]
 BASELINE_PATH = Path(__file__).parent / "evidence" / "coverage-baseline.yaml"
@@ -90,6 +91,7 @@ def regressions(baseline: dict, scenarios: list[Scenario],
     return problems
 
 
+@pytest.mark.evidence
 def test_accepted_coverage_does_not_regress():
     baseline = load_baseline()
     admitted, _ = register_view(baseline)
@@ -97,6 +99,7 @@ def test_accepted_coverage_does_not_regress():
     assert not problems, "accepted E2E coverage regressed:\n  " + "\n  ".join(problems)
 
 
+@pytest.mark.evidence
 def test_register_revision_stays_traceable(capsys):
     """Report the register revision and re-verify the accepted clauses against it."""
     baseline = load_baseline()
@@ -114,6 +117,7 @@ def _without(scenarios, audit_id, scenario_id):
             if not (scenario.audit_id == audit_id and scenario.scenario_id == scenario_id)]
 
 
+@pytest.mark.test_infrastructure
 def test_the_control_detects_a_lost_scenario_identity_or_reference():
     """Isolated demonstration that the control detects loss and substitution.
 
@@ -154,6 +158,7 @@ def test_the_control_detects_a_lost_scenario_identity_or_reference():
     assert any("has no scenarios left" in problem for problem in emptied), emptied
 
 
+@pytest.mark.test_infrastructure
 def test_the_control_detects_a_clause_that_left_the_admitted_scope():
     """A register change that withdraws an accepted clause invalidates the evidence."""
     baseline = load_baseline()
@@ -164,6 +169,7 @@ def test_the_control_detects_a_clause_that_left_the_admitted_scope():
     assert any("is no longer an admitted clause" in problem for problem in problems), problems
 
 
+@pytest.mark.evidence
 def test_the_completeness_gate_stays_separate_from_this_reference():
     """The reference protects accepted evidence; it never claims completeness."""
     baseline = load_baseline()

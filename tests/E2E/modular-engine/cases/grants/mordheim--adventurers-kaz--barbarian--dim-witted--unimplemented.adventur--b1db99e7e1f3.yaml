@@ -99,9 +99,10 @@
 
 # --- Authored scenarios ---
 # Derived from the printed rule, the printed band profiles and the recorded contract; no engine output was
-# consulted.  The supplied Leadership value is declared through the same channel the corpus uses for a supplied
-# source (the bearer's supplied test value) and the Barbarian is supplied as an admitted nearby participant, so
-# the tape states the printed condition instead of simulating the warband.
+# consulted.  The Barbarian leader is supplied as an admitted nearby participant within the printed six inches and
+# the Stupidity test borrows his Dim-Witted effective Leadership 7 through the engine's leader supply, so the tape
+# states the printed condition instead of simulating the warband.  The elf fights with its neutral fist, which
+# still grants the opponent the printed 6+ save, taped before the injury roll.
 
 - audit_id: rule/mordheim/adventurers-kaz/barbarian--dim-witted/unimplemented.adventurers-kaz.barbarian.dim-witted
   id: inside-the-printed-six-inches-the-supplied-seven-is-the-value-tested
@@ -111,7 +112,7 @@
       collection: mordheim
       band_id: adventurers-kaz
       profile_id: elf
-      trait_overrides: {stupidity: true, stupidity_leadership: 7}
+      trait_overrides: {stupidity: true}
     second:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
@@ -127,6 +128,8 @@
         condition: standing
         fighter: {collection: mordheim, band_id: adventurers-kaz, profile_id: barbarian}
   maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.stupidity.leader.barbarian-leader, value: true}
   rolls:
     - {key: round.0.first.stupidity.0, value: 4}
     - {key: round.0.first.stupidity.1, value: 4}
@@ -165,6 +168,7 @@
     - {key: round.0.first.stupidity.1, value: 4}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {state.first.stupidity_failed: false, attacks.0.damage: 1, state.second.wounds: 1}

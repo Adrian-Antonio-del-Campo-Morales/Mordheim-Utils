@@ -65,13 +65,16 @@
       collection: mordheim
       band_id: survivors-of-strigos-sylv
       profile_id: strigoi-vampire
+      special_rule_ids: [strigoi-vampire--great-thirster]
     second:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1, leadership: 7}
   initial_state: {first: {attacks: 1}}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.first.attack.0.injury.0, value: 5}
@@ -91,11 +94,13 @@
       profile_id: strigoi-vampire
     second:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 2, initiative: 10, attacks: 1}
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 2, initiative: 10, attacks: 1, leadership: 7}
   initial_state: {first: {wounds: 1, frenzy: true}}
   duel_context: {charging: [second], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.second.fear.charge.0, value: 1}
+    - {key: round.0.second.fear.charge.1, value: 1}
     - {key: round.0.second.attack.0.hit, value: 4}
     - {key: round.0.second.attack.0.wound, value: 4}
     - {key: round.0.second.attack.0.injury.0, value: 1}
@@ -112,10 +117,10 @@
   fighters:
     first:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
     second:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1, leadership: 7}
   initial_state: {second: {attacks: 0}}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1

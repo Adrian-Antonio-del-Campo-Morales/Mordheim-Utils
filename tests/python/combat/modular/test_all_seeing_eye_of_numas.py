@@ -48,6 +48,7 @@ def state(fighter):
 
 
 @pytest.mark.parametrize("ward,saved", [(5, False), (6, True)])
+@pytest.mark.rule_behavior
 def test_the_carried_artefact_saves_on_its_printed_six_after_the_armour_save(ward, saved):
     owner, foe = bearer("armour.light-armour"), enemy()
     # Carrying the piece and selecting its mechanic deliver the one 6+ save; the
@@ -67,6 +68,7 @@ def test_the_carried_artefact_saves_on_its_printed_six_after_the_armour_save(war
     assert result.state.second.wounds == (2 if saved else 1)
 
 
+@pytest.mark.rule_behavior
 def test_strength_and_weapon_modifiers_move_the_armour_save_but_never_the_artefact_save():
     owner = bearer("armour.heavy-armour")
     mundane, strong = enemy(), enemy(strength=5, weapon="weapon.cleaver")

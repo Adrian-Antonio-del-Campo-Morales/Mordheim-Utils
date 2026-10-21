@@ -25,7 +25,8 @@ def choices(*values):
 
 def skinner():
     return compile_fighter(FighterBuild('mordheim', band_id='hirelings.hired-sword.1b',
-        profile_id='hireling.hired-sword.mule-skinner', main_weapon_id='weapon.whip-tc14'))
+        profile_id='hireling.hired-sword.mule-skinner', main_weapon_id='weapon.whip-tc14',
+        special_rule_ids=('hireling.hired-sword.mule-skinner.skill.animal-handling-falconer',)))
 
 
 def heinrich():
@@ -51,6 +52,7 @@ def strike(owner, foe, rolls, decisions, *, key='r', defender_state=None):
     return result
 
 
+@pytest.mark.compilation
 def test_canonical_profiles_and_source_variant_stay_distinct():
     for fighter in (skinner(), heinrich()):
         assert 'weapon.whip-tc14' in fighter.main_weapon.tags
@@ -61,6 +63,7 @@ def test_canonical_profiles_and_source_variant_stay_distinct():
     assert next(item for item in load_items("mordheim") if item['id'] == 'whip')['combat_status'] == 'out_of_scope'
 
 
+@pytest.mark.rule_behavior
 @pytest.mark.parametrize('wound,saved', [(4, False), (5, True)])
 def test_normal_whip_hit_uses_minus_one_strength_no_parry_and_plus_one_enemy_save(wound, saved):
     owner = skinner()
@@ -73,12 +76,14 @@ def test_normal_whip_hit_uses_minus_one_strength_no_parry_and_plus_one_enemy_sav
     assert result.saved == saved and result.wounded == saved
 
 
+@pytest.mark.rule_behavior
 def test_whip_master_can_repeat_a_success_and_must_keep_the_worse_result_without_spending():
     result = strike(skinner(), enemy(), [('r.hit', 4), ('r.hit.reroll', 1)],
         choices(('r.whip-disarm.main', False), ('r.whip-master', True)))
     assert not result.hit and not result.attacker.resources_spent
 
 
+@pytest.mark.interaction
 @pytest.mark.parametrize('other', ['ordinary', 'oracle', 'scryer'])
 def test_whip_master_never_adds_a_third_roll(other):
     owner = skinner()
@@ -97,6 +102,7 @@ def test_whip_master_never_adds_a_third_roll(other):
     assert result.hit and not result.wounded
 
 
+@pytest.mark.rule_behavior
 @pytest.mark.parametrize('hold,dropped', [(3, True), (5, False)])
 def test_disarm_always_grants_one_hold_attempt_without_wounding_or_using_normal_parries(hold, dropped):
     foe = enemy()  # mace: no native parry, no shield, no armour
@@ -107,6 +113,7 @@ def test_disarm_always_grants_one_hold_attempt_without_wounding_or_using_normal_
     assert result.defender.parries_remaining == 0
 
 
+@pytest.mark.rule_behavior
 def test_two_disarms_drop_the_active_weapon_then_its_distinct_carried_backup():
     owner = skinner()
     original = enemy(owned_item_ids=('mace', 'sword'))
@@ -123,12 +130,14 @@ def test_two_disarms_drop_the_active_weapon_then_its_distinct_carried_backup():
     assert second.defender.broken_hands == frozenset({'main', slot})
 
 
+@pytest.mark.eligibility
 def test_indestructible_weapon_is_not_offered_as_a_disarm_target():
     result = strike(skinner(), enemy(main_weapon_id='weapon.broadsword-of-damnation'),
         [('r.hit', 4), ('r.wound', 1)], choices(('r.whip-master', False)))
     assert not result.defender.broken_hands
 
 
+@pytest.mark.rule_behavior
 def test_pool_preserves_the_declaration_without_asking_again_or_rolling_to_wound():
     owner, foe = skinner(), enemy()
     dice = tape(('p.attack.0.hit', 4), ('p.attack.0.disarm-hold', 3))
@@ -140,6 +149,7 @@ def test_pool_preserves_the_declaration_without_asking_again_or_rolling_to_wound
     assert len(outcomes) == 1 and not outcomes[0].wounded
 
 
+@pytest.mark.rule_behavior
 @pytest.mark.parametrize('species', ['snake', 'serpent'])
 def test_snake_fear_is_opponent_qualified_and_does_not_make_heinrich_cause_fear(species):
     owner = heinrich()
@@ -151,6 +161,7 @@ def test_snake_fear_is_opponent_qualified_and_does_not_make_heinrich_cause_fear(
     assert not causes_fear(animal, owner)
 
 
+@pytest.mark.rule_behavior
 @pytest.mark.parametrize('receiving', [False, True])
 def test_canonical_snake_fear_reaches_charges_and_the_actual_round(receiving):
     owner, snake = heinrich(), enemy(trait_overrides={'species': 'snake'})
@@ -170,6 +181,7 @@ def test_canonical_snake_fear_reaches_charges_and_the_actual_round(receiving):
     dice.finish(); decisions.finish()
 
 
+@pytest.mark.rule_behavior
 def test_tc14_reach_does_not_inherit_the_other_whips_charge_bonus():
     owner, foe = skinner(), enemy()
     dice = tape(('p.attack.0.hit', 1))
@@ -180,6 +192,7 @@ def test_tc14_reach_does_not_inherit_the_other_whips_charge_bonus():
     assert len(outcomes) == 1
 
 
+@pytest.mark.interaction
 @pytest.mark.parametrize('off_hand', [False, True])
 def test_disarmed_opponent_replies_with_surviving_weapon_in_the_same_round(off_hand):
     owner = skinner()
@@ -201,6 +214,7 @@ def test_disarmed_opponent_replies_with_surviving_weapon_in_the_same_round(off_h
     assert len(result.attacks) == 2 and not result.attacks[-1].wounded
 
 
+@pytest.mark.rule_behavior
 @pytest.mark.parametrize('hit,hold,dropped', [(6, 6, True), (4, 5, False)])
 def test_hold_attempt_is_one_roll_even_against_a_six_or_overwhelming_strength(hit, hold, dropped):
     owner = compile_fighter(FighterBuild('mordheim', Characteristics(3, 8, 3, 2, 3, 1),

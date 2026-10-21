@@ -71,6 +71,7 @@
   duel_context: {charging: [second], active_participant: second}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.first.fear.charged.ghostly-howl, value: 1}
     - {key: round.0.first.fear.charged.0, value: 5}
     - {key: round.0.first.fear.charged.1, value: 4}
     - {key: round.0.first.attack.0.hit, value: 4}
@@ -90,9 +91,11 @@
   duel_context: {charging: [second], active_participant: second}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.first.fear.charged.ghostly-howl, value: 1}
     - {key: round.0.first.fear.charged.0, value: 3}
     - {key: round.0.first.fear.charged.1, value: 3}
     - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.ethereal, value: 3}
     - {key: round.0.first.attack.0.wound, value: 3}
     - {key: round.0.first.attack.0.injury.0, value: 1}
   expect_rounds:

@@ -48,6 +48,8 @@
 # Derived from the printed rule and the printed profile; no engine output was consulted.
 # The fixture's Initiative is higher and the bearer contributes no attacks of its own (initial_state),
 # so the die of 3 at the injury table is Stunned, converted to Knocked Down by the bearer's rule.
+# The scarecrow is also an undead construct and may re-roll injury results; the fixture declines that
+# optional re-roll so the declared 3 remains the Stunned result the No Pain clause converts.
 - audit_id: rule/mordheim/restless-dead/scarecrows--no-pain/skill.ignore-pain
   id: a-stunned-result-becomes-knocked-down
   covers:
@@ -81,6 +83,9 @@
     value: 5
   - key: round.0.first.attack.0.injury.0
     value: 3
+  decisions:
+  - key: round.0.first.attack.0.injury.0.reroll-choice
+    value: false
   expect_rounds:
     0:
       state.second.wounds: 0

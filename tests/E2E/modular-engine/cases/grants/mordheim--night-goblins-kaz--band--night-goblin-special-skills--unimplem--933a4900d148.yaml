@@ -154,7 +154,11 @@
 #
 # EXPECTATION, category B: this band row is not yet wired to the operator (KB scope LATER, implemented
 # 'NO', null binding), so this first tape is expected to fail until the binding exists; a mis-spelled grant
-# id would fail on the grant rather than on the rule.
+# id would fail on the grant rather than on the rule.  The sibling row that does name the operator
+# (band--night-goblin-special-skills-netter, special-rules.yaml) declares its net-charge producer
+# scope 'NO' -- only condition.netted is admitted -- so no Night Goblin row produces
+# round.N.<side>.netter.hit / .escape today and the declared net dice stay unused.  The control below
+# (no band rule) is unaffected.
 - audit_id: rule/mordheim/night-goblins-kaz/band--night-goblin-special-skills/unimplemented.night-goblins-kaz.band.night-goblin-special-skills
   id: a-hit-net-knocks-the-target-down-and-the-charge-strikes-home
   covers: [whole--scope--netter]
@@ -163,7 +167,7 @@
       collection: mordheim
       band_id: night-goblins-kaz
       profile_id: night-goblins
-      main_weapon_id: weapon.mace
+      main_weapon_id: weapon.club
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
       main_weapon_id: weapon.mace
@@ -194,7 +198,7 @@
       collection: mordheim
       band_id: night-goblins-kaz
       profile_id: night-goblins
-      main_weapon_id: weapon.mace
+      main_weapon_id: weapon.club
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
       main_weapon_id: weapon.mace

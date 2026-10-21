@@ -98,7 +98,7 @@
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
-    - {key: round.0.first.attack.0.injury.0, value: 2}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
   expect_rounds:
     0: {attacks.0.damage: 1, state.second.condition: KNOCKED_DOWN, state.second.wounds: 0}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -63,7 +63,8 @@
   expect_error: Berserker may not be combined with Ferocious Charge
 
 # The same bearer holding only Berserker is accepted.  Both attack pools are suppressed, so the accepted
-# construction is the only thing the round shows and no die is requested.
+# construction is the only thing the round shows: the one die is the shared priority/Initiative tie the
+# two equal warriors must resolve before their empty pools, and no attack, wound or save die follows.
 - audit_id: rule/mordheim/pit-fighters/band--troll-slayer-special-skills-berserker/compiler.berserker-incompatible-with-ferocious-charge
   id: berserker-alone-is-accepted-at-construction
   covers: [whole]
@@ -79,6 +80,7 @@
   initial_state: {first: {attacks: 0}, second: {attacks: 0}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
-  rolls: []
+  rolls:
+    - {key: round.0.priority-tie, value: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 

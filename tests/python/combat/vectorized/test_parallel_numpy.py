@@ -9,6 +9,7 @@ from mordheim_construction.compiler import compile_fighter
 from mordheim_core.models import Characteristics
 from mordheim_core.models import DuelRequest
 from mordheim_core.models import FighterBuild
+import pytest
 
 
 def fighter(**changes):
@@ -20,6 +21,7 @@ def fighter(**changes):
     return compile_fighter(FighterBuild(**options))
 
 
+@pytest.mark.test_infrastructure
 def test_batch_plan_and_seeds_are_canonical_and_deterministic():
     assert _batch_sizes(1000, 300) == (300, 300, 300, 100)
     assert _batch_sizes(300, 300) == (300,)
@@ -30,6 +32,7 @@ def test_batch_plan_and_seeds_are_canonical_and_deterministic():
     assert _batch_seed(2026, 1) != _batch_seed(2027, 1)
 
 
+@pytest.mark.parity
 def test_parallel_numpy_matches_the_sequential_driver_exactly():
     first, second = fighter(), fighter()
     simulations, batch_size = 800, 250  # four whole batches
@@ -47,6 +50,7 @@ def test_parallel_numpy_matches_the_sequential_driver_exactly():
     assert again == sequential
 
 
+@pytest.mark.parity
 def test_single_batch_samples_are_unchanged_by_the_parallel_path():
     first, second = fighter(), fighter()
     request = DuelRequest(

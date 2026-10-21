@@ -131,10 +131,12 @@
   rolls:
     - {key: round.0.first.attack.0.hit, value: 2}
     - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 2}
+    - {key: round.0.first.attack.1.hit.reroll, value: 2}
     - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
-    0: {attacks.0.damage: 1, state.second.wounds: 1}
+    0: {attacks.0.damage: 1, attacks.0.hit: true, attacks.1.hit: false, state.second.wounds: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 - audit_id: mechanic/mechanic.thirst-for-vengeance
   id: the-same-miss-stands-against-a-living-opponent
@@ -151,8 +153,9 @@
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.1.hit, value: 2}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
-    0: {attacks.0.damage: 0}
+    0: {attacks.0.damage: 0, attacks.1.damage: 0}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 

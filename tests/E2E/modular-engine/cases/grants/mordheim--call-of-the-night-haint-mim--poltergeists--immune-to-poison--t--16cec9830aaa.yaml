@@ -16,15 +16,16 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: whole (scope: YES)
-# AUTHORED[whole]: 1 scenario shows the printed poison immunity against the one duel-time
-# poison rider: a Nightshade-coated mace wounds the bearer, the wound is taken as any
-# wound would be, and the poisoned-wound Initiative penalty is suppressed, so the
-# bearer's recorded initiative_penalty stays 0.  The bearer is the call-of-the-night-haint-mim/poltergeists profile
-# that prints the rule, and the tape declares the bearer's own printed defence failing,
-# so the wound is then taken as any wound would be.
-# The bearer starts the duel at two wounds and declares no attack, so a single unsaved
-# wound leaves it standing and no injury roll is needed; the clause is single-faceted,
-# so no second scenario is required.
+# AUTHORED[whole]: 1 scenario shows the printed poison immunity on the bearer that prints
+# it.  Incorporeal takes a wounded Poltergeist out of action before Nightshade's wound
+# rider resolves, so a suppressed Initiative penalty on that branch would not distinguish
+# immunity.  The witness instead uses Black Lotus, whose automatic wound is resolved in
+# the wound step before that branch: a natural six to hit with a wound die of one never
+# wounds the immune bearer, while the same tape wounds a non-immune defender.  The bearer
+# is the call-of-the-night-haint-mim/poltergeists profile that prints the rule, and the
+# tape declares the bearer's own printed defence failing, so the hit reaches that step.
+# The bearer keeps its printed single Wound and declares no attack; the clause is
+# single-faceted, so no second scenario is required.
 
 # The bearer also prints the band Ethereal rule, whose accepted per-profile grant is the
 # 4+ unmodifiable save taken after the To Hit roll, so the tape declares that save failing
@@ -60,29 +61,30 @@
 
 # --- Authored scenarios ---
 # Derived from the printed rule for this bearer and the admitted clause; no engine
-# output was consulted.  Nightshade is the one admitted poison whose consequence is a
-# state change on the warrior it wounds, so it is the rider the immunity must suppress:
-# the coated mace wounds the bearer as any mace would, and the poisoned-wound
-# Initiative penalty never lands.  The attacker's Weapon Skill 10, Strength 8 and
-# Initiative 10 are hand-built fixture facts, not profile values, and its higher
-# Initiative with no charge declared lets it strike first, so the bearer declares no
-# attack of its own and the tape holds only the attacker's hit and wound dice.
+# output was consulted.  Black Lotus is the admitted poison route whose consequence is
+# resolved before Incorporeal's immediate-out branch: a natural six to hit makes a wound
+# die of one still wound an ordinary defender, and the bearer's immunity cancels that
+# automatic wound, so no Wound is lost and no injury or Nightshade rider is reached.  The
+# attacker's Weapon Skill 10, Strength 8 and Initiative 10 are hand-built fixture facts,
+# not profile values, and its higher Initiative with no charge declared lets it strike
+# first, so the bearer declares no attack of its own and the tape holds only the
+# attacker's hit, Ethereal and wound dice.
 - audit_id: rule/mordheim/call-of-the-night-haint-mim/poltergeists--immune-to-poison/trait.poison-immune
   id: the-poisoned-wound-keeps-its-wound-and-loses-its-rider
   covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
-      main_poison_id: poison.nightshade
+      main_poison_id: poison.black-lotus
       characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
     second: {collection: mordheim, band_id: call-of-the-night-haint-mim, profile_id: poltergeists}
-  initial_state: {second: {wounds: 2, attacks: 0}}
+  initial_state: {second: {attacks: 0}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
-    - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 6}
     - {key: round.0.first.attack.0.ethereal, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 1}
   expect_rounds:
-    0: {attacks.0.damage: 1, state.second.wounds: 1, state.second.initiative_penalty: 0}
+    0: {attacks.0.damage: 0, state.second.wounds: 1, state.second.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -104,6 +104,10 @@
   rolls:
     - {key: round.0.first.feral-instinct.0, value: 2}
     - {key: round.0.first.feral-instinct.1, value: 2}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.2.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {state.first.feral_instinct_failed: false}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
@@ -124,6 +128,10 @@
   rolls:
     - {key: round.0.first.feral-instinct.0, value: 6}
     - {key: round.0.first.feral-instinct.1, value: 5}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.2.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {state.first.feral_instinct_failed: true}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

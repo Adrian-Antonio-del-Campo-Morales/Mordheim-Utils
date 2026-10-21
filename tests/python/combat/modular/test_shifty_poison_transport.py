@@ -34,6 +34,10 @@ from mordheim_combat.modular.rounds import resolve_round
 from mordheim_combat.modular.state import initialize_duel
 from mordheim_combat_lab.verification.dice import StrictDecisions, StrictDice
 from mordheim_core.models import Characteristics, CompiledFighter, DuelContext, EffectSet
+import pytest
+
+
+pytestmark = pytest.mark.interaction
 
 SHIFTY_TAG = 'skill.shifty'
 SPIDER_SPITTLE_TAG = 'poison.spider-spittle'

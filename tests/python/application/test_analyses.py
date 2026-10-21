@@ -20,6 +20,7 @@ def build(weapon="weapon.dagger"):
     return FighterBuild("mordheim", Characteristics(3, 3, 3, 1, 3, 1), main_weapon_id=weapon)
 
 
+@pytest.mark.workflow
 def test_comparison_service_reports_results_and_illegal_variants():
     batch = compare_builds(build(), build(), (
         ComparisonCandidate("mace", "Mace", build("weapon.mace")),
@@ -29,6 +30,7 @@ def test_comparison_service_reports_results_and_illegal_variants():
     assert [candidate.id for candidate, _reason in batch.rejected] == ["unknown"]
 
 
+@pytest.mark.workflow
 def test_comparison_service_honours_cancellation():
     cancelled = Event(); cancelled.set()
     with pytest.raises(SimulationCancelled):
@@ -40,6 +42,7 @@ def skill(index: int):
     return SimpleNamespace(id=f"skill.{index}", name=f"Skill {index}")
 
 
+@pytest.mark.operator
 def test_improvement_combinations_covers_single_and_pair_sizes():
     pool = tuple(skill(index) for index in range(4))
 
@@ -54,6 +57,7 @@ def test_improvement_combinations_covers_single_and_pair_sizes():
     )
 
 
+@pytest.mark.operator
 def test_improvement_combinations_rejects_invalid_sizes_and_large_pools():
     pool = tuple(skill(index) for index in range(4))
 
@@ -65,6 +69,7 @@ def test_improvement_combinations_rejects_invalid_sizes_and_large_pools():
     assert len(improvement_combinations(tuple(skill(index) for index in range(30)), 4)) == 27405
 
 
+@pytest.mark.eligibility
 def test_attribute_choices_stop_at_the_racial_maximum():
     catalogue = CombatCatalogue()
     choice = ProfileChoice("mordheim", "sisters-of-sigmar", "sister-superior", "Sister Superior")
@@ -94,6 +99,7 @@ def test_attribute_choices_stop_at_the_racial_maximum():
     assert {item.id for item in attribute_choices(catalogue, choice, fresh)} == {"WS", "S", "T", "W", "I", "A"}
 
 
+@pytest.mark.operator
 def test_attribute_increases_repeat_until_the_racial_maximum():
     """Strength at 3 steps and size 3 yields exactly [S+1, S+1, S+1]."""
     strength = AttributeChoice("S", "Strength", steps=3)
@@ -105,6 +111,7 @@ def test_attribute_increases_repeat_until_the_racial_maximum():
     assert combinations[0].label == "Strength + Strength + Strength"
 
 
+@pytest.mark.operator
 def test_repeating_attributes_are_bounded_by_their_remaining_steps():
     strength = AttributeChoice("S", "Strength", steps=2)
     single = skill(0)
@@ -129,6 +136,7 @@ def test_repeating_attributes_are_bounded_by_their_remaining_steps():
     assert improvement_combinations((AttributeChoice("S", "Strength", steps=1),), 3) == ()
 
 
+@pytest.mark.operator
 def test_improve_attributes_stacks_repeated_increases():
     base = FighterBuild("mordheim", Characteristics(3, 3, 3, 1, 3, 1))
 
@@ -139,6 +147,7 @@ def test_improve_attributes_stacks_repeated_increases():
         improve_attributes(base, {"BS": 1})
 
 
+@pytest.mark.operator
 def test_add_improvement_items_mixes_skills_and_attributes():
     catalogue = CombatCatalogue()
     choice = ProfileChoice("mordheim", "sisters-of-sigmar", "sister-superior", "Sister Superior")

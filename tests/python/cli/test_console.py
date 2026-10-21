@@ -1,7 +1,12 @@
 import argparse
 
+import pytest
+
 from mordheim_combat_lab.console import HelpFormatter
 from mordheim_combat_lab.console import style_help
+
+# The whole file proves the visible help rendering, not command routing.
+pytestmark = pytest.mark.presentation
 
 SAMPLE = (
     "usage: tool [opts]\n"

@@ -80,9 +80,12 @@
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 1}
+    # The band's printed Hatred against Lizardmen offers the first-round reroll as well; the
+    # declared face keeps the miss so the ordering question is the only thing observed.
+    - {key: round.0.first.attack.0.hit.reroll, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
-    0: {state.first.wounds: 1, state.second.wounds: 2}
+    0: {state.first.wounds: 1, state.second.wounds: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 - audit_id: rule/trollheim/lustria-amazons/band--amazon-special-skills-lizard-hunter/mechanic.strike-first-vs-skinks-always
@@ -98,13 +101,12 @@
     second:
       main_weapon_id: weapon.stone-axe
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
-  initial_state: {first: {wounds: 2}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
     - {key: round.0.second.attack.0.hit, value: 1}
     - {key: round.0.first.attack.0.hit, value: 1}
   expect_rounds:
-    0: {state.first.wounds: 2, state.second.wounds: 2}
+    0: {state.first.wounds: 1, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 

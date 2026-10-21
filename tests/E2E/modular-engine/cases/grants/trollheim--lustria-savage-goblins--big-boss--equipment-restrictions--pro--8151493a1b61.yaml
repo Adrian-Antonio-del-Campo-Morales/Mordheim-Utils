@@ -12,7 +12,7 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: whole (scope: YES)
-# AUTHORED[whole]: 2 scenarios evidence the declared item ban on the construction route the record names. 'sacrifice_dagger' is a carried item id of the catalogue (sources/knowledge/catalog/items/trollheim.yaml), so the bound profile.equipment-restrictions binding this band declares (grant: profile, implemented YES) reaches it through the shared eligibility stage: a Big Boss build carrying the Sacrifice Dagger is refused with '"sacrifice_dagger" is forbidden for lustria-savage-goblins/big-boss.' and the identical build without it is accepted at construction. The second printed sentence (the Feather Headdress may not be bought at creation) is the creation-timing half the register records as excluded and is not asserted. REVIEWED still requires manual semantic review.
+# AUTHORED[whole]: 2 scenarios evidence the declared item ban on the construction route the record names. 'sacrifice_dagger' is a carried item id of the catalogue (sources/knowledge/catalog/items/trollheim.yaml), so the bound profile.equipment-restrictions binding this band declares (grant: profile, implemented YES) reaches it through the shared eligibility stage: a Big Boss build carrying the Sacrifice Dagger is refused with '"sacrifice_dagger" is not on any equipment list of lustria-savage-goblins/big-boss.' and the identical build without it is accepted at construction. The second printed sentence (the Feather Headdress may not be bought at creation) is the creation-timing half the register records as excluded and is not asserted. REVIEWED still requires manual semantic review.
 # origin_id:
 #   rule/trollheim/lustria-savage-goblins/big-boss--equipment-restrictions/profile.equipment-restrictions
 # analysis_status:
@@ -55,7 +55,7 @@
       band_id: lustria-savage-goblins
       profile_id: big-boss
       owned_item_ids: [sacrifice_dagger]
-  expect_error: '"sacrifice_dagger" is forbidden for lustria-savage-goblins/big-boss.'
+  expect_error: '"sacrifice_dagger" is not on any equipment list of lustria-savage-goblins/big-boss.'
 
 - audit_id: rule/trollheim/lustria-savage-goblins/big-boss--equipment-restrictions/profile.equipment-restrictions
   id: big-boss-without-the-sacrifice-dagger-is-accepted-at-construction

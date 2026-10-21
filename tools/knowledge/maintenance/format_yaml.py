@@ -15,6 +15,10 @@ the other descriptive keys (`description`, `notes`, ...) fold when they need
 wrapping (multi-line quoted scalars, content beyond the target width, or a
 physical line past the 120 maximum) and short values keep their single-line
 quotes.
+Remaining long values, including list entries, translated metadata and flow
+collections, are wrapped using parser boundaries. Quoted YAML preserves exact
+spaces and paragraph breaks when a folded block cannot represent them. Comments,
+anchors and aliases are retained; indivisible tokens may still exceed the limit.
 Rule prose lives under exactly one key — `effect` (never `summary`); the
 editorial schemas and the knowledge pipeline guards enforce that invariant. Parsed
 values are checked for semantic equivalence after whitespace normalization.
@@ -28,6 +32,8 @@ from pathlib import Path
 from typing import Any
 
 import yaml
+
+SAFE_YAML_LOADER = getattr(yaml, "CSafeLoader", yaml.SafeLoader)
 
 ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_ROOT = ROOT / "sources" / "knowledge"
@@ -52,7 +58,7 @@ def semantic_shape(value: Any, field: str | None = None) -> Any:
 
 
 def load(path: Path) -> Any:
-    return yaml.safe_load(path.read_text(encoding="utf-8"))
+    return yaml.load(path.read_text(encoding="utf-8"), Loader=SAFE_YAML_LOADER)
 
 
 def quote_closes(text: str, quote: str) -> bool:
@@ -267,7 +273,7 @@ def normalize_lines(original: str) -> tuple[str, list[str]]:
                 # the prose genuinely needs wrapping (content beyond the
                 # target width, or a physical line beyond the hard maximum).
                 try:
-                    value = yaml.safe_load("x: " + rest)["x"]
+                    value = yaml.load("x: " + rest, Loader=SAFE_YAML_LOADER)["x"]
                 except (KeyError, TypeError, yaml.YAMLError):
                     value = None
                 if isinstance(value, str) and (
@@ -280,9 +286,8 @@ def normalize_lines(original: str) -> tuple[str, list[str]]:
                 # value: that is the shape the staged writers emit, and the line
                 # past the hard maximum is exactly what the check flags. The
                 # block's value is unchanged by rewrapping, so the guard below
-                # makes this safe for any folded scalar (a block whose value
-                # carries paragraph breaks simply fails the round-trip and is
-                # left alone).
+                # makes this safe for any folded scalar. Paragraphs that cannot
+                # fold equivalently are handled by the parser-based pass below.
                 body = lines[index + 1 : folded_block_end(lines, index, len(indent))]
                 if any(over_long(item) for item in body):
                     fold = True
@@ -308,7 +313,7 @@ def normalize_lines(original: str) -> tuple[str, list[str]]:
                     last = plain_scalar_end(lines, index, len(indent)) - 1
                 scalar_source = "x: " + rest + "\n" + "\n".join(lines[index + 1 : last + 1])
                 try:
-                    value = yaml.safe_load(scalar_source)["x"]
+                    value = yaml.load(scalar_source, Loader=SAFE_YAML_LOADER)["x"]
                 except (KeyError, TypeError, yaml.YAMLError):
                     output.extend(lines[index : last + 1])
                     index = last + 1
@@ -317,7 +322,7 @@ def normalize_lines(original: str) -> tuple[str, list[str]]:
                 # Per-scalar guard: the folded block must re-parse to the same
                 # value; otherwise the scalar is left untouched.
                 try:
-                    probe = yaml.safe_load("\n".join(emitted))
+                    probe = yaml.load("\n".join(emitted), Loader=SAFE_YAML_LOADER)
                 except yaml.YAMLError:
                     probe = None
                 if not isinstance(probe, dict) or probe.get(key) != value:
@@ -334,7 +339,73 @@ def normalize_lines(original: str) -> tuple[str, list[str]]:
         index += 1
     while output and output[-1] == "":
         output.pop()
-    return "\n".join(output) + "\n", changed_fields
+    formatted = "\n".join(output) + "\n"
+    return wrap_remaining_scalars(formatted), changed_fields
+
+
+def wrap_remaining_scalars(text: str) -> str:
+    """Wrap remaining YAML values using parser boundaries, preserving values.
+
+    This covers list entries, translated metadata and flow collections without
+    mistaking prose for mapping keys. Keep comments, anchors and aliases intact.
+    """
+    try:
+        root = yaml.compose(text, Loader=SAFE_YAML_LOADER)
+    except yaml.YAMLError:
+        return text
+    edits: list[tuple[int, int, str]] = []
+    visited: set[int] = set()
+
+    def visit(node, in_flow: bool = False) -> None:
+        if id(node) in visited:
+            return
+        visited.add(id(node))
+        start, end = node.start_mark.index, node.end_mark.index
+        source = text[start:end]
+        scalar = isinstance(node, yaml.ScalarNode)
+        flow = isinstance(node, (yaml.MappingNode, yaml.SequenceNode)) and node.flow_style
+        physical = " " * node.start_mark.column + source
+        if (scalar or flow) and any(over_long(line) for line in physical.splitlines()):
+            tokens = list(yaml.scan(source))
+            protected = any(isinstance(token, (yaml.AnchorToken, yaml.AliasToken, yaml.TagToken)) for token in tokens)
+            # Comments outside quoted scalar tokens are not retained by dump.
+            spans = [(token.start_mark.index, token.end_mark.index) for token in tokens
+                     if isinstance(token, yaml.ScalarToken)]
+            comments = any(character == "#" and not any(a <= i < b for a, b in spans)
+                           for i, character in enumerate(source))
+            if not protected and not comments:
+                value = yaml.load(source, Loader=SAFE_YAML_LOADER)
+                dumped = yaml.safe_dump(value, allow_unicode=True, sort_keys=False,
+                                        default_flow_style=True,
+                                        default_style='"' if scalar else None,
+                                        width=max(20, TARGET_WIDTH - node.start_mark.column)).rstrip("\n")
+                if dumped.endswith("\n..."):
+                    dumped = dumped[:-4]
+                continuation = " " * node.start_mark.column
+                replacement = dumped.replace("\n", "\n" + continuation)
+                suffix = text[end:].split("\n", 1)[0]
+                if (scalar and not in_flow and not suffix.lstrip().startswith("#")
+                        and isinstance(value, str) and value == " ".join(value.split())):
+                    body_indent = " " * (node.start_mark.column + 2)
+                    replacement = ">-\n" + "\n".join(
+                        body_indent + line for line in wrap_words(value, max(20, TARGET_WIDTH - len(body_indent))))
+                if source.endswith("\n"):
+                    replacement += "\n"
+                if replacement != source and yaml.load(replacement, Loader=SAFE_YAML_LOADER) == value:
+                    edits.append((start, end, replacement))
+                    return
+        if isinstance(node, yaml.MappingNode):
+            for _, value in node.value:
+                visit(value, in_flow or bool(node.flow_style))
+        elif isinstance(node, yaml.SequenceNode):
+            for value in node.value:
+                visit(value, in_flow or bool(node.flow_style))
+
+    if root is not None:
+        visit(root)
+    for start, end, replacement in sorted(edits, reverse=True):
+        text = text[:start] + replacement + text[end:]
+    return text
 
 
 def over_long(line: str) -> bool:
@@ -380,13 +451,13 @@ def main() -> int:
     failures = 0
     changed = 0
     for path in sum((iter_yaml(root) for root in paths), []):
-        # Read the raw bytes: universal-newline translation would hide CRLF, and
-        # the maintained sources are LF-only (the knowledge base has no CRLF).
+        # Read raw bytes so non-LF endings can be reported and repaired.
         original = path.read_bytes().decode("utf-8")
+        normalized_endings = original.replace("\r\n", "\n").replace("\r", "\n")
         formatted, fields = normalize_lines(original)
         try:
             before = load(path)
-            after = yaml.safe_load(formatted)
+            after = yaml.load(formatted, Loader=SAFE_YAML_LOADER)
         except yaml.YAMLError as error:
             print(f"ERROR {path}: YAML parse failure: {error}")
             failures += 1
@@ -400,7 +471,10 @@ def main() -> int:
             for issue in issues:
                 print(f"WARN {path}: {issue}")
         if formatted != original:
-            changed += 1
+            if not args.write and original != normalized_endings:
+                print(f"WARN {path}: non-LF line endings (LF recommended; run --write to normalize)")
+            # Line endings alone are advisory; other formatting still counts.
+            changed += int(args.write or formatted != normalized_endings)
             if args.write:
                 path.write_text(formatted, encoding="utf-8", newline="\n")
                 label = ", ".join(sorted(set(fields)))

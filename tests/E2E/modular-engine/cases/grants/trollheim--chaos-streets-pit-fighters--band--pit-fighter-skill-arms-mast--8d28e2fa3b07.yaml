@@ -89,5 +89,6 @@
   initial_state: {first: {attacks: 0}, second: {attacks: 0}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
-  rolls: []
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

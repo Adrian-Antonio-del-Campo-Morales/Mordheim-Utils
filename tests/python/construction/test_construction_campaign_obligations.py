@@ -70,6 +70,7 @@ def _artefact() -> dict:
     return load_artefact_document(path)
 
 
+@pytest.mark.knowledge_integrity
 def test_family_heirloom_publishes_the_printed_creation_roll():
     catalogue = _campaign("recruitment-and-veterans")
     decisions = catalogue.get("creation_decisions") or ()
@@ -112,6 +113,7 @@ def test_family_heirloom_publishes_the_printed_creation_roll():
         assert row["result_i18n"]["es"].strip()
 
 
+@pytest.mark.knowledge_integrity
 def test_rout_exemption_names_its_recipients_and_the_generator_curates_them_once():
     band = _band(PATROL)
     rule = _rule(band, ROUT_RULE)
@@ -139,6 +141,7 @@ def test_rout_exemption_names_its_recipients_and_the_generator_curates_them_once
     assert patrol["band_id"] == PATROL
 
 
+@pytest.mark.knowledge_integrity
 def test_repeater_pistol_market_scope_is_published_and_stays_out_of_construction():
     canonical = _campaign("trading-post")
     entry = next(
@@ -172,6 +175,7 @@ def test_repeater_pistol_market_scope_is_published_and_stays_out_of_construction
 
 
 
+@pytest.mark.knowledge_integrity
 def test_unique_plate_mail_is_not_sold_and_reaches_the_warband_by_item_id():
     canonical = _campaign("trading-post")
     entry = next(
@@ -206,6 +210,7 @@ SLAYER = "dwarf-slayer-cult-web"
 SHALLOWS = "shallows-beasts-mim"
 
 
+@pytest.mark.knowledge_integrity
 def test_succession_clause_publishes_the_leader_and_the_successors():
     catalogue = _campaign("recruitment-and-veterans")
     entry = next(
@@ -235,6 +240,7 @@ def test_succession_clause_publishes_the_leader_and_the_successors():
     assert leader_rules, "the published leader profile must carry the band's Leader rule"
 
 
+@pytest.mark.knowledge_integrity
 def test_born_marksmen_publishes_the_granted_skill_list():
     catalogue = _campaign("recruitment-and-veterans")
     entry = next(
@@ -253,6 +259,7 @@ def test_born_marksmen_publishes_the_granted_skill_list():
     assert "Shooting skills" in printed
 
 
+@pytest.mark.knowledge_integrity
 def test_mutation_grant_publishes_priced_ids_and_names_the_unpriced_ones():
     catalogue = _campaign("mutations")
     entry = next(
@@ -295,6 +302,7 @@ def test_mutation_grant_publishes_priced_ids_and_names_the_unpriced_ones():
     }
 
 
+@pytest.mark.knowledge_integrity
 def test_withdrawal_rules_name_the_members_that_leave_the_table():
     cases = (
         ("bretonnian-buccaneers-sar", "swabbies--blimey-they-got-away", "swabbies"),
@@ -307,14 +315,22 @@ def test_withdrawal_rules_name_the_members_that_leave_the_table():
         assert "Remove them from your warband roster as if they had been killed" in printed
 
 
+@pytest.mark.data_transport
 def test_artefact_carries_the_new_campaign_sections():
     artefact = _artefact()
     recruitment = artefact["campaign"]["recruitment-and-veterans"]
-    assert recruitment["succession_clauses"][0]["rule_id"] == "band--succession"
-    assert recruitment["advance_access_clauses"][0]["rule_id"] == "axe-hurlers--born-marksmen"
-    assert artefact["campaign"]["mutations"]["grant_rules"][0]["rule_id"] == "band--aquatic-mutants"
+    # The published lists are append-only: a new clause must never displace the
+    # section the artefact already carried, so the gate asserts presence, not
+    # the position of the clause that happened to be alone when it was added.
+    succession = {clause["rule_id"] for clause in recruitment["succession_clauses"]}
+    advance = {clause["rule_id"] for clause in recruitment["advance_access_clauses"]}
+    grants = {grant["rule_id"] for grant in artefact["campaign"]["mutations"]["grant_rules"]}
+    assert "band--succession" in succession
+    assert "axe-hurlers--born-marksmen" in advance
+    assert "band--aquatic-mutants" in grants
 
 
+@pytest.mark.data_contract
 def test_campaign_catalogue_schemas_publish_the_new_fields():
     recruitment = json.loads(
         (CONTRACTS / "campaign-recruitment-and-veterans.yaml.schema.json").read_text(encoding="utf-8")

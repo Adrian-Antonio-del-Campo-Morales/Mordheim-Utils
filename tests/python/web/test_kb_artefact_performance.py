@@ -65,6 +65,7 @@ def _gzip_size(path: Path) -> int:
 
 @pytest.mark.skipif(not INITIAL.exists(), reason="KB artefact not generated yet")
 class TestKbArtefactPerformance:
+    @pytest.mark.performance
     def test_initial_download_within_delivery_budget(self) -> None:
         """The startup download — and only it — is what the budget bounds."""
         gzipped = _gzip_size(INITIAL)
@@ -74,6 +75,7 @@ class TestKbArtefactPerformance:
             "section (architecture change) instead of raising the budget."
         )
 
+    @pytest.mark.delivery
     def test_deferred_catalogue_is_not_part_of_the_initial_download(self) -> None:
         """Items and campaign sections must be absent from the initial document."""
         document = _load(INITIAL)
@@ -86,6 +88,7 @@ class TestKbArtefactPerformance:
         fragment = _load(fragment_path)
         assert fragment["items"] and fragment["campaign"], "the deferred fragment must carry both families"
 
+    @pytest.mark.data_transport
     def test_deferred_catalogue_digest_matches_the_published_fragment(self) -> None:
         """The fragment is addressed by digest; a drift is a broken delivery."""
         document = _load(INITIAL)
@@ -96,6 +99,7 @@ class TestKbArtefactPerformance:
             "knowledge-catalogue.json does not match catalogue_digest: regenerate, never hand-edit"
         )
 
+    @pytest.mark.performance
     def test_initial_and_deferred_sizes_are_measured_separately(self) -> None:
         """Report both downloads and their combined cost explicitly."""
         assert CATALOGUE.exists(), "the deferred catalogue was not generated"
@@ -109,6 +113,7 @@ class TestKbArtefactPerformance:
             f"(initial {initial_gzip / 1024:.0f} kB, deferred {catalogue_gzip / 1024:.0f} kB)"
         )
 
+    @pytest.mark.performance
     def test_index_build_cost_within_budget(self) -> None:
         artefact = _load(INITIAL)
         catalogue = _load(CATALOGUE)
@@ -131,6 +136,7 @@ class TestKbArtefactPerformance:
             f"{INDEX_BUDGET_SECONDS}s budget."
         )
 
+    @pytest.mark.evidence
     def test_size_metrics_are_stable_and_reported(self) -> None:
         """The generator output size is deterministic run to run."""
         artefact = _load(INITIAL)

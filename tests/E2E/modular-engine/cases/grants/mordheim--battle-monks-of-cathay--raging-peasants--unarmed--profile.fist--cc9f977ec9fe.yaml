@@ -47,15 +47,17 @@
 # The printed profile rule is not the Unarmed Fighting skill: it keeps the printed
 # Strength and Attacks and does not grant the enemy the dagger-class +1 save.  The
 # profile build below is what the compiler selects for this origin.
-# The fist attack resolves at the bearer's printed Strength 3, so a three wounds an
-# equal Toughness 3 where a penalised unarmed attack would need a four.
+# The fist attack resolves at the bearer's printed Strength 3, so a four wounds an
+# equal Toughness 3 where a penalised unarmed attack (Strength 2) would need a five.
 - audit_id: rule/mordheim/battle-monks-of-cathay/raging-peasants--unarmed/profile.fist
   id: the-profile-fist-attacks-at-its-printed-strength
   covers: [whole]
   fighters:
     first:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: raging-peasants
       main_weapon_id: weapon.fist
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
@@ -63,22 +65,24 @@
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.wounded: True, attacks.0.damage: 1, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
-# The second printed consequence: the enemy wears light armour, which saves on 6+, and
-# the profile's fist does not hand it the dagger-class +1 save.  The identical attack
-# from a hand-built ordinary fist is the discriminating control in the same file's
-# contract: there the same five would have saved.
+# The second printed consequence: the enemy wears light armour, which saves on its own
+# 6+, and the profile's fist does not hand it the dagger-class +1 save; with that +1 the
+# same five would have saved.  The bearer's fists are still the printed unarmed attack,
+# so the wound face above is the one a penalised fist would miss.
 - audit_id: rule/mordheim/battle-monks-of-cathay/raging-peasants--unarmed/profile.fist
   id: the-fist-does-not-grant-the-enemy-the-dagger-save-bonus
   covers: [whole]
   fighters:
     first:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: raging-peasants
       main_weapon_id: weapon.fist
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
       main_weapon_id: weapon.mace
       armour_id: armour.light-armour
@@ -87,7 +91,7 @@
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.first.attack.0.armour, value: 5}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:

@@ -12,7 +12,7 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: whole (scope: YES)
-# AUTHORED[whole]: 3 scenarios evidence both declared tokens on the construction route the record names. 'mage_staff' (sources/knowledge/catalog/items/trollheim.yaml) and 'elven_runestones' (sources/knowledge/catalog/items/out-of-scope.yaml) are carried item ids, so the bound profile.equipment-restrictions binding this band declares (grant: profile, implemented YES) reaches each through the shared eligibility stage: an Explorer build carrying either item is refused with '"mage_staff" is forbidden for lustria-high-elves/explorers.' or '"elven_runestones" is forbidden for lustria-high-elves/explorers.' verbatim, and the identical build without them is accepted at construction. REVIEWED still requires manual semantic review.
+# AUTHORED[whole]: 3 scenarios evidence both declared tokens on the construction route the record names. 'mage_staff' (sources/knowledge/catalog/items/trollheim.yaml) and 'elven_runestones' (sources/knowledge/catalog/items/out-of-scope.yaml) are carried item ids, so the bound profile.equipment-restrictions binding this band declares (grant: profile, implemented YES) reaches each through the shared eligibility stage: an Explorer build carrying either item is refused with '"mage_staff" is not on any equipment list of lustria-high-elves/explorers.' or '"elven_runestones" is not on any equipment list of lustria-high-elves/explorers.' verbatim, and the identical build without them is accepted at construction. REVIEWED still requires manual semantic review.
 # origin_id:
 #   rule/trollheim/lustria-high-elves/explorers--equipment-restrictions/profile.equipment-restrictions
 # analysis_status:
@@ -56,7 +56,7 @@
       band_id: lustria-high-elves
       profile_id: explorers
       owned_item_ids: [mage_staff]
-  expect_error: '"mage_staff" is forbidden for lustria-high-elves/explorers.'
+  expect_error: '"mage_staff" is not on any equipment list of lustria-high-elves/explorers.'
 
 - audit_id: rule/trollheim/lustria-high-elves/explorers--equipment-restrictions/profile.equipment-restrictions
   id: explorers-with-the-elven-runestones-is-refused
@@ -68,7 +68,7 @@
       band_id: lustria-high-elves
       profile_id: explorers
       owned_item_ids: [elven_runestones]
-  expect_error: '"elven_runestones" is forbidden for lustria-high-elves/explorers.'
+  expect_error: '"elven_runestones" is not on any equipment list of lustria-high-elves/explorers.'
 
 - audit_id: rule/trollheim/lustria-high-elves/explorers--equipment-restrictions/profile.equipment-restrictions
   id: explorers-without-the-banned-entries-is-accepted-at-construction

@@ -7,6 +7,10 @@ import pytest
 
 from mordheim_combat_lab.persistence import usage_log
 
+# The whole file proves the on-disk JSONL sink: round trip, limits, corrupt
+# lines and unwritable storage.
+pytestmark = pytest.mark.persistence
+
 
 @pytest.fixture()
 def log_path(tmp_path, monkeypatch):

@@ -42,10 +42,12 @@
 #   Consumed as the two-parry allowance in the parry capacity; the same flag also enables the match-roll parry, so a fighter with this skill blocks on an equal roll as well. Surface reuse candidate: {"family":"skill.unbeatable-warrior","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the individual clause and current active contract. Distinguish dance choices; parry enablement, equality, rerolls and extra attempts; and fists/claws count or critical facets. Sharing preparation/state machinery is not sharing the entire combined rule.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
 # --- Authored scenarios ---
-# The bearer holds a parrying sword and the skill, and his opponent's two-attack
-# pool is declared to hit twice.  Two parry dice are therefore requested and both
-# beat their hit rolls, so both attacks are blocked and the printed allowance is
-# spent; a one-parry fighter could not have blocked the second one.
+# The bearer holds the two parrying swords the printed clause requires and the
+# skill, and his opponent's two-attack pool is declared to hit twice.  Two parry
+# dice are therefore requested and both beat their hit rolls, so both attacks are
+# blocked and the printed allowance is spent; a one-parry fighter could not have
+# blocked the second one.  The bearer's own pool is declared empty in the supplied
+# initial state so the tape holds only the two attacks under test.
 - audit_id: mechanic/skill.unbeatable-warrior
   id: two-parrying-weapons-give-two-parry-attempts
   covers: [two-parries-with-two-weapons]
@@ -55,10 +57,15 @@
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
     second:
       main_weapon_id: weapon.sword
+      off_hand_id: weapon.sword
       skill_ids: [skill.unbeatable-warrior]
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
+  # The bearer's two swords also give him the printed extra attack, so his own
+  # pool is one miss after both parries; the supplied zero base attacks cannot
+  # remove that second weapon's attack.
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.1.hit, value: 4}
@@ -68,10 +75,11 @@
   expect_rounds:
     0: {attacks.0.parried: true, attacks.1.parried: true, state.second.parries_remaining: 0, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
-# The same warriors and the same declaration without the skill: the single
-# attempt blocks the first attack, and the second one is then resolved with a
-# wound die because no parry die is offered for it at all.  The pair isolates the
-# printed second parry rather than the ordinary parry itself.
+# The same warriors with the same two parrying swords and the same declaration,
+# differing only in the skill: the single attempt blocks the first attack, and
+# the second one is then resolved with a wound die because no parry die is
+# offered for it at all.  The pair isolates the printed second parry rather than
+# the ordinary parry itself.
 - audit_id: mechanic/skill.unbeatable-warrior
   id: without-the-skill-only-the-first-attack-is-parried
   covers: [two-parries-with-two-weapons]
@@ -81,7 +89,9 @@
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
     second:
       main_weapon_id: weapon.sword
+      off_hand_id: weapon.sword
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
@@ -89,7 +99,6 @@
     - {key: round.0.first.attack.1.hit, value: 4}
     - {key: round.0.first.attack.0.parry, value: 5}
     - {key: round.0.first.attack.1.wound, value: 4}
-    - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.parried: true, attacks.1.parried: false, attacks.1.damage: 1, state.second.parries_remaining: 0, state.second.wounds: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

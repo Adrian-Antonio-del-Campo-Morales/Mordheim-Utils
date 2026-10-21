@@ -14,6 +14,9 @@ from pathlib import Path
 
 import pytest
 
+# The scan protects the visible surface from untranslated prose.
+pytestmark = pytest.mark.presentation
+
 UI_PACKAGES = (
     Path(__file__).resolve().parents[3] / "apps" / "combat-lab" / "mordheim_combat_lab" / "ui",
 )

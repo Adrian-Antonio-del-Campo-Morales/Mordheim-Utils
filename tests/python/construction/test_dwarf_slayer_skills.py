@@ -9,6 +9,8 @@ transport (`profileFacts`, `profileSkillLists`, `skillChoices`), so a member
 list that stopped reaching its recipients fails instead of passing on the words
 that describe it.
 """
+import pytest
+
 from mordheim_construction.eligibility import desktop_call
 from mordheim_construction.selection import _profile
 from mordheim_construction.source_profiles import prepare_source_profile
@@ -98,6 +100,7 @@ def _choosable(pack, row, build):
     return {skill_id for skill_id in _special_skills() if choices.get(skill_id)}
 
 
+@pytest.mark.eligibility
 def test_each_column_publishes_its_printed_members_to_its_named_recipients():
     for (band, profile), expected in EXPECTED.items():
         pack = _package(band)
@@ -114,6 +117,7 @@ def test_each_column_publishes_its_printed_members_to_its_named_recipients():
                                                 for skill in members}, (band, profile)
 
 
+@pytest.mark.eligibility
 def test_master_of_blades_is_one_entry_and_never_the_vampire_contract():
     """One printed Master of Blades entry publishes exactly one skill."""
     for band, profile in (("dwarf-guildsmen-kaz", "master-craftsman"),
@@ -126,6 +130,7 @@ def test_master_of_blades_is_one_entry_and_never_the_vampire_contract():
         assert choices["skill.sword-master"] is False, (band, profile)
 
 
+@pytest.mark.compilation
 def test_each_new_slayer_member_reaches_its_shared_operator_through_compilation():
     """The three omitted members are executable choices, not catalogue prose."""
     from mordheim_construction.compiler import compile_fighter
@@ -136,6 +141,7 @@ def test_each_new_slayer_member_reaches_its_shared_operator_through_compilation(
             assert tag in unit.global_effects.tags, (skill_id, tag)
 
 
+@pytest.mark.knowledge_integrity
 def test_printed_members_outside_the_duel_carry_their_own_disposition():
     """A printed member with no duel consequence is disposed, never dropped."""
     for (band, rule_id), members in DISPOSED_MEMBERS.items():
@@ -147,6 +153,7 @@ def test_printed_members_outside_the_duel_carry_their_own_disposition():
             assert member in reasons, (band, rule_id, member)
 
 
+@pytest.mark.eligibility
 def test_born_marksmen_opens_shooting_only_for_the_promoted_axe_hurler():
     pack = _package("dwarf-slayer-cult-web")
     row = _profile_row(pack, "axe-hurlers")
@@ -172,6 +179,7 @@ def _supplied(band, profile, **overrides):
     return prepare_source_profile(build, *_profile(build, ROOT), ROOT)
 
 
+@pytest.mark.eligibility
 def test_the_supplied_human_rememberer_takes_speed_and_never_the_dwarf_column():
     """The printed Skill Table gives the Human line Speed where the Dwarf has Special."""
     build, _, _, package, profile, _ = _supplied("dwarf-slayers-kaz", "rememberer", species="human")

@@ -65,6 +65,7 @@ def _family_binding(rule: dict, kind: str, family_id: str, member: str = "member
     return matches[0]
 
 
+@pytest.mark.knowledge_integrity
 def test_all_implemented_canonical_families_are_executable_for_every_member():
     document = yaml.safe_load((ROOT / "catalog/rules/implemented-canonical-families.yaml").read_text(encoding="utf-8"))
     assert document["counts"] == {"families": 66, "rules": 101, "kinds": {"compiler": 41, "mechanic": 20, "trait": 5}}
@@ -89,6 +90,7 @@ def test_all_implemented_canonical_families_are_executable_for_every_member():
             )
 
 
+@pytest.mark.knowledge_integrity
 def test_family_binding_lookup_accepts_only_the_family_contract():
     kind, family_id = "compiler", "compiler.bow-discipline"
 
@@ -116,6 +118,7 @@ def test_family_binding_lookup_accepts_only_the_family_contract():
         _family_binding(rule_with({"kind": kind, "id": "compiler.some-other-contract"}), kind, family_id)
 
 
+@pytest.mark.knowledge_integrity
 def test_unique_effect_members_share_the_family_binding_parameters():
     """Identical-effect families must share the family binding parameters.
 
@@ -147,6 +150,7 @@ def test_unique_effect_members_share_the_family_binding_parameters():
         )
 
 
+@pytest.mark.knowledge_integrity
 def test_family_roster_covers_each_declared_binding_exactly_once():
     document = yaml.safe_load((ROOT / "catalog/rules/implemented-canonical-families.yaml").read_text(encoding="utf-8"))
     families = document["families"]
@@ -157,6 +161,7 @@ def test_family_roster_covers_each_declared_binding_exactly_once():
     assert len(members) == len(set(members)) == document["counts"]["rules"]
 
 
+@pytest.mark.knowledge_integrity
 def test_bow_discipline_keeps_both_of_its_declared_bindings():
     """Bow Discipline owns a combat contract and a construction obligation.
 
@@ -194,6 +199,7 @@ def test_bow_discipline_keeps_both_of_its_declared_bindings():
         assert list(parameters.get("exempt_profile_ids") or ()) == ["cleric"]
 
 
+@pytest.mark.rule_behavior
 def test_unarmed_fighting_and_eshin_mastery_have_their_exact_attack_bonuses():
     charging = np.zeros(1, dtype=bool)
     monk_unarmed = compile_fighter(build(
@@ -224,6 +230,7 @@ def test_unarmed_fighting_and_eshin_mastery_have_their_exact_attack_bonuses():
         assert attack_count(claws, charging)[0] == claws.characteristics.attacks + 2
 
 
+@pytest.mark.rule_behavior
 def test_art_of_silent_death_criticals_are_always_resolved_on_to_wound():
     natural = EffectSet(tags=("weapon.natural-attacks",))
     fist = EffectSet(tags=("weapon.fist",))
@@ -236,6 +243,7 @@ def test_art_of_silent_death_criticals_are_always_resolved_on_to_wound():
     assert _critical_wound_threshold(cathay, dagger, False) == 6
 
 
+@pytest.mark.knowledge_integrity
 def test_art_of_silent_death_kb_texts_use_to_wound_and_share_the_eshin_contract():
     packages = {
         package.band["id"]: package
@@ -254,6 +262,7 @@ def test_art_of_silent_death_kb_texts_use_to_wound_and_share_the_eshin_contract(
         _family_binding(rule, "mechanic", "skill.art-of-silent-death", f"{band_id}/{rule_id}")
 
 
+@pytest.mark.compilation
 def test_black_hunger_adds_attack_and_resolves_armour_ignoring_backlash():
     fighter = compile_fighter(build(
         "skaven-clan-eshin", "assassin-adept",
@@ -263,6 +272,7 @@ def test_black_hunger_adds_attack_and_resolves_armour_ignoring_backlash():
     assert "mechanic.black-hunger" in fighter.global_effects.tags
 
 
+@pytest.mark.rule_behavior
 def test_body_slam_and_bull_charge_replace_charge_attacks(monkeypatch):
     body = compile_fighter(build(
         "pit-fighters", "pit-king",
@@ -289,6 +299,7 @@ def test_body_slam_and_bull_charge_replace_charge_attacks(monkeypatch):
     assert slam.strength_bonus == 1 and slam.hit_modifier == 1
 
 
+@pytest.mark.rule_behavior
 def test_bull_charge_knocks_down_on_a_successful_charge_hit():
     attacker = compile_fighter(build("maneaters", "bulls"), ROOT)
     defender = compile_fighter(FighterBuild("mordheim", Characteristics(3, 3, 3, 1, 3, 1)), ROOT)
@@ -298,6 +309,7 @@ def test_bull_charge_knocks_down_on_a_successful_charge_hit():
     assert defence_state.condition[0] != STANDING
 
 
+@pytest.mark.rule_behavior
 def test_force_of_will_rescues_once_and_then_requires_cumulative_tests():
     fighter = compile_fighter(build(
         "pit-fighters", "pit-king",
@@ -313,6 +325,7 @@ def test_force_of_will_rescues_once_and_then_requires_cumulative_tests():
     assert state.condition[0] == OUT
 
 
+@pytest.mark.rule_behavior
 def test_unpredictable_marks_one_attack_unparryable(monkeypatch):
     attacker = compile_fighter(build(
         "khemri-hobgoblin-raiders", "sneaky", collection="trollheim",
@@ -333,6 +346,7 @@ def test_unpredictable_marks_one_attack_unparryable(monkeypatch):
     assert captured[0].cannot_be_parried
 
 
+@pytest.mark.rule_behavior
 def test_skink_hunter_overrides_charge_priority_only_against_skinks():
     hunter = compile_fighter(build(
         "amazons-lustria", "serpent-priestess",
@@ -345,6 +359,7 @@ def test_skink_hunter_overrides_charge_priority_only_against_skinks():
     assert priority(hunter, human, True, charging, charged, stood)[0] < 20
 
 
+@pytest.mark.eligibility
 def test_shared_compiler_contracts_enforce_construction_rules():
     with pytest.raises(ValueError, match="poisons are forbidden"):
         compile_fighter(build(
@@ -370,6 +385,7 @@ def test_shared_compiler_contracts_enforce_construction_rules():
     assert mutant.global_effects.incoming_attacks_modifier == -1
 
 
+@pytest.mark.eligibility
 def test_arms_master_censer_bearer_skill_access_and_pit_fighter_trait():
     with pytest.raises(ValueError, match="occupies both hands"):
         compile_fighter(build(

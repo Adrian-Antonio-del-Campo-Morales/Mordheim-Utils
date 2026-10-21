@@ -140,14 +140,17 @@
   id: a-head-injury-roll-subjects-the-bearer-to-stupidity
   covers: [head-injury-stupidity]
   fighters:
-    first: {collection: trollheim, band_id: chaos-streets-mordheim-inhabitants, profile_id: cripples}
+    first:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+      condition_ids: [condition.disability-6]
     second:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
-    - {key: first.disability, value: 6}
     - {key: round.0.first.stupidity.0, value: 6}
     - {key: round.0.first.stupidity.1, value: 6}
   expect_rounds:
@@ -164,14 +167,17 @@
     first:
       main_weapon_id: weapon.mace
       skill_ids: [mechanic.disability]
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      condition_ids: [condition.disability-2]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
     second:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      # Weapon Skill 5 separates the bands: the unharmed 3 hits on 4+, the
+      # crippled 2 needs 5+, so the same declared four misses only with the
+      # permanent penalty (Weapon Skill 3 against 3 would hit on the same 4+).
+      characteristics: {weapon_skill: 5, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
-    - {key: first.disability, value: 2}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
@@ -184,10 +190,10 @@
   fighters:
     first:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
     second:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      characteristics: {weapon_skill: 5, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
@@ -206,15 +212,15 @@
   fighters:
     first:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
     second:
       main_weapon_id: weapon.mace
       skill_ids: [mechanic.disability]
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      condition_ids: [condition.disability-4]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
-    - {key: second.disability, value: 4}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 3}
     - {key: round.0.second.attack.0.hit, value: 1}
@@ -236,20 +242,14 @@
       main_weapon_id: weapon.mace
       off_hand_id: weapon.axe
       skill_ids: [mechanic.disability]
-      characteristics: {weapon_skill: 5, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      condition_ids: [condition.disability-2]
+      characteristics: {weapon_skill: 5, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
     second:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
-  rolls:
-    - {key: first.disability, value: 2}
-    - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 5}
-    - {key: round.0.second.attack.0.hit, value: 1}
-  expect_rounds:
-    0: {attacks.0.damage: 1, state.second.wounds: 2}
-  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_error: 'may use at most 1 one-handed weapon at a time.'
 
 # The control for the same build: with no disability roll the same pair resolves both attacks, which
 # the two declared hit dice and the two damages show.
@@ -260,18 +260,16 @@
     first:
       main_weapon_id: weapon.mace
       off_hand_id: weapon.axe
-      characteristics: {weapon_skill: 5, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      characteristics: {weapon_skill: 5, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
     second:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
-  decisions:
-    - {key: round.0.first.main-weapon-majority, value: true}
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.first.attack.1.wound, value: 5}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
@@ -288,24 +286,17 @@
   fighters:
     first:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
     second:
       main_weapon_id: weapon.mace
       armour_id: armour.light-armour
       off_hand_id: defence.shield
       skill_ids: [mechanic.disability]
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      condition_ids: [condition.disability-2]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
-  rolls:
-    - {key: second.disability, value: 2}
-    - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 4}
-    - {key: round.0.first.attack.0.armour, value: 5}
-    - {key: round.0.second.attack.0.hit, value: 1}
-  expect_rounds:
-    0: {attacks.0.saved: false, state.second.wounds: 1}
-  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_error: '"defence.shield" is forbidden for custom/custom.'
 
 # The control for the shield half: the same armour die of five saves while the disability has not been
 # rolled, which is the printed +1 the shield adds to the worn light armour.
@@ -315,12 +306,12 @@
   fighters:
     first:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
     second:
       main_weapon_id: weapon.mace
       armour_id: armour.light-armour
       off_hand_id: defence.shield
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:

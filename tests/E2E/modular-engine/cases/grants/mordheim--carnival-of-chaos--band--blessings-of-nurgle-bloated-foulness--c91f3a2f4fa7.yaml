@@ -81,8 +81,10 @@
         state.second.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
-# The control: the same duel and the same declared dice without the blessing row, where the bearer
-# holds one Wound and a Toughness one point lower, so the declared four wounds it.
+# The control: the same duel and the same declared dice with another blessing of the same band
+# (Nurgle's Rot, which adds no Wound or Toughness), where the bearer holds one Wound and a Toughness
+# one point lower, so the declared four wounds it.  The Nurgle's Blessings clause requires every
+# Tainted One to carry at least one Blessing, so the control is legal only with a different row.
 - audit_id: rule/mordheim/carnival-of-chaos/band--blessings-of-nurgle-bloated-foulness/special-rule.band--blessings-of-nurgle-bloated-foulness
   id: without-the-blessing-the-same-wound-face-lands
   covers: [whole]
@@ -94,6 +96,7 @@
       collection: mordheim
       band_id: carnival-of-chaos
       profile_id: tainted-ones
+      special_rule_ids: [band--blessings-of-nurgle-nurgles-rot]
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
   initial_state: {second: {attacks: 0}}
   duel_context: {charging: [], active_participant: first}
@@ -104,5 +107,5 @@
     - {key: round.0.first.attack.0.injury.0, value: 2}
   expect_initial: {second.wounds: 1}
   expect_rounds:
-    0: {attacks.0.wounded: true, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+    0: {attacks.0.wounded: true, state.second.wounds: 0, state.second.condition: STUNNED}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

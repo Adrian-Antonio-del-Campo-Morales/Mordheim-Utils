@@ -50,6 +50,7 @@ ANIMALS = (
 )
 
 
+@pytest.mark.eligibility
 def test_the_mule_skinner_chooses_exactly_one_published_animal_handling_skill():
     offered = desktop_call("specialRules", build(MULE_BAND, MULE), ROOT,
                            package=PACKS[MULE_BAND], profile=profile_of(MULE_BAND, MULE))
@@ -69,6 +70,7 @@ HILLMAN_BAND = "hirelings.hired-sword.2a"
 WOLF = "hireling.hired-sword.cursed-hillman.rule.wolf-form"
 
 
+@pytest.mark.compilation
 def test_the_supplied_wolf_form_compiles_the_printed_line_and_uses_the_werewolf_state():
     man = compile_fighter(build(HILLMAN_BAND, HILLMAN), ROOT)
     wolf = compile_fighter(build(HILLMAN_BAND, HILLMAN, special_rule_ids=(WOLF,)), ROOT)
@@ -94,6 +96,7 @@ PRIEST = "hireling.hired-sword.priest-of-verena"
 PRIEST_BAND = "hirelings.hired-sword.2b"
 
 
+@pytest.mark.eligibility
 def test_strength_access_belongs_to_the_solkan_variant_alone():
     assert facts(PRIEST_BAND, PRIEST)["skill_access"] == ["academic"]
     solkan = facts(PRIEST_BAND, PRIEST, variant_ids=("deity.solkan",))
@@ -110,6 +113,7 @@ WITCH_FINDER = "hireling.hired-sword.priest-of-verena.skill.witch-finder"
 WITCH_FINDER_CHARGE = "condition.witch-finder-charge"
 
 
+@pytest.mark.eligibility
 def test_the_supplied_compulsory_charge_belongs_to_the_marked_witch_finder_alone():
     assert compile_fighter(build(PRIEST_BAND, PRIEST, variant_ids=("deity.solkan",),
         special_rule_ids=(WITCH_FINDER,), condition_ids=(WITCH_FINDER_CHARGE,)), ROOT)
@@ -126,6 +130,7 @@ def test_the_supplied_compulsory_charge_belongs_to_the_marked_witch_finder_alone
 PIT = "pit-fighters"
 
 
+@pytest.mark.eligibility
 def test_the_promoted_ogre_pit_fighter_opens_its_three_lists_only_after_promotion():
     henchman = facts(PIT, "ogre-pit-fighter")
     assert henchman["skill_access"] == []
@@ -141,6 +146,7 @@ def test_the_promoted_ogre_pit_fighter_opens_its_three_lists_only_after_promotio
 # --- 5. the Bloodfather's remaining consequences -----------------------------
 
 
+@pytest.mark.knowledge_integrity
 def test_the_bloodfather_role_keeps_frenzy_and_classifies_the_closed_consequences():
     seer = compile_fighter(build("marauders-of-chaos", "seer",
         special_rule_ids=("band--mark-of-arkhar",)), ROOT)
@@ -162,6 +168,7 @@ SPEED = {"skill.acrobat", "skill.dodge", "skill.jump-up", "skill.leap",
          "skill.lightning-reflexes", "skill.scale-sheer-surfaces", "skill.sprint"}
 
 
+@pytest.mark.eligibility
 def test_ippan_shu_reaches_every_speed_skill_and_only_the_admitted_battle_monk_member():
     assert desktop_call("specialRules", build(IPPAN_BAND, IPPAN), ROOT,
                         package=PACKS[IPPAN_BAND], profile=profile_of(IPPAN_BAND, IPPAN)) == [

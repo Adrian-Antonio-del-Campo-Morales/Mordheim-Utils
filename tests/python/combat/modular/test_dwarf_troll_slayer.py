@@ -15,6 +15,7 @@ from mordheim_combat.modular.state import initialize_duel, initialize_fighter
 from mordheim_combat_lab.verification.dice import StrictDecisions, StrictDice
 from mordheim_construction.compiler import compile_fighter
 from mordheim_core.models import Characteristics, DuelContext, FighterBuild
+import pytest
 
 PROFILE = "hireling.hired-sword.dwarf-troll-slayer"
 BAND = "hirelings.hired-sword.core"
@@ -41,6 +42,7 @@ def states(attacker, defender, dice=None):
             initialize_fighter(defender, dice, "d"))
 
 
+@pytest.mark.compilation
 def test_the_intrinsic_rules_travel_and_the_skills_stay_selectable():
     base = slayer()
     for tag in ("concussion_immune", "skill.hard-to-kill", "mechanic.psychology-immunity"):
@@ -59,6 +61,7 @@ def injury(fighter, weapon, roll):
         context, StrictDice([{"key": "h01.injury", "value": roll}])).condition
 
 
+@pytest.mark.rule_behavior
 def test_hard_head_cancels_only_the_mace_concussion():
     mace = plain().main_weapon
     assert mace.concussion
@@ -74,6 +77,7 @@ def test_hard_head_cancels_only_the_mace_concussion():
     assert injury(plain(), mace, 5) is phases.Condition.OUT
 
 
+@pytest.mark.rule_behavior
 def test_monster_slayer_wounds_on_four_but_keeps_a_better_strength():
     target = plain(toughness=4)
     _, target_state = states(slayer(), target)
@@ -101,6 +105,7 @@ def test_monster_slayer_wounds_on_four_but_keeps_a_better_strength():
     assert capped == 3
 
 
+@pytest.mark.rule_behavior
 def test_berserker_adds_one_only_on_the_charging_turn():
     target = plain()
     chosen = slayer(special_rule_ids=(BERSERK,))
@@ -117,6 +122,7 @@ def test_berserker_adds_one_only_on_the_charging_turn():
     assert modifier(chosen, charging=False) == modifier(slayer(), charging=False)
 
 
+@pytest.mark.rule_behavior
 def test_ferocious_charge_is_declared_and_expires_with_the_charge():
     """The printed "may" doubles Attacks and costs -1 To Hit only when chosen."""
     foe = plain()
@@ -193,6 +199,7 @@ class Recorder:
         return True
 
 
+@pytest.mark.rule_behavior
 def test_deathwish_immunity_skips_the_fear_test():
     slayer_fighter = slayer(main_weapon_id="weapon.axe")
     ogre = compile_fighter(FighterBuild("mordheim", band_id=BAND, profile_id=OGRE,

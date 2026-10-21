@@ -13,6 +13,11 @@ justify itself by covering something no deterministic test covers.
 
 ## Modular integration closure
 
+The [test classification reference](test-sequence.md) defines proposed categories
+by guarantee, assignment criteria and execution/repair dependencies. It is a
+classification contract, not an implemented ordered runner. Successful selected
+commands alone do not establish modular closure.
+
 As of 2026-10-18, the admitted implementation queue is closed. This is
 implementation disposition, not certification. The register itself is the
 authority on admitted keys and pending work: read it through
@@ -72,8 +77,8 @@ Equipment and skill eligibility has its own cross-consumer checks:
 `tests/fixtures/eligibility/decisions.json` is exercised by both
 `tests/typescript/domain/shared-eligibility.test.ts` and
 `tests/python/construction/test_shared_eligibility.py`. The latter runs the
-actual embedded JavaScript, checks the source digest, parallel calls and recovery
-after a validation error. `npm run check:eligibility` rebuilds in memory and
+actual embedded JavaScript, checks the bundle against a fresh generation,
+parallel calls and recovery after a validation error. `npm run check:eligibility` rebuilds in memory and
 rejects a stale checked-in bundle. Construction and application/UI suites prove
 the adapters' behavior; these checks do not certify a choice's duel effect.
 

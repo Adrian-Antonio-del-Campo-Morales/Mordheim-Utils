@@ -63,6 +63,7 @@ def run(first, second, rolls, choices, state=None):
     return result, [request.key for request in dice.requests]
 
 
+@pytest.mark.compilation
 def test_canonical_selection_retains_normal_weapon_and_compiles_separate_option():
     selected, absent = troll(), troll(False)
     assert selected.main_weapon == absent.main_weapon
@@ -74,6 +75,7 @@ def test_canonical_selection_retains_normal_weapon_and_compiles_separate_option(
     )
 
 
+@pytest.mark.rule_behavior
 @pytest.mark.parametrize("selected,accept,count", [(True, True, 1), (True, False, 4), (False, False, 4)])
 def test_real_round_replacement_and_ordinary_controls(selected, accept, count):
     first, second = troll(selected), opponent()
@@ -91,6 +93,7 @@ def test_real_round_replacement_and_ordinary_controls(selected, accept, count):
         assert not hit.natural_hit_six
 
 
+@pytest.mark.rule_behavior
 def test_replacement_is_a_fresh_choice_each_round_not_a_permanent_weapon_change():
     first, second = troll(), opponent()
     initial, _ = run(first, second,
@@ -103,6 +106,7 @@ def test_replacement_is_a_fresh_choice_each_round_not_a_permanent_weapon_change(
     assert len(initial.attacks) == 2 and len(later.attacks) == 5
 
 
+@pytest.mark.rule_behavior
 def test_second_participant_has_its_own_decision_and_dice_keys():
     result, requests = run(opponent(), troll(),
         [roll("round.0.second.attack.0.wound"), roll("round.0.first.attack.0.hit")],
@@ -111,6 +115,7 @@ def test_second_participant_has_its_own_decision_and_dice_keys():
     assert len(result.attacks) == 2
 
 
+@pytest.mark.interaction
 @pytest.mark.parametrize("save,face,saved", [("ward_save", 6, True), ("ward_save", 5, False),
                                             ("regeneration_save", 4, True), ("regeneration_save", 3, False)])
 def test_armour_denial_keeps_independent_special_saves(save, face, saved):
@@ -124,6 +129,7 @@ def test_armour_denial_keeps_independent_special_saves(save, face, saved):
     assert result.state.second.wounds == (4 if saved else 3)
 
 
+@pytest.mark.interaction
 @pytest.mark.parametrize("direct", [False, True])
 def test_vomit_suppresses_other_hands_natural_attacks_and_charge_replacements(direct):
     # Deliberately synthetic composition: no claim that a Warpstone Troll can
@@ -149,12 +155,14 @@ def test_vomit_suppresses_other_hands_natural_attacks_and_charge_replacements(di
     assert len(outcomes) == 1 and defender.wounds == 3
 
 
+@pytest.mark.eligibility
 @pytest.mark.parametrize("backend", ["auto", "numpy", "native"])
 def test_unported_option_is_refused_before_optimized_execution(backend):
     with pytest.raises(ValueError, match="optional Vomit Attack.*modular"):
         simulate_duel(DuelRequest(troll(), opponent(), simulations=1), backend=backend)
 
 
+@pytest.mark.eligibility
 def test_low_level_optimized_entries_do_not_silently_drop_the_option():
     first, second = troll(), opponent()
     for call in (lambda: compile_duel_plan(first, second), lambda: compile_duel(first, second),

@@ -60,7 +60,7 @@
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
-    - {key: round.0.first.attack.0.special.ward, value: 5}
+    - {key: round.0.first.attack.0.special.regeneration, value: 5}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
@@ -82,7 +82,7 @@
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
-    - {key: round.0.first.attack.0.special.ward, value: 4}
+    - {key: round.0.first.attack.0.special.regeneration, value: 4}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}

@@ -72,7 +72,7 @@
       profile_id: duelists
       armour_id: armour.light-armour
       main_weapon_id: weapon.mace
-  initial_state: {second: {wounds: 2, attacks: 0}}
+  initial_state: {second: {attacks: 0}}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
@@ -80,7 +80,7 @@
     - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.first.attack.0.armour, value: 5}
   expect_rounds:
-    0: {attacks.0.saved: true, state.second.wounds: 2}
+    0: {attacks.0.saved: true, state.second.wounds: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 - audit_id: rule/trollheim/lustria-tileans/duelists--cloak-and-dagger/trait.counts-as-shield
@@ -94,7 +94,7 @@
       main_weapon_id: weapon.mace
       armour_id: armour.light-armour
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
-  initial_state: {second: {wounds: 2, attacks: 0}}
+  initial_state: {second: {attacks: 0}}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:

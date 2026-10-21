@@ -19,8 +19,9 @@
 # Clause: orc-special-skill-access (scope: YES)
 # AUTHORED[orc-special-skill-access]: 2 scenarios cover the printed permission (Savage Orc Heroes
 #   may use the Orc special skills from TC6 instead of any of the standard skill lists available to
-#   them).  The admission scenario builds the recipient with skill.thick-skull, the identity the
-#   referenced band--orc-special-skills-ard-ead rule binds, and records that the duel ran unrefused;
+#   them).  The admission scenario builds the recipient selecting the inherited Orc rule row
+#   band--orc-special-skills-ard-ead (the child the audit id's parameters name, whose own binding is
+#   skill.thick-skull), and records that the duel ran unrefused;
 #   the closure scenario shows a special skill outside the inherited table refused.  The scaffold's
 #   own note stands: the referenced children are semantic targets and no whole-table automatic
 #   equivalence is claimed, so the remaining children (Waaagh, Ere We Go, Da Cunnin Plan, Well Ard,
@@ -65,8 +66,15 @@
       collection: mordheim
       band_id: savage-orcs-kaz
       profile_id: boss
-      skill_ids: [skill.thick-skull]
-      main_weapon_id: weapon.mace
+      # The inherited Orc table is a set of warband-skill rows, so the recipient takes the
+      # child rule itself (the row the audit id's parameters name) through special_rule_ids;
+      # skill_ids only admits catalogue skill.* ids from the recipient's own skill lists, and
+      # this boss has no Orc table of its own until this permission is exercised.  The row's
+      # mechanic (skill.thick-skull) is bound by that selection, which the compiled fighter
+      # then receives.
+      special_rule_ids: [band--orc-special-skills-ard-ead]
+      # The band list prints the wooden club; the mace catalogue id is not on it.
+      main_weapon_id: weapon.club
     second:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
@@ -84,5 +92,5 @@
       band_id: savage-orcs-kaz
       profile_id: boss
       skill_ids: [skill.monster-slayer]
-      main_weapon_id: weapon.mace
+      main_weapon_id: weapon.club
   expect_error: "skills are not available to savage-orcs-kaz/boss: ['skill.monster-slayer']"

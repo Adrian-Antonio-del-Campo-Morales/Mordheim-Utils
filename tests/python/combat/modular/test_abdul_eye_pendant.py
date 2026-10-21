@@ -34,6 +34,7 @@ def initial(owner, foe):
 
 
 @pytest.mark.parametrize('ward,saved', [(3, False), (4, True)])
+@pytest.mark.rule_behavior
 def test_printed_kit_compiles_and_worn_ward_uses_four_plus(ward, saved):
     owner, foe = abdul(), enemy(False)
     assert 'weapon.dagger' in owner.main_weapon.tags
@@ -46,6 +47,7 @@ def test_printed_kit_compiles_and_worn_ward_uses_four_plus(ward, saved):
     assert result.defender.wounds == (2 if saved else 1)
 
 
+@pytest.mark.rule_behavior
 def test_undead_fail_despite_psychology_immunity_and_retry_next_turn():
     owner, foe = abdul(), enemy()
     foe = replace(foe, global_effects=replace(foe.global_effects,
@@ -65,6 +67,7 @@ def test_undead_fail_despite_psychology_immunity_and_retry_next_turn():
 
 
 @pytest.mark.parametrize('worn,undead', [(True, False), (False, True)])
+@pytest.mark.rule_behavior
 def test_living_enemy_or_unworn_pendant_needs_no_test(worn, undead):
     owner, foe = abdul(worn), enemy(undead)
     dice = tape(('round.0.first.attack.0.hit', 1), ('round.0.second.attack.0.hit', 1))
@@ -76,6 +79,7 @@ def test_living_enemy_or_unworn_pendant_needs_no_test(worn, undead):
         assert owner.global_effects.ward_save == 7
 
 
+@pytest.mark.compilation
 def test_discarding_the_item_retires_both_ward_and_attack_restriction():
     owner = abdul()
     current = replace(initialize_fighter(owner, tape(), 'a'), equipment_cast_off=True)

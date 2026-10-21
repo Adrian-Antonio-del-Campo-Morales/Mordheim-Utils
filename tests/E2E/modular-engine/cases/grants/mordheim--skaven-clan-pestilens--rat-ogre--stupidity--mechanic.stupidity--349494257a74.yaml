@@ -69,7 +69,7 @@
 # value belongs to the sibling borrowing clause (supplying stupidity_leadership without that mechanic
 # is refused by the compiler contract).  The supplied fact stands for the band's printed Plague Priest
 # hero (Leadership 7) present within the printed 6 inches.  The opponent is a hand-built fixture with
-# one attack, so the tape speaks about the bearer's own test alone.
+# one attack, so the tape speaks about the bearer's own test and the charged warrior's Fear test.
 
 # The bearer's own Leadership fails the two declared sixes, so the voluntary charge is cancelled and
 # no close-combat attack is resolved at all.
@@ -113,6 +113,10 @@
   rolls:
     - {key: round.0.first.stupidity.0, value: 1}
     - {key: round.0.first.stupidity.1, value: 1}
+    # The bearer causes Fear and charges, so the warrior it charged tests Fear before
+    # the attack phase; a passing total of two keeps this scenario about Stupidity.
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 5}
     - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.second.attack.0.hit, value: 1}
@@ -138,6 +142,9 @@
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
+    # The exemption removes the Stupidity test, not the charged warrior's Fear test.
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 5}
     - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.second.attack.0.hit, value: 1}
@@ -170,6 +177,10 @@
               fighter: {collection: mordheim, band_id: skaven-clan-pestilens, profile_id: plague-priest}}]}
   maximum_rounds: 1
   rolls:
+    # The supplied nearby Hero keeps the bearer out of the Stupidity test; the charged
+    # warrior's Fear test is unaffected and still resolves first.
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 5}
     - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.second.attack.0.hit, value: 1}

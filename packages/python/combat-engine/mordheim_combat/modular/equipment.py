@@ -1,7 +1,7 @@
 """Equipment that remains usable after ammunition or weapon loss."""
 from dataclasses import replace
 
-from mordheim_combat.phases import has_tag
+from mordheim_combat.phases import WHIPCRACK_WEAPON_TAGS, has_tag
 from mordheim_core.effects import merge_effects
 from mordheim_core.models import CompiledFighter, EffectSet
 from .state import FighterState
@@ -27,9 +27,7 @@ def pistol_as_club(weapon: EffectSet) -> EffectSet:
 
 def whipcrack_weapon(fighter: CompiledFighter) -> EffectSet | None:
     for weapon in (fighter.main_weapon, fighter.off_hand):
-        if weapon is not None and any(has_tag(weapon, tag) for tag in (
-                'weapon.steel-whip', 'weapon.beastlash', 'weapon.pirate-scourge',
-                'weapon.serpent-whip', 'weapon.barbed-whip', 'weapon.thinglash')):
+        if weapon is not None and any(has_tag(weapon, tag) for tag in WHIPCRACK_WEAPON_TAGS):
             return weapon
     return None
 

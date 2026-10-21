@@ -129,28 +129,26 @@
   # Poetry: "your leader adds +1 to his Leadership for his first leadership test in a scenario", admitted
   # by this origin's scope review as the supplied leader condition the ruling allows.  The recipient is the
   # printed leader, so the tested duelist is the band's own `emir` (its printed Leader, Ld 8, the profile
-  # the band's own `emir--leader` rule applies to) and the rule carrier is the band's own `scholar`,
-  # supplied as a nearby participant of the leader's side.  The leader's first Leadership test is the Fear
+  # the band's own `emir--leader` rule applies to); the printed carrier is the band's own `scholar`, whose
+  # Field of Scholarship is supplied on the leader as the canonical condition the register names.  The
+  # leader's first Leadership test is the Fear
   # test of the charge he receives; the declared faces total 9, which passes at the printed Ld 8 + 1 and
   # fails at the unmodified Ld 8, so this tape and its control below read the +1 and nothing else.  The
-  # rule's binding is null today, so the strict tape fails until the Poetry condition is projected onto the
-  # tested duelist's value - the PENDING implementation defect, not a withheld requirement.
+  # rule's own effect is the supplied condition.poetry-victorious-leader, declared on the tested duelist and
+  # consumed by resolve_local_leadership for his first Leadership test, so this tape reads the +1 itself.
   fighters:
     first:
       trait_overrides: {causes_fear: true}
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
-    second: {collection: mordheim, band_id: muzil-rel, profile_id: emir}
+    second:
+      collection: mordheim
+      band_id: muzil-rel
+      profile_id: emir
+      condition_ids: [condition.poetry-victorious-leader]
   duel_context:
     charging: [first]
     active_participant: first
-    nearby:
-      - participant_id: poet
-        side_id: second
-        condition: standing
-        fighter: {collection: mordheim, band_id: muzil-rel, profile_id: scholar}
-    distances:
-      - [second, poet, 6]
   maximum_rounds: 1
   rolls:
     - {key: round.0.second.fear.charged.0, value: 4}

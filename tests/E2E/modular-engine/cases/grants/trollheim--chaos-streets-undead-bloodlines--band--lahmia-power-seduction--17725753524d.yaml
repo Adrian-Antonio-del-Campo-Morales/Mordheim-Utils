@@ -72,10 +72,13 @@
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
       main_weapon_id: weapon.mace
-      skill_ids: [sex.male]
+      trait_overrides: {sex: male}
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
+  # The admitted power is used: the male recipient takes its own Leadership test.
+  decisions:
+    - {key: round.0.second.lahmia-seduction, value: true}
   rolls:
     - {key: round.0.second.lahmia-seduction.0, value: 6}
     - {key: round.0.second.lahmia-seduction.1, value: 6}
@@ -96,7 +99,7 @@
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
       main_weapon_id: weapon.mace
-      skill_ids: [sex.female]
+      trait_overrides: {sex: female}
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1

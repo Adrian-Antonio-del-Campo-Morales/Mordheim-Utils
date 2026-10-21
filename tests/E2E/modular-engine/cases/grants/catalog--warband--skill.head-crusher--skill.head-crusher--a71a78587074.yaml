@@ -45,7 +45,9 @@
 # --- Authored scenarios ---
 # The catalog warband skill list prints the canonical head-crusher wording: the
 # upgrade transforms injuries inflicted by the bearer, so it is evidenced on the
-# printed one-two band of the injury chart.
+# printed one-two band of the injury chart. The mace's Concussion already turns
+# injury faces 2-4 into Stunned, so the plain Knocked Down face is 1; rolling 2
+# would leave the control Stunned without the skill and make the pair vacuous.
 - audit_id: rule/catalog/warband/skill.head-crusher/skill.head-crusher
   id: a-knocked-down-result-becomes-stunned
   covers: [whole]
@@ -63,7 +65,7 @@
     - {key: round.0.second.attack.0.hit, value: 1}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
-    - {key: round.0.first.attack.0.injury.0, value: 2}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
   expect_rounds:
     0: {state.second.condition: STUNNED}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
@@ -83,7 +85,7 @@
     - {key: round.0.second.attack.0.hit, value: 1}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
-    - {key: round.0.first.attack.0.injury.0, value: 2}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
   expect_rounds:
     0: {state.second.condition: KNOCKED_DOWN}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

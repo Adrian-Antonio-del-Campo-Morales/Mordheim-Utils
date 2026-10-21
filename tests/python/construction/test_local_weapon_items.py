@@ -41,6 +41,7 @@ def attack(attacker, defender, weapon, tape, **context):
     return result
 
 
+@pytest.mark.rule_behavior
 @pytest.mark.parametrize('band,profile,weapon,count', [
     ('silent-brotherhood-sc', 'silent-master', 'weapon.long-daggers', 3),
     ('low-kings-mim', 'racketeer', 'weapon.knuckledusters', 2),
@@ -62,6 +63,7 @@ def test_local_pairs_add_one_attack_in_the_real_round(band, profile, weapon, cou
     assert attacker.main_weapon.hit_modifier == 0
 
 
+@pytest.mark.rule_behavior
 def test_long_daggers_parry_once_without_a_pair_reroll():
     defender = fighter('silent-brotherhood-sc', 'poisoner', 'weapon.long-daggers')
     for parry, success in ((5, True), (4, False)):
@@ -70,6 +72,7 @@ def test_long_daggers_parry_once_without_a_pair_reroll():
         assert result.parried is success
 
 
+@pytest.mark.rule_behavior
 @pytest.mark.parametrize('band,profile,weapon', [
     ('silent-brotherhood-sc', 'poisoner', 'weapon.long-daggers'),
     ('low-kings-mim', 'racketeer', 'weapon.knuckledusters'),
@@ -87,6 +90,7 @@ def test_local_pairs_preserve_normal_strength_armour_and_injury(band, profile, w
     assert result.defender.condition == Condition.KNOCKED_DOWN
 
 
+@pytest.mark.eligibility
 @pytest.mark.parametrize('band,profile,weapon,item', [
     ('silent-brotherhood-sc', 'poisoner', 'weapon.long-daggers', 'long_daggers'),
     ('low-kings-mim', 'racketeer', 'weapon.knuckledusters', 'knuckledusters'),
@@ -117,6 +121,7 @@ def test_local_pair_access_hands_and_unported_boundary(band, profile, weapon, it
 
 # Printed +1 Strength weapons wound T3 on 3; ordinary S3 weapons need 4.
 # A printed concussion clause changes injury face 2 from knocked down to stunned.
+@pytest.mark.rule_behavior
 @pytest.mark.parametrize('band,profile,weapon,wound,condition', [
     ('grave-robbers-sylv', 'graver', 'weapon.pry-bar', 4, Condition.STUNNED),
     ('nipponese-expedition-web', 'ashigaru', 'weapon.kanabo', 3, Condition.STUNNED),
@@ -135,6 +140,7 @@ def test_canonical_profile_resolves_the_printed_weapon(band, profile, weapon, wo
     assert result.defender.condition == condition
 
 
+@pytest.mark.rule_behavior
 @pytest.mark.parametrize('weapon,band,profile', [
     ('weapon.pry-bar', 'grave-robbers-sylv', 'graver'),
     ('weapon.wizards-staff', 'sorcerous-society-lotd4', 'magus'),
@@ -147,6 +153,7 @@ def test_new_parrying_profiles_use_the_existing_defence(weapon, band, profile):
     assert result.parried
 
 
+@pytest.mark.rule_behavior
 def test_darksteel_uses_critical_damage_and_wicked_edge_not_wound_rerolls():
     c = catalogue()
     choice = next(row for row in c.profiles('mordheim', 'druchii-mic') if row.profile_id == 'noble')
@@ -170,6 +177,7 @@ def test_darksteel_uses_critical_damage_and_wicked_edge_not_wound_rerolls():
         fighter('druchii-mic', 'corsairs', 'weapon.sword', main_material_id='material.dark-elf-blade')
 
 
+@pytest.mark.eligibility
 @pytest.mark.parametrize('weapon,band,profile', [
     ('weapon.kanabo', 'nipponese-expedition-web', 'ashigaru'),
     ('weapon.wizards-staff', 'sorcerous-society-lotd4', 'magus'),
@@ -183,6 +191,7 @@ def test_two_handed_profiles_refuse_an_additional_weapon_and_unported_execution(
         require_optimized_support(unit, target())
 
 
+@pytest.mark.rule_behavior
 def test_skull_busta_strength_expires_and_concussion_remains():
     attacker = fighter('savage-orcs-kaz', 'boyz', 'weapon.skull-busta')
     for first_round in (True, False):
@@ -197,6 +206,7 @@ def test_skull_busta_strength_expires_and_concussion_remains():
     assert later.defender.condition == Condition.STUNNED
 
 
+@pytest.mark.rule_behavior
 @pytest.mark.parametrize('helmet,face,condition', [
     ('defence.helmet', 5, Condition.STUNNED),
     ('defence.helmet', 6, Condition.KNOCKED_DOWN),
@@ -208,12 +218,13 @@ def test_skull_busta_basha_changes_only_the_used_weapon_helmet_save(helmet, face
     result = attack(attacker, defender, attacker.main_weapon,
         [('item.hit', 4), ('item.wound', 4), ('item.injury.0', 2), ('item.helmet', face)])
     assert result.defender.condition == condition
-    ordinary = fighter('savage-orcs-kaz', 'boyz', 'weapon.mace')
+    ordinary = fighter('savage-orcs-kaz', 'boyz', 'weapon.club')
     control = attack(ordinary, defender, ordinary.main_weapon,
         [('item.hit', 4), ('item.wound', 4), ('item.injury.0', 2), ('item.helmet', face)])
     assert control.defender.condition == Condition.KNOCKED_DOWN
 
 
+@pytest.mark.rule_behavior
 def test_skull_busta_preserves_no_pain_and_thick_skull_reactions():
     attacker = fighter('savage-orcs-kaz', 'boyz', 'weapon.skull-busta')
     for defender, extra in (
@@ -226,6 +237,7 @@ def test_skull_busta_preserves_no_pain_and_thick_skull_reactions():
         assert result.defender.condition == Condition.KNOCKED_DOWN
 
 
+@pytest.mark.eligibility
 def test_skull_busta_canonical_access_active_combinations_and_modular_boundary():
     c = catalogue()
     choice = next(row for row in c.profiles('mordheim', 'savage-orcs-kaz') if row.profile_id == 'boyz')
@@ -251,6 +263,7 @@ def test_skull_busta_canonical_access_active_combinations_and_modular_boundary()
         require_optimized_support(unit, target())
 
 
+@pytest.mark.rule_behavior
 def test_spirit_knife_is_local_to_the_used_hand_and_keeps_its_armour_modifier():
     attacker = fighter('call-of-the-night-haint-mim', 'cairn-wraith', 'weapon.mace',
         off_hand_id='weapon.spirit-knife')
@@ -280,6 +293,7 @@ def catalogue():
     return CombatCatalogue()
 
 
+@pytest.mark.eligibility
 def test_source_specific_recipient_exceptions_are_used_by_the_catalogue_and_compiler():
     c = catalogue()
     cases = [('cairn-wraith', (), True), ('tomb-banshee', (), True),
@@ -306,6 +320,7 @@ def test_source_specific_recipient_exceptions_are_used_by_the_catalogue_and_comp
         fighter('pirates-of-the-cathayan-sea-sar', 'martial-artists', 'weapon.katana')
 
 
+@pytest.mark.rule_behavior
 @pytest.mark.parametrize('injury,condition', [
     (1, Condition.STUNNED), (2, Condition.STUNNED),
     (4, Condition.STUNNED), (5, Condition.OUT),
@@ -318,6 +333,7 @@ def test_shock_rod_uses_printed_injury_boundaries(injury, condition):
     assert not result.critical
 
 
+@pytest.mark.rule_behavior
 def test_shock_rod_keeps_defensive_reactions_and_ordinary_weapon_control():
     attacker = fighter('skaven-of-clan-pristekk-sc', 'packmasters', 'weapon.shock-rod')
     # Free defensive configurations exercise existing reactions, not access claims.
@@ -326,12 +342,13 @@ def test_shock_rod_keeps_defensive_reactions_and_ordinary_weapon_control():
         result = attack(attacker, defender, attacker.main_weapon,
             [('item.hit', 4), ('item.wound', 3), ('item.injury.0', 1), *extra])
         assert result.defender.condition == Condition.KNOCKED_DOWN
-    ordinary = fighter('skaven-of-clan-pristekk-sc', 'packmasters', 'weapon.mace')
+    ordinary = fighter('skaven-of-clan-pristekk-sc', 'packmasters', 'weapon.club')
     result = attack(ordinary, target(), ordinary.main_weapon,
         [('item.hit', 4), ('item.wound', 3), ('item.injury.0', 1)])
     assert result.defender.condition == Condition.KNOCKED_DOWN
 
 
+@pytest.mark.rule_behavior
 def test_shock_rod_strikes_before_faster_enemy_in_real_round():
     attacker = fighter('skaven-of-clan-pristekk-sc', 'packmasters', 'weapon.shock-rod')
     defender = compile_fighter(FighterBuild('mordheim', Characteristics(3, 3, 3, 1, 8, 1),
@@ -349,6 +366,7 @@ def test_shock_rod_strikes_before_faster_enemy_in_real_round():
     assert len(result.attacks) == 1
 
 
+@pytest.mark.eligibility
 def test_shock_rod_access_two_hands_and_modular_boundary():
     c = catalogue()
     for profile, allowed in (('chieftain', True), ('packmasters', True),

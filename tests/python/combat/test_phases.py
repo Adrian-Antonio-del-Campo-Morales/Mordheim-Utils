@@ -67,6 +67,7 @@ def fighter(**changes):
     ("attacker_ws", "defender_ws", "expected"),
     ((3, 0, 0), (4, 3, 3), (3, 3, 4), (2, 5, 5), (3, 6, 4)),
 )
+@pytest.mark.operator
 def test_to_hit_table_is_a_pure_exhaustive_threshold(attacker_ws, defender_ws, expected):
     assert to_hit_target(attacker_ws, defender_ws) == expected
     outcomes = exact_distribution(
@@ -78,6 +79,7 @@ def test_to_hit_table_is_a_pure_exhaustive_threshold(attacker_ws, defender_ws, e
     assert outcomes[True] == (Fraction(1) if expected == 0 else Fraction(7 - expected, 6))
 
 
+@pytest.mark.operator
 def test_hit_modifier_and_reroll_are_local_composable_operators():
     improved = resolve_hit(HitContext(3, 3, modifier=1), ScriptedDice((3,)))
     rerolled = resolve_hit(HitContext(3, 3, reroll=True), ScriptedDice((3, 4)))
@@ -94,6 +96,7 @@ def test_hit_modifier_and_reroll_are_local_composable_operators():
     ("strength", "toughness", "expected"),
     ((5, 3, 2), (4, 3, 3), (3, 3, 4), (3, 4, 5), (3, 5, 6), (3, 7, 7)),
 )
+@pytest.mark.operator
 def test_to_wound_table_is_independently_exhaustive(strength, toughness, expected):
     assert wound_target(strength, toughness) == expected
     outcomes = exact_distribution(
@@ -106,11 +109,13 @@ def test_to_wound_table_is_independently_exhaustive(strength, toughness, expecte
     assert outcomes.get(True, Fraction(0)) == expected_success
 
 
+@pytest.mark.operator
 def test_automatic_wound_never_synthesizes_a_critical():
     result = resolve_wound(WoundContext(3, 3, automatic=True), ScriptedDice(()))
     assert result.success and not result.critical and result.roll == 0
 
 
+@pytest.mark.operator
 def test_failed_wound_can_still_succeed_without_inventing_a_critical():
     failed = resolve_wound(
         WoundContext(3, 6, failure_still_wounds=True), ScriptedDice((1,))
@@ -122,6 +127,7 @@ def test_failed_wound_can_still_succeed_without_inventing_a_critical():
     assert critical.success and critical.critical
 
 
+@pytest.mark.operator
 def test_armour_phase_owns_strength_penetration_natural_armour_and_floors():
     ordinary = ArmourContext(armour_save=5, strength=4, armour_penetration=1)
     natural = replace(ordinary, natural_armour_save=5, natural_armour_unmodified=True)
@@ -134,6 +140,7 @@ def test_armour_phase_owns_strength_penetration_natural_armour_and_floors():
     assert resolve_armour(natural, ScriptedDice((5,))).saved
 
 
+@pytest.mark.interaction
 def test_special_saves_resolve_ward_before_regeneration_exactly():
     context = SpecialSaveContext(ward_save=5, regeneration_save=4)
     distribution = exact_distribution(
@@ -159,10 +166,12 @@ def test_special_saves_resolve_ward_before_regeneration_exactly():
         (3, InjuryContext(ignore_pain=True), Condition.KNOCKED_DOWN),
     ),
 )
+@pytest.mark.operator
 def test_injury_profiles_are_local_roll_mappings(roll, context, condition):
     assert resolve_injury(context, ScriptedDice((roll,))).condition == condition
 
 
+@pytest.mark.operator
 def test_parry_phase_owns_eligibility_comparison_and_reroll():
     ineligible = resolve_parry(
         ParryContext(4, attacker_strength=6, defender_strength=3), ScriptedDice(())
@@ -180,6 +189,7 @@ def test_parry_phase_owns_eligibility_comparison_and_reroll():
 
 @pytest.mark.parametrize("allowed", [False, True])
 @pytest.mark.parametrize("roll", range(1, 7))
+@pytest.mark.operator
 def test_parry_six_requires_explicit_exception(allowed, roll):
     result = resolve_parry(
         ParryContext(6, 3, 3, match_allowed=True, can_parry_six=allowed),
@@ -192,6 +202,7 @@ def test_parry_six_requires_explicit_exception(allowed, roll):
 @pytest.mark.parametrize("overrides", [
     {"available": False}, {"cannot_be_parried": True}, {"attacker_strength": 6},
 ])
+@pytest.mark.operator
 def test_parry_six_exception_preserves_other_prohibitions(overrides):
     values = dict(hit_roll=6, attacker_strength=3, defender_strength=3,
                   match_allowed=True, can_parry_six=True, reroll=True)
@@ -199,6 +210,7 @@ def test_parry_six_exception_preserves_other_prohibitions(overrides):
     assert not result.attempted
 
 
+@pytest.mark.operator
 def test_priority_and_attack_generation_are_directly_testable_phases():
     flags = fighter(main_weapon_id="weapon.double-handed-weapon")
     strong = fighter(
@@ -212,6 +224,7 @@ def test_priority_and_attack_generation_are_directly_testable_phases():
 
 
 @pytest.mark.parametrize("charging", [False, True])
+@pytest.mark.rule_behavior
 def test_standing_up_preserves_only_explicit_always_strikes_first(charging):
     ordinary = fighter(main_weapon_id="weapon.mace")
     always_first = fighter(main_weapon_id="weapon.mace", skill_ids=("skill.always-strikes-first",))
@@ -222,6 +235,7 @@ def test_standing_up_preserves_only_explicit_always_strikes_first(charging):
         assert result.priority == expected
 
 
+@pytest.mark.interaction
 def test_bear_hug_is_the_minimal_cross_phase_sequence_with_an_explicit_choice():
     context = BearHugContext(2, 4, 4)
     declined = resolve_bear_hug(context, ScriptedDice(()), AlwaysReject())
@@ -235,6 +249,7 @@ def test_bear_hug_is_the_minimal_cross_phase_sequence_with_an_explicit_choice():
     assert won.wounded and not won.armour_allowed
 
 
+@pytest.mark.interaction
 def test_production_attack_orchestrator_aggregates_bear_hug_across_two_attacks():
     from mordheim_combat.vectorized import OUT
     from mordheim_combat.vectorized import _new_state
@@ -264,6 +279,7 @@ def test_production_attack_orchestrator_aggregates_bear_hug_across_two_attacks()
     assert defender_state.wounds.tolist()==[1]
 
 
+@pytest.mark.interaction
 def test_attack_and_round_orchestrators_prove_phase_order_and_short_circuiting():
     strike = StrikeContext(
         hit=HitContext(3, 3),
@@ -295,6 +311,7 @@ def test_attack_and_round_orchestrators_prove_phase_order_and_short_circuiting()
     assert (round_result.state.attacks, round_result.state.hits, round_result.state.wounds) == (1, 1, 1)
 
 
+@pytest.mark.parity
 def test_keyed_dice_replays_semantic_rolls_independently_of_request_order():
     first = KeyedDice(41)
     a = first.roll(RollRequest("round.0.hit"))

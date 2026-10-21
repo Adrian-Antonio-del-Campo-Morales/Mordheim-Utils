@@ -20,7 +20,7 @@
 # failed Leadership test its hit roll of 4 - a roll that beats its ordinary target - wounds nothing, and
 # on a passed test the same roll wounds on its ordinary target.  The warrior charged by this causer is the
 # Fear-tested side; the fixture's Leadership 7, Weapon Skill 10 and Strength 8 are hand-built facts, not
-# profile values, and the causer contributes no attacks of its own so the only rolls are the Fear test and
+# profile values, and the causer contributes no attacks of its own so the rolls are the bearer's own Stupidity test, the Fear test and
 # the charged warrior's.  The cancelled voluntary charge, the one-test-per-pairing rule and the exemptions
 # (an opponent that causes Fear, is immune to Psychology or Fear, or is Frenzied) are not asserted here:
 # the cancelled charge is a flag consequence rather than a wound outcome and the exemptions need a second
@@ -71,6 +71,10 @@
   duel_context: {charging: [second], active_participant: second}
   maximum_rounds: 1
   rolls:
+    # The Rat Ogre is subject to Stupidity, so its own turn opens with that
+    # Leadership test (a passing total of two) before the charged warrior's Fear test.
+    - {key: round.0.second.stupidity.0, value: 1}
+    - {key: round.0.second.stupidity.1, value: 1}
     - {key: round.0.first.fear.charged.0, value: 5}
     - {key: round.0.first.fear.charged.1, value: 4}
     - {key: round.0.first.attack.0.hit, value: 4}
@@ -90,6 +94,9 @@
   duel_context: {charging: [second], active_participant: second}
   maximum_rounds: 1
   rolls:
+    # The bearer's own Stupidity test passes on a total of two before the Fear test.
+    - {key: round.0.second.stupidity.0, value: 1}
+    - {key: round.0.second.stupidity.1, value: 1}
     - {key: round.0.first.fear.charged.0, value: 3}
     - {key: round.0.first.fear.charged.1, value: 3}
     - {key: round.0.first.attack.0.hit, value: 4}

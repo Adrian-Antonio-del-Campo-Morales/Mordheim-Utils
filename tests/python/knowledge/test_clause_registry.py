@@ -10,9 +10,14 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
+import pytest
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "tools" / "knowledge"))
+
 import clause_registry as tool
 
 
+@pytest.mark.persistence
 class RegisterToolsTest(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()

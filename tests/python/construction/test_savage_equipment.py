@@ -5,6 +5,11 @@ from mordheim_construction.compiler import compile_fighter
 from mordheim_core.models import FighterBuild
 
 
+# Every case proves what the printed restriction admits or refuses; the
+# retained +1 Attack of the positive control is its secondary guarantee.
+pytestmark = pytest.mark.eligibility
+
+
 def build(profile="orc-nuttaz", **equipment):
     return FighterBuild("mordheim", band_id="black-orcs", profile_id=profile, **equipment)
 

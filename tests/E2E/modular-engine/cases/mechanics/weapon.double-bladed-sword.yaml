@@ -88,10 +88,12 @@
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
+  # The pool resolves every To Hit die before any defence is offered, so both parries
+  # follow the two hit dice.
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.parry, value: 5}
     - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
     - {key: round.0.first.attack.1.parry, value: 5}
     - {key: round.0.second.attack.0.hit, value: 1}
     - {key: round.0.second.attack.1.hit, value: 1}

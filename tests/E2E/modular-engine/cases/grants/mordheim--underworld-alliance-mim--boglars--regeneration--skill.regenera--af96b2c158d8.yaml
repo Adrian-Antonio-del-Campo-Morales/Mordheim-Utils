@@ -62,14 +62,14 @@
     first:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
-    second: {collection: mordheim, band_id: underworld-alliance-mim, profile_id: boglars}
+    second: {collection: mordheim, band_id: underworld-alliance-mim, profile_id: boglars, characteristics: {weapon_skill: 2, strength: 2, toughness: 3, wounds: 2, initiative: 3, attacks: 1, leadership: 5}}
   initial_state: {second: {wounds: 2, attacks: 0}}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 5}
-    - {key: round.0.first.attack.0.special.ward, value: 5}
+    - {key: round.0.first.attack.0.special.regeneration, value: 5}
   expect_rounds:
     0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
@@ -82,14 +82,14 @@
     first:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
-    second: {collection: mordheim, band_id: underworld-alliance-mim, profile_id: boglars}
+    second: {collection: mordheim, band_id: underworld-alliance-mim, profile_id: boglars, characteristics: {weapon_skill: 2, strength: 2, toughness: 3, wounds: 2, initiative: 3, attacks: 1, leadership: 5}}
   initial_state: {second: {wounds: 2, attacks: 0}}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 5}
-    - {key: round.0.first.attack.0.special.ward, value: 4}
+    - {key: round.0.first.attack.0.special.regeneration, value: 4}
   expect_rounds:
     0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
@@ -103,7 +103,7 @@
     first:
       main_weapon_id: weapon.brazier-iron
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
-    second: {collection: mordheim, band_id: underworld-alliance-mim, profile_id: boglars}
+    second: {collection: mordheim, band_id: underworld-alliance-mim, profile_id: boglars, characteristics: {weapon_skill: 2, strength: 2, toughness: 3, wounds: 2, initiative: 3, attacks: 1, leadership: 5}}
   initial_state: {second: {wounds: 2, attacks: 0}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1

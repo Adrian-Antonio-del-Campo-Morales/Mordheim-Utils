@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 import numpy as np
+import pytest
 
 from mordheim_combat.vector_dice import FastVectorDice
 from mordheim_combat.vector_dice import KeyedVectorDice
 from mordheim_combat.vector_dice import VectorRollRequest
 
 
+@pytest.mark.operator
 def test_keyed_vector_dice_are_stable_under_row_reordering_and_chunking():
     dice = KeyedVectorDice(91)
     rows = np.array([8, 2, 12, 1], dtype=np.int64)
@@ -21,6 +23,7 @@ def test_keyed_vector_dice_are_stable_under_row_reordering_and_chunking():
     assert np.all((complete >= 1) & (complete <= 6))
 
 
+@pytest.mark.operator
 def test_semantic_keys_and_seeds_define_independent_rolls():
     rows = np.arange(32, dtype=np.int64)
     first = KeyedVectorDice(4).roll(VectorRollRequest("hit", rows))
@@ -33,6 +36,7 @@ def test_semantic_keys_and_seeds_define_independent_rolls():
     assert first.tolist() != another_seed.tolist()
 
 
+@pytest.mark.operator
 def test_fast_vector_dice_return_bulk_rolls_and_uniforms():
     rows = np.arange(100, dtype=np.int64)
     dice = FastVectorDice(7)

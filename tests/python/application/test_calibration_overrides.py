@@ -31,6 +31,7 @@ def _reference_defaults():
     apply_calibration(None)
 
 
+@pytest.mark.workflow
 def test_profile_replaces_every_measured_axis():
     applied = apply_calibration(PROFILE)
 
@@ -48,6 +49,7 @@ def test_profile_replaces_every_measured_axis():
     assert set(applied) == {"batch_sizes", "pooled_batch_sizes", "pool_workers", "spawn_seconds"}
 
 
+@pytest.mark.workflow
 def test_untouched_axes_keep_the_reference_values():
     apply_calibration({"schema": CALIBRATION_SCHEMA, "pool_workers": {"numpy": 6}})
 
@@ -58,12 +60,15 @@ def test_untouched_axes_keep_the_reference_values():
     assert pool_spawn_seconds("numpy") == 0.20
 
 
+@pytest.mark.workflow
 def test_explicit_batches_are_never_rewritten_by_calibration():
     apply_calibration(PROFILE)
     explicit = DuelExecutionSettings(1_000_000, 7, 40_000, 20)
     assert pool_batch_size("numpy", explicit) == 40_000
 
 
+# The foreign/hostile payloads are rejected on shape and schema version.
+@pytest.mark.data_contract
 def test_hostile_or_foreign_payloads_are_ignored():
     assert apply_calibration({"schema": "mordheim-combat-lab-calibration/v99",
                               "pool_workers": {"native": 3}}) == {}
@@ -80,6 +85,7 @@ def test_hostile_or_foreign_payloads_are_ignored():
     assert default_batch_size("native") == 5_000
 
 
+@pytest.mark.workflow
 def test_empty_payload_restores_the_reference_defaults():
     apply_calibration(PROFILE)
     assert apply_calibration({}) == {}

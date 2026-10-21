@@ -32,6 +32,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
+import pytest
 import yaml
 
 from mordheim_knowledge.loader import load_bands, load_collections
@@ -85,6 +86,7 @@ def _opened(package) -> set[str]:
     }
 
 
+@pytest.mark.knowledge_integrity
 def test_every_band_that_demands_a_choice_publishes_options():
     missing = []
     for (collection, band_id), package in _packages().items():
@@ -101,6 +103,7 @@ def test_every_band_that_demands_a_choice_publishes_options():
     )
 
 
+@pytest.mark.knowledge_integrity
 def test_every_mandatory_choice_opens_exactly_the_gated_slots():
     for (collection, band_id), package in _packages().items():
         roster = package.band.get("roster") or {}
@@ -131,6 +134,7 @@ def test_every_mandatory_choice_opens_exactly_the_gated_slots():
                 )
 
 
+@pytest.mark.knowledge_integrity
 def test_published_bounds_are_the_printed_ones():
     checked = 0
     for (collection, band_id), package in _packages().items():
@@ -167,6 +171,7 @@ def test_published_bounds_are_the_printed_ones():
     assert checked >= 5, checked
 
 
+@pytest.mark.knowledge_integrity
 def test_khemri_publishes_the_canonical_background_ids():
     package = _packages()[("trollheim", KHEMRI)]
     variants = package.band["variants"]
@@ -180,6 +185,7 @@ def test_khemri_publishes_the_canonical_background_ids():
     assert binding["id"] == "compiler.foreign-or-native-background"
 
 
+@pytest.mark.knowledge_integrity
 def test_every_background_option_names_published_equipment_lists():
     package = _packages()[("trollheim", KHEMRI)]
     lists = {str(row["id"]) for row in package.equipment_lists}
@@ -209,6 +215,7 @@ def test_every_background_option_names_published_equipment_lists():
                     ), f"{profile_id} declares {sorted(declared)} but not {candidate}"
 
 
+@pytest.mark.knowledge_integrity
 def test_khemri_profile_lists_follow_the_printed_background_restrictions():
     package = _packages()[("trollheim", KHEMRI)]
     profiles = _profiles(package)
@@ -254,6 +261,7 @@ def test_khemri_profile_lists_follow_the_printed_background_restrictions():
         }, f"{profile_id} declares {sorted(declared)}"
 
 
+@pytest.mark.eligibility
 def test_the_shared_compiler_reads_the_same_four_profiles():
     package = _packages()[("trollheim", KHEMRI)]
     opened = {
@@ -279,6 +287,7 @@ def test_the_shared_compiler_reads_the_same_four_profiles():
                 assert verdict is None, verdict
 
 
+@pytest.mark.knowledge_integrity
 def test_bloodline_options_follow_the_profile_bloodlines():
     package = _packages()[("trollheim", BLOODLINES)]
     profiles = _profiles(package)
@@ -299,6 +308,7 @@ def test_bloodline_options_follow_the_profile_bloodlines():
         } == {vampire, *({"carrion-ghoul"} if slug == "strigoi" else set())}, row
 
 
+@pytest.mark.eligibility
 def test_the_selected_background_owns_the_profile_equipment_list():
     """F074/`compiler.foreign-or-native-background`: the two candidate undead
     lists of a Lahmian profile are alternatives, not a union.
@@ -335,6 +345,7 @@ def test_the_selected_background_owns_the_profile_equipment_list():
     assert "weapon.axe" not in offered("spirits", "foreign")
 
 
+@pytest.mark.evidence
 def test_the_accepted_specs_use_the_published_ids():
     spec = yaml.safe_load((SPECS / "khemri-background.yaml").read_text(encoding="utf-8"))
     used = set()

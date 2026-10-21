@@ -45,16 +45,18 @@
 # The printed chart replaces the injury bands with 1-2 Knocked Down, 3 Stunned, 4-6 Out of
 # Action, and the defender is the model that carries it.  The ordinary chart puts four in the
 # Stunned band, so the same declared four separates the two readings: the control below keeps
-# every other input identical and only omits the chart trait.
+# every other input identical and only omits the chart trait.  Both warriors fight with the
+# plain sword: the mace's own Concussion rule converts a 2-4 on the ordinary chart into
+# Stunned, which is a second printed rule and would confound the band this clause declares.
 - audit_id: mechanic/mechanic.bat-injury-chart
   id: an-injury-total-of-four-takes-the-bat-out-of-action
   covers: [bat-injury-chart]
   fighters:
     first:
-      main_weapon_id: weapon.mace
+      main_weapon_id: weapon.sword
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
-      main_weapon_id: weapon.mace
+      main_weapon_id: weapon.sword
       skill_ids: [mechanic.bat-injury-chart]
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
   initial_state:
@@ -63,7 +65,7 @@
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 6}
-    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.first.attack.0.injury.0, value: 4}
   expect_rounds:
     0: {attacks.0.damage: 1, state.second.condition: OUT, state.second.wounds: 0}
@@ -75,10 +77,10 @@
   covers: [bat-injury-chart]
   fighters:
     first:
-      main_weapon_id: weapon.mace
+      main_weapon_id: weapon.sword
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
-      main_weapon_id: weapon.mace
+      main_weapon_id: weapon.sword
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
   initial_state:
     second: {wounds: 1, attacks: 0}
@@ -86,7 +88,7 @@
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 6}
-    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.first.attack.0.injury.0, value: 4}
   expect_rounds:
     0: {attacks.0.damage: 1, state.second.condition: STUNNED, state.second.wounds: 0}

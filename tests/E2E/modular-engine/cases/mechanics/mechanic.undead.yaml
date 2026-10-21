@@ -94,9 +94,10 @@
     - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
 
 # The Psychology immunity inside the composite: the bearer charges a Fear-causing
-# opponent and takes no Fear test of his own, while the Fear-causing opponent is
-# the one that tests.  Immunity is not an automatic pass, so no die is requested
-# for the bearer at all.
+# opponent and takes no Fear test of his own.  The charged model is a Fear-causer
+# itself, so the round has two Fear-causing duelists and neither side is tested
+# for it; the immunity is not an automatic pass, and the strict tape shows that
+# no Fear die at all is requested while the bearer simply strikes.
 - audit_id: mechanic/mechanic.undead
   id: the-composite-leaves-the-bearer-without-a-fear-test
   covers: [undead]
@@ -112,15 +113,11 @@
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
-    - {key: round.0.second.fear.charged.0, value: 1}
-    - {key: round.0.second.fear.charged.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {state.engaged: True, state.first.fear_hit_sixes: False, state.first_charged: True}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
   expect_events:
-    - {kind: roll, key: round.0.second.fear.charged.0, sides: 6, value: 1}
-    - {kind: roll, key: round.0.second.fear.charged.1, sides: 6, value: 1}
     - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
     - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}

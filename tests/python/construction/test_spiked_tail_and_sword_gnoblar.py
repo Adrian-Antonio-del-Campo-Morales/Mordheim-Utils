@@ -21,6 +21,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
+
 from mordheim_construction.compiler import compile_fighter
 from mordheim_core.models import FighterBuild
 from mordheim_knowledge.loader import read_yaml, runtime_bindings
@@ -48,12 +50,14 @@ def gnoblar(fighter):
 
 
 # source publication
+@pytest.mark.knowledge_integrity
 def test_spiked_tail_rule_publishes_the_repeated_strength_plus_one_clause():
     text = " ".join(str(rule(LORDS_OF_THE_MARSH, "fimir-warriors--spiked-tail")["effect"]).split())
     assert "extra tail attack in each hand-to-hand combat phase" in text
     assert "Strength +1" in text
 
 
+@pytest.mark.knowledge_integrity
 def test_spiked_tail_binds_an_executable_contract_for_each_recipient():
     for rule_id in ("fimir-warriors--spiked-tail", "young-nobles--spiked-tail"):
         row = rule(LORDS_OF_THE_MARSH, rule_id)
@@ -64,6 +68,7 @@ def test_spiked_tail_binds_an_executable_contract_for_each_recipient():
 
 
 # compiled recipients
+@pytest.mark.compilation
 def test_spiked_tail_reaches_both_printed_recipients_at_strength_plus_one():
     for band, profile in (("lords-of-the-marsh-mim", "fimir-warriors"),
                           ("lords-of-the-marsh-mim", "young-nobles")):
@@ -74,10 +79,12 @@ def test_spiked_tail_reaches_both_printed_recipients_at_strength_plus_one():
         assert effects[0].strength_bonus == 1
 
 
+@pytest.mark.compilation
 def test_spiked_tail_stays_absent_from_a_non_recipient():
     assert tail(compiled("lords-of-the-marsh-mim", "shearls")) == []
 
 
+@pytest.mark.compilation
 def test_sword_gnoblar_adds_one_fixed_strength_two_attack():
     effects = gnoblar(compiled("maneaters", "captain", main_weapon_id="weapon.sword",
                                owned_item_ids=("sword_gnoblar",)))
@@ -86,5 +93,6 @@ def test_sword_gnoblar_adds_one_fixed_strength_two_attack():
     assert effects[0].strength_bonus == 0
 
 
+@pytest.mark.compilation
 def test_sword_gnoblar_contribution_requires_the_item():
     assert gnoblar(compiled("maneaters", "captain", main_weapon_id="weapon.sword")) == []

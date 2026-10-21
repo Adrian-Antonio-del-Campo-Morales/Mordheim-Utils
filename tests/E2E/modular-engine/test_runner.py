@@ -14,6 +14,7 @@ from mordheim_modular_e2e.dice import EvidenceMismatch, StrictDecisions, StrictD
 from mordheim_modular_e2e.runner import _build, _lookup, _plain, _state, check_case
 
 
+@pytest.mark.test_infrastructure
 @pytest.mark.parametrize("values", [[], [{"key": "wrong", "value": 3}],
                                     [{"key": "hit", "sides": 3, "value": 3}]])
 def test_strict_dice_rejects_unexpected_requests(values):
@@ -21,6 +22,7 @@ def test_strict_dice_rejects_unexpected_requests(values):
         StrictDice(values).roll(RollRequest("hit"))
 
 
+@pytest.mark.test_infrastructure
 def test_strict_dice_checks_unused_rolls_and_repeated_keys():
     tape = StrictDice([{"key": "hit", "value": 2}, {"key": "hit", "value": 6}])
     assert tape.roll(RollRequest("hit")) == 2
@@ -30,6 +32,7 @@ def test_strict_dice_checks_unused_rolls_and_repeated_keys():
     tape.finish()
 
 
+@pytest.mark.test_infrastructure
 def test_strict_decisions_rejects_unused_and_unexpected_choices():
     policy = StrictDecisions([{"key": "hug", "value": False}])
     with pytest.raises(EvidenceMismatch, match="unused"):
@@ -40,6 +43,7 @@ def test_strict_decisions_rejects_unused_and_unexpected_choices():
         policy.choose("hug")
 
 
+@pytest.mark.test_infrastructure
 def test_adaptive_enumeration_weights_short_circuit_and_mixed_dice_exactly():
     def trial(dice):
         if dice.roll(RollRequest("first")) >= 5:
@@ -50,6 +54,7 @@ def test_adaptive_enumeration_weights_short_circuit_and_mixed_dice_exactly():
     }
 
 
+@pytest.mark.test_infrastructure
 def test_enumeration_refuses_to_truncate_unbounded_sequences():
     def forever(dice):
         while True:
@@ -58,6 +63,7 @@ def test_enumeration_refuses_to_truncate_unbounded_sequences():
         enumerate_exact(forever, max_rolls=2)
 
 
+@pytest.mark.test_infrastructure
 def test_copied_helpers_build_initialize_and_observe_without_mutating_inputs():
     build = {"main_weapon_id": "weapon.mace", "defence_ids": ["defence.lucky-charm"]}
     overrides = {"condition": "STUNNED", "resources_spent": ["example"], "wounds": 1}
@@ -75,6 +81,7 @@ def test_copied_helpers_build_initialize_and_observe_without_mutating_inputs():
     dice.finish()
 
 
+@pytest.mark.test_infrastructure
 def test_copied_lookup_does_not_ignore_invalid_expectation_paths():
     """The harness name is the shared pure lookup, and invalid paths still fail.
 
@@ -123,10 +130,12 @@ def _duel_case():
     }
 
 
+@pytest.mark.end_to_end
 def test_real_rounds_preserve_wounds_resources_and_alternate_turns():
     check_case(_duel_case(), knowledge_root())
 
 
+@pytest.mark.end_to_end
 def test_recovery_occurs_only_on_the_combatants_own_turn():
     case = _duel_case()
     case["initial_state"]["first"]["condition"] = "STUNNED"
@@ -141,6 +150,7 @@ def test_recovery_occurs_only_on_the_combatants_own_turn():
     check_case(case, knowledge_root())
 
 
+@pytest.mark.end_to_end
 def test_initialization_dice_are_not_repeated_between_rounds():
     case = _duel_case()
     case["fighters"]["first"]["preparation_ids"] = ["preparation.crimson-shade"]
@@ -167,10 +177,12 @@ def _terminal_case():
     return case
 
 
+@pytest.mark.end_to_end
 def test_real_injury_terminates_before_the_requested_horizon():
     check_case(_terminal_case(), knowledge_root())
 
 
+@pytest.mark.test_infrastructure
 def test_unexecuted_round_checkpoint_cannot_be_ignored():
     case = _terminal_case()
     case["expect_rounds"][1] = {"state.round_index": 2}
@@ -178,6 +190,7 @@ def test_unexecuted_round_checkpoint_cannot_be_ignored():
         check_case(case, knowledge_root())
 
 
+@pytest.mark.end_to_end
 def test_local_context_preserves_nearby_provider_and_independent_turn_owner():
     case = _duel_case()
     case["duel_context"] = {
@@ -196,6 +209,7 @@ def test_local_context_preserves_nearby_provider_and_independent_turn_owner():
     check_case(case, knowledge_root())
 
 
+@pytest.mark.end_to_end
 def test_real_weapon_allocation_decision_precedes_attack_dice():
     case = _duel_case()
     case["fighters"]["first"]["characteristics"]["attacks"] = 2
@@ -214,6 +228,7 @@ def test_real_weapon_allocation_decision_precedes_attack_dice():
     check_case(case, knowledge_root())
 
 
+@pytest.mark.test_infrastructure
 @pytest.mark.parametrize("checkpoint", ["initial", "round", "final"])
 def test_incorrect_expectations_fail_at_each_checkpoint(checkpoint):
     case = _duel_case()
@@ -227,6 +242,7 @@ def test_incorrect_expectations_fail_at_each_checkpoint(checkpoint):
         check_case(case, knowledge_root())
 
 
+@pytest.mark.test_infrastructure
 @pytest.mark.parametrize("extra", ["roll", "decision"])
 def test_full_loop_rejects_unconsumed_scripts(extra):
     case = _duel_case()
@@ -238,6 +254,7 @@ def test_full_loop_rejects_unconsumed_scripts(extra):
         check_case(case, knowledge_root())
 
 
+@pytest.mark.data_contract
 @pytest.mark.parametrize("maximum", [0, -1, True, 1.5])
 def test_full_loop_rejects_invalid_horizons(maximum):
     case = _duel_case()
@@ -246,6 +263,7 @@ def test_full_loop_rejects_invalid_horizons(maximum):
         check_case(case, knowledge_root())
 
 
+@pytest.mark.data_contract
 def test_full_loop_rejects_misspelled_scenario_fields():
     case = _duel_case()
     case["maximum_rounnds"] = 2
@@ -253,6 +271,7 @@ def test_full_loop_rejects_misspelled_scenario_fields():
         check_case(case, knowledge_root())
 
 
+@pytest.mark.architecture
 def test_runner_imports_without_loading_the_old_verifier(pytestconfig):
     environment = {**os.environ, "PYTHONPATH": os.pathsep.join(
         str(path) for path in pytestconfig.getini("pythonpath"))}

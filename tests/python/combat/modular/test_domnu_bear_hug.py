@@ -28,6 +28,7 @@ from mordheim_combat.modular import state as st
 from mordheim_combat_lab.verification.dice import StrictDecisions, StrictDice
 from mordheim_construction.compiler import compile_fighter
 from mordheim_core.models import Characteristics, FighterBuild
+import pytest
 
 
 def domnu(main_weapon_id="weapon.fist", band_id="channel-rats-mim", profile_id="domnu"):
@@ -54,6 +55,7 @@ def pool(attacker, count, rolls, decisions, key="domnu"):
     return result, dice, result[1]
 
 
+@pytest.mark.compilation
 def test_the_domnu_compiles_the_bear_hug_with_its_unarmed_marker():
     fighter = domnu()
     assert fighter.global_effects.bear_hug is True
@@ -63,12 +65,14 @@ def test_the_domnu_compiles_the_bear_hug_with_its_unarmed_marker():
     assert "skill.unarmed-fighting" in fighter.global_effects.tags
 
 
+@pytest.mark.compilation
 def test_the_marker_stays_absent_from_a_non_recipient():
     tinker = domnu(band_id="channel-rats-mim", profile_id="tinker")
     assert tinker.global_effects.bear_hug is False
     assert "rule.bear-hug-unarmed" not in tinker.global_effects.tags
 
 
+@pytest.mark.rule_behavior
 def test_two_unarmed_hits_replace_into_one_unsaveable_wound():
     fighter = domnu()
     result, dice, defender_state = pool(
@@ -89,6 +93,7 @@ def test_two_unarmed_hits_replace_into_one_unsaveable_wound():
     assert defender_state.condition.name == "STANDING"  # no injury roll was needed
 
 
+@pytest.mark.rule_behavior
 def test_losing_the_opposed_roll_deals_no_damage():
     fighter = domnu()
     result, dice, defender_state = pool(
@@ -101,11 +106,12 @@ def test_losing_the_opposed_roll_deals_no_damage():
     assert defender_state.wounds == 3
 
 
+@pytest.mark.rule_behavior
 def test_an_armed_domnu_is_never_offered_the_hug():
-    # Printed precondition: both hits must be *unarmed*.  A mace-armed Domnu has
+    # Printed precondition: both hits must be *unarmed*.  An axe-armed Domnu has
     # two attacks and both hit, yet no Bear Hug decision is ever requested, so
     # ``StrictDecisions`` with no scripted answer is the discriminating control.
-    fighter = domnu(main_weapon_id="weapon.mace")
+    fighter = domnu(main_weapon_id="weapon.axe")
     assert fighter.global_effects.bear_hug is True
     result, dice, defender_state = pool(
         fighter, 2,
@@ -118,6 +124,7 @@ def test_an_armed_domnu_is_never_offered_the_hug():
     dice.finish()
 
 
+@pytest.mark.compilation
 def test_the_trained_bear_keeps_its_unqualified_attacks_clause():
     # The same operator without the marker: the Bear's natural attacks still
     # offer the replacement, which is what the shared operator and its
@@ -128,6 +135,7 @@ def test_the_trained_bear_keeps_its_unqualified_attacks_clause():
     assert "rule.bear-hug-unarmed" not in bear.global_effects.tags
 
 
+@pytest.mark.rule_behavior
 def test_hug_replaces_two_hits_and_preserves_a_third_independent_attack():
     result, dice, defender_state = pool(domnu(), 3,
         (("domnu.attack.0.hit", 5), ("domnu.attack.1.hit", 5), ("domnu.attack.2.hit", 5),

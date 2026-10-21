@@ -5,6 +5,8 @@ import subprocess
 import sys
 import os
 
+import pytest
+
 
 ROOT = Path(__file__).resolve().parents[3]
 PACKAGE_ROOTS = {
@@ -15,6 +17,9 @@ PACKAGE_ROOTS = {
     "mordheim_combat_lab": ROOT / "apps" / "combat-lab" / "mordheim_combat_lab",
 }
 PACKAGE_IMPORT_ROOTS = tuple(sorted({str(path.parent) for path in PACKAGE_ROOTS.values()}))
+
+# The whole file asserts import boundaries between the packages.
+pytestmark = pytest.mark.architecture
 
 SHARED_PACKAGES = ("mordheim_core", "mordheim_knowledge", "mordheim_construction", "mordheim_combat")
 RUNTIME_AREAS = ("application", "persistence", "ui")

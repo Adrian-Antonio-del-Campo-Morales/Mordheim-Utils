@@ -74,17 +74,19 @@
       band_id: call-of-the-night-haint-mim
       profile_id: malignant-spirits
       main_weapon_id: weapon.mace
+      condition_ids: [condition.summoned-this-turn]
       characteristics: {weapon_skill: 4, strength: 4, toughness: 3, wounds: 1, initiative: 5, attacks: 1}
     second:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 4, strength: 3, toughness: 4, wounds: 3, initiative: 2, attacks: 1}
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 4, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
   initial_state: {second: {attacks: 0}}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 3}
     - {key: round.0.first.attack.0.hit, value: 3}
     - {key: round.0.first.attack.0.wound, value: 3}
-    - {key: round.0.first.attack.0.injury.0, value: 2}
   expect_rounds:
-    0: {attacks.0.hit: true, attacks.0.wounded: true, state.second.wounds: 2, state.second.condition: KNOCKED_DOWN}
+    0: {attacks.0.hit: true, attacks.0.wounded: true, state.second.wounds: 2, state.second.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

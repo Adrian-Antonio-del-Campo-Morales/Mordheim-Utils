@@ -82,6 +82,7 @@ def _spoof(monkeypatch: pytest.MonkeyPatch, name: str, mutate):
 # Post-battle sequence
 
 
+@pytest.mark.data_transport
 def test_post_battle_sequence_is_normative():
     sequence = load_post_battle_sequence()
     assert sequence.id == "campaign.post-battle"
@@ -97,6 +98,7 @@ def test_post_battle_sequence_is_normative():
     assert sequence.steps[-1].resolves == "warband-rating.yaml"
 
 
+@pytest.mark.knowledge_integrity
 def test_post_battle_sequence_rejects_unknown_resolves(monkeypatch):
     def mutate(document):
         document["sequence"]["steps"][0]["resolves"] = "missing-tables.yaml"
@@ -106,6 +108,7 @@ def test_post_battle_sequence_rejects_unknown_resolves(monkeypatch):
         load_post_battle_sequence()
 
 
+@pytest.mark.data_contract
 def test_post_battle_sequence_rejects_contiguous_order_breaks(monkeypatch):
     def mutate(document):
         document["sequence"]["steps"][1]["order"] = 12
@@ -118,6 +121,7 @@ def test_post_battle_sequence_rejects_contiguous_order_breaks(monkeypatch):
 # Campaign catalogue
 
 
+@pytest.mark.data_transport
 def test_campaign_catalog_loads_every_published_document():
     catalog = load_campaign_catalog()
     assert set(catalog.documents) == CAMPAIGN_STEMS
@@ -135,6 +139,7 @@ def test_campaign_catalog_loads_every_published_document():
     assert len(catalog.catalogue("scenarios.yaml")["scenarios"]) == 98
 
 
+@pytest.mark.data_contract
 def test_campaign_catalog_rejects_bad_schema_version(monkeypatch):
     def mutate(document):
         document["schema_version"] = 99
@@ -144,6 +149,7 @@ def test_campaign_catalog_rejects_bad_schema_version(monkeypatch):
         load_campaign_catalog()
 
 
+@pytest.mark.knowledge_integrity
 def test_campaign_catalog_rejects_duplicate_declared_ids(monkeypatch):
     def mutate(document):
         document["scenarios"][1]["id"] = document["scenarios"][0]["id"]
@@ -153,6 +159,7 @@ def test_campaign_catalog_rejects_duplicate_declared_ids(monkeypatch):
         load_campaign_catalog()
 
 
+@pytest.mark.knowledge_integrity
 def test_campaign_catalog_rejects_unknown_profile_id(monkeypatch):
     def mutate(document):
         document["hired_swords"][0]["profile_id"] = "hireling.hired-sword.nobody"
@@ -162,6 +169,7 @@ def test_campaign_catalog_rejects_unknown_profile_id(monkeypatch):
         load_campaign_catalog()
 
 
+@pytest.mark.knowledge_integrity
 def test_campaign_catalog_rejects_unknown_warband_group(monkeypatch):
     def mutate(document):
         document["hired_swords"][0]["eligibility"]["allow_groups"] = ["warband-group.nobody"]
@@ -171,6 +179,7 @@ def test_campaign_catalog_rejects_unknown_warband_group(monkeypatch):
         load_campaign_catalog()
 
 
+@pytest.mark.knowledge_integrity
 def test_campaign_catalog_rejects_unknown_band_reference(monkeypatch):
     def mutate(document):
         for item in document["items"]:
@@ -185,6 +194,7 @@ def test_campaign_catalog_rejects_unknown_band_reference(monkeypatch):
         load_campaign_catalog()
 
 
+@pytest.mark.knowledge_integrity
 def test_campaign_catalog_rejects_unknown_item_reference(monkeypatch):
     def mutate(document):
         for scenario in document["scenarios"]:
@@ -202,6 +212,7 @@ def test_campaign_catalog_rejects_unknown_item_reference(monkeypatch):
 # Hireling catalogue and warband groups (shared resolution pools)
 
 
+@pytest.mark.knowledge_integrity
 def test_hireling_catalogue_profiles_resolve_across_catalog():
     catalogue = load_hirelings()
     profiles = catalogue.profiles
@@ -220,6 +231,7 @@ def test_hireling_catalogue_profiles_resolve_across_catalog():
     assert {entry["profile_id"] for entry in entries} <= catalogue.profile_ids
 
 
+@pytest.mark.knowledge_integrity
 def test_hireling_catalogue_rejects_duplicate_declared_ids(monkeypatch):
     def mutate(document):
         if len(document.get("profiles", [])) < 2:
@@ -231,6 +243,7 @@ def test_hireling_catalogue_rejects_duplicate_declared_ids(monkeypatch):
         load_hirelings()
 
 
+@pytest.mark.knowledge_integrity
 def test_hireling_catalogue_rejects_undeclared_rule_reference(monkeypatch):
     def mutate(document):
         for profile in document.get("profiles", []):
@@ -243,6 +256,7 @@ def test_hireling_catalogue_rejects_undeclared_rule_reference(monkeypatch):
         load_hirelings()
 
 
+@pytest.mark.knowledge_integrity
 def test_hireling_catalogue_starting_skills_resolve_in_the_skill_catalogue():
     """F037: every declared starting skill resolves in the skill catalogue.
 
@@ -273,6 +287,7 @@ def test_hireling_catalogue_starting_skills_resolve_in_the_skill_catalogue():
     )
 
 
+@pytest.mark.knowledge_integrity
 def test_warband_groups_registry_loads_and_resolves():
     groups = load_warband_groups()
     assert len(groups) == 25

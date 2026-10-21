@@ -1405,22 +1405,32 @@ def resolve_round(
             index = next(i for i, event in enumerate(events) if event[2] == is_first)
             events.insert(index+1, (stomp, defender, is_first, 1, priority,
                 f"{'first' if is_first else 'second'}.stomp"))
-    # A charged whip's bonus has its own Strike First timing. Its ordinary
-    # attacks retain their own priority and cannot borrow that bonus's tier.
-    for owner, charged in ((True, second_charging), (False, first_charging)):
+    # A charged whip's bonus has its own Strike First timing: the weapon's
+    # declared priority is that bonus tier.  Its ordinary attacks retain their
+    # own priority and cannot borrow the bonus's tier.
+    # The bonus joins the bearer's pool when he charges; it is split out as its
+    # own earlier event only when he is charged, which is the printed timing
+    # ("only that bonus strikes first when charged").  The charge itself is
+    # applied by the pool operators above.
+    for owner, bearer_charged in ((True, second_charging), (False, first_charging)):
         for index, event in enumerate(events):
             attacker, defender, is_first, count, priority, label = event
             whip = whipcrack_weapon(attacker)
-            if is_first != owner or not charged or not count or whip is None:
+            if is_first != owner or not bearer_charged or not count or whip is None:
                 continue
             events[index] = (*event[:3], count - 1, priority, label)
             bonus_fighter = replace(attacker, main_weapon=whip, off_hand=None,
                 off_hand_attacks=False, extra_attacks=(), main_hand_slot=(
                     attacker.main_hand_slot if whip == attacker.main_weapon else attacker.off_hand_slot))
-            bonus_priority = phases.PriorityResult(1, priority.initiative)
+            bonus_priority = phases.PriorityResult(max(1, whip.priority), priority.initiative)
             bonus = (bonus_fighter, defender, is_first, 1, bonus_priority, f'{label}.whipcrack')
             position = len(events)
             for candidate_index, candidate in enumerate(events):
+                # The printed bonus precedes its bearer's own ordinary attack;
+                # that order is not a tie between the two warriors.
+                if candidate[2] == is_first and candidate[5] == label:
+                    position = candidate_index
+                    break
                 if phases.first_acts_before(bonus_priority, candidate[4], dice,
                         key=f'round.{state.round_index}.{label}.whip-priority-tie'):
                     position = candidate_index

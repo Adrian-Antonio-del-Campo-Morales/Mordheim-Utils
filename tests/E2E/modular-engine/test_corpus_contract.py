@@ -54,12 +54,14 @@ VALID = {
 }
 
 
+@pytest.mark.data_contract
 def test_a_minimal_legitimate_scenario_loads():
     scenario = contract(VALID)
     assert scenario.test_id == "core/synthetic-rule::the-grant-is-declared-on-the-compiled-bearer"
     assert scenario.covers == ("whole",)
 
 
+@pytest.mark.data_contract
 def test_a_scenario_with_only_expect_fighters_is_a_legal_observation():
     expected = dict(VALID)
     del expected["expect_final"]
@@ -68,6 +70,7 @@ def test_a_scenario_with_only_expect_fighters_is_a_legal_observation():
     assert scenario.case["expect_fighters"] == {"first.tags.syn-tag": True}
 
 
+@pytest.mark.data_contract
 def test_normal_scenarios_without_expect_fighters_keep_loading(tmp_path):
     legacy = {
         "id": "ordinary-observation",
@@ -86,12 +89,14 @@ def test_normal_scenarios_without_expect_fighters_keep_loading(tmp_path):
         ["the-grant-is-declared-on-the-compiled-bearer", "ordinary-observation"])
 
 
+@pytest.mark.data_contract
 def test_unknown_scenario_fields_fail():
     dirty = {**VALID, "expect_weapon_skill": 3}
     with pytest.raises(CorpusError, match="unknown scenario fields"):
         contract(dirty)
 
 
+@pytest.mark.data_contract
 def test_identity_contracts_fail():
     for dirty, message in (
             ({**VALID, "id": "  "}, "id must be a nonempty string"),
@@ -104,6 +109,7 @@ def test_identity_contracts_fail():
             contract(dirty)
 
 
+@pytest.mark.data_contract
 def test_the_refusal_channel_is_exclusive_and_named():
     with pytest.raises(CorpusError, match="expect_error must be a nonempty string"):
         contract({**VALID, "expect_final": {"state.first.wounds": 3}, "expect_error": "  "})
@@ -123,6 +129,7 @@ def test_the_refusal_channel_is_exclusive_and_named():
     assert contract(dirty)  # a refusal alone is a legal scenario
 
 
+@pytest.mark.data_contract
 def test_a_case_without_any_observation_fails():
     dirty = dict(VALID)
     del dirty["expect_final"]
@@ -130,6 +137,7 @@ def test_a_case_without_any_observation_fails():
         contract(dirty)
 
 
+@pytest.mark.data_contract
 def test_an_empty_events_list_is_a_legal_absence_assertion():
     dirty = dict(VALID)
     del dirty["expect_final"]
@@ -137,6 +145,7 @@ def test_an_empty_events_list_is_a_legal_absence_assertion():
     assert contract(dirty).case["expect_events"] == []
 
 
+@pytest.mark.data_contract
 def test_maximum_rounds_must_be_a_positive_integer_without_bools():
     for bad in (0, -1, True, 1.5, "3", None):
         with pytest.raises(CorpusError, match="maximum_rounds must be a positive integer"):
@@ -144,6 +153,7 @@ def test_maximum_rounds_must_be_a_positive_integer_without_bools():
     assert contract({**VALID, "maximum_rounds": 4})
 
 
+@pytest.mark.data_contract
 def test_fighters_are_limited_to_first_and_second():
     for dirty in ({**VALID, "fighters": {"first": {}, "third": {}}},
                   {**VALID, "initial_state": {"first": {}, "second": {}, "third": {}}},
@@ -153,6 +163,7 @@ def test_fighters_are_limited_to_first_and_second():
     assert contract({**VALID, "initial_state": {"first": {}}})
 
 
+@pytest.mark.data_contract
 def test_roll_entries_match_the_strict_dice_contract():
     for message, entry in (
             ("must declare a nonempty string key", {"value": 3}),
@@ -172,6 +183,7 @@ def test_roll_entries_match_the_strict_dice_contract():
     assert contract({**VALID, "rolls": [{"key": "k", "value": 3}, {"key": "k2", "value": 6, "sides": 6}]})
 
 
+@pytest.mark.data_contract
 def test_roll_entries_must_be_a_list_of_mappings():
     with pytest.raises(CorpusError, match="rolls must be a list"):
         contract({**VALID, "rolls": {"key": 3}})
@@ -179,6 +191,7 @@ def test_roll_entries_must_be_a_list_of_mappings():
         contract({**VALID, "rolls": ["round.0"]})
 
 
+@pytest.mark.data_contract
 def test_decision_entries_require_a_key_and_a_boolean():
     for message, entry in (
             ("nonempty string key", {"value": True}),
@@ -191,6 +204,7 @@ def test_decision_entries_require_a_key_and_a_boolean():
     assert contract({**VALID, "decisions": [{"key": "k", "value": False}]})
 
 
+@pytest.mark.data_contract
 def test_observations_must_be_nonempty_mappings_of_nonempty_paths():
     for dirty, message in (
             ({**VALID, "expect_events": "nothing"}, "expect_events must be an ordered list"),
@@ -205,6 +219,7 @@ def test_observations_must_be_nonempty_mappings_of_nonempty_paths():
             contract(dirty)
 
 
+@pytest.mark.data_contract
 def test_round_checkpoints_must_be_non_negative_integer_indices():
     with pytest.raises(CorpusError, match="non-negative integer indices"):
         contract({**VALID, "expect_rounds": {True: {"state.first.wounds": 1}}})
@@ -218,6 +233,7 @@ def test_round_checkpoints_must_be_non_negative_integer_indices():
     assert contract({**VALID, "expect_rounds": {"0": {"state.first.wounds": 1}}})
 
 
+@pytest.mark.data_contract
 def test_the_pure_lookup_rejects_unknown_paths():
     with pytest.raises(CorpusError, match="observation does not exist"):
         lookup_observation({"a": {"b": 1}}, "a.missing")
@@ -226,6 +242,7 @@ def test_the_pure_lookup_rejects_unknown_paths():
     assert lookup_observation({"a": {"b": [7, 8]}}, "a.b.1") == 8
 
 
+@pytest.mark.data_contract
 def test_the_pure_assertion_separates_bools_from_ints_and_prefixes_the_label():
     observed = {"state": {"first": {"wounds": 1}, "pinned": 1}}
     with pytest.raises(CorpusError, match=r"final\.state\.pinned: got 1, expected True"):
@@ -235,6 +252,7 @@ def test_the_pure_assertion_separates_bools_from_ints_and_prefixes_the_label():
                            {"state.pinned": 1}, "final")
 
 
+@pytest.mark.data_contract
 def test_the_pure_assertion_requires_a_nonempty_mapping_of_nonempty_paths():
     for expected in ({}, "not-a-mapping", {"": 1}):
         with pytest.raises(CorpusError, match="expectations must be a nonempty mapping"
@@ -243,11 +261,13 @@ def test_the_pure_assertion_requires_a_nonempty_mapping_of_nonempty_paths():
     assert_observations({"a": 1}, {"a": 1}, "final")  # the happy path holds
 
 
+@pytest.mark.data_contract
 def test_the_pure_assertion_labels_missing_paths_with_the_channel():
     with pytest.raises(CorpusError, match=r"^fighters\.first\.tags: observation does not exist$"):
         assert_observations({"first": {}}, {"first.tags": True}, "fighters")
 
 
+@pytest.mark.data_contract
 def test_loading_rejects_a_duplicate_scenario_identity(tmp_path):
     same = {**VALID, "expect_final": {"state.second.wounds": 2}}
     directory = tmp_path / "cases"
@@ -258,6 +278,7 @@ def test_loading_rejects_a_duplicate_scenario_identity(tmp_path):
         load_corpus(directory)
 
 
+@pytest.mark.data_contract
 def test_a_non_list_document_fails_at_load(tmp_path):
     directory = tmp_path / "cases"
     directory.mkdir()
@@ -266,6 +287,7 @@ def test_a_non_list_document_fails_at_load(tmp_path):
         load_corpus(directory)
 
 
+@pytest.mark.data_contract
 def test_the_real_corpus_directory_constant_points_at_the_cases_tree():
     assert CASES_DIRECTORY.name == "cases"
     assert (CASES_DIRECTORY / "core").is_dir()
@@ -273,11 +295,13 @@ def test_the_real_corpus_directory_constant_points_at_the_cases_tree():
 
 # Delegating the pure assertion must keep the loader meaning stable even when
 # some other test sped the loader up ahead of this file:
+@pytest.mark.data_contract
 def test_errors_are_value_errors_so_callers_kept_their_except_shape():
     with pytest.raises(ValueError):
         contract({**VALID, "id": "  "})
 
 
+@pytest.mark.architecture
 def test_corpus_is_importable_without_combat():
     """The loader and its contract import no combat package anywhere."""
     code = textwrap.dedent("""
@@ -361,6 +385,7 @@ def _run(validator, directory, *, real=False, require_complete=False):
     return code, buffer.getvalue()
 
 
+@pytest.mark.evidence
 def test_the_real_corpus_reports_clean_integrity_but_declared_gaps(validator):
     """Sorted whole-tree run: nothing malformed, coverage gaps stay report-only."""
     code, text = _run(validator, CASES_DIRECTORY, real=True)
@@ -369,6 +394,7 @@ def test_the_real_corpus_reports_clean_integrity_but_declared_gaps(validator):
     assert "--require-complete" in text or "reported gaps are information" in text
 
 
+@pytest.mark.test_infrastructure
 def test_a_minimal_synthetic_corpus_is_accepted(validator, tmp_path):
     directory = tmp_path / "cases"
     _corpus_file(directory, "ok.yaml", TODO_HEADER,
@@ -379,6 +405,7 @@ def test_a_minimal_synthetic_corpus_is_accepted(validator, tmp_path):
     assert "scenarios declared: 1" in text
 
 
+@pytest.mark.test_infrastructure
 def test_unknown_and_duplicate_identity_and_unknown_clause_fail(validator, tmp_path):
     directory = tmp_path / "cases"
     _corpus_file(directory, "ok.yaml", TODO_HEADER,
@@ -401,6 +428,7 @@ def test_unknown_and_duplicate_identity_and_unknown_clause_fail(validator, tmp_p
     assert "duplicate scenario" in text
 
 
+@pytest.mark.test_infrastructure
 def test_a_malformed_file_fails_integrity_but_the_rest_loads(validator, tmp_path):
     directory = tmp_path / "cases"
     _corpus_file(directory, "ok.yaml", TODO_HEADER,
@@ -413,6 +441,7 @@ def test_a_malformed_file_fails_integrity_but_the_rest_loads(validator, tmp_path
     assert "scenarios declared: 1" in text
 
 
+@pytest.mark.test_infrastructure
 def test_retired_identities_are_reported_outside_the_pending_work(validator, tmp_path):
     directory = tmp_path / "cases"
     _corpus_file(directory, "retired.yaml", TODO_HEADER,
@@ -424,6 +453,7 @@ def test_retired_identities_are_reported_outside_the_pending_work(validator, tmp
     assert "Retired" in text and "retired/some-old-identity" in text
 
 
+@pytest.mark.test_infrastructure
 def test_authoring_marker_state_conflicts_are_reported_per_file(validator, tmp_path):
     directory = tmp_path / "cases"
     def scenario(name):
@@ -466,6 +496,7 @@ def test_authoring_marker_state_conflicts_are_reported_per_file(validator, tmp_p
     assert "authoring metadata conflicts: 5 findings" in text
 
 
+@pytest.mark.test_infrastructure
 def test_require_complete_fails_when_a_declared_clause_is_uncovered(validator, tmp_path):
     directory = tmp_path / "cases"
     _corpus_file(directory, "partial.yaml", TODO_HEADER,

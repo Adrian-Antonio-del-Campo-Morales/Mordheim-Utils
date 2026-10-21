@@ -53,8 +53,9 @@
 # the bearer is a hand-built fighter carrying the admitted skill identity, as the accepted
 # mechanic-level scaffold does.  Physical characteristics are supplied as fixture facts
 # (WS3 S3 T3 W2 I2 A1) so the dice thresholds and the strike order are fixed; the bearer holds two
-# parrying swords, which is the printed condition for the second attempt, and its own attack pool is
-# declared empty so the tape holds only the parry under test.  Every expectation is read from the
+# parrying swords, which is the printed condition for the second attempt, and its base Attack pool is
+# zeroed, with the off-hand's extra attack scripted as a natural 1, so the tape holds the parry under
+# test.  Every expectation is read from the
 # printed rule (improves parries and allows two parries with two Parry weapons) and the recorded
 # register note that the same flag also enables the match-roll parry, never from engine output; the
 # roll tape is derived statically and stays unexecuted.  The pool's two To-Hit rolls are declared
@@ -82,6 +83,7 @@
     - {key: round.0.first.attack.1.hit, value: 4}
     - {key: round.0.first.attack.0.parry, value: 5}
     - {key: round.0.first.attack.1.parry, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.parried: true, attacks.1.parried: true, state.second.parries_remaining: 0, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
@@ -107,6 +109,7 @@
     - {key: round.0.first.attack.1.hit, value: 4}
     - {key: round.0.first.attack.0.parry, value: 5}
     - {key: round.0.first.attack.1.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.parried: true, attacks.1.parried: false, attacks.1.damage: 1, state.second.parries_remaining: 0, state.second.wounds: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

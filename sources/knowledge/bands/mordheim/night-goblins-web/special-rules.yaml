@@ -962,15 +962,15 @@ rules:
     band: true
 - id: band--hate-stunties
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.night-goblins-web.band.hate-stunties
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.hatred-dwarfs
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.hatred-dwarfs
   name: Hate Stunties
   effect: >-
     Night Goblins are subject to Hatred against Dwarfs. This affects Night Goblins only, not other
@@ -988,6 +988,12 @@ rules:
       Nocturnos, no a otros modelos de la banda. Los Fanáticos están exentos.
   applies_to:
     band: true
+    profile_ids:
+    - boss
+    - squig-herder
+    - goonz
+    - shaman
+    - night-goblin-warriors
 - id: band--fear-elves
   runtime:
     grant: band
@@ -1016,6 +1022,12 @@ rules:
       Nocturnos, no a otros modelos de la banda. Los Fanáticos están exentos.
   applies_to:
     band: true
+    profile_ids:
+    - boss
+    - squig-herder
+    - goonz
+    - shaman
+    - night-goblin-warriors
 - id: band--distasteful-company
   name: Distasteful Company
   effect: >-

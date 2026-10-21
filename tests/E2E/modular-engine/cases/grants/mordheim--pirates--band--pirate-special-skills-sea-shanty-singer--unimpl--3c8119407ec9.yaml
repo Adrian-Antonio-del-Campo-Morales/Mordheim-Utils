@@ -64,6 +64,17 @@
 
 
 # --- Authored scenarios ---
+# Fixture correction (2026-10-21): the round pipeline now carries the printed consumer, so the
+# scenario declares its real protocol instead of a placeholder.  The offer is the decision
+# `round.<round>.<owner>.sea-shanty`, the chosen enemy's Leadership test is
+# `round.<round>.<owner>.sea-shanty.leadership.0/.1`, and a failed test removes one attack from that
+# enemy's pool.  The enemy keeps one of its two printed Attacks, so the round carries two attack
+# dice in total; the strict tape is what proves the second attack was removed.  The first clause
+# scenario is corrected here.  The Psychology-immune scenario stays as written and remains blocked:
+# this origin's Kb binding is `mechanic.sea-shanty`, whose printed exclusion is Undead/non-living
+# only, while the recorded contract reads the Psychology-immune exception of the sibling variant
+# (`mechanic.sea-shanty-psychology`, pinned by
+# tests/python/combat/modular/test_residual_lifecycle.py::test_mordheim_song_does_not_invent_lustria_psychology_exclusion).
 # Derived from the printed rule and the recorded semantic contract; no engine output was consulted.
 # The singer is a hand-built fixture carrying the printed band rule, because this scaffold records no
 # recipient profile id; the chosen enemy, its Leadership 7 and its Attacks 2 are fixture facts
@@ -82,16 +93,18 @@
     second:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 2, leadership: 7}
-  decisions:
-    - {key: round.0.first.sea-shanty-singer, value: true}
+  duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.sea-shanty, value: true}
   rolls:
-    - {key: round.0.second.sea-shanty-singer.0, value: 5}
-    - {key: round.0.second.sea-shanty-singer.1, value: 5}
+    - {key: round.0.first.sea-shanty.leadership.0, value: 5}
+    - {key: round.0.first.sea-shanty.leadership.1, value: 5}
+    - {key: round.0.priority-tie, value: 4}
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
-    0: {state.second.attacks: 1}
+    0: {attacks.0.hit: false, attacks.1.hit: false}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 - audit_id: rule/mordheim/pirates/band--pirate-special-skills-sea-shanty-singer/unimplemented.pirates.band.pirate-special-skills-sea-shanty-singer
@@ -104,10 +117,12 @@
       characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1, leadership: 7}
     second:
       main_weapon_id: weapon.mace
-      trait_overrides: {psychology_immunity: true}
+      skill_ids: [mechanic.psychology-immunity]
       characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 2, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.priority-tie, value: 4}
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
     - {key: round.0.second.attack.1.hit, value: 1}

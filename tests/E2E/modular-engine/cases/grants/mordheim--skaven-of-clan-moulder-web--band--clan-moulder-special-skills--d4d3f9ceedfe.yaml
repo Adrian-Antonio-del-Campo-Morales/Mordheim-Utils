@@ -284,8 +284,8 @@
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.first.attack.1.wound, value: 4}
     - {key: round.0.second.attack.0.hit, value: 1}
     - {key: round.0.first.black-hunger.hits, sides: 3, value: 1}
@@ -310,6 +310,8 @@
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
+    # Black Hunger's +1 Attack turns the pinned pool into one attack, declared as a miss.
+    - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.first.black-hunger.hits, sides: 3, value: 1}
     - {key: round.0.first.black-hunger.hit.0.wound, value: 4}
   expect_rounds:
@@ -326,21 +328,33 @@
   id: the-printed-list-member-is-admitted-to-a-clan-moulder-hero
   covers: [black-hunger--scope--skill-list-access]
   # The printed permission is the required behaviour: a Clan Moulder hero may take a skill from the printed list
-  # instead of the standard tables, so the build must compile and the engagement must start.  The build is
-  # refused today because the row binds no member list, a KB connection gap; the expectation is deliberately NOT
-  # that refusal.
+  # instead of the standard tables, so the build must compile and the engagement must start.  The printed list
+  # member is this band's own warband-skill row, and a warband skill is selected through special_rule_ids
+  # (the channel the compiler reads for `kind: warband_skill` and whose mechanic binding it materialises);
+  # skill_ids only admits catalogue skill.* ids from the recipient's own declared lists, so it could only ever
+  # report the id as unavailable rather than exercise the printed access.
   fighters:
     first:
       collection: mordheim
       band_id: skaven-of-clan-moulder-web
       profile_id: packmaster
-      skill_ids: [mechanic.black-hunger]
+      special_rule_ids: [band--clan-moulder-special-skills-black-hunger]
     second:
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
   initial_state: {first: {attacks: 0}, second: {attacks: 0}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
+  # The admitted member is the whole evidence: the selection materialises Black Hunger, so its printed +1
+  # Attack turns the pinned pool into this one (missing) attack, and its printed end-of-turn D3 Strength 3
+  # hits are declared on the sides-3 key.  The single hit misses on the wound face (Strength 3 against
+  # Toughness 3), so no injury die belongs to this tape; both pools and both Wound totals stay as supplied.
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.black-hunger.hits, sides: 3, value: 1}
+    - {key: round.0.first.black-hunger.hit.0.wound, value: 1}
   expect_initial: {first.attacks: 0, second.attacks: 0}
+  expect_rounds:
+    0: {state.first.wounds: 1, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 - audit_id: rule/mordheim/skaven-of-clan-moulder-web/band--clan-moulder-special-skills/unimplemented.skaven-of-clan-moulder-web.special.clan-moulder-special-skills
@@ -389,7 +403,9 @@
     - {key: round.0.second.hypnotic-musk-charge.1, value: 3}
   expect_rounds:
     0: {state.engaged: false}
-  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  # The failed gate cancels the charge, so the duel is no longer engaged and the
+  # documented termination reason for that state is `disengaged`.
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
 
 # The control: a non-animal charger of the same build is not printed by the clause, so no gate die
 # exists and the charge resolves as ordinary close combat (natural-1 strikes miss for everyone).

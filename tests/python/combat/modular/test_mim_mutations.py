@@ -12,6 +12,8 @@ from mordheim_combat_lab.verification.dice import StrictDice
 from mordheim_construction.compiler import compile_fighter
 from mordheim_core.models import Characteristics, EffectSet, FighterBuild, CarriedEquipment
 
+pytestmark = pytest.mark.rule_behavior
+
 
 @pytest.fixture(scope='module')
 def chart():

@@ -1,7 +1,11 @@
 """C03c: printed special-list access and supplied construction phase."""
+import pytest
+
 from mordheim_construction.eligibility import call, desktop_call, package_facts
 from mordheim_core.models import FighterBuild
 from mordheim_knowledge.loader import load_bands
+
+pytestmark = pytest.mark.eligibility
 
 
 def package(band):

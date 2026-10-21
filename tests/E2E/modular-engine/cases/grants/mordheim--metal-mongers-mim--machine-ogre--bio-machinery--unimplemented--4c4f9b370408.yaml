@@ -128,9 +128,13 @@
     second: {collection: mordheim, band_id: metal-mongers-mim, profile_id: machine-ogre}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
+  # Both duellists strike with their whole printed pool, so every hit die is declared: the
+  # attacker's single attack and the machine-ogre's printed A3, and every strike is a natural 1.
   rolls:
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.2.hit, value: 1}
   expect_rounds:
     0: {state.second.condition: STANDING, state.engaged: true}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

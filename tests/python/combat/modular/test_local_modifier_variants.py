@@ -3,6 +3,8 @@ from dataclasses import replace
 
 import pytest
 
+pytestmark = pytest.mark.rule_behavior
+
 from mordheim_combat import phases
 
 from mordheim_combat.modular.attacks import resolve_reference_attack
@@ -455,7 +457,7 @@ def test_sabretusk_natural_hide_saves_on_five_and_takes_strength_penalties():
 
 def test_domnu_prize_fighter_only_adds_attack_and_removes_penalties_when_unarmed():
     domnu = canonical('channel-rats-mim', 'domnu', 'weapon.fist')
-    armed = canonical('channel-rats-mim', 'domnu', 'weapon.mace')
+    armed = canonical('channel-rats-mim', 'domnu', 'weapon.axe')
     assert build_attacks(AttackPoolContext(domnu)).attacks == 3
     assert build_attacks(AttackPoolContext(armed)).attacks == 2
     # S4, rather than ordinary unarmed S3, wounds T3 on 3; no enemy armour bonus.
@@ -504,7 +506,7 @@ def test_ogre_hunter_unarmed_pool_strikes_twice_in_a_real_round():
 
 def test_ogre_hunter_losing_its_last_weapon_falls_back_without_losing_attacks():
     from mordheim_combat.modular.equipment import equipment_for_state
-    hunter = canonical('ogre-hunting-party-web', 'ogre-hunter', 'weapon.mace')
+    hunter = canonical('ogre-hunting-party-web', 'ogre-hunter', 'weapon.sword')
     assert 'weapon.fist' not in hunter.main_weapon.tags
     stripped = equipment_for_state(hunter, replace(
         initialize_fighter(hunter, StrictDice([]), 'd'),
@@ -586,7 +588,7 @@ def test_bitter_valour_rerolls_wounds_using_natural_strength(strength, weapon, q
 
 def test_slimy_makes_four_miss_but_keeps_natural_six_and_named_control():
     troll = canonical('orc-pirates-sar', 'sea-troll', 'weapon.fist')
-    ordinary = canonical('orc-pirates-sar', 'orc-boyz', 'weapon.mace')
+    ordinary = canonical('orc-pirates-sar', 'orc-boyz', 'weapon.axe')
     attacker = enemy()
     assert not strike(attacker, troll, [('hit', 4)]).hit
     assert strike(attacker, troll, [('hit', 6), ('wound', 1)]).hit
@@ -1343,7 +1345,10 @@ STUPIDITY_COMPLETION_PROFILES = (
 
 def test_stupidity_completion_canonical_routes_and_brood_recipient_filter():
     for band, profile in STUPIDITY_COMPLETION_PROFILES:
-        fighter = canonical(band, profile, 'weapon.fist')
+        # Moulder's printed 'It's Alive!' requires exactly one mutation per Rat Ogre.
+        mutations = ('band--mutations-great-claw',) if (band, profile) == (
+            'skaven-of-clan-moulder-web', 'rat-ogres') else ()
+        fighter = canonical(band, profile, 'weapon.fist', special_rule_ids=mutations)
         assert fighter.global_effects.tags.count('mechanic.stupidity') == 1, (band, profile)
     worm = canonical('brood-of-ghurash-the-sc', 'baneworms', 'weapon.fist')
     assert 'mechanic.stupidity' not in worm.global_effects.tags
@@ -1359,8 +1364,11 @@ def test_stupidity_completion_supplied_exemption_skips_unknown_leadership_and_cl
     # source contract of that supplied fact; no group model is introduced.
     for band, profile in [('skaven-of-clan-moulder-web', 'rat-ogres'),
                           ('mazzalupo-web', 'black-sheep'), ('kislevites', 'trained-bear')]:
-        fighter = canonical(band, profile, 'weapon.fist', trait_overrides={
-            'stupidity_exempt': True, 'stupidity_initial_failed': True})
+        mutations = ('band--mutations-great-claw',) if (band, profile) == (
+            'skaven-of-clan-moulder-web', 'rat-ogres') else ()
+        fighter = canonical(band, profile, 'weapon.fist', special_rule_ids=mutations,
+                            trait_overrides={'stupidity_exempt': True,
+                                             'stupidity_initial_failed': True})
         fighter = replace(fighter, characteristics=replace(fighter.characteristics, leadership=None))
         dice = StrictDice([]); decisions = StrictDecisions([])
         state = initialize_duel(fighter, enemy(), dice, context=DuelContext(charging=(), active_participant='first'))
@@ -1534,8 +1542,10 @@ def test_elf_identity_and_hatred_do_not_spread_to_animals_or_mixed_recruits():
     assert 'species.dark-elf' in canonical('druchii-mic', 'witch-elves', 'weapon.fist').global_effects.tags
     assert 'species.high-elf' in canonical('shadow-warriors', 'shadow-warrior', 'weapon.fist').global_effects.tags
     assert 'species.high-elf' not in canonical('high-elves-lus', 'seaguard', 'weapon.fist', trait_overrides={'elf_kind': 'other'}).global_effects.tags
+    wood = enemy(trait_overrides={'elf_kind': 'wood'})
+    assert {'species.elf', 'species.wood-elf'} <= set(wood.global_effects.tags)
     with pytest.raises(ValueError, match='elf_kind'):
-        enemy(trait_overrides={'elf_kind': 'wood'})
+        enemy(trait_overrides={'elf_kind': 'unknown-elf'})
 
 
 @pytest.mark.parametrize('band,profile,mandatory', [
@@ -1711,15 +1721,20 @@ def test_pilgrims_innate_hatred_retains_first_round_and_immunity_limits(first_ro
 
 def test_spawn_explicit_automatic_leadership_preserves_its_separate_preparation():
     from mordheim_combat.modular.leadership import resolve_local_leadership
+    from mordheim_combat.modular.rounds import resolve_spawn_attack_count
     spawn = canonical('marauders-of-chaos', 'spawn-of-chaos', 'weapon.fist')
     assert 'mechanic.automatic-leadership' in spawn.global_effects.tags
     assert 'mechanic.automatic-leadership' not in canonical('marauders-of-chaos', 'marauder-chieftain', 'weapon.fist').global_effects.tags
     spawn = replace(spawn, characteristics=replace(spawn.characteristics, leadership=None))
-    dice = StrictDice([{'key': 'first.characteristic.A.0', 'value': 3}])
+    dice = StrictDice([{'key': 'round.0.first.spawn-attacks', 'value': 3}])
     decisions = StrictDecisions([])
     state = initialize_duel(spawn, enemy(), dice,
                            context=DuelContext(charging=(), active_participant='first'))
-    assert state.first.attacks == 4
+    # Special Attacks rolls the printed D6+1 at the start of each Close Combat
+    # phase; initialization must not consume that separate preparation.
+    assert state.first.attacks == 2
+    assert resolve_spawn_attack_count(
+        spawn, state.first.attacks, dice, 'round.0.first.spawn-attacks') == 4
     assert resolve_local_leadership(spawn, state, dice, decisions, 'ld', first=True)
     assert resolve_local_leadership(spawn, state, dice, decisions, 'fear', first=True, psychology=True, fear=True)
     dice.finish(); decisions.finish()
@@ -2179,7 +2194,11 @@ def test_hypnotist_first_attack_breaks_trance_even_when_saved():
         {'key': 'round.0.first.attack.0.armour', 'value': 6},
         {'key': 'round.0.second.attack.0.hit', 'value': 1},
     ])
-    choices = StrictDecisions([{'key': 'round.0.first.hypnotist', 'value': True}])
+    choices = StrictDecisions([
+        {'key': 'round.0.first.hypnotist', 'value': True},
+        # The Sleuth's Scryer offers a personal reroll on its own wound roll.
+        {'key': 'round.0.first.attack.0.wound.scryer', 'value': False},
+    ])
     state = initialize_duel(sleuth, foe, dice, context=DuelContext(charging=("first",), active_participant="first"))
     result = resolve_round(sleuth, foe, state, dice, choices)
     assert result.attacks[0].hit and result.attacks[0].saved

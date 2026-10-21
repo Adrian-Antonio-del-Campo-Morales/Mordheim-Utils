@@ -9,6 +9,7 @@ from mordheim_combat.modular.parallel import simulate_duel_reference_parallel
 from mordheim_construction.compiler import compile_fighter
 from mordheim_core.models import Characteristics
 from mordheim_core.models import FighterBuild
+import pytest
 
 
 def fighter(**changes):
@@ -20,6 +21,7 @@ def fighter(**changes):
     return compile_fighter(FighterBuild(**options))
 
 
+@pytest.mark.test_infrastructure
 def test_chunk_ranges_partition_contiguously_and_exactly():
     ranges = chunk_ranges(13, 4)
     assert ranges == ((0, 4), (4, 3), (7, 3), (10, 3))
@@ -28,6 +30,7 @@ def test_chunk_ranges_partition_contiguously_and_exactly():
     assert chunk_ranges(3, 9) == ((0, 1), (1, 1), (2, 1))
 
 
+@pytest.mark.test_infrastructure
 def test_resolve_oracle_workers_gates_auto_by_estimated_time():
     # auto: pool only samples whose estimated sequential time is >= ~20 s.
     assert resolve_oracle_workers(None, 10_000, 50, cpu=8) is None      # ~10 s
@@ -42,6 +45,7 @@ def test_resolve_oracle_workers_gates_auto_by_estimated_time():
     assert resolve_oracle_workers(99, 100_000, 50, cpu=8) == 8
 
 
+@pytest.mark.parity
 def test_parallel_oracle_matches_the_sequential_oracle_exactly():
     first = fighter(characteristics=Characteristics(3, 4, 3, 1, 4, 2))
     second = fighter()

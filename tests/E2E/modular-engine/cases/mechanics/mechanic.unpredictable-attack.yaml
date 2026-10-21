@@ -119,10 +119,12 @@
   decisions:
     - {key: round.0.first.unpredictable-attack.0, value: false}
     - {key: round.0.first.unpredictable-attack.1, value: true}
+  # The pool rolls every To Hit die before any defence is offered, so the parry
+  # attempt for the highest hit roll follows both declared hits.
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.parry, value: 5}
     - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
     - {key: round.0.first.attack.1.wound, value: 4}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:

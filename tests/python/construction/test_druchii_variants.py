@@ -14,6 +14,10 @@ import pytest
 from mordheim_construction.compiler import compile_fighter
 from mordheim_core.models import FighterBuild, Characteristics
 
+# Printed kit variants: each case pins the compiled save/weapon shape, including
+# the one-cloak limit, which is the same grant applied exactly once.
+pytestmark = pytest.mark.compilation
+
 
 def build(**options):
     return FighterBuild("mordheim", Characteristics(3, 4, 3, 2, 3, 1, leadership=7), **options)

@@ -101,7 +101,11 @@
   rolls:
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
+  # Both declared faces are below the 4+ the two equal Weapon Skills require, so the
+  # charged bearer's immunity is observed on an unwounded round: only the absence of
+  # the fear die distinguishes it, and the strict tape requests no such die at all.
   expect_rounds:
-    0: {state.first.wounds: 3, state.second.wounds: 2}
+    0: {attacks.0.hit: false, attacks.1.hit: false,
+        state.first.wounds: 3, state.second.wounds: 3}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 

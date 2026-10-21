@@ -154,6 +154,8 @@
       characteristics: {weapon_skill: 8, strength: 8, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.impetuous-avoid-compulsion, value: false}
   rolls:
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}

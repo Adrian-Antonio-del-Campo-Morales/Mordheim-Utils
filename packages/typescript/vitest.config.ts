@@ -5,6 +5,11 @@ import { defineConfig } from "vitest/config";
 // The suite lives in the repository's tests/typescript tree (support code stays
 // out of the packages); the aliases are the same vocabulary the web app uses.
 // Dependencies resolve through the npm workspace root.
+//
+// Selection is expressed through homogeneous Vitest suites grouped under the test
+// contract root, not through a parallel catalog or source-text classifier. Each
+// directory becomes one group the coordinator can select by component; the primary
+// category stays with each test's assertions, not with this grouping.
 export default defineConfig({
   resolve: {
     alias: {
@@ -21,5 +26,6 @@ export default defineConfig({
     include: [
       fileURLToPath(new URL("../../tests/typescript/**/*.test.ts", import.meta.url)).replaceAll("\\", "/"),
     ],
+    reporters: ["default"],
   },
 });

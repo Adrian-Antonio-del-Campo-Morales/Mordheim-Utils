@@ -55,6 +55,9 @@
 
 # --- Authored scenarios ---
 # Derived from the printed sentence and the printed profile; no engine output was consulted.
+# The Centigor profile also prints Drunken, so each tape declares that start-of-turn D6 as an
+# ordinary 3: neither Frenzy nor a forced Stupidity test, leaving the trample attack the only
+# thing under test.  All attack and wound dice follow the engine's pool order (impacts first).
 
 - audit_id: rule/mordheim/beastmen-raiders/centigors--trample/profile-rule.centigors--trample
   id: the-charging-centigor-resolves-the-hooves-attack-next-to-its-weapon
@@ -72,9 +75,10 @@
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.first.drunken, value: 3}
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
   expect_rounds:
     0: {attacks.0.wounded: True, attacks.0.damage: 1, attacks.1.hit: False, state.second.wounds: 2, state.second.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
@@ -97,9 +101,10 @@
   duel_context: {charging: [second], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: round.0.first.drunken, value: 3}
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
   expect_rounds:
     0: {attacks.0.wounded: True, attacks.0.damage: 1, attacks.1.hit: False, state.second.wounds: 2, state.second.condition: STANDING, state.first_charged: False, state.second_charged: True}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

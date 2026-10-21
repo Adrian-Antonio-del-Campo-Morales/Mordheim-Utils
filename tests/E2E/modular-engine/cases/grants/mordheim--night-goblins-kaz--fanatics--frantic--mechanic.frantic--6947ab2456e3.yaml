@@ -65,6 +65,18 @@
 # Derived from the printed rule and this band's printed rule binding; no engine output was consulted.
 # The fanatic fixture carries no weapon (the band profile declares no fixed equipment) and its attack
 # pool is pinned to one die by the initial state, so the tape is one To Hit die per side.
+#
+# Known gap (recorded, not worked around): the current KB row for this band
+# (sources/knowledge/bands/mordheim/night-goblins-kaz/special-rules.yaml, fanatics--frantic) binds
+# skill.always-strikes-first with kind mechanic, so the Fanatic enters only the ordinary
+# strike-first share and an Initiative-5 charger still opens the round.  The printed "ignoring
+# penalties for weapons or initiative order" tier is delivered by the compiler-kind binding
+# profile-rule.fanatics--frantic, whose priority-10 contract lives in
+# mordheim_construction.contracts.PROFILE_RULE_EFFECTS and is reached only through
+# runtime_bindings(rule, "compiler") -- the route the mic and crooked-moon rows take.  The first
+# scenario below therefore keeps the printed expectation (the Fanatic strikes first against the
+# higher-Initiative charger) and is expected to fail until the kaz row carries that binding; the
+# control scenario is unaffected by the gap.
 - audit_id: rule/mordheim/night-goblins-kaz/fanatics--frantic/mechanic.frantic
   id: the-frantic-fanatic-opens-the-round-against-a-charger-with-the-higher-initiative
   covers: [whole]
@@ -80,7 +92,7 @@
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
-    0: {attacks.0.hit: false, state.first.wounds: 3, state.first.condition: STANDING,
+    0: {attacks.0.hit: false, state.first.wounds: 1, state.first.condition: STANDING,
         state.second.wounds: 3, state.second.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
   expect_events:

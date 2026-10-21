@@ -69,12 +69,14 @@
       main_weapon_id: weapon.dagger
     second:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 6, wounds: 3, initiative: 1, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 6, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
+    # A dagger grants an unarmoured enemy a 6+ save; the declared face fails it.
+    - {key: round.0.first.attack.0.armour, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
@@ -91,7 +93,7 @@
       main_weapon_id: weapon.dagger
     second:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 6, wounds: 3, initiative: 1, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 6, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
@@ -114,12 +116,14 @@
       main_weapon_id: weapon.dagger
     second:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 3, initiative: 1, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 3}
+    # A dagger grants an unarmoured enemy a 6+ save; the declared face fails it.
+    - {key: round.0.first.attack.0.armour, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.damage: 1, state.second.wounds: 2}

@@ -72,15 +72,15 @@
     first:
       main_weapon_id: weapon.mace
       main_poison_id: poison.nightshade
-      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
     second: {collection: trollheim, band_id: lustria-savage-goblins, profile_id: zomblintua}
   initial_state: {second: {wounds: 2, attacks: 0}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 6}
-    - {key: round.0.first.attack.0.special.ward, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.special.regeneration, value: 1}
   expect_rounds:
     0: {attacks.0.damage: 1, state.second.wounds: 1, state.second.initiative_penalty: 0}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

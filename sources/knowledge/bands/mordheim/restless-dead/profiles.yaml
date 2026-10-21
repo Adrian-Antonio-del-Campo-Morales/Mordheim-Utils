@@ -49,7 +49,8 @@ profiles:
     poison_immune: true
     creature_kind: undead
   equipment_restrictions_i18n:
-    es: "Puede llevar armadura de la Lista de equipo de los muertos inquietos. \n No puede llevar armas no mágicas y no sufre penalización por luchar sin arma."
+    es: "Puede llevar armadura de la Lista de equipo de los muertos inquietos. \n No puede llevar armas\
+          \ no mágicas y no sufre penalización por luchar sin arma."
 - id: necromancer
   name: Necromancer
   type: hero
@@ -213,6 +214,7 @@ profiles:
   - skeletons--no-pain
   - skeletons--no-brain
   combat_traits:
+    undead_kind: skeleton
     poison_immune: true
     creature_kind: undead
 - id: wights

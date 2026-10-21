@@ -58,7 +58,7 @@
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
-  expect_error: "Shallyan Strictures permit charges only against Carnival of Chaos or followers of Onogal"
+  expect_error: "Charging configuration violates Cannot Charge or Shallyan Strictures"
 # The same charge against a Carnival of Chaos warrior is the printed exception, so
 # the duel initializes and the round resolves both blows.
 - audit_id: mechanic/mechanic.shallya-strictures
@@ -100,10 +100,12 @@
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
   duel_context: {charging: [second], active_participant: first}
   maximum_rounds: 1
+  # The charging enemy opens the round, so his miss is the first attack of the
+  # ledger and the strictures warrior's own blow is the second.
   rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
-    - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
-    0: {state.first_charged: False, attacks.0.damage: 1, state.second.wounds: 1}
+    0: {state.first_charged: False, attacks.1.damage: 1, state.second.wounds: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -12,7 +12,7 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: whole (scope: YES)
-# AUTHORED[whole]: the declared prohibition is evidenced as a construction refusal: the recipient build where carrying armour.heavy-armour in armour_id is refused with ""armour-suit" is forbidden for estalian-corsairs-sar/captain.", and the same recipient without the item is accepted at construction. One refusal is declared per printed recipient of the rule. Consumer: the shared eligibility stage (packages/python/roster-construction/mordheim_construction/_eligibility.js).
+# AUTHORED[whole]: the declared prohibition is evidenced as a construction refusal: the recipient build where carrying armour.light-armour in armour_id is refused with ""armour.light-armour" is forbidden for estalian-corsairs-sar/captain.", and the same recipient without the item is accepted at construction. One refusal is declared per printed recipient of the rule. Consumer: the shared eligibility stage (packages/python/roster-construction/mordheim_construction/_eligibility.js).
 # origin_id:
 #   rule/mordheim/estalian-corsairs-sar/pirates--no-armour/profile.equipment-restrictions
 # analysis_status:
@@ -52,8 +52,8 @@
       collection: mordheim
       band_id: estalian-corsairs-sar
       profile_id: captain
-      armour_id: armour.heavy-armour
-  expect_error: '"armour-suit" is forbidden for estalian-corsairs-sar/captain.'
+      armour_id: armour.light-armour
+  expect_error: '"armour.light-armour" is forbidden for estalian-corsairs-sar/captain.'
 
 - audit_id: rule/mordheim/estalian-corsairs-sar/pirates--no-armour/profile.equipment-restrictions
   id: captain-without-armour-suit-is-accepted-at-construction
@@ -89,8 +89,8 @@
       collection: mordheim
       band_id: estalian-corsairs-sar
       profile_id: mates
-      armour_id: armour.heavy-armour
-  expect_error: '"armour-suit" is forbidden for estalian-corsairs-sar/mates.'
+      armour_id: armour.light-armour
+  expect_error: '"armour.light-armour" is forbidden for estalian-corsairs-sar/mates.'
 
 - audit_id: rule/mordheim/estalian-corsairs-sar/pirates--no-armour/profile.equipment-restrictions
   id: mates-without-armour-suit-is-accepted-at-construction
@@ -126,8 +126,8 @@
       collection: mordheim
       band_id: estalian-corsairs-sar
       profile_id: cabin-boys
-      armour_id: armour.heavy-armour
-  expect_error: '"armour-suit" is forbidden for estalian-corsairs-sar/cabin-boys.'
+      armour_id: armour.light-armour
+  expect_error: '"armour.light-armour" is forbidden for estalian-corsairs-sar/cabin-boys.'
 
 - audit_id: rule/mordheim/estalian-corsairs-sar/pirates--no-armour/profile.equipment-restrictions
   id: cabin-boys-without-armour-suit-is-accepted-at-construction
@@ -163,8 +163,8 @@
       collection: mordheim
       band_id: estalian-corsairs-sar
       profile_id: crew
-      armour_id: armour.heavy-armour
-  expect_error: '"armour-suit" is forbidden for estalian-corsairs-sar/crew.'
+      armour_id: armour.light-armour
+  expect_error: '"armour.light-armour" is forbidden for estalian-corsairs-sar/crew.'
 
 - audit_id: rule/mordheim/estalian-corsairs-sar/pirates--no-armour/profile.equipment-restrictions
   id: crew-without-armour-suit-is-accepted-at-construction
@@ -200,8 +200,8 @@
       collection: mordheim
       band_id: estalian-corsairs-sar
       profile_id: gunners
-      armour_id: armour.heavy-armour
-  expect_error: '"armour-suit" is forbidden for estalian-corsairs-sar/gunners.'
+      armour_id: armour.light-armour
+  expect_error: '"armour.light-armour" is forbidden for estalian-corsairs-sar/gunners.'
 
 - audit_id: rule/mordheim/estalian-corsairs-sar/pirates--no-armour/profile.equipment-restrictions
   id: gunners-without-armour-suit-is-accepted-at-construction
@@ -237,8 +237,8 @@
       collection: mordheim
       band_id: estalian-corsairs-sar
       profile_id: boatswains
-      armour_id: armour.heavy-armour
-  expect_error: '"armour-suit" is forbidden for estalian-corsairs-sar/boatswains.'
+      armour_id: armour.light-armour
+  expect_error: '"armour.light-armour" is forbidden for estalian-corsairs-sar/boatswains.'
 
 - audit_id: rule/mordheim/estalian-corsairs-sar/pirates--no-armour/profile.equipment-restrictions
   id: boatswains-without-armour-suit-is-accepted-at-construction

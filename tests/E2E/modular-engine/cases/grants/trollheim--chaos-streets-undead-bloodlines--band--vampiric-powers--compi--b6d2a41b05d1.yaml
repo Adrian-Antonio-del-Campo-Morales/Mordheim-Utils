@@ -67,12 +67,20 @@
       profile_id: lahmia-vampire
       special_rule_ids: [band--lahmia-power-deceive]
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 0}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 0}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
+  # The admitted row is a selectable power, so the declared use is declined here:
+  # this scenario observes admission, and the power's own consequence belongs to
+  # its own identity.
+  decisions:
+    - {key: round.0.second.deceive, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
   expect_final: {rounds_executed: 1}
 
 - audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--vampiric-powers/compiler.vampiric-powers

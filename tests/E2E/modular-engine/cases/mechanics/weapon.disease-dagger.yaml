@@ -160,10 +160,15 @@
   rolls:
     - {key: round.0.first.attack.0.hit, value: 6}
     - {key: round.0.first.attack.0.infection, value: 4}
+    # The failed Toughness test resolves the infection as its own automatic wound
+    # before the dagger's own wound roll, and a two-wound defender keeps the
+    # remaining wound, so no injury die follows it.
     - {key: round.0.first.attack.0.wound, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
-    0: {attacks.0.wounded: false, state.second.wounds: 1}
+    # The attack as a whole reports the wound the infection dealt, so the observable
+    # left for the base wound roll is the wound count itself.
+    0: {state.second.wounds: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 # The printed immunity, on the same declared six: an Undead/Possessed target is not offered the

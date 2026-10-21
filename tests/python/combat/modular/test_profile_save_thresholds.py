@@ -73,6 +73,7 @@ def attack(attacker, defender, rolls, **options):
 
 
 # Fimir Warriors: 5+ natural save inside the band-wide clauses
+@pytest.mark.rule_behavior
 @pytest.mark.parametrize("face,saved,damage", [(5, True, 0), (4, False, 1)])
 def test_fimir_warriors_only_save_on_the_printed_five(face, saved, damage):
     # To-wound target is 6 (S3 against T5), so a natural six wounds without a
@@ -83,6 +84,7 @@ def test_fimir_warriors_only_save_on_the_printed_five(face, saved, damage):
     assert result.defender.wounds == 3 - damage
 
 
+@pytest.mark.rule_behavior
 @pytest.mark.parametrize("face,saved,damage", [(4, True, 0), (3, False, 1)])
 def test_fimir_warriors_light_armour_adds_one_to_the_five_plus(face, saved, damage):
     result = attack(
@@ -93,18 +95,21 @@ def test_fimir_warriors_light_armour_adds_one_to_the_five_plus(face, saved, dama
     assert result.damage == damage
 
 
+@pytest.mark.compilation
 def test_fimir_warriors_natural_armour_target_is_five_not_six():
     context = prepare_armour_context(mace(), profile(FIMIR), state(mace()), state(profile(FIMIR)), EffectSet(), EffectSet())
     assert context.natural_armour_save == 5
     assert phases.armour_target(context) == 5
 
 
+@pytest.mark.compilation
 def test_fimir_warriors_light_armour_target_is_four():
     defender = profile(FIMIR, armour_id="armour.light-armour")
     context = prepare_armour_context(mace(), defender, state(mace()), state(defender), EffectSet(), EffectSet())
     assert phases.armour_target(context) == 4
 
 
+@pytest.mark.compilation
 def test_fimir_strength_worsening_stops_at_the_band_six_plus_floor():
     # "cannot be modified beyond 6 by Strength": S6 would ask for 5+3=8 plus
     # the ordinary armour slot, but the natural save is floored at 6.
@@ -115,6 +120,7 @@ def test_fimir_strength_worsening_stops_at_the_band_six_plus_floor():
     assert phases.armour_target(context) == 6
 
 
+@pytest.mark.rule_behavior
 @pytest.mark.parametrize("face,saved,damage", [(6, True, 0), (5, False, 1)])
 def test_fimir_strength_boundary_six_plus_floor_on_a_real_attack(face, saved, damage):
     # S6 against T5 asks for 3+ to wound, so 3 wounds without a critical.
@@ -123,6 +129,7 @@ def test_fimir_strength_boundary_six_plus_floor_on_a_real_attack(face, saved, da
     assert result.damage == damage
 
 
+@pytest.mark.rule_behavior
 def test_fimir_critical_no_save_result_negates_the_natural_armour_without_a_die():
     # S4 against T5 asks for 5+ to wound; a six both wounds and criticises, and
     # the critical chart result 3 is a "no save".
@@ -134,6 +141,7 @@ def test_fimir_critical_no_save_result_negates_the_natural_armour_without_a_die(
     # StrictDice.finish() above already proves no armour die was requested.
 
 
+@pytest.mark.compilation
 def test_fimir_armour_denial_reaches_the_isolated_armour_context():
     attacker = fighter(main_weapon_id="weapon.vomit-attack")
     defender = profile(FIMIR)
@@ -145,6 +153,7 @@ def test_fimir_armour_denial_reaches_the_isolated_armour_context():
     assert phases.armour_target(context) == 7
 
 
+@pytest.mark.rule_behavior
 def test_fimir_failed_armour_does_not_request_a_special_save_die():
     # The Fimir clause grants only the natural armour save: after a failed 1
     # the tape ends at the armour die, so nothing else may be consumed.
@@ -153,6 +162,7 @@ def test_fimir_failed_armour_does_not_request_a_special_save_die():
     assert result.defender.wounds == 2
 
 
+@pytest.mark.compilation
 def test_fimir_has_no_ward_or_regeneration_contribution():
     compiled = profile(FIMIR)
     context = prepare_special_save_context(compiled, EffectSet())
@@ -162,6 +172,7 @@ def test_fimir_has_no_ward_or_regeneration_contribution():
 
 
 # Boglars: regeneration 5+ with the fire prohibition
+@pytest.mark.rule_behavior
 @pytest.mark.parametrize("face,saved,damage", [(5, True, 0), (4, False, 1)])
 def test_boglar_regeneration_only_saves_on_five_or_more(face, saved, damage):
     # S3 against T3 asks for 4+ to wound, so 4 wounds without a critical and
@@ -175,6 +186,7 @@ def test_boglar_regeneration_only_saves_on_five_or_more(face, saved, damage):
     assert result.defender.wounds == (1 if saved else 0)
 
 
+@pytest.mark.compilation
 def test_boglar_regeneration_context_is_five_plus_and_fire_blocked():
     compiled = profile(BOGLAR)
     ordinary = prepare_special_save_context(compiled, EffectSet())
@@ -186,6 +198,7 @@ def test_boglar_regeneration_context_is_five_plus_and_fire_blocked():
     assert fire.regeneration_save == 5
 
 
+@pytest.mark.compilation
 def test_fire_tag_alone_does_not_block_a_different_defender():
     # The block is the Boglar's clause, not a global fire prohibition.
     assert prepare_special_save_context(profile(WARPSTONE_TROLL), EffectSet(tags=("attack.fire",))).regeneration_blocked is True
@@ -193,6 +206,7 @@ def test_fire_tag_alone_does_not_block_a_different_defender():
     assert ordinary.global_effects.regeneration_save == 7
 
 
+@pytest.mark.rule_behavior
 def test_boglar_fire_weapon_never_requests_a_regeneration_die():
     # weapon.brazier-iron is the canonical fire producer (attack.fire); S4
     # against T3 asks for 3+ to wound.  StrictDice.finish() proves the tape was
@@ -205,6 +219,7 @@ def test_boglar_fire_weapon_never_requests_a_regeneration_die():
     assert result.defender.condition == phases.Condition.KNOCKED_DOWN
 
 
+@pytest.mark.rule_behavior
 def test_boglar_ordinary_weapon_requests_the_regeneration_die_for_the_same_wound():
     result = attack(
         mace(), profile(BOGLAR),
@@ -214,6 +229,7 @@ def test_boglar_ordinary_weapon_requests_the_regeneration_die_for_the_same_wound
     assert result.defender.condition == phases.Condition.KNOCKED_DOWN
 
 
+@pytest.mark.compilation
 def test_boglar_magical_tag_is_not_a_fire_block():
     # "fire or fire-based magic" is expressed by the attack.fire tag; a plain
     # magical attack has no canonical producer in the current KB and must not
@@ -223,6 +239,7 @@ def test_boglar_magical_tag_is_not_a_fire_block():
 
 
 # cross-profile controls in the same process
+@pytest.mark.rule_behavior
 def test_warpstone_troll_still_saves_on_four_while_boglars_needs_five():
     troll_saved = attack(mace(), profile(WARPSTONE_TROLL), [roll("a.hit", 6), roll("a.wound", 5), roll("a.special.regeneration", 4)])
     assert troll_saved.saved is True and troll_saved.damage == 0
@@ -233,6 +250,7 @@ def test_warpstone_troll_still_saves_on_four_while_boglars_needs_five():
     assert boglar_failed.saved is False and boglar_failed.damage == 1
 
 
+@pytest.mark.compilation
 def test_control_compilations_do_not_change_between_boglar_attacks():
     troll_before = profile(WARPSTONE_TROLL)
     attack(mace(), profile(BOGLAR), [roll("a.hit", 6), roll("a.wound", 4), roll("a.special.regeneration", 4), roll("a.injury.0", 1)])
@@ -247,16 +265,21 @@ def duel_context():
     return DuelContext(charging=("first",), active_participant="first")
 
 
+@pytest.mark.end_to_end
 def test_real_duel_fimir_armour_save_five_keeps_the_wound():
     result = replay_duel(
         profile(FIMIR), mace(), backend="modular", context=duel_context(),
         rolls=[
+            roll("round.0.first.stupidity.0", 1),
+            roll("round.0.first.stupidity.1", 2),
+            roll("round.0.first.stupidity.2", 3),
             roll("round.0.second.fear.charged.0", 3),
             roll("round.0.second.fear.charged.1", 4),
-            # The Fimir's own three attacks miss.
+            # The Fimir's three profile attacks and its tail attack miss.
             roll("round.0.first.attack.0.hit", 1),
             roll("round.0.first.attack.1.hit", 1),
             roll("round.0.first.attack.2.hit", 1),
+            roll("round.0.first.attack.3.hit", 1),
             # The attacker wounds once; the printed 5+ natural save holds.
             roll("round.0.second.attack.0.hit", 6),
             roll("round.0.second.attack.0.wound", 6),
@@ -268,6 +291,7 @@ def test_real_duel_fimir_armour_save_five_keeps_the_wound():
     assert result.conditions == (0, 0)
 
 
+@pytest.mark.end_to_end
 def test_real_duel_boglar_needs_five_and_goes_out_on_a_four():
     result = replay_duel(
         profile(BOGLAR), mace(), backend="modular", context=duel_context(),

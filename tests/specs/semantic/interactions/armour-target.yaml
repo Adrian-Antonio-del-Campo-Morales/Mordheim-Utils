@@ -1231,8 +1231,10 @@ specifications:
   bindings:
   - '{"id": "armour.light-armour", "kind": "mechanic", "parameters": {}}'
   - '{"id": "material.gromril", "kind": "mechanic", "parameters": {}}'
-  interpretation: light armour saves on 6+; gromril composes the armour target to 6 plus Strength-based
-    modifier, penetration and target bonus. The save is ineligible when the target exceeds 6.
+  interpretation: >-
+    Light armour provides a 6+ save. Gromril adds a further -1 armour-save modifier; Strength 5 adds
+    a -2 modifier. Once the modified save is impossible, the observable result is ineligible,
+    unsaved and no armour die consumed; the diagnostic target need not be normalized to 7.
   cases:
   - id: composition
     roles:
@@ -1264,7 +1266,10 @@ specifications:
         attacks: 1
     defender: *id047
     expect:
-      result.target: 7
+      context.armour_save: 6
+      context.strength: 5
+      context.armour_penetration: 1
+      context.target_armour_bonus: 0
       result.eligible: false
       result.saved: false
       result.roll: null
@@ -1403,8 +1408,10 @@ specifications:
   bindings:
   - '{"id": "armour.light-armour", "kind": "mechanic", "parameters": {}}'
   - '{"id": "weapon.axe", "kind": "mechanic", "parameters": {}}'
-  interpretation: light armour saves on 6+; axe composes the armour target to 6 plus Strength-based modifier,
-    penetration and target bonus. The save is ineligible when the target exceeds 6.
+  interpretation: >-
+    Light armour provides a 6+ save. An axe adds a further -1 armour-save modifier; Strength 5 adds
+    a -2 modifier. Once the modified save is impossible, the observable result is ineligible,
+    unsaved and no armour die consumed; the diagnostic target need not be normalized to 7.
   cases:
   - id: composition
     roles:
@@ -1434,7 +1441,10 @@ specifications:
         attacks: 1
     defender: *id051
     expect:
-      result.target: 7
+      context.armour_save: 6
+      context.strength: 5
+      context.armour_penetration: 1
+      context.target_armour_bonus: 0
       result.eligible: false
       result.saved: false
       result.roll: null
@@ -1503,8 +1513,10 @@ specifications:
   bindings:
   - '{"id": "armour.light-armour", "kind": "mechanic", "parameters": {}}'
   - '{"id": "weapon.katar", "kind": "mechanic", "parameters": {}}'
-  interpretation: light armour saves on 6+; katar composes the armour target to 6 plus Strength-based
-    modifier, penetration and target bonus. The save is ineligible when the target exceeds 6.
+  interpretation: >-
+    Light armour provides a 6+ save. A katar adds a further -1 armour-save modifier; Strength 5 adds
+    a -2 modifier. Once the modified save is impossible, the observable result is ineligible,
+    unsaved and no armour die consumed; the diagnostic target need not be normalized to 7.
   cases:
   - id: composition
     roles:
@@ -1534,7 +1546,10 @@ specifications:
         attacks: 1
     defender: *id054
     expect:
-      result.target: 7
+      context.armour_save: 6
+      context.strength: 5
+      context.armour_penetration: 1
+      context.target_armour_bonus: 0
       result.eligible: false
       result.saved: false
       result.roll: null
@@ -1650,8 +1665,10 @@ specifications:
   bindings:
   - '{"id": "armour.no-armour", "kind": "mechanic", "parameters": {}}'
   - '{"id": "material.gromril", "kind": "mechanic", "parameters": {}}'
-  interpretation: no armour saves on 7+; gromril composes the armour target to 7 plus Strength-based modifier,
-    penetration and target bonus. The save is ineligible when the target exceeds 6.
+  interpretation: >-
+    No Armour supplies no body armour save. Gromril adds a further -1 armour-save modifier; neither
+    it nor a Strength penalty can create a save. The observable result is ineligible, unsaved and no
+    armour die consumed; an impossible diagnostic target need not be normalized to 7.
   cases:
   - id: composition
     roles:
@@ -1663,7 +1680,10 @@ specifications:
     defender: &id059
       armour_id: armour.no-armour
     expect:
-      result.target: 7
+      context.armour_save: 7
+      context.strength: 3
+      context.armour_penetration: 1
+      context.target_armour_bonus: 0
       result.eligible: false
       result.saved: false
       result.roll: null
@@ -1683,7 +1703,10 @@ specifications:
         attacks: 1
     defender: *id059
     expect:
-      result.target: 7
+      context.armour_save: 7
+      context.strength: 5
+      context.armour_penetration: 1
+      context.target_armour_bonus: 0
       result.eligible: false
       result.saved: false
       result.roll: null
@@ -1827,8 +1850,10 @@ specifications:
   bindings:
   - '{"id": "armour.no-armour", "kind": "mechanic", "parameters": {}}'
   - '{"id": "weapon.axe", "kind": "mechanic", "parameters": {}}'
-  interpretation: no armour saves on 7+; axe composes the armour target to 7 plus Strength-based modifier,
-    penetration and target bonus. The save is ineligible when the target exceeds 6.
+  interpretation: >-
+    No Armour supplies no body armour save. An axe adds a further -1 armour-save modifier; neither
+    it nor a Strength penalty can create a save. The observable result is ineligible, unsaved and no
+    armour die consumed; an impossible diagnostic target need not be normalized to 7.
   cases:
   - id: composition
     roles:
@@ -1839,7 +1864,10 @@ specifications:
     defender: &id063
       armour_id: armour.no-armour
     expect:
-      result.target: 7
+      context.armour_save: 7
+      context.strength: 3
+      context.armour_penetration: 1
+      context.target_armour_bonus: 0
       result.eligible: false
       result.saved: false
       result.roll: null
@@ -1858,7 +1886,10 @@ specifications:
         attacks: 1
     defender: *id063
     expect:
-      result.target: 7
+      context.armour_save: 7
+      context.strength: 5
+      context.armour_penetration: 1
+      context.target_armour_bonus: 0
       result.eligible: false
       result.saved: false
       result.roll: null
@@ -1927,8 +1958,10 @@ specifications:
   bindings:
   - '{"id": "armour.no-armour", "kind": "mechanic", "parameters": {}}'
   - '{"id": "weapon.katar", "kind": "mechanic", "parameters": {}}'
-  interpretation: no armour saves on 7+; katar composes the armour target to 7 plus Strength-based modifier,
-    penetration and target bonus. The save is ineligible when the target exceeds 6.
+  interpretation: >-
+    No Armour supplies no body armour save. A katar adds a further -1 armour-save modifier; neither
+    it nor a Strength penalty can create a save. The observable result is ineligible, unsaved and no
+    armour die consumed; an impossible diagnostic target need not be normalized to 7.
   cases:
   - id: composition
     roles:
@@ -1939,7 +1972,10 @@ specifications:
     defender: &id066
       armour_id: armour.no-armour
     expect:
-      result.target: 7
+      context.armour_save: 7
+      context.strength: 3
+      context.armour_penetration: 1
+      context.target_armour_bonus: 0
       result.eligible: false
       result.saved: false
       result.roll: null
@@ -1958,7 +1994,10 @@ specifications:
         attacks: 1
     defender: *id066
     expect:
-      result.target: 7
+      context.armour_save: 7
+      context.strength: 5
+      context.armour_penetration: 1
+      context.target_armour_bonus: 0
       result.eligible: false
       result.saved: false
       result.roll: null

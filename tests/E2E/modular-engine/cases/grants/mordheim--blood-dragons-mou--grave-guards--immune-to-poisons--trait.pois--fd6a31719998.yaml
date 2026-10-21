@@ -22,11 +22,11 @@
 # bearer's recorded initiative_penalty stays 0.  The bearer is the blood-dragons-mou/grave-guards profile
 # that prints the rule, which declares no armour, ward or regeneration save and no
 # Ethereal-class hit gate, so the mace lands its wound without a declared defence die.
-# The bearer starts the duel at two wounds and declares no attack, so a single unsaved
-# wound leaves it standing and no injury roll is needed; the clause is single-faceted,
-# so no second scenario is required.
-# The printed profile lists this rule without the compiled poison_immune trait, which
-# is an implementation observation recorded for execution, not a clause decision.
+# The bearer declares no attack and starts at its printed one wound; the single unsaved
+# wound is kept and the injury die resolves the resulting Knocked Down condition.  The
+# clause is single-faceted, so no second scenario is required.
+# The compiled bearer carries the poison_immune trait (the binding lives in the band
+# special rules), so the rider suppression below is produced by the printed clause.
 # REVIEWED still requires manual semantic review and execution_status stays
 # UNEXECUTED.
 # origin_id:
@@ -64,7 +64,11 @@
 # Initiative penalty never lands.  The attacker's Weapon Skill 10, Strength 8 and
 # Initiative 10 are hand-built fixture facts, not profile values, and its higher
 # Initiative with no charge declared lets it strike first, so the bearer declares no
-# attack of its own and the tape holds only the attacker's hit and wound dice.
+# attack of its own.  The bearer keeps the printed Grave Guard profile (W1), so the
+# single wound takes it to zero and the declared injury die resolves the downed state;
+# the wound is still taken (damage 1) and only the poison rider is suppressed.  The
+# wound die is 4 because Strength 8 against Toughness 4 needs 2+ and a natural 6 would
+# be critical and demand a `.critical` die.
 - audit_id: rule/mordheim/blood-dragons-mou/grave-guards--immune-to-poisons/trait.poison-immune
   id: the-poisoned-wound-keeps-its-wound-and-loses-its-rider
   covers: [whole]
@@ -74,12 +78,13 @@
       main_poison_id: poison.nightshade
       characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
     second: {collection: mordheim, band_id: blood-dragons-mou, profile_id: grave-guards}
-  initial_state: {second: {wounds: 2, attacks: 0}}
+  initial_state: {second: {attacks: 0}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
   expect_rounds:
-    0: {attacks.0.damage: 1, state.second.wounds: 1, state.second.initiative_penalty: 0}
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN, state.second.initiative_penalty: 0}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

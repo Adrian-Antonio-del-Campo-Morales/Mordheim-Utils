@@ -78,21 +78,25 @@
   id: the-printed-staff-and-dagger-are-accepted
   covers: [owned-equipment-ban]
   # The printed exception, and nothing else: the Mage carries the walking staff (club) and the dagger his own
-  # profile records as fixed equipment.  Declared through the possession channel; the hand slot stays unarmed
-  # because the catalogue records no mechanic for the club item.  The engagement starts, which is the printed
-  # permission.
+  # profile records as fixed equipment.  Declared through the possession channel, and the hand holds the
+  # printed walking staff: weapon.club is the catalogue row for that printed club and the only close-combat
+  # row this profile's own exception admits besides the dagger.  The engagement starts, which is the
+  # printed permission.
   fighters:
     first:
       collection: mordheim
       band_id: nipponese-expedition-web
       profile_id: vim-to-mage
-      main_weapon_id: weapon.natural-attacks
+      main_weapon_id: weapon.club
       owned_item_ids: [club, dagger]
+    # The checkpoint body is the printed Hatamoto; its Nippon Noble Equipment List carries the sword
+    # (Wakizashi) and no mace, so the hand holds the printed sword.  It is declared out, so nothing of its
+    # own kit affects the tape.
     second:
       collection: mordheim
       band_id: nipponese-expedition-web
       profile_id: hatamoto
-      main_weapon_id: weapon.mace
+      main_weapon_id: weapon.sword
   duel_context: {charging: [], active_participant: first}
   initial_state: {second: {condition: OUT}}
   expect_initial: {second.condition: OUT}
@@ -111,7 +115,7 @@
       collection: mordheim
       band_id: nipponese-expedition-web
       profile_id: vim-to-mage
-      main_weapon_id: weapon.natural-attacks
+      main_weapon_id: weapon.club
       owned_item_ids: [club, dagger, sword]
-  expect_error: "equipment is not available to nipponese-expedition-web/vim-to-mage"
+  expect_error: sword may not be carried; the printed clause admits only weapon.mace, weapon.club, weapon.dagger.
 

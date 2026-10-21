@@ -3202,7 +3202,9 @@ effect_ids:
 - campaign.hireling.upkeep
 eligibility_semantics:
   simple_lists:
-    allow: If both allow lists are empty, there is no positive static band filter. Otherwise the band must match at least one allow_group or allow_band_id.
+    allow: >-
+             If both allow lists are empty, there is no positive static band filter. Otherwise the
+             band must match at least one allow_group or allow_band_id.
     forbid: A match in any forbid_group or forbid_band_id rejects the hire.
     precedence: forbid
   expression:
@@ -3215,4 +3217,7 @@ eligibility_semantics:
     - any_of
     - not
     mutual_exclusion: When expression is present, allow/forbid lists are not used for that entry.
-  dynamic_checks: Current-roster composition, current Hired Swords and selected warband variants are profile rules. The application that builds/manages the campaign roster evaluates those rules.
+  dynamic_checks: >-
+                    Current-roster composition, current Hired Swords and selected warband variants
+                    are profile rules. The application that builds/manages the campaign roster
+                    evaluates those rules.

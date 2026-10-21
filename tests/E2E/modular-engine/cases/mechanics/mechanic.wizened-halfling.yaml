@@ -59,20 +59,23 @@
   covers: [whole]
   fighters:
     first:
-      main_weapon_id: weapon.mace
-      trait_overrides: {stupidity: true, species: halfling}
+      main_weapon_id: weapon.dagger
+      trait_overrides: {stupidity: true}
       collection: mordheim
-      band_id: carnival-of-chaos
-      profile_id: brethren
+      band_id: halflings-mic
+      profile_id: halfling-thief
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
     second:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  # The supplied leader is the band's own Halfling Elder: its printed Leader rule
+  # (mechanic.leader-six) supplies the six-inch radius and its printed Wizened
+  # Halfling skill carries the reroll for halfling recipients of the same band.
   duel_context: {first_id: first, second_id: second, charging: [first], active_participant: first,
     distances: [[first, wizened-leader, 4]],
     nearby: [{participant_id: wizened-leader, side_id: first, condition: standing,
-              fighter: {collection: mordheim, band_id: carnival-of-chaos, profile_id: carnival-master,
-                        skill_ids: [mechanic.wizened-halfling]}}]}
+              fighter: {collection: mordheim, band_id: halflings-mic, profile_id: halfling-elder,
+                        special_rule_ids: [halfling-elder--wizened-halfling]}}]}
   maximum_rounds: 1
   decisions:
     - {key: round.0.first.stupidity.leader.wizened-leader, value: false}
@@ -84,6 +87,9 @@
     - {key: round.0.first.stupidity.reroll.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
+    # The dagger in the halfling's hand grants the target +1 armour, so the bare
+    # defender still rolls the save a six would hold.
+    - {key: round.0.first.attack.0.armour, value: 4}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.damage: 1, state.first.stupidity_failed: false, state.second.wounds: 1}

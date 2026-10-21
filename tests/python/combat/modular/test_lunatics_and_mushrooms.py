@@ -62,14 +62,14 @@ class KeyedDice:
             raise EvidenceMismatch(f"unused rolls: {sorted(self.values)}")
 
 
-def lunatic(weapon="weapon.mace", **options):
+def lunatic(weapon="weapon.club", **options):
     return compile_fighter(FighterBuild("mordheim", band_id="lustria-pygmies",
         profile_id="wild-lunatics", collection="trollheim", main_weapon_id=weapon, **options))
 
 
 def pygmy(profile="pygmies"):
     return compile_fighter(FighterBuild("mordheim", band_id="lustria-pygmies",
-        profile_id=profile, collection="trollheim", main_weapon_id="weapon.mace"))
+        profile_id=profile, collection="trollheim", main_weapon_id="weapon.club"))
 
 
 def bare(*, weapon="weapon.mace", wounds=2, strength=3, **options):
@@ -98,6 +98,7 @@ def misses(round_index, owner, count, *, first=0):
 
 # --- Lunatics: the printed recipient and its every-player-turn D6 -------------------
 
+@pytest.mark.eligibility
 def test_the_lunatics_rule_reaches_its_printed_recipient_only():
     fighter = lunatic()
     assert LUNATICS in fighter.global_effects.tags
@@ -108,6 +109,7 @@ def test_the_lunatics_rule_reaches_its_printed_recipient_only():
     assert LUNATICS not in pygmy().global_effects.tags
 
 
+@pytest.mark.rule_behavior
 def test_a_roll_of_one_to_three_grants_frenzy_and_retains_recovered_duration():
     fighter, foe = lunatic(), bare()
     dice = KeyedDice({"round.0.first.lunatics": 2, **misses(0, "first", 2), **misses(0, "second", 1)})
@@ -127,6 +129,7 @@ def test_a_roll_of_one_to_three_grants_frenzy_and_retains_recovered_duration():
     assert second.state.first.frenzy and len(second.attacks) == 3
 
 
+@pytest.mark.rule_behavior
 def test_a_roll_of_four_to_six_grants_the_printed_stupidity():
     fighter, foe = lunatic(), bare()
     # The opponent closes the charge, so the failure reads only as the printed
@@ -162,6 +165,7 @@ def test_a_roll_of_four_to_six_grants_the_printed_stupidity():
     assert third.state.first.stupidity_failed and len(third.attacks) == 1
 
 
+@pytest.mark.interaction
 def test_the_granted_frenzy_exempts_the_stupidity_and_its_loss_resumes_it():
     fighter, foe = lunatic(), bare()
     # The Frenzy the same printed rule granted holds: the model's own printed
@@ -191,6 +195,7 @@ def test_the_granted_frenzy_exempts_the_stupidity_and_its_loss_resumes_it():
 
 # --- Fungus Brew: the supplied results are canonical conditions ------------
 
+@pytest.mark.compilation
 def test_every_printed_brew_result_is_supplied_through_its_condition():
     plain = supplied(())
     assert plain.characteristics.initiative == 5
@@ -220,6 +225,7 @@ def test_every_printed_brew_result_is_supplied_through_its_condition():
     assert "mechanic.fear-immunity" in batch.global_effects.tags
 
 
+@pytest.mark.eligibility
 def test_the_brew_table_is_a_supplied_state_and_not_an_unadmitted_condition():
     # The supply table admits only canonical conditions whose own runtime binds an
     # operator, so a general rule text cannot be handed in as a supplied result.
@@ -227,6 +233,7 @@ def test_the_brew_table_is_a_supplied_state_and_not_an_unadmitted_condition():
         supplied(("condition.fear",))
 
 
+@pytest.mark.rule_behavior
 def test_the_belligerent_brew_rerolls_a_first_round_miss_like_hatred():
     drinker, foe = supplied(("condition.fungus-brew-belligerent",)), bare()
     dice = KeyedDice({
@@ -241,6 +248,7 @@ def test_the_belligerent_brew_rerolls_a_first_round_miss_like_hatred():
     assert not result.attacks[0].hit and result.state.second.wounds == 2
 
 
+@pytest.mark.interaction
 def test_the_loony_stupidity_is_ignored_while_its_frenzy_holds():
     drinker, foe = supplied(("condition.fungus-brew-loony",)), bare()
     dice = KeyedDice({**misses(0, "first", 2), **misses(0, "second", 1)})
@@ -270,9 +278,10 @@ def test_the_loony_stupidity_is_ignored_while_its_frenzy_holds():
 def goblin(**options):
     """A Night Goblin carrying its warband's own printed squabble rule."""
     return compile_fighter(FighterBuild("mordheim", band_id="crooked-moon-kep",
-        profile_id="night-goblins", main_weapon_id="weapon.mace", **options))
+        profile_id="night-goblins", main_weapon_id="weapon.club", **options))
 
 
+@pytest.mark.rule_behavior
 def test_the_rowdy_result_widens_the_own_turn_animosity_band_to_one_or_two():
     squabbler, foe = goblin(), bare()
     # The ordinary printed contract fails on a 1 only.
@@ -310,6 +319,7 @@ def test_the_rowdy_result_widens_the_own_turn_animosity_band_to_one_or_two():
 
 # --- Numbed: the +1 save and its printed 6+ limit --------------------------
 
+@pytest.mark.rule_behavior
 def test_the_numbed_floor_bounds_the_arithmetic_but_never_an_armour_ignoring_attack():
     numbed = supplied(("condition.fungus-brew-numbed",))
     # A Strength 6 blow would take an unarmoured save past 6+; the printed limit
@@ -332,6 +342,7 @@ def test_the_numbed_floor_bounds_the_arithmetic_but_never_an_armour_ignoring_att
         armour_save_floor=numbed.global_effects.armour_save_floor)) == 7
 
 
+@pytest.mark.rule_behavior
 def test_the_numbed_save_holds_a_normal_blow_that_an_unprepared_bearer_takes():
     numbed, foe = supplied(("condition.fungus-brew-numbed",)), bare()
     dice = KeyedDice({
@@ -361,6 +372,7 @@ def test_the_numbed_save_holds_a_normal_blow_that_an_unprepared_bearer_takes():
 
 # --- The Mad Cap Mushrooms' printed exclusion -----------------------------
 
+@pytest.mark.rule_behavior
 def test_the_mushrooms_have_no_effect_on_undead_or_the_possessed():
     # "The Mad Cap Mushroom has no effect on Undead such as Vampires and Zombies,
     # or the Possessed": the printed sentence belongs to that item's own text.

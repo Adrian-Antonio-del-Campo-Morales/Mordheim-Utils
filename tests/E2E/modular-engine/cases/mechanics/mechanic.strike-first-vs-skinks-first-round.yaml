@@ -57,14 +57,17 @@
       skill_ids: [mechanic.strike-first-vs-skinks-first-round]
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
     second:
-      main_weapon_id: weapon.mace
-      trait_overrides: {species: skink}
+      collection: mordheim
+      band_id: lizardmen
+      profile_id: skink-braves
+      main_weapon_id: weapon.dagger
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
   duel_context: {charging: [second], active_participant: second}
   maximum_rounds: 2
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
     - {key: round.1.second.attack.0.hit, value: 1}
     - {key: round.1.first.attack.0.hit, value: 1}
@@ -75,6 +78,7 @@
   expect_events:
     - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 4}
     - {kind: roll, key: round.0.first.attack.0.wound, sides: 6, value: 4}
+    - {kind: roll, key: round.0.first.attack.0.armour, sides: 6, value: 1}
     - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
     - {kind: roll, key: round.1.second.attack.0.hit, sides: 6, value: 1}
     - {kind: roll, key: round.1.first.attack.0.hit, sides: 6, value: 1}
@@ -88,8 +92,10 @@
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
     second:
-      main_weapon_id: weapon.mace
-      trait_overrides: {species: skink}
+      collection: mordheim
+      band_id: lizardmen
+      profile_id: skink-braves
+      main_weapon_id: weapon.dagger
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
   duel_context: {charging: [second], active_participant: second}
   maximum_rounds: 2

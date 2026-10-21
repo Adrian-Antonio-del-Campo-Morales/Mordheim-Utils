@@ -4,6 +4,9 @@ from mordheim_construction.compiler import compile_fighter
 from mordheim_core.models import Characteristics, FighterBuild
 
 
+pytestmark = pytest.mark.eligibility
+
+
 @pytest.mark.parametrize("collection, band", [
     ("mordheim", "bretonnian-knights"),
     ("trollheim", "chaos-streets-bretonnian-knights"),
