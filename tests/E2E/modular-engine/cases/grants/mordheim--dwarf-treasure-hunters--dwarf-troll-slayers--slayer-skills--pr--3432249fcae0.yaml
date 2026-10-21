@@ -1,3 +1,4 @@
+# Runtime correction: choose the printed band Slayer skill through its selectable rule, not a generic skill purchase.
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/dwarf-treasure-hunters/dwarf-troll-slayers--slayer-skills/profile.skill-access
 # scaffold_fingerprint: 3e3eaf29d65ce5339edaad2f30121534b0e18ed2f72cb608289f1c9ba59a7360
@@ -63,7 +64,7 @@
       collection: mordheim
       band_id: dwarf-treasure-hunters
       profile_id: dwarf-troll-slayers
-      skill_ids: [skill.ferocious-charge]
+      special_rule_ids: [band--slayer-special-skills-ferocious-charge]
       main_weapon_id: weapon.mace
     second:
       main_weapon_id: weapon.mace
@@ -71,6 +72,8 @@
   initial_state: {first: {attacks: 0}, second: {attacks: 0}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
+  rolls:
+    - {key: round.0.priority-tie, value: 1}
   expect_final: {rounds_executed: 1}
 
 - audit_id: rule/mordheim/dwarf-treasure-hunters/dwarf-troll-slayers--slayer-skills/profile.skill-access

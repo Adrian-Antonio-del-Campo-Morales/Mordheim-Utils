@@ -294,6 +294,7 @@ def _hit_reroll(
     )
     return bool(
         effect.reroll_hits
+        or first_round and has_tag(effect, "mechanic.first-round-hit-reroll")
         or pride
         or first_round and has_tag(effect, "mechanic.pikewall")
         and has_tag(effect, "condition.being-charged") and weapon.priority > 0
@@ -786,9 +787,12 @@ def prepare_armour_context(
         armour_save = max(1, 7 - defender.shield_and_skill_effects.armour_save_bonus)
         natural_armour_save = 7
         natural_armour_worst_save = 7
+    # A hand-held shield is compiled into the shield-and-skill provenance, not
+    # into ``off_hand`` (that slot keeps weapons), so the printed requirement
+    # is read from the same source the armour save uses.
     if (phases.has_tag(defender.global_effects, "mechanic.norse-bulwark")
             and phases.has_tag(defender.main_weapon, "weapon.axe")
-            and defender.off_hand is not None and phases.has_tag(defender.off_hand, "defence.shield")):
+            and phases.has_tag(defender.shield_and_skill_effects, "defence.shield")):
         armour_save = max(2, armour_save - 1)
     ignore_armour = effect.ignore_armour or (
         effect.ignore_armour_against_knocked_down

@@ -129,8 +129,9 @@
 # round.N.<side>.danse-macabre, a Leadership request the duel does NOT route as Psychology. The
 # tape below supplies that state on the bearer itself: the auto-pass answers the request with no
 # die at all (an implementation that asked for one would fail the strict tape) and the state
-# clears - the absence of the die is the assertion, as in the Fear tapes above. No charge is
-# declared, so the round resolves without combat and nothing else is requested.
+# clears - the absence of the die is the assertion, as in the Fear tapes above. The two ordinary
+# strikes are declared as natural 1s, so the round reports nothing but the Leadership request
+# under test.
 - audit_id: rule/mordheim/cult-of-the-possessed/darksouls--crazed/mechanic.automatic-leadership
   id: the-supplied-danse-state-clears-through-the-non-psychology-route
   covers: [automatic-leadership]
@@ -144,6 +145,9 @@
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {state.first.danse_macabre_controlled: false}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

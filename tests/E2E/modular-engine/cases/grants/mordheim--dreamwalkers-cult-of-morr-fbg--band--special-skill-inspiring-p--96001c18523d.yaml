@@ -69,11 +69,12 @@
       - participant_id: dreamer
         side_id: second
         condition: standing
-        fighter: {collection: mordheim, band_id: dreamwalkers-cult-of-morr-fbg, profile_id: dreamer}
+        fighter: {collection: mordheim, band_id: dreamwalkers-cult-of-morr-fbg, profile_id: dreamer,
+                  special_rule_ids: [band--special-skill-inspiring-presence]}
     distances:
       - [second, dreamer, 12]
   decisions:
-    - {key: round.0.second.fear.charged.dreamer.leader, value: true}
+    - {key: round.0.second.fear.charged.leader.dreamer, value: true}
   maximum_rounds: 1
   rolls:
     - {key: round.0.second.fear.charged.0, value: 4}
@@ -102,11 +103,12 @@
       - participant_id: dreamer
         side_id: second
         condition: standing
-        fighter: {collection: mordheim, band_id: dreamwalkers-cult-of-morr-fbg, profile_id: dreamer}
+        fighter: {collection: mordheim, band_id: dreamwalkers-cult-of-morr-fbg, profile_id: dreamer,
+                  special_rule_ids: [band--special-skill-inspiring-presence]}
     distances:
       - [second, dreamer, 12]
   decisions:
-    - {key: round.0.second.fear.charged.dreamer.leader, value: false}
+    - {key: round.0.second.fear.charged.leader.dreamer, value: false}
   maximum_rounds: 1
   rolls:
     - {key: round.0.second.fear.charged.0, value: 4}

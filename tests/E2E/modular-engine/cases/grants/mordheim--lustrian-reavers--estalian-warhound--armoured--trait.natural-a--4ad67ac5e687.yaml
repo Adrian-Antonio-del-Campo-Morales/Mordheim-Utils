@@ -49,8 +49,8 @@
 
 # --- Authored scenarios ---
 # Derived from the printed rule and the printed profile; no engine output was consulted.
-# The bearer is the profile that prints the save and starts the duel at two wounds, so an
-# unsaved wound leaves it standing and no injury roll is needed.  The attacker's Weapon Skill
+# The bearer retains its printed W1; a saved wound leaves it standing, and an
+# unsaved wound resolves the explicitly supplied injury face of 1 (knocked down).  The attacker's Weapon Skill
 # 10, Initiative 10 and Strength 3 are hand-built fixture facts, not profile values: Strength 3
 # leaves the printed save unmodified and the higher Initiative with no charge declared lets the
 # attacker strike first, so the bearer declares no attack of its own and the tape holds only the
@@ -64,7 +64,7 @@
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
     second: {collection: mordheim, band_id: lustrian-reavers, profile_id: estalian-warhound}
-  initial_state: {second: {wounds: 2, attacks: 0}}
+  initial_state: {second: {attacks: 0}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
@@ -72,7 +72,7 @@
     - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.first.attack.0.armour, value: 5}
   expect_rounds:
-    0: {attacks.0.saved: true, state.second.wounds: 2, state.second.condition: STANDING}
+    0: {attacks.0.saved: true, state.second.wounds: 1, state.second.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 - audit_id: rule/mordheim/lustrian-reavers/estalian-warhound--armoured/trait.natural-armour-save
@@ -83,13 +83,14 @@
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
     second: {collection: mordheim, band_id: lustrian-reavers, profile_id: estalian-warhound}
-  initial_state: {second: {wounds: 2, attacks: 0}}
+  initial_state: {second: {attacks: 0}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.first.attack.0.armour, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
   expect_rounds:
-    0: {attacks.0.saved: false, state.second.wounds: 1, state.second.condition: STANDING}
+    0: {attacks.0.saved: false, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

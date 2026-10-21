@@ -219,6 +219,13 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.stupidity
+    # The Cold One borrows the Beastmaster's own Leadership through the
+    # supplied handler value; it never borrows the warband leader's.
+    - id: mechanic.handler-leadership
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.handler-leadership
 - id: cold-ones--scaly-skin
   runtime:
     scope: 'YES'

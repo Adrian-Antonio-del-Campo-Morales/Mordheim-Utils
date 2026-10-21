@@ -1,3 +1,4 @@
+# Runtime correction: Hunter is an automatic profile grant, observed through its compiled contract, not purchased through skill_ids.
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/gunnery-school-of-nuln/marksmen--quick-reload/compiler.quick-reload
 # scaffold_fingerprint: 68f609909a1ed253c6f39f1175eaf28ef7c55c49ef5939d3efaaa2733a67aaaf
@@ -62,7 +63,6 @@
       collection: mordheim
       band_id: gunnery-school-of-nuln
       profile_id: marksmen
-      skill_ids: [skill.hunter]
       main_weapon_id: weapon.mace
     second:
       main_weapon_id: weapon.mace
@@ -70,4 +70,6 @@
   initial_state: {first: {attacks: 0}, second: {attacks: 0}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
+  expect_fighters:
+    first.construction_tags: [compiler.proud-to-a-fault, compiler.quick-reload]
   expect_final: {rounds_executed: 1}

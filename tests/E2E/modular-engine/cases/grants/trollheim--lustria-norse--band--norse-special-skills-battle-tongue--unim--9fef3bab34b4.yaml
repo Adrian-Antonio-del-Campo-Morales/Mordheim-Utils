@@ -1,14 +1,14 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/lustria-norse/band--norse-special-skills-battle-tongue/unimplemented.lustria-norse.band.norse-special-skills-battle-tongue
 # scaffold_fingerprint: 45a5e06e1b4c6eae9c714a66ae98103486ceebdbcd7df97f648012522754f74e
-# authoring_status: AUTHORED
-# authoring_progress: the admitted whole clause carries 3 authored scenarios derived from the
+# authoring_status: REVIEWED
+# authoring_progress: Scope-only review by explicit user decision; all scenarios retired, no behavioral PASS claimed.
 # printed Battle Tongue radius and the delivered mechanic.leader-twelve connection (the register
 # note above predates that delivery): a same-band borrower adopts the supplied Jarl's Leadership at
 # twelve inches and passes with it, a supplied Jarl past twelve inches supplies nothing, and a
 # same-band warrior who does not print the Leader rule supplies nothing.  REVIEWED still requires
 # manual semantic review and execution_status stays UNEXECUTED.
-# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+# execution_status: RETIRED_BY_SCOPE (no positive runtime evidence)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
@@ -17,7 +17,7 @@
 # Governing rulings: docs/decisions/design-rulings.md
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
+# Clause: whole (scope: NO)
 # AUTHORED[whole]: 3 scenarios evidence the printed twelve-inch radius of the upgrade.  The
 #   borrower is the band's printed bondsmen profile and the supplied leader is the printed jarl,
 #   the profile the band grant restricts the radius to; both Leadership values are supplied fixture
@@ -51,125 +51,7 @@
 # Register notes (context only, not behavioral authority):
 #   One admitted clause: the leader-only selection is a construction restriction and the increased Leader radius (12 inches) is the individual consequence, so the record is YES rather than LATER. leadership.resolve_local_leadership hard-codes the 6-inch borrow radius, so the 12-inch radius is not connected yet. Surface reuse candidate: {"family":"M-LEADER-INCREASE","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare supplied provider, same side/band, standing status, recipient, distance, range upgrades and borrowing/reroll effects. Do not simulate another fighter or erase handler/leader restrictions; a range upgrade is not another aura.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
-# --- Authored scenarios ---
-# The supplied leader is a nearby participant of the borrower's own side and band: the band's
-# printed Jarl whose Leader rule has been widened to twelve inches.
-- audit_id: rule/trollheim/lustria-norse/band--norse-special-skills-battle-tongue/unimplemented.lustria-norse.band.norse-special-skills-battle-tongue
-  id: a-supplied-jarl-at-twelve-inches-lends-his-leadership
-  covers: [whole]
-  fighters:
-    first:
-      trait_overrides: {causes_fear: true}
-      main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 8, attacks: 1, leadership: 7}
-    second:
-      collection: trollheim
-      band_id: lustria-norse
-      profile_id: bondsmen
-      main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1, leadership: 3}
-  duel_context:
-    charging: [first]
-    active_participant: first
-    nearby:
-      - participant_id: leader
-        side_id: second
-        condition: standing
-        fighter:
-          collection: trollheim
-          band_id: lustria-norse
-          profile_id: jarl
-          special_rule_ids: [band--norse-special-skills-battle-tongue]
-          characteristics: {weapon_skill: 4, strength: 4, toughness: 4, wounds: 2, initiative: 4, attacks: 1, leadership: 8}
-    distances:
-      - [second, leader, 12]
-  decisions:
-    - {key: round.0.second.fear.charged.leader.leader, value: true}
-  maximum_rounds: 1
-  rolls:
-    - {key: round.0.second.fear.charged.0, value: 4}
-    - {key: round.0.second.fear.charged.1, value: 4}
-    - {key: round.0.first.attack.0.hit, value: 1}
-    - {key: round.0.second.attack.0.hit, value: 1}
-  expect_rounds:
-    0: {state.first.wounds: 3, state.second.wounds: 2, state.second.fear_hit_sixes: false}
-  expect_final: {rounds_executed: 1, termination_reason: horizon}
-# Past the printed twelve inches no use is offered at all, which the strict decision tape itself
-# proves.
-- audit_id: rule/trollheim/lustria-norse/band--norse-special-skills-battle-tongue/unimplemented.lustria-norse.band.norse-special-skills-battle-tongue
-  id: a-jarl-beyond-twelve-inches-supplies-nothing
-  covers: [whole]
-  fighters:
-    first:
-      trait_overrides: {causes_fear: true}
-      main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 8, attacks: 1, leadership: 7}
-    second:
-      collection: trollheim
-      band_id: lustria-norse
-      profile_id: bondsmen
-      main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1, leadership: 3}
-  duel_context:
-    charging: [first]
-    active_participant: first
-    nearby:
-      - participant_id: leader
-        side_id: second
-        condition: standing
-        fighter:
-          collection: trollheim
-          band_id: lustria-norse
-          profile_id: jarl
-          special_rule_ids: [band--norse-special-skills-battle-tongue]
-          characteristics: {weapon_skill: 4, strength: 4, toughness: 4, wounds: 2, initiative: 4, attacks: 1, leadership: 8}
-    distances:
-      - [second, leader, 13.0]
-  maximum_rounds: 1
-  rolls:
-    - {key: round.0.second.fear.charged.0, value: 4}
-    - {key: round.0.second.fear.charged.1, value: 4}
-    - {key: round.0.first.attack.0.hit, value: 1}
-    - {key: round.0.second.attack.0.hit, value: 1}
-  expect_rounds:
-    0: {state.first.wounds: 3, state.second.wounds: 2, state.second.fear_hit_sixes: true}
-  expect_final: {rounds_executed: 1, termination_reason: horizon}
-# The printed radius belongs to the Jarl profile, not to the band: a same-band participant that
-# does not print the Leader rule is no provider, so no use is offered.
-- audit_id: rule/trollheim/lustria-norse/band--norse-special-skills-battle-tongue/unimplemented.lustria-norse.band.norse-special-skills-battle-tongue
-  id: a-band-sibling-without-the-leader-rule-supplies-nothing
-  covers: [whole]
-  fighters:
-    first:
-      trait_overrides: {causes_fear: true}
-      main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 8, attacks: 1, leadership: 7}
-    second:
-      collection: trollheim
-      band_id: lustria-norse
-      profile_id: bondsmen
-      main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1, leadership: 3}
-  duel_context:
-    charging: [first]
-    active_participant: first
-    nearby:
-      - participant_id: leader
-        side_id: second
-        condition: standing
-        fighter:
-          collection: trollheim
-          band_id: lustria-norse
-          profile_id: hunters
-          characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1, leadership: 8}
-    distances:
-      - [second, leader, 6]
-  maximum_rounds: 1
-  rolls:
-    - {key: round.0.second.fear.charged.0, value: 4}
-    - {key: round.0.second.fear.charged.1, value: 4}
-    - {key: round.0.first.attack.0.hit, value: 1}
-    - {key: round.0.second.attack.0.hit, value: 1}
-  expect_rounds:
-    0: {state.first.wounds: 3, state.second.wounds: 2, state.second.fear_hit_sixes: true}
-  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Runtime scope decision (2026-10-21): excluded producer/skill scenarios were
+# retired to E2EFIXING/RETIROS-ALCANCE.md by explicit user instruction.
+# No executable scenarios remain for this excluded procedure.
+[]

@@ -143,7 +143,12 @@ def test_every_execution_mechanism_can_enter_the_scalar_round_pipeline():
             elif family == "poisons":
                 options = {"main_poison_id": mechanic_id}
             else:
-                options = {"skill_ids": (mechanic_id,)}
+                # Curse of the Revenant prints "Requires Great Thirster", and the
+                # compiler enforces that prerequisite, so the row is admitted
+                # together with the skill it requires.
+                requires = ("mechanic.great-thirster",)
+                options = {"skill_ids": (mechanic_id, *(
+                    requires if mechanic_id == "mechanic.curse-of-the-revenant" else ()), )}
             context = (DuelContext(charging=(charge_attempt[mechanic_id],),
                                    active_participant="first")
                        if mechanic_id in charge_attempt else None)

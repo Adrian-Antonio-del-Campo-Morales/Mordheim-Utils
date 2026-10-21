@@ -7,9 +7,11 @@
 # clause covers the single optional reroll of this warrior's own failed Leadership test (taken, accepted when it
 # fails again, and declined).  The earlier claim that no reroll scenario was authorable is withdrawn: the
 # executor does observe the reroll (it offers it behind the declared decision key and reads the second pair of
-# dice), and the printed row is declarable through special_rule_ids, so the offer comes from the row rather than
-# from an injected mechanic.  REVIEWED still requires manual semantic review and execution_status stays
-# UNEXECUTED; no behavioral result is claimed.
+# dice), and the printed row is granted by the profile package and bound to mechanics, so the offer comes
+# from the row rather than from an injected mechanic.  The reroll scenarios use the Wolfman, another profile
+# the row admits, because the Mad Scientist's printed immunity leaves no Leadership test it can fail.
+# REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED; no behavioral result
+# is claimed by the authoring header.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -58,14 +60,16 @@
 #   Fear clause of a compound record. Surface reuse candidate: {"family":"mechanic.causes-fear","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare enemy/bearer identity, charge direction, individual test, failed-charge versus hit penalty, and immunity/reroll exceptions. Ordinary Fear has both charging and charged consequences; narrow immunity or charging-only Fear must not become unconditional.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: leadership-reroll (scope: YES)
-# AUTHORED[leadership-reroll]: 3 scenarios carry the printed reroll onto the real route: this warrior fails
-#   its own Fear test, the declared offer is taken and the second pair passes, so the charge survives; the
-#   accepted second failure with no third attempt (the fixture refuses a second request); and the declined
-#   offer, where the first failure stands.  The recipient is built from the band package with the printed row
-#   selected through special_rule_ids, so the offer comes from the printed record and not from an injected
-#   mechanic; the row's own `applies_to.profile_ids` admits the Mad Scientist, the Thrall, the Wolfman and the
-#   Hunchbacks, and both of its halves are bound to mechanics in the band's special-rules.yaml, which is why
-#   the failure of the reroll half to reach the fighter is the defect these tapes detect.
+# AUTHORED[leadership-reroll]: 3 scenarios carry the printed reroll onto the real route: the bearer fails
+#   its own Stupidity Leadership test, the declared offer is taken and the second pair passes, so its charge
+#   survives; the accepted second failure with no third attempt (the fixture refuses a second request); and
+#   the declined offer, where the first failure stands.  The bearer is the Wolfman, a profile the row's own
+#   `applies_to.profile_ids` admits and which carries no psychology immunity, so the printed optional reroll
+#   is observable on an individual Leadership test.  The Mad Scientist is not used: its printed
+#   `mad-scientist--immune-to-psychology` suppresses every psychology test and the row's Fear-causing half
+#   blocks the charged-side Fear test by reciprocity, so no Leadership test could ever fail for it.  Both
+#   halves of the row are bound to mechanics in the band's special-rules.yaml, so the offer comes from the
+#   printed record and not from an injected mechanic.
 # origin_id:
 #   rule/mordheim/masters-of-horror-sylv/mad-scientist--lunatic/mechanic.leadership-reroll
 # analysis_status:
@@ -141,40 +145,44 @@
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 # --- Additional authored scenarios ---
-# The printed sentence is "The model causes Fear and may reroll any Leadership Test" - the Lunatic special
-# skill of this band (special-rules.yaml row mad-scientist--lunatic, whose applies_to.profile_ids admits the
-# Mad Scientist, the Thrall, the Wolfman and the Hunchbacks, and whose two halves bind mechanic.causes-fear and
-# mechanic.leadership-reroll).  The reroll is exercised on the Fear test of the charge this warrior makes
-# against an opponent that causes Fear, the individual Leadership test this setup forces; the row's other half
-# is evidenced above.  The row is selected through special_rule_ids, the corpus channel for a printed rule row
-# (no mechanic is injected through skill_ids), so the offer has to come from the row.  The failed pair is
-# declared as sixes, which no printed Leadership of this band passes, and the accepted reroll as a pair of
-# ones, which every one of them passes, so the tapes do not depend on the profile's printed value.
+# The printed row is "The model causes Fear and may reroll any Leadership Test" (Lunatic). The Mad
+# Scientist cannot evidence the reroll half: its profile carries mad-scientist--immune-to-psychology
+# (profiles.yaml), which suppresses every psychology test, and the Lunatic half makes the bearer cause
+# Fear, so no Fear test can arise for it either (needs_test excludes immune warriors and mutual
+# fear-causers). The Wolfman is also in the row's applies_to list, carries no psychology immunity and
+# can therefore take an individual Leadership test. The corpus supplies the Stupidity state as a
+# fixture fact (trait_overrides: {stupidity: true}), the same device the mechanic.* cases use; the test
+# is the Wolfman's own Leadership 7, so the declared 6+6 fails and the declared 1+1 reroll passes
+# regardless of later profile changes. The clause audited is still the printed optional reroll; only
+# the Leadership test that triggers it changes from an impossible Fear test to an individual one.
 - audit_id: rule/mordheim/masters-of-horror-sylv/mad-scientist--lunatic/mechanic.leadership-reroll
-  id: the-lunatic-rerolls-its-failed-fear-test
+  id: the-lunatic-rerolls-its-failed-stupidity-test
   covers: [leadership-reroll]
   fighters:
     first:
       collection: mordheim
       band_id: masters-of-horror-sylv
-      profile_id: mad-scientist
+      profile_id: wolfman
+      trait_overrides: {stupidity: true}
     second:
       main_weapon_id: weapon.mace
-      skill_ids: [mechanic.causes-fear]
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 1, attacks: 1, leadership: 7}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   decisions:
-    - {key: round.0.first.fear.charge.reroll, value: true}
+    - {key: round.0.first.stupidity.reroll, value: true}
   rolls:
-    - {key: round.0.first.fear.charge.0, value: 6}
-    - {key: round.0.first.fear.charge.1, value: 6}
-    - {key: round.0.first.fear.charge.reroll.0, value: 1}
-    - {key: round.0.first.fear.charge.reroll.1, value: 1}
+    - {key: round.0.first.stupidity.0, value: 6}
+    - {key: round.0.first.stupidity.1, value: 6}
+    - {key: round.0.first.stupidity.reroll.0, value: 1}
+    - {key: round.0.first.stupidity.reroll.1, value: 1}
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
-    0: {state.first_charged: true, state.second.wounds: 2}
+    0: {state.first.stupidity_failed: false, state.first_charged: true}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 # The second result is accepted: the rerolled sixes fail as well, so no third attempt is offered and the
@@ -186,22 +194,22 @@
     first:
       collection: mordheim
       band_id: masters-of-horror-sylv
-      profile_id: mad-scientist
+      profile_id: wolfman
+      trait_overrides: {stupidity: true}
     second:
       main_weapon_id: weapon.mace
-      skill_ids: [mechanic.causes-fear]
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 1, attacks: 1, leadership: 7}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   decisions:
-    - {key: round.0.first.fear.charge.reroll, value: true}
+    - {key: round.0.first.stupidity.reroll, value: true}
   rolls:
-    - {key: round.0.first.fear.charge.0, value: 6}
-    - {key: round.0.first.fear.charge.1, value: 6}
-    - {key: round.0.first.fear.charge.reroll.0, value: 6}
-    - {key: round.0.first.fear.charge.reroll.1, value: 6}
+    - {key: round.0.first.stupidity.0, value: 6}
+    - {key: round.0.first.stupidity.1, value: 6}
+    - {key: round.0.first.stupidity.reroll.0, value: 6}
+    - {key: round.0.first.stupidity.reroll.1, value: 6}
   expect_rounds:
-    0: {attacks: [], state.first_charged: false, state.failed_charges: ['first'], state.engaged: false}
+    0: {attacks: [], state.first.stupidity_failed: true, state.first_charged: false, state.failed_charges: ['first'], state.engaged: false}
   expect_final: {rounds_executed: 1, termination_reason: disengaged}
 
 # The offer is optional: declining it consumes no die and the first failure stands.
@@ -212,19 +220,19 @@
     first:
       collection: mordheim
       band_id: masters-of-horror-sylv
-      profile_id: mad-scientist
+      profile_id: wolfman
+      trait_overrides: {stupidity: true}
     second:
       main_weapon_id: weapon.mace
-      skill_ids: [mechanic.causes-fear]
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 1, attacks: 1, leadership: 7}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   decisions:
-    - {key: round.0.first.fear.charge.reroll, value: false}
+    - {key: round.0.first.stupidity.reroll, value: false}
   rolls:
-    - {key: round.0.first.fear.charge.0, value: 6}
-    - {key: round.0.first.fear.charge.1, value: 6}
+    - {key: round.0.first.stupidity.0, value: 6}
+    - {key: round.0.first.stupidity.1, value: 6}
   expect_rounds:
-    0: {attacks: [], state.first_charged: false, state.failed_charges: ['first'], state.engaged: false}
+    0: {attacks: [], state.first.stupidity_failed: true, state.first_charged: false, state.failed_charges: ['first'], state.engaged: false}
   expect_final: {rounds_executed: 1, termination_reason: disengaged}
 

@@ -60,12 +60,14 @@
       main_weapon_id: weapon.mace
   duel_context: &uncharged {charging: [], active_participant: first}
   maximum_rounds: 1
+  # The bearer nominates which of the attacker's allocated attacks is lost.
+  decisions:
+    - {key: round.0.first.grapple-lost-attack.0, value: true}
   rolls:
     - {key: round.0.first.attack.0.hit, value: 1}
-    - {key: round.0.first.attack.1.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
-    0: {attacks.0.hit: false, attacks.1.hit: false, attacks.2.hit: false, state.first.wounds: 2}
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.first.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 # Without the mutation the same attacker keeps both printed attacks, so the missing die is the
@@ -81,6 +83,7 @@
       collection: trollheim
       band_id: trollheim-cult-of-the-possessed
       profile_id: mutants
+      special_rule_ids: [band--mutations-acid-blood]
       main_weapon_id: weapon.mace
   duel_context: *uncharged
   maximum_rounds: 1

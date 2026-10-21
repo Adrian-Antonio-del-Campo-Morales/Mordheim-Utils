@@ -235,6 +235,36 @@ def test_resilient_and_reptile_venom_do_not_change_armour_strength():
     assert reptile_attack.armour_strength.tolist() == [3]
 
 
+@pytest.mark.operator
+def test_natural_armour_caps_strength_before_armour_penetration():
+    from mordheim_combat import phases
+    from mordheim_combat.vectorized import armour_targets
+
+    defender = compile_fighter(FighterBuild(
+        "mordheim", band_id="lizardmen", profile_id="saurus-totem-warrior",
+    ))
+    assert (defender.natural_armour_save, defender.natural_armour_worst_save) == (5, 6)
+    strength = np.arange(1, 8, dtype=np.int16)
+    effect = EffectSet(armour_penetration=1)
+
+    actual = armour_targets(defender, strength, effect, False)
+    expected = np.asarray([
+        phases.armour_target(phases.ArmourContext(
+            armour_save=defender.armour_save,
+            natural_armour_save=defender.natural_armour_save,
+            natural_armour_worst_save=defender.natural_armour_worst_save,
+            natural_armour_unmodified=defender.natural_armour_unmodified,
+            strength=int(value),
+            armour_penetration=effect.armour_penetration,
+        ))
+        for value in strength
+    ])
+    # Strength stops at the worst natural save; penetration then worsens the save
+    # instead of being absorbed by that cap.
+    assert actual.tolist() == expected.tolist()
+    assert actual.tolist()[-1] == 7
+
+
 @pytest.mark.rule_behavior
 def test_lotus_failed_critical_attempt_keeps_the_wound():
     from mordheim_combat.vectorized import _new_state

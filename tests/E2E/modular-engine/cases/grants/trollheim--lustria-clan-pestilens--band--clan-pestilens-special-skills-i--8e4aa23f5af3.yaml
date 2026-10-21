@@ -69,8 +69,11 @@
       collection: trollheim
       band_id: lustria-clan-pestilens
       profile_id: plague-monks
-      # The printed clause is a selectable skill, so the fixture must carry it.
-      skill_ids: [band--clan-pestilens-special-skills-ignore-pain]
+      # The printed clause is a selectable rule row, so the fixture carries it through
+      # special_rule_ids; skill_ids accepts only mechanic/skill execution ids.  Its printed
+      # prerequisite, the Resilient Strength skill, is supplied as the admitted build requires.
+      skill_ids: [skill.resilient]
+      special_rule_ids: [band--clan-pestilens-special-skills-ignore-pain]
   initial_state:
     second:
       wounds: 1

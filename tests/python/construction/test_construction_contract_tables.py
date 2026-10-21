@@ -151,10 +151,17 @@ def test_open_clauses_resolve_and_are_still_unstructured():
         rule = _rule(bands, row["band_id"], row["rule_id"])
         runtime = rule.get("runtime") or {}
         if runtime.get("implemented") == "YES":
-            # Implemented for another consumer, but it publishes no recipient set:
-            # the clause is a band-wide grant the construction contract cannot place.
-            assert not (rule.get("applies_to") or {}).get("profile_ids"), (
-                f"{row['rule_id']} now publishes recipients; the clause can be structured"
+            # Implemented for another consumer.  Recipients alone do not close the
+            # clause: `profile.skill-access` with only `parameters.category` grants
+            # the whole category.  The printed member list in `parameters.skills`
+            # is what makes the access placeable at construction.
+            structured = bool((rule.get("applies_to") or {}).get("profile_ids")) and any(
+                (effect.get("binding") or {}).get("id") == "profile.skill-access"
+                and (effect.get("binding") or {}).get("parameters", {}).get("skills")
+                for effect in runtime.get("effects") or ()
+            )
+            assert not structured, (
+                f"{row['rule_id']} now publishes recipients and a member list; the clause can be structured"
             )
         else:
             assert runtime_bindings(rule) == (), (

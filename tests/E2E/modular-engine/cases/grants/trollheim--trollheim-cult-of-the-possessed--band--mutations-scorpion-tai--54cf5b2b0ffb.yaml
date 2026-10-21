@@ -97,7 +97,9 @@
     0: {attacks.0.hit: false, attacks.1.hit: false, attacks.2.hit: false, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
-# The same recipient without the mutation keeps its printed single attack.
+# The same recipient keeps its printed single attack when a different mutation is selected.  The
+# Mutant may not be recruited with no mutation at all (`requiredInitial`), so the control carries
+# the neutral Acid Blood instead.
 - audit_id: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-scorpion-tail/trait.scorpion-tail
   id: without-the-mutation-the-bearer-keeps-one-attack
   covers: [whole--scope--scorpion-tail]
@@ -106,6 +108,7 @@
       collection: trollheim
       band_id: trollheim-cult-of-the-possessed
       profile_id: mutants
+      special_rule_ids: [band--mutations-acid-blood]
       main_weapon_id: weapon.mace
     second:
       main_weapon_id: weapon.mace

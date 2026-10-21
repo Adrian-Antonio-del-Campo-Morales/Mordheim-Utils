@@ -229,15 +229,16 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: selectable
     effects:
     - id: unimplemented.norse-explorers-lustria.band.norse-special-skills-battle-tongue
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: >-
-        Deferred subsystem: psychology or mounts.
+        Out of scope: Battle Tongue range extensions are excluded from the resolved duel (user
+        decision 2026-10-21). Innate Leader radii remain separate.
   rule_ref: shared-rule.battle-tongue
 - id: band--norse-special-skills-berserk-charge
   kind: warband_skill

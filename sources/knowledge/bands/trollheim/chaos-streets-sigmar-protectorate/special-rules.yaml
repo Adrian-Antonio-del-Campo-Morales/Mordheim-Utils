@@ -256,11 +256,13 @@ rules:
     scope: 'YES'
     implemented: 'YES'
     effects:
-    - id: mechanic.fear-immunity
+    # The printed skill re-rolls a failed Fear test; it does not make the Hero
+    # immune to Fear, so the immunity tag would suppress the very test it allows.
+    - id: mechanic.fear-reroll
       scope: 'YES'
       binding:
         kind: mechanic
-        id: mechanic.fear-immunity
+        id: mechanic.fear-reroll
 - id: band--protectorate-special-skills-absolute-determination
   kind: warband_skill
   name: Absolute Determination

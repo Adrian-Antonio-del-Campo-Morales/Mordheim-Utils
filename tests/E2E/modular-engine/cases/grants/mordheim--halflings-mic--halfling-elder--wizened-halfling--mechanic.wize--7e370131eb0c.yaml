@@ -44,21 +44,21 @@
 # --- Authored scenarios ---
 # The halfling fails the stupidity Leadership test on two sixes (12 against his own 6).
 # The wizened halfling leader stands four inches away and is supplied as a nearby,
-# standing, same-band participant, which is what prints the reroll for a halfling
-# recipient: the reroll is offered, accepted and passes on two ones, so the charge holds
-# and the declared attacks follow.  The borrowed value itself is declined, so the first
-# test is read against the borrower's own Leadership and the rule exercised here is the
-# printed reroll.
+# standing, same-band participant carrying the printed selectable skill, which is what
+# prints the reroll for a halfling recipient: the reroll is offered, accepted and passes
+# on two ones, so the charge holds and the declared attacks follow.  The borrowed value
+# itself is declined, so the first test is read against the borrower's own Leadership and
+# the rule exercised here is the printed reroll.
 - audit_id: rule/mordheim/halflings-mic/halfling-elder--wizened-halfling/mechanic.wizened-halfling
   id: the-halfling-s-failed-leadership-test-is-taken-again
   covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
-      trait_overrides: {stupidity: true, species: halfling}
+      trait_overrides: {stupidity: true}
       collection: mordheim
-      band_id: carnival-of-chaos
-      profile_id: brethren
+      band_id: halflings-mic
+      profile_id: halfling-youths
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
     second:
       main_weapon_id: weapon.mace
@@ -66,8 +66,8 @@
   duel_context: {first_id: first, second_id: second, charging: [first], active_participant: first,
     distances: [[first, wizened-leader, 4]],
     nearby: [{participant_id: wizened-leader, side_id: first, condition: standing,
-              fighter: {collection: mordheim, band_id: carnival-of-chaos, profile_id: carnival-master,
-                        skill_ids: [mechanic.wizened-halfling]}}]}
+              fighter: {collection: mordheim, band_id: halflings-mic, profile_id: halfling-elder,
+                        special_rule_ids: [halfling-elder--wizened-halfling]}}]}
   maximum_rounds: 1
   decisions:
     - {key: round.0.first.stupidity.leader.wizened-leader, value: false}
@@ -93,10 +93,10 @@
   fighters:
     first:
       main_weapon_id: weapon.mace
-      trait_overrides: {stupidity: true, species: halfling}
+      trait_overrides: {stupidity: true}
       collection: mordheim
-      band_id: carnival-of-chaos
-      profile_id: brethren
+      band_id: halflings-mic
+      profile_id: halfling-youths
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
     second:
       main_weapon_id: weapon.mace

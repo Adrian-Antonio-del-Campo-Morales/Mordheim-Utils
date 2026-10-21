@@ -159,6 +159,12 @@ rules:
         id: profile.skill-access
         parameters:
           category: special
+          # The printed table's members.  Their own runtime is deferred
+          # (movement/escape), so selecting one is construction-only.
+          skills:
+          - band--arabian-tomb-raiders-special-skills-sand-worm
+          - band--arabian-tomb-raiders-special-skills-hit-and-run
+          - band--arabian-tomb-raiders-special-skills-weather-tolerant
   name: Arabian Tomb Raiders Special Skills
   effect: >-
     Arab Heroes may use the following skill table instead of any of the standard skill tables

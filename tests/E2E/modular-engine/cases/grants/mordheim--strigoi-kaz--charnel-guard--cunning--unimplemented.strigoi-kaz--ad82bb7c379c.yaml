@@ -22,7 +22,7 @@
 # Governing rulings: docs/decisions/design-rulings.md
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: weapons-expert-missile-access (scope: YES)
+# Clause: weapons-expert-missile-access (scope: NO)
 # AUTHORED[weapons-expert-missile-access]: 2 scenarios carry the printed missile access in the accepted
 # shape of this corpus's access family.  RECIPIENT: the band's printed Charnel Guard (profiles.yaml, id
 # charnel-guard), whose recorded skill_access is combat / strength / speed, so the shooting category the
@@ -118,12 +118,9 @@
 # Register notes (context only, not behavioral authority):
 #   The shared rule recognizes Weapons Training, but Cunning has no canonical grant and the unconditional equipment ban can still win. Represent the exception and then check both consumers; neither the missing binding nor training's existence proves the full route works. Scope review integration: {"clause_id":"weapons-training-permission","review_clause_id":"weapons-training-permission","source_state":"unverified","review_status":"reviewed","scope_reason":"Learning Weapons Training to use weapons outside the ordinary allowance is legal-construction access for this duelist.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"} Surface reuse candidate: {"family":"C-DIFFICULT","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Keep one Difficult-to-Use weapon plus an ordinary hand weapon distinct from ignoring every Difficult-to-Use restriction. Weapons Training expands allowed identities; it does not imply the same waiver.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
-# --- Authored scenarios ---
-# Derived from the printed rows of this band's special-rules.yaml, the recipient's recorded profile
-# (profiles.yaml: charnel-guard) and the admitted catalogue rows the printed skills name
-# (catalog/skills/general.yaml); no engine output was consulted.  The skill is supplied through the
-# fixture's declared skill selection and the weapon through its declared weapon slot - both existing
-# channels, exactly as the corpus's other construction-access tapes use them.
+# Runtime scope decision (2026-10-21): excluded producer/skill scenarios were
+# retired to E2EFIXING/RETIROS-ALCANCE.md by explicit user instruction.
+# The retained scenarios exercise only admitted behavior.
 
 - audit_id: rule/mordheim/strigoi-kaz/charnel-guard--cunning/unimplemented.strigoi-kaz.charnel-guard.cunning
   id: the-trained-charnel-guard-may-use-a-weapon-outside-its-ordinary-allowance
@@ -147,39 +144,3 @@
   maximum_rounds: 1
   expect_initial: {first.attacks: 0, second.attacks: 0}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
-
-- audit_id: rule/mordheim/strigoi-kaz/charnel-guard--cunning/unimplemented.strigoi-kaz.charnel-guard.cunning
-  id: the-printed-missile-skill-is-admitted-to-a-charnel-guard
-  covers: [weapons-expert-missile-access]
-  # skill.weapons-expert is a registered shooting row, and the recipient's recorded skill_access is
-  # combat / strength / speed, so this build is admitted only by the printed exception.  The expectation
-  # is that printed permission, not the refusal a missing binding would produce today.
-  fighters:
-    first:
-      collection: mordheim
-      band_id: strigoi-kaz
-      profile_id: charnel-guard
-      skill_ids: [skill.weapons-expert]
-      main_weapon_id: weapon.pistol
-    second:
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
-  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
-  duel_context: {charging: [], active_participant: first}
-  maximum_rounds: 1
-  expect_initial: {first.attacks: 0, second.attacks: 0}
-  expect_final: {rounds_executed: 1, termination_reason: horizon}
-
-- audit_id: rule/mordheim/strigoi-kaz/charnel-guard--cunning/unimplemented.strigoi-kaz.charnel-guard.cunning
-  id: a-shooting-skill-that-is-not-weapons-expert-is-refused
-  covers: [weapons-expert-missile-access]
-  # The closure of the printed exception: a different shooting skill is not available to this recipient,
-  # whose recorded access carries no shooting category.  The declared fragment is the shared
-  # skill-availability sentence of this corpus's access family, so the tape does not read the printed
-  # exception as general shooting access.
-  fighters:
-    first:
-      collection: mordheim
-      band_id: strigoi-kaz
-      profile_id: charnel-guard
-      skill_ids: [skill.quick-shot]
-  expect_error: "skills are not available to strigoi-kaz/charnel-guard: ['skill.quick-shot']"

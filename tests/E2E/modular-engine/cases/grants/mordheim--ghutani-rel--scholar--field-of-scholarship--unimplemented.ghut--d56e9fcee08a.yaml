@@ -130,18 +130,19 @@
   # by this origin's scope review as the supplied leader condition the ruling allows.  The recipient is
   # the printed leader, so the tested duelist is the band's own `emir` (its printed Leader, Ld 8, the
   # profile the band's own `emir--leader` rule applies to) and the rule carrier is the band's own
-  # `scholar`, supplied as a nearby participant of the leader's side.  The leader's first Leadership test
+  # `scholar`.  The accepted contract supplies Poetry as the victorious-leader condition on the Emir,
+  # never as an automatic bonus on the Scholar producing it, so the condition is the leader's supplied
+  # fact while the Scholar remains the printed carrier of the rule.  The leader's first Leadership test
   # is the Fear test of the charge he receives; the declared faces total 9, which passes at the printed
   # Ld 8 + 1 and fails at the unmodified Ld 8, so this tape and its control below read the +1 and nothing
-  # else.  The rule's binding is null today, so the strict tape fails until the Poetry condition is
-  # projected onto the tested duelist's value - the PENDING implementation defect, not a withheld
-  # requirement.
+  # else.
   fighters:
     first:
       trait_overrides: {causes_fear: true}
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
-    second: {collection: mordheim, band_id: ghutani-rel, profile_id: emir}
+    second: {collection: mordheim, band_id: ghutani-rel, profile_id: emir,
+             condition_ids: [condition.poetry-victorious-leader]}
   duel_context:
     charging: [first]
     active_participant: first

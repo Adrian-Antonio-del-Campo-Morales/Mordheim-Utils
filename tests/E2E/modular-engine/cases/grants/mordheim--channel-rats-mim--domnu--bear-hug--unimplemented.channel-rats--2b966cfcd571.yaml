@@ -89,10 +89,13 @@
 
 # --- Authored scenarios ---
 # Derived from the printed rule, the recorded contract and the delivered operator (witnessed by the
-# focused test tests/python/combat/modular/test_t13_domnu_bear_hug.py); no engine output was
-# consulted.  The bearer is the printed Domnu profile with its Strength and Initiative supplied as
-# fixture facts, and the opponent is a hand-built fighter in plate armour, which is what makes the
-# absence of any armour die part of the evidence.
+# focused test tests/python/combat/modular/test_domnu_bear_hug.py); no engine output was
+# consulted.  The Domnu's printed Prize-fighter skill (skill.unarmed-fighting) grants +1 Attack while
+# fighting unarmed, so the two supplied Attack dice become three; the hug consumes the first two hits
+# and the third attack is scripted to miss so the tape stays about the replacement.  The bearer is the
+# printed Domnu profile with its Strength and Initiative supplied as fixture facts, and the opponent is
+# a hand-built fighter in plate armour, which is what makes the absence of any armour die part of the
+# evidence.
 - audit_id: rule/mordheim/channel-rats-mim/domnu--bear-hug/unimplemented.channel-rats-mim.domnu.bear-hug
   id: two-unarmed-hits-are-replaced-by-one-unsaveable-bear-hug-wound
   covers: [bear-hug, replaces-normal-attacks]
@@ -115,6 +118,7 @@
   rolls:
     - {key: round.0.first.attack.0.hit, value: 5}
     - {key: round.0.first.attack.1.hit, value: 5}
+    - {key: round.0.first.attack.2.hit, value: 1}
     - {key: round.0.first.bear-hug.attacker, value: 3}
     - {key: round.0.first.bear-hug.defender, value: 3}
   expect_rounds:
@@ -123,6 +127,7 @@
   expect_events:
     - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 5}
     - {kind: roll, key: round.0.first.attack.1.hit, sides: 6, value: 5}
+    - {kind: roll, key: round.0.first.attack.2.hit, sides: 6, value: 1}
     - {kind: decision, key: round.0.first.bear-hug, value: true}
     - {kind: roll, key: round.0.first.bear-hug.attacker, sides: 6, value: 3}
     - {kind: roll, key: round.0.first.bear-hug.defender, sides: 6, value: 3}
@@ -150,6 +155,7 @@
   rolls:
     - {key: round.0.first.attack.0.hit, value: 5}
     - {key: round.0.first.attack.1.hit, value: 5}
+    - {key: round.0.first.attack.2.hit, value: 1}
     - {key: round.0.first.bear-hug.attacker, value: 1}
     - {key: round.0.first.bear-hug.defender, value: 5}
   expect_rounds:

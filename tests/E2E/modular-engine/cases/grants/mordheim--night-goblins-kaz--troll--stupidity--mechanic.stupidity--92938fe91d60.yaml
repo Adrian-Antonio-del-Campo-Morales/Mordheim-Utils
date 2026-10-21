@@ -72,6 +72,8 @@
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
   duel_context: {charging: [first], active_participant: first}
+  # A failed test cancels the charge before any attack pool is built, so the round never asks
+  # whether the Troll declares its optional Vomit Attack; no decision is scripted here.
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.stupidity.0, value: 6}
@@ -93,6 +95,9 @@
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
   duel_context: {charging: [first], active_participant: first}
+  # The Troll's printed optional Vomit Attack is declined so its ordinary pool resolves.
+  decisions:
+    - {key: round.0.first.vomit-attack, value: false}
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.stupidity.0, value: 1}
@@ -121,6 +126,9 @@
   initial_state:
     first: {frenzy: true}
   duel_context: {charging: [first], active_participant: first}
+  # The Troll's printed optional Vomit Attack is declined so its ordinary pool resolves.
+  decisions:
+    - {key: round.0.first.vomit-attack, value: false}
   maximum_rounds: 1
   # The supplied frenzy doubles the bearer's printed single Attack, so its pool holds two attacks.
   # Every hit die of the pool is requested before the wound step begins, hence the two To Hit

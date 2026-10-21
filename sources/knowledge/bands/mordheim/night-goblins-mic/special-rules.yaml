@@ -728,13 +728,20 @@ rules:
   runtime:
     scope: 'YES'
     implemented: 'YES'
-    grant: selectable
+    grant: none
     effects:
-    - id: mechanic.netter
+    - id: condition.netted
       scope: 'YES'
       binding:
         kind: mechanic
-        id: mechanic.netter
+        id: condition.netted
+    - id: band--night-goblin-special-skills-netter.net-charge-producer
+      scope: 'NO'
+      binding: null
+      reason: The net charge is a throw resolved by ballistic skill followed by the target's Strength escape
+        test, and a miss or escape is a failed charge stopped short of contact; those producers and the
+        board placement remain outside the duel and are not simulated.  Only the caught victim's individually
+        admitted state applies, and the caller supplies it expressly as condition.netted.
   name: Netter
   effect: >-
     The goblin is adept at using a net to disable his enemies. They learn their skill hunting wild

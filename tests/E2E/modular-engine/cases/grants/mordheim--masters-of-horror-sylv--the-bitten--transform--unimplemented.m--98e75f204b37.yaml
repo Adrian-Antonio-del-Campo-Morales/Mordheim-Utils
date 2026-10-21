@@ -220,23 +220,29 @@
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
   duel_context: {charging: [], active_participant: first}
-  maximum_rounds: 2
+  maximum_rounds: 3
   rolls:
     - {key: round.0.first.bitten, value: 4}
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.parry, value: 1}
     - {key: round.0.second.attack.0.wound, value: 4}
     - {key: round.0.second.attack.0.armour, value: 6}
-    - {key: round.1.first.bitten, value: 6}
     - {key: round.1.first.attack.0.hit, value: 1}
-    - {key: round.1.first.attack.1.hit, value: 1}
     - {key: round.1.second.attack.0.hit, value: 4}
+    - {key: round.1.second.attack.0.parry, value: 1}
     - {key: round.1.second.attack.0.wound, value: 4}
-    - {key: round.1.second.attack.0.injury.0, value: 1}
+    - {key: round.1.second.attack.0.armour, value: 6}
+    - {key: round.2.first.bitten, value: 6}
+    - {key: round.2.first.attack.0.hit, value: 1}
+    - {key: round.2.first.attack.1.hit, value: 1}
+    - {key: round.2.second.attack.0.hit, value: 4}
+    - {key: round.2.second.attack.0.wound, value: 4}
+    - {key: round.2.second.attack.0.injury.0, value: 1}
   expect_rounds:
     0: {state.first.transformed: False, state.first.wounds: 1, state.first.condition: STANDING}
-    1: {state.first.transformed: True, state.first.wounds: 0, state.first.condition: KNOCKED_DOWN}
-  expect_final: {rounds_executed: 2, termination_reason: horizon}
+    2: {state.first.transformed: True, state.first.wounds: 0, state.first.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 3, termination_reason: horizon}
 
 # The printed form lasts until a one and its own turn asks for no die while it lasts and the bearer is
 # in combat, so the second and the third phase consume no form die at all and the form still stands.

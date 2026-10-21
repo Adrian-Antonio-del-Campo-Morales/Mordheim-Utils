@@ -88,17 +88,20 @@
       collection: mordheim
       band_id: kislevites
       profile_id: trained-bear
-      skill_ids: [mechanic.handler-leadership]
       trait_overrides: {stupidity: true, stupidity_leadership: 7}
     second:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.stupidity.0, value: 3}
     - {key: round.0.first.stupidity.1, value: 4}
+    # The printed Fearsome bear makes the charged opponent take its own Fear test.
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 1}
     - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
@@ -115,7 +118,6 @@
       collection: mordheim
       band_id: kislevites
       profile_id: trained-bear
-      skill_ids: [mechanic.handler-leadership]
       trait_overrides: {stupidity: true}
     second:
       main_weapon_id: weapon.mace

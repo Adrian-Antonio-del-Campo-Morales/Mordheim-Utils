@@ -81,8 +81,16 @@ def resolve_stupidity(first, second, state, dice, decisions):
     # surrounding warband or a board.  The bearer's own warband group scopes the
     # concession to the Skaven warriors that print it, so another stupid
     # creature standing beside a supplied Skaven Hero does not borrow it.
+    # The printed clause is shared by the Skaven bands whose Rat Ogres print it:
+    # Clan Mors, Clan Moulder and Clan Pristekk.
+    printed_bands = ("band.skaven-of-clan-mors-kaz",
+                     "band.skaven-of-clan-moulder-web",
+                     "band.skaven-of-clan-pristekk-sc")
+    own_band = next((band for band in printed_bands
+                     if phases.has_tag(fighter.global_effects, band)), None)
     if (not passed and phases.has_tag(fighter.global_effects, "mechanic.stupidity")
-            and phases.has_tag(fighter.global_effects, "warband-group.skaven")):
+            and (phases.has_tag(fighter.global_effects, "warband-group.skaven")
+                 or own_band is not None)):
         exempting = ()
         if state.context is not None:
             context = state.context
@@ -91,7 +99,9 @@ def resolve_stupidity(first, second, state, dice, decisions):
             exempting = tuple(record for record in context.facts.nearby
                 if record.side_id == side and record.condition != "out"
                 and phases.has_tag(record.fighter.global_effects, "fighter-kind.hero")
-                and phases.has_tag(record.fighter.global_effects, "species.skaven"))
+                and (phases.has_tag(record.fighter.global_effects, "species.skaven")
+                     or own_band is not None
+                     and phases.has_tag(record.fighter.global_effects, own_band)))
             passed = any(context.distance(participant, record.participant_id) <= 6
                          for record in exempting)
     if not passed and phases.has_tag(fighter.global_effects, 'mechanic.bear-handler-recipient'):

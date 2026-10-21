@@ -109,9 +109,8 @@
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.first.attack.0.hit.reroll, value: 6}
     - {key: round.0.first.attack.0.wound, value: 5}
-    # The wound takes the printed last Wound of the qualifying opponent, so the recorded armour
-    # and Injury dice are declared; the printed table turns a one into Knocked Down.
-    - {key: round.0.first.attack.0.armour, value: 1}
+    # The Norse Marauder wears no armour, so the wound reaches the Injury chart directly;
+    # the printed table turns a one into Knocked Down.
     - {key: round.0.first.attack.0.injury.0, value: 1}
   expect_rounds:
     0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 0,

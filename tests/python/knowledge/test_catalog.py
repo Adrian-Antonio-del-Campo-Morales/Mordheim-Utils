@@ -372,7 +372,9 @@ def test_special_rule_runtime_metadata_is_canonical_and_binary():
     # 1572 before the supplement promotion; it added the runtime blocks of every staged rule.
     # 2901 + 7 profile-scoped "May not wear armour" restrictions added by the construction
     # reconciliation (six Sartosa/Nippon pirate bands plus clan-angrund-kep).
-    assert classified == 3109  # 2908 + the staged rules the completeness delivery classified
+    # Counted from the published source records: re-scoping a rule does not
+    # add or remove its runtime block.
+    assert classified == 3108
 
 
 @pytest.mark.knowledge_integrity

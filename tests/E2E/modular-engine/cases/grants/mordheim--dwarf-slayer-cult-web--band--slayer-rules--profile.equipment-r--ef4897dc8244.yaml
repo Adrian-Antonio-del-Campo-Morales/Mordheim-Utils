@@ -180,9 +180,10 @@
   initial_state: {first: {attacks: 0}, second: {resources_spent: [disability.6]}}
   duel_context: {charging: [], active_participant: second}
   maximum_rounds: 1
+  # The printed Leadership test fails on a total of eleven against the Rememberer's 8.
   rolls:
-    - {key: round.0.second.stupidity.0, value: 1}
-    - {key: round.0.second.stupidity.1, value: 1}
+    - {key: round.0.second.stupidity.0, value: 5}
+    - {key: round.0.second.stupidity.1, value: 6}
   expect_rounds:
     0: {state.first.wounds: 3, state.second.wounds: 1, state.second.stupidity_failed: true, state.second.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

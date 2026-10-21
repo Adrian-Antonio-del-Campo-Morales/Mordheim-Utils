@@ -70,6 +70,9 @@
   initial_state: {second: {attacks: 0}}
   duel_context: {charging: [second], active_participant: second}
   maximum_rounds: 1
+  # The Troll's printed optional Vomit Attack is declined so the ordinary pool resolves.
+  decisions:
+    - {key: round.0.second.vomit-attack, value: false}
   # The charging Fear-causer is itself subject to Stupidity, so its own turn opens with that
   # two-dice Leadership test before the charged model is tested for Fear.
   rolls:
@@ -93,6 +96,9 @@
   initial_state: {second: {attacks: 0}}
   duel_context: {charging: [second], active_participant: second}
   maximum_rounds: 1
+  # The Troll's printed optional Vomit Attack is declined so the ordinary pool resolves.
+  decisions:
+    - {key: round.0.second.vomit-attack, value: false}
   # The charging Fear-causer is itself subject to Stupidity, so its own turn opens with that
   # two-dice Leadership test before the charged model is tested for Fear.
   rolls:

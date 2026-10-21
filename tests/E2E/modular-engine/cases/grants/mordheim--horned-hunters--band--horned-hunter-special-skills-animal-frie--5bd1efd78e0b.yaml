@@ -113,19 +113,23 @@
       trait_overrides: {normal_animal: true}
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
+      collection: mordheim
+      band_id: horned-hunters
+      profile_id: horned-hunter
+      special_rule_ids: [band--horned-hunter-special-skills-animal-friendship]
       main_weapon_id: weapon.mace
-      skill_ids: [trait.animal-friendship]
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
   initial_state:
-    second: {wounds: 3, attacks: 1}
+    second: {wounds: 3, attacks: 0}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   expect_rounds:
     0: {attacks: [], state.second.wounds: 3, state.engaged: true}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 # The control for the clause: the identical animal attacks a warrior without the lasting
-# condition, and the same declared sixes wound him, so the empty pool above is the trait's
-# effect and not a tape artefact.
+# condition, and the declared hit and wound land, so the empty pool above is the trait's
+# effect and not a tape artefact.  A wound face of five wounds normally; a six would be a
+# critical hit and would add its own chart die and damage.
 - audit_id: rule/mordheim/horned-hunters/band--horned-hunter-special-skills-animal-friendship/trait.animal-friendship
   id: the-same-animal-attacks-a-warrior-without-the-trait
   covers: [whole--scope--animals-never-attack]
@@ -138,12 +142,12 @@
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
   initial_state:
-    second: {wounds: 3, attacks: 1}
+    second: {wounds: 3, attacks: 0}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 6}
-    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 5}
   expect_rounds:
     0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

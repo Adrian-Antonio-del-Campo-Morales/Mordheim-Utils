@@ -41,16 +41,15 @@
 # Register notes (context only, not behavioral authority):
 #   Two-hop Leadership relay; the consumer only does a single hop, so the relay needs a new branch.
 
-# --- Authored scenarios ---
-# Derived from the printed rule, the printed Adjutant / Commander / Guards profiles and the band's own rule
-# rows; no engine output was consulted.  The borrow is supplied as the fixture condition the rule speaks about,
-# and both providers are admitted nearby participants, never simulated.
+# Runtime scope decision (2026-10-21): excluded producer/skill scenarios were
+# retired to E2EFIXING/RETIROS-ALCANCE.md by explicit user instruction.
+# The retained scenarios exercise only admitted behavior.
 
 - audit_id: rule/mordheim/house-guard-sc/adjutant--relay-orders/unimplemented.house-guard-sc.adjutant.relay-orders
   id: the-supplied-adjutant-relays-the-commanders-leadership
   covers: [relay-orders]
   fighters:
-    first: {collection: mordheim, band_id: house-guard-sc, profile_id: guards, trait_overrides: {stupidity: true}}
+    first: {collection: mordheim, band_id: house-guard-sc, profile_id: guards, main_weapon_id: weapon.mace, trait_overrides: {stupidity: true, house_guard_house: halcon}}
     second:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
@@ -71,6 +70,8 @@
         side_id: first
         condition: standing
         fighter: {collection: mordheim, band_id: house-guard-sc, profile_id: adjutant}
+  decisions:
+    - {key: round.0.first.stupidity.leader.adjutant, value: true}
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.stupidity.0, value: 4}
@@ -87,7 +88,7 @@
   id: without-the-adjutant-the-commanders-own-radius-does-not-reach
   covers: [relay-orders]
   fighters:
-    first: {collection: mordheim, band_id: house-guard-sc, profile_id: guards, trait_overrides: {stupidity: true}}
+    first: {collection: mordheim, band_id: house-guard-sc, profile_id: guards, main_weapon_id: weapon.mace, trait_overrides: {stupidity: true, house_guard_house: halcon}}
     second:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
@@ -116,7 +117,7 @@
   id: an-adjutant-beyond-his-leaders-own-radius-relays-nothing
   covers: [relay-orders]
   fighters:
-    first: {collection: mordheim, band_id: house-guard-sc, profile_id: guards, trait_overrides: {stupidity: true}}
+    first: {collection: mordheim, band_id: house-guard-sc, profile_id: guards, main_weapon_id: weapon.mace, trait_overrides: {stupidity: true, house_guard_house: halcon}}
     second:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
@@ -149,7 +150,7 @@
   id: beyond-six-inches-the-unwidened-relay-does-not-reach
   covers: [relay-orders]
   fighters:
-    first: {collection: mordheim, band_id: house-guard-sc, profile_id: guards, trait_overrides: {stupidity: true}}
+    first: {collection: mordheim, band_id: house-guard-sc, profile_id: guards, main_weapon_id: weapon.mace, trait_overrides: {stupidity: true, house_guard_house: halcon}}
     second:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
@@ -175,42 +176,3 @@
   expect_rounds:
     0: {attacks: [], state.first.stupidity_failed: true, state.first_charged: false, state.engaged: false}
   expect_final: {rounds_executed: 1, termination_reason: disengaged}
-
-# The printed Battle Tongue upgrade: the same distances as the unwidened negative, but the supplied Adjutant
-# carries the canonical academic skill, whose printed effect increases the range of the Leader ability by six
-# inches - for this relay that is the printed twelve - so the recipient at ten inches uses the leader's value.
-- audit_id: rule/mordheim/house-guard-sc/adjutant--relay-orders/unimplemented.house-guard-sc.adjutant.relay-orders
-  id: battle-tongue-widens-the-relay-to-twelve-inches
-  covers: [relay-orders]
-  fighters:
-    first: {collection: mordheim, band_id: house-guard-sc, profile_id: guards, trait_overrides: {stupidity: true}}
-    second:
-      main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
-  initial_state:
-    second: {attacks: 0}
-  duel_context:
-    first_id: first
-    second_id: second
-    charging: [first]
-    active_participant: first
-    distances: [[first, commander, 12], [first, adjutant, 10], [commander, adjutant, 5]]
-    nearby:
-      - participant_id: commander
-        side_id: first
-        condition: standing
-        fighter: {collection: mordheim, band_id: house-guard-sc, profile_id: commander}
-      - participant_id: adjutant
-        side_id: first
-        condition: standing
-        fighter: {collection: mordheim, band_id: house-guard-sc, profile_id: adjutant, skill_ids: [skill.battle-tongue]}
-  maximum_rounds: 1
-  rolls:
-    - {key: round.0.first.stupidity.0, value: 4}
-    - {key: round.0.first.stupidity.1, value: 4}
-    - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 4}
-  expect_rounds:
-    0: {state.first.stupidity_failed: false, attacks.0.damage: 1, state.second.wounds: 1}
-  expect_final: {rounds_executed: 1, termination_reason: horizon}
-

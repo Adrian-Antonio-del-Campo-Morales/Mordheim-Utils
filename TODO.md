@@ -13,7 +13,7 @@ implementation queue does not establish integrated correctness.
 | Work | Recorded status | Dependency or next step |
 | --- | --- | --- |
 | [Modular integration](#close-modular-integrated-verification) | Implementation queue closed; integrated verification pending | Run the scoped closure procedure on one integrated revision. |
-| [Web artefacts](#regenerate-the-web-artefacts) | Generation failures reported; current tree not rechecked | Reconcile translated labels and validate freshly generated data. |
+| [Web artefacts](#regenerate-the-web-artefacts) | Generation and freshness pass on 2026-10-21; one artefact-level check outstanding | Confirm Dwarf inheritance against the fresh artefacts. |
 | [Combat Lab popover](#combat-lab-checklist-popover-closes-during-layout) | Failure observed; cause unknown | Reproduce the focused case and establish why the popover closes. |
 | [Test classification](#test-classification-coverage) | Every maintained Python suite classified and guarded; TypeScript/web pending | Give the TypeScript and web suites a runner-supported category; validate the new executor separately. |
 | [Optimized engines](#subsequent-vectorized-and-native-engine-work) | Follow-on work to scope | Complete modular verification before defining the porting delta. |
@@ -23,8 +23,11 @@ implementation queue does not establish integrated correctness.
 
 ### Close modular integrated verification
 
-**Status:** the implementation queue is recorded as closed; integrated
-verification is still pending. Follow the
+**Status:** the implementation queue is recorded as closed. On 2026-10-21 the
+default E2E battery (5,172 scenarios), both workspace typechecks and the shared
+eligibility bundle pass, and `clause_registry.py query --pending` is empty.
+Integrated verification stays open because the defects and unverified checks
+below remain. Follow the
 [closure procedure](docs/reference/verification.md#modular-integration-closure).
 
 - Run the existing modular combat, construction, modular semantic and E2E
@@ -43,64 +46,44 @@ verification is still pending. Follow the
   closure; record any unresolved concrete blocker here.
 - Rerun affected groups after fixes, then perform one final integrated
   confirmation on the delivered revision. Reuse valid output instead of
-  repeating unchanged checks.
-- Reconcile the two reported `a-band-mate-without-the-immunity-is-tested-for-stupidity`
-  E2E scenarios (Mordheim and Trollheim Grizzled Veteran): the external delivery
-  reproduces their failures both before and after its patch. Check the supplied
-  Stupidity state and source-derived expectations; do not weaken the assertions.
+  repeating unchanged checks. The 2026-10-21 battery is that integrated run for
+  the E2E corpus; rerun only what later changes affect.
 - Review Grizzled Veteran in
   `sources/knowledge/bands/trollheim/chaos-streets-pit-fighters/special-rules.yaml`:
   it still uses `grant: band` although its printed origin presents a selectable
   Hero skill. Reconcile its construction and E2E recipients, as done for the
   Mordheim origin, with focused proof.
-- Reconcile Battle Tongue's general runtime exclusion and the deferred
-  `norse-explorers-lustria` copy with the executable Norse special-skill variant;
-  preserve source-specific recipients and source-backed scope decisions.
 - Replace stale verification references to the absent
   `test_t13_psychology_leadership.py` in the clause register using the maintained
   registry utility and current executed evidence. Keep clause identities intact.
-- Reconcile the semantic scope/source digests of
-  `access-nagarythe-already-strength` after the construction-scenario integration.
-  The focused coordinator selection passes 39 checks; only
-  `test_redundant_access_mutation_is_justified_not_counted_as_detected` fails,
-  reporting stale scope and Powerful Build source digests. Review the actual
-  scope/source changes with the verifier work before updating the pins; do not
-  bypass provenance validation or infer global semantic closure.
-- Reconcile the wider semantic corpus against the maintained scope and sources.
-  The verifier integration improves stale-pin diagnostics but deliberately does
-  not renew evidence. Review scope changes, changed rule rows, band-context-only
-  changes and revised catalogue mechanics separately; update pins only after
-  the affected interpretations and witnesses have been checked. In particular,
-  preserve the reviewed dispositions for Inconsistency, Spectral Touch, Netter,
-  Energy Focus and Sea Dragon Cloak. Do not use a corpus-wide digest refresh as
-  semantic acceptance. The four focused verifier controls pass after integration;
-  the full semantic audit remains unresolved and was not rerun by the coordinator.
-- Complete the published warband-skill table route through `skill_ids` for
-  Amazons Lustria, Battle Monks of Cathay and Arabian Tomb Raiders
-  (E2E_0027, E2E_0032 and E2E_0031). The first two still fail with unknown
-  band-member mechanic IDs after their independent fixture corrections.
-  Reconcile table membership, canonical resolution and execution support in
-  the maintained TypeScript eligibility source and Python construction path;
-  regenerate the eligibility bundle instead of editing it directly. Preserve
-  the positive list-route scenarios and their out-of-table rejection controls.
-
-- Resolve the Noble special-skill admission contract (E2E_0022): its positive
-  scenario selects campaign-only `skill.trading-flair`, whereas construction
-  deliberately rejects legal named skills without a duel operator. Decide how
-  out-of-duel selections are represented before changing the scenario or
-  construction contract; do not add a fictitious close-combat no-op or turn the
-  positive admission claim into an incidental-error assertion.
-
+- Vectorized: the armour operator now matches `phases.armour_target` and its
+  seven exact parity checks pass. The two parity report tests remain incomplete
+  while 248 vectorized obligations (244 tags, 4 fields) are pending in the
+  follow-on port; the family/roster coverage checks also fail on the grown
+  catalogue (14 failures in `tests/python/combat/vectorized`, measured
+  2026-10-21).
+- Semantic pins: 421 `sources[].digest` pins are stale (`refresh_spec_digests.py
+  --check`, measured 2026-10-21). Review scope changes, changed rule rows,
+  band-context-only changes and revised catalogue mechanics separately; renew a
+  pin only after its interpretation and witnesses have been checked. Preserve
+  the reviewed dispositions for Inconsistency, Spectral Touch, Netter, Energy
+  Focus and Sea Dragon Cloak, and do not use a corpus-wide refresh as semantic
+  acceptance. The full semantic audit remains unresolved.
+- Absolute Faith prints a second consequence ("does not need to take a test for
+  being engaged by multiple opponents") that the row's `mechanic.fear-reroll`
+  binding does not represent. The three Fear-reroll scenarios are verified; the
+  multiple-opponent face has no scenario or consumer. Add it only after deciding
+  whether the supplied multi-enemy fact belongs to the duel or to the excluded
+  group-psychology scope.
 - Review the remaining Knights Feats members Combat Charge, Lancer and Armour
   Specialist against their own source-specific contracts before admitting their
   execution. The Sword Master list route is verified; it does not certify the
   other feats, and partial placeholder operators were not integrated.
-- Complete the remaining E2E_0355 assignment: its two excluded Netter scenarios
-  are archived, while seven other scenarios remain active and were not verified
-  as a package here. Preserve their independent queue ownership.
 - Resolve admitted E2E coverage gaps under `MORDHEIM_E2E_REQUIRE_COMPLETE=1`
-  before global closure. Passing ordinary inventory checks after justified
-  exclusions does not establish completeness or positive semantic evidence.
+  before global closure: 27 identities with admitted clauses and no scenario,
+  and 44 identities with uncovered clauses (measured 2026-10-21). Passing
+  ordinary inventory checks after justified exclusions does not establish
+  completeness or positive semantic evidence.
 - Carry the modular whipcrack priority correction into optimized-backend parity
   work. The vectorized proposal was deferred; this integration verifies only
   the modular path and does not establish optimized parity.
@@ -118,41 +101,39 @@ coverage campaigns, statistical certification or optimized engine implementation
 
 ### Regenerate the web artefacts
 
-**Status:** generation failures were last reported on 2026-10-17; they have not
-been rechecked against the current tree.
+**Status:** generation and freshness pass on 2026-10-21.
+`python tools/knowledge/generate_knowledge_web.py` wrote 161 bands, 1,056
+profiles, 464 deferred items and 87 skills with no bilingual label conflict, and
+`--check` reports the artefacts up to date. Aquatic Mutants pass against the
+fresh artefacts
+([`mutations.test.ts`](tests/typescript/domain/campaign/mutations.test.ts), 9
+tests, run from `packages/typescript`). Dwarf inheritance was not separately
+rechecked against the regenerated JSON: its four E2E scenarios pass in the
+battery but exercise compilation, not the web projection.
 
-**Recorded failures:** conflicting Spanish rule labels in `_build_rules_prose`:
+**Next steps:** confirm Dwarf inheritance in the fresh artefacts, or state the
+limitation where the web route is validated. Do not hand-edit generated JSON or
+weaken validation.
 
-- `No Missile Weapons` in
-  `sources/knowledge/bands/mordheim/knights-of-the-bitter-moors-mim/special-rules.yaml`:
-  `Sin armas de proyectil` / `Sin Armas de Proyectil`.
-- `Mer-Creature` in an earlier generation run.
-
-**Next steps:** reconcile the actual conflicting labels while preserving
-source-specific prose and validation. Regenerate the artefacts with
-`python tools/knowledge/generate_knowledge_web.py`, then run its `--check`.
-Do not hand-edit generated JSON or weaken validation.
-
-**Close when:** generation and freshness checks pass, and Dwarf inheritance
-and Aquatic Mutants are checked against the fresh artefacts. Reuse
-[`mutations.test.ts`](tests/typescript/domain/campaign/mutations.test.ts)
-for Aquatic Mutants. Evidence against an older artefact does not close the
-current web route.
+**Close when:** generation and freshness checks pass and every claimed
+artefact-level check has been run against the current artefacts.
 
 ### Combat Lab checklist popover closes during layout
 
-**Status:** last observed on 2026-10-18; no cause has been established.
+**Status:** reproduced on 2026-10-21; no cause has been established.
 
-**Recorded failure:**
+**Recorded failure:** two cases in
 [`test_checklist_popover.py`](tests/python/ui/test_checklist_popover.py),
-case `test_popover_body_matches_the_dark_theme`, fails after `root.update()`
-because `popover.scroll_frame` is already `None`. The failure occurred both
-before and after the UI ownership move.
+`test_popover_body_matches_the_dark_theme` and
+`test_popover_shows_a_visible_scrollbar`, fail after `root.update()`: the
+popover's scrollbar path is already destroyed (`TclError: bad window path
+name`), so the widget tree is torn down during layout. Both failed before and
+after the UI ownership move.
 
 **Next step:** determine why the popover closes during layout and correct its
 lifecycle or the test's focus setup as appropriate.
 
-**Close when:** the existing focused case passes with the theme and width
+**Close when:** both focused cases pass with the theme, width and scrollbar
 assertions preserved.
 
 ### Test classification coverage
@@ -164,11 +145,11 @@ assertions preserved.
 collected item under a classified root that carries no primary category, several,
 or a marker that is not a category. The classified roots are
 `tests/python/{architecture,contracts,knowledge,construction,application,persistence,ui,cli,web,combat,verification}`
-and `tests/E2E/modular-engine`. On 2026-10-20 the full suite collected 12,959
-items, none outside those roots and none with zero or several categories; a
-temporary probe confirmed the guard rejects a missing and a doubled category and
-that `--strict-markers` rejects an unregistered marker. No functional test was
-executed for the annotations.
+and `tests/E2E/modular-engine`. On 2026-10-21 the full suite collected 12,993
+items; the 2026-10-20 probe found none outside those roots and none with zero or
+several categories, and confirmed the guard rejects a missing and a doubled
+category while `--strict-markers` rejects an unregistered marker. No functional
+test was executed for the annotations.
 
 An ordered entry point now exists (`tools/verification/test_sequence.py`, invoked
 as `python tools/mordheim-utils.py test-sequence`), added by a concurrent slice.
@@ -177,16 +158,9 @@ as `test_infrastructure`; the plugin itself lives under `tools/` and is therefor
 not a collected suite (`testpaths = ["tests"]`). Its ordering has not been
 validated here.
 
-The E2E corpus reconciles today: 1,779 case files declare 5,171 scenarios, all
-with unique `audit_id::id` identities, the loader collects 5,171 parameters, and
-`HEAD` declares the same 5,171. The readings of 5,183 and 5,174 reported by the
-concurrent delivery, and the 5,174 measured here mid-session, were transient
-working-tree states: the three declarations that existed then and are gone now
-are the carnival-of-chaos plague-cart `the-same-face-leaves-a-stunned-result-
-without-the-modifier` scenario and the ogre-hunting-party-web
-`a-declared-net-charge-knocks-the-enemy-down-and-the-charge-strikes-home` and
-`without-the-netter-rule-the-charge-asks-for-no-net-die` scenarios. No mechanism
-produces a nine-identity offset (no duplicate ids, no loader skip).
+The E2E corpus reconciles on 2026-10-21: 1,779 case files, 5,172 scenarios
+collected by the loader, and the battery passes. Earlier readings of 5,171,
+5,174 and 5,183 were transient working-tree states, not a corpus defect.
 
 **Pending:**
 

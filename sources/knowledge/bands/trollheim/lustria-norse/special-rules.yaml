@@ -315,14 +315,16 @@ rules:
     - hero
   runtime:
     grant: selectable
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     effects:
     - id: mechanic.leader-twelve
-      scope: 'YES'
-      binding:
-        kind: mechanic
-        id: mechanic.leader-twelve
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: Battle Tongue range extensions are excluded from the resolved duel (user
+        decision 2026-10-21). Innate Leader radii remain separate.
+
 - id: band--norse-special-skills-barbarian-courage
   kind: warband_skill
   name: Barbarian Courage

@@ -507,6 +507,21 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
     errors = validate_execution_contract(build.ruleset, root)
     if errors: raise ValueError("; ".join(errors))
     mechanics, effects = mechanic_index(build.ruleset, root), effect_index(build.ruleset, root)
+    # A published special table may list a member with no duel operator.  The
+    # printed access clause makes that selection legal; it stays
+    # construction-only, so it is taken out of the executable selection lists
+    # and contributes no effect.  Catalogue identifiers keep their own checks.
+    inert_ids: list[str] = []
+    if package is not None and profile is not None and build.skill_ids:
+        printed_members = {str(member)
+            for entry in desktop_call("profileSkillLists", build, root,
+                                      package=package, profile=profile)
+            for member in (entry.get("skills") or ())}
+        inert_ids = [item for item in build.skill_ids
+                     if item in printed_members and item not in mechanics]
+        if inert_ids:
+            build = replace(build, skill_ids=tuple(
+                item for item in build.skill_ids if item not in inert_ids))
     excluded={row.get("id") for row in load_runtime_scope(build.ruleset,root).get("mechanic_exclusions") or ()}
     # Current conditions are supplied facts, resolved once through the KB
     # catalogue.  The caller names a canonical id; the KB declares the
@@ -638,13 +653,6 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
     selected = [main_weapon_id,build.armour_id,build.main_material_id,*build.defence_ids,*build.skill_ids,*build.preparation_ids]
     selected += [x for x in (build.off_hand_id,build.off_material_id,build.main_poison_id,build.off_poison_id,build.extra_hand_id) if x]
     unknown = [x for x in selected if x not in mechanics and x not in excluded]
-    if package is not None and any(x in build.skill_ids for x in unknown):
-        # Legality and executable support are separate: an unimplemented member
-        # of a published named table is not an unknown catalogue identifier.
-        legal = desktop_call("skillChoices", build, root, package=package, profile=profile)
-        pending = [x for x in unknown if x in build.skill_ids and legal.get(x)]
-        if pending:
-            raise ValueError(f"named skills have no executable duel mechanic: {pending}")
     if unknown: raise KeyError(f"unknown mechanic IDs: {unknown}")
     if build.armour_id == "armour.attlas-plate-mail":
         characteristics = _apply_characteristic_bonuses(characteristics, {"wounds": 1})
@@ -783,8 +791,10 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
     # executable effect: the bearer's clause owns the access it opens.
     if "compiler.weapons-training-exception" in compiler_contracts:
         global_ids = [item for item in global_ids if item != "skill.weapons-training"]
-    innate_ids = [*build.skill_ids, *build.preparation_ids, *profile_rule_skills,
-                  *selected_special_mechanics, *supplied.mechanic_ids]
+    innate_ids = [item for item in (
+                  *build.skill_ids, *build.preparation_ids, *profile_rule_skills,
+                  *selected_special_mechanics, *supplied.mechanic_ids)
+                  if item not in inert_ids]
     if "compiler.weapons-training-exception" in compiler_contracts:
         innate_ids = [item for item in innate_ids if item != "skill.weapons-training"]
     innate_ids = [item for item in innate_ids if item != "condition.executioners-hood"]
@@ -864,7 +874,8 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
         if rule.get("kind") == "warband_skill" and rule["id"] in build.special_rule_ids
         for binding in runtime_bindings(rule, "mechanic")
     ]
-    skill_effects_ids = [*build.skill_ids, *selected_skill_mechanics]
+    skill_effects_ids = [item for item in (*build.skill_ids, *selected_skill_mechanics)
+                         if item not in inert_ids]
     if "compiler.weapons-training-exception" in compiler_contracts:
         skill_effects_ids = [item for item in skill_effects_ids if item != "skill.weapons-training"]
     skill_effects_only = apply_execution_effects(
@@ -1298,7 +1309,7 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
                 initiative_bonus=main_without_poison.initiative_bonus - generic_staff.initiative_bonus)
     vomit_attack = (apply_execution_effects(
         EffectSet(), ("weapon.vomit-attack",), effects, "attack", "attack")
-        if "weapon.vomit-attack" in selected_special_mechanics else None)
+        if "weapon.vomit-attack" in (*selected_special_mechanics, *profile_rule_skills) else None)
     off_effect=apply_execution_effects(EffectSet(), (build.off_hand_id,), effects, "attack", "attack") if build.off_hand_id else None
     off_without_poison = None
     if off_effect and build.off_hand_id.startswith("weapon."):

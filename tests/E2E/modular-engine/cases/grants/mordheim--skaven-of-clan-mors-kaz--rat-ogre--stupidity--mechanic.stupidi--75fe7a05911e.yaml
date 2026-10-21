@@ -177,9 +177,37 @@
               fighter: {collection: mordheim, band_id: skaven-of-clan-mors-kaz, profile_id: claw-leader}}]}
   maximum_rounds: 1
   rolls:
+    # The supplied hero exempts the bearer, not the charged opponent, from Psychology.
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 5}
     - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {state.first.stupidity_failed: false, state.first.condition: STANDING, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed exemption ends beyond six inches; a distant Hero supplies no exemption.
+- audit_id: rule/mordheim/skaven-of-clan-mors-kaz/rat-ogre--stupidity/mechanic.stupidity
+  id: a-hero-beyond-six-inches-does-not-exempt-the-bearer
+  covers: [stupidity]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: skaven-of-clan-mors-kaz
+      profile_id: rat-ogre
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+  duel_context: {first_id: first, second_id: second, charging: [first], active_participant: first,
+    distances: [[first, hero, 7]],
+    nearby: [{participant_id: hero, side_id: first, condition: standing,
+              fighter: {collection: mordheim, band_id: skaven-of-clan-mors-kaz, profile_id: claw-leader}}]}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 6}
+    - {key: round.0.first.stupidity.1, value: 6}
+  expect_rounds:
+    0: {state.first.stupidity_failed: true, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}

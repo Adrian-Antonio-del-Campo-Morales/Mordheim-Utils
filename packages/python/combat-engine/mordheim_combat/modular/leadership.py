@@ -165,7 +165,11 @@ def resolve_local_leadership(
                 "nature.possessed", "identity.chaos-follower")):
             return result(True)
     value = fighter.characteristics.leadership
-    handler_only = phases.has_tag(fighter.global_effects, "mechanic.handler-leadership")
+    # Handle Animal belongs to the Herder, not to the animal receiving his
+    # Leadership. Canonical identity scopes this provider-only concession.
+    squig_recipient = fighter.fighter_id == "night-goblins-web:cave-squigs"
+    handler_only = (squig_recipient
+                    or phases.has_tag(fighter.global_effects, "mechanic.handler-leadership"))
     if handler_only and fighter.stupidity_leadership is not None:
         value = fighter.stupidity_leadership
     supplied_reroll = False
@@ -181,9 +185,21 @@ def resolve_local_leadership(
         bands = {tag for tag in fighter.global_effects.tags if tag.startswith("band.")}
         if handler_only and not own_value_only:
             for provider in context.facts.nearby:
+                provider_effect = provider.fighter.global_effects
+                if squig_recipient:
+                    eligible = (provider.fighter.fighter_id == "night-goblins-web:squig-herder"
+                                and bands.intersection(provider_effect.tags)
+                                and phases.has_tag(provider_effect, "mechanic.handler-leadership"))
+                    prodder = any(phases.has_tag(weapon, "weapon.squig-prodder")
+                                  for weapon in (provider.fighter.main_weapon,
+                                                 provider.fighter.off_hand or EffectSet()))
+                    radius = 12 if prodder else 6
+                else:
+                    eligible = phases.has_tag(provider_effect, "mechanic.bear-handler")
+                    radius = 6
                 if (provider.side_id == side and provider.condition != 'out'
-                        and phases.has_tag(provider.fighter.global_effects, 'mechanic.bear-handler')
-                        and context.distance(participant_id, provider.participant_id) <= 6
+                        and eligible
+                        and context.distance(participant_id, provider.participant_id) <= radius
                         and decisions.choose(f"{key}.handler.{provider.participant_id}", fighter)):
                     value = provider.fighter.characteristics.leadership
                     break

@@ -459,9 +459,15 @@ def _resolve_reference_attack_body(
     # the pool handler to knock the target down without a To Wound roll.
     if (phases.has_tag(effect, "mechanic.bull-charge")
             and not phases.has_tag(weapon, "weapon.vomit-attack")):
+        armour_context = prepare_armour_context(
+            attacker, defender, attacker_state, defender_state, weapon, effect,
+            first_round=first_round, charging=charging, key=f"{key}.armour",
+            melee_attack=melee_attack,
+        )
+        armour = resolve_armour(armour_context, defender_dice)
         return AttackOutcome(
             attacker_state, defender_state, hit=True, hit_roll=hit.roll,
-            hit_target=hit.target, trace=trace,
+            hit_target=hit.target, saved=armour.saved, trace=(*trace, Phase.ARMOUR),
             natural_hit_six=natural_hit_six,
         )
     if phases.has_tag(weapon, "weapon.kusara-kama") and hit.roll >= 5:

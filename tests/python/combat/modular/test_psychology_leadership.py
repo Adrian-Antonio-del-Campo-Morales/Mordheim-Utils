@@ -205,7 +205,7 @@ def leader_pass(recipient, provider, participant_id, distance, faces, decision=N
 
 
 @pytest.mark.rule_behavior
-def test_battle_tongue_widens_the_reikland_captains_supplied_radius():
+def test_reikland_military_discipline_widens_the_captains_supplied_radius():
     leader = canonical("mercenaries", "mercenary-captain", "weapon.sword")
     warrior = canonical("mercenaries", "warriors")
     assert leader.characteristics.leadership == 8 and warrior.characteristics.leadership == 7
@@ -225,14 +225,9 @@ def test_battle_tongue_widens_the_reikland_captains_supplied_radius():
 def test_only_the_named_leaders_carry_the_extended_radius():
     assert "mechanic.leader-twelve" in canonical(
         "gunnery-school-of-nuln", "senior-gunnery-officer", "weapon.sword").global_effects.tags
-    assert "mechanic.leader-twelve" in canonical(
-        "norse-explorers-btb", "jarl", "weapon.sword",
-        special_rule_ids=("band--norse-special-skills-battle-tongue",)).global_effects.tags
     # Untaught profiles and the rest of the warband keep the ordinary radius.
     assert "mechanic.leader-twelve" not in canonical(
         "mercenaries", "warriors").global_effects.tags
-    assert "mechanic.leader-twelve" not in canonical(
-        "norse-explorers-btb", "bondsmen").global_effects.tags
 
 
 def supplied_leadership(recipient, providers, faces, decisions=None):

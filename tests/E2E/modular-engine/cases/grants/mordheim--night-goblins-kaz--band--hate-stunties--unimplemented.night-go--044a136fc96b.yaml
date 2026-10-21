@@ -156,6 +156,9 @@
       trait_overrides: {species: dwarf}
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
   duel_context: {charging: [first], active_participant: first}
+  # The Troll's printed optional Vomit Attack is declined; this case is about the absent Hatred.
+  decisions:
+    - {key: round.0.first.vomit-attack, value: false}
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.stupidity.0, value: 1}

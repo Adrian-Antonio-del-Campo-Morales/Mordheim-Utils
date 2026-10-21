@@ -12,10 +12,9 @@ maintained meaning is recorded in ``tests/specs``:
   Initiative advantage defeats strike first."*
 * ``semantic/grants/remaining-profile-access.yaml`` /
   ``night-goblin-fanatic-frantic``: Frantic *"grants the Fanatic an absolute
-  priority that prevails over Initiative and ordinary weapon modifiers"* - that
-  case is the ``night-goblins-mic`` origin, whose compiler binding sets priority
-  10.  The ``night-goblins-kaz`` origin deliberately binds the canonical
-  mechanic instead, as its own baseline test records.
+  priority that prevails over Initiative and ordinary weapon modifiers"* - both
+  origins use the compiler binding that sets priority 10, while keeping the
+  canonical mechanic tag the stand-up rule reads.
 """
 from __future__ import annotations
 
@@ -62,14 +61,14 @@ def test_the_shared_skill_is_the_operator_both_rules_bind():
 def test_the_fanatic_compiles_the_printed_always_strikes_first_tag():
     compiled = fanatic()
     assert "skill.always-strikes-first" in compiled.global_effects.tags
-    assert compiled.global_effects.priority == 1
+    assert compiled.global_effects.priority == 10
 
 
 @pytest.mark.rule_behavior
 def test_the_operator_raises_priority_above_the_ordinary_order():
     compiled = fanatic()
     ordinary = fighter()
-    assert priority(compiled, ordinary).priority == 1
+    assert priority(compiled, ordinary).priority == 10
     assert priority(ordinary, compiled).priority == 0
 
 
@@ -79,7 +78,7 @@ def test_two_bearers_of_the_skill_tie_and_the_roll_breaks_it():
     # falls to Initiative, exactly as the retained spec case records.
     compiled = fanatic()
     spear = fighter(weapon="weapon.spear")
-    assert priority(compiled, spear, first_round=True).priority == 1
+    assert priority(compiled, spear, first_round=True).priority == 10
     assert priority(spear, compiled, first_round=True).priority == 1
 
 
@@ -87,7 +86,7 @@ def test_two_bearers_of_the_skill_tie_and_the_roll_breaks_it():
 def test_the_fanatic_keeps_strike_first_when_standing_up():
     compiled = fanatic()
     plain = fighter()
-    assert priority(compiled, plain, first_round=False, stood_up=True).priority == 1
+    assert priority(compiled, plain, first_round=False, stood_up=True).priority == 10
     # A warrior without the printed rule keeps the standing-up penalty.
     assert priority(plain, plain, first_round=False, stood_up=True).priority == -1
 
@@ -106,8 +105,8 @@ def test_lost_innocence_is_selectable_for_the_lahmia_vampire_alone():
 def test_no_ordinary_initiative_advantage_defeats_lost_innocence():
     vampire = lahmia_vampire()
     quick = fighter(initiative=10)
-    assert priority(vampire, quick).priority == 1
+    assert priority(vampire, quick).priority == 10
     assert priority(quick, vampire).priority == 0
     # The printed exception survives standing up, and it is the only case that
     # suppresses the standing-up penalty.
-    assert priority(vampire, quick, first_round=False, stood_up=True).priority == 1
+    assert priority(vampire, quick, first_round=False, stood_up=True).priority == 10

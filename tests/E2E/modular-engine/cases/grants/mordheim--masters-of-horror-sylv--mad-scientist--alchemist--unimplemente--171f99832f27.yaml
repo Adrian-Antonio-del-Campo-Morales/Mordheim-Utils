@@ -119,6 +119,9 @@
   # "1: Potion of Resilience - Add +1 to Toughness for duration of game."
   fighters:
     first:
+      collection: mordheim
+      band_id: masters-of-horror-sylv
+      profile_id: mad-scientist
       main_weapon_id: weapon.mace
       condition_ids: [condition.alchemist-resilience]
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
@@ -137,6 +140,9 @@
   # "2: Brew of Strength - Add +1 to Strength for duration of game."
   fighters:
     first:
+      collection: mordheim
+      band_id: masters-of-horror-sylv
+      profile_id: mad-scientist
       main_weapon_id: weapon.mace
       condition_ids: [condition.alchemist-strength]
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
@@ -156,6 +162,9 @@
   # the one supplied result, which is what tells this entry apart from entries 1 and 2.
   fighters:
     first:
+      collection: mordheim
+      band_id: masters-of-horror-sylv
+      profile_id: mad-scientist
       main_weapon_id: weapon.mace
       condition_ids: [condition.alchemist-aberrantius-vigortia]
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
@@ -176,6 +185,9 @@
   # source gives no test timing (recorded in the clause marker).
   fighters:
     first:
+      collection: mordheim
+      band_id: masters-of-horror-sylv
+      profile_id: mad-scientist
       main_weapon_id: weapon.mace
       condition_ids: [condition.alchemist-backleys-brew]
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
@@ -195,6 +207,9 @@
   # characteristics, so the grants above are attributable to the drawn potion and not to the build shape.
   fighters:
     first:
+      collection: mordheim
+      band_id: masters-of-horror-sylv
+      profile_id: mad-scientist
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
     second:
@@ -214,6 +229,9 @@
   # build; that sentence is the resolver's, not an invented diagnostic.
   fighters:
     first:
+      collection: mordheim
+      band_id: masters-of-horror-sylv
+      profile_id: mad-scientist
       main_weapon_id: weapon.mace
       condition_ids: [condition.alchemist-resilience, condition.alchemist-strength]
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
@@ -230,14 +248,20 @@
   fighters:
     first:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
     second:
+      collection: mordheim
+      band_id: masters-of-horror-sylv
+      profile_id: mad-scientist
       main_weapon_id: weapon.mace
       condition_ids: [condition.alchemist-addicted]
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
+  # The canonical Scientist causes Fear; the charger explicitly passes that unrelated test.
   rolls:
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
   expect_rounds:
@@ -253,13 +277,19 @@
   fighters:
     first:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
     second:
+      collection: mordheim
+      band_id: masters-of-horror-sylv
+      profile_id: mad-scientist
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
+  # The canonical Scientist causes Fear; the charger explicitly passes that unrelated test.
   rolls:
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.second.attack.0.hit, value: 1}

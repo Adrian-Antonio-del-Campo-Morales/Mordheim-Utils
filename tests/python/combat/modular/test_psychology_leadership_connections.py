@@ -161,6 +161,3 @@ def test_leader_range_skills_widen_only_their_selected_bearer():
     assert "mechanic.leader-twelve" not in canonical(
         "chaos-streets-undead-bloodlines", "von-carstein-vampire",
         collection="trollheim").global_effects.tags
-    tongue = "band--norse-special-skills-battle-tongue"
-    assert "mechanic.leader-twelve" in canonical(
-        "lustria-norse", "jarl", collection="trollheim", rules=(tongue,)).global_effects.tags

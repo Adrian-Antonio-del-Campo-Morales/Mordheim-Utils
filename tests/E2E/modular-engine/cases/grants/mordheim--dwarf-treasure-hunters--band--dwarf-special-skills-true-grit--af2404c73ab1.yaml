@@ -96,9 +96,11 @@
 - audit_id: rule/mordheim/dwarf-treasure-hunters/band--dwarf-special-skills-true-grit/skill.tough-as-steel
   id: an-injury-total-of-three-leaves-the-bearer-knocked-down
   covers: [whole]
+  # A sword, not the mace of the siblings: the mace's printed Concussion turns an injury
+  # result of 2-4 into Stunned and would mask the True Grit band this scenario reads.
   fighters:
     first:
-      main_weapon_id: weapon.mace
+      main_weapon_id: weapon.sword
       characteristics: *tg-attacker
     second:
       main_weapon_id: weapon.mace

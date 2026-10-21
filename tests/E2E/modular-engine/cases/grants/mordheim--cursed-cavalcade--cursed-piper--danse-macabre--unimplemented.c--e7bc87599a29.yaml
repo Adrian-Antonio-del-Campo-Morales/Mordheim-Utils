@@ -86,9 +86,11 @@
 # --- Authored scenarios ---
 # Derived from the printed clause and the admitted supplied condition row; no engine output was
 # consulted.  The controlled target is a hand-built recipient carrying the supplied cursed state
-# (condition_ids), Leadership 6 as a declared fixture fact, acting first, with a declared charge so
-# the round is a close-combat round.  The re-test is the 2d6 request round.0.first.danse-macabre;
-# the declared natural-1 hits miss for everyone, so the round's wounds never change.
+# (condition_ids), Leadership 6 as a declared fixture fact, acting first.  The duel is engaged by
+# default: no charge is declared for the dancer, because the printed clause already forbids it to
+# charge, and a declared charge would fail and disengage the pair before the attack step the
+# scenario is about.  The re-test is the 2d6 request round.0.first.danse-macabre; the declared
+# natural-1 strike misses, so the round's wounds never change.
 
 - audit_id: rule/mordheim/cursed-cavalcade/cursed-piper--danse-macabre/unimplemented.cursed-cavalcade.cursed-piper.danse-macabre
   id: the-failed-retest-leaves-the-warrior-dancing-and-attackless
@@ -96,14 +98,14 @@
   # The printed "will continue to be under the Pipers' control and... cannot attack": 5+4 = 9 is
   # above the declared Leadership 6, so the re-test fails, the state keeps the warrior dancing
   # (danse_macabre_controlled stays true) and its share of the round's attack pool is zero - the
-  # only declared strike is the opponent's, which the pool alone supplies.
+  # only attack die in the tape is the opponent's, which the pool alone supplies.
   fighters:
     first:
       condition_ids: [condition.danse-macabre-controlled]
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1, leadership: 6}
     second:
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
-  duel_context: {charging: [first], active_participant: first}
+  duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.danse-macabre.0, value: 5}

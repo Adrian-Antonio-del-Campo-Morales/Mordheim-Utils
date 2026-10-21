@@ -81,9 +81,7 @@
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
-    # The Possessed causes Fear, so the warrior it charged tests first and passes.
-    - {key: round.0.second.fear.charged.0, value: 1}
-    - {key: round.0.second.fear.charged.1, value: 1}
+    # The Mutant does not cause Fear, so the round opens with its own attack pool.
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.first.attack.1.hit, value: 4}
     - {key: round.0.first.attack.1.wound, value: 2}
@@ -99,6 +97,7 @@
       collection: trollheim
       band_id: trollheim-cult-of-the-possessed
       profile_id: mutants
+      special_rule_ids: [band--mutations-acid-blood]
       main_weapon_id: weapon.mace
     second:
       main_weapon_id: weapon.mace
@@ -107,9 +106,7 @@
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
-    # The Possessed causes Fear, so the warrior it charged tests first and passes.
-    - {key: round.0.second.fear.charged.0, value: 1}
-    - {key: round.0.second.fear.charged.1, value: 1}
+    # The Mutant does not cause Fear, so the round opens with its own attack pool.
     - {key: round.0.first.attack.0.hit, value: 1}
   expect_rounds:
     0: {state.second.wounds: 3, state.second.condition: STANDING}

@@ -195,9 +195,10 @@
     - {kind: roll, key: round.0.second.attack.1.hit, sides: 6, value: 1}
 # Recovery between phases: the hamper lasts exactly one close-combat phase of the
 # wielder.  In round 0 the declared five hampers the off hand and the defender's
-# pool keeps one attack (state attack penalty 1); at the start of round 1 the
-# printed reset fires, so the defender's pool is restored to both attack dice -
-# the tape carries the two round-1 defender attacks and the reset field reads 0.
+# pool keeps one attack, so only one defender hit die is offered; the strict tape
+# would reject a second one.  At the start of round 1 the printed reset fires, so
+# the defender's pool is restored to both attack dice - the tape carries the two
+# round-1 defender attacks and the penalty field reads 0.
 - audit_id: mechanic/weapon.kusara-kama
   id: the-hamper-lasts-until-the-start-of-the-wielder-s-next-phase
   covers: [whole]
@@ -221,6 +222,6 @@
     - {key: round.1.second.attack.0.hit, value: 1}
     - {key: round.1.second.attack.1.hit, value: 1}
   expect_rounds:
-    0: {attacks.0.damage: 1, state.second.wounds: 2, state.second.attack_penalty: 1}
+    0: {attacks.0.damage: 1, attacks.1.hit: false, state.second.wounds: 2}
     1: {state.second.attack_penalty: 0, attacks.1.hit: false, attacks.2.hit: false}
   expect_final: {rounds_executed: 2, termination_reason: horizon}

@@ -42,9 +42,10 @@
 #   Trollheim duplicate of the Mordheim Extra Arm origin; shared contract.
 
 # --- Authored scenarios ---
-# "A Mutant may use a one-handed weapon in the extra arm and gains +1 Attack": the printed
-# extra attack is evidenced by the pool carrying one attack die more than the same recipient
-# without the mutation, with every attack scripted as a miss so the pool is the only difference.
+# "A Mutant may use a one-handed weapon in the extra arm and gains +1 Attack": the extra arm
+# carries its own one-handed weapon, so the pool carries one attack die more than the same
+# recipient without this mutation, with every attack scripted as a miss so the pool is the only
+# difference.
 - audit_id: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-extra-arm/special-rule.band--mutations-extra-arm
   id: the-mutant-carries-an-extra-attack-with-the-mutation
   covers: [whole]
@@ -55,6 +56,7 @@
       profile_id: mutants
       special_rule_ids: [band--mutations-extra-arm]
       main_weapon_id: weapon.mace
+      extra_hand_id: weapon.mace
     second:
       main_weapon_id: weapon.mace
       characteristics: &plain-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
@@ -68,8 +70,9 @@
     0: {attacks.0.hit: false, attacks.1.hit: false, attacks.2.hit: false, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
-# The same recipient without the mutation keeps its printed single attack, so the extra die is
-# the mutation's own contribution.
+# The same recipient keeps its printed single attack when a different mutation is selected, so
+# the extra die is this mutation's own contribution.  The Mutant may not be recruited with no
+# mutation at all (`requiredInitial`), so the control carries the neutral Acid Blood instead.
 - audit_id: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-extra-arm/special-rule.band--mutations-extra-arm
   id: the-same-mutant-without-the-mutation-keeps-one-attack
   covers: [whole]
@@ -78,6 +81,7 @@
       collection: trollheim
       band_id: trollheim-cult-of-the-possessed
       profile_id: mutants
+      special_rule_ids: [band--mutations-acid-blood]
       main_weapon_id: weapon.mace
     second:
       main_weapon_id: weapon.mace

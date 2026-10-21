@@ -187,8 +187,13 @@ def armour_targets(defender: CompiledFighter, strength: np.ndarray,
     armour = defender.armour_save + modifier
     natural = np.full(strength.size, defender.natural_armour_save, dtype=np.int16)
     if not defender.natural_armour_unmodified:
-        natural += modifier
-    natural = np.minimum(natural, defender.natural_armour_worst_save)
+        # Mirror the canonical contract: the strength and target-bonus part is
+        # capped at the armour's worst save, and penetration applies after that
+        # cap.  Unmodified natural armour ignores both strength and penetration.
+        natural = np.minimum(
+            natural + np.maximum(0, strength - 3) - effect.target_armour_bonus,
+            defender.natural_armour_worst_save,
+        ) + effect.armour_penetration
     if defender.global_effects.natural_armour_negated_by_magic and magical_attack:
         natural[:] = 7
     target = np.minimum(armour, natural).astype(np.int16)

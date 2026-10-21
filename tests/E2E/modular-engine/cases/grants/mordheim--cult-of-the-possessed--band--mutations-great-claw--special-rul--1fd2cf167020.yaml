@@ -74,9 +74,9 @@
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
-    # The Possessed causes Fear, so the warrior it charged tests first and passes.
-    - {key: round.0.second.fear.charged.0, value: 1}
-    - {key: round.0.second.fear.charged.1, value: 1}
+    # The Mutant does not itself cause Fear (only The Possessed and the Hideous mutation do), so the
+    # charged warrior takes no Fear test and the round opens with the Mutant's attacks: the weapon
+    # attack misses and the extra claw attack lands.
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.first.attack.1.hit, value: 4}
     - {key: round.0.first.attack.1.wound, value: 2}

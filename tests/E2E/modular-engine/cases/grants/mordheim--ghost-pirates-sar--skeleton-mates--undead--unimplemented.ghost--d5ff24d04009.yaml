@@ -97,6 +97,9 @@
 #   The existing cause-fear connection is separate and already present. Connect the remaining immunity to its consumers without promising an unbound whole Undead package or adding unrelated inherited abilities. Surface reuse candidate: {"family":"mechanic.psychology-immunity","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare each immunity or automatic-pass clause separately. Psychology immunity is not automatic success on every Leadership test. Preserve ordinary Hatred/Frenzy suppression and the explicit Strigoi exception; excluded running, experience and group tests remain excluded.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
 # --- Authored scenarios ---
+# Runtime review: use the printed W1 maximum and resolve intrinsic ward saves
+# before injury. Initiative is stored as base plus initiative_penalty; the
+# penalty of one expresses effective I4 without overwriting the base I5.
 # Derived from the printed rule for this bearer and the admitted clause; no engine
 # output was consulted.  Nightshade is the one admitted poison whose consequence is a
 # state change on the warrior it wounds, so it is the rider the immunity must suppress:
@@ -114,14 +117,15 @@
       main_poison_id: poison.nightshade
       characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
     second: {collection: mordheim, band_id: ghost-pirates-sar, profile_id: skeleton-mates}
-  initial_state: {second: {wounds: 2, attacks: 0}}
+  initial_state: {second: {attacks: 0}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
   expect_rounds:
-    0: {attacks.0.damage: 1, state.second.wounds: 1, state.second.initiative_penalty: 0}
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.initiative_penalty: 0}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 # The control uses the same attacker and the same declared dice against an ordinary hand-built neighbour
@@ -146,7 +150,7 @@
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 5}
   expect_rounds:
-    0: {attacks.0.damage: 1, state.second.wounds: 1, state.second.initiative_penalty: 1, state.second.initiative: 4}
+    0: {attacks.0.damage: 1, state.second.wounds: 1, state.second.initiative_penalty: 1, state.second.initiative: 5}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 # Closing review (combined facet): no Skeleton Mate carries the second psychology-related grants
@@ -157,17 +161,16 @@
   covers: [undead-psychology-immunity]
   fighters:
     first:
+      trait_overrides: {frenzy: true}
       main_weapon_id: weapon.mace
       skill_ids: [mechanic.stupidity, mechanic.hatred-undead, mechanic.psychology-immunity]
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
     second: {collection: mordheim, band_id: undead, profile_id: zombies}
-  initial_state: {first: {frenzy: true}}
-  expect_initial: {first: {frenzy: False}}
+  expect_initial: {first.frenzy: false}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 1}
-    - {key: round.0.first.attack.1.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.damage: 0, state.first.stupidity_failed: False, state.first.frenzy: False}

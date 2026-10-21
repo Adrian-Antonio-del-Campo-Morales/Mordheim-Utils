@@ -55,10 +55,12 @@
 # Family model (Frenzy granted by the Looney's mushrooms): the bearer is Frenzied from
 # duel start (doubled attacks, psychology exemption), takes no Fear test for the charge
 # it receives, and loses Frenzy when an injury knocks it down; standing up does not
-# regrant it.  Attack order follows core/combat-order: a charge and any strike-first
-# effect share the top tier before ordinary Initiative, and a warrior that stood up
-# strikes last in that turn only.  This profile declares no strike-first ability, so the
-# charging opponent resolves before the bearer.  The band's printed Animosity rule is
+# regrant it.  The Looney's own printed Frantic rule (mechanic.frantic) makes it strike
+# before ordinary combatants regardless of weapon penalties or Initiative, so the Looney
+# resolves first even when it is the one charged, and its Frantic tier also outranks the
+# ordinary strike-last of a warrior that stood up.  The doubled-attack scenarios arm the bearer with the printed
+# two-handed weapon of its Fanatic Equipment List: an unarmed fighter is capped at one
+# attack, which would hide the doubling.  The band's printed Animosity rule is
 # implemented, so the bearer tests on its own turn and a 3 passes the printed 1-fails band.
 
 - audit_id: rule/mordheim/crooked-moon-kep/fanatics--looney/unimplemented.crooked-moon-kep.fanatics.looney
@@ -69,15 +71,19 @@
       trait_overrides: {causes_fear: true}
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
-    second: {collection: mordheim, band_id: crooked-moon-kep, profile_id: fanatics}
+    second:
+      collection: mordheim
+      band_id: crooked-moon-kep
+      profile_id: fanatics
+      main_weapon_id: weapon.double-handed-weapon
   initial_state:
     second: {attacks: 1}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
-    - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
     - {key: round.0.second.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
   expect_rounds:
     0: {state.second.frenzy: true, attacks.2.wounded: false}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
@@ -90,15 +96,19 @@
       trait_overrides: {causes_fear: true}
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
-    second: {collection: mordheim, band_id: crooked-moon-kep, profile_id: fanatics}
+    second:
+      collection: mordheim
+      band_id: crooked-moon-kep
+      profile_id: fanatics
+      main_weapon_id: weapon.double-handed-weapon
   initial_state:
     second: {attacks: 1}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
-    - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
     - {key: round.0.second.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
   expect_rounds:
     0: {state.second.frenzy: true, state.second.fear_hit_sixes: false, attacks.2.wounded: false}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
@@ -107,7 +117,11 @@
   id: a-frenzied-looney-auto-passes-the-head-injury-stupidity-test
   covers: [frenzy]
   fighters:
-    first: {collection: mordheim, band_id: crooked-moon-kep, profile_id: fanatics}
+    first:
+      collection: mordheim
+      band_id: crooked-moon-kep
+      profile_id: fanatics
+      main_weapon_id: weapon.double-handed-weapon
     second:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
@@ -137,12 +151,14 @@
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 2
   rolls:
+    # The Looney is Frantic, so it strikes before the charging opponent.
+    - {key: round.0.second.attack.0.hit, value: 1}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.first.attack.0.injury.0, value: 1}
     - {key: round.1.second.animosity, value: 3}
-    - {key: round.1.first.attack.0.hit, value: 1}
     - {key: round.1.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 1}
   expect_rounds:
     0: {state.second.frenzy: false, state.second.condition: KNOCKED_DOWN}
     1: {state.second.frenzy: false, state.second.condition: STANDING}

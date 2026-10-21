@@ -1,6 +1,8 @@
 """Minimal sequences of complex rules."""
 from __future__ import annotations
 
+from dataclasses import replace
+
 from mordheim_combat.vectorized import KNOCKED_DOWN
 from mordheim_combat.vectorized import OUT
 from mordheim_combat.vectorized import STANDING
@@ -9,6 +11,7 @@ from mordheim_combat.vectorized import _new_state
 from mordheim_combat.vectorized import _resolve_fire
 from mordheim_combat.vectorized import _resolve_netter_charge
 from mordheim_construction.compiler import compile_fighter
+from mordheim_core.effects import EffectSet
 from mordheim_core.models import Characteristics
 from mordheim_core.models import FighterBuild
 import numpy as np
@@ -38,10 +41,16 @@ def ordinary(*, strength=3, wounds=1):
 
 
 def test_netter_minimal_sequence_distinguishes_miss_escape_and_capture():
-    netter = compile_fighter(FighterBuild(
-        "mordheim", band_id="night-goblins-mic", profile_id="big-boss",
-        special_rule_ids=("band--night-goblin-special-skills-netter",),
-    ))
+    # The KB retires the net-throwing technique (`grant: none`): the caller supplies
+    # the caught victim's condition and no construction selects the producer.  The
+    # vectorized helper keeps its regression tape, so its tag is a fixture fact.
+    netter = replace(
+        compile_fighter(FighterBuild(
+            "mordheim", band_id="night-goblins-mic", profile_id="big-boss",
+        )),
+        global_effects=EffectSet(tags=("mechanic.netter",)),
+        ballistic_skill=3,
+    )
     target = ordinary(strength=3)
 
     for dice, expected in (((1, 6), STANDING), ((6, 1), STANDING), ((6, 6), KNOCKED_DOWN)):

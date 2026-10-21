@@ -444,7 +444,8 @@
     # scenario reads the poisoned wound itself.
     - {key: round.0.first.attack.0.wound, value: 5}
   expect_rounds:
-    0: {attacks.0.damage: 1, state.second.wounds: 1, state.second.initiative_penalty: 1, state.second.initiative: 4}
+    # The wound records its Initiative penalty; the base characteristic is not rewritten.
+    0: {attacks.0.damage: 1, state.second.wounds: 1, state.second.initiative_penalty: 1, state.second.initiative: 5}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 # The printed No Pain, read at the injury boundary: the bearer is the printed profile this clause names and its
@@ -457,11 +458,13 @@
     first:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
-    second: {collection: mordheim, band_id: clockworkers-sc, profile_id: clockwork-soldiers, skill_ids: [skill.ignore-pain]}
+    second: {collection: mordheim, band_id: clockworkers-sc, profile_id: clockwork-soldiers}
   initial_state: {second: {attacks: 0}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
+    # Both print Initiative 2, so the tie die decides the order; a four sends the attacker first.
+    - {key: round.0.priority-tie, value: 4}
     - {key: round.0.first.attack.0.hit, value: 4}
     # A five wounds an S8 attack against T3 without being the critical six, so the
     # scenario reads the poisoned wound itself.
@@ -487,6 +490,8 @@
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
+    # Both print Initiative 2, so the tie die decides the order; a four sends the attacker first.
+    - {key: round.0.priority-tie, value: 4}
     - {key: round.0.first.attack.0.hit, value: 4}
     # A five wounds an S8 attack against T3 without being the critical six, so the
     # scenario reads the poisoned wound itself.
@@ -507,12 +512,15 @@
       trait_overrides: {causes_fear: true}
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 7, attacks: 1, leadership: 7}
-    second: {collection: mordheim, band_id: clockworkers-sc, profile_id: clockwork-soldiers, skill_ids: [mechanic.psychology-immunity]}
+    second: {collection: mordheim, band_id: clockworkers-sc, profile_id: clockwork-soldiers}
   initial_state: {second: {attacks: 0}}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
+  # No Fear die is offered to the immune construct. Its emptied pool still resolves one printed
+  # unarmed attack, declared here as a miss so the observation stays the immunity.
   rolls:
     - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.damage: 0, state.second.wounds: 1, state.second.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

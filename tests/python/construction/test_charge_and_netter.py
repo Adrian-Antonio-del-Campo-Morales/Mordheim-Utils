@@ -7,9 +7,9 @@ the block are:
 * Animal Fury composes its two admitted consequences on one selection: the
   individual Fear immunity and the shared charge attack bonus, which
   ``build_attacks`` consumes on a charging turn only;
-* the Netter clause of the three bands whose printed list carries it (Crooked
-  Moon, Karak Azgal Night Goblins, Ogre Hunting Party): the two Night Goblin
-  records declare the caught victim's canonical ``condition.netted`` for their
+* the Netter clause of the four bands whose printed list carries it (Crooked
+  Moon, Karak Azgal and Mordheimer Night Goblins, Ogre Hunting Party): the
+  Night Goblin records declare the caught victim's canonical ``condition.netted`` for their
   printed recipients and keep the printed net throw, escape test and failed
   charge as an explicit NO producer, while the Ogre record is a supply clause
   that grants three Nets and no technique;
@@ -103,10 +103,11 @@ def test_animal_fury_stays_a_selectable_special_skill_of_its_printed_recipients(
         compiled("lustria-amazons", "amazon-warriors", ANIMAL_FURY, collection="trollheim")
 
 
-#: Printed recipients of each Netter clause: the two Night Goblin skill-list
-#: bands keep the band-wide list, and the hunting party names its two Gnoblar
+#: Printed recipients of each Netter clause: the Night Goblin skill-list
+#: bands keep their printed list, and the hunting party names its two Gnoblar
 #: heroes.
 NETTER_RECORDS = (
+    ("night-goblins-mic", "band--night-goblin-special-skills-netter", None),
     ("night-goblins-kaz", "band--night-goblin-special-skills-netter", None),
     ("crooked-moon-kep", "band--night-goblin-special-skills-netter", None),
     ("ogre-hunting-party-web", OGRE_NETTER, ("trappers", "sabre-baiter")),
@@ -138,6 +139,7 @@ def test_the_netter_clauses_reach_the_supplied_caught_victim_and_not_the_helper(
 
 
 @pytest.mark.parametrize(("band", "profile"), (
+    ("night-goblins-mic", "big-boss"),
     ("night-goblins-kaz", "big-boss"),
     ("crooked-moon-kep", "big-boss"),
     ("ogre-hunting-party-web", "trappers"),
@@ -173,6 +175,12 @@ def test_the_netter_clauses_declare_the_supplied_caught_victim_and_grant_no_tech
     with pytest.raises(ValueError, match="not selectable|outside the executable duel runtime"):
         compiled(band, rejected_profile, rule_id)
     if band == "ogre-hunting-party-web":
+        assert rule_id in available_special_rules(
+            FighterBuild("mordheim", Characteristics(3, 3, 3, 1, 3, 1, leadership=7),
+                         band_id=band, profile_id=profile), KNOWLEDGE)
+    elif band == "night-goblins-mic":
+        # This origin retains its printed warband-skill list for editorial
+        # selection; the separate compile refusal above enforces duel scope.
         assert rule_id in available_special_rules(
             FighterBuild("mordheim", Characteristics(3, 3, 3, 1, 3, 1, leadership=7),
                          band_id=band, profile_id=profile), KNOWLEDGE)

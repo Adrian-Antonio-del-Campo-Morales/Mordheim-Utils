@@ -145,14 +145,19 @@
     second: {condition: KNOCKED_DOWN, attacks: 0}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
+  # A Knocked Down defender is hit automatically, so neither attack asks for a hit die; the stomp is
+  # its own allocated attack (round.N.first.stomp.attack.M) at the warrior's own Strength.  The
+  # dagger attack fails its wound roll and the stomp lands: a Knocked Down warrior that suffers a
+  # wound is taken Out of Action, so the stomp is what ends the fight.  The Out of Action condition
+  # is recorded on the state; the Wounds characteristic itself is not rewritten.
   rolls:
-    - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 4}
-    - {key: round.0.first.attack.1.hit, value: 4}
-    - {key: round.0.first.attack.1.wound, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.first.stomp.attack.0.wound, value: 4}
   expect_rounds:
-    0: {attacks.1.hit: true, attacks.1.damage: 1, state.second.wounds: 1}
-  expect_final: {rounds_executed: 1, termination_reason: horizon}
+    0: {attacks.0.hit: true, attacks.0.wounded: false, attacks.1.hit: true,
+        attacks.1.wounded: true, attacks.1.damage: 1,
+        state.second.wounds: 3, state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
 
 # The control for the same fixture with a standing opponent: only the ordinary attack die is allocated, so the
 # identical hit and wound faces leave the fixture one wound higher.  The two tapes differ only in the stomp.
@@ -168,9 +173,12 @@
     second: {attacks: 0}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
+  # The aristocrat's dagger lets the standing, unarmoured defender save at 6+, and the declared save
+  # fails.  No stomp attack follows, so the round ends after this one wound.
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 1}
   expect_rounds:
-    0: {state.second.wounds: 2}
+    0: {attacks.0.damage: 1, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

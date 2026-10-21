@@ -77,22 +77,19 @@
   covers:
   - whole
   # The printed instrument and nothing else: the pointy stick the sentence grants at no cost, which
-  # counts as a dagger.  It is declared in both channels because the clause is about having it and using
-  # it.  The build is refused today by the over-broad "equipment" token, which is an implementation gap
-  # and not a rule outcome, so the expectation stays the printed admission.
+  # counts as a dagger.  It is the profile's own fixed equipment (`pointy_stick`), so the build
+  # declares no purchased weapon at all and the fixed kit is what has to reach the fighter; naming
+  # `weapon.dagger` here would be a purchase the print forbids, and the printed unit is not a
+  # catalogue equipment row.  The expectation stays the printed admission.
   fighters:
     first:
       collection: mordheim
       band_id: crooked-moon-kep
       profile_id: snotling-mob
-      main_weapon_id: weapon.dagger
-      owned_item_ids: [dagger]
     second:
       collection: mordheim
       band_id: crooked-moon-kep
       profile_id: snotling-mob
-      main_weapon_id: weapon.dagger
-      owned_item_ids: [dagger]
   duel_context:
     charging: []
     active_participant: first

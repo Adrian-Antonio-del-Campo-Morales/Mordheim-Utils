@@ -152,6 +152,9 @@
     second:
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
   duel_context: {charging: [], active_participant: first}
+  # Both ordinary pools are pinned empty so the only question on the tape is whether the
+  # auto-pass asks for any Leadership die at all.
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
   maximum_rounds: 1
   expect_rounds:
     0: {state.first.danse_macabre_controlled: false}

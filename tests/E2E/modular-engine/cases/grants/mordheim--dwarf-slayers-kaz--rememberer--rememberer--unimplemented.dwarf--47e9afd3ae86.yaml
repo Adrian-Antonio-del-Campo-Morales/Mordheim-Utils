@@ -1,3 +1,4 @@
+# Runtime correction: supply the qualified recipient condition; only the active participant tests Stupidity.
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/dwarf-slayers-kaz/rememberer--rememberer/unimplemented.dwarf-slayers-kaz.rememberer.rememberer
 # scaffold_fingerprint: 808f5c590f6e497b57a793f81c7422a25883828521abff5eb7b0b8560f667a79
@@ -113,11 +114,13 @@
       collection: mordheim
       band_id: dwarf-slayers-kaz
       profile_id: troll-slayers
+      condition_ids: [condition.rememberer-kaz-support]
       main_weapon_id: weapon.mace
     second:
       collection: mordheim
       band_id: black-orcs
       profile_id: troll
+      condition_ids: [condition.large-target]
   duel_context:
     charging: []
     active_participant: first
@@ -129,9 +132,9 @@
     distances:
       - [first, rememberer, 6]
   maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.rememberer, value: true}
   rolls:
-    - {key: round.0.second.stupidity.0, value: 1}
-    - {key: round.0.second.stupidity.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 2}
     - {key: round.0.first.attack.0.hit.reroll, value: 4}
     - {key: round.0.first.attack.0.wound, value: 2}

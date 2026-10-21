@@ -135,6 +135,9 @@
     second: {collection: mordheim, band_id: night-goblins-kaz, profile_id: troll}
   initial_state: {second: {wounds: 2, attacks: 0}}
   duel_context: {charging: [], active_participant: first}
+  # The Troll's printed optional Vomit Attack is declined so its own pool stays empty.
+  decisions:
+    - {key: round.0.second.vomit-attack, value: false}
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 5}
@@ -156,6 +159,9 @@
     second: {collection: mordheim, band_id: night-goblins-kaz, profile_id: troll}
   initial_state: {second: {wounds: 2, attacks: 0}}
   duel_context: {charging: [], active_participant: first}
+  # The Troll's printed optional Vomit Attack is declined so its own pool stays empty.
+  decisions:
+    - {key: round.0.second.vomit-attack, value: false}
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 5}
@@ -179,6 +185,9 @@
     second: {collection: mordheim, band_id: night-goblins-kaz, profile_id: troll}
   initial_state: {second: {wounds: 2, attacks: 0}}
   duel_context: {charging: [], active_participant: first}
+  # The Troll's printed optional Vomit Attack is declined so its own pool stays empty.
+  decisions:
+    - {key: round.0.second.vomit-attack, value: false}
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 5}

@@ -1,3 +1,4 @@
+# Runtime correction: Dwarf Rememberer has the Dwarf Special column, not the Slayer-only Monster Slayer entry.
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/dwarf-slayers-kaz/band--slayer-special-skills/unimplemented.dwarf-slayers-kaz.band.slayer-special-skills
 # scaffold_fingerprint: faae10abcc0551c4566c03d10128ceb05c664711b880772de2f898b700452b07
@@ -136,12 +137,14 @@
       band_id: dwarf-slayers-kaz
       profile_id: rememberer
       trait_overrides: {species: dwarf}
-      skill_ids: [skill.monster-slayer]
+      skill_ids: [skill.thick-skull]
     second:
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
   initial_state: {first: {attacks: 0}, second: {attacks: 0}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
+  rolls:
+    - {key: round.0.priority-tie, value: 1}
   expect_initial: {first.attacks: 0, second.attacks: 0}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
@@ -150,13 +153,15 @@
   covers: [whole]
   # The printed Human Rememberer column names Speed instead, which the same merged recorded access also
   # drops; the declared species selects the printed column and the printed permission is the expectation.
+  # skill.jump-up is the Speed row with an executable duel contract, so the admission is observable at
+  # compilation instead of being refused later for a movement-only mechanic.
   fighters:
     first:
       collection: mordheim
       band_id: dwarf-slayers-kaz
       profile_id: rememberer
       trait_overrides: {species: human}
-      skill_ids: [skill.sprint]
+      skill_ids: [skill.jump-up]
     second:
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
   initial_state: {first: {attacks: 0}, second: {attacks: 0}}

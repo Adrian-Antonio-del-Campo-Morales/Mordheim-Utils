@@ -2,16 +2,10 @@
 # audit_id: rule/trollheim/chaos-streets-undead-bloodlines/strigoi-vampire--hatred-everyone/skill.hatred
 # scaffold_fingerprint: 24692431fc01c7009b30666a8184053818adf5dad55cf3e0dea664824bd88ce3
 # authoring_status: AUTHORED
-# authoring_progress: the admitted hatred clause carries 3 authored scenarios for the family model
-#   derived from the printed rule and the recorded grant: the printed Strigoi Vampire rerolls its
-#   first-round missed To-Hit roll, an opponent that does declare a species identity is rerolled
-#   against too because this grant names no target, and a band-mate the record does not reach leaves
-#   the same miss standing.  Two recorded facts about this member: the printed profile also lists
-#   skill.hatred among its starting skills, and the shared contract's 'suppressed for a
-#   Psychology-immune warrior' gate meets this bearer's printed immunity; the accepted Kindred Hatred
-#   contract for the same bearer resolves that gate explicitly with psychology_immunity_suppresses:
-#   false, which is why the scenarios assert the printed reroll.  REVIEWED still requires manual
-#   semantic review and execution_status stays UNEXECUTED; no behavioral result is claimed.
+# authoring_progress: the two historical positive-reroll scenario identities now test the
+#   accepted immunity-precedence decision: selected ordinary Hatred grants no reroll to
+#   the Psychology-immune Strigoi, regardless of enemy identity. A non-recipient and
+#   a custom non-immune Hatred bearer provide independent negative/positive controls.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -22,9 +16,8 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: hatred (scope: YES)
-# AUTHORED[hatred]: 3 scenario(s) cover the clause: the printed Strigoi Vampire rerolls its
-#   first-round missed hit, an opponent that does declare a species identity is rerolled against too,
-#   and a band-mate the record does not reach leaves the same miss standing.
+# AUTHORED[hatred]: immunity suppresses selected Hatred with/without enemy identity;
+#   non-recipient lacks the benefit; ordinary non-immune Hatred retains its reroll.
 # origin_id:
 #   rule/trollheim/chaos-streets-undead-bloodlines/strigoi-vampire--hatred-everyone/skill.hatred
 # analysis_status:
@@ -53,14 +46,11 @@
 #   Filtered Hatred bound to skill.hatred; contexts._hit_reroll matches the enemy identity tag, enforces first-round timing and the Psychology-immunity suppression. Enemy identity must be supplied explicitly. Surface reuse candidate: {"family":"skill.hatred","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Possible shared first-round hit-reroll consumer only. Resolve each printed hated target and the ordinary Psychology/Frenzy gates; do not inherit the audit Orc/Goblin effect ID for every target or the Strigoi immunity exception.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
 # --- Authored scenarios ---
-# Family model (Hatred against every enemy): the bearer is the printed Strigoi Vampire built from its
-# band profile; its physical characteristics are supplied as fixture facts (WS3 S3 T3 W2 I5 A1) so the
-# dice thresholds and the strike order are fixed, and its printed Leadership stays in place.  The
-# recorded grant is selectable, so the bearer declares the selection that activates it.  A natural 2
-# misses against WS3, the reroll is taken on a 4+ and the wound rolls a 4+, so the reroll is exactly
-# what the tape shows.  The first opponent declares no identity fact at all and the third declares a
-# printed species identity: the clause names no target, so both are qualified.  The contrast bearer is
-# a band profile the printed record does not reach, and its tape holds no reroll key at all.
+# Accepted user decision (2026-10-21): Psychology immunity prevails over the
+# Strigoi's ordinary Hatred against everyone. Kindred Hatred remains a separate
+# explicit exception and is neither supplied nor altered here. The two original
+# scenario IDs are retained for traceability despite their historic reroll names.
+# Explicitly selecting the printed rule distinguishes suppression from absence.
 
 - audit_id: rule/trollheim/chaos-streets-undead-bloodlines/strigoi-vampire--hatred-everyone/skill.hatred
   id: the-strigoi-vampire-first-round-miss-is-rerolled
@@ -70,6 +60,7 @@
       collection: trollheim
       band_id: chaos-streets-undead-bloodlines
       profile_id: strigoi-vampire
+      special_rule_ids: [strigoi-vampire--hatred-everyone]
       main_weapon_id: weapon.natural-attacks
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
@@ -81,15 +72,12 @@
     - {key: round.0.second.fear.charged.0, value: 3}
     - {key: round.0.second.fear.charged.1, value: 3}
     - {key: round.0.first.attack.0.hit, value: 2}
-    - {key: round.0.first.attack.0.hit.reroll, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
-    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 1}
+    0: {attacks.0.hit: false, attacks.0.damage: 0, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
-# An opponent that does declare a printed species identity is still qualified, because this grant
-# names no hated target at all.
+# Enemy identity does not remove the bearer's Psychology immunity.
 - audit_id: rule/trollheim/chaos-streets-undead-bloodlines/strigoi-vampire--hatred-everyone/skill.hatred
   id: an-opponent-that-declares-an-identity-is-rerolled-against-too
   covers: [hatred]
@@ -98,6 +86,7 @@
       collection: trollheim
       band_id: chaos-streets-undead-bloodlines
       profile_id: strigoi-vampire
+      special_rule_ids: [strigoi-vampire--hatred-everyone]
       main_weapon_id: weapon.natural-attacks
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
@@ -110,11 +99,9 @@
     - {key: round.0.second.fear.charged.0, value: 3}
     - {key: round.0.second.fear.charged.1, value: 3}
     - {key: round.0.first.attack.0.hit, value: 2}
-    - {key: round.0.first.attack.0.hit.reroll, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
-    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 1}
+    0: {attacks.0.hit: false, attacks.0.damage: 0, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 # The same fixture, but the bearer is a band profile outside the printed recipient of the record.
@@ -138,4 +125,28 @@
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same ordinary Hatred consumer remains active without Psychology immunity.
+# This is a custom control, not a claim that a Strigoi may discard its immunity.
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/strigoi-vampire--hatred-everyone/skill.hatred
+  id: ordinary-hatred-still-rerolls-without-psychology-immunity
+  covers: [hatred]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.hatred]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -153,7 +153,9 @@
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 # The control: the identical nightshade attack without the blessing row, where the printed one
-# point of Initiative is lost.
+# point of Initiative is lost.  The loss is the poison's recorded Initiative penalty; the base
+# characteristic is not rewritten, which is the same observation the poison-immunity family uses
+# ("recorded initiative_penalty stays 0").
 - audit_id: rule/mordheim/carnival-of-chaos/band--blessings-of-nurgle-mark-of-nurgle/special-rule.band--blessings-of-nurgle-mark-of-nurgle
   id: without-the-mark-the-same-poison-lowers-initiative
   covers: [whole]
@@ -176,5 +178,5 @@
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
   expect_rounds:
-    0: {attacks.0.damage: 1, state.second.initiative: 4}
+    0: {attacks.0.damage: 1, state.second.initiative_penalty: 1, state.second.initiative: 5}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

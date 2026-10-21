@@ -71,6 +71,14 @@ rules:
       ven afectados.
   applies_to:
     band: true
+    # The printed rule limits the hatred to Night Goblins and exempts Fanatics;
+    # the band's animals, troll and snotling mob are not recipients.
+    profile_ids:
+    - big-boss
+    - shaman
+    - bosses
+    - squig-hopper
+    - night-goblins
 - id: band--night-goblin-special-skills
   runtime:
     scope: LATER

@@ -396,7 +396,7 @@ def build_attacks(context: AttackPoolContext) -> AttackPoolResult:
     elif off_pistol and not context.first_round:
         attacks = max(0, attacks - 1)
     if context.first_round and context.charging and any(
-        has_tag(effect, tag) for tag in ("mechanic.body-slam", "mechanic.bull-charge", "mechanic.anvil-head")
+        has_tag(effect, tag) for tag in ("mechanic.body-slam", "mechanic.anvil-head")
     ):
         attacks = 1
     if has_tag(effect, "mechanic.death-blow") and fighter.characteristics.attacks >= 2:

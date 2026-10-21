@@ -51,8 +51,10 @@
   fighters:
     first:
       main_weapon_id: weapon.censer
-      skill_ids: [mechanic.black-hunger]
-      special_rule_ids: [band--clan-pestilens-special-skills-censer-bearer]
+      # Black Hunger is the printed selectable row of this band, not a bare skill id;
+      # the Censer Bearer row requires the mechanic it compiles.
+      special_rule_ids: [band--clan-pestilens-special-skills-black-hunger,
+                        band--clan-pestilens-special-skills-censer-bearer]
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
       main_weapon_id: weapon.mace
@@ -61,9 +63,13 @@
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
+    # Black Hunger grants the extra attack in this phase and resolves its backlash
+    # after the attack pool, so the bearer's single miss comes first.
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
     - {key: round.0.first.black-hunger.hits, sides: 3, value: 1}
     - {key: round.0.first.black-hunger.hit.0.wound, value: 4}
-  expect_initial: {first: {frenzy: true}}
+  expect_initial: {first.frenzy: true}
   expect_rounds:
     0: {state.first.wounds: 1, state.first.condition: STANDING, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

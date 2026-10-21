@@ -83,27 +83,27 @@
 #   All-Alone tests are the excluded group subsystem and the source-specific reroll needs the producer supplied; recorded so the compound sentence is fully covered, no duel-runtime consumer assigned. Scope review integration: {"clause_id":"all-alone-and-reroll","review_clause_id":"all-alone-and-reroll","source_state":"unverified","review_status":"reviewed","scope_reason":"The All Alone test and reroll clauses carried by these sentences belong to the group enemy-counting and rout procedures, excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"}
 
 # --- Authored scenarios ---
-# WHAT THESE TAPES FAIL ON (checked statically in the shared construction stage, not by running it): this
-# row is recorded `implemented: NO`, so `compile_fighter()` refuses the declared selection with
-# "special rule is outside the executable duel runtime: band--special-skill-instinctual-violence:
-# Psychology (fear) and strike-first binding: deferred to the close-combat milestone." before any duel
-# runs.  The scenarios keep the printed fear immunity and the nominated strike-first order because that
-# is the requirement; they are expected to fail on it until the recorded binding exists.
+# The KB now records this row `implemented: YES` with two executable effects: a Fear immunity that
+# applies only to Undead chargers, and a nominated attack that strikes first.  The tapes below read the
+# printed scoping (the undead causer) and the voluntary nomination the mechanic asks for.
 
 - audit_id: rule/mordheim/grave-robbers-sylv/band--special-skill-instinctual-violence/unimplemented.grave-robbers-sylv.special-skill.instinctual-violence
   id: the-fear-immune-warrior-is-not-tested
   covers: [fear-immunity]
   fighters:
     first:
-      trait_overrides: {causes_fear: true}
+      trait_overrides: {causes_fear: true, creature_kind: undead}
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
     second: {collection: mordheim, band_id: grave-robbers-sylv, profile_id: graver, special_rule_ids: [band--special-skill-instinctual-violence]}
   duel_context: {charging: [first], active_participant: first}
+  decisions:
+    - {key: round.0.second.strike-first.attack.0, value: false}
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit.reroll, value: 1}
   expect_rounds:
     0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
@@ -141,15 +141,18 @@
       main_weapon_id: weapon.club
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
   duel_context: {charging: [], active_participant: first}
+  decisions:
+    - {key: round.0.first.strike-first.attack.0, value: true}
   maximum_rounds: 1
   rolls:
-    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.strike-first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {state.first.wounds: 1, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
   expect_events:
-    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: decision, key: round.0.first.strike-first.attack.0, value: true}
+    - {kind: roll, key: round.0.first.strike-first.attack.0.hit, sides: 6, value: 1}
     - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
 
 # The contrast for the identical fixture without the printed grant: the ordinary Initiative

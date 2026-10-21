@@ -54,15 +54,17 @@
   covers: [fear-immunity]
   fighters:
     first:
-      trait_overrides: {causes_fear: true, undead_kind: skeleton}
+      trait_overrides: {causes_fear: true, creature_kind: undead}
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
     second: {collection: mordheim, band_id: dreamwalkers-cult-of-morr-fbg, profile_id: dreamer}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: second.guiding-dream, value: 1}
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit.reroll, value: 1}
   expect_rounds:
     0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
@@ -79,6 +81,7 @@
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
+    - {key: second.guiding-dream, value: 1}
     - {key: round.0.second.fear.charged.0, value: 1}
     - {key: round.0.second.fear.charged.1, value: 1}
     - {key: round.0.first.attack.0.hit, value: 1}

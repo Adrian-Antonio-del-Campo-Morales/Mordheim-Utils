@@ -1,3 +1,4 @@
+# Runtime correction: supply the qualified recipient condition; nearby provenance alone does not emit an aura.
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/dwarf-slayer-cult-web/rememberer--rememberer/unimplemented.dwarf-slayer-cult-web.rememberer.rememberer
 # scaffold_fingerprint: a3903dbc7519914581e4a395512e2aaad75016ab4a049e63ab85e104ed8b5563
@@ -84,6 +85,8 @@
       collection: mordheim
       band_id: dwarf-slayer-cult-web
       profile_id: giant-slayer
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.rememberer-web-support]
       characteristics: {weapon_skill: 5, strength: 4, toughness: 4, wounds: 1, initiative: 3, attacks: 1}
     second:
       main_weapon_id: weapon.mace
@@ -98,7 +101,10 @@
         fighter: {collection: mordheim, band_id: dwarf-slayer-cult-web, profile_id: rememberer}
     distances:
       - [first, rememberer, 6]
+  initial_state: {first: {strength: 4}}
   maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.rememberer, value: true}
   rolls:
     - {key: round.0.first.attack.0.hit, value: 2}
     - {key: round.0.first.attack.0.hit.reroll, value: 4}

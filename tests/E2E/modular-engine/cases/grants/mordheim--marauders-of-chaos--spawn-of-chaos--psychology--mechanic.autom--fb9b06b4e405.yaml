@@ -75,10 +75,11 @@
   duel_context: {charging: [second], active_participant: second}
   maximum_rounds: 1
   rolls:
-    - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 1}
   expect_rounds:
-    0: {attacks.0.hit: true, attacks.1.hit: false, state.first.condition: STANDING}
+    0: {attacks.0.hit: false, attacks.1.hit: true, state.first.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 # Negative control: without the operator the identical bearer rolls the Fear test - the strict

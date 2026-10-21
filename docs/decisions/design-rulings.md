@@ -13,6 +13,29 @@ a single spec.
 
 ## Duel engine (modular oracle)
 
+- **Netter consumes a supplied victim.** Throwing the net, resolving escape
+  and charge movement are outside the duel. Keep `condition.netted` and its
+  close-combat/recovery consequences; do not grant a net-throwing technique.
+- **Battle Tongue is outside the duel scope.** Exclude its range extension,
+  including band-specific copies. Printed innate Leader radii remain separate.
+- **Charnel Cunning retains only Weapons Training.** Its Weapons Expert
+  missile-access branch is outside this scope, including the pistol fixture.
+  A weapon's close-combat use does not admit this excluded access rule.
+- **Squig Herder lends Leadership through supplied context.** A Cave Squig
+  may use its allied Herder's actual Leadership within 6 inches, or 12 when
+  the Herder carries a Squig Prodder. Check supplied participants and distance;
+  do not simulate movement or give the Herder's ability to the Squig.
+- **Strigoi Psychology immunity suppresses Hatred against everyone.** The
+  generic immunity takes precedence for that clause. Preserve the separately
+  scoped Kindred Hatred exception; do not extend it by analogy.
+  (User decisions adopted 2026-10-21.)
+- **A published table member may be construction-only.** Legality and
+  executable support are separate: a skill the profile's printed special table
+  publishes is admitted even when it has no duel operator, and contributes
+  nothing to combat. Keep the existing refusals for a member of another band's
+  table, a skill outside the table and an unknown catalogue id. The declared
+  `special_rule_ids` route keeps its runtime gate; the `skill_ids` list route
+  admits the table member inertly. (User decision adopted 2026-10-21.)
 - **Basic critical table only.** The weapon-family critical charts are
   optional rules and are not enabled. A separate critical result roll governs
   damage, armour denial and Injury modification; table bonuses modify that

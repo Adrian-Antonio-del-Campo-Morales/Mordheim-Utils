@@ -101,6 +101,9 @@
     second: {on_fire: true}
   duel_context: {charging: [second], active_participant: first}
   maximum_rounds: 1
+  # The Troll's printed optional Vomit Attack is declined so its ordinary pool strikes.
+  decisions:
+    - {key: round.0.first.vomit-attack, value: false}
   rolls:
     - {key: round.0.first.stupidity.0, value: 1}
     - {key: round.0.first.stupidity.1, value: 1}
@@ -131,6 +134,9 @@
     second: {on_fire: true}
   duel_context: {charging: [second], active_participant: first}
   maximum_rounds: 1
+  # The Troll's printed optional Vomit Attack is declined, so no replacement pool is declared.
+  decisions:
+    - {key: round.0.first.vomit-attack, value: false}
   rolls:
     - {key: round.0.second.fear.charge.0, value: 1}
     - {key: round.0.second.fear.charge.1, value: 1}

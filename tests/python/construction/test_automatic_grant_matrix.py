@@ -298,15 +298,15 @@ def test_hard_head_trait_stays_absent_from_non_recipients(band_id, profile_id):
     assert "concussion_immune" not in compile_band(band_id, profile_id).global_effects.tags
 
 
-# frantic: mechanic skill.always-strikes-first inside a profile grant
+# frantic: mechanic tag plus compiler priority inside a profile grant
 def test_frantic_fanatics_project_the_strike_first_component_once():
     # "will strike first in combat ignoring penalties for weapons or
-    # initiative order": the canonical binding is the skill.always-strikes-first
-    # mechanic whose execution contract sets priority 1 and its tag.  The
-    # same-named rule of night-goblins-mic uses a compiler binding handled by
-    # PROFILE_RULE_EFFECTS (priority 10) and is a different origin.
+    # initiative order" is absolute priority (10), not weapon priority 1.  The
+    # Kaz origin now carries the compiler binding handled by
+    # PROFILE_RULE_EFFECTS, like the Mic origin, while the mechanic binding
+    # still projects the tag that the stand-up rule reads.
     fanatics = compile_band("night-goblins-kaz", "fanatics")
-    assert fanatics.global_effects.priority == 1
+    assert fanatics.global_effects.priority == 10
     assert "skill.always-strikes-first" in fanatics.global_effects.tags
 
 

@@ -260,15 +260,16 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: selectable
     effects:
     - id: mechanic.leader-twelve
-      scope: 'YES'
-      binding:
-        kind: mechanic
-        id: mechanic.leader-twelve
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: Battle Tongue range extensions are excluded from the resolved duel (user
+        decision 2026-10-21). Innate Leader radii remain separate.
   rule_ref: shared-rule.battle-tongue
 - id: band--norse-special-skills-berserk-charge
   kind: warband_skill

@@ -209,6 +209,9 @@ SPECIAL_RULE_EFFECTS = {
     # Bear Hug's source binding retains the historic special-rule namespace;
     # PROFILE_RULE_EFFECTS is what grants it automatically to the Bear.
     "trained-bear--bear-hug": {"effects": {"bear_hug": True}},
+    # The Necrotect selects an unconditional first-round repetition, not the
+    # ordinary Psychology rule called Hatred.
+    "necrotect--hatred": {"effects": {"tags": ("mechanic.first-round-hit-reroll",)}},
     "band--mutations-extra-arm": {},
     "band--mutations-great-claw": {},
     "band--beastmen-special-skills-horned-one": {},

@@ -143,10 +143,10 @@
   initial_state: {second: {condition: KNOCKED_DOWN, attacks: 1}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
+  # A Knocked Down opponent is hit automatically and a further wound takes it out of
+  # action without an injury roll, so the tape holds only the wound die.
   rolls:
-    - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
-    - {key: round.0.first.attack.0.injury.0, value: 6}
   expect_rounds:
     0: {attacks.0.damage: 1, state.second.condition: OUT}
   expect_final: {rounds_executed: 1, termination_reason: second_out}

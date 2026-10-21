@@ -155,19 +155,17 @@
 - audit_id: rule/mordheim/cursed-cavalcade/band--cursed-cavalcade-special-skills/profile.skill-access
   id: the-published-member-is-admitted-on-the-table-list-route
   covers: [whole]
-  # R1's membership half, through the route that reads the member array: the printed permission makes
-  # this band's published member a legal special selection for one of its Heroes. The declared
-  # identity is the band's own published member id, because no catalogue row carries it. Today the
-  # binding has no member array and the list route rejects an identity the catalogue does not carry,
-  # so the build is refused with the 'skills are not available' sentence naming that very member - the
-  # PENDING projection defect kept visible rather than avoided.
+  # R1's membership half: the printed permission makes this band's published member a legal special
+  # selection for one of its Heroes. The member is a `warband_skill` row of this band, not a catalogue
+  # skill, so the channel that carries it is the declared selection (`special_rule_ids`); the catalogue
+  # list route (`skill_ids`) resolves catalogue skills only and is never the route the product uses for
+  # a band-published member (the editor splits those ids into `special_rule_ids` before compiling).
   fighters:
     first:
       collection: mordheim
       band_id: cursed-cavalcade
       profile_id: companions
-      skill_ids: [band--cursed-cavalcade-special-skills-torturer]
-      main_weapon_id: weapon.mace
+      special_rule_ids: [band--cursed-cavalcade-special-skills-torturer]
     second:
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
   initial_state: {first: {attacks: 0}, second: {attacks: 0}}

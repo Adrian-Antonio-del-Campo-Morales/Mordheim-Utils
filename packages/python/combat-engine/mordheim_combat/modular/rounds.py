@@ -1787,6 +1787,15 @@ def resolve_round(
     )
     state=_burning_bodies(first,second,replace(state,first=first_state,second=second_state),dice,decisions)
     first_state,second_state=state.first,state.second
+    # Spider-Infested's penalty lasts "until it is no longer engaged with the
+    # Hero or the Hero is taken Out of Action": once the bearer is out, the
+    # enemy's accumulated Initiative penalty is cleared.
+    if (has_tag(first.global_effects, "mechanic.spider-infested")
+            and first_state.condition == Condition.OUT):
+        second_state = replace(second_state, initiative_penalty=0)
+    if (has_tag(second.global_effects, "mechanic.spider-infested")
+            and second_state.condition == Condition.OUT):
+        first_state = replace(first_state, initiative_penalty=0)
     # Seduction's printed release.  The Khemrian copy ends the control when the
     # Vampire attacks her victim at all; the Lahmia copy only when an attack
     # hits.  A control that was not attacked survives into the next phase, where

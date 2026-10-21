@@ -70,6 +70,9 @@
     second: {collection: mordheim, band_id: night-goblins-kaz, profile_id: troll}
   initial_state: {second: {attacks: 0}}
   duel_context: {charging: [second], active_participant: second}
+  # The Troll's printed optional Vomit Attack is declined so the ordinary pool resolves.
+  decisions:
+    - {key: round.0.second.vomit-attack, value: false}
   maximum_rounds: 1
   rolls:
     - {key: round.0.second.stupidity.0, value: 1}
@@ -91,6 +94,9 @@
     second: {collection: mordheim, band_id: night-goblins-kaz, profile_id: troll}
   initial_state: {second: {attacks: 0}}
   duel_context: {charging: [second], active_participant: second}
+  # The Troll's printed optional Vomit Attack is declined so the ordinary pool resolves.
+  decisions:
+    - {key: round.0.second.vomit-attack, value: false}
   maximum_rounds: 1
   rolls:
     - {key: round.0.second.stupidity.0, value: 1}

@@ -54,8 +54,11 @@ def test_named_table_member_is_offered_and_support_is_separate(profile, skill):
     build = FighterBuild('mordheim', band_id='adventurers-kaz', profile_id=profile, skill_ids=(skill,))
     if skill not in SUPPORTED:
         assert options[skill].unavailable_reason == 'No executable duel mechanic.'
-        with pytest.raises(ValueError, match='named skills have no executable duel mechanic'):
-            compile_fighter(build)
+        # The printed table's membership admits the selection; support stays a
+        # separate fact, so the member is carried as construction only and
+        # contributes no duel effect.
+        fighter = compile_fighter(build)
+        assert skill not in fighter.global_effects.tags
     else:
         fighter = compile_fighter(build)
         assert fighter.global_effects.tags.count(skill) == 1

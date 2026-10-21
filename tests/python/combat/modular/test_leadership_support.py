@@ -19,10 +19,6 @@ simulated anywhere here.
   within six inches re-rolls one failed Leadership test at +1, capped at 10;
 * Poetry (the three Araby Rel bands): the supplied "won the last battle" fact
   gives the Leader's own first Leadership test of the scenario +1, spent once;
-* Battle Tongue (Lustria Norse): the skill reaches only the warband's current
-  Leader - the native Jarl, or another eligible Hero the caller supplies in that
-  position - and widens the Leader rule that position carries to twelve inches,
-  granting no Leader rule of its own;
 * the conditional Rat Ogre Stupidity of the shared record: a supplied exempting
   hero skips the test entirely.
 
@@ -41,17 +37,11 @@ from mordheim_combat.modular.psychology import resolve_stupidity
 from mordheim_combat.modular.state import initialize_duel
 from mordheim_combat_lab.verification.dice import StrictDecisions, StrictDice
 from mordheim_construction.compiler import compile_fighter
-from mordheim_construction.selection import available_special_rules
 from mordheim_core.models import Characteristics, DuelContext, FighterBuild, LocalParticipant
-from mordheim_knowledge.loader import knowledge_root
 
-ROOT = knowledge_root()
 DARK_MAJESTY = "band--von-carstein-power-dark-majesty"
 MOB = "raging-peasants--mob"
 SONGSTER = "band--rememberer-skills"
-BATTLE_TONGUE = "band--norse-special-skills-battle-tongue"
-#: Supplied current state of a Hero that is its warband's actual leader.
-LEADER_STATE = "condition.current-warband-leader"
 
 
 def canonical(band, profile, weapon="weapon.fist", *, collection="mordheim", **options):
@@ -236,80 +226,3 @@ def test_a_supplied_exempting_hero_skips_the_conditional_stupidity_test():
                                            {"key": "round.0.first.stupidity.1", "value": 6}]),
                                StrictDecisions([]))
     assert failed.first.stupidity_failed
-
-
-# --- Battle Tongue ---------------------------------------------------------
-
-@pytest.mark.eligibility
-def test_battle_tongue_reaches_only_the_current_leader_and_widens_to_twelve():
-    jarl = canonical("lustria-norse", "jarl", "weapon.fist", collection="trollheim",
-                     special_rule_ids=(BATTLE_TONGUE,))
-    # The intact native route: the Jarl prints the band's Leader rule and needs
-    # no supplied state to keep his ordinary access to the skill.
-    assert {"mechanic.leader-six", "mechanic.leader-twelve"} <= set(jarl.global_effects.tags)
-    member = led("lustria-norse", "bondsmen", 6, collection="trollheim")
-    # Ten inches: the widened radius reaches, an unskilled leader's six does not.
-    borrowed = leadership_test(member, (("jarl", jarl, 10),), (3, 4),
-                               [{"key": "probe.leader.jarl", "value": True}])
-    assert borrowed is True
-    plain = canonical("lustria-norse", "jarl", "weapon.fist", collection="trollheim")
-    assert "mechanic.leader-twelve" not in plain.global_effects.tags
-    assert leadership_test(member, (("jarl", plain, 10),), (3, 4)) is False
-    # The printed radius is twelve, not unlimited: at thirteen inches the
-    # skilled leader offers nothing and the member's own six decides.
-    assert leadership_test(member, (("jarl", jarl, 13),), (3, 4)) is False
-
-
-@pytest.mark.eligibility
-def test_battle_tongue_reaches_another_hero_supplied_as_the_current_leader():
-    """The printed recipient is a state, not a profile: another eligible Norse
-    Hero the caller supplies as the actual current leader takes the skill."""
-    supplied = canonical("lustria-norse", "berserkers", "weapon.fist", collection="trollheim",
-                         special_rule_ids=(BATTLE_TONGUE,), condition_ids=(LEADER_STATE,))
-    # The position carries the Leader rule; the skill widens that rule and never
-    # grants a Leader rule of its own.
-    assert {"mechanic.leader-six", "mechanic.leader-twelve"} <= set(supplied.global_effects.tags)
-    member = led("lustria-norse", "bondsmen", 6, collection="trollheim")
-    # Ten inches: the widened radius reaches, the position's printed six does not.
-    borrowed = leadership_test(member, (("berserker", supplied, 10),), (3, 4),
-                               [{"key": "probe.leader.berserker", "value": True}])
-    assert borrowed is True
-    # The same supplied leader without the skill keeps the position's own six.
-    position = canonical("lustria-norse", "berserkers", "weapon.fist", collection="trollheim",
-                         condition_ids=(LEADER_STATE,))
-    assert "mechanic.leader-six" in position.global_effects.tags
-    assert "mechanic.leader-twelve" not in position.global_effects.tags
-    assert leadership_test(member, (("berserker", position, 10),), (3, 4)) is False
-    # Negative control: the same Hero without the supplied position is refused by
-    # the shared recipient decision, not by a static profile list.
-    with pytest.raises(ValueError, match="not available"):
-        canonical("lustria-norse", "berserkers", "weapon.fist", collection="trollheim",
-                  special_rule_ids=(BATTLE_TONGUE,))
-
-
-@pytest.mark.eligibility
-def test_battle_tongue_is_not_selectable_by_a_member_who_is_not_the_leader():
-    # A Berserker is a profile that holds the band's other Norse skills; the
-    # printed clause reserves this one to the current Leader alone, so the
-    # canonical selection/compile route refuses him.
-    for profile in ("berserkers", "bondsmen", "wulfen"):
-        with pytest.raises(ValueError, match="not available"):
-            canonical("lustria-norse", profile, "weapon.fist", collection="trollheim",
-                      special_rule_ids=(BATTLE_TONGUE,))
-
-
-@pytest.mark.eligibility
-def test_battle_tongue_is_offered_only_while_the_leader_state_is_supplied():
-    """The offer list reads the same supplied state the compiler does."""
-    for profile in ("berserkers", "bondsmen", "wulfen"):
-        assert BATTLE_TONGUE not in available_special_rules(
-            FighterBuild("mordheim", band_id="lustria-norse", profile_id=profile,
-                         collection="trollheim", main_weapon_id="weapon.fist"), ROOT)
-        assert BATTLE_TONGUE in available_special_rules(
-            FighterBuild("mordheim", band_id="lustria-norse", profile_id=profile,
-                         collection="trollheim", main_weapon_id="weapon.fist",
-                         condition_ids=(LEADER_STATE,)), ROOT)
-    # The native Leader keeps his ordinary offer with no supplied state at all.
-    assert BATTLE_TONGUE in available_special_rules(
-        FighterBuild("mordheim", band_id="lustria-norse", profile_id="jarl",
-                     collection="trollheim", main_weapon_id="weapon.fist"), ROOT)

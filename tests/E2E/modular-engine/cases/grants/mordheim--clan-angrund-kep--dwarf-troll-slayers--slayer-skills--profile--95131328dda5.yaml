@@ -72,6 +72,10 @@
   initial_state: {first: {attacks: 0}, second: {attacks: 0}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
+  # Both fighters print the same Initiative, so the order is decided by the tie die before the
+  # (empty) attack pools; the observation stays the admitted skill selection.
+  rolls:
+    - {key: round.0.priority-tie, value: 3}
   expect_final: {rounds_executed: 1}
 
 - audit_id: rule/mordheim/clan-angrund-kep/dwarf-troll-slayers--slayer-skills/profile.skill-access

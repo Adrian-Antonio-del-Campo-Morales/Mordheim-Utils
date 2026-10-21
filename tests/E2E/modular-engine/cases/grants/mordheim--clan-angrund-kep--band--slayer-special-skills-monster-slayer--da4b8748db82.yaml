@@ -133,12 +133,12 @@
       characteristics: {weapon_skill: 3, strength: 3, toughness: 6, wounds: 3, initiative: 1, attacks: 1}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
-  # The troll slayer's dagger lets the opponent save at 6+ (`target_armour_bonus` 1 over
-  # the unarmoured 7), so the declared wound is followed by that save die.
+  # The same declared wound face fails here: without the grant the S3 dagger needs 5+ against
+  # Toughness 6, so the roll of 4 wounds nothing and no armour die is ever asked for - the absence
+  # of the save die is part of the control.
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
-    - {key: round.0.first.attack.0.armour, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.damage: 0, state.second.wounds: 3}
