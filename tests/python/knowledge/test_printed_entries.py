@@ -76,14 +76,14 @@ def page(tmp_path) -> pe.HtmlCorpus:
     return pe.HtmlCorpus(path)
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_html_entries_are_split_by_the_document_structure(page) -> None:
     """Una entrada por `div.fighter`: la navegación no es una entrada."""
     assert [entry["heading"] for entry in page.entries()] == [
         "\u201cBusty\u201d Gwen", "The Dark Jester in Mordheim"]
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_html_entry_reads_only_its_own_block(page) -> None:
     """La tarifa y el rating del vecino no cuentan (el defecto que 2A tenía)."""
     gwen, jester = page.entries()
@@ -94,7 +94,7 @@ def test_html_entry_reads_only_its_own_block(page) -> None:
     assert pe.ratings_in(jester["text"]) == [55]
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_html_stat_row_is_read_in_cell_order(page) -> None:
     """La fila se lee por celdas: el orden de la tabla, no el de la prosa."""
     gwen, jester = page.entries()
@@ -102,7 +102,7 @@ def test_html_stat_row_is_read_in_cell_order(page) -> None:
     assert pe.stat_rows(jester) == ["433332627"]
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_a_two_digit_characteristic_is_kept() -> None:
     """Ld 10 no cabe en nueve caracteres: truncar la fila perdería la última."""
     entry = {"line_words": [
@@ -133,7 +133,7 @@ DOCUMENT = """<!doctype html><html><body>
 """
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_document_reads_headings_with_their_span() -> None:
     """El tramo de un encabezado es el suyo y el de sus descendientes, no más."""
     doc = pe.HtmlDocument(DOCUMENT)
@@ -148,7 +148,7 @@ def test_document_reads_headings_with_their_span() -> None:
     assert doc.text(*doc.span(0)).count("Equipment List") == 3  # el padre y sus hijos
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_document_rows_are_read_by_cells() -> None:
     """Las filas llegan con sus celdas en el orden de las columnas y su tabla."""
     doc = pe.HtmlDocument(DOCUMENT)
@@ -162,7 +162,7 @@ def test_document_rows_are_read_by_cells() -> None:
     assert doc.rows(*doc.span(2))[0].cells == ("Spear", "5 gc")
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_document_finds_a_heading_by_level_and_text() -> None:
     doc = pe.HtmlDocument(DOCUMENT)
     assert doc.heading_span_of(2, "Special Rules") is not None
@@ -189,7 +189,7 @@ PROFILES = """<!doctype html><html><body>
 </body></html>"""
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_characteristic_columns_are_read_by_their_titles() -> None:
     """La tabla se reconoce por los títulos de sus columnas, no por su primera fila."""
     assert pe.characteristic_columns(
@@ -204,7 +204,7 @@ def test_characteristic_columns_are_read_by_their_titles() -> None:
     assert pe.characteristic_columns(("M", "WS", "BS", "S", "T", "W", "I", "A")) is None
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_cell_value_folds_the_dash_the_page_prints() -> None:
     """Las páginas imprimen el guion largo para la característica que no hay."""
     assert pe.cell_value("\u2013") == "-"
@@ -212,7 +212,7 @@ def test_cell_value_folds_the_dash_the_page_prints() -> None:
     assert pe.cell_value(" 4 ") == "4"
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_profile_row_takes_the_name_it_prints_or_leaves_it_to_the_table() -> None:
     """La fila lleva su nombre en la primera columna, o no lo lleva."""
     header = ("Profile", "M", "WS", "BS", "S", "T", "W", "I", "A", "Ld")
@@ -224,7 +224,7 @@ def test_profile_row_takes_the_name_it_prints_or_leaves_it_to_the_table() -> Non
     assert pe.profile_row(("Item", "Cost"), ("Sword", "10 gc")) is None
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_profile_tables_read_every_row_of_every_characteristic_table() -> None:
     """La tabla de perfiles se lee del documento: una celda por columna."""
     assert pe.profile_tables(pe.HtmlDocument(PROFILES)) == [
@@ -234,7 +234,7 @@ def test_profile_tables_read_every_row_of_every_characteristic_table() -> None:
     ]
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_stat_header_reads_the_table_that_titles_its_columns() -> None:
     """La cabecera de la tabla, con el título «Profile» delante o sin él."""
     words = [(0, 0, word) for word in "Profile M WS BS S T W I A Ld".split()]
@@ -256,42 +256,42 @@ def physical(*texts: str, top: int = 0) -> dict:
     return {"text": " ".join(texts), "top": top, "left": 0, "words": words, "spans": spans}
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_cells_split_the_line_where_the_gap_is_a_column() -> None:
     """La línea se corta donde el hueco es de columna; sin geometría es una sola."""
     assert [cell.text for cell in pe.cells(physical("Dagger", "2 gc"))] == ["Dagger", "2 gc"]
     assert [cell.text for cell in pe.cells({"text": "Dagger 2 gc"})] == ["Dagger 2 gc"]
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_price_row_reads_the_name_and_the_price_of_its_own_cell() -> None:
     """Dos listas en la misma línea: cada ítem con su tarifa, no la del vecino."""
     rows = pe.price_rows([physical("Dagger", "2 gc", "Sword", "10 gc")])
     assert [(row["name"], row["prices"]) for row in rows] == [("Dagger", [2]), ("Sword", [10])]
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_price_row_reads_the_name_that_covers_it_above() -> None:
     """El nombre cierra una línea y la tarifa abre la siguiente (celdas partidas)."""
     row = pe.price_rows([physical("Bramble"), physical("2 gc")])[0]
     assert (row["name"], row["prices"], row["above"]) == ("Bramble", [2], "Bramble")
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_price_row_without_a_name_is_not_baptised_by_its_neighbour() -> None:
     """Una cifra suelta se devuelve sin nombre, no con el de la línea de al lado."""
     rows = pe.price_rows([physical("Bramble"), physical("2 gc"), physical("42 gc", top=400)])
     assert (rows[1]["name"], rows[1]["prices"]) == ("", [42])
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_price_row_keeps_the_formula_it_prints() -> None:
     """«75+5D6 gold crowns» guarda su cifra base y se declara fórmula."""
     row = pe.price_rows([physical("Ratling Gun", "75+5D6 gold crowns")])[0]
     assert (row["name"], row["prices"], row["formula"]) == ("Ratling Gun", [75], True)
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_price_rows_read_every_row_the_line_prints() -> None:
     """La lista de tres columnas pone tres filas a la misma altura, cada una la suya."""
     rows = pe.price_rows([physical("Axe 5 gc", "Gromril Weapon 3x the cost",
@@ -300,14 +300,14 @@ def test_price_rows_read_every_row_the_line_prints() -> None:
         ("Axe", [5], False), ("Gromril Weapon", [], True), ("Dagger 1st free", [2], False)]
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_price_row_reads_the_multiplier_that_rates_with_another_price() -> None:
     """«Gromril Weapon 3x the cost»: la cifra multiplica, no tasa, y el nombre es de la celda."""
     row = pe.price_rows([physical("Gromril Weapon 3x the cost")])[0]
     assert (row["name"], row["prices"], row["formula"]) == ("Gromril Weapon", [], True)
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_price_row_reads_the_multiplier_written_the_other_way_round() -> None:
     """«Ithilmar Weapon» con «Price x 2*» debajo: el nombre es el que la cubre."""
     row = pe.price_rows([physical("Ithilmar Weapon"), physical("Price x 2*")])[0]
@@ -326,7 +326,7 @@ COSTS = """<!doctype html><html><body>
 </body></html>"""
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_list_rows_read_a_multiplier_and_not_the_column_headers() -> None:
     """La fila de la lista se reconoce por su tasa; el encabezado de columna no es una."""
     assert pe.list_rows(pe.HtmlDocument(COSTS)) == [("Ithilmar weapon *", "2 x price"),
@@ -364,7 +364,7 @@ def test_ledger_keeps_one_measure_per_check() -> None:
     assert "b 0/0 filas" in ledger.line()
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_text_entries_start_at_the_declared_anchor(tmp_path) -> None:
     """En el texto de 2A cada entrada abre con su `Source:` y su nombre encima."""
     path = tmp_path / "dramatis-grade-2a.txt"
@@ -401,7 +401,7 @@ def printed(**kwargs) -> dict:
     return entry(**kwargs)
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.phase1_kb_contracts
 def test_a_printed_fee_in_another_currency_is_a_finding() -> None:
     """La divisa impresa se compara: 75 warp tokens no son 75 coronas."""
     coverage = pe.Coverage()
@@ -411,7 +411,7 @@ def test_a_printed_fee_in_another_currency_is_a_finding() -> None:
     assert any("warp tokens" in finding for finding in coverage.report()["findings"])
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.phase1_kb_contracts
 def test_a_fee_that_neither_side_declares_verifies_by_absence() -> None:
     """Gwen cobra por el escenario, no una tarifa: la ausencia es el cotejo."""
     coverage = pe.Coverage()
@@ -419,7 +419,7 @@ def test_a_fee_that_neither_side_declares_verifies_by_absence() -> None:
     assert "fee" in coverage.verified
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.phase1_kb_contracts
 def test_a_datum_only_one_side_declares_is_a_note_not_a_finding() -> None:
     """Lo que no se pudo comparar baja la cobertura y se explica; no es un verde."""
     coverage = pe.Coverage()
@@ -430,7 +430,7 @@ def test_a_datum_only_one_side_declares_is_a_note_not_a_finding() -> None:
     assert any("no imprime tarifa" in note for note in report["notes"])
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_a_stat_row_with_surplus_digits_from_the_shared_line_still_matches() -> None:
     """El Warrior-Priest imprime su fila y un `3"` de la prosa contigua en la misma línea."""
     coverage = pe.Coverage()
@@ -446,7 +446,7 @@ def test_a_stat_row_with_surplus_digits_from_the_shared_line_still_matches() -> 
     assert coverage.report()["findings"] == []
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.phase1_kb_contracts
 def test_a_different_stat_row_is_a_finding() -> None:
     coverage = pe.Coverage()
     pe.compare(entry("", line_words=[
@@ -459,7 +459,7 @@ def test_a_different_stat_row_is_a_finding() -> None:
     assert any("stats impresas" in finding for finding in coverage.report()["findings"])
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.phase1_kb_contracts
 def test_a_rule_is_compared_one_by_one() -> None:
     """Una etiqueta que no aparece es un hallazgo, no lo tapa otra que sí."""
     coverage = pe.Coverage()
@@ -470,7 +470,7 @@ def test_a_rule_is_compared_one_by_one() -> None:
     assert not any("'Fear'" in finding for finding in findings)
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.phase1_kb_contracts
 def test_an_editorial_label_is_a_note_with_its_reason() -> None:
     """La etiqueta que el árbol escribe y la fuente imprime con otro nombre."""
     coverage = pe.Coverage()
@@ -484,7 +484,7 @@ def test_an_editorial_label_is_a_note_with_its_reason() -> None:
     assert any("May Be Hired" in note for note in report["notes"])
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.phase1_kb_contracts
 def test_two_sources_must_both_agree() -> None:
     """El paquete tiene que coincidir con cada fuente que imprime el dato."""
     agree, disagree = pe.Coverage(), pe.Coverage()
@@ -496,7 +496,7 @@ def test_two_sources_must_both_agree() -> None:
     assert any("tarifa impresa" in finding for finding in merged.report()["findings"])
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.phase1_kb_contracts
 def test_merge_is_the_identity_for_one_source() -> None:
     single = pe.Coverage()
     pe.compare(entry("30 gold crowns to hire", line_words=[
@@ -511,7 +511,7 @@ def test_merge_is_the_identity_for_one_source() -> None:
 
 # La tarifa que el paquete declara y el índice del documento
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_package_fee_reads_the_printed_expression() -> None:
     """El contrato guarda la expresión impresa cuando no se cobra en coronas."""
     assert pe.package_fee({"resources": {"gold_crowns": {"cost": 20}}}) == pe.Fee(20, "gold crowns")
@@ -522,7 +522,7 @@ def test_package_fee_reads_the_printed_expression() -> None:
     assert pe.package_fee(None) is None
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_fee_index_reads_both_contract_blocks(tmp_path) -> None:
     path = tmp_path / "hired-swords-and-dramatis.yaml"
     path.write_text(yaml.safe_dump({

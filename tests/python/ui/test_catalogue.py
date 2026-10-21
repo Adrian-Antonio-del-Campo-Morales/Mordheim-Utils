@@ -9,7 +9,7 @@ from mordheim_knowledge.loader import load_skills
 import pytest as pytest
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase7_warband
 def test_the_preparation_picker_lists_the_trading_post_consumables_its_bearer_may_use():
     """The picker reads the same permission the compiled fighter applies."""
     catalogue = CombatCatalogue()
@@ -28,7 +28,7 @@ def test_the_preparation_picker_lists_the_trading_post_consumables_its_bearer_ma
 
 
 # The read model is what the UI offers: profiles, equipment and skills.
-@pytest.mark.eligibility
+@pytest.mark.phase7_warband
 def test_catalogue_exposes_kb_profiles_and_profile_equipment():
     catalogue = CombatCatalogue()
     choices = catalogue.profiles("mordheim", "mercenaries")
@@ -57,7 +57,7 @@ def test_catalogue_exposes_kb_profiles_and_profile_equipment():
     assert catalogue.profile_rules(captain)[0].name == "Leader"
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase7_warband
 def test_profile_keeps_all_general_skill_categories_visible():
     catalogue = CombatCatalogue()
     profile = next(
@@ -75,7 +75,7 @@ def test_profile_keeps_all_general_skill_categories_visible():
     assert not inaccessible.runtime_available
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase7_warband
 def test_mordheim_amazons_have_no_special_skills():
     catalogue = CombatCatalogue()
     priestess = next(
@@ -86,7 +86,7 @@ def test_mordheim_amazons_have_no_special_skills():
     assert not [skill for skill in catalogue.skills(priestess) if skill.category == "special"]
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase7_warband
 def test_catalogue_exposes_runtime_options_for_free_selection():
     catalogue = CombatCatalogue()
 
@@ -95,7 +95,7 @@ def test_catalogue_exposes_runtime_options_for_free_selection():
     assert {skill.id for skill in catalogue.skills(None)} >= {"skill.mighty-blow", "skill.step-aside"}
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase7_warband
 def test_catalogue_filters_bands_by_the_legacy_collection_grades():
     catalogue = CombatCatalogue()
 
@@ -108,7 +108,7 @@ def test_catalogue_filters_bands_by_the_legacy_collection_grades():
     assert all("trollheim" in package.band.get("categories", ()) for package in trollheim)
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase7_warband
 def test_catalogue_limits_special_skills_to_the_selected_warband():
     catalogue = CombatCatalogue()
     amazon = catalogue.profiles("mordheim", "amazons-lustria")[0]
@@ -138,7 +138,7 @@ def test_catalogue_limits_special_skills_to_the_selected_warband():
     assert not bellowing_roar.runtime_available
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase7_warband
 def test_catalogue_uses_a_trollheim_band_canonical_family_for_special_skills():
     catalogue = CombatCatalogue()
     lizardman = next(
@@ -151,7 +151,7 @@ def test_catalogue_uses_a_trollheim_band_canonical_family_for_special_skills():
     }
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase7_warband
 def test_catalogue_exposes_executable_warband_skills_in_the_skill_list():
     catalogue = CombatCatalogue()
     pit_king = next(
@@ -167,7 +167,7 @@ def test_catalogue_exposes_executable_warband_skills_in_the_skill_list():
     } <= rules
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase7_warband
 def test_catalogue_exposes_new_first_batch_choices_and_pirate_mercenary_equipment():
     catalogue = CombatCatalogue()
     horned = next(choice for choice in catalogue.profiles("mordheim", "horned-hunters") if choice.profile_id == "horned-hunter")
@@ -179,7 +179,7 @@ def test_catalogue_exposes_new_first_batch_choices_and_pirate_mercenary_equipmen
     assert ("armour.heavy-armour", "Heavy Armour") in catalogue.armours(pirate)
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase7_warband
 def test_profile_lists_every_special_skill_from_its_band_only():
     catalogue = CombatCatalogue()
 
@@ -196,7 +196,7 @@ def test_profile_lists_every_special_skill_from_its_band_only():
                 assert skill.rule_id in warband_rule_ids
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase7_warband
 def test_free_selection_lists_every_warband_skill_but_does_not_grant_band_access():
     catalogue = CombatCatalogue()
     skills = catalogue.skills(None)
@@ -215,7 +215,7 @@ def test_free_selection_lists_every_warband_skill_but_does_not_grant_band_access
 
 
 # Main claim: listing is not admission. The compiled missile limit is secondary.
-@pytest.mark.eligibility
+@pytest.mark.phase7_warband
 def test_free_selection_listing_never_grants_band_access_to_a_listed_rule():
     """Negative test: listing a warband skill must not make it selectable outside its band.
 
@@ -238,7 +238,7 @@ def test_free_selection_listing_never_grants_band_access_to_a_listed_rule():
         ))
 
 
-@pytest.mark.presentation
+@pytest.mark.phase7_warband
 def test_selected_band_omits_the_redundant_warband_name_from_special_skills():
     catalogue = CombatCatalogue()
     raider = catalogue.profiles("mordheim", "arabian-tomb-raiders")[0]
@@ -250,7 +250,7 @@ def test_selected_band_omits_the_redundant_warband_name_from_special_skills():
     assert hit_and_run.name == "Hit and Run"
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase7_warband
 def test_battle_monk_special_skills_respect_the_skill_table_and_rule_eligibility():
     catalogue = CombatCatalogue()
     profiles = {
@@ -268,7 +268,7 @@ def test_battle_monk_special_skills_respect_the_skill_table_and_rule_eligibility
 
 
 # The user picks a displayed skill identity; it must map to the band rule id.
-@pytest.mark.presentation
+@pytest.mark.phase7_warband
 def test_warband_skill_ui_identity_maps_to_the_selected_band_rule():
     catalogue = CombatCatalogue()
     saurus = next(
@@ -286,7 +286,7 @@ def test_warband_skill_ui_identity_maps_to_the_selected_band_rule():
     assert battle_roar.id in catalogue.skill_ui_ids(saurus, ordinary, special)
 
 
-@pytest.mark.compilation
+@pytest.mark.phase7_warband
 def test_profile_build_can_apply_user_edited_characteristics():
     fighter = compile_fighter(FighterBuild(
         "mordheim", Characteristics(5, 4, 4, 2, 5, 2),

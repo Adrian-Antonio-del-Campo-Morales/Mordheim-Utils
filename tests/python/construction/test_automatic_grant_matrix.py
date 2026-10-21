@@ -25,7 +25,7 @@ import pytest
 from mordheim_construction.compiler import compile_fighter
 from mordheim_core.models import FighterBuild
 
-pytestmark = pytest.mark.compilation
+pytestmark = pytest.mark.phase2_construction
 
 COLLECTION = "mordheim"
 

@@ -20,7 +20,7 @@ import yaml
 import pytest
 
 
-pytestmark = pytest.mark.knowledge_integrity
+pytestmark = pytest.mark.phase1_kb_contracts
 
 ROOT = Path(__file__).resolve().parents[4]
 CATALOGUE = ROOT / "sources/knowledge/catalog/hirelings"

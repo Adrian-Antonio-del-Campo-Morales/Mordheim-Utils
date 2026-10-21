@@ -15,7 +15,7 @@ from pathlib import Path
 import pytest
 import yaml
 
-pytestmark = pytest.mark.knowledge_integrity
+pytestmark = pytest.mark.phase1_kb_contracts
 
 ROOT = Path(__file__).resolve().parents[3] / "sources" / "knowledge"
 ITEMS = ROOT / "catalog" / "items"

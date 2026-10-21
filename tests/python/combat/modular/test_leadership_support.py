@@ -84,7 +84,7 @@ def leadership_test(recipient, providers, faces, decisions=None, reroll_faces=()
 
 # --- Dim-Witted ------------------------------------------------------------
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_dim_witted_leader_lends_his_seven_within_six_inches():
     leader = canonical("adventurers-kaz", "barbarian", "weapon.fist")
     assert {"mechanic.leader-six", "mechanic.dim-witted-leader"} <= set(leader.global_effects.tags)
@@ -101,7 +101,7 @@ def test_dim_witted_leader_lends_his_seven_within_six_inches():
 
 # --- Dark Majesty ----------------------------------------------------------
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_dark_majesty_widens_the_supplied_leader_radius_to_twelve():
     vampire = canonical("chaos-streets-undead-bloodlines", "von-carstein-vampire",
                         "weapon.fist", collection="trollheim", special_rule_ids=(DARK_MAJESTY,))
@@ -119,7 +119,7 @@ def test_dark_majesty_widens_the_supplied_leader_radius_to_twelve():
 
 # --- Mob -------------------------------------------------------------------
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_mob_adds_the_supplied_ally_count_and_denies_the_leader_rule():
     peasant = led("battle-monks-of-cathay", "raging-peasants", 5,
                   trait_overrides={"mob_allies": 2})
@@ -136,7 +136,7 @@ def test_mob_adds_the_supplied_ally_count_and_denies_the_leader_rule():
 
 # --- Songster --------------------------------------------------------------
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_songster_rerolls_one_failed_leadership_test_at_plus_one():
     bard = canonical("dwarf-slayer-cult-web", "rememberer", "weapon.fist",
                      special_rule_ids=(SONGSTER,))
@@ -160,7 +160,7 @@ def test_songster_rerolls_one_failed_leadership_test_at_plus_one():
 
 # --- Poetry ----------------------------------------------------------------
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_supplied_victorious_poetry_raises_the_leaders_first_test_once():
     # The Scholar produces the campaign qualification; it does not receive
     # the leader's supplied bonus automatically on its own profile.
@@ -204,7 +204,7 @@ def test_supplied_victorious_poetry_raises_the_leaders_first_test_once():
 
 # --- Shared conditional Stupidity ------------------------------------------
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_a_supplied_exempting_hero_skips_the_conditional_stupidity_test():
     ogre = canonical("skaven-clan-eshin", "rat-ogre", "weapon.fist",
                      condition_ids=("condition.stupidity-exempt",))

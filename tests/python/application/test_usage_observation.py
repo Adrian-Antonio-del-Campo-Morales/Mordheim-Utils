@@ -11,7 +11,7 @@ from mordheim_core.models import Characteristics, FighterBuild, SimulationCancel
 
 # The whole file proves the comparison service's telemetry payloads (resolution,
 # timings, cancellation), not the duels it measures.
-pytestmark = pytest.mark.workflow
+pytestmark = pytest.mark.phase7_warband
 
 
 def build(weapon="weapon.dagger"):

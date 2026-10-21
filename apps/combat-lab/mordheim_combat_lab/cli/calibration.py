@@ -236,7 +236,7 @@ def run_calibration(pair_set: str = "full", *, seed: int = 7,
         excluded_pairs[backend] = {}
         for pair in _pairs(name):
             try:
-                require_optimized_support(pair[0], pair[1])
+                require_optimized_support(pair[0], pair[1], backend=backend)
             except ValueError as error:
                 excluded_pairs[backend][pair[3]] = str(error)
                 log(f"{backend}: excluding {pair[3]}: {error}")

@@ -56,7 +56,7 @@ PRINTED_RECIPIENTS = [
 ]
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 @pytest.mark.parametrize("band,profile,item,expected", PRINTED_RECIPIENTS,
                          ids=lambda value: str(value))
 def test_printed_entry_recipients_decide_the_explicit_selection(band, profile, item, expected):
@@ -71,7 +71,7 @@ def test_printed_entry_recipients_decide_the_explicit_selection(band, profile, i
         assert expected in issues
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_f074_rulings_keep_knights_and_promoted_heroes_distinct_from_henchmen():
     catalogue = _catalogue()
     for profile in ("paragon", "gallant", "redeemed-knights", "pilgrims"):
@@ -90,7 +90,7 @@ def test_f074_rulings_keep_knights_and_promoted_heroes_distinct_from_henchmen():
                 assert denied == (profile != "hunt-master" and not variant_ids)
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_printed_recipients_reach_the_compiler_not_only_the_picker():
     # A direct build that never passes through the picker is judged by the same
     # shared decision: the hero-only katana of the shared pirate list reaches its
@@ -106,7 +106,7 @@ def test_printed_recipients_reach_the_compiler_not_only_the_picker():
         ))
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_slayer_vow_refuses_armour_and_missile_weapons_to_slayers_only():
     # The printed note on the armour, shield, helmet and pistol rows repeats the
     # restriction each Slayer profile carries, so it applies to the Slayer
@@ -119,7 +119,7 @@ def test_slayer_vow_refuses_armour_and_missile_weapons_to_slayers_only():
         assert _possession_issues("dwarf-slayers-kaz", profile, "helmet") == []
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_profile_characteristics_projects_selected_bonuses():
     ordinary = compile_fighter(FighterBuild(
         "mordheim", band_id="mercenaries", profile_id="mercenary-captain",
@@ -131,7 +131,7 @@ def test_profile_characteristics_projects_selected_bonuses():
     assert middenheimer.characteristics.strength == ordinary.characteristics.strength + 1
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_profile_fist_overrides_the_unarmed_profile_fallback():
     peasant = compile_fighter(FighterBuild(
         "mordheim", band_id="battle-monks-of-cathay", profile_id="raging-peasants",
@@ -141,7 +141,7 @@ def test_profile_fist_overrides_the_unarmed_profile_fallback():
     assert peasant.main_weapon.target_armour_bonus == 1
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_profile_natural_attacks_selects_the_natural_weapon():
     warhound = compile_fighter(FighterBuild(
         "mordheim", band_id="beastmen-raiders", profile_id="warhounds-of-chaos",
@@ -150,7 +150,7 @@ def test_profile_natural_attacks_selects_the_natural_weapon():
     assert "weapon.fist" not in warhound.main_weapon.tags
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_profile_random_characteristics_preserves_the_exact_dice_contract():
     condemned = compile_fighter(FighterBuild(
         "mordheim", band_id="marauders-of-chaos", profile_id="condemned",
@@ -163,7 +163,7 @@ def test_profile_random_characteristics_preserves_the_exact_dice_contract():
     )
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_profile_equipment_restrictions_have_a_legal_and_an_illegal_case():
     compile_fighter(FighterBuild(
         "mordheim", band_id="horned-hunters", profile_id="priest-of-taal",
@@ -175,7 +175,7 @@ def test_profile_equipment_restrictions_have_a_legal_and_an_illegal_case():
         ))
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_profile_armour_prohibition_covers_the_pirate_equipment_lists():
     # Every profile printed with "May not wear armour." offers armour suits on
     # its own equipment list, so the restriction must refuse them at construction
@@ -198,7 +198,7 @@ def test_profile_armour_prohibition_covers_the_pirate_equipment_lists():
             ))
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_pirate_armour_prohibition_leaves_hand_held_defences_selectable():
     # "May not wear armour" forbids armour suits, not the shield and helmet the
     # same printed list offers, so the restriction must use the armour-suit token.
@@ -210,7 +210,7 @@ def test_pirate_armour_prohibition_leaves_hand_held_defences_selectable():
 
 # Primary: the skill list admits and refuses the right profiles. The granted
 # Strength is the secondary guarantee of the admitted choice.
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_profile_skill_access_has_a_rejected_and_granted_strength_skill():
     with pytest.raises(ValueError, match="skills are not available"):
         compile_fighter(FighterBuild(

@@ -15,7 +15,7 @@ def fighter():
     return compile_fighter(FighterBuild("mordheim", Characteristics(3, 3, 3, 2, 3, 1)))
 
 
-@pytest.mark.data_contract
+@pytest.mark.phase1_kb_contracts
 def test_six_positional_stats_remain_valid_and_unknown_is_explicit():
     stats = Characteristics(3, 3, 3, 1, 3, 1)
     assert stats.movement is stats.leadership is None
@@ -30,13 +30,13 @@ def test_six_positional_stats_remain_valid_and_unknown_is_explicit():
 
 @pytest.mark.parametrize("value", [-1, True, 1.5])
 @pytest.mark.parametrize("name", ["movement", "leadership"])
-@pytest.mark.data_contract
+@pytest.mark.phase1_kb_contracts
 def test_invalid_contextual_stat_is_rejected(name, value):
     with pytest.raises(ValueError):
         Characteristics(3, 3, 3, 1, 3, 1, **{name: value})
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_canonical_stats_survive_player_advances_and_explicit_overrides():
     build = FighterBuild("mordheim", band_id="mercenaries", profile_id="mercenary-captain")
     canonical = compile_fighter(build)
@@ -50,7 +50,7 @@ def test_canonical_stats_survive_player_advances_and_explicit_overrides():
     assert (improved.characteristics.movement, improved.characteristics.leadership) == (5, 9)
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_local_identity_does_not_replace_canonical_identity():
     unit = fighter()
     context = DuelContext(first_id="a", second_id="b", nearby=(LocalParticipant("helper", "first", unit),),
@@ -77,7 +77,7 @@ def test_local_identity_does_not_replace_canonical_identity():
     {"charging": ()}, {"active_participant": "unknown"},
     {"terrain": (("unknown", "difficult"),)},
 ])
-@pytest.mark.data_contract
+@pytest.mark.phase1_kb_contracts
 def test_invalid_or_contradictory_facts_fail(changes):
     with pytest.raises(ValueError):
         DuelContext(**changes)
@@ -85,7 +85,7 @@ def test_invalid_or_contradictory_facts_fail(changes):
 
 @pytest.mark.parametrize("charging,counts", [((), (1, 1)), (("first",), (2, 1)),
     (("second",), (1, 2)), (("first", "second"), (2, 2))])
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_real_round_consumes_charge_facts_and_independent_clock(charging, counts):
     unit = fighter()
     unit = replace(unit, global_effects=replace(unit.global_effects, charge_attacks_bonus=1))
@@ -100,7 +100,7 @@ def test_real_round_consumes_charge_facts_and_independent_clock(charging, counts
     assert result.state.context is state.context
 
 
-@pytest.mark.parity
+@pytest.mark.phase5_vectorized
 def test_context_free_and_empty_context_retain_rng_order_and_results():
     unit = fighter()
     from mordheim_combat.modular.duel import simulate_duel_reference
@@ -110,8 +110,12 @@ def test_context_free_and_empty_context_retain_rng_order_and_results():
     assert simulate_duel(request, backend="numpy") == simulate_duel(replace(request, context=DuelContext()), backend="numpy")
 
 
-@pytest.mark.parametrize("backend", ["numpy", "native"])
-@pytest.mark.parity
+#: Each backend item is classified by the backend it actually executes; the
+#: comparison run waits for that backend's own phase.
+@pytest.mark.parametrize("backend", [
+    pytest.param("numpy", marks=pytest.mark.phase5_vectorized),
+    pytest.param("native", marks=pytest.mark.phase6_native),
+])
 def test_real_pool_preserves_context(backend):
     from mordheim_combat.vectorized import available_backends, simulate_duel, simulate_duel_parallel
     from mordheim_combat_lab.application.settings import DuelExecutionSettings, simulate_battery
@@ -132,7 +136,7 @@ def test_real_pool_preserves_context(backend):
     assert simulate_duel_reference_parallel(unit, unit, 20, seed=13, maximum_rounds=3, workers=2, context=context) == simulate_duel_reference(unit, unit, 20, seed=13, maximum_rounds=3, context=context)
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase6_native
 def test_kernel_and_native_lowering_keep_named_optional_stats():
     from mordheim_combat.native._combat_compile import compile_duel
     unit = fighter()
@@ -148,7 +152,7 @@ def test_kernel_and_native_lowering_keep_named_optional_stats():
 
 
 
-@pytest.mark.architecture
+@pytest.mark.phase6_native
 def test_native_unavailable_is_an_explicit_error(monkeypatch):
     import builtins
     from mordheim_combat.vectorized import simulate_duel
@@ -163,7 +167,7 @@ def test_native_unavailable_is_an_explicit_error(monkeypatch):
         simulate_duel(DuelRequest(unit, unit, 1), backend="native")
 
 
-@pytest.mark.workflow
+@pytest.mark.phase5_vectorized
 def test_real_parallel_cancellation_is_propagated():
     from threading import Event
     from mordheim_combat.vectorized import simulate_duel_parallel

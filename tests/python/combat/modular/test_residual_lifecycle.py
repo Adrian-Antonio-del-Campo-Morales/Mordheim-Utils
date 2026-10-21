@@ -3,7 +3,7 @@ from dataclasses import replace
 
 import pytest
 
-pytestmark = pytest.mark.rule_behavior
+pytestmark = pytest.mark.phase3_rules
 
 from mordheim_combat.modular.rounds import resolve_round
 from mordheim_combat.modular.state import initialize_duel, initialize_fighter

@@ -20,16 +20,17 @@ CORPUS = load_corpus()
 
 
 def _primary_category(scenario):
-    """The guarantee a declaration proves, from its explicit expectation channel.
+    """The phase guarantee a declaration proves, from its expectation channel.
 
-    A scenario that declares a named refusal proves admission (``eligibility``);
-    every other declaration drives the real pipeline and asserts an observed
-    round/duel state, which is the connected product path (``end_to_end``).
+    A scenario that declares a named refusal proves admission
+    (``phase2_construction``); every other declaration drives the real modular
+    pipeline and asserts an observed round/duel state, which is the connected
+    modular path (``phase4_modular``).
     """
-    return "eligibility" if "expect_error" in scenario.case else "end_to_end"
+    return "phase2_construction" if "expect_error" in scenario.case else "phase4_modular"
 
 
-#: One explicit primary category per collected declaration, applied at the
+#: One explicit phase category per collected declaration, applied at the
 #: parametrisation point so selection never needs a manual name list.
 CORPUS_PARAMS = [
     pytest.param(scenario, id=scenario.test_id,
@@ -46,7 +47,7 @@ def test_declared_scenario(scenario):
         raise EvidenceMismatch(f"{scenario.test_id} ({scenario.source}): {error}") from error
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.phase4_modular
 def test_a_declared_scenario_fails_when_its_expectation_is_wrong():
     """A collected declaration is a real assertion, not a collection check."""
     scenario = next(item for item in CORPUS if item.case.get("expect_final"))
@@ -56,7 +57,7 @@ def test_a_declared_scenario_fails_when_its_expectation_is_wrong():
         check_case(case, knowledge_root())
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.phase4_modular
 def test_rejection_assertions_are_named_not_swallowed():
     """An expected refusal must be refused for the reason it declares.
 
@@ -81,7 +82,7 @@ def test_rejection_assertions_are_named_not_swallowed():
         check_case(accepted, knowledge_root())
 
 
-@pytest.mark.data_contract
+@pytest.mark.phase0_preflight
 def test_a_rejection_cannot_be_combined_with_an_observation():
     case = {**next(item for item in CORPUS if item.case.get("expect_error")).case,
             "expect_final": {"rounds_executed": 1}}
@@ -89,7 +90,7 @@ def test_a_rejection_cannot_be_combined_with_an_observation():
         check_case(case, knowledge_root())
 
 
-@pytest.mark.evidence
+@pytest.mark.phase0_preflight
 def test_declared_corpus_is_nonempty_and_unique():
     assert CORPUS, "the E2E corpus must declare at least one scenario"
     assert len({scenario.test_id for scenario in CORPUS}) == len(CORPUS)
@@ -101,7 +102,7 @@ def _write(tmp_path, documents):
     return path
 
 
-@pytest.mark.data_contract
+@pytest.mark.phase0_preflight
 def test_loader_rejects_unknown_scenario_fields(tmp_path):
     _write(tmp_path, [{
         "id": "s", "audit_id": "core/combat-order", "covers": ["charge-before-initiative"],
@@ -111,7 +112,7 @@ def test_loader_rejects_unknown_scenario_fields(tmp_path):
         load_corpus(tmp_path)
 
 
-@pytest.mark.data_contract
+@pytest.mark.phase0_preflight
 def test_loader_requires_audit_identity_covers_and_an_assertion(tmp_path):
     _write(tmp_path, [{"id": "s", "covers": ["c"], "expect_initial": {"a": 1}}])
     with pytest.raises(CorpusError, match="audit_id"):
@@ -126,7 +127,7 @@ def test_loader_requires_audit_identity_covers_and_an_assertion(tmp_path):
         load_corpus(tmp_path)
 
 
-@pytest.mark.data_contract
+@pytest.mark.phase0_preflight
 def test_loader_rejects_duplicate_scenario_identities(tmp_path):
     declaration = {"id": "s", "audit_id": "core/combat-order",
                    "covers": ["c"], "expect_initial": {"a": 1}}
@@ -135,7 +136,7 @@ def test_loader_rejects_duplicate_scenario_identities(tmp_path):
         load_corpus(tmp_path)
 
 
-@pytest.mark.data_contract
+@pytest.mark.phase0_preflight
 def test_loader_rejects_an_empty_rejection_expectation(tmp_path):
     _write(tmp_path, [{"id": "s", "audit_id": "core/combat-order", "covers": ["c"],
                        "expect_error": "  "}])
@@ -143,7 +144,7 @@ def test_loader_rejects_an_empty_rejection_expectation(tmp_path):
         load_corpus(tmp_path)
 
 
-@pytest.mark.data_contract
+@pytest.mark.phase0_preflight
 def test_loader_rejects_a_non_list_document(tmp_path):
     (tmp_path / "declarations.yaml").write_text("id: not-a-list\n", encoding="utf-8")
     with pytest.raises(CorpusError, match="must be a list"):

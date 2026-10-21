@@ -17,7 +17,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "tools" / "knowledg
 import clause_registry as tool
 
 
-@pytest.mark.persistence
+@pytest.mark.phase1_kb_contracts
 class RegisterToolsTest(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
@@ -29,7 +29,7 @@ class RegisterToolsTest(unittest.TestCase):
                         clause_text='Quoted "source"\nsecond line', clause_scope="YES",
                         semantic_contract="Printed contract", relation="independent",
                         parameters="{}", conditions="{}", consumer="[]", pending="{}",
-                        verification='["inspection"]', notes="Existing useful note")
+                        verification='["inspection"]', status='{"numpy":"pending","native":"pending"}', notes="Existing useful note")
         out = io.StringIO(newline="")
         writer = csv.DictWriter(out, fieldnames=tool.validator.FIELDS, lineterminator="\n")
         writer.writeheader()
@@ -101,6 +101,68 @@ class RegisterToolsTest(unittest.TestCase):
         request["replace_note_references"] = {"Useful note": "discard"}
         with self.assertRaisesRegex(ValueError, "delivery reference"):
             tool.prepare(self.path, [request])
+
+    def test_status_validation_and_explicit_scope_transition(self):
+        for status in ([], {"numpy": "pending"}, {"numpy": "wrong", "native": "pending"},
+                       {"numpy": [], "native": "pending"},
+                       {"numpy": "pending", "native": "pending", "other": "pending"}):
+            with self.subTest(status=status), self.assertRaises(ValueError):
+                tool.prepare(self.path, [{"id": "same-id", "clause_id": "1",
+                                          "set": {"status": status}}])
+        with self.assertRaises(ValueError):
+            tool.prepare(self.path, [{"id": "same-id", "clause_id": "1",
+                                      "set": {"clause_scope": "NO"}}])
+        package = tool.prepare(self.path, [{"id": "same-id", "clause_id": "1",
+                                           "set": {"clause_scope": "NO", "status": {}}}])
+        self.assertEqual(json.loads(tool.read(tool.candidate(self.raw, package))[1]["status"]), {})
+
+    def test_migration_conservation_idempotence_snapshot_and_old_packages(self):
+        rows = tool.read(self.raw)
+        rows[1]["clause_scope"] = "NO"
+        for ending in ("\n", "\r\n"):
+            out = io.StringIO(newline="")
+            writer = csv.DictWriter(out, fieldnames=tool.validator.FIELDS[:-1],
+                                    extrasaction="ignore", lineterminator=ending)
+            writer.writeheader()
+            writer.writerows(rows)
+            legacy = out.getvalue().encode("utf-8")
+            self.path.write_bytes(legacy)
+            package = tool.migration(self.path)
+            with contextlib.redirect_stdout(io.StringIO()):
+                tool.apply(self.path, package)
+            self.assertEqual(self.path.read_bytes(), legacy)
+            result = tool.candidate(legacy, package)
+            actual = tool.read(result)
+            self.assertEqual([{f: row[f] for f in tool.validator.FIELDS[:-1]}
+                              for row in actual], tool.read(legacy, legacy=True))
+            self.assertEqual(json.loads(actual[0]["status"]), {"numpy": "pending", "native": "pending"})
+            self.assertEqual(json.loads(actual[1]["status"]), {})
+            self.assertEqual(result.count(ending.encode()), legacy.count(ending.encode()))
+            with self.assertRaisesRegex(ValueError, "Concurrent change"):
+                tool.candidate(legacy + b"\n", package)
+            self.path.write_bytes(result)
+            changed = tool.prepare(self.path, [{"id": "same-id", "clause_id": "0",
+                "set": {"status": {"numpy": "implemented", "native": "blocked"}}}])
+            result = tool.candidate(result, changed)
+            self.path.write_bytes(result)
+            self.assertEqual(tool.candidate(result, tool.migration(self.path)), result)
+            with self.assertRaisesRegex(ValueError, "schema"):
+                tool.candidate(result, {"sha256": tool.digest(result), "changes": []})
+
+    def test_backend_query_filters_and_required_backend(self):
+        package = tool.prepare(self.path, [{"id": "same-id", "clause_id": "1",
+            "set": {"status": {"numpy": "implemented", "native": "blocked"}}},
+            {"id": "same-id", "clause_id": "2", "set": {"clause_scope": "NO", "status": {}}}])
+        self.path.write_bytes(tool.candidate(self.raw, package))
+        def query(*args):
+            return subprocess.run([sys.executable, "-X", "utf8", str(Path(tool.__file__)),
+                                   "--csv", str(self.path), "query", *args],
+                                  capture_output=True, text=True, encoding="utf-8")
+        result = query("--backend", "numpy", "--status", "implemented", "--fields", "clause_id,status")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout)[0]["clause_id"], "1")
+        self.assertEqual(json.loads(query("--backend", "native", "--clause-id", "2").stdout), [])
+        self.assertIn("--status requires --backend", query("--status", "pending").stderr)
 
     def test_stale_package_rejected_and_lock_removed(self):
         package = tool.prepare(self.path, self.requests)

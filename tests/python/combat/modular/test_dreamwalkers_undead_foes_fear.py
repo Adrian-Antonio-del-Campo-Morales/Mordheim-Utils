@@ -39,14 +39,14 @@ def duel_context():
     return DuelContext(charging=("first",), active_participant="first")
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_the_band_rule_projects_its_conditional_fear_immunity_tag():
     hers = dreamer()
     assert "mechanic.undead-foes-no-fear" in hers.global_effects.tags
     assert "mechanic.fear-immunity" not in hers.global_effects.tags
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_an_undead_fear_causing_charger_takes_no_fear_roll_from_the_dreamer():
     foe = grave_guard()
     assert "mechanic.causes-fear" in foe.global_effects.tags
@@ -63,7 +63,7 @@ def test_an_undead_fear_causing_charger_takes_no_fear_roll_from_the_dreamer():
     assert result.conditions == (0, 0)
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_a_vampire_charger_takes_no_fear_roll_either():
     # The other printed identity: a vampire (species.vampire) who causes Fear
     # without any Undead follower identity.
@@ -85,7 +85,7 @@ def test_a_vampire_charger_takes_no_fear_roll_either():
 
 
 @pytest.mark.parametrize('band', ['undead', 'restless-dead'])
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_a_canonical_living_necromancer_activates_both_fear_paths(band):
     # Fear is a supplied current effect, not a simulated spell. Identity comes
     # from the printed profile, without inferring Undead from its warband.
@@ -104,7 +104,7 @@ def test_a_canonical_living_necromancer_activates_both_fear_paths(band):
     dice.finish(); decisions.finish()
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_fear_stays_normal_against_an_enemy_that_fails_the_condition():
     # A living caster that is not a necromancer still causes the ordinary
     # Fear test. Double six actually fails it: the charged dreamer hits on sixes.

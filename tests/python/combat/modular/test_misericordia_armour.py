@@ -44,7 +44,7 @@ def context(condition):
                                   me.main_weapon, key="armour")
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_contract_publishes_the_condition_scoped_denial():
     from mordheim_construction.contracts import effect_index
     effect = effect_index("mordheim")["weapon.misericordia"].effect
@@ -53,7 +53,7 @@ def test_contract_publishes_the_condition_scoped_denial():
     assert effect.target_armour_bonus == 1
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_a_knocked_down_target_is_denied_its_armour_save_entirely():
     knocked = context(Condition.KNOCKED_DOWN)
     assert knocked.ignore_armour is True
@@ -61,7 +61,7 @@ def test_a_knocked_down_target_is_denied_its_armour_save_entirely():
     assert resolve_armour(knocked, StrictDice([])).eligible is False
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_a_standing_target_still_rolls_the_armour_save():
     standing = context(Condition.STANDING)
     assert standing.ignore_armour is False

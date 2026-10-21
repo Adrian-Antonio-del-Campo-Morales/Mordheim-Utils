@@ -34,7 +34,7 @@ def bare(**options):
 
 # --- Night Goblin Hatred of Dwarfs -----------------------------------------
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_hate_stunties_reaches_the_night_goblins_only():
     boss = canonical("night-goblins-mic", "big-boss")
     assert "mechanic.hatred-dwarfs" in boss.global_effects.tags
@@ -46,7 +46,7 @@ def test_hate_stunties_reaches_the_night_goblins_only():
         "night-goblins-mic", "cave-squigs").global_effects.tags
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_hate_stunties_is_gone_from_the_sibling_bands_other_records():
     for band, profile in (("night-goblins-web", "boss"), ("night-goblins-kaz", "big-boss")):
         assert "mechanic.hatred-dwarfs" in canonical(band, profile).global_effects.tags
@@ -56,7 +56,7 @@ def test_hate_stunties_is_gone_from_the_sibling_bands_other_records():
 
 # --- The Clockwork Construct immunity --------------------------------------
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_constructs_are_psychology_immune_and_the_human_heroes_are_not():
     soldier = canonical("clockworkers-sc", "clockwork-soldiers")
     assert "mechanic.psychology-immunity" in soldier.global_effects.tags
@@ -67,7 +67,7 @@ def test_constructs_are_psychology_immune_and_the_human_heroes_are_not():
         "clockworkers-sc", "apprentices").global_effects.tags
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_the_construct_immunity_waives_a_required_psychology_test():
     soldier = canonical("clockworkers-sc", "clockwork-soldiers")
     dice = StrictDice([])
@@ -82,7 +82,7 @@ def test_the_construct_immunity_waives_a_required_psychology_test():
 
 # --- The supplied pre-battle states ----------------------------------------
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_troll_brew_results_are_supplied_states_with_their_own_consequences():
     immune = canonical("dwarf-guildsmen-kaz", "master-craftsman",
                        conditions=("condition.troll-brew-fear-immunity",))
@@ -101,7 +101,7 @@ def test_troll_brew_results_are_supplied_states_with_their_own_consequences():
     assert not canonical("dwarf-guildsmen-kaz", "master-craftsman").global_effects.frenzy
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_the_promoted_knight_of_purity_auto_passes_a_required_test():
     knight = canonical("watchmen-mim", "sergeants",
                        trait_overrides={"crusader_of_law": True})
@@ -128,7 +128,7 @@ def emissary(patron):
         special_rule_ids=("hireling.hired-sword.emissary-of-chaos.patron." + patron,)))
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_the_emissary_patron_states_are_the_supplied_branch():
     khorne, nurgle = emissary("khorne"), emissary("nurgle")
     slaanesh, tzeentch = emissary("slaanesh"), emissary("tzeentch")
@@ -143,7 +143,7 @@ def test_the_emissary_patron_states_are_the_supplied_branch():
     assert "poison.black-lotus" not in khorne.global_effects.tags
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_the_slaanesh_patron_penalty_lands_on_the_engaged_enemy():
     # Printed clause: "those enemies that do engage the Emissary in close combat
     # suffer -1 to their to-hit rolls." The enemy's own blow is one point harder
@@ -173,7 +173,7 @@ def test_the_slaanesh_patron_penalty_lands_on_the_engaged_enemy():
 
 # --- The qualified Beast Hunter family -------------------------------------
 
-@pytest.mark.knowledge_integrity
+@pytest.mark.phase1_kb_contracts
 def test_the_beast_hunter_qualifiers_are_declared_and_bound():
     from pathlib import Path
 
@@ -202,7 +202,7 @@ def test_the_beast_hunter_qualifiers_are_declared_and_bound():
         "hireling.hired-sword.beast-hunter.rule.beastmen-vengeance"}
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_the_qualified_beastman_operators_do_not_over_grant():
     # A synthetic bearer carrying the new tags is what the binding produces;
     # the opponent fact decides the outcome, so an unqualified enemy is

@@ -18,7 +18,7 @@ from mordheim_core.models import Characteristics, DuelContext, FighterBuild, Loc
 import pytest
 
 
-pytestmark = pytest.mark.rule_behavior
+pytestmark = pytest.mark.phase3_rules
 
 INSPIRING_PRESENCE = "band--special-skill-inspiring-presence"
 

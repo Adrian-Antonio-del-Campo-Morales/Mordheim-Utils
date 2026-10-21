@@ -116,7 +116,7 @@ def offers(band: str, profile_id: str) -> set:
 
 
 @pytest.mark.parametrize("band,profile,forbidden,intrinsic", C01A)
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_every_clause_fights_with_its_printed_intrinsic_attack(band, profile, forbidden, intrinsic):
     """A legal configuration with no fictitious weapon, at the printed S and A."""
     row = profile_row(band, profile)
@@ -132,7 +132,7 @@ def test_every_clause_fights_with_its_printed_intrinsic_attack(band, profile, fo
 
 
 @pytest.mark.parametrize("band,profile,forbidden,intrinsic", C01A)
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_every_clause_refuses_what_it_forbids_on_the_direct_path(band, profile, forbidden, intrinsic):
     """The printed refusal, asked of a build that never passed through a picker."""
     with pytest.raises(ValueError):
@@ -152,7 +152,7 @@ def test_every_clause_refuses_what_it_forbids_on_the_direct_path(band, profile, 
 
 
 @pytest.mark.parametrize("band,profile,forbidden,intrinsic", C01A)
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_the_selection_layer_offers_no_piece_the_clause_refuses(band, profile, forbidden, intrinsic):
     """The offered set carries no weapon, armour or defence beyond the printed kit."""
     kit = set(profile_row(band, profile).get("fixed_equipment") or ())
@@ -181,7 +181,7 @@ DUEL = [
 
 
 @pytest.mark.parametrize("band,profile,attacks,rolls", DUEL)
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_the_printed_kit_and_the_printed_bones_reach_the_duel(band, profile, attacks, rolls):
     """The declared attack resolves as a real round, not merely as a binding."""
     unit = compiled(band, profile)
@@ -197,7 +197,7 @@ def test_the_printed_kit_and_the_printed_bones_reach_the_duel(band, profile, att
     choices.finish()
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_no_clause_receives_a_general_immunity_to_the_fist_penalties():
     """The printed 'no penalty' lines stay per-profile; no general fist waiver."""
     for band, profile, forbidden, intrinsic in C01A:
@@ -212,7 +212,7 @@ def foe(initiative: int = 5):
                                         main_weapon_id="weapon.mace"))
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_the_blank_initiative_is_never_replaced_by_a_number():
     """The printed blank travels as an absence, and the order strikes last."""
     row = profile_row("necrarchs-mou", "banshee")
@@ -234,7 +234,7 @@ def test_the_blank_initiative_is_never_replaced_by_a_number():
         == phases.PriorityResult(1, 5)
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_a_real_round_charges_the_banshee_and_still_puts_it_last():
     """The declared order resolves inside one round, charging included."""
     unit = compiled("necrarchs-mou", "banshee")
@@ -289,7 +289,7 @@ COLD_STEEL = [
 
 
 @pytest.mark.parametrize("weapon_id,modifier,unharmed", COLD_STEEL)
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_cold_steel_reads_the_attack_identity_and_keeps_its_exceptions(weapon_id, modifier, unharmed):
     """The clause decides on the weapon carried, never on a visible name."""
     unit = compiled("necrarchs-mou", "banshee")
@@ -301,7 +301,7 @@ def test_cold_steel_reads_the_attack_identity_and_keeps_its_exceptions(weapon_id
     assert wound.unharmed is unharmed
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_a_club_offered_by_the_selection_layer_is_not_a_metal_weapon():
     """Selection → configuration → attack: the offered club carries weapon.club."""
     items = {str(row["id"]): row for row in load_items("mordheim", KNOWLEDGE)}
@@ -321,7 +321,7 @@ def test_a_club_offered_by_the_selection_layer_is_not_a_metal_weapon():
     assert hit.modifier == 0 and wound.unharmed is True
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_cold_steel_exempts_only_the_canonical_blessed_weapon():
     """The supplied Sisters blessing names one weapon, not the whole bearer.
 
@@ -349,7 +349,7 @@ def test_cold_steel_exempts_only_the_canonical_blessed_weapon():
     assert off_hit.modifier == -1
 
 
-@pytest.mark.interaction
+@pytest.mark.phase4_modular
 def test_a_steel_hit_wounds_the_banshee_through_the_ordinary_injury_procedure():
     """Composition: the admitted wound continues into the normal injury chart."""
     unit = compiled("necrarchs-mou", "banshee")
@@ -372,7 +372,7 @@ def test_a_steel_hit_wounds_the_banshee_through_the_ordinary_injury_procedure():
     choices.finish()
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_the_printed_poison_and_drug_immunity_reaches_the_enemy_attack():
     """An enemy poison rider is suppressed for the Banshee only."""
     unit = compiled("necrarchs-mou", "banshee")
@@ -395,7 +395,7 @@ def test_the_printed_poison_and_drug_immunity_reaches_the_enemy_attack():
     assert control.failure_still_wounds is True
 
 
-@pytest.mark.interaction
+@pytest.mark.phase4_modular
 def test_sweep_against_the_absent_initiative_resolves_instead_of_aborting():
     """Sweep's printed condition cannot be met, so its one attack hits."""
     unit = compiled("necrarchs-mou", "banshee")
@@ -418,7 +418,7 @@ def test_sweep_against_the_absent_initiative_resolves_instead_of_aborting():
     choices.finish()
 
 
-@pytest.mark.interaction
+@pytest.mark.phase4_modular
 def test_a_second_strike_last_attacker_keeps_the_printed_initiative_order():
     """Both strike last: the printed Initiative orders the pair, no roll invented."""
     unit = compiled("necrarchs-mou", "banshee")
@@ -435,7 +435,7 @@ def test_a_second_strike_last_attacker_keeps_the_printed_initiative_order():
     assert phases.first_acts_before(absent, absent, StrictDice([{"key": "tie", "value": 2}]), key="tie") is False
 
 
-@pytest.mark.interaction
+@pytest.mark.phase4_modular
 def test_the_round_orders_two_strike_last_fighters_without_an_absent_value():
     """The great weapon and the Banshee both strike last; 4 orders against None."""
     unit = compiled("necrarchs-mou", "banshee")

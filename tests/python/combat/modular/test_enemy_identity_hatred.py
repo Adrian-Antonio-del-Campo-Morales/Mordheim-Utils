@@ -21,7 +21,7 @@ from mordheim_knowledge.loader import knowledge_root
 import pytest
 
 
-pytestmark = pytest.mark.rule_behavior
+pytestmark = pytest.mark.phase3_rules
 
 # The shared root resolves the documented knowledge overlay when one is exported,
 # so this family reads the same tree the rest of the construction suite reads.

@@ -74,7 +74,7 @@ def attack(key="a", face=6):
 
 # --- Warpaint: recipients ---------------------------------------------------
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_warpaint_reaches_the_printed_orc_bearers_and_the_gobbo_boyz():
     for profile in ("boyz", "gobbo-boyz"):
         assert WARPAINT in offers("mordheim", "savage-orcs-kaz", profile)
@@ -82,7 +82,7 @@ def test_warpaint_reaches_the_printed_orc_bearers_and_the_gobbo_boyz():
         assert WARPAINT in fighter.global_effects.tags
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_warpaint_is_not_a_generic_market_consumable():
     """The Savage Orc clause is the recipient: another warband cannot take it."""
     assert WARPAINT not in offers("mordheim", "mercenaries", "mercenary-captain")
@@ -91,7 +91,7 @@ def test_warpaint_is_not_a_generic_market_consumable():
 
 # --- Warpaint: printed effect and single use --------------------------------
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_warpaint_delivers_the_six_plus_invulnerable_save():
     owner, first = attack("a")
     assert owner.global_effects.ward_save == 6
@@ -99,7 +99,7 @@ def test_warpaint_delivers_the_six_plus_invulnerable_save():
     assert prepare_special_save_context(owner, enemy().main_weapon, key="probe").ward_save == 6
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_one_use_is_one_battle_application_and_never_one_saving_throw():
     """A second strike of the same duel still meets the same 6+ save."""
     _, first = attack("a")
@@ -114,7 +114,7 @@ def test_one_use_is_one_battle_application_and_never_one_saving_throw():
 
 # --- Elven Wine: recipients -------------------------------------------------
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_elven_wine_reaches_the_printing_lists_and_the_shadow_warrior_market():
     assert WINE in offers("trollheim", "lustria-high-elves", "sword-guardians")
     assert WINE in offers("trollheim", "chaos-streets-sons-of-nagarythe", "shadow-warrior")
@@ -122,7 +122,7 @@ def test_elven_wine_reaches_the_printing_lists_and_the_shadow_warrior_market():
         build("trollheim", "lustria-high-elves", "sword-guardians", WINE)).global_effects.tags
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_elven_wine_is_not_offered_where_no_printed_clause_reaches_it():
     # The Cadet list of the same band never prints the wine, and a mercenary is
     # not a printed recipient at all.
@@ -142,7 +142,7 @@ def fear_setup(wine):
     return foe, bearer
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_elven_wine_is_fear_immunity_for_the_bearer_and_not_psychology_immunity():
     foe, bearer = fear_setup((WINE,))
     assert "mechanic.fear-immunity" in bearer.global_effects.tags
@@ -160,7 +160,7 @@ def test_elven_wine_is_fear_immunity_for_the_bearer_and_not_psychology_immunity(
     dice.finish()
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_without_the_wine_the_same_fear_test_still_happens():
     foe, bearer = fear_setup(())
     assert "mechanic.fear-immunity" not in bearer.global_effects.tags
@@ -172,7 +172,7 @@ def test_without_the_wine_the_same_fear_test_still_happens():
     dice.finish()
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_one_use_is_the_battle_and_a_second_declaration_changes_nothing():
     once = compile_fighter(build("trollheim", "lustria-high-elves", "sword-guardians", WINE))
     twice = compile_fighter(build("trollheim", "lustria-high-elves", "sword-guardians", WINE, WINE))

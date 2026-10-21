@@ -78,7 +78,7 @@ def test_inventory_covers_campaign_sections_read_by_the_web_adapter() -> None:
     assert not missing, f"web campaign catalogues missing from the KB inventory: {sorted(missing)}"
 
 
-@pytest.mark.knowledge_integrity
+@pytest.mark.phase1_kb_contracts
 def test_every_band_used_by_v5_fixtures_resolves_against_the_kb() -> None:
     band_ids = set()
     for band_file in (KB / "bands").glob("*/*/band.yaml"):
@@ -96,6 +96,6 @@ def test_every_band_used_by_v5_fixtures_resolves_against_the_kb() -> None:
     assert not dangling, f"fixture bands missing from the KB: {dangling}"
 
 
-@pytest.mark.architecture
+@pytest.mark.phase0_preflight
 def test_excluded_combat_lab_surfaces_are_not_inputs() -> None:
     assert not any(surface in pattern for surface in EXCLUDED_SURFACES for pattern in REQUIRED_CATALOGUES)

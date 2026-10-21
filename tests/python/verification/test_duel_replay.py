@@ -8,6 +8,23 @@ from mordheim_construction.compiler import compile_fighter
 
 BACKENDS = ("modular", "numpy", "native")
 
+#: One category per backend item: the replay comparison is classified by the
+#: implementation it validates, not by the file that contains it. Parametrizing
+#: with explicit marks keeps the backend ids and the amount of tests unchanged.
+REPLAY_PARAMS = [
+    pytest.param("modular", marks=pytest.mark.phase4_modular),
+    pytest.param("numpy", marks=pytest.mark.phase5_vectorized),
+    pytest.param("native", marks=pytest.mark.phase6_native),
+]
+
+#: A rule assertion using the backend as preparation belongs to that backend's
+#: own phase; the shared modular rule item stays in phase 3.
+RULE_PARAMS = [
+    pytest.param("modular", marks=pytest.mark.phase3_rules),
+    pytest.param("numpy", marks=pytest.mark.phase5_vectorized),
+    pytest.param("native", marks=pytest.mark.phase6_native),
+]
+
 
 def fighter(initiative=3, **build):
     return compile_fighter(FighterBuild("mordheim", Characteristics(3, 3, 3, 1, initiative, 1), main_weapon_id="weapon.mace", **build))
@@ -31,8 +48,7 @@ def roll(key, value, sides=6):
     return {"key": key, "sides": sides, "value": value}
 
 
-@pytest.mark.parity
-@pytest.mark.parametrize("backend", BACKENDS)
+@pytest.mark.parametrize("backend", REPLAY_PARAMS)
 def test_real_attack_wound_injury_and_terminal_state(backend):
     first, second = fighter(), fighter(initiative=2)
     result = execute(first, second, backend,
@@ -44,8 +60,7 @@ def test_real_attack_wound_injury_and_terminal_state(backend):
     assert len(result.rolls) == 3 and result.decisions == ()
 
 
-@pytest.mark.parity
-@pytest.mark.parametrize("backend", BACKENDS)
+@pytest.mark.parametrize("backend", REPLAY_PARAMS)
 def test_absence_misses_and_priority_tie(backend):
     unit = fighter()
     result = execute(unit, unit, backend,
@@ -55,8 +70,7 @@ def test_absence_misses_and_priority_tie(backend):
     assert result.terminal == (2, 1, (1, 1), (0, 0), (frozenset(), frozenset()))
 
 
-@pytest.mark.parity
-@pytest.mark.parametrize("backend", BACKENDS)
+@pytest.mark.parametrize("backend", REPLAY_PARAMS)
 @pytest.mark.parametrize("first_charges", [True, False])
 def test_injected_charge_and_d3_initialization_preserve_backend_order(backend, first_charges):
     first = fighter(preparation_ids=("preparation.crimson-shade",))
@@ -70,8 +84,7 @@ def test_injected_charge_and_d3_initialization_preserve_backend_order(backend, f
     assert len(result.rolls) == 4
 
 
-@pytest.mark.parity
-@pytest.mark.parametrize("backend", BACKENDS)
+@pytest.mark.parametrize("backend", REPLAY_PARAMS)
 def test_lucky_charm_consumption_and_continuation(backend):
     first, second = fighter(), fighter(initiative=2, defence_ids=("defence.lucky-charm",))
     result = execute(first, second, backend,
@@ -81,8 +94,7 @@ def test_lucky_charm_consumption_and_continuation(backend):
     assert result.terminal == (2, 1, (1, 1), (0, 0), (frozenset(), frozenset({"lucky-charm"})))
 
 
-@pytest.mark.test_infrastructure
-@pytest.mark.parametrize("backend", BACKENDS)
+@pytest.mark.parametrize("backend", REPLAY_PARAMS)
 def test_missing_or_extra_draws_fail(backend):
     first, second = fighter(), fighter(initiative=2)
     context = DuelContext(charging=("first",), active_participant="first")
@@ -93,7 +105,7 @@ def test_missing_or_extra_draws_fail(backend):
         execute(first, second, backend, scalar, [("integer", 6, 1)] * 3, context=context)
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.phase0_preflight
 def test_replay_validates_sides_values_binary_draws_and_cleanup():
     rng = ReplayRng(tape([("integer", 3, 3), ("binary", 2, 2)]))
     assert rng.integers(1, 4, 1).tolist() == [3]
@@ -105,8 +117,7 @@ def test_replay_validates_sides_values_binary_draws_and_cleanup():
         ReplayRng(tape([("integer", 3, 4)])).integers(1, 4, 1)
 
 
-@pytest.mark.rule_behavior
-@pytest.mark.parametrize("backend", BACKENDS)
+@pytest.mark.parametrize("backend", RULE_PARAMS)
 @pytest.mark.parametrize("accept", [False, True])
 def test_supported_bull_charge_decision_is_consumed_once(backend, accept):
     first, second = fighter(), fighter(initiative=2)
@@ -121,8 +132,7 @@ def test_supported_bull_charge_decision_is_consumed_once(backend, accept):
     assert result.decisions == (("round.0.first.bull-charge" if backend == "modular" else "bull-charge"),)
 
 
-@pytest.mark.rule_behavior
-@pytest.mark.parametrize("backend", BACKENDS)
+@pytest.mark.parametrize("backend", RULE_PARAMS)
 @pytest.mark.parametrize("active", ["first", "second"])
 def test_real_turn_sensitive_operator_uses_clock_without_charge(backend, active):
     first, second = fighter(), fighter(initiative=2)
@@ -137,7 +147,7 @@ def test_real_turn_sensitive_operator_uses_clock_without_charge(backend, active)
     assert len(result.rolls) == first_count + 1
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.phase6_native
 def test_decision_exhaustion_and_unused_choice_fail():
     first, second = fighter(), fighter(initiative=2)
     context = DuelContext(charging=("first",), active_participant="first")
@@ -152,7 +162,7 @@ def test_decision_exhaustion_and_unused_choice_fail():
                 choices=[{"key": "unused", "value": True}])
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.phase6_native
 def test_native_exception_cleanup_and_reentry_are_strict():
     native = pytest.importorskip("mordheim_combat._combat_native")
     from mordheim_core.models import DuelRequest
@@ -172,8 +182,7 @@ def test_native_exception_cleanup_and_reentry_are_strict():
     native.simulate_duel(request, compile_duel_plan(first, second))
 
 
-@pytest.mark.rule_behavior
-@pytest.mark.parametrize("backend", BACKENDS)
+@pytest.mark.parametrize("backend", RULE_PARAMS)
 def test_disability_initialization_marker_is_not_a_spent_resource(backend):
     first, second = fighter(), fighter(initiative=2)
     first = replace(first, global_effects=replace(first.global_effects, tags=("mechanic.disability",)))
@@ -186,7 +195,7 @@ def test_disability_initialization_marker_is_not_a_spent_resource(backend):
     assert result.terminal == (2, 1, (1, 1), (0, 0), (frozenset(), frozenset()))
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.phase6_native
 def test_explicit_native_context_and_replay_never_fall_back(monkeypatch):
     native = pytest.importorskip("mordheim_combat._combat_native")
     from mordheim_combat.vectorized import simulate_duel
@@ -204,7 +213,7 @@ def test_explicit_native_context_and_replay_never_fall_back(monkeypatch):
         simulate_duel(request, backend="native")
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.phase6_native
 @pytest.mark.parametrize("value", [0, 7, 1.5, True])
 def test_native_callback_rejects_invalid_integer_and_cleans_up(value):
     import numpy as np
@@ -218,7 +227,7 @@ def test_native_callback_rejects_invalid_integer_and_cleans_up(value):
     assert execute(first, second, "native", [], [("integer", 6, 1)] * 2, context=context).winner == 2
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.phase6_native
 @pytest.mark.parametrize("value", [-0.1, 1, float("nan"), True])
 def test_native_callback_rejects_invalid_binary_draw(value):
     import numpy as np
@@ -230,7 +239,7 @@ def test_native_callback_rejects_invalid_binary_draw(value):
 
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase6_native
 def test_native_observation_round_counter_does_not_wrap():
     import numpy as np
     native = pytest.importorskip("mordheim_combat._combat_native")

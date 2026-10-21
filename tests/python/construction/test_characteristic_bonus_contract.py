@@ -24,7 +24,7 @@ from mordheim_construction.compiler import (
 from mordheim_core.models import Characteristics
 from mordheim_core.models import FighterBuild
 
-pytestmark = pytest.mark.compilation
+pytestmark = pytest.mark.phase2_construction
 
 
 #: Real selectable, executable rules used as hosts for fabricated bindings.

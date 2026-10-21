@@ -6,7 +6,7 @@ import yaml
 
 from mordheim_knowledge import loader
 
-pytestmark = pytest.mark.data_transport
+pytestmark = pytest.mark.phase1_kb_contracts
 LOADERS = [yaml.SafeLoader]
 if hasattr(yaml, "CSafeLoader"):
     LOADERS.append(yaml.CSafeLoader)

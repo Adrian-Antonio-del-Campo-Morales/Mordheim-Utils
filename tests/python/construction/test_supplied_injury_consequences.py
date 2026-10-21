@@ -15,7 +15,7 @@ def build(**options):
                         main_weapon_id='weapon.axe', **options)
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 @pytest.mark.parametrize('condition,attribute,expected,rolls', [
     ('campaign.condition.hand-injury', 'weapon_skill', 0,
      [('round.0.second.attack.0.wound', 1), ('round.0.first.attack.0.hit', 1)]),
@@ -43,7 +43,7 @@ def test_supplied_injury_changes_the_actual_hit_or_wound_boundary(condition, att
     assert result.state.first.wounds == (1 if attribute == 'toughness' else 2)
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_nervous_condition_changes_round_order_without_a_fabricated_priority_tie():
     injured = compile_fighter(build(condition_ids=('campaign.condition.nervous-condition',)))
     opponent = compile_fighter(build())
@@ -56,7 +56,7 @@ def test_nervous_condition_changes_round_order_without_a_fabricated_priority_tie
     assert result.state.first.initiative == 3
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_amputated_arm_limits_active_weapons_without_forbidding_holstered_ownership():
     supplied = build(condition_ids=('campaign.condition.amputated-arm',), owned_item_ids=('axe', 'sword'))
     assert 'weapon.axe' in compile_fighter(supplied).main_weapon.tags

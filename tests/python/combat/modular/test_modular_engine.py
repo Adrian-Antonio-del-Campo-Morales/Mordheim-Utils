@@ -29,7 +29,7 @@ def fighter(**changes):
     return compile_fighter(FighterBuild(**options))
 
 
-@pytest.mark.architecture
+@pytest.mark.phase0_preflight
 def test_scalar_attack_pool_has_no_dependency_on_the_vectorized_engine(monkeypatch):
     import mordheim_combat.vectorized as engine
 
@@ -37,7 +37,7 @@ def test_scalar_attack_pool_has_no_dependency_on_the_vectorized_engine(monkeypat
     assert build_attacks(AttackPoolContext(fighter(off_hand_id="weapon.dagger"))).attacks == 2
 
 
-@pytest.mark.interaction
+@pytest.mark.phase4_modular
 def test_reference_attack_transfers_a_wound_through_every_scalar_phase():
     attacker = fighter(characteristics=Characteristics(6, 6, 3, 1, 6, 1))
     defender = fighter()
@@ -58,7 +58,7 @@ def test_reference_attack_transfers_a_wound_through_every_scalar_phase():
     assert result.defender.condition == Condition.OUT
 
 
-@pytest.mark.interaction
+@pytest.mark.phase4_modular
 def test_reference_round_generates_priority_attacks_and_aftermath_itself():
     first, second = fighter(), fighter()
     state = DuelState(
@@ -73,7 +73,7 @@ def test_reference_round_generates_priority_attacks_and_aftermath_itself():
     assert result.attacks
 
 
-@pytest.mark.architecture
+@pytest.mark.phase0_preflight
 def test_reference_duels_are_reproducible_without_calling_numpy_executor(monkeypatch):
     import mordheim_combat.vectorized as engine
 
@@ -86,7 +86,7 @@ def test_reference_duels_are_reproducible_without_calling_numpy_executor(monkeyp
     assert a.first_wins + a.second_wins + a.unresolved == 20
 
 
-@pytest.mark.interaction
+@pytest.mark.phase4_modular
 def test_reference_bear_hug_is_orchestrated_before_normal_wounds():
     bear = compile_fighter(FighterBuild(
         "mordheim", band_id="kislevites", profile_id="trained-bear",
@@ -101,7 +101,7 @@ def test_reference_bear_hug_is_orchestrated_before_normal_wounds():
     assert result.state.round_index == 1
 
 
-@pytest.mark.workflow
+@pytest.mark.phase7_warband
 def test_reference_duel_honours_cancellation_and_maximum_rounds():
     cancelled = Event()
     cancelled.set()

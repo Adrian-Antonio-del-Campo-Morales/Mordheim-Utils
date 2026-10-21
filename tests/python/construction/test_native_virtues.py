@@ -4,7 +4,7 @@ from mordheim_construction.compiler import compile_fighter
 from mordheim_core.models import Characteristics, FighterBuild
 
 
-pytestmark = pytest.mark.eligibility
+pytestmark = pytest.mark.phase2_construction
 
 
 @pytest.mark.parametrize("collection, band", [

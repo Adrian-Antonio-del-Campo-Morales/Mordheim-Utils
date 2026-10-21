@@ -27,8 +27,8 @@ from mordheim_knowledge.loader import load_bands
 
 
 # Every case decides a declared recipient against its lawful control, so the
-# primary category is admission, not the projection that carries it.
-pytestmark = pytest.mark.eligibility
+# category is construction admission, not the projection that carries it.
+pytestmark = pytest.mark.phase2_construction
 
 ROOT = Path(__file__).resolve().parents[3]
 KNOWLEDGE = ROOT / "sources" / "knowledge"

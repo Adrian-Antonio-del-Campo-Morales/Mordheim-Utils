@@ -4,7 +4,7 @@ from mordheim_combat_lab.verification import engine_mutation
 from mordheim_combat_lab.verification.engine_mutation import CATALOG
 
 
-pytestmark = pytest.mark.test_infrastructure
+pytestmark = pytest.mark.phase0_preflight
 
 
 def test_catalogue_ids_are_unique_and_anchors_apply_to_current_source():

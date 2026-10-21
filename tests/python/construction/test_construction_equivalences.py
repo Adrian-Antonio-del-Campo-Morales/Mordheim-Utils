@@ -21,7 +21,7 @@ from mordheim_core.models import FighterBuild
 from mordheim_knowledge.loader import (load_bands, load_items, load_mechanics,
                                       load_simulation_mappings)
 
-pytestmark = pytest.mark.compilation
+pytestmark = pytest.mark.phase2_construction
 
 ROOT = Path(__file__).resolve().parents[3]
 KNOWLEDGE = ROOT / "sources" / "knowledge"

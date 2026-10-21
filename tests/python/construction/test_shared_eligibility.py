@@ -18,7 +18,7 @@ def codes(result):
     return [issue["code"] for issue in (result if isinstance(result, list) else [result]) if issue]
 
 
-@pytest.mark.parity
+@pytest.mark.phase2_construction
 @pytest.mark.parametrize("case", RECIPIENT_CASES, ids=lambda case: case["name"])
 def test_printed_entry_recipients_match_the_direct_typescript_module(case):
     """The transport projects the same offers as `profileFactsProjection`.
@@ -30,7 +30,7 @@ def test_printed_entry_recipients_match_the_direct_typescript_module(case):
     assert [offer["item_id"] for offer in facts["equipment_access"]] == case["offers"]
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 @pytest.mark.parametrize("case", CASES, ids=lambda case: case["name"])
 def test_shared_decisions(case):
     assert codes(call(case["operation"], *case["args"])) == case["codes"]
@@ -44,7 +44,7 @@ def _bundle_check(target=None) -> subprocess.CompletedProcess:
     return subprocess.run(command, cwd=ROOT, capture_output=True, text=True, encoding="utf-8")
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_bundle_matches_a_fresh_generation():
     """Compare the checked-in bundle with the real build, not only its banner.
 
@@ -56,7 +56,7 @@ def test_bundle_matches_a_fresh_generation():
     assert result.returncode == 0, (result.stdout + result.stderr).strip()
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_body_only_divergence_fails_without_rewriting_the_checked_file(tmp_path):
     bundle = files("mordheim_construction").joinpath("_eligibility.js").read_text(encoding="utf-8")
     assert "// Source SHA256:" in bundle
@@ -74,7 +74,7 @@ def test_body_only_divergence_fails_without_rewriting_the_checked_file(tmp_path)
     assert candidate.read_text(encoding="utf-8") == tampered
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_parallel_desktop_calls_keep_their_own_facts():
     def decide(case):
         return codes(call(case["operation"], *case["args"]))
@@ -82,7 +82,7 @@ def test_parallel_desktop_calls_keep_their_own_facts():
         assert list(pool.map(decide, CASES * 3)) == [case["codes"] for case in CASES * 3]
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_validation_failure_does_not_poison_the_embedded_runtime():
     package = {"band": {"id": "test"}, "profiles": [], "equipment_lists": [], "special_rules": []}
     catalogue = {"packages": {}, "foreign_packages": {}, "mechanics": {}, "mappings": {}, "skills": {}}

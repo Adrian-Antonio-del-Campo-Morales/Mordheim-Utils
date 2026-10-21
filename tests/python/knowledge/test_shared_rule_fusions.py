@@ -6,7 +6,7 @@ import pytest
 
 from mordheim_knowledge.loader import load_bands, load_shared_rules
 
-pytestmark = pytest.mark.knowledge_integrity
+pytestmark = pytest.mark.phase1_kb_contracts
 
 
 #: How many band rules reference each fused id. The counts pin the consolidation:

@@ -117,7 +117,7 @@ def _without(scenarios, audit_id, scenario_id):
             if not (scenario.audit_id == audit_id and scenario.scenario_id == scenario_id)]
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.evidence
 def test_the_control_detects_a_lost_scenario_identity_or_reference():
     """Isolated demonstration that the control detects loss and substitution.
 
@@ -158,7 +158,7 @@ def test_the_control_detects_a_lost_scenario_identity_or_reference():
     assert any("has no scenarios left" in problem for problem in emptied), emptied
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.evidence
 def test_the_control_detects_a_clause_that_left_the_admitted_scope():
     """A register change that withdraws an accepted clause invalidates the evidence."""
     baseline = load_baseline()

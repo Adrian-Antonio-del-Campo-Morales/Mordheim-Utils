@@ -46,7 +46,7 @@ def plain(strength=3):
 
 # --- admission ----------------------------------------------------------------
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_the_profile_compiles_with_its_printed_clauses_bound():
     master = ippan_shu(FAN)
     assert "skill.unarmed-fighting" in master.global_effects.tags
@@ -55,7 +55,7 @@ def test_the_profile_compiles_with_its_printed_clauses_bound():
     assert master.global_effects.initiative_bonus == 1
 
 
-@pytest.mark.knowledge_integrity
+@pytest.mark.phase1_kb_contracts
 def test_the_excluded_clauses_name_their_own_reason():
     """The four out-of-duel clauses are classified, not left without runtime."""
     from mordheim_construction.combat_packages import combat_packages
@@ -71,7 +71,7 @@ def test_the_excluded_clauses_name_their_own_reason():
 
 # --- the shared unarmed operator ----------------------------------------------
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_bare_handed_resolves_one_attack_more_than_the_profile_value():
     master = ippan_shu()
     assert master.characteristics.attacks == 4
@@ -88,7 +88,7 @@ def test_bare_handed_resolves_one_attack_more_than_the_profile_value():
     (("skill.unarmed-fighting", "skill.art-of-silent-death"), "weapon.fighting-claws", 6),
     (("skill.unarmed-fighting", "skill.art-of-silent-death"), "weapon.sword", 4),
 ])
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_the_same_second_weapon_is_counted_once_without_losing_the_claws_bonus(skills, weapon, expected):
     fighter = compile_fighter(FighterBuild(
         "mordheim", Characteristics(3, 3, 3, 2, 3, 4),
@@ -96,7 +96,7 @@ def test_the_same_second_weapon_is_counted_once_without_losing_the_claws_bonus(s
     assert build_attacks(AttackPoolContext(fighter)).attacks == expected
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_bare_handed_removes_the_fist_penalty():
     master, foe = ippan_shu(), plain()
     states = {fighter: initialize_fighter(fighter, StrictDice([]), "probe")
@@ -120,7 +120,7 @@ def initiative(fighter):
 
 # Primary: the fan's compiled parry and its single Initiative point. The
 # priority resolution below is the secondary guarantee it feeds.
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_the_iron_fan_parries_and_raises_his_initiative():
     master = ippan_shu(FAN)
     assert master.main_weapon.parry is True

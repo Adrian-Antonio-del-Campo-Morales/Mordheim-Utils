@@ -20,7 +20,6 @@ specifications:
       attacker.global_effects.tags:
       - mechanic.spawn-special-attacks
     expect:
-      # The phase operator owns D6+1; initialization must not roll A as well.
       attacker.random_characteristics: []
   - id: minimum
     roles:
@@ -228,7 +227,7 @@ specifications:
   category: local
   sources:
   - target: mechanic/weapon.sun-gauntlet
-    digest: ff7060e4ac49b0937fbb2ddf3038af59eae14a8c37c911b9345efc1efe5e76cf
+    digest: 035a7be35f33c4da1f5172aadeb8665979e631302790f3dab4942c5c0c49431e
   interpretation: Sun Gauntlet only occupies the off hand and resolves that attack at fixed Strength 4
     ignoring the armour save.
   cases:

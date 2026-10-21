@@ -5,7 +5,7 @@ from mordheim_construction.eligibility import call, desktop_call, package_facts
 from mordheim_core.models import FighterBuild
 from mordheim_knowledge.loader import load_bands
 
-pytestmark = pytest.mark.eligibility
+pytestmark = pytest.mark.phase2_construction
 
 
 def package(band):

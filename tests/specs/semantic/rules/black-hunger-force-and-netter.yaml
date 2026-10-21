@@ -21,7 +21,6 @@ specifications:
       skill_ids:
       - mechanic.black-hunger
     expect:
-      # Invocation belongs to the owner's turn, not the compiled passive set.
       attacker.global_effects.attacks_bonus: 0
       result.attacks: 1
     expect_contains:
@@ -41,11 +40,17 @@ specifications:
     context:
       first_charged: true
     rolls:
-    - {key: round.0.first.attack.0.hit, value: 1}
-    - {key: round.0.first.attack.1.hit, value: 1}
-    - {key: round.0.second.attack.0.hit, value: 1}
-    - {key: round.0.first.black-hunger.hits, sides: 3, value: 1}
-    - {key: round.0.first.black-hunger.hit.0.wound, value: 1}
+    - key: round.0.first.attack.0.hit
+      value: 1
+    - key: round.0.first.attack.1.hit
+      value: 1
+    - key: round.0.second.attack.0.hit
+      value: 1
+    - key: round.0.first.black-hunger.hits
+      sides: 3
+      value: 1
+    - key: round.0.first.black-hunger.hit.0.wound
+      value: 1
     expect:
       result.attacks.0.hit: false
       result.attacks.1.hit: false
@@ -229,13 +234,13 @@ specifications:
   category: construction
   sources:
   - target: rule/mordheim/skaven-clan-eshin/band--skaven-special-skills-black-hunger/mechanic.black-hunger
-    digest: a5d0d5e411699b3cc7dac402f89b95e1eb653a0065b95f64ba5915cc03274ab2
+    digest: b1855a5433da95960883888210c1c9fe55bb7ae764ceb1628314abdc1db8d3f6
   - target: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-black-hunger/mechanic.black-hunger
-    digest: fb0c011621695205f7c83c84cbb4ee5ce28743868b046f8db4653c3c44921f8a
+    digest: c40cb92df0c1f1637b84b71efa8da53083532672b3690d603ccaddffc338b549
   - target: rule/trollheim/lustria-clan-pestilens/band--clan-pestilens-special-skills-black-hunger/mechanic.black-hunger
-    digest: 9e7538c6d939eca40809c76498dd3285006d413e927920b2376de7bc984c1251
+    digest: a303033ecf080e9ec9b0e264a36d28cacf50f9b84d7f5f2227420147cc89b605
   - target: rule/trollheim/trollheim-skaven-clan-eshin/band--skaven-special-skills-black-hunger/mechanic.black-hunger
-    digest: 35bb53e3f0334b736c71875b80bc07ce9a69236aa81af196f7b5788b404be8d1
+    digest: 9bb55761f06d7d9cdd51b6278284d0c385eaee1b59d306c4f9a7f6f93fb9fa56
   depends_on:
   - mechanic/mechanic.black-hunger
   interpretation: The four rules grant Black Hunger to their exact Hero lists; the editorial Movement
@@ -323,11 +328,17 @@ specifications:
     context:
       first_charged: true
     rolls:
-    - {key: round.0.first.attack.0.hit, value: 1}
-    - {key: round.0.first.attack.1.hit, value: 1}
-    - {key: round.0.second.attack.0.hit, value: 1}
-    - {key: round.0.first.black-hunger.hits, sides: 3, value: 1}
-    - {key: round.0.first.black-hunger.hit.0.wound, value: 1}
+    - key: round.0.first.attack.0.hit
+      value: 1
+    - key: round.0.first.attack.1.hit
+      value: 1
+    - key: round.0.second.attack.0.hit
+      value: 1
+    - key: round.0.first.black-hunger.hits
+      sides: 3
+      value: 1
+    - key: round.0.first.black-hunger.hit.0.wound
+      value: 1
     expect:
       attacker.global_effects.attacks_bonus: 0
       result.attacks.0.hit: false
@@ -345,9 +356,9 @@ specifications:
   category: construction
   sources:
   - target: rule/mordheim/pit-fighters/band--pit-fighter-skill-force-of-will/mechanic.force-of-will
-    digest: 005ee0cfb21f3c195429fd4a857d728ee21aa10dba99741ef0edcd9d7bbe51b5
+    digest: e130c506dde68497c1498c9fcab18e576d56dcf8c7c9f82f101c9d69bb02a83a
   - target: rule/trollheim/chaos-streets-pit-fighters/band--pit-fighter-skill-force-of-will/mechanic.force-of-will
-    digest: d440b8892945c5f1db700ffe57f04be8523003fca0036fa10089ecc8d661e132
+    digest: 0566cc8eee411b0b4d1965deb388c39e5beab3bcfca34a71e96631efc49e9d34
   depends_on:
   - mechanic/mechanic.force-of-will
   interpretation: Both editions grant Force of Will exclusively to Dwarf Troll Slayer, Pit King and Pit

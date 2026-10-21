@@ -36,7 +36,7 @@ def plain(strength=3):
         main_weapon_id="weapon.fist"))
 
 
-@pytest.mark.knowledge_integrity
+@pytest.mark.phase1_kb_contracts
 def test_the_profile_rule_publishes_the_shared_operator():
     from mordheim_construction.combat_packages import combat_packages
 
@@ -52,7 +52,7 @@ def test_the_profile_rule_publishes_the_shared_operator():
     assert "skill.unarmed-fighting" not in plain().global_effects.tags
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_the_unarmed_monk_resolves_one_attack_more_than_its_profile_value():
     monk = build()
     assert monk.characteristics.attacks == 1
@@ -65,12 +65,12 @@ def test_the_unarmed_monk_resolves_one_attack_more_than_its_profile_value():
     assert build_attacks(AttackPoolContext(armed)).attacks == 1
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_another_unarmed_fighter_keeps_the_single_attack_clamp():
     assert build_attacks(AttackPoolContext(build("shanghaires"))).attacks == 1
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_the_unarmed_monk_suffers_neither_the_fist_strength_penalty_nor_its_armour_bonus():
     monk, foe = build(), plain()
     control = build("shanghaires")
@@ -84,7 +84,7 @@ def test_the_unarmed_monk_suffers_neither_the_fist_strength_penalty_nor_its_armo
                             control_effect, False, False)[0] == control.characteristics.strength - 1
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_the_printed_armour_ban_keeps_its_executed_consequence():
     with pytest.raises(ValueError, match="armour"):
         build(armour_id="armour.light-armour")

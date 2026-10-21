@@ -75,7 +75,7 @@ def execution_ids():
     return {row["id"] for row in contract["mechanics"]}
 
 
-@pytest.mark.knowledge_integrity
+@pytest.mark.phase1_kb_contracts
 def test_every_candidate_classifies_its_existing_operator():
     catalogued = skills()
     mechanics = execution_ids()
@@ -96,7 +96,7 @@ def test_every_candidate_classifies_its_existing_operator():
                 assert effect["reason"].strip(), skill_id
 
 
-@pytest.mark.knowledge_integrity
+@pytest.mark.phase1_kb_contracts
 def test_classification_does_not_change_who_receives_the_skill():
     catalogued = skills()
     for skill_id in CLASSIFIED:
@@ -106,7 +106,7 @@ def test_classification_does_not_change_who_receives_the_skill():
         assert skill["runtime"]["grant"] == "none", skill_id
 
 
-@pytest.mark.knowledge_integrity
+@pytest.mark.phase1_kb_contracts
 def test_the_remaining_clauses_are_explicit_and_never_invent_an_operator():
     catalogued = skills()
     for skill_id in CLASSIFIED:
@@ -122,7 +122,7 @@ def test_the_remaining_clauses_are_explicit_and_never_invent_an_operator():
         assert clause["id"] not in execution_ids(), skill_id
 
 
-@pytest.mark.knowledge_integrity
+@pytest.mark.phase1_kb_contracts
 def test_skills_without_an_operator_stay_unclassified():
     catalogued = skills()
     mechanics = execution_ids()
@@ -138,7 +138,7 @@ def test_skills_without_an_operator_stay_unclassified():
 
 
 @pytest.mark.parametrize("skill_id,field,expected", OBSERVABLE)
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_the_bound_operator_is_executed_and_not_only_declared(skill_id, field, expected):
     build = FighterBuild("mordheim", Characteristics(3, 3, 3, 1, 3, 1), skill_ids=(skill_id,))
     compiled = compile_fighter(build, ROOT)
@@ -147,7 +147,7 @@ def test_the_bound_operator_is_executed_and_not_only_declared(skill_id, field, e
     assert getattr(without.global_effects, field) != expected
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_a_tag_only_operator_reaches_the_compiled_fighter():
     build = FighterBuild("mordheim", Characteristics(3, 3, 3, 1, 3, 1),
                          skill_ids=("skill.expert-swordsman",))
@@ -156,7 +156,7 @@ def test_a_tag_only_operator_reaches_the_compiled_fighter():
     assert "skill.expert-swordsman" not in without.global_effects.tags
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_fey_quickness_shares_the_elven_agility_ward_save():
     """Fey Quickness' printed 'same as TC12' is Elven Agility's 6+ avoidance."""
     build = FighterBuild("mordheim", Characteristics(3, 3, 3, 1, 3, 1),
@@ -177,7 +177,7 @@ def test_fey_quickness_shares_the_elven_agility_ward_save():
     (("skill.step-aside",), 4, 1),
     ((), None, 1),
 ])
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_fey_quickness_melee_save_and_step_aside_upgrade(skills, ward_roll, damage):
     """Printed 6+, or 4+ with Step Aside, replaces rather than adds a save."""
     from mordheim_combat.modular.attacks import resolve_reference_attack
@@ -201,7 +201,7 @@ def test_fey_quickness_melee_save_and_step_aside_upgrade(skills, ward_roll, dama
     assert result.defender.wounds == 3 - damage
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_mighty_blow_excludes_both_pistols_but_bonuses_the_melee_hand():
     from dataclasses import replace
     from mordheim_combat.modular.contexts import _combined_effect, prepare_wound_context
@@ -225,7 +225,7 @@ def test_mighty_blow_excludes_both_pistols_but_bonuses_the_melee_hand():
     dice.finish()
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_ignore_pain_prerequisite_is_covered_by_shared_construction():
     base = FighterBuild("mordheim", band_id="skaven-clan-pestilens",
                         profile_id="plague-priest", main_weapon_id="weapon.sword",

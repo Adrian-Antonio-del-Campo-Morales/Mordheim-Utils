@@ -45,7 +45,7 @@ def choice(band, profile, collection='mordheim'):
 
 
 @pytest.mark.parametrize('profile,skill', [(p, s) for p, skills in TABLES.items() for s in skills])
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_named_table_member_is_offered_and_support_is_separate(profile, skill):
     options = {row.id: row for row in catalogue().skills(choice('adventurers-kaz', profile))}
     assert skill in options and options[skill].summary
@@ -67,7 +67,7 @@ def test_named_table_member_is_offered_and_support_is_separate(profile, skill):
 
 
 @pytest.mark.parametrize('profile', TABLES)
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_named_tables_do_not_leak_to_other_profiles(profile):
     build = FighterBuild('mordheim', band_id='adventurers-kaz', profile_id=profile)
     _, _, package, row, _ = _profile(build, ROOT)
@@ -79,7 +79,7 @@ def test_named_tables_do_not_leak_to_other_profiles(profile):
 
 
 @pytest.mark.parametrize('profile', ('halfling-scouts', 'halfling-warriors'))
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_promoted_halfling_selects_and_executes_shifty(profile):
     build = FighterBuild('mordheim', band_id='halflings-mic', profile_id=profile,
         main_weapon_id='weapon.mace', variant_ids=('promotion.hero',), special_rule_ids=('halfling-elder--shifty',))
@@ -99,14 +99,14 @@ def test_promoted_halfling_selects_and_executes_shifty(profile):
 
 
 @pytest.mark.parametrize('profile', ('piggies', 'village-ogre'))
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_configured_hero_type_does_not_make_a_non_halfling_a_shifty_recipient(profile):
     build = FighterBuild('mordheim', band_id='halflings-mic', profile_id=profile, variant_ids=('promotion.hero',))
     assert 'halfling-elder--shifty' not in available_special_rules(build, ROOT)
 
 
 @pytest.mark.parametrize('off', ('weapon.club', 'weapon.dagger'))
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_runt_active_limit_and_promoted_exception(off):
     kwargs = dict(band_id='snotlings-web', profile_id='runts', main_weapon_id='weapon.club', off_hand_id=off)
     with pytest.raises(ValueError, match='at most 1 one-handed weapon at a time'):
@@ -114,7 +114,7 @@ def test_runt_active_limit_and_promoted_exception(off):
     assert compile_fighter(FighterBuild('mordheim', **kwargs, variant_ids=('promotion.hero',))).off_hand_attacks
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_runt_ownership_is_not_active_weapon_count_and_armour_guard_survives():
     ch = choice('snotlings-web', 'runts')
     assert catalogue().validate_configuration(ch, possession=('club', 'dagger'), slots={'main_weapon_id': 'weapon.club'}) == ()
@@ -130,7 +130,7 @@ def test_runt_ownership_is_not_active_weapon_count_and_armour_guard_survives():
         off_hand_id='defence.shield', variant_ids=('promotion.hero',))).off_hand is not None
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_outlaw_complete_kit_runs_the_real_catalogue_transport():
     c = catalogue(); ch = choice('outlaws-of-stirwood-forest-redux-fbg', 'bandit-leader')
     slots = {'main_weapon_id': 'weapon.fist'}
@@ -147,7 +147,7 @@ def test_outlaw_complete_kit_runs_the_real_catalogue_transport():
 
 
 @pytest.mark.parametrize('owned', [(), ('bow',), ('bow', 'short_bow')])
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_cleric_bow_exemption_preserves_one_missile_limit(owned):
     ch = choice('outlaws-of-stirwood-forest-redux-fbg', 'cleric')
     codes = [i['code'] for i in catalogue().validate_configuration(ch, possession=owned,
@@ -166,7 +166,7 @@ def test_cleric_bow_exemption_preserves_one_missile_limit(owned):
     (None, True, ''), ((), False, 'includes no "bow"'), (('bow',), True, ''),
     (('bow', 'short_bow'), False, 'missile weapons'), (('crossbow',), False, 'not on any equipment list'),
 ])
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_compiler_checks_a_supplied_owned_kit_without_folding_holstered_items(owned, allowed, reason):
     build = FighterBuild('mordheim', band_id='outlaws-of-stirwood-forest-redux-fbg',
         profile_id='bandit-leader', main_weapon_id='weapon.fist', owned_item_ids=owned)
@@ -206,7 +206,7 @@ def test_compiler_checks_a_supplied_owned_kit_without_folding_holstered_items(ow
     ('protectorate-of-sigmar-lotd3', 'warrior-priest', 'band--special-skill-utter-determination', 'templar', None),
     ('protectorate-of-sigmar-lotd3', 'warrior-priest', 'band--special-skill-rousing-sermon', 'templar', 'mechanic.rousing-sermon'),
 ])
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_source_backed_options_have_recipients_and_registered_activation(band, profile, prefix, other, effect_prefix):
     """Printed options reach their own recipients; the register decides activation.
 
@@ -233,14 +233,14 @@ def test_source_backed_options_have_recipients_and_registered_activation(band, p
             assert len([tag for tag in tags if tag.startswith(effect_prefix)]) == 1
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_bloodline_is_a_configured_ability_not_a_foreign_profile_skill():
     c = catalogue()
     assert any(row.id == 'vampire--bloodline' and not row.runtime_available for row in c.selectable_rules(choice('strigoi-kaz', 'vampire')))
     assert all(row.id != 'vampire--bloodline' for row in c.selectable_rules(choice('strigoi-kaz', 'charnel-guard')))
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_iron_sinews_has_one_route_and_keeps_mordheim_source_gate():
     assert 'band--strigoi-power-iron-sinews' not in SPECIAL_RULE_EFFECTS
     base = dict(collection='trollheim', band_id='chaos-streets-undead-bloodlines', profile_id='strigoi-vampire')
@@ -253,7 +253,7 @@ def test_iron_sinews_has_one_route_and_keeps_mordheim_source_gate():
         compile_fighter(FighterBuild('mordheim', band_id='strigoi-kaz', profile_id='vampire', special_rule_ids=('vampire--bloodline',)))
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_profile_without_lists_has_empty_access_through_the_real_transport():
     """A canonical profile with no declared list buys nothing, not anything.
 
@@ -289,7 +289,7 @@ def test_profile_without_lists_has_empty_access_through_the_real_transport():
     ('mordheim', 'pit-fighters', 'ogre-pit-fighter', ['combat', 'strength', 'special']),
     ('trollheim', 'chaos-streets-pit-fighters', 'ogre-pit-fighter', ['combat', 'strength', 'special']),
 ])
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_promoted_ogre_grant_reaches_only_the_configured_hero(collection, band, profile, granted):
     """The published promotion grant is projected and gated by promotion.
 
@@ -318,7 +318,7 @@ def test_promoted_ogre_grant_reaches_only_the_configured_hero(collection, band, 
 # exercises the same path the editor uses, not a hand-built profile token.
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_sigmarite_hammer_copy_bound_keeps_the_bearer_exception_and_possession_split():
     c = catalogue()
     sister = choice('sisters-of-sigmar', 'sigmarite-sister')
@@ -344,7 +344,7 @@ def test_sigmarite_hammer_copy_bound_keeps_the_bearer_exception_and_possession_s
         main_weapon_id='sigmarite_hammer')['sigmarite_hammer'] is None
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_knights_errant_must_acquire_a_hand_to_hand_weapon_and_a_dagger_never_satisfies_it():
     c = catalogue()
     slots = {'main_weapon_id': 'weapon.fist'}
@@ -361,7 +361,7 @@ def test_knights_errant_must_acquire_a_hand_to_hand_weapon_and_a_dagger_never_sa
     assert c.validate_configuration(choice('bretonnian-knights-errant-mou', 'squires'), possession=(), slots=slots) == ()
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_lizardman_poison_application_is_qualified_by_species_and_weapon_kind():
     c = catalogue()
 
@@ -382,7 +382,7 @@ def test_lizardman_poison_application_is_qualified_by_species_and_weapon_kind():
         'equipment_forbidden', 'band--skink-henchman-poison-application')
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_house_selection_reaches_the_shared_decision_through_the_catalogue_adapter():
     c = catalogue()
     commander = choice('house-guard-sc', 'commander')
@@ -397,7 +397,7 @@ def test_house_selection_reaches_the_shared_decision_through_the_catalogue_adapt
     assert c.equipment_decisions(commander, ('weapon.rapier',))['weapon.rapier']
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_sniper_specialisation_transport_keeps_the_silent_master_exclusion():
     c = catalogue()
     poisoner = choice('silent-brotherhood-sc', 'poisoner')
@@ -418,7 +418,7 @@ def test_sniper_specialisation_transport_keeps_the_silent_master_exclusion():
         variant_ids=('modus-operandi.sniper',))['crossbow']
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_sons_of_hashut_blunderbuss_is_a_compulsory_named_item():
     c = catalogue()
     row = choice('sons-of-hashut', 'blunderbuss-chaos-dwarfs')
@@ -428,7 +428,7 @@ def test_sons_of_hashut_blunderbuss_is_a_compulsory_named_item():
     assert c.validate_configuration(row, possession=('chaos_dwarf_blunderbuss',), slots=slots) == ()
 
 
-@pytest.mark.knowledge_integrity
+@pytest.mark.phase1_kb_contracts
 def test_runtime_distinguishes_planned_and_active_bindings():
     from mordheim_knowledge.loader import runtime_bindings
     rule = {'id': 'test', 'runtime': {'scope': 'LATER', 'implemented': 'NO', 'grant': 'profile',
@@ -451,7 +451,7 @@ def test_runtime_distinguishes_planned_and_active_bindings():
             for row in pack.special_rules:
                 validate_rule_runtime(row)
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_loremaster_tower_of_hoeth_whitelist_bounds_use_not_possession():
     """Tower of Hoeth: 'may only use a sword, dagger or Mage Staff in battle'."""
     c = catalogue()
@@ -481,7 +481,7 @@ def test_loremaster_tower_of_hoeth_whitelist_bounds_use_not_possession():
         slots={'main_weapon_id': 'weapon.axe'})] == []
 
 
-@pytest.mark.knowledge_integrity
+@pytest.mark.phase1_kb_contracts
 def test_moot_elder_reuses_the_halfling_list_and_adds_the_pistol_concession():
     """'May buy equipment from the Halfling Equipment List and ... a pistol'."""
     c = catalogue()
@@ -510,7 +510,7 @@ def test_moot_elder_reuses_the_halfling_list_and_adds_the_pistol_concession():
     assert c.validate_configuration(elder, possession=('dagger', 'sling'), slots=slots) == ()
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_dame_of_the_mare_ancient_armour_is_intrinsic_and_not_substitutable():
     """'may never be removed, traded or stolen ... provides a 5+ save'."""
     c = catalogue()
@@ -540,7 +540,7 @@ def test_dame_of_the_mare_ancient_armour_is_intrinsic_and_not_substitutable():
     assert filly.global_effects.natural_armour_negated_by_magic is True
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_shoota_team_bounds_missile_weapons_by_units_and_exempts_pebbles():
     """'May only purchase ONE non-pebble or non-slingshot missile weapon'."""
     c = catalogue()
@@ -565,7 +565,7 @@ def test_shoota_team_bounds_missile_weapons_by_units_and_exempts_pebbles():
         slots={'main_weapon_id': 'crossbow'})[0]['code'] == 'equipment_limit_exceeded'
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_plague_monk_robes_protect_once_for_both_named_profiles():
     """'robes offer protection equal to soft leather and count as light armour'."""
     for profile_id in ('plague-priest', 'plague-champion'):
@@ -583,7 +583,7 @@ def test_plague_monk_robes_protect_once_for_both_named_profiles():
         profile_id='monk-initiate', main_weapon_id='weapon.sword')).natural_armour_save == 7
 
 
-@pytest.mark.knowledge_integrity
+@pytest.mark.phase1_kb_contracts
 def test_ghutani_flagellants_townsmen_note_is_a_list_reference():
     """'Restricted to Townsmen.' names the bearer of the list, not a prohibition."""
     c = catalogue()
@@ -619,7 +619,7 @@ def _condition_build(condition_ids, **traits):
     ('condition.hatred', 'skill.hatred', None),
     ('campaign.condition.frenzy', None, 'frenzy'),
 ])
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_supplied_condition_id_resolves_once_to_its_declared_operator(condition_id, tag, flag):
     fighter = compile_fighter(_condition_build((condition_id,)))
     assert tag is None or fighter.global_effects.tags.count(tag) == 1
@@ -633,7 +633,7 @@ def test_supplied_condition_id_resolves_once_to_its_declared_operator(condition_
     assert flag is None or getattr(double.global_effects, flag) is True
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_cold_blooded_condition_keeps_the_two_printed_origins():
     """Lizardmen and Fimir print different Cold-Blooded scopes; no universal variant."""
     def compiled(origin=None):
@@ -649,7 +649,7 @@ def test_cold_blooded_condition_keeps_the_two_printed_origins():
             compiled(invalid)
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_rules_definitions_and_unbound_condition_ids_are_refused():
     """condition.fear is the printed rule; the catalogue declares its disposition."""
     with pytest.raises(ValueError, match='outside the executable duel runtime'):
@@ -660,7 +660,7 @@ def test_rules_definitions_and_unbound_condition_ids_are_refused():
         compile_fighter(_condition_build(('condition.not-a-condition',)))
 
 
-@pytest.mark.knowledge_integrity
+@pytest.mark.phase1_kb_contracts
 def test_catalogue_declares_the_closed_condition_set_and_its_bindings():
     from mordheim_knowledge.loader import load_conditions, runtime_bindings
     rows = {row['id']: row for row in load_conditions('mordheim', ROOT)}
@@ -682,7 +682,7 @@ def test_catalogue_declares_the_closed_condition_set_and_its_bindings():
     assert {e['variant'] for e in cold['effects']} == {'lizardmen', 'fimir'}
 
 
-@pytest.mark.data_contract
+@pytest.mark.phase1_kb_contracts
 def test_condition_validation_rejects_a_malformed_declaration():
     from mordheim_knowledge.loader import load_conditions, runtime_bindings, validate_rule_runtime
     with pytest.raises(ValueError, match='implemented YES effect has no binding'):

@@ -490,3 +490,19 @@ ends the action restriction and supplies Aberrantius Vigortia (+1 Strength and
 Toughness), once, without healing Wounds or duplicating an already supplied dose.
 The initial potion result/addiction are supplied. Campaign creation of addiction,
 post-battle rolls and Quicksilver's Movement effect remain excluded.
+
+## Absolute Faith's multiple-opponent face stays out of the duel — 2026-10-21
+
+Sisters of Sigmar's Absolute Faith prints two consequences: the warrior may
+re-roll any Fear test, and she does not have to test for being engaged by
+multiple opponents. Only the first is admitted: `mechanic.fear-reroll` is
+consumed by `resolve_local_leadership` for the printed recipient, and the
+`fear-reroll` clause row carries the executed evidence. The second consequence
+counts enemy models engaging the fighter — All Alone / multiple-combatant
+enemy counting under the 2026-10-04 ruling. A one-against-one duel never
+supplies that fact, so the register records the clause as `scope: NO` with no
+consumer, exactly as the Norse explorers' "never needs to take all alone tests"
+and the Trollheim Protectorate's All Alone rider are recorded. Adding a supplied
+multi-enemy fact would introduce a new scope input rather than implement this
+rule; revisit only through an approved runtime-scope change that admits group
+engagement counting.

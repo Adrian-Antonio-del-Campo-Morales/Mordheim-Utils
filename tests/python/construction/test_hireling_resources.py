@@ -60,7 +60,7 @@ def emissary(patrons):
 
 # --- Marks of Myrmidia: the Oracle reroll -------------------------------
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_the_oracle_reroll_is_one_personal_die_for_the_whole_battle():
     selected, unselected = priestess(), priestess(select=False)
     assert "mechanic.oracle" in selected.global_effects.tags
@@ -88,7 +88,7 @@ def test_the_oracle_reroll_is_one_personal_die_for_the_whole_battle():
 
 # --- Snorri: the drinking table -----------------------------------------
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_snorri_results_two_to_four_are_their_own_states():
     # Results 5 (+1 Strength), 6 (Frenzy) and the refusal of result 1 are
     # already pinned by test_hireling_admission; these are the rest.
@@ -112,7 +112,7 @@ def test_snorri_results_two_to_four_are_their_own_states():
 
 # --- Belandysh: the dice profile ----------------------------------------
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_belandysh_rolls_his_profile_once_per_turn_when_a_value_is_needed():
     fighter = compile_fighter(FighterBuild(
         "mordheim", band_id="hirelings.dramatis-personae.1c", profile_id=BELANDYSH))
@@ -135,7 +135,7 @@ def test_belandysh_rolls_his_profile_once_per_turn_when_a_value_is_needed():
 
 # --- Innominatus: printed skills and the Dark Elf Blade -----------------
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_innominatus_has_grizzled_veteran_and_death_without_a_face():
     fighter = compile_fighter(FighterBuild(
         "mordheim", band_id="hirelings.dramatis-personae.1c", profile_id=INNOMINATUS))
@@ -167,7 +167,7 @@ def test_innominatus_has_grizzled_veteran_and_death_without_a_face():
 
 # --- Emissary of Chaos: the patron branch -------------------------------
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_the_emissary_needs_exactly_one_patron():
     with pytest.raises(ValueError, match="exactly one printed patron"):
         emissary(())
@@ -175,7 +175,7 @@ def test_the_emissary_needs_exactly_one_patron():
         emissary(("khorne", "nurgle"))
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_the_tzeentch_patron_keeps_its_own_academic_skill_access():
     from mordheim_construction.combat_packages import combat_packages
     from mordheim_construction.eligibility import desktop_call
@@ -197,7 +197,7 @@ def test_the_tzeentch_patron_keeps_its_own_academic_skill_access():
     assert tzeentch["skill.fearsome"] and tzeentch["skill.arcane-lore"]
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_khorne_adds_frenzy_and_one_attack_without_duplication():
     khorne, nurgle = emissary(("khorne",)), emissary(("nurgle",))
     assert khorne.global_effects.frenzy and not nurgle.global_effects.frenzy
@@ -206,7 +206,7 @@ def test_khorne_adds_frenzy_and_one_attack_without_duplication():
     assert phases.build_attacks(phases.AttackPoolContext(fighter=nurgle)).attacks == 1
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_nurgle_poison_reaches_the_attacks_that_carry_it():
     # The Fear half of the Nurgle branch is H03a's discriminator; this case
     # proves only that the printed poison is applied by the attack operator.

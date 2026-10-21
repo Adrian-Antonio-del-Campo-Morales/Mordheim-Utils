@@ -20,7 +20,7 @@ distinguishes implementation closure from certification.
 - [Verification](reference/verification.md) — the certification layers,
   coverage and mutation gates, and what each one can prove.
 - [Test classification and execution order](reference/test-sequence.md) — the
-  proposed categories, assignment criteria and dependency-based repair order.
+  phase categories, assignment criteria and dependency-based repair order.
 - [Tools](reference/tools.md) — maintained scripts, their purpose and the
   directory that owns each one.
 - [Web presentation](reference/web-presentation.md) — localization, provenance

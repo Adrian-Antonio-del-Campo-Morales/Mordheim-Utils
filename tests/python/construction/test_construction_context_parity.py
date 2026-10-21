@@ -25,7 +25,7 @@ def _codes(decisions):
 
 
 @pytest.mark.parametrize("case", CASES, ids=lambda case: case["name"])
-@pytest.mark.parity
+@pytest.mark.phase2_construction
 def test_selection_decisions_match_the_fixture(case):
     decisions = call("selectionDecisions", case["context"], case["proposals"])
     assert _allowed(decisions) == case["allowed"]
@@ -34,7 +34,7 @@ def test_selection_decisions_match_the_fixture(case):
 
 
 @pytest.mark.parametrize("case", CASES, ids=lambda case: case["name"])
-@pytest.mark.parity
+@pytest.mark.phase2_construction
 def test_complete_validation_matches_the_fixture(case):
     issues = call("validateConstruction", case["context"], {"draft": True})
     assert [issue["code"] for issue in issues] == case["validation_codes"]
@@ -55,7 +55,7 @@ def canonical_transport_context():
     }
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_installed_catalogue_is_lookup_not_carried_equipment(canonical_transport_context):
     from mordheim_construction.eligibility import construction_call
     build, facts = canonical_transport_context
@@ -64,7 +64,7 @@ def test_installed_catalogue_is_lookup_not_carried_equipment(canonical_transport
 
 
 @pytest.mark.parametrize("source", ["selections", "possession"])
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_transport_checks_actual_selected_and_owned_items(canonical_transport_context, source):
     from mordheim_construction.eligibility import construction_call
     build, facts = canonical_transport_context
@@ -75,7 +75,7 @@ def test_transport_checks_actual_selected_and_owned_items(canonical_transport_co
         ("equipment_not_permitted", "weapon.blowpipe")]
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_transport_preserves_final_and_draft_requirement_checks(canonical_transport_context):
     from mordheim_construction.eligibility import construction_call
     build, facts = canonical_transport_context

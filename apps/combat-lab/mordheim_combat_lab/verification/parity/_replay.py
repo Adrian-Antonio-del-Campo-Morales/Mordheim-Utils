@@ -91,7 +91,7 @@ def replay_duel(first: CompiledFighter, second: CompiledFighter, *, backend: str
                             for fighter, local in ((first, state.first), (second, state.second))))
     elif backend in {"numpy", "native"}:
         from mordheim_combat.kernel import compile_duel_plan
-        plan = compile_duel_plan(first, second, context=context)
+        plan = compile_duel_plan(first, second, context=context, backend=backend)
         if backend == "native":
             from mordheim_combat import _combat_native as engine
             if getattr(engine, "CONTEXT_VERSION", None) != 1 or not hasattr(engine, "simulate_batch_observed"):

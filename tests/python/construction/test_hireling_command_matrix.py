@@ -150,7 +150,7 @@ def _mazzalupo_package():
 # Canonical command boundary
 
 
-@pytest.mark.knowledge_integrity
+@pytest.mark.phase1_kb_contracts
 def test_sixth_command_stays_outside_the_melee_command_matrix():
     assert EXCLUDED_COMMAND not in {spell for spell, *_ in COMMANDS}
     lore = _lore_commands()
@@ -161,7 +161,7 @@ def test_sixth_command_stays_outside_the_melee_command_matrix():
 
 
 @pytest.mark.parametrize(("origin", "owner", "_question"), HIRELING_ORIGINS)
-@pytest.mark.knowledge_integrity
+@pytest.mark.phase1_kb_contracts
 def test_hireling_origin_resolves_to_its_canonical_rule_node(origin, owner, _question):
     document = next(profile for profile in _catalogue().profiles if profile.get("id") == owner)
     node = _find_node(document, origin)
@@ -178,7 +178,7 @@ def test_hireling_origin_resolves_to_its_canonical_rule_node(origin, owner, _que
 
 
 @pytest.mark.parametrize(("origin", "owner", "_question"), HIRELING_ORIGINS)
-@pytest.mark.knowledge_integrity
+@pytest.mark.phase1_kb_contracts
 def test_hireling_origin_resolves_in_the_published_hireling_catalogue(origin, owner, _question):
     profile = next((row for row in _catalogue().profiles if row.get("id") == owner), None)
     assert profile is not None, owner
@@ -192,7 +192,7 @@ def test_hireling_origin_resolves_in_the_published_hireling_catalogue(origin, ow
     assert rule["effect"].strip(), origin
 
 
-@pytest.mark.knowledge_integrity
+@pytest.mark.phase1_kb_contracts
 def test_no_hireling_profile_or_rule_is_part_of_band_construction():
     band_profiles, band_rules = _band_index()
     owners = {owner for _origin, owner, _q in HIRELING_ORIGINS}
@@ -201,7 +201,7 @@ def test_no_hireling_profile_or_rule_is_part_of_band_construction():
     assert len(owners) == 25
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_free_selection_build_does_not_apply_hireling_rules():
     # Aldred Fellblade's canonical characteristics (M4 WS6 BS4 S4 T4 W2 I4 A2 Ld8).
     # A free-selection build is not a canonical hireling construction; this
@@ -240,7 +240,7 @@ def _band_rule(rule_id):
 
 
 @pytest.mark.parametrize(("spell_id", "_band_rule_id", "roll", "difficulty", "clause"), COMMANDS)
-@pytest.mark.knowledge_integrity
+@pytest.mark.phase1_kb_contracts
 def test_command_origin_resolves_in_lore_commands(spell_id, _band_rule_id, roll, difficulty, clause):
     lore = _lore_commands()
     spell = next((row for row in lore["spells"] if row.get("id") == spell_id), None)
@@ -250,7 +250,7 @@ def test_command_origin_resolves_in_lore_commands(spell_id, _band_rule_id, roll,
     assert clause in spell["effect"], spell_id
 
 
-@pytest.mark.knowledge_integrity
+@pytest.mark.phase1_kb_contracts
 def test_commands_lore_separates_orders_from_spells():
     lore = _lore_commands()
     note = " ".join(lore["note"].split())
@@ -263,7 +263,7 @@ def test_commands_lore_separates_orders_from_spells():
 
 
 @pytest.mark.parametrize(("spell_id", "band_rule_id", "_roll", "difficulty", "_clause"), COMMANDS)
-@pytest.mark.knowledge_integrity
+@pytest.mark.phase1_kb_contracts
 def test_command_band_rule_is_declared_out_of_scope_without_binding(spell_id, band_rule_id, _roll, difficulty, _clause):
     rule = _band_rule(band_rule_id)
     assert rule is not None, band_rule_id
@@ -280,7 +280,7 @@ def test_command_band_rule_is_declared_out_of_scope_without_binding(spell_id, ba
     assert rule["effect"].startswith(f"Difficulty: {difficulty}."), band_rule_id
 
 
-@pytest.mark.knowledge_integrity
+@pytest.mark.phase1_kb_contracts
 def test_commands_gate_rule_declares_the_subsystem_out_of_scope():
     rule = _band_rule("wandering-knight--commands")
     assert rule is not None
@@ -295,7 +295,7 @@ def test_commands_gate_rule_declares_the_subsystem_out_of_scope():
     assert "Commands" in reason
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_canonical_wandering_knight_compiles_without_command_effects():
     compiled = compile_fighter(
         FighterBuild("mordheim", collection=COLLECTION, band_id="mazzalupo-web", profile_id=WANDERING_KNIGHT)
@@ -307,7 +307,7 @@ def test_canonical_wandering_knight_compiles_without_command_effects():
     assert not any("command" in tag for tag in compiled.global_effects.tags)
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_wandering_knight_is_not_offered_commands_as_selectable_rules():
     build = FighterBuild("mordheim", collection=COLLECTION, band_id="mazzalupo-web", profile_id=WANDERING_KNIGHT)
     offered = {str(rule.get("id")) for rule in available_special_rules(build, None)}
@@ -320,7 +320,7 @@ def test_wandering_knight_is_not_offered_commands_as_selectable_rules():
     ('crimashin', 'weapon.dagger', 'weapon.sword', 'armour.no-armour'),
     ('holy-man', 'weapon.double-handed-weapon', None, 'armour.no-armour'),
 ])
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_native_hireling_compiles_its_source_qualified_printed_kit(profile, weapon, off, armour):
     result = compile_fighter(FighterBuild('mordheim', band_id='hirelings.hired-sword.2b',
         profile_id='hireling.hired-sword.' + profile, main_weapon_id=weapon,
@@ -337,7 +337,7 @@ def test_native_hireling_compiles_its_source_qualified_printed_kit(profile, weap
         assert 'mechanic.centigor-drunken' in result.global_effects.tags
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_native_kit_keeps_whole_choices_quantities_and_materials():
     base = dict(band_id='hirelings.hired-sword.2b', profile_id='hireling.hired-sword.black-orc-bodyguard',
                 main_weapon_id='weapon.axe', off_hand_id='weapon.axe', armour_id='armour.heavy-armour')

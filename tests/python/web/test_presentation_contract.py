@@ -4,7 +4,7 @@ from tools.knowledge.presentation_contract import build_presentation_entries
 
 # The whole file proves the stable presentation locators that address a
 # published row independently of its array position.
-pytestmark = pytest.mark.data_transport
+pytestmark = pytest.mark.phase1_kb_contracts
 
 
 def sources_of(artefact):

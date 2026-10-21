@@ -23,7 +23,7 @@ from mordheim_core.models import Characteristics, FighterBuild
 import pytest
 
 
-pytestmark = pytest.mark.rule_behavior
+pytestmark = pytest.mark.phase3_rules
 
 
 def tape(*rolls):

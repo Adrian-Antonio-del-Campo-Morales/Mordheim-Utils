@@ -36,7 +36,7 @@ import generate_knowledge_web as generator  # noqa: E402
 
 # The whole file probes the generated artefact's row shapes: malformations the
 # TypeScript reader would silently shadow, not game choices or rule effects.
-pytestmark = pytest.mark.data_transport
+pytestmark = pytest.mark.phase1_kb_contracts
 
 
 def _artefact() -> dict:

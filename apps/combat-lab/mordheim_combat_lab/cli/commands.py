@@ -81,7 +81,10 @@ def _structural_errors(knowledge, specs) -> tuple[list[str], int]:
     from mordheim_core.models import FighterBuild
     from mordheim_knowledge.editorial_schemas import validate_knowledge_base
     from mordheim_knowledge.loader import load_bands
-    from mordheim_combat_lab.verification.structural import audit_phase_verification
+    from mordheim_combat_lab.verification.structural import (
+        audit_phase_verification,
+        required_profile_build,
+    )
 
     errors = list(validate_knowledge_base(knowledge))
     errors.extend(validate_execution_contract("mordheim", knowledge))
@@ -92,10 +95,15 @@ def _structural_errors(knowledge, specs) -> tuple[list[str], int]:
         for band in load_bands(collection, knowledge):
             for profile in band.profiles:
                 try:
-                    compile_fighter(FighterBuild(
-                        "mordheim", collection=collection,
-                        band_id=str(band.band["id"]), profile_id=str(profile["id"]),
-                    ), knowledge)
+                    # Supply the profile's printed mandatory initial choice from
+                    # the same helper the structural projection uses, so a
+                    # Trapper/Rat Ogre/Cripple is compiled with what its source
+                    # requires instead of becoming a false structural failure.
+                    compile_fighter(
+                        required_profile_build(
+                            collection, str(band.band["id"]), str(profile["id"])
+                        ), knowledge
+                    )
                 except ValueError as error:
                     # Scope exclusions and mandatory selectable grants are valid
                     # classifications; every other compilation failure is structural.

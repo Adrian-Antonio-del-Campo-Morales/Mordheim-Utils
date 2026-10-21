@@ -7,7 +7,7 @@ from mordheim_core.models import FighterBuild
 from mordheim_knowledge.loader import load_bands
 
 
-pytestmark = pytest.mark.eligibility
+pytestmark = pytest.mark.phase2_construction
 
 
 def test_kumfy_gear_rejects_both_forbidden_combinations_in_owned_and_active_equipment():

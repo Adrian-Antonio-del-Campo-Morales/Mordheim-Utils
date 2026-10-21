@@ -48,7 +48,7 @@ def attack(a, b, rolls, *, a_state=None, b_state=None, react=True, decisions=(),
     return result
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 @pytest.mark.parametrize('spectral,face,damage', [(True, 6, 1), (True, 5, 0),
                                                 (False, 6, 0)])
 def test_trigger_and_failed_ordinary_wound(spectral, face, damage):
@@ -57,14 +57,14 @@ def test_trigger_and_failed_ordinary_wound(spectral, face, damage):
     assert result.wounded == bool(damage)
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_hit_modifier_does_not_turn_five_into_natural_six():
     a = fighter(True)
     a = replace(a, main_weapon=replace(a.main_weapon, hit_modifier=1))
     assert attack(a, fighter(), [roll('a.hit', 5), roll('a.wound', 1)]).damage == 0
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_final_natural_reroll_six_qualifies():
     a = fighter(True)
     a = replace(a, global_effects=replace(a.global_effects, reroll_hits=True))
@@ -72,7 +72,7 @@ def test_final_natural_reroll_six_qualifies():
     assert result.damage == 1
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 @pytest.mark.parametrize('automatic', ['weapon', 'ws-zero', 'helpless'])
 def test_automatic_hit_has_no_natural_six(automatic):
     a, b, options = fighter(True), fighter(), {}
@@ -85,13 +85,13 @@ def test_automatic_hit_has_no_natural_six(automatic):
     assert attack(a, b, [roll('a.wound', 1)], **options).damage == 0
 
 
-@pytest.mark.interaction
+@pytest.mark.phase4_modular
 def test_sweep_characteristic_failure_is_not_hit_die_six():
     a = fighter(True, main_weapon_id='weapon.double-handed-weapon', skill_ids=('skill.sweep',))
     assert attack(a, fighter(), [roll('a.sweep', 6), roll('a.wound', 1)]).damage == 0
 
 
-@pytest.mark.interaction
+@pytest.mark.phase4_modular
 @pytest.mark.parametrize('save', [4, 6])
 def test_lucky_charm_discards_original_hit_and_extra(save):
     b = fighter(defence_ids=('defence.lucky-charm',))
@@ -99,7 +99,7 @@ def test_lucky_charm_discards_original_hit_and_extra(save):
     assert result.damage == 0 and not result.defender.lucky_charm
 
 
-@pytest.mark.interaction
+@pytest.mark.phase4_modular
 def test_failed_charm_does_not_roll_again_for_extra():
     b = fighter(defence_ids=('defence.lucky-charm',))
     result = attack(fighter(True), b,
@@ -107,7 +107,7 @@ def test_failed_charm_does_not_roll_again_for_extra():
     assert result.damage == 1 and not result.defender.lucky_charm
 
 
-@pytest.mark.interaction
+@pytest.mark.phase4_modular
 def test_exceptional_parry_discards_spectral_hit():
     b = fighter(main_weapon_id='weapon.sword')
     b = replace(b, global_effects=replace(b.global_effects,
@@ -116,7 +116,7 @@ def test_exceptional_parry_discards_spectral_hit():
     assert result.parried and result.damage == 0
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 @pytest.mark.parametrize('extra_save,ordinary_save,damage', [(6, 6, 0), (6, 1, 1),
                                                           (1, 6, 1), (1, 1, 2)])
 def test_each_contribution_has_own_armour_save(extra_save, ordinary_save, damage):
@@ -127,7 +127,7 @@ def test_each_contribution_has_own_armour_save(extra_save, ordinary_save, damage
     assert result.damage == damage and result.defender.wounds == 4 - damage
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 @pytest.mark.parametrize('save_kind', ['ward', 'regeneration'])
 @pytest.mark.parametrize('face,damage', [(6, 0), (1, 1)])
 def test_extra_obeys_special_saves(save_kind, face, damage):
@@ -139,7 +139,7 @@ def test_extra_obeys_special_saves(save_kind, face, damage):
     assert result.damage == damage
 
 
-@pytest.mark.interaction
+@pytest.mark.phase4_modular
 def test_extra_removal_stops_ordinary_and_reacts_once():
     a, b = fighter(True), fighter(wounds=1, trait_overrides={'acid_blood': True})
     result = attack(a, b, [roll('a.hit', 6), roll('a.spectral-touch.injury.0', 6),
@@ -148,7 +148,7 @@ def test_extra_removal_stops_ordinary_and_reacts_once():
     assert result.damage == 1 and result.attacker.wounds == 3
 
 
-@pytest.mark.interaction
+@pytest.mark.phase4_modular
 def test_both_contributions_react_once():
     b = fighter(trait_overrides={'acid_blood': True})
     result = attack(fighter(True), b, [roll('a.hit', 6),
@@ -157,7 +157,7 @@ def test_both_contributions_react_once():
     assert result.damage == 2 and result.defender.wounds == result.attacker.wounds == 2
 
 
-@pytest.mark.interaction
+@pytest.mark.phase4_modular
 @pytest.mark.parametrize('rescue', [1, 6])
 def test_rescue_is_immediate_before_ordinary_wound(rescue):
     b = fighter(wounds=1, skill_ids=('mechanic.force-of-will',))
@@ -170,7 +170,7 @@ def test_rescue_is_immediate_before_ordinary_wound(rescue):
     assert result.defender.condition == (phases.Condition.STANDING if rescue == 1 else phases.Condition.OUT)
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 @pytest.mark.parametrize('injury', [1, 3])
 def test_extra_knockdown_or_stun_does_not_auto_finish_continuation(injury):
     result = attack(fighter(True), fighter(wounds=1), [roll('a.hit', 6),
@@ -179,7 +179,7 @@ def test_extra_knockdown_or_stun_does_not_auto_finish_continuation(injury):
         phases.Condition.KNOCKED_DOWN if injury == 1 else phases.Condition.STUNNED)
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_extra_does_not_use_critical_capacity_or_weapon_damage_die():
     a = fighter(True)
     a = replace(a, main_weapon=replace(a.main_weapon, damage=4, damage_die_sides=3))
@@ -187,7 +187,7 @@ def test_extra_does_not_use_critical_capacity_or_weapon_damage_die():
     assert result.damage == 1 and result.attacker.critical_available
 
 
-@pytest.mark.interaction
+@pytest.mark.phase4_modular
 def test_ordinary_critical_does_not_double_extra():
     result = attack(fighter(True), fighter(),
         [roll('a.hit', 6), roll('a.wound', 6), roll('a.critical', 3)])
@@ -203,7 +203,7 @@ def pool(a, b, rolls, count=1):
     return result
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_repeated_pool_sixes_each_add_one_wound_after_hit_preparation():
     a = fighter(True)
     sa, sb, outcomes = pool(a, fighter(), [roll('p.attack.0.hit', 6),
@@ -212,7 +212,7 @@ def test_repeated_pool_sixes_each_add_one_wound_after_hit_preparation():
     assert sa.critical_available
 
 
-@pytest.mark.interaction
+@pytest.mark.phase4_modular
 def test_mark_manufactured_six_is_not_natural_even_after_pool_transport():
     a = fighter(True, skill_ids=('mechanic.mark-of-the-old-ones',))
     a = replace(a, main_weapon=replace(a.main_weapon, hit_modifier=-2))
@@ -221,7 +221,7 @@ def test_mark_manufactured_six_is_not_natural_even_after_pool_transport():
     assert outcomes[0].hit_roll == 6 and outcomes[0].damage == 0 and sb.wounds == 4
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_real_spirit_host_receives_the_trait_without_fixture_injection():
     a = compile_fighter(FighterBuild('mordheim', band_id='call-of-the-night-haint-mim',
         profile_id='spirit-hosts'))
@@ -230,7 +230,7 @@ def test_real_spirit_host_receives_the_trait_without_fixture_injection():
     assert result.damage == 1
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 @pytest.mark.parametrize('armour_face,damage', [(4, 1), (5, 0)])
 def test_extra_uses_actual_attack_strength_and_penetration(armour_face, damage):
     # Heavy armour 5+, S4 makes 6+, dagger's +1 brings it back to 5+.
@@ -240,7 +240,7 @@ def test_extra_uses_actual_attack_strength_and_penetration(armour_face, damage):
     assert result.damage == damage
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_extra_respects_magic_specific_natural_armour_and_ward():
     a, b = fighter(True), fighter()
     a = replace(a, main_weapon=replace(a.main_weapon,
@@ -250,7 +250,7 @@ def test_extra_respects_magic_specific_natural_armour_and_ward():
     assert attack(a, b, [roll('a.hit', 6), roll('a.wound', 1)]).damage == 1
 
 
-@pytest.mark.interaction
+@pytest.mark.phase4_modular
 def test_extra_is_one_even_with_fire_and_flammable():
     a, b = fighter(True), fighter()
     a = replace(a, main_weapon=replace(a.main_weapon, tags=(*a.main_weapon.tags, 'attack.fire')))
@@ -258,7 +258,7 @@ def test_extra_is_one_even_with_fire_and_flammable():
     assert attack(a, b, [roll('a.hit', 6), roll('a.wound', 1)]).damage == 1
 
 
-@pytest.mark.interaction
+@pytest.mark.phase4_modular
 def test_extra_immediate_save_consumes_luck_before_ordinary_save():
     b = fighter(armour_id='armour.heavy-armour', skill_ids=('skill.luck',))
     result = attack(fighter(True), b, [roll('a.hit', 6),
@@ -268,7 +268,7 @@ def test_extra_immediate_save_consumes_luck_before_ordinary_save():
     assert result.damage == 1 and 'luck' in result.defender.resources_spent
 
 
-@pytest.mark.interaction
+@pytest.mark.phase4_modular
 def test_extra_acid_blood_removing_attacker_cancels_ordinary():
     b = fighter(trait_overrides={'acid_blood': True})
     result = attack(fighter(True, wounds=1), b, [roll('a.hit', 6),
@@ -278,14 +278,14 @@ def test_extra_acid_blood_removing_attacker_cancels_ordinary():
     assert result.damage == 1
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_stun_then_successful_ordinary_wound_still_rolls_injury():
     result = attack(fighter(True), fighter(wounds=1), [roll('a.hit', 6),
         roll('a.spectral-touch.injury.0', 3), roll('a.wound', 4), roll('a.injury.0', 1)])
     assert result.damage == 2 and result.defender.condition == phases.Condition.STUNNED
 
 
-@pytest.mark.interaction
+@pytest.mark.phase4_modular
 def test_ordinary_critical_armour_denial_cannot_retroactively_deny_extra_save():
     result = attack(fighter(True), fighter(armour_id='armour.heavy-armour'),
         [roll('a.hit', 6), roll('a.spectral-touch.armour', 6),
@@ -293,14 +293,14 @@ def test_ordinary_critical_armour_denial_cannot_retroactively_deny_extra_save():
     assert result.damage == 2 and result.critical
 
 
-@pytest.mark.interaction
+@pytest.mark.phase4_modular
 def test_on_hit_kusara_effect_is_not_replayed_by_extra_wound():
     result = attack(fighter(True, main_weapon_id='weapon.kusara-kama'), fighter(),
         [roll('a.hit', 6), roll('a.wound', 1)])
     assert result.damage == 1 and result.defender.attack_penalty == 1
 
 
-@pytest.mark.interaction
+@pytest.mark.phase4_modular
 def test_pool_charm_blocks_only_first_six_and_consumes_once():
     _, sb, outcomes = pool(fighter(True), fighter(defence_ids=('defence.lucky-charm',)),
         [roll('p.attack.0.hit', 6), roll('p.attack.1.hit', 6),
@@ -309,7 +309,7 @@ def test_pool_charm_blocks_only_first_six_and_consumes_once():
     assert [o.damage for o in outcomes] == [0, 1]
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_pool_lethal_extra_cancels_later_prepared_hit_wounds():
     _, sb, outcomes = pool(fighter(True), fighter(wounds=1),
         [roll('p.attack.0.hit', 6), roll('p.attack.1.hit', 6),
@@ -317,7 +317,7 @@ def test_pool_lethal_extra_cancels_later_prepared_hit_wounds():
     assert sb.condition == phases.Condition.OUT and len(outcomes) == 1
 
 
-@pytest.mark.interaction
+@pytest.mark.phase4_modular
 def test_barrage_new_six_establishes_extra_and_stops_despite_ordinary_failure():
     a, b = fighter(True, main_weapon_id='weapon.rapier'), fighter()
     dice = StrictDice([roll('p.attack.0.hit', 5), roll('p.attack.0.wound', 1),
@@ -333,7 +333,7 @@ def test_barrage_new_six_establishes_extra_and_stops_despite_ordinary_failure():
     assert outcomes[0].damage_already_reacted == 1 and outcomes[0].wounded
 
 
-@pytest.mark.interaction
+@pytest.mark.phase4_modular
 def test_barrage_new_six_reacts_to_extra_and_ordinary_damage_once_each():
     a = fighter(True, main_weapon_id='weapon.rapier')
     b = fighter(trait_overrides={'acid_blood': True})
@@ -352,7 +352,7 @@ def test_barrage_new_six_reacts_to_extra_and_ordinary_damage_once_each():
     assert result.damage_already_reacted == 2 and result.reactions_resolved and result.wounded
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.phase4_modular
 @pytest.mark.parametrize('mutation', ['remove-trigger', 'suppress-continuation'])
 def test_semantic_expectations_detect_isolated_mutations(monkeypatch, mutation):
     from pathlib import Path
@@ -372,7 +372,7 @@ def test_semantic_expectations_detect_isolated_mutations(monkeypatch, mutation):
         test_trigger_and_failed_ordinary_wound(True, 6, 1)
 
 
-@pytest.mark.interaction
+@pytest.mark.phase4_modular
 @pytest.mark.parametrize('saved', [False, True])
 @pytest.mark.parametrize('path', ['attack', 'pool', 'replay'])
 def test_established_extra_wound_prevents_barrage_even_when_saved(saved, path):
@@ -408,7 +408,7 @@ def test_established_extra_wound_prevents_barrage_even_when_saved(saved, path):
     assert result.defender.wounds == 4 - int(not saved)
 
 
-@pytest.mark.interaction
+@pytest.mark.phase4_modular
 def test_natural_six_without_spectral_touch_keeps_barrage_after_failed_wound():
     a, b = fighter(main_weapon_id='weapon.rapier'), fighter()
     dice = StrictDice([roll('a.hit', 6), roll('a.wound', 1),
@@ -422,7 +422,7 @@ def test_natural_six_without_spectral_touch_keeps_barrage_after_failed_wound():
     assert result.damage == 1 and result.wounded and result.defender.wounds == 3
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.phase4_modular
 @pytest.mark.parametrize('mutation', ['remove-wound-prerequisite', 'use-unsaved-damage'])
 def test_barrage_prerequisite_detects_isolated_mutations(monkeypatch, mutation):
     from pathlib import Path
@@ -441,7 +441,7 @@ def test_barrage_prerequisite_detects_isolated_mutations(monkeypatch, mutation):
         test_established_extra_wound_prevents_barrage_even_when_saved(True, 'attack')
 
 
-@pytest.mark.end_to_end
+@pytest.mark.phase4_modular
 def test_pending_spirit_host_tag_reaches_actual_modular_duel_driver():
     from mordheim_combat_lab.verification.parity._replay import replay_duel
     from mordheim_core.models import DuelContext

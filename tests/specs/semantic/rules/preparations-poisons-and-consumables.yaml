@@ -352,6 +352,9 @@ specifications:
     - active
     - sequence
     - boundary
+    # The supplied permanent result is spent once when the fighter is
+    # initialized; the case asserts the `disability.1` resource as consumed.
+    - consumption
     operation: initialize
     attacker:
       collection: trollheim

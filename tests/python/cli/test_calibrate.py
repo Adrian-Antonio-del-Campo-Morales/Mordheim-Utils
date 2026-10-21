@@ -44,7 +44,7 @@ def payload():
     )
 
 
-@pytest.mark.workflow
+@pytest.mark.phase7_warband
 def test_sweep_reports_winners_inside_the_candidates(payload):
     assert payload["schema"] == CALIBRATION_SCHEMA
     assert payload["method"]["pair_sets"]["native"] == "mini"
@@ -74,7 +74,7 @@ def test_sweep_reports_winners_inside_the_candidates(payload):
             payload["method"]["pair_ids"][backend])
 
 
-@pytest.mark.workflow
+@pytest.mark.phase7_warband
 def test_sweep_derives_a_pool_speedup_curve_from_its_own_evidence(payload):
     curves = measured_pool_speedups(payload)
 
@@ -85,7 +85,7 @@ def test_sweep_derives_a_pool_speedup_curve_from_its_own_evidence(payload):
                    for segments, speedup in points.items())
 
 
-@pytest.mark.workflow
+@pytest.mark.phase7_warband
 def test_installed_profile_is_the_applied_one(payload, tmp_path, monkeypatch, capsys):
     monkeypatch.setenv("LOCALAPPDATA", str(tmp_path))
     monkeypatch.setattr(calibration, "run_calibration", lambda *_args, **_kwargs: payload)
@@ -105,7 +105,7 @@ def test_installed_profile_is_the_applied_one(payload, tmp_path, monkeypatch, ca
 
 
 # Saved state: the installed profile and the optional report copy are files.
-@pytest.mark.persistence
+@pytest.mark.phase7_warband
 def test_output_flag_writes_a_second_copy(payload, tmp_path, monkeypatch):
     monkeypatch.setenv("LOCALAPPDATA", str(tmp_path))
     monkeypatch.setattr(calibration, "run_calibration", lambda *_args, **_kwargs: payload)
@@ -119,7 +119,7 @@ def test_output_flag_writes_a_second_copy(payload, tmp_path, monkeypatch):
     assert (tmp_path / "Mordheim Combat Lab" / "calibration.json").exists()
 
 
-@pytest.mark.persistence
+@pytest.mark.phase7_warband
 def test_reset_removes_the_installed_profile(payload, tmp_path, monkeypatch):
     monkeypatch.setenv("LOCALAPPDATA", str(tmp_path))
     monkeypatch.setattr(calibration, "run_calibration", lambda *_args, **_kwargs: payload)

@@ -33,7 +33,7 @@ from mordheim_knowledge.loader import load_bands
 
 # Printed recipients decide who is offered, admitted or refused a line. The two
 # tests that read a compiled kit assert the same admission at its consumer.
-pytestmark = pytest.mark.eligibility
+pytestmark = pytest.mark.phase2_construction
 
 ROOT = Path(__file__).resolve().parents[3]
 KNOWLEDGE = ROOT / "sources" / "knowledge"

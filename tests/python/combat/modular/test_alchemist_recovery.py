@@ -8,7 +8,7 @@ from mordheim_core.models import Characteristics, DuelContext, FighterBuild
 import pytest
 
 
-pytestmark = pytest.mark.rule_behavior
+pytestmark = pytest.mark.phase3_rules
 
 
 def scientist(*conditions, **options):

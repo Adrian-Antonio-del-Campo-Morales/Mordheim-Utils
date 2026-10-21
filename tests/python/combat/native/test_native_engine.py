@@ -31,7 +31,7 @@ def _require_native() -> None:
         pytest.skip("native combat backend is not compiled in this environment")
 
 
-@pytest.mark.compilation
+@pytest.mark.phase6_native
 def test_native_compile_keeps_unarmed_fallback_for_later_pistol_rounds() -> None:
     """A main pistol becomes unarmed after opening round when no off-hand exists."""
     from mordheim_combat_lab.cli.benchmarking import DEEP_SCENARIOS
@@ -48,7 +48,7 @@ def test_native_compile_keeps_unarmed_fallback_for_later_pistol_rounds() -> None
         for name in EFFECT_VALUE_FIELDS
     )
 
-@pytest.mark.compilation
+@pytest.mark.phase6_native
 def test_native_compile_preserves_entangle_reaction_contract() -> None:
     """Entangle reaction is compiled as automatic fixed-strength attack."""
     from mordheim_combat_lab.cli.benchmarking import DEEP_SCENARIOS
@@ -64,7 +64,7 @@ def test_native_compile_preserves_entangle_reaction_contract() -> None:
     assert reaction["effect"][37] == 1
 
 
-@pytest.mark.workflow
+@pytest.mark.phase6_native
 def test_native_is_selected_by_auto_when_available() -> None:
     _require_native()
     assert available_backends()[0] == "native"
@@ -74,7 +74,7 @@ def test_native_is_selected_by_auto_when_available() -> None:
     )
 
 
-@pytest.mark.workflow
+@pytest.mark.phase6_native
 def test_native_accumulates_counts_across_batches() -> None:
     """Batch accumulation must neither lose nor duplicate duels."""
     _require_native()
@@ -84,7 +84,7 @@ def test_native_accumulates_counts_across_batches() -> None:
         == result.simulations
 
 
-@pytest.mark.parity
+@pytest.mark.phase6_native
 def test_native_symmetric_duel_is_statistically_fair() -> None:
     """Two identical profiles must each win ~50% (single large batch)."""
     _require_native()
@@ -94,7 +94,7 @@ def test_native_symmetric_duel_is_statistically_fair() -> None:
     assert abs(p - 0.5) < 6 * (0.5 * 0.5 / result.simulations) ** 0.5 + 0.0025
 
 
-@pytest.mark.parity
+@pytest.mark.phase6_native
 def test_native_runs_are_deterministic_per_seed() -> None:
     """Replay-style reproducibility: same seed ⇒ identical result;
     different seed ⇒ different dice stream (the per-batch PCG32 is derived
@@ -109,7 +109,7 @@ def test_native_runs_are_deterministic_per_seed() -> None:
     )
 
 
-@pytest.mark.parity
+@pytest.mark.phase6_native
 def test_native_statistical_parity_against_modular_oracle() -> None:
     """The statistical gate (modular oracle) certifies the native backend."""
     _require_native()
@@ -122,7 +122,7 @@ def test_native_statistical_parity_against_modular_oracle() -> None:
     assert result.passed
 
 
-@pytest.mark.parity
+@pytest.mark.phase6_native
 def test_native_two_weapons_vs_parry_is_certified_against_the_oracle() -> None:
     """Regression for the natural-6 parry waste in the deep matrix.
 
@@ -147,7 +147,7 @@ def test_native_two_weapons_vs_parry_is_certified_against_the_oracle() -> None:
     assert result.passed
 
 
-@pytest.mark.parity
+@pytest.mark.phase6_native
 def test_native_frenzy_vs_heavy_is_certified_against_the_oracle() -> None:
     """Regression for the native-only frenzy re-doubling in the deep matrix.
 
@@ -171,7 +171,7 @@ def test_native_frenzy_vs_heavy_is_certified_against_the_oracle() -> None:
     assert result.passed
 
 
-@pytest.mark.parity
+@pytest.mark.phase6_native
 def test_native_elite_vs_durable_is_certified_against_the_oracle() -> None:
     """Regression for the stunned-defender follow-up kill in the deep matrix.
 

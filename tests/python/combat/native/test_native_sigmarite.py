@@ -7,7 +7,7 @@ from mordheim_construction.compiler import compile_fighter
 import pytest
 
 
-@pytest.mark.compilation
+@pytest.mark.phase6_native
 def test_native_compile_preserves_sigmarite_and_ignore_pain_contract() -> None:
     scenario = next(item for item in DEEP_SCENARIOS if item.id == "sigmarite-vs-undead")
     from mordheim_knowledge.loader import knowledge_root
@@ -21,7 +21,7 @@ def test_native_compile_preserves_sigmarite_and_ignore_pain_contract() -> None:
     assert context["second"]["ignore_pain"] is True
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.phase6_native
 def test_native_source_keeps_pool_phase_snapshot_for_stunned_followups() -> None:
     source = open(
         "packages/python/combat-engine/mordheim_combat/native/_combat_native.pyx",

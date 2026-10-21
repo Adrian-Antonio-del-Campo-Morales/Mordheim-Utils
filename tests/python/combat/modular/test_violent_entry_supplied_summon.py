@@ -72,7 +72,7 @@ def resolve_one_round(owner, victim, *, dice, charging=("first",)):
     return resolve_round(owner, victim, state, dice, NoDecisions())
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_charging_on_the_summoned_turn_gains_both_printed_bonuses():
     owner, victim, dice = spirit(SUMMON), foe(), Tape({
         "round.0.first.attack.0.hit": [3], "round.0.first.attack.0.wound": [3]})
@@ -85,7 +85,7 @@ def test_charging_on_the_summoned_turn_gains_both_printed_bonuses():
     dice.finish()
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_a_charge_without_the_supplied_summon_turn_grants_nothing():
     owner, victim, dice = spirit(), foe(), Tape({"round.0.first.attack.0.hit": [3]})
     result = resolve_one_round(owner, victim, dice=dice)
@@ -95,7 +95,7 @@ def test_a_charge_without_the_supplied_summon_turn_grants_nothing():
     dice.finish()
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_the_supplied_fact_without_a_charge_grants_nothing():
     owner, victim = spirit(SUMMON), foe()
     dice = Tape({"round.0.first.attack.0.hit": [3]})
@@ -115,7 +115,7 @@ def test_the_supplied_fact_without_a_charge_grants_nothing():
     assert resolve_hit(context, Tape()).target == 3
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_the_bonus_does_not_persist_into_later_rounds():
     owner, victim, dice = spirit(SUMMON), foe(), Tape({
         "round.0.first.attack.0.hit": [3], "round.0.first.attack.0.wound": [3]})
@@ -137,7 +137,7 @@ def test_the_bonus_does_not_persist_into_later_rounds():
     dice.finish()
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_repeating_the_supplied_fact_does_not_double_the_bonus():
     single, repeated = spirit(SUMMON), spirit(SUMMON, SUMMON)
     assert single.global_effects.charge_strength_bonus == 1
@@ -152,7 +152,7 @@ def test_repeating_the_supplied_fact_does_not_double_the_bonus():
         assert context.modifier == 1 and wound.strength == 4
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_the_supplied_fact_needs_its_malignant_spirits_recipient():
     with pytest.raises(ValueError, match="Malignant Spirits recipient"):
         compile_fighter(FighterBuild("mordheim", Characteristics(3, 3, 3, 2, 3, 1),
@@ -162,7 +162,7 @@ def test_the_supplied_fact_needs_its_malignant_spirits_recipient():
             condition_ids=(SUMMON,)))
 
 
-@pytest.mark.knowledge_integrity
+@pytest.mark.phase1_kb_contracts
 def test_the_rule_binds_the_bonus_to_the_supplied_fact_without_granting_it():
     package = next(p for p in combat_packages("mordheim") if p.band["id"] == BAND)
     rule = next(r for r in package.special_rules if r["id"] == "malignant-spirits--violent-entry")

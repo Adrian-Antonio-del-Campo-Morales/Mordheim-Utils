@@ -71,7 +71,7 @@ def fear_carriers():
     )
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_each_trait_fear_row_reaches_causes_fear_once():
     foe = plain()
     for carrier in fear_carriers():
@@ -79,7 +79,7 @@ def test_each_trait_fear_row_reaches_causes_fear_once():
         assert causes_fear(carrier, foe)
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_the_ogre_identities_survive_the_fear_projection():
     _, slave, goliath, _, bodyguard = fear_carriers()
     assert "species.ogre" in slave.global_effects.tags
@@ -88,7 +88,7 @@ def test_the_ogre_identities_survive_the_fear_projection():
     assert "mechanic.undead-construct" in goliath.global_effects.tags
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_the_emissary_fear_belongs_to_its_nurgle_patron_only():
     khorne = hireling(
         "hireling.hired-sword.emissary-of-chaos", "hirelings.hired-sword.2a",
@@ -104,7 +104,7 @@ def test_the_emissary_fear_belongs_to_its_nurgle_patron_only():
     assert causes_fear(nurgle, plain())
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_dark_mage_hatred_rerolls_only_against_a_necromancer():
     mage = hireling("hireling.hired-sword.dark-mage", "hirelings.hired-sword.2a")
     necromancer = fighter("restless-dead", "necromancer")
@@ -135,7 +135,7 @@ def test_dark_mage_hatred_rerolls_only_against_a_necromancer():
     assert "mechanic.psychology-immunity" not in mage.global_effects.tags
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_fallen_sister_must_pass_leadership_to_charge_a_sigmarite():
     sister = hireling("hireling.hired-sword.the-fallen-sister", "hirelings.hired-sword.2a")
     sigmarite = fighter("sisters-of-sigmar", "sigmarite-sister")
@@ -158,7 +158,7 @@ def test_fallen_sister_must_pass_leadership_to_charge_a_sigmarite():
     assert not free.failed_charges
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_massively_built_optional_penalty_is_the_supplied_leadership_fact():
     target = plain(condition_ids=("condition.massively-built-leadership-penalty",))
     assert target.characteristics.leadership == 6
@@ -166,7 +166,7 @@ def test_massively_built_optional_penalty_is_the_supplied_leadership_fact():
     assert "mechanic.psychology-immunity" not in target.global_effects.tags
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_massively_built_supplied_loss_costs_the_recipients_own_turn_once():
     """The printed outcome is a whole lost turn, spent once on the target.
 
@@ -240,7 +240,7 @@ def test_massively_built_supplied_loss_costs_the_recipients_own_turn_once():
     assert "round.3.rousing-sermon" in fourth.state.second.resources_spent
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_the_lost_turn_offers_no_optional_own_action():
     """A lost turn is not just an empty attack pool.
 

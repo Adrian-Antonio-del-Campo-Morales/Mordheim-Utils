@@ -30,34 +30,35 @@ _COMPILED_OPERATIONS = frozenset({"construction_tag_presence", "trait_presence"}
 
 
 def _case_category(spec, case):
-    """The single guarantee an authored semantic case proves.
+    """The single phase guarantee an authored semantic case proves.
 
     Decisions use only metadata the specification already declares: the
     ``category`` of its reviewed scope, the case ``roles`` and the ``compile``
     rejection channel.  A composition case composes rules; a compiled role
-    proves the executable representation; an admission operation or a named
-    rejection proves eligibility; a compile case without a refusal proves the
-    compiled projection; every remaining single-rule case proves its behaviour.
+    proves the construction representation; an admission operation or a named
+    rejection proves construction admission; a compile case without a refusal
+    proves the compiled projection; every remaining single-rule case proves its
+    isolated behaviour.
     """
     roles = set(case.get("roles") or ())
     operation = case.get("operation")
     if "composition" in roles:
-        return "interaction"
+        return "phase4_modular"
     if "compiled" in roles or operation in _COMPILED_OPERATIONS:
-        return "compilation"
+        return "phase2_construction"
     if "rejected" in roles or "reject" in case:
-        return "eligibility"
+        return "phase2_construction"
     if operation in _ADMISSION_OPERATIONS:
-        return "eligibility"
+        return "phase2_construction"
     if operation == "compile":
-        return "compilation"
+        return "phase2_construction"
     if spec.get("category") == "interaction":
-        return "interaction"
-    return "rule_behavior"
+        return "phase4_modular"
+    return "phase3_rules"
 
 
 @pytest.mark.parametrize("spec_id", ["initial-choice-mordheim-mutants", "initial-choice-tainted-ones"])
-@pytest.mark.test_infrastructure
+@pytest.mark.evidence
 def test_initial_choice_mutation_is_isolated(spec_id):
     spec = next(s for s in load_fixtures() if s["id"] == spec_id)
     case = next(c for c in spec["cases"] if c["id"] == "choices")
@@ -72,14 +73,14 @@ def test_initial_choice_mutation_is_isolated(spec_id):
     ("selection_choices", {"bad": {"arbitrary_code": "pass"}}),
     ("equipment_choices", {"bad": {"special_rule_ids": []}}),
 ])
-@pytest.mark.data_contract
+@pytest.mark.phase1_kb_contracts
 def test_construction_choices_reject_fields_outside_their_contract(operation, choices):
     with pytest.raises(ValueError, match="unsupported construction fields"):
         check_case({"operation": operation, "context": {"choices": choices},
                     "expect": {"result.accepted": []}}, knowledge_root())
 
 
-@pytest.mark.data_contract
+@pytest.mark.phase1_kb_contracts
 def test_selection_choices_cannot_ignore_decisions():
     with pytest.raises(ValueError, match="construction cases cannot request combat decisions"):
         check_case({"operation": "selection_choices", "context": {"choices": {}},
@@ -87,7 +88,7 @@ def test_selection_choices_cannot_ignore_decisions():
                     "expect": {"result.accepted": []}}, knowledge_root())
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.evidence
 def test_category_prohibition_mutation_is_isolated():
     spec = next(s for s in load_fixtures()
                 if s["id"] == "category-prohibitions-battle-monks-of-cathay-poison")
@@ -172,13 +173,13 @@ def test_interaction_risk_is_separate_from_verification_requirement():
 
 @pytest.mark.parametrize("values", [[], [{"key": "wrong", "value": 3}],
                                     [{"key": "hit", "sides": 3, "value": 3}]])
-@pytest.mark.test_infrastructure
+@pytest.mark.evidence
 def test_strict_dice_rejects_unexpected_requests(values):
     with pytest.raises(EvidenceMismatch):
         StrictDice(values).roll(RollRequest("hit"))
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.evidence
 def test_strict_dice_checks_unused_rolls_and_repeated_keys():
     tape = StrictDice([{"key": "hit", "value": 2}, {"key": "hit", "value": 6}])
     assert tape.roll(RollRequest("hit")) == 2
@@ -188,7 +189,7 @@ def test_strict_dice_checks_unused_rolls_and_repeated_keys():
     tape.finish()
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.evidence
 def test_strict_decisions_rejects_unused_and_unexpected_choices():
     policy = StrictDecisions([{"key": "hug", "value": False}])
     with pytest.raises(EvidenceMismatch, match="unused"):
@@ -199,7 +200,7 @@ def test_strict_decisions_rejects_unused_and_unexpected_choices():
         policy.choose("hug")
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.evidence
 def test_adaptive_enumeration_weights_short_circuit_and_mixed_dice_exactly():
     def trial(dice):
         if dice.roll(RollRequest("first")) >= 5:
@@ -210,7 +211,7 @@ def test_adaptive_enumeration_weights_short_circuit_and_mixed_dice_exactly():
     }
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.evidence
 def test_enumeration_refuses_to_truncate_unbounded_sequences():
     def forever(dice):
         while True:
@@ -253,14 +254,14 @@ def _single_spec(monkeypatch, change):
     return verify_semantics()
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.evidence
 def test_changed_source_cannot_reuse_old_evidence(monkeypatch):
     report = _single_spec(monkeypatch, lambda s: s["sources"][0].update(digest="outdated"))
     assert not report.verified
     assert any("source changed" in error for error in report.errors)
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.evidence
 def test_surviving_mutation_prevents_certification(monkeypatch):
     report = _single_spec(monkeypatch, lambda s: s.update(mutations=[{
         "id": "no-change", "path": "attacker.global_effects.strength_bonus", "value": 1,
@@ -270,7 +271,7 @@ def test_surviving_mutation_prevents_certification(monkeypatch):
     assert any("surviving mutation" in error for error in report.errors)
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.evidence
 def test_compile_only_case_cannot_claim_consumer_evidence(monkeypatch):
     def change(spec):
         spec["cases"] = [spec["cases"][0]]
@@ -280,7 +281,7 @@ def test_compile_only_case_cannot_claim_consumer_evidence(monkeypatch):
     assert any("compile-only" in error for error in report.errors)
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.evidence
 def test_unresolved_ruling_stays_pending(monkeypatch):
     report = _single_spec(monkeypatch, lambda s: s.update(pending="needs source clarification"))
     assert not report.errors
@@ -288,7 +289,7 @@ def test_unresolved_ruling_stays_pending(monkeypatch):
     assert ("mechanic/skill.mighty-blow", "needs source clarification") in report.pending
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.evidence
 def test_interaction_proof_does_not_certify_participant_rules(monkeypatch):
     import mordheim_combat_lab.verification.audit as semantic
     interaction = next(s for s in load_fixtures() if s["id"] == "two-strength-skills-stack")
@@ -301,41 +302,41 @@ def test_interaction_proof_does_not_certify_participant_rules(monkeypatch):
     assert not report.semantic_complete
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.evidence
 def test_scope_change_invalidates_previous_reviews(monkeypatch):
     report = _single_spec(monkeypatch, lambda spec: spec.update(scope_digest="old-scope"))
     assert not report.verified
     assert any("scope changed" in error for error in report.errors)
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.evidence
 def test_unknown_scenario_field_cannot_be_silently_ignored():
     with pytest.raises(ValueError, match="unknown scenario fields"):
         check_case({"id": "typo", "operation": "compile", "expected": {}}, knowledge_root())
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.evidence
 def test_misspelled_activation_condition_cannot_be_silently_ignored():
     with pytest.raises(ValueError, match="unknown context fields"):
         check_case({"id": "typo", "operation": "strength", "context": {"charing": True},
                     "expect": {"result.wound": 3}}, knowledge_root())
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.evidence
 def test_distribution_cannot_silently_ignore_fixed_expectations():
     with pytest.raises(ValueError, match="cannot silently ignore"):
         check_case({"id": "mixed", "operation": "hit", "expect": {"result.success": True},
                     "distribution": {}}, knowledge_root())
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.evidence
 def test_mutation_must_reference_real_passing_baseline_cases(monkeypatch):
     report = _single_spec(monkeypatch, lambda spec: spec["mutations"][0]["cases"].append("typo"))
     assert not report.verified
     assert any("passing baseline cases" in error for error in report.errors)
 
 
-@pytest.mark.data_contract
+@pytest.mark.phase1_kb_contracts
 def test_interaction_concepts_are_normalized_and_unknown_concepts_rejected():
     from mordheim_combat_lab.verification.interactions import normalize_interaction_contract
     assert normalize_interaction_contract({"reads": ["strength.base", "fighter.strength"],
@@ -346,7 +347,7 @@ def test_interaction_concepts_are_normalized_and_unknown_concepts_rejected():
         normalize_interaction_contract({"reads": [], "writes": ["attaks.count"]})
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.evidence
 def test_isolated_construction_mutation_does_not_leak():
     spec = next(s for s in load_fixtures() if s["id"] == "access-mordheim-dark-elves")
     case = next(c for c in spec["cases"] if c["id"] == "granted-high-born")
@@ -355,7 +356,7 @@ def test_isolated_construction_mutation_does_not_leak():
     check_case(case, knowledge_root())
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.evidence
 def test_isolated_resource_mutations_do_not_leak():
     spec = next(s for s in load_fixtures() if any(
         m.get("runtime_fault") == "retain-critical-allowance" for m in s.get("mutations", [])))
@@ -366,7 +367,7 @@ def test_isolated_resource_mutations_do_not_leak():
     check_case(case, knowledge_root())
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_rapier_failed_extra_hit_omits_extra_wound_roll():
     # Focused regression, not a certificate of all Rapier interactions.
     check_case({"id": "rapier-extra-miss", "operation": "attack",
@@ -378,7 +379,7 @@ def test_rapier_failed_extra_hit_omits_extra_wound_roll():
                            "result.defender.wounds": 3}}, knowledge_root())
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.evidence
 def test_integration_checks_execute_real_phase_calls(monkeypatch):
     from dataclasses import replace
     import mordheim_combat.modular.rounds as reference
@@ -394,7 +395,7 @@ def test_integration_checks_execute_real_phase_calls(monkeypatch):
     assert any("actual-phase-order-and-state-transfer" in error for error in errors)
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.evidence
 def test_generic_operator_witnesses_detect_an_incorrect_composition(monkeypatch):
     import mordheim_core.effects as effects
     from mordheim_combat_lab.verification.operators import verify_operators
@@ -406,14 +407,14 @@ def test_generic_operator_witnesses_detect_an_incorrect_composition(monkeypatch)
     assert errors
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.evidence
 def test_compositional_evidence_cannot_depend_on_itself(monkeypatch):
     report = _single_spec(monkeypatch, lambda spec: spec.update(depends_on=["mechanic/skill.mighty-blow"]))
     assert not report.verified
     assert any("circular semantic dependencies" in error for error in report.errors)
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.evidence
 def test_unverified_shared_consumer_keeps_editorial_grant_pending(monkeypatch):
     import mordheim_combat_lab.verification.audit as semantic
     fixture = next(s for s in load_fixtures() if s["id"] == "poison-grant-mordheim-undead-vampire")
@@ -425,7 +426,7 @@ def test_unverified_shared_consumer_keeps_editorial_grant_pending(monkeypatch):
     assert (fixture["sources"][0]["target"], "dependency lacks semantic evidence") in report.pending
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.evidence
 def test_claimed_equivalence_must_not_change_any_observable(monkeypatch):
     def change(spec):
         spec["mutations"][0]["equivalent_reason"] = "Incorrect claim for test of the verifier"
@@ -434,7 +435,7 @@ def test_claimed_equivalence_must_not_change_any_observable(monkeypatch):
     assert any("claimed equivalent mutation changes" in error for error in report.errors)
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.evidence
 def test_redundant_access_mutation_is_justified_not_counted_as_detected(monkeypatch):
     import mordheim_combat_lab.verification.audit as semantic
     fixture = next(s for s in load_fixtures() if s["id"] == "access-nagarythe-already-strength")
@@ -447,7 +448,7 @@ def test_redundant_access_mutation_is_justified_not_counted_as_detected(monkeypa
     assert fixture["sources"][0]["target"] in report.verified
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.evidence
 def test_three_rule_evidence_does_not_certify_pairs_or_bindings(monkeypatch):
     import mordheim_combat_lab.verification.audit as semantic
     fixture = next(s for s in load_fixtures() if s["id"] == "concussion-no-pain-jump-up")

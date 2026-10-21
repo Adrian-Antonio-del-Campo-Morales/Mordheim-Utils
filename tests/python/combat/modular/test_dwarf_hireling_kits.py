@@ -45,7 +45,7 @@ def rerolls(attacker, defender, *, first_round=True):
 
 # --- the Treasure Hunter's two handed unique object ---------------------------
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_the_mining_pick_is_the_treasure_hunters_two_handed_weapon():
     """The printed Mining Pick uses the double-handed axe/hammer rules.
 
@@ -64,7 +64,7 @@ def test_the_mining_pick_is_the_treasure_hunters_two_handed_weapon():
     assert dagger.main_weapon.strength_bonus == 0
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_the_lantern_rig_stays_a_carried_object_not_a_weapon():
     """The rig follows the lantern, so it may not occupy an active weapon slot."""
     rig = "hireling.hired-sword.dwarf-treasure-hunter.item.lantern-rig"
@@ -76,7 +76,7 @@ def test_the_lantern_rig_stays_a_carried_object_not_a_weapon():
     assert rig not in hunter.main_weapon.tags
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_the_dwarf_hatred_needs_the_enemy_identity():
     """All Dwarfs hate Orcs and Goblins; the printed target must be supplied."""
     hunter = hireling(TREASURE_HUNTER, TREASURE_HUNTER_BAND,
@@ -92,7 +92,7 @@ def test_the_dwarf_hatred_needs_the_enemy_identity():
 
 # --- the Slayer Pirate's spent pistol ----------------------------------------
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_a_spent_pistol_is_counted_as_a_club_for_the_slayer_pirate():
     """The printed Festooned with Pistols clause keeps a spent pistol in hand.
 
@@ -118,7 +118,7 @@ def test_a_spent_pistol_is_counted_as_a_club_for_the_slayer_pirate():
     assert "weapon.pistol" not in dropped.main_weapon.tags
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_the_slayer_pirates_sword_and_pistol_are_one_legal_kit():
     """The printed Weapons/Armour line is the Sword, Blackpowder and Pistols."""
     sword = hireling(SLAYER_PIRATE, SLAYER_PIRATE_BAND, main_weapon_id="weapon.sword")

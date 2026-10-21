@@ -13,7 +13,7 @@ from mordheim_construction.compiler import compile_fighter
 from mordheim_construction.eligibility import desktop_call
 from mordheim_core.models import FighterBuild
 
-pytestmark = pytest.mark.eligibility
+pytestmark = pytest.mark.phase2_construction
 
 COLLECTIONS = ("mordheim", "trollheim")
 PACKS = {(collection, str(pack.band["id"])): pack

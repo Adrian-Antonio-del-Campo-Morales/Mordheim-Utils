@@ -145,7 +145,7 @@ def _runtime_reason(band_id: str, rule_id: str) -> str:
 # --- availability and recipients -------------------------------------------
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_available_special_rules_offers_each_selectable_rule_to_its_recipients():
     assert _rule("clan-angrund-kep", "band--dwarf-special-skills-master-of-blades").get("runtime", {}).get("grant") == "selectable"
     dwarf_noble = set(available_special_rules(build("clan-angrund-kep", "dwarf-noble"), None))
@@ -171,7 +171,7 @@ def test_available_special_rules_offers_each_selectable_rule_to_its_recipients()
     assert "band--lizardmen-special-skills-saurus-only-bellowing-battle-roar" in saurus
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 @pytest.mark.parametrize("band_id,profile_id,rule_id", PENDING)
 def test_pending_selectable_origins_refuse_with_their_published_source_reason(band_id, profile_id, rule_id):
     # The rule is visible for selection (available_special_rules offers it) but
@@ -187,7 +187,7 @@ def test_pending_selectable_origins_refuse_with_their_published_source_reason(ba
     assert _runtime_reason(band_id, rule_id) in message
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 @pytest.mark.parametrize("band_id,profile_id,rule_id", PENDING_WITHOUT_AVAILABILITY_CHANNEL)
 def test_pending_selectable_origins_without_channel_still_refuse_with_their_source_reason(band_id, profile_id, rule_id):
     # Only the runtime gate is asserted here: the current warband-skill API
@@ -203,7 +203,7 @@ def test_pending_selectable_origins_without_channel_still_refuse_with_their_sour
 # --- origins the runtime executes -------------------------------------------
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 @pytest.mark.parametrize("band_id,profile_id,rule_id,tag", NOW_EXECUTABLE)
 def test_executable_selectable_origins_deliver_their_declared_operator(band_id, profile_id, rule_id, tag):
     # The selection is admitted and its own binding reaches the compiled fighter:
@@ -212,7 +212,7 @@ def test_executable_selectable_origins_deliver_their_declared_operator(band_id, 
     assert tag in selected.global_effects.tags
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_thirst_for_vengeance_adds_its_declared_charge_attack():
     # The operator's parameter is the source's '+1 Attack on the charge', not a
     # second tag: the tag alone is the band's shared Hatred of the Undead.
@@ -221,7 +221,7 @@ def test_thirst_for_vengeance_adds_its_declared_charge_attack():
     assert selected.global_effects.charge_attacks_bonus == 1
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_unshakeable_faith_is_executable_but_the_warband_skill_channel_omits_it():
     # Recorded discrepancy: the rule's runtime is implemented, but it publishes
     # no recipient and the Warrior Priest declares no 'special' skill access, so
@@ -239,7 +239,7 @@ def test_unshakeable_faith_is_executable_but_the_warband_skill_channel_omits_it(
 
 # Primary: the rule reaches its recipients and refuses the others. The compiled
 # immunity flags are the secondary guarantee of the admitted selection.
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_hardy_constitution_grants_poison_immunity_and_refuses_non_recipients():
     control = compile_fighter(build("grave-robbers-sylv", "graver"))
     selected = compile_fighter(build(
@@ -256,7 +256,7 @@ def test_hardy_constitution_grants_poison_immunity_and_refuses_non_recipients():
         ))
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_master_of_blades_projects_both_shared_mechanics_and_the_parry_variant():
     fighter = compile_fighter(build(
         "clan-angrund-kep", "dwarf-noble",
@@ -267,7 +267,7 @@ def test_master_of_blades_projects_both_shared_mechanics_and_the_parry_variant()
     assert {"skill.unbeatable-warrior", "skill.sword-master", "rule.dwarf-axe-parry-reroll"} <= set(fighter.global_effects.tags)
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_clan_angrund_selectable_skills_use_their_printed_operators_not_the_automatic_grants():
     # clan-angrund-kep grants Hard to Kill (1-2 Knocked Down) and Hard Head
     # (concussion immunity) band-wide. True Grit (1-3 Knocked Down) and Thick
@@ -290,7 +290,7 @@ def test_clan_angrund_selectable_skills_use_their_printed_operators_not_the_auto
     assert thick_skull.global_effects.thick_skull is True
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 @pytest.mark.parametrize("rule_id,tag", [
     ("band--slayer-special-skills-ferocious-charge", "skill.ferocious-charge"),
     ("band--slayer-special-skills-monster-slayer", "skill.monster-slayer"),
@@ -307,7 +307,7 @@ def test_slayer_skills_reach_the_slayer_and_refuse_the_other_records(rule_id, ta
         compile_fighter(build("clan-angrund-kep", "ironbreaker", special_rule_ids=(rule_id,)))
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_bellowing_battle_roar_reaches_saurus_and_refuses_skinks():
     selected = compile_fighter(build(
         "lizardmen-lus", "saurus-totem-warriors",
@@ -321,7 +321,7 @@ def test_bellowing_battle_roar_reaches_saurus_and_refuses_skinks():
         ))
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_vomit_attack_is_selectable_only_for_the_warpstone_troll():
     # The selected rule supplies a separate optional attack. The normal hand
     # remains equipped until the modular policy chooses the replacement.
@@ -343,7 +343,7 @@ def test_vomit_attack_is_selectable_only_for_the_warpstone_troll():
 # --- equipment --------------------------------------------------------------
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_duelling_pistol_is_selectable_in_both_hand_slots_with_its_published_close_combat_profile():
     main = compile_fighter(build(
         "mercenaries", "mercenary-captain", main_weapon_id="weapon.duelling-pistol",
@@ -366,7 +366,7 @@ def test_duelling_pistol_is_selectable_in_both_hand_slots_with_its_published_clo
         ))
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_gromril_material_route_prices_the_supported_material_and_refuses_foreign_bands():
     # Keep this Gromril route distinct from the source-backed Darksteel Blade:
     # its armour penetration does not certify that item's critical/injury rules.

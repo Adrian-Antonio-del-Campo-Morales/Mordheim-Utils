@@ -8,7 +8,7 @@ from mordheim_combat_lab.verification.dice import StrictDice
 import pytest
 
 
-pytestmark = pytest.mark.rule_behavior
+pytestmark = pytest.mark.phase3_rules
 
 
 def test_bat_survives_first_wound_then_disappears_without_injury_roll():

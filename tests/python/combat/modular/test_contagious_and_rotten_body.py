@@ -68,7 +68,7 @@ def duel(owner, foe, *values):
 
 
 @pytest.mark.parametrize("collection,band", ORIGINS)
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_each_origin_executes_contagious_under_its_rotten_body_prerequisite(collection, band):
     tagged = priest(collection)
     assert "contagious" in tagged.global_effects.tags
@@ -86,7 +86,7 @@ def test_each_origin_executes_contagious_under_its_rotten_body_prerequisite(coll
 
 
 @pytest.mark.parametrize("collection", ("mordheim", "trollheim"))
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_only_a_definitive_out_of_action_forces_the_test_and_a_rescue_removes_it(collection):
     bearer = priest(collection)
     # A Knocked Down result leaves the bearer in the fight: no reaction die exists.
@@ -106,7 +106,7 @@ def test_only_a_definitive_out_of_action_forces_the_test_and_a_rescue_removes_it
     assert saved.state.second.wounds == 1 and saved.state.first.wounds == 2
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_the_reacting_fighter_tests_once_per_resolved_injury():
     # Two attacks, the first already lethal: the second is abandoned, and the tape
     # carries a single reaction die because a repeated reaction would overrun it.
@@ -117,7 +117,7 @@ def test_the_reacting_fighter_tests_once_per_resolved_injury():
 
 
 @pytest.mark.parametrize("toughness,face,wounds", [(3, 6, 1), (3, 1, 2), (6, 6, 1)])
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_the_toughness_test_limits_including_the_natural_six(toughness, face, wounds):
     struck = duel(attacker(toughness), priest(), (HIT, 5), (WOUND, 4), (INJURY, 6),
                   (REACTION, face))
@@ -125,7 +125,7 @@ def test_the_toughness_test_limits_including_the_natural_six(toughness, face, wo
     assert struck.state.first.wounds == wounds
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_undead_and_possessed_attackers_are_exempt():
     guardian = compile_fighter(FighterBuild(
         "mordheim", band_id="tomb-guardians", profile_id="tomb-guardians",
@@ -138,7 +138,7 @@ def test_undead_and_possessed_attackers_are_exempt():
     assert exempt.state.first.wounds == 1
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_contagious_requires_new_melee_damage_not_an_already_out_bearer():
     from mordheim_combat.modular.aftermath import _react_to_wound
     from mordheim_combat.modular.state import AttackOutcome

@@ -39,7 +39,7 @@ def _artefact() -> dict:
 # One category per case: the projection is data_transport, except the resolved
 # canonical references (4), the excluded-surface boundary (17) and the rejected
 # generation request (22).
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_artefact_has_every_required_top_section() -> None:
     artefact = _artefact()
     for key in ("schema_version", "ruleset", "collections", "bands", "profiles",
@@ -51,14 +51,14 @@ def test_artefact_has_every_required_top_section() -> None:
         assert stem in artefact["campaign"], f"campaign catalogue {stem!r} missing from the artefact"
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_output_is_byte_identical_across_runs() -> None:
     first = json.dumps(_artefact(), ensure_ascii=False, indent=1, sort_keys=False)
     second = json.dumps(_artefact(), ensure_ascii=False, indent=1, sort_keys=False)
     assert first == second
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_ids_are_unique_in_their_declared_scope() -> None:
     artefact = _artefact()
     assert len({str(band["id"]) for band in artefact["bands"]}) == len(artefact["bands"])
@@ -70,7 +70,7 @@ def test_ids_are_unique_in_their_declared_scope() -> None:
 
 
 # Profiles' band keys and item ids are resolved against the canonical KB itself.
-@pytest.mark.knowledge_integrity
+@pytest.mark.phase1_kb_contracts
 def test_stable_references_resolve() -> None:
     artefact = _artefact()
     band_keys = {(str(band["collection"]), str(band["id"])) for band in artefact["bands"]}
@@ -83,20 +83,20 @@ def test_stable_references_resolve() -> None:
     assert set(artefact["indexes"]["items_by_id"]) == artefact_item_ids
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_profiles_materialize_shared_special_rule_references() -> None:
     artefact = _artefact()
     profile = next(row for row in artefact["profiles"] if row["id"] == "serpent-priestess")
     assert "shared-rule.leader" in profile["rule_ids"]
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_profiles_materialize_equipment_forbids_from_special_rules() -> None:
     profile = next(row for row in _artefact()["profiles"] if row["id"] == "augur")
     assert profile["equipment_forbids"] == ["armour"]
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_profiles_project_declared_loadouts_and_never_invent_lists() -> None:
     artefact = _artefact()
     profiles = {(str(row["collection"]), str(row["band_id"]), str(row["id"])): row
@@ -115,7 +115,7 @@ def test_profiles_project_declared_loadouts_and_never_invent_lists() -> None:
     assert profiles[("mordheim", "restless-dead", "zombies")]["equipment_access"] == []
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_profiles_materialize_band_wide_skill_grants_and_prose_lists() -> None:
     """F017 recipients reach every member; a prose-only list travels empty."""
     artefact = _artefact()
@@ -127,7 +127,7 @@ def test_profiles_materialize_band_wide_skill_grants_and_prose_lists() -> None:
                                      "category": "special", "skills": []}]
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_profiles_flatten_list_valued_forbids() -> None:
     artefact = _artefact()
     profiles = {(str(row["collection"]), str(row["band_id"]), str(row["id"])): row
@@ -140,7 +140,7 @@ def test_profiles_flatten_list_valued_forbids() -> None:
     assert profiles[("mordheim", "ghost-pirates-sar", "gibbets")]["equipment_forbids"] == ["armour-suit"]
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_profiles_publish_effective_access_not_only_the_printed_list() -> None:
     """Concessions enter the offers; conditional printed exceptions leave them."""
     artefact = _artefact()
@@ -161,7 +161,7 @@ def test_profiles_publish_effective_access_not_only_the_printed_list() -> None:
     assert "spirit_knife" not in {row["item_id"] for row in revenants["equipment_access"]}
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_profiles_publish_the_promotion_grant_separately() -> None:
     artefact = _artefact()
     ogre = next(row for row in artefact["profiles"]
@@ -170,7 +170,7 @@ def test_profiles_publish_the_promotion_grant_separately() -> None:
     assert ogre["skill_access"] == []
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_warband_reference_preserves_equipment_lists_and_notes() -> None:
     rows = {row["band_id"]: row for row in generator._build_warband_reference("mordheim")["rows"]}
     sisters = rows["sisters-of-sigmar"]["equipment_lists"][0]
@@ -190,7 +190,7 @@ def test_warband_reference_preserves_equipment_lists_and_notes() -> None:
     assert "blowpipe" in {row["item_id"] for row in generator._build_items("mordheim")}
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_shared_special_rules_stem_publishes_only_the_shared_catalogue() -> None:
     """The ``special-rules`` stem is the promoted ``shared-rule.*`` catalogue and
     nothing else.
@@ -208,7 +208,7 @@ def test_shared_special_rules_stem_publishes_only_the_shared_catalogue() -> None
     assert [str(row["id"]) for row in shared if row.get("band_id")] == []
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_band_specific_special_rules_include_localized_prose() -> None:
     """A band-specific rule keeps its prose in the band document only.
 
@@ -235,7 +235,7 @@ def test_band_specific_special_rules_include_localized_prose() -> None:
     }
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_every_translated_band_rule_publishes_a_legacy_name_label() -> None:
     artefact = _artefact()
     labels = {row["names"]["en"]: row["names"]["es"]
@@ -255,7 +255,7 @@ def test_every_translated_band_rule_publishes_a_legacy_name_label() -> None:
     assert any("Matatrolles Enanos" in row["effects"]["es"] for row in contextual)
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_campaign_items_include_entries_outside_combat_lab_scope() -> None:
     artefact = _artefact()
     items = {item["item_id"]: item for item in artefact["items"]}
@@ -268,7 +268,7 @@ def test_campaign_items_include_entries_outside_combat_lab_scope() -> None:
                for item in items.values())
 
 
-@pytest.mark.architecture
+@pytest.mark.phase0_preflight
 def test_excluded_combat_lab_surfaces_do_not_leak() -> None:
     artefact = _artefact()
     text = json.dumps(artefact)
@@ -276,7 +276,7 @@ def test_excluded_combat_lab_surfaces_do_not_leak() -> None:
         assert forbidden not in text
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_display_names_travel_per_locale_with_canonical_english() -> None:
     artefact = _artefact()
     sample = artefact["bands"][0]
@@ -285,7 +285,7 @@ def test_display_names_travel_per_locale_with_canonical_english() -> None:
     assert translated, "expected at least some Spanish translations in the KB"
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_every_profile_ability_with_a_canonical_id_has_a_display_name() -> None:
     artefact = _artefact()
     labels = artefact["display_names"]
@@ -314,7 +314,7 @@ def test_every_profile_ability_with_a_canonical_id_has_a_display_name() -> None:
     assert artefact["display_effects"]["skill.blessed-sight"]["es"].startswith("La Augur puede repetir")
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_rule_ref_band_rules_reuse_the_shared_rule_display_name() -> None:
     """A band rule that delegates to a shared ``rule_ref`` shows the shared name.
 
@@ -346,7 +346,7 @@ def test_rule_ref_band_rules_reuse_the_shared_rule_display_name() -> None:
         ), f"{scoped} should delegate its prose to {shared_id}"
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_serious_injury_tables_publish_reader_facing_names() -> None:
     tables = {row["id"]: row for row in _artefact()["campaign"]["serious-injuries"]["tables"]}
     assert tables["campaign.serious-injuries.hero"]["name"] == "Heroes' Serious Injuries Chart"
@@ -356,7 +356,7 @@ def test_serious_injury_tables_publish_reader_facing_names() -> None:
 
 
 # A generation request for a ruleset whose catalogues do not exist is refused.
-@pytest.mark.data_contract
+@pytest.mark.phase1_kb_contracts
 def test_unsupported_ruleset_fails_with_actionable_error() -> None:
     """A ruleset whose KB catalogues do not exist stops the build with a clear
     GenerationError naming the ruleset — never a raw loader traceback."""
@@ -366,7 +366,7 @@ def test_unsupported_ruleset_fails_with_actionable_error() -> None:
         generator.generate("trollheim")
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_collections_of_the_artefact_match_the_ruleset() -> None:
     artefact = _artefact()
     for collection in artefact["collections"]:

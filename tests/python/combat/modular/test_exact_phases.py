@@ -16,7 +16,7 @@ from mordheim_core.dice import exact_distribution
 import pytest as pytest
 
 
-pytestmark = pytest.mark.operator
+pytestmark = pytest.mark.phase3_rules
 
 
 @pytest.mark.parametrize("target", range(2, 7))

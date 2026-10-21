@@ -20,13 +20,13 @@ def _pair(scenario_id: str = "basic"):
     )
 
 
-@pytest.mark.parity
+@pytest.mark.phase5_vectorized
 def test_truncation_horizons_are_ascending_and_positive():
     assert TRUNCATION_HORIZONS == tuple(sorted(TRUNCATION_HORIZONS))
     assert all(horizon >= 1 for horizon in TRUNCATION_HORIZONS)
 
 
-@pytest.mark.parity
+@pytest.mark.phase5_vectorized
 def test_truncation_rows_name_their_horizon_and_pass_smoke():
     first, second, maximum_rounds = _pair()
     rows = compare_truncation_parity(
@@ -42,7 +42,7 @@ def test_truncation_rows_name_their_horizon_and_pass_smoke():
         assert row.passed  # six-sigma gate at small N is permissive
 
 
-@pytest.mark.parity
+@pytest.mark.phase5_vectorized
 def test_horizons_respect_the_round_budget():
     first, second, maximum_rounds = _pair("long")  # 75-round budget
     rows = compare_truncation_parity(
@@ -54,7 +54,7 @@ def test_horizons_respect_the_round_budget():
     ]
 
 
-@pytest.mark.parity
+@pytest.mark.phase5_vectorized
 def test_no_fitting_horizon_is_rejected():
     import pytest
     first, second, _ = _pair()
@@ -65,7 +65,7 @@ def test_no_fitting_horizon_is_rejected():
         )
 
 
-@pytest.mark.parity
+@pytest.mark.phase5_vectorized
 def test_truncation_rows_are_independent_samples_of_the_same_gate():
     # Each horizon row must behave like the aggregate statistical comparison
     # at that truncation budget (the underlying gate is the same function).
@@ -85,7 +85,7 @@ def test_truncation_rows_are_independent_samples_of_the_same_gate():
     assert rows[0].passed == direct.passed
 
 
-@pytest.mark.workflow
+@pytest.mark.evidence
 def test_truncation_rows_flow_into_payload_and_markdown():
     first, second, maximum_rounds = _pair()
     rows = compare_truncation_parity(
@@ -112,7 +112,7 @@ def test_truncation_rows_flow_into_payload_and_markdown():
     assert "| True |" in markdown
 
 
-@pytest.mark.parity
+@pytest.mark.phase5_vectorized
 def test_truncation_pooled_oracle_matches_the_sequential_path():
     first, second, maximum_rounds = _pair()
     kwargs = dict(simulations=300, seed=3, maximum_rounds=maximum_rounds,
@@ -126,7 +126,7 @@ def test_truncation_pooled_oracle_matches_the_sequential_path():
     assert fields(pooled) == fields(sequential)
 
 
-@pytest.mark.workflow
+@pytest.mark.evidence
 def test_truncation_progress_fires_once_per_horizon():
     first, second, maximum_rounds = _pair()
     calls = []

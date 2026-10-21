@@ -7,7 +7,7 @@ import numpy as np
 import pytest
 
 
-pytestmark = pytest.mark.parity
+pytestmark = pytest.mark.phase4_modular
 
 
 def _pair(scenario_id: str = "basic"):

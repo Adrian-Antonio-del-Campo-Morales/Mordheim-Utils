@@ -19,7 +19,7 @@ PACKAGE_ROOTS = {
 PACKAGE_IMPORT_ROOTS = tuple(sorted({str(path.parent) for path in PACKAGE_ROOTS.values()}))
 
 # The whole file asserts import boundaries between the packages.
-pytestmark = pytest.mark.architecture
+pytestmark = pytest.mark.phase0_preflight
 
 SHARED_PACKAGES = ("mordheim_core", "mordheim_knowledge", "mordheim_construction", "mordheim_combat")
 RUNTIME_AREAS = ("application", "persistence", "ui")

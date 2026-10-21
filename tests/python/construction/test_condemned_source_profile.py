@@ -14,7 +14,7 @@ def build(**options):
 
 
 @pytest.mark.parametrize('weapon', ['weapon.dagger', 'weapon.fist'])
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_variable_condemned_fights_without_unarmed_penalties_and_rolls_only_when_needed(weapon):
     fighter = compile_fighter(build(main_weapon_id=weapon))
     assert fighter.main_weapon.strength_bonus == 0
@@ -30,7 +30,7 @@ def test_variable_condemned_fights_without_unarmed_penalties_and_rolls_only_when
     assert state.attacks == 3 and state.random_rolled == frozenset({'A'})
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_partial_fixed_values_are_preserved_and_all_fixed_unlocks_equipment():
     supplied = Characteristics(5, 4, 3, 1, 4, 2, movement=4, leadership=7)
     partial = build(characteristics=supplied, trait_overrides={'condemned_fixed_characteristics': ['WS', 'S']})
@@ -51,13 +51,13 @@ def test_partial_fixed_values_are_preserved_and_all_fixed_unlocks_equipment():
     {'off_hand_id': 'defence.shield'},
     {'characteristics': Characteristics(5, 4, 3, 1, 4, 2), 'main_weapon_id': 'weapon.sword'},
 ])
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_variable_equipment_use_is_forbidden_even_with_manual_stat_values(options):
     with pytest.raises(ValueError, match='uses no equipment'):
         compile_fighter(build(**options))
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_permanent_results_require_declared_values_and_source_identity():
     with pytest.raises(ValueError, match='fixed characteristic values'):
         compile_fighter(build(trait_overrides={'condemned_fixed_characteristics': ['WS']}))

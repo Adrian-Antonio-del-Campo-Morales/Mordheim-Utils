@@ -19,7 +19,7 @@ from mordheim_construction.eligibility import configuration_context, constructio
 from mordheim_core.models import FighterBuild
 from mordheim_knowledge.loader import knowledge_root, load_bands
 
-pytestmark = pytest.mark.eligibility
+pytestmark = pytest.mark.phase2_construction
 
 ROOT = knowledge_root()
 PACKAGES = {str(pack.band["id"]): pack for collection in ("mordheim", "trollheim")

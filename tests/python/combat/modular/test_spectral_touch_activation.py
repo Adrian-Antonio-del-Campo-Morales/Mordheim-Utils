@@ -50,7 +50,7 @@ def state(fighter):
     return result
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_canonical_binding_compiles_exact_consumer_tag_and_legal_natural_weapon(host):
     assert host.characteristics == Characteristics(2, 2, 2, 3, 2, 3, movement=3, leadership=6)
     assert host.global_effects.tags.count(TAG) == 1
@@ -60,7 +60,7 @@ def test_canonical_binding_compiles_exact_consumer_tag_and_legal_natural_weapon(
     assert host.extra_attacks == ()
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_catalogue_profile_status_and_build_share_the_canonical_route(host):
     catalogue = CombatCatalogue()
     profile = next(p for p in catalogue.profiles('mordheim', BAND) if p.profile_id == 'spirit-hosts')
@@ -70,7 +70,7 @@ def test_catalogue_profile_status_and_build_share_the_canonical_route(host):
     assert TAG in host.global_effects.tags
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 @pytest.mark.parametrize('profile', ['cairn-wraith', 'corpse-master', 'tomb-banshee',
                                     'malignant-spirits', 'revenants', 'poltergeists', 'mourngul'])
 def test_other_canonical_profiles_do_not_receive_spectral_touch(profile):
@@ -78,7 +78,7 @@ def test_other_canonical_profiles_do_not_receive_spectral_touch(profile):
     assert TAG not in fighter.global_effects.tags
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 @pytest.mark.parametrize('faces,damages', [((6, 5, 1), (1, 0, 0)),
                                         ((5, 6, 1), (0, 1, 0)),
                                         ((5, 5, 1), (0, 0, 0))])
@@ -96,7 +96,7 @@ def test_canonical_three_attack_pool_retains_each_hits_own_six(host, plain, face
     assert [r.key for r in dice.requests] == [r['key'] for r in tape]
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_canonical_whole_round_runs_without_injected_traits(host, plain):
     tape = [roll(f'round.0.first.attack.{i}.hit', face)
             for i, face in enumerate((6, 5, 1))]
@@ -113,7 +113,7 @@ def test_canonical_whole_round_runs_without_injected_traits(host, plain):
     assert host.global_effects.tags.count(TAG) == 1
 
 
-@pytest.mark.end_to_end
+@pytest.mark.phase4_modular
 def test_public_modular_request_runs_the_canonical_fighter(monkeypatch, host, plain):
     # Terminal extra wound makes the public result sensitive to activation.
     defender = replace(plain, characteristics=replace(plain.characteristics, wounds=1))
@@ -128,7 +128,7 @@ def test_public_modular_request_runs_the_canonical_fighter(monkeypatch, host, pl
     assert (result.first_wins, result.second_wins, result.unresolved) == (1, 0, 0)
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 @pytest.mark.parametrize('second', [False, True])
 @pytest.mark.parametrize('backend', ['auto', 'numpy', 'native'])
 def test_public_optimized_paths_refuse_unported_canonical_effect(host, plain, second, backend):
@@ -137,7 +137,7 @@ def test_public_optimized_paths_refuse_unported_canonical_effect(host, plain, se
         simulate_duel(DuelRequest(*pair, simulations=1), backend=backend)
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 @pytest.mark.parametrize('second', [False, True])
 def test_low_level_optimized_paths_refuse_before_execution(host, plain, second):
     pair = (plain, host) if second else (host, plain)
@@ -149,7 +149,7 @@ def test_low_level_optimized_paths_refuse_before_execution(host, plain, second):
             call()
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_guard_also_rejects_weapon_scoped_spectral_effect(plain):
     # Synthetic transport control: Spirit Knife remains source-gated/F025.
     synthetic = replace(plain, main_weapon=replace(plain.main_weapon,

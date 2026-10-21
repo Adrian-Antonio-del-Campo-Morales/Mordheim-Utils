@@ -75,7 +75,7 @@ class TestKbArtefactPerformance:
             "section (architecture change) instead of raising the budget."
         )
 
-    @pytest.mark.delivery
+    @pytest.mark.packaging
     def test_deferred_catalogue_is_not_part_of_the_initial_download(self) -> None:
         """Items and campaign sections must be absent from the initial document."""
         document = _load(INITIAL)
@@ -88,7 +88,7 @@ class TestKbArtefactPerformance:
         fragment = _load(fragment_path)
         assert fragment["items"] and fragment["campaign"], "the deferred fragment must carry both families"
 
-    @pytest.mark.data_transport
+    @pytest.mark.phase1_kb_contracts
     def test_deferred_catalogue_digest_matches_the_published_fragment(self) -> None:
         """The fragment is addressed by digest; a drift is a broken delivery."""
         document = _load(INITIAL)

@@ -12,7 +12,7 @@ from mordheim_combat_lab.application.settings import DuelExecutionSettings
 from mordheim_combat_lab.ui.tabs.improvements import ImprovementAnalysisTab
 from mordheim_core.models import Characteristics, FighterBuild
 
-@pytest.mark.eligibility
+@pytest.mark.phase7_warband
 def test_improvement_choices_exclude_out_of_scope_and_already_selected_skills():
     catalogue = CombatCatalogue()
     choice = next(
@@ -38,7 +38,7 @@ def test_improvement_choices_exclude_out_of_scope_and_already_selected_skills():
 
 # The admitted selection must be represented the way the compiler consumes it:
 # as a special rule id, not as a general skill id.
-@pytest.mark.compilation
+@pytest.mark.phase7_warband
 def test_add_improvement_maps_warband_skills_to_special_rule_ids():
     catalogue = CombatCatalogue()
     choice = next(
@@ -62,7 +62,7 @@ def test_add_improvement_maps_warband_skills_to_special_rule_ids():
     assert improved.special_rule_ids == ("band--pit-fighter-skill-body-slam",)
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase7_warband
 def test_improvement_choices_exclude_compound_renowned_virtue():
     catalogue = CombatCatalogue()
     choice = next(
@@ -142,7 +142,7 @@ def _sync_selection(tab):
     tab._close_skill_popover()
 
 
-@pytest.mark.presentation
+@pytest.mark.phase7_warband
 def test_improvements_tab_lists_choices_and_runs_selected_combinations(root):
     catalogue = CombatCatalogue()
     choice = _captain(catalogue)
@@ -180,7 +180,7 @@ def test_improvements_tab_lists_choices_and_runs_selected_combinations(root):
         assert not tab.tree.set(row, "improvement2").endswith("+1")
 
 
-@pytest.mark.presentation
+@pytest.mark.phase7_warband
 def test_improvements_tab_respects_the_skill_selection(root):
     catalogue = CombatCatalogue()
     choice = _captain(catalogue)
@@ -204,7 +204,7 @@ def test_improvements_tab_respects_the_skill_selection(root):
     assert "Se compararon 1 combinaciones" in tab.status.get() or "Compared 1 combinations" in tab.status.get()
 
 
-@pytest.mark.presentation
+@pytest.mark.phase7_warband
 def test_improvements_tab_requires_a_selection(root):
     catalogue = CombatCatalogue()
     choice = _captain(catalogue)
@@ -223,7 +223,7 @@ def test_improvements_tab_requires_a_selection(root):
     assert tab.status.get() == "Select at least one improvement to compare."
 
 
-@pytest.mark.presentation
+@pytest.mark.phase7_warband
 def test_improvements_tab_passes_workers_to_the_battery_service(root):
     catalogue = CombatCatalogue()
     choice = _captain(catalogue)
@@ -249,7 +249,7 @@ def test_improvements_tab_passes_workers_to_the_battery_service(root):
 
 # The popover's visible labels and the capped offer set are one acceptance:
 # what the tab offers the user.
-@pytest.mark.presentation
+@pytest.mark.phase7_warband
 def test_improvements_tab_offers_attribute_increases_within_racial_maximums(root):
     catalogue = CombatCatalogue()
     choice = _captain(catalogue)
@@ -295,7 +295,7 @@ def _menu_labels(menu):
     return labels
 
 
-@pytest.mark.presentation
+@pytest.mark.phase7_warband
 def test_improvements_tab_runs_attribute_increases(root):
     catalogue = CombatCatalogue()
     choice = _captain(catalogue)
@@ -321,7 +321,7 @@ def test_improvements_tab_runs_attribute_increases(root):
     assert "+" in tab.tree.set(rows[0], "optimal")  # win rate and impact
 
 
-@pytest.mark.presentation
+@pytest.mark.phase7_warband
 def test_improvements_tab_repeats_an_attribute_to_its_racial_maximum(root):
     """Selecting only Strength with size 3 runs [S+1, S+1, S+1] as one row
     whenever the candidate still has three points below the racial maximum."""

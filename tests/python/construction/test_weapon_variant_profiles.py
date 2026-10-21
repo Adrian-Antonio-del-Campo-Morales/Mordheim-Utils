@@ -40,7 +40,7 @@ def build(main_weapon_id, **options):
         main_weapon_id=main_weapon_id, **options))
 
 
-@pytest.mark.knowledge_integrity
+@pytest.mark.phase1_kb_contracts
 def test_each_printed_variant_resolves_to_its_own_operator():
     mappings = {row["item_id"]: row
                 for row in load_simulation_mappings("mordheim", None)["item_mappings"]}
@@ -49,7 +49,7 @@ def test_each_printed_variant_resolves_to_its_own_operator():
         assert mappings[item_id]["mechanic_id"] == mechanic_id, item_id
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_the_cleaver_keeps_the_bearer_strength_and_counts_as_an_axe():
     cleaver = build("weapon.cleaver").main_weapon
     # "Strength: As user": the printed -1 belongs to the Save column, so the
@@ -61,7 +61,7 @@ def test_the_cleaver_keeps_the_bearer_strength_and_counts_as_an_axe():
     assert build("weapon.axe").main_weapon.strength_bonus == 0
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_the_barbed_whip_prints_no_strength_penalty_and_no_cannot_be_parried():
     whip = build("weapon.barbed-whip").main_weapon
     assert whip.strength_bonus == 0
@@ -71,13 +71,13 @@ def test_the_barbed_whip_prints_no_strength_penalty_and_no_cannot_be_parried():
     assert beastlash.strength_bonus == -1 and beastlash.cannot_be_parried is True
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_the_barbed_whip_still_carries_the_whipcrack_bonus():
     assert whipcrack_weapon(build("weapon.barbed-whip")) is not None
     assert whipcrack_weapon(build("weapon.mace")) is None
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_the_ladle_operator_publishes_the_shield_and_skill_exception():
     ladle = effect_index("mordheim")["weapon.ladle"].effect
     assert ladle.ignore_armour_except_shield_and_skills is True
@@ -87,7 +87,7 @@ def test_the_ladle_operator_publishes_the_shield_and_skill_exception():
     assert "weapon.mace" in ladle_weapon.tags and "weapon.ladle" in ladle_weapon.tags
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 @pytest.mark.parametrize("off_hand,armour,expected", [
     (None, "armour.no-armour", 7),
     (None, "armour.heavy-armour", 7),
@@ -100,7 +100,7 @@ def test_only_shield_and_skill_saves_survive_the_ladle(off_hand, armour, expecte
     assert allowed == expected
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_a_save_from_another_provenance_does_not_join_the_ladle_exception():
     """The printed clause keeps shields and skills, not every other source."""
     cloaked = build("weapon.ladle", defence_ids=("defence.wolf-pelt-cloak",))
@@ -110,7 +110,7 @@ def test_a_save_from_another_provenance_does_not_join_the_ladle_exception():
     assert max(1, 7 - cloaked.shield_and_skill_effects.armour_save_bonus) == 7
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_a_skill_ward_is_the_only_special_save_the_ladle_keeps():
     skins = build("weapon.mace", defence_ids=("defence.enchanted-skins",))
     assert skins.global_effects.ward_save == 6
@@ -134,7 +134,7 @@ def mappings():
             for row in load_simulation_mappings("mordheim", None)["item_mappings"]}
 
 
-@pytest.mark.knowledge_integrity
+@pytest.mark.phase1_kb_contracts
 def test_the_belaying_pin_is_the_thrown_weapon_its_source_lists():
     """The Pirate and Swabbie lists print it under *Missile Weapons*.
 
@@ -157,7 +157,7 @@ def test_the_belaying_pin_is_the_thrown_weapon_its_source_lists():
     assert build("weapon.mace").main_weapon.concussion is True
 
 
-@pytest.mark.knowledge_integrity
+@pytest.mark.phase1_kb_contracts
 def test_the_sunstaff_is_the_missile_weapon_its_source_lists():
     """The Heroines list prints it under *Missile Weapons*, at Range 24.
 
@@ -179,7 +179,7 @@ def test_the_sunstaff_is_the_missile_weapon_its_source_lists():
     assert mappings()["sunstaff_lustria"]["engine_option"] == "Brazier iron"
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_the_sun_gauntlet_melee_half_is_the_off_hand_strength_four_attack():
     assert items()["sun_gauntlet"]["mechanic_id"] == "weapon.sun-gauntlet"
     with pytest.raises(ValueError, match="illegal main-hand selection"):
@@ -216,7 +216,7 @@ def grip_build(main_weapon_id, **options):
         profile_id="silent-hunter", main_weapon_id=main_weapon_id, **options))
 
 
-@pytest.mark.knowledge_integrity
+@pytest.mark.phase1_kb_contracts
 def test_the_yari_record_declares_both_printed_grips_of_one_object():
     yari = items()["yari"]
     assert yari["combat_status"] == "implemented"
@@ -230,7 +230,7 @@ def test_the_yari_record_declares_both_printed_grips_of_one_object():
             if row.get("mechanic_id") in YARI_GRIPS] == ["yari"]
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_both_printed_grips_are_offered_and_accepted_from_the_same_line():
     catalogue, choice = silent_hunter()
     offered = dict(catalogue.weapons(choice))
@@ -245,7 +245,7 @@ def test_both_printed_grips_are_offered_and_accepted_from_the_same_line():
             choice, possession=("yari",), slots={"main_weapon_id": grip})
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_each_grip_transports_to_the_modular_attack_with_its_printed_properties():
     opponent = build("weapon.dagger", armour_id="armour.no-armour")
     one_handed = grip_build("weapon.yari-one-handed", owned_item_ids=("yari",))
@@ -260,7 +260,7 @@ def test_each_grip_transports_to_the_modular_attack_with_its_printed_properties(
         phases.PriorityContext(two_handed, opponent, first_round=True)).priority == 1
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_the_two_handed_grip_rejects_an_incompatible_secondary_hand():
     catalogue, choice = silent_hunter()
     # The one-handed grip keeps the legal secondary hand the printed profile allows.
@@ -280,7 +280,7 @@ def test_the_two_handed_grip_rejects_an_incompatible_secondary_hand():
                    owned_item_ids=("yari", "dagger"))
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_neither_grip_reaches_a_recipient_whose_list_omits_the_object():
     catalogue, choice = silent_hunter("shadow-blade")
     assert not [grip for grip in YARI_GRIPS if grip in dict(catalogue.weapons(choice))]

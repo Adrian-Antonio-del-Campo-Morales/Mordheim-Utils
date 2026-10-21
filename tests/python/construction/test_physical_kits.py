@@ -42,7 +42,7 @@ def offers(band_id, profile_id, **options):
 
 
 # --- the instrument hand (Cursed Piper) -------------------------------------
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_the_instrument_hand_forbids_the_double_handed_weapon_only_for_the_piper():
     two_handed = "weapon.double-handed-weapon"
     # The same printed weapon and the same equipment list stay legal for the
@@ -52,7 +52,7 @@ def test_the_instrument_hand_forbids_the_double_handed_weapon_only_for_the_piper
         compile_fighter(fighter("cursed-cavalcade", "cursed-piper", main_weapon_id=two_handed))
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_the_instrument_hand_leaves_one_one_handed_weapon_available():
     armed = compile_fighter(fighter("cursed-cavalcade", "cursed-piper", main_weapon_id="weapon.sword"))
     assert armed.main_weapon is not None
@@ -62,7 +62,7 @@ def test_the_instrument_hand_leaves_one_one_handed_weapon_available():
 
 
 # --- House Guard plate armour ------------------------------------------------
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_the_printed_four_plus_plate_armour_composes_through_the_ordinary_path():
     mappings = {row["item_id"]: row for row in load_simulation_mappings("mordheim")["item_mappings"]}
     assert mappings["house_guard_plate_armour"]["mechanic_id"] == "armour.plate-armour"
@@ -76,7 +76,7 @@ def test_the_printed_four_plus_plate_armour_composes_through_the_ordinary_path()
     assert heavy.armour_save == 5
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_the_plate_armour_recipient_stays_a_printed_variant_and_keeps_the_special_list():
     # House Baluardo prints it in the Heroes list; the ungated special list
     # carries the same item with the same printed 4+.
@@ -93,7 +93,7 @@ def artefact(**options):
                         main_weapon_id="weapon.sword", **options)
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_attlas_gromril_save_and_fortitude_wound_follow_the_physical_piece():
     worn = compile_fighter(artefact(armour_id="armour.attlas-plate-mail"))
     assert (worn.armour_save, worn.characteristics.wounds) == (4, 4)
@@ -104,7 +104,7 @@ def test_attlas_gromril_save_and_fortitude_wound_follow_the_physical_piece():
     assert (removed.armour_save, removed.characteristics.wounds) == (7, 3)
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_a_transformation_casts_off_the_worn_piece_and_keeps_the_innate_rules():
     worn = compile_fighter(artefact(skill_ids=("skill.ignore-pain",),
                                     armour_id="armour.attlas-plate-mail"))
@@ -114,7 +114,7 @@ def test_a_transformation_casts_off_the_worn_piece_and_keeps_the_innate_rules():
     assert "skill.ignore-pain" in cast.global_effects.tags
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_the_intrinsic_gibbet_cage_is_not_carried_equipment():
     gibbets = compile_fighter(fighter("ghost-pirates-sar", "gibbets", main_weapon_id="weapon.fist"))
     assert gibbets.armour_save == 5
@@ -136,7 +136,7 @@ def canonical_witch(**options):
                                         band_id="dark-elf-corsairs-mou", profile_id="witch-elf", **options))
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 @pytest.mark.parametrize("selection", [{}, {"main_weapon_id": "weapon.sword"}])
 def test_the_printed_kit_arms_both_hands_with_a_coated_dark_elven_blade(selection):
     witch = canonical_witch(**selection)
@@ -152,7 +152,7 @@ def test_the_printed_kit_arms_both_hands_with_a_coated_dark_elven_blade(selectio
     assert witch.global_effects.frenzy and witch.natural_armour_save == 5
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_the_printed_kit_concedes_no_generic_access():
     row = profile_row("dark-elf-corsairs-mou", "witch-elf")
     assert row["equipment_lists"] == []
@@ -163,7 +163,7 @@ def test_the_printed_kit_concedes_no_generic_access():
         "weapon.sword", "material.dark-elf-blade", "poison.black-venom"}
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_the_dark_venom_raises_the_strength_of_her_attacks():
     from mordheim_combat import phases
     from mordheim_combat.modular.contexts import prepare_armour_context
@@ -187,7 +187,7 @@ def test_the_dark_venom_raises_the_strength_of_her_attacks():
     assert (armour_target(plain), armour_target(canonical_witch())) == (6, 7)
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_the_second_blade_adds_the_one_attack_the_engine_already_grants():
     from mordheim_combat.phases import AttackPoolContext, build_attacks
 
@@ -200,7 +200,7 @@ def test_the_second_blade_adds_the_one_attack_the_engine_already_grants():
             build_attacks(AttackPoolContext(witch)).attacks) == (1, 3)
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_the_witch_elf_drugs_grant_frenzy_without_touching_her_fellows():
     witch = compile_fighter(fighter("dark-elf-corsairs-mou", "witch-elf", main_weapon_id="weapon.fist"))
     assert witch.global_effects.frenzy
@@ -208,7 +208,7 @@ def test_the_witch_elf_drugs_grant_frenzy_without_touching_her_fellows():
     assert not sorceress.global_effects.frenzy
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_the_martial_arts_save_is_an_intrinsic_five_plus_against_a_wound():
     from mordheim_combat import phases
     from mordheim_combat.modular.contexts import prepare_armour_context

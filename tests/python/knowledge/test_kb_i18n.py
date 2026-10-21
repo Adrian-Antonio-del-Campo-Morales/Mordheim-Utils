@@ -38,7 +38,7 @@ def _translated_rule() -> dict:
     raise AssertionError("the Bretonnian translated fixture rule disappeared from the KB")
 
 
-@pytest.mark.presentation
+@pytest.mark.phase1_kb_contracts
 def test_default_locale_is_canonical_english_and_mordheim_locale_env_is_read(monkeypatch):
     assert set_locale() == CANONICAL_LOCALE
     monkeypatch.setenv("MORDHEIM_LOCALE", "es")
@@ -46,14 +46,14 @@ def test_default_locale_is_canonical_english_and_mordheim_locale_env_is_read(mon
     assert current_locale() == "es"
 
 
-@pytest.mark.presentation
+@pytest.mark.phase1_kb_contracts
 def test_unsupported_locale_is_ignored():
     set_locale("es")
     assert set_locale("de") == "es"
     assert set_locale("xx-YY") == "es"
 
 
-@pytest.mark.presentation
+@pytest.mark.phase1_kb_contracts
 def test_display_name_prefers_the_reviewed_translation_in_the_active_locale():
     rule = _translated_rule()
     set_locale("es")
@@ -62,21 +62,21 @@ def test_display_name_prefers_the_reviewed_translation_in_the_active_locale():
     assert display_name(rule) == str(rule["name"])
 
 
-@pytest.mark.presentation
+@pytest.mark.phase1_kb_contracts
 def test_display_name_falls_back_to_the_canonical_name_when_translation_is_missing():
     record = {"id": "skill.regeneration", "name": "Regeneration", "name_i18n": {"es": None}}
     set_locale("es")
     assert display_name(record) == "Regeneration"
 
 
-@pytest.mark.presentation
+@pytest.mark.phase1_kb_contracts
 def test_display_name_falls_back_to_any_translated_locale():
     rule = _translated_rule()
     record = {"name": None, "name_i18n": {"es": str(rule["name_i18n"]["es"])}}
     set_locale("en")
     assert display_name(record) == str(rule["name_i18n"]["es"])
 
-@pytest.mark.presentation
+@pytest.mark.phase1_kb_contracts
 def test_display_name_returns_empty_for_untranslated_and_resolved_name_uses_the_id():
     record = {"id": "skill.regeneration", "name": "Regeneration", "name_i18n": {"es": None}}
     set_locale("es")
@@ -84,7 +84,7 @@ def test_display_name_returns_empty_for_untranslated_and_resolved_name_uses_the_
     assert resolved_name(record) == "Regeneration"
 
 
-@pytest.mark.presentation
+@pytest.mark.phase1_kb_contracts
 def test_display_name_and_resolved_name_tolerate_non_dict_records():
     assert display_name(None, "fallback-id") == "fallback-id"
     assert display_name({"name": None}, "") == ""
@@ -92,7 +92,7 @@ def test_display_name_and_resolved_name_tolerate_non_dict_records():
     assert resolved_name({"id": "weapon.axe"}, "") == "weapon.axe"
 
 
-@pytest.mark.presentation
+@pytest.mark.phase1_kb_contracts
 def test_display_effect_prefers_the_canonical_prose_under_english_and_the_translation_under_spanish():
     record = {"effect": "The warrior regenerates.", "effect_i18n": {"es": "El guerrero regenera."}}
     assert display_effect(record) == "The warrior regenerates."
@@ -102,7 +102,7 @@ def test_display_effect_prefers_the_canonical_prose_under_english_and_the_transl
     assert display_effect(stripped) == "El guerrero regenera."
 
 
-@pytest.mark.presentation
+@pytest.mark.phase1_kb_contracts
 def test_supported_locales_is_english_and_spanish():
     assert SUPPORTED_LOCALES == frozenset({"en", "es"})
 
@@ -123,7 +123,7 @@ def _walk_no_en_mirror(node: object, path: str, problems: list[str]) -> None:
             _walk_no_en_mirror(value, f"{path}[{index}]", problems)
 
 
-@pytest.mark.knowledge_integrity
+@pytest.mark.phase1_kb_contracts
 def test_no_locale_block_stores_an_en_mirror():
     import yaml
 

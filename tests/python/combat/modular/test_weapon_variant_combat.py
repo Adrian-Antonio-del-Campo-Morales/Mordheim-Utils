@@ -23,7 +23,7 @@ from mordheim_knowledge.loader import load_items
 import pytest
 
 
-pytestmark = pytest.mark.rule_behavior
+pytestmark = pytest.mark.phase3_rules
 
 
 def build(main_weapon_id, armour_id="armour.no-armour", off_hand_id=None, **options):

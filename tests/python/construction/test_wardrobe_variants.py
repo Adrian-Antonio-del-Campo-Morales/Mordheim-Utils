@@ -66,7 +66,7 @@ def refusal(band_id, profile_id, armour_id, **options):
 
 
 # The shared rule itself: the two tunics refuse every other armour piece
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 @pytest.mark.parametrize("armour_id", ["armour.mage-robes", "armour.wizard-robe"])
 @pytest.mark.parametrize("other", ["defence.helmet", "defence.cooking-pot-helmet"])
 def test_the_origin_tunics_refuse_another_defence_including_a_helmet(armour_id, other):
@@ -74,7 +74,7 @@ def test_the_origin_tunics_refuse_another_defence_including_a_helmet(armour_id, 
         f"{armour_id} cannot be combined with any other armour")
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 @pytest.mark.parametrize("armour_id", ["armour.mage-robes", "armour.wizard-robe"])
 @pytest.mark.parametrize("other", ["defence.shield", "defence.buckler", "defence.kite-shield"])
 def test_the_origin_tunics_refuse_a_hand_held_armour_piece(armour_id, other):
@@ -82,14 +82,14 @@ def test_the_origin_tunics_refuse_a_hand_held_armour_piece(armour_id, other):
         f"{armour_id} cannot be combined with any other armour")
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 @pytest.mark.parametrize("armour_id", ["armour.mage-robes", "armour.wizard-robe"])
 def test_the_origin_tunics_alone_carry_their_six_plus_save(armour_id):
     assert loadout(armour_id) is None
 
 
 # The other users keep their own printed limit
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_the_generic_wizard_s_robe_still_admits_a_helmet():
     # Its own source prints "cannot combine with other armour except a helmet",
     # so the two origin variants must not re-judge it.
@@ -98,7 +98,7 @@ def test_the_generic_wizard_s_robe_still_admits_a_helmet():
         "armour.wizard-s-robe cannot be combined with other armour except a helmet")
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_the_eshin_robes_still_admit_the_printed_helmet_exception():
     assert loadout("armour.eshin-assassin-robes", defence_ids=["defence.helmet"]) is None
     assert loadout("armour.eshin-assassin-robes", off_hand_id="defence.shield") == (
@@ -106,7 +106,7 @@ def test_the_eshin_robes_still_admit_the_printed_helmet_exception():
 
 
 # The real bands: item -> origin mechanic -> the same decision
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 @pytest.mark.parametrize("band_id,profile_id,armour_id", [KHEMRI_TUNIC, ARCANE_TUNIC])
 def test_each_origin_item_binds_its_own_tunic_and_keeps_the_six_plus_save(
         band_id, profile_id, armour_id):
@@ -115,7 +115,7 @@ def test_each_origin_item_binds_its_own_tunic_and_keeps_the_six_plus_save(
     assert armour_id in fighter.global_effects.tags
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 @pytest.mark.parametrize("other", [{"defence_ids": ("defence.helmet",)},
                                    {"off_hand_id": "defence.shield"},
                                    {"off_hand_id": "defence.buckler"}])
@@ -127,7 +127,7 @@ def test_the_arcane_society_tunic_refuses_the_armour_its_own_list_offers(other):
         "armour.wizard-robe cannot be combined with any other armour")
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_the_deathbringer_assassin_keeps_the_helmet_its_paragraph_excepts():
     fighter = compile_with(*ASSASSIN_ROBES, defence_ids=("defence.helmet",))
     assert fighter.armour_save == 6

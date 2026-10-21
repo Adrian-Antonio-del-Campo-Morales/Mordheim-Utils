@@ -27,7 +27,7 @@ def fighter(**changes):
     return compile_fighter(FighterBuild("mordheim",Characteristics(**values)))
 
 
-@pytest.mark.parity
+@pytest.mark.phase5_vectorized
 def test_seeded_duel_is_reproducible_and_counts_are_complete():
     request=DuelRequest(fighter(),fighter(),10_000,seed=91,batch_size=2_000)
     first=simulate_duel(request);second=simulate_duel(request)
@@ -36,7 +36,7 @@ def test_seeded_duel_is_reproducible_and_counts_are_complete():
     assert pytest.approx(first.first_win_rate+first.second_win_rate+first.unresolved_rate)==100
 
 
-@pytest.mark.parity
+@pytest.mark.phase5_vectorized
 def test_symmetric_duel_is_statistically_symmetric_across_chunk_sizes():
     unit=fighter()
     small=simulate_duel(DuelRequest(unit,unit,20_000,seed=7,batch_size=1_000))
@@ -46,13 +46,13 @@ def test_symmetric_duel_is_statistically_symmetric_across_chunk_sizes():
     assert abs(small.first_win_rate-large.first_win_rate)<2
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase5_vectorized
 def test_higher_strength_has_expected_advantage():
     strong=simulate_duel(DuelRequest(fighter(strength=5),fighter(),20_000,seed=5))
     assert strong.first_win_rate>strong.second_win_rate
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase5_vectorized
 def test_shield_does_not_grant_an_attack_but_second_weapon_does():
     from mordheim_combat.vectorized import attack_count
     import numpy as np
@@ -64,7 +64,7 @@ def test_shield_does_not_grant_an_attack_but_second_weapon_does():
     assert attack_count(dagger,charging)[0]==2
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase5_vectorized
 def test_conditional_hit_rerolls_and_berserker_only_apply_while_charging():
     from mordheim_combat.vectorized import _new_state
     from mordheim_combat.vectorized import _prepare_weapon_attack
@@ -81,7 +81,7 @@ def test_conditional_hit_rerolls_and_berserker_only_apply_while_charging():
     assert prepared.hit_rows.tolist()==[0]
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase5_vectorized
 def test_sweep_replaces_all_attacks_with_one_initiative_test():
     from mordheim_combat.vectorized import attack_count
     attacker=compile_fighter(FighterBuild(
@@ -90,20 +90,20 @@ def test_sweep_replaces_all_attacks_with_one_initiative_test():
     assert attack_count(attacker,np.zeros(3,dtype=bool)).tolist()==[1,1,1]
 
 
-@pytest.mark.workflow
+@pytest.mark.phase5_vectorized
 def test_cancellation_is_checked_between_batches():
     event=Event();event.set()
     with pytest.raises(SimulationCancelled):simulate_duel(DuelRequest(fighter(),fighter(),100,cancel_event=event))
 
 
-@pytest.mark.data_contract
+@pytest.mark.phase5_vectorized
 def test_invalid_request_and_result_are_rejected():
     from mordheim_core.models import DuelResult
     with pytest.raises(ValueError):DuelRequest(fighter(),fighter(),0)
     with pytest.raises(ValueError):DuelResult(1,1,1,2)
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase5_vectorized
 def test_armour_poison_and_regeneration_change_aggregate_outcomes():
     stats=Characteristics(4,4,3,2,4,2)
     plain=compile_fighter(FighterBuild("mordheim",stats))
@@ -119,7 +119,7 @@ def test_armour_poison_and_regeneration_change_aggregate_outcomes():
     assert vs_regeneration.first_win_rate<vs_plain.first_win_rate
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase5_vectorized
 def test_wound_modifier_improves_the_wound_roll_target():
     from mordheim_combat.vectorized import _new_state
     from mordheim_combat.vectorized import _resolve_weapon
@@ -138,7 +138,7 @@ def test_wound_modifier_improves_the_wound_roll_target():
     assert improved_defender_state.wounds[0]==0
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase5_vectorized
 def test_scorpion_tail_loses_strength_against_poison_immunity():
     from mordheim_combat.vectorized import _new_state
     from mordheim_combat.vectorized import _prepare_weapon_attack
@@ -154,7 +154,7 @@ def test_scorpion_tail_loses_strength_against_poison_immunity():
     assert resisted.strength.tolist()==[2]
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase5_vectorized
 def test_acid_blood_retaliates_once_per_wound_lost():
     from mordheim_combat.vectorized import _new_state
     from mordheim_combat.vectorized import _resolve_weapon
@@ -168,7 +168,7 @@ def test_acid_blood_retaliates_once_per_wound_lost():
     assert attacker_state.wounds[0]==2
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase5_vectorized
 def test_spines_resolve_simultaneously_at_the_start_of_the_phase():
     from mordheim_combat.vectorized import _new_state
     from mordheim_combat.vectorized import _resolve_spines
@@ -183,7 +183,7 @@ def test_spines_resolve_simultaneously_at_the_start_of_the_phase():
 
 
 @pytest.mark.parametrize("protection", (EffectSet(ward_save=2), EffectSet(regeneration_save=2)))
-@pytest.mark.rule_behavior
+@pytest.mark.phase5_vectorized
 def test_profile_two_is_not_out_when_a_special_save_ignores_the_wound(protection):
     from mordheim_combat.vectorized import STANDING
     from mordheim_combat.vectorized import _new_state
@@ -199,7 +199,7 @@ def test_profile_two_is_not_out_when_a_special_save_ignores_the_wound(protection
     assert defender_state.wounds[0]==1
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase5_vectorized
 def test_summoned_bat_loses_two_wounds_before_removal_without_injury_dice():
     from mordheim_combat.vectorized import _new_state, _resolve_weapon, OUT, STANDING
 
@@ -228,7 +228,7 @@ def test_summoned_bat_loses_two_wounds_before_removal_without_injury_dice():
         assert defender_state.condition[0] == condition
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase5_vectorized
 def test_charge_conditions_are_isolated_per_vector_row():
     from mordheim_combat.vectorized import _new_state
     from mordheim_combat.vectorized import _resolve_weapon
@@ -241,7 +241,7 @@ def test_charge_conditions_are_isolated_per_vector_row():
     assert defender_state.entangled.tolist()==[True,False]
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase5_vectorized
 def test_parry_is_one_attempt_per_phase_and_respects_strength_limit():
     from mordheim_combat.vectorized import _new_state
     from mordheim_combat.vectorized import _parry_hits
@@ -259,7 +259,7 @@ def test_parry_is_one_attempt_per_phase_and_respects_strength_limit():
     assert remaining.size==1 and blocked.size==1
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase5_vectorized
 def test_unbeatable_warrior_parries_twice_with_two_parry_weapons():
     from mordheim_combat.vectorized import _new_state
     from mordheim_combat.vectorized import _parry_hits
@@ -272,7 +272,7 @@ def test_unbeatable_warrior_parries_twice_with_two_parry_weapons():
     assert remaining.size==0 and blocked.tolist()==[0,0]
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase5_vectorized
 def test_parry_selects_highest_hit_across_main_and_off_hand(monkeypatch):
     import mordheim_combat.vectorized as engine
     import mordheim_combat.vectorized._attacks as engine_attacks
@@ -293,7 +293,7 @@ def test_parry_selects_highest_hit_across_main_and_off_hand(monkeypatch):
     assert selected==[(3,[]),(5,[0])]
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase5_vectorized
 def test_only_one_critical_can_be_claimed_per_row_and_phase():
     from mordheim_combat.vectorized import _claim_criticals
     from mordheim_combat.vectorized import _new_state
@@ -302,7 +302,7 @@ def test_only_one_critical_can_be_claimed_per_row_and_phase():
     assert _claim_criticals(np.array([True,True]),np.array([0,1]),state).tolist()==[False,False]
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase5_vectorized
 def test_incapacitated_states_are_resolved_separately():
     from mordheim_combat.vectorized import KNOCKED_DOWN
     from mordheim_combat.vectorized import OUT
@@ -320,7 +320,7 @@ def test_incapacitated_states_are_resolved_separately():
     assert defender_state.condition.tolist()==[KNOCKED_DOWN,OUT,OUT]
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase5_vectorized
 def test_random_profile_characteristics_are_rolled_per_simulation_row():
     from mordheim_combat.vectorized import _new_state
     condemned=compile_fighter(FighterBuild("mordheim",band_id="marauders-of-chaos",profile_id="condemned"))
@@ -334,7 +334,7 @@ def test_random_profile_characteristics_are_rolled_per_simulation_row():
     assert np.unique(condemned_state.weapon_skill).size>1 and np.unique(spawn_state.attacks).size>1
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase5_vectorized
 def test_lustria_scaly_skin_keeps_its_shared_six_plus_floor():
     from mordheim_combat.vectorized import STANDING
     from mordheim_combat.vectorized import _new_state
@@ -351,7 +351,7 @@ def test_lustria_scaly_skin_keeps_its_shared_six_plus_floor():
     assert defender_state.condition[0]==STANDING and defender_state.wounds[0]==1
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase5_vectorized
 def test_shared_hard_to_kill_and_fragile_injury_profiles():
     from mordheim_combat.vectorized import STUNNED
     from mordheim_combat.vectorized import OUT
@@ -375,7 +375,7 @@ def test_shared_hard_to_kill_and_fragile_injury_profiles():
         assert defender_state.condition[0]==expected
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase5_vectorized
 def test_skink_hunter_priority_distinguishes_first_round_from_always():
     from mordheim_combat.vectorized import priority
     skink=replace(fighter(),global_effects=EffectSet(tags=("species.skink",)))
@@ -387,7 +387,7 @@ def test_skink_hunter_priority_distinguishes_first_round_from_always():
     assert priority(always,skink,False,flags,flags,flags)[0]==20
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase5_vectorized
 def test_two_dwarf_axes_reroll_independently_of_master_of_blades():
     from mordheim_combat.vectorized import _new_state
     from mordheim_combat.vectorized import _parry_hits
@@ -402,7 +402,7 @@ def test_two_dwarf_axes_reroll_independently_of_master_of_blades():
     assert rerolled.size==0
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase5_vectorized
 def test_scarecrow_catches_fire_on_three_plus_instead_of_brazier_five_plus():
     from mordheim_combat.vectorized import _new_state
     from mordheim_combat.vectorized import _resolve_weapon

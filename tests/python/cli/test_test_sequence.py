@@ -7,9 +7,29 @@ import sys
 
 import pytest
 
-pytestmark = pytest.mark.test_infrastructure
+pytestmark = pytest.mark.phase0_preflight
 ROOT = Path(__file__).resolve().parents[3]
 PLUGIN = "tools.verification.test_sequence"
+
+
+@pytest.mark.parametrize("arguments, expected", [
+    (["--steps"], 0),
+    (["--scope", "nonexistent"], 2),
+])
+def test_output_report_preserves_console_and_exit_status(tmp_path, arguments, expected):
+    report = tmp_path / "report directory" / "tests.txt"
+    report.parent.mkdir()
+    report.write_text("previous report", encoding="utf-8")
+    result = subprocess.run(
+        [sys.executable, str(ROOT / "tools/mordheim-utils.py"), "test-sequence",
+         *arguments, "--output", str(report)],
+        capture_output=True, text=True, encoding="utf-8", timeout=30,
+        env={**os.environ, "PYTHONIOENCODING": "utf-8"})
+    assert result.returncode == expected, result.stdout + result.stderr
+    assert report.read_text(encoding="utf-8") == result.stdout
+    assert result.stdout and "previous report" not in result.stdout
+
+
 SOURCE = '''\
 from pathlib import Path
 import pytest
@@ -18,13 +38,13 @@ def record(value):
     with Path("trace").open("a") as stream:
         stream.write(value + "\\n")
 
-@pytest.mark.operator
+@pytest.mark.phase4_modular
 def test_consumer():
-    record("operator")
+    record("modular")
 
-@pytest.mark.compilation
+@pytest.mark.phase3_rules
 def test_producer():
-    record("compilation")
+    record("rules")
     assert False, "broken producer"
 '''
 
@@ -32,8 +52,10 @@ def test_producer():
 def run_selection(tmp_path, *args, source=SOURCE):
     (tmp_path / "test_subject.py").write_text(source, encoding="utf-8")
     (tmp_path / "pytest.ini").write_text(
-        "[pytest]\nmarkers =\n compilation: producer\n operator: consumer\n"
-        " rule_behavior: rule\n", encoding="utf-8")
+        "[pytest]\nmarkers =\n phase2_construction: construction\n"
+        " phase3_rules: rule\n phase4_modular: modular\n"
+        " phase5_vectorized: vectorized\n phase6_native: native\n",
+        encoding="utf-8")
     env = dict(os.environ, PYTHONPATH=os.pathsep.join(
         [str(ROOT), os.environ.get("PYTHONPATH", "")]))
     # Keep local pytest defaults/plugins from changing the synthetic experiment.
@@ -49,69 +71,76 @@ def run_selection(tmp_path, *args, source=SOURCE):
 def test_broken_producer_stops_before_earlier_collected_consumer(tmp_path):
     result = run_selection(tmp_path, "-x")
     assert result.returncode == 1, result.stdout
-    assert (tmp_path / "trace").read_text().splitlines() == ["compilation"]
-    assert "operator: 1 not-run" in result.stdout
+    assert (tmp_path / "trace").read_text().splitlines() == ["rules"]
+    assert "phase4_modular: 1 not-run" in result.stdout
 
 
 @pytest.mark.parametrize("flags", [(), ("--sequence-keep-going",)])
 def test_diagnostic_mode_continues_without_turning_failure_into_success(tmp_path, flags):
     result = run_selection(tmp_path, *flags)
     assert result.returncode == 1, result.stdout
-    assert (tmp_path / "trace").read_text().splitlines() == ["compilation", "operator"]
+    assert (tmp_path / "trace").read_text().splitlines() == ["rules", "modular"]
 
 
 def test_plan_obeys_marker_selection_and_executes_no_test_body(tmp_path):
-    result = run_selection(tmp_path, "--step", "3", "--sequence-plan", "-m", "compilation")
+    result = run_selection(tmp_path, "--step", "3", "--sequence-plan", "-m", "phase3_rules")
     assert result.returncode == 0, result.stdout
-    assert "compilation: 1" in result.stdout
-    assert "operator: 1" not in result.stdout
+    assert "phase3_rules: 1" in result.stdout
+    assert "phase4_modular: 1" not in result.stdout
     assert not (tmp_path / "trace").exists()
 
 
 def test_one_phase_does_not_execute_earlier_or_later_categories(tmp_path):
     result = run_selection(tmp_path, "--step", "4", source=SOURCE + '''
-@pytest.mark.rule_behavior
-def test_rule():
-    record("rule")
+@pytest.mark.phase2_construction
+def test_construction():
+    record("construction")
 ''')
     assert result.returncode == 0, result.stdout
-    assert (tmp_path / "trace").read_text().splitlines() == ["rule"]
-    assert "Only step 4" in result.stdout
+    assert (tmp_path / "trace").read_text().splitlines() == ["modular"]
+    assert "Only phase 4" in result.stdout
 
 
 def test_resume_omits_prerequisites_explicitly(tmp_path):
-    result = run_selection(tmp_path, "--sequence-from", "operator")
+    result = run_selection(tmp_path, "--sequence-from", "phase4_modular")
     assert result.returncode == 0, result.stdout
-    assert (tmp_path / "trace").read_text().splitlines() == ["operator"]
-    assert "Earlier stages omitted explicitly" in result.stdout
+    assert (tmp_path / "trace").read_text().splitlines() == ["modular"]
+    assert "Earlier phases omitted explicitly" in result.stdout
 
 
 def test_unclassified_test_blocks_execution(tmp_path):
     result = run_selection(tmp_path, source="def test_unclassified():\n    assert False\n")
     assert result.returncode == 4, result.stdout
-    assert "exactly one primary category" in result.stdout
+    assert "exactly one phase category" in result.stdout
     assert not (tmp_path / "trace").exists()
 
 
-def test_native_compilation_waits_for_selected_oracle_behavior(tmp_path):
+def test_backend_items_follow_their_own_explicit_phase(tmp_path):
+    """A parametrized item is ordered by the backend it actually executes."""
     backend = tmp_path / "tests/python/combat/native"
     backend.mkdir(parents=True)
     (backend / "test_backend.py").write_text(
-        'from pathlib import Path\nimport pytest\n@pytest.mark.compilation\n'
-        'def test_backend():\n    assert Path("trace").read_text() == "rule\\n"\n',
+        'from pathlib import Path\nimport pytest\n@pytest.mark.phase6_native\n'
+        'def test_backend():\n    assert Path("trace").read_text().startswith("rules\\n")'
+        '\n    assert "numpy" in Path("trace").read_text()\n',
         encoding="utf-8")
     (tmp_path / "test_parameters.py").write_text(
-        'from pathlib import Path\nimport pytest\n@pytest.mark.operator\n'
-        '@pytest.mark.parametrize("backend", ["native", "modular"])\n'
+        'from pathlib import Path\nimport pytest\n'
+        '@pytest.mark.parametrize("backend", [\n'
+        '    pytest.param("numpy", marks=pytest.mark.phase5_vectorized),\n'
+        '    pytest.param("native", marks=pytest.mark.phase6_native),\n'
+        '])\n'
         'def test_parameter(backend):\n'
         '    with Path("trace").open("a") as stream:\n'
         '        stream.write(backend + "\\n")\n', encoding="utf-8")
     result = run_selection(tmp_path, source=(
-        'from pathlib import Path\nimport pytest\n@pytest.mark.rule_behavior\n'
-        'def test_rule():\n    Path("trace").write_text("rule\\n")\n'))
+        'from pathlib import Path\nimport pytest\n@pytest.mark.phase3_rules\n'
+        'def test_rule():\n    Path("trace").write_text("rules\\n")\n'))
     assert result.returncode == 0, result.stdout
-    assert result.stdout.index("rule_behavior: 1") < result.stdout.index("optimized/compilation: 1")
-    assert (tmp_path / "trace").read_text() == "rule\nnative\n"
+    trace = (tmp_path / "trace").read_text().splitlines()
+    assert trace[0] == "rules" and "numpy" in trace
+    assert result.stdout.index("phase3_rules: 1") < result.stdout.index("phase5_vectorized: 1")
+    assert result.stdout.index("phase5_vectorized: 1") < result.stdout.index("phase6_native: 2")
 
 
 def test_launcher_reuses_scope_and_forwards_runner_options(monkeypatch, capsys):
@@ -140,9 +169,9 @@ def test_launcher_reuses_scope_and_forwards_runner_options(monkeypatch, capsys):
     assert cli.main(["test-sequence", "--steps"]) == 0
     assert calls == [(sys.executable, "-m", PLUGIN, "--steps")]
     calls.clear()
-    assert cli.main(["test-sequence", "-step1", "--scope", "knowledge", "--workers=4"]) == 0
+    assert cli.main(["test-sequence", "-step0", "--scope", "knowledge", "--workers=4"]) == 0
     assert calls == [(sys.executable, "-m", PLUGIN, "--workers", "4", "--",
-                      "tests/python/knowledge", "tests/specs", "--step=1")]
+                      "tests/python/knowledge", "tests/specs", "--step=0")]
     calls.clear()
     assert cli.main(["test-sequence", "--workers", "0"]) == 2
     assert not calls

@@ -1,0 +1,21 @@
+P00 contract probe (read-only)
+python=3.10.6 numpy=2.2.6
+fighter_build_compiled=CompiledFighter
+rows=16 seed=11 horizon=6
+oracle_type=ObservedDuelResult candidate_type=VectorBatchObservation
+
+oracle_published_fields=winner,resolution_rounds,first_wounds,second_wounds,first_condition,second_condition,simulations,maximum_rounds
+candidate_published_fields=winner,rounds,first_wounds,second_wounds,first_condition,second_condition,first_resources,second_resources
+
+oracle_row_lengths={'winner': 16, 'resolution_rounds': 16, 'first_wounds': 16, 'second_wounds': 16, 'first_condition': 16, 'second_condition': 16}
+candidate_row_lengths={'winner': 16, 'rounds': 16, 'first_wounds': 16, 'second_wounds': 16, 'first_condition': 16, 'second_condition': 16}
+
+row0_equals_solo=False (measured; batch width changes the stream)
+  differs rounds: batch=3 solo=2
+  differs first_wounds: batch=-1 solo=0
+  differs second_wounds: batch=0 solo=1
+repeat_is_deterministic=True
+shape_mismatch=none
+
+Observed dataclasses publish resources/psychology?
+  ObservedDuelResult: resources=False psychology=False

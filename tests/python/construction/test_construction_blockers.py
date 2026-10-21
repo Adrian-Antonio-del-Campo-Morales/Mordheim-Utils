@@ -31,7 +31,7 @@ import pytest
 
 from mordheim_knowledge.loader import load_bands, load_items, read_yaml
 
-pytestmark = pytest.mark.knowledge_integrity
+pytestmark = pytest.mark.phase1_kb_contracts
 
 ROOT = Path(__file__).resolve().parents[3]
 KB = ROOT / "sources" / "knowledge"

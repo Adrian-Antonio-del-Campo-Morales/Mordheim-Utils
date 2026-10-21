@@ -7,7 +7,7 @@ import pytest
 from mordheim_combat.vectorized import _run_starts
 
 
-@pytest.mark.operator
+@pytest.mark.phase5_vectorized
 def test_run_starts_equals_unique_on_sorted_inputs() -> None:
     rng = np.random.default_rng(7)
     for size in (0, 1, 2, 10, 1_000):
@@ -19,13 +19,13 @@ def test_run_starts_equals_unique_on_sorted_inputs() -> None:
             assert np.array_equal(starts, expected)
 
 
-@pytest.mark.operator
+@pytest.mark.phase5_vectorized
 def test_run_starts_single_and_empty() -> None:
     assert _run_starts(np.array([], dtype=np.int64)).size == 0
     assert _run_starts(np.array([5], dtype=np.int64)).tolist() == [0]
 
 
-@pytest.mark.operator
+@pytest.mark.phase5_vectorized
 def test_run_starts_duplicated_runs() -> None:
     values = np.array([3, 3, 3, 7, 7, 9], dtype=np.int64)
     assert _run_starts(values).tolist() == [0, 3, 5]

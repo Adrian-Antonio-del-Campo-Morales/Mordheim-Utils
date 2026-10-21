@@ -26,7 +26,7 @@ def issue(band, profile, item, kind, mechanic=None):
         "item": {"kind": kind, "mechanic_id": mechanic or item, "tags": []}})
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_poison_daggers_keep_both_fanatic_recipients_and_black_lotus():
     for band in ("crooked-moon-kep", "night-goblins-kaz"):
         assert not issue(band, "fanatics", "poison_daggers", "close-combat-weapon",
@@ -39,7 +39,7 @@ def test_poison_daggers_keep_both_fanatic_recipients_and_black_lotus():
         assert "poison.black-lotus" in fighter.main_weapon.tags
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_house_guard_pike_and_mare_vow_reach_their_existing_consumers():
     pike = compile_fighter(FighterBuild("mordheim", band_id="house-guard-sc",
         profile_id="pikemen", main_weapon_id="weapon.pike"))
@@ -49,7 +49,7 @@ def test_house_guard_pike_and_mare_vow_reach_their_existing_consumers():
     assert issue("order-of-the-mare-web", "paragon", "lance", "close-combat-weapon", "weapon.lance")
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_bearcloak_and_ogre_list_restrict_the_line_without_removing_other_lists():
     assert not issue("mazzalupo-web", "sheepherder", "bearcloak", "combat-equipment")
     assert issue("mazzalupo-web", "churl", "bearcloak", "combat-equipment")

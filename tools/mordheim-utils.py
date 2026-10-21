@@ -96,7 +96,7 @@ COMMANDS = (
     ("coverage-gate", "measure deterministic engine coverage and check the drift budget"),
     ("calibrate", "measure this machine's engine optima and install the calibration profile"),
     ("tests", "run the pytest suites, filtered by --scope"),
-    ("test-sequence", "run classified Python tests in conservative causal order (pytest options)"),
+    ("test-sequence", "run Python tests in the project's functional dependency phases (pytest options)"),
     ("check-presentation", "test the GUI text detector and run the strict, deep and dynamic completeness audits"),
     ("run-ci", "run the local equivalent of the CI validation gates before Pages publishing"),
     ("doctor", "report the environment, installed engines and KB location"),
@@ -210,23 +210,38 @@ def tests_command(args: list[str], *, ordered: bool = False) -> int:
     if ordered and any(arg in ("-h", "--help") for arg in own_args):
         print("usage: python tools/mordheim-utils.py test-sequence [options] [pytest args ...]")
         print("""
-Run classified Python tests in conservative causal order, with one pytest
-collection and session. The default continues after failures, returning an
-unsuccessful exit status if any test fails. Use -x to stop at the first failure.
+Run Python tests in the project's functional dependency phases, with one
+pytest collection and session. Phases 0..7 follow the project's dependencies:
+  0 preflight (architecture, test infrastructure)  1 KB and contracts
+  2 warrior construction                           3 modular rules/operators
+  4 modular engine/oracle                          5 vectorized engine + parity
+  6 native engine + parity                          7 Warband Manager/application
+Evidence, packaging and performance are additional categories outside that
+sequence and run only when requested. The default continues after failures,
+returning an unsuccessful exit status if any test fails. Use -x to stop at the
+first failure.
 
 Options:
-  --steps                 List numbered phases without collecting tests.
-  --step N / -stepN       Execute only phase N; earlier phases are not run.
-  --workers N            Use N processes within each phase (default: 1).
-                          With N > 1, complete each phase before starting the next.
+  --steps                 List the phases and additional categories (no collection).
+  --step N / -stepN       Execute only functional phase N (0..7).
+  --sequence-category NAME
+                          Execute only one additional category: evidence,
+                          packaging or performance.
+  --extras                Run evidence, packaging and performance after the
+                          selected functional phases.
+  --workers N             Use N processes within each category (default: 1).
+                          Complete a category before starting the next one.
+  --output FILE           Save combined console output as UTF-8 text (overwrite).
+                          Output remains visible on screen, including failures.
   --scope NAME            Select an existing Python component (default: all).
   --sequence-plan         Collect and display the ordered selection; run no tests.
-  --sequence-from STAGE   Start at CATEGORY or optimized/CATEGORY; earlier stages
-                          are omitted, not validated from a previous run.
+  --sequence-from PHASE   Start at a functional phase id (phase0_preflight ..
+                          phase7_warband); earlier phases are omitted, not
+                          validated from a previous run.
   --sequence-keep-going   Explicit alias for the default continuation behaviour.
                           Cannot combine with -x/--maxfail.
   -x / --maxfail N        Stop after one failure, or after N failures.
-  -m EXPRESSION           Select primary categories using pytest markers.
+  -m EXPRESSION           Select phase categories using pytest markers.
   -k EXPRESSION           Further filter test names using pytest.
   -q / -qq               Reduce output; -qq is useful for large collection plans.
   -h, --help             Show this help without collecting or executing tests.
@@ -236,33 +251,68 @@ Options:
         print("""
 Examples:
   python tools/mordheim-utils.py test-sequence --steps
-  python tools/mordheim-utils.py test-sequence -step1 -q
-  python tools/mordheim-utils.py test-sequence -step1 --workers 4 -q
+  python tools/mordheim-utils.py test-sequence -step0 -q
+  python tools/mordheim-utils.py test-sequence -step2 --workers 4 -q
   python tools/mordheim-utils.py test-sequence --workers 4 -q
-  python tools/mordheim-utils.py test-sequence --step 3 --scope construction -q
+  python tools/mordheim-utils.py test-sequence --workers 4 -q --output reports/tests.txt
+  python tools/mordheim-utils.py test-sequence --step 2 --scope construction -q
   python tools/mordheim-utils.py test-sequence --sequence-plan -qq
   python tools/mordheim-utils.py test-sequence --scope construction -q
-  python tools/mordheim-utils.py test-sequence -m "eligibility or compilation" -q
-  python tools/mordheim-utils.py test-sequence --sequence-from rule_behavior -q
-  python tools/mordheim-utils.py test-sequence --sequence-from optimized/compilation -q
+  python tools/mordheim-utils.py test-sequence -m "phase1_kb_contracts or phase2_construction" -q
+  python tools/mordheim-utils.py test-sequence --sequence-from phase3_rules -q
+  python tools/mordheim-utils.py test-sequence --extras -q
+  python tools/mordheim-utils.py test-sequence --sequence-category performance -q
   python tools/mordheim-utils.py test-sequence --sequence-keep-going -q
 
 Limits:
-  Python only: Vitest and node:test are not included. Scopes and filters do not
-  automatically add prerequisites. Generated inputs/builds must be prepared
-  separately. Ordering is by categories and backend components, not an inferred
-  per-test dependency graph. Parallel mode uses xdist/loadfile: no ordering
-  between files within a phase. Each phase/worker repeats collection.
-  --workers 1 retains a single sequential pytest session. Parallel mode does not
-  support --sequence-from; use --step to select a phase. Plans stay sequential.
+  Python only: Vitest and node:test are not included; the TypeScript/web
+  categories are selected with the annotated Vitest projects (see the reference).
+  Scopes and filters do not automatically add prerequisites. Generated inputs and
+  builds must be prepared separately. Ordering uses the per-item phase marker,
+  not an inferred dependency graph: a parametrized item carries the category of
+  the backend it executes. Parallel mode uses xdist/loadfile: no ordering between
+  files within a category. Each category/worker repeats collection. --workers 1
+  retains a single sequential pytest session. Parallel mode does not support
+  --sequence-from; use --step or --sequence-category. Plans stay sequential.
   Plan mode imports modules and loads test data. Skips do not prove correctness;
   successful selected tests do not imply full certification. No success is cached.
-  Category/phase filtering happens after module import. Use --scope to avoid
-  collecting unrelated components; --steps is the fast static phase list.
+  Category filtering happens after module import. Use --scope to avoid collecting
+  unrelated components; --steps is the fast static list.
 
 Reference: docs/reference/test-sequence.md
 """)
         return 0
+    if ordered:
+        for index, arg in enumerate(own_args):
+            if arg == "--output" or arg.startswith("--output="):
+                value = arg.split("=", 1)[1] if "=" in arg else (
+                    args[index + 1] if index + 1 < len(own_args) else "")
+                if not value or ("=" not in arg and value.startswith("-")):
+                    print("test-sequence: --output requires a file path", file=sys.stderr)
+                    return 2
+                remaining = args[:index] + args[index + (1 if "=" in arg else 2):]
+                destination = Path(value).resolve()
+                try:
+                    destination.parent.mkdir(parents=True, exist_ok=True)
+                    with destination.open("w", encoding="utf-8") as report:
+                        env = _environment()
+                        env["PYTHONIOENCODING"] = "utf-8"
+                        with subprocess.Popen(
+                            [sys.executable, "-u", str(Path(__file__).resolve()),
+                             "test-sequence", *remaining],
+                            cwd=REPO_ROOT, env=env, stdout=subprocess.PIPE,
+                            stderr=subprocess.STDOUT, text=True, encoding="utf-8",
+                            errors="replace",
+                        ) as process:
+                            for line in process.stdout:
+                                print(line, end="", flush=True)
+                                report.write(line)
+                                report.flush()
+                            return process.wait()
+                except OSError as exc:
+                    print(f"test-sequence: cannot save report to {destination}: {exc}",
+                          file=sys.stderr)
+                    return 2
     if ordered and "--steps" in args:
         if args != ["--steps"]:
             print("test-sequence: --steps is a static list; use it without other options", file=sys.stderr)

@@ -19,7 +19,7 @@ import pytest
 _KNOWLEDGE_ROOT = Path(__file__).resolve().parents[3] / "sources" / "knowledge"
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.evidence
 def test_catalogue_audit_rejects_unknown_active_contracts_but_allows_plans(tmp_path):
     import json
     from mordheim_combat_lab.verification.structural import _catalogue_binding_errors
@@ -114,8 +114,13 @@ def test_structural_audit_covers_the_current_implemented_catalogue_snapshot():
     assert report.evidenced_profile_bindings == 7  # active use whitelist, separate from ownership
     assert report.projected_automatic_compiler_bindings == 46
     assert report.evidenced_selectable_compiler_bindings == 9
-    assert report.evidenced_special_compiler_bindings == 22
-    assert report.observable_canonical_bindings == 346
+    # +2 on 2026-10-21: the Necrotect's Hated profile ability and the Lahmia
+    # Lost Innocence special rule now carry their maintained compiled-observable
+    # evidence instead of being reported as unknown/missing bindings.
+    assert report.evidenced_special_compiler_bindings == 24
+    # +1 on 2026-10-21: the Necrotect binding is now recognised through the
+    # `profile-rule.*` namespace that the structural contract already validated.
+    assert report.observable_canonical_bindings == 347
     assert report.evidenced_complex_sequences == 13
     assert report.modular_tag_consumers == 321
     # Field-consumer registry stays in lockstep with the EffectSet contract;
@@ -129,13 +134,12 @@ def test_structural_audit_covers_the_current_implemented_catalogue_snapshot():
     # Derived from the knowledge base instead of pinning a number: it moves with
     # legitimately promoted rules and fails on any silent drift.
     assert report.implemented_rule_records == _implemented_rule_records()
-    # 995 Mordheim + 417 Trollheim implemented records, counted directly from
-    # the band packages; the helper above already fails on any silent drift.
-    assert report.implemented_rule_records == 1412
-    assert report.canonical_bindings == 346
+    # The count itself is derived from the band packages; the assertion above
+    # already fails on any silent drift, so no pinned historical total is kept.
+    assert report.canonical_bindings == 347
 
 
-@pytest.mark.data_contract
+@pytest.mark.phase4_modular
 def test_every_effect_field_has_an_owned_phase_operator():
     specification = load_phase_verification("mordheim")
     assert set(specification["operator_fields"]) == {field.name for field in fields(EffectSet)}
@@ -146,7 +150,7 @@ def test_every_effect_field_has_an_owned_phase_operator():
     }
 
 
-@pytest.mark.data_contract
+@pytest.mark.phase4_modular
 def test_complex_rules_declare_their_minimal_phase_sequences():
     complex_rules = load_phase_verification("mordheim")["complex_rules"]
     assert complex_rules["trained-bear--bear-hug"]["phases"] == ["hit", "wound", "armour"]
@@ -155,7 +159,7 @@ def test_complex_rules_declare_their_minimal_phase_sequences():
     assert all(rule.get("scenario") for rule in complex_rules.values())
 
 
-@pytest.mark.data_contract
+@pytest.mark.phase4_modular
 def test_bindings_are_classified_compositionally_instead_of_repeating_editorial_rules():
     specification = load_phase_verification("mordheim")
     assert specification["binding_categories"] == {
@@ -167,7 +171,7 @@ def test_bindings_are_classified_compositionally_instead_of_repeating_editorial_
     assert audit_phase_verification().interaction_groups > 0
 
 
-@pytest.mark.data_contract
+@pytest.mark.phase4_modular
 def test_semantic_evidence_declares_an_observable_for_each_binding_kind():
     evidence = load_phase_verification("mordheim")["semantic_evidence"]
     assert evidence["mechanism_projection"]["observable"] == "compiled-effect-set"
@@ -179,7 +183,7 @@ def test_semantic_evidence_declares_an_observable_for_each_binding_kind():
     }
 
 
-@pytest.mark.operator
+@pytest.mark.phase3_rules
 def test_all_declarative_effect_pairs_compose_independently_of_catalogue_order():
     effects = [definition.effect for definition in effect_index("mordheim").values()]
     for left, right in combinations(effects, 2):

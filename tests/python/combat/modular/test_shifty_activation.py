@@ -60,7 +60,7 @@ def run(first, second, tape, *, charging=('second',), choices=()):
     return result
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 @pytest.mark.parametrize('profile', HEROES)
 def test_canonical_heroes_offer_select_compile_once_and_keep_absence_control(profile):
     assert RULE in available_special_rules(build(profile, False), knowledge_root())
@@ -75,7 +75,7 @@ def test_canonical_heroes_offer_select_compile_once_and_keep_absence_control(pro
     assert selected.characteristics.attacks == 1
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 @pytest.mark.parametrize('profile', HEROES)
 def test_catalogue_offer_roundtrips_into_canonical_rule_selection(profile):
     catalogue = CombatCatalogue()
@@ -89,7 +89,7 @@ def test_catalogue_offer_roundtrips_into_canonical_rule_selection(profile):
     assert 'skill.shifty' in compile_fighter(build(profile, special_rule_ids=special)).global_effects.tags
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 @pytest.mark.parametrize('profile', HENCHMEN)
 def test_unpromoted_canonical_henchmen_do_not_offer_or_compile_the_skill(profile):
     assert RULE not in available_special_rules(build(profile, False), knowledge_root())
@@ -99,21 +99,21 @@ def test_unpromoted_canonical_henchmen_do_not_offer_or_compile_the_skill(profile
     assert 'skill.shifty' not in control.global_effects.tags
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_foreign_profile_cannot_select_halfling_skill():
     with pytest.raises(ValueError, match='special rule is not available'):
         compile_fighter(FighterBuild('mordheim', band_id='mercenaries',
             profile_id='mercenary-captain', special_rule_ids=(RULE,)))
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_foreign_profile_cannot_bypass_recipients_with_raw_mechanic_id():
     with pytest.raises(ValueError, match='skills are not available'):
         compile_fighter(FighterBuild('mordheim', band_id='mercenaries',
             profile_id='mercenary-captain', skill_ids=('skill.shifty',)))
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 @pytest.mark.parametrize('profile', HEROES)
 @pytest.mark.parametrize('owner', ('first', 'second'))
 def test_actual_canonical_bonus_precedes_charger_but_ordinary_attack_does_not(profile, owner, opponent):
@@ -126,7 +126,7 @@ def test_actual_canonical_bonus_precedes_charger_but_ordinary_attack_does_not(pr
     assert result.state.second.wounds == pair[1].characteristics.wounds
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 @pytest.mark.parametrize('selected,charging', [(False, ('second',)), (True, ()), (True, ('first',))])
 def test_absent_not_charged_and_own_charge_controls_have_no_bonus(selected, charging, opponent):
     order = ('second', 'first') if charging == ('second',) else ('first', 'second')
@@ -134,7 +134,7 @@ def test_absent_not_charged_and_own_charge_controls_have_no_bonus(selected, char
     assert len(result.attacks) == 2
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_bonus_does_not_recur_in_later_round_without_another_charge(opponent):
     first = hero()
     dice = StrictDice([roll('first.shifty'), roll('second'), roll('first'),
@@ -149,7 +149,7 @@ def test_bonus_does_not_recur_in_later_round_without_another_charge(opponent):
     assert (len(one.attacks), len(two.attacks)) == (3, 2)
 
 
-@pytest.mark.end_to_end
+@pytest.mark.phase4_modular
 def test_public_modular_request_uses_the_canonical_selection(monkeypatch, opponent):
     dice, decisions = StrictDice([roll('first.shifty'), roll('second'), roll('first')]), StrictDecisions([])
     monkeypatch.setattr(duel, 'SeededDice', lambda seed: dice)
@@ -160,7 +160,7 @@ def test_public_modular_request_uses_the_canonical_selection(monkeypatch, oppone
     assert result.unresolved == 1
 
 
-@pytest.mark.interaction
+@pytest.mark.phase4_modular
 def test_canonical_thief_pistol_bonus_and_shifty_both_execute(opponent):
     thief = compile_fighter(build('halfling-thief', main_weapon_id='weapon.pistol'))
     dice, decisions = StrictDice([roll('first.shifty'), roll('second'), roll('first')]), StrictDecisions([])
@@ -172,7 +172,7 @@ def test_canonical_thief_pistol_bonus_and_shifty_both_execute(opponent):
     decisions.finish()
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 @pytest.mark.parametrize('second', [False, True])
 @pytest.mark.parametrize('backend', ['auto', 'numpy', 'native'])
 def test_optimized_entries_explicitly_refuse_the_unported_canonical_skill(second, backend, opponent):
@@ -181,7 +181,7 @@ def test_optimized_entries_explicitly_refuse_the_unported_canonical_skill(second
         simulate_duel(DuelRequest(*pair, simulations=1), backend=backend)
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_low_level_optimized_entries_refuse_without_losing_other_guards(opponent):
     pair = (hero(), opponent)
     for call in (lambda: compile_duel_plan(*pair), lambda: compile_duel(*pair),

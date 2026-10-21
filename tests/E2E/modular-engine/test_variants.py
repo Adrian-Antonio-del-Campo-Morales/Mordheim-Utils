@@ -70,7 +70,7 @@ def _sibling_pair():
     return BY_IDENTITY[first], BY_IDENTITY[second]
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.phase0_preflight
 def test_the_corpus_shares_variant_data_between_siblings():
     groups = shared_variant_data(CORPUS)
     assert groups, "no document shares a declaration between two scenarios"
@@ -93,7 +93,7 @@ def _execute_corpus():
     return executed
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.phase0_preflight
 def test_executing_the_corpus_does_not_change_shared_variant_data():
     groups = shared_variant_data(CORPUS)
     before = {key: deepcopy(container) for key, (container, _) in groups.items()}
@@ -107,7 +107,7 @@ def test_executing_the_corpus_does_not_change_shared_variant_data():
             f"executing the corpus mutated a shared declaration: {key[0]}")
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.phase0_preflight
 def test_a_sibling_result_does_not_depend_on_the_order_its_siblings_run():
     first, second = _sibling_pair()
     assert first.test_id != second.test_id
@@ -119,7 +119,7 @@ def test_a_sibling_result_does_not_depend_on_the_order_its_siblings_run():
     assert check_case(second.case, knowledge_root()) == other
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.phase0_preflight
 def test_editing_one_variant_leaves_its_siblings_intact():
     edited_source, sibling = _sibling_pair()
     declared = deepcopy(edited_source.case)

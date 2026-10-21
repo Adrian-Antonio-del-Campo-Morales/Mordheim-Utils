@@ -78,7 +78,7 @@ def strike(foe, injury_face, *, fear=False):
     return result.state.second.condition
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 @pytest.mark.parametrize("face,condition", [
     (1, Condition.STUNNED), (3, Condition.STUNNED), (4, Condition.OUT), (6, Condition.OUT),
 ])
@@ -97,7 +97,7 @@ def test_the_printed_table_stuns_on_one_to_three_and_takes_out_on_four_to_six(fa
     assert strike(living_opponent(), face) == condition
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 @pytest.mark.parametrize("face,condition", [
     (1, Condition.KNOCKED_DOWN), (3, Condition.KNOCKED_DOWN), (4, Condition.OUT),
 ])
@@ -109,7 +109,7 @@ def test_undead_are_knocked_down_by_the_stun_band_instead_of_stunned(face, condi
     assert strike(foe, face, fear=True) == condition
 
 
-@pytest.mark.knowledge_integrity
+@pytest.mark.phase1_kb_contracts
 def test_the_canonical_item_resolves_to_its_own_mechanic_and_the_cavalcade_dagger_is_conserved():
     from mordheim_knowledge.campaign import load_campaign_catalog
     from mordheim_knowledge.loader import load_items, load_mechanics, load_simulation_mappings

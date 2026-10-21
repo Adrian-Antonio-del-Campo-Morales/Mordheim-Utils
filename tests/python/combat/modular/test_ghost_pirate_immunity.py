@@ -27,7 +27,7 @@ POISON_IMMUNE_RECIPIENTS = (
 )
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_ghost_pirate_poison_immunity_reaches_every_printed_recipient():
     for profile in POISON_IMMUNE_RECIPIENTS:
         compiled = canonical("ghost-pirates-sar", profile)
@@ -35,7 +35,7 @@ def test_ghost_pirate_poison_immunity_reaches_every_printed_recipient():
         assert "poison_immune" in compiled.global_effects.tags, profile
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_the_living_ghost_pirate_profiles_stay_without_the_immunity():
     # Negative control: the same band, the profiles whose printed sentence
     # carries no immunity.
@@ -45,7 +45,7 @@ def test_the_living_ghost_pirate_profiles_stay_without_the_immunity():
         assert "poison_immune" not in compiled.global_effects.tags, profile
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_poison_immunity_drops_the_poisoned_contribution_of_the_attack():
     poisoned = compile_fighter(FighterBuild(
         "mordheim", band_id="ghost-pirates-sar", profile_id="skeleton-mates",

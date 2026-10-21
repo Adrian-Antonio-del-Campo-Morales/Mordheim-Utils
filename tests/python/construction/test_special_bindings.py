@@ -14,7 +14,7 @@ def build(band_id, profile_id, *, collection="mordheim", **kwargs):
     )
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_automatic_profile_handlers_compile_trample_frantic_and_bear_hug():
     centigor = compile_fighter(build("beastmen-raiders", "centigors"))
     fanatic = compile_fighter(build("night-goblins-mic", "fanatics"))
@@ -24,7 +24,7 @@ def test_automatic_profile_handlers_compile_trample_frantic_and_bear_hug():
     assert bear.global_effects.bear_hug
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_mutant_grants_and_mutation_handlers_have_distinct_observables():
     beastman = compile_fighter(build(
         "beastmen-raiders", "beastmen-chieftain",
@@ -52,7 +52,7 @@ def test_mutant_grants_and_mutation_handlers_have_distinct_observables():
     assert any("weapon.dagger" in attack.tags for attack in extra_arm.extra_attacks)
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_horn_shield_and_tail_handlers_compile_independent_attacks():
     horned = compile_fighter(build(
         "beastmen-raiders", "beastmen-chieftain",
@@ -72,7 +72,7 @@ def test_horn_shield_and_tail_handlers_compile_independent_attacks():
     assert any("weapon.dagger" in attack.tags for attack in tail.extra_attacks)
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_all_three_nurgle_blessing_handlers_change_compiled_state():
     base = compile_fighter(build(
         "carnival-of-chaos", "tainted-ones",
@@ -91,7 +91,7 @@ def test_all_three_nurgle_blessing_handlers_change_compiled_state():
     assert marked.characteristics.wounds == 2 and marked.global_effects.poison_immunity
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_remaining_selected_handlers_project_their_exact_combat_modifier():
     berserk = compile_fighter(build(
         "norse-explorers-btb", "jarl",
@@ -145,7 +145,7 @@ def _aquatic(*extra, **kwargs):
     ))
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_every_aquatic_mutants_pool_member_compiles_its_projected_state():
     # The grant rule of `shallows-beasts-mim / band--aquatic-mutants` lets any
     # Hero select one mutation from the printed pool; each member projects the
@@ -175,7 +175,7 @@ def test_every_aquatic_mutants_pool_member_compiles_its_projected_state():
     assert "mechanic.causes-fear" in eye_stalks.global_effects.tags
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_aquatic_mutants_access_is_one_pool_member_per_hero():
     grant = compile_fighter(FighterBuild(
         "mordheim", band_id="shallows-beasts-mim", profile_id="buccaneer",
@@ -189,7 +189,7 @@ def test_aquatic_mutants_access_is_one_pool_member_per_hero():
         _aquatic("band--mutations-blackblood", "band--mutations-beak")
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_aquatic_mutants_pool_is_closed_and_hero_only():
     # Mutations outside the printed pool (a Possessed Extra Arm or Scorpion
     # Tail) are not selectable, and a non-Hero cannot receive the grant.
@@ -204,7 +204,7 @@ def test_aquatic_mutants_pool_is_closed_and_hero_only():
         ))
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_extra_arm_and_great_claw_enforce_their_printed_arm_rules():
     """Extra Arm: 'The mutant may use any single-handed weapon in the extra
     arm...  Alternatively, he may carry a shield or a buckler in the extra arm.

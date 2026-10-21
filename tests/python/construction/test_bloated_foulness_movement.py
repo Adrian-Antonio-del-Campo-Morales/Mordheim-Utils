@@ -18,7 +18,7 @@ from mordheim_construction.compiler import compile_fighter
 from mordheim_core.models import FighterBuild
 from mordheim_knowledge.loader import load_bands
 
-pytestmark = pytest.mark.compilation
+pytestmark = pytest.mark.phase2_construction
 
 
 BLESSING = "band--blessings-of-nurgle-bloated-foulness"

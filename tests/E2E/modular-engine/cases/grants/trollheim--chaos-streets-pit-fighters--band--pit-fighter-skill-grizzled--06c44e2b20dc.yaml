@@ -56,7 +56,11 @@
     first:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
-    second: {collection: trollheim, band_id: chaos-streets-pit-fighters, profile_id: pit-veterans}
+    second:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: pit-veterans
+      special_rule_ids: [band--pit-fighter-skill-grizzled-veteran]
   initial_state: {first: {attacks: 0}, second: {resources_spent: [disability.6]}}
   duel_context: {charging: [], active_participant: second}
   maximum_rounds: 1
@@ -96,7 +100,11 @@
       trait_overrides: {causes_fear: true}
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
-    second: {collection: trollheim, band_id: chaos-streets-pit-fighters, profile_id: pit-veterans}
+    second:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: pit-veterans
+      special_rule_ids: [band--pit-fighter-skill-grizzled-veteran]
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:

@@ -19,8 +19,8 @@ def digest(raw):
     return hashlib.sha256(raw).hexdigest()
 
 
-def read(raw):
-    errors = validator.check(raw.replace(b"\r\n", b"\n"), {})
+def read(raw, *, legacy=False):
+    errors = validator.check(raw.replace(b"\r\n", b"\n"), {}, legacy=legacy)
     if errors:
         raise ValueError("Invalid CSV:\n" + "\n".join(errors))
     rows = list(csv.DictReader(io.StringIO(raw.decode("utf-8"), newline="")))
@@ -84,14 +84,53 @@ def prepare(path, requests):
             if note_references:
                 change["replace_note_references"] = note_references
             changes.append(change)
-    package = {"csv": str(path.resolve()), "sha256": digest(raw), "changes": changes}
+    package = {"csv": str(path.resolve()), "schema": validator.FIELDS,
+               "sha256": digest(raw), "changes": changes}
     candidate(raw, package)
     return package
 
 
+def migration(path):
+    raw = path.read_bytes()
+    package = {"csv": str(path.resolve()), "schema": validator.FIELDS,
+               "sha256": digest(raw), "operation": "migrate", "changes": []}
+    candidate(raw, package)
+    return package
+
+
+def migrate_candidate(raw):
+    header = next(csv.reader(io.StringIO(raw.decode("utf-8"), newline="")))
+    if header == validator.FIELDS:
+        read(raw)  # A repeated migration preserves explicit existing statuses.
+        return raw
+    rows = read(raw, legacy=True)
+    lines = io.StringIO(raw.decode("utf-8"), newline="").readlines()
+    reader = csv.reader(io.StringIO(raw.decode("utf-8"), newline=""))
+    chunks, start = [], 0
+    for index, _ in enumerate(reader):
+        span = "".join(lines[start:reader.line_num])
+        start = reader.line_num
+        ending = "\r\n" if span.endswith("\r\n") else "\n"
+        value = "status" if index == 0 else json.dumps(
+            dict.fromkeys(validator.BACKENDS, "pending")
+            if rows[index - 1]["clause_scope"] == "YES" else {}, separators=(",", ":"))
+        out = io.StringIO(newline="")
+        csv.writer(out, lineterminator=ending).writerow([value])
+        chunks.append(span[:-len(ending)] + "," + out.getvalue())
+    result = "".join(chunks).encode("utf-8")
+    actual = read(result)
+    if [{f: row[f] for f in validator.FIELDS[:-1]} for row in actual] != rows:
+        raise ValueError("Migration conservation check failed")
+    return result
+
+
 def candidate(raw, package):
+    if package.get("schema") != validator.FIELDS:
+        raise ValueError("Obsolete or missing package schema; prepare again with status column")
     if digest(raw) != package["sha256"]:
         raise ValueError("Concurrent change: CSV differs from prepared snapshot; prepare again")
+    if package.get("operation") == "migrate":
+        return migrate_candidate(raw)
     rows = read(raw)
     replacements = {}
     index = {key(row): row for row in rows}
@@ -137,6 +176,9 @@ def candidate(raw, package):
 
 
 def show(package):
+    if package.get("operation") == "migrate":
+        print("Migration preview: append status for legacy schema; preserve existing status otherwise")
+        return
     changes = []
     for change in package["changes"]:
         before, after = change["before"], change["after"]
@@ -159,7 +201,7 @@ def apply(path, package, write=False):
     try:
         raw = path.read_bytes()
         result = candidate(raw, package)
-        if not package["changes"]:
+        if result == raw:
             print("No changes")
             return
         backup = Path(tempfile.mkdtemp(prefix="clause-register-")) / path.name
@@ -178,7 +220,8 @@ def apply(path, package, write=False):
         finally:
             if temp_path is not None:
                 temp_path.unlink(missing_ok=True)
-        print(f"Applied {len(package['changes'])} clause changes")
+        print("Schema migrated" if package.get("operation") == "migrate"
+              else f"Applied {len(package['changes'])} clause changes")
     finally:
         handle.close()
         lock.unlink()
@@ -193,6 +236,8 @@ def main():
     for field in ("id", "clause-id", "source", "consumer", "work", "review"):
         query.add_argument("--" + field)
     query.add_argument("--pending", action="store_true")
+    query.add_argument("--backend", choices=validator.BACKENDS)
+    query.add_argument("--status", choices=sorted(validator.BACKEND_STATES))
     query.add_argument("--limit", type=int, default=10)
     query.add_argument("--fields", default="id,clause_id,clause_text,semantic_contract,consumer,pending,notes")
     prep = commands.add_parser("prepare")
@@ -201,15 +246,23 @@ def main():
     app = commands.add_parser("apply")
     app.add_argument("package", type=Path)
     app.add_argument("--write", action="store_true", help="Without this flag, only validate and preview")
+    migrate = commands.add_parser("migrate", help="Extend legacy schema; preview by default")
+    migrate.add_argument("--write", action="store_true")
     args = parser.parse_args()
     try:
         if args.command == "query":
+            if args.status and not args.backend:
+                raise ValueError("--status requires --backend")
             fields = args.fields.split(",")
             if set(fields) - set(validator.FIELDS) or args.limit < 1:
                 raise ValueError("Invalid fields or limit")
             matched = []
             for row in read(args.csv.read_bytes()):
                 pending = json.loads(row["pending"])
+                status = json.loads(row["status"])
+                if args.backend and (args.backend not in status or
+                                     (args.status and status[args.backend] != args.status)):
+                    continue
                 if any(value is not None and row[field] != value for field, value in
                        (("id", args.id), ("clause_id", args.clause_id))):
                     continue
@@ -228,6 +281,8 @@ def main():
                 if len(matched) == args.limit:
                     break
             print(json.dumps(matched, ensure_ascii=False, indent=2))
+        elif args.command == "migrate":
+            apply(args.csv, migration(args.csv), args.write)
         elif args.command == "prepare":
             package = prepare(args.csv, json.loads(args.changes.read_text(encoding="utf-8")))
             with args.out.open("x", encoding="utf-8") as out:

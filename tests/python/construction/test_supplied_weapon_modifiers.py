@@ -31,7 +31,7 @@ def strike(attacker, defender, weapon, *rolls):
     return result
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 @pytest.mark.parametrize('band,profile,weapon', [
     ('sisters-of-sigmar', 'sister-superior', 'weapon.mace'),
     ('witch-hunters', 'witch-hunter-captain', 'weapon.sword'),
@@ -55,7 +55,7 @@ def test_supplied_blessing_wounds_undead_and_possessed_on_two_plus(band, profile
     assert not strike(bearer, undead, bearer.main_weapon, ('r.hit', 4), ('r.wound', 1)).wounded
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_supplied_blessing_leaves_the_other_hand_and_the_saves_alone():
     bearer = compile_fighter(build('sisters-of-sigmar', 'sister-superior', 'weapon.mace',
         off_hand_id='weapon.dagger', condition_ids=('condition.blessed-weapon',),
@@ -70,7 +70,7 @@ def test_supplied_blessing_leaves_the_other_hand_and_the_saves_alone():
     assert saved.saved and saved.defender.wounds == initialize_fighter(armoured, tape(), 'b').wounds
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_supplied_blessing_needs_a_sisters_or_witch_hunters_bearer():
     with pytest.raises(ValueError, match='bearers'):
         compile_fighter(build('mercenaries', 'mercenary-captain', 'weapon.sword',
@@ -82,7 +82,7 @@ def test_supplied_blessing_needs_a_sisters_or_witch_hunters_bearer():
             trait_overrides={'blessed_weapon_slots': ['main', 'off']}))
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 @pytest.mark.parametrize('band,profile,weapon', [
     ('witch-hunters', 'witch-hunter-captain', 'weapon.sword'),
     ('battle-monks-of-cathay', 'soldiers', 'weapon.dragon-sword'),
@@ -99,7 +99,7 @@ def test_supplied_honing_gives_the_named_blades_cutting_edge(band, profile, weap
     assert 'rule.cutting-edge' in honed.main_weapon.tags
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_supplied_honing_worsens_the_save_on_the_honed_blade_alone():
     honed = compile_fighter(build('witch-hunters', 'witch-hunter-captain', 'weapon.sword',
         off_hand_id='weapon.sword', condition_ids=('condition.swordsmith-honing',),
@@ -119,7 +119,7 @@ def test_supplied_honing_worsens_the_save_on_the_honed_blade_alone():
                   ('r.armour', 5)).saved
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_supplied_honing_reaches_swords_only_and_at_most_three():
     bearer = compile_fighter(build('witch-hunters', 'witch-hunter-captain', 'weapon.sword',
         off_hand_id='weapon.sword', condition_ids=('condition.swordsmith-honing',),
@@ -136,7 +136,7 @@ def test_supplied_honing_reaches_swords_only_and_at_most_three():
             trait_overrides={'honing_slots': ['main', 'main']}))
 
 
-@pytest.mark.interaction
+@pytest.mark.phase4_modular
 def test_distinct_supplied_modifiers_compose_without_relaxing_the_rune_limit():
     facts = {'blessed_weapon_slots': ['main'], 'honing_slots': ['main'],
              'rune_cleaving_slots': ['main'], 'rune_striking_slots': ['main']}
@@ -153,7 +153,7 @@ def test_distinct_supplied_modifiers_compose_without_relaxing_the_rune_limit():
             condition_ids=(*conditions, 'condition.rune-striking'), trait_overrides=facts))
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_master_craftsman_strength_changes_only_the_chosen_weapon_and_leaves_with_it():
     owner = compile_fighter(build('mercenaries', 'mercenary-captain', 'weapon.sword',
         off_hand_id='weapon.dagger', condition_ids=('condition.master-craftsman-strength',),
@@ -171,7 +171,7 @@ def test_master_craftsman_strength_changes_only_the_chosen_weapon_and_leaves_wit
             trait_overrides={'craftsman_strength_slots': ['main', 'off']}))
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_master_craftsman_initiative_controls_round_order_and_expires_on_weapon_loss():
     owner = compile_fighter(build('mercenaries', 'mercenary-captain', 'weapon.sword',
         off_hand_id='weapon.dagger', condition_ids=('condition.master-craftsman-initiative',),
@@ -189,7 +189,7 @@ def test_master_craftsman_initiative_controls_round_order_and_expires_on_weapon_
     assert owner.off_hand.initiative_bonus == 0
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_master_craftsman_initiative_on_extra_hand_counts_once_and_leaves_with_that_hand():
     owner = compile_fighter(build('cult-of-the-possessed', 'mutants', 'weapon.sword',
         extra_hand_id='weapon.dagger', special_rule_ids=('band--mutations-extra-arm',),
@@ -202,7 +202,7 @@ def test_master_craftsman_initiative_on_extra_hand_counts_once_and_leaves_with_t
     assert resolve_priority(PriorityContext(active, foe)).initiative == 3
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_supplied_coating_stays_on_the_chosen_weapon_and_on_its_poison_free_copy():
     coated = compile_fighter(build('hirelings.dramatis-personae.2a', 'hireling.dramatis.the-foole',
         'weapon.sword', off_hand_id='weapon.dagger',

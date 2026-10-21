@@ -60,7 +60,7 @@ def run(first, second, rolls, *, transform=None, choices=()):
     return result, [request.key for request in dice.requests]
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_a_slayer_killed_before_he_strikes_makes_his_remaining_attacks():
     slayer = brawler(attacks=2, initiative=1, tag=DEATHBLOW)
     killer = brawler(initiative=5, certain=True)
@@ -73,7 +73,7 @@ def test_a_slayer_killed_before_he_strikes_makes_his_remaining_attacks():
                     "round.0.second.attack.0.hit", "round.0.second.attack.1.hit"]
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_a_slayer_who_already_struck_makes_no_second_pool():
     slayer = brawler(attacks=2, initiative=5, tag=DEATHBLOW)
     killer = brawler(initiative=1, certain=True)
@@ -85,7 +85,7 @@ def test_a_slayer_who_already_struck_makes_no_second_pool():
                     "round.0.second.attack.0.wound", "round.0.second.attack.0.injury.0"]
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_a_successful_deathblow_resolves_the_wound_and_injury():
     slayer = brawler(initiative=1, tag=DEATHBLOW, certain=True)
     result, keys = run(brawler(certain=True), slayer, kill("first") + kill("second"),
@@ -96,7 +96,7 @@ def test_a_successful_deathblow_resolves_the_wound_and_injury():
                     "round.0.second.attack.0.wound", "round.0.second.attack.0.injury.0"]
 
 
-@pytest.mark.interaction
+@pytest.mark.phase4_modular
 def test_deathblow_preserves_the_remainder_after_one_nominated_early_attack():
     slayer = brawler(attacks=2, initiative=1, tag=DEATHBLOW)
     slayer = replace(slayer, global_effects=replace(slayer.global_effects,
@@ -110,7 +110,7 @@ def test_deathblow_preserves_the_remainder_after_one_nominated_early_attack():
     assert keys == [entry["key"] for entry in rolls]
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_the_printed_clause_survives_being_knocked_down_first():
     slayer = brawler(attacks=2, initiative=1, tag=DEATHBLOW)
     killer = brawler(initiative=5, certain=True)
@@ -129,7 +129,7 @@ def test_the_printed_clause_survives_being_knocked_down_first():
                     "round.0.second.attack.0.hit", "round.0.second.attack.1.hit"]
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_a_slayer_without_the_skill_is_removed_without_a_last_pool():
     slayer = brawler(attacks=2, initiative=1)
     killer = brawler(initiative=5, certain=True)
@@ -138,7 +138,7 @@ def test_a_slayer_without_the_skill_is_removed_without_a_last_pool():
     assert keys == ["round.0.first.attack.0.wound", "round.0.first.attack.0.injury.0"]
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_the_slayer_may_decline_deathblow():
     result, keys = run(brawler(certain=True), brawler(initiative=1, tag=DEATHBLOW),
         kill("first"), choices=[{"key": "round.0.second.deathblow", "value": False}])
@@ -146,14 +146,14 @@ def test_the_slayer_may_decline_deathblow():
     assert keys == ["round.0.first.attack.0.wound", "round.0.first.attack.0.injury.0"]
 
 
-@pytest.mark.architecture
+@pytest.mark.phase0_preflight
 def test_deathblow_declares_itself_a_modular_only_operator():
     slayer, killer = brawler(tag=DEATHBLOW), brawler()
     with pytest.raises(ValueError, match="modular"):
         require_optimized_support(slayer, killer)
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_tough_as_steel_declares_and_consumes_the_printed_true_grit_chart():
     unit = compile_fighter(FighterBuild("mordheim", band_id="dwarf-slayer-cult-web",
         profile_id="giant-slayer", skill_ids=("skill.tough-as-steel",)), ROOT)

@@ -13,9 +13,9 @@ justify itself by covering something no deterministic test covers.
 
 ## Modular integration closure
 
-The [test classification reference](test-sequence.md) defines proposed categories
-by guarantee, assignment criteria and execution/repair dependencies. It is a
-classification contract, not an implemented ordered runner. Successful selected
+The [test classification reference](test-sequence.md) defines the phase
+categories, assignment criteria and execution/repair dependencies, and the
+`test-sequence` launcher implements that Python order. Successful selected
 commands alone do not establish modular closure.
 
 As of 2026-10-18, the admitted implementation queue is closed. This is

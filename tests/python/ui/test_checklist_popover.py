@@ -11,7 +11,7 @@ from mordheim_combat_lab.ui.theme import COLORS
 
 # The whole file proves the visible and interactive popover behaviour (mapping,
 # dismissal, scrollbar and theme), driven through a real Tk root.
-pytestmark = pytest.mark.presentation
+pytestmark = pytest.mark.phase7_warband
 
 
 @pytest.fixture(scope="module")

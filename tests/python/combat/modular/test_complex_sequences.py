@@ -18,7 +18,7 @@ import numpy as np
 import pytest
 
 
-pytestmark = pytest.mark.rule_behavior
+pytestmark = pytest.mark.phase3_rules
 
 
 class ScriptedRng:

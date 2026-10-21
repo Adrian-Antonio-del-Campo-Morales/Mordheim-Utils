@@ -37,7 +37,7 @@ from mordheim_core.models import Characteristics, CompiledFighter, DuelContext, 
 import pytest
 
 
-pytestmark = pytest.mark.interaction
+pytestmark = pytest.mark.phase4_modular
 
 SHIFTY_TAG = 'skill.shifty'
 SPIDER_SPITTLE_TAG = 'poison.spider-spittle'

@@ -4,7 +4,7 @@ import pytest
 from mordheim_construction.compiler import compile_fighter
 from mordheim_core.models import FighterBuild
 
-pytestmark = pytest.mark.eligibility
+pytestmark = pytest.mark.phase2_construction
 
 
 def test_fog_fragments_require_a_censer_only_when_carried():

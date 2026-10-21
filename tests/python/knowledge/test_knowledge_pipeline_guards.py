@@ -26,7 +26,7 @@ CAMPAIGN = KB_ROOT / "catalog" / "campaign" / "exploration-and-income.yaml"
 # ---------------------------------------------------------------------------
 # Capitalization policy
 # ---------------------------------------------------------------------------
-@pytest.mark.knowledge_integrity
+@pytest.mark.phase1_kb_contracts
 def test_kb_names_are_normalized() -> None:
     tool = ROOT / "tools" / "knowledge" / "maintenance" / "normalize_names.py"
     result = subprocess.run(
@@ -59,7 +59,7 @@ def _keys(node) -> set:
     return set()
 
 
-@pytest.mark.knowledge_integrity
+@pytest.mark.phase1_kb_contracts
 def test_no_summary_key_survives_in_the_knowledge_base() -> None:
     offenders: list[str] = []
     for path in sorted(KB_ROOT.rglob("*.yaml")):
@@ -149,7 +149,7 @@ class _FamilyTracker:
                 self.en_untranslated.setdefault(key, f"{origin} ({label})")
 
 
-@pytest.mark.knowledge_integrity
+@pytest.mark.phase1_kb_contracts
 def test_same_english_text_always_gets_the_same_spanish_translation() -> None:
     trackers = [_FamilyTracker(field, i18n_field) for field, i18n_field in FIELD_FAMILIES]
 
@@ -185,7 +185,7 @@ LONG_LINE = (
 )
 
 
-@pytest.mark.knowledge_integrity
+@pytest.mark.phase1_kb_contracts
 def test_yaml_formatting_is_canonical() -> None:
     tool = ROOT / "tools" / "knowledge" / "maintenance" / "format_yaml.py"
     assert KB_ROOT.is_dir(), "Canonical KB directory is missing"
@@ -221,7 +221,7 @@ def run_tool(*arguments: str) -> subprocess.CompletedProcess:
     )
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.phase1_kb_contracts
 @pytest.mark.parametrize("ending", ["\r\n", "\r", "mixed"])
 @pytest.mark.parametrize("other_change", [False, True])
 def test_line_endings_warn_without_hiding_other_formatting(tmp_path: Path, ending: str, other_change: bool) -> None:
@@ -244,7 +244,7 @@ def test_line_endings_warn_without_hiding_other_formatting(tmp_path: Path, endin
     assert "0 would change" in run_tool("--check", str(path)).stdout
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.phase1_kb_contracts
 def test_a_folded_block_written_as_one_line_is_rewrapped(tmp_path: Path) -> None:
     path = tmp_path / "staged.yaml"
     path.write_text(
@@ -270,7 +270,7 @@ def test_a_folded_block_written_as_one_line_is_rewrapped(tmp_path: Path) -> None
     assert "0 would change" in run_tool("--check", str(path)).stdout
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.phase1_kb_contracts
 def test_a_folded_block_keeps_paragraphs_when_wrapped(tmp_path: Path) -> None:
     path = tmp_path / "paragraphs.yaml"
     document = (
@@ -291,7 +291,7 @@ def test_a_folded_block_keeps_paragraphs_when_wrapped(tmp_path: Path) -> None:
     assert "0 would change" in run_tool("--check", str(path)).stdout
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.phase1_kb_contracts
 @pytest.mark.parametrize("document", [
     f"notes: {LONG_LINE}\n",
     f"notes_i18n:\n  es: {LONG_LINE}\n",
@@ -311,7 +311,7 @@ def test_remaining_long_yaml_values_are_wrapped_without_changing_data(tmp_path: 
     assert "0 would change" in run_tool("--check", str(path)).stdout
 
 
-@pytest.mark.test_infrastructure
+@pytest.mark.phase1_kb_contracts
 def test_wrapping_preserves_anchors_aliases_and_comments(tmp_path: Path) -> None:
     document = (
         f"original: &prose '{LONG_LINE}'\n"
@@ -419,7 +419,7 @@ def binding_kinds() -> set[str]:
     return found
 
 
-@pytest.mark.data_contract
+@pytest.mark.phase1_kb_contracts
 def test_registry_is_well_formed() -> None:
     kinds = binding_kinds()
     for binding_id, entry in load_registry().items():
@@ -436,7 +436,7 @@ def test_registry_is_well_formed() -> None:
         )
 
 
-@pytest.mark.knowledge_integrity
+@pytest.mark.phase1_kb_contracts
 def test_every_staged_binding_is_registered() -> None:
     registered = set(load_registry())
     known = kb_binding_ids() | registered
@@ -451,7 +451,7 @@ def test_every_staged_binding_is_registered() -> None:
     )
 
 
-@pytest.mark.knowledge_integrity
+@pytest.mark.phase1_kb_contracts
 def test_registry_entries_resolve_and_are_not_stale() -> None:
     duplicates = [row for row in staged_bindings() if row["binding"] in load_registry()]
     kb_ids = kb_binding_ids()
@@ -514,7 +514,7 @@ def _kb_items() -> dict[str, dict]:
     return items
 
 
-@pytest.mark.knowledge_integrity
+@pytest.mark.phase1_kb_contracts
 def test_canonical_absence_is_real() -> None:
     items = _kb_items()
     missing = sorted(ABSENT_ITEM_IDS - set(items))
@@ -529,7 +529,7 @@ def test_canonical_absence_is_real() -> None:
         )
 
 
-@pytest.mark.knowledge_integrity
+@pytest.mark.phase1_kb_contracts
 def test_magical_artefacts_publish_both_locales() -> None:
     rows = {
         row["id"]: row

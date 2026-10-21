@@ -123,7 +123,7 @@ def test_a_url_is_claimed_by_one_document() -> None:
         ])
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_a_document_may_declare_the_same_url_twice() -> None:
     """Repetir una forma de citar el mismo documento es inocuo."""
     url = "https://example.invalid/a.pdf"
@@ -134,7 +134,7 @@ def test_a_document_may_declare_the_same_url_twice() -> None:
     assert documents.document_for(url).id == "a"
 
 
-@pytest.mark.data_contract
+@pytest.mark.phase1_kb_contracts
 def test_an_unknown_kind_is_refused() -> None:
     """Un documento que el cotejo no sepa leer se declara, no se adivina."""
     with pytest.raises(ValueError, match="kind 'scan'"):
@@ -144,7 +144,7 @@ def test_an_unknown_kind_is_refused() -> None:
         ])
 
 
-@pytest.mark.data_contract
+@pytest.mark.phase1_kb_contracts
 def test_the_mirror_names_are_relative_and_unique() -> None:
     """Cada documento ocupa una copia distinta del espejo, dentro de su raíz."""
     documents = sd.SourceDocuments.load()
@@ -157,7 +157,7 @@ def test_the_mirror_names_are_relative_and_unique() -> None:
         assert mirror.declared(document) == sd.ORIGINS / document.mirror
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_the_dramatis_page_of_a_grade_is_the_documented_snapshot() -> None:
     """La página del grado se lee del snapshot cacheado y, a falta de él, de su texto.
 
@@ -178,7 +178,7 @@ def test_the_dramatis_page_of_a_grade_is_the_documented_snapshot() -> None:
 
 # La resolución de una entrada
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_resolution_keeps_the_citation_order_and_reads_a_document_once() -> None:
     """Dos formas de citar el mismo PDF son un documento, y la primera es la cita."""
     documents = sd.SourceDocuments.load()
@@ -200,7 +200,7 @@ def test_resolution_keeps_the_citation_order_and_reads_a_document_once() -> None
     assert resolved[0].citation.where == "A"
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_the_singular_source_of_a_band_record_resolves() -> None:
     """Los perfiles y reglas de banda declaran su cita con ``source``, no ``source_refs``.
 
@@ -214,7 +214,7 @@ def test_the_singular_source_of_a_band_record_resolves() -> None:
         ("mordheimer.net.dramatis-personae.grade-1a", "Aenur")]
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_a_citation_with_an_unknown_url_is_reported() -> None:
     """Una cita que el registro no declare se dice, no se ignora."""
     documents = sd.SourceDocuments.load()
@@ -224,13 +224,13 @@ def test_a_citation_with_an_unknown_url_is_reported() -> None:
     assert documents.resolve(record) == []
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_a_record_without_provenance_resolves_to_nothing() -> None:
     documents = sd.SourceDocuments.load()
     assert documents.resolve({}) == [] and documents.undeclared({}) == []
 
 
-@pytest.mark.data_transport
+@pytest.mark.phase1_kb_contracts
 def test_the_canonical_form_folds_the_citation_spellings() -> None:
     """La ruta descodificada y sin barra final: dos formas de la misma cita coinciden."""
     documents = sd.SourceDocuments.load()

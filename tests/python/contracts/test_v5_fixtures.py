@@ -17,7 +17,7 @@ SCHEMA_PATH = CONTRACT / "campaign-file-v5.schema.json"
 FIXTURES = sorted((CONTRACT / "fixtures").glob("*.json"))
 
 # The whole file validates the schema and every fixture document against it.
-pytestmark = pytest.mark.data_contract
+pytestmark = pytest.mark.phase7_warband
 
 
 def test_contract_files_exist():

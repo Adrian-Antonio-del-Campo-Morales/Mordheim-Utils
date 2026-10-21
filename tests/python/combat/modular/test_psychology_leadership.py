@@ -46,7 +46,7 @@ def fear_state(first, second, charging, rolls):
 
 # --- 'Ere We Go! -----------------------------------------------------------
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_ere_we_go_grants_its_bearer_and_nothing_else():
     boss = canonical("black-orcs", "black-orc-boss", special_rule_ids=(ERE_WE_GO,))
     assert "mechanic.ere-we-go" in boss.global_effects.tags
@@ -54,7 +54,7 @@ def test_ere_we_go_grants_its_bearer_and_nothing_else():
     assert "mechanic.ere-we-go" not in unselected.global_effects.tags
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_ere_we_go_waives_only_the_bearers_own_charging_fear_test():
     fearer = bare(trait_overrides={"causes_fear": True})
     assert causes_fear(fearer, canonical("black-orcs", "black-orc-boss"))
@@ -74,7 +74,7 @@ def test_ere_we_go_waives_only_the_bearers_own_charging_fear_test():
     assert charged.first.fear_hit_sixes
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_ere_we_go_is_shared_by_the_three_green_skin_bands():
     for band, profile, collection, rule in (
         ("black-orcs", "black-orc-boss", "mordheim",
@@ -89,7 +89,7 @@ def test_ere_we_go_is_shared_by_the_three_green_skin_bands():
 
 # --- Fear of Elves ---------------------------------------------------------
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_fear_of_elves_is_a_recipient_qualified_directional_fear():
     elf = canonical("high-elves-lus", "loremaster", "weapon.sword")
     goblin = canonical("night-goblins-web", "night-goblin-warriors")
@@ -100,7 +100,7 @@ def test_fear_of_elves_is_a_recipient_qualified_directional_fear():
     assert causes_fear(bare(), goblin) is False
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_fear_of_elves_keeps_the_printed_band_and_fanatic_exemptions():
     elf = canonical("high-elves-lus", "loremaster", "weapon.sword")
     goblin = canonical("night-goblins-web", "night-goblin-warriors")
@@ -115,7 +115,7 @@ def test_fear_of_elves_keeps_the_printed_band_and_fanatic_exemptions():
                       "first", []).engaged
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_fear_of_elves_is_a_shared_rule_with_its_own_recipients():
     for band, profile, collection in (
         ("chaos-streets-greenskins", "goblin-warriors", "trollheim"),
@@ -125,7 +125,7 @@ def test_fear_of_elves_is_a_shared_rule_with_its_own_recipients():
         assert "mechanic.fear-of-elves" in fighter.global_effects.tags, (band, profile)
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_unspecified_elf_kind_does_not_imply_a_printed_kind():
     elf = bare(trait_overrides={"elf_kind": "other"})
     assert "species.elf" in elf.global_effects.tags
@@ -133,7 +133,7 @@ def test_unspecified_elf_kind_does_not_imply_a_printed_kind():
         elf.global_effects.tags)
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_fear_of_elves_reads_the_models_own_elf_species_fact():
     # The Elf species is the model's own printed fact, never its warband's:
     # `elf_kind` projects `species.elf`, the three printed kinds add the marker
@@ -167,7 +167,7 @@ def test_fear_of_elves_reads_the_models_own_elf_species_fact():
     assert causes_fear(bare(), recipients[0]) is False
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_fear_of_elves_ignores_an_elf_warbands_non_elf_models():
     # The Ivy Ferret is listed in a Wood Elf warband but its printed Spirit
     # rule makes it a woodland spirit, and the Cold Ones are that Dark Elf
@@ -204,7 +204,7 @@ def leader_pass(recipient, provider, participant_id, distance, faces, decision=N
     return passed
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_reikland_military_discipline_widens_the_captains_supplied_radius():
     leader = canonical("mercenaries", "mercenary-captain", "weapon.sword")
     warrior = canonical("mercenaries", "warriors")
@@ -221,7 +221,7 @@ def test_reikland_military_discipline_widens_the_captains_supplied_radius():
     assert leader_pass(warrior, warrior, "other", 8, (3, 5)) is False
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_only_the_named_leaders_carry_the_extended_radius():
     assert "mechanic.leader-twelve" in canonical(
         "gunnery-school-of-nuln", "senior-gunnery-officer", "weapon.sword").global_effects.tags
@@ -248,7 +248,7 @@ def supplied_leadership(recipient, providers, faces, decisions=None):
     return passed
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_second_in_command_yields_to_a_usable_witch_doctor():
     boss = canonical("lustria-savage-goblins", "big-boss", "weapon.sword", collection="trollheim")
     doctor = canonical("lustria-savage-goblins", "witch-doctor", "weapon.sword", collection="trollheim")
@@ -281,7 +281,7 @@ def test_second_in_command_yields_to_a_usable_witch_doctor():
     assert supplied_leadership(goblin, (("boss", boss, "standing", 5),), seven) is False
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_second_in_command_grants_only_the_four_inch_big_boss_radius():
     boss = canonical("lustria-savage-goblins", "big-boss", "weapon.sword", collection="trollheim")
     goblin = canonical("lustria-savage-goblins", "savage-goblins", collection="trollheim")
@@ -306,7 +306,7 @@ def lahmian(profile, **options):
                      collection="trollheim", **options)
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_accustomed_to_fear_exempts_only_the_three_printed_undead_kinds():
     # The exemption names Vampires, Skeletons and Spirits -- the fear-causing
     # model's own facts, not "Undead" as a whole.
@@ -344,7 +344,7 @@ def test_accustomed_to_fear_exempts_only_the_three_printed_undead_kinds():
             assert feared.first.fear_hit_sixes is True, (profile, name)
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_accustomed_to_fear_belongs_to_the_four_recipients_only():
     for band, profile, collection in (
         ("khemri-lahmian-brotherhood", "lahmian-vampire", "trollheim"),
@@ -373,7 +373,7 @@ def lahmia_vampire(power):
     return canonical(band, profile, "weapon.sword", collection="trollheim", special_rule_ids=(rule,))
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_the_two_lahmia_powers_are_selectable_by_their_printed_recipient_only():
     # Both powers are selectable band grants, so the shared eligibility layer must
     # accept only the named Lahmia Vampire: a sibling profile of the same band and
@@ -425,7 +425,7 @@ def tape(*rows):
     return StrictDice([{"key": key, "value": value} for key, value in rows])
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_deceive_bars_a_failed_enemy_for_that_combat_phase_only():
     vampire = lahmia_vampire(DECEIVE)
     assert "mechanic.lahmia-deceive" in vampire.global_effects.tags
@@ -454,7 +454,7 @@ def test_deceive_bars_a_failed_enemy_for_that_combat_phase_only():
     assert len(after.attacks) == 3
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_deceive_passes_over_undead_daemons_and_psychology_immune_enemies():
     vampire = lahmia_vampire(DECEIVE)
     # The Trollheim Zombie prints both Undead and immunity to Psychology, the
@@ -481,7 +481,7 @@ def test_deceive_passes_over_undead_daemons_and_psychology_immune_enemies():
         assert len(result.attacks) == 2 + theirs, name
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_deceive_never_borrows_a_nearby_leader_for_the_enemy():
     # Deceive prints "using its own Leadership": the eligible four-inch Big Boss
     # of the enemy's own warband is never offered, so the doubled three that the
@@ -500,7 +500,7 @@ def test_deceive_never_borrows_a_nearby_leader_for_the_enemy():
     assert len(blocked.attacks) == 2
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_hypnotize_bars_the_target_and_lifts_attackers_to_hit_by_one():
     vampire = lahmia_vampire(HYPNOTIZE)
     assert "mechanic.lahmian-hypnotize" in vampire.global_effects.tags
@@ -525,7 +525,7 @@ def test_hypnotize_bars_the_target_and_lifts_attackers_to_hit_by_one():
     assert [attack.hit_target for attack in plain.attacks] == [3, 3, 4]
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_hypnotize_reads_a_supplied_leaders_leadership():
     # Hypnotize prints "a Leadership test", not "its own": the doubled three is
     # six, which the goblin's own five fails and the eligible Big Boss passes.
@@ -553,7 +553,7 @@ def test_hypnotize_reads_a_supplied_leaders_leadership():
     assert blocked.state.second.charm_attack_blocked is True
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_hypnotize_affects_a_non_immune_enemy_but_not_a_psychology_immune_one():
     # The printed exception is immunity to Psychology alone, so a plain enemy is
     # a valid target while the Undead Wight and the Deathwish Slayers, which both
@@ -583,7 +583,7 @@ def test_hypnotize_affects_a_non_immune_enemy_but_not_a_psychology_immune_one():
         assert len(exempt.attacks) == 3
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_enchanting_beauty_lowers_a_borrowed_leadership_too():
     # "Any living enemy in base contact suffers -1 Leadership": the borrowed
     # seven of an eligible same-warband leader drops with it.
@@ -604,7 +604,7 @@ def test_enchanting_beauty_lowers_a_borrowed_leadership_too():
     borrowed.finish()
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_enchanting_beauty_lowers_only_a_living_contacting_enemy():
     vampire = canonical("chaos-streets-undead-bloodlines", "lahmia-vampire", "weapon.sword",
                         collection="trollheim")
@@ -631,7 +631,7 @@ def test_enchanting_beauty_lowers_only_a_living_contacting_enemy():
                                     StrictDecisions([]), "probe", first=True) is False
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_deceive_tests_the_targets_own_leadership_not_a_supplied_leaders():
     # Deceive prints "using its own Leadership", so the borrowed-leader path is
     # skipped even when an eligible same-band provider stands in range.
@@ -655,7 +655,7 @@ def test_deceive_tests_the_targets_own_leadership_not_a_supplied_leaders():
                                     borrowed, "probe", first=True) is True
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_enchanting_beauty_waits_for_the_contact_a_charge_has_not_made_yet():
     # The clause names an enemy *in base contact*, and a voluntary charge is
     # resolved before that contact exists.  The vampire supplies Fear explicitly
@@ -689,7 +689,7 @@ def test_enchanting_beauty_waits_for_the_contact_a_charge_has_not_made_yet():
     assert contacting.state.second.fear_hit_sixes is True
 
 
-@pytest.mark.interaction
+@pytest.mark.phase4_modular
 def test_both_lahmia_powers_keep_the_tests_resource_consumption_on_success():
     # One shared witness for both powers: a carried relic auto-passes the first
     # required Leadership test and pays for it, so the spend must survive the
@@ -721,7 +721,7 @@ def test_both_lahmia_powers_keep_the_tests_resource_consumption_on_success():
 
 # --- Ghostly Howl ----------------------------------------------------------
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_ghostly_howl_costs_the_tested_enemy_a_die_of_leadership():
     """The printed -D6 reaches its opponent's fear test and nothing else."""
     banshee = canonical("call-of-the-night-haint-mim", "tomb-banshee")

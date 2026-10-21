@@ -45,7 +45,7 @@ def armour_stage(attacker_fighter, defender):
         attacker_fighter.main_weapon, attacker_fighter.main_weapon, key="armour")
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_the_claws_keep_four_attacks_and_reach_a_total_minus_three_modifier():
     claws = veskit()
     # The printed A4 already includes the integrated pistols' extra attack.
@@ -62,7 +62,7 @@ def test_the_claws_keep_four_attacks_and_reach_a_total_minus_three_modifier():
     assert resolve_armour(stage, StrictDice([])).eligible is False
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_metallic_body_is_the_armour_save_on_three_or_better():
     # The mechanical body is armour, not a ward or a regeneration save.
     stage = armour_stage(attacker(), veskit())
@@ -71,7 +71,7 @@ def test_metallic_body_is_the_armour_save_on_three_or_better():
     assert resolve_armour(stage, StrictDice([{"key": "armour", "value": 2}])).saved is False
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_unfeeling_skips_the_psychology_test_instead_of_rolling_leadership():
     fighter = veskit()
     duel = DuelState(state(fighter), state(attacker()), first_charged=False)

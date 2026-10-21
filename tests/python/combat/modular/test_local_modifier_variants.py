@@ -3,7 +3,7 @@ from dataclasses import replace
 
 import pytest
 
-pytestmark = pytest.mark.rule_behavior
+pytestmark = pytest.mark.phase3_rules
 
 from mordheim_combat import phases
 

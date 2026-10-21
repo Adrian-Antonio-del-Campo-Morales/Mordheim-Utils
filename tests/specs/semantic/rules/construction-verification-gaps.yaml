@@ -11,7 +11,7 @@ specifications:
   - target: mechanic/armour.ninja-robes
     digest: 727effbdf4fa2f8e12d263ca2b23156798fd2a9b6ba4452b4748d86937236e9d
   - target: mechanic/armour.eshin-assassin-robes
-    digest: f6a299c749ad780ce66540d2f736e63d87de7a242b863a2d69c7d4f7e6c4603c
+    digest: fd196482bc59e77c0a397df7570a94a89519de10de10fcfafd0e44dc65172469
   ruling: Plate Armour saves on 4+; Wizard's Robe and Eshin Assassin Robes save on 6+ and only combine
     with a helmet; Ninja Robes counts as Toughened Leathers.
   interpretation: The four armours occupy the body slot. Plate Armour can combine with a shield; its Movement
@@ -213,12 +213,13 @@ specifications:
   category: local
   sources:
   - target: mechanic/defence.sea-dragon-cloak
-    digest: 476594e53f0e3cf798749e0ef4a4c04dca8905748f669001ec616b0fb2a88266
-  ruling: Sea Dragon Cloak saves on 5+ in combat and on 4+ against shooting; the source records that it was
-    never fully clarified whether the cloak may be combined with armour and shields.
-  interpretation: The admitted mechanic resolves the ambiguity as a constant-save cloak that occupies the
-    armour choice, so it cannot be layered over a second suit, while combining normally with shields and
-    helmets. The duel runtime executes the 5+ in combat; the shooting branch is outside the current scope.
+    digest: 3da6aab3952078d101c1d0b320df3b5246e202d18be57e90540430da03a50c99
+  ruling: Sea Dragon Cloak saves on 5+ in combat and on 4+ against shooting; the source records that it
+    was never fully clarified whether the cloak may be combined with armour and shields.
+  interpretation: The admitted mechanic resolves the ambiguity as a constant-save cloak that occupies
+    the armour choice, so it cannot be layered over a second suit, while combining normally with shields
+    and helmets. The duel runtime executes the 5+ in combat; the shooting branch is outside the current
+    scope.
   cases:
   - id: close-combat-five-plus
     roles:
@@ -365,14 +366,14 @@ specifications:
   - target: mechanic/mechanic.energy-focus
     digest: da9b4b1ca3e7e0ecfc259795b0ffd1c12433220ca9e430bf285a764f410feeb6
   - target: rule/mordheim/battle-monks-of-cathay/band--battle-monks-special-skills-energy-focus/compiler.energy-focus
-    digest: 154a154dcf00f75ed9435fd1b8a697602866bcac9a06141adb3795e6c006f528
+    digest: 3f00a1997588e9667ec6fa5f582eed7528e127fcad7880dbfe0f3385532d2b45
   ruling: Energy Focus allows selecting any number of attacks, including zero or all of the profile's
     attacks.
   interpretation: Battle Monks Special Skills / Energy Focus allows choosing any amount between zero and
     the profile's Attacks. Each sacrificed attack reduces A by one and grants +1 Strength while the monk
     fights unarmed. The historical convention of always keeping one attack was a simplification and is
-    not part of the RAW. The Dragon Monks' printed Unarmed Fighting also adds one Attack while
-    unarmed, so the pool is the profile's Attacks plus one before the sacrificed attacks are removed.
+    not part of the RAW. The Dragon Monks' printed Unarmed Fighting also adds one Attack while unarmed,
+    so the pool is the profile's Attacks plus one before the sacrificed attacks are removed.
   cases:
   - id: compiled-selection
     roles:

@@ -89,11 +89,12 @@ rules:
         id: profile.skill-access
         parameters:
           category: special
+          # Only the feat with a canonical, executable skill record is published.
+          # Combat charge, Lancer and Armour specialist keep their printed text in
+          # this rule but have no catalogue record or operator yet, so the list
+          # must not admit them as selectable no-ops.
           skills:
-          - skill.combat-charge
-          - skill.lancer
           - skill.sword-master
-          - skill.armour-specialist
   name: Knights Feats
   effect: >-
     Knights Errant may choose to use the following skill list instead of the standard skill

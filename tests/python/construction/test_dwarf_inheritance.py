@@ -41,7 +41,7 @@ def _compiled(band, profile, **overrides):
 
 
 @pytest.mark.parametrize("band", ALL_DWARF_BANDS)
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_every_dwarf_member_inherits_the_admitted_rules_automatically(band):
     for profile in _profile_ids(band):
         unit = _compiled(band, profile)
@@ -56,7 +56,7 @@ def test_every_dwarf_member_inherits_the_admitted_rules_automatically(band):
 
 
 @pytest.mark.parametrize("band", ALL_DWARF_BANDS)
-@pytest.mark.knowledge_integrity
+@pytest.mark.phase1_kb_contracts
 def test_no_other_rule_of_the_band_grants_the_same_dwarf_rules(band):
     for rule in _package(band).special_rules:
         runtime = rule.get("runtime") or {}
@@ -67,7 +67,7 @@ def test_no_other_rule_of_the_band_grants_the_same_dwarf_rules(band):
         assert not bound & set(DWARF_RULES), (band, rule["id"], bound & set(DWARF_RULES))
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_the_inheritance_cannot_be_selected_as_a_skill():
     build = FighterBuild(COLLECTION, band_id="dwarf-slayers-kaz", profile_id="giant-slayer",
                          special_rule_ids=(INHERITANCE,))
@@ -75,7 +75,7 @@ def test_the_inheritance_cannot_be_selected_as_a_skill():
         compile_fighter(build, ROOT)
 
 
-@pytest.mark.compilation
+@pytest.mark.phase2_construction
 def test_the_supplied_human_rememberer_keeps_the_human_line_without_dwarf_rules():
     for overrides, inherited in (({}, True), ({"species": "human"}, False)):
         unit = _compiled("dwarf-slayers-kaz", "rememberer", trait_overrides=overrides)
@@ -83,7 +83,7 @@ def test_the_supplied_human_rememberer_keeps_the_human_line_without_dwarf_rules(
             assert (tag in unit.global_effects.tags) is inherited, (overrides, tag)
 
 
-@pytest.mark.rule_behavior
+@pytest.mark.phase3_rules
 def test_the_inherited_rules_reach_their_modular_consumers():
     dwarf = _compiled("dwarf-guildsmen-kaz", "artisans")
     human = _compiled("dwarf-slayers-kaz", "rememberer", trait_overrides={"species": "human"})

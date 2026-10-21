@@ -31,7 +31,7 @@ from mordheim_knowledge.loader import load_bands, knowledge_root
 
 # The concession is the offer: every case decides what the member may select,
 # and the compiled tag only follows an admitted choice.
-pytestmark = pytest.mark.eligibility
+pytestmark = pytest.mark.phase2_construction
 
 ROOT = knowledge_root()
 COLLECTION = "mordheim"

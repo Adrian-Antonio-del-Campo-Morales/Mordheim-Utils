@@ -30,6 +30,11 @@ class CombatState:
     entangled: np.ndarray
     parry_used: np.ndarray
     parry_remaining: np.ndarray
+    #: Per-phase resources: Seaguard Spear Master rerolls one failed hit in the
+    #: opening round, and a corrupted defender forces one hit to be rerolled.
+    #: The driver clears both with ``parry_used`` at the start of every round.
+    seaguard_used: np.ndarray
+    corruption_used: np.ndarray
     critical_used: np.ndarray
     force_of_will_used: np.ndarray
     force_of_will_active: np.ndarray
@@ -46,6 +51,54 @@ class CombatState:
     broken_hands: np.ndarray
     hampered_main: np.ndarray
     hampered_off: np.ndarray
+    # --- Initialisation, recovery and per-row bookkeeping -------------------
+    #: Wound total ``initialize_fighter`` computed for this fighter.  Recovery
+    #: and the wounded-attacks test compare against it instead of re-deriving
+    #: the printed profile, which gear can fold a Wound into.
+    starting_wounds: np.ndarray
+    #: ``True`` when the printed profile fixes no Initiative.  The numeric
+    #: column is an ordering placeholder; the absence itself is kept here.
+    initiative_missing: np.ndarray
+    #: Bit mask of the lazy Inconsistency characteristics already rolled for
+    #: the current round (1 WS, 2 S, 4 T, 8 I, 16 A).
+    random_rolled: np.ndarray
+    #: Fixed delta per characteristic (``("WS", "S", "T", "I", "A")``) that
+    #: a lazy roll adds to its die: the supplied permanently fixed value the
+    #: fighter keeps for the whole duel.
+    random_modifiers: np.ndarray
+    torture_strength_loss: np.ndarray
+    #: Battle-start Guiding Dream D6; 0 when the fighter has no such roll.
+    guiding_dream_result: np.ndarray
+    stupidity_failed: np.ndarray
+    massively_built_lost_turn: np.ndarray
+    netted: np.ndarray
+    #: Fear's per-row "natural sixes only" fact.  The driver copies G05's
+    #: ``PsychologyResources.fear_hit_sixes`` here each round so every attack
+    #: path (weapons, bonuses, holds) reads the same mask.
+    fear_hit_sixes: np.ndarray
+    #: Close-combat hold, per row: the victim is held and the holder grips it.
+    grappled: np.ndarray
+    grappling: np.ndarray
+    #: Alchemist/Backley penalties kept as the ``(stat, points)`` pairs the
+    #: modular state stores, so a later brew update can restore them.
+    backley_penalties: np.ndarray
+    # --- Equipment, mutated members and shape changes -----------------------
+    #: Per row, because a batch may roll different brands on different rows.
+    mutations: np.ndarray
+    mutation_equipment: np.ndarray
+    mutation_weapon_limbs: np.ndarray
+    mutated_hands: np.ndarray
+    atrophied_arms: np.ndarray
+    atrophied_legs: np.ndarray
+    transformed: np.ndarray
+    equipment_cast_off: np.ndarray
+    hillman_wolf: np.ndarray
+    #: Selected prehensile tail index, -1 when none is selected.  The modular
+    #: state spends ``mutation-tail.<n>``; the array keeps the same fact.
+    mutation_tail: np.ndarray
+    #: Per-row cache of the projected ``CompiledFighter``.  ``None`` means the
+    #: printed fighter is still the effective one; the mutation helpers fill it.
+    effective_fighter: np.ndarray
 
 @dataclass(slots=True)
 class PreparedAttack:
@@ -58,6 +111,10 @@ class PreparedAttack:
     rolls: np.ndarray
     hit_rows: np.ndarray
     rerolled: np.ndarray
+    #: Physical face of the die that produced each row's final hit, before a
+    #: granted success (Mark of the Old Ones) substitutes the target number.
+    #: Six-triggered rules read this, never the substituted value.
+    natural: np.ndarray | None = None
 
 @dataclass(slots=True)
 class VectorAttackObservation:

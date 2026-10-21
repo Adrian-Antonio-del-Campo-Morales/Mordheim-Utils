@@ -45,7 +45,7 @@ def profile_build(collection, band_id, profile_id):
     )
 
 
-@pytest.mark.eligibility
+@pytest.mark.phase2_construction
 def test_modular_runtime_rejects_a_manually_injected_lance():
     fighter = compile_fighter(FighterBuild("mordheim", Characteristics(3, 3, 3, 1, 3, 1)))
     lance = replace(fighter, main_weapon=replace(fighter.main_weapon, tags=("weapon.lance",)))
@@ -53,7 +53,7 @@ def test_modular_runtime_rejects_a_manually_injected_lance():
         initialize_duel(lance, fighter, KeyedDice(1))
 
 
-@pytest.mark.end_to_end
+@pytest.mark.phase4_modular
 def test_every_legal_profile_can_execute_a_complete_scalar_round():
     # Profiles the runtime scope excludes (a vehicle and a watercraft) never
     # reach this pipeline; they are declared with their reason in
@@ -104,7 +104,7 @@ def _witch_finder_charge(opponent):
     return fighter, target
 
 
-@pytest.mark.end_to_end
+@pytest.mark.phase4_modular
 def test_every_execution_mechanism_can_enter_the_scalar_round_pipeline():
     characteristics = Characteristics(3, 3, 3, 2, 3, 1, leadership=7)
     opponent = compile_fighter(FighterBuild(
