@@ -35,7 +35,7 @@ from mordheim_construction.compiler import compile_fighter
 from mordheim_core.dice import ScriptedDecisions
 from mordheim_knowledge.loader import knowledge_root
 
-from ._battery_cases import VARIANTS, VARIANT_KEYS, required_variants
+from ._battery_cases import VARIANTS, VARIANT_KEYS, required_variants, resolve_context
 
 #: The four resources the candidate publishes today.  This is not the full
 #: observable vocabulary (that lives in ``_battery_cases``).
@@ -492,6 +492,7 @@ def _run_case(case, *, backend: str, rows: int | None, root, focused_seen: dict,
     try:
         first = compile_fighter(case.first, root)
         second = compile_fighter(case.second, root)
+        context = resolve_context(getattr(case, "context", None), root)
     except Exception as error:  # the compiler is shared; an invalid case is not a divergence
         return _result(
             case, backend, "NOT_RUN", rows=effective_rows,
@@ -499,7 +500,6 @@ def _run_case(case, *, backend: str, rows: int | None, root, focused_seen: dict,
         )
 
     decisions = ScriptedDecisions(dict(getattr(case, "decisions", {}) or {}))
-    context = getattr(case, "context", None)
     seed = int(getattr(case, "seed", 2026))
     maximum_rounds = int(getattr(case, "maximum_rounds", 50))
 
