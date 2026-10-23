@@ -1,0 +1,107 @@
+schema_version: 1
+specifications:
+- id: mordheim-kroxigor-scaly-skin
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: local
+  sources:
+  - target: rule/mordheim/lizardmen/kroxigor--scaly-skin/trait.natural-armour-save
+    digest: 6377a6c48213b63df8fd33fb29c9897cfb92ff72b2714608883d774eb7e20003
+  interpretation: The Kroxigor has a natural 4+ save, modified normally by Strength. No accumulation or
+    extra limit is inferred because this source only grants the natural value.
+  cases:
+  - id: recipient
+    roles:
+    - grant
+    operation: grant
+    defender:
+      band_id: lizardmen
+      profile_id: kroxigor
+    context:
+      rule_id: kroxigor--scaly-skin
+    expect:
+      result.recipients:
+      - kroxigor
+  - id: base-save
+    roles:
+    - compiled
+    - active
+    - consumer
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      band_id: lizardmen
+      profile_id: kroxigor
+    distribution:
+      observable: result.saved
+      max_rolls: 1
+      expected:
+        'true': 1/2
+        'false': 1/2
+  - id: strength-four
+    roles:
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.sword
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      band_id: lizardmen
+      profile_id: kroxigor
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      result.target: 5
+      result.saved: false
+  - id: strength-five-modifies
+    roles:
+    - active
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.sword
+      characteristics:
+        weapon_skill: 3
+        strength: 5
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      band_id: lizardmen
+      profile_id: kroxigor
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      result.target: 6
+      result.saved: true
+  - id: armour-denial
+    roles:
+    - inactive
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.vomit-attack
+    defender:
+      band_id: lizardmen
+      profile_id: kroxigor
+    expect:
+      result.eligible: false
+      result.saved: false
+  mutations:
+  - id: remove-natural-armour
+    changes:
+    - path: defender.natural_armour_save
+      value: 7
+    - path: defender.armour_save
+      value: 7
+    cases:
+    - base-save

@@ -1,0 +1,2568 @@
+schema_version: 1
+specifications:
+- id: interaction-combat-critical-hits--combat-injury-states
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: core/combat-critical-hits
+    digest: e8eca12d783ded31c450f816bbc94069e59ffe07575d75d378d642f87fdffd1d
+  - target: core/combat-injury-states
+    digest: dc6466c032b2f181edcbbfd5371810e78dac33db0f95701d70a237c7d1a63a8e
+  bindings:
+  - '{"id": "combat-critical-hits", "kind": "core", "parameters": {}}'
+  - '{"id": "combat-injury-states", "kind": "core", "parameters": {}}'
+  interpretation: The basic critical table is rolled independently. This composition chooses Master Strike
+    (5), two wounds with armour ignored and +2 Injury. The boundary is an ordinary wound.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attack
+    attacker: &id001
+      main_weapon_id: weapon.sword
+    defender: &id002
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 6
+    - key: test.critical
+      value: 5
+    - key: test.injury.0
+      value: 1
+    - key: test.injury.1
+      value: 1
+    expect:
+      result.critical: true
+      result.defender.condition: STUNNED
+  - id: boundary
+    roles:
+    - boundary
+    operation: attack
+    attacker: *id001
+    defender: *id002
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 5
+    - key: test.injury.0
+      value: 1
+    expect:
+      result.critical: false
+      result.defender.condition: KNOCKED_DOWN
+  mutations:
+  - id: raise-wound-threshold
+    path: defender.characteristics.toughness
+    value: 5
+    cases:
+    - composition
+- id: interaction-combat-critical-hits--material.dark-elf-blade
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: core/combat-critical-hits
+    digest: e8eca12d783ded31c450f816bbc94069e59ffe07575d75d378d642f87fdffd1d
+  - target: mechanic/material.dark-elf-blade
+    digest: c67b2b9c02b068d7c2ff5c4b70475cd4ae0b9232d5836f12871b061ea26a25e4
+  bindings:
+  - '{"id": "combat-critical-hits", "kind": "core", "parameters": {}}'
+  - '{"id": "material.dark-elf-blade", "kind": "mechanic", "parameters": {}}'
+  interpretation: The basic critical table is rolled independently. This composition chooses Master Strike
+    (5), two wounds with armour ignored and +2 Injury. The boundary is an ordinary wound.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attack
+    attacker: &id003
+      main_weapon_id: weapon.sword
+      main_material_id: material.dark-elf-blade
+    defender: &id004
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 6
+    - key: test.critical
+      value: 5
+    - key: test.injury.0
+      value: 1
+    - key: test.injury.1
+      value: 1
+    expect:
+      result.critical: true
+      result.defender.condition: STUNNED
+  - id: boundary
+    roles:
+    - boundary
+    operation: attack
+    attacker: *id003
+    defender: *id004
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 5
+    - key: test.injury.0
+      value: 1
+    expect:
+      result.critical: false
+      result.defender.condition: KNOCKED_DOWN
+  mutations:
+  - id: raise-wound-threshold
+    path: defender.characteristics.toughness
+    value: 5
+    cases:
+    - composition
+- id: interaction-combat-critical-hits--skill.hard-to-kill
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: core/combat-critical-hits
+    digest: e8eca12d783ded31c450f816bbc94069e59ffe07575d75d378d642f87fdffd1d
+  - target: mechanic/skill.hard-to-kill
+    digest: 30c6fc4070dd027a07d52d82f26be50550fc51210367834aaff08ae459928dad
+  bindings:
+  - '{"id": "combat-critical-hits", "kind": "core", "parameters": {}}'
+  - '{"id": "skill.hard-to-kill", "kind": "mechanic", "parameters": {}}'
+  interpretation: The basic critical table is rolled independently. This composition chooses Master Strike
+    (5), two wounds with armour ignored and +2 Injury. The boundary is an ordinary wound.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attack
+    attacker: &id005
+      main_weapon_id: weapon.sword
+    defender: &id006
+      skill_ids:
+      - skill.hard-to-kill
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 6
+    - key: test.critical
+      value: 5
+    - key: test.injury.0
+      value: 1
+    - key: test.injury.1
+      value: 1
+    expect:
+      result.critical: true
+      result.defender.condition: STUNNED
+  - id: boundary
+    roles:
+    - boundary
+    operation: attack
+    attacker: *id005
+    defender: *id006
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 5
+    - key: test.injury.0
+      value: 1
+    expect:
+      result.critical: false
+      result.defender.condition: KNOCKED_DOWN
+  mutations:
+  - id: raise-wound-threshold
+    path: defender.characteristics.toughness
+    value: 5
+    cases:
+    - composition
+- id: interaction-combat-critical-hits--skill.knife-fighting
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: core/combat-critical-hits
+    digest: e8eca12d783ded31c450f816bbc94069e59ffe07575d75d378d642f87fdffd1d
+  - target: mechanic/skill.knife-fighting
+    digest: 9abc29a35f5773cffa9aa9db86e17b4855279c277925fe5ea31fcaeeddfcf892
+  bindings:
+  - '{"id": "combat-critical-hits", "kind": "core", "parameters": {}}'
+  - '{"id": "skill.knife-fighting", "kind": "mechanic", "parameters": {}}'
+  interpretation: The basic critical table is rolled independently. This composition chooses Master Strike
+    (5), two wounds with armour ignored and +2 Injury. The boundary is an ordinary wound.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attack
+    attacker: &id007
+      main_weapon_id: weapon.dagger
+      skill_ids:
+      - skill.knife-fighting
+    defender: &id008
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 6
+    - key: test.critical
+      value: 5
+    - key: test.injury.0
+      value: 1
+    - key: test.injury.1
+      value: 1
+    expect:
+      result.critical: true
+      result.defender.condition: STUNNED
+  - id: boundary
+    roles:
+    - boundary
+    operation: attack
+    attacker: *id007
+    defender: *id008
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 5
+    - key: test.armour
+      value: 5
+    - key: test.injury.0
+      value: 1
+    expect:
+      result.critical: false
+      result.defender.condition: KNOCKED_DOWN
+  mutations:
+  - id: raise-wound-threshold
+    path: defender.characteristics.toughness
+    value: 5
+    cases:
+    - composition
+- id: interaction-combat-critical-hits--skill.strike-to-injure
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: core/combat-critical-hits
+    digest: e8eca12d783ded31c450f816bbc94069e59ffe07575d75d378d642f87fdffd1d
+  - target: mechanic/skill.strike-to-injure
+    digest: 3a5c5d822a31438679e5cbecded74558de0f71edb354051331920878cb160922
+  bindings:
+  - '{"id": "combat-critical-hits", "kind": "core", "parameters": {}}'
+  - '{"id": "skill.strike-to-injure", "kind": "mechanic", "parameters": {}}'
+  interpretation: The basic critical table is rolled independently. This composition chooses Master Strike
+    (5), two wounds with armour ignored and +2 Injury. The boundary is an ordinary wound.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attack
+    attacker: &id009
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.strike-to-injure
+    defender: &id010
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 6
+    - key: test.critical
+      value: 5
+    - key: test.injury.0
+      value: 1
+    - key: test.injury.1
+      value: 1
+    expect:
+      result.critical: true
+      result.defender.condition: STUNNED
+  - id: boundary
+    roles:
+    - boundary
+    operation: attack
+    attacker: *id009
+    defender: *id010
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 5
+    - key: test.injury.0
+      value: 1
+    expect:
+      result.critical: false
+      result.defender.condition: KNOCKED_DOWN
+  mutations:
+  - id: raise-wound-threshold
+    path: defender.characteristics.toughness
+    value: 5
+    cases:
+    - composition
+- id: interaction-combat-critical-hits--weapon.mace
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: core/combat-critical-hits
+    digest: e8eca12d783ded31c450f816bbc94069e59ffe07575d75d378d642f87fdffd1d
+  - target: mechanic/weapon.mace
+    digest: 149b95265f40ad7cebde89db2c0660bdc346cc04594df315492f8f7ec1e050bc
+  bindings:
+  - '{"id": "combat-critical-hits", "kind": "core", "parameters": {}}'
+  - '{"id": "weapon.mace", "kind": "mechanic", "parameters": {}}'
+  interpretation: The basic critical table is rolled independently. This composition chooses Master Strike
+    (5), two wounds with armour ignored and +2 Injury. The boundary is an ordinary wound.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attack
+    attacker: &id011
+      main_weapon_id: weapon.mace
+    defender: &id012
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 6
+    - key: test.critical
+      value: 5
+    - key: test.injury.0
+      value: 1
+    - key: test.injury.1
+      value: 1
+    expect:
+      result.critical: true
+      result.defender.condition: STUNNED
+  - id: boundary
+    roles:
+    - boundary
+    operation: attack
+    attacker: *id011
+    defender: *id012
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 5
+    - key: test.injury.0
+      value: 1
+    expect:
+      result.critical: false
+      result.defender.condition: KNOCKED_DOWN
+  mutations:
+  - id: raise-wound-threshold
+    path: defender.characteristics.toughness
+    value: 5
+    cases:
+    - composition
+- id: interaction-combat-critical-hits--weapon.stone-axe
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: core/combat-critical-hits
+    digest: e8eca12d783ded31c450f816bbc94069e59ffe07575d75d378d642f87fdffd1d
+  - target: mechanic/weapon.stone-axe
+    digest: d2a695e1cde97239e5dc99157b94d3218f2fa22aa35f31afce459ee4e28f5e24
+  bindings:
+  - '{"id": "combat-critical-hits", "kind": "core", "parameters": {}}'
+  - '{"id": "weapon.stone-axe", "kind": "mechanic", "parameters": {}}'
+  interpretation: The basic critical table is rolled independently. This composition chooses Master Strike
+    (5), two wounds with armour ignored and +2 Injury. The boundary is an ordinary wound.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attack
+    attacker: &id013
+      main_weapon_id: weapon.stone-axe
+    defender: &id014
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 6
+    - key: test.critical
+      value: 5
+    - key: test.injury.0
+      value: 1
+    - key: test.injury.1
+      value: 1
+    expect:
+      result.critical: true
+      result.defender.condition: STUNNED
+  - id: boundary
+    roles:
+    - boundary
+    operation: attack
+    attacker: *id013
+    defender: *id014
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 5
+    - key: test.injury.0
+      value: 1
+    expect:
+      result.critical: false
+      result.defender.condition: KNOCKED_DOWN
+  mutations:
+  - id: raise-wound-threshold
+    path: defender.characteristics.toughness
+    value: 5
+    cases:
+    - composition
+- id: interaction-combat-injury-states--defence.cooking-pot-helmet
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: core/combat-injury-states
+    digest: dc6466c032b2f181edcbbfd5371810e78dac33db0f95701d70a237c7d1a63a8e
+  - target: mechanic/defence.cooking-pot-helmet
+    digest: 799dd9dded30e488b05476820ed94d652bb13641b4ba672a6e60fa618c7d11e1
+  bindings:
+  - '{"id": "combat-injury-states", "kind": "core", "parameters": {}}'
+  - '{"id": "defence.cooking-pot-helmet", "kind": "mechanic", "parameters": {}}'
+  interpretation: A Stunned result from the Injury table can be converted to Knocked Down by the cooking
+    pot helmet's unmodified 5+; the reaction consumes exactly one die.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury_reaction
+    defender: &id015
+      defence_ids:
+      - defence.cooking-pot-helmet
+    rolls:
+    - key: test.injury
+      value: 3
+    - key: test.helmet
+      value: 5
+    expect:
+      result.condition: KNOCKED_DOWN
+      result.reaction.attempted: true
+      result.reaction.threshold: 5
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury_reaction
+    defender: *id015
+    rolls:
+    - key: test.injury
+      value: 3
+    - key: test.helmet
+      value: 4
+    expect:
+      result.condition: STUNNED
+  mutations:
+  - id: remove-composed-behaviour
+    path: defender.helmet_save
+    value: 7
+    cases:
+    - composition
+- id: interaction-combat-injury-states--defence.helmet
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: core/combat-injury-states
+    digest: dc6466c032b2f181edcbbfd5371810e78dac33db0f95701d70a237c7d1a63a8e
+  - target: mechanic/defence.helmet
+    digest: 3b7f47e7319a54f1c36099c21353c232df5bc062f87bdbd73d6d886ce0ff93c9
+  bindings:
+  - '{"id": "combat-injury-states", "kind": "core", "parameters": {}}'
+  - '{"id": "defence.helmet", "kind": "mechanic", "parameters": {}}'
+  interpretation: A Helmet converts a Stunned Injury result to Knocked Down on 4+ after the Injury table;
+    the reaction consumes exactly one die.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury_reaction
+    defender: &id016
+      defence_ids:
+      - defence.helmet
+    rolls:
+    - key: test.injury
+      value: 3
+    - key: test.helmet
+      value: 4
+    expect:
+      result.condition: KNOCKED_DOWN
+      result.reaction.attempted: true
+      result.reaction.threshold: 4
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury_reaction
+    defender: *id016
+    rolls:
+    - key: test.injury
+      value: 3
+    - key: test.helmet
+      value: 3
+    expect:
+      result.condition: STUNNED
+  mutations:
+  - id: remove-composed-behaviour
+    path: defender.helmet_save
+    value: 7
+    cases:
+    - composition
+- id: interaction-combat-injury-states--material.dark-elf-blade
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: core/combat-injury-states
+    digest: dc6466c032b2f181edcbbfd5371810e78dac33db0f95701d70a237c7d1a63a8e
+  - target: mechanic/material.dark-elf-blade
+    digest: c67b2b9c02b068d7c2ff5c4b70475cd4ae0b9232d5836f12871b061ea26a25e4
+  bindings:
+  - '{"id": "combat-injury-states", "kind": "core", "parameters": {}}'
+  - '{"id": "material.dark-elf-blade", "kind": "mechanic", "parameters": {}}'
+  interpretation: Wicked Edge changes the stun boundary rather than adding an Injury modifier. Other Injury
+    modifiers and Hard to Kill retain their own thresholds.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury
+    attacker: &id017
+      main_weapon_id: weapon.sword
+      main_material_id: material.dark-elf-blade
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: STUNNED
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury
+    attacker: *id017
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-wicked-edge
+    path: attacker.main_weapon.concussion
+    value: false
+    cases:
+    - composition
+- id: interaction-combat-injury-states--skill.hard-to-kill
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: core/combat-injury-states
+    digest: dc6466c032b2f181edcbbfd5371810e78dac33db0f95701d70a237c7d1a63a8e
+  - target: mechanic/skill.hard-to-kill
+    digest: 30c6fc4070dd027a07d52d82f26be50550fc51210367834aaff08ae459928dad
+  bindings:
+  - '{"id": "combat-injury-states", "kind": "core", "parameters": {}}'
+  - '{"id": "skill.hard-to-kill", "kind": "mechanic", "parameters": {}}'
+  interpretation: Hard to Kill changes the table to 1-2 Knocked Down, 3-5 Stunned, 6 Out; a Stunned result
+    stays Stunned without a helmet or Thick Skull.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury_reaction
+    defender: &id018
+      skill_ids:
+      - skill.hard-to-kill
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+      result.reaction.attempted: false
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury_reaction
+    defender: *id018
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-composed-behaviour
+    changes:
+    - path: defender.global_effects.out_of_action_threshold
+      value: 5
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - composition
+- id: interaction-combat-injury-states--skill.head-crusher
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: core/combat-injury-states
+    digest: dc6466c032b2f181edcbbfd5371810e78dac33db0f95701d70a237c7d1a63a8e
+  - target: mechanic/skill.head-crusher
+    digest: 3a07db7e3648824bddd84f443bb97757541617f1ad02cd560b811013c5ec9676
+  bindings:
+  - '{"id": "combat-injury-states", "kind": "core", "parameters": {}}'
+  - '{"id": "skill.head-crusher", "kind": "mechanic", "parameters": {}}'
+  interpretation: Head Crusher promotes the attacker's Knocked Down results to Stunned after the Injury
+    table.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury_reaction
+    attacker: &id019
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.head-crusher
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: STUNNED
+      result.injury.condition: STUNNED
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury_reaction
+    attacker: *id019
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-composed-behaviour
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - composition
+- id: interaction-combat-injury-states--skill.ignore-pain
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: core/combat-injury-states
+    digest: dc6466c032b2f181edcbbfd5371810e78dac33db0f95701d70a237c7d1a63a8e
+  - target: mechanic/skill.ignore-pain
+    digest: b7f2f8f45188f5a498dbb8a7743fc675e38614e972004c698c7088c7584fc384
+  bindings:
+  - '{"id": "combat-injury-states", "kind": "core", "parameters": {}}'
+  - '{"id": "skill.ignore-pain", "kind": "mechanic", "parameters": {}}'
+  interpretation: Ignore Pain converts Stunned Injury results to Knocked Down; no reaction die is requested
+    afterwards.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury_reaction
+    defender: &id020
+      skill_ids:
+      - skill.ignore-pain
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: KNOCKED_DOWN
+      result.reaction.attempted: false
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury_reaction
+    defender: *id020
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-composed-behaviour
+    path: defender.global_effects.tags
+    value: []
+    cases:
+    - composition
+- id: interaction-combat-injury-states--skill.jump-up
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: core/combat-injury-states
+    digest: dc6466c032b2f181edcbbfd5371810e78dac33db0f95701d70a237c7d1a63a8e
+  - target: mechanic/skill.jump-up
+    digest: a8bf2a5b1275d395a3bb754fdad1a5605ad20c1097f374e389c288ac75459db1
+  bindings:
+  - '{"id": "combat-injury-states", "kind": "core", "parameters": {}}'
+  - '{"id": "skill.jump-up", "kind": "mechanic", "parameters": {}}'
+  interpretation: Jump Up ignores ordinary Knocked Down Injury results; a Stunned result still applies
+    and no reaction die is requested.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury_reaction
+    defender: &id021
+      skill_ids:
+      - skill.jump-up
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: STANDING
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury_reaction
+    defender: *id021
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  mutations:
+  - id: remove-composed-behaviour
+    path: defender.global_effects.tags
+    value: []
+    cases:
+    - composition
+- id: interaction-combat-injury-states--skill.knife-fighting
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: core/combat-injury-states
+    digest: dc6466c032b2f181edcbbfd5371810e78dac33db0f95701d70a237c7d1a63a8e
+  - target: mechanic/skill.knife-fighting
+    digest: 9abc29a35f5773cffa9aa9db86e17b4855279c277925fe5ea31fcaeeddfcf892
+  bindings:
+  - '{"id": "combat-injury-states", "kind": "core", "parameters": {}}'
+  - '{"id": "skill.knife-fighting", "kind": "mechanic", "parameters": {}}'
+  interpretation: Knife Fighting adds +1 to Injury rolls caused with a dagger or yambiya.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury
+    attacker: &id022
+      main_weapon_id: weapon.dagger
+      skill_ids:
+      - skill.knife-fighting
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: STUNNED
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury
+    attacker: *id022
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-injury-bonus
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - composition
+- id: interaction-combat-injury-states--skill.strike-to-injure
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: core/combat-injury-states
+    digest: dc6466c032b2f181edcbbfd5371810e78dac33db0f95701d70a237c7d1a63a8e
+  - target: mechanic/skill.strike-to-injure
+    digest: 3a5c5d822a31438679e5cbecded74558de0f71edb354051331920878cb160922
+  bindings:
+  - '{"id": "combat-injury-states", "kind": "core", "parameters": {}}'
+  - '{"id": "skill.strike-to-injure", "kind": "mechanic", "parameters": {}}'
+  interpretation: Strike to Injure adds +1 to Injury rolls caused in close combat.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury
+    attacker: &id023
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.strike-to-injure
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: STUNNED
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury
+    attacker: *id023
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-injury-bonus
+    path: attacker.global_effects.injury_modifier
+    value: 0
+    cases:
+    - composition
+- id: interaction-combat-injury-states--weapon.mace
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: core/combat-injury-states
+    digest: dc6466c032b2f181edcbbfd5371810e78dac33db0f95701d70a237c7d1a63a8e
+  - target: mechanic/weapon.mace
+    digest: 149b95265f40ad7cebde89db2c0660bdc346cc04594df315492f8f7ec1e050bc
+  bindings:
+  - '{"id": "combat-injury-states", "kind": "core", "parameters": {}}'
+  - '{"id": "weapon.mace", "kind": "mechanic", "parameters": {}}'
+  interpretation: Mace Concussion turns Injury faces 2-4 into Stunned after the table.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury_reaction
+    attacker: &id024
+      main_weapon_id: weapon.mace
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: STUNNED
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury_reaction
+    attacker: *id024
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-composed-behaviour
+    path: attacker.main_weapon.concussion
+    value: false
+    cases:
+    - composition
+- id: interaction-combat-injury-states--weapon.stone-axe
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: core/combat-injury-states
+    digest: dc6466c032b2f181edcbbfd5371810e78dac33db0f95701d70a237c7d1a63a8e
+  - target: mechanic/weapon.stone-axe
+    digest: d2a695e1cde97239e5dc99157b94d3218f2fa22aa35f31afce459ee4e28f5e24
+  bindings:
+  - '{"id": "combat-injury-states", "kind": "core", "parameters": {}}'
+  - '{"id": "weapon.stone-axe", "kind": "mechanic", "parameters": {}}'
+  interpretation: 'Stone Axe uses the club table: Concussion turns Injury faces 2-4 into Stunned.'
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury_reaction
+    attacker: &id025
+      main_weapon_id: weapon.stone-axe
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: STUNNED
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury_reaction
+    attacker: *id025
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-composed-behaviour
+    path: attacker.main_weapon.concussion
+    value: false
+    cases:
+    - composition
+- id: interaction-defence.cooking-pot-helmet--defence.helmet
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: mechanic/defence.cooking-pot-helmet
+    digest: 799dd9dded30e488b05476820ed94d652bb13641b4ba672a6e60fa618c7d11e1
+  - target: mechanic/defence.helmet
+    digest: 3b7f47e7319a54f1c36099c21353c232df5bc062f87bdbd73d6d886ce0ff93c9
+  bindings:
+  - '{"id": "defence.cooking-pot-helmet", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "defence.helmet", "kind": "mechanic", "parameters": {}}'
+  interpretation: With both helmets worn the better 4+ reaction applies; the threshold reveals that the
+    cooking pot's 5+ was never used.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury_reaction
+    defender: &id026
+      defence_ids:
+      - defence.helmet
+      - defence.cooking-pot-helmet
+    rolls:
+    - key: test.injury
+      value: 3
+    - key: test.helmet
+      value: 4
+    expect:
+      result.condition: KNOCKED_DOWN
+      result.reaction.threshold: 4
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury_reaction
+    defender: *id026
+    rolls:
+    - key: test.injury
+      value: 3
+    - key: test.helmet
+      value: 3
+    expect:
+      result.condition: STUNNED
+  mutations:
+  - id: remove-composed-behaviour
+    path: defender.helmet_save
+    value: 5
+    cases:
+    - composition
+- id: interaction-defence.cooking-pot-helmet--skill.hard-to-kill
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: mechanic/defence.cooking-pot-helmet
+    digest: 799dd9dded30e488b05476820ed94d652bb13641b4ba672a6e60fa618c7d11e1
+  - target: mechanic/skill.hard-to-kill
+    digest: 30c6fc4070dd027a07d52d82f26be50550fc51210367834aaff08ae459928dad
+  bindings:
+  - '{"id": "defence.cooking-pot-helmet", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.hard-to-kill", "kind": "mechanic", "parameters": {}}'
+  interpretation: Hard to Kill makes face 5 Stunned; the cooking pot helmet then converts it on 5+.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury_reaction
+    defender: &id027
+      defence_ids:
+      - defence.cooking-pot-helmet
+      skill_ids:
+      - skill.hard-to-kill
+    rolls:
+    - key: test.injury
+      value: 5
+    - key: test.helmet
+      value: 5
+    expect:
+      result.condition: KNOCKED_DOWN
+      result.reaction.attempted: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury_reaction
+    defender: *id027
+    rolls:
+    - key: test.injury
+      value: 5
+    - key: test.helmet
+      value: 4
+    expect:
+      result.condition: STUNNED
+  mutations:
+  - id: remove-composed-behaviour
+    changes:
+    - path: defender.global_effects.out_of_action_threshold
+      value: 5
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - composition
+- id: interaction-defence.cooking-pot-helmet--skill.head-crusher
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: mechanic/defence.cooking-pot-helmet
+    digest: 799dd9dded30e488b05476820ed94d652bb13641b4ba672a6e60fa618c7d11e1
+  - target: mechanic/skill.head-crusher
+    digest: 3a07db7e3648824bddd84f443bb97757541617f1ad02cd560b811013c5ec9676
+  bindings:
+  - '{"id": "defence.cooking-pot-helmet", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.head-crusher", "kind": "mechanic", "parameters": {}}'
+  interpretation: Head Crusher promotes the Knocked Down face to Stunned; the cooking pot helmet then
+    reacts on 5+.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury_reaction
+    attacker: &id028
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.head-crusher
+    defender: &id029
+      defence_ids:
+      - defence.cooking-pot-helmet
+    rolls:
+    - key: test.injury
+      value: 1
+    - key: test.helmet
+      value: 5
+    expect:
+      result.condition: KNOCKED_DOWN
+      result.reaction.attempted: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury_reaction
+    attacker: *id028
+    defender: *id029
+    rolls:
+    - key: test.injury
+      value: 1
+    - key: test.helmet
+      value: 4
+    expect:
+      result.condition: STUNNED
+  mutations:
+  - id: remove-composed-behaviour
+    path: defender.helmet_save
+    value: 7
+    cases:
+    - composition
+- id: interaction-defence.cooking-pot-helmet--skill.ignore-pain
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: mechanic/defence.cooking-pot-helmet
+    digest: 799dd9dded30e488b05476820ed94d652bb13641b4ba672a6e60fa618c7d11e1
+  - target: mechanic/skill.ignore-pain
+    digest: b7f2f8f45188f5a498dbb8a7743fc675e38614e972004c698c7088c7584fc384
+  bindings:
+  - '{"id": "defence.cooking-pot-helmet", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.ignore-pain", "kind": "mechanic", "parameters": {}}'
+  interpretation: Ignore Pain already converts the Stunned face to Knocked Down, so the cooking pot helmet
+    requests no reaction die.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury_reaction
+    defender: &id030
+      defence_ids:
+      - defence.cooking-pot-helmet
+      skill_ids:
+      - skill.ignore-pain
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: KNOCKED_DOWN
+      result.reaction.attempted: false
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury_reaction
+    defender: *id030
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-composed-behaviour
+    path: defender.global_effects.tags
+    value: []
+    cases:
+    - composition
+- id: interaction-defence.cooking-pot-helmet--skill.jump-up
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: mechanic/defence.cooking-pot-helmet
+    digest: 799dd9dded30e488b05476820ed94d652bb13641b4ba672a6e60fa618c7d11e1
+  - target: mechanic/skill.jump-up
+    digest: a8bf2a5b1275d395a3bb754fdad1a5605ad20c1097f374e389c288ac75459db1
+  bindings:
+  - '{"id": "defence.cooking-pot-helmet", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.jump-up", "kind": "mechanic", "parameters": {}}'
+  interpretation: Jump Up handles the ordinary Knocked Down face first; a face the cooking pot helmet
+    converts to Knocked Down stays down.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury_reaction
+    defender: &id031
+      defence_ids:
+      - defence.cooking-pot-helmet
+      skill_ids:
+      - skill.jump-up
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: STANDING
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury_reaction
+    defender: *id031
+    rolls:
+    - key: test.injury
+      value: 3
+    - key: test.helmet
+      value: 5
+    expect:
+      result.condition: KNOCKED_DOWN
+  mutations:
+  - id: remove-composed-behaviour
+    path: defender.global_effects.tags
+    value: []
+    cases:
+    - composition
+- id: interaction-defence.cooking-pot-helmet--skill.thick-skull
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: mechanic/defence.cooking-pot-helmet
+    digest: 799dd9dded30e488b05476820ed94d652bb13641b4ba672a6e60fa618c7d11e1
+  - target: mechanic/skill.thick-skull
+    digest: 2ecbff4a299a46b96fc4b0c5f24f4b34f75a711341173e7c2fbe06edbd3204bf
+  bindings:
+  - '{"id": "defence.cooking-pot-helmet", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.thick-skull", "kind": "mechanic", "parameters": {}}'
+  interpretation: Thick Skull replaces the cooking pot helmet's reaction with its own 3+ threshold; the
+    pot's 5+ is never rolled.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury_reaction
+    defender: &id032
+      defence_ids:
+      - defence.cooking-pot-helmet
+      skill_ids:
+      - skill.thick-skull
+    rolls:
+    - key: test.injury
+      value: 3
+    - key: test.thick-skull
+      value: 3
+    expect:
+      result.condition: KNOCKED_DOWN
+      result.reaction.threshold: 3
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury_reaction
+    defender: *id032
+    rolls:
+    - key: test.injury
+      value: 3
+    - key: test.thick-skull
+      value: 2
+    expect:
+      result.condition: STUNNED
+  mutations:
+  - id: remove-composed-behaviour
+    path: defender.global_effects.thick_skull
+    value: false
+    cases:
+    - composition
+- id: interaction-defence.cooking-pot-helmet--weapon.mace
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: mechanic/defence.cooking-pot-helmet
+    digest: 799dd9dded30e488b05476820ed94d652bb13641b4ba672a6e60fa618c7d11e1
+  - target: mechanic/weapon.mace
+    digest: 149b95265f40ad7cebde89db2c0660bdc346cc04594df315492f8f7ec1e050bc
+  bindings:
+  - '{"id": "defence.cooking-pot-helmet", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.mace", "kind": "mechanic", "parameters": {}}'
+  interpretation: Mace Concussion turns face 2 into Stunned; the cooking pot helmet may then convert it
+    on 5+.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury_reaction
+    attacker: &id033
+      main_weapon_id: weapon.mace
+    defender: &id034
+      defence_ids:
+      - defence.cooking-pot-helmet
+    rolls:
+    - key: test.injury
+      value: 2
+    - key: test.helmet
+      value: 5
+    expect:
+      result.condition: KNOCKED_DOWN
+      result.reaction.attempted: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury_reaction
+    attacker: *id033
+    defender: *id034
+    rolls:
+    - key: test.injury
+      value: 2
+    - key: test.helmet
+      value: 4
+    expect:
+      result.condition: STUNNED
+  mutations:
+  - id: remove-composed-behaviour
+    path: defender.helmet_save
+    value: 7
+    cases:
+    - composition
+- id: interaction-defence.cooking-pot-helmet--weapon.stone-axe
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: mechanic/defence.cooking-pot-helmet
+    digest: 799dd9dded30e488b05476820ed94d652bb13641b4ba672a6e60fa618c7d11e1
+  - target: mechanic/weapon.stone-axe
+    digest: d2a695e1cde97239e5dc99157b94d3218f2fa22aa35f31afce459ee4e28f5e24
+  bindings:
+  - '{"id": "defence.cooking-pot-helmet", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.stone-axe", "kind": "mechanic", "parameters": {}}'
+  interpretation: Stone Axe Concussion turns face 2 into Stunned; the cooking pot helmet may then convert
+    it on 5+.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury_reaction
+    attacker: &id035
+      main_weapon_id: weapon.stone-axe
+    defender: &id036
+      defence_ids:
+      - defence.cooking-pot-helmet
+    rolls:
+    - key: test.injury
+      value: 2
+    - key: test.helmet
+      value: 5
+    expect:
+      result.condition: KNOCKED_DOWN
+      result.reaction.attempted: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury_reaction
+    attacker: *id035
+    defender: *id036
+    rolls:
+    - key: test.injury
+      value: 2
+    - key: test.helmet
+      value: 4
+    expect:
+      result.condition: STUNNED
+  mutations:
+  - id: remove-composed-behaviour
+    path: defender.helmet_save
+    value: 7
+    cases:
+    - composition
+- id: interaction-defence.helmet--skill.hard-to-kill
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: mechanic/defence.helmet
+    digest: 3b7f47e7319a54f1c36099c21353c232df5bc062f87bdbd73d6d886ce0ff93c9
+  - target: mechanic/skill.hard-to-kill
+    digest: 30c6fc4070dd027a07d52d82f26be50550fc51210367834aaff08ae459928dad
+  bindings:
+  - '{"id": "defence.helmet", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.hard-to-kill", "kind": "mechanic", "parameters": {}}'
+  interpretation: Hard to Kill makes face 5 Stunned; the helmet then converts it on 4+.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury_reaction
+    defender: &id037
+      defence_ids:
+      - defence.helmet
+      skill_ids:
+      - skill.hard-to-kill
+    rolls:
+    - key: test.injury
+      value: 5
+    - key: test.helmet
+      value: 4
+    expect:
+      result.condition: KNOCKED_DOWN
+      result.reaction.attempted: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury_reaction
+    defender: *id037
+    rolls:
+    - key: test.injury
+      value: 5
+    - key: test.helmet
+      value: 3
+    expect:
+      result.condition: STUNNED
+  mutations:
+  - id: remove-composed-behaviour
+    changes:
+    - path: defender.global_effects.out_of_action_threshold
+      value: 5
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - composition
+- id: interaction-defence.helmet--skill.head-crusher
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: mechanic/defence.helmet
+    digest: 3b7f47e7319a54f1c36099c21353c232df5bc062f87bdbd73d6d886ce0ff93c9
+  - target: mechanic/skill.head-crusher
+    digest: 3a07db7e3648824bddd84f443bb97757541617f1ad02cd560b811013c5ec9676
+  bindings:
+  - '{"id": "defence.helmet", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.head-crusher", "kind": "mechanic", "parameters": {}}'
+  interpretation: Head Crusher promotes the Knocked Down face to Stunned; the helmet then converts it
+    on 4+.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury_reaction
+    attacker: &id038
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.head-crusher
+    defender: &id039
+      defence_ids:
+      - defence.helmet
+    rolls:
+    - key: test.injury
+      value: 1
+    - key: test.helmet
+      value: 4
+    expect:
+      result.condition: KNOCKED_DOWN
+      result.reaction.attempted: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury_reaction
+    attacker: *id038
+    defender: *id039
+    rolls:
+    - key: test.injury
+      value: 1
+    - key: test.helmet
+      value: 3
+    expect:
+      result.condition: STUNNED
+  mutations:
+  - id: remove-composed-behaviour
+    path: defender.helmet_save
+    value: 7
+    cases:
+    - composition
+- id: interaction-defence.helmet--skill.ignore-pain
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: mechanic/defence.helmet
+    digest: 3b7f47e7319a54f1c36099c21353c232df5bc062f87bdbd73d6d886ce0ff93c9
+  - target: mechanic/skill.ignore-pain
+    digest: b7f2f8f45188f5a498dbb8a7743fc675e38614e972004c698c7088c7584fc384
+  bindings:
+  - '{"id": "defence.helmet", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.ignore-pain", "kind": "mechanic", "parameters": {}}'
+  interpretation: Ignore Pain converts the Stunned face to Knocked Down before any helmet reaction, so
+    the helmet requests no die.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury_reaction
+    defender: &id040
+      defence_ids:
+      - defence.helmet
+      skill_ids:
+      - skill.ignore-pain
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: KNOCKED_DOWN
+      result.reaction.attempted: false
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury_reaction
+    defender: *id040
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-composed-behaviour
+    path: defender.global_effects.tags
+    value: []
+    cases:
+    - composition
+- id: interaction-defence.helmet--skill.jump-up
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: mechanic/defence.helmet
+    digest: 3b7f47e7319a54f1c36099c21353c232df5bc062f87bdbd73d6d886ce0ff93c9
+  - target: mechanic/skill.jump-up
+    digest: a8bf2a5b1275d395a3bb754fdad1a5605ad20c1097f374e389c288ac75459db1
+  bindings:
+  - '{"id": "defence.helmet", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.jump-up", "kind": "mechanic", "parameters": {}}'
+  interpretation: Jump Up stands on the ordinary Knocked Down face; a Stunned face converted by the helmet
+    is Knocked Down and stays down.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury_reaction
+    defender: &id041
+      defence_ids:
+      - defence.helmet
+      skill_ids:
+      - skill.jump-up
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: STANDING
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury_reaction
+    defender: *id041
+    rolls:
+    - key: test.injury
+      value: 3
+    - key: test.helmet
+      value: 4
+    expect:
+      result.condition: KNOCKED_DOWN
+  mutations:
+  - id: remove-composed-behaviour
+    path: defender.global_effects.tags
+    value: []
+    cases:
+    - composition
+- id: interaction-defence.helmet--weapon.mace
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: mechanic/defence.helmet
+    digest: 3b7f47e7319a54f1c36099c21353c232df5bc062f87bdbd73d6d886ce0ff93c9
+  - target: mechanic/weapon.mace
+    digest: 149b95265f40ad7cebde89db2c0660bdc346cc04594df315492f8f7ec1e050bc
+  bindings:
+  - '{"id": "defence.helmet", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.mace", "kind": "mechanic", "parameters": {}}'
+  interpretation: Mace Concussion turns face 2 into Stunned; the helmet may then convert it on 4+.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury_reaction
+    attacker: &id042
+      main_weapon_id: weapon.mace
+    defender: &id043
+      defence_ids:
+      - defence.helmet
+    rolls:
+    - key: test.injury
+      value: 2
+    - key: test.helmet
+      value: 4
+    expect:
+      result.condition: KNOCKED_DOWN
+      result.reaction.attempted: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury_reaction
+    attacker: *id042
+    defender: *id043
+    rolls:
+    - key: test.injury
+      value: 2
+    - key: test.helmet
+      value: 3
+    expect:
+      result.condition: STUNNED
+  mutations:
+  - id: remove-composed-behaviour
+    path: defender.helmet_save
+    value: 7
+    cases:
+    - composition
+- id: interaction-defence.helmet--weapon.stone-axe
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: mechanic/defence.helmet
+    digest: 3b7f47e7319a54f1c36099c21353c232df5bc062f87bdbd73d6d886ce0ff93c9
+  - target: mechanic/weapon.stone-axe
+    digest: d2a695e1cde97239e5dc99157b94d3218f2fa22aa35f31afce459ee4e28f5e24
+  bindings:
+  - '{"id": "defence.helmet", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.stone-axe", "kind": "mechanic", "parameters": {}}'
+  interpretation: Stone Axe Concussion turns face 2 into Stunned; the helmet may then convert it on 4+.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury_reaction
+    attacker: &id044
+      main_weapon_id: weapon.stone-axe
+    defender: &id045
+      defence_ids:
+      - defence.helmet
+    rolls:
+    - key: test.injury
+      value: 2
+    - key: test.helmet
+      value: 4
+    expect:
+      result.condition: KNOCKED_DOWN
+      result.reaction.attempted: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury_reaction
+    attacker: *id044
+    defender: *id045
+    rolls:
+    - key: test.injury
+      value: 2
+    - key: test.helmet
+      value: 3
+    expect:
+      result.condition: STUNNED
+  mutations:
+  - id: remove-composed-behaviour
+    path: defender.helmet_save
+    value: 7
+    cases:
+    - composition
+- id: interaction-material.dark-elf-blade--skill.hard-to-kill
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: mechanic/material.dark-elf-blade
+    digest: c67b2b9c02b068d7c2ff5c4b70475cd4ae0b9232d5836f12871b061ea26a25e4
+  - target: mechanic/skill.hard-to-kill
+    digest: 30c6fc4070dd027a07d52d82f26be50550fc51210367834aaff08ae459928dad
+  bindings:
+  - '{"id": "material.dark-elf-blade", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.hard-to-kill", "kind": "mechanic", "parameters": {}}'
+  interpretation: Wicked Edge changes the stun boundary rather than adding an Injury modifier. Other Injury
+    modifiers and Hard to Kill retain their own thresholds.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury
+    attacker: &id046
+      main_weapon_id: weapon.sword
+      main_material_id: material.dark-elf-blade
+    defender: &id047
+      skill_ids:
+      - skill.hard-to-kill
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: STUNNED
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury
+    attacker: *id046
+    defender: *id047
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  mutations:
+  - id: remove-wicked-edge
+    path: attacker.main_weapon.concussion
+    value: false
+    cases:
+    - composition
+- id: interaction-material.dark-elf-blade--skill.knife-fighting
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: mechanic/material.dark-elf-blade
+    digest: c67b2b9c02b068d7c2ff5c4b70475cd4ae0b9232d5836f12871b061ea26a25e4
+  - target: mechanic/skill.knife-fighting
+    digest: 9abc29a35f5773cffa9aa9db86e17b4855279c277925fe5ea31fcaeeddfcf892
+  bindings:
+  - '{"id": "material.dark-elf-blade", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.knife-fighting", "kind": "mechanic", "parameters": {}}'
+  interpretation: Wicked Edge changes the stun boundary rather than adding an Injury modifier. Other Injury
+    modifiers and Hard to Kill retain their own thresholds.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury
+    attacker: &id048
+      main_weapon_id: weapon.dagger
+      main_material_id: material.dark-elf-blade
+      skill_ids:
+      - skill.knife-fighting
+    defender: {}
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: STUNNED
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury
+    attacker: *id048
+    defender: {}
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-injury-bonus
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - composition
+- id: interaction-material.dark-elf-blade--skill.strike-to-injure
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: mechanic/material.dark-elf-blade
+    digest: c67b2b9c02b068d7c2ff5c4b70475cd4ae0b9232d5836f12871b061ea26a25e4
+  - target: mechanic/skill.strike-to-injure
+    digest: 3a5c5d822a31438679e5cbecded74558de0f71edb354051331920878cb160922
+  bindings:
+  - '{"id": "material.dark-elf-blade", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.strike-to-injure", "kind": "mechanic", "parameters": {}}'
+  interpretation: Wicked Edge changes the stun boundary rather than adding an Injury modifier. Other Injury
+    modifiers and Hard to Kill retain their own thresholds.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury
+    attacker: &id049
+      main_weapon_id: weapon.sword
+      main_material_id: material.dark-elf-blade
+      skill_ids:
+      - skill.strike-to-injure
+    defender: {}
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: STUNNED
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury
+    attacker: *id049
+    defender: {}
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-injury-bonus
+    path: attacker.global_effects.injury_modifier
+    value: 0
+    cases:
+    - composition
+- id: interaction-material.dark-elf-blade--weapon.mace
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: mechanic/material.dark-elf-blade
+    digest: c67b2b9c02b068d7c2ff5c4b70475cd4ae0b9232d5836f12871b061ea26a25e4
+  - target: mechanic/weapon.mace
+    digest: 149b95265f40ad7cebde89db2c0660bdc346cc04594df315492f8f7ec1e050bc
+  bindings:
+  - '{"id": "material.dark-elf-blade", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.mace", "kind": "mechanic", "parameters": {}}'
+  interpretation: Wicked Edge changes the stun boundary rather than adding an Injury modifier. Other Injury
+    modifiers and Hard to Kill retain their own thresholds.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury
+    attacker: &id050
+      main_weapon_id: weapon.mace
+      main_material_id: material.dark-elf-blade
+    defender: {}
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: STUNNED
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury
+    attacker: *id050
+    defender: {}
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-composed-concussion
+    path: attacker.main_weapon.concussion
+    value: false
+    cases:
+    - composition
+- id: interaction-material.dark-elf-blade--weapon.stone-axe
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: mechanic/material.dark-elf-blade
+    digest: c67b2b9c02b068d7c2ff5c4b70475cd4ae0b9232d5836f12871b061ea26a25e4
+  - target: mechanic/weapon.stone-axe
+    digest: d2a695e1cde97239e5dc99157b94d3218f2fa22aa35f31afce459ee4e28f5e24
+  bindings:
+  - '{"id": "material.dark-elf-blade", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.stone-axe", "kind": "mechanic", "parameters": {}}'
+  interpretation: Wicked Edge changes the stun boundary rather than adding an Injury modifier. Other Injury
+    modifiers and Hard to Kill retain their own thresholds.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury
+    attacker: &id051
+      main_weapon_id: weapon.stone-axe
+      main_material_id: material.dark-elf-blade
+    defender: {}
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: STUNNED
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury
+    attacker: *id051
+    defender: {}
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-composed-concussion
+    path: attacker.main_weapon.concussion
+    value: false
+    cases:
+    - composition
+- id: interaction-skill.hard-to-kill--skill.head-crusher
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: mechanic/skill.hard-to-kill
+    digest: 30c6fc4070dd027a07d52d82f26be50550fc51210367834aaff08ae459928dad
+  - target: mechanic/skill.head-crusher
+    digest: 3a07db7e3648824bddd84f443bb97757541617f1ad02cd560b811013c5ec9676
+  bindings:
+  - '{"id": "skill.hard-to-kill", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.head-crusher", "kind": "mechanic", "parameters": {}}'
+  interpretation: Under Hard to Kill face 1-2 is Knocked Down; Head Crusher then promotes it to Stunned.
+    Face 6 stays Out.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury_reaction
+    attacker: &id052
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.head-crusher
+    defender: &id053
+      skill_ids:
+      - skill.hard-to-kill
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: STUNNED
+      result.injury.condition: STUNNED
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury_reaction
+    attacker: *id052
+    defender: *id053
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-composed-behaviour
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - composition
+- id: interaction-skill.hard-to-kill--skill.knife-fighting
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: mechanic/skill.hard-to-kill
+    digest: 30c6fc4070dd027a07d52d82f26be50550fc51210367834aaff08ae459928dad
+  - target: mechanic/skill.knife-fighting
+    digest: 9abc29a35f5773cffa9aa9db86e17b4855279c277925fe5ea31fcaeeddfcf892
+  bindings:
+  - '{"id": "skill.hard-to-kill", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.knife-fighting", "kind": "mechanic", "parameters": {}}'
+  interpretation: Knife Fighting's +1 turns total 2 into 3, which Hard to Kill makes Stunned.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury
+    attacker: &id054
+      main_weapon_id: weapon.dagger
+      skill_ids:
+      - skill.knife-fighting
+    defender: &id055
+      skill_ids:
+      - skill.hard-to-kill
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: STUNNED
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury
+    attacker: *id054
+    defender: *id055
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-injury-bonus
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - composition
+- id: interaction-skill.hard-to-kill--skill.strike-to-injure
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: mechanic/skill.hard-to-kill
+    digest: 30c6fc4070dd027a07d52d82f26be50550fc51210367834aaff08ae459928dad
+  - target: mechanic/skill.strike-to-injure
+    digest: 3a5c5d822a31438679e5cbecded74558de0f71edb354051331920878cb160922
+  bindings:
+  - '{"id": "skill.hard-to-kill", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.strike-to-injure", "kind": "mechanic", "parameters": {}}'
+  interpretation: Strike to Injure's +1 turns total 2 into 3, which Hard to Kill makes Stunned.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury
+    attacker: &id056
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.strike-to-injure
+    defender: &id057
+      skill_ids:
+      - skill.hard-to-kill
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: STUNNED
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury
+    attacker: *id056
+    defender: *id057
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-injury-bonus
+    path: attacker.global_effects.injury_modifier
+    value: 0
+    cases:
+    - composition
+- id: interaction-skill.hard-to-kill--weapon.stone-axe
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: mechanic/skill.hard-to-kill
+    digest: 30c6fc4070dd027a07d52d82f26be50550fc51210367834aaff08ae459928dad
+  - target: mechanic/weapon.stone-axe
+    digest: d2a695e1cde97239e5dc99157b94d3218f2fa22aa35f31afce459ee4e28f5e24
+  bindings:
+  - '{"id": "skill.hard-to-kill", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.stone-axe", "kind": "mechanic", "parameters": {}}'
+  interpretation: Hard to Kill makes face 2 Knocked Down; Stone Axe Concussion then turns it into Stunned.
+    Face 6 stays Out.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury_reaction
+    attacker: &id058
+      main_weapon_id: weapon.stone-axe
+    defender: &id059
+      skill_ids:
+      - skill.hard-to-kill
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: STUNNED
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury_reaction
+    attacker: *id058
+    defender: *id059
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-composed-behaviour
+    path: attacker.main_weapon.concussion
+    value: false
+    cases:
+    - composition
+- id: interaction-skill.head-crusher--skill.ignore-pain
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: mechanic/skill.head-crusher
+    digest: 3a07db7e3648824bddd84f443bb97757541617f1ad02cd560b811013c5ec9676
+  - target: mechanic/skill.ignore-pain
+    digest: b7f2f8f45188f5a498dbb8a7743fc675e38614e972004c698c7088c7584fc384
+  bindings:
+  - '{"id": "skill.head-crusher", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.ignore-pain", "kind": "mechanic", "parameters": {}}'
+  interpretation: Head Crusher promotes Knocked Down to Stunned; Ignore Pain then converts it back to
+    Knocked Down. Face 5-6 stays Out.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury_reaction
+    attacker: &id060
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.head-crusher
+    defender: &id061
+      skill_ids:
+      - skill.ignore-pain
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury_reaction
+    attacker: *id060
+    defender: *id061
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-composed-behaviour
+    path: defender.global_effects.tags
+    value: []
+    cases:
+    - composition
+- id: interaction-skill.head-crusher--skill.jump-up
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: mechanic/skill.head-crusher
+    digest: 3a07db7e3648824bddd84f443bb97757541617f1ad02cd560b811013c5ec9676
+  - target: mechanic/skill.jump-up
+    digest: a8bf2a5b1275d395a3bb754fdad1a5605ad20c1097f374e389c288ac75459db1
+  bindings:
+  - '{"id": "skill.head-crusher", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.jump-up", "kind": "mechanic", "parameters": {}}'
+  interpretation: Head Crusher promotes the Knocked Down face to Stunned, so Jump Up no longer applies.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury_reaction
+    attacker: &id062
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.head-crusher
+    defender: &id063
+      skill_ids:
+      - skill.jump-up
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: STUNNED
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury_reaction
+    attacker: *id062
+    defender: *id063
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-composed-behaviour
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - composition
+- id: interaction-skill.head-crusher--weapon.mace
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: mechanic/skill.head-crusher
+    digest: 3a07db7e3648824bddd84f443bb97757541617f1ad02cd560b811013c5ec9676
+  - target: mechanic/weapon.mace
+    digest: 149b95265f40ad7cebde89db2c0660bdc346cc04594df315492f8f7ec1e050bc
+  bindings:
+  - '{"id": "skill.head-crusher", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.mace", "kind": "mechanic", "parameters": {}}'
+  interpretation: With Mace and Head Crusher both on the attacker, face 1 is promoted to Stunned (Concussion
+    only covers 2-4).
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury_reaction
+    attacker: &id064
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.head-crusher
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: STUNNED
+      result.injury.condition: STUNNED
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury_reaction
+    attacker: *id064
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-composed-behaviour
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - composition
+- id: interaction-skill.head-crusher--weapon.stone-axe
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: mechanic/skill.head-crusher
+    digest: 3a07db7e3648824bddd84f443bb97757541617f1ad02cd560b811013c5ec9676
+  - target: mechanic/weapon.stone-axe
+    digest: d2a695e1cde97239e5dc99157b94d3218f2fa22aa35f31afce459ee4e28f5e24
+  bindings:
+  - '{"id": "skill.head-crusher", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.stone-axe", "kind": "mechanic", "parameters": {}}'
+  interpretation: With Stone Axe and Head Crusher both on the attacker, face 1 is promoted to Stunned.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury_reaction
+    attacker: &id065
+      main_weapon_id: weapon.stone-axe
+      skill_ids:
+      - skill.head-crusher
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: STUNNED
+      result.injury.condition: STUNNED
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury_reaction
+    attacker: *id065
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-composed-behaviour
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - composition
+- id: interaction-skill.ignore-pain--weapon.stone-axe
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: mechanic/skill.ignore-pain
+    digest: b7f2f8f45188f5a498dbb8a7743fc675e38614e972004c698c7088c7584fc384
+  - target: mechanic/weapon.stone-axe
+    digest: d2a695e1cde97239e5dc99157b94d3218f2fa22aa35f31afce459ee4e28f5e24
+  bindings:
+  - '{"id": "skill.ignore-pain", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.stone-axe", "kind": "mechanic", "parameters": {}}'
+  interpretation: Stone Axe Concussion turns face 2 into Stunned; Ignore Pain then converts it to Knocked
+    Down.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury_reaction
+    attacker: &id066
+      main_weapon_id: weapon.stone-axe
+    defender: &id067
+      skill_ids:
+      - skill.ignore-pain
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury_reaction
+    attacker: *id066
+    defender: *id067
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-composed-behaviour
+    path: defender.global_effects.tags
+    value: []
+    cases:
+    - composition
+- id: interaction-skill.jump-up--weapon.stone-axe
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: mechanic/skill.jump-up
+    digest: a8bf2a5b1275d395a3bb754fdad1a5605ad20c1097f374e389c288ac75459db1
+  - target: mechanic/weapon.stone-axe
+    digest: d2a695e1cde97239e5dc99157b94d3218f2fa22aa35f31afce459ee4e28f5e24
+  bindings:
+  - '{"id": "skill.jump-up", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.stone-axe", "kind": "mechanic", "parameters": {}}'
+  interpretation: Stone Axe Concussion turns face 2 into Stunned, which Jump Up cannot ignore; the ordinary
+    Knocked Down face still jumps up.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury_reaction
+    attacker: &id068
+      main_weapon_id: weapon.stone-axe
+    defender: &id069
+      skill_ids:
+      - skill.jump-up
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: STUNNED
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury_reaction
+    attacker: *id068
+    defender: *id069
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: STANDING
+  mutations:
+  - id: remove-composed-behaviour
+    path: attacker.main_weapon.concussion
+    value: false
+    cases:
+    - composition
+- id: interaction-skill.knife-fighting--skill.strike-to-injure
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: mechanic/skill.knife-fighting
+    digest: 9abc29a35f5773cffa9aa9db86e17b4855279c277925fe5ea31fcaeeddfcf892
+  - target: mechanic/skill.strike-to-injure
+    digest: 3a5c5d822a31438679e5cbecded74558de0f71edb354051331920878cb160922
+  bindings:
+  - '{"id": "skill.knife-fighting", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.strike-to-injure", "kind": "mechanic", "parameters": {}}'
+  interpretation: Knife Fighting and Strike to Injure both add +1 to dagger injuries.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury
+    attacker: &id070
+      main_weapon_id: weapon.dagger
+      skill_ids:
+      - skill.knife-fighting
+      - skill.strike-to-injure
+    defender: {}
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: STUNNED
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury
+    attacker: *id070
+    defender: {}
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-injury-bonus
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - composition
+- id: interaction-skill.knife-fighting--weapon.mace
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: mechanic/skill.knife-fighting
+    digest: 9abc29a35f5773cffa9aa9db86e17b4855279c277925fe5ea31fcaeeddfcf892
+  - target: mechanic/weapon.mace
+    digest: 149b95265f40ad7cebde89db2c0660bdc346cc04594df315492f8f7ec1e050bc
+  bindings:
+  - '{"id": "skill.knife-fighting", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.mace", "kind": "mechanic", "parameters": {}}'
+  interpretation: Knife Fighting adds +1 to the dagger's injuries; the off-hand Mace keeps its own Concussion
+    table.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury
+    attacker: &id071
+      main_weapon_id: weapon.dagger
+      off_hand_id: weapon.mace
+      skill_ids:
+      - skill.knife-fighting
+    defender: {}
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: STUNNED
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury
+    attacker: *id071
+    defender: {}
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-injury-bonus
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - composition
+- id: interaction-skill.knife-fighting--weapon.stone-axe
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: mechanic/skill.knife-fighting
+    digest: 9abc29a35f5773cffa9aa9db86e17b4855279c277925fe5ea31fcaeeddfcf892
+  - target: mechanic/weapon.stone-axe
+    digest: d2a695e1cde97239e5dc99157b94d3218f2fa22aa35f31afce459ee4e28f5e24
+  bindings:
+  - '{"id": "skill.knife-fighting", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.stone-axe", "kind": "mechanic", "parameters": {}}'
+  interpretation: Knife Fighting adds +1 to the dagger's injuries; the off-hand Stone Axe keeps its own
+    Concussion table.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury
+    attacker: &id072
+      main_weapon_id: weapon.dagger
+      off_hand_id: weapon.stone-axe
+      skill_ids:
+      - skill.knife-fighting
+    defender: {}
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: STUNNED
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury
+    attacker: *id072
+    defender: {}
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-injury-bonus
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - composition
+- id: interaction-skill.strike-to-injure--weapon.mace
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: mechanic/skill.strike-to-injure
+    digest: 3a5c5d822a31438679e5cbecded74558de0f71edb354051331920878cb160922
+  - target: mechanic/weapon.mace
+    digest: 149b95265f40ad7cebde89db2c0660bdc346cc04594df315492f8f7ec1e050bc
+  bindings:
+  - '{"id": "skill.strike-to-injure", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.mace", "kind": "mechanic", "parameters": {}}'
+  interpretation: Strike to Injure's +1 pushes face 1 to total 2, which Mace Concussion turns into Stunned.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury
+    attacker: &id073
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.strike-to-injure
+    defender: {}
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: STUNNED
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury
+    attacker: *id073
+    defender: {}
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-injury-bonus
+    path: attacker.global_effects.injury_modifier
+    value: 0
+    cases:
+    - composition
+- id: interaction-skill.strike-to-injure--weapon.stone-axe
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: mechanic/skill.strike-to-injure
+    digest: 3a5c5d822a31438679e5cbecded74558de0f71edb354051331920878cb160922
+  - target: mechanic/weapon.stone-axe
+    digest: d2a695e1cde97239e5dc99157b94d3218f2fa22aa35f31afce459ee4e28f5e24
+  bindings:
+  - '{"id": "skill.strike-to-injure", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.stone-axe", "kind": "mechanic", "parameters": {}}'
+  interpretation: Strike to Injure's +1 pushes face 1 to total 2, which Stone Axe Concussion turns into
+    Stunned.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury
+    attacker: &id074
+      main_weapon_id: weapon.stone-axe
+      skill_ids:
+      - skill.strike-to-injure
+    defender: {}
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: STUNNED
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury
+    attacker: *id074
+    defender: {}
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-injury-bonus
+    path: attacker.global_effects.injury_modifier
+    value: 0
+    cases:
+    - composition
+- id: interaction-weapon.mace--weapon.stone-axe
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: interaction
+  sources:
+  - target: mechanic/weapon.mace
+    digest: 149b95265f40ad7cebde89db2c0660bdc346cc04594df315492f8f7ec1e050bc
+  - target: mechanic/weapon.stone-axe
+    digest: d2a695e1cde97239e5dc99157b94d3218f2fa22aa35f31afce459ee4e28f5e24
+  bindings:
+  - '{"id": "weapon.mace", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.stone-axe", "kind": "mechanic", "parameters": {}}'
+  interpretation: 'Mace and Stone Axe both use the club table: every attack carrying either weapon turns
+    Injury faces 2-4 into Stunned.'
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: injury_reaction
+    attacker: &id075
+      main_weapon_id: weapon.mace
+      off_hand_id: weapon.stone-axe
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: STUNNED
+  - id: boundary
+    roles:
+    - boundary
+    operation: injury_reaction
+    attacker: *id075
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-composed-behaviour
+    path: attacker.main_weapon.concussion
+    value: false
+    cases:
+    - composition

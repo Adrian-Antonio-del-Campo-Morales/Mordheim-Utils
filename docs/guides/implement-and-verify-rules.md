@@ -180,7 +180,7 @@ of the specification: it does not imply that a question or an extra decision
 existed.
 
 These data are edited in the corresponding YAML specification under
-`tests/specs/semantic/`, **never manually in the generated CSV**. The status
+`tests/rules/integration/specs/semantic/`, **never manually in the generated CSV**. The status
 is computed; `review_status` is not written into the YAML. Real resolved
 example:
 
@@ -202,20 +202,20 @@ executed. If the source changes, the footprint invalidates the previous
 evidence as before. A decision history that was never documented is not
 automatically rebuilt; it is incorporated while reviewing each specification.
 
-See `tests/specs/semantic/grants/editorial-hochland-swordmaster.yaml` for a
-resolved question and `tests/specs/semantic/rules/contextual-bonuses-and-rulings.yaml`
+See `tests/rules/integration/specs/semantic/grants/editorial-hochland-swordmaster.yaml` for a
+resolved question and `tests/rules/integration/specs/semantic/rules/contextual-bonuses-and-rulings.yaml`
 for pending questions.
 
 ### Procedure
 
 1. Run `python tools/mordheim-utils.py verify --inventory`.
-2. Add under `tests/specs/semantic/` the source, interpretation, category,
+2. Add under `tests/rules/integration/specs/semantic/` the source, interpretation, category,
    cases, interaction and reviewed footprints.
 3. Cover activation, non-activation, boundaries and consumption; use
    mini-sequences only for state or flow.
 4. Declare exact dice and decisions; use fractions for distributions.
 5. Add a mutation detected by behaviour, not only by the same compiled field.
-6. Run `python -m pytest tests/python/verification/test_semantics.py -q` and
+6. Run `python -m pytest tests/rules/integration/test_semantics.py -q` and
    `python tools/mordheim-utils.py verify --json`.
 7. When the new evidence reaches the interaction matrix, certify the
    vectorized/native engines against the modular oracle with
@@ -249,7 +249,7 @@ consumer regressions; effect-only repairs stay with the compiler/engine.
 For equipment restrictions, `equipment_choices` runs the real compiler for
 every `context.choices` construction and returns `result.accepted` and
 `result.rejected` (with the exact reason). It does not compute legality by
-itself. See `tests/specs/semantic/grants/editorial-savage-equipment.yaml`: it
+itself. See `tests/rules/integration/specs/semantic/grants/editorial-savage-equipment.yaml`: it
 checks legal weapons, prohibited armour and the neighbouring profile without
 the restriction. A prohibition test must not pass merely because the item is
 not in the warrior's list. The isolated mutation
@@ -261,15 +261,15 @@ For skill choices, special rules, variants and `energy_focus_attacks`, use
 rejection reasons after calling the real compiler; it does not decide
 legality by itself. The case must start from a valid construction and declare
 the alternative selections in `context.choices`. See
-`tests/specs/semantic/grants/editorial-required-initial-choices.yaml`: it
+`tests/rules/integration/specs/semantic/grants/editorial-required-initial-choices.yaml`: it
 tests zero, one and two choices and temporarily removes the requirement with
 `suppress-required-initial-choices` to prove the test detects its absence.
 
 Distinguish an ambiguous source from an implementation limitation when writing
 `pending`. A rule that also forbids acquiring upgrades after recruitment is
 not verified by checking only its initial amount. The files
-`tests/specs/semantic/grants/editorial-recruitment-and-magic-gaps.yaml` and
-`tests/specs/semantic/rules/construction-verification-gaps.yaml` document
+`tests/rules/integration/specs/semantic/grants/editorial-recruitment-and-magic-gaps.yaml` and
+`tests/rules/integration/specs/semantic/rules/construction-verification-gaps.yaml` document
 those pendings; they provide no approved evidence and do not all require a
 user decision.
 
@@ -283,7 +283,7 @@ The audit separates technical risk from the current requirement:
 | `verification_requirement` | `required`, `recommended`, `optional`, `not_applicable` |
 | `interaction_status` | `tested`, `covered_by_composition`, `independent`, `illegal`, `pending`, `needs_ruling` |
 
-The policy lives in `tests/specs/interaction-policy.yaml`. By default,
+The policy lives in `tests/rules/integration/specs/interaction-policy.yaml`. By default,
 `critical` and `high` are `required`, `medium` is `recommended` and `low` is
 `optional`. Only unresolved required interactions block `semantic_complete`;
 the rest stay visible to broaden coverage later.
@@ -314,7 +314,7 @@ Pairs that are not overridden are closed by authored interaction specs
 (`semantic/interactions/`), one per pair, with composition + boundary cases
 and a detected mutation. The per-cluster case patterns are summarized in the
 [verification reference](../reference/verification.md) and detailed in
-`tests/specs/README.md`; the live matrix status is whatever `verify` reports
+`tests/rules/integration/specs/README.md`; the live matrix status is whatever `verify` reports
 when you run it — the executable reports are the source of truth, not any
 number written here.
 
@@ -345,5 +345,5 @@ actual modular, NumPy or compiled native driver with strict, fully consumed dice
 and decisions, then records terminal state/resources. Author each backend's legacy
 physical draw order explicitly; do not assume equal seeds imply equal streams.
 Native replay requires a rebuilt context-aware extension and never falls back.
-The foundation cases live in `tests/python/verification/test_duel_replay.py`; new
+The foundation cases live in `tests/engines/parity/test_duel_replay.py`; new
 mechanisms still need source-derived specifications, interactions and mutations.

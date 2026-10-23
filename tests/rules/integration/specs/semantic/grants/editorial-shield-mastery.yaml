@@ -1,0 +1,97 @@
+schema_version: 1
+specifications:
+- id: editorial-shield-mastery-grants
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: permanent
+  sources:
+  - target: rule/mordheim/norse-explorers-btb/band--norse-special-skills-shield-master/skill.shield-mastery
+    digest: 64bb69763980b59e2ff4989049b4ca0d63b83666feb0bea00ef1a11f2c81aa9e
+  - target: rule/mordheim/norse-explorers-lustria/band--norse-special-skills-shield-master/skill.shield-mastery
+    digest: 900afec155083cb96ed3014cda860c5c39e71ca13e94fd804bd323ba854e5735
+  - target: rule/trollheim/lustria-norse/band--norse-special-skills-shield-mastery/skill.shield-mastery
+    digest: 11c72288ae19f20f4f4624e689658e10defa9d78b2c7bde6ccdc6d8dbc98323b
+  depends_on:
+  - mechanic/skill.shield-mastery
+  interpretation: The three Norse variants grant the selectable skill to their four hero profiles. The
+    spelling of the Berserker profile differs between collections, while the granted shield behaviour
+    is identical.
+  cases:
+  - id: border-town-burning-heroes
+    roles:
+    - grant
+    - compiled
+    operation: selectable_grant
+    defender:
+      collection: mordheim
+      band_id: norse-explorers-btb
+      profile_id: jarl
+    context:
+      rule_id: band--norse-special-skills-shield-master
+    expect:
+      result.recipients:
+      - beserkers
+      - bondsmen
+      - jarl
+      - wulfen
+  - id: mordheim-lustria-heroes
+    roles:
+    - grant
+    operation: selectable_grant
+    defender:
+      collection: mordheim
+      band_id: norse-explorers-lustria
+      profile_id: jarl
+    context:
+      rule_id: band--norse-special-skills-shield-master
+    expect:
+      result.recipients:
+      - beserkers
+      - bondsmen
+      - jarl
+      - wulfen
+  - id: trollheim-lustria-heroes
+    roles:
+    - grant
+    operation: selectable_grant
+    defender:
+      collection: trollheim
+      band_id: lustria-norse
+      profile_id: jarl
+    context:
+      rule_id: band--norse-special-skills-shield-mastery
+    expect:
+      result.recipients:
+      - berserkers
+      - bondsmen
+      - jarl
+      - wulfen
+  - id: granted-consumer
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: parry
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: lustria-norse
+      profile_id: jarl
+      special_rule_ids:
+      - band--norse-special-skills-shield-mastery
+      main_weapon_id: weapon.axe
+      off_hand_id: defence.shield
+    context:
+      hit_roll: 4
+    distribution:
+      observable: result.blocked
+      max_rolls: 1
+      expected:
+        'true': 1/3
+        'false': 2/3
+  mutations:
+  - id: remove-granted-mastery
+    path: defender.global_effects.tags
+    value: []
+    cases:
+    - granted-consumer

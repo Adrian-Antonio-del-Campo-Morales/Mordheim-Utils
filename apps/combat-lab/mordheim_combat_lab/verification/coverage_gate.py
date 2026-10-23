@@ -37,12 +37,14 @@ ROOT = Path(__file__).resolve().parents[4]
 #: included: they certify *interaction*, and a flaky sample should never gate
 #: coverage.
 DEFAULT_SUITES = (
-    "tests/python/combat/modular",
-    "tests/python/combat/vectorized",
-    "tests/python/combat/test_phases.py",
-    "tests/python/combat/test_duel_context.py",
-    "tests/python/verification/test_duel_replay.py",
-    "tests/python/verification/test_parity.py",
+    "tests/engines/modular",
+    "tests/engines/vectorized",
+    "tests/engines/shared/test_phases.py",
+    "tests/engines/shared/test_duel_context.py",
+    "tests/engines/shared/test_exact_phases.py",
+    "tests/engines/shared/test_interactions.py",
+    "tests/engines/parity/test_duel_replay.py",
+    "tests/engines/parity/test_parity.py",
 )
 
 #: Areas of the engine tracked by the gate, keyed by the sub-path under

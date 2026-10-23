@@ -1,0 +1,414 @@
+schema_version: 1
+specifications:
+- id: hardy-constitution-and-pirate-grants
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: stateful
+  sources:
+  - target: mechanic/skill.hardy-constitution
+    digest: ab0eb7f61771ffc7bbe22a7d2ebd08124ae86c46a355ec0bc7a6d52256399546
+  - target: rule/mordheim/pirates/band--pirate-special-skills-hardy-constitution/skill.hardy-constitution
+    digest: 84a714d620c809c113e8d7499b5ba79c4b6b8c91643a286b1e37aa60f9059c97
+  - target: rule/trollheim/lustria-pirates/band--pirate-special-skills-hardy-constitution/skill.hardy-constitution
+    digest: ea0323cc151bc3864b136f710a66958b3544e6439e08178769794d6be0d64257
+  interpretation: 'Pirate Special Skills / Hardy Constitution (Mordheimer and Lustria p.91). A 5 or 6
+    cancels the critical effect, not the wound. A 1-4 leaves the critical available for its resolution.
+    The wound classification is checked without using the historical critical table as an oracle. The
+    test does not require rolling if the wound is normal, if there is no wound, or if the critical is
+    no longer available. Uncancelled criticals now resolve the basic table: two damage; the cancellation
+    probability is unchanged.'
+  cases:
+  - id: full-hit-wound-cancellation-distribution
+    roles:
+    - active
+    - consumer
+    - sequence
+    - boundary
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.hardy-constitution
+    distribution:
+      observable: result.critical
+      max_rolls: 4
+      expected:
+        'true': 1/18
+        'false': 17/18
+  - id: critical-cancellation-face-1
+    roles:
+    - compiled
+    - active
+    - boundary
+    - consumer
+    - sequence
+    - consumption
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.hardy-constitution
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 6
+    - key: test.hardy-constitution
+      value: 1
+    - key: test.critical
+      value: 1
+    expect:
+      result.critical: true
+      result.damage: 2
+      result.defender.wounds: 1
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hardy-constitution
+  - id: critical-cancellation-face-2
+    roles:
+    - compiled
+    - active
+    - boundary
+    - consumer
+    - sequence
+    - consumption
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.hardy-constitution
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 6
+    - key: test.hardy-constitution
+      value: 2
+    - key: test.critical
+      value: 1
+    expect:
+      result.critical: true
+      result.damage: 2
+      result.defender.wounds: 1
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hardy-constitution
+  - id: critical-cancellation-face-3
+    roles:
+    - compiled
+    - active
+    - boundary
+    - consumer
+    - sequence
+    - consumption
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.hardy-constitution
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 6
+    - key: test.hardy-constitution
+      value: 3
+    - key: test.critical
+      value: 1
+    expect:
+      result.critical: true
+      result.damage: 2
+      result.defender.wounds: 1
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hardy-constitution
+  - id: critical-cancellation-face-4
+    roles:
+    - compiled
+    - active
+    - boundary
+    - consumer
+    - sequence
+    - consumption
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.hardy-constitution
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 6
+    - key: test.hardy-constitution
+      value: 4
+    - key: test.critical
+      value: 1
+    expect:
+      result.critical: true
+      result.damage: 2
+      result.defender.wounds: 1
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hardy-constitution
+  - id: critical-cancellation-face-5
+    roles:
+    - compiled
+    - active
+    - boundary
+    - consumer
+    - sequence
+    - consumption
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.hardy-constitution
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 6
+    - key: test.hardy-constitution
+      value: 5
+    expect:
+      result.critical: false
+      result.damage: 1
+      result.defender.wounds: 2
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hardy-constitution
+  - id: critical-cancellation-face-6
+    roles:
+    - compiled
+    - active
+    - boundary
+    - consumer
+    - sequence
+    - consumption
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.hardy-constitution
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 6
+    - key: test.hardy-constitution
+      value: 6
+    expect:
+      result.critical: false
+      result.damage: 1
+      result.defender.wounds: 2
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hardy-constitution
+  - id: ordinary-wound
+    roles:
+    - inactive
+    - boundary
+    - sequence
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.hardy-constitution
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    expect:
+      result.critical: false
+      result.damage: 1
+      result.defender.wounds: 2
+  - id: without-skill
+    roles:
+    - inactive
+    - boundary
+    - sequence
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.mace
+    defender: {}
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 6
+    - key: test.critical
+      value: 1
+    expect:
+      result.critical: true
+      result.damage: 2
+      result.defender.wounds: 1
+  - id: spent-critical
+    roles:
+    - inactive
+    - boundary
+    - sequence
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.hardy-constitution
+    attacker_state:
+      critical_available: false
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 6
+    expect:
+      result.critical: false
+      result.damage: 1
+      result.defender.wounds: 2
+  - id: failed-wound
+    roles:
+    - inactive
+    - boundary
+    - sequence
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.hardy-constitution
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 1
+    expect:
+      result.critical: false
+      result.damage: 0
+      result.defender.wounds: 3
+  - id: cancelled-critical-uses-normal-injury
+    roles:
+    - sequence
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.axe
+    defender:
+      skill_ids:
+      - skill.hardy-constitution
+    defender_state:
+      wounds: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 6
+    - key: test.hardy-constitution
+      value: 5
+    - key: test.injury.0
+      value: 3
+    expect:
+      result.critical: false
+      result.damage: 1
+      result.defender.condition: STUNNED
+  - id: mordheim-recipients
+    roles:
+    - grant
+    - compiled
+    operation: selectable_grant
+    defender:
+      collection: mordheim
+      band_id: pirates
+      profile_id: pirate-captain
+    context:
+      rule_id: band--pirate-special-skills-hardy-constitution
+    expect:
+      result.recipients:
+      - cabin-boys
+      - pirate-captain
+      - ships-mates
+  - id: mordheim-captain-cancels-but-is-wounded
+    roles:
+    - active
+    - consumer
+    - sequence
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.axe
+    defender:
+      collection: mordheim
+      band_id: pirates
+      profile_id: pirate-captain
+      special_rule_ids:
+      - band--pirate-special-skills-hardy-constitution
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 6
+    - key: test.hardy-constitution
+      value: 6
+    - key: test.injury.0
+      value: 3
+    expect:
+      result.critical: false
+      result.damage: 1
+      result.defender.condition: STUNNED
+  - id: trollheim-recipients
+    roles:
+    - grant
+    - compiled
+    operation: selectable_grant
+    defender:
+      collection: trollheim
+      band_id: lustria-pirates
+      profile_id: pirate-captain
+    context:
+      rule_id: band--pirate-special-skills-hardy-constitution
+    expect:
+      result.recipients:
+      - cabin-boys
+      - pirate-captain
+      - ships-mates
+  - id: trollheim-captain-cancels-but-is-wounded
+    roles:
+    - active
+    - consumer
+    - sequence
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.axe
+    defender:
+      collection: trollheim
+      band_id: lustria-pirates
+      profile_id: pirate-captain
+      special_rule_ids:
+      - band--pirate-special-skills-hardy-constitution
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 6
+    - key: test.hardy-constitution
+      value: 6
+    - key: test.injury.0
+      value: 3
+    expect:
+      result.critical: false
+      result.damage: 1
+      result.defender.condition: STUNNED
+  mutations:
+  - id: remove-critical-protection
+    path: defender.global_effects.tags
+    value: []
+    cases:
+    - critical-cancellation-face-5
+    - mordheim-captain-cancels-but-is-wounded
+    - trollheim-captain-cancels-but-is-wounded

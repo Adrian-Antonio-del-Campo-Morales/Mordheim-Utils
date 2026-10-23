@@ -1,0 +1,644 @@
+schema_version: 1
+specifications:
+- id: advanced-dwarf-parries-rangers
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: stateful
+  sources:
+  - target: rule/mordheim/dwarf-rangers/band--dwarf-special-skills-combat-master/skill.unbeatable-warrior
+    digest: 7b4c4e39ef7d74809c38a7f77c8f245fe73aee98d1fe740a18eb38973c07621d
+  - target: mechanic/skill.unbeatable-warrior
+    digest: 55d53f3dd45e830bcbca0f28987a10e416cb1fa33d19cf4381f009071a36fbcd
+  interpretation: The Hero can match the enemy's roll and, with two Parry weapons, has two parries. Master
+    of Blades re-rolls failed parries only with two Dwarf Axes. A natural six remains unparryable, but
+    does not consume the second exceptional parry.
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    - compiled
+    operation: selectable_grant
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: runesmith
+    context:
+      rule_id: band--dwarf-special-skills-combat-master
+    expect:
+      result.recipients:
+      - apprentice-runesmith
+      - dwarf-troll-slayers
+      - runesmith
+  - id: equality-parries
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: parry
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: runesmith
+      special_rule_ids:
+      - band--dwarf-special-skills-combat-master
+      main_weapon_id: weapon.sword
+    context:
+      hit_roll: 4
+    rolls:
+    - key: test.parry
+      value: 4
+    expect:
+      result.blocked: true
+  - id: two-parry-capacity
+    roles:
+    - sequence
+    - consumption
+    - consumer
+    operation: initialize
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: runesmith
+      special_rule_ids:
+      - band--dwarf-special-skills-combat-master
+      main_weapon_id: weapon.sword
+      off_hand_id: weapon.sword
+    expect:
+      result.defender.parries_remaining: 2
+  - id: one-weapon-one-capacity
+    roles:
+    - boundary
+    operation: initialize
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: runesmith
+      special_rule_ids:
+      - band--dwarf-special-skills-combat-master
+      main_weapon_id: weapon.sword
+    expect:
+      result.defender.parries_remaining: 1
+  - id: natural-six-unparryable
+    roles:
+    - inactive
+    - boundary
+    operation: parry
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: runesmith
+      special_rule_ids:
+      - band--dwarf-special-skills-combat-master
+      main_weapon_id: weapon.sword
+    context:
+      hit_roll: 6
+    expect:
+      result.attempted: false
+      result.blocked: false
+  - id: equality-all-faces
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: parry
+    defender:
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.unbeatable-warrior
+    context:
+      hit_roll: 4
+    distribution:
+      observable: result.blocked
+      max_rolls: 2
+      expected:
+        'true': 1/2
+        'false': 1/2
+  - id: natural-six-keeps-second-parry
+    roles:
+    - sequence
+    - consumption
+    - boundary
+    operation: pool
+    attacker:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 2
+    defender:
+      main_weapon_id: weapon.sword
+      off_hand_id: weapon.sword
+      skill_ids:
+      - skill.unbeatable-warrior
+    context:
+      count: 2
+    rolls:
+    - key: test.attack.0.hit
+      value: 6
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.attack.1.parry
+      value: 4
+    - key: test.attack.0.wound
+      value: 1
+    expect:
+      result.attacks.0.parried: false
+      result.attacks.1.parried: true
+      result.defender.parries_remaining: 1
+  - id: highest-two-hits-consume-both-parries
+    roles:
+    - sequence
+    - consumption
+    - boundary
+    operation: pool
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: runesmith
+      special_rule_ids:
+      - band--dwarf-special-skills-combat-master
+      main_weapon_id: weapon.sword
+      off_hand_id: weapon.sword
+    context:
+      count: 3
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 5
+    - key: test.attack.2.hit
+      value: 4
+    - key: test.attack.1.parry
+      value: 5
+    - key: test.attack.0.parry
+      value: 4
+    - key: test.attack.2.wound
+      value: 1
+    expect:
+      result.defender.parries_remaining: 0
+      result.attacks.0.parried: true
+      result.attacks.1.parried: true
+      result.attacks.2.parried: false
+      result.attacks.2.wounded: false
+  - id: no-weapon-does-not-grant-parry
+    roles:
+    - inactive
+    operation: parry
+    defender:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.unbeatable-warrior
+    context:
+      hit_roll: 4
+    expect:
+      result.attempted: false
+      result.blocked: false
+  mutations:
+  - id: remove-advanced-parry
+    path: defender.global_effects.tags
+    value: []
+    cases:
+    - equality-parries
+    - two-parry-capacity
+    - equality-all-faces
+  - id: retain-two-parry-capacity
+    runtime_fault: retain-parry-capacity
+    cases:
+    - highest-two-hits-consume-both-parries
+- id: advanced-dwarf-parries-treasure-mordheim
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: stateful
+  sources:
+  - target: rule/mordheim/dwarf-treasure-hunters/band--dwarf-special-skills-master-of-blades/skill.unbeatable-warrior
+    digest: fe1ba6bcf56df28594a4d072a2a221fb9cb32ad7b27b3351aaed4b0328a98996
+  - target: rule/mordheim/dwarf-treasure-hunters/band--dwarf-special-skills-master-of-blades/skill.sword-master
+    digest: fe1ba6bcf56df28594a4d072a2a221fb9cb32ad7b27b3351aaed4b0328a98996
+  depends_on:
+  - mechanic/skill.sword-master
+  - mechanic/skill.unbeatable-warrior
+  interpretation: The Hero can match the enemy's roll and, with two Parry weapons, has two parries. Master
+    of Blades re-rolls failed parries only with two Dwarf Axes. A natural six remains unparryable, but
+    does not consume the second exceptional parry.
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    - compiled
+    operation: selectable_grant
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-noble
+    context:
+      rule_id: band--dwarf-special-skills-master-of-blades
+    expect:
+      result.recipients:
+      - dwarf-engineer
+      - dwarf-noble
+      - dwarf-troll-slayers
+  - id: equality-parries
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: parry
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-noble
+      special_rule_ids:
+      - band--dwarf-special-skills-master-of-blades
+      main_weapon_id: weapon.sword
+    context:
+      hit_roll: 4
+    rolls:
+    - key: test.parry
+      value: 4
+    expect:
+      result.blocked: true
+  - id: two-parry-capacity
+    roles:
+    - sequence
+    - consumption
+    - consumer
+    operation: initialize
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-noble
+      special_rule_ids:
+      - band--dwarf-special-skills-master-of-blades
+      main_weapon_id: weapon.sword
+      off_hand_id: weapon.sword
+    expect:
+      result.defender.parries_remaining: 2
+  - id: one-weapon-one-capacity
+    roles:
+    - boundary
+    operation: initialize
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-noble
+      special_rule_ids:
+      - band--dwarf-special-skills-master-of-blades
+      main_weapon_id: weapon.sword
+    expect:
+      result.defender.parries_remaining: 1
+  - id: natural-six-unparryable
+    roles:
+    - inactive
+    - boundary
+    operation: parry
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-noble
+      special_rule_ids:
+      - band--dwarf-special-skills-master-of-blades
+      main_weapon_id: weapon.sword
+    context:
+      hit_roll: 6
+    expect:
+      result.attempted: false
+      result.blocked: false
+  - id: two-dwarf-axes-reroll
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: parry
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-noble
+      special_rule_ids:
+      - band--dwarf-special-skills-master-of-blades
+      main_weapon_id: weapon.dwarf-axe
+      off_hand_id: weapon.dwarf-axe
+    context:
+      hit_roll: 4
+    rolls:
+    - key: test.parry
+      value: 3
+    - key: test.parry.reroll
+      value: 4
+    expect:
+      result.blocked: true
+      result.rerolled: true
+  - id: sword-does-not-gain-dwarf-axe-reroll
+    roles:
+    - inactive
+    - consumer
+    - boundary
+    operation: parry
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-noble
+      special_rule_ids:
+      - band--dwarf-special-skills-master-of-blades
+      main_weapon_id: weapon.sword
+    context:
+      hit_roll: 4
+    distribution:
+      observable: result.blocked
+      max_rolls: 2
+      expected:
+        'true': 1/2
+        'false': 1/2
+  - id: two-axes-all-faces
+    roles:
+    - active
+    - boundary
+    operation: parry
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-noble
+      special_rule_ids:
+      - band--dwarf-special-skills-master-of-blades
+      main_weapon_id: weapon.dwarf-axe
+      off_hand_id: weapon.dwarf-axe
+    context:
+      hit_roll: 4
+    distribution:
+      observable: result.blocked
+      max_rolls: 2
+      expected:
+        'true': 3/4
+        'false': 1/4
+  - id: both-axe-parries-reroll-and-consume
+    roles:
+    - sequence
+    - consumption
+    - boundary
+    operation: pool
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-noble
+      special_rule_ids:
+      - band--dwarf-special-skills-master-of-blades
+      main_weapon_id: weapon.dwarf-axe
+      off_hand_id: weapon.dwarf-axe
+    context:
+      count: 2
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 5
+    - key: test.attack.1.parry
+      value: 1
+    - key: test.attack.1.parry.reroll
+      value: 5
+    - key: test.attack.0.parry
+      value: 1
+    - key: test.attack.0.parry.reroll
+      value: 4
+    expect:
+      result.attacks.0.parried: true
+      result.attacks.1.parried: true
+      result.defender.parries_remaining: 0
+  mutations:
+  - id: drop-axe-condition
+    path: defender.global_effects.tags
+    value:
+    - skill.unbeatable-warrior
+    - skill.sword-master
+    cases:
+    - sword-does-not-gain-dwarf-axe-reroll
+  - id: retain-axe-parries
+    runtime_fault: retain-parry-capacity
+    cases:
+    - both-axe-parries-reroll-and-consume
+  - id: remove-advanced-parry
+    path: defender.global_effects.tags
+    value: []
+    cases:
+    - equality-parries
+    - two-parry-capacity
+    - two-dwarf-axes-reroll
+- id: advanced-dwarf-parries-treasure-streets
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: stateful
+  sources:
+  - target: rule/trollheim/chaos-streets-dwarf-treasure-hunters/band--dwarf-special-skills-master-of-blades/skill.unbeatable-warrior
+    digest: 5cbae1f12f65bccc591514d756806db1e6281307c642c4505f9dc7c915c29859
+  - target: rule/trollheim/chaos-streets-dwarf-treasure-hunters/band--dwarf-special-skills-master-of-blades/skill.sword-master
+    digest: 5cbae1f12f65bccc591514d756806db1e6281307c642c4505f9dc7c915c29859
+  depends_on:
+  - mechanic/skill.sword-master
+  - mechanic/skill.unbeatable-warrior
+  interpretation: The Hero can match the enemy's roll and, with two Parry weapons, has two parries. Master
+    of Blades re-rolls failed parries only with two Dwarf Axes. A natural six remains unparryable, but
+    does not consume the second exceptional parry.
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    - compiled
+    operation: selectable_grant
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-noble
+    context:
+      rule_id: band--dwarf-special-skills-master-of-blades
+    expect:
+      result.recipients:
+      - dwarf-engineer
+      - dwarf-noble
+      - dwarf-troll-slayers
+  - id: equality-parries
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: parry
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-noble
+      special_rule_ids:
+      - band--dwarf-special-skills-master-of-blades
+      main_weapon_id: weapon.sword
+    context:
+      hit_roll: 4
+    rolls:
+    - key: test.parry
+      value: 4
+    expect:
+      result.blocked: true
+  - id: two-parry-capacity
+    roles:
+    - sequence
+    - consumption
+    - consumer
+    operation: initialize
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-noble
+      special_rule_ids:
+      - band--dwarf-special-skills-master-of-blades
+      main_weapon_id: weapon.sword
+      off_hand_id: weapon.sword
+    expect:
+      result.defender.parries_remaining: 2
+  - id: one-weapon-one-capacity
+    roles:
+    - boundary
+    operation: initialize
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-noble
+      special_rule_ids:
+      - band--dwarf-special-skills-master-of-blades
+      main_weapon_id: weapon.sword
+    expect:
+      result.defender.parries_remaining: 1
+  - id: natural-six-unparryable
+    roles:
+    - inactive
+    - boundary
+    operation: parry
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-noble
+      special_rule_ids:
+      - band--dwarf-special-skills-master-of-blades
+      main_weapon_id: weapon.sword
+    context:
+      hit_roll: 6
+    expect:
+      result.attempted: false
+      result.blocked: false
+  - id: two-dwarf-axes-reroll
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: parry
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-noble
+      special_rule_ids:
+      - band--dwarf-special-skills-master-of-blades
+      main_weapon_id: weapon.dwarf-axe
+      off_hand_id: weapon.dwarf-axe
+    context:
+      hit_roll: 4
+    rolls:
+    - key: test.parry
+      value: 3
+    - key: test.parry.reroll
+      value: 4
+    expect:
+      result.blocked: true
+      result.rerolled: true
+  - id: sword-does-not-gain-dwarf-axe-reroll
+    roles:
+    - inactive
+    - consumer
+    - boundary
+    operation: parry
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-noble
+      special_rule_ids:
+      - band--dwarf-special-skills-master-of-blades
+      main_weapon_id: weapon.sword
+    context:
+      hit_roll: 4
+    distribution:
+      observable: result.blocked
+      max_rolls: 2
+      expected:
+        'true': 1/2
+        'false': 1/2
+  - id: two-axes-all-faces
+    roles:
+    - active
+    - boundary
+    operation: parry
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-noble
+      special_rule_ids:
+      - band--dwarf-special-skills-master-of-blades
+      main_weapon_id: weapon.dwarf-axe
+      off_hand_id: weapon.dwarf-axe
+    context:
+      hit_roll: 4
+    distribution:
+      observable: result.blocked
+      max_rolls: 2
+      expected:
+        'true': 3/4
+        'false': 1/4
+  - id: both-axe-parries-reroll-and-consume
+    roles:
+    - sequence
+    - consumption
+    - boundary
+    operation: pool
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-noble
+      special_rule_ids:
+      - band--dwarf-special-skills-master-of-blades
+      main_weapon_id: weapon.dwarf-axe
+      off_hand_id: weapon.dwarf-axe
+    context:
+      count: 2
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 5
+    - key: test.attack.1.parry
+      value: 1
+    - key: test.attack.1.parry.reroll
+      value: 5
+    - key: test.attack.0.parry
+      value: 1
+    - key: test.attack.0.parry.reroll
+      value: 4
+    expect:
+      result.attacks.0.parried: true
+      result.attacks.1.parried: true
+      result.defender.parries_remaining: 0
+  mutations:
+  - id: drop-axe-condition
+    path: defender.global_effects.tags
+    value:
+    - skill.unbeatable-warrior
+    - skill.sword-master
+    cases:
+    - sword-does-not-gain-dwarf-axe-reroll
+  - id: retain-axe-parries
+    runtime_fault: retain-parry-capacity
+    cases:
+    - both-axe-parries-reroll-and-consume
+  - id: remove-advanced-parry
+    path: defender.global_effects.tags
+    value: []
+    cases:
+    - equality-parries
+    - two-parry-capacity
+    - two-dwarf-axes-reroll

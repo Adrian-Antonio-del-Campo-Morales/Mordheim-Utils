@@ -1,0 +1,77 @@
+schema_version: 1
+specifications:
+- id: vampiric-powers-bloodline-access
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: construction
+  sources:
+  - target: rule/trollheim/chaos-streets-undead-bloodlines/band--vampiric-powers/compiler.vampiric-powers
+    digest: bdfc15fe00e41d6938a8d0210d8238c2487a7d813b44b572c60280438ffd7e0e
+  interpretation: Each Vampire accesses only the powers of its own bloodline; choosing one does not alter
+    the access of the other bloodlines.
+  cases:
+  - id: lahmia-list
+    roles:
+    - grant
+    - accepted
+    operation: special_rule_access
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: lahmia-vampire
+    expect:
+      result.rules:
+      - band--lahmia-power-deceive
+      - band--lahmia-power-lost-innocence
+      - band--lahmia-power-seduction
+      - band--vampire-power-hypnotic-gaze
+  - id: blood-dragon-list
+    roles:
+    - boundary
+    operation: special_rule_access
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: blood-dragon-vampire
+    expect:
+      result.rules:
+      - band--blood-dragon-power-infallible
+      - band--blood-dragon-power-red-fury
+      - band--blood-dragon-power-strength-of-steel
+      - band--blood-dragon-power-sword-master
+  - id: foreign-power-rejected
+    roles:
+    - rejected
+    operation: selection_choices
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: lahmia-vampire
+    context:
+      choices:
+        own:
+          special_rule_ids:
+          - band--lahmia-power-lost-innocence
+        foreign:
+          special_rule_ids:
+          - band--blood-dragon-power-red-fury
+    expect:
+      result.accepted:
+      - own
+      result.rejected:
+        foreign: 'special rule is not available to chaos-streets-undead-bloodlines/lahmia-vampire: band--blood-dragon-power-red-fury'
+  - id: contract
+    operation: construction_tag_presence
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: lahmia-vampire
+    context:
+      tag: compiler.vampiric-powers
+    expect:
+      result.present: true
+  mutations:
+  - id: remove-vampiric-contract
+    path: attacker.construction_tags
+    value: []
+    cases:
+    - contract

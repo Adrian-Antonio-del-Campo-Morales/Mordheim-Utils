@@ -81,7 +81,10 @@ def _structural_errors(knowledge, specs) -> tuple[list[str], int]:
     from mordheim_core.models import FighterBuild
     from mordheim_knowledge.editorial_schemas import validate_knowledge_base
     from mordheim_knowledge.loader import load_bands
-    from mordheim_combat_lab.verification.structural import audit_phase_verification
+    from mordheim_combat_lab.verification.structural import (
+        audit_phase_verification,
+        required_profile_build,
+    )
 
     errors = list(validate_knowledge_base(knowledge))
     errors.extend(validate_execution_contract("mordheim", knowledge))
@@ -92,10 +95,15 @@ def _structural_errors(knowledge, specs) -> tuple[list[str], int]:
         for band in load_bands(collection, knowledge):
             for profile in band.profiles:
                 try:
-                    compile_fighter(FighterBuild(
-                        "mordheim", collection=collection,
-                        band_id=str(band.band["id"]), profile_id=str(profile["id"]),
-                    ), knowledge)
+                    # Supply the profile's printed mandatory initial choice from
+                    # the same helper the structural projection uses, so a
+                    # Trapper/Rat Ogre/Cripple is compiled with what its source
+                    # requires instead of becoming a false structural failure.
+                    compile_fighter(
+                        required_profile_build(
+                            collection, str(band.band["id"]), str(profile["id"])
+                        ), knowledge
+                    )
                 except ValueError as error:
                     # Scope exclusions and mandatory selectable grants are valid
                     # classifications; every other compilation failure is structural.
@@ -686,11 +694,227 @@ def benchmark_command(args) -> int:
     return int(bool(args.require_improvement and (gate is None or not gate.passed)))
 
 
+def _battery_command(args, profile: str) -> int:
+    """Run the renewed P01/P02 battery and emit the P03 certificate.
+
+    This is the only path that consumes the battery catalog.  It never falls
+    back to NumPy for ``--backend native`` and never turns a declared, blocked
+    or unexecuted case into a pass: a dependency stays a dependency.
+    """
+    import hashlib
+
+    from mordheim_combat.modular.duel import simulate_duel_observed
+    from mordheim_combat.vectorized import simulate_batch_observed
+    from mordheim_combat_lab.verification.parity import _battery_cases as catalog
+    from mordheim_combat_lab.verification.parity._battery_runner import (
+        combine_reports, run_battery,
+    )
+    from mordheim_combat_lab.verification.parity._report import (
+        battery_failure_kind, battery_report_markdown, battery_report_payload,
+    )
+
+    def _fingerprint(module) -> dict[str, str]:
+        """Real identity of an engine module: its name and its file's SHA256."""
+        path = getattr(module, "__file__", None)
+        return {
+            "module": str(getattr(module, "__name__", "unknown")),
+            "sha256": (
+                hashlib.sha256(Path(path).read_bytes()).hexdigest()
+                if path else "unavailable"
+            ),
+        }
+
+    # Traceability of the real versions, not of a declared one: the module that
+    # owns the sampled entry point and the hash of its file.
+    versions: dict[str, object] = {
+        "oracle": _fingerprint(sys.modules[simulate_duel_observed.__module__]),
+        "candidate_numpy": _fingerprint(
+            sys.modules[simulate_batch_observed.__module__]
+        ),
+    }
+
+    backend = getattr(args, "backend", None) or "numpy"
+    requested = ("numpy", "native") if backend == "all" else (backend,)
+    if "native" in requested:
+        try:
+            from mordheim_combat import _combat_native as native_module
+        except ImportError:
+            versions["candidate_native"] = {
+                "module": "mordheim_combat._combat_native",
+                "sha256": "unavailable",
+            }
+        else:
+            versions["candidate_native"] = _fingerprint(native_module)
+    rows = getattr(args, "rows", None)
+    cases = catalog.battery_cases(profile)
+    started = time.perf_counter()
+    # One compiled input and one modular sample per case, shared by every
+    # requested candidate: the oracle is paid for once, not per backend.
+    reuse: dict = {}
+    reports = tuple(
+        run_battery(
+            cases, profile=profile, backend=name, rows=rows, reuse=reuse,
+            workers=getattr(args, "workers", 1),
+        )
+        for name in requested
+    )
+    report = reports[0] if len(reports) == 1 else combine_reports(
+        reports, profile=profile, backend=backend,
+    )
+    elapsed = time.perf_counter() - started
+    payload = battery_report_payload(
+        report, profile=profile, backend=backend,
+        catalog_sha256=hashlib.sha256(Path(catalog.__file__).read_bytes()).hexdigest(),
+        inventory_sha256=catalog.INVENTORY_SHA256,
+        elapsed_seconds=elapsed,
+        backends=requested,
+        versions=versions,
+    )
+    payload["oracle_workers_requested"] = getattr(args, "workers", 1)
+    if args.output:
+        output = Path(args.output).resolve()
+        output.parent.mkdir(parents=True, exist_ok=True)
+        content = (
+            battery_report_markdown(payload)
+            if output.suffix.casefold() in {".md", ".markdown"}
+            else json.dumps(payload, ensure_ascii=True, indent=2) + "\n"
+        )
+        output.write_text(content, encoding="utf-8")
+    if args.json:
+        print(json.dumps(payload, ensure_ascii=True, indent=2))
+    else:
+        coverage = payload["coverage"]
+        print(
+            f"battery_profile={profile} backend={backend} "
+            f"execution={payload['execution']}"
+        )
+        print(
+            f"battery_complete={payload['complete']} "
+            f"battery_accepted={payload['accepted']}"
+        )
+        print("battery: " + ", ".join(
+            f"{name}={coverage.get(name, 0)}"
+            for name in (
+                "declared", "case_ids", "prepared", "executed", "compared",
+                "approved", "divergent", "incompatible", "not_run", "errors",
+                "dependency", "sensitivity_pending",
+            )
+        ))
+        magnitudes = payload.get("magnitudes") or {}
+        if magnitudes:
+            print("battery magnitudes: " + ", ".join(
+                f"{name}={row['passed']}/{row['cases']}"
+                for name, row in sorted(magnitudes.items())
+            ))
+        if coverage.get("errors"):
+            print(
+                f"battery: {coverage['errors']} case(s) failed before approval "
+                "(own error; see the case detail)"
+            )
+        if coverage.get("divergent"):
+            print(
+                f"battery: {coverage['divergent']} case(s) compared with a "
+                "divergent distribution"
+            )
+        if coverage.get("dependency"):
+            print(
+                f"battery: {coverage['dependency']} case(s) kept out by a real "
+                "input limit or an absent backend; partial execution, "
+                "certificate incomplete"
+            )
+        limits = payload.get("limits") or {}
+        for case_id, cause in sorted(limits.items()):
+            print(f"LIMIT: {case_id} blocked_by={cause}")
+        for row in payload["backends"]:
+            print(
+                f"BACKEND: {row['backend']} available={row['available']} "
+                f"executed={row['executed']} compared={row['compared']} "
+                f"approved={row['approved']} incompatible={row['incompatible']} "
+                f"not_run={row['not_run']}"
+            )
+        if report.missing_variants:
+            print("MISSING VARIANTS: " + ", ".join(report.missing_variants))
+        owners = coverage.get("dependencies_by_owner") or {}
+        for owner, case_ids in owners.items():
+            print(f"DEPENDENCY: {owner} owns {len(case_ids)} case(s)")
+        if payload["execution"] == "not-run":
+            print(
+                "battery: preparation only; no candidate sample was executed "
+                "(a declared or blocked case is not a pass)"
+            )
+        if args.output:
+            print(f"BATTERY REPORT: {Path(args.output).resolve()}")
+        print(f"Elapsed: {elapsed:.2f}s")
+    # One classification for the CLI and the report: an own error fails the
+    # command even without --require-complete; a dependency only leaves the run
+    # partial (identified as incomplete, never a pass).
+    kinds = [
+        battery_failure_kind(
+            str(result.status), str(getattr(result, "detail", "") or ""),
+        )
+        for result in report.results
+    ]
+    errored = "error" in kinds
+    incomplete = not (report.complete and report.accepted)
+    return int(bool(errored or (
+        getattr(args, "require_complete", False) and incomplete
+    )))
+
+
 def parity_command(args) -> int:
-    level = getattr(args, "level", "deterministic")
+    # P03: ``--profile`` selects the renewed battery; every historical selector
+    # (``--level``, ``--pair-set``, ``--truncations``) keeps its old meaning when
+    # ``--profile`` is absent.  An explicit legacy selector plus ``--profile`` is
+    # two different measurements of the same command, so it is refused instead
+    # of silently mixing them; the argparse defaults are not a conflict.
+    profile = getattr(args, "profile", None)
+    if profile is not None:
+        explicit = [
+            name for name, value in (
+                ("--level", getattr(args, "level", None)),
+                ("--pair-set", getattr(args, "pair_set", None)),
+                ("--truncations", True if getattr(args, "truncations", False) else None),
+            ) if value is not None
+        ]
+        if explicit:
+            print(
+                "Parity configuration error: --profile selects the renewed "
+                "battery and cannot be combined with " + ", ".join(explicit)
+                + "; run the historical certificate without --profile.",
+                file=sys.stderr,
+            )
+            return 2
+        if (getattr(args, "rows", None) is not None
+                and getattr(args, "require_complete", False)):
+            print(
+                "Parity configuration error: --rows is a calibration override; "
+                "--require-complete accepts only the declared sample width.",
+                file=sys.stderr,
+            )
+            return 2
+        return _battery_command(args, profile)
+    selected_backend = getattr(args, "backend", None)
+    if selected_backend is not None and (
+        getattr(args, "level", None) != "statistical"
+        or getattr(args, "truncations", False)
+    ):
+        print(
+            "Parity configuration error: --backend requires --profile or "
+            "--level statistical without --truncations.",
+            file=sys.stderr,
+        )
+        return 2
+    if getattr(args, "rows", None) is not None:
+        print(
+            "Parity configuration error: --rows applies to the renewed battery; "
+            "pass it with --profile quick|complete|deep.",
+            file=sys.stderr,
+        )
+        return 2
+    level = getattr(args, "level", None) or "deterministic"
     args.statistical = level == "statistical"
     args.deep = level == "deep"
-    pair_set = getattr(args, "pair_set", "full")
+    pair_set = getattr(args, "pair_set", None) or "full"
     if pair_set != "full" and not (args.deep or args.truncations):
         print(
             "Parity configuration error: --pair-set applies to --deep or "
@@ -705,6 +929,22 @@ def parity_command(args) -> int:
             "mini": timestamped_report_path("outputs/parity", "deep-mini", ".json"),
             "fast": timestamped_report_path("outputs/parity", "deep-fast", ".json"),
         }.get(pair_set, timestamped_report_path("outputs/parity", "deep", ".json"))
+    statistical_backends = ()
+    if args.statistical:
+        from mordheim_combat.vectorized import available_backends
+
+        installed = available_backends()
+        if selected_backend in {"native", "all"} and "native" not in installed:
+            print(
+                "Parity configuration error: native backend is not available; "
+                "use --backend numpy or install the native backend.",
+                file=sys.stderr,
+            )
+            return 2
+        statistical_backends = (
+            (selected_backend,) if selected_backend in {"numpy", "native"}
+            else tuple(name for name in ("numpy", "native") if name in installed)
+        )
     started = time.perf_counter()
     from mordheim_combat_lab.cli.benchmarking import BenchmarkProgress
     from mordheim_combat_lab.cli.benchmarking import benchmark_scenarios
@@ -728,9 +968,6 @@ def parity_command(args) -> int:
     if args.statistical:
         from mordheim_combat.modular.parallel import resolve_oracle_workers
         from mordheim_combat.modular.parallel import run_oracle_sample
-        from mordheim_combat.vectorized import available_backends
-
-        installed = available_backends()
         progress = None if args.json else BenchmarkProgress(len(benchmark_scenarios()))
         samples: list = []
         for scenario in benchmark_scenarios():
@@ -747,15 +984,10 @@ def parity_command(args) -> int:
                 ),
             )
             oracle_seconds = time.perf_counter() - oracle_started
-            samples.append(compare_statistical_parity(
-                scenario.id, first, second, args.statistical_simulations, seed=args.seed,
-                maximum_rounds=scenario.maximum_rounds, modular=modular, backend="numpy",
-                reference_seconds=oracle_seconds,
-            ))
-            if "native" in installed:
+            for backend in statistical_backends:
                 samples.append(compare_statistical_parity(
                     scenario.id, first, second, args.statistical_simulations, seed=args.seed,
-                    maximum_rounds=scenario.maximum_rounds, modular=modular, backend="native",
+                    maximum_rounds=scenario.maximum_rounds, modular=modular, backend=backend,
                     reference_seconds=oracle_seconds,
                 ))
             if progress is not None:
@@ -1187,9 +1419,9 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
              "(repeatable)")
     coverage_output = coverage.add_argument_group("budget and output")
     coverage_output.add_argument(
-        "--budget", default="tests/fixtures/coverage/budget.json", metavar="PATH",
+        "--budget", default="tests/tooling/verification/fixtures/coverage/budget.json", metavar="PATH",
         help="coverage budget file to check against (default: "
-             "tests/fixtures/coverage/budget.json)")
+             "tests/tooling/verification/fixtures/coverage/budget.json)")
     coverage_output.add_argument(
         "--update-budget", action="store_true",
         help="write the measured covered lines as the new budget instead of "
@@ -1310,14 +1542,15 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
     parity_samples = parity.add_argument_group("certification samples")
     parity_samples.add_argument(
         "--level", choices=("deterministic", "statistical", "deep"),
-        default="deterministic", metavar="LEVEL",
-        help="preset: deterministic (default) runs the exact checks only; "
+        default=None, metavar="LEVEL",
+        help="historical certificate preset (default when --profile is absent): "
+             "deterministic runs the exact checks only; "
              "statistical adds the aggregate six-sigma samples on the five "
              "standard scenarios; deep runs the selected archetype pair set "
              "(fast or full) plus the numpy<->native cross at scale",
     )
     parity_samples.add_argument(
-        "--pair-set", choices=("mini", "fast", "full"), default="full", metavar="SET",
+        "--pair-set", choices=("mini", "fast", "full"), default=None, metavar="SET",
         help="pair set for --deep/--truncations: mini is the 10-pair "
              "performance-survey set; fast is the 30-pair "
              "coverage-oriented set for a roughly 10-15 minute pooled run; "
@@ -1363,8 +1596,8 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
     parity_samples.add_argument(
         "--workers", type=_oracle_workers, metavar="N|auto",
         default=os.environ.get("MORDHEIM_PARALLEL_ORACLE_WORKERS", "auto"),
-        help="processes for the modular-oracle samples of the statistical and "
-             "deep layers; auto pools only samples estimated to take over ~20 s "
+        help="processes for modular-oracle samples, including --profile "
+             "quick|complete|deep; auto pools only samples estimated to take over ~20 s "
              "sequentially, 1 disables the pool (also from "
              "MORDHEIM_PARALLEL_ORACLE_WORKERS)",
     )
@@ -1372,11 +1605,35 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
     parity_output.add_argument("--json", action="store_true",
                                help="print the certificate as JSON")
     parity_output.add_argument("--require-complete", action="store_true",
-                               help="fail unless the certificate is complete")
+                               help="fail unless the certificate is complete; with "
+                                    "--profile a missing, incompatible or "
+                                    "unexecuted scenario also fails")
     parity_output.add_argument("--output", metavar="PATH",
                                help="save the report as .json or .md (deep defaults to "
                                     "deep.json for full, deep-fast.json for fast "
                                     "or deep-mini.json for mini)")
+    battery = parity.add_argument_group("renewed behaviour battery")
+    battery.add_argument(
+        "--profile", choices=("quick", "complete", "deep"), default=None,
+        metavar="PROFILE",
+        help="run the renewed statistical scenario battery instead of the "
+             "historical certificate; profiles are cumulative "
+             "(quick is contained in complete, complete in deep) and default "
+             "to the NumPy candidate",
+    )
+    battery.add_argument(
+        "--backend", choices=("numpy", "native", "all"), default=None,
+        metavar="ENGINE",
+        help="candidate for --profile or --level statistical: numpy, native "
+             "(never falls back to NumPy) or all. Statistical defaults to "
+             "installed backends; explicit native/all requires native. "
+             "Profiles default to numpy and report availability per backend",
+    )
+    battery.add_argument(
+        "--rows", type=_positive, default=None, metavar="DUELS",
+        help="override the sample width of every battery case for --profile "
+             "(P04 calibration); the declared width stays the default",
+    )
     parity.set_defaults(handler=parity_command)
 
     test_report = commands.add_parser(

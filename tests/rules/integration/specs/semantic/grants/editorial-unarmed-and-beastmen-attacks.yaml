@@ -1,0 +1,860 @@
+schema_version: 1
+specifications:
+- id: unarmed-exemption-raging-peasants
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: local
+  sources:
+  - target: rule/mordheim/battle-monks-of-cathay/raging-peasants--unarmed/profile.fist
+    digest: 7891e99b68c45c732d3f0db2e03fd499829c11ac206529b1289427fedaf3e6c1
+  interpretation: 'Weapons/Armour / Unarmed: keeps the profile''s Strength and Attacks and does not grant
+    +1 to the enemy''s save. It is not equivalent to Unarmed Fighting, which additionally grants an attack.
+    Guardian uses the component''s S3, not the chariot''s Toughness.'
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    operation: grant
+    defender:
+      band_id: battle-monks-of-cathay
+      profile_id: raging-peasants
+      main_weapon_id: weapon.fist
+    context:
+      rule_id: raging-peasants--unarmed
+    expect:
+      result.recipients:
+      - raging-peasants
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      band_id: battle-monks-of-cathay
+      profile_id: raging-peasants
+      main_weapon_id: weapon.fist
+    expect:
+      attacker.characteristics.strength: 3
+      attacker.characteristics.attacks: 1
+  - id: strength
+    roles:
+    - active
+    - consumer
+    operation: strength
+    attacker:
+      band_id: battle-monks-of-cathay
+      profile_id: raging-peasants
+      main_weapon_id: weapon.fist
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: attacks
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: attacks
+    attacker:
+      band_id: battle-monks-of-cathay
+      profile_id: raging-peasants
+      main_weapon_id: weapon.fist
+    expect:
+      result.attacks: 1
+  - id: advanced-attacks
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: attacks
+    attacker:
+      band_id: battle-monks-of-cathay
+      profile_id: raging-peasants
+      main_weapon_id: weapon.fist
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 3
+    expect:
+      result.attacks: 3
+  - id: untrained-strength
+    roles:
+    - inactive
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.fist
+    expect:
+      result.wound: 2
+      result.armour: 2
+  - id: save-1
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: armour
+    attacker:
+      band_id: battle-monks-of-cathay
+      profile_id: raging-peasants
+      main_weapon_id: weapon.fist
+    defender:
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 1
+    expect:
+      result.saved: false
+  - id: save-2
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: armour
+    attacker:
+      band_id: battle-monks-of-cathay
+      profile_id: raging-peasants
+      main_weapon_id: weapon.fist
+    defender:
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 2
+    expect:
+      result.saved: false
+  - id: save-3
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: armour
+    attacker:
+      band_id: battle-monks-of-cathay
+      profile_id: raging-peasants
+      main_weapon_id: weapon.fist
+    defender:
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 3
+    expect:
+      result.saved: false
+  - id: save-4
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: armour
+    attacker:
+      band_id: battle-monks-of-cathay
+      profile_id: raging-peasants
+      main_weapon_id: weapon.fist
+    defender:
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      result.saved: false
+  - id: save-5
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: armour
+    attacker:
+      band_id: battle-monks-of-cathay
+      profile_id: raging-peasants
+      main_weapon_id: weapon.fist
+    defender:
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.saved: true
+  - id: save-6
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: armour
+    attacker:
+      band_id: battle-monks-of-cathay
+      profile_id: raging-peasants
+      main_weapon_id: weapon.fist
+    defender:
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      result.saved: true
+  - id: untrained-armour
+    roles:
+    - inactive
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.fist
+    defender:
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      result.saved: true
+  mutations:
+  - id: remove-exemption
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - strength
+    - advanced-attacks
+    - save-4
+- id: unarmed-exemption-plague-cart
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: local
+  sources:
+  - target: rule/mordheim/carnival-of-chaos/plague-cart--guardian-unarmed/mechanic.guardian-unarmed
+    digest: 88c237df904757462fa10cd4af0b6e4e7046dd1cb45ffaef1786af3e9a7bda3c
+  interpretation: 'Weapons/Armour / Unarmed: keeps the profile''s Strength and Attacks and does not grant
+    +1 to the enemy''s save. It is not equivalent to Unarmed Fighting, which additionally grants an attack.
+    Guardian uses the component''s S3, not the chariot''s Toughness.'
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    operation: grant
+    defender:
+      band_id: carnival-of-chaos
+      profile_id: plague-cart
+      main_weapon_id: weapon.fist
+    context:
+      rule_id: plague-cart--guardian-unarmed
+    expect:
+      result.recipients:
+      - plague-cart
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      band_id: carnival-of-chaos
+      profile_id: plague-cart
+      main_weapon_id: weapon.fist
+    expect:
+      attacker.characteristics.strength: 3
+      attacker.characteristics.attacks: 1
+  - id: strength
+    roles:
+    - active
+    - consumer
+    operation: strength
+    attacker:
+      band_id: carnival-of-chaos
+      profile_id: plague-cart
+      main_weapon_id: weapon.fist
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: attacks
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: attacks
+    attacker:
+      band_id: carnival-of-chaos
+      profile_id: plague-cart
+      main_weapon_id: weapon.fist
+    expect:
+      result.attacks: 1
+  - id: advanced-attacks
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: attacks
+    attacker:
+      band_id: carnival-of-chaos
+      profile_id: plague-cart
+      main_weapon_id: weapon.fist
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 3
+    expect:
+      result.attacks: 3
+  - id: untrained-strength
+    roles:
+    - inactive
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.fist
+    expect:
+      result.wound: 2
+      result.armour: 2
+  - id: tagged-fist-strength
+    # The exemption is a property of the bearer, not of the cart's printed
+    # natural attack: the granted trait must keep an actual fist at full
+    # Strength and leave the enemy no extra save.  This witness supplies the
+    # rule's own canonical trait so the consumer half is observable.
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.fist
+      trait_overrides:
+        guardian_unarmed: true
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: save-1
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: armour
+    attacker:
+      band_id: carnival-of-chaos
+      profile_id: plague-cart
+      main_weapon_id: weapon.fist
+    defender:
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 1
+    expect:
+      result.saved: false
+  - id: save-2
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: armour
+    attacker:
+      band_id: carnival-of-chaos
+      profile_id: plague-cart
+      main_weapon_id: weapon.fist
+    defender:
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 2
+    expect:
+      result.saved: false
+  - id: save-3
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: armour
+    attacker:
+      band_id: carnival-of-chaos
+      profile_id: plague-cart
+      main_weapon_id: weapon.fist
+    defender:
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 3
+    expect:
+      result.saved: false
+  - id: save-4
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: armour
+    attacker:
+      band_id: carnival-of-chaos
+      profile_id: plague-cart
+      main_weapon_id: weapon.fist
+    defender:
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      result.saved: false
+  - id: save-5
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: armour
+    attacker:
+      band_id: carnival-of-chaos
+      profile_id: plague-cart
+      main_weapon_id: weapon.fist
+    defender:
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.saved: true
+  - id: save-6
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: armour
+    attacker:
+      band_id: carnival-of-chaos
+      profile_id: plague-cart
+      main_weapon_id: weapon.fist
+    defender:
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      result.saved: true
+  - id: untrained-armour
+    roles:
+    - inactive
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.fist
+    defender:
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      result.saved: true
+  mutations:
+  - id: remove-exemption
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - strength
+    - advanced-attacks
+    - save-4
+    - tagged-fist-strength
+- id: beastmen-extra-trample
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: stateful
+  sources:
+  - target: rule/mordheim/beastmen-raiders/centigors--trample/profile-rule.centigors--trample
+    digest: 40cec6df3b9558b6f60e29a3cdd243e3ed2d73931d32086c53fce1be1a77db2a
+  interpretation: 'Centigors / Trample: one extra S4 attack, separate from the weapon. The two-handed
+    weapon keeps its bonus only on its own attack; not on the hooves.'
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    - compiled
+    operation: grant
+    defender:
+      band_id: beastmen-raiders
+      profile_id: centigors
+    context:
+      rule_id: centigors--trample
+    expect:
+      result.recipients:
+      - centigors
+  - id: pool-false-false
+    roles:
+    - active
+    - sequence
+    - consumption
+    - boundary
+    operation: pool
+    attacker:
+      band_id: beastmen-raiders
+      profile_id: centigors
+      main_weapon_id: weapon.double-handed-weapon
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 4
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    context:
+      count: 1
+      first_round: false
+      charging: false
+    rolls:
+    - key: test.attack.0.hit
+      value: 1
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.attack.1.wound
+      value: 4
+    expect:
+      result.defender.wounds: 2
+      result.attacks.1.damage: 1
+  - id: pool-true-false
+    roles:
+    - active
+    - sequence
+    - consumption
+    - boundary
+    operation: pool
+    attacker:
+      band_id: beastmen-raiders
+      profile_id: centigors
+      main_weapon_id: weapon.double-handed-weapon
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 4
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    context:
+      count: 1
+      first_round: true
+      charging: false
+    rolls:
+    - key: test.attack.0.hit
+      value: 1
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.attack.1.wound
+      value: 4
+    expect:
+      result.defender.wounds: 2
+      result.attacks.1.damage: 1
+  - id: pool-false-true
+    roles:
+    - active
+    - sequence
+    - consumption
+    - boundary
+    operation: pool
+    attacker:
+      band_id: beastmen-raiders
+      profile_id: centigors
+      main_weapon_id: weapon.double-handed-weapon
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 4
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    context:
+      count: 1
+      first_round: false
+      charging: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 1
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.attack.1.wound
+      value: 4
+    expect:
+      result.defender.wounds: 2
+      result.attacks.1.damage: 1
+  - id: pool-true-true
+    roles:
+    - active
+    - sequence
+    - consumption
+    - boundary
+    operation: pool
+    attacker:
+      band_id: beastmen-raiders
+      profile_id: centigors
+      main_weapon_id: weapon.double-handed-weapon
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 4
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    context:
+      count: 1
+      first_round: true
+      charging: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 1
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.attack.1.wound
+      value: 4
+    expect:
+      result.defender.wounds: 2
+      result.attacks.1.damage: 1
+  - id: no-weapon-strength-leak
+    roles:
+    - active
+    - boundary
+    - sequence
+    - consumption
+    operation: pool
+    attacker:
+      band_id: beastmen-raiders
+      profile_id: centigors
+      main_weapon_id: weapon.double-handed-weapon
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 4
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    context:
+      count: 1
+      first_round: true
+      charging: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 1
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.attack.1.wound
+      value: 3
+    expect:
+      result.defender.wounds: 3
+      result.attacks.1.wounded: false
+  - id: control
+    roles:
+    - inactive
+    operation: pool
+    attacker:
+      band_id: beastmen-raiders
+      profile_id: beastmen-chieftain
+    context:
+      count: 1
+      charging: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 1
+    expect:
+      result.defender.wounds: 3
+  mutations:
+  - id: remove-extra-attack
+    path: attacker.extra_attacks
+    value: []
+    cases:
+    - pool-true-true
+- id: beastmen-extra-horned-one
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: stateful
+  sources:
+  - target: rule/mordheim/beastmen-raiders/band--beastmen-special-skills-horned-one/special-rule.band--beastmen-special-skills-horned-one
+    digest: e242ecbb6f501c7e8527a56bdc450c39563c4820931be88909f604bcd343e5ec
+  interpretation: 'Beastmen Special Skills / Horned One: one extra attack at basic Strength only when
+    charging. It does not replace the normal attack nor inherit the two-handed weapon bonus.'
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    - compiled
+    operation: selectable_grant
+    defender:
+      band_id: beastmen-raiders
+      profile_id: beastmen-chieftain
+      special_rule_ids:
+      - band--beastmen-special-skills-horned-one
+    context:
+      rule_id: band--beastmen-special-skills-horned-one
+    expect:
+      result.recipients:
+      - beastmen-chieftain
+      - beastmen-shaman
+      - bestigors
+      - centigors
+  - id: pool-false-false
+    roles:
+    - inactive
+    - sequence
+    - consumption
+    - boundary
+    operation: pool
+    attacker:
+      band_id: beastmen-raiders
+      profile_id: beastmen-chieftain
+      special_rule_ids:
+      - band--beastmen-special-skills-horned-one
+      main_weapon_id: weapon.double-handed-weapon
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 4
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    context:
+      count: 1
+      first_round: false
+      charging: false
+    rolls:
+    - key: test.attack.0.hit
+      value: 1
+    expect:
+      result.defender.wounds: 3
+  - id: pool-true-false
+    roles:
+    - inactive
+    - sequence
+    - consumption
+    - boundary
+    operation: pool
+    attacker:
+      band_id: beastmen-raiders
+      profile_id: beastmen-chieftain
+      special_rule_ids:
+      - band--beastmen-special-skills-horned-one
+      main_weapon_id: weapon.double-handed-weapon
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 4
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    context:
+      count: 1
+      first_round: true
+      charging: false
+    rolls:
+    - key: test.attack.0.hit
+      value: 1
+    expect:
+      result.defender.wounds: 3
+  - id: pool-false-true
+    roles:
+    - active
+    - sequence
+    - consumption
+    - boundary
+    operation: pool
+    attacker:
+      band_id: beastmen-raiders
+      profile_id: beastmen-chieftain
+      special_rule_ids:
+      - band--beastmen-special-skills-horned-one
+      main_weapon_id: weapon.double-handed-weapon
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 4
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    context:
+      count: 1
+      first_round: false
+      charging: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 1
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.attack.1.wound
+      value: 4
+    expect:
+      result.defender.wounds: 2
+      result.attacks.1.damage: 1
+  - id: pool-true-true
+    roles:
+    - active
+    - sequence
+    - consumption
+    - boundary
+    operation: pool
+    attacker:
+      band_id: beastmen-raiders
+      profile_id: beastmen-chieftain
+      special_rule_ids:
+      - band--beastmen-special-skills-horned-one
+      main_weapon_id: weapon.double-handed-weapon
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 4
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    context:
+      count: 1
+      first_round: true
+      charging: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 1
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.attack.1.wound
+      value: 4
+    expect:
+      result.defender.wounds: 2
+      result.attacks.1.damage: 1
+  - id: no-weapon-strength-leak
+    roles:
+    - active
+    - boundary
+    - sequence
+    - consumption
+    operation: pool
+    attacker:
+      band_id: beastmen-raiders
+      profile_id: beastmen-chieftain
+      special_rule_ids:
+      - band--beastmen-special-skills-horned-one
+      main_weapon_id: weapon.double-handed-weapon
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 4
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    context:
+      count: 1
+      first_round: true
+      charging: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 1
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.attack.1.wound
+      value: 3
+    expect:
+      result.defender.wounds: 3
+      result.attacks.1.wounded: false
+  - id: control
+    roles:
+    - inactive
+    operation: pool
+    attacker:
+      band_id: beastmen-raiders
+      profile_id: beastmen-chieftain
+      special_rule_ids: []
+    context:
+      count: 1
+      charging: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 1
+    expect:
+      result.defender.wounds: 3
+  mutations:
+  - id: remove-extra-attack
+    path: attacker.extra_attacks
+    value: []
+    cases:
+    - pool-true-true

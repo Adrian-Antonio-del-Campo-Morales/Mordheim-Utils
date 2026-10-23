@@ -1,0 +1,286 @@
+schema_version: 1
+specifications:
+- id: editorial-art-of-silent-death-variants
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: construction
+  sources:
+  - target: rule/mordheim/skaven-clan-eshin/band--skaven-special-skills-art-of-silent-death/skill.art-of-silent-death
+    digest: 63e426ed94073c8880a69145a6c37cea1712a11020813fd3c3446c4f8109cac4
+  - target: rule/trollheim/trollheim-skaven-clan-eshin/band--skaven-special-skills-art-of-silent-death/skill.art-of-silent-death
+    digest: dcb86c516f078522223cd748570fc71d9fa393e1cdf85f69ba419e82dc46cc18
+  - target: rule/trollheim/chaos-streets-deathbringers/band--deathbringer-special-skills-art-of-unarmed-combat/skill.art-of-silent-death
+    digest: 23dc0663b9424c881a49dee4c9ab2a490779e9fd270a2fb68398419bd39278d0
+  depends_on:
+  - mechanic/skill.art-of-silent-death
+  interpretation: The three variants grant the same mechanism, but their exact lists of eligible Heroes
+    are checked separately and that each selection projects the binding onto the fighter.
+  cases:
+  - id: mordheim-recipients
+    roles:
+    - grant
+    - accepted
+    - rejected
+    operation: selectable_grant
+    defender:
+      band_id: skaven-clan-eshin
+      profile_id: assassin-adept
+    context:
+      rule_id: band--skaven-special-skills-art-of-silent-death
+    expect:
+      result.recipients:
+      - assassin-adept
+      - black-skaven
+      - eshin-sorcerer
+      - night-runners
+  - id: trollheim-skaven-recipients
+    roles:
+    - grant
+    - accepted
+    - rejected
+    operation: selectable_grant
+    defender:
+      collection: trollheim
+      band_id: trollheim-skaven-clan-eshin
+      profile_id: assassin-adept
+    context:
+      rule_id: band--skaven-special-skills-art-of-silent-death
+    expect:
+      result.recipients:
+      - assassin-adept
+      - black-skaven
+      - eshin-sorcerer
+      - night-runners
+  - id: deathbringer-recipients
+    roles:
+    - grant
+    - accepted
+    - rejected
+    operation: selectable_grant
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-deathbringers
+      profile_id: shadow-blade
+    context:
+      rule_id: band--deathbringer-special-skills-art-of-unarmed-combat
+    expect:
+      result.recipients:
+      - black-knives
+      - shadow-blade
+      - silent-hunter
+      - young-claw
+  - id: mordheim-selected
+    roles:
+    - accepted
+    operation: wound
+    attacker:
+      band_id: skaven-clan-eshin
+      profile_id: assassin-adept
+      main_weapon_id: weapon.fist
+      special_rule_ids:
+      - band--skaven-special-skills-art-of-silent-death
+    rolls:
+    - key: wound
+      value: 5
+    expect:
+      context.critical_threshold: 5
+      result.critical: true
+  - id: trollheim-skaven-selected
+    roles:
+    - accepted
+    operation: attacks
+    attacker:
+      collection: trollheim
+      band_id: trollheim-skaven-clan-eshin
+      profile_id: night-runners
+      main_weapon_id: weapon.fist
+      special_rule_ids:
+      - band--skaven-special-skills-art-of-silent-death
+    expect_contains:
+      attacker.global_effects.tags:
+      - skill.art-of-silent-death
+    expect:
+      result.attacks: 2
+  - id: deathbringer-selected
+    roles:
+    - accepted
+    operation: wound
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-deathbringers
+      profile_id: shadow-blade
+      main_weapon_id: weapon.fist
+      special_rule_ids:
+      - band--deathbringer-special-skills-art-of-unarmed-combat
+    rolls:
+    - key: wound
+      value: 5
+    expect:
+      context.critical_threshold: 5
+      result.critical: true
+  mutations:
+  - id: omit-mordheim-binding
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - mordheim-selected
+  - id: omit-trollheim-binding
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - trollheim-skaven-selected
+    - deathbringer-selected
+- id: editorial-cripples-disability
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: construction
+  sources:
+  - target: rule/trollheim/chaos-streets-mordheim-inhabitants/cripples--disability/compiler.disability
+    digest: 8649571949023091b4d911f4e2e9bfbf77dceef211143467d5cb3b6d9f0ca69e
+  depends_on:
+  - mechanic/mechanic.disability
+  interpretation: Disability is granted only to the Cripples profile. The caller supplies exactly one
+    permanent condition.disability-1..6 as the group-creation result; compilation applies its statistics
+    once and initialisation retains the same result without rolling again.
+  cases:
+  - id: recipient
+    roles:
+    - grant
+    - accepted
+    - rejected
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+      condition_ids:
+      - condition.disability-1
+    context:
+      rule_id: cripples--disability
+    expect:
+      result.recipients:
+      - cripples
+  - id: selected
+    roles:
+    - accepted
+    operation: initialize
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+      condition_ids:
+      - condition.disability-5
+    expect:
+      result.attacker.strength: 2
+      result.attacker.resources_spent:
+      - disability.5
+  mutations:
+  - id: omit-disability
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - selected
+- id: editorial-high-elf-luck
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: construction
+  sources:
+  - target: rule/trollheim/lustria-high-elves/band--high-elf-special-skills-luck/skill.luck
+    digest: bfab1fcb090a1142d095daa3db49a2481db843222f8f9a616c363c9c9b2ba4e8
+  depends_on:
+  - mechanic/skill.luck
+  interpretation: Luck is selectable only by Explorers and re-rolls one of their own rolls, leaving the
+    canonical resource consumed.
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    - accepted
+    - rejected
+    operation: selectable_grant
+    defender:
+      collection: trollheim
+      band_id: lustria-high-elves
+      profile_id: explorers
+    context:
+      rule_id: band--high-elf-special-skills-luck
+    expect:
+      result.recipients:
+      - explorers
+  - id: selected
+    roles:
+    - accepted
+    operation: attack
+    attacker:
+      collection: trollheim
+      band_id: lustria-high-elves
+      profile_id: explorers
+      special_rule_ids:
+      - band--high-elf-special-skills-luck
+    context:
+      hit_only: true
+    rolls:
+    - key: test.hit
+      value: 1
+    - key: test.hit.reroll
+      value: 4
+    expect:
+      result.hit: true
+      result.attacker.resources_spent:
+      - luck
+  mutations:
+  - id: omit-luck
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - selected
+- id: editorial-mark-of-the-old-ones
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: construction
+  sources:
+  - target: rule/trollheim/lustria-lizardmen/band--sacred-mark-of-the-old-ones/compiler.mark-of-the-old-ones
+    digest: 0c6cde27c6f6a129cb8e05a3ec26f2c9b90b60540f3a7c091c3ef765e046eefe
+  depends_on:
+  - mechanic/mechanic.mark-of-the-old-ones
+  interpretation: Mark of the Old Ones can only be selected for the three indicated Heroes and turns their
+    first failure through the already verified consumable mechanism.
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    - accepted
+    - rejected
+    operation: selectable_grant
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: skink-priest
+    context:
+      rule_id: band--sacred-mark-of-the-old-ones
+    expect:
+      result.recipients:
+      - saurus-totem-warrior
+      - skink-great-crests
+      - skink-priest
+  - id: selected
+    roles:
+    - accepted
+    operation: attack
+    attacker:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: skink-priest
+      special_rule_ids:
+      - band--sacred-mark-of-the-old-ones
+    context:
+      hit_only: true
+    rolls:
+    - key: test.hit
+      value: 1
+    expect:
+      result.hit: true
+      result.attacker.resources_spent:
+      - mark-of-the-old-ones
+  mutations:
+  - id: omit-mark
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - selected

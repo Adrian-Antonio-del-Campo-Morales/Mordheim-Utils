@@ -10,24 +10,27 @@ import json
 
 FIELDS = ["id", "clause_id", "source_file", "source_fingerprint",
           "clause_text", "clause_scope", "semantic_contract", "effect_id", "relation",
-          "parameters", "conditions", "consumer", "pending", "verification", "notes"]
+          "parameters", "conditions", "consumer", "pending", "verification", "notes", "status"]
 
 SCOPES = {"YES", "NO", "LATER", "UNCLASSIFIED"}
 REL = {"equivalent", "independent", "related", "unresolved", "parameterized_variant"}
 WORK = {"", "none", "connection", "assessment", "data", "behavior", "projection", "product"}
 STATUS = {"reviewed", "source_blocked", "needs_clarification"}
 EV = {"inspection", "none", "executed"}
-OBJ_FIELDS = ("parameters", "conditions", "pending")
+BACKENDS = ("numpy", "native")
+BACKEND_STATES = {"pending", "in_progress", "implemented", "verified", "blocked"}
+OBJ_FIELDS = ("parameters", "conditions", "pending", "status")
 ARR_FIELDS = ("consumer", "verification")
 
 
-def check(raw, base, audit_rows=None):
+def check(raw, base, audit_rows=None, *, legacy=False):
     """Return a list of violation strings for the CSV bytes `raw`.
 
     `base` maps (id, clause_id) -> baseline row dict.  `audit_rows`, when
     given, is the generated inventory; each id must be covered by an origin or
     current identity unless its scope is explicitly NO.
     """
+    fields = FIELDS[:-1] if legacy else FIELDS
     v = []
     if raw[:3] == b"\xef\xbb\xbf":
         v.append("UTF-8 BOM present (expected none)")
@@ -43,13 +46,13 @@ def check(raw, base, audit_rows=None):
     records = list(csv.reader(io.StringIO(text)))
     if not records:
         return ["file is empty"]
-    if records[0] != FIELDS:
-        v.append("header is not the exact %d-column sequence: %r" % (len(FIELDS), records[0]))
+    if records[0] != fields:
+        v.append("header is not the exact %d-column sequence: %r" % (len(fields), records[0]))
         return v  # a wrong header invalidates every later position check
     bad_width = False
     for i, rec in enumerate(records[1:], start=2):
-        if len(rec) != len(FIELDS):
-            v.append("record on line %d has %d fields (expected %d)" % (i, len(rec), len(FIELDS)))
+        if len(rec) != len(fields):
+            v.append("record on line %d has %d fields (expected %d)" % (i, len(rec), len(fields)))
             bad_width = True
     if bad_width:
         return v
@@ -76,7 +79,21 @@ def check(raw, base, audit_rows=None):
             required = pending.get("requires", [])
             if not isinstance(required, list) or not all(isinstance(x, str) for x in required):
                 v.append("pending.requires is not an array of strings at " + where)
-        for f in OBJ_FIELDS:
+        if not legacy:
+            try:
+                status = json.loads(r["status"])
+            except (ValueError, TypeError):
+                status = None
+            if isinstance(status, dict):
+                if set(status) - set(BACKENDS):
+                    v.append("unknown status backend at " + where)
+                if any(not isinstance(value, str) or value not in BACKEND_STATES
+                       for value in status.values()):
+                    v.append("invalid backend status at " + where)
+                expected = set(BACKENDS) if r["clause_scope"] == "YES" else set()
+                if set(status) != expected:
+                    v.append("status keys disagree with clause_scope at " + where)
+        for f in (OBJ_FIELDS[:-1] if legacy else OBJ_FIELDS):
             try:
                 val = json.loads(r[f])
             except Exception:

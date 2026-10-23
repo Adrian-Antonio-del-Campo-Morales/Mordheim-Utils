@@ -118,7 +118,7 @@ npm run build
 
 `npm test` runs the TypeScript package and web suites. `npm run lint` includes the presentation gate; `npm run build` typechecks and builds the web application into `apps/warband-manager-web/dist/`.
 
-See [Test classification and execution order](docs/reference/test-sequence.md) for the proposed categories and repair order, and [Develop and release](docs/guides/develop-and-release.md) for release checks, coverage, mutation testing, benchmarks and calibration. Expensive parity and certification runs are separate from the focused edit loop.
+See [Test classification and execution order](docs/reference/test-sequence.md) for the phase categories and repair order, and [Develop and release](docs/guides/develop-and-release.md) for release checks, coverage, mutation testing, benchmarks and calibration. Expensive parity and certification runs are separate from the focused edit loop.
 
 ## Repository layout
 

@@ -53,12 +53,12 @@ TypeScript domain/eligibility → browser domain/application adapters
   Its theme and interface translations live in `mordheim_combat_lab.ui.theme`
   and `mordheim_combat_lab.ui.i18n`.
 - TypeScript campaign `application` owns use cases and state transitions; the React UI presents results and forwards actions.
-- UI layers do not load YAML. `tests/python/architecture/test_boundaries.py` enforces that rule, and keeps Combat Lab application code independent of Tkinter.
+- UI layers do not load YAML. `tests/tooling/architecture/test_boundaries.py` enforces that rule, and keeps Combat Lab application code independent of Tkinter.
 - The web app consumes generated JSON and does not use YAML, Python packages or browser storage for campaigns.
 
 ## Shared resources and entry points
 
-`mordheim_knowledge.paths.knowledge_root()` resolves `sources/knowledge/`, including the `MORDHEIM_COMBAT_LAB_KNOWLEDGE_PATH` override and frozen-executable support. The semantic verification corpus is under `tests/specs/` and is test material, not a runtime resource.
+`mordheim_knowledge.paths.knowledge_root()` resolves `sources/knowledge/`, including the `MORDHEIM_COMBAT_LAB_KNOWLEDGE_PATH` override and frozen-executable support. The semantic verification corpus is under `tests/rules/integration/specs/` and is test material, not a runtime resource.
 
 Python entry points declared in `pyproject.toml`:
 
@@ -112,7 +112,7 @@ The web adapter is `packages/typescript/adapters/campaign-file/`; PDF export bel
 
 ## Verification corpus and reports
 
-`tests/specs/` is the executable link between written KB rules and the modular engine. `apps/combat-lab/mordheim_combat_lab/verification/` runs semantic verification, audit export, parity, coverage and mutations.
+`tests/rules/integration/specs/` is the executable link between written KB rules and the modular engine. `apps/combat-lab/mordheim_combat_lab/verification/` runs semantic verification, audit export, parity, coverage and mutations.
 
 Generated reports are written below ignored `outputs/`:
 
@@ -134,7 +134,7 @@ The web knowledge artefact is generated under ignored `outputs/web-public/knowle
 | Combat Lab use case/UI | `apps/combat-lab/` |
 | Web domain/application/adapters | `packages/typescript/` |
 | Web shell and presentation | `apps/warband-manager-web/` |
-| Verification evidence | `tests/specs/`, `tests/python/verification/`, related test suites |
+| Verification evidence | `tests/rules/integration/specs/`, `tests/engines/parity/`, `tests/tooling/verification/`, `tests/tooling/evidence/`, related test suites |
 | Build/release tooling | `tools/`, `.github/workflows/` |
 
 See [Knowledge base](knowledge-base.md) and [Verification](verification.md)

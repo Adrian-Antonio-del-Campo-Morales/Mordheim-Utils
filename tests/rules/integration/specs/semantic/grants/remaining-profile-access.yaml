@@ -1,0 +1,257 @@
+schema_version: 1
+specifications:
+- id: night-goblin-fanatic-frantic
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: priority
+  sources:
+  - target: rule/mordheim/night-goblins-mic/fanatics--frantic/profile-rule.fanatics--frantic
+    digest: 73598d8736b0875d861c43826af49ab11a146cfc92833ef2ee9f45c6a37da75c
+  interpretation: Frantic grants the Fanatic an absolute priority that prevails over Initiative and ordinary
+    weapon modifiers.
+  cases:
+  - id: compiled
+    roles:
+    - grant
+    - compiled
+    operation: compile
+    attacker:
+      band_id: night-goblins-mic
+      profile_id: fanatics
+    expect:
+      attacker.global_effects.priority: 10
+  - id: priority-consumed
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: priority
+    attacker:
+      band_id: night-goblins-mic
+      profile_id: fanatics
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 10
+        attacks: 1
+    expect:
+      result.priority: 10
+  - id: ordinary-control
+    roles:
+    - inactive
+    operation: priority
+    expect:
+      result.priority: 0
+  mutations:
+  - id: remove-frantic
+    path: attacker.global_effects.priority
+    value: 0
+    cases:
+    - priority-consumed
+- id: biggest-boss-strength-access
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: construction
+  sources:
+  - target: rule/mordheim/night-goblins-web/boss--da-biggest-boss/profile.skill-access
+    digest: 0f1df0f5826eadff38efa33bcd19da509d5ec59ec0b1c5d83f9cffbec4022ae2
+  interpretation: Only the current Boss adds Strength to its Combat access; other profiles receive no
+    Strength through this rule.
+  cases:
+  - id: boss-access
+    roles:
+    - grant
+    - accepted
+    operation: general_skill_access
+    attacker:
+      band_id: night-goblins-web
+      profile_id: boss
+    expect:
+      result.skills:
+      - skill.expert-swordsman
+      - skill.fearsome
+      - skill.jump-up
+      - skill.lightning-reflexes
+      - skill.mighty-blow
+      - skill.resilient
+      - skill.step-aside
+      - skill.strike-to-injure
+      - skill.strongman
+      - skill.unstoppable-charge
+      - skill.web-of-steel
+  - id: herder-control
+    roles:
+    - rejected
+    operation: general_skill_access
+    attacker:
+      band_id: night-goblins-web
+      profile_id: squig-herder
+    expect:
+      result.skills:
+      - skill.expert-swordsman
+      - skill.jump-up
+      - skill.lightning-reflexes
+      - skill.step-aside
+      - skill.strike-to-injure
+      - skill.web-of-steel
+  mutations:
+  - id: suppress-profile-access
+    runtime_fault: suppress-profile-declared-strength-access
+    cases:
+    - boss-access
+- id: night-goblin-promoted-hero-lists
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: construction
+  sources:
+  - target: rule/mordheim/night-goblins-web/band--promoted-henchmen-no-strength/compiler.promoted-hero-no-strength-access
+    digest: f42beca311f5f20562f84046e88c63f5cc1801b88470d79b4288143618cf6fbc
+  interpretation: A promoted Henchman chooses up to two lists through skill-list.*, but Strength is rejected;
+    Combat and Speed grant their exact skills.
+  cases:
+  - id: combat-and-speed
+    roles:
+    - grant
+    - accepted
+    operation: general_skill_access
+    attacker:
+      band_id: night-goblins-web
+      profile_id: night-goblin-warriors
+      variant_ids:
+      - skill-list.combat
+      - skill-list.speed
+    expect:
+      result.skills:
+      - skill.expert-swordsman
+      - skill.jump-up
+      - skill.lightning-reflexes
+      - skill.step-aside
+      - skill.strike-to-injure
+      - skill.web-of-steel
+  - id: strength-rejected
+    roles:
+    - rejected
+    operation: selection_choices
+    attacker:
+      band_id: night-goblins-web
+      profile_id: night-goblin-warriors
+    context:
+      choices:
+        ordinary: {}
+        strength:
+          variant_ids:
+          - skill-list.strength
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        strength: Strength skill list is forbidden for night-goblins-web/night-goblin-warriors
+  - id: contract-present
+    operation: construction_tag_presence
+    attacker:
+      band_id: night-goblins-web
+      profile_id: night-goblin-warriors
+    context:
+      tag: compiler.promoted-hero-no-strength-access
+    expect:
+      result.present: true
+  mutations:
+  - id: remove-promotion-contract
+    path: attacker.construction_tags
+    value: []
+    cases:
+    - contract-present
+- id: promoted-ogre-combat-strength-access
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: construction
+  sources:
+  - target: rule/mordheim/ostlanders/ogre--skills/compiler.promoted-hero-skill-access
+    digest: 370d5225cf1f3aa1d6d21b68c1e9d05c62e8e8deb4b3aae73308c9e46d7dc8ef
+  - target: rule/mordheim/pit-fighters/ogre-pit-fighter--skills/compiler.promoted-hero-skill-access
+    digest: 453db24b007d4c9b409c75773c2dfd2f88850bfb8bf2f29b825278e66468052d
+  - target: rule/trollheim/chaos-streets-pit-fighters/ogre-pit-fighter--skills/compiler.promoted-hero-skill-access
+    digest: 4d36be6c1a927aea4d4b5ca1bba2a375c182a3af72305de363972953a63110b1
+  interpretation: The three promoted Ogres access Combat and Strength; the Pit Fighters additionally keep
+    their editorial Special list.
+  cases:
+  - id: ostlander-access
+    roles:
+    - grant
+    - accepted
+    operation: general_skill_access
+    attacker:
+      band_id: ostlanders
+      profile_id: ogre
+      variant_ids:
+      - promotion.hero
+    expect:
+      result.skills: &id001
+      - skill.expert-swordsman
+      - skill.fearsome
+      - skill.mighty-blow
+      - skill.resilient
+      - skill.step-aside
+      - skill.strike-to-injure
+      - skill.strongman
+      - skill.unstoppable-charge
+      - skill.web-of-steel
+  - id: pit-access
+    roles:
+    - grant
+    - accepted
+    operation: general_skill_access
+    attacker:
+      band_id: pit-fighters
+      profile_id: ogre-pit-fighter
+      variant_ids:
+      - promotion.hero
+    expect:
+      result.skills: *id001
+  - id: streets-access
+    roles:
+    - grant
+    - accepted
+    operation: general_skill_access
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: ogre-pit-fighter
+      variant_ids:
+      - promotion.hero
+    expect:
+      result.skills: *id001
+  - id: speed-rejected
+    roles:
+    - rejected
+    operation: compile
+    attacker:
+      band_id: ostlanders
+      profile_id: ogre
+      skill_ids:
+      - skill.acrobat
+    reject: skills are not available
+  - id: unpromoted-combat-rejected
+    roles:
+    - rejected
+    operation: compile
+    attacker:
+      band_id: ostlanders
+      profile_id: ogre
+      skill_ids:
+      - skill.expert-swordsman
+    reject: skills are not available
+  - id: contract-present
+    operation: construction_tag_presence
+    attacker:
+      band_id: ostlanders
+      profile_id: ogre
+    context:
+      tag: compiler.promoted-hero-skill-access
+    expect:
+      result.present: true
+  mutations:
+  - id: remove-ogre-access-contract
+    path: attacker.construction_tags
+    value: []
+    cases:
+    - contract-present

@@ -1,0 +1,523 @@
+schema_version: 1
+specifications:
+- id: unpredictable-attack-one-per-phase
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: stateful
+  sources:
+  - target: mechanic/mechanic.unpredictable-attack
+    digest: d6d6173c945b6a753b6f0c975a5da73def242dc87e53b0c05798273b816e0d11
+  interpretation: The Hero declares which of its attacks is Unpredictable and only that attack cannot
+    be parried; the declaration is offered for each allocated attack in order and nominates exactly one,
+    so a two-weapon bearer decides which attack the defender may not parry. An attack the bearer does
+    not declare (and a pool whose bearer declares none) keeps the ordinary parry resolution. The parry
+    capability is not consumed by skipping the unpredictable attack; it is consumed when attempting to
+    parry the next one.
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      skill_ids:
+      - mechanic.unpredictable-attack
+    expect:
+      attacker.fighter_id: custom:custom
+    expect_contains:
+      attacker.global_effects.tags:
+      - mechanic.unpredictable-attack
+  - id: one-unparryable-second-parried
+    roles:
+    - active
+    - consumer
+    - sequence
+    - consumption
+    - boundary
+    operation: pool
+    attacker:
+      skill_ids:
+      - mechanic.unpredictable-attack
+      main_weapon_id: weapon.mace
+    defender:
+      main_weapon_id: weapon.sword
+      off_hand_id: weapon.sword
+      skill_ids:
+      - skill.unbeatable-warrior
+    context:
+      count: 2
+    decisions:
+    - key: test.unpredictable-attack.0
+      value: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 5
+    - key: test.attack.1.parry
+      value: 5
+    - key: test.attack.0.wound
+      value: 1
+    expect:
+      result.attacks.0.parried: false
+      result.attacks.0.wounded: false
+      result.attacks.1.parried: true
+      result.defender.parries_remaining: 1
+  - id: declared-second-attack-keeps-the-first-parryable
+    roles:
+    - active
+    - consumer
+    - sequence
+    - consumption
+    - boundary
+    operation: pool
+    attacker:
+      skill_ids:
+      - mechanic.unpredictable-attack
+      main_weapon_id: weapon.mace
+    defender:
+      main_weapon_id: weapon.sword
+      off_hand_id: weapon.sword
+      skill_ids:
+      - skill.unbeatable-warrior
+    context:
+      count: 2
+    decisions:
+    - key: test.unpredictable-attack.0
+      value: false
+    - key: test.unpredictable-attack.1
+      value: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 5
+    - key: test.attack.0.parry
+      value: 5
+    - key: test.attack.1.wound
+      value: 1
+    expect:
+      result.attacks.0.parried: true
+      result.attacks.1.parried: false
+      result.attacks.1.wounded: false
+      result.defender.parries_remaining: 1
+  - id: single-attack-omits-parry
+    roles:
+    - active
+    - boundary
+    operation: pool
+    attacker:
+      skill_ids:
+      - mechanic.unpredictable-attack
+      main_weapon_id: weapon.mace
+    defender:
+      main_weapon_id: weapon.sword
+    context:
+      count: 1
+    decisions:
+    - key: test.unpredictable-attack.0
+      value: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.0.wound
+      value: 1
+    expect:
+      result.attacks.0.parried: false
+      result.defender.parries_remaining: 1
+  - id: without-rule-parry-is-attempted
+    roles:
+    - inactive
+    - boundary
+    operation: pool
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      main_weapon_id: weapon.sword
+    context:
+      count: 1
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.0.parry
+      value: 4
+    - key: test.attack.0.wound
+      value: 1
+    expect:
+      result.attacks.0.parried: false
+      result.defender.parries_remaining: 0
+  mutations:
+  - id: remove-unpredictable-declaration
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - one-unparryable-second-parried
+    - declared-second-attack-keeps-the-first-parryable
+    - single-attack-omits-parry
+- id: hobgoblin-sneaky-unpredictable
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: stateful
+  sources:
+  - target: rule/trollheim/khemri-hobgoblin-raiders/sneaky--unpredictable/mechanic.unpredictable-attack
+    digest: 4408488fdab7a7fa4732d1ee717c34cfb79867bbda136434dc94f7aec77498f4
+  depends_on:
+  - mechanic/mechanic.unpredictable-attack
+  interpretation: Khemri p.80 / Sneaky / Unpredictable grants the mechanism to the Sneaky profile automatically.
+    The test runs a real attack of the profile and contrasts another band profile without the rule.
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    - compiled
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: khemri-hobgoblin-raiders
+      profile_id: sneaky
+    context:
+      rule_id: sneaky--unpredictable
+    expect:
+      result.recipients:
+      - sneaky
+  - id: active
+    roles:
+    - active
+    - consumer
+    - sequence
+    - consumption
+    - boundary
+    operation: pool
+    attacker:
+      collection: trollheim
+      band_id: khemri-hobgoblin-raiders
+      profile_id: sneaky
+      main_weapon_id: weapon.mace
+    defender:
+      main_weapon_id: weapon.sword
+    context:
+      count: 1
+    decisions:
+    - key: test.unpredictable-attack.0
+      value: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.0.wound
+      value: 1
+    expect:
+      result.attacks.0.parried: false
+      result.defender.parries_remaining: 1
+  - id: profile-control
+    roles:
+    - inactive
+    operation: pool
+    attacker:
+      collection: trollheim
+      band_id: khemri-hobgoblin-raiders
+      profile_id: khann
+      main_weapon_id: weapon.mace
+    defender:
+      main_weapon_id: weapon.sword
+    context:
+      count: 1
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.0.parry
+      value: 4
+    - key: test.attack.0.wound
+      value: 1
+    expect:
+      result.defender.parries_remaining: 0
+  mutations:
+  - id: omit-profile-grant
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - active
+- id: hobgoblin-special-skill-unpredictable
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: stateful
+  sources:
+  - target: rule/trollheim/khemri-hobgoblin-raiders/band--hobgoblin-special-skills-unpredictable/mechanic.unpredictable-attack
+    digest: a343d7185560eaea140be4de34cc07eda01de7e3a6d3a5de06291f0543cc4083
+  depends_on:
+  - mechanic/mechanic.unpredictable-attack
+  interpretation: Khemri p.79 / Hobgoblin Special Skills / Unpredictable is available exactly to Khann,
+    Hobgoblin Shaman, Scouts and Sneaky. Once chosen, an attack avoids the parry; without choosing it,
+    the same attack consumes the parry.
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    - compiled
+    operation: selectable_grant
+    defender:
+      collection: trollheim
+      band_id: khemri-hobgoblin-raiders
+      profile_id: khann
+    context:
+      rule_id: band--hobgoblin-special-skills-unpredictable
+    expect:
+      result.recipients:
+      - hobgoblin-shaman
+      - khann
+      - scouts
+      - sneaky
+  - id: selected
+    roles:
+    - active
+    - consumer
+    - sequence
+    - consumption
+    - boundary
+    operation: pool
+    attacker:
+      collection: trollheim
+      band_id: khemri-hobgoblin-raiders
+      profile_id: khann
+      main_weapon_id: weapon.mace
+      special_rule_ids:
+      - band--hobgoblin-special-skills-unpredictable
+    defender:
+      main_weapon_id: weapon.sword
+    context:
+      count: 1
+    decisions:
+    - key: test.unpredictable-attack.0
+      value: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.0.wound
+      value: 1
+    expect:
+      result.defender.parries_remaining: 1
+  - id: not-selected
+    roles:
+    - inactive
+    operation: pool
+    attacker:
+      collection: trollheim
+      band_id: khemri-hobgoblin-raiders
+      profile_id: khann
+      main_weapon_id: weapon.mace
+    defender:
+      main_weapon_id: weapon.sword
+    context:
+      count: 1
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.0.parry
+      value: 4
+    - key: test.attack.0.wound
+      value: 1
+    expect:
+      result.defender.parries_remaining: 0
+  mutations:
+  - id: omit-selected-skill
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - selected
+- id: savage-goblin-special-skill-unpredictable
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: stateful
+  sources:
+  - target: rule/trollheim/lustria-savage-goblins/band--savage-goblin-special-skills-unpredictable/mechanic.unpredictable-attack
+    digest: 8e307ea41a9ca0613ffad6636484e08a1d03e72f1915f0ecd5f21743546d8001
+  depends_on:
+  - mechanic/mechanic.unpredictable-attack
+  interpretation: Lustria p.105 / Savage Goblin Special Skills / Unpredictable is available exactly to
+    Witch Doctor, Big Boss, Red Teeth and Trackers. The phase consumes the parry without the skill and
+    skips it when selected.
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    - compiled
+    operation: selectable_grant
+    defender:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: big-boss
+    context:
+      rule_id: band--savage-goblin-special-skills-unpredictable
+    expect:
+      result.recipients:
+      - big-boss
+      - red-teeth
+      - trackers
+      - witch-doctor
+  - id: selected
+    roles:
+    - active
+    - consumer
+    - sequence
+    - consumption
+    - boundary
+    operation: pool
+    attacker:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: big-boss
+      main_weapon_id: weapon.club
+      special_rule_ids:
+      - band--savage-goblin-special-skills-unpredictable
+    defender:
+      main_weapon_id: weapon.sword
+    context:
+      count: 1
+    decisions:
+    - key: test.unpredictable-attack.0
+      value: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.0.wound
+      value: 1
+    expect:
+      result.defender.parries_remaining: 1
+  - id: not-selected
+    roles:
+    - inactive
+    operation: pool
+    attacker:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: big-boss
+      main_weapon_id: weapon.club
+    defender:
+      main_weapon_id: weapon.sword
+    context:
+      count: 1
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.0.parry
+      value: 4
+    - key: test.attack.0.wound
+      value: 1
+    expect:
+      result.defender.parries_remaining: 0
+  mutations:
+  - id: omit-selected-skill
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - selected
+- id: web-of-steel-critical-injury
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: local
+  sources:
+  - target: mechanic/skill.web-of-steel
+    digest: eadceda3a3207282cb44bf63ace37eff3b204949b062b59b3cd8d75335dc567c
+  interpretation: Web of Steel adds one to the basic critical result. A table roll 4 becomes Master Strike
+    (5), causing two wounds with +2 Injury; without the skill it has no Injury bonus. The historical flat
+    +3 Injury interpretation is superseded by the corrected source reading.
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      skill_ids:
+      - skill.web-of-steel
+    expect:
+      attacker.fighter_id: custom:custom
+    expect_contains:
+      attacker.global_effects.tags:
+      - skill.web-of-steel
+  - id: critical-adds-one
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.web-of-steel
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 6
+    - key: test.critical
+      value: 4
+    - key: test.injury.0
+      value: 3
+    - key: test.injury.1
+      value: 1
+    expect:
+      result.critical: true
+      result.defender.condition: OUT
+  - id: without-skill
+    roles:
+    - inactive
+    - boundary
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 6
+    - key: test.critical
+      value: 4
+    - key: test.injury.0
+      value: 3
+    - key: test.injury.1
+      value: 1
+    expect:
+      result.critical: true
+      result.defender.condition: STUNNED
+  - id: non-critical-does-not-add
+    roles:
+    - inactive
+    - boundary
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.web-of-steel
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 5
+    - key: test.injury.0
+      value: 2
+    expect:
+      result.critical: false
+      result.defender.condition: KNOCKED_DOWN
+  mutations:
+  - id: omit-critical-table-bonus
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - critical-adds-one

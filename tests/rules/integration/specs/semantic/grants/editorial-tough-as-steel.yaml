@@ -1,0 +1,145 @@
+schema_version: 1
+specifications:
+- id: editorial-tough-as-steel-grants
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: permanent
+  sources:
+  - target: rule/mordheim/black-dwarfs/band--chaos-dwarf-special-skills-true-grit/skill.tough-as-steel
+    digest: bb8a890bca452255b5b50c3f87c8f96fe8b90906900bcabfc22219d38d8d8fa6
+  - target: rule/mordheim/dwarf-rangers/band--dwarf-special-skills-true-grit/skill.tough-as-steel
+    digest: 110479ef3f0b0fe90d5d0ae2371731938fb6517e2c345e1dbe0f89be60183b00
+  - target: rule/mordheim/dwarf-treasure-hunters/band--dwarf-special-skills-true-grit/skill.tough-as-steel
+    digest: c632b6c765e40569e73c136a84946dae38f4e18365807cbdb00899fab750fa97
+  - target: rule/mordheim/sons-of-hashut/band--chaos-dwarfs-special-skills-true-grit/skill.tough-as-steel
+    digest: ffaac553d2a9cd4d31a6b0cc3a61aeb3433f8a6fd383ce2a29f4ee244e044f51
+  - target: rule/trollheim/chaos-streets-dwarf-treasure-hunters/band--dwarf-special-skills-true-grit/skill.tough-as-steel
+    digest: 8ce8865a46e76d0e9faad612e28c5819e352828ec4f4a84f215a0be9f1ffea22
+  - target: rule/trollheim/khemri-cursed-of-karak-zorn/band--karak-zorn-special-skills-hard-as-steel/skill.tough-as-steel
+    digest: 0b1a58cb318be10ff8852161970a9c7ff7f7ee95108a17353979ab5b7cb40018
+  depends_on:
+  - mechanic/skill.tough-as-steel
+  interpretation: All six publications state the same 1-3 / 4-5 / 6 Injury table and expose it as a selectable
+    skill to their listed Dwarf or Chaos Dwarf heroes.
+  cases:
+  - id: black-dwarf-heroes
+    roles:
+    - grant
+    - compiled
+    operation: selectable_grant
+    defender:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: sorcerer
+    context:
+      rule_id: band--chaos-dwarf-special-skills-true-grit
+    expect:
+      result.recipients:
+      - gaolers
+      - sorcerer
+  - id: dwarf-ranger-heroes
+    roles:
+    - grant
+    operation: selectable_grant
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: runesmith
+    context:
+      rule_id: band--dwarf-special-skills-true-grit
+    expect:
+      result.recipients:
+      - apprentice-runesmith
+      - dwarf-troll-slayers
+      - runesmith
+  - id: treasure-hunter-heroes
+    roles:
+    - grant
+    operation: selectable_grant
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-noble
+    context:
+      rule_id: band--dwarf-special-skills-true-grit
+    expect:
+      result.recipients:
+      - dwarf-engineer
+      - dwarf-noble
+      - dwarf-troll-slayers
+  - id: sons-of-hashut-heroes
+    roles:
+    - grant
+    operation: selectable_grant
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: apprentice-sorcerer
+    context:
+      rule_id: band--chaos-dwarfs-special-skills-true-grit
+    expect:
+      result.recipients:
+      - apprentice-sorcerer
+      - bull-centaur
+      - chaos-dwarf-champions
+  - id: streets-dwarf-heroes
+    roles:
+    - grant
+    operation: selectable_grant
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-noble
+    context:
+      rule_id: band--dwarf-special-skills-true-grit
+    expect:
+      result.recipients:
+      - dwarf-engineer
+      - dwarf-noble
+      - dwarf-troll-slayers
+  - id: karak-zorn-heroes
+    roles:
+    - grant
+    operation: selectable_grant
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: karak-zorn-noble
+    context:
+      rule_id: band--karak-zorn-special-skills-hard-as-steel
+    expect:
+      result.recipients:
+      - karak-zorn-noble
+      - longbeard
+      - priest-of-grungni
+      - troll-slayer
+  - id: granted-face-three
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: apprentice-sorcerer
+      special_rule_ids:
+      - band--chaos-dwarfs-special-skills-true-grit
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: KNOCKED_DOWN
+  mutations:
+  - id: remove-granted-true-grit
+    changes:
+    - path: defender.global_effects.tags
+      value: []
+    - path: defender.global_effects.out_of_action_threshold
+      value: 5
+    # The compiled contract carries the printed 1-3 Knocked Down chart as
+    # `true_grit`, which the resolver reads even when the tag is gone; removing
+    # the grant requires resetting both carriers.
+    - path: defender.global_effects.true_grit
+      value: false
+    cases:
+    - granted-face-three

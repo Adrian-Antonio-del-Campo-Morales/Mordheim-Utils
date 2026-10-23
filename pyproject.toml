@@ -33,26 +33,21 @@ mordheim_construction = ["_eligibility.js"]
 pythonpath = ["packages/python/combat-engine", "packages/python/roster-construction", "packages/python/core", "packages/python/knowledge", "apps/combat-lab"]
 testpaths = ["tests"]
 addopts = "--strict-markers"
-# One primary category per executable test, chosen from its assertions (see
+# One phase category per executable test, chosen from its assertions (see
 # docs/reference/test-sequence.md). Registering them here makes
 # `pytest -m <category>` the selection mechanism and rejects unknown markers.
+# phase0..phase7 are the functional dependency order; the last three are
+# additional categories outside that sequence.
 markers = [
-    "architecture: component and dependency boundaries are respected",
-    "data_contract: documents and requests conform to structural contracts",
-    "knowledge_integrity: canonical KB records are consistent and preserve source facts",
-    "data_transport: information survives generation, loading and projection",
-    "eligibility: a choice is offered, admitted or rejected for the correct reason",
-    "compilation: an admitted configuration becomes the correct executable representation",
-    "operator: a local operation produces its defined value or distribution",
-    "rule_behavior: one game rule has its source-defined consequences",
-    "interaction: multiple rules or phases compose in the required order",
-    "workflow: an application or execution service connects its steps correctly",
-    "persistence: saved state is preserved and invalid storage is handled",
-    "presentation: visible and interactive results are correct",
-    "end_to_end: a complete connected product path meets observable acceptance",
-    "test_infrastructure: testing and diagnostic mechanisms detect faults reliably",
-    "evidence: coverage, provenance and certification records are valid",
-    "parity: implementations or execution modes agree under a defined comparison",
+    "phase0_preflight: architecture boundaries and the test infrastructure itself",
+    "phase1_kb_contracts: KB schemas, references, integrity, loading and its contracts",
+    "phase2_construction: eligibility, profiles, compilation and rule grants produce fighters",
+    "phase3_rules: modular conditions, operators, effects and isolated rule application",
+    "phase4_modular: modular interactions, combat sequences, integration and E2E",
+    "phase5_vectorized: vectorized engine tests and parity against the oracle",
+    "phase6_native: native engine tests and parity against the oracle",
+    "phase7_warband: Warband Manager persistence, flows, presentation, integration and E2E",
+    "evidence: evidence generation, coverage, provenance and certification records",
+    "packaging: the built or packaged product contains required usable artefacts",
     "performance: a measured execution or delivery budget is met",
-    "delivery: the built or packaged product contains required usable artefacts",
 ]

@@ -1,0 +1,75 @@
+schema_version: 1
+specifications:
+- id: editorial-knife-fighting-grant
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: contextual
+  sources:
+  - target: rule/trollheim/khemri-thieves-guild/band--guild-special-skills-knife-fighting/skill.knife-fighting
+    digest: 2b38b99ce56c0cf7b40435cef42db8e91c191815fc144222ec06b1ee4b7ca6e2
+  depends_on:
+  - mechanic/skill.knife-fighting
+  interpretation: Knife Fighting is selectable by the four Thieves' Guild hero profiles. Selection grants
+    the canonical dagger-or-yambiya-only WS and Injury modifiers; ordinary henchmen do not receive access.
+  cases:
+  - id: exact-guild-heroes
+    roles:
+    - grant
+    - compiled
+    operation: selectable_grant
+    defender:
+      collection: trollheim
+      band_id: khemri-thieves-guild
+      profile_id: guild-chief
+    context:
+      rule_id: band--guild-special-skills-knife-fighting
+    expect:
+      result.recipients:
+      - guild-chief
+      - guild-hashashiyyin
+      - guild-master-thief
+      - guild-ruffian
+  - id: granted-injury-consumer
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: injury
+    attacker:
+      collection: trollheim
+      band_id: khemri-thieves-guild
+      profile_id: guild-chief
+      special_rule_ids:
+      - band--guild-special-skills-knife-fighting
+      main_weapon_id: weapon.dagger
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.total: 3
+      result.condition: STUNNED
+    expect_contains:
+      attacker.global_effects.tags:
+      - skill.knife-fighting
+  - id: granted-but-wrong-weapon
+    roles:
+    - inactive
+    operation: injury
+    attacker:
+      collection: trollheim
+      band_id: khemri-thieves-guild
+      profile_id: guild-chief
+      special_rule_ids:
+      - band--guild-special-skills-knife-fighting
+      main_weapon_id: weapon.sword
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.total: 2
+      result.condition: KNOCKED_DOWN
+  mutations:
+  - id: remove-granted-skill
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - granted-injury-consumer

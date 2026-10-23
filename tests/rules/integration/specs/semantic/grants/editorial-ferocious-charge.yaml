@@ -1,0 +1,129 @@
+schema_version: 1
+specifications:
+- id: editorial-ferocious-charge-grants
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: permanent
+  sources:
+  - target: rule/mordheim/dwarf-rangers/band--slayer-special-skills-ferocious-charge/skill.ferocious-charge
+    digest: a03b996aa4440accae31eb5a75bce0da55bc0ab171e2672bd0a48685bf39634f
+  - target: rule/mordheim/dwarf-treasure-hunters/band--slayer-special-skills-ferocious-charge/skill.ferocious-charge
+    digest: 6c76f4aac91ae27cc6de09f68ff233bcb298080f5ee25b2f26fcb934210b90e1
+  - target: rule/mordheim/pit-fighters/band--troll-slayer-special-skills-ferocious-charge/skill.ferocious-charge
+    digest: 2bb6a0bfd562d1642cf1ccd6eaed47a297344c8267d0af294ad0310e8f2d8d43
+  - target: rule/trollheim/chaos-streets-dwarf-treasure-hunters/band--slayer-special-skills-ferocious-charge/skill.ferocious-charge
+    digest: 497b0762d63f105b0cab10d9527e358b408c6a8e0796befbf6d8b5ea6b43f135
+  - target: rule/trollheim/chaos-streets-pit-fighters/band--troll-slayer-special-skills-ferocious-charge/skill.ferocious-charge
+    digest: 3942c793b66ea9f6e1917ffa4360871f8beda7c612f42df14e74e0ba25980a6a
+  - target: rule/trollheim/khemri-cursed-of-karak-zorn/band--troll-slayer-special-skills-ferocious-charge/skill.ferocious-charge
+    digest: fc9d9694aa45656b79facdb895cfc470ecdc8f4e6c621b9ff353c43da758c78e
+  depends_on:
+  - mechanic/skill.ferocious-charge
+  interpretation: Each editorial rule is a selectable Slayer skill. It grants the canonical mechanism
+    only to the explicitly named Slayer profile, including sources whose surrounding skill category is
+    available to other heroes.
+  cases:
+  - id: dwarf-rangers-only-slayers
+    roles:
+    - grant
+    - compiled
+    operation: selectable_grant
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: runesmith
+    context:
+      rule_id: band--slayer-special-skills-ferocious-charge
+    expect:
+      result.recipients:
+      - dwarf-troll-slayers
+  - id: treasure-hunters-only-slayers
+    roles:
+    - grant
+    operation: selectable_grant
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-noble
+    context:
+      rule_id: band--slayer-special-skills-ferocious-charge
+    expect:
+      result.recipients:
+      - dwarf-troll-slayers
+  - id: pit-fighters-only-slayer
+    roles:
+    - grant
+    operation: selectable_grant
+    defender:
+      collection: mordheim
+      band_id: pit-fighters
+      profile_id: pit-king
+    context:
+      rule_id: band--troll-slayer-special-skills-ferocious-charge
+    expect:
+      result.recipients:
+      - dwarf-troll-slayer
+  - id: streets-dwarfs-only-slayers
+    roles:
+    - grant
+    operation: selectable_grant
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-noble
+    context:
+      rule_id: band--slayer-special-skills-ferocious-charge
+    expect:
+      result.recipients:
+      - dwarf-troll-slayers
+  - id: streets-pit-fighters-only-slayer
+    roles:
+    - grant
+    operation: selectable_grant
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: pit-king
+    context:
+      rule_id: band--troll-slayer-special-skills-ferocious-charge
+    expect:
+      result.recipients:
+      - dwarf-troll-slayer
+  - id: karak-zorn-only-slayer
+    roles:
+    - grant
+    operation: selectable_grant
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: karak-zorn-noble
+    context:
+      rule_id: band--troll-slayer-special-skills-ferocious-charge
+    expect:
+      result.recipients:
+      - troll-slayer
+  - id: granted-consumer
+    roles:
+    - consumer
+    - boundary
+    operation: attacks
+    attacker:
+      collection: mordheim
+      band_id: pit-fighters
+      profile_id: dwarf-troll-slayer
+      special_rule_ids:
+      - band--troll-slayer-special-skills-ferocious-charge
+      main_weapon_id: weapon.mace
+    context:
+      first_round: true
+      charging: true
+    expect:
+      result.attacks: 2
+    expect_contains:
+      attacker.global_effects.tags:
+      - skill.ferocious-charge
+  mutations:
+  - id: remove-granted-effect
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - granted-consumer

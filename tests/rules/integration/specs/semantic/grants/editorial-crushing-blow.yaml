@@ -1,0 +1,93 @@
+schema_version: 1
+specifications:
+- id: editorial-crushing-blow-grants
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: permanent
+  sources:
+  - target: rule/mordheim/norse-explorers-btb/band--norse-special-skills-crushing-blow/skill.crushing-blow
+    digest: 449627d5da88fc3193ae85b55a7b87e6fd601303c27d1c803544f3145ceb891b
+  - target: rule/mordheim/norse-explorers-lustria/band--norse-special-skills-crushing-blow/skill.crushing-blow
+    digest: 6584b522403141c930498caf6bd17f91e8aaf86dd9ea44cea1715b367afa3d0d
+  - target: rule/trollheim/lustria-norse/band--norse-special-skills-crushing-blow/skill.crushing-blow
+    digest: 6d9bfe292c893a4abeb3c7a1dbd5f564eb7641485709004863dd30f7608e4edd
+  depends_on:
+  - mechanic/skill.crushing-blow
+  interpretation: The three Norse publications grant the same selectable skill to their four hero profiles.
+    Henchmen and wolves cannot select it. The historical spelling difference between beserkers and berserkers
+    is a profile ID, not a semantic difference.
+  cases:
+  - id: border-town-burning-heroes
+    roles:
+    - grant
+    - compiled
+    operation: selectable_grant
+    defender:
+      collection: mordheim
+      band_id: norse-explorers-btb
+      profile_id: jarl
+    context:
+      rule_id: band--norse-special-skills-crushing-blow
+    expect:
+      result.recipients:
+      - beserkers
+      - bondsmen
+      - jarl
+      - wulfen
+  - id: mordheim-lustria-heroes
+    roles:
+    - grant
+    operation: selectable_grant
+    defender:
+      collection: mordheim
+      band_id: norse-explorers-lustria
+      profile_id: jarl
+    context:
+      rule_id: band--norse-special-skills-crushing-blow
+    expect:
+      result.recipients:
+      - beserkers
+      - bondsmen
+      - jarl
+      - wulfen
+  - id: trollheim-lustria-heroes
+    roles:
+    - grant
+    operation: selectable_grant
+    defender:
+      collection: trollheim
+      band_id: lustria-norse
+      profile_id: jarl
+    context:
+      rule_id: band--norse-special-skills-crushing-blow
+    expect:
+      result.recipients:
+      - berserkers
+      - bondsmen
+      - jarl
+      - wulfen
+  - id: granted-consumer
+    roles:
+    - consumer
+    - boundary
+    operation: parry
+    attacker:
+      collection: mordheim
+      band_id: norse-explorers-btb
+      profile_id: jarl
+      special_rule_ids:
+      - band--norse-special-skills-crushing-blow
+      main_weapon_id: weapon.mace
+    defender:
+      main_weapon_id: weapon.sword
+    context:
+      hit_roll: 4
+    expect:
+      attacker.global_effects.cannot_be_parried: true
+      result.attempted: false
+      result.blocked: false
+  mutations:
+  - id: remove-granted-effect
+    path: attacker.global_effects.cannot_be_parried
+    value: false
+    cases:
+    - granted-consumer

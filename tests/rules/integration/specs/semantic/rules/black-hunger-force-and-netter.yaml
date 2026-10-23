@@ -1,0 +1,424 @@
+schema_version: 1
+specifications:
+- id: mechanic-black-hunger
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: stateful
+  sources:
+  - target: mechanic/mechanic.black-hunger
+    digest: f164df0aa450626ee038306c757dc43172ac962536c93894ed45330cb3ed33a1
+  interpretation: Black Hunger adds an attack while active and, at the end, causes D3 automatic Strength
+    3 hits that ignore armour.
+  cases:
+  - id: attack-bonus
+    roles:
+    - compiled
+    - inactive
+    - consumer
+    - boundary
+    operation: attacks
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - mechanic.black-hunger
+    expect:
+      attacker.global_effects.attacks_bonus: 0
+      result.attacks: 1
+    expect_contains:
+      attacker.global_effects.tags:
+      - mechanic.black-hunger
+  - id: own-turn-attack-bonus
+    roles:
+    - active
+    - sequence
+    - consumption
+    - boundary
+    operation: round
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - mechanic.black-hunger
+    context:
+      first_charged: true
+    rolls:
+    - key: round.0.first.attack.0.hit
+      value: 1
+    - key: round.0.first.attack.1.hit
+      value: 1
+    - key: round.0.second.attack.0.hit
+      value: 1
+    - key: round.0.first.black-hunger.hits
+      sides: 3
+      value: 1
+    - key: round.0.first.black-hunger.hit.0.wound
+      value: 1
+    expect:
+      result.attacks.0.hit: false
+      result.attacks.1.hit: false
+      result.attacks.2.hit: false
+      result.attacks.3.wounded: false
+  - id: one-backlash-hit
+    roles:
+    - active
+    - sequence
+    - consumption
+    - boundary
+    operation: black_hunger
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - mechanic.black-hunger
+    rolls:
+    - key: test.black-hunger.hits
+      sides: 3
+      value: 1
+    - key: test.black-hunger.hit.0.wound
+      value: 4
+    expect:
+      result.attacker.wounds: 2
+      result.attacks.0.wounded: true
+  - id: three-failed-wounds
+    roles:
+    - boundary
+    - sequence
+    - consumption
+    operation: black_hunger
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - mechanic.black-hunger
+    rolls:
+    - key: test.black-hunger.hits
+      sides: 3
+      value: 3
+    - key: test.black-hunger.hit.0.wound
+      value: 1
+    - key: test.black-hunger.hit.1.wound
+      value: 1
+    - key: test.black-hunger.hit.2.wound
+      value: 1
+    expect:
+      result.attacker.wounds: 3
+      result.attacks.0.wounded: false
+      result.attacks.1.wounded: false
+      result.attacks.2.wounded: false
+  - id: inactive-fighter
+    roles:
+    - inactive
+    operation: black_hunger
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - mechanic.black-hunger
+    attacker_state:
+      condition: OUT
+    expect:
+      result.attacker.wounds: 3
+      result.attacks: []
+  mutations:
+  - id: remove-black-hunger
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - own-turn-attack-bonus
+    - one-backlash-hit
+- id: mechanic-force-of-will
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: stateful
+  sources:
+  - target: mechanic/mechanic.force-of-will
+    digest: 9afc490b038f5305b2fab7e311d154083d6ef95de83de7014ca4b522920a6407
+  interpretation: Force of Will attempts to rescue the first Out of Action once with Toughness and afterwards
+    requires cumulative checks with an extra -1 per round.
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - mechanic.force-of-will
+    expect:
+      attacker.global_effects.strength_bonus: 0
+    expect_contains:
+      attacker.global_effects.tags:
+      - mechanic.force-of-will
+  - id: rescue-success
+    roles:
+    - active
+    - sequence
+    - consumption
+    - boundary
+    operation: force_of_will
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - mechanic.force-of-will
+    attacker_state:
+      condition: OUT
+      wounds: 0
+    rolls:
+    - key: test.force.rescue
+      value: 3
+    expect:
+      result.condition: STANDING
+      result.wounds: 1
+      result.force_of_will_active: true
+      result.resources_spent:
+      - force-of-will
+  - id: rescue-failure
+    roles:
+    - boundary
+    - consumption
+    operation: force_of_will
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - mechanic.force-of-will
+    attacker_state:
+      condition: OUT
+      wounds: 0
+    rolls:
+    - key: test.force.rescue
+      value: 4
+    expect:
+      result.condition: OUT
+      result.force_of_will_active: false
+      result.resources_spent:
+      - force-of-will
+  - id: sustain-success
+    roles:
+    - active
+    - sequence
+    - boundary
+    operation: force_of_will
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - mechanic.force-of-will
+    attacker_state:
+      force_of_will_active: true
+      force_of_will_penalty: 0
+      resources_spent:
+      - force-of-will
+    context:
+      sustain: true
+    rolls:
+    - key: test.force.sustain
+      value: 2
+    expect:
+      result.condition: STANDING
+      result.force_of_will_active: true
+      result.force_of_will_penalty: 1
+  - id: ordinary-inactive
+    roles:
+    - inactive
+    operation: force_of_will
+    attacker:
+      main_weapon_id: weapon.mace
+    attacker_state:
+      condition: OUT
+      wounds: 0
+    expect:
+      result.condition: OUT
+      result.resources_spent: []
+  mutations:
+  - id: remove-force
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - rescue-success
+    - rescue-failure
+- id: editorial-black-hunger-variants
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: construction
+  sources:
+  - target: rule/mordheim/skaven-clan-eshin/band--skaven-special-skills-black-hunger/mechanic.black-hunger
+    digest: b1855a5433da95960883888210c1c9fe55bb7ae764ceb1628314abdc1db8d3f6
+  - target: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-black-hunger/mechanic.black-hunger
+    digest: c40cb92df0c1f1637b84b71efa8da53083532672b3690d603ccaddffc338b549
+  - target: rule/trollheim/lustria-clan-pestilens/band--clan-pestilens-special-skills-black-hunger/mechanic.black-hunger
+    digest: a303033ecf080e9ec9b0e264a36d28cacf50f9b84d7f5f2227420147cc89b605
+  - target: rule/trollheim/trollheim-skaven-clan-eshin/band--skaven-special-skills-black-hunger/mechanic.black-hunger
+    digest: 9bb55761f06d7d9cdd51b6278284d0c385eaee1b59d306c4f9a7f6f93fb9fa56
+  depends_on:
+  - mechanic/mechanic.black-hunger
+  interpretation: The four rules grant Black Hunger to their exact Hero lists; the editorial Movement
+    differences stay outside the duel and share the same combat effect.
+  cases:
+  - id: eshin-mordheim
+    roles:
+    - grant
+    - accepted
+    - rejected
+    operation: selectable_grant
+    defender:
+      band_id: skaven-clan-eshin
+      profile_id: assassin-adept
+    context:
+      rule_id: band--skaven-special-skills-black-hunger
+    expect:
+      result.recipients:
+      - assassin-adept
+      - black-skaven
+      - eshin-sorcerer
+      - night-runners
+  - id: pestilens-mordheim
+    roles:
+    - grant
+    - accepted
+    - rejected
+    operation: selectable_grant
+    defender:
+      band_id: skaven-clan-pestilens
+      profile_id: plague-priest
+    context:
+      rule_id: band--clan-pestilens-special-skills-black-hunger
+    expect:
+      result.recipients:
+      - monk-initiates
+      - pestilens-sorcerer
+      - plague-monks
+      - plague-priest
+  - id: pestilens-lustria
+    roles:
+    - grant
+    - accepted
+    - rejected
+    operation: selectable_grant
+    defender:
+      collection: trollheim
+      band_id: lustria-clan-pestilens
+      profile_id: plague-priest
+    context:
+      rule_id: band--clan-pestilens-special-skills-black-hunger
+    expect:
+      result.recipients:
+      - monk-initiates
+      - pestilens-sorcerer
+      - plague-monks
+      - plague-priest
+  - id: eshin-trollheim
+    roles:
+    - grant
+    - accepted
+    - rejected
+    operation: selectable_grant
+    defender:
+      collection: trollheim
+      band_id: trollheim-skaven-clan-eshin
+      profile_id: assassin-adept
+    context:
+      rule_id: band--skaven-special-skills-black-hunger
+    expect:
+      result.recipients:
+      - assassin-adept
+      - black-skaven
+      - eshin-sorcerer
+      - night-runners
+  - id: selected-effect
+    roles:
+    - accepted
+    operation: round
+    attacker:
+      band_id: skaven-clan-eshin
+      profile_id: assassin-adept
+      special_rule_ids:
+      - band--skaven-special-skills-black-hunger
+    context:
+      first_charged: true
+    rolls:
+    - key: round.0.first.attack.0.hit
+      value: 1
+    - key: round.0.first.attack.1.hit
+      value: 1
+    - key: round.0.second.attack.0.hit
+      value: 1
+    - key: round.0.first.black-hunger.hits
+      sides: 3
+      value: 1
+    - key: round.0.first.black-hunger.hit.0.wound
+      value: 1
+    expect:
+      attacker.global_effects.attacks_bonus: 0
+      result.attacks.0.hit: false
+      result.attacks.1.hit: false
+      result.attacks.2.hit: false
+      result.attacks.3.wounded: false
+  mutations:
+  - id: omit-black-hunger
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - selected-effect
+- id: editorial-force-of-will-variants
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: construction
+  sources:
+  - target: rule/mordheim/pit-fighters/band--pit-fighter-skill-force-of-will/mechanic.force-of-will
+    digest: e130c506dde68497c1498c9fcab18e576d56dcf8c7c9f82f101c9d69bb02a83a
+  - target: rule/trollheim/chaos-streets-pit-fighters/band--pit-fighter-skill-force-of-will/mechanic.force-of-will
+    digest: 0566cc8eee411b0b4d1965deb388c39e5beab3bcfca34a71e96631efc49e9d34
+  depends_on:
+  - mechanic/mechanic.force-of-will
+  interpretation: Both editions grant Force of Will exclusively to Dwarf Troll Slayer, Pit King and Pit
+    Veterans and consume the same canonical rescue.
+  cases:
+  - id: mordheim-recipients
+    roles:
+    - grant
+    - accepted
+    - rejected
+    operation: selectable_grant
+    defender:
+      band_id: pit-fighters
+      profile_id: pit-king
+    context:
+      rule_id: band--pit-fighter-skill-force-of-will
+    expect:
+      result.recipients:
+      - dwarf-troll-slayer
+      - pit-king
+      - pit-veterans
+  - id: trollheim-recipients
+    roles:
+    - grant
+    - accepted
+    - rejected
+    operation: selectable_grant
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: pit-king
+    context:
+      rule_id: band--pit-fighter-skill-force-of-will
+    expect:
+      result.recipients:
+      - dwarf-troll-slayer
+      - pit-king
+      - pit-veterans
+  - id: selected-rescue
+    roles:
+    - accepted
+    operation: force_of_will
+    attacker:
+      band_id: pit-fighters
+      profile_id: pit-king
+      special_rule_ids:
+      - band--pit-fighter-skill-force-of-will
+    attacker_state:
+      condition: OUT
+      wounds: 0
+    rolls:
+    - key: test.force.rescue
+      value: 3
+    expect:
+      result.condition: STANDING
+      result.resources_spent:
+      - force-of-will
+  mutations:
+  - id: omit-force
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - selected-rescue

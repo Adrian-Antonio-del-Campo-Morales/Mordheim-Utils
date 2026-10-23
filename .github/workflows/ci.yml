@@ -52,7 +52,7 @@ jobs:
       # shared eligibility bridge. The artefact audits and parity vectors of
       # `tests/python/web` are deliberately excluded (see the header).
       - name: Run the Python regression net
-        run: python -m pytest tests/python/contracts tests/python/architecture tests/python/knowledge tests/python/construction/test_shared_eligibility.py -q
+        run: python -m pytest tests/applications/warband_manager/persistence/campaign_file tests/tooling/architecture tests/rules/knowledge tests/rules/construction/test_shared_eligibility.py -q
 
       # The modular engine E2E battery is listed separately: the Python
       # regression net above deliberately excludes tests/E2E.  This step runs
@@ -61,7 +61,7 @@ jobs:
       # the audit register.  Incomplete admitted-clause coverage is reported,
       # and fails only under MORDHEIM_E2E_REQUIRE_COMPLETE=1.
       - name: Run the modular engine E2E battery
-        run: python -m pytest tests/E2E/modular-engine -q
+        run: python -m pytest tests/rules/integration/e2e -q --ignore=tests/rules/integration/e2e/test_non_regression.py
 
       # Separated from the battery so a lost accepted scenario, clause
       # reference or identity is visible on its own rather than hidden among
@@ -69,7 +69,7 @@ jobs:
       # evidence/coverage-baseline.yaml set-wise; counts alone would let a
       # reviewed scenario be substituted by another one.
       - name: Check accepted E2E coverage has not regressed
-        run: python -m pytest tests/E2E/modular-engine/test_non_regression.py -q
+        run: python -m pytest tests/rules/integration/e2e/test_non_regression.py -q
 
       - name: Verify the artefact is deterministic and untouched by a rebuild
         run: python tools/knowledge/generate_knowledge_web.py --check
@@ -108,10 +108,10 @@ jobs:
         run: |
           cd apps/warband-manager-web
           npx vitest run --pool=forks --maxWorkers=1 --testTimeout=200000 \
-            ../../tests/web/features/campaign/knowledge-display-coverage.test.tsx \
-            ../../tests/web/features/campaign/ui_i18n.test.ts \
-            ../../tests/web/features/campaign/displayText.test.ts \
-            ../../tests/web/features/campaign/KnowledgeHint.test.tsx
+            ../../tests/applications/warband_manager/features/campaign/knowledge-display-coverage.test.tsx \
+            ../../tests/applications/warband_manager/features/campaign/ui_i18n.test.ts \
+            ../../tests/applications/warband_manager/features/campaign/displayText.test.ts \
+            ../../tests/applications/warband_manager/features/campaign/KnowledgeHint.test.tsx
 
       - name: Typecheck, lint, test and build the web app
         run: |
@@ -126,7 +126,7 @@ jobs:
       # asserting the bundle excludes NumPy/Cython/Tkinter/Combat Lab and
       # ships no .mordheim files (the pre-build `npm test` run skips it).
       - name: Post-build bundle guardrails (boundaries.test.ts)
-        run: cd apps/warband-manager-web && npx vitest run ../../tests/web/architecture/boundaries.test.ts
+        run: cd apps/warband-manager-web && npx vitest run ../../tests/tooling/architecture/web-boundaries.test.ts ../../tests/applications/warband_manager/packaging/bundle-boundaries.test.ts
 
       - name: Upload the built app for inspection
         uses: actions/upload-artifact@v4

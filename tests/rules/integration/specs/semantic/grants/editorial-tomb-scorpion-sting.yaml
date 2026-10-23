@@ -1,0 +1,162 @@
+schema_version: 1
+specifications:
+- id: editorial-mordheim-tomb-scorpion-sting
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: local
+  sources:
+  - target: rule/mordheim/tomb-guardians/tomb-scorpions--scorpion-sting/poison.black-lotus
+    digest: 43d4df42536e2f197bf1ad82cc8a5dad5759fc10bc89edc60400c51e76db81ed
+  depends_on:
+  - mechanic/poison.black-lotus
+  interpretation: The Tomb Scorpion's natural attack receives Black Lotus; a natural 6 to hit wounds automatically
+    unless the target is immune to poison.
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    - compiled
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: tomb-guardians
+      profile_id: tomb-scorpions
+    context:
+      rule_id: tomb-scorpions--scorpion-sting
+    expect:
+      result.recipients:
+      - tomb-scorpions
+  - id: hit-six-automatic-wound
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      collection: mordheim
+      band_id: tomb-guardians
+      profile_id: tomb-scorpions
+    context:
+      hit_roll: 6
+    expect:
+      context.automatic: false
+      result.success: true
+      result.critical: false
+      context.failure_still_wounds: true
+    expect_contains:
+      attacker.main_weapon.tags:
+      - poison.black-lotus
+    rolls:
+    - key: wound
+      value: 1
+  - id: hit-five-is-ordinary
+    roles:
+    - inactive
+    - boundary
+    operation: wound
+    attacker:
+      collection: mordheim
+      band_id: tomb-guardians
+      profile_id: tomb-scorpions
+    context:
+      hit_roll: 5
+    rolls:
+    - key: wound
+      value: 1
+    expect:
+      context.automatic: false
+      result.success: false
+  - id: immunity-cancels-sting
+    roles:
+    - inactive
+    - boundary
+    operation: wound
+    attacker:
+      collection: mordheim
+      band_id: tomb-guardians
+      profile_id: tomb-scorpions
+    defender:
+      preparation_ids:
+      - preparation.tears-of-shallaya
+    context:
+      hit_roll: 6
+    rolls:
+    - key: wound
+      value: 1
+    expect:
+      context.automatic: false
+      result.success: false
+  mutations:
+  - id: remove-sting
+    path: attacker.main_weapon.tags
+    value: []
+    cases:
+    - hit-six-automatic-wound
+- id: editorial-khemri-tomb-scorpion-sting
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: local
+  sources:
+  - target: rule/trollheim/khemri-tomb-guardians/tomb-scorpions--scorpion-sting/poison.black-lotus
+    digest: 569d553bd6acf9bccbcffaba8896abcf0b78250f506d99251f97a376a8a7b7b0
+  depends_on:
+  - mechanic/poison.black-lotus
+  interpretation: The Khemri version grants the natural attack exactly the same Black Lotus mechanism.
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    - compiled
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: khemri-tomb-guardians
+      profile_id: tomb-scorpions
+    context:
+      rule_id: tomb-scorpions--scorpion-sting
+    expect:
+      result.recipients:
+      - tomb-scorpions
+  - id: hit-six-automatic-wound
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      collection: trollheim
+      band_id: khemri-tomb-guardians
+      profile_id: tomb-scorpions
+    context:
+      hit_roll: 6
+    expect:
+      context.automatic: false
+      result.success: true
+      result.critical: false
+      context.failure_still_wounds: true
+    expect_contains:
+      attacker.main_weapon.tags:
+      - poison.black-lotus
+    rolls:
+    - key: wound
+      value: 1
+  - id: hit-five-is-ordinary
+    roles:
+    - inactive
+    - boundary
+    operation: wound
+    attacker:
+      collection: trollheim
+      band_id: khemri-tomb-guardians
+      profile_id: tomb-scorpions
+    context:
+      hit_roll: 5
+    rolls:
+    - key: wound
+      value: 1
+    expect:
+      result.success: false
+  mutations:
+  - id: remove-sting
+    path: attacker.main_weapon.tags
+    value: []
+    cases:
+    - hit-six-automatic-wound

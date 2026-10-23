@@ -1,0 +1,620 @@
+schema_version: 1
+specifications:
+- id: retain-weapon-strength
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: contextual
+  sources:
+  - target: mechanic/mechanic.retain-flail-morning-star-strength-bonus
+    digest: fda967ef736084ad89fe5f7a2f17e9f660658febf0d24a427b716b9f4052b167
+  - target: rule/mordheim/bretonnian-chapel-guard/band--bulging-muscles/mechanic.retain-flail-morning-star-strength-bonus
+    digest: a920f375b0da7b2deec294492b7ca3440b54ff651a54f7e002b1f312f8f8c2a4
+  interpretation: 'Knightly Skills / Bulging Muscles: keeps the flail''s +2 S and the morning star''s
+    +1 S after the first round. It does not increase swords nor add more Strength to the initial bonus;
+    wounds and Strength-based penetration use the same value.'
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    operation: selectable_grant
+    defender:
+      band_id: bretonnian-chapel-guard
+      profile_id: questing-knight
+      special_rule_ids:
+      - band--bulging-muscles
+    context:
+      rule_id: band--bulging-muscles
+    expect:
+      result.recipients:
+      - knights-errant
+      - questing-knight
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      skill_ids:
+      - mechanic.retain-flail-morning-star-strength-bonus
+    expect:
+      attacker.characteristics.strength: 3
+    expect_contains:
+      attacker.global_effects.tags:
+      - mechanic.retain-flail-morning-star-strength-bonus
+  - id: flail-false
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: strength
+    attacker:
+      band_id: bretonnian-chapel-guard
+      profile_id: questing-knight
+      special_rule_ids:
+      - band--bulging-muscles
+      main_weapon_id: weapon.flail
+    context:
+      first_round: false
+    expect:
+      result.wound: 6
+      result.armour: 6
+  - id: normal-flail-false
+    roles:
+    - inactive
+    - boundary
+    operation: strength
+    attacker:
+      band_id: bretonnian-chapel-guard
+      profile_id: questing-knight
+      special_rule_ids: []
+      main_weapon_id: weapon.flail
+    context:
+      first_round: false
+    expect:
+      result.wound: 4
+      result.armour: 4
+  - id: flail-true
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: strength
+    attacker:
+      band_id: bretonnian-chapel-guard
+      profile_id: questing-knight
+      special_rule_ids:
+      - band--bulging-muscles
+      main_weapon_id: weapon.flail
+    context:
+      first_round: true
+    expect:
+      result.wound: 6
+      result.armour: 6
+  - id: normal-flail-true
+    roles:
+    - inactive
+    - boundary
+    operation: strength
+    attacker:
+      band_id: bretonnian-chapel-guard
+      profile_id: questing-knight
+      special_rule_ids: []
+      main_weapon_id: weapon.flail
+    context:
+      first_round: true
+    expect:
+      result.wound: 6
+      result.armour: 6
+  - id: morning-star-false
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: strength
+    attacker:
+      band_id: bretonnian-chapel-guard
+      profile_id: questing-knight
+      special_rule_ids:
+      - band--bulging-muscles
+      main_weapon_id: weapon.morning-star
+    context:
+      first_round: false
+    expect:
+      result.wound: 5
+      result.armour: 5
+  - id: normal-morning-star-false
+    roles:
+    - inactive
+    - boundary
+    operation: strength
+    attacker:
+      band_id: bretonnian-chapel-guard
+      profile_id: questing-knight
+      special_rule_ids: []
+      main_weapon_id: weapon.morning-star
+    context:
+      first_round: false
+    expect:
+      result.wound: 4
+      result.armour: 4
+  - id: morning-star-true
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: strength
+    attacker:
+      band_id: bretonnian-chapel-guard
+      profile_id: questing-knight
+      special_rule_ids:
+      - band--bulging-muscles
+      main_weapon_id: weapon.morning-star
+    context:
+      first_round: true
+    expect:
+      result.wound: 5
+      result.armour: 5
+  - id: normal-morning-star-true
+    roles:
+    - inactive
+    - boundary
+    operation: strength
+    attacker:
+      band_id: bretonnian-chapel-guard
+      profile_id: questing-knight
+      special_rule_ids: []
+      main_weapon_id: weapon.morning-star
+    context:
+      first_round: true
+    expect:
+      result.wound: 5
+      result.armour: 5
+  - id: sword-false
+    roles:
+    - inactive
+    - consumer
+    - boundary
+    operation: strength
+    attacker:
+      band_id: bretonnian-chapel-guard
+      profile_id: questing-knight
+      special_rule_ids:
+      - band--bulging-muscles
+      main_weapon_id: weapon.sword
+    context:
+      first_round: false
+    expect:
+      result.wound: 4
+      result.armour: 4
+  - id: normal-sword-false
+    roles:
+    - inactive
+    - boundary
+    operation: strength
+    attacker:
+      band_id: bretonnian-chapel-guard
+      profile_id: questing-knight
+      special_rule_ids: []
+      main_weapon_id: weapon.sword
+    context:
+      first_round: false
+    expect:
+      result.wound: 4
+      result.armour: 4
+  - id: sword-true
+    roles:
+    - inactive
+    - consumer
+    - boundary
+    operation: strength
+    attacker:
+      band_id: bretonnian-chapel-guard
+      profile_id: questing-knight
+      special_rule_ids:
+      - band--bulging-muscles
+      main_weapon_id: weapon.sword
+    context:
+      first_round: true
+    expect:
+      result.wound: 4
+      result.armour: 4
+  - id: normal-sword-true
+    roles:
+    - inactive
+    - boundary
+    operation: strength
+    attacker:
+      band_id: bretonnian-chapel-guard
+      profile_id: questing-knight
+      special_rule_ids: []
+      main_weapon_id: weapon.sword
+    context:
+      first_round: true
+    expect:
+      result.wound: 4
+      result.armour: 4
+  mutations:
+  - id: lose-retention
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - flail-false
+    - morning-star-false
+- id: sermon-self-attack
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: local
+  sources:
+  - target: mechanic/skill.inspiring-sermon
+    digest: ef7205dbfe8de8524cd4275ea80ef3520e4b18db32f3e587180e012358939a3c
+  - target: rule/trollheim/chaos-streets-sigmar-protectorate/band--protectorate-special-skills-rousing-sermon/skill.inspiring-sermon
+    digest: 7800698006975dd5a5059d81ce41fcde4c105849a34c6e3f65eb4347ecea4025
+  interpretation: 'Chaos in the Streets p.153 / Rousing Sermon: on the turn it is declared, the priest
+    gains +1 Attack. This selection represents the sermon active in the tested turn. Prayers and allies
+    within 6 inches do not belong to the individual duel; they are not simulated here.'
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    operation: selectable_grant
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-sigmar-protectorate
+      profile_id: warrior-priest
+      special_rule_ids:
+      - band--protectorate-special-skills-rousing-sermon
+    context:
+      rule_id: band--protectorate-special-skills-rousing-sermon
+    expect:
+      result.recipients:
+      - warrior-priest
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      skill_ids:
+      - skill.inspiring-sermon
+    expect:
+      attacker.characteristics.attacks: 1
+    expect_contains:
+      attacker.global_effects.tags:
+      - skill.inspiring-sermon
+  - id: active-false-false
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: attacks
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-sigmar-protectorate
+      profile_id: warrior-priest
+      special_rule_ids:
+      - band--protectorate-special-skills-rousing-sermon
+    context:
+      first_round: false
+      charging: false
+      player_turn: true
+    expect:
+      result.attacks: 2
+  - id: inactive-enemy-turn
+    roles:
+    - inactive
+    - boundary
+    operation: attacks
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-sigmar-protectorate
+      profile_id: warrior-priest
+      special_rule_ids:
+      - band--protectorate-special-skills-rousing-sermon
+    context:
+      first_round: false
+      charging: false
+      player_turn: false
+    expect:
+      result.attacks: 1
+  - id: active-false-true
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: attacks
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-sigmar-protectorate
+      profile_id: warrior-priest
+      special_rule_ids:
+      - band--protectorate-special-skills-rousing-sermon
+    context:
+      first_round: false
+      charging: true
+      player_turn: true
+    expect:
+      result.attacks: 2
+  - id: active-true-false
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: attacks
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-sigmar-protectorate
+      profile_id: warrior-priest
+      special_rule_ids:
+      - band--protectorate-special-skills-rousing-sermon
+    context:
+      first_round: true
+      charging: false
+    expect:
+      result.attacks: 2
+  - id: active-true-true
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: attacks
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-sigmar-protectorate
+      profile_id: warrior-priest
+      special_rule_ids:
+      - band--protectorate-special-skills-rousing-sermon
+    context:
+      first_round: true
+      charging: true
+    expect:
+      result.attacks: 2
+  - id: not-declared
+    roles:
+    - inactive
+    operation: attacks
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-sigmar-protectorate
+      profile_id: warrior-priest
+      special_rule_ids: []
+    expect:
+      result.attacks: 1
+  - id: advanced-attacks
+    roles:
+    - active
+    - boundary
+    operation: attacks
+    attacker:
+      skill_ids:
+      - skill.inspiring-sermon
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 4
+    expect:
+      result.attacks: 5
+  mutations:
+  - id: remove-sermon
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - active-false-false
+- id: well-ard-no-armour-ruling
+  question: Does the +1 from Well 'Ard create a 6+ armour save when the warrior has no armour save at
+    all?
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: local
+  sources:
+  - target: mechanic/mechanic.armour-save-bonus
+    digest: 081b4d3cf828f7f347c620d6add1258b32dee4eca0e75d8545111b80a116ac1a
+  - target: rule/trollheim/chaos-streets-greenskins/band--orc-special-skills-well-ard/mechanic.armour-save-bonus
+    digest: 1404fc093153328439e48228381c709fbed09c7de528b7b5a2ac72ec9fe34a53
+  - target: rule/mordheim/orc-mob/band--orc-special-skills-well-ard/mechanic.armour-save-bonus
+    digest: 53c13b79678aacfb209b0df6c42e91095c3b72d016f1ca25069e3a5708ca8078
+  ruling: Well 'Ard creates a 6+ armour save if the warrior had none.
+  interpretation: Well 'Ard improves an existing armour save by one point and turns the absence of armour
+    into a 6+ save. It applies as ordinary armour, so it still suffers the relevant penetration modifiers.
+  cases:
+  - id: compiled-bonus
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      skill_ids:
+      - mechanic.armour-save-bonus
+    expect:
+      attacker.armour_save: 6
+  - id: recipients-trollheim
+    roles:
+    - grant
+    operation: selectable_grant
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-greenskins
+      profile_id: orc-boss
+    context:
+      rule_id: band--orc-special-skills-well-ard
+    expect:
+      result.recipients:
+      - orc-big-uns
+      - orc-boss
+      - orc-shaman
+  - id: existing-armour
+    roles:
+    - active
+    - consumer
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      armour_id: armour.heavy-armour
+      skill_ids:
+      - mechanic.armour-save-bonus
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      result.saved: true
+  - id: no-armour-six-saves
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      skill_ids:
+      - mechanic.armour-save-bonus
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      result.saved: true
+  - id: no-armour-five-fails
+    roles:
+    - active
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      skill_ids:
+      - mechanic.armour-save-bonus
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.saved: false
+  - id: ordinary-unarmoured-control
+    roles:
+    - inactive
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.mace
+    defender: {}
+    expect:
+      result.eligible: false
+  mutations:
+  - id: remove-created-save
+    path: defender.armour_save
+    value: 7
+    cases:
+    - no-armour-six-saves
+- id: shield-strike-penetration-ruling
+  question: Does Shield Strike apply a special penalty or the normal Strength-based modification?
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: stateful
+  sources:
+  - target: mechanic/skill.shield-strike
+    digest: 1cd0452db62df48eaa9d47f5509bdbb2640637f745cd4784f7c9efa6198f536c
+  ruling: Shield Strike modifies armour normally according to the Strength of the hit.
+  interpretation: The extra attack uses the warrior's Strength and contributes no armour bonus or penalty
+    of its own. The existing grant requires a standard shield.
+  cases:
+  - id: compiled-without-special-penetration
+    roles:
+    - grant
+    - compiled
+    operation: compile
+    attacker:
+      skill_ids:
+      - skill.shield-strike
+      off_hand_id: defence.shield
+    expect:
+      attacker.extra_attacks.0.target_armour_bonus: 0
+    expect_contains:
+      attacker.extra_attacks.0.tags:
+      - rule.shield-strike
+  - id: strength-four-penetrates
+    roles:
+    - active
+    - consumer
+    - sequence
+    - boundary
+    operation: extra_attack
+    attacker:
+      skill_ids:
+      - skill.shield-strike
+      off_hand_id: defence.shield
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 2
+        initiative: 3
+        attacks: 1
+    defender:
+      armour_id: armour.plate-armour
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 3
+    - key: test.armour
+      value: 4
+    expect:
+      result.wounded: true
+      result.defender.wounds: 1
+  - id: strength-three-control
+    roles:
+    - inactive
+    - consumption
+    - boundary
+    operation: extra_attack
+    attacker:
+      skill_ids:
+      - skill.shield-strike
+      off_hand_id: defence.shield
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 3
+        attacks: 1
+    defender:
+      armour_id: armour.plate-armour
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.armour
+      value: 4
+    expect:
+      result.defender.wounds: 2
+  mutations:
+  - id: restore-poor-penetration
+    path: attacker.extra_attacks.0.target_armour_bonus
+    value: 1
+    cases:
+    - strength-four-penetrates
+    - strength-three-control

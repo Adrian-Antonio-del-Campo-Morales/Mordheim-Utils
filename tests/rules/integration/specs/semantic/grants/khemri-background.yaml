@@ -1,0 +1,100 @@
+schema_version: 1
+specifications:
+- id: khemri-foreign-native-construction
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: construction
+  sources:
+  - target: rule/trollheim/khemri-lahmian-brotherhood/band--background-selection/compiler.foreign-or-native-background
+    digest: ed1616df941fabe23621bfff3a38066ac0198e59e625235068db13dd27eeecad
+  interpretation: FighterBuild represents the background applicable to its build through background.foreign
+    or background.native; it cannot combine both. Later campaign changes stay outside the duel runtime.
+  cases:
+  - id: alternatives-exclusive
+    roles:
+    - grant
+    - accepted
+    - rejected
+    - boundary
+    operation: selection_choices
+    attacker:
+      collection: trollheim
+      band_id: khemri-lahmian-brotherhood
+      profile_id: lahmian-vampire
+    context:
+      choices:
+        foreign:
+          variant_ids:
+          - background.foreign
+        native:
+          variant_ids:
+          - background.native
+        both:
+          variant_ids:
+          - background.foreign
+          - background.native
+    expect:
+      result.accepted:
+      - foreign
+      - native
+      result.rejected:
+        both: choose exactly one Foreign or Native background
+  - id: foreign-only-profile
+    roles:
+    - consumer
+    operation: selection_choices
+    attacker:
+      collection: trollheim
+      band_id: khemri-lahmian-brotherhood
+      profile_id: blood-slaves
+      variant_ids:
+      - background.foreign
+    context:
+      choices:
+        foreign:
+          variant_ids:
+          - background.foreign
+        native:
+          variant_ids:
+          - background.native
+    expect:
+      result.accepted:
+      - foreign
+      result.rejected:
+        native: blood-slaves requires the Foreign background
+  - id: native-only-profile
+    operation: selection_choices
+    attacker:
+      collection: trollheim
+      band_id: khemri-lahmian-brotherhood
+      profile_id: spirits
+      variant_ids:
+      - background.native
+    context:
+      choices:
+        native:
+          variant_ids:
+          - background.native
+        foreign:
+          variant_ids:
+          - background.foreign
+    expect:
+      result.accepted:
+      - native
+      result.rejected:
+        foreign: spirits requires the Native background
+  - id: contract
+    operation: construction_tag_presence
+    attacker:
+      collection: trollheim
+      band_id: khemri-lahmian-brotherhood
+      profile_id: lahmian-vampire
+    context:
+      tag: compiler.foreign-or-native-background
+    expect:
+      result.present: true
+  mutations:
+  - id: remove-background-contract
+    path: attacker.construction_tags
+    value: []
+    cases:
+    - contract

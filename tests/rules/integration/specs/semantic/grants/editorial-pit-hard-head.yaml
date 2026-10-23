@@ -1,0 +1,316 @@
+schema_version: 1
+specifications:
+- id: editorial-pit-hard-head-pit-fighters
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: local
+  sources:
+  - target: rule/mordheim/pit-fighters/dwarf-troll-slayer--hard-head/trait.concussion-immune
+    digest: d7f735d03c89d3f0fc433b6a94afd9255aec6573682dfc5e8e266b2160e86aaf
+  depends_on:
+  - mechanic/weapon.mace
+  - mechanic/skill.hard-to-kill
+  interpretation: Heroes / Dwarf Troll Slayer / Hard Head ignores Concussion, not normal Stunned results.
+    Only the Dwarf receives this rule; the human Pit King does not. Hard to Kill retains the Dwarf table.
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    - compiled
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: pit-fighters
+      profile_id: dwarf-troll-slayer
+    context:
+      rule_id: dwarf-troll-slayer--hard-head
+    expect:
+      result.recipients:
+      - dwarf-troll-slayer
+  - id: face-1
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: pit-fighters
+      profile_id: dwarf-troll-slayer
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      context.concussion_immune: true
+      result.condition: KNOCKED_DOWN
+  - id: face-2
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: pit-fighters
+      profile_id: dwarf-troll-slayer
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      context.concussion_immune: true
+      result.condition: KNOCKED_DOWN
+  - id: face-3
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: pit-fighters
+      profile_id: dwarf-troll-slayer
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      context.concussion_immune: true
+      result.condition: STUNNED
+  - id: face-4
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: pit-fighters
+      profile_id: dwarf-troll-slayer
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      context.concussion_immune: true
+      result.condition: STUNNED
+  - id: face-5
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: pit-fighters
+      profile_id: dwarf-troll-slayer
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      context.concussion_immune: true
+      result.condition: STUNNED
+  - id: face-6
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: pit-fighters
+      profile_id: dwarf-troll-slayer
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      context.concussion_immune: true
+      result.condition: OUT
+  - id: excluded-pit-king
+    roles:
+    - inactive
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: pit-fighters
+      profile_id: pit-king
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      context.concussion_immune: false
+      result.condition: STUNNED
+  mutations:
+  - id: remove-immunity
+    path: defender.global_effects.tags
+    value:
+    - skill.hard-to-kill
+    cases:
+    - face-2
+- id: editorial-pit-hard-head-chaos-streets-pit-fighters
+  scope_digest: 5fd7034eceb69daeeac4b0ad8bba9f2bc5ba50ca65a102d49b69e25f85d18dc9
+  category: local
+  sources:
+  - target: rule/trollheim/chaos-streets-pit-fighters/dwarf-troll-slayer--hard-head/trait.concussion-immune
+    digest: 5c001edbf2ce28d1b0f4f0af82ebe61a21f891cb4a6f0d8fe60495fe79213f4f
+  depends_on:
+  - mechanic/weapon.mace
+  - mechanic/skill.hard-to-kill
+  interpretation: Heroes / Dwarf Troll Slayer / Hard Head ignores Concussion, not normal Stunned results.
+    Only the Dwarf receives this rule; the human Pit King does not. Hard to Kill retains the Dwarf table.
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    - compiled
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: dwarf-troll-slayer
+    context:
+      rule_id: dwarf-troll-slayer--hard-head
+    expect:
+      result.recipients:
+      - dwarf-troll-slayer
+  - id: face-1
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: dwarf-troll-slayer
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      context.concussion_immune: true
+      result.condition: KNOCKED_DOWN
+  - id: face-2
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: dwarf-troll-slayer
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      context.concussion_immune: true
+      result.condition: KNOCKED_DOWN
+  - id: face-3
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: dwarf-troll-slayer
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      context.concussion_immune: true
+      result.condition: STUNNED
+  - id: face-4
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: dwarf-troll-slayer
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      context.concussion_immune: true
+      result.condition: STUNNED
+  - id: face-5
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: dwarf-troll-slayer
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      context.concussion_immune: true
+      result.condition: STUNNED
+  - id: face-6
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: dwarf-troll-slayer
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      context.concussion_immune: true
+      result.condition: OUT
+  - id: excluded-pit-king
+    roles:
+    - inactive
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: pit-king
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      context.concussion_immune: false
+      result.condition: STUNNED
+  mutations:
+  - id: remove-immunity
+    path: defender.global_effects.tags
+    value:
+    - skill.hard-to-kill
+    cases:
+    - face-2

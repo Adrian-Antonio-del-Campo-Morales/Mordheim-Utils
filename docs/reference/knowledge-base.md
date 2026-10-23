@@ -435,6 +435,15 @@ clause contracts, scope, consumers and evidence. Its 4,556 keys are
 in Git (pre-compaction checkpoint `cee529cd`). `pending` omits defaults
 `work=none`, `review=reviewed`, `requires=[]`; `verification` retains inspection,
 executed or absent evidence separately. A closed row is not certification.
+The final JSON object `status` tracks NumPy and native independently: rows with
+`clause_scope=YES` require both `numpy` and `native`; all other scopes require `{}`.
+Each backend accepts `pending`, `in_progress`, `implemented`, `verified` or `blocked`.
+`implemented` means integrated awaiting parity; `verified` means applicable parity
+passed, not universal certification. Scope remains authoritative: changing scope
+requires an explicit matching status update, without inferred closure or reset.
+Reuse `consumer` for references to either engine, and `verification`/`notes` for
+engine-qualified evidence and context. Identify the engine in notes or the linked
+report; modular tests or a NumPy fallback do not establish native verification.
 [The source scope review](../../sources/knowledge/verification/source-scope-review.csv)
 feeds `verification/audit_export.py`; a source-text change invalidates an old
 review. Applications read exclusively from consolidated `sources/knowledge`.
@@ -444,6 +453,7 @@ Access the semantic CSV only through `python -X utf8 tools/knowledge/clause_regi
 ```powershell
 python -X utf8 tools/knowledge/clause_registry.py query --id "ID_EXACTO" --clause-id "CLAUSULA"
 python -X utf8 tools/knowledge/clause_registry.py query --pending --consumer contexts.py --limit 5
+python -X utf8 tools/knowledge/clause_registry.py query --backend numpy --status pending --fields id,clause_id,status
 python -X utf8 tools/knowledge/clause_registry.py prepare "$env:TEMP/clause-changes.json" --out "$env:TEMP/clause-prepared.json"
 python -X utf8 tools/knowledge/clause_registry.py apply "$env:TEMP/clause-prepared.json"
 # Authorized writer only, after reviewing the preview:
@@ -452,6 +462,14 @@ python -X utf8 tools/knowledge/clause_registry.py apply "$env:TEMP/clause-prepar
 
 `--id`/`--clause-id` are exact; `--source`/`--consumer` match fragments;
 `--work`, `--review`, `--pending`, `--fields` and `--limit` narrow queries.
+`--backend numpy|native` selects rows containing that backend; `--status` requires
+`--backend` and filters its state. Existing `--pending` retains its original meaning.
+To append `status` to the legacy schema, run `clause_registry.py migrate` for a
+preview, then `clause_registry.py migrate --write` explicitly. Migration uses the
+same lock, snapshot checks and external byte backup as apply, preserves all
+original cells and line endings, and initializes admitted rows to both `pending`.
+Repeating it preserves existing statuses. Packages prepared for the old schema
+are rejected; prepare them again after migration.
 Keep proposals/packages outside the repository. A proposal is a JSON array:
 
 ```json

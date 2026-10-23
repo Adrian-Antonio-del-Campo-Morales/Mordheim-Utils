@@ -452,7 +452,7 @@ def _native_segment_eligible(first, second, context=None) -> bool:
         from mordheim_combat.kernel import compile_duel_plan
     except ImportError:
         return False
-    plan = compile_duel_plan(first, second, context=context)
+    plan = compile_duel_plan(first, second, context=context, backend="native")
     if context is not None and getattr(_combat_native, "CONTEXT_VERSION", None) != 1:
         return False
     if not plan.optimization_eligible:

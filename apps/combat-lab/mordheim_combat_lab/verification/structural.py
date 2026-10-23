@@ -75,7 +75,13 @@ def _binding_contract_error(binding: dict, execution_ids: set[str]) -> str | Non
                 identifier.removeprefix("special-rule.") in SPECIAL_RULE_EFFECTS
                 or identifier.removeprefix("special-rule.") in PROFILE_RULE_EFFECTS
             )
-            or identifier.startswith("profile-rule.") and identifier.removeprefix("profile-rule.") in PROFILE_RULE_EFFECTS
+            # Both maintained compiler tables are authoritative for either
+            # namespace: a profile ability may be carried by a selectable
+            # special-rule contract (the Necrotect's Hatred) and vice versa.
+            or identifier.startswith("profile-rule.") and (
+                identifier.removeprefix("profile-rule.") in PROFILE_RULE_EFFECTS
+                or identifier.removeprefix("profile-rule.") in SPECIAL_RULE_EFFECTS
+            )
         )
     else:
         known = False
@@ -168,6 +174,10 @@ def _projection_errors(ruleset: str, root: Path | None) -> tuple[int, list[str]]
                 kwargs["trait_overrides"] = {"fighter_kind": "hero"}
             elif mechanic_id == "mechanic.disability":
                 kwargs["condition_ids"] = ("condition.disability-2",)
+            elif mechanic_id == "mechanic.curse-of-the-revenant":
+                # The printed skill exists only on a Great Thirster; the caller
+                # supplies the companion prerequisite instead of a default.
+                kwargs["skill_ids"] = (mechanic_id, "mechanic.great-thirster")
 
             try:
                 fighter = compile_fighter(FighterBuild(ruleset, characteristics, **kwargs), root)
@@ -233,7 +243,7 @@ def _trait_projection_errors(
     return projected, errors
 
 
-def _required_profile_build(collection: str, band_id: str, profile_id: str) -> FighterBuild:
+def required_profile_build(collection: str, band_id: str, profile_id: str) -> FighterBuild:
     """Supply each profile's printed mandatory initial choice.
 
     These are construction facts the source requires before the member exists,
@@ -295,7 +305,7 @@ def _automatic_compiler_projection_errors(
                     continue
                 try:
                     fighter = compile_fighter(
-                        _required_profile_build(collection, band_id, profile_id), root
+                        required_profile_build(collection, band_id, profile_id), root
                     )
                 except Exception as exc:
                     errors.append(
