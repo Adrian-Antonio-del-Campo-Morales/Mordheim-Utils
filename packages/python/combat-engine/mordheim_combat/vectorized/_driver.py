@@ -1145,16 +1145,16 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
         # count) if extra else 0`` in the modular round.
         mim_extra1 = mim1 & bool(attack_first.extra_attacks)
         mim_extra2 = mim2 & bool(attack_second.extra_attacks)
-        shifty1 = (first_round & charged1 & ~mim1
+        shifty1 = (first_round & charged1 & (not mim1)
                    & has(attack_first.global_effects, "skill.shifty")
-                   & ~has(attack_first.main_weapon, "effect.serpent-staff-power")
-                   & ~(has(attack_first.main_weapon, "weapon.fist")
-                       and unarmed_attack_cap_applies(attack_first.global_effects)))
-        shifty2 = (first_round & charged2 & ~mim2
+                   & (not has(attack_first.main_weapon, "effect.serpent-staff-power"))
+                   & (not (has(attack_first.main_weapon, "weapon.fist")
+                       and unarmed_attack_cap_applies(attack_first.global_effects))))
+        shifty2 = (first_round & charged2 & (not mim2)
                    & has(attack_second.global_effects, "skill.shifty")
-                   & ~has(attack_second.main_weapon, "effect.serpent-staff-power")
-                   & ~(has(attack_second.main_weapon, "weapon.fist")
-                       and unarmed_attack_cap_applies(attack_second.global_effects)))
+                   & (not has(attack_second.main_weapon, "effect.serpent-staff-power"))
+                   & (not (has(attack_second.main_weapon, "weapon.fist")
+                       and unarmed_attack_cap_applies(attack_second.global_effects))))
         groups = _equipment_groups(active_rows, equipment1, equipment2)
         for a_f, d_f, group in groups:
             attacks1[group] = attack_count(
@@ -1323,14 +1323,14 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             stomp1_rows = (unresolved & ~silent1
                            & (state1.condition == STANDING)
                            & (state2.condition == KNOCKED_DOWN) & (attacks1 > 0)
-                           & ~has(attack_first.main_weapon,
-                                  'effect.serpent-staff-power'))
+                           & (not has(attack_first.main_weapon,
+                                  'effect.serpent-staff-power')))
         if has(attack_second.global_effects, 'mechanic.noblesse-stomp'):
             stomp2_rows = (unresolved & ~silent2
                            & (state2.condition == STANDING)
                            & (state1.condition == KNOCKED_DOWN) & (attacks2 > 0)
-                           & ~has(attack_second.main_weapon,
-                                  'effect.serpent-staff-power'))
+                           & (not has(attack_second.main_weapon,
+                                  'effect.serpent-staff-power')))
         stomp1_fighter = replace(
             attack_first, main_weapon=EffectSet(tags=('rule.noblesse-stomp',)),
             main_weapon_without_poison=None, off_hand=None,

@@ -649,7 +649,7 @@ def hit_reroll(
         and has(defender.global_effects, "mechanic.fighting-undead")
         and "species.vampire" in attacker_tags
     )
-    psychology_allowed = ~frenzy & ~has(attacker.global_effects, "mechanic.psychology-immunity")
+    psychology_allowed = ~frenzy & (not has(attacker.global_effects, "mechanic.psychology-immunity"))
     hatred = first_round and psychology_allowed & (
         has(effect, "skill.hatred")
         or has(effect, "mechanic.burn-the-witch") and "identity.spellcaster" in enemy_tags
@@ -964,7 +964,7 @@ def wound_context(
     six = np.broadcast_to(np.asarray(hit_roll) == 6, (size,))
     luck = (
         allow_luck and has(effect, "skill.luck")
-        and ~attacker_state.luck_used[rows] & ~bool(effect.reroll_wounds)
+        and ~attacker_state.luck_used[rows] & (not bool(effect.reroll_wounds))
     )
     lotus = phases.black_lotus_wounds(effect, defender.global_effects)
     failure_still_wounds = six & bool(
@@ -1011,7 +1011,7 @@ def wound_context(
         reroll=np.asarray(reroll, dtype=bool),
         critical_threshold=critical_rows,
         critical_available=~attacker_state.critical_used[rows]
-        & ~has(effect, "effect.no-critical"),
+        & (not has(effect, "effect.no-critical")),
         critical_on_reroll=np.full(
             size, bool(poison_blocked or not has(effect, "poison.devil-s-toxin")), dtype=bool,
         ),

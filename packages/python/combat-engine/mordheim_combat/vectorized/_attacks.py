@@ -618,7 +618,7 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
         rolled_success &= wound_rolls != 1
     luck = None
     if has(effect, "skill.luck"):
-        luck = (~attacker_state.luck_used[hit_rows] & ~bool(effect.reroll_wounds))
+        luck = (~attacker_state.luck_used[hit_rows] & (not bool(effect.reroll_wounds)))
     reroll_failed = (~automatic_wound) & (wound_rolls < targets) & wound.reroll
     if reroll_failed.any():
         failed = np.flatnonzero(reroll_failed)

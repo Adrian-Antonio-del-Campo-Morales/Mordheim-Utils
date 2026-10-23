@@ -31,7 +31,7 @@ def _close_runtime():
 def _engine():
     global _runtime, _runtime_pid
     if _runtime is None or _runtime_pid != os.getpid():
-        from py_mini_racer import MiniRacer
+        from mordheim_construction._miniracer import MiniRacer
         engine = MiniRacer()
         try:
             engine.eval(files("mordheim_construction").joinpath("_eligibility.js").read_text(encoding="utf-8"))
@@ -52,7 +52,7 @@ def call(operation, *args):
 
 
 def _invoke(function, *args):
-    from py_mini_racer import JSEvalException
+    from mordheim_construction._miniracer import JSEvalException
     try:
         return _engine().call(function, *args, timeout_sec=10)
     except JSEvalException as error:
