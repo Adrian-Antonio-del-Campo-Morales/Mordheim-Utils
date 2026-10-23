@@ -70,7 +70,7 @@ resolvers and presentation types. Its 700+ findings are "the detector cannot
 demonstrate protection", not confirmed leaks.
 
 The dynamic layer (step 5, `tools/web/presentation-completeness-audit.mjs` plus
-`tests/web/tools/presentation-completeness-sweep.test.tsx`) is about
+`tests/tooling/web/presentation-completeness-sweep.test.tsx`) is about
 **visible completeness**: it executes the real consumers (the `RulesCatalogue`,
 the rendered shell pages, loaded v5 campaigns, the PDF text model) against the
 real generated artefacts in ES and EN, captures what a person would actually
@@ -117,14 +117,14 @@ the report to inspect the layer directly.
 
 The "Reglas compartidas" defect (band-local rows published in the shared stem as
 generic fallbacks) is guarded by
-`tests/web/tools/presentation-completeness-regression.test.tsx`, which stays red
+`tests/tooling/web/presentation-completeness-regression.test.tsx`, which stays red
 whenever the generator, the catalogue or the data leak band-local rows into the
 special-rules category again.
 
 The per-family gate for the visible fallbacks closed after `4631eae` — scenario
 authors, wyrdstone, notes, loot rewards, `difficulty: auto` and the
 serious-injury result names — is
-`tests/web/features/campaign/visible-fallback-families.test.ts`. It asserts both
+`tests/applications/warband_manager/features/campaign/visible-fallback-families.test.ts`. It asserts both
 directions: the generated artefact and the composed catalogue text of every
 family carry no `TODO-TRANSLATE`, no generic fallback and no missing resolution,
 and the pre-fix shapes still redden the shared classifier, so the gate can never

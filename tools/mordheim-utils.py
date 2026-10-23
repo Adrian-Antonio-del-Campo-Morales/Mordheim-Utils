@@ -49,12 +49,17 @@ for package_root in reversed(PACKAGE_ROOTS):
 SCOPE_PATHS = {
     "all": ("tests",),
     "engines": ("tests/engines",),
+    "shared": ("tests/engines/shared",),
+    "parity": ("tests/engines/parity",),
+    "rules": ("tests/rules",),
+    "applications": ("tests/applications",),
+    "tooling": ("tests/tooling",),
     "modular": ("tests/engines/modular",),
     "vectorized": ("tests/engines/vectorized",),
     "native": ("tests/engines/native",),
     "e2e": ("tests/rules/integration/e2e",),
-    # The per-change engine gate: the deterministic suites that certify rule
-    # behaviour without statistical noise (mirrors the coverage-gate budget).
+    # Broad deterministic selection retained for coverage/certification work;
+    # prefer individual files or a component scope during development.
     "deterministic": ("tests/engines/modular", "tests/engines/vectorized",
                       "tests/engines/shared/test_phases.py", "tests/engines/shared/test_duel_context.py",
                       "tests/engines/shared/test_exact_phases.py", "tests/engines/shared/test_interactions.py",
@@ -217,11 +222,40 @@ def report_command(args: list[str]) -> int:
 
 def tests_command(args: list[str], *, ordered: bool = False) -> int:
     own_args = args[:args.index("--")] if "--" in args else args
+    if not ordered and any(arg in ("-h", "--help") for arg in own_args):
+        print("usage: python tools/mordheim-utils.py tests [--scope NAME] [pytest args ...]")
+        print("\nPython tests grouped by responsibility (default scope: all):")
+        for name, paths in SCOPE_PATHS.items():
+            print(f"  {name:15} {', '.join(paths)}")
+        print("""
+Engine tests load checked-in fixtures from tests/engines/fixtures; no regeneration
+is needed for an ordinary run. Rules/E2E tests retain KB/compiler preparation.
+Documented mixed compilation-rejection tests retain the real compiler too.
+
+Examples:
+  python tools/mordheim-utils.py tests --scope shared --collect-only -q
+  python tools/mordheim-utils.py tests --scope modular -k selected_test -q
+  python -u -m pytest tests/engines/native/test_native_engine.py::test_native_accumulates_counts_across_batches -v
+
+For an exact file/node selection, use python -m pytest <paths-or-nodeids> directly;
+adding a path after --scope does not replace the scope's selected directories.
+Use -n 2 --dist=load for independent checks; keep tests with inner worker pools
+and timing-sensitive checks serial. Collection-only runs remain serial.
+Use test-sequence --workers N for phase barriers; do not mix it with raw -n/--dist.
+A missing snapshot is a preparation defect; a result mismatch or explicitly
+unsupported rule may belong to an incomplete optimized backend. A skipped native
+test does not prove native execution. Do not repair engine rules as fixture work.
+
+'tests -- --help' forwards the complete pytest help.
+References: docs/reference/tools.md and docs/reference/verification.md
+""")
+        return 0
     if ordered and any(arg in ("-h", "--help") for arg in own_args):
         print("usage: python tools/mordheim-utils.py test-sequence [options] [pytest args ...]")
         print("""
 Run Python tests in the project's functional dependency phases, with one
-pytest collection and session. Phases 0..7 follow the project's dependencies:
+session when sequential, or one session per category with --workers N > 1.
+Phases 0..7 follow the project's dependencies:
   0 preflight (architecture, test infrastructure)  1 KB and contracts
   2 warrior construction                           3 modular rules/operators
   4 modular engine/oracle                          5 vectorized engine + parity
@@ -264,7 +298,7 @@ Examples:
   python tools/mordheim-utils.py test-sequence -step0 -q
   python tools/mordheim-utils.py test-sequence -step2 --workers 4 -q
   python tools/mordheim-utils.py test-sequence --workers 4 -q
-  python tools/mordheim-utils.py test-sequence --workers 4 -q --output reports/tests.txt
+  python tools/mordheim-utils.py test-sequence --workers 4 -q --output outputs/test-runs/tests.txt
   python tools/mordheim-utils.py test-sequence --step 2 --scope construction -q
   python tools/mordheim-utils.py test-sequence --sequence-plan -qq
   python tools/mordheim-utils.py test-sequence --scope construction -q
@@ -497,7 +531,7 @@ def _help_text() -> str:
         "    test-sequence --help                ordered Python tests: options and examples",
         "    test-sequence --steps               list numbered phases without collecting",
         "    test-sequence --sequence-plan -qq    preview the order without running tests",
-        "    tests --scope deterministic         the per-change engine gate",
+        "    tests --help                        scopes, fixtures and focused execution",
         "    verify                              knowledge base before touching rules",
         "    report rules                        per-rule implementation inventory",
         "    run-ci                              everything, before publishing",

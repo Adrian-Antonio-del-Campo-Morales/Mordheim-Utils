@@ -49,8 +49,8 @@ reopening every previously accepted campaign flow.
   and `packages/typescript/application/campaign/features/`
   (see the [architecture reference](../reference/architecture.md#campaign-manager)).
 
-Layer checks live in `tests/python/architecture/test_boundaries.py` and
-`tests/typescript/architecture/purity.test.ts`: Python UI never imports KB
+Layer checks live in `tests/tooling/architecture/test_boundaries.py` and
+`tests/tooling/architecture/purity.test.ts`: Python UI never imports KB
 loaders or YAML, application/persistence never import Tkinter, and TypeScript
 domain/application never import UI or browser storage.
 

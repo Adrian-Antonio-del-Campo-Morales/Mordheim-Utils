@@ -7,39 +7,94 @@ doctor` reports what is actually available.
 
 ## Fast development loop
 
+Choose the smallest check for the changed responsibility. Moving a test or
+editing a path usually needs syntax/import checks and targeted collection;
+changing an adapter needs a small execution sample. Reuse valid results and
+repeat only checks affected by a later edit.
+
 ```powershell
+python tools/mordheim-utils.py tests --help
 python tools/mordheim-utils.py verify --structural   # KB change only
-python tools/mordheim-utils.py tests --scope deterministic
+python -u -m pytest tests/engines/shared/test_kernel_plan.py -q --tb=short
+python tools/mordheim-utils.py tests --scope modular -k selected_test -q
 ```
 
-For TypeScript/web changes:
+Engine tests consume versioned snapshots under `tests/engines/fixtures/`;
+ordinary execution needs no regeneration. The original E2E corpus is under
+`tests/rules/integration/e2e/`, and source-backed construction/KB/integration
+checks retain compiler access. See [fixture maintenance](../reference/verification.md#engine-test-fixtures)
+and the [launcher scope guide](../reference/tools.md#selecting-tests-with-the-launcher).
+`--scope all` is the whole Python tree; `engines` and `deterministic` are also
+broad selections, not default per-edit checks. They include optimized-backend
+checks whose rules may still be unimplemented.
+
+Use direct pytest paths/node IDs for an exact selection. Independent checks may
+use `-n 2 --dist=load -q --durations=10 --tb=short`; tests creating their own worker
+pools and timing measurements stay serial. Collection-only runs stay serial.
+For phase barriers use `test-sequence --workers N` without raw xdist flags.
+Keep live output; do not hide it with `| tail` or restart a still-running process
+after a tool timeout.
+
+For TypeScript/web changes, select affected files from their workspace:
 
 ```powershell
-npm run typecheck    # TypeScript packages and web app
-npm test             # both Vitest suites
-npm run lint         # ESLint over the workspace + the presentation gate
-npm run build        # the web app: typecheck + Vite build
+npm run typecheck
+npm test --workspace campaign-web-core -- ../../tests/applications/warband_manager/domain/shared-eligibility-reconciliation.test.ts --maxWorkers=2
 ```
 
-They run from the repository root and fan out to the npm workspaces; the
-per-workspace forms (`npm test --workspace campaign-web-core`) still work when a
-single suite is what changed.
-
-Narrower Python scopes: `knowledge`, `verification`, `construction`, `ui`,
-`cli`, `architecture`. `tests --scope all` runs the whole `tests/` tree,
-including `tests/E2E`; anything after the scope is forwarded to pytest.
+`npm test` runs both workspaces; `npm run lint` includes presentation checks and
+`npm run build` typechecks/builds the web app. These broader checks belong to the
+relevant integration stage, not every documentation or fixture-path edit.
 
 For shared equipment/skill decisions, edit the [eligibility module](../reference/eligibility.md), then run from the repository root:
 
 ```powershell
 npm run build:eligibility
 npm run check:eligibility
-python -m pytest tests/python/construction -q
-npm test --workspace campaign-web-core -- ../../tests/typescript/domain/shared-eligibility.test.ts
+python -m pytest tests/rules/construction -q
+npm test --workspace campaign-web-core -- ../../tests/applications/warband_manager/domain/shared-eligibility-reconciliation.test.ts
 ```
 
 Commit the generated `_eligibility.js` with its maintained TypeScript source. The
 Python runtime uses that checked-in bundle; Node is a development dependency.
+
+## Ready-to-use test configurations
+
+Use these configurations as alternatives, not mandatory successive gates. The
+[command recipe reference](../reference/tools.md#command-recipes-and-configuration)
+explains all flags and workspace/project names.
+
+| Change | Smallest useful starting point |
+|---|---|
+| Test move or import/path update | `python -u -m pytest tests/engines/shared/test_kernel_plan.py --collect-only -q` (substitute the affected file) |
+| One engine adapter / frozen-input connection | Run the explicit NumPy or native node below |
+| Compiler behavior | Select affected files in `tests/rules/construction/`; do not regenerate fixtures just to make changed outputs pass |
+| E2E scenario | Select the scenario's collected node ID in `tests/rules/integration/e2e/`; use `--collect-only` on its runner when the ID is unknown |
+| Launcher behavior | Select existing checks in `tests/tooling/launcher/` |
+| TypeScript domain change | Workspace typecheck and the affected Vitest file |
+| Multiple construction changes | Ordered construction-only phase with a saved report |
+
+```powershell
+# Independent Python checks: two workers, short failures, slowest timings
+python -u -m pytest tests/engines/shared/test_kernel_plan.py tests/tooling/launcher/test_umbrella.py -n 2 --dist=load -q --durations=10 --tb=short
+
+# Frozen-input connection: run separately, without xdist
+python -u -m pytest tests/engines/vectorized/test_parallel_numpy.py::test_single_batch_samples_are_unchanged_by_the_parallel_path -v --tb=short
+python -u -m pytest tests/engines/native/test_native_engine.py::test_native_accumulates_counts_across_batches -v --tb=short
+
+# Explicit early stop while investigating a selected failure
+python -u -m pytest tests/engines/shared/test_kernel_plan.py -x -v --tb=short
+
+# Construction phase only, parallel inside the phase, visible + saved output
+python tools/mordheim-utils.py test-sequence --step 2 --scope construction --workers 2 -q --output outputs/test-runs/construction.txt
+```
+
+Default execution continues after failures. Choose `-x` or `--maxfail=3` only
+when early stopping is intended. Never add raw `-n`/`--dist` to `test-sequence`;
+its `--workers` option owns parallelism. A skipped native test is not a native
+connection check. An explicitly unsupported mechanic or wrong optimized-engine
+result needs engine triage, while missing snapshot keys and broken bindings
+need fixture/preparation correction.
 
 ## Knowledge artefact
 
@@ -65,11 +120,9 @@ Runs the knowledge generator/check, the Python contract/campaign/architecture/
 knowledge/web tests and shared eligibility transport tests, the eligibility
 bundle freshness check, the TypeScript typecheck/tests and the web
 typecheck/lint/tests/build plus the post-build bundle guard — the steps of
-`.github/workflows/ci.yml` plus `tests/python/web`. That directory is the
-slowest gate (it re-parses the 3 MB generated artefact per test and took 5:54 of
-the Python job's 12:05), so CI leaves it out; run it here, or directly with
-`python -m pytest tests/python/web`, whenever you touch the KB, the generator or
-the contracts.
+`.github/workflows/ci.yml` plus `tests/rules/knowledge/web`. Those browser
+artefact checks read generated knowledge data and can be expensive; select the
+affected files while editing and reserve the full gate for integration.
 
 ## Verification and certification
 
@@ -116,6 +169,9 @@ python tools/mordheim-utils.py calibrate
 python tools/mordheim-utils.py calibrate --pairs mini
 python tools/mordheim-utils.py calibrate --reset         # drop the profile
 ```
+
+The benchmark/parity/calibration CLIs retain their own scenario preparation and
+may compile from the KB; frozen pytest inputs do not change those defaults.
 
 The command installs `calibration.json` beside the local preferences. Use
 `--no-install` for a read-only study, `--output PATH` for the full evidence and

@@ -99,9 +99,9 @@ The real Sisters sheet exercises composition, all five profiles, the skill
 matrix, special skills, equipment and prayers, but is not yet a complete
 content-coverage example.
 
-Focused tests live in `tests/typescript/application/rules/warband-reference.test.ts`
-and `tests/web/warband-reference-template.test.tsx`, alongside the updated
-`tests/web/rules-page.test.tsx`. They cover the real bilingual Sisters sheet,
+Focused tests live in `tests/applications/warband_manager/application/rules/warband-reference.test.ts`
+and `tests/applications/warband_manager/presentation/warband-reference-template.test.tsx`, alongside the updated
+`tests/applications/warband_manager/presentation/rules-page.test.tsx`. They cover the real bilingual Sisters sheet,
 scoped identities, optional list metadata/shared delegation, unchanged base
 roster with variants, empty bands, search and mobile focus/scroll restoration.
 Underworld regressions cover list names/notes, four hero recipients of the
@@ -333,7 +333,7 @@ From the repository root, run applicable new and existing tests, including:
 ```powershell
 python tools/knowledge/generate_knowledge_web.py
 python tools/knowledge/generate_knowledge_web.py --check
-python -m pytest tests/python/web/test_knowledge_artefact.py tests/python/web/test_presentation_contract.py tests/python/web/test_kb_artefact_inventory.py tests/python/web/test_kb_artefact_performance.py
+python -m pytest tests/rules/knowledge/web/test_knowledge_artefact.py tests/rules/knowledge/web/test_presentation_contract.py tests/rules/knowledge/web/test_kb_artefact_inventory.py tests/rules/knowledge/web/test_kb_artefact_performance.py
 npm run test --workspace campaign-web-core -- rules-catalogue
 npm run test --workspace warband-manager-web -- rules-page
 npm run typecheck

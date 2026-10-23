@@ -21,12 +21,12 @@ distinguishes implementation closure from certification.
   coverage and mutation gates, and what each one can prove.
 - [Test classification and execution order](reference/test-sequence.md) — the
   phase categories, assignment criteria and dependency-based repair order.
-- [Tools](reference/tools.md) — maintained scripts, their purpose and the
-  directory that owns each one.
+- [Tools and launcher](reference/tools.md) — `mordheim-utils.py` scope selection,
+  focused/parallel execution and maintained scripts.
+- [Frozen engine inputs](reference/verification.md#engine-test-fixtures) — loaders,
+  regeneration and the boundary with source-backed rules/E2E checks.
 - [Web presentation](reference/web-presentation.md) — localization, provenance
   and output-boundary rules.
-- [Development codes](reference/development-codes.md) — what was removed from
-  the retired phase/plan vocabulary and what still needs a decision.
 
 Contracts:
 
@@ -40,9 +40,6 @@ Contracts:
 
 - [Modify the knowledge base](guides/modify-knowledge-base.md)
 - [Implement and verify rules](guides/implement-and-verify-rules.md)
-- [Modular engine implementation](guides/modular-engine-implementation.md) —
-  the active modular-engine scope and reusable semantic contracts for later
-  optimized ports.
 - [Modify an application](guides/modify-application.md)
 - [Implement the warband reference template](guides/warband-reference-template.md)
   — the Rules → Warbands sheet: read model, fixed section order and the
@@ -75,12 +72,12 @@ points and documents owned by a specific artefact live beside them:
   verification work and deferred capabilities.
 - [`AGENTS.md`](../AGENTS.md) — repository instructions, which agents read from
   the checkout root.
-- `contracts/*/README.md` — `tests/python/knowledge/test_editorial_schemas.py`
+- `contracts/*/README.md` — `tests/rules/knowledge/test_editorial_schemas.py`
   requires each contract README next to its schemas.
-- [`tests/specs/README.md`](../tests/specs/README.md) — the conventions of the
+- [`tests/rules/integration/specs/README.md`](../tests/rules/integration/specs/README.md) — the conventions of the
   verification corpus, published beside the corpus itself.
-- `tests/E2E/modular-engine/README.md` and
-  `tests/E2E/modular-engine/cases/grants/INVENTORY.md` — the E2E battery's own
+- `tests/rules/integration/e2e/README.md` and
+  `tests/rules/integration/e2e/cases/grants/INVENTORY.md` — the E2E battery's own
   contract, procedure notes and grant inventory, owned with the corpus they
   describe.
 

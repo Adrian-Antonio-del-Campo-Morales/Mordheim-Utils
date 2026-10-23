@@ -1,8 +1,8 @@
 # Modular engine E2E tests
 
 Unresolved defects and authority questions are recorded in the
-[project backlog](../../../TODO.md); accepted rule interpretations belong in
-[Design rulings](../../../docs/decisions/design-rulings.md).
+[project backlog](../../../../TODO.md); accepted rule interpretations belong in
+[Design rulings](../../../../docs/decisions/design-rulings.md).
 This document retains the authoring/execution procedure, not another issue queue.
 
 This directory contains the modular engine E2E battery and its corpus.
@@ -10,10 +10,21 @@ The reusable support, modular combat loop, declarative corpus loading and
 pytest collection, inventory reconciliation and a CI execution step exist.
 Source-derived authoring, semantic review and execution are separate stages.
 Executing this battery is part of
-[modular integration validation](../../../docs/reference/verification.md#modular-integration-closure).
+[modular integration validation](../../../../docs/reference/verification.md#modular-integration-closure).
 New scenarios are authored from scratch, with a single authorized exception:
 the one-time move of the already developed pilot scenarios into their per-ID files (*Migrated pilot scenarios*
 below). Declarations and empty files do not certify semantic coverage.
+
+## Relationship to frozen engine fixtures
+
+This is the original source-backed integration suite. It still loads its YAML
+scenarios and uses the compiler/KB; it has not been replaced by the frozen
+engine corpus. Derived execution inputs live separately in
+`tests/engines/fixtures/` for isolated engine development.
+
+From the repository root, select this suite explicitly with
+`python tools/mordheim-utils.py tests --scope e2e -q`. During authoring, prefer
+a single affected file or node ID; the complete corpus is an integration run.
 
 ## Current files
 
@@ -217,10 +228,10 @@ they do not certify unrelated uncommitted work or future source revisions.
 
 | Original source | Copied symbols |
 | --- | --- |
-| [verification/dice.py](../../../apps/combat-lab/mordheim_combat_lab/verification/dice.py) | `StrictDice`, `StrictDecisions`, `_NeedRoll`, `_PrefixDice`, `enumerate_exact`. |
-| [verification/reports.py](../../../apps/combat-lab/mordheim_combat_lab/verification/reports.py) | `EvidenceMismatch`, placed in the local `dice.py`. |
-| [verification/scenarios.py](../../../apps/combat-lab/mordheim_combat_lab/verification/scenarios.py) | `_plain`, `_lookup`, `_build`, `_state`. |
-| [test_semantics.py](../../python/verification/test_semantics.py) | The five strict dice, decisions and exact-enumeration test functions. |
+| [verification/dice.py](../../../../apps/combat-lab/mordheim_combat_lab/verification/dice.py) | `StrictDice`, `StrictDecisions`, `_NeedRoll`, `_PrefixDice`, `enumerate_exact`. |
+| [verification/reports.py](../../../../apps/combat-lab/mordheim_combat_lab/verification/reports.py) | `EvidenceMismatch`, placed in the local `dice.py`. |
+| [verification/scenarios.py](../../../../apps/combat-lab/mordheim_combat_lab/verification/scenarios.py) | `_plain`, `_lookup`, `_build`, `_state`. |
+| [test_semantics.py](../../../tooling/evidence/test_semantic_evidence.py) | The five strict dice, decisions and exact-enumeration test functions. |
 
 The dice classes, enumeration helpers, `_plain`, `_lookup`, `_build` and the five
 copied test functions retain their original bodies. Module headers and imports

@@ -73,13 +73,14 @@ The source-checkout launcher delegates to application commands and repository to
 | Validate the KB and semantic specifications | `python tools/mordheim-utils.py verify` |
 | Generate the rule inventory | `python tools/mordheim-utils.py report rules` |
 | Generate test reports | `python tools/mordheim-utils.py report tests` |
-| Run deterministic engine checks | `python tools/mordheim-utils.py tests --scope deterministic` |
+| Choose Python test scopes and focused checks | `python tools/mordheim-utils.py tests --help` |
+| Run the original modular E2E corpus | `python tools/mordheim-utils.py tests --scope e2e -q` |
 | Check engine parity | `python tools/mordheim-utils.py parity --require-complete` |
 | Measure local engine optima | `python tools/mordheim-utils.py calibrate` |
 | Run the web presentation checks | `python tools/mordheim-utils.py check-presentation` |
 | Run the local CI validation gates | `python tools/mordheim-utils.py run-ci` |
 
-Reports and local working artefacts belong under ignored `outputs/`.
+Reports and local working artefacts belong under ignored `outputs/`. Copyable examples for file/node selections, worker counts, phase filters, saved reports and workspace checks are in the [command recipes](docs/reference/tools.md#command-recipes-and-configuration).
 
 ## Development
 
@@ -105,7 +106,11 @@ Unlike browser assets, the generated `_eligibility.js` is versioned and must be 
 
 ### Checks and web build
 
-Choose checks for the area you changed. Python test scopes include `modular`, `construction`, `knowledge`, `ui`, `cli` and `architecture`; extra pytest arguments are forwarded, for example `tests --scope construction -q`.
+Choose checks for the area you changed. Python scopes follow responsibilities: `modular`, `vectorized`, `native`, `shared`, `parity`, `rules`, `applications` and `tooling`; narrower legacy scopes such as `construction` and `knowledge` remain available. Use `tests --help` for exact selections. Extra pytest arguments are forwarded; use direct pytest paths/node IDs for an exact file selection rather than adding a path to a broad scope.
+
+Engine suites load versioned inputs from `tests/engines/fixtures/` through the existing loaders and conftest fixtures. Normal test runs do not regenerate them. The original E2E corpus remains in `tests/rules/integration/e2e/`; rules, construction and E2E tests retain their compiler/KB workflow, as do documented compilation-rejection exceptions. Fixture loading is separate from whether an optimized engine implements every rule. See [engine test fixtures](docs/reference/verification.md#engine-test-fixtures).
+
+For routine edits, run only affected checks. Reserve `--scope all`, `deterministic`, `engines`, `run-ci` and statistical parity campaigns for explicitly broader validation. Parallelize independent focused pytest selections with `-n 2 --dist=load`; keep inner process-pool tests serial. For ordered phases use `test-sequence --workers N`, without raw xdist flags.
 
 Run npm commands from the repository root after generating the browser knowledge data:
 
@@ -130,8 +135,10 @@ See [Test classification and execution order](docs/reference/test-sequence.md) f
 | `packages/typescript/` | Campaign domain, application services, adapters and shared eligibility |
 | `sources/knowledge/` | Canonical YAML knowledge base |
 | `contracts/` | Campaign-file and knowledge editorial schemas |
-| `tests/python/`, `tests/typescript/`, `tests/web/` | Package and application test suites |
-| `tests/specs/`, `tests/E2E/`, `tests/fixtures/` | Semantic specifications, E2E corpus and shared fixtures |
+| `tests/engines/` | Modular, NumPy, native, shared and parity tests; versioned precompiled fixtures |
+| `tests/rules/` | KB, construction and integration tests, including original E2E and semantic corpora |
+| `tests/applications/` | Combat Lab and Warband Manager tests across languages |
+| `tests/tooling/` | Launcher, architecture, evidence, verification and web-tool checks |
 | `tools/` | Launcher, knowledge generation, verification, web checks and Windows packaging |
 | `docs/` | References, guides, design decisions and backlog |
 

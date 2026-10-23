@@ -100,7 +100,7 @@ add it here in the same commit so later bands inherit it.
 
 The promotion of the staged supplement books put each new band next to the
 historical ones, and the same English name arrived in two Spanish forms in 162
-places. `tests/python/knowledge/test_knowledge_pipeline_guards.py` allows exactly
+places. `tests/rules/knowledge/test_knowledge_pipeline_guards.py` allows exactly
 one Spanish text per English text, so the reconciliation kept a single one:
 
 - where the KB already carried the name, **the KB's own translation wins** and
@@ -165,7 +165,7 @@ printed supplements keep (*Emir*, *Askar*, *Rais*, *Thaggi*, *Hatamoto*,
 *Katana*), the loanwords (*Globadier*, *Chef*, *Inventor*, *Noble*) and the Latin
 tag *Modus Operandi* — are listed in
 `_NAMES_WHOSE_SPANISH_IS_IDENTICAL` in
-`tests/python/knowledge/test_band_translation_parity.py`, which is where the
+`tests/rules/knowledge/test_band_translation_parity.py`, which is where the
 parity check reads them.
 
 ## Equipment vocabulary

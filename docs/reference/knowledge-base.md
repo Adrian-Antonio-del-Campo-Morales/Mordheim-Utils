@@ -10,7 +10,7 @@ Three ideas define the KB, and everything else follows from them:
    experience, gold, rolls and purchases of a concrete warband belong to the
    campaign state of the applications, not to the KB.
 2. **The KB carries no evidence of correctness.** Its structural contract and
-   semantic scenarios live in `tests/specs/`, so the runtime never depends on
+   semantic scenarios live in `tests/rules/integration/specs/`, so the runtime never depends on
    its own tests. Editorial text is reviewed against the written sources
    (mordheimer.net / The New Mordheimer), never against engine output.
 3. **Stable ids are the backbone.** Every rule, profile, item, mechanic and
@@ -58,7 +58,7 @@ sources/knowledge/
 Group IDs are namespaced `warband-group.<slug>`; eligibility and restriction
 blocks of the campaign catalogues reference them exactly by that id
 (`mordheim_knowledge.campaign.load_warband_groups` validates all references;
-tests in `tests/python/knowledge/test_campaign_loaders.py`).
+tests in `tests/rules/knowledge/test_campaign_loaders.py`).
 
 ### Runtime classification (`runtime-schema.yaml`)
 
@@ -125,7 +125,7 @@ campaign catalogue (the thirteen documents of `catalog/campaign/`, including the
 typed campaign effects and the exploration procedure tree).
 `mordheim_knowledge.editorial_schemas` validates them all, the structural
 layer of `verify` fails on any mismatch, and
-`tests/python/knowledge/test_editorial_schemas.py` keeps the schemas
+`tests/rules/knowledge/test_editorial_schemas.py` keeps the schemas
 in step with the code contracts they mirror (`EffectSet`, `TRAIT_TYPES`,
 `runtime-schema.yaml`, the documents a post-battle step may resolve, the band
 skill-list vocabulary). The suite also fails when a maintained YAML document
@@ -271,14 +271,14 @@ them without flattening their rules.
 path: it validates IDs, rule references and items; campaign loaders additionally
 resolve hiring `profile_id` references. Editorial schemas in
 `contracts/knowledge-editorial-v1/` validate structure before loader contracts;
-`tests/python/knowledge/test_campaign_loaders.py` covers the loader boundary.
+`tests/rules/knowledge/test_campaign_loaders.py` covers the loader boundary.
 
 ### Source provenance and catalogue comparison
 
 Records cite manuals, printed pages, sections and URLs through `source_refs`.
 `registry/source-documents.yaml` resolves each cited URL to its document and
 its offline copy under `sources/origins/`; undeclared citations fail
-`tests/python/knowledge/test_source_documents.py`. Use
+`tests/rules/knowledge/test_source_documents.py`. Use
 `tools/knowledge/source_documents.py` to resolve a record's document and
 `tools/knowledge/printed_entries.py` to read the printed entry. Missing offline
 copies are reported as missing, never compared against an empty page.
@@ -323,7 +323,7 @@ non-canonical locales (`es`) and never carry an `en` mirror of the canonical
 English — duplicating long English prose invites silent drift, and nothing
 renders the copy anyway. `tools/knowledge/maintenance/normalize_names.py` enforces this (it strips
 any `en` mirror and drops a locale block left without a real translation),
-and `tests/python/knowledge/test_kb_i18n.py` guards the invariant independently.
+and `tests/rules/knowledge/test_kb_i18n.py` guards the invariant independently.
 
 The KB carries a **reviewed Spanish translation**: every warband's rules,
 profiles and band names, the hired swords and campaign catalogues, and the
@@ -355,7 +355,7 @@ Spanish name is required only when both the binding **and** the English name
 match. When rules share a binding but their English names differ, each rule
 translates its own English name directly. This mirrors the `trait.*`
 exception (the trait is shared but the flavour rule name is band-specific).
-`tests/python/knowledge/test_band_translation_parity.py`
+`tests/rules/knowledge/test_band_translation_parity.py`
 (`test_equivalent_rules_share_the_same_spanish_name`) enforces exactly this:
 consistency gated on `(binding kind, binding id, English name)`.
 
@@ -492,14 +492,14 @@ or force an obsolete snapshot: reload and prepare explicit decisions again.
 No direct CSV edits or alternative rewrite scripts. Failed conservation means
 no write; after damage, suspend writes and notify the coordinator, never rebuild
 from HEAD or old exports. The tool does not repair or certify earlier damage.
-Tool tests use synthetic CSVs: `python -m pytest tests/python/knowledge/test_clause_registry.py -q`;
+Tool tests use synthetic CSVs: `python -m pytest tests/rules/knowledge/test_clause_registry.py -q`;
 do not rerun them for rule-only changes.
 
 ## Where is the evidence?
 
 The KB has no `verification/` area of its own: the verification corpus — the
-structural contract (`tests/specs/structural/phase-verification.yaml`) and the
-semantic scenarios under `tests/specs/semantic/` — lives in `tests/`. It is
+structural contract (`tests/rules/integration/specs/structural/phase-verification.yaml`) and the
+semantic scenarios under `tests/rules/integration/specs/semantic/` — lives in `tests/`. It is
 test material and is never distributed with the applications.
 
 Semantic scenarios reference KB targets by canonical path and **content
@@ -552,7 +552,7 @@ that all bind the same mechanic id — reuse without duplication.
    oracle by `parity` (per-field obligations + six-sigma statistical gates),
    sharing the same modular sample. A divergence is presumed to be a defect
    of the candidate — `parity` only reads the oracle and never modifies it.
-7. **Evidence.** Scenarios in `tests/specs/semantic/` pin the rule source by
+7. **Evidence.** Scenarios in `tests/rules/integration/specs/semantic/` pin the rule source by
    digest, exercise granting/compilation and the observable duel result with
    strict dice, and apply deliberate mutations to prove the tests are not
    vacuous. `audit` merges the editorial inventory, scope and executed

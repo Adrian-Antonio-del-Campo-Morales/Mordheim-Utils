@@ -12,6 +12,26 @@ can explain several downstream failures; the phases order those consumers behind
 their prerequisites. Classification does not establish correctness, coverage
 completeness or permission to delete tests.
 
+## Directory ownership and frozen preparation
+
+Physical ownership is organized by responsibility, independently of phase markers:
+`tests/rules/{knowledge,construction,integration}`,
+`tests/engines/{modular,vectorized,native,shared,parity}`,
+`tests/applications` and `tests/tooling`. Python, TypeScript and web checks live
+with their owner rather than in language-specific root directories.
+
+Engine execution suites reuse `tests/engines/fixtures/` through their loaders and
+conftest fixtures. This does not move or replace the original E2E/semantic
+corpora under `tests/rules/integration`, which retain compiler/KB preparation.
+See [engine test fixtures](verification.md#engine-test-fixtures) for the two
+frozen formats and explicit compilation exceptions.
+
+Phases still classify what a test asserts, not how its fighters are prepared.
+Use a focused file/node selection for routine edits; the ordered launcher is
+for a deliberately selected phase workflow. A connected optimized backend can
+still fail for unimplemented rules. Such failures do not, by themselves, identify
+a fixture defect or certify statistical parity.
+
 ## Classification unit
 
 Every executable item has **one category**, chosen from its assertions and the
@@ -180,7 +200,7 @@ python tools/mordheim-utils.py test-sequence --sequence-plan -qq
 python tools/mordheim-utils.py test-sequence --sequence-from phase3_rules -q
 python tools/mordheim-utils.py test-sequence -m "phase1_kb_contracts or phase2_construction" -q
 python tools/mordheim-utils.py test-sequence --workers 4 -q
-python tools/mordheim-utils.py test-sequence --workers 4 -q --output reports/tests.txt
+python tools/mordheim-utils.py test-sequence --workers 4 -q --output outputs/test-runs/tests.txt
 python tools/mordheim-utils.py test-sequence -step2 --workers 4 -q
 python tools/mordheim-utils.py test-sequence --extras -q
 python tools/mordheim-utils.py test-sequence --sequence-category performance -q

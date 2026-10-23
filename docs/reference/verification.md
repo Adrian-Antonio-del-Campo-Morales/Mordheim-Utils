@@ -36,6 +36,34 @@ Deliberate compilation rejections in mixed tests keep the real compiler
 The vectorized `cripple` exception is tracked in `TODO.md`.
 No import or file-access blocking instrumentation is required.
 
+These are two independent formats: cases preserve scenario roles and execution
+metadata; build snapshots cache the result for a complete build request. Keep
+original arguments, `None` versus empty sequences and post-compilation transforms
+unchanged when replacing preparation. Never substitute a similar fighter or
+weaken an assertion to satisfy a missing key. Generate a missing entry explicitly
+from its original build; intentional compiler rejections are not missing snapshots.
+The case exporter is a Python API (`export_cases`), not a command-line generator.
+Snapshot generation preserves existing entries; it does not automatically refresh
+frozen results after a KB/compiler change. Review any intended data update explicitly.
+
+A fixture update may read the KB; an ordinary engine test loads the checked-in
+results. `verify`, `parity`, `benchmark` and `calibrate` retain their application
+CLI defaults and may still compile scenarios. Their tests using fixtures do not
+imply those commands have switched to precompiled input.
+
+To smoke-test the connection without a statistical campaign:
+
+```powershell
+python -u -m pytest tests/engines/vectorized/test_parallel_numpy.py::test_single_batch_samples_are_unchanged_by_the_parallel_path -v --tb=short
+python -u -m pytest tests/engines/native/test_native_engine.py::test_native_accumulates_counts_across_batches -v --tb=short
+```
+
+Keep these runs serial: the NumPy sample uses its own worker pool. A native skip
+does not prove native execution. Successful samples establish the file-to-backend
+connection for those paths; they do not certify every fixture or pending rule.
+Classify missing keys, bad deserialization and wrong participant bindings as
+preparation defects before interpreting engine output differences.
+
 Migration verification on 2026-10-23: integrated collection found 13,148 tests;
 both workspace typechecks passed. Manual modular/shared runs passed 1,384 tests
 plus the three parallel-oracle tests. Focused NumPy sequential/parallel and native
@@ -123,7 +151,8 @@ compiled effect and correct battle behavior require distinct evidence. F035
 classifies historical construction findings against the current implementation;
 it does not require rebuilding the shared module or repeating accepted Web phases.
 
-Run deterministic suites for ordinary changes. Deep parity, truncation,
+Run affected deterministic files or node IDs for ordinary changes; the full
+`deterministic` scope is a broader coverage/integration selection. Deep parity, truncation,
 coverage mutation and benchmark matrices are certification jobs for engine
 changes and releases; use their focused CLI options while developing. The
 commands and current defaults are discoverable through

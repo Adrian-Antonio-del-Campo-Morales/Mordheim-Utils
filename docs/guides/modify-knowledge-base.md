@@ -27,7 +27,7 @@ that guide's last section.
    [`contracts/knowledge-editorial-v1`](../../contracts/knowledge-editorial-v1/README.md):
    when a document gains, renames or drops a field, extend its schema in the
    same change or the validation fails. A new YAML under a covered tree needs a
-   schema of its own — `tests/python/knowledge/test_editorial_schemas.py` fails when a
+   schema of its own — `tests/rules/knowledge/test_editorial_schemas.py` fails when a
    document escapes the contract. The same suite refuses a schema that admits
    more than the documents hold and a declaration the documents never exercise
    unless `tools/knowledge/audit_schema_strictness.py` can name the contract

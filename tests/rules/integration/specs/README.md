@@ -37,9 +37,9 @@ written here.
   status source.
 
 The design basis for every case pattern is documented in
-[the verification reference](../../docs/reference/verification.md) (layered
+[the verification reference](../../../../docs/reference/verification.md) (layered
 strategy) and the permanent
-[design rulings](../../docs/decisions/design-rulings.md).
+[design rulings](../../../../docs/decisions/design-rulings.md).
 
 ```powershell
 python -m mordheim_combat_lab verify --inventory
@@ -50,4 +50,4 @@ python -m mordheim_combat_lab verify --require-complete
 
 The last command fails while any obligation or interaction remains pending.
 Full commands and report reading:
-[Develop and release](../../docs/guides/develop-and-release.md).
+[Develop and release](../../../../docs/guides/develop-and-release.md).

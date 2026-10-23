@@ -7,7 +7,7 @@ code). This page is consultable on its own; audit findings and development
 history are not part of the permanent design record.
 
 Rulings that answer a specific spec `question` are additionally recorded next
-to the spec (`ruling:` field in `tests/specs/semantic/**`); this page collects
+to the spec (`ruling:` field in `tests/rules/integration/specs/semantic/**`); this page collects
 the ones with lasting design impact plus the decisions that were taken outside
 a single spec.
 
