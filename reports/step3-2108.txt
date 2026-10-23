@@ -1,21 +1,21 @@
 
-=== Modular rules and operators (8 workers, loadfile) ===
+=== Modular rules and operators (10 workers, loadfile) ===
 bringing up nodes...
 bringing up nodes...
 
 --------------------------- sequence: phase3_rules ----------------------------
 ........................................................................ [  2%]
 ........................................................................ [  4%]
-........................................................................ [  6%]
+......................................................................... [  6%]
 ........................................................................ [  8%]
 ........................................................................ [ 10%]
-............................F........................................... [ 12%]
-......................................................................... [ 14%]
-......................................................................... [ 16%]
+........................................................................ [ 12%]
+.....................................................................F.. [ 14%]
+........................................................................ [ 16%]
 ........................................................................ [ 18%]
-...............................................................F.......F [ 20%]
+.............F......F................................................... [ 20%]
 ........................................................................ [ 22%]
-........................................................................ [ 24%]
+......................................................................... [ 24%]
 ........................................................................ [ 26%]
 ........................................................................ [ 28%]
 ........................................................................ [ 31%]
@@ -53,154 +53,9 @@ bringing up nodes...
 ........................................................................ [ 97%]
 ........................................................................ [ 99%]
 ...........................                                              [100%]
-=================================== ERRORS ====================================
-___ ERROR collecting tests/python/verification/test_parity_battery_cases.py ___
-tests\python\verification\test_parity_battery_cases.py:13: in <module>
-    from mordheim_combat_lab.verification.parity._battery_cases import (
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_cases.py:1553: in <module>
-    validate_cases()
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_cases.py:1518: in validate_cases
-    raise ValueError(f"complete does not represent variants {missing}")
-E   ValueError: complete does not represent variants ['B01.2', 'B09.2']
-___ ERROR collecting tests/python/verification/test_parity_battery_cases.py ___
-tests\python\verification\test_parity_battery_cases.py:13: in <module>
-    from mordheim_combat_lab.verification.parity._battery_cases import (
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_cases.py:1553: in <module>
-    validate_cases()
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_cases.py:1518: in validate_cases
-    raise ValueError(f"complete does not represent variants {missing}")
-E   ValueError: complete does not represent variants ['B01.2', 'B09.2']
-___ ERROR collecting tests/python/verification/test_parity_battery_cases.py ___
-tests\python\verification\test_parity_battery_cases.py:13: in <module>
-    from mordheim_combat_lab.verification.parity._battery_cases import (
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_cases.py:1553: in <module>
-    validate_cases()
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_cases.py:1518: in validate_cases
-    raise ValueError(f"complete does not represent variants {missing}")
-E   ValueError: complete does not represent variants ['B01.2', 'B09.2']
-___ ERROR collecting tests/python/verification/test_parity_battery_cases.py ___
-tests\python\verification\test_parity_battery_cases.py:13: in <module>
-    from mordheim_combat_lab.verification.parity._battery_cases import (
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_cases.py:1553: in <module>
-    validate_cases()
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_cases.py:1518: in validate_cases
-    raise ValueError(f"complete does not represent variants {missing}")
-E   ValueError: complete does not represent variants ['B01.2', 'B09.2']
-___ ERROR collecting tests/python/verification/test_parity_battery_cases.py ___
-tests\python\verification\test_parity_battery_cases.py:13: in <module>
-    from mordheim_combat_lab.verification.parity._battery_cases import (
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_cases.py:1553: in <module>
-    validate_cases()
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_cases.py:1518: in validate_cases
-    raise ValueError(f"complete does not represent variants {missing}")
-E   ValueError: complete does not represent variants ['B01.2', 'B09.2']
-___ ERROR collecting tests/python/verification/test_parity_battery_cases.py ___
-tests\python\verification\test_parity_battery_cases.py:13: in <module>
-    from mordheim_combat_lab.verification.parity._battery_cases import (
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_cases.py:1553: in <module>
-    validate_cases()
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_cases.py:1518: in validate_cases
-    raise ValueError(f"complete does not represent variants {missing}")
-E   ValueError: complete does not represent variants ['B01.2', 'B09.2']
-__ ERROR collecting tests/python/verification/test_parity_battery_runner.py ___
-tests\python\verification\test_parity_battery_runner.py:11: in <module>
-    from mordheim_combat_lab.verification.parity import _battery_runner as runner
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_runner.py:38: in <module>
-    from ._battery_cases import VARIANTS, VARIANT_KEYS, required_variants
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_cases.py:1553: in <module>
-    validate_cases()
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_cases.py:1518: in validate_cases
-    raise ValueError(f"complete does not represent variants {missing}")
-E   ValueError: complete does not represent variants ['B01.2', 'B09.2']
-___ ERROR collecting tests/python/verification/test_parity_battery_cases.py ___
-tests\python\verification\test_parity_battery_cases.py:13: in <module>
-    from mordheim_combat_lab.verification.parity._battery_cases import (
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_cases.py:1553: in <module>
-    validate_cases()
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_cases.py:1518: in validate_cases
-    raise ValueError(f"complete does not represent variants {missing}")
-E   ValueError: complete does not represent variants ['B01.2', 'B09.2']
-___ ERROR collecting tests/python/verification/test_parity_battery_cases.py ___
-tests\python\verification\test_parity_battery_cases.py:13: in <module>
-    from mordheim_combat_lab.verification.parity._battery_cases import (
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_cases.py:1553: in <module>
-    validate_cases()
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_cases.py:1518: in validate_cases
-    raise ValueError(f"complete does not represent variants {missing}")
-E   ValueError: complete does not represent variants ['B01.2', 'B09.2']
-__ ERROR collecting tests/python/verification/test_parity_battery_runner.py ___
-tests\python\verification\test_parity_battery_runner.py:11: in <module>
-    from mordheim_combat_lab.verification.parity import _battery_runner as runner
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_runner.py:38: in <module>
-    from ._battery_cases import VARIANTS, VARIANT_KEYS, required_variants
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_cases.py:1553: in <module>
-    validate_cases()
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_cases.py:1518: in validate_cases
-    raise ValueError(f"complete does not represent variants {missing}")
-E   ValueError: complete does not represent variants ['B01.2', 'B09.2']
-__ ERROR collecting tests/python/verification/test_parity_battery_runner.py ___
-tests\python\verification\test_parity_battery_runner.py:11: in <module>
-    from mordheim_combat_lab.verification.parity import _battery_runner as runner
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_runner.py:38: in <module>
-    from ._battery_cases import VARIANTS, VARIANT_KEYS, required_variants
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_cases.py:1553: in <module>
-    validate_cases()
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_cases.py:1518: in validate_cases
-    raise ValueError(f"complete does not represent variants {missing}")
-E   ValueError: complete does not represent variants ['B01.2', 'B09.2']
-__ ERROR collecting tests/python/verification/test_parity_battery_runner.py ___
-tests\python\verification\test_parity_battery_runner.py:11: in <module>
-    from mordheim_combat_lab.verification.parity import _battery_runner as runner
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_runner.py:38: in <module>
-    from ._battery_cases import VARIANTS, VARIANT_KEYS, required_variants
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_cases.py:1553: in <module>
-    validate_cases()
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_cases.py:1518: in validate_cases
-    raise ValueError(f"complete does not represent variants {missing}")
-E   ValueError: complete does not represent variants ['B01.2', 'B09.2']
-__ ERROR collecting tests/python/verification/test_parity_battery_runner.py ___
-tests\python\verification\test_parity_battery_runner.py:11: in <module>
-    from mordheim_combat_lab.verification.parity import _battery_runner as runner
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_runner.py:38: in <module>
-    from ._battery_cases import VARIANTS, VARIANT_KEYS, required_variants
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_cases.py:1553: in <module>
-    validate_cases()
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_cases.py:1518: in validate_cases
-    raise ValueError(f"complete does not represent variants {missing}")
-E   ValueError: complete does not represent variants ['B01.2', 'B09.2']
-__ ERROR collecting tests/python/verification/test_parity_battery_runner.py ___
-tests\python\verification\test_parity_battery_runner.py:11: in <module>
-    from mordheim_combat_lab.verification.parity import _battery_runner as runner
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_runner.py:38: in <module>
-    from ._battery_cases import VARIANTS, VARIANT_KEYS, required_variants
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_cases.py:1553: in <module>
-    validate_cases()
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_cases.py:1518: in validate_cases
-    raise ValueError(f"complete does not represent variants {missing}")
-E   ValueError: complete does not represent variants ['B01.2', 'B09.2']
-__ ERROR collecting tests/python/verification/test_parity_battery_runner.py ___
-tests\python\verification\test_parity_battery_runner.py:11: in <module>
-    from mordheim_combat_lab.verification.parity import _battery_runner as runner
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_runner.py:38: in <module>
-    from ._battery_cases import VARIANTS, VARIANT_KEYS, required_variants
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_cases.py:1553: in <module>
-    validate_cases()
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_cases.py:1518: in validate_cases
-    raise ValueError(f"complete does not represent variants {missing}")
-E   ValueError: complete does not represent variants ['B01.2', 'B09.2']
-__ ERROR collecting tests/python/verification/test_parity_battery_runner.py ___
-tests\python\verification\test_parity_battery_runner.py:11: in <module>
-    from mordheim_combat_lab.verification.parity import _battery_runner as runner
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_runner.py:38: in <module>
-    from ._battery_cases import VARIANTS, VARIANT_KEYS, required_variants
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_cases.py:1553: in <module>
-    validate_cases()
-apps\combat-lab\mordheim_combat_lab\verification\parity\_battery_cases.py:1518: in validate_cases
-    raise ValueError(f"complete does not represent variants {missing}")
-E   ValueError: complete does not represent variants ['B01.2', 'B09.2']
 ================================== FAILURES ===================================
 __ test_spirit_knife_is_local_to_the_used_hand_and_keeps_its_armour_modifier __
-[gw5] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
+[gw8] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
 
     @pytest.mark.phase3_rules
     def test_spirit_knife_is_local_to_the_used_hand_and_keeps_its_armour_modifier():
@@ -285,7 +140,7 @@ E       AssertionError: Regex pattern 'Spectral Touch' does not match 'Local mod
 
 tests\python\construction\test_local_weapon_items.py:287: AssertionError
 ___ test_canonical_six_wounds_once_without_a_wound_or_critical_die[wights] ____
-[gw6] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
+[gw9] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
 
 profile = 'wights'
 
@@ -346,7 +201,7 @@ E       AssertionError: Regex pattern 'Killing Blow' does not match 'Local modif
 
 tests\python\combat\modular\test_killing_blow.py:52: AssertionError
 _ test_canonical_six_wounds_once_without_a_wound_or_critical_die[grave-guards] _
-[gw6] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
+[gw9] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
 
 profile = 'grave-guards'
 
@@ -412,23 +267,7 @@ phase3_rules: 3482 passed, 3 failed
 FAILED tests/python/construction/test_local_weapon_items.py::test_spirit_knife_is_local_to_the_used_hand_and_keeps_its_armour_modifier
 FAILED tests/python/combat/modular/test_killing_blow.py::test_canonical_six_wounds_once_without_a_wound_or_critical_die[wights]
 FAILED tests/python/combat/modular/test_killing_blow.py::test_canonical_six_wounds_once_without_a_wound_or_critical_die[grave-guards]
-ERROR tests/python/verification/test_parity_battery_cases.py - ValueError: co...
-ERROR tests/python/verification/test_parity_battery_cases.py - ValueError: co...
-ERROR tests/python/verification/test_parity_battery_cases.py - ValueError: co...
-ERROR tests/python/verification/test_parity_battery_cases.py - ValueError: co...
-ERROR tests/python/verification/test_parity_battery_cases.py - ValueError: co...
-ERROR tests/python/verification/test_parity_battery_cases.py - ValueError: co...
-ERROR tests/python/verification/test_parity_battery_runner.py - ValueError: c...
-ERROR tests/python/verification/test_parity_battery_cases.py - ValueError: co...
-ERROR tests/python/verification/test_parity_battery_cases.py - ValueError: co...
-ERROR tests/python/verification/test_parity_battery_runner.py - ValueError: c...
-ERROR tests/python/verification/test_parity_battery_runner.py - ValueError: c...
-ERROR tests/python/verification/test_parity_battery_runner.py - ValueError: c...
-ERROR tests/python/verification/test_parity_battery_runner.py - ValueError: c...
-ERROR tests/python/verification/test_parity_battery_runner.py - ValueError: c...
-ERROR tests/python/verification/test_parity_battery_runner.py - ValueError: c...
-ERROR tests/python/verification/test_parity_battery_runner.py - ValueError: c...
-3 failed, 3482 passed, 16 errors in 105.53s (0:01:45)
+3 failed, 3482 passed in 107.28s (0:01:47)
 
 Phase results (process completion is the barrier):
   phase3_rules: failed

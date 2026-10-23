@@ -2,6 +2,8 @@
 
 Los encargos individuales, sus cláusulas y el orden de lanzamiento están en [README.md](README.md), junto a los ficheros G00–G08 de este directorio. Sus anexos asignan responsabilidad; el CSV conserva el progreso canónico.
 
+Estado documental, 2026-10-22: este plan conserva la secuencia y los criterios del portado; no implica que siga pendiente implementarlo. El motor se recibe como implementado y la evidencia de cada fase se consulta en sus entregas. El rework estadístico tiene alcance independiente, indicado en §2.1; no se relanza la implementación ni se acredita G07 por actualizar este documento.
+
 ## Objetivo y premisas obligatorias
 
 Completar el motor NumPy existente hasta reproducir el comportamiento del motor modular dentro del alcance admitido del proyecto. Después, comprobar la paridad y optimizar la implementación correcta.
@@ -128,17 +130,15 @@ Todo el alcance admitido está integrado en la ruta NumPy y las comprobaciones e
 
 ### 2.1. Reutilizar las baterías existentes
 
-La [renovación de paridad](parity_update/PARITY_BATTERY_RENOVATION.md) autoriza
-preparar su ampliación en paralelo a fase 1, con los
-[prompts P00–P05](parity_update/PROMPTS_AGENTES.md). Ahora solo se preparan tests;
-el vectorial no está terminado. No se ejecutan candidatos ni se exigen resultados
-suyos para aceptar el inventario, catálogo, adaptador o conexión CLI/informes.
-Se comprueba la infraestructura propia y, cuando haga falta, se usa el oráculo
-para preparar referencias y medir coste, sin revalidarlo. Las dependencias del
-motor se documentan con contrato y propietario, sin bloquear P03 por su ausencia.
-P04 puede cerrar su preparación y medición modular ahora; completa la calibración
-candidata tras G00–G06. P05 ejecuta entonces la aceptación de fase 2/G07 con la
-batería preparada, sin repetir otra campaña independiente.
+La [renovación estadística](parity_update/PARITY_BATTERY_RENOVATION.md) y su
+[prompt vigente](parity_update/PROMPTS_AGENTES.md) reutilizan el catálogo ampliado
+para comparar distribuciones de resultados de duelos. No requieren publicar
+eventos internos ni ampliar motores. La adaptación está pendiente y mantiene
+su restricción de edición estática; P04/P05 son campañas posteriores autorizadas
+por separado. **G07 no espera esa adaptación, no ejecuta P05 y no depende de P04.**
+Usa la batería histórica aplicable sobre una versión integrada identificada.
+Cada campaña acredita solo su batería y versión, sin transferir cobertura ni
+reabrir automáticamente cierres anteriores.
 
 Usar el modular aceptado como referencia y NumPy como candidato explícito. No volver a ejecutar su proceso de certificación modular completo.
 
@@ -156,7 +156,7 @@ Relacionar los comportamientos portados con lo que ejercitan esos escenarios. Si
 
 ### 2.2. Ejecutar realmente NumPy
 
-El comando actual de paridad incorpora el nativo cuando está instalado. Añadir selección `--backend numpy|native|all`, manteniendo `all` como comportamiento predeterminado compatible. Las ejecuciones de esta fase seleccionan `numpy` y comparan exclusivamente modular contra NumPy.
+El comando histórico de paridad puede incorporar el nativo cuando está instalado. Reutilizar la selección explícita de backend existente para comparar exclusivamente modular contra NumPy en esta fase; conservar la selección histórica implícita. No reconstruir opciones de CLI ya implementadas ni asumir que los nuevos perfiles estadísticos están adaptados.
 
 Los informes deben identificar el backend ejecutado. No aceptar fallback modular como evidencia NumPy. Las búsquedas de campos y etiquetas pueden conservarse como inventario, pero no bastan para acreditar resultados.
 

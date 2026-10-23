@@ -31,7 +31,8 @@ def hit_targets(attacker_ws: np.ndarray, defender_ws: np.ndarray, *,
     # The three cases are mutually exclusive, so the table collapses to one
     # arithmetic expression: 4 minus (attacker stronger) plus (defender much
     # stronger), with zero marking an automatic hit against defender WS 0.
-    target = (4 + (defender_ws > 2 * attacker_ws) - (attacker_ws > defender_ws)).astype(np.int16)
+    target = 4 + (defender_ws > 2 * attacker_ws) - (attacker_ws > defender_ws)
+    target = target.astype(np.int16)
     if guiding_dream is not None:
         # +1 To Hit is one point less on the target roll.
         target = target - np.asarray(guiding_dream, dtype=np.int16)
@@ -245,8 +246,9 @@ def armour_targets(defender: CompiledFighter, strength: np.ndarray,
                    effect: EffectSet, magical_attack: bool,
                    ignore: np.ndarray | bool = False) -> np.ndarray:
     """Vector form of the canonical `armour_target` contract."""
+    strength_penetration = np.maximum(0, strength - 3)
     modifier = (
-        np.maximum(0, strength - 3)
+        strength_penetration
         + effect.armour_penetration
         - effect.target_armour_bonus
     )
@@ -257,7 +259,7 @@ def armour_targets(defender: CompiledFighter, strength: np.ndarray,
         # capped at the armour's worst save, and penetration applies after that
         # cap.  Unmodified natural armour ignores both strength and penetration.
         natural = np.minimum(
-            natural + np.maximum(0, strength - 3) - effect.target_armour_bonus,
+            natural + strength_penetration - effect.target_armour_bonus,
             defender.natural_armour_worst_save,
         ) + effect.armour_penetration
     if defender.global_effects.natural_armour_negated_by_magic and magical_attack:

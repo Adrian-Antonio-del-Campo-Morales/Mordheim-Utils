@@ -284,7 +284,11 @@ def test_spirit_knife_is_local_to_the_used_hand_and_keeps_its_armour_modifier():
     saved = attack(attacker, target(wounds=2, armour_id='armour.light-armour'), attacker.off_hand,
         [('item.hit', 6), ('item.spectral-touch.armour', 5), ('item.wound', 1)])
     assert saved.defender.wounds == 2
-    with pytest.raises(ValueError, match='Spectral Touch'):
+    # The knife's own printed modifier is a pending native local modifier and
+    # the gate names it before Spectral Touch. Refusal before any silent drop
+    # is the invariant; the spectral-specific gate is pinned synthetically in
+    # tests/python/combat/modular/test_spectral_touch_activation.py.
+    with pytest.raises(ValueError, match='modular engine'):
         require_optimized_support(attacker, target())
 
 

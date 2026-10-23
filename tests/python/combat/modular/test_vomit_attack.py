@@ -158,15 +158,37 @@ def test_vomit_suppresses_other_hands_natural_attacks_and_charge_replacements(di
 @pytest.mark.phase2_construction
 @pytest.mark.parametrize("backend", ["auto", "numpy", "native"])
 def test_unported_option_is_refused_before_optimized_execution(backend):
-    with pytest.raises(ValueError, match="optional Vomit Attack.*modular"):
+    """NumPy executes the connected option; the native gate still refuses it.
+
+    The native gate names its first pending capability, which for this Troll is
+    a local modifier rather than the Vomit option, so its refusal is asserted
+    generically. The NumPy request supplies explicit Leadership because the
+    charging fear test needs it in both engines.
+    """
+    if backend == "numpy":
+        led = compile_fighter(FighterBuild(
+            "mordheim", Characteristics(3, 3, 3, 4, 1, 1, leadership=7),
+            main_weapon_id="weapon.sword",
+        ))
+        result = simulate_duel(DuelRequest(troll(), led, simulations=1), backend=backend)
+        assert result.first_wins + result.second_wins + result.unresolved == 1
+        return
+    with pytest.raises(ValueError, match="modular engine"):
         simulate_duel(DuelRequest(troll(), opponent(), simulations=1), backend=backend)
 
 
 @pytest.mark.phase2_construction
 def test_low_level_optimized_entries_do_not_silently_drop_the_option():
     first, second = troll(), opponent()
-    for call in (lambda: compile_duel_plan(first, second), lambda: compile_duel(first, second),
-                 lambda: simulate_batch(first, second, 1, np.random.default_rng(0), 1),
-                 lambda: simulate_duel_parallel(DuelRequest(first, second, simulations=1))):
-        with pytest.raises(ValueError, match="optional Vomit Attack.*modular"):
+    for call in (lambda: compile_duel_plan(first, second), lambda: compile_duel(first, second)):
+        with pytest.raises(ValueError, match="modular engine"):
             call()
+    # The accepted NumPy entries execute the connected option instead of
+    # dropping it. Explicit Leadership keeps the charging fear test valid.
+    led = compile_fighter(FighterBuild(
+        "mordheim", Characteristics(3, 3, 3, 4, 1, 1, leadership=7),
+        main_weapon_id="weapon.sword",
+    ))
+    assert sum(simulate_batch(first, led, 1, np.random.default_rng(0), 1)) == 1
+    parallel = simulate_duel_parallel(DuelRequest(first, led, simulations=1))
+    assert parallel.first_wins + parallel.second_wins + parallel.unresolved == 1

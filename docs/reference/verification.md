@@ -282,6 +282,112 @@ python tools/verification/mutate-engine.py --mutant wound-ramp-off-by-one --json
   statistical/deep rows carry engine-level wall times. Every certificate and
   budget pins its seed/suites so a reported divergence is reproducible.
 
+## Renewed statistical scenario battery
+
+`parity --profile quick|complete|deep` runs the scenario catalogue of
+`mordheim_combat_lab.verification.parity._battery_cases` and compares the
+terminal outcome distributions of the modular oracle and the selected candidate.
+Profiles are cumulative by case id (`quick` ⊆ `complete` ⊆ `deep`). Each case
+declares origin, variant, fighters, context, decisions, sample width, seed and
+horizon; it is executed by both real engines, never by delegating one to the
+other.
+
+```bash
+# minimal battery (11 prepared cases; execution evidence is separate)
+python -X utf8 tools/mordheim-utils.py parity --profile quick --output outputs/parity/battery-quick.json
+
+# both candidates, per-backend coverage
+python -X utf8 tools/mordheim-utils.py parity --profile complete --backend all --output outputs/parity/battery-complete.json
+
+# markdown certificate and strict gate
+python -X utf8 tools/mordheim-utils.py parity --profile deep --output outputs/parity/battery-deep.md --require-complete
+
+# smaller sample width for calibration, never for acceptance
+python -X utf8 tools/mordheim-utils.py parity --profile quick --rows 256 --output outputs/parity/battery-quick-256.json
+
+# 1000 duels per case, up to 10 modular-oracle worker processes
+python -X utf8 tools/mordheim-utils.py parity --profile quick --backend numpy --rows 1000 --workers 10 --output outputs/parity/battery-quick-1000.json
+```
+
+`--workers N|auto` also applies to all three profiles. It partitions each
+modular sample into contiguous `seed + i` ranges, preserves terminal row order
+and reuses one process pool across cases. `1` stays sequential; explicit counts
+are capped to available CPUs, and `auto` uses the historical cost threshold.
+Candidate batches are unchanged, and `--backend all` still shares the modular
+sample between candidates. The report records `oracle_workers_requested` as
+the requested policy, not a claim that every case used that many processes.
+
+The comparison is statistical. `winner` (first win, second win, unresolved) is
+always compared with the six-sigma tolerance shared with the historical
+certificate (`_statistical.six_sigma_tolerance`, floor 0.25%). `rounds`,
+`wounds` and `condition` are added when the case declares them, because both
+sampling paths already publish those distributions. Internal counters, typed
+witnesses, activation flags, equipment hashes and checkpoints are **not**
+required: `expect`, `positive_control` and `witness_value` remain declaration
+data and never gate execution or approval.
+
+A real input limit is still a limit: a supplied state or preparation the current
+API cannot express (`blocked_by="state:…"`) or a per-row decision script
+(`decision:per-row`) makes the case `INCOMPATIBLE` with its cause and keeps it in
+the profile denominator. It is never executed as a different scenario. The
+certificate lists those limits (`limits`), so a partial run cannot be read as
+complete coverage.
+
+The reviewed catalogue declares 122 cases (11 exclusive to `quick`, 103 to
+`complete`, 8 to `deep`; cumulative 11/114/122). 118 are prepared by static
+reading of the catalogue, the compiler and both consumers; four keep a real
+limit. `c03-petru-potion` needs a campaign-only potion table the KB marks out of
+scope; `v01-restriction` needs a charge the construction rejects before any
+sample exists; and `v14-handler`/`v14-handler-absent` need an engine change: the
+canonical bear-and-tamer build auto-exempts the bear's Stupidity inside the
+handler radius and its Fear test never occurs because the bear itself causes
+Fear, so the handler branch has no test left to lend to. The `deep` profile composes already
+justified situations (fear → charge → parry, leadership → psychology, extra
+attacks → defensive capacity, armour → parry, order → attacks and reactions →
+injury) and adds no new rule material.
+
+`--backend` defaults to `numpy`. `native` never falls back to NumPy: a missing,
+stale or unsupported extension is `NOT_RUN:native-*` and never a comparison.
+`--backend`/`--rows` without `--profile` and `--rows` with `--require-complete`
+are rejected with code 2; the historical route without `--profile` is unchanged.
+
+The certificate is schema `mordheim-combat-parity-battery/v3`. Per case it
+records the stages actually reached — `executed` (both samples obtained),
+`compared` (at least one magnitude compared) and `approved` (all magnitudes
+within tolerance) — plus every `comparisons[]` entry with the modular and
+candidate rates and tolerances. `coverage` aggregates `declared`, `case_ids`,
+`prepared` (no real input limit), `executed`, `compared`, `approved`,
+`divergent`, `incompatible`, `not_run`, `errors`, `dependency` and
+`sensitivity_pending`. `magnitudes` reports how many comparisons of each
+magnitude stayed within tolerance, and `variants`/`clauses` keep the same stages
+per variant and canonical clause.
+
+Own errors (`NOT_RUN:compile`, `NOT_RUN:decision-script`,
+`NOT_RUN:case-definition`, `NOT_RUN:outcome-codes`, an unexpected exception, a
+batch-shape or determinism failure and any divergence) make the command exit 1
+**even without `--require-complete`**. Real input limits and an absent backend are dependencies:
+they leave the run partial and only `--require-complete` turns that into a
+failure. The CLI and the report share one classification
+(`battery_failure_kind`), so a bucket cannot contradict the exit code.
+
+Each engine's winner convention is validated before normalisation (oracle
+`0/1/2`, candidate `1/-1/0`). A code outside its own convention is malformed
+data: the case is `NOT_RUN:outcome-codes`, an own error, and the code never
+enters the unresolved category or disappears from the sample.
+
+A case names a printed rule in `special_rule_ids` (a band rule id for a
+band/profile build, any rule id of the collection for a free build); an effect
+id such as `trait.flammable` is not a rule and is refused. Supplied traits
+(`concussion_immune`, `poison_immune`, `injury_profile`, `frenzy`, …) travel in
+`trait_overrides`, and hand-held defences (`defence.shield`,
+`defence.buckler`) occupy `off_hand_id`, not `defence_ids`.
+
+`sensitivity` is reported as pending for every case: a statistical PASS compares
+outcome distributions, it does not prove that a rule changes them. The
+with/without-rule contrast over the oracle belongs to the later campaign, and
+`complete`/`accepted` are execution semantics over the required scenarios of the
+profile, not semantic coverage of every internal rule.
+
 ## What each layer cannot see (and who covers it)
 
 - Sampling noise hides branches rarer than ~10⁻³ even at deep scale → L1 exact
@@ -312,13 +418,12 @@ efficiently than broad enumeration.
 
 ## When to add a pair
 
-Add a statistical pair only when it exercises an **interaction axis** no
-deterministic case covers (a new combination of rule families over a legal
-construction that L1/L2 do not compose), and prefer adding the deterministic
-case that covers that axis instead whenever one exists. Keep the matrix
-curated: each pair is justified by the axis it adds, triage is expected to
-find root causes shared by several pairs, and the number of pairs converges
-to tens — not to the combinatorics of all possible matchups.
+Add or reuse a statistical scenario when it represents a rule variant, boundary
+or interaction missing from the selected catalogue and can affect measured duel
+outcomes. Existing deterministic coverage does not replace statistical execution
+of the selected scenario. Prefer material with/without-rule contrasts where
+useful, record sensitivity limits and avoid the Cartesian product of matchups.
+Keep the matrix curated by justified behaviour, without a fixed scenario quota.
 
 ## Reports and the interaction matrix
 

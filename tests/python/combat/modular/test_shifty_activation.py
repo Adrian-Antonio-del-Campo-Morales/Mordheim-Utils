@@ -176,19 +176,40 @@ def test_canonical_thief_pistol_bonus_and_shifty_both_execute(opponent):
 @pytest.mark.parametrize('second', [False, True])
 @pytest.mark.parametrize('backend', ['auto', 'numpy', 'native'])
 def test_optimized_entries_explicitly_refuse_the_unported_canonical_skill(second, backend, opponent):
+    """The accepted NumPy gate executes Shifty; the native gate still refuses it.
+
+    ``NUMPY_CONNECTED_BEHAVIOURS`` declares the connected NumPy port, while
+    ``NATIVE_PENDING`` keeps the whole snapshot. ``auto`` resolves to the
+    available native backend and therefore follows the native gate. The Elder
+    also carries its innate Leader contract, which the native gate rejects
+    before Shifty, so the refusal is asserted generically here.
+    """
     pair = (opponent, hero()) if second else (hero(), opponent)
-    with pytest.raises(ValueError, match='Shifty.*modular'):
-        simulate_duel(DuelRequest(*pair, simulations=1), backend=backend)
+    request = DuelRequest(*pair, simulations=1)
+    if backend == 'numpy':
+        result = simulate_duel(request, backend=backend)
+        assert result.first_wins + result.second_wins + result.unresolved == 1
+        return
+    with pytest.raises(ValueError, match='modular engine'):
+        simulate_duel(request, backend=backend)
 
 
 @pytest.mark.phase2_construction
 def test_low_level_optimized_entries_refuse_without_losing_other_guards(opponent):
-    pair = (hero(), opponent)
-    for call in (lambda: compile_duel_plan(*pair), lambda: compile_duel(*pair),
-                 lambda: simulate_batch(*pair, 1, np.random.default_rng(0), 1),
-                 lambda: simulate_duel_parallel(DuelRequest(*pair, simulations=1))):
+    """Native entries refuse Shifty; the connected NumPy entries execute it.
+
+    ``compile_duel_plan``/``compile_duel`` default to the native gate, which
+    still rejects the skill. ``simulate_batch``/``simulate_duel_parallel`` run
+    the accepted NumPy port, which now applies the same contract instead of
+    refusing it.
+    """
+    cook = hero(profile='halfling-cook')
+    for call in (lambda: compile_duel_plan(cook, opponent), lambda: compile_duel(cook, opponent)):
         with pytest.raises(ValueError, match='Shifty.*modular'):
             call()
+    assert sum(simulate_batch(cook, opponent, 1, np.random.default_rng(0), 1)) == 1
+    parallel = simulate_duel_parallel(DuelRequest(cook, opponent, simulations=1))
+    assert parallel.first_wins + parallel.second_wins + parallel.unresolved == 1
     # The Elder now has an innate modular-only Leader contract, independently
     # of selected Shifty. A Cook without either contract remains supported.
     with pytest.raises(ValueError, match='Local modifier.*modular'):

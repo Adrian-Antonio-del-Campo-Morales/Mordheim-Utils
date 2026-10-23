@@ -1,72 +1,65 @@
-"""Executable parity battery: compile once, sample both engines, compare.
+"""Statistical parity battery: sample real duels in both engines and compare.
 
-P02 of the parity-battery renovation.  The modular engine is the only
-correctness oracle; a case is a declared behaviour, a seed and a sample width,
-never a hand-maintained tuple of rolls.  This module owns execution,
-comparison and the report; ``_battery_cases.py`` owns the catalog.
+P03 (statistical adaptation).  The modular engine is the correctness oracle;
+each case is a declared scenario — fighters, context, decisions, seed, sample
+width and horizon — executed by both engines.  Parity is decided on terminal
+outcome distributions, never on internal events: no witness, counter, flag,
+hash or positive control is required to execute or approve a case.
 
-Preparation contract (P00 revision 4 + A8–A10):
+``winner`` is always compared (first win, second win, unresolved) with the
+six-sigma gate of ``_statistical``.  ``rounds``, ``wounds`` and ``condition``
+are compared when the case declares them; both sampling paths publish them
+already, so they are real observations, not instrumentation.  A real input
+limitation — initial state the API cannot express, per-row decisions — is
+reported as ``INCOMPATIBLE`` with its cause and is never replaced by a weaker
+scenario.  Sensitivity of a rule pair needs a later campaign: this module
+reports statistical parity, not semantic coverage.
 
-* a case names one ``variant``; its witness, kind and predicates come from the
-  catalog, never from the case;
-* ``condition``/``wounds`` are direct-result witnesses only in B07/B15, while
-  ``leadership-test-value``/``psychology-dice`` are measured direct results in
-  B11/B14 (A9);
-* a focused positive has no ``positive_control``; its negative references it and
-  the pair is resolved before approval (A10);
-* a positive control that does not activate is ``NOT_ACTIVATED``, never a
-  divergence between engines;
-* no presence-of-category rule substitutes for a witness contrast.
+Each engine's winner convention is validated before normalisation.  A code
+outside it is malformed data (``NOT_RUN:outcome-codes``), an own error: it is
+never folded into the unresolved category and never dropped from the sample.
 """
 from __future__ import annotations
 
-import math
 import time
 from collections import Counter
-from dataclasses import dataclass, replace
-from typing import Iterable, Mapping, Sequence
+from concurrent.futures import ProcessPoolExecutor
+from contextlib import ExitStack
+from dataclasses import dataclass
+from typing import Iterable, Sequence
 
 import numpy as np
 
 from mordheim_combat.modular.duel import simulate_duel_observed
-from mordheim_combat.phases import Condition
+from mordheim_combat.modular.parallel import chunk_ranges, resolve_oracle_workers
 from mordheim_combat.vectorized import simulate_batch_observed
 from mordheim_construction.compiler import compile_fighter
 from mordheim_core.dice import ScriptedDecisions
+from mordheim_core.models import ObservedDuelResult
 from mordheim_knowledge.loader import knowledge_root
 
-from ._battery_cases import VARIANTS, VARIANT_KEYS, required_variants, resolve_context
+from ._battery_cases import (
+    VARIANTS,
+    VARIANT_KEYS,
+    case_magnitudes,
+    input_limit,
+    required_variants,
+    resolve_context,
+)
+from ._statistical import (
+    OUTCOME_LABELS,
+    compare_outcome_rates,
+    outcome_counts,
+    six_sigma_tolerance,
+)
 
-#: The four resources the candidate publishes today.  This is not the full
-#: observable vocabulary (that lives in ``_battery_cases``).
-RESOURCES_OBSERVED = ("lucky-charm", "force-of-will", "mark-of-the-old-ones", "luck")
-
-#: Result states, in the vocabulary P03's report consumes.
-_STATUSES = ("PASS", "DIVERGENCE", "INCOMPATIBLE", "NOT_ACTIVATED", "NOT_RUN")
-
-#: Outcomes.  ``wounds``/``condition`` are direct-result witnesses only in
-#: B07/B15 (A9); here they are compared as distributions like any outcome.
-_OUTCOMES = frozenset({"winner", "rounds", "wounds", "condition"})
-
-#: Default owner of an observation the candidate does not publish.
-_WITNESS_OWNERS = {
-    "lucky-charm": "G06",
-    "force-of-will": "G06",
-    "mark-of-the-old-ones": "G06",
-    "luck": "G06",
-    "fear-hit-sixes": "G05/G06",
-    "fear-test-skipped": "G05/G06",
-    "psychology-test-skipped": "G05/G06",
-    "psychology-dice": "G05/G06",
-    "stupidity-failed": "G05/G06",
-    "animosity-failed": "G05/G06",
-    "feral-instinct-failed": "G05/G06",
-    "leadership-first-failed": "G05/G06",
-    "leadership-auto-pass": "G05/G06",
-    "leadership-test-value": "G05/G06",
-    "poetry-first-leadership": "G05/G06",
-    "acting-order": "G03/G06",
-    "equipment": "G02/G06",
+#: Worst-first order used when several candidate backends judge one case.  A
+#: missing capability never becomes a pass because a sibling backend compared.
+_STATUS_SEVERITY = {
+    "DIVERGENCE": 0,
+    "NOT_RUN": 1,
+    "INCOMPATIBLE": 2,
+    "PASS": 3,
 }
 
 
@@ -74,13 +67,21 @@ class _NativeUnavailable(RuntimeError):
     """The native extension is absent, stale or cannot run this plan."""
 
 
-class _WitnessUnavailable(RuntimeError):
-    """The selected engine does not publish this witness per row."""
+@dataclass(frozen=True, slots=True)
+class MagnitudeComparison:
+    """One compared magnitude, with the rates the two engines produced.
 
-    def __init__(self, name: str, owner: str):
-        super().__init__(name)
-        self.name = name
-        self.owner = owner
+    ``magnitude`` is the compared label (``winner``, ``rounds``,
+    ``wounds[first]``…); ``passed`` is the six-sigma decision on it.  Rates are
+    in oracle code order: for ``winner`` 0=first win, 1=second win, 2=unresolved.
+    """
+
+    magnitude: str
+    modular_rates: tuple[float, ...]
+    candidate_rates: tuple[float, ...]
+    tolerances: tuple[float, ...]
+    passed: bool
+    detail: str = ""
 
 
 @dataclass(frozen=True, slots=True)
@@ -94,16 +95,24 @@ class BatteryCaseResult:
     keys: tuple[str, ...]
     observables: tuple[str, ...]
     rows: int
-    witness: str | None = None
-    witness_kind: str | None = None
-    witness_rate: float | None = None
-    expect: str = "present"
-    expect_value: int | str | None = None
-    comparison: str = "witness"
-    coupling: str = "unverified"
-    detail: str = ""
+    #: Declared sample parameters, carried into the report so a certificate
+    #: names the seed and horizon it was prepared for.
+    seed: int | None = None
+    horizon: int | None = None
+    #: Stages actually reached, recorded where they happen: a comparison that
+    #: never obtained both samples is not execution evidence, and a divergent
+    #: distribution is a performed comparison that was not approved.
+    executed: bool = False
+    compared: bool = False
+    approved: bool = False
+    #: Magnitudes actually compared (in comparison order).
+    magnitudes: tuple[str, ...] = ()
+    comparisons: tuple[MagnitudeComparison, ...] = ()
     modular_seconds: float = 0.0
     candidate_seconds: float = 0.0
+    detail: str = ""
+    #: The real input limitation that prevented execution, when one exists.
+    blocked_by: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -116,7 +125,6 @@ class BatteryReport:
     passed: tuple[str, ...]
     divergences: tuple[str, ...]
     incompatible: tuple[str, ...]
-    not_activated: tuple[str, ...]
     not_run: tuple[str, ...]
     missing_variants: tuple[str, ...]
 
@@ -160,176 +168,166 @@ def _candidate_sample(
     )
 
 
+#: Terminal outcome codes each engine actually publishes.  The oracle uses
+#: 0/1/2; the optimized candidate uses 1/-1/0.  ``0`` means opposite things in
+#: the two conventions, so each sample is validated against its own set before
+#: any mapping happens.
+_ORACLE_WINNER_CODES = frozenset({0, 1, 2})
+_CANDIDATE_WINNER_CODES = frozenset({-1, 0, 1})
+
+
+class OutcomeCodeError(ValueError):
+    """A sample published a winner code its engine's convention does not define."""
+
+
+def _validated_winner_codes(values, allowed: frozenset[int], source: str) -> np.ndarray:
+    """Return the sample only when every code belongs to ``source``'s convention.
+
+    An unknown code is malformed data: it is neither an unresolved duel nor a
+    fourth category, and silently normalising it would compare a distribution
+    the engine never produced.
+    """
+    array = np.asarray(values)
+    if array.dtype.kind not in "iu":
+        raise OutcomeCodeError(
+            f"{source} winner codes must be integers, got dtype {array.dtype}"
+        )
+    unknown = np.unique(array[~np.isin(array, tuple(allowed))])
+    if unknown.size:
+        raise OutcomeCodeError(
+            f"{source} winner code(s) {unknown.tolist()} outside "
+            f"{sorted(allowed)}"
+        )
+    return array
+
+
 def _winner_codes(values: np.ndarray) -> np.ndarray:
     """Map the candidate's 1/-1/0 onto the oracle's 0/1/2 convention."""
-    values = np.asarray(values)
+    values = _validated_winner_codes(values, _CANDIDATE_WINNER_CODES, "candidate")
     return np.select(
         (values == 1, values == -1), (0, 1), default=2,
     ).astype(np.int8)
 
 
-def _observable_pairs(name: str, oracle, candidate) -> list[tuple[str, np.ndarray, np.ndarray]]:
-    if name == "winner":
-        return [("winner", np.asarray(oracle.winner), _winner_codes(candidate.winner))]
-    if name == "rounds":
-        return [("rounds", np.asarray(oracle.resolution_rounds), np.asarray(candidate.rounds))]
-    if name == "wounds":
-        return [
-            ("wounds[first]", np.asarray(oracle.first_wounds), np.asarray(candidate.first_wounds)),
-            ("wounds[second]", np.asarray(oracle.second_wounds), np.asarray(candidate.second_wounds)),
-        ]
-    if name == "condition":
-        return [
-            ("condition[first]", np.asarray(oracle.first_condition), np.asarray(candidate.first_condition)),
-            ("condition[second]", np.asarray(oracle.second_condition), np.asarray(candidate.second_condition)),
-        ]
-    raise KeyError(name)
+def _admission_tags(first, second, backend: str) -> tuple[str, ...]:
+    """Name the effect tags the candidate's admission gate refuses.
 
-
-def _row_values(name: str, observation) -> np.ndarray:
-    """Return one value per row for ``name``, or raise ``_WitnessUnavailable``.
-
-    Outcomes are published by both sampling paths.  Other witnesses are read
-    from an attribute or a per-fighter resource tuple; a name the selected
-    engine does not expose is a declared dependency, not an error.
+    The gate is engine data (``kernel.pending_capabilities``); this only reads
+    it so the report names the refused behaviour instead of calling every
+    refusal a construction defect.  Nothing is bypassed or forced: the engine
+    still refuses the plan and the case stays ``INCOMPATIBLE``.
     """
-    if name == "condition":
-        return np.concatenate((
-            np.asarray(observation.first_condition),
-            np.asarray(observation.second_condition),
-        ))
-    if name == "wounds":
-        return np.concatenate((
-            np.asarray(observation.first_wounds),
-            np.asarray(observation.second_wounds),
-        ))
-    attribute = name.replace("-", "_")
-    if hasattr(observation, attribute):
-        return np.asarray(getattr(observation, attribute))
-    for side in ("first_resources", "second_resources"):
-        for resource_name, values in getattr(observation, side, ()) or ():
-            if resource_name == name:
-                return np.asarray(values)
-    raise _WitnessUnavailable(name, _WITNESS_OWNERS.get(name, "G02/G06"))
+    from mordheim_combat import kernel
 
-
-def _predicate(kind: str, predicate: str, values: np.ndarray, expected) -> tuple[bool, float]:
-    """Evaluate one typed predicate; return (activated, rate of rows)."""
-    values = np.asarray(values)
-    if kind == "counter":
-        counts = values.astype(np.int64, copy=False)
-        if predicate == "count>0":
-            mask = counts > 0
-        elif predicate == "count==0":
-            mask = counts == 0
-        else:
-            raise ValueError(f"unknown counter predicate: {predicate}")
-    elif kind == "flag":
-        flags = values.astype(bool, copy=False)
-        if predicate == "flag-true":
-            mask = flags
-        elif predicate == "flag-false":
-            mask = ~flags
-        else:
-            raise ValueError(f"unknown flag predicate: {predicate}")
-    elif kind in {"category", "direct-result"}:
-        if expected is None:
-            raise ValueError(f"{kind} witness needs an expected value")
-        try:
-            mask = values == expected
-        except (TypeError, ValueError):
-            mask = np.array([str(value) == str(expected) for value in values])
-        if predicate in {"class-equals", "value-equals"}:
-            pass
-        elif predicate in {"class-differs", "value-differs"}:
-            mask = ~mask
-        else:
-            raise ValueError(f"unknown {kind} predicate: {predicate}")
-    elif kind == "hash":
-        if expected is None:
-            raise ValueError("hash witness needs a base hash")
-        mask = values != expected
-        if predicate == "hash-same":
-            mask = ~mask
-        elif predicate != "hash-changes":
-            raise ValueError(f"unknown hash predicate: {predicate}")
-    else:
-        raise ValueError(f"unknown witness kind: {kind}")
-    mask = np.asarray(mask, dtype=bool)
-    return bool(mask.any()), float(mask.mean()) if mask.size else 0.0
-
-
-def _focused_value(case) -> tuple[str, object]:
-    """Split ``focused`` into ``(outcome, expected)``.
-
-    ``condition:out`` names the shared ``Condition`` code; a numeric outcome
-    keeps its integer category (``winner:2``).
-    """
-    text = str(getattr(case, "focused", "") or "")
-    if ":" not in text:
-        raise ValueError("focused comparison needs '<outcome>:<value>'")
-    name, raw = text.split(":", 1)
-    if name not in _OUTCOMES:
-        raise ValueError(f"focused comparison needs an outcome, not {name!r}")
-    if name == "condition" and raw.strip().upper() in Condition.__members__:
-        return name, int(Condition[raw.strip().upper()])
-    expected: object = raw
     try:
-        expected = int(raw)
+        pending = kernel.pending_capabilities(backend)
     except ValueError:
-        pass
-    return name, expected
-
-
-def _focused_activated(case, oracle, rows: int) -> tuple[bool, float]:
-    name, expected = _focused_value(case)
-    if name == "winner":
-        values = np.asarray(oracle.winner)
-    elif name == "rounds":
-        values = np.asarray(oracle.resolution_rounds)
-    elif name == "wounds":
-        values = np.concatenate((oracle.first_wounds, oracle.second_wounds))
-    else:
-        values = np.concatenate((oracle.first_condition, oracle.second_condition))
-    mask = values == expected
-    mask = np.asarray(mask, dtype=bool)
-    return bool(mask.any()), float(mask.mean()) if mask.size else 0.0
+        return ()
+    refused = pending.residual_tags | pending.local_modifier_tags | pending.weapon_profile_tags
+    return tuple(sorted({
+        tag
+        for fighter in (first, second)
+        for effect in kernel._effects(fighter)
+        for tag in effect.tags
+        if tag in refused
+    }))
 
 
 def _category_counts(values: np.ndarray) -> Counter:
-    return Counter(int(value) for value in np.asarray(values).ravel())
+    flat = np.asarray(values).ravel().tolist()
+    try:
+        return Counter(int(value) for value in flat)
+    except (TypeError, ValueError):
+        return Counter(str(value) for value in flat)
 
 
-def _tolerance(left: float, right: float, rows: int) -> float:
-    """The existing six-sigma gate, copied from ``_statistical.py:19-24``.
+def _detail(
+    label: str, categories: Sequence, left: Counter, right: Counter, rows: int,
+    tolerances: Sequence[float],
+) -> str:
+    """Worst-margin text for one magnitude: the reported evidence."""
+    worst: tuple[float, str] | None = None
+    for category, left_rate, right_rate, tolerance in zip(
+        categories,
+        (left.get(category, 0) / rows for category in categories),
+        (right.get(category, 0) / rows for category in categories),
+        tolerances,
+    ):
+        text = (
+            f"{label}[{category}]: modular={left_rate:.6f}, "
+            f"candidate={right_rate:.6f}, tol={tolerance:.6f}"
+        )
+        margin = abs(left_rate - right_rate) - tolerance
+        if worst is None or margin > worst[0]:
+            worst = (margin, text)
+    return "" if worst is None else worst[1]
 
-    P03 unifies this expression in ``_statistical.py``; the battery deliberately
-    does not introduce a second policy.
-    """
-    return max(
-        .0025,
-        6 * math.sqrt(left * (1 - left) / rows + right * (1 - right) / rows),
+
+def _distribution(
+    label: str, modular_values: np.ndarray, candidate_values: np.ndarray, rows: int,
+) -> MagnitudeComparison:
+    """Compare two category distributions with the six-sigma gate."""
+    left = _category_counts(modular_values)
+    right = _category_counts(candidate_values)
+    categories = sorted(set(left) | set(right), key=str)
+    modular_rates = tuple(left.get(category, 0) / rows for category in categories)
+    candidate_rates = tuple(right.get(category, 0) / rows for category in categories)
+    tolerances = tuple(
+        six_sigma_tolerance(left_rate, right_rate, rows)
+        for left_rate, right_rate in zip(modular_rates, candidate_rates)
+    )
+    passed = all(
+        abs(left_rate - right_rate) <= tolerance
+        for left_rate, right_rate, tolerance in zip(
+            modular_rates, candidate_rates, tolerances,
+        )
+    )
+    return MagnitudeComparison(
+        magnitude=label,
+        modular_rates=modular_rates,
+        candidate_rates=candidate_rates,
+        tolerances=tolerances,
+        passed=passed,
+        detail=_detail(label, categories, left, right, rows, tolerances),
     )
 
 
-def _compare(pairs: Sequence[tuple[str, np.ndarray, np.ndarray]], rows: int) -> str | None:
-    """Return ``None`` when every category passes, else the worst detail string."""
+def _winner_comparison(oracle, candidate, rows: int) -> MagnitudeComparison:
+    """Compare the three terminal outcomes through the shared gate.
+
+    Both conventions are validated before normalisation: a code the engine does
+    not define raises instead of entering the unresolved category.
+    """
+    oracle_values = _validated_winner_codes(
+        oracle.winner, _ORACLE_WINNER_CODES, "oracle",
+    )
+    modular_rates, candidate_rates, tolerances, passed = compare_outcome_rates(
+        outcome_counts(oracle_values),
+        outcome_counts(_winner_codes(candidate.winner)),
+        rows,
+    )
+    detail = ""
     worst: tuple[float, str] | None = None
-    for label, oracle_values, candidate_values in pairs:
-        left_counts = _category_counts(oracle_values)
-        right_counts = _category_counts(candidate_values)
-        for category in sorted(set(left_counts) | set(right_counts)):
-            left = left_counts[category] / rows
-            right = right_counts[category] / rows
-            difference = abs(left - right)
-            tolerance = _tolerance(left, right, rows)
-            detail = (
-                f"{label}[{category}]: modular={left:.6f}, "
-                f"candidate={right:.6f}, tol={tolerance:.6f}"
-            )
-            if difference > tolerance and (worst is None or difference > worst[0]):
-                worst = (difference, detail)
-    return None if worst is None else worst[1]
+    for label, left, right, tolerance in zip(
+        OUTCOME_LABELS, modular_rates, candidate_rates, tolerances,
+    ):
+        margin = abs(left - right) - tolerance
+        text = (
+            f"winner[{label}]: modular={left:.6f}, "
+            f"candidate={right:.6f}, tol={tolerance:.6f}"
+        )
+        if worst is None or margin > worst[0]:
+            worst = (margin, text)
+    if worst is not None:
+        detail = worst[1]
+    return MagnitudeComparison(
+        magnitude="winner",
+        modular_rates=modular_rates,
+        candidate_rates=candidate_rates,
+        tolerances=tolerances,
+        passed=passed,
+        detail=detail,
+    )
 
 
 def _shape_mismatch(oracle, candidate, rows: int) -> str | None:
@@ -364,14 +362,6 @@ def _same_sample(left, right) -> bool:
     for name in fields:
         if not np.array_equal(np.asarray(getattr(left, name)), np.asarray(getattr(right, name))):
             return False
-    for side in ("first_resources", "second_resources"):
-        if not hasattr(left, side) or not hasattr(right, side):
-            continue
-        for (name, values), (other_name, other_values) in zip(
-            getattr(left, side), getattr(right, side),
-        ):
-            if name != other_name or not np.array_equal(np.asarray(values), np.asarray(other_values)):
-                return False
     return True
 
 
@@ -381,15 +371,6 @@ def _decision_key(error: KeyError) -> str:
     return text.split("for ")[-1] if "for " in text else text
 
 
-def _classify_value_error(error: ValueError) -> str:
-    message = str(error)
-    if "require the modular engine" in message or "optimized ports are pending" in message:
-        return "INCOMPATIBLE:construction"
-    if "outside the one-against-one runtime" in message:
-        return "INCOMPATIBLE:construction"
-    return f"DIVERGENCE:exception:ValueError: {message}"
-
-
 def _variant(case):
     variant = VARIANTS.get(case.variant)
     if variant is None:
@@ -397,16 +378,12 @@ def _variant(case):
     return variant
 
 
-def _result(case, backend: str, status: str, *, rows: int, detail: str = "",
-            witness=None, witness_rate: float | None = None,
-            modular_seconds: float = 0.0, candidate_seconds: float = 0.0) -> BatteryCaseResult:
-    variant = VARIANTS.get(case.variant)
-    keys = tuple(VARIANT_KEYS.get(case.variant, ()))
-    keys += tuple(
-        key
-        for extra in getattr(case, "also_covers", ()) or ()
-        for key in VARIANT_KEYS.get(extra, ())
-    )
+def _result(
+    case, backend: str, status: str, *, rows: int, detail: str = "",
+    modular_seconds: float = 0.0, candidate_seconds: float = 0.0,
+    executed: bool = False, compared: bool = False, approved: bool = False,
+    comparisons: tuple[MagnitudeComparison, ...] = (), blocked_by: str | None = None,
+) -> BatteryCaseResult:
     return BatteryCaseResult(
         case=str(case.id),
         level=str(case.level),
@@ -414,90 +391,141 @@ def _result(case, backend: str, status: str, *, rows: int, detail: str = "",
         obligation=str(case.variant).split(".")[0],
         backend=backend,
         status=status,
-        keys=tuple(dict.fromkeys(keys)),
+        keys=tuple(dict.fromkeys(VARIANT_KEYS.get(case.variant, ()))),
         observables=tuple(getattr(case, "observables", ()) or ()),
         rows=rows,
-        witness=getattr(witness, "name", None),
-        witness_kind=getattr(witness, "kind", None),
-        witness_rate=witness_rate,
-        expect=str(getattr(case, "expect", "present")),
-        expect_value=getattr(case, "witness_value", None),
-        comparison=str(getattr(case, "comparison", "witness")),
-        coupling=("focused" if getattr(case, "comparison", "witness") == "focused"
-                  else "unverified"),
-        detail=detail,
+        seed=int(getattr(case, "seed", 2026)),
+        horizon=int(getattr(case, "maximum_rounds", 50)),
+        executed=executed,
+        compared=compared,
+        approved=approved,
+        magnitudes=tuple(item.magnitude for item in comparisons),
+        comparisons=comparisons,
         modular_seconds=modular_seconds,
         candidate_seconds=candidate_seconds,
+        detail=detail,
+        blocked_by=blocked_by,
     )
 
 
-def _blocked(case, backend: str, rows: int) -> BatteryCaseResult | None:
-    blocked = getattr(case, "blocked_by", None)
-    if not blocked:
-        return None
-    text = str(blocked)
-    parts = text.split(":")
-    head = parts[0]
-    owner = parts[-1] if len(parts) > 1 else "G00/G02"
-    if head == "state":
-        return _result(case, backend, "INCOMPATIBLE", rows=rows,
-                       detail=f"INCOMPATIBLE:state owner={owner}")
-    if head == "consume":
-        return _result(case, backend, "INCOMPATIBLE", rows=rows,
-                       detail=f"INCOMPATIBLE:consumer:{case.variant} owner={owner}")
-    if head == "witness":
-        variant = VARIANTS.get(case.variant)
-        witness = getattr(variant, "witness", None)
-        name = parts[1] if len(parts) == 3 else (getattr(witness, "name", None) or "unknown")
-        return _result(case, backend, "INCOMPATIBLE", rows=rows,
-                       witness=witness,
-                       detail=f"INCOMPATIBLE:witness:{name} owner={owner}")
-    if head == "decision":
-        return _result(case, backend, "INCOMPATIBLE", rows=rows,
-                       detail=f"INCOMPATIBLE:decision-scope owner={owner}")
-    return _result(case, backend, "NOT_RUN", rows=rows,
-                   detail=f"NOT_RUN:case-definition: unknown blocked_by {text!r} owner=P01")
+def _compare_case(magnitudes: Sequence[str], oracle, candidate, rows: int) -> tuple[
+    tuple[MagnitudeComparison, ...], MagnitudeComparison | None,
+]:
+    """Compare every declared magnitude; return (comparisons, first failure)."""
+    comparisons: list[MagnitudeComparison] = []
+    failure: MagnitudeComparison | None = None
+    for name in magnitudes:
+        if name == "winner":
+            comparison = _winner_comparison(oracle, candidate, rows)
+        elif name == "rounds":
+            comparison = _distribution(
+                "rounds", np.asarray(oracle.resolution_rounds),
+                np.asarray(candidate.rounds), rows,
+            )
+        elif name == "wounds":
+            first = _distribution(
+                "wounds[first]", np.asarray(oracle.first_wounds),
+                np.asarray(candidate.first_wounds), rows,
+            )
+            second = _distribution(
+                "wounds[second]", np.asarray(oracle.second_wounds),
+                np.asarray(candidate.second_wounds), rows,
+            )
+            for item in (first, second):
+                comparisons.append(item)
+                if not item.passed and failure is None:
+                    failure = item
+            continue
+        elif name == "condition":
+            first = _distribution(
+                "condition[first]", np.asarray(oracle.first_condition),
+                np.asarray(candidate.first_condition), rows,
+            )
+            second = _distribution(
+                "condition[second]", np.asarray(oracle.second_condition),
+                np.asarray(candidate.second_condition), rows,
+            )
+            for item in (first, second):
+                comparisons.append(item)
+                if not item.passed and failure is None:
+                    failure = item
+            continue
+        else:
+            raise ValueError(f"unknown statistical magnitude {name!r}")
+        comparisons.append(comparison)
+        if not comparison.passed and failure is None:
+            failure = comparison
+    return tuple(comparisons), failure
 
 
-def _run_case(case, *, backend: str, rows: int | None, root, focused_seen: dict,
-              witness_seen: dict) -> BatteryCaseResult:
+def _oracle_sample(first, second, rows: int, *, seed: int, maximum_rounds: int,
+                   decisions, context, workers: int | None = None, executor=None):
+    """Keep the sequential oracle's seed+i rows, including their original order."""
+    if executor is None or workers is None or workers < 2:
+        return simulate_duel_observed(
+            first, second, rows, seed=seed, maximum_rounds=maximum_rounds,
+            decisions=decisions, context=context,
+        )
+    futures = [
+        executor.submit(
+            simulate_duel_observed, first, second, count, seed=seed + start,
+            maximum_rounds=maximum_rounds, decisions=decisions, context=context,
+        )
+        for start, count in chunk_ranges(rows, workers)
+    ]
+    try:
+        samples = [future.result() for future in futures]
+    finally:
+        for future in futures:
+            future.cancel()
+    fields = (
+        "winner", "resolution_rounds", "first_wounds", "second_wounds",
+        "first_condition", "second_condition",
+    )
+    return ObservedDuelResult(
+        **{name: np.concatenate([getattr(sample, name) for sample in samples])
+           for name in fields},
+        simulations=rows, maximum_rounds=maximum_rounds,
+    )
+
+
+def _run_case(case, *, backend: str, rows: int | None, root,
+              reuse: dict | None = None, workers: int | None = None,
+              executor=None) -> BatteryCaseResult:
     effective_rows = int(getattr(case, "rows", 64)) if rows is None else int(rows)
-    observables = tuple(getattr(case, "observables", ()) or ())
-    blocked = _blocked(case, backend, effective_rows)
-    if blocked is not None:
-        return blocked
-    if str(getattr(case, "decision_scope", "uniform")) == "per-row":
+    limit = input_limit(case)
+    if limit is not None:
         return _result(
             case, backend, "INCOMPATIBLE", rows=effective_rows,
-            detail="INCOMPATIBLE:decision-scope owner=P02/G02",
+            detail=f"INCOMPATIBLE:{limit}", blocked_by=limit,
         )
     try:
-        variant = _variant(case)
+        _variant(case)
+        magnitudes = tuple(case_magnitudes(case))
     except ValueError as error:
         return _result(case, backend, "NOT_RUN", rows=effective_rows,
                        detail=f"NOT_RUN:case-definition: {error} owner=P01")
-
-    witness = getattr(variant, "witness", None)
-    comparison = str(getattr(case, "comparison", "witness"))
-    if comparison == "focused" and not getattr(case, "focused", None):
-        return _result(case, backend, "NOT_RUN", rows=effective_rows,
-                       detail="NOT_RUN:case-definition: focused case has no focus owner=P01")
-    if comparison != "focused" and witness is None:
-        return _result(case, backend, "INCOMPATIBLE", rows=effective_rows,
-                       detail=f"INCOMPATIBLE:witness:none owner={variant.owner}")
-    if witness is not None and witness.name not in observables:
-        return _result(case, backend, "NOT_RUN", rows=effective_rows,
-                       detail=f"NOT_RUN:case-definition: witness {witness.name} not declared owner=P01")
-
-    try:
-        first = compile_fighter(case.first, root)
-        second = compile_fighter(case.second, root)
-        context = resolve_context(getattr(case, "context", None), root)
-    except Exception as error:  # the compiler is shared; an invalid case is not a divergence
+    if "winner" not in magnitudes:
         return _result(
             case, backend, "NOT_RUN", rows=effective_rows,
-            detail=f"NOT_RUN:compile:{type(error).__name__}: {error}",
+            detail="NOT_RUN:case-definition: winner must always be compared owner=P01",
         )
+
+    # Compile once and sample the modular oracle once per case, so a second
+    # candidate (``--backend all``) compares against the same evidence.  The key
+    # carries the sample width: a different width is different evidence.
+    key = f"{case.id}@{effective_rows}"
+    prepared = None if reuse is None else reuse.get(key)
+    if prepared is None:
+        try:
+            first = compile_fighter(case.first, root)
+            second = compile_fighter(case.second, root)
+            context = resolve_context(getattr(case, "context", None), root)
+        except Exception as error:  # the compiler is shared; an invalid case is not a divergence
+            return _result(
+                case, backend, "NOT_RUN", rows=effective_rows,
+                detail=f"NOT_RUN:compile:{type(error).__name__}: {error}",
+            )
 
     decisions = ScriptedDecisions(dict(getattr(case, "decisions", {}) or {}))
     seed = int(getattr(case, "seed", 2026))
@@ -510,19 +538,28 @@ def _run_case(case, *, backend: str, rows: int | None, root, focused_seen: dict,
             return _result(case, backend, "NOT_RUN", rows=effective_rows,
                            detail=f"NOT_RUN:native-stale: {error}")
 
-    started = time.perf_counter()
-    try:
-        oracle = simulate_duel_observed(
-            first, second, effective_rows, seed=seed,
-            maximum_rounds=maximum_rounds, decisions=decisions, context=context,
-        )
-    except KeyError as error:
-        return _result(case, backend, "NOT_RUN", rows=effective_rows,
-                       detail=f"NOT_RUN:decision-script:{_decision_key(error)} owner=P01")
-    except Exception as error:
-        return _result(case, backend, "DIVERGENCE", rows=effective_rows,
-                       detail=f"DIVERGENCE:exception:{type(error).__name__}: {error}")
-    modular_seconds = time.perf_counter() - started
+    if prepared is None:
+        started = time.perf_counter()
+        try:
+            oracle = _oracle_sample(
+                first, second, effective_rows, seed=seed,
+                maximum_rounds=maximum_rounds, decisions=decisions, context=context,
+                workers=workers, executor=executor,
+            )
+        except KeyError as error:
+            return _result(case, backend, "NOT_RUN", rows=effective_rows,
+                           detail=f"NOT_RUN:decision-script:{_decision_key(error)} owner=P01")
+        except Exception as error:
+            return _result(case, backend, "DIVERGENCE", rows=effective_rows,
+                           detail=f"DIVERGENCE:exception:{type(error).__name__}: {error}")
+        modular_seconds = time.perf_counter() - started
+        if reuse is not None:
+            reuse[key] = (first, second, context, oracle)
+    else:
+        first, second, context, oracle = prepared
+        # The oracle sample is measured once per case; reusing it is not a new
+        # measurement, so a reused row never reports a modular time of its own.
+        modular_seconds = 0.0
 
     started = time.perf_counter()
     try:
@@ -539,27 +576,42 @@ def _run_case(case, *, backend: str, rows: int | None, root, focused_seen: dict,
                        detail=f"NOT_RUN:decision-script:{_decision_key(error)} owner=P01",
                        modular_seconds=modular_seconds)
     except (AttributeError, TypeError) as error:
-        name = witness.name if witness is not None else "unknown"
-        owner = getattr(variant, "owner", None) or _WITNESS_OWNERS.get(name, "G02/G06")
-        return _result(case, backend, "INCOMPATIBLE", rows=effective_rows,
-                       detail=f"INCOMPATIBLE:witness:{name} owner={owner}",
-                       modular_seconds=modular_seconds)
+        return _result(
+            case, backend, "INCOMPATIBLE", rows=effective_rows,
+            detail=f"INCOMPATIBLE:candidate-sample:{type(error).__name__}: {error}",
+            modular_seconds=modular_seconds,
+        )
     except ValueError as error:
-        detail = _classify_value_error(error)
-        status = "INCOMPATIBLE" if detail.startswith("INCOMPATIBLE") else "DIVERGENCE"
-        return _result(case, backend, status, rows=effective_rows, detail=detail,
+        message = str(error)
+        if ("require the modular engine" in message
+                or "optimized ports are pending" in message
+                or "outside the one-against-one runtime" in message):
+            # The engine refused the compiled plan, not the battery its inputs:
+            # name the refused tags so the limit is attributable.
+            tags = _admission_tags(first, second, backend)
+            detail = f"INCOMPATIBLE:admission: {message}"
+            if tags:
+                detail += " tags=" + ",".join(tags)
+            return _result(
+                case, backend, "INCOMPATIBLE", rows=effective_rows,
+                detail=detail,
+                modular_seconds=modular_seconds,
+            )
+        return _result(case, backend, "DIVERGENCE", rows=effective_rows,
+                       detail=f"DIVERGENCE:exception:ValueError: {message}",
                        modular_seconds=modular_seconds)
     except Exception as error:
         return _result(case, backend, "DIVERGENCE", rows=effective_rows,
                        detail=f"DIVERGENCE:exception:{type(error).__name__}: {error}",
                        modular_seconds=modular_seconds)
     candidate_seconds = time.perf_counter() - started
+    executed = True
 
     mismatch = _shape_mismatch(oracle, candidate, effective_rows)
     if mismatch is not None:
         return _result(case, backend, "DIVERGENCE", rows=effective_rows,
                        detail=f"DIVERGENCE:batch-shape: {mismatch}",
-                       modular_seconds=modular_seconds,
+                       executed=executed, modular_seconds=modular_seconds,
                        candidate_seconds=candidate_seconds)
 
     if effective_rows > 1:
@@ -571,230 +623,112 @@ def _run_case(case, *, backend: str, rows: int | None, root, focused_seen: dict,
         except Exception as error:
             return _result(case, backend, "DIVERGENCE", rows=effective_rows,
                            detail=f"DIVERGENCE:exception:{type(error).__name__}: {error}",
-                           modular_seconds=modular_seconds,
+                           executed=executed, modular_seconds=modular_seconds,
                            candidate_seconds=candidate_seconds)
         if not _same_sample(candidate, repeat):
             return _result(case, backend, "DIVERGENCE", rows=effective_rows,
                            detail="DIVERGENCE:batch-nondeterministic",
-                           modular_seconds=modular_seconds,
+                           executed=executed, modular_seconds=modular_seconds,
                            candidate_seconds=candidate_seconds)
-
-    pairs: list[tuple[str, np.ndarray, np.ndarray]] = []
-    for name in observables:
-        if name in _OUTCOMES:
-            pairs.extend(_observable_pairs(name, oracle, candidate))
-            continue
-        try:
-            oracle_values = _row_values(name, oracle)
-            candidate_values = _row_values(name, candidate)
-        except _WitnessUnavailable as error:
-            return _result(
-                case, backend, "INCOMPATIBLE", rows=effective_rows,
-                detail=f"INCOMPATIBLE:witness:{error.name} owner={error.owner}",
-                modular_seconds=modular_seconds, candidate_seconds=candidate_seconds,
-            )
-        if oracle_values.size != candidate_values.size:
-            return _result(case, backend, "DIVERGENCE", rows=effective_rows,
-                           detail=f"DIVERGENCE:batch-shape: witness {name}",
-                           modular_seconds=modular_seconds,
-                           candidate_seconds=candidate_seconds)
-        pairs.append((name, oracle_values, candidate_values))
-
-    failure = _compare(pairs, effective_rows) if pairs else None
-    if failure is not None:
-        return _result(case, backend, "DIVERGENCE", rows=effective_rows,
-                       detail=f"DIVERGENCE: {failure}",
-                       modular_seconds=modular_seconds,
-                       candidate_seconds=candidate_seconds)
-
-    if comparison == "focused":
-        try:
-            activated, rate = _focused_activated(case, oracle, effective_rows)
-        except ValueError as error:
-            return _result(case, backend, "NOT_RUN", rows=effective_rows,
-                           detail=f"NOT_RUN:case-definition: {error} owner=P01",
-                           modular_seconds=modular_seconds,
-                           candidate_seconds=candidate_seconds)
-        focused_seen[str(case.id)] = activated
-        if str(getattr(case, "expect", "present")) == "present":
-            if not activated:
-                return _result(case, backend, "NOT_ACTIVATED", rows=effective_rows,
-                               detail=f"NOT_ACTIVATED:{case.focused}",
-                               modular_seconds=modular_seconds,
-                               candidate_seconds=candidate_seconds)
-        else:
-            if activated:
-                return _result(case, backend, "NOT_RUN", rows=effective_rows,
-                               detail=f"NOT_RUN:criterion-insensitive:{case.variant} owner=P01",
-                               modular_seconds=modular_seconds,
-                               candidate_seconds=candidate_seconds)
-        detail = f"focused[{case.focused}] rate={rate:.6f}"
-        return _result(case, backend, "PASS", rows=effective_rows, detail=detail,
-                       modular_seconds=modular_seconds,
-                       candidate_seconds=candidate_seconds)
 
     try:
-        values = _row_values(witness.name, oracle)
-        kind = witness.kind
-        expected = getattr(case, "witness_value", None)
-        present_ok, rate = _predicate(kind, witness.present, values, expected)
-        absent_ok, _ = _predicate(kind, witness.absent, values, expected)
-    except _WitnessUnavailable as error:
+        comparisons, failure = _compare_case(
+            magnitudes, oracle, candidate, effective_rows,
+        )
+    except OutcomeCodeError as error:
+        # Malformed outcome data is an own infrastructure error, not a
+        # divergence and not an unresolved duel.
         return _result(
-            case, backend, "INCOMPATIBLE", rows=effective_rows,
-            detail=f"INCOMPATIBLE:witness:{error.name} owner={error.owner}",
-            witness=witness, modular_seconds=modular_seconds,
+            case, backend, "NOT_RUN", rows=effective_rows,
+            detail=f"NOT_RUN:outcome-codes: {error}",
+            executed=executed, modular_seconds=modular_seconds,
             candidate_seconds=candidate_seconds,
         )
     except ValueError as error:
-        return _result(case, backend, "NOT_RUN", rows=effective_rows,
-                       detail=f"NOT_RUN:case-definition: {error} owner=P01",
-                       witness=witness, modular_seconds=modular_seconds,
-                       candidate_seconds=candidate_seconds)
-
-    witness_seen[str(case.id)] = present_ok
-    if str(getattr(case, "expect", "present")) == "present" and not present_ok:
-        return _result(case, backend, "NOT_ACTIVATED", rows=effective_rows,
-                       detail=f"NOT_ACTIVATED:{witness.name}",
-                       witness=witness, witness_rate=rate,
-                       modular_seconds=modular_seconds,
-                       candidate_seconds=candidate_seconds)
-    if str(getattr(case, "expect", "present")) == "absent" and not absent_ok:
-        return _result(case, backend, "NOT_RUN", rows=effective_rows,
-                       detail=f"NOT_RUN:criterion-insensitive:{case.variant} owner=P01",
-                       witness=witness, witness_rate=rate,
-                       modular_seconds=modular_seconds,
-                       candidate_seconds=candidate_seconds)
-
-    detail = ""
-    if pairs:
-        best: tuple[float, str] | None = None
-        for label, oracle_values, candidate_values in pairs:
-            left_counts = _category_counts(oracle_values)
-            right_counts = _category_counts(candidate_values)
-            for category in sorted(set(left_counts) | set(right_counts)):
-                left = left_counts[category] / effective_rows
-                right = right_counts[category] / effective_rows
-                tolerance = _tolerance(left, right, effective_rows)
-                margin = tolerance - abs(left - right)
-                text = (
-                    f"{label}[{category}]: modular={left:.6f}, "
-                    f"candidate={right:.6f}, tol={tolerance:.6f}"
-                )
-                if best is None or margin < best[0]:
-                    best = (margin, text)
-        if best is not None:
-            detail = best[1]
-    return _result(case, backend, "PASS", rows=effective_rows, detail=detail,
-                   witness=witness, witness_rate=rate,
-                   modular_seconds=modular_seconds,
-                   candidate_seconds=candidate_seconds)
-
-
-def _resolve_controls(cases: Sequence, results: Sequence[BatteryCaseResult],
-                      focused_seen: Mapping[str, bool],
-                      witness_seen: Mapping[str, bool]) -> tuple[BatteryCaseResult, ...]:
-    """Resolve positive/negative pairs before any approval.
-
-    A focused positive has no ``positive_control`` (A10) and is evidence only
-    when a negative of the same variant references it and declares the same
-    focused result.  Every negative — focused or witness — requires its control
-    to activate; a non-activating control is ``NOT_ACTIVATED``, never a
-    divergence between engines.
-    """
-    by_id = {case.id: case for case in cases}
-    negatives: dict[str, list] = {}
-    for case in cases:
-        if (str(getattr(case, "expect", "present")) == "absent"
-                and getattr(case, "positive_control", None)):
-            negatives.setdefault(case.positive_control, []).append(case)
-
-    resolved = {case.id: result for case, result in zip(cases, results)}
-
-    # Pass one: a negative may only pass when its positive control activated.
-    for case in cases:
-        result = resolved[case.id]
-        if result.status != "PASS" or str(getattr(case, "expect", "present")) != "absent":
-            continue
-        comparison = str(getattr(case, "comparison", "witness"))
-        focus = str(getattr(case, "focused", "") or "")
-        control = by_id.get(getattr(case, "positive_control", None))
-        if control is None:
-            resolved[case.id] = replace(
-                result, status="NOT_RUN",
-                detail="NOT_RUN:case-definition: control missing owner=P01",
-            )
-            continue
-        same_focus = (
-            comparison != "focused"
-            or str(getattr(control, "focused", "")) == focus
+        return _result(
+            case, backend, "NOT_RUN", rows=effective_rows,
+            detail=f"NOT_RUN:case-definition: {error} owner=P01",
+            executed=executed, modular_seconds=modular_seconds,
+            candidate_seconds=candidate_seconds,
         )
-        if not same_focus:
-            resolved[case.id] = replace(
-                result, status="NOT_RUN",
-                detail="NOT_RUN:case-definition: focused control mismatch owner=P01",
-            )
-            continue
-        activated = (focused_seen if comparison == "focused" else witness_seen).get(
-            control.id, False,
+    if failure is not None:
+        return _result(
+            case, backend, "DIVERGENCE", rows=effective_rows,
+            detail=f"DIVERGENCE: {failure.detail}",
+            executed=executed, compared=True,
+            modular_seconds=modular_seconds, candidate_seconds=candidate_seconds,
+            comparisons=comparisons,
         )
-        if not activated:
-            resolved[case.id] = replace(
-                result, status="NOT_ACTIVATED",
-                detail=f"NOT_ACTIVATED:positive-control:{control.id}",
-            )
-            continue
-        resolved[case.id] = replace(result, coupling="contrast")
+    ranked = [item for item in comparisons if item.detail]
+    tightest = max(ranked, key=_slack) if ranked else None
+    detail = tightest.detail if tightest is not None else ""
+    return _result(
+        case, backend, "PASS", rows=effective_rows, detail=detail,
+        executed=executed, compared=True, approved=True,
+        modular_seconds=modular_seconds, candidate_seconds=candidate_seconds,
+        comparisons=comparisons,
+    )
 
-    # Pass two: a focused positive is evidence only with a passing negative.
-    for case in cases:
-        result = resolved[case.id]
-        if result.status != "PASS":
-            continue
-        comparison = str(getattr(case, "comparison", "witness"))
-        if comparison != "focused" or str(getattr(case, "expect", "present")) != "present":
-            continue
-        focus = str(getattr(case, "focused", "") or "")
-        partners = [
-            other for other in negatives.get(case.id, ())
-            if str(getattr(other, "comparison", "witness")) == "focused"
-            and str(getattr(other, "focused", "")) == focus
-        ]
-        if not partners:
-            resolved[case.id] = replace(
-                result, status="NOT_ACTIVATED",
-                detail="NOT_ACTIVATED:no-negative-control",
-            )
-            continue
-        if not any(resolved[other.id].status == "PASS" for other in partners):
-            resolved[case.id] = replace(
-                result, status="NOT_ACTIVATED",
-                detail="NOT_ACTIVATED:negative-control-not-passing",
-            )
-            continue
-        resolved[case.id] = replace(result, coupling="contrast")
 
-    # A witness positive with a passing negative also has a declared contrast.
-    for case in cases:
-        result = resolved[case.id]
-        if (result.status != "PASS" or result.coupling != "unverified"
-                or str(getattr(case, "comparison", "witness")) == "focused"):
-            continue
-        partners = negatives.get(case.id, ())
-        if partners and any(resolved[other.id].status == "PASS" for other in partners):
-            resolved[case.id] = replace(result, coupling="contrast")
-
-    adjusted = [resolved[case.id] for case in cases]
-    return tuple(adjusted)
+def _slack(item: MagnitudeComparison) -> float:
+    """How close the magnitude came to failing (higher is tighter)."""
+    return max(
+        abs(left - right) - tolerance
+        for left, right, tolerance in zip(
+            item.modular_rates, item.candidate_rates, item.tolerances,
+        )
+    )
 
 
 def _by_status(results: Iterable[BatteryCaseResult], status: str) -> tuple[str, ...]:
     return tuple(result.case for result in results if result.status == status)
 
 
+def combine_reports(
+    reports: Sequence[BatteryReport], *, profile: str | None = None,
+    backend: str = "all",
+) -> BatteryReport:
+    """Merge per-backend reports over the same case set into one certificate.
+
+    Every per-backend row survives in ``results`` (the report separates coverage
+    per backend from them), while the case-level tuples carry the worst status
+    of each case: ``--backend all`` certifies a case only when every requested
+    backend passed it.  ``complete``/``accepted`` are the conjunction of the
+    merged runs, never ``all([])``.
+    """
+    reports = tuple(reports)
+    if not reports:
+        raise ValueError("combine_reports needs at least one report")
+    worst: dict[str, BatteryCaseResult] = {}
+    for report in reports:
+        for result in report.results:
+            current = worst.get(result.case)
+            if (current is None
+                    or _STATUS_SEVERITY[result.status] < _STATUS_SEVERITY[current.status]):
+                worst[result.case] = result
+    merged = tuple(worst.values())
+    missing = tuple(dict.fromkeys(
+        variant for report in reports for variant in report.missing_variants
+    ))
+    return BatteryReport(
+        complete=all(report.complete for report in reports),
+        accepted=all(report.accepted for report in reports),
+        scope="profile" if any(report.scope == "profile" for report in reports)
+        else "provided",
+        profile=profile if profile is not None else reports[0].profile,
+        results=tuple(result for report in reports for result in report.results),
+        passed=_by_status(merged, "PASS"),
+        divergences=_by_status(merged, "DIVERGENCE"),
+        incompatible=_by_status(merged, "INCOMPATIBLE"),
+        not_run=_by_status(merged, "NOT_RUN"),
+        missing_variants=missing,
+    )
+
+
 def run_battery(
     cases: Sequence, *, profile: str | None = None, backend: str = "numpy",
-    rows: int | None = None, root=None,
+    rows: int | None = None, root=None, reuse: dict | None = None,
+    workers: int | str | None = 1,
 ) -> BatteryReport:
     """Run ``cases`` through the real oracle and the selected candidate.
 
@@ -806,6 +740,16 @@ def run_battery(
     ``profile`` makes coverage meaningful: every required duel variant of that
     profile must be represented.  Without it the run is a diagnostic subset and
     ``accepted`` is always false.
+
+    ``reuse`` is the same-process cache P03 passes when it runs several
+    candidates over one case set: it holds the compiled fighters, the resolved
+    context and the modular sample of each ``<case>@<rows>`` key.  It is never
+    read from disk, so a saved certificate can neither age into evidence nor
+    skip a declared input.
+
+    ``workers`` uses the historical oracle policy: 1 is sequential, explicit
+    counts are capped to CPU availability, and auto pools only large samples.
+    One pool serves all cases; candidates keep their existing batch execution.
     """
     if backend not in {"numpy", "native"}:
         raise ValueError(f"unknown battery backend: {backend}")
@@ -813,20 +757,31 @@ def run_battery(
         raise ValueError("rows must be positive")
     if profile is not None and profile not in ("quick", "complete", "deep"):
         raise ValueError(f"unknown battery profile: {profile}")
+    if workers is not None and str(workers).casefold() != "auto" and int(workers) < 1:
+        raise ValueError("workers must be positive or auto")
     knowledge = root or knowledge_root()
-    focused_seen: dict[str, bool] = {}
-    witness_seen: dict[str, bool] = {}
-    results = tuple(
-        _run_case(case, backend=backend, rows=rows, root=knowledge,
-                  focused_seen=focused_seen, witness_seen=witness_seen)
+    worker_counts = tuple(
+        resolve_oracle_workers(
+            workers, int(case.rows) if rows is None else int(rows),
+            int(case.maximum_rounds),
+        )
         for case in cases
     )
-    results = _resolve_controls(cases, results, focused_seen, witness_seen)
+    with ExitStack() as stack:
+        pool_size = max((count or 1 for count in worker_counts), default=1)
+        executor = (
+            stack.enter_context(ProcessPoolExecutor(max_workers=pool_size))
+            if pool_size > 1 else None
+        )
+        results = tuple(
+            _run_case(
+                case, backend=backend, rows=rows, root=knowledge, reuse=reuse,
+                workers=count, executor=executor,
+            )
+            for case, count in zip(cases, worker_counts)
+        )
 
-    represented: set[str] = set()
-    for case in cases:
-        represented.add(str(case.variant))
-        represented.update(str(extra) for extra in getattr(case, "also_covers", ()) or ())
+    represented = {str(case.variant) for case in cases}
     if profile is None:
         missing: tuple[str, ...] = ()
     else:
@@ -838,7 +793,6 @@ def run_battery(
     bad = (
         _by_status(results, "DIVERGENCE")
         + _by_status(results, "INCOMPATIBLE")
-        + _by_status(results, "NOT_ACTIVATED")
         + _by_status(results, "NOT_RUN")
     )
     complete = bool(results) and not bad and not missing
@@ -852,15 +806,15 @@ def run_battery(
         passed=_by_status(results, "PASS"),
         divergences=_by_status(results, "DIVERGENCE"),
         incompatible=_by_status(results, "INCOMPATIBLE"),
-        not_activated=_by_status(results, "NOT_ACTIVATED"),
         not_run=_by_status(results, "NOT_RUN"),
         missing_variants=missing,
     )
 
 
 __all__ = (
-    "RESOURCES_OBSERVED",
+    "MagnitudeComparison",
     "BatteryCaseResult",
     "BatteryReport",
+    "combine_reports",
     "run_battery",
 )

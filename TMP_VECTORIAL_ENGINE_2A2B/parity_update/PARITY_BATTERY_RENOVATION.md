@@ -1,136 +1,73 @@
+# Renovación de la batería de paridad estadística
 
-Renovación de la batería de paridad
+## 1. Decisión vigente y alcance
 
-## 1. Objetivo y enfoque
+**Mantener la filosofía anterior: ejecutar muestras de duelos en el modular y en el candidato y comparar estadísticamente sus resultados.** La renovación mejora la selección de escenarios desde las cláusulas y variantes; no convierte la paridad estadística en una suite de eventos internos.
 
-Preparar una batería de paridad desde las cláusulas admitidas y el **motor
-modular validado como referencia**, con cierre propio independiente del plan
-de implementación del vectorial.
+Esta revisión, acordada el 22 de octubre de 2026, sustituye las instrucciones anteriores que exigían testigos internos, checkpoints o instrumentación nueva como condición de comparación o aprobación estadística. Las entregas, adendas y revisiones obsoletas se han retirado. La información de diseño útil se conserva en [SCENARIO_DESIGN_REFERENCE.md](SCENARIO_DESIGN_REFERENCE.md), los datos auxiliares y el catálogo ejecutable; no se reinician los inventarios. [P03-deliverable.md](P03-deliverable.md) registra el estado de la adaptación, pendiente hasta que se implemente.
 
-**Situación de coordinación:** el plan del motor está terminando G07 con su
-batería actual; el rework está ejecutando P01/P02. G07 puede cerrar identificando
-la versión, batería y límites de su evidencia, sin esperar a los tests nuevos.
-Su cierre no acredita la cobertura ampliada del rework.
+El motor se recibe como implementado. Este trabajo no cambia motores ni sus planes, no reabre G07 y no atribuye a su evidencia anterior la cobertura nueva. La adaptación y su campaña posterior conservan alcance y resultados propios.
 
-**El rework se completa en P03.** P00–P03 definen todos los tests de rápido,
-completo y profundo y conectan catálogo, adaptador, comparador, CLI e informes.
-No se ejecutan comparaciones contra NumPy/nativo para aceptar esa preparación,
-ni se exige que pasen en el candidato. El diseño no sigue el estado del portado:
-se obtiene de las cláusulas y del oráculo. La falta de una capacidad del motor
-se registra para la futura ejecución; no elimina ni aplaza la definición del test.
+Los documentos externos `../README.md`, `../PLAN_IMPLEMENTACION.md` y `../G07_PARIDAD_CONTRA_MODULAR.md` describen el plan del motor y su aceptación con la batería histórica. G07 es independiente de P04/P05. Para este rework rigen este documento, `PROMPTS_AGENTES.md` y el estado de `P03-deliverable.md`; los encargos del motor no autorizan ampliar la instrumentación ni cambian estas condiciones de preparación.
 
-**P04 y P05 forman una campaña posterior al cierre del rework.** Con la batería
-P03 terminada y una versión fija del motor entregado por G07, P04 mide costes y
-calibra parámetros; P05 ejecuta la aceptación con la batería renovada. P05 no es
-G07 ni reabre su cierre anterior. Este documento no modifica el plan del motor.
+## 2. Aprovechar el trabajo realizado
 
-**La cobertura se organizará por comportamientos, no por número de combates ni por número de cláusulas.** Un mismo comportamiento puede aparecer en muchas reglas; ejecutar miles de enfrentamientos equivalentes aporta poco.
+Se conservan el inventario de cláusulas y variantes, los escenarios materializados, los pares con/sin regla, sus orígenes E2E, los niveles acumulativos, la CLI y la infraestructura histórica de ejecución y comparación reutilizable. No se copia el corpus E2E ni se reconstruye la validación del modular.
 
-Reutilizaremos la infraestructura de paridad, los escenarios existentes y las situaciones ya descritas en los E2E. Solo añadiremos escenarios para huecos concretos. No desarrollaremos nuevas pruebas modulares ni duplicaremos su corpus.
+Se retira como requisito estadístico la publicación de contadores de eventos, banderas de activación, categorías internas, hashes de equipo, tentativas de parada y checkpoints. No se encarga implementarlos en ningún motor. Las sondas existentes pueden permanecer; no hay que eliminarlas ni ampliarlas.
 
-## 2. Construir un catálogo de comportamientos comprobables
+Un bloqueo que solo pide un testigo interno no puede impedir ejecutar y comparar un duelo estadístico válido. En cambio, una entrada necesaria que el motor no acepta —por ejemplo, un estado inicial especial— sigue siendo una limitación real. No se borra ese bloqueo a ciegas ni se ejecuta otro estado bajo el mismo nombre. El escenario se conserva con disposición explícita y referencia de cobertura, sin contarlo como ejecutado ni aprobado.
 
-Partir del CSV actual, sus consumidores modulares y las referencias a pruebas existentes. Para cada comportamiento, identificar:
+## 3. Selección de escenarios desde las reglas
 
-- **Activación y ausencia:** cuándo actúa y cuándo debe permanecer inactivo.
-- **Variantes relevantes:** límites, excepciones y parámetros que cambian el resultado.
-- **Evolución temporal:** consumo, recuperación, duración y reinicio de recursos o estados.
-- **Interacciones:** efectos que comparten fase, modifican el mismo estado o alteran el orden de resolución.
+Cada caso identifica origen, variante y claves canónicas, participantes, equipo, reglas, contexto, decisiones admitidas, horizonte, muestras y semillas. Su preparación debe poder llevar a la situación relevante durante un duelo real. Portar una etiqueta no demuestra por sí solo que la regla influya en la muestra.
 
-Por ejemplo, comprobar un recurso de un solo uso requiere observar su consumo y que no vuelva a utilizarse. La proporción final de victorias puede no revelar ese error.
+Reutilizar pares con/sin regla cuando su preparación sea materialmente distinta y válida. Ambos miembros son duelos estadísticos normales: no exigen reproducción exacta de tiradas ni predicados de contadores. Una misma semilla no garantiza la misma secuencia de tiradas entre motores.
 
-Las agrupaciones existentes sirven para repartir la revisión, pero no acreditan cobertura por sí mismas. Compartir `consumer` o `effect_id` tampoco demuestra que dos contratos tengan idéntico comportamiento.
+La comparación modular/candidato de cada miembro sigue siendo el criterio de paridad. En una campaña posterior, el contraste con/sin regla en el modular puede aportar evidencia de sensibilidad. Una diferencia no detectable con la muestra disponible no prueba ausencia de efecto ni fallo del candidato: deja la sensibilidad sin demostrar. No introducir un gate universal nuevo para los pares ni ajustar escenarios a la salida del candidato.
 
-Cada escenario declarará qué comportamientos y claves del CSV comprueba. Estas referencias pertenecerán a la definición del escenario; el informe de cobertura se generará a partir de ellas. **Mantendremos un único CSV de progreso, sin nuevas columnas ni otro registro manual.**
+Si una variante no tiene señal útil en los resultados disponibles, registrar ese límite. Buscar primero una preparación o un horizonte válidos con las entradas existentes. No resolver el límite encargando instrumentación nueva.
 
-## 3. Una batería con tres niveles acumulativos
+## 4. Ejecución y comparación
 
-| Nivel | Contenido | Uso |
-|---|---|---|
-| **1. Rápido** | Selección pequeña que recorra las principales fases y mecanismos: ataques, defensas, estados, psicología, recursos y avance de rondas. Incluye ejecución con varias simulaciones para detectar errores de máscaras o estado compartido. | Durante el desarrollo y tras cambios pequeños. |
-| **2. Completo** | Nivel 1 más los escenarios necesarios para cubrir todos los comportamientos y variantes identificados, con comparaciones enfocadas y enfrentamientos estadísticos representativos. | Al integrar funcionalidades y antes de optimizar. |
-| **3. Profundo** | Nivel 2 más interacciones relevantes, posiciones intercambiadas, contextos alternativos, combates largos y horizontes de rondas. Amplía muestras y semillas en los casos que lo justifiquen. | Cierre de versión y cambios importantes del motor. |
+El modular validado sigue siendo el oráculo. Cada candidato ejecuta sus duelos reales, sin delegar en el modular ni usar resultados fabricados.
 
-**El nivel completo debe aportar amplitud; el profundo, mayor sensibilidad y composición.** No reservaremos una regla entera exclusivamente al nivel profundo.
+La comparación básica conserva las proporciones históricas de victoria del primero, victoria del segundo y duelo sin resolver, con sus tolerancias y criterios existentes. Reutilizar el comparador histórico donde encaje. Las distribuciones de duración, heridas y condiciones finales pueden aprovecharse donde las APIs actuales las expongan en ambos motores con significado compatible y ya exista comparación aplicable. Su ausencia no bloquea la comparación básica; el informe identifica qué magnitudes comparó. No añadir recursos internos como magnitudes obligatorias nuevas.
 
-Los conjuntos actuales se revisarán y reutilizarán. No conservaremos artificialmente las cantidades de 10, 30 y 42 enfrentamientos si dejan de representar el motor actual.
+No aumentar tolerancias ni reducir muestras para obtener aprobación. Los valores pequeños de autoría o diagnóstico no se presentan como muestras suficientes de aceptación: sensibilidad y coste se comprueban después.
 
-Los tiempos se fijarán **después de medir**, como has elegido. Un límite de tiempo agotado producirá una ejecución incompleta, nunca una aprobación con casos omitidos.
+Compilar entradas reutilizadas una vez y compartir la muestra modular entre candidatos cuando coincidan caso, entradas, contexto, decisiones, semillas, muestras, horizonte y versión real. Reutilizar mecanismos existentes, sin otro sistema de caché. No exigir igualdad fila a fila entre muestras independientes.
 
-Al cerrar P03 los tres perfiles tienen todos sus escenarios y variantes
-requeridos, cláusulas y comportamientos referenciados, entradas, controles,
-observables, criterios de comparación y selección desde CLI. Incluyen muestras,
-semillas y horizontes iniciales explícitos que P04 podrá calibrar. No puede
-quedar autoría de tests para P04/P05. «Perfil preparado» no significa «perfil
-ejecutado y aprobado». Sus tamaños dependen de comportamientos y variantes
-justificados, sin cuotas de escenarios.
+## 5. Perfiles y cobertura
 
-## 4. Comparar lo suficiente sin disparar el coste
+| Perfil acumulativo | Contenido |
+| --- | --- |
+| `quick` | Subconjunto representativo de las fases y reglas principales. |
+| `complete` | `quick` más los escenarios base de las variantes inventariadas y controles válidos. |
+| `deep` | `complete` más composiciones justificadas, intercambio de lados, horizontes y sensibilidad adicional. |
 
-Prepararemos dos formas de comparación para su ejecución futura dentro de la misma batería:
+No reservar una regla base únicamente a `deep` ni fijar cuotas arbitrarias. Conservar la selección existente siempre que sea válida; no reiniciar autoría para recuperar recuentos antiguos.
 
-**Comparaciones enfocadas.** Aprovechar las situaciones E2E y las reproducciones existentes para observar estados, heridas, recursos y decisiones en puntos relevantes. El adaptador deberá conducir cada motor por su ejecución real. Los casos con preparación de estado u observaciones todavía incompatibles quedarán como huecos explícitos.
+El informe distingue selección de diseño por cláusula/variante, escenarios ejecutados, magnitudes comparadas, resultado estadístico, sensibilidad demostrada o pendiente y casos no ejecutables con causa. **Paridad estadística aprobada no significa verificación exhaustiva de todas las reglas internas.** Una variante con caso seleccionado pero pendiente o sin sensibilidad demostrada no puede presentarse como comportamiento comprobado.
 
-No mantendremos manualmente dos grandes colecciones de tiradas. Reutilizaremos los mecanismos existentes de reproducción donde sean compatibles y añadiremos únicamente las adaptaciones necesarias. Una misma semilla no garantiza las mismas tiradas entre motores.
+El perfil completo conserva el denominador de diseño aunque tenga casos incompatibles. No ocultar casos para obtener `complete=True`. La completitud de ejecución se basa en los casos estadísticos requeridos del perfil, no en disponer de sondas ni en acreditar cobertura semántica absoluta. Los casos aprobados sin sensibilidad acreditada se distinguen expresamente en el informe de cobertura.
 
-**Comparaciones estadísticas.** Mantener los duelos completos para detectar diferencias de distribución e interacciones. Conservar las tolerancias actuales para los resultados ya comparados; cualquier observable nuevo necesitará un criterio explícito. Comparar estados o recursos cuando sean relevantes para el escenario, además del ganador.
+## 6. Secuencia y cierre
 
-Para ahorrar ejecución:
+| Paso | Trabajo y cierre |
+| --- | --- |
+| Adaptación estadística de P01–P03 | Reutilizar catálogo y conexión; retirar dependencias de testigos internos y controles de eventos del camino estadístico; mantener limitaciones reales de entrada. Actualizar comprobantes y documentación. |
+| P04, campaña posterior | Ejecutar muestras y medir coste y sensibilidad. Calibrar parámetros sin relajar criterios para obtener PASS. |
+| P05, campaña posterior | Ejecutar aceptación sobre una base identificada; informar resultados, cobertura y límites reales. |
 
-- Compilar una vez las entradas reutilizadas.
-- Compartir la muestra modular entre candidatos, como ya permite la infraestructura.
-- Reutilizar resultados modulares guardados únicamente cuando coincidan entradas, configuración, semillas y versión del oráculo.
-- Ejecutar horizontes adicionales donde puedan descubrir errores de duración u orden.
-- Evitar productos cartesianos de todas las reglas.
-- Usar casos dirigidos para sucesos raros; aumentar muestras indiscriminadamente puede seguir sin detectarlos.
+No volver a lanzar P00 ni encadenar rondas de inventario. La adaptación termina con catálogo → duelos reales → comparación estadística → CLI/informe conectado y limitaciones identificadas. No depende de ampliar observación o estado en los motores. Un defecto propio de conexión se corrige; una limitación de entrada queda visible.
 
-La igualdad estadística de victorias no bastará para acreditar un comportamiento que nunca se ha observado actuar.
+Se mantiene para el encargo inmediato la restricción de preparación estática: no ejecutar tests, importaciones de validación, `py_compile`, compilaciones ni motores. Dejar comprobantes escritos y comandos posteriores exactos, sin declararlos ejecutados. P04/P05 requieren un encargo posterior explícito; esta revisión documental no autoriza campañas.
 
-Ahora se define cómo distinguir cada comportamiento: entradas que contienen la
-regla, disparador, ausencia, observable y criterio de comparación. Puede usarse
-el oráculo para preparar una referencia cuando sea necesario; no se reconstruye
-su validación. Una capacidad del candidato todavía no disponible se declara con
-su contrato mínimo y propietario, sin emularla ni sustituir la situación por un
-duelo que omita la regla. La falta de esa capacidad no impide aceptar el test
-preparado; una entrada o un comparador incorrectos sí son defectos de preparación.
+## 7. Propiedad y entrega
 
-La infraestructura se comprueba con carga, selección, referencias, conexión de
-interfaces y las comprobaciones mínimas del adaptador/comparador. Datos
-sintéticos pueden comprobar sus ramas de informe o error, pero no son evidencia
-de combate ni sustituyen un motor. No se ejecuta el candidato para buscar fallos
-ni se requieren resultados suyos para cerrar la preparación.
+Escritura de implementación: herramientas de paridad, conexión en CLI, comprobantes afectados y documentación de uso. Preservar la ruta histórica sin `--profile` y la selección `--profile quick|complete|deep`; no añadir otro modo. Conservar selección de backend, informar ausencia de nativo sin fallback y no certificar nativo con evidencia NumPy.
 
-## 5. Dos cierres independientes y una campaña posterior
+No modificar motores modular/vectorial/nativo, modelos compartidos, planes del motor, KB, CSV canónico ni corpus E2E. No añadir dependencias, intérpretes de eventos, DSL, planificadores o registros de progreso. No hacer commits ni pushes. Preservar cambios concurrentes y un escritor por archivo. Referenciar problemas concretos pendientes en `TODO.md`, sin convertir observabilidad fuera de alcance en trabajo obligatorio nuevo.
 
-| Trabajo | Secuencia | Cierre |
-| --- | --- | --- |
-| Plan del motor, referencia externa | G07 termina con su batería actual | Evidencia acotada a la revisión y batería que realmente ejecutó; no espera al rework. |
-| Rework de tests | P00 → (P01 + P02 en paralelo) → P03 | Todos los tests y niveles definidos, preparados y conectados, sin resultados del candidato. |
-| Campaña con la batería renovada | P03 terminado + versión fija del motor entregado por G07 → P04 → P05 | Medición/calibración y aceptación frente al modular con la nueva cobertura. |
-
-P03 se acepta por autoría completa, trazabilidad, corrección del adaptador y
-comparador, selección acumulativa y conexión de las herramientas. Si faltan
-tests, variantes o criterios requeridos, el rework sigue abierto. Las carencias
-externas de entrada, consumo o publicación del motor se especifican con sus
-casos afectados y se gestionan al ejecutar; no son autoría aplazada.
-
-P04 solo ajusta muestras, semillas, horizontes y parámetros de ejecución por el
-coste y sensibilidad medidos, conservando todas las obligaciones y escenarios
-base. No se utiliza para crear reglas o familias de tests faltantes. Si descubre
-un defecto de preparación, devuelve la corrección a P01/P02/P03 y registra su
-impacto, sin certificar una campaña incompleta. P05 distingue igualmente defectos
-del test, del adaptador y del motor, sin cambiar expectativas para conseguir PASS.
-
-La preparación será propietaria de los escenarios y herramientas de paridad.
-Cualquier necesidad del motor se comunica a su propietario, sin editarlo ni
-cambiar sus planes. P01/P02 no tienen que perseguir la evolución de G07.
-
-El informe de preparación distinguirá obligaciones con test preparado, trabajo
-propio pendiente y dependencias del motor, además de referencias modulares
-realmente obtenidas. El informe futuro de ejecución mostrará comportamientos
-declarados, ejecutados, activados, comparados, pendientes, incompatibles y
-divergentes; muestras, tiempos por motor y revisión utilizada. Un resultado de
-ejecución `complete=False` no es el estado de entrega de la preparación. El
-coordinador no actualizará `status.numpy` ni `status.native` por preparar tests.
-
-El objetivo será **cubrir todos los comportamientos inventariados y sus interacciones seleccionadas**. No afirmaremos que una batería finita cubre todas las combinaciones posibles. Tampoco confundiremos una etiqueta de cobertura con una ejecución que realmente distingue el comportamiento.
+Actualizar una sola entrega: `P03-deliverable.md`. Distinguir adaptación estadística vigente e implementación instrumentada histórica. Identificar archivos cambiados, reutilización, disposición de casos, limitaciones reales, comprobantes escritos y no ejecutados y comandos propuestos. No actualizar estados de verificación del CSV por autoría o etiquetas.

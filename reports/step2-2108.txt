@@ -1,5 +1,5 @@
 
-=== Warrior construction (8 workers, loadfile) ===
+=== Warrior construction (10 workers, loadfile) ===
 bringing up nodes...
 bringing up nodes...
 
@@ -9,7 +9,7 @@ bringing up nodes...
 ........................................................................ [  7%]
 ........................................................................ [ 10%]
 ......................................................................... [ 13%]
-........................................................................ [ 15%]
+......................................................................... [ 15%]
 ........................................................................ [ 18%]
 ........................................................................ [ 21%]
 ........................................................................ [ 23%]
@@ -19,15 +19,15 @@ bringing up nodes...
 ........................................................................ [ 34%]
 ........................................................................ [ 36%]
 ........................................................................ [ 39%]
-..................................................F.....F.......F....... [ 42%]
-.F.........F..................F.....F..F.F..F...F..F...F..F..F.......... [ 44%]
-........................................................................ [ 47%]
+.........................................................F.............. [ 42%]
+.F........F....F......F.....F.F.F......F....F.......F.........F......F.. [ 44%]
+.F....F................................................................. [ 47%]
 ........................................................................ [ 50%]
 ........................................................................ [ 52%]
 ........................................................................ [ 55%]
-........................................................................ [ 58%]
-...........................................................F............ [ 60%]
-.........F........F....F................................................ [ 63%]
+.........F............F........F.......F................................ [ 58%]
+........................................................................ [ 60%]
+........................................................................ [ 63%]
 ........................................................................ [ 65%]
 ........................................................................ [ 68%]
 ........................................................................ [ 71%]
@@ -41,380 +41,10 @@ bringing up nodes...
 ........................................................................ [ 92%]
 ........................................................................ [ 94%]
 ........................................................................ [ 97%]
-..................................................................       [100%]
+.................................................................        [100%]
 ================================== FAILURES ===================================
-__ test_public_optimized_paths_refuse_unported_canonical_effect[auto-False] ___
-[gw6] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
-
-host = CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristics(weapon_skill=2,..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
-plain = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
-second = False, backend = 'auto'
-
-    @pytest.mark.phase2_construction
-    @pytest.mark.parametrize('second', [False, True])
-    @pytest.mark.parametrize('backend', ['auto', 'numpy', 'native'])
-    def test_public_optimized_paths_refuse_unported_canonical_effect(host, plain, second, backend):
-        pair = (plain, host) if second else (host, plain)
-        with pytest.raises(ValueError, match='Spectral Touch.*modular'):
->           simulate_duel(DuelRequest(*pair, simulations=1), backend=backend)
-
-tests\python\combat\modular\test_spectral_touch_activation.py:137: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-
-request = DuelRequest(first=CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristi...cks=False, extra_attacks_without_poison=()), simulations=1, seed=0, batch_size=100000, maximum_rounds=50, context=None)
-
-    def simulate_duel(request: DuelRequest, *, backend: str = "auto") -> DuelResult:
-        """Run a duel through the selected backend without changing `DuelRequest`."""
-        if backend not in {"auto", "numpy", "native"}:
-            raise ValueError(f"unknown combat backend: {backend}")
-        from mordheim_combat.kernel import require_optimized_support
-        selected = available_backends()[0] if backend == "auto" else backend
->       require_optimized_support(request.first, request.second, backend=selected)
-
-packages\python\combat-engine\mordheim_combat\vectorized\_driver.py:1747: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-
-first = CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristics(weapon_skill=2,..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
-second = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
-
-    def require_optimized_support(
-        first: CompiledFighter, second: CompiledFighter, *,
-        backend: OptimizedBackend | None = None,
-    ) -> None:
-        """Refuse modular-only choices before an optimized engine can omit them.
-    
-        ``backend`` names the engine that will actually run, so the NumPy path and
-        the native path are admitted independently. Legacy calls without a backend
-        keep the conservative native gate; they never gain support because NumPy
-        advanced.
-        """
-        pending = _PENDING["native"] if backend is None else pending_capabilities(backend)
-        if any(set(effect.tags) & pending.residual_tags
-               or ("effect-values" in pending.behaviours and (
-                   effect.critical_threshold != 6 or effect.ethereal_hit_save != 4
-                   or effect.natural_armour_negated_by_fire))
-               for fighter in (first, second) for effect in _effects(fighter)):
-            raise ValueError("Residual modular effects require the modular engine; optimized ports are pending")
-        if any(set(effect.tags) & pending.local_modifier_tags
-               for fighter in (first, second) for effect in _effects(fighter)):
->           raise ValueError("Local modifier variants currently require the modular engine; optimized ports are pending")
-E           ValueError: Local modifier variants currently require the modular engine; optimized ports are pending
-
-packages\python\combat-engine\mordheim_combat\kernel.py:266: ValueError
-
-During handling of the above exception, another exception occurred:
-
-host = CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristics(weapon_skill=2,..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
-plain = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
-second = False, backend = 'auto'
-
-    @pytest.mark.phase2_construction
-    @pytest.mark.parametrize('second', [False, True])
-    @pytest.mark.parametrize('backend', ['auto', 'numpy', 'native'])
-    def test_public_optimized_paths_refuse_unported_canonical_effect(host, plain, second, backend):
-        pair = (plain, host) if second else (host, plain)
->       with pytest.raises(ValueError, match='Spectral Touch.*modular'):
-E       AssertionError: Regex pattern 'Spectral Touch.*modular' does not match 'Local modifier variants currently require the modular engine; optimized ports are pending'.
-
-tests\python\combat\modular\test_spectral_touch_activation.py:136: AssertionError
-___ test_public_optimized_paths_refuse_unported_canonical_effect[auto-True] ___
-[gw6] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
-
-host = CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristics(weapon_skill=2,..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
-plain = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
-second = True, backend = 'auto'
-
-    @pytest.mark.phase2_construction
-    @pytest.mark.parametrize('second', [False, True])
-    @pytest.mark.parametrize('backend', ['auto', 'numpy', 'native'])
-    def test_public_optimized_paths_refuse_unported_canonical_effect(host, plain, second, backend):
-        pair = (plain, host) if second else (host, plain)
-        with pytest.raises(ValueError, match='Spectral Touch.*modular'):
->           simulate_duel(DuelRequest(*pair, simulations=1), backend=backend)
-
-tests\python\combat\modular\test_spectral_touch_activation.py:137: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-
-request = DuelRequest(first=CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength...cks=False, extra_attacks_without_poison=()), simulations=1, seed=0, batch_size=100000, maximum_rounds=50, context=None)
-
-    def simulate_duel(request: DuelRequest, *, backend: str = "auto") -> DuelResult:
-        """Run a duel through the selected backend without changing `DuelRequest`."""
-        if backend not in {"auto", "numpy", "native"}:
-            raise ValueError(f"unknown combat backend: {backend}")
-        from mordheim_combat.kernel import require_optimized_support
-        selected = available_backends()[0] if backend == "auto" else backend
->       require_optimized_support(request.first, request.second, backend=selected)
-
-packages\python\combat-engine\mordheim_combat\vectorized\_driver.py:1747: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-
-first = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
-second = CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristics(weapon_skill=2,..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
-
-    def require_optimized_support(
-        first: CompiledFighter, second: CompiledFighter, *,
-        backend: OptimizedBackend | None = None,
-    ) -> None:
-        """Refuse modular-only choices before an optimized engine can omit them.
-    
-        ``backend`` names the engine that will actually run, so the NumPy path and
-        the native path are admitted independently. Legacy calls without a backend
-        keep the conservative native gate; they never gain support because NumPy
-        advanced.
-        """
-        pending = _PENDING["native"] if backend is None else pending_capabilities(backend)
-        if any(set(effect.tags) & pending.residual_tags
-               or ("effect-values" in pending.behaviours and (
-                   effect.critical_threshold != 6 or effect.ethereal_hit_save != 4
-                   or effect.natural_armour_negated_by_fire))
-               for fighter in (first, second) for effect in _effects(fighter)):
-            raise ValueError("Residual modular effects require the modular engine; optimized ports are pending")
-        if any(set(effect.tags) & pending.local_modifier_tags
-               for fighter in (first, second) for effect in _effects(fighter)):
->           raise ValueError("Local modifier variants currently require the modular engine; optimized ports are pending")
-E           ValueError: Local modifier variants currently require the modular engine; optimized ports are pending
-
-packages\python\combat-engine\mordheim_combat\kernel.py:266: ValueError
-
-During handling of the above exception, another exception occurred:
-
-host = CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristics(weapon_skill=2,..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
-plain = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
-second = True, backend = 'auto'
-
-    @pytest.mark.phase2_construction
-    @pytest.mark.parametrize('second', [False, True])
-    @pytest.mark.parametrize('backend', ['auto', 'numpy', 'native'])
-    def test_public_optimized_paths_refuse_unported_canonical_effect(host, plain, second, backend):
-        pair = (plain, host) if second else (host, plain)
->       with pytest.raises(ValueError, match='Spectral Touch.*modular'):
-E       AssertionError: Regex pattern 'Spectral Touch.*modular' does not match 'Local modifier variants currently require the modular engine; optimized ports are pending'.
-
-tests\python\combat\modular\test_spectral_touch_activation.py:136: AssertionError
-__ test_public_optimized_paths_refuse_unported_canonical_effect[numpy-False] __
-[gw6] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
-
-host = CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristics(weapon_skill=2,..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
-plain = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
-second = False, backend = 'numpy'
-
-    @pytest.mark.phase2_construction
-    @pytest.mark.parametrize('second', [False, True])
-    @pytest.mark.parametrize('backend', ['auto', 'numpy', 'native'])
-    def test_public_optimized_paths_refuse_unported_canonical_effect(host, plain, second, backend):
-        pair = (plain, host) if second else (host, plain)
-        with pytest.raises(ValueError, match='Spectral Touch.*modular'):
->           simulate_duel(DuelRequest(*pair, simulations=1), backend=backend)
-
-tests\python\combat\modular\test_spectral_touch_activation.py:137: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-
-request = DuelRequest(first=CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristi...cks=False, extra_attacks_without_poison=()), simulations=1, seed=0, batch_size=100000, maximum_rounds=50, context=None)
-
-    def simulate_duel(request: DuelRequest, *, backend: str = "auto") -> DuelResult:
-        """Run a duel through the selected backend without changing `DuelRequest`."""
-        if backend not in {"auto", "numpy", "native"}:
-            raise ValueError(f"unknown combat backend: {backend}")
-        from mordheim_combat.kernel import require_optimized_support
-        selected = available_backends()[0] if backend == "auto" else backend
->       require_optimized_support(request.first, request.second, backend=selected)
-
-packages\python\combat-engine\mordheim_combat\vectorized\_driver.py:1747: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-
-first = CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristics(weapon_skill=2,..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
-second = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
-
-    def require_optimized_support(
-        first: CompiledFighter, second: CompiledFighter, *,
-        backend: OptimizedBackend | None = None,
-    ) -> None:
-        """Refuse modular-only choices before an optimized engine can omit them.
-    
-        ``backend`` names the engine that will actually run, so the NumPy path and
-        the native path are admitted independently. Legacy calls without a backend
-        keep the conservative native gate; they never gain support because NumPy
-        advanced.
-        """
-        pending = _PENDING["native"] if backend is None else pending_capabilities(backend)
-        if any(set(effect.tags) & pending.residual_tags
-               or ("effect-values" in pending.behaviours and (
-                   effect.critical_threshold != 6 or effect.ethereal_hit_save != 4
-                   or effect.natural_armour_negated_by_fire))
-               for fighter in (first, second) for effect in _effects(fighter)):
-            raise ValueError("Residual modular effects require the modular engine; optimized ports are pending")
-        if any(set(effect.tags) & pending.local_modifier_tags
-               for fighter in (first, second) for effect in _effects(fighter)):
->           raise ValueError("Local modifier variants currently require the modular engine; optimized ports are pending")
-E           ValueError: Local modifier variants currently require the modular engine; optimized ports are pending
-
-packages\python\combat-engine\mordheim_combat\kernel.py:266: ValueError
-
-During handling of the above exception, another exception occurred:
-
-host = CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristics(weapon_skill=2,..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
-plain = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
-second = False, backend = 'numpy'
-
-    @pytest.mark.phase2_construction
-    @pytest.mark.parametrize('second', [False, True])
-    @pytest.mark.parametrize('backend', ['auto', 'numpy', 'native'])
-    def test_public_optimized_paths_refuse_unported_canonical_effect(host, plain, second, backend):
-        pair = (plain, host) if second else (host, plain)
->       with pytest.raises(ValueError, match='Spectral Touch.*modular'):
-E       AssertionError: Regex pattern 'Spectral Touch.*modular' does not match 'Local modifier variants currently require the modular engine; optimized ports are pending'.
-
-tests\python\combat\modular\test_spectral_touch_activation.py:136: AssertionError
-__ test_public_optimized_paths_refuse_unported_canonical_effect[numpy-True] ___
-[gw6] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
-
-host = CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristics(weapon_skill=2,..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
-plain = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
-second = True, backend = 'numpy'
-
-    @pytest.mark.phase2_construction
-    @pytest.mark.parametrize('second', [False, True])
-    @pytest.mark.parametrize('backend', ['auto', 'numpy', 'native'])
-    def test_public_optimized_paths_refuse_unported_canonical_effect(host, plain, second, backend):
-        pair = (plain, host) if second else (host, plain)
-        with pytest.raises(ValueError, match='Spectral Touch.*modular'):
->           simulate_duel(DuelRequest(*pair, simulations=1), backend=backend)
-
-tests\python\combat\modular\test_spectral_touch_activation.py:137: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-
-request = DuelRequest(first=CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength...cks=False, extra_attacks_without_poison=()), simulations=1, seed=0, batch_size=100000, maximum_rounds=50, context=None)
-
-    def simulate_duel(request: DuelRequest, *, backend: str = "auto") -> DuelResult:
-        """Run a duel through the selected backend without changing `DuelRequest`."""
-        if backend not in {"auto", "numpy", "native"}:
-            raise ValueError(f"unknown combat backend: {backend}")
-        from mordheim_combat.kernel import require_optimized_support
-        selected = available_backends()[0] if backend == "auto" else backend
->       require_optimized_support(request.first, request.second, backend=selected)
-
-packages\python\combat-engine\mordheim_combat\vectorized\_driver.py:1747: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-
-first = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
-second = CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristics(weapon_skill=2,..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
-
-    def require_optimized_support(
-        first: CompiledFighter, second: CompiledFighter, *,
-        backend: OptimizedBackend | None = None,
-    ) -> None:
-        """Refuse modular-only choices before an optimized engine can omit them.
-    
-        ``backend`` names the engine that will actually run, so the NumPy path and
-        the native path are admitted independently. Legacy calls without a backend
-        keep the conservative native gate; they never gain support because NumPy
-        advanced.
-        """
-        pending = _PENDING["native"] if backend is None else pending_capabilities(backend)
-        if any(set(effect.tags) & pending.residual_tags
-               or ("effect-values" in pending.behaviours and (
-                   effect.critical_threshold != 6 or effect.ethereal_hit_save != 4
-                   or effect.natural_armour_negated_by_fire))
-               for fighter in (first, second) for effect in _effects(fighter)):
-            raise ValueError("Residual modular effects require the modular engine; optimized ports are pending")
-        if any(set(effect.tags) & pending.local_modifier_tags
-               for fighter in (first, second) for effect in _effects(fighter)):
->           raise ValueError("Local modifier variants currently require the modular engine; optimized ports are pending")
-E           ValueError: Local modifier variants currently require the modular engine; optimized ports are pending
-
-packages\python\combat-engine\mordheim_combat\kernel.py:266: ValueError
-
-During handling of the above exception, another exception occurred:
-
-host = CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristics(weapon_skill=2,..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
-plain = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
-second = True, backend = 'numpy'
-
-    @pytest.mark.phase2_construction
-    @pytest.mark.parametrize('second', [False, True])
-    @pytest.mark.parametrize('backend', ['auto', 'numpy', 'native'])
-    def test_public_optimized_paths_refuse_unported_canonical_effect(host, plain, second, backend):
-        pair = (plain, host) if second else (host, plain)
->       with pytest.raises(ValueError, match='Spectral Touch.*modular'):
-E       AssertionError: Regex pattern 'Spectral Touch.*modular' does not match 'Local modifier variants currently require the modular engine; optimized ports are pending'.
-
-tests\python\combat\modular\test_spectral_touch_activation.py:136: AssertionError
-_ test_public_optimized_paths_refuse_unported_canonical_effect[native-False] __
-[gw6] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
-
-host = CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristics(weapon_skill=2,..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
-plain = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
-second = False, backend = 'native'
-
-    @pytest.mark.phase2_construction
-    @pytest.mark.parametrize('second', [False, True])
-    @pytest.mark.parametrize('backend', ['auto', 'numpy', 'native'])
-    def test_public_optimized_paths_refuse_unported_canonical_effect(host, plain, second, backend):
-        pair = (plain, host) if second else (host, plain)
-        with pytest.raises(ValueError, match='Spectral Touch.*modular'):
->           simulate_duel(DuelRequest(*pair, simulations=1), backend=backend)
-
-tests\python\combat\modular\test_spectral_touch_activation.py:137: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-
-request = DuelRequest(first=CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristi...cks=False, extra_attacks_without_poison=()), simulations=1, seed=0, batch_size=100000, maximum_rounds=50, context=None)
-
-    def simulate_duel(request: DuelRequest, *, backend: str = "auto") -> DuelResult:
-        """Run a duel through the selected backend without changing `DuelRequest`."""
-        if backend not in {"auto", "numpy", "native"}:
-            raise ValueError(f"unknown combat backend: {backend}")
-        from mordheim_combat.kernel import require_optimized_support
-        selected = available_backends()[0] if backend == "auto" else backend
->       require_optimized_support(request.first, request.second, backend=selected)
-
-packages\python\combat-engine\mordheim_combat\vectorized\_driver.py:1747: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-
-first = CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristics(weapon_skill=2,..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
-second = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
-
-    def require_optimized_support(
-        first: CompiledFighter, second: CompiledFighter, *,
-        backend: OptimizedBackend | None = None,
-    ) -> None:
-        """Refuse modular-only choices before an optimized engine can omit them.
-    
-        ``backend`` names the engine that will actually run, so the NumPy path and
-        the native path are admitted independently. Legacy calls without a backend
-        keep the conservative native gate; they never gain support because NumPy
-        advanced.
-        """
-        pending = _PENDING["native"] if backend is None else pending_capabilities(backend)
-        if any(set(effect.tags) & pending.residual_tags
-               or ("effect-values" in pending.behaviours and (
-                   effect.critical_threshold != 6 or effect.ethereal_hit_save != 4
-                   or effect.natural_armour_negated_by_fire))
-               for fighter in (first, second) for effect in _effects(fighter)):
-            raise ValueError("Residual modular effects require the modular engine; optimized ports are pending")
-        if any(set(effect.tags) & pending.local_modifier_tags
-               for fighter in (first, second) for effect in _effects(fighter)):
->           raise ValueError("Local modifier variants currently require the modular engine; optimized ports are pending")
-E           ValueError: Local modifier variants currently require the modular engine; optimized ports are pending
-
-packages\python\combat-engine\mordheim_combat\kernel.py:266: ValueError
-
-During handling of the above exception, another exception occurred:
-
-host = CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristics(weapon_skill=2,..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
-plain = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
-second = False, backend = 'native'
-
-    @pytest.mark.phase2_construction
-    @pytest.mark.parametrize('second', [False, True])
-    @pytest.mark.parametrize('backend', ['auto', 'numpy', 'native'])
-    def test_public_optimized_paths_refuse_unported_canonical_effect(host, plain, second, backend):
-        pair = (plain, host) if second else (host, plain)
->       with pytest.raises(ValueError, match='Spectral Touch.*modular'):
-E       AssertionError: Regex pattern 'Spectral Touch.*modular' does not match 'Local modifier variants currently require the modular engine; optimized ports are pending'.
-
-tests\python\combat\modular\test_spectral_touch_activation.py:136: AssertionError
 _ test_optimized_entries_explicitly_refuse_the_unported_canonical_skill[auto-False] _
-[gw2] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
+[gw3] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
 
 second = False, backend = 'auto'
 opponent = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w...t='main', stat_bonuses=(), effect_without_poison=None),), natural_armour_stacks=False, extra_attacks_without_poison=())
@@ -440,7 +70,7 @@ request = DuelRequest(first=CompiledFighter(fighter_id='halflings-mic:halfling-e
         selected = available_backends()[0] if backend == "auto" else backend
 >       require_optimized_support(request.first, request.second, backend=selected)
 
-packages\python\combat-engine\mordheim_combat\vectorized\_driver.py:1747: 
+packages\python\combat-engine\mordheim_combat\vectorized\_driver.py:1796: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
 first = CompiledFighter(fighter_id='halflings-mic:halfling-elder', characteristics=Characteristics(weapon_skill=3, strength=3,...ot='main', stat_bonuses=(), effect_without_poison=None),), natural_armour_stacks=True, extra_attacks_without_poison=())
@@ -486,7 +116,7 @@ E       AssertionError: Regex pattern 'Shifty.*modular' does not match 'Local mo
 
 tests\python\combat\modular\test_shifty_activation.py:180: AssertionError
 _ test_optimized_entries_explicitly_refuse_the_unported_canonical_skill[auto-True] _
-[gw2] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
+[gw3] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
 
 second = True, backend = 'auto'
 opponent = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w...t='main', stat_bonuses=(), effect_without_poison=None),), natural_armour_stacks=False, extra_attacks_without_poison=())
@@ -512,7 +142,7 @@ request = DuelRequest(first=CompiledFighter(fighter_id='custom:custom', characte
         selected = available_backends()[0] if backend == "auto" else backend
 >       require_optimized_support(request.first, request.second, backend=selected)
 
-packages\python\combat-engine\mordheim_combat\vectorized\_driver.py:1747: 
+packages\python\combat-engine\mordheim_combat\vectorized\_driver.py:1796: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
 first = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w...t='main', stat_bonuses=(), effect_without_poison=None),), natural_armour_stacks=False, extra_attacks_without_poison=())
@@ -558,7 +188,7 @@ E       AssertionError: Regex pattern 'Shifty.*modular' does not match 'Local mo
 
 tests\python\combat\modular\test_shifty_activation.py:180: AssertionError
 _ test_optimized_entries_explicitly_refuse_the_unported_canonical_skill[numpy-False] _
-[gw2] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
+[gw3] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
 
 second = False, backend = 'numpy'
 opponent = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w...t='main', stat_bonuses=(), effect_without_poison=None),), natural_armour_stacks=False, extra_attacks_without_poison=())
@@ -573,7 +203,7 @@ E       Failed: DID NOT RAISE <class 'ValueError'>
 
 tests\python\combat\modular\test_shifty_activation.py:180: Failed
 _ test_optimized_entries_explicitly_refuse_the_unported_canonical_skill[numpy-True] _
-[gw2] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
+[gw3] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
 
 second = True, backend = 'numpy'
 opponent = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w...t='main', stat_bonuses=(), effect_without_poison=None),), natural_armour_stacks=False, extra_attacks_without_poison=())
@@ -588,7 +218,7 @@ E       Failed: DID NOT RAISE <class 'ValueError'>
 
 tests\python\combat\modular\test_shifty_activation.py:180: Failed
 _ test_optimized_entries_explicitly_refuse_the_unported_canonical_skill[native-False] _
-[gw2] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
+[gw3] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
 
 second = False, backend = 'native'
 opponent = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w...t='main', stat_bonuses=(), effect_without_poison=None),), natural_armour_stacks=False, extra_attacks_without_poison=())
@@ -614,7 +244,7 @@ request = DuelRequest(first=CompiledFighter(fighter_id='halflings-mic:halfling-e
         selected = available_backends()[0] if backend == "auto" else backend
 >       require_optimized_support(request.first, request.second, backend=selected)
 
-packages\python\combat-engine\mordheim_combat\vectorized\_driver.py:1747: 
+packages\python\combat-engine\mordheim_combat\vectorized\_driver.py:1796: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
 first = CompiledFighter(fighter_id='halflings-mic:halfling-elder', characteristics=Characteristics(weapon_skill=3, strength=3,...ot='main', stat_bonuses=(), effect_without_poison=None),), natural_armour_stacks=True, extra_attacks_without_poison=())
@@ -660,7 +290,7 @@ E       AssertionError: Regex pattern 'Shifty.*modular' does not match 'Local mo
 
 tests\python\combat\modular\test_shifty_activation.py:180: AssertionError
 _ test_optimized_entries_explicitly_refuse_the_unported_canonical_skill[native-True] _
-[gw2] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
+[gw3] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
 
 second = True, backend = 'native'
 opponent = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w...t='main', stat_bonuses=(), effect_without_poison=None),), natural_armour_stacks=False, extra_attacks_without_poison=())
@@ -686,7 +316,7 @@ request = DuelRequest(first=CompiledFighter(fighter_id='custom:custom', characte
         selected = available_backends()[0] if backend == "auto" else backend
 >       require_optimized_support(request.first, request.second, backend=selected)
 
-packages\python\combat-engine\mordheim_combat\vectorized\_driver.py:1747: 
+packages\python\combat-engine\mordheim_combat\vectorized\_driver.py:1796: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
 first = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w...t='main', stat_bonuses=(), effect_without_poison=None),), natural_armour_stacks=False, extra_attacks_without_poison=())
@@ -731,8 +361,82 @@ opponent = CompiledFighter(fighter_id='custom:custom', characteristics=Character
 E       AssertionError: Regex pattern 'Shifty.*modular' does not match 'Local modifier variants currently require the modular engine; optimized ports are pending'.
 
 tests\python\combat\modular\test_shifty_activation.py:180: AssertionError
+__ test_public_optimized_paths_refuse_unported_canonical_effect[auto-False] ___
+[gw7] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
+
+host = CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristics(weapon_skill=2,..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
+plain = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
+second = False, backend = 'auto'
+
+    @pytest.mark.phase2_construction
+    @pytest.mark.parametrize('second', [False, True])
+    @pytest.mark.parametrize('backend', ['auto', 'numpy', 'native'])
+    def test_public_optimized_paths_refuse_unported_canonical_effect(host, plain, second, backend):
+        pair = (plain, host) if second else (host, plain)
+        with pytest.raises(ValueError, match='Spectral Touch.*modular'):
+>           simulate_duel(DuelRequest(*pair, simulations=1), backend=backend)
+
+tests\python\combat\modular\test_spectral_touch_activation.py:137: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+request = DuelRequest(first=CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristi...cks=False, extra_attacks_without_poison=()), simulations=1, seed=0, batch_size=100000, maximum_rounds=50, context=None)
+
+    def simulate_duel(request: DuelRequest, *, backend: str = "auto") -> DuelResult:
+        """Run a duel through the selected backend without changing `DuelRequest`."""
+        if backend not in {"auto", "numpy", "native"}:
+            raise ValueError(f"unknown combat backend: {backend}")
+        from mordheim_combat.kernel import require_optimized_support
+        selected = available_backends()[0] if backend == "auto" else backend
+>       require_optimized_support(request.first, request.second, backend=selected)
+
+packages\python\combat-engine\mordheim_combat\vectorized\_driver.py:1796: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+first = CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristics(weapon_skill=2,..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
+second = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
+
+    def require_optimized_support(
+        first: CompiledFighter, second: CompiledFighter, *,
+        backend: OptimizedBackend | None = None,
+    ) -> None:
+        """Refuse modular-only choices before an optimized engine can omit them.
+    
+        ``backend`` names the engine that will actually run, so the NumPy path and
+        the native path are admitted independently. Legacy calls without a backend
+        keep the conservative native gate; they never gain support because NumPy
+        advanced.
+        """
+        pending = _PENDING["native"] if backend is None else pending_capabilities(backend)
+        if any(set(effect.tags) & pending.residual_tags
+               or ("effect-values" in pending.behaviours and (
+                   effect.critical_threshold != 6 or effect.ethereal_hit_save != 4
+                   or effect.natural_armour_negated_by_fire))
+               for fighter in (first, second) for effect in _effects(fighter)):
+            raise ValueError("Residual modular effects require the modular engine; optimized ports are pending")
+        if any(set(effect.tags) & pending.local_modifier_tags
+               for fighter in (first, second) for effect in _effects(fighter)):
+>           raise ValueError("Local modifier variants currently require the modular engine; optimized ports are pending")
+E           ValueError: Local modifier variants currently require the modular engine; optimized ports are pending
+
+packages\python\combat-engine\mordheim_combat\kernel.py:266: ValueError
+
+During handling of the above exception, another exception occurred:
+
+host = CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristics(weapon_skill=2,..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
+plain = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
+second = False, backend = 'auto'
+
+    @pytest.mark.phase2_construction
+    @pytest.mark.parametrize('second', [False, True])
+    @pytest.mark.parametrize('backend', ['auto', 'numpy', 'native'])
+    def test_public_optimized_paths_refuse_unported_canonical_effect(host, plain, second, backend):
+        pair = (plain, host) if second else (host, plain)
+>       with pytest.raises(ValueError, match='Spectral Touch.*modular'):
+E       AssertionError: Regex pattern 'Spectral Touch.*modular' does not match 'Local modifier variants currently require the modular engine; optimized ports are pending'.
+
+tests\python\combat\modular\test_spectral_touch_activation.py:136: AssertionError
 _____ test_low_level_optimized_entries_refuse_without_losing_other_guards _____
-[gw2] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
+[gw3] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
 
 opponent = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w...t='main', stat_bonuses=(), effect_without_poison=None),), natural_armour_stacks=False, extra_attacks_without_poison=())
 
@@ -811,8 +515,304 @@ opponent = CompiledFighter(fighter_id='custom:custom', characteristics=Character
 E           AssertionError: Regex pattern 'Shifty.*modular' does not match 'Local modifier variants currently require the modular engine; optimized ports are pending'.
 
 tests\python\combat\modular\test_shifty_activation.py:190: AssertionError
+___ test_public_optimized_paths_refuse_unported_canonical_effect[auto-True] ___
+[gw7] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
+
+host = CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristics(weapon_skill=2,..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
+plain = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
+second = True, backend = 'auto'
+
+    @pytest.mark.phase2_construction
+    @pytest.mark.parametrize('second', [False, True])
+    @pytest.mark.parametrize('backend', ['auto', 'numpy', 'native'])
+    def test_public_optimized_paths_refuse_unported_canonical_effect(host, plain, second, backend):
+        pair = (plain, host) if second else (host, plain)
+        with pytest.raises(ValueError, match='Spectral Touch.*modular'):
+>           simulate_duel(DuelRequest(*pair, simulations=1), backend=backend)
+
+tests\python\combat\modular\test_spectral_touch_activation.py:137: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+request = DuelRequest(first=CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength...cks=False, extra_attacks_without_poison=()), simulations=1, seed=0, batch_size=100000, maximum_rounds=50, context=None)
+
+    def simulate_duel(request: DuelRequest, *, backend: str = "auto") -> DuelResult:
+        """Run a duel through the selected backend without changing `DuelRequest`."""
+        if backend not in {"auto", "numpy", "native"}:
+            raise ValueError(f"unknown combat backend: {backend}")
+        from mordheim_combat.kernel import require_optimized_support
+        selected = available_backends()[0] if backend == "auto" else backend
+>       require_optimized_support(request.first, request.second, backend=selected)
+
+packages\python\combat-engine\mordheim_combat\vectorized\_driver.py:1796: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+first = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
+second = CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristics(weapon_skill=2,..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
+
+    def require_optimized_support(
+        first: CompiledFighter, second: CompiledFighter, *,
+        backend: OptimizedBackend | None = None,
+    ) -> None:
+        """Refuse modular-only choices before an optimized engine can omit them.
+    
+        ``backend`` names the engine that will actually run, so the NumPy path and
+        the native path are admitted independently. Legacy calls without a backend
+        keep the conservative native gate; they never gain support because NumPy
+        advanced.
+        """
+        pending = _PENDING["native"] if backend is None else pending_capabilities(backend)
+        if any(set(effect.tags) & pending.residual_tags
+               or ("effect-values" in pending.behaviours and (
+                   effect.critical_threshold != 6 or effect.ethereal_hit_save != 4
+                   or effect.natural_armour_negated_by_fire))
+               for fighter in (first, second) for effect in _effects(fighter)):
+            raise ValueError("Residual modular effects require the modular engine; optimized ports are pending")
+        if any(set(effect.tags) & pending.local_modifier_tags
+               for fighter in (first, second) for effect in _effects(fighter)):
+>           raise ValueError("Local modifier variants currently require the modular engine; optimized ports are pending")
+E           ValueError: Local modifier variants currently require the modular engine; optimized ports are pending
+
+packages\python\combat-engine\mordheim_combat\kernel.py:266: ValueError
+
+During handling of the above exception, another exception occurred:
+
+host = CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristics(weapon_skill=2,..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
+plain = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
+second = True, backend = 'auto'
+
+    @pytest.mark.phase2_construction
+    @pytest.mark.parametrize('second', [False, True])
+    @pytest.mark.parametrize('backend', ['auto', 'numpy', 'native'])
+    def test_public_optimized_paths_refuse_unported_canonical_effect(host, plain, second, backend):
+        pair = (plain, host) if second else (host, plain)
+>       with pytest.raises(ValueError, match='Spectral Touch.*modular'):
+E       AssertionError: Regex pattern 'Spectral Touch.*modular' does not match 'Local modifier variants currently require the modular engine; optimized ports are pending'.
+
+tests\python\combat\modular\test_spectral_touch_activation.py:136: AssertionError
+__ test_public_optimized_paths_refuse_unported_canonical_effect[numpy-False] __
+[gw7] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
+
+host = CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristics(weapon_skill=2,..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
+plain = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
+second = False, backend = 'numpy'
+
+    @pytest.mark.phase2_construction
+    @pytest.mark.parametrize('second', [False, True])
+    @pytest.mark.parametrize('backend', ['auto', 'numpy', 'native'])
+    def test_public_optimized_paths_refuse_unported_canonical_effect(host, plain, second, backend):
+        pair = (plain, host) if second else (host, plain)
+        with pytest.raises(ValueError, match='Spectral Touch.*modular'):
+>           simulate_duel(DuelRequest(*pair, simulations=1), backend=backend)
+
+tests\python\combat\modular\test_spectral_touch_activation.py:137: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+request = DuelRequest(first=CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristi...cks=False, extra_attacks_without_poison=()), simulations=1, seed=0, batch_size=100000, maximum_rounds=50, context=None)
+
+    def simulate_duel(request: DuelRequest, *, backend: str = "auto") -> DuelResult:
+        """Run a duel through the selected backend without changing `DuelRequest`."""
+        if backend not in {"auto", "numpy", "native"}:
+            raise ValueError(f"unknown combat backend: {backend}")
+        from mordheim_combat.kernel import require_optimized_support
+        selected = available_backends()[0] if backend == "auto" else backend
+>       require_optimized_support(request.first, request.second, backend=selected)
+
+packages\python\combat-engine\mordheim_combat\vectorized\_driver.py:1796: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+first = CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristics(weapon_skill=2,..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
+second = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
+
+    def require_optimized_support(
+        first: CompiledFighter, second: CompiledFighter, *,
+        backend: OptimizedBackend | None = None,
+    ) -> None:
+        """Refuse modular-only choices before an optimized engine can omit them.
+    
+        ``backend`` names the engine that will actually run, so the NumPy path and
+        the native path are admitted independently. Legacy calls without a backend
+        keep the conservative native gate; they never gain support because NumPy
+        advanced.
+        """
+        pending = _PENDING["native"] if backend is None else pending_capabilities(backend)
+        if any(set(effect.tags) & pending.residual_tags
+               or ("effect-values" in pending.behaviours and (
+                   effect.critical_threshold != 6 or effect.ethereal_hit_save != 4
+                   or effect.natural_armour_negated_by_fire))
+               for fighter in (first, second) for effect in _effects(fighter)):
+            raise ValueError("Residual modular effects require the modular engine; optimized ports are pending")
+        if any(set(effect.tags) & pending.local_modifier_tags
+               for fighter in (first, second) for effect in _effects(fighter)):
+>           raise ValueError("Local modifier variants currently require the modular engine; optimized ports are pending")
+E           ValueError: Local modifier variants currently require the modular engine; optimized ports are pending
+
+packages\python\combat-engine\mordheim_combat\kernel.py:266: ValueError
+
+During handling of the above exception, another exception occurred:
+
+host = CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristics(weapon_skill=2,..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
+plain = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
+second = False, backend = 'numpy'
+
+    @pytest.mark.phase2_construction
+    @pytest.mark.parametrize('second', [False, True])
+    @pytest.mark.parametrize('backend', ['auto', 'numpy', 'native'])
+    def test_public_optimized_paths_refuse_unported_canonical_effect(host, plain, second, backend):
+        pair = (plain, host) if second else (host, plain)
+>       with pytest.raises(ValueError, match='Spectral Touch.*modular'):
+E       AssertionError: Regex pattern 'Spectral Touch.*modular' does not match 'Local modifier variants currently require the modular engine; optimized ports are pending'.
+
+tests\python\combat\modular\test_spectral_touch_activation.py:136: AssertionError
+__ test_public_optimized_paths_refuse_unported_canonical_effect[numpy-True] ___
+[gw7] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
+
+host = CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristics(weapon_skill=2,..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
+plain = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
+second = True, backend = 'numpy'
+
+    @pytest.mark.phase2_construction
+    @pytest.mark.parametrize('second', [False, True])
+    @pytest.mark.parametrize('backend', ['auto', 'numpy', 'native'])
+    def test_public_optimized_paths_refuse_unported_canonical_effect(host, plain, second, backend):
+        pair = (plain, host) if second else (host, plain)
+        with pytest.raises(ValueError, match='Spectral Touch.*modular'):
+>           simulate_duel(DuelRequest(*pair, simulations=1), backend=backend)
+
+tests\python\combat\modular\test_spectral_touch_activation.py:137: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+request = DuelRequest(first=CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength...cks=False, extra_attacks_without_poison=()), simulations=1, seed=0, batch_size=100000, maximum_rounds=50, context=None)
+
+    def simulate_duel(request: DuelRequest, *, backend: str = "auto") -> DuelResult:
+        """Run a duel through the selected backend without changing `DuelRequest`."""
+        if backend not in {"auto", "numpy", "native"}:
+            raise ValueError(f"unknown combat backend: {backend}")
+        from mordheim_combat.kernel import require_optimized_support
+        selected = available_backends()[0] if backend == "auto" else backend
+>       require_optimized_support(request.first, request.second, backend=selected)
+
+packages\python\combat-engine\mordheim_combat\vectorized\_driver.py:1796: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+first = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
+second = CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristics(weapon_skill=2,..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
+
+    def require_optimized_support(
+        first: CompiledFighter, second: CompiledFighter, *,
+        backend: OptimizedBackend | None = None,
+    ) -> None:
+        """Refuse modular-only choices before an optimized engine can omit them.
+    
+        ``backend`` names the engine that will actually run, so the NumPy path and
+        the native path are admitted independently. Legacy calls without a backend
+        keep the conservative native gate; they never gain support because NumPy
+        advanced.
+        """
+        pending = _PENDING["native"] if backend is None else pending_capabilities(backend)
+        if any(set(effect.tags) & pending.residual_tags
+               or ("effect-values" in pending.behaviours and (
+                   effect.critical_threshold != 6 or effect.ethereal_hit_save != 4
+                   or effect.natural_armour_negated_by_fire))
+               for fighter in (first, second) for effect in _effects(fighter)):
+            raise ValueError("Residual modular effects require the modular engine; optimized ports are pending")
+        if any(set(effect.tags) & pending.local_modifier_tags
+               for fighter in (first, second) for effect in _effects(fighter)):
+>           raise ValueError("Local modifier variants currently require the modular engine; optimized ports are pending")
+E           ValueError: Local modifier variants currently require the modular engine; optimized ports are pending
+
+packages\python\combat-engine\mordheim_combat\kernel.py:266: ValueError
+
+During handling of the above exception, another exception occurred:
+
+host = CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristics(weapon_skill=2,..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
+plain = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
+second = True, backend = 'numpy'
+
+    @pytest.mark.phase2_construction
+    @pytest.mark.parametrize('second', [False, True])
+    @pytest.mark.parametrize('backend', ['auto', 'numpy', 'native'])
+    def test_public_optimized_paths_refuse_unported_canonical_effect(host, plain, second, backend):
+        pair = (plain, host) if second else (host, plain)
+>       with pytest.raises(ValueError, match='Spectral Touch.*modular'):
+E       AssertionError: Regex pattern 'Spectral Touch.*modular' does not match 'Local modifier variants currently require the modular engine; optimized ports are pending'.
+
+tests\python\combat\modular\test_spectral_touch_activation.py:136: AssertionError
+_ test_public_optimized_paths_refuse_unported_canonical_effect[native-False] __
+[gw7] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
+
+host = CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristics(weapon_skill=2,..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
+plain = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
+second = False, backend = 'native'
+
+    @pytest.mark.phase2_construction
+    @pytest.mark.parametrize('second', [False, True])
+    @pytest.mark.parametrize('backend', ['auto', 'numpy', 'native'])
+    def test_public_optimized_paths_refuse_unported_canonical_effect(host, plain, second, backend):
+        pair = (plain, host) if second else (host, plain)
+        with pytest.raises(ValueError, match='Spectral Touch.*modular'):
+>           simulate_duel(DuelRequest(*pair, simulations=1), backend=backend)
+
+tests\python\combat\modular\test_spectral_touch_activation.py:137: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+request = DuelRequest(first=CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristi...cks=False, extra_attacks_without_poison=()), simulations=1, seed=0, batch_size=100000, maximum_rounds=50, context=None)
+
+    def simulate_duel(request: DuelRequest, *, backend: str = "auto") -> DuelResult:
+        """Run a duel through the selected backend without changing `DuelRequest`."""
+        if backend not in {"auto", "numpy", "native"}:
+            raise ValueError(f"unknown combat backend: {backend}")
+        from mordheim_combat.kernel import require_optimized_support
+        selected = available_backends()[0] if backend == "auto" else backend
+>       require_optimized_support(request.first, request.second, backend=selected)
+
+packages\python\combat-engine\mordheim_combat\vectorized\_driver.py:1796: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+first = CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristics(weapon_skill=2,..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
+second = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
+
+    def require_optimized_support(
+        first: CompiledFighter, second: CompiledFighter, *,
+        backend: OptimizedBackend | None = None,
+    ) -> None:
+        """Refuse modular-only choices before an optimized engine can omit them.
+    
+        ``backend`` names the engine that will actually run, so the NumPy path and
+        the native path are admitted independently. Legacy calls without a backend
+        keep the conservative native gate; they never gain support because NumPy
+        advanced.
+        """
+        pending = _PENDING["native"] if backend is None else pending_capabilities(backend)
+        if any(set(effect.tags) & pending.residual_tags
+               or ("effect-values" in pending.behaviours and (
+                   effect.critical_threshold != 6 or effect.ethereal_hit_save != 4
+                   or effect.natural_armour_negated_by_fire))
+               for fighter in (first, second) for effect in _effects(fighter)):
+            raise ValueError("Residual modular effects require the modular engine; optimized ports are pending")
+        if any(set(effect.tags) & pending.local_modifier_tags
+               for fighter in (first, second) for effect in _effects(fighter)):
+>           raise ValueError("Local modifier variants currently require the modular engine; optimized ports are pending")
+E           ValueError: Local modifier variants currently require the modular engine; optimized ports are pending
+
+packages\python\combat-engine\mordheim_combat\kernel.py:266: ValueError
+
+During handling of the above exception, another exception occurred:
+
+host = CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristics(weapon_skill=2,..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
+plain = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
+second = False, backend = 'native'
+
+    @pytest.mark.phase2_construction
+    @pytest.mark.parametrize('second', [False, True])
+    @pytest.mark.parametrize('backend', ['auto', 'numpy', 'native'])
+    def test_public_optimized_paths_refuse_unported_canonical_effect(host, plain, second, backend):
+        pair = (plain, host) if second else (host, plain)
+>       with pytest.raises(ValueError, match='Spectral Touch.*modular'):
+E       AssertionError: Regex pattern 'Spectral Touch.*modular' does not match 'Local modifier variants currently require the modular engine; optimized ports are pending'.
+
+tests\python\combat\modular\test_spectral_touch_activation.py:136: AssertionError
 __ test_public_optimized_paths_refuse_unported_canonical_effect[native-True] __
-[gw6] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
+[gw7] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
 
 host = CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristics(weapon_skill=2,..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
 plain = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
@@ -839,7 +839,7 @@ request = DuelRequest(first=CompiledFighter(fighter_id='custom:custom', characte
         selected = available_backends()[0] if backend == "auto" else backend
 >       require_optimized_support(request.first, request.second, backend=selected)
 
-packages\python\combat-engine\mordheim_combat\vectorized\_driver.py:1747: 
+packages\python\combat-engine\mordheim_combat\vectorized\_driver.py:1796: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
 first = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
@@ -886,7 +886,7 @@ E       AssertionError: Regex pattern 'Spectral Touch.*modular' does not match '
 
 tests\python\combat\modular\test_spectral_touch_activation.py:136: AssertionError
 ________ test_low_level_optimized_paths_refuse_before_execution[False] ________
-[gw6] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
+[gw7] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
 
 host = CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristics(weapon_skill=2,..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
 plain = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
@@ -974,7 +974,7 @@ E           AssertionError: Regex pattern 'Spectral Touch.*modular' does not mat
 
 tests\python\combat\modular\test_spectral_touch_activation.py:148: AssertionError
 ________ test_low_level_optimized_paths_refuse_before_execution[True] _________
-[gw6] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
+[gw7] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
 
 host = CompiledFighter(fighter_id='call-of-the-night-haint-mim:spirit-hosts', characteristics=Characteristics(weapon_skill=2,..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
 plain = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w..._fire=False), mutation_options=(), mutation_equipment=(), natural_armour_stacks=False, extra_attacks_without_poison=())
@@ -1062,7 +1062,7 @@ E           AssertionError: Regex pattern 'Spectral Touch.*modular' does not mat
 
 tests\python\combat\modular\test_spectral_touch_activation.py:148: AssertionError
 ______ test_unported_option_is_refused_before_optimized_execution[auto] _______
-[gw2] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
+[gw4] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
 
 backend = 'auto'
 
@@ -1085,7 +1085,7 @@ request = DuelRequest(first=CompiledFighter(fighter_id='underworld-alliance-mim:
         selected = available_backends()[0] if backend == "auto" else backend
 >       require_optimized_support(request.first, request.second, backend=selected)
 
-packages\python\combat-engine\mordheim_combat\vectorized\_driver.py:1747: 
+packages\python\combat-engine\mordheim_combat\vectorized\_driver.py:1796: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
 first = CompiledFighter(fighter_id='underworld-alliance-mim:warpstone-troll', characteristics=Characteristics(weapon_skill=3, ...t='main', stat_bonuses=(), effect_without_poison=None),), natural_armour_stacks=False, extra_attacks_without_poison=())
@@ -1128,7 +1128,7 @@ E       AssertionError: Regex pattern 'optional Vomit Attack.*modular' does not 
 
 tests\python\combat\modular\test_vomit_attack.py:161: AssertionError
 ______ test_unported_option_is_refused_before_optimized_execution[numpy] ______
-[gw2] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
+[gw4] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
 
 backend = 'numpy'
 
@@ -1153,7 +1153,7 @@ request = DuelRequest(first=CompiledFighter(fighter_id='underworld-alliance-mim:
         if selected == "numpy":
 >           return _simulate_duel_numpy(request)
 
-packages\python\combat-engine\mordheim_combat\vectorized\_driver.py:1749: 
+packages\python\combat-engine\mordheim_combat\vectorized\_driver.py:1798: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
 request = DuelRequest(first=CompiledFighter(fighter_id='underworld-alliance-mim:warpstone-troll', characteristics=Characteristic...cks=False, extra_attacks_without_poison=()), simulations=1, seed=0, batch_size=100000, maximum_rounds=50, context=None)
@@ -1169,13 +1169,13 @@ request = DuelRequest(first=CompiledFighter(fighter_id='underworld-alliance-mim:
                 request.maximum_rounds, request.decision_policy, request.context,
             )
 
-packages\python\combat-engine\mordheim_combat\vectorized\_driver.py:1651: 
+packages\python\combat-engine\mordheim_combat\vectorized\_driver.py:1700: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
 first = CompiledFighter(fighter_id='underworld-alliance-mim:warpstone-troll', characteristics=Characteristics(weapon_skill=3, ...t='main', stat_bonuses=(), effect_without_poison=None),), natural_armour_stacks=False, extra_attacks_without_poison=())
 second = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w...='armour', stat_bonuses=(), effect_without_poison=None)), natural_armour_stacks=False, extra_attacks_without_poison=())
 count = 1, seed = 0, batch_index = 0, maximum_rounds = 50
-decisions = <mordheim_core.dice.AlwaysAccept object at 0x000001F9484D2F20>
+decisions = <mordheim_core.dice.AlwaysAccept object at 0x000002396E553FA0>
 context = None
 
     def _run_one_batch(first: CompiledFighter, second: CompiledFighter, count: int,
@@ -1187,13 +1187,13 @@ context = None
             seed if batch_index == 0 else _batch_seed(seed, batch_index))
 >       return simulate_batch(first, second, count, rng, maximum_rounds, decisions, context=context)
 
-packages\python\combat-engine\mordheim_combat\vectorized\_driver.py:1642: 
+packages\python\combat-engine\mordheim_combat\vectorized\_driver.py:1691: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
 first = CompiledFighter(fighter_id='underworld-alliance-mim:warpstone-troll', characteristics=Characteristics(weapon_skill=3, ...t='main', stat_bonuses=(), effect_without_poison=None),), natural_armour_stacks=False, extra_attacks_without_poison=())
 second = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w...='armour', stat_bonuses=(), effect_without_poison=None)), natural_armour_stacks=False, extra_attacks_without_poison=())
-count = 1, rng = Generator(PCG64) at 0x1F94814E5E0, maximum_rounds = 50
-decisions = <mordheim_core.dice.AlwaysAccept object at 0x000001F9484D2F20>
+count = 1, rng = Generator(PCG64) at 0x239C8C39700, maximum_rounds = 50
+decisions = <mordheim_core.dice.AlwaysAccept object at 0x000002396E553FA0>
 
     def simulate_batch(first: CompiledFighter, second: CompiledFighter, count: int,
                        rng: np.random.Generator, maximum_rounds: int,
@@ -1201,13 +1201,13 @@ decisions = <mordheim_core.dice.AlwaysAccept object at 0x000001F9484D2F20>
                        context: DuelContext | None = None) -> tuple[int, int, int]:
 >       result = _simulate_batch_core(first, second, count, rng, maximum_rounds, decisions, context=context)
 
-packages\python\combat-engine\mordheim_combat\vectorized\_driver.py:1584: 
+packages\python\combat-engine\mordheim_combat\vectorized\_driver.py:1633: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
 first = CompiledFighter(fighter_id='underworld-alliance-mim:warpstone-troll', characteristics=Characteristics(weapon_skill=3, ...t='main', stat_bonuses=(), effect_without_poison=None),), natural_armour_stacks=False, extra_attacks_without_poison=())
 second = CompiledFighter(fighter_id='custom:custom', characteristics=Characteristics(weapon_skill=3, strength=3, toughness=3, w...='armour', stat_bonuses=(), effect_without_poison=None)), natural_armour_stacks=False, extra_attacks_without_poison=())
-count = 1, rng = Generator(PCG64) at 0x1F94814E5E0, maximum_rounds = 50
-decisions = <mordheim_core.dice.AlwaysAccept object at 0x000001F9484D2F20>
+count = 1, rng = Generator(PCG64) at 0x239C8C39700, maximum_rounds = 50
+decisions = <mordheim_core.dice.AlwaysAccept object at 0x000002396E553FA0>
 
     def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count: int,
                              rng: np.random.Generator, maximum_rounds: int,
@@ -1484,7 +1484,7 @@ decisions = <mordheim_core.dice.AlwaysAccept object at 0x000001F9484D2F20>
                     key_prefix=f"round.{round_index}",
                 )
 
-packages\python\combat-engine\mordheim_combat\vectorized\_driver.py:985: 
+packages\python\combat-engine\mordheim_combat\vectorized\_driver.py:1028: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
 first = CompiledFighter(fighter_id='underworld-alliance-mim:warpstone-troll', characteristics=Characteristics(weapon_skill=3, ...t='main', stat_bonuses=(), effect_without_poison=None),), natural_armour_stacks=False, extra_attacks_without_poison=())
@@ -1917,7 +1917,7 @@ E       AssertionError: Regex pattern 'optional Vomit Attack.*modular' does not 
 
 tests\python\combat\modular\test_vomit_attack.py:161: AssertionError
 _____ test_unported_option_is_refused_before_optimized_execution[native] ______
-[gw2] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
+[gw4] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
 
 backend = 'native'
 
@@ -1940,7 +1940,7 @@ request = DuelRequest(first=CompiledFighter(fighter_id='underworld-alliance-mim:
         selected = available_backends()[0] if backend == "auto" else backend
 >       require_optimized_support(request.first, request.second, backend=selected)
 
-packages\python\combat-engine\mordheim_combat\vectorized\_driver.py:1747: 
+packages\python\combat-engine\mordheim_combat\vectorized\_driver.py:1796: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
 first = CompiledFighter(fighter_id='underworld-alliance-mim:warpstone-troll', characteristics=Characteristics(weapon_skill=3, ...t='main', stat_bonuses=(), effect_without_poison=None),), natural_armour_stacks=False, extra_attacks_without_poison=())
@@ -1983,7 +1983,7 @@ E       AssertionError: Regex pattern 'optional Vomit Attack.*modular' does not 
 
 tests\python\combat\modular\test_vomit_attack.py:161: AssertionError
 ______ test_low_level_optimized_entries_do_not_silently_drop_the_option _______
-[gw2] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
+[gw4] win32 -- Python 3.10.6 C:\Users\Pholtergate\AppData\Local\Programs\Python\Python310\python.exe
 
     @pytest.mark.phase2_construction
     def test_low_level_optimized_entries_do_not_silently_drop_the_option():
@@ -2061,18 +2061,18 @@ tests\python\combat\modular\test_vomit_attack.py:171: AssertionError
 ================ Sequence results (skips are not verification) ================
 phase2_construction: 2712 passed, 19 failed
 =========================== short test summary info ===========================
-FAILED tests/python/combat/modular/test_spectral_touch_activation.py::test_public_optimized_paths_refuse_unported_canonical_effect[auto-False]
-FAILED tests/python/combat/modular/test_spectral_touch_activation.py::test_public_optimized_paths_refuse_unported_canonical_effect[auto-True]
-FAILED tests/python/combat/modular/test_spectral_touch_activation.py::test_public_optimized_paths_refuse_unported_canonical_effect[numpy-False]
-FAILED tests/python/combat/modular/test_spectral_touch_activation.py::test_public_optimized_paths_refuse_unported_canonical_effect[numpy-True]
-FAILED tests/python/combat/modular/test_spectral_touch_activation.py::test_public_optimized_paths_refuse_unported_canonical_effect[native-False]
 FAILED tests/python/combat/modular/test_shifty_activation.py::test_optimized_entries_explicitly_refuse_the_unported_canonical_skill[auto-False]
 FAILED tests/python/combat/modular/test_shifty_activation.py::test_optimized_entries_explicitly_refuse_the_unported_canonical_skill[auto-True]
 FAILED tests/python/combat/modular/test_shifty_activation.py::test_optimized_entries_explicitly_refuse_the_unported_canonical_skill[numpy-False]
 FAILED tests/python/combat/modular/test_shifty_activation.py::test_optimized_entries_explicitly_refuse_the_unported_canonical_skill[numpy-True]
 FAILED tests/python/combat/modular/test_shifty_activation.py::test_optimized_entries_explicitly_refuse_the_unported_canonical_skill[native-False]
 FAILED tests/python/combat/modular/test_shifty_activation.py::test_optimized_entries_explicitly_refuse_the_unported_canonical_skill[native-True]
+FAILED tests/python/combat/modular/test_spectral_touch_activation.py::test_public_optimized_paths_refuse_unported_canonical_effect[auto-False]
 FAILED tests/python/combat/modular/test_shifty_activation.py::test_low_level_optimized_entries_refuse_without_losing_other_guards
+FAILED tests/python/combat/modular/test_spectral_touch_activation.py::test_public_optimized_paths_refuse_unported_canonical_effect[auto-True]
+FAILED tests/python/combat/modular/test_spectral_touch_activation.py::test_public_optimized_paths_refuse_unported_canonical_effect[numpy-False]
+FAILED tests/python/combat/modular/test_spectral_touch_activation.py::test_public_optimized_paths_refuse_unported_canonical_effect[numpy-True]
+FAILED tests/python/combat/modular/test_spectral_touch_activation.py::test_public_optimized_paths_refuse_unported_canonical_effect[native-False]
 FAILED tests/python/combat/modular/test_spectral_touch_activation.py::test_public_optimized_paths_refuse_unported_canonical_effect[native-True]
 FAILED tests/python/combat/modular/test_spectral_touch_activation.py::test_low_level_optimized_paths_refuse_before_execution[False]
 FAILED tests/python/combat/modular/test_spectral_touch_activation.py::test_low_level_optimized_paths_refuse_before_execution[True]
@@ -2080,7 +2080,7 @@ FAILED tests/python/combat/modular/test_vomit_attack.py::test_unported_option_is
 FAILED tests/python/combat/modular/test_vomit_attack.py::test_unported_option_is_refused_before_optimized_execution[numpy]
 FAILED tests/python/combat/modular/test_vomit_attack.py::test_unported_option_is_refused_before_optimized_execution[native]
 FAILED tests/python/combat/modular/test_vomit_attack.py::test_low_level_optimized_entries_do_not_silently_drop_the_option
-19 failed, 2712 passed in 83.04s (0:01:23)
+19 failed, 2712 passed in 93.21s (0:01:33)
 
 Phase results (process completion is the barrier):
   phase2_construction: failed

@@ -192,46 +192,127 @@ classification. See
 limitation is either accepted permanently or removed, and a functional run on an
 integrated revision confirms the phase order.
 
-## Subsequent vectorized and native engine work
+## Statistical parity adaptation and backend verification
 
-Parity battery renovation, reviewed 2026-10-21: P00 revision 4 is accepted as
-the preparation base with coordinator addenda A8–A10; P01/P02 remain partial.
-Preserve required variants despite missing engine inputs, apply the typed-witness
-rules and use non-circular focused control pairs. Restore the actual rules and
-preparation in catalog cases, replace the invalid category-presence mask criterion,
-and implement the agreed witnesses. Supply the missing P01/P02 deliveries and connect P03
-without requiring candidate execution or results: the vectorized engine is still
-being implemented. Record missing engine capabilities as external dependencies;
-they do not prevent accepting prepared tests. P04 measures the modular side now;
-candidate calibration and P05 acceptance follow G00–G06. The recorded NumPy
-disability replay failure is deferred to candidate acceptance, not a preparation gate.
-Evidence and ownership: [coordinator review](TMP_VECTORIAL_ENGINE_2A2B/parity_update/COORDINATOR-progress-review.md).
+Parity battery renovation, scope revised 2026-10-22: adapt the existing scenario
+catalogue and profiles to statistical comparison of real modular/candidate duel
+results, preserving historical tolerances and the legacy command path. Remove
+internal-event witnesses as prerequisites; do not add engine instrumentation.
+Keep genuine unsupported-input cases explicit and inside the coverage denominator.
+The statistical path is connected (P03: catalogue → real duels → outcome
+comparison → CLI/report); focused execution evidence remains pending and P04/P05
+are later execution campaigns.
 
-**Dependency:** scope these phases after modular verification. They do not
-block modular closure. Both engines already exist; extend their current paths
-rather than introducing replacements.
+Known limits to keep visible: `c03-petru-potion` (B01.3) stays `INCOMPATIBLE`
+inside the denominator because its origin is Petru's pre-battle potion table,
+which the KB declares out of scope (`implemented: NO`, pre-battle campaign
+allocation with persistence). `v01-restriction` (B01.5) keeps its limit because the
+only expression of the clause is a charge `build_duel_state` rejects before
+sampling. `v14-handler`/`v14-handler-absent` (B14.5) are **not** a limit: the
+bear-only reading was wrong. `leadership.py:170-203` carries a second canonical
+branch for Squigs (recipient identity `night-goblins-web:cave-squigs`, provider
+`squig-herder` with `mechanic.handler-leadership` within 6", 12" with a squig
+prodder, mirrored in `vectorized/_leadership.py:346-366`), so both cases are
+prepared with Cave Squigs + Squig Herder and a supplied Stupidity state that
+makes the Leadership test observable. They must be executed before their parity
+is claimed.
+`q00-honorable`, the knocked-down recovery cases and the other former `state:`
+blocks are now prepared inside the duel with the current APIs. See the
+[current plan](TMP_VECTORIAL_ENGINE_2A2B/parity_update/PARITY_BATTERY_RENOVATION.md)
+and [adaptation status](TMP_VECTORIAL_ENGINE_2A2B/parity_update/P03-deliverable.md).
 
-1. **Define the porting delta:** compare the verified modular contracts with
-   each backend's actual support. Identify missing state, operators and
-   orchestration by usable rule family; retain explicit rejection of unsupported
-   combinations. Do not reinterpret source rules already settled for the oracle.
-2. **Complete the NumPy implementation:** port missing admitted consequences,
-   including decisions, per-fighter resources, timing and composition. Preserve
-   the canonical construction/context boundary and batch isolation; prove each
-   family against existing deterministic modular cases as it becomes usable.
-3. **Complete the native implementation:** port the same contracts into the
+The modular remains the validated oracle. NumPy is received as implemented;
+this backlog does not restart its port or establish that G07 passed. Keep the
+motor's historical acceptance separate from the renewed statistical campaign.
+
+1. **Record applicable NumPy evidence:** identify the integrated revision, the
+   historical battery actually run, results and remaining concrete defects.
+   Reuse valid G07 evidence; do not require the renewed profiles or internal
+   instrumentation to close that separate scope. Implementation alone does not
+   establish statistical acceptance.
+2. **Complete the native implementation where support is missing:** port the same contracts into the
    existing Cython backend and compile/folding layer. Rebuild the extension and
    test the native path explicitly; a NumPy fallback is not native evidence.
    Independent backend families may be developed in parallel with disjoint owners.
-4. **Verify and qualify the optimized backends:** use the existing deterministic
+3. **Verify and qualify the optimized backends:** use the existing deterministic
    rule and whole-duel comparisons first, then targeted interactions and the
    applicable parity/certification gates in
    [Verification](docs/reference/verification.md). Benchmark only correct, supported
    paths. Report backend-specific limits and evidence before enabling broader use.
 
-**Close when:** each backend's admitted porting delta is implemented and its
-applicable checks pass, with remaining limits and evidence stated per backend.
-These phases do not expand into the deferred domains below.
+Demonstrated engine defects found while adapting the battery (2026-10-22, static
+reading only; none was fixed here and none was inferred from a statistical
+result alone):
+
+- **Freed-from-net recovery differs (vectorized).** The modular contract frees the
+  victim and stands it in the same recovery: `modular/rounds.py:552-565` sets
+  `KNOCKED_DOWN` and records `freed_from_net`, and
+  `modular/aftermath.py:125-134` stands any `KNOCKED_DOWN` in that own-turn
+  recovery. `vectorized/_driver.py:863-876` excludes those rows from `stood2`
+  (`~netted2`), so the candidate leaves the freed fighter knocked down. Observed
+  in `v09-netted`: `condition[second]` standing 45.6 % modular vs 0 % candidate,
+  `winner[first]` 52.1 % vs 75.1 %. Close when one netted row shows the same
+  recovery stance in both engines.
+- **Helpless damage over-subtracts wounds (vectorized).** For a helpless
+  close-combat hit the modular returns `OUT` with `damage=1` and leaves `wounds`
+  untouched (`modular/attacks.py:741-747`); the vectorized marks `OUT` and still
+  subtracts the full damage (`vectorized/_attacks.py:757-764`, `:776-786`), so it
+  publishes negative wounds where the modular keeps the pre-hit value. This is
+  the located asymmetry behind the systematic excess at `wounds[-1]` with
+  matching `condition`/`winner` (q04/c04/v02/v03/v06/v08/v12 families). The
+  battery does **not** normalise it; close when the helpless rows stop being
+  subtracted in the candidate.
+- **Black Hunger backlash resolves against stale rows (vectorized).**
+  `_driver.py:711-722` computes `active` once, before the three hit groups, never
+  re-filters after a hit takes the bearer out, and rescues Force of Will inside
+  the backlash. The modular resolves one hit at a time on the updated state and
+  breaks as soon as the bearer is inactive (`modular/aftermath.py:243-258`), with
+  no rescue there. The candidate therefore lands hits 2..n on a bearer the
+  oracle stops hitting: `q11-black-hunger` reports `condition[first]` standing
+  52.9 % → 23.1 % and out of action 36.1 % → 52.0 %, the same direction and order
+  as the observed `winner[second]` 35.7 % → 51.1 %. Close when a fixed backlash
+  count stops resolving hits on a row already out of action.
+- **A cancelled charge does not cancel engagement (vectorized).** After a failed
+  round-0 Stupidity test the modular clears the charge and recomputes
+  `engaged = engaged and any(charges)` (`modular/psychology.py:126-131`), so
+  `modular/rounds.py:674-677` exchanges no blows. The vectorized computes
+  `engaged` once before Psychology (`_driver.py:799-801`), rebinds only
+  `first_charges`/`second_charges` from the Stupidity outcome (`:986-1021`) and
+  recomputes `engaged` only for Fear (`:1040-1041`), so the duel keeps making
+  contact without the charge bonus. Observed in the `v14-*` winner cases, e.g.
+  `v14-slave-absent` 98.9 % unresolved modular vs 38.7 % second wins candidate.
+  Close when a forced Stupidity failure leaves the round without contact.
+- **Bear-hug rows reach wound resolution unsorted (vectorized).** `hug_rows`
+  accumulates across prepared attacks (`vectorized/_attacks.py:1147-1161`), so
+  attack 1's rows follow attack 0's and `won_rows` is not monotonic;
+  `_prepare_weapon_attack` keeps that order (`:1168-1172`, the filter at `:202`
+  is order-preserving) and `_resolve_weapon` re-derives positions with
+  `np.searchsorted(active, hit_rows)` (`:465`), which requires sorted input and
+  returns `len(active)` otherwise. `c05-bear-hug` raises `IndexError: index 4891
+  is out of bounds for axis 0 with size 4891` — the index equals the array size.
+  No battery input is implicated. Close when the case resolves and the sorted
+  rows produce identical positions.
+- **Black Lotus decision key does not carry the round key (vectorized).** The
+  main pool calls `_resolve_weapon` without `key`, so it stays at the default
+  `test` (`vectorized/_attacks.py:392,433`) and asks `test.lotus-critical`,
+  while the modular composes `round.{r}.{side}.attack.{i}.lotus-critical` from
+  its own key (`modular/attacks.py:556`). `v03-poison` only reaches comparison by
+  declaring the extra `test.lotus-critical` entry, which keeps the same refusal
+  instead of changing the rule. Close when the candidate asks under the round
+  and attack key the catalogue declares.
+- **Admission refusals are engine-side, not battery-side.** The received run's
+  25 `INCOMPATIBLE:construction` rows (now reported as
+  `INCOMPATIBLE:admission`) come from `require_optimized_support(...,
+  backend="numpy")` on the real NumPy batch entry point
+  (`vectorized/_driver.py:761-767` → `kernel.py:257-266`), whose gate is the
+  snapshot at `kernel.py:122-182` minus `NUMPY_CONNECTED_TAGS` (`:216-220`). They
+  clear only when a port group connects the behaviour.
+
+**Close when:** the statistical adaptation is connected, its later campaign has
+applicable evidence, and remaining backend-specific work has its own results and
+limits. Do not infer native support from NumPy or reopen completed motor work
+because the renewed battery is still pending. None of this expands into the
+deferred domains below.
 
 ## Knowledge gaps
 

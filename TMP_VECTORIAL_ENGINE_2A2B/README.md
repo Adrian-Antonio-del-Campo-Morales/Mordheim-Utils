@@ -1,21 +1,20 @@
 # Encargos del motor vectorial — índice y orden de ejecución
 
-Estos ficheros se entregan individualmente a agentes externos. Preparan el trabajo futuro; no se ha iniciado el portado ni se ha modificado el CSV al crearlos.
+Estos ficheros conservan los encargos y la propiedad del plan del motor. Son instrucciones y referencias de diseño, no un estado actual ni evidencia de ejecución. El motor se recibe como implementado; los resultados de cada fase deben consultarse en sus entregas y en el registro vigente, sin relanzar el portado por leer estos documentos.
 
 ## Premisas
 
 El modular se considera completado y validado. Se porta su implementación existente a NumPy y se conservan sus contratos. La fase 1 desarrolla solo las pruebas mínimas imprescindibles; fase 2 comprueba paridad reutilizando las baterías actuales; fase 3 optimiza la versión correcta. El plan general sigue en [PLAN_IMPLEMENTACION.md](PLAN_IMPLEMENTACION.md).
 
-En paralelo al portado está autorizada la
-[preparación de la batería renovada](parity_update/PARITY_BATTERY_RENOVATION.md),
-con [prompts P00–P05](parity_update/PROMPTS_AGENTES.md). **El trabajo actual solo
-prepara tests: el vectorial todavía está en implementación.** P00–P03 se aceptan
-por diseño, autoría y conexión de la batería, sin ejecutar candidatos ni exigir
-que pasen. P04 prepara referencias y mide el modular; su calibración candidata
-se difiere. Las capacidades pendientes del motor se especifican y asignan,
-sin bloquear tests preparados ni P03. Tras G00–G06, P04 completa medidas y P05
-ejecuta la aceptación G07 una sola vez. Esta preparación no amplía las pruebas
-modulares ni modifica los encargos de implementación G00–G06.
+La [renovación de paridad](parity_update/PARITY_BATTERY_RENOVATION.md) tiene un
+[encargo vigente propio](parity_update/PROMPTS_AGENTES.md): reutilizar el catálogo
+ampliado y comparar estadísticamente resultados de duelos reales. No exige
+sondas de eventos internos ni nuevas interfaces del motor. La adaptación está
+pendiente, según [P03](parity_update/P03-deliverable.md), y su encargo inmediato
+es estático. P04/P05 serán campañas posteriores con autorización de ejecución.
+**G07 usa la batería histórica aplicable y no depende del rework ni equivale a
+P05.** Su evidencia queda limitada a la versión y batería realmente ejecutadas;
+la campaña renovada no reabre ese cierre ni hereda su cobertura automáticamente.
 
 El registro canónico de progreso es `sources/knowledge/verification/clause-contracts.csv`. Los anexos solo asignan sus claves a responsables. No son otra clasificación semántica ni otro registro de estados.
 

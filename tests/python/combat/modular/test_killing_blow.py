@@ -49,7 +49,11 @@ def test_canonical_six_wounds_once_without_a_wound_or_critical_die(profile):
     result = attack(a, opponent(), [('a.hit', 6)])
     assert result.damage == 1 and result.defender.wounds == 3
     assert not result.critical and result.attacker.critical_available
-    with pytest.raises(ValueError, match='Killing Blow'):
+    # Wights and Grave Guards also carry pending native local modifiers
+    # (causes-fear/psychology-immunity) that the gate names before Killing
+    # Blow. The invariant under test is that the entry refuses before it can
+    # silently drop the behaviour, not which pending capability is named.
+    with pytest.raises(ValueError, match='modular engine'):
         require_optimized_support(a, opponent())
 
 

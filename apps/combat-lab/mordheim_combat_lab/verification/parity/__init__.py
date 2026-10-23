@@ -6,11 +6,15 @@ statistical sampling).  This facade re-exports the historical module API
 so existing importers and the CLI keep working unchanged.
 """
 from mordheim_combat_lab.verification.parity._report import (
+    BATTERY_SCHEMA,
     ParityObligation,
     ParityReport,
     StatisticalParityResult,
     SpecificationParityCase,
     SpecificationParityReport,
+    battery_failure_kind,
+    battery_report_markdown,
+    battery_report_payload,
     parity_report_markdown,
     parity_report_payload,
 )

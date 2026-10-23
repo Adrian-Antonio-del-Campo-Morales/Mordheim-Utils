@@ -1,14 +1,15 @@
 # G07 — Fase 2: paridad contra el modular aceptado
 
-**Encargo futuro de aceptación.** La preparación actual de tests se realiza
-en paralelo al portado mediante
-[P00–P04](parity_update/PROMPTS_AGENTES.md), sin ejecutar candidatos ni exigir
-resultados del vectorial todavía en implementación. Las dependencias externas
-no bloquean una entrega de preparación correcta ni la conexión de P03. Cuando
-G00–G06 estén integrados y P04 complete la calibración candidata, P05 ejecutará
-esta aceptación y se enlazará desde `G07-deliverable.md`; G07 no repetirá otra
-campaña. Los límites históricos siguientes sobre autoría en G07 no restringen
-la ampliación preparatoria autorizada en `parity_update/`.
+**Alcance de aceptación del plan del motor.** G07 compara NumPy contra el modular
+con la batería histórica aplicable y registra la versión y los límites reales de
+su evidencia. El motor se recibe como implementado; este documento no acredita
+por sí solo que G07 se haya ejecutado o aprobado ni ordena repetirlo.
+
+La [renovación estadística](parity_update/PARITY_BATTERY_RENOVATION.md) es otro
+trabajo: reutiliza escenarios ampliados sin exigir instrumentación interna.
+Su adaptación P03 está pendiente y P04/P05 serán campañas posteriores. **G07 no
+depende de P03/P04, no equivale a P05 y no reabre su cierre para esperar al rework.**
+No certificar los nuevos perfiles con evidencia de la batería histórica.
 
 ## Prompt para lanzar el agente
 
@@ -26,8 +27,9 @@ INFORMACIÓN QUE DEBES LEER
    D:\DEVEL\Mordheim\Mordheim-Utils REPO-REWORK\TMP_VECTORIAL_ENGINE_2A2B\README.md
 3. El plan acordado de tres fases:
    D:\DEVEL\Mordheim\Mordheim-Utils REPO-REWORK\TMP_VECTORIAL_ENGINE_2A2B\PLAN_IMPLEMENTACION.md
-4. parity_update/PARITY_BATTERY_RENOVATION.md, parity_update/PROMPTS_AGENTES.md
-   y las entregas P00–P04, resueltas bajo TMP_VECTORIAL_ENGINE_2A2B.
+4. docs/reference/verification.md y las entregas integradas G00–G06.
+   El plan parity_update/PARITY_BATTERY_RENOVATION.md solo delimita el rework
+   independiente: sus perfiles pendientes no son una dependencia de G07.
 5. AGENTS.md y las instrucciones adicionales aplicables de la copia de trabajo.
 
 Trabaja en la copia aislada asignada por el coordinador. Las rutas anteriores identifican el
@@ -35,20 +37,20 @@ repositorio original; si tu copia está en otra ubicación, resuelve los mismos 
 a su raíz. Conserva la base completa entregada, incluidos cambios todavía sin commit.
 
 CONDICIÓN DE INICIO
-Solo tras la integración de fase 1 (G00–G06), la preparación P00–P03 y la
-calibración candidata P04. Una versión fija; sin implementadores escribiendo en paralelo.
+Tras la integración de fase 1 (G00–G06), con una versión fija y la batería
+histórica identificada; sin implementadores escribiendo en paralelo.
 Comprueba la entrega de esas dependencias. Si falta alguna, comunica la dependencia concreta;
 puedes avanzar con lectura o trabajo independiente, pero no inventes interfaces ni declares
 completada una conexión que todavía no existe.
 
 OBJETIVO CONCRETO
-Ejecutar P05 como fase 2/G07 sobre la implementación integrada de G00–G06 y la
-batería preparada por P00–P04. El modular validado es el oráculo; selecciona
-NumPy explícitamente. Usa los perfiles y comandos finales P03/P04, conservando
-la evidencia histórica aplicable. No reconstruyas catálogo ni selección de
-backend ya preparados. Investiga divergencias y devuelve correcciones a sus
-propietarios; no inicies otra auditoría modular ni optimices. Enlaza P05 desde
-G07-deliverable.md; una sola campaña de aceptación.
+Ejecutar la aceptación G07 con la batería histórica aplicable sobre la versión
+integrada de G00–G06. El modular validado es el oráculo; selecciona NumPy
+explícitamente y reutiliza evidencia vigente sin repetir campañas innecesarias.
+No reconstruyas catálogo ni selección de backend existentes. Investiga
+divergencias y devuelve correcciones a sus propietarios; no audites de nuevo el
+modular ni optimices. Registra resultados y límites en G07-deliverable.md.
+No ejecutar P05 ni esperar los perfiles renovados para cerrar este alcance.
 
 REFERENCIAS Y COMPROBACIONES QUE DEBES REUTILIZAR
 Lee docs/reference/verification.md y la infraestructura parity/_statistical.py, _deep.py, _truncations.py y cli/scenarios.py enumerada en el encargo. Ejecutar muchas pruebas existentes es parte de esta fase; desarrollar nuevas baterías no lo es. Extiende o añade solo un caso mínimo cuando demuestres un hueco. Conserva muestras y tolerancias; no las debilites ni presentes búsquedas de tags como evidencia ejecutada.
@@ -101,8 +103,8 @@ Al terminar, comunica al coordinador la ruta del fichero y un resumen breve. No 
 manifiesto o sistema de seguimiento. Sigue el criterio de entrega de tu encargo.
 ```
 
-**Inicio:** tras G00–G06 integrados, preparación P00–P03 y calibración candidata
-P04. Una versión fija; sin implementadores escribiendo en paralelo.
+**Inicio:** tras G00–G06 integrados, con versión fija y batería histórica
+identificada; sin implementadores escribiendo en paralelo. Sin dependencia de P04.
 
 **Cláusulas principales:** 0. **Cláusulas de apoyo:** 0.
 
@@ -110,7 +112,7 @@ Este encargo trabaja sobre el conjunto integrado de claves de G00–G06; no aña
 
 ## Instrucciones obligatorias para el agente
 
-- Este es un encargo futuro, no evidencia de trabajo realizado. El motor modular se considera implementado y validado.
+- Este documento define un encargo, no evidencia de ejecución ni una orden de repetirlo. El motor modular se considera implementado y validado.
 - Parte de la implementación modular y de los contratos existentes. No reinterpretes reglas, no reclasifiques el alcance y no hagas otra auditoría del modular.
 - Lee `AGENTS.md` y el plan `TMP_VECTORIAL_ENGINE_2A2B/PLAN_IMPLEMENTACION.md`. La raíz de trabajo es `D:\DEVEL\Mordheim\Mordheim-Utils REPO-REWORK`.
 - Antes de editar, comprueba base, cambios existentes y propiedad. Usa la copia aislada indicada por el coordinador, incluyendo sus cambios no confirmados. No partas de un HEAD que omita la base entregada.
@@ -173,19 +175,20 @@ Estas referencias son puntos de entrada; sigue sus llamadas para reproducir el c
 
 ## Trabajo concreto
 
-1. Seleccionar `--backend numpy` explícitamente con los comandos P03/P04; no cambiar defaults ni reconstruir la selección ya preparada.
-2. Reutilizar checks exactos, reproducciones y perfiles quick/complete/deep preparados en P00–P04, conservando casos históricos aplicables. Usar el inventario de comportamientos, sin iniciar otra revisión semántica.
-3. Ejecutar P05 con muestras y horizontes finales P04. Diagnosticar diferencias con el menor caso aplicable, sin rebajar tolerancias ni convertir búsquedas de tags en evidencia ejecutada.
+1. Seleccionar NumPy explícitamente en el comando histórico sin `--profile`; no cambiar defaults ni reconstruir la selección existente.
+2. Reutilizar checks exactos, reproducciones, comparaciones estadísticas y horizontes de la batería histórica aplicable. Identificar selección y revisión, sin iniciar otra revisión semántica ni depender de los perfiles renovados pendientes.
+3. Ejecutar G07 con muestras y horizontes de aceptación vigentes. Diagnosticar diferencias con el menor caso aplicable, sin rebajar tolerancias ni convertir búsquedas de tags en evidencia ejecutada. P05 conserva su campaña independiente.
 4. Añadir cero escenarios si la batería cubre el portado. Si existe un hueco, extender un caso existente o añadir únicamente el comprobante mínimo. No construir otra batería modular.
 5. Para una divergencia, reproducirla y devolver corrección concreta al propietario G02/G03/G04/G05/G06; no editar sus archivos simultáneamente. Una vez entregada, integrar y reejecutar lo afectado.
 6. Entregar al coordinador evidencia por familias y claves para actualizar de implemented a verified. Los anexos de G00–G06 constituyen el universo, no nuevas filas en otro registro.
 
 ## Comprobación mínima
 
-Esta fase ejecuta P05 con la batería renovada aplicable a NumPy sobre una base
-fija. Reutiliza la evidencia válida; no repite otra campaña G07. Las correcciones
-de tests vuelven a P01/P02/P03. No añade tests modulares ni recalifica la
-verificación modular aceptada. No se ejecuta durante la preparación actual.
+Esta fase compara NumPy con el modular mediante la batería histórica sobre una
+base fija. Reutiliza evidencia válida de ese mismo alcance y no repite campañas
+sin cambios que lo justifiquen. No añade tests modulares ni recalifica la
+verificación modular aceptada. El rework y P04/P05 conservan sus propios encargos;
+editar esta documentación no autoriza ejecutar ninguna campaña.
 
 ## Criterio de entrega
 

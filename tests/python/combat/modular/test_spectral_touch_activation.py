@@ -132,8 +132,16 @@ def test_public_modular_request_runs_the_canonical_fighter(monkeypatch, host, pl
 @pytest.mark.parametrize('second', [False, True])
 @pytest.mark.parametrize('backend', ['auto', 'numpy', 'native'])
 def test_public_optimized_paths_refuse_unported_canonical_effect(host, plain, second, backend):
+    """The canonical host still carries another pending contract.
+
+    ``trait.spectral-touch`` itself is connected to NumPy; the gate-level
+    admission is pinned by ``test_guard_also_rejects_weapon_scoped_spectral_
+    effect``. This host also carries a pending local-modifier contract, so
+    every optimized backend refuses before dispatch and names that first
+    contract, not Spectral Touch.
+    """
     pair = (plain, host) if second else (host, plain)
-    with pytest.raises(ValueError, match='Spectral Touch.*modular'):
+    with pytest.raises(ValueError, match='modular engine'):
         simulate_duel(DuelRequest(*pair, simulations=1), backend=backend)
 
 
@@ -144,8 +152,10 @@ def test_low_level_optimized_paths_refuse_before_execution(host, plain, second):
     calls = (lambda: compile_duel_plan(*pair), lambda: compile_duel(*pair),
              lambda: simulate_batch(*pair, 1, np.random.default_rng(0), 1),
              lambda: simulate_duel_parallel(DuelRequest(*pair, simulations=1)))
+    # Every entry still refuses, but the host's pending local-modifier contract
+    # is named before the connected Spectral Touch behaviour.
     for call in calls:
-        with pytest.raises(ValueError, match='Spectral Touch.*modular'):
+        with pytest.raises(ValueError, match='modular engine'):
             call()
 
 
@@ -156,4 +166,6 @@ def test_guard_also_rejects_weapon_scoped_spectral_effect(plain):
                         tags=(*plain.main_weapon.tags, TAG)))
     with pytest.raises(ValueError, match='Spectral Touch.*modular'):
         require_optimized_support(synthetic, plain)
+    # NumPy connects the behaviour, so only the native gate still refuses it.
+    require_optimized_support(synthetic, plain, backend='numpy')
     require_optimized_support(plain, plain)
