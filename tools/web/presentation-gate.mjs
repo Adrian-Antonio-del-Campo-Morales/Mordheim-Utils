@@ -39,7 +39,7 @@ export function definePhases(root = REPO_ROOT, cwd = APP_DIR) {
       command: process.execPath,
       args: [
         "--test",
-        resolve(root, "tests", "web", "tools", "presentation-completeness-detector.test.mjs"),
+        resolve(root, "tests", "tooling", "web", "presentation-completeness-detector.test.mjs"),
       ],
       cwd,
       parse: parseDetectorTests,

@@ -192,6 +192,34 @@ classification. See
 limitation is either accepted permanently or removed, and a functional run on an
 integrated revision confirms the phase order.
 
+### T08 vectorized `cripple` fixture gap
+
+**Status:** accepted temporary exception, documented 2026-10-23. T08 consumes
+the frozen corpus for every other execution block; this one test still compiles
+its crippler from the KB.
+
+**Test and original build:**
+`tests/engines/vectorized/test_rule_families_a.py::test_disability_guardian_unarmed_and_onogal_have_observable_runtime_effects`
+compiles `FighterBuild("mordheim", band_id="chaos-streets-mordheim-inhabitants",
+profile_id="cripples", collection="trollheim")` and initializes it with
+`_new_state(cripple, 1, FixedRng(4))`.
+
+**Failure:**
+`ValueError: Disability requires one permanent supplied result (condition.disability-1..6)`.
+
+**No exact fixture:** the corpus has no recoverable entry for that build. Its
+only frozen crippler uses `condition.disability-6`, which is not the rolled 4
+the test asserts, and the available artefacts contain no `CompiledFighter` with
+disability 4.
+
+**Accepted exception:** keep this single `compile_fighter` call and the original
+scenario temporarily. Do not change the assertion, substitute `disability-6`,
+invent a configuration or repair the compiler as part of the testing rework.
+
+**Close when:** T06/coordination decides whether to publish an exact frozen
+variant with a supplied permanent result of 4 or to move the scenario to the
+construction tier. Until then the test is not fixture-independent.
+
 ## Statistical parity adaptation and backend verification
 
 Parity battery renovation, scope revised 2026-10-22: adapt the existing scenario

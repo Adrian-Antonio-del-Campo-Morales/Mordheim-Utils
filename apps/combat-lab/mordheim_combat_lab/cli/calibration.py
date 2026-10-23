@@ -219,12 +219,16 @@ def run_calibration(pair_set: str = "full", *, seed: int = 7,
                     pooled_samples: int = POOLED_SAMPLES,
                     sequential_batches=None, pooled_batches=None,
                     worker_candidates=None, spawn_repetitions: int = 3,
-                    log=print) -> dict:
+                    log=print, pair_source=None) -> dict:
     """Measure this machine and return the calibration payload.
 
     The keyword overrides exist for tests (small sizes) and future re-tuning;
-    the CLI maps its arguments to the defaults above.
+    the CLI maps its arguments to the defaults above.  ``pair_source`` supplies
+    the prepared ``(first, second, maximum_rounds, id)`` rows of a pair set;
+    the default compiles the scenario definitions, while the tests pass the
+    frozen precompiled corpus so a sweep never reads the knowledge base.
     """
+    source = pair_source or _pairs
     backends = set(available_backends())
     native_available = "native" in backends
     numpy_set = "mini" if pair_set == "mini" else "fast"
@@ -234,7 +238,7 @@ def run_calibration(pair_set: str = "full", *, seed: int = 7,
     for backend, name in sets.items():
         pairs[backend] = []
         excluded_pairs[backend] = {}
-        for pair in _pairs(name):
+        for pair in source(name):
             try:
                 require_optimized_support(pair[0], pair[1], backend=backend)
             except ValueError as error:

@@ -81,8 +81,8 @@ framework, directory and diagnostic convenience are not criteria.
   for the modular item). Explicit `pytest.param(..., marks=...)` keeps the
   parametrization, the ids and the number of items unchanged.
 - **Backend-specific suites.** Every functional item under
-  `tests/python/combat/vectorized` is `phase5_vectorized` and under
-  `tests/python/combat/native` is `phase6_native`, even when it asserts a rule,
+  `tests/engines/vectorized` is `phase5_vectorized` and under
+  `tests/engines/native` is `phase6_native`, even when it asserts a rule,
   a KB-shaped value or an architecture/transport contract of that backend.
 - **Test infrastructure versus product.** A mechanism that detects faults on
   synthetic inputs is `phase0_preflight`. A harness or mutation witness that
@@ -127,20 +127,20 @@ Classified roots:
 
 | Root | Component |
 | --- | --- |
-| `tests/python/architecture` | package boundaries |
-| `tests/python/contracts` | campaign-file contracts |
-| `tests/python/knowledge` | KB, catalogues, editorial and translation |
-| `tests/python/construction` | roster construction and eligibility |
-| `tests/python/application` | Combat Lab application services and settings |
-| `tests/python/persistence` | Combat Lab saved state |
-| `tests/python/ui` | Combat Lab desktop UI |
-| `tests/python/cli` | launcher, tests and console |
-| `tests/python/web` | generated web artefact, readers and vectors |
-| `tests/python/combat` | modular, vectorized and native execution |
-| `tests/python/verification` | audit, inventory, parity, consumers and verifiers |
-| `tests/E2E/modular-engine` | declarative corpus, phase/variant suites and generator checks |
+| `tests/tooling/architecture` | package boundaries |
+| `tests/applications/warband_manager/persistence/campaign_file` | campaign-file contracts |
+| `tests/rules/knowledge` | KB, catalogues, editorial and translation |
+| `tests/rules/construction` | roster construction and eligibility |
+| `tests/applications/combat_lab/services` | Combat Lab application services and settings |
+| `tests/applications/combat_lab/persistence` | Combat Lab saved state |
+| `tests/applications/combat_lab/ui` | Combat Lab desktop UI |
+| `tests/tooling/launcher`, `tests/applications/combat_lab/cli`, `tests/engines/parity/benchmarks` | launcher, tests and console |
+| `tests/rules/knowledge/web` | generated web artefact, readers and vectors |
+| `tests/engines/modular`, `tests/engines/vectorized`, `tests/engines/native`, `tests/engines/shared` | modular, vectorized and native execution |
+| `tests/engines/parity`, `tests/tooling/verification`, `tests/tooling/evidence`, `tests/rules/integration` | audit, inventory, parity, consumers and verifiers |
+| `tests/rules/integration/e2e` | declarative corpus, phase/variant suites and generator checks |
 
-`tests/specs` remains declarative YAML test data. `tests/E2E/modular-engine`
+`tests/rules/integration/specs` remains declarative YAML test data. `tests/rules/integration/e2e`
 loads its corpus during collection; an item that asserts a named refusal is
 derived as `phase2_construction`, every observed declaration as
 `phase4_modular`, from the declaration's explicit expectation channel. The
@@ -218,17 +218,17 @@ Both suites use the runner's native project mechanism; the installed Vitest
 
 | Project | Files |
 | --- | --- |
-| `phase0_preflight` | `tests/typescript/architecture/**/*.test.ts` |
-| `phase1_kb_contracts` | `tests/typescript/parity-kb-vectors.test.ts` |
-| `phase7_warband` | the remaining `tests/typescript/**/*.test.ts` |
+| `phase0_preflight` | `tests/tooling/architecture/purity.test.ts` |
+| `phase1_kb_contracts` | `tests/rules/knowledge/parity-kb-vectors.test.ts` |
+| `phase7_warband` | `tests/applications/warband_manager/domain/**/*.test.ts`, `tests/applications/warband_manager/application/**/*.test.ts`, `tests/applications/warband_manager/adapters/**/*.test.ts` and `tests/applications/warband_manager/parity-vectors.test.ts` |
 
 `apps/warband-manager-web/vite.config.ts` (invoked from that directory):
 
 | Project | Files |
 | --- | --- |
-| `phase0_preflight` | `tests/web/architecture/boundaries.test.ts` |
-| `packaging` | `tests/web/architecture/font-publication.test.ts` |
-| `phase7_warband` | the remaining `tests/web/**/*.test.{ts,tsx}` |
+| `phase0_preflight` | `tests/tooling/architecture/web-boundaries.test.ts` |
+| `packaging` | `tests/applications/warband_manager/packaging/font-publication.test.ts` and `tests/applications/warband_manager/packaging/bundle-boundaries.test.ts` |
+| `phase7_warband` | `tests/applications/warband_manager/features/**/*.test.{ts,tsx}`, `tests/applications/warband_manager/presentation/**/*.test.{ts,tsx}` and `tests/tooling/web/**/*.test.{ts,tsx}` |
 
 ```text
 cd packages/typescript && npx vitest run --project phase7_warband
@@ -237,17 +237,17 @@ cd apps/warband-manager-web && npx vitest run --project phase7_warband
 
 The default `vitest run` (and `npm test`) still runs every project. Test and
 suite identities, parametrizations and worker settings are unchanged. The web
-suite must be invoked from `apps/warband-manager-web`: `tests/web/**` resolves
-the generated artefacts from `process.cwd()`.
+suite must be invoked from `apps/warband-manager-web`: its absolute include
+patterns resolve the generated artefacts from `process.cwd()`.
 
 Limits of this runner:
 
 - There is no per-test tag, so a file is the smallest selectable unit. The
-  architecture file `tests/web/architecture/boundaries.test.ts` also contains
-  two post-build bundle guards. It stays in `phase0_preflight` because its
-  guarantee is predominantly source-boundary checking and the two bundle guards
-  skip when no build exists; a per-test assignment would put those two in
-  `packaging`. The minimal change for per-test selection is a newer Vitest with
+  source-boundary checks in `tests/tooling/architecture/web-boundaries.test.ts`
+  stay in `phase0_preflight`; the post-build bundle guards live in
+  `tests/applications/warband_manager/packaging/bundle-boundaries.test.ts`,
+  skip when no build exists and are selected by `packaging`. The minimal change
+  for per-test selection is a newer Vitest with
   test tags, or a category token in the file name
   (`<name>.<category>.test.ts`) with one project per token, which renames files
   and changes every Vitest report identity.

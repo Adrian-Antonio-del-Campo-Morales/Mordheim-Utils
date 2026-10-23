@@ -7,12 +7,17 @@ import tseslint from "typescript-eslint";
 // One lint config for the React surface: the web application's sources and its
 // suite, which lives in the repository test tree. It sits at the workspace root
 // because flat config only lints files below its own directory. The TypeScript
-// packages suite (tests/typescript) is typechecked but not linted, as before.
+// packages suite (tests/applications/warband_manager) is typechecked but not
+// linted, as before.
 export default tseslint.config(
   { ignores: ["**/dist/**", "**/coverage/**", "**/node_modules/**"] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ["apps/warband-manager-web/src/**/*.{ts,tsx}", "tests/web/**/*.{ts,tsx}"],
+    files: [
+      "apps/warband-manager-web/src/**/*.{ts,tsx}",
+      "tests/applications/warband_manager/**/*.{ts,tsx}",
+      "tests/tooling/web/**/*.{ts,tsx}",
+    ],
     languageOptions: {
       ecmaVersion: 2022,
       globals: globals.browser,

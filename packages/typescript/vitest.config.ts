@@ -2,8 +2,8 @@ import { fileURLToPath } from "node:url";
 import { defineConfig } from "vitest/config";
 
 // Domain/application packages must run in plain Node — no DOM.
-// The suite lives in the repository's tests/typescript tree (support code stays
-// out of the packages); the aliases are the same vocabulary the web app uses.
+// The suite lives in the repository's tests tree (support code stays out of the
+// packages); the aliases are the same vocabulary the web app uses.
 // Dependencies resolve through the npm workspace root.
 //
 // Category selection uses the runner's native project mechanism: one project per
@@ -13,12 +13,16 @@ import { defineConfig } from "vitest/config";
 // Vitest 3.2 exposes no per-test tag, so the category is resolved per file; the
 // one mixed file and its limitation are documented in the web config and in
 // docs/reference/test-sequence.md.
-const TEST_ROOT = fileURLToPath(
-  new URL("../../tests/typescript/", import.meta.url),
+const REPO_ROOT = fileURLToPath(
+  new URL("../../tests/", import.meta.url),
 ).replaceAll("\\", "/");
 
-const ARCHITECTURE = `${TEST_ROOT}architecture/**/*.test.ts`;
-const KB_PARITY = `${TEST_ROOT}parity-kb-vectors.test.ts`;
+const ARCHITECTURE = `${REPO_ROOT}tooling/architecture/purity.test.ts`;
+const KB_PARITY = `${REPO_ROOT}rules/knowledge/parity-kb-vectors.test.ts`;
+const DOMAIN = `${REPO_ROOT}applications/warband_manager/domain/**/*.test.ts`;
+const APPLICATION = `${REPO_ROOT}applications/warband_manager/application/**/*.test.ts`;
+const ADAPTERS = `${REPO_ROOT}applications/warband_manager/adapters/**/*.test.ts`;
+const PARITY = `${REPO_ROOT}applications/warband_manager/parity-vectors.test.ts`;
 
 export default defineConfig({
   resolve: {
@@ -47,8 +51,7 @@ export default defineConfig({
         extends: true as const,
         test: {
           name: "phase7_warband",
-          include: [`${TEST_ROOT}**/*.test.ts`],
-          exclude: [ARCHITECTURE, KB_PARITY],
+          include: [DOMAIN, APPLICATION, ADAPTERS, PARITY],
         },
       },
     ],

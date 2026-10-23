@@ -27,9 +27,9 @@ admission/kit corrections have focused evidence; integrated verification
 remains outstanding.
 
 Modular integration closure includes the E2E battery in
-`tests/E2E/modular-engine/`: declared scenarios, coverage inventory and
+`tests/rules/integration/e2e/`: declared scenarios, coverage inventory and
 accepted-evidence non-regression checks. Run it with
-`python -m pytest tests/E2E/modular-engine -q` on the same integrated revision
+`python -m pytest tests/rules/integration/e2e -q` on the same integrated revision
 as the other modular checks. Source-derived authoring and semantic review
 remain separate from execution; static corpus validation alone is insufficient.
 
@@ -61,7 +61,7 @@ A genuinely missing source must be identified exactly; do not invent a rule.
 
 | Layer | Certifies | Artifacts / commands | Cost | Runs when |
 | --- | --- | --- | --- | --- |
-| L0 structure | KB + compiled fighters are well-formed and connected | `verify --structural`, structural contract `tests/specs/structural/` | seconds | every change |
+| L0 structure | KB + compiled fighters are well-formed and connected | `verify --structural`, structural contract `tests/rules/integration/specs/structural/` | seconds | every change |
 | L1 per-rule determinism | each rule behaves as written, both engines, exact distributions | semantic specs with scripted dice + exhaustive finite brute force; exact operator checks; native backend where exposed | seconds–minutes | every change |
 | L2 whole-duel determinism | orchestration: acting order, reply phases, stateful timing | round-truncation outcome parity (`parity --truncations`); observed-mode samples | minutes | engine-touching changes |
 | L3 interaction, statistical | joint behaviour of many rules over real archetype duels | 6σ marginal gate; deep archetype matrix; numpy↔native cross at scale | minutes–hours | certification, deep on demand |
@@ -74,9 +74,9 @@ on L1–L5.
 ## Runtime budget
 
 Equipment and skill eligibility has its own cross-consumer checks:
-`tests/fixtures/eligibility/decisions.json` is exercised by both
-`tests/typescript/domain/shared-eligibility.test.ts` and
-`tests/python/construction/test_shared_eligibility.py`. The latter runs the
+`tests/rules/construction/fixtures/eligibility/decisions.json` is exercised by both
+`tests/applications/warband_manager/domain/shared-eligibility.test.ts` and
+`tests/rules/construction/test_shared_eligibility.py`. The latter runs the
 actual embedded JavaScript, checks the bundle against a fresh generation,
 parallel calls and recovery after a validation error. `npm run check:eligibility` rebuilds in memory and
 rejects a stale checked-in bundle. Construction and application/UI suites prove
@@ -100,7 +100,7 @@ commands and current defaults are discoverable through
 
 ## L1 — deterministic per-rule evidence (both engines)
 
-- The **semantic specifications** (`tests/specs/semantic/`) declare exact dice
+- The **semantic specifications** (`tests/rules/integration/specs/semantic/`) declare exact dice
   and decisions and compare the *distribution* the engines induce, computed by
   exhaustive finite enumeration where the domain is small enough (up to 6⁶
   rolls per case) — no sampling, no tolerance. Each case is replayed against
@@ -206,11 +206,12 @@ Two gates measure whether the deterministic corpus is *complete enough*,
 which no amount of naming discipline can assert by itself.
 
 **Coverage drift gate** (`coverage-gate`). The deterministic suites
-(`tests/python/combat/modular`, `tests/python/combat/vectorized`,
-`tests/python/combat/test_phases.py`, `tests/python/combat/test_duel_context.py`,
-`tests/python/verification/test_duel_replay.py`, `tests/python/verification/test_parity.py`) run under
+(`tests/engines/modular`, `tests/engines/vectorized`,
+`tests/engines/shared/test_phases.py`, `tests/engines/shared/test_duel_context.py`,
+`tests/engines/shared/test_exact_phases.py`, `tests/engines/shared/test_interactions.py`,
+`tests/engines/parity/test_duel_replay.py`, `tests/engines/parity/test_parity.py`) run under
 `coverage` and the result is compared against a committed budget
-(`tests/fixtures/coverage/budget.json`, schema `mordheim-coverage-budget/v1`):
+(`tests/tooling/verification/fixtures/coverage/budget.json`, schema `mordheim-coverage-budget/v1`):
 the engine statements that were exercised when the budget was written (the
 committed file lists every line). The gate **fails when any
 budgeted line stops being exercised** — a line became dead code, or its test
@@ -400,7 +401,7 @@ profile, not semantic coverage of every internal rule.
   checks and L4 mutation catalogue.
 - Two engines may share a wrong reading of a rule (oracle included) → L1
   specs are reviewed against the written sources, never against engine
-  output; see `tests/specs/README.md`.
+  output; see `tests/rules/integration/specs/README.md`.
 
 ## Why "thousands of pairs" is the wrong lever
 
@@ -433,10 +434,10 @@ and presets are documented in [Develop and release](../guides/develop-and-releas
 
 The **interaction matrix** — how every required interaction pair of the
 verification gate is closed — is documented per cluster in the verification
-corpus README (`tests/specs/README.md`): the nine cluster files of
-`tests/specs/semantic/interactions/`, the authoring recipe (one spec per pair
+corpus README (`tests/rules/integration/specs/README.md`): the nine cluster files of
+`tests/rules/integration/specs/semantic/interactions/`, the authoring recipe (one spec per pair
 with composition + boundary cases, strict dice, ≥1 detected mutation) and the
-10 reviewed `illegal` overrides in `tests/specs/interaction-policy.yaml`
+10 reviewed `illegal` overrides in `tests/rules/integration/specs/interaction-policy.yaml`
 (body-armour × body-armour pairs that can never co-occur in legal
 construction). The matrix is complete — run `python tools/mordheim-utils.py
 verify --inventory` for the live status (required interactions covered,
@@ -458,5 +459,5 @@ actual modular, NumPy or compiled native driver with strict, fully consumed dice
 and decisions, then records terminal state/resources. Author each backend's legacy
 physical draw order explicitly; do not assume equal seeds imply equal streams.
 Native replay requires a rebuilt context-aware extension and never falls back.
-The foundation cases live in `tests/python/verification/test_duel_replay.py`; new
+The foundation cases live in `tests/engines/parity/test_duel_replay.py`; new
 mechanisms still need source-derived specifications, interactions and mutations.

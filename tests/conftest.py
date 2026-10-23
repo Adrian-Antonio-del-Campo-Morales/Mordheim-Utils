@@ -28,18 +28,10 @@ RUNNER_MARKERS = frozenset({
 # Roots whose items are classified. Extend this tuple (not the checks) when a
 # root is classified by its owner.
 CLASSIFIED_ROOTS = (
-    "tests/python/architecture",
-    "tests/python/contracts",
-    "tests/python/knowledge",
-    "tests/python/construction",
-    "tests/python/application",
-    "tests/python/persistence",
-    "tests/python/ui",
-    "tests/python/cli",
-    "tests/python/web",
-    "tests/python/combat",
-    "tests/python/verification",
-    "tests/E2E/modular-engine",
+    "tests/tooling",
+    "tests/applications",
+    "tests/rules",
+    "tests/engines",
 )
 
 

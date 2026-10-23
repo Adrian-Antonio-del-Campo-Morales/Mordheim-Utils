@@ -1,0 +1,174 @@
+--- a/tests/engines/modular/test_leadership_support.py
++++ b/tests/engines/modular/test_leadership_support.py
+@@ -1,8 +1,8 @@
+ """Supplied Leadership providers and support facts.
+ 
+-The admitted individual consequences, each read live from ``sources/knowledge``
+-through the canonical compiler and the real ``leadership``/``psychology``
+-consumers.  Every case supplies the nearby participant explicitly as a
++The admitted individual consequences, read from the frozen compiled builds and
++the real ``leadership``/``psychology`` consumers.  Every case supplies the
++nearby participant explicitly as a
+ ``LocalParticipant``: no third fighter, group count or table position is
+ simulated anywhere here.
+ 
+@@ -36,7 +36,6 @@
+ from mordheim_combat.modular.psychology import resolve_stupidity
+ from mordheim_combat.modular.state import initialize_duel
+ from mordheim_combat_lab.verification.dice import StrictDecisions, StrictDice
+-from mordheim_construction.compiler import compile_fighter
+ from mordheim_core.models import Characteristics, DuelContext, FighterBuild, LocalParticipant
+ 
+ DARK_MAJESTY = "band--von-carstein-power-dark-majesty"
+@@ -44,24 +43,26 @@
+ SONGSTER = "band--rememberer-skills"
+ 
+ 
+-def canonical(band, profile, weapon="weapon.fist", *, collection="mordheim", **options):
++def canonical(compile_fighter, band, profile, weapon="weapon.fist", *,
++              collection="mordheim", **options):
+     return compile_fighter(FighterBuild("mordheim", band_id=band, profile_id=profile,
+         collection=collection, main_weapon_id=weapon, **options))
+ 
+ 
+-def led(band, profile, leadership, *, collection="mordheim", **options):
++def led(compile_fighter, band, profile, leadership, *, collection="mordheim", **options):
+     """A band member whose supplied Leadership replaces the printed one."""
+     return compile_fighter(FighterBuild("mordheim",
+         Characteristics(3, 3, 3, 2, 3, 1, leadership=leadership), band_id=band,
+         profile_id=profile, collection=collection, main_weapon_id="weapon.fist", **options))
+ 
+ 
+-def bare(**options):
++def bare(compile_fighter, **options):
+     return compile_fighter(FighterBuild("mordheim", Characteristics(3, 3, 3, 2, 3, 1, leadership=7),
+         main_weapon_id="weapon.mace", armour_id="armour.no-armour", **options))
+ 
+ 
+-def leadership_test(recipient, providers, faces, decisions=None, reroll_faces=()):
++def leadership_test(compile_fighter, recipient, providers, faces, decisions=None,
++                    reroll_faces=()):
+     """One Leadership test with the supplied same-side participants.
+ 
+     ``providers`` is a tuple of ``(participant_id, fighter, inches)``; the
+@@ -72,7 +73,7 @@
+     context = DuelContext(charging=("first",), active_participant="first",
+         nearby=tuple(LocalParticipant(pid, "first", fighter) for pid, fighter, _ in providers),
+         distances=tuple(("first", pid, inches) for pid, _, inches in providers))
+-    state = initialize_duel(recipient, bare(), StrictDice([]), context=context)
++    state = initialize_duel(recipient, bare(compile_fighter), StrictDice([]), context=context)
+     rolls = [{"key": f"probe.{index}", "value": value} for index, value in enumerate(faces)]
+     rolls += [{"key": f"probe.reroll.{index}", "value": value}
+               for index, value in enumerate(reroll_faces)]
+@@ -85,84 +86,88 @@
+ # --- Dim-Witted ------------------------------------------------------------
+ 
+ @pytest.mark.phase3_rules
+-def test_dim_witted_leader_lends_his_seven_within_six_inches(precompiled):
++def test_dim_witted_leader_lends_his_seven_within_six_inches(precompiled, compiled_builds):
+     leader = precompiled().first
+     assert {"mechanic.leader-six", "mechanic.dim-witted-leader"} <= set(leader.global_effects.tags)
+     # The printed supply: this leader's effective 7 for members within six
+     # inches.  A roll of seven fails on the member's own six and passes borrowed.
+-    member = led("adventurers-kaz", "dwarf", 6)
+-    borrowed = leadership_test(member, (("barbarian", leader, 4),), (3, 4),
+-                               [{"key": "probe.leader.barbarian", "value": True}])
++    member = led(compiled_builds.fighter, "adventurers-kaz", "dwarf", 6)
++    borrowed = leadership_test(compiled_builds.fighter, member, (("barbarian", leader, 4),),
++                               (3, 4), [{"key": "probe.leader.barbarian", "value": True}])
+     assert borrowed is True
+     # Negative control: beyond the printed six inches no leader value is offered
+     # at all, so the tape stays empty and the own six fails.
+-    assert leadership_test(member, (("barbarian", leader, 7),), (3, 4)) is False
++    assert leadership_test(compiled_builds.fighter, member, (("barbarian", leader, 7),),
++                           (3, 4)) is False
+ 
+ 
+ # --- Dark Majesty ----------------------------------------------------------
+ 
+ @pytest.mark.phase3_rules
+-def test_dark_majesty_widens_the_supplied_leader_radius_to_twelve(precompiled):
++def test_dark_majesty_widens_the_supplied_leader_radius_to_twelve(precompiled, compiled_builds):
+     compiled = precompiled()
+     vampire, plain = compiled.first, compiled.second
+     assert {"mechanic.leader-six", "mechanic.leader-twelve"} <= set(vampire.global_effects.tags)
+-    member = led("chaos-streets-undead-bloodlines", "von-carstein-vampire", 6,
+-                 collection="trollheim")
++    member = led(compiled_builds.fighter, "chaos-streets-undead-bloodlines",
++                 "von-carstein-vampire", 6, collection="trollheim")
+     # Ten inches: the increased radius reaches, the ordinary one does not.
+-    widened = leadership_test(member, (("vampire", vampire, 10),), (3, 4),
+-                              [{"key": "probe.leader.vampire", "value": True}])
++    widened = leadership_test(compiled_builds.fighter, member, (("vampire", vampire, 10),),
++                              (3, 4), [{"key": "probe.leader.vampire", "value": True}])
+     assert widened is True
+-    assert leadership_test(member, (("vampire", plain, 10),), (3, 4)) is False
++    assert leadership_test(compiled_builds.fighter, member, (("vampire", plain, 10),),
++                           (3, 4)) is False
+ 
+ 
+ # --- Mob -------------------------------------------------------------------
+ 
+ @pytest.mark.phase3_rules
+-def test_mob_adds_the_supplied_ally_count_and_denies_the_leader_rule(precompiled):
+-    peasant = led("battle-monks-of-cathay", "raging-peasants", 5,
++def test_mob_adds_the_supplied_ally_count_and_denies_the_leader_rule(precompiled, compiled_builds):
++    peasant = led(compiled_builds.fighter, "battle-monks-of-cathay", "raging-peasants", 5,
+                   trait_overrides={"mob_allies": 2})
+     assert {"mechanic.mob-leadership", "mechanic.own-leadership"} <= set(peasant.global_effects.tags)
+     # Five plus the two supplied allies reaches seven.
+-    assert leadership_test(peasant, (), (3, 4)) is True
++    assert leadership_test(compiled_builds.fighter, peasant, (), (3, 4)) is True
+     # Negative control: the same peasant without the supplied count fails on 5.
+-    assert leadership_test(led("battle-monks-of-cathay", "raging-peasants", 5), (), (3, 4)) is False
++    unsupplied = led(compiled_builds.fighter, "battle-monks-of-cathay", "raging-peasants", 5)
++    assert leadership_test(compiled_builds.fighter, unsupplied, (), (3, 4)) is False
+     # The printed rage half: no leader value is offered even at four inches, so
+     # the strict tape must not be asked for a leader decision.
+     leader = precompiled().second
+-    assert leadership_test(peasant, (("emissary", leader, 4),), (3, 4)) is True
++    assert leadership_test(compiled_builds.fighter, peasant, (("emissary", leader, 4),),
++                           (3, 4)) is True
+ 
+ 
+ # --- Songster --------------------------------------------------------------
+ 
+ @pytest.mark.phase3_rules
+-def test_songster_rerolls_one_failed_leadership_test_at_plus_one(precompiled):
++def test_songster_rerolls_one_failed_leadership_test_at_plus_one(precompiled, compiled_builds):
+     compiled = precompiled()
+     bard, silent = compiled.first, compiled.second
+     assert "mechanic.songster" in bard.global_effects.tags
+     # A Rememberer who never took the skill sings for nobody.
+     assert "mechanic.songster" not in silent.global_effects.tags
+-    member = led("dwarf-slayer-cult-web", "giant-slayer", 6)
++    member = led(compiled_builds.fighter, "dwarf-slayer-cult-web", "giant-slayer", 6)
+     sixes = (6, 6)
+     # Six fails the own test, and the printed +1 within six inches passes the
+     # single re-roll the gift allows (three on the two re-rolled dice): one
+     # Leadership die pair beyond the failed test, never a second test.
+-    assert leadership_test(member, (("bard", bard, 4),), (6, 6),
++    assert leadership_test(compiled_builds.fighter, member, (("bard", bard, 4),), (6, 6),
+                            [{"key": "probe.reroll", "value": True}],
+                            reroll_faces=(3, 4)) is True
+     # Negative control: outside six inches no support reaches and six fails.
+-    assert leadership_test(member, (("bard", bard, 7),), sixes) is False
++    assert leadership_test(compiled_builds.fighter, member, (("bard", bard, 7),), sixes) is False
+     # And the silent provider is not a provider at all.
+-    assert leadership_test(member, (("bard", silent, 4),), sixes) is False
++    assert leadership_test(compiled_builds.fighter, member, (("bard", silent, 4),), sixes) is False
+ 
+ 
+ # --- Poetry ----------------------------------------------------------------
+ 
+ @pytest.mark.phase3_rules
+-def test_supplied_victorious_poetry_raises_the_leaders_first_test_once(precompiled):
++def test_supplied_victorious_poetry_raises_the_leaders_first_test_once(precompiled, compiled_builds):
+     # The Scholar produces the campaign qualification; it does not receive
+     # the leader's supplied bonus automatically on its own profile.
+     for band in ("ghutani-rel", "muzil-rel", "turjuk-rel"):
+-        scholar = canonical(band, "scholar")
++        scholar = canonical(compiled_builds.fighter, band, "scholar")
+         assert "condition.poetry-victorious-leader" not in scholar.global_effects.tags
+     poetry, bare_case = precompiled(0).first, precompiled(0).second
+     leader = poetry

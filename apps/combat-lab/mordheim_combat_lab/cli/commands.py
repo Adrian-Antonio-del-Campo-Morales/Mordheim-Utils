@@ -1419,9 +1419,9 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
              "(repeatable)")
     coverage_output = coverage.add_argument_group("budget and output")
     coverage_output.add_argument(
-        "--budget", default="tests/fixtures/coverage/budget.json", metavar="PATH",
+        "--budget", default="tests/tooling/verification/fixtures/coverage/budget.json", metavar="PATH",
         help="coverage budget file to check against (default: "
-             "tests/fixtures/coverage/budget.json)")
+             "tests/tooling/verification/fixtures/coverage/budget.json)")
     coverage_output.add_argument(
         "--update-budget", action="store_true",
         help="write the measured covered lines as the new budget instead of "

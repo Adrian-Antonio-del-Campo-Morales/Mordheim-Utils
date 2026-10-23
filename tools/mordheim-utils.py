@@ -48,22 +48,32 @@ for package_root in reversed(PACKAGE_ROOTS):
 #: Map of ``tests --scope`` names to the pytest paths they select.
 SCOPE_PATHS = {
     "all": ("tests",),
-    "engines": ("tests/python/combat",),
-    "modular": ("tests/python/combat/modular",),
-    "vectorized": ("tests/python/combat/vectorized",),
-    "native": ("tests/python/combat/native",),
-    "e2e": ("tests/E2E/modular-engine",),
+    "engines": ("tests/engines",),
+    "modular": ("tests/engines/modular",),
+    "vectorized": ("tests/engines/vectorized",),
+    "native": ("tests/engines/native",),
+    "e2e": ("tests/rules/integration/e2e",),
     # The per-change engine gate: the deterministic suites that certify rule
     # behaviour without statistical noise (mirrors the coverage-gate budget).
-    "deterministic": ("tests/python/combat/modular", "tests/python/combat/vectorized",
-                      "tests/python/combat/test_phases.py", "tests/python/combat/test_duel_context.py",
-                      "tests/python/verification/test_duel_replay.py", "tests/python/verification/test_parity.py"),
-    "knowledge": ("tests/python/knowledge", "tests/specs"),
-    "verification": ("tests/python/verification",),
-    "construction": ("tests/python/construction",),
-    "ui": ("tests/python/ui",),
-    "cli": ("tests/python/cli",),
-    "architecture": ("tests/python/architecture",),
+    "deterministic": ("tests/engines/modular", "tests/engines/vectorized",
+                      "tests/engines/shared/test_phases.py", "tests/engines/shared/test_duel_context.py",
+                      "tests/engines/shared/test_exact_phases.py", "tests/engines/shared/test_interactions.py",
+                      "tests/engines/parity/test_duel_replay.py",
+                      "tests/engines/parity/test_parity.py"),
+    "knowledge": ("tests/rules/knowledge", "tests/rules/integration/specs"),
+    "verification": ("tests/engines/parity/test_duel_replay.py",
+                      "tests/engines/parity/test_parity.py",
+                      "tests/engines/parity/test_parity_battery_cases.py",
+                      "tests/engines/parity/test_parity_battery_runner.py",
+                      "tests/engines/parity/test_truncation_parity.py",
+                      "tests/tooling/verification",
+                      "tests/rules/integration/test_semantics.py",
+                      "tests/rules/integration/test_structural.py"),
+    "construction": ("tests/rules/construction",),
+    "ui": ("tests/applications/combat_lab/ui",),
+    "cli": ("tests/tooling/launcher", "tests/applications/combat_lab/cli",
+            "tests/engines/parity/benchmarks"),
+    "architecture": ("tests/tooling/architecture",),
 }
 
 #: Combat Lab subcommands forwarded verbatim to ``python -m mordheim_combat_lab``.
@@ -380,9 +390,10 @@ def run_ci_command(args: list[str]) -> int:
                     (sys.executable, str(KNOWLEDGE_GENERATOR), "--check")):
         if _run_in(REPO_ROOT, *command):
             return 1
-    if _run_module("pytest", "tests/python/web", "tests/python/contracts",
-                   "tests/python/architecture", "tests/python/knowledge",
-                   "tests/python/construction/test_shared_eligibility.py", "-q"):
+    if _run_module("pytest", "tests/rules/knowledge/web",
+                   "tests/applications/warband_manager/persistence/campaign_file",
+                   "tests/tooling/architecture", "tests/rules/knowledge",
+                   "tests/rules/construction/test_shared_eligibility.py", "-q"):
         return 1
     if _run(sys.executable, str(KNOWLEDGE_GENERATOR), "--check"):
         return 1
@@ -401,15 +412,17 @@ def run_ci_command(args: list[str]) -> int:
         WEB_APP,
         "npx", "vitest", "run", "--pool=forks", "--maxWorkers=1",
         "--testTimeout=200000",
-        "../../tests/web/features/campaign/knowledge-display-coverage.test.tsx",
-        "../../tests/web/features/campaign/ui_i18n.test.ts",
-        "../../tests/web/features/campaign/displayText.test.ts",
-        "../../tests/web/features/campaign/KnowledgeHint.test.tsx",
+        "../../tests/applications/warband_manager/features/campaign/knowledge-display-coverage.test.tsx",
+        "../../tests/applications/warband_manager/features/campaign/ui_i18n.test.ts",
+        "../../tests/applications/warband_manager/features/campaign/displayText.test.ts",
+        "../../tests/applications/warband_manager/features/campaign/KnowledgeHint.test.tsx",
     ):
         return 1
     for command in (("npm", "run", "typecheck"), ("npm", "run", "lint"),
                     ("npm", "test"), ("npm", "run", "build"),
-                    ("npx", "vitest", "run", "../../tests/web/architecture/boundaries.test.ts")):
+                    ("npx", "vitest", "run",
+                     "../../tests/tooling/architecture/web-boundaries.test.ts",
+                     "../../tests/applications/warband_manager/packaging/bundle-boundaries.test.ts")):
         if _run_in(WEB_APP, *command):
             return 1
     return 0

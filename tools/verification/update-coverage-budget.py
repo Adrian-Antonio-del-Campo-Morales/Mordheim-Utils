@@ -2,7 +2,7 @@
 """Regenerate the committed deterministic-coverage budget.
 
 Runs the deterministic engine suites under ``coverage`` and writes the
-measured covered lines to ``tests/fixtures/coverage/budget.json``.  This must
+measured covered lines to ``tests/tooling/verification/fixtures/coverage/budget.json``.  This must
 be a real script (not ``python - <<EOF`` or ``-c``): the measured suites
 include multiprocessing tests whose spawned workers re-import the main
 module, which only works when the main module lives in a file.
@@ -43,8 +43,8 @@ def main(argv: list[str] | None = None) -> int:
         help="pytest paths to measure (default: the deterministic suites)",
     )
     parser.add_argument(
-        "--output", default="tests/fixtures/coverage/budget.json", metavar="PATH",
-        help="budget file to write (default: tests/fixtures/coverage/budget.json)",
+        "--output", default="tests/tooling/verification/fixtures/coverage/budget.json", metavar="PATH",
+        help="budget file to write (default: tests/tooling/verification/fixtures/coverage/budget.json)",
     )
     args = parser.parse_args(argv)
     suites = tuple(args.suites) if args.suites else coverage_gate.DEFAULT_SUITES

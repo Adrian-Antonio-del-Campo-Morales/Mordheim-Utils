@@ -45,6 +45,49 @@ instead of repeating their investigation or checks. Subagents do not write the
 shared CSV or create separate completion documents; return changes, focused
 evidence and blockers to the parent, which produces the single package delivery.
 
+## Testing rework: verification and parallel execution
+
+For tasks governed by `tests/TMP_TESTING_REWORK/REWORK_PLAN.md` and
+`REWORK_PLAN_TASKS.md`, use the minimum verification needed for the assigned
+change. These scope limits also apply to coordinators and delegated agents.
+
+- Do not develop new tests, expand coverage or add improvements outside the
+  assigned task. Reuse and adapt existing checks.
+- Moves and path/configuration edits normally need syntax/import checks and
+  targeted collection or test listing, not functional suites. Codec/exporter
+  changes need focused data-contract checks; engine adapters need a small
+  representative sample. Benchmark wiring needs a small smoke execution, not
+  a performance or statistical campaign.
+- Each agent verifies only its package. The coordinator groups shared
+  collection/typechecks once on the integrated state and reuses valid evidence.
+  Repeat a check only when relevant code, inputs or dependencies changed, or a
+  defect introduced by the rework was corrected; record that reason.
+- Do not run whole component suites or the full repository just to close a
+  task. Broad functional certification is separate and requires an explicit
+  request. Unrelated failures are reported without investigation or repair and
+  do not block delivery of the assigned change; rework-caused defects remain
+  the owner's responsibility.
+- Parallelize independent Python checks using the existing xdist installation:
+  `python -u -m pytest <affected-files-or-nodeids> -n 2 --dist=load -q --durations=10 --tb=short`.
+  With several agents, default to two workers per active agent; a single
+  integrated run may use four when resources are free. Avoid `-n auto`, nested
+  pools and concurrent checks that write the same files. Keep timing-sensitive
+  checks and shared-resource operations serial.
+- The phased launcher keeps its existing phase barriers: use `test-sequence
+  --workers N`; do not combine it with raw `-n` or `--dist`, or redesign its
+  scheduler as part of this rework. Collection-only runs stay serial.
+- Vitest already parallelizes files. Run selected files from their workspace
+  with `--maxWorkers=2` while other agents are active; do not add concurrent
+  test execution inside files. Do not parallelize benchmark measurements merely
+  to accelerate verification or multiply inner engine workers by xdist workers.
+- Keep live output, without `| tail`. Use persistent execution sessions and
+  poll them. A tool timeout is not a reason to restart the whole selection:
+  check whether the original process is still active and preserve completed
+  evidence. Never interrupt another agent's processes.
+- Record commands, selection, relevant revision or inputs, outcome and limits
+  in the existing task document; do not create additional verification reports.
+  Focused checks do not certify the full functional suite.
+
 ## Pending problems and human decisions
 
 Use `TODO.md` for concrete unresolved defects and problems.
