@@ -11,6 +11,37 @@ granularity; the statistical layer is demoted to what it can actually see
 (interaction between rules and joint drift), and every expensive pair must
 justify itself by covering something no deterministic test covers.
 
+## Engine test fixtures
+
+Tests are grouped under `tests/engines/{modular,vectorized,native,shared,parity}`;
+KB, construction and integration checks remain under `tests/rules` and retain
+access to the compiler and source indexes.
+
+`tests/engines/fixtures/compiled-cases.json` stores execution cases; its
+`compiled-cases.manifest.json` records provenance and consumer mappings.
+`tools/verification/compiled_cases.py` loads them without automatic recompilation.
+The exporter is `tools/knowledge/export_compiled_cases.py`.
+
+`tests/engines/fixtures/compiled-builds.json` stores compiled fighters keyed by
+the complete `FighterBuild` and normalized root. Load it through
+`tools/verification/compiled_builds.py`; modular tests use the session fixture
+`compiled_builds` and its `fighter(build, root)` callable. Preserve all original
+builder arguments and subsequent transformations. Missing entries fail explicitly.
+Regenerate with `python tools/verification/generate_compiled_builds.py --write`;
+the generator preserves existing frozen entries and adds newly captured builds.
+Use a single writer for each generated document.
+
+Deliberate compilation rejections in mixed tests keep the real compiler
+(Khemrian Seduction, Shadow Dances, Knight of Purity and Magic Acorn).
+The vectorized `cripple` exception is tracked in `TODO.md`.
+No import or file-access blocking instrumentation is required.
+
+Migration verification on 2026-10-23: integrated collection found 13,148 tests;
+both workspace typechecks passed. Manual modular/shared runs passed 1,384 tests
+plus the three parallel-oracle tests. Focused NumPy sequential/parallel and native
+batch-accumulation checks each passed using precompiled inputs. These connection
+checks do not certify unimplemented optimized-engine rules.
+
 ## Modular integration closure
 
 The [test classification reference](test-sequence.md) defines the phase

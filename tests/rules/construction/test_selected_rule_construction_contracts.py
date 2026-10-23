@@ -1,6 +1,6 @@
 """Construction contracts split from ``tests/engines/modular/test_local_modifier_variants.py``.
 
-T07-A block.  Every check below asserts the compiled output of the canonical
+Every check below asserts the compiled output of the canonical
 builder or a construction refusal; none executes a round, so they belong to the
 construction suite.  Names, parametrizations, assertions and bodies are the
 originals; the phase marker is the construction category.

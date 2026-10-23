@@ -246,8 +246,7 @@ makes the Leadership test observable. They must be executed before their parity
 is claimed.
 `q00-honorable`, the knocked-down recovery cases and the other former `state:`
 blocks are now prepared inside the duel with the current APIs. See the
-[current plan](TMP_VECTORIAL_ENGINE_2A2B/parity_update/PARITY_BATTERY_RENOVATION.md)
-and [adaptation status](TMP_VECTORIAL_ENGINE_2A2B/parity_update/P03-deliverable.md).
+[verification reference](docs/reference/verification.md) for the execution workflow.
 
 The modular remains the validated oracle. NumPy is received as implemented;
 this backlog does not restart its port or establish that G07 passed. Keep the

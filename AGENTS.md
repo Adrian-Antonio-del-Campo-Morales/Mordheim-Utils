@@ -47,9 +47,8 @@ evidence and blockers to the parent, which produces the single package delivery.
 
 ## Testing rework: verification and parallel execution
 
-For tasks governed by `tests/TMP_TESTING_REWORK/REWORK_PLAN.md` and
-`REWORK_PLAN_TASKS.md`, use the minimum verification needed for the assigned
-change. These scope limits also apply to coordinators and delegated agents.
+For test maintenance and migrations, use the minimum verification needed for
+the assigned change. These scope limits also apply to coordinators and delegated agents.
 
 - Do not develop new tests, expand coverage or add improvements outside the
   assigned task. Reuse and adapt existing checks.
