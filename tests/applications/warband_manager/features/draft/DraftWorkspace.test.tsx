@@ -9,7 +9,7 @@ import { memberCount } from "@domain/campaign/kernel/document";
 import { CampaignAppProvider } from "@src/features/campaign/useCampaignApp";
 import type { CampaignDocument } from "@src/features/campaign/types";
 import { DraftWorkspace } from "@src/features/draft/DraftWorkspace";
-import { readArtefactReader } from "../../../../rules/knowledge/support/kb-artefact";
+import { readArtefactReader } from "../../../../knowledge/support/kb-artefact";
 
 describe("DraftWorkspace", () => {
   it("does not count a Hired Sword against the initial warband limit", () => {

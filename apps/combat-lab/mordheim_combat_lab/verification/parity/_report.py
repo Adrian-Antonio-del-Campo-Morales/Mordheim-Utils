@@ -45,30 +45,12 @@ class StatisticalParityResult:
     # rows never carry the flag).
     escalated: bool = False
 
-@dataclass(frozen=True, slots=True)
-class SpecificationParityCase:
-    specification: str
-    case: str
-    operation: str
-    status: str
-    adapter: str
-    detail: str = ""
-
-@dataclass(frozen=True, slots=True)
-class SpecificationParityReport:
-    complete: bool
-    cases: tuple[SpecificationParityCase, ...]
-    passed: tuple[str, ...]
-    pending: tuple[str, ...]
-    divergences: tuple[str, ...]
-    out_of_scope: tuple[str, ...]
 
 CERTIFICATION_SIMULATIONS = 100_000
 
 def parity_report_payload(
     report: ParityReport,
     statistical: Iterable[StatisticalParityResult] = (),
-    specifications: SpecificationParityReport | None = None,
     deep: Iterable[StatisticalParityResult] = (),
     truncations: Iterable[StatisticalParityResult] = (),
     elapsed_seconds: float | None = None,
@@ -98,9 +80,8 @@ def parity_report_payload(
         "elapsed_seconds": elapsed_seconds,
         "oracle": "combat.modular (read-only)",
         "candidate": "combat.vectorized",
-        "complete": report.complete and statistical_passed and deep_passed and (
-            specifications is None or specifications.complete
-        ) and (not truncation_samples or truncations_passed),
+        "complete": report.complete and statistical_passed and deep_passed
+        and (not truncation_samples or truncations_passed),
         "certification_sample_complete": certification,
         "certification_minimum_simulations_per_engine": CERTIFICATION_SIMULATIONS,
         "deterministic": {
@@ -156,21 +137,7 @@ def parity_report_payload(
                 "candidate_seconds": item.candidate_seconds,
             } for item in truncation_samples),
         },
-        "specifications": None if specifications is None else {
-            "complete": specifications.complete,
-            "passed": specifications.passed,
-            "pending": specifications.pending,
-            "divergences": specifications.divergences,
-            "out_of_scope": specifications.out_of_scope,
-            "cases": tuple({
-                "specification": item.specification,
-                "case": item.case,
-                "operation": item.operation,
-                "status": item.status,
-                "adapter": item.adapter,
-                "detail": item.detail,
-            } for item in specifications.cases),
-        },
+
     }
 
 def parity_report_markdown(payload: dict[str, object]) -> str:
@@ -198,15 +165,6 @@ def parity_report_markdown(payload: dict[str, object]) -> str:
         "",
         *[f"- `{name}`" for name in deterministic["exact_checks"]],
     ]
-    specifications = payload.get("specifications")
-    if isinstance(specifications, dict):
-        lines.extend((
-            "", "## Semantic specification parity", "",
-            f"- PASS: `{len(specifications['passed'])}`",
-            f"- PENDING_ADAPTER: `{len(specifications['pending'])}`",
-            f"- DIVERGENCE: `{len(specifications['divergences'])}`",
-            f"- OUT_OF_SCOPE: `{len(specifications['out_of_scope'])}`",
-        ))
     if rows:
         lines.extend((
             "", "## Statistical comparisons", "",

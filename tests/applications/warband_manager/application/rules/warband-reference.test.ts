@@ -4,7 +4,7 @@ import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 import type { KnowledgeArtefact } from "@adapters/knowledge-reader/artefact-types";
 import { presentationEntries } from "@adapters/knowledge-reader/presentation";
 import { WarbandReferences } from "@app/rules/warband-reference";
-import { readArtefactReader } from "../../../../rules/knowledge/support/kb-artefact";
+import { readArtefactReader } from "../../../../knowledge/support/kb-artefact";
 
 const real = () => new WarbandReferences(readArtefactReader(resolve(__dirname, "../../../../../outputs/web-public/knowledge/knowledge-web.json")));
 

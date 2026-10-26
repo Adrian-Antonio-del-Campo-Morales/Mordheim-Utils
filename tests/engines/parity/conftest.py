@@ -1,12 +1,13 @@
-"""Precompiled-case access for the parity and benchmark suites (T10).
+"""Precompiled-case access for the cross-engine parity comparisons (T10).
 
-Parity, replay and benchmark consumers no longer build fighters through the
-knowledge base and the construction compiler.  They read the frozen corpus
+The parity comparisons no longer build fighters through
+the knowledge base and the construction compiler.  They read the frozen corpus
 produced by T06, keyed by the stable ``case_key`` that T01 fixed, and keep
 their own scenarios, dice, decisions, contexts, seeds, samples and
 tolerances.  Nothing here imports the compiler, the knowledge base or the
 engines: a missing or incompatible corpus raises ``CompiledCaseError``
-instead of recompiling a fighter.
+instead of recompiling a fighter.  Tooling and benchmark consumers outside this
+directory use ``tests/tooling/conftest.py`` for the same corpus.
 """
 from __future__ import annotations
 

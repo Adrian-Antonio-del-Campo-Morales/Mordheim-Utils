@@ -4,7 +4,7 @@ import "@testing-library/jest-dom/vitest";
 import { resolve } from "node:path";
 
 import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
-import { readArtefactReader } from "../../../../rules/knowledge/support/kb-artefact";
+import { readArtefactReader } from "../../../../knowledge/support/kb-artefact";
 
 import { KnowledgeHint } from "@src/features/campaign/KnowledgeHint";
 import { knowledgeName, readableValue } from "@src/features/campaign/displayText";

@@ -4,8 +4,8 @@ Reference material and procedures for the Mordheim Utils repository. Start
 with the [repository overview](../README.md) for installation and the common
 commands.
 
-Current follow-ups are in [the backlog](../TODO.md); the
-[modular verification sequence](reference/verification.md#modular-integration-closure)
+Current follow-ups are in [the backlog](../TODO.md);
+[modular integration closure](reference/verification.md#modular-integration-closure)
 distinguishes implementation closure from certification.
 
 ## Reference — how the system is built
@@ -17,12 +17,11 @@ distinguishes implementation closure from certification.
   adapters, bundle maintenance and boundary with combat compilation.
 - [Knowledge base](reference/knowledge-base.md) — canonical data, IDs,
   classification, translation and formatting policy.
-- [Verification](reference/verification.md) — the certification layers,
-  coverage and mutation gates, and what each one can prove.
-- [Test classification and execution order](reference/test-sequence.md) — the
-  phase categories, assignment criteria and dependency-based repair order.
-- [Tools and launcher](reference/tools.md) — `mordheim-utils.py` scope selection,
-  focused/parallel execution and maintained scripts.
+- [Verification](reference/verification.md) — the certification layers, the
+  coverage gate and what each one can prove.
+- [Tools and launcher](reference/tools.md) — the `mordheim-utils.py` app
+  launchers, test selections, performance measurements, checks, parallel
+  execution and maintained scripts.
 - [Frozen engine inputs](reference/verification.md#engine-test-fixtures) — loaders,
   regeneration and the boundary with source-backed rules/E2E checks.
 - [Web presentation](reference/web-presentation.md) — localization, provenance
@@ -72,12 +71,10 @@ points and documents owned by a specific artefact live beside them:
   verification work and deferred capabilities.
 - [`AGENTS.md`](../AGENTS.md) — repository instructions, which agents read from
   the checkout root.
-- `contracts/*/README.md` — `tests/rules/knowledge/test_editorial_schemas.py`
+- `contracts/*/README.md` — `tests/knowledge/test_editorial_schemas.py`
   requires each contract README next to its schemas.
-- [`tests/rules/integration/specs/README.md`](../tests/rules/integration/specs/README.md) — the conventions of the
-  verification corpus, published beside the corpus itself.
-- `tests/rules/integration/e2e/README.md` and
-  `tests/rules/integration/e2e/cases/grants/INVENTORY.md` — the E2E battery's own
+- `tests/integration/e2e/README.md` and
+  `tests/integration/e2e/cases/grants/INVENTORY.md` — the E2E battery's own
   contract, procedure notes and grant inventory, owned with the corpus they
   describe.
 

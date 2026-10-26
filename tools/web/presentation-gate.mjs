@@ -1,6 +1,6 @@
 /**
  * Presentation gate — the single entry point of `npm run check:presentation`
- * (and therefore of `python tools/mordheim-utils.py check-presentation`).
+ * (and therefore of `python tools/mordheim-utils.py check presentation`).
  *
  * Why this exists: the three checks used to be chained with `&&`, so the
  * static audit's non-zero exit (733 inherited findings) short-circuited the
@@ -39,7 +39,8 @@ export function definePhases(root = REPO_ROOT, cwd = APP_DIR) {
       command: process.execPath,
       args: [
         "--test",
-        resolve(root, "tests", "tooling", "web", "presentation-completeness-detector.test.mjs"),
+        resolve(root, "tests", "applications", "warband_manager", "presentation",
+          "completeness", "presentation-completeness-detector.test.mjs"),
       ],
       cwd,
       parse: parseDetectorTests,

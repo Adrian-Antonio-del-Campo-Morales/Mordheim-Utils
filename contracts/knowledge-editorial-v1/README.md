@@ -64,7 +64,7 @@ Every maintained YAML document of `sources/knowledge/` is claimed: the test
 suite fails when a new file appears without a schema, and when a document is
 claimed by two schemas. One document is declared outside the contract
 (`registry/bindings.yaml`, a legacy binding registry gated by
-`tests/rules/knowledge/test_knowledge_pipeline_guards.py`); the exception is
+`tests/knowledge/test_knowledge_pipeline_guards.py`); the exception is
 listed in `editorial_schemas.UNCOVERED_DOCUMENTS` and the suite fails if it goes
 stale.
 
@@ -181,9 +181,9 @@ accept them explicitly:
 The contract is enforced by the structural gate and by the test suite:
 
 ```powershell
-python tools/mordheim-utils.py verify --structural  # structure, connections, editorial schemas
+python tools/mordheim-utils.py check verify --structural  # structure, connections, editorial schemas
 python tools/knowledge/audit_schema_strictness.py  # how the schemas relate to the data
-python -m pytest tests/rules/knowledge/test_editorial_schemas.py
+python -m pytest tests/knowledge/test_editorial_schemas.py
 ```
 
 `mordheim_knowledge.editorial_schemas` reads the schemas from this directory,

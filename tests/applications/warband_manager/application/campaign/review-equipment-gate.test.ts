@@ -22,7 +22,7 @@
  */
 import { describe, expect, it } from "vitest";
 import { existsSync } from "node:fs";
-import { readArtefactDocument } from "../../../../rules/knowledge/support/kb-artefact";
+import { readArtefactDocument } from "../../../../knowledge/support/kb-artefact";
 import { join } from "node:path";
 
 import { CampaignFileV5Adapter } from "@adapters/campaign-file";

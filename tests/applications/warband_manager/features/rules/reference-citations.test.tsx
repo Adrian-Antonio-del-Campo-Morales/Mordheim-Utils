@@ -11,7 +11,7 @@ import "@testing-library/jest-dom/vitest";
 import { describe, expect, it } from "vitest";
 import { WarbandReferences } from "@app/rules/warband-reference";
 import { WarbandReferenceTemplate } from "@src/features/rules/WarbandReferenceTemplate";
-import { readArtefactReader } from "../../../../rules/knowledge/support/kb-artefact";
+import { readArtefactReader } from "../../../../knowledge/support/kb-artefact";
 
 const realReader = () => readArtefactReader(resolve(process.cwd(), "../../outputs/web-public/knowledge/knowledge-web.json"));
 

@@ -2,7 +2,7 @@ import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
 import { adaptCharacteristicValue, adaptDistanceText } from "@app/rules/distance-display";
-import { readArtefactDocument } from "../../../../rules/knowledge/support/kb-artefact";
+import { readArtefactDocument } from "../../../../knowledge/support/kb-artefact";
 
 const FIXED_CASES = [
   ["0.4\"", "1 cm"],

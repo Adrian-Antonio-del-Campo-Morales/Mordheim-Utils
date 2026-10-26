@@ -14,7 +14,7 @@ import { applicableRules, type BandPackage, type EditorialProfile } from "@domai
 
 interface Case { name: string; package: BandPackage; profile: EditorialProfile; expected_rule_ids: string[] }
 const cases: Case[] = JSON.parse(readFileSync(
-  new URL("../../../rules/construction/fixtures/eligibility/band-rule-recipients.json", import.meta.url), "utf8",
+  new URL("../../../construction/fixtures/eligibility/band-rule-recipients.json", import.meta.url), "utf8",
 )).cases;
 
 describe("F017 shared band-rule recipient contract", () => {

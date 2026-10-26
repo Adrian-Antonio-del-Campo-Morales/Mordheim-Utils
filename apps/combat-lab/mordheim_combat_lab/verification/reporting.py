@@ -1,4 +1,4 @@
-"""Excel-friendly human reports for semantic parity and technical tests."""
+"""Excel-friendly reports for statistical comparisons and technical tests."""
 from __future__ import annotations
 
 import csv
@@ -14,15 +14,10 @@ from typing import Iterable
 from mordheim_combat_lab.cli.benchmarking import benchmark_scenarios
 from mordheim_combat.vectorized import available_backends
 from mordheim_construction.compiler import compile_fighter
-from mordheim_combat_lab.verification.parity import CONSTRUCTION_SPEC_OPERATIONS
 from mordheim_combat_lab.verification.parity import compare_statistical_parity
-from mordheim_combat_lab.verification.parity import verify_specification_parity
-from mordheim_combat_lab.verification.scenarios import check_case
-from mordheim_combat_lab.verification.specifications import load_fixtures
-from mordheim_knowledge.loader import knowledge_root
 
 
-SEMANTIC_COLUMNS = (
+STATISTICAL_COLUMNS = (
     "test_id", "category", "operation", "rules", "expected",
     "modular_result", "numpy_result", "native_result",
     "modular_status", "numpy_status", "native_status", "passes", "details",
@@ -61,215 +56,102 @@ def write_csv(path: Path, columns: tuple[str, ...], rows: Iterable[dict[str, obj
             writer.writerow({column: _excel_cell(row.get(column, "")) for column in columns})
 
 
-def _expected(case: dict) -> dict[str, object]:
-    result: dict[str, object] = {}
-    for key in ("expect", "expect_contains", "distribution", "reject"):
-        if key in case:
-            result[key] = case[key]
-    return result
-
-
-def _overall(*statuses: str) -> str:
-    if any(status in {"FAIL", "DIVERGENCE", "ERROR"} for status in statuses):
-        return "FAIL"
-    if statuses and all(status == "OUT_OF_SCOPE" for status in statuses):
-        return "OUT_OF_SCOPE"
-    if any(status in {"PENDING_ADAPTER", "PENDING_SEMANTIC", "NOT_AVAILABLE"} for status in statuses):
-        return "PENDING"
-    return "PASS"
-
-
-def semantic_report_rows(*, statistical: bool = False, simulations: int = 100_000,
-                         seed: int = 2026,
-                         on_progress: Callable[[], None] | None = None,
-                         workers: object | None = None,
-                         ) -> list[dict[str, object]]:
-    root = knowledge_root()
-    parity = verify_specification_parity(root)
-    indexed = {(item.specification, item.case): item for item in parity.cases}
+def statistical_report_rows(*, simulations: int = 100_000, seed: int = 2026,
+                            on_progress: Callable[[], None] | None = None,
+                            workers: object | None = None,
+                            ) -> list[dict[str, object]]:
+    """Compare the existing duel scenarios statistically; no semantic YAML runs."""
     native_available = "native" in available_backends()
     rows: list[dict[str, object]] = []
-    for specification in load_fixtures():
-        sources = " | ".join(str(source["target"]) for source in specification.get("sources", ()))
-        for case in specification.get("cases", ()):
-            item = indexed[(str(specification["id"]), str(case["id"]))]
-            construction = item.operation in CONSTRUCTION_SPEC_OPERATIONS
-            base = {
-                "test_id": f"{item.specification}/{item.case}",
-                "specification": item.specification,
-                "case": item.case,
-                "category": specification.get("category", ""),
-                "operation": item.operation,
-                "layer": "construction" if construction else "combat",
-                "source_targets": sources,
-                "rules": sources,
-                "roles": " | ".join(str(role) for role in case.get("roles", ())),
-                "interpretation": specification.get("interpretation", ""),
-                "expected": _json(_expected(case)),
-                "rng_mode": "distribution" if "distribution" in case else "fixed" if case.get("rolls") else "deterministic",
-                "shared_status": "NOT_APPLICABLE", "shared_result": "", "shared_detail": "",
-                "modular_status": "", "modular_result": "", "modular_detail": "",
-                "numpy_status": "", "numpy_result": "", "numpy_detail": "",
-                "native_status": "", "native_result": "", "native_detail": "",
-                "details": "",
-            }
-            if item.status == "OUT_OF_SCOPE":
-                for engine in ("shared", "modular", "numpy", "native"):
-                    base[f"{engine}_status"] = "OUT_OF_SCOPE"
-                base["passes"] = "OUT_OF_SCOPE"
-                base["details"] = "Rule excluded by the declared runtime scope."
-                rows.append(base)
-                continue
-            if item.adapter == "semantic-pending":
-                base["modular_status"] = base["numpy_status"] = base["native_status"] = "PENDING_SEMANTIC"
-                base["modular_detail"] = item.detail
-                base["passes"] = "PENDING"
-                base["details"] = item.detail
-                rows.append(base)
-                continue
+    for scenario in benchmark_scenarios():
+        from mordheim_combat.modular.parallel import resolve_oracle_workers
+        from mordheim_combat.modular.parallel import run_oracle_sample
+        import time
+
+        first, second = compile_fighter(scenario.first), compile_fighter(scenario.second)
+        oracle_started = time.perf_counter()
+        modular_result = run_oracle_sample(
+            first, second, simulations, seed=seed,
+            maximum_rounds=scenario.maximum_rounds,
+            workers=resolve_oracle_workers(
+                workers, simulations, scenario.maximum_rounds,
+            ),
+        )
+        oracle_seconds = time.perf_counter() - oracle_started
+        numpy_result = compare_statistical_parity(
+            scenario.id, first, second, simulations, seed=seed,
+            maximum_rounds=scenario.maximum_rounds, backend="numpy",
+            modular=modular_result, reference_seconds=oracle_seconds,
+        )
+        modular = {"rates_w_l_u": numpy_result.modular_rates, "simulations": simulations}
+        numpy = {"rates_w_l_u": numpy_result.vectorized_rates, "tolerances": numpy_result.tolerances,
+                 "simulations": simulations}
+        native = {}
+        native_status = "NOT_AVAILABLE"
+        native_detail = "native combat backend is not available"
+        if native_available:
             try:
-                observed = check_case(case, root)
+                native_result = compare_statistical_parity(
+                    scenario.id, first, second, simulations, seed=seed,
+                    maximum_rounds=scenario.maximum_rounds, backend="native",
+                    modular=modular_result, reference_seconds=oracle_seconds,
+                )
             except Exception as error:
-                base["modular_status"] = "FAIL"
-                base["modular_detail"] = str(error)
-                observed = None
+                native_status = "FAIL"
+                native_detail = str(error)
             else:
-                base["modular_status"] = "PASS_SHARED" if construction else "PASS"
-                base["modular_result"] = _json(observed)
-            if construction:
-                base["shared_status"] = "PASS" if observed is not None else "FAIL"
-                base["shared_result"] = base["modular_result"]
-                for engine in ("numpy", "native"):
-                    base[f"{engine}_status"] = "PASS_SHARED" if observed is not None else "FAIL"
-                    base[f"{engine}_result"] = base["modular_result"]
-            else:
-                base["numpy_status"] = item.status
-                base["numpy_detail"] = item.detail
-                if item.status == "PASS":
-                    base["numpy_result"] = base["modular_result"]
-                if native_available:
-                    # Per-operator cases certify each engine's operator
-                    # semantics.  The native backend is a duel-level engine
-                    # without independent per-operator entry points: its C
-                    # loop is certified on the duel-level (statistical) rows
-                    # and reuses the operator semantics verified above.
-                    base["native_status"] = "NOT_APPLICABLE"
-                    base["native_detail"] = (
-                        "native is a duel-level engine; per-operator cases are "
-                        "covered by the numpy adapter, duel-level rows by the "
-                        "statistical comparison"
-                    )
-                else:
-                    base["native_status"] = "NOT_AVAILABLE"
-                    base["native_detail"] = "native combat backend is not available"
-            base["passes"] = _overall(
-                str(base["shared_status"]), str(base["modular_status"]),
-                str(base["numpy_status"]), str(base["native_status"]),
-            )
-            details = tuple(
-                f"{engine}: {base[f'{engine}_detail']}"
-                for engine in ("shared", "modular", "numpy", "native")
-                if base.get(f"{engine}_detail")
-            )
-            base["details"] = " | ".join(details)
-            rows.append(base)
+                native_status = "PASS" if native_result.passed else "FAIL"
+                native = {
+                    "rates_w_l_u": native_result.vectorized_rates,
+                    "tolerances": native_result.tolerances, "simulations": simulations,
+                }
+                native_detail = ""
+        numpy_passed = numpy_result.passed
+        native_passed = not native_available or native_status == "PASS"
+        passes = "PASS" if numpy_passed and native_passed else "FAIL"
+        if not native_available and numpy_passed:
+            passes = "PENDING"
+        rows.append({
+            "test_id": f"statistical/{scenario.id}", "specification": "statistical",
+            "case": scenario.id, "category": "statistical", "operation": "duel",
+            "layer": "combat", "source_targets": "", "roles": "aggregate",
+            "rules": "",
+            "interpretation": "Independent modular and optimized samples satisfy the six-sigma gate.",
+            "expected": _json({"minimum_tolerance": 0.0025}), "rng_mode": "statistical",
+            "shared_status": "NOT_APPLICABLE", "shared_result": "", "shared_detail": "",
+            "modular_status": "PASS", "modular_result": _json(modular), "modular_detail": "",
+            "numpy_status": "PASS" if numpy_passed else "FAIL", "numpy_result": _json(numpy), "numpy_detail": "",
+            "native_status": native_status, "native_result": _json(native) if native else "",
+            "native_detail": native_detail,
+            "passes": passes,
+            "details": "" if not native_detail else f"native: {native_detail}",
+        })
         if on_progress is not None:
             on_progress()
-
-    if statistical:
-        for scenario in benchmark_scenarios():
-            from mordheim_combat.modular.parallel import resolve_oracle_workers
-            from mordheim_combat.modular.parallel import run_oracle_sample
-            import time
-
-            first, second = compile_fighter(scenario.first), compile_fighter(scenario.second)
-            oracle_started = time.perf_counter()
-            modular_result = run_oracle_sample(
-                first, second, simulations, seed=seed,
-                maximum_rounds=scenario.maximum_rounds,
-                workers=resolve_oracle_workers(
-                    workers, simulations, scenario.maximum_rounds,
-                ),
-            )
-            oracle_seconds = time.perf_counter() - oracle_started
-            numpy_result = compare_statistical_parity(
-                scenario.id, first, second, simulations, seed=seed,
-                maximum_rounds=scenario.maximum_rounds, backend="numpy",
-                modular=modular_result, reference_seconds=oracle_seconds,
-            )
-            modular = {"rates_w_l_u": numpy_result.modular_rates, "simulations": simulations}
-            numpy = {"rates_w_l_u": numpy_result.vectorized_rates, "tolerances": numpy_result.tolerances,
-                     "simulations": simulations}
-            native = {}
-            native_status = "NOT_AVAILABLE"
-            native_detail = "native combat backend is not available"
-            if native_available:
-                try:
-                    native_result = compare_statistical_parity(
-                        scenario.id, first, second, simulations, seed=seed,
-                        maximum_rounds=scenario.maximum_rounds, backend="native",
-                        modular=modular_result, reference_seconds=oracle_seconds,
-                    )
-                except Exception as error:
-                    native_status = "FAIL"
-                    native_detail = str(error)
-                else:
-                    native_status = "PASS" if native_result.passed else "FAIL"
-                    native = {
-                        "rates_w_l_u": native_result.vectorized_rates,
-                        "tolerances": native_result.tolerances, "simulations": simulations,
-                    }
-                    native_detail = ""
-            numpy_passed = numpy_result.passed
-            native_passed = not native_available or native_status == "PASS"
-            passes = "PASS" if numpy_passed and native_passed else "FAIL"
-            if not native_available and numpy_passed:
-                passes = "PENDING"
-            rows.append({
-                "test_id": f"statistical/{scenario.id}", "specification": "statistical",
-                "case": scenario.id, "category": "statistical", "operation": "duel",
-                "layer": "combat", "source_targets": "", "roles": "aggregate",
-                "rules": "",
-                "interpretation": "Independent modular and optimized samples satisfy the six-sigma gate.",
-                "expected": _json({"minimum_tolerance": 0.0025}), "rng_mode": "statistical",
-                "shared_status": "NOT_APPLICABLE", "shared_result": "", "shared_detail": "",
-                "modular_status": "PASS", "modular_result": _json(modular), "modular_detail": "",
-                "numpy_status": "PASS" if numpy_passed else "FAIL", "numpy_result": _json(numpy), "numpy_detail": "",
-                "native_status": native_status, "native_result": _json(native) if native else "",
-                "native_detail": native_detail,
-                "passes": passes,
-                "details": "" if not native_detail else f"native: {native_detail}",
-            })
-            if on_progress is not None:
-                on_progress()
     return rows
 
 
-def write_semantic_report(output: Path, *, statistical: bool = False,
+def write_statistical_report(output: Path, *,
                           simulations: int = 100_000, seed: int = 2026,
                           on_progress: Callable[[], None] | None = None,
                           workers: object | None = None,
                           ) -> tuple[Path, list[dict[str, object]]]:
-    """Compute the semantic parity rows and write the CSV; return its path.
-
-    The on_progress hook fires once per semantic specification and once per
-    statistical scenario, so callers can render a live bar over this phase.
-    """
+    """Compute statistical comparisons and write their CSV; return its path."""
     output = Path(output)
-    semantic_path = output / "semantic-parity.csv"
+    statistical_path = output / "statistical-parity.csv"
     try:
-        semantic_rows = semantic_report_rows(
-            statistical=statistical, simulations=simulations, seed=seed,
+        statistical_rows = statistical_report_rows(
+            simulations=simulations, seed=seed,
             on_progress=on_progress, workers=workers,
         )
     except Exception as error:
-        semantic_rows = [{
-            "test_id": "report/semantic-generation", "category": "report",
+        statistical_rows = [{
+            "test_id": "report/statistical-generation", "category": "report",
             "operation": "generate", "layer": "infrastructure",
             "modular_status": "ERROR", "modular_detail": str(error), "passes": "FAIL",
         }]
-    write_csv(semantic_path, SEMANTIC_COLUMNS, semantic_rows)
-    return semantic_path, semantic_rows
+    write_csv(statistical_path, STATISTICAL_COLUMNS, statistical_rows)
+    return statistical_path, statistical_rows
 
 
 def run_technical_tests(path: Path) -> int:
@@ -300,13 +182,15 @@ def generate_test_report(output: Path, *, statistical: bool = False,
                          simulations: int = 100_000, seed: int = 2026,
                          on_progress: Callable[[], None] | None = None,
                          workers: object | None = None,
-                         ) -> tuple[Path, Path, list[dict[str, object]], int]:
-    """Both report phases in one call; see write_semantic_report."""
+                         ) -> tuple[Path | None, Path, list[dict[str, object]], int]:
+    """Technical tests plus optional statistical comparisons; no semantic runner."""
     output = Path(output)
-    semantic_path, semantic_rows = write_semantic_report(
-        output, statistical=statistical, simulations=simulations, seed=seed,
-        on_progress=on_progress, workers=workers,
-    )
+    statistical_path, statistical_rows = None, []
+    if statistical:
+        statistical_path, statistical_rows = write_statistical_report(
+            output, simulations=simulations, seed=seed,
+            on_progress=on_progress, workers=workers,
+        )
     technical_path = output / "technical-tests.csv"
     technical_exit = run_technical_tests(technical_path)
-    return semantic_path, technical_path, semantic_rows, technical_exit
+    return statistical_path, technical_path, statistical_rows, technical_exit

@@ -533,7 +533,7 @@
     "impact": "under-allow",
     "kb_change": "the rule publishes `applies_to.profile_ids: [giant-slayer, doomseeker]` — the printed column is Slayers Only, so the Rememberer is never a recipient — and the complete printed member list in the `profile.skill-access` parameters (`skills: skill.deathwish, skill.ferocious-charge, skill.monster-slayer, skill.berserker, skill.deathblow, skill.axe-mastery, skill.tough-as-steel, skill.thick-skull`), with `skill.tough-as-steel` declaring `true_grit` and the printed 1-3/4-5/6 chart and the Relentless member disposed by content (failed-charge movement) inside the rule",
     "contract": "`profileSkillLists`/`profileFactsProjection` publish the bounded special list and `skillIssue` refuses a special skill outside it; the Deathblow member is resolved by `modular.rounds`/`modular.pools`/`modular.attacks`",
-    "test": "tests/rules/construction/test_dwarf_slayer_skills.py; tests/engines/modular/test_slayer_deathblow.py",
+    "test": "tests/construction/test_dwarf_slayer_skills.py; tests/engines/modular/mechanics/test_slayer_deathblow.py",
     "evidence": "before: the rule covered the whole band with no member list and Deathwish, Deathblow and Axe Mastery stayed unavailable; after: the Slayer Heroes pick the eight admitted printed members, any other special skill is refused as `skill_not_permitted`, the Rememberer publishes no Slayer list, and a Slayer taken out of action still makes the remainder of the phase's attacks through the modular pool"
    },
    {
@@ -545,7 +545,7 @@
     "impact": "under-allow",
     "kb_change": "the rule publishes `applies_to.profile_ids: [giant-slayer, troll-slayers]` and the printed member list in the `profile.skill-access` parameters (`skills: skill.ferocious-charge, skill.monster-slayer, skill.berserker`); the inherited Dwarf column of the same table (`band--town-crier-6-dwarf-special-skills`) publishes exactly its printed members (`skill.unbeatable-warrior`, `skill.tough-as-steel`, `skill.thick-skull`), Master of Blades being one printed entry, and disposes the campaign-only Extra Tough and Resource Hunter by content",
     "contract": "`profileSkillLists`/`profileFactsProjection` publish the bounded special list and `skillIssue` refuses a special skill outside it; `skill.tough-as-steel` carries the printed True Grit chart",
-    "test": "tests/rules/construction/test_dwarf_slayer_skills.py",
+    "test": "tests/construction/test_dwarf_slayer_skills.py",
     "evidence": "before: the Town Crier 6 cross-reference stayed deferred and the column granted nothing; after: Giant Slayer and Troll Slayer pick the three transcribed Slayer members while the Rememberer keeps the inherited Dwarf column, the Dwarf column admits Unbeatable Warrior but never the distinct Vampire `skill.sword-master`, and the campaign-only members keep their own dispositions"
    },
    {

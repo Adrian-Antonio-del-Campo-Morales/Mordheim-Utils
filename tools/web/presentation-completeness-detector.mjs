@@ -3,7 +3,8 @@
  * completeness layer of `check-presentation` (step 5).
  *
  * This module is deliberately pure: no I/O, no artefact knowledge, no React.
- * The dynamic audit (tests/web/tools/presentation-completeness-sweep.test.tsx)
+ * The dynamic audit (tests/applications/warband_manager/presentation/
+ * completeness/presentation-completeness-sweep.test.tsx)
  * loads the real generated artefacts through the maintained helpers and renders
  * the real consumers; every visible value it captures is classified here with
  * the context of its surface (locale, published translations, id inventory,
