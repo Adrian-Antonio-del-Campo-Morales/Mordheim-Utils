@@ -28,16 +28,14 @@ from mordheim_combat.modular.rounds import resolve_round
 from mordheim_combat.modular.state import initialize_duel, initialize_fighter
 
 
-from mordheim_combat.native._combat_compile import compile_duel
 
 
 from mordheim_combat.vectorized import simulate_batch, simulate_duel, simulate_duel_parallel
 
 
-from mordheim_combat_lab.application.catalogue import CombatCatalogue
 
 
-from mordheim_combat_lab.verification.dice import StrictDecisions, StrictDice
+from tests.engines.shared.dice import StrictDecisions, StrictDice
 
 
 from mordheim_core.models import Characteristics, DuelContext, DuelRequest
@@ -63,7 +61,7 @@ def plain(cases):
 
 
 @pytest.mark.parametrize('second', [False, True])
-@pytest.mark.parametrize('backend', ['auto', 'numpy', 'native'])
+@pytest.mark.parametrize('backend', ['auto', 'numpy'])
 def test_public_optimized_paths_refuse_unported_canonical_effect(host, plain, second, backend):
     """The canonical host still carries another pending contract.
 
@@ -81,7 +79,7 @@ def test_public_optimized_paths_refuse_unported_canonical_effect(host, plain, se
 @pytest.mark.parametrize('second', [False, True])
 def test_low_level_optimized_paths_refuse_before_execution(host, plain, second):
     pair = (plain, host) if second else (host, plain)
-    calls = (lambda: compile_duel_plan(*pair), lambda: compile_duel(*pair),
+    calls = (lambda: compile_duel_plan(*pair),
              lambda: simulate_batch(*pair, 1, np.random.default_rng(0), 1),
              lambda: simulate_duel_parallel(DuelRequest(*pair, simulations=1)))
     # Every entry still refuses, but the host's pending local-modifier contract

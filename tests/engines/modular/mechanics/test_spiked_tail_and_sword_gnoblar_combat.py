@@ -11,7 +11,7 @@ from dataclasses import replace
 from mordheim_combat.modular.contexts import _attack_strength
 from mordheim_combat.modular.rounds import resolve_round
 from mordheim_combat.modular.state import initialize_duel, initialize_fighter
-from mordheim_combat_lab.verification.dice import StrictDecisions, StrictDice
+from tests.engines.shared.dice import StrictDecisions, StrictDice
 from mordheim_core.models import DuelContext
 import pytest
 

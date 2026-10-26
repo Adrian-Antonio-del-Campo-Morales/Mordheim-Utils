@@ -15,7 +15,7 @@ from dataclasses import replace
 from mordheim_combat.modular.attacks import resolve_reference_attack
 from mordheim_combat.modular.contexts import _combined_effect, _hit_reroll
 from mordheim_combat.modular.state import initialize_fighter
-from mordheim_combat_lab.verification.dice import StrictDice
+from tests.engines.shared.dice import StrictDice
 from mordheim_core.models import FighterBuild
 from pathlib import Path
 import pytest

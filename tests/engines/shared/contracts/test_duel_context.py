@@ -2,7 +2,7 @@
 from dataclasses import replace
 import pickle
 import pytest
-from mordheim_core.models import Characteristics, DuelContext, DuelRequest, FighterBuild, LocalParticipant
+from mordheim_core.models import Characteristics, DuelContext, DuelRequest, LocalParticipant
 from mordheim_core.context import prepare_duel_context
 from mordheim_core.dice import ScriptedDice
 from mordheim_combat.kernel import compile_duel_plan
@@ -31,7 +31,6 @@ def test_invalid_contextual_stat_is_rejected(name, value):
 
 
 def test_canonical_stats_survive_player_advances_and_explicit_overrides(precompiled):
-    build = FighterBuild("mordheim", band_id="mercenaries", profile_id="mercenary-captain")
     compiled = precompiled()
     canonical = compiled.first
     advanced = compiled.second
@@ -42,9 +41,6 @@ def test_canonical_stats_survive_player_advances_and_explicit_overrides(precompi
         characteristics=replace(advanced.characteristics, movement=5, leadership=9),
     )
     assert (custom.characteristics.movement, custom.characteristics.leadership) == (5, 9)
-    from mordheim_combat_lab.application.analyses import improve_attributes
-    improved = improve_attributes(replace(build, characteristics=custom.characteristics), {"S": 1})
-    assert (improved.characteristics.movement, improved.characteristics.leadership) == (5, 9)
 
 
 def test_local_identity_does_not_replace_canonical_identity(precompiled):
@@ -85,26 +81,3 @@ def test_context_free_and_empty_context_retain_rng_order_and_results(precompiled
     assert simulate_duel_reference(unit, unit, 30, seed=9) == simulate_duel_reference(unit, unit, 30, seed=9, context=DuelContext())
     request = DuelRequest(unit, unit, 100, seed=11, batch_size=31)
     assert simulate_duel(request, backend="numpy") == simulate_duel(replace(request, context=DuelContext()), backend="numpy")
-
-
-@pytest.mark.parametrize("backend", ["numpy", "native"])
-def test_real_pool_preserves_context(backend, cases):
-    from mordheim_combat.vectorized import available_backends, simulate_duel, simulate_duel_parallel
-    from mordheim_combat_lab.application.settings import DuelExecutionSettings, simulate_battery
-    if backend == "native" and "native" not in available_backends():
-        pytest.skip("native extension unavailable")
-    # The original build and its charge bonus are identical for both backends.
-    unit = cases[
-        "unit/shared/test_duel_context/test_real_pool_preserves_context-0-0"
-    ].first
-    context = DuelContext(charging=("second",), active_participant="first")
-    request = DuelRequest(unit, unit, 80, seed=13, batch_size=21, maximum_rounds=3, context=context)
-    sequential = simulate_duel(request, backend=backend)
-    settings = DuelExecutionSettings(80, 13, 21, 3)
-    assert settings.request(unit, unit, context=context).context == context
-    assert simulate_battery(unit, unit, settings, workers=2, backend=backend, context=context) == sequential
-    if backend == "numpy":
-        assert simulate_duel_parallel(request, workers=2) == sequential
-    from mordheim_combat.modular.duel import simulate_duel_reference
-    from mordheim_combat.modular.parallel import simulate_duel_reference_parallel
-    assert simulate_duel_reference_parallel(unit, unit, 20, seed=13, maximum_rounds=3, workers=2, context=context) == simulate_duel_reference(unit, unit, 20, seed=13, maximum_rounds=3, context=context)

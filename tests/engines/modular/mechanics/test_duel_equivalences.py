@@ -18,7 +18,7 @@ from mordheim_combat.modular.contexts import prepare_armour_context
 from mordheim_combat.modular.equipment import whipcrack_weapon
 from mordheim_combat.modular.rounds import apply_round_weapon_attack_modifiers
 from mordheim_combat.modular.state import initialize_fighter
-from mordheim_combat_lab.verification.dice import StrictDice
+from tests.engines.shared.dice import StrictDice
 from mordheim_core.models import Characteristics, FighterBuild
 import pytest
 

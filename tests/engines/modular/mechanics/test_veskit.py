@@ -15,7 +15,7 @@ from mordheim_combat.modular.contexts import prepare_armour_context
 from mordheim_combat.modular.leadership import resolve_local_leadership
 from mordheim_combat.modular.state import DuelState, initialize_fighter
 from mordheim_combat.phases import armour_target, resolve_armour
-from mordheim_combat_lab.verification.dice import StrictDecisions, StrictDice
+from tests.engines.shared.dice import StrictDecisions, StrictDice
 import pytest
 
 

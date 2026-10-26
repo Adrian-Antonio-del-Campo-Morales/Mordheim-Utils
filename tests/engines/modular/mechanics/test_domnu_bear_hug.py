@@ -26,7 +26,7 @@ from __future__ import annotations
 import sys
 from mordheim_combat.modular import pools
 from mordheim_combat.modular import state as st
-from mordheim_combat_lab.verification.dice import StrictDecisions, StrictDice
+from tests.engines.shared.dice import StrictDecisions, StrictDice
 from mordheim_core.models import Characteristics, FighterBuild
 import pytest
 

@@ -20,7 +20,7 @@ from mordheim_combat import phases
 from mordheim_combat.modular import pools
 from mordheim_combat.modular import rounds
 from mordheim_combat.modular import state as st
-from mordheim_combat_lab.verification.dice import StrictDice
+from tests.engines.shared.dice import StrictDice
 from mordheim_core.dice import AlwaysAccept
 from mordheim_core.dice import AlwaysReject
 from mordheim_core.dice import ScriptedDecisions

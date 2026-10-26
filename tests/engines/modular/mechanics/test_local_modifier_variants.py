@@ -13,7 +13,7 @@ from mordheim_combat.modular.state import initialize_duel, initialize_fighter
 from mordheim_combat.phases import Condition
 from mordheim_combat.phases import AttackPoolContext, build_attacks
 from mordheim_combat.kernel import require_optimized_support
-from mordheim_combat_lab.verification.dice import StrictDecisions, StrictDice
+from tests.engines.shared.dice import StrictDecisions, StrictDice
 import sys
 
 compile_fighter = None
@@ -88,7 +88,6 @@ def test_shadow_dances_modify_actual_injury_and_magic_save(precompiled, dance, r
     assert result.saved is saved
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_woven_mist_uses_total_attacks_and_initiative_for_first_strike_ties():
     # The recorded case is the post-selection state; the unchanged fighter this
     # test also measures is only available from the compiler.
@@ -119,7 +118,6 @@ def test_shadow_dances_require_a_promoted_minstrel_and_cannot_be_declined_when_a
     assert idle is promoted and next_state.last_shadow_dance is None
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_woodsmen_staff_uses_printed_strength_not_balanced_initiative():
     woodsman = canonical('woodsmen-de-artois-mou', 'chief', 'weapon.quarter-staff')
     cathayan = canonical('pirates-of-the-cathayan-sea-sar', 'dragon-monk', 'weapon.quarter-staff')
@@ -131,7 +129,6 @@ def test_woodsmen_staff_uses_printed_strength_not_balanced_initiative():
     assert (sword.main_weapon.strength_bonus, sword.main_weapon.initiative_bonus) == (0, 0)
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_woodsmen_staff_keeps_parry_and_two_hand_compatibility():
     woodsman = canonical('woodsmen-de-artois-mou', 'chief', 'weapon.quarter-staff')
     assert strike(enemy(), woodsman, [('hit', 4), ('parry', 5)]).parried
@@ -147,7 +144,6 @@ def strike(attacker, defender, rolls):
     return result
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('armour,face', [('armour.no-armour', 6), ('armour.heavy-armour', 4)])
 def test_shortsword_keeps_parry_and_grants_the_printed_enemy_armour_bonus(armour, face):
     short = canonical('bretonnian-chapel-guard', 'battle-pilgrims', 'weapon.shortsword')
@@ -161,7 +157,6 @@ def test_shortsword_keeps_parry_and_grants_the_printed_enemy_armour_bonus(armour
     assert not strike(sword, enemy(armour=armour), control).saved
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('band,profile,rule', [
     ('dark-elves', 'high-born', 'band--dark-elf-special-skills-fey-quickness'),
     ('druchii-mic', 'noble', 'noble--fey-quickness'),
@@ -179,7 +174,6 @@ def test_fey_quickness_is_acquired_and_combines_with_step_aside(band, profile, r
                 [('hit', 4), ('wound', 4), ('special.ward', face)]).saved is saved
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_bestial_is_innate_vampire_ward_against_mundane_and_magic():
     vampire = compile_fighter(FighterBuild('mordheim', band_id='strigoi-kaz', profile_id='vampire'))
     assert vampire.global_effects.ward_save == 6
@@ -195,7 +189,6 @@ def test_bestial_is_innate_vampire_ward_against_mundane_and_magic():
     assert guard.global_effects.ward_save == 7
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('profile', ['plague-priest', 'plague-champion'])
 def test_pestilens_innate_resilience_does_not_stack_with_the_same_selected_skill(profile):
     skaven = canonical('skaven-of-clan-pestilens-mou', profile, 'weapon.dagger')
@@ -216,7 +209,6 @@ def test_strigoi_bats_use_their_printed_injury_chart_not_bloated_squishy(precomp
         [('hit', 4), ('wound', 3), ('injury.0', face)]).defender.condition == condition
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('fire', [False, True])
 def test_fen_hard_to_kill_is_recipient_and_fire_qualified(fire):
     fen = compile_fighter(FighterBuild('mordheim', band_id='fen-guard-mim', profile_id='dryads'))
@@ -279,7 +271,6 @@ def test_hard_to_rattle_has_a_helmet_reaction_except_against_fire(precompiled, f
         assert result.defender.condition == Condition.STUNNED
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('priest_first', [True, False])
 @pytest.mark.parametrize('wound_face,wounded', [(3, False), (4, True)])
 def test_priest_bite_follows_both_double_handed_weapons_and_uses_only_own_strength(priest_first, wound_face, wounded):
@@ -347,7 +338,6 @@ def test_priest_bite_recurs_in_later_rounds_but_stops_when_ordinary_attack_remov
     assert len(result.attacks) == 1 and result.state.second.condition == Condition.OUT
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('charging,base,expected', [(True, 1, 2), (True, 3, 2), (False, 3, 3)])
 @pytest.mark.parametrize('selection', ['weapon.dagger', 'weapon.fist'])
 def test_sabretusk_charge_replaces_profile_attacks_only_during_actual_charge(charging, base, expected, selection):
@@ -371,7 +361,6 @@ def test_sabretusk_charge_replaces_profile_attacks_only_during_actual_charge(cha
         require_optimized_support(cub, foe)
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_unerring_strike_reuses_failed_wound_reroll_on_the_canonical_elf():
     elf = canonical('high-elves-lus', 'loremaster',
         special_rule_ids=('band--skill-unerring-strike',))
@@ -418,7 +407,6 @@ def test_seaguard_can_save_one_reroll_for_a_later_miss_and_bonus_expires_after_f
         require_optimized_support(guard, foe)
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_seaguard_has_no_spear_bonus_on_other_weapon_or_other_profile():
     foe = enemy()
     for guard in (canonical('lothern-sea-patrol-sar', 'seaguards', 'weapon.axe'),
@@ -465,7 +453,6 @@ def test_sabretusk_natural_hide_saves_on_five_and_takes_strength_penalties(preco
     assert not strike(stronger, cub, [('hit', 4), ('wound', 4), ('armour', 5), ('injury.0', 1)]).saved
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_domnu_prize_fighter_only_adds_attack_and_removes_penalties_when_unarmed():
     domnu = canonical('channel-rats-mim', 'domnu', 'weapon.fist')
     armed = canonical('channel-rats-mim', 'domnu', 'weapon.axe')
@@ -517,7 +504,6 @@ def test_ogre_hunter_unarmed_pool_strikes_twice_in_a_real_round(precompiled):
     assert len(result.attacks) == 3
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_ogre_hunter_losing_its_last_weapon_falls_back_without_losing_attacks():
     from mordheim_combat.modular.equipment import equipment_for_state
     hunter = canonical('ogre-hunting-party-web', 'ogre-hunter', 'weapon.sword')
@@ -571,7 +557,6 @@ def test_cutthroat_only_changes_saves_for_an_actual_dagger_pair(precompiled, wea
     assert outcome.defender.wounds == (1 if active else 2)
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_perfect_killer_is_automatic_and_not_applied_to_the_other_hero():
     master = canonical('silent-brotherhood-sc', 'silent-master')
     poisoner = canonical('silent-brotherhood-sc', 'poisoner')
@@ -582,7 +567,6 @@ def test_perfect_killer_is_automatic_and_not_applied_to_the_other_hero():
     assert not result.saved and result.defender.wounds == 1
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('strength,weapon,qualifies', [
     (5, 'weapon.mace', True), (4, 'weapon.mace', False),
     (4, 'weapon.double-handed-weapon', False),
@@ -607,7 +591,6 @@ def test_slimy_makes_four_miss_but_keeps_natural_six_and_named_control(precompil
     assert ordinary.global_effects.incoming_hit_modifier == 0
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('magical,ignore_armour,face,saved', [
     (False, False, 6, True), (True, True, 6, True), (True, True, 5, False),
 ])
@@ -627,7 +610,6 @@ def test_tattoos_are_a_special_save_even_when_armour_is_negated(magical, ignore_
         assert outcome.defender.condition == Condition.KNOCKED_DOWN
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_wolf_rat_bite_uses_strength_four_without_an_armour_penalty():
     rat = canonical('skaven-of-clan-moulder-web', 'wolf-rats', 'weapon.dagger')
     # S4 wounds T3 on 3, yet the printed exception retains light armour's 6+.
@@ -805,7 +787,6 @@ def fear_round(foe, rolls, *, charging='first', choices=(), context=None, state=
     return result
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('ld,face,hit,target', [
     ((3, 4), 4, True, 4), ((6, 6), 5, False, 6), ((6, 6), 6, True, 6),
 ])
@@ -827,7 +808,6 @@ def test_fear_when_charged_changes_hits_only_for_that_round(ld, face, hit, targe
     assert not later.state.second.fear_hit_sixes
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_failed_fear_charge_has_no_contact_attacks_or_invented_winner():
     foe = enemy()
     result = fear_round(foe, [('round.0.second.fear.charge.0', 6),
@@ -849,7 +829,6 @@ def test_failed_fear_charge_has_no_contact_attacks_or_invented_winner():
     assert later.state == replace(result.state, round_index=later.state.round_index)
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('charging', ['first', 'second'])
 def test_supplied_base_contact_refuses_an_initial_charge_between_the_same_duelists(charging):
     # A charge is an in-range attempt against a model that is not in base contact,
@@ -865,7 +844,6 @@ def test_supplied_base_contact_refuses_an_initial_charge_between_the_same_duelis
     dice.finish()
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_supplied_base_contact_keeps_a_fear_causing_duel_engaged_without_a_charge_test():
     # The supplied contact is the established engagement, so the round's charge
     # question is already answered as "nobody charges".  There is no initial
@@ -912,7 +890,6 @@ def test_a_supplied_engagement_is_not_broken_by_the_legacy_charge_attribution(pr
     assert len(result.attacks) == 2
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_successful_fear_charge_retains_its_real_priority_and_only_one_test():
     result = fear_round(enemy(), [('round.0.second.fear.charge.0', 3),
                                  ('round.0.second.fear.charge.1', 4),
@@ -923,7 +900,6 @@ def test_successful_fear_charge_retains_its_real_priority_and_only_one_test():
     assert not result.state.first.fear_hit_sixes
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('kind,foe_count', [('causes-fear', 2), ('automatic', 1), ('frenzy', 2)])
 def test_source_fear_exemptions_and_automatic_personal_leadership_consume_no_test_dice(kind, foe_count):
     if kind == 'causes-fear':
@@ -940,7 +916,6 @@ def test_source_fear_exemptions_and_automatic_personal_leadership_consume_no_tes
     assert len(result.attacks) == 2 + foe_count
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_fear_uses_live_frenzy_loss_and_shared_leader_threshold():
     cub = canonical('ogre-hunting-party-web', 'sabretusks', 'weapon.fist')
     foe = enemy(trait_overrides={'frenzy': True})
@@ -964,7 +939,6 @@ def test_fear_uses_live_frenzy_loss_and_shared_leader_threshold():
     assert not passed.state.second.fear_hit_sixes
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_fear_sixes_override_hit_modifiers_and_automatic_hit_but_allow_one_reroll():
     foe = enemy()
     # Synthetic effect discriminators, not a canonical character/loadout claim.
@@ -980,7 +954,6 @@ def test_fear_sixes_override_hit_modifiers_and_automatic_hit_but_allow_one_rerol
     assert result.attacks[-1].hit_roll == 6
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_fear_reaches_shifty_and_collectively_prepared_hits_with_hatred_rerolls():
     foe = enemy(off_hand_id='weapon.axe', skill_ids=('skill.shifty', 'skill.hatred'))
     result = fear_round(foe, [('round.0.second.fear.charged.0', 6),
@@ -1000,7 +973,6 @@ def test_fear_reaches_shifty_and_collectively_prepared_hits_with_hatred_rerolls(
     assert [attack.hit_roll for attack in result.attacks[-3:]] == [6, 5, 6]
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_fear_requires_known_leadership_only_when_a_test_is_required():
     foe = enemy()
     foe = replace(foe, characteristics=replace(foe.characteristics, leadership=None))
@@ -1032,7 +1004,6 @@ def test_failed_fear_charge_stops_both_modular_drivers_as_unresolved(monkeypatch
         assert result.first_condition.tolist() == result.second_condition.tolist() == [int(Condition.STANDING)]
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_fear_does_not_turn_passive_spines_into_a_melee_hit_roll():
     foe = enemy(trait_overrides={'spines': True})
     result = fear_round(foe, [('round.0.second.fear.charged.0', 6),
@@ -1044,7 +1015,6 @@ def test_fear_does_not_turn_passive_spines_into_a_melee_hit_roll():
     assert not result.attacks[-1].hit and result.attacks[-1].hit_target == 6
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('source', ['fearsome', 'mutation', 'blessing', 'current-condition', 'canonical-condition'])
 def test_acquired_fear_reaches_the_same_real_charge_test(source):
     if source == 'fearsome':
@@ -1086,7 +1056,6 @@ def test_beastlash_fear_is_wielded_and_animal_specific(precompiled, hand, animal
     assert state.engaged is not animal
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_chainsaw_sword_grants_bearer_fear_and_only_its_own_armour_penalty():
     owner = canonical('masters-of-horror-sylv', 'mad-scientist', 'weapon.chainsaw-sword')
     assert 'mechanic.causes-fear' in owner.global_effects.tags
@@ -1102,7 +1071,6 @@ def test_chainsaw_sword_grants_bearer_fear_and_only_its_own_armour_penalty():
     assert double.global_effects.tags.count('mechanic.causes-fear') == 1
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('band,faces,passed', [
     ('lizardmen', (6, 3, 4), True),
     ('lizardmen-lus', (3, 6, 4), True),
@@ -1146,7 +1114,6 @@ def test_cold_blooded_variants_distinguish_crude_belch_from_psychology(precompil
     assert result.attacks[-1].hit_roll == (1 if passed else None)
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_cold_blooded_preserves_explicit_leadership_and_automatic_pass_contracts():
     from mordheim_combat.modular.leadership import resolve_local_leadership
     tested = canonical('lizardmen-lus', 'skink-great-crests', 'weapon.axe')
@@ -1163,7 +1130,6 @@ def test_cold_blooded_preserves_explicit_leadership_and_automatic_pass_contracts
     dice.finish()
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('profile', ['draich', 'young-nobles', 'shearls'])
 def test_craven_can_fail_a_fear_charge_even_when_the_fimir_causes_fear(profile):
     # The Draich causes Fear innately; the other two receive an explicit current
@@ -1180,7 +1146,6 @@ def test_craven_can_fail_a_fear_charge_even_when_the_fimir_causes_fear(profile):
         require_optimized_support(fighter, enemy())
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('faces,passed', [((6, 4, 4), True), ((6, 6, 6), False)])
 def test_draich_craven_received_charge_preserves_cold_blooded_and_sixes_rule(faces, passed):
     draich = canonical('lords-of-the-marsh-mim', 'draich', 'weapon.axe')
@@ -1272,7 +1237,6 @@ def test_stupidity_frenzy_exemption_uses_no_leadership_dice(precompiled):
     dice.finish(); decisions.finish()
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('band,profile', [
     ('black-orcs', 'troll'), ('night-goblins-kaz', 'troll'),
     ('underworld-alliance-mim', 'warpstone-troll'),
@@ -1299,7 +1263,6 @@ def test_troll_stupidity_failure_suppresses_attacks_in_the_real_round(band, prof
     assert result.state.first.wounds == fighter.characteristics.wounds
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_stupidity_completion_supplied_exemption_skips_unknown_leadership_and_clears_history():
     from mordheim_combat.modular.psychology import resolve_stupidity
     # Eligible helper presence is a supplied active exemption, not a simulated
@@ -1320,7 +1283,6 @@ def test_stupidity_completion_supplied_exemption_skips_unknown_leadership_and_cl
         dice.finish(); decisions.finish()
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('band,profile,leader', [
     ('dark-elves', 'cold-one-beasthounds', 'high-born'),
     ('kislevites', 'trained-bear', 'druzhina-captain'),
@@ -1344,7 +1306,6 @@ def test_stupidity_completion_handler_uses_own_value_and_never_borrows_leader(ba
         dice.finish(); decisions.finish()
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_stupidity_completion_brood_bonus_affects_only_stupidity_tests():
     from mordheim_combat.modular.leadership import resolve_local_leadership
     fighter = canonical('brood-of-ghurash-the-sc', 'firstborns', 'weapon.fist',
@@ -1358,7 +1319,6 @@ def test_stupidity_completion_brood_bonus_affects_only_stupidity_tests():
         dice.finish(); decisions.finish()
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_stupidity_completion_acquired_prior_failure_lasts_until_next_own_turn():
     fighter = compile_fighter(FighterBuild('mordheim', Characteristics(3, 3, 3, 2, 1, 1, leadership=7),
         main_weapon_id='weapon.mace', trait_overrides={'stupidity': True, 'stupidity_initial_failed': True}))
@@ -1376,7 +1336,6 @@ def test_stupidity_completion_acquired_prior_failure_lasts_until_next_own_turn()
     dice.finish(); decisions.finish()
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_stupidity_completion_disability_head_injury_uses_the_same_turn_operator():
     from mordheim_combat.modular.psychology import resolve_stupidity
     fighter = enemy(skill_ids=('mechanic.disability',), condition_ids=('condition.disability-6',))
@@ -1388,7 +1347,6 @@ def test_stupidity_completion_disability_head_injury_uses_the_same_turn_operator
     dice.finish(); decisions.finish()
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('band,profile,control', [
     ('adventurers-kaz', 'barbarian', 'elf'),
     ('khorne-raiders-sar', 'cannibal-boys', 'plunderers'),
@@ -1419,7 +1377,6 @@ def test_remaining_innate_frenzy_grants_execute_and_are_lost_after_knockdown(ban
     assert not result.defender.frenzy
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('first_round', [True, False])
 def test_unlimited_hatred_means_any_enemy_not_infinite_duration(first_round):
     rule = 'band--chaos-dwarfs-special-skills-unlimited-hatred'
@@ -1437,7 +1394,6 @@ def test_unlimited_hatred_means_any_enemy_not_infinite_duration(first_round):
     assert not result.hit
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('band,profile,target', [
     ('adventurers-kaz', 'elf', 'dark'),
     ('dark-elves', 'corsairs', 'high'),
@@ -1466,7 +1422,6 @@ def test_elf_hatred_filters_individual_identity_and_first_combat_turn(band, prof
         require_optimized_support(warrior, wanted)
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('band,profile,mandatory', [
     ('bretonnian-chapel-guard', 'battle-pilgrims', True),
     ('dwarf-rangers', 'dwarf-longbeards', False),
@@ -1508,7 +1463,6 @@ def test_stubborn_rerolls_failed_individual_tests_once_with_source_correct_choic
         dice.finish(); decisions.finish()
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('band', ['norse-explorers-btb', 'norse-explorers-lustria'])
 def test_barbarian_courage_rerolls_fear_without_rerolling_stupidity(band):
     from mordheim_combat.modular.leadership import resolve_local_leadership
@@ -1530,7 +1484,6 @@ def test_barbarian_courage_rerolls_fear_without_rerolling_stupidity(band):
     dice.finish(); decisions.finish()
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('band,profile,rule', [
     ('beastmen-raiders', 'beastmen-chieftain', 'band--beastmen-special-skills-fearless'),
     ('vampire-hunters-of-sylvania-lotd5', 'vampire-hunter', 'band--special-skill-iron-will'),
@@ -1550,7 +1503,6 @@ def test_fear_immunity_skips_the_test_without_general_leadership_immunity(band, 
         require_optimized_support(fighter, enemy())
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('band,profile', [
     ('carnival-of-chaos', 'plague-bearers'),
     ('carnival-of-chaos', 'nurglings'),
@@ -1573,7 +1525,6 @@ def test_explicit_automatic_leadership_passes_without_dice_or_borrowed_leader(ba
         require_optimized_support(fighter, enemy())
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('band,profile', [('undead', 'vampire'), ('fen-guard-mim', 'branchwych')])
 def test_psychology_immunity_cancels_individual_tests_and_benefits_only(band, profile):
     from mordheim_combat.modular.leadership import resolve_local_leadership
@@ -1606,7 +1557,6 @@ def test_psychology_immunity_cancels_individual_tests_and_benefits_only(band, pr
         require_optimized_support(fighter, foe)
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('first_round,immune,reroll', [(True, False, True), (False, False, False), (True, True, False)])
 def test_pilgrims_innate_hatred_retains_first_round_and_immunity_limits(first_round, immune, reroll):
     pilgrim = canonical('order-of-the-mare-web', 'pilgrims', 'weapon.mace')
@@ -1627,7 +1577,6 @@ def test_pilgrims_innate_hatred_retains_first_round_and_immunity_limits(first_ro
     assert not result.hit
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_spawn_explicit_automatic_leadership_preserves_its_separate_preparation():
     from mordheim_combat.modular.leadership import resolve_local_leadership
     from mordheim_combat.modular.rounds import resolve_spawn_attack_count
@@ -1649,7 +1598,6 @@ def test_spawn_explicit_automatic_leadership_preserves_its_separate_preparation(
         require_optimized_support(spawn, enemy())
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_remaining_no_pain_grants_share_the_injury_operator_without_activating_bloated():
     recipients = [('ghost-pirates-sar', 'skeleton-mates'), ('ghost-pirates-sar', 'gibbets'),
                   ('necrarchs-mou', 'nosferatu'), ('necrarchs-mou', 'abomination'),
@@ -1663,7 +1611,6 @@ def test_remaining_no_pain_grants_share_the_injury_operator_without_activating_b
     assert strike(enemy(), skeleton, [('hit', 4), ('wound', 4), ('injury.0', 6)]).defender.condition == Condition.OUT
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('band,profile', [('black-dwarfs', 'sorcerer'),
                                         ('guild-of-disgraced-engineers-mim', 'expelled-engineer')])
 def test_remaining_hard_head_grants_ignore_concussion_without_ignoring_normal_stun(band, profile):
@@ -1679,7 +1626,6 @@ def test_remaining_hard_head_grants_ignore_concussion_without_ignoring_normal_st
         assert strike(attacker, informer, [('hit', 4), ('wound', 5), ('injury.0', 2)]).defender.condition == Condition.STUNNED
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_slayer_pirates_compound_injury_rules_exclude_thaggi():
     captain = canonical('slayer-pirates-sar', 'slayer-captain', 'weapon.fist')
     captain = replace(captain, characteristics=replace(captain.characteristics, wounds=1))
@@ -1706,7 +1652,6 @@ def test_bloated_squishy_overrides_no_pain_per_q037_ruling(precompiled):
         require_optimized_support(bloated, incoming)
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_revenant_is_selected_requires_thirster_and_recovers_at_own_turn_start_despite_fire():
     from mordheim_combat.modular.aftermath import _revenant_recovery
     thirst = 'strigoi-vampire--great-thirster'
@@ -1732,7 +1677,6 @@ def test_revenant_is_selected_requires_thirster_and_recovers_at_own_turn_start_d
     failed.finish()
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_great_thirster_prerequisite_has_its_own_out_of_action_frenzy_effect():
     from mordheim_combat.modular.aftermath import _react_to_wound
     vampire = canonical('survivors-of-strigos-sylv', 'strigoi-vampire', 'weapon.fist',
@@ -1753,7 +1697,6 @@ def test_great_thirster_prerequisite_has_its_own_out_of_action_frenzy_effect():
     assert disabled.defender.condition != Condition.STANDING and not disabled.defender.frenzy
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('owner', ['first', 'second'])
 def test_rousing_sermon_is_priest_only_once_and_expires_after_own_turn(owner):
     skill = 'band--special-skill-rousing-sermon'
@@ -1775,7 +1718,6 @@ def test_rousing_sermon_is_priest_only_once_and_expires_after_own_turn(owner):
     assert 'rousing-sermon' in getattr(state, owner).resources_spent
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_frantic_ignores_weapon_penalties_low_initiative_and_standing_up():
     fanatic = canonical('crooked-moon-kep', 'fanatics', 'weapon.fist')
     # Isolate the printed operator from the profile's restricted weapon list.
@@ -1797,7 +1739,6 @@ def test_frantic_ignores_weapon_penalties_low_initiative_and_standing_up():
         require_optimized_support(fanatic, foe)
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('band,profile,skill', [
     ('sisters-of-sigmar', 'sigmarite-matriarch', 'band--special-skills-absolute-faith'),
     ('bretonnian-chapel-guard', 'questing-knight', 'band--questing-vow'),
@@ -1817,7 +1758,6 @@ def test_faith_and_questing_vow_reroll_failed_charge_fear_once(band, profile, sk
     dice.finish(); decisions.finish()
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_questing_vow_is_acquired_knight_only_and_qualifies_non_fear_leadership():
     from mordheim_combat.modular.rounds import apply_opponent_leadership
     from mordheim_combat.modular.leadership import resolve_local_leadership
@@ -1835,7 +1775,6 @@ def test_questing_vow_is_acquired_knight_only_and_qualifies_non_fear_leadership(
     assert apply_opponent_leadership(knight, foe, replace(state, engaged=False, first_charged=False, second_charged=False)) is knight
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('strength,wound_face,saved', [(3, 4, True), (4, 3, False)])
 def test_gibbet_iron_cage_is_inseparable_normal_five_plus_armour(strength, wound_face, saved):
     gibbet = canonical('ghost-pirates-sar', 'gibbets', 'weapon.mace')
@@ -1845,7 +1784,6 @@ def test_gibbet_iron_cage_is_inseparable_normal_five_plus_armour(strength, wound
     assert result.defender.wounds == (2 if saved else 1)
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_frustratingly_tiny_is_acquired_snotling_defence_not_an_innate_goblin_skill():
     skill = 'bullied-goblin--frustratingly-tiny'
     base = canonical('snotlings-web', 'bigsnotz', 'weapon.sword')
@@ -1857,7 +1795,6 @@ def test_frustratingly_tiny_is_acquired_snotling_defence_not_an_innate_goblin_sk
     assert control.hit and not affected.hit and affected.hit_target == 4
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('band,profile,rule', [
     ('sisters-of-sigmar', 'sigmarite-matriarch', 'band--special-skills-sign-of-sigmar'),
     ('vampire-hunters-of-sylvania-lotd5', 'vampire-hunter', 'band--special-skill-righteous-aura'),
@@ -1890,7 +1827,6 @@ def test_canonical_sigmar_and_righteous_aura_restrict_only_first_round_targets(b
     assert apply_opponent_attack_modifiers(human, canonical(band, profile, "weapon.mace"), 3, first_round=True) == 3
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('condition', [Condition.KNOCKED_DOWN, Condition.STUNNED])
 def test_honorable_refuses_incapacitated_opponent_without_dice(condition):
     from mordheim_combat.modular.pools import _resolve_attack_pool
@@ -1908,7 +1844,6 @@ def test_honorable_refuses_incapacitated_opponent_without_dice(condition):
     assert not strike(noble, foe, [('hit', 1)]).hit
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_exact_creature_facts_distinguish_undead_possessed_daemons_and_normal_animals():
     facts = [('undead', 'vampire', 'weapon.sword', 'nature.undead'),
              ('cult-of-the-possessed', 'the-possessed', 'weapon.fist', 'nature.possessed'),
@@ -1925,7 +1860,6 @@ def test_exact_creature_facts_distinguish_undead_possessed_daemons_and_normal_an
     assert apply_opponent_attack_modifiers(monster, friend, 2, first_round=False) == 2
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_undead_hatred_charge_and_morr_injury_reuse_real_operators():
     from mordheim_combat.modular.contexts import _hit_reroll
     hunter = canonical('vampire-hunters-of-sylvania-lotd5', 'vampire-hunter', 'weapon.mace',
@@ -1939,7 +1873,6 @@ def test_undead_hatred_charge_and_morr_injury_reuse_real_operators():
     assert strike(hunter, zombie, [('hit', 4), ('wound', 4), ('injury.0', 4)]).defender.condition == Condition.OUT
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('toughness,threshold', [(3, 5), (6, 6)])
 def test_hellblade_has_exact_nature_filter_and_deadly_wound_boundary(toughness, threshold):
     from mordheim_combat.modular.contexts import prepare_hit_context, prepare_wound_context, _combined_effect
@@ -1959,7 +1892,6 @@ def test_hellblade_has_exact_nature_filter_and_deadly_wound_boundary(toughness, 
     assert wound.critical_threshold == threshold
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_torturer_strength_loss_accumulates_to_one_and_exempts_undead():
     from mordheim_combat.modular.aftermath import _react_to_wound
     from mordheim_combat.modular.state import AttackOutcome
@@ -1974,7 +1906,6 @@ def test_torturer_strength_loss_accumulates_to_one_and_exempts_undead():
     dice.finish()
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize("rolls,blocked", [((6, 6), True), ((1, 1), False)])
 def test_mesmerising_dance_blocks_attacks_but_preserves_defence(rolls, blocked):
     amazon = canonical('amazons-lustria', 'serpent-priestess', special_rule_ids=(
@@ -1994,7 +1925,6 @@ def test_mesmerising_dance_blocks_attacks_but_preserves_defence(rolls, blocked):
     dice.finish(); choices.finish()
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_savage_fury_immunity_and_charge_bonus_and_lizardman_exemption():
     amazon = canonical('amazons-lustria', 'serpent-priestess', special_rule_ids=(
         'band--amazon-special-skills-savage-fury',))
@@ -2011,7 +1941,6 @@ def _penthesilea_canonical():
         profile_id='hireling.dramatis.penthesilea-mark-of-the-serpent'))
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_penthesilea_dance_transfixes_a_failing_foe_and_fury_scores_the_charge_swing():
     pent = _penthesilea_canonical()
     foe = enemy()
@@ -2039,7 +1968,6 @@ def test_penthesilea_dance_transfixes_a_failing_foe_and_fury_scores_the_charge_s
     dice.finish()
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_shornaal_uses_highest_two_then_stops_testing_after_success():
     mark = canonical('marauders-of-chaos', 'marauder-chieftain', special_rule_ids=(
         'band--mark-of-shornaal',))
@@ -2059,7 +1987,6 @@ def test_shornaal_uses_highest_two_then_stops_testing_after_success():
     dice.finish(); choices.finish()
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_hypnotist_first_attack_breaks_trance_even_when_saved():
     sleuth = canonical('watchmen-mim', 'private-sleuth')
     foe = enemy(armour='armour.heavy-armour')
@@ -2083,7 +2010,6 @@ def test_hypnotist_first_attack_breaks_trance_even_when_saved():
     dice.finish(); choices.finish()
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('band,profile,rule', [
     ('ostlanders', 'elder', 'band--ostlander-special-skills-foul-odour'),
     ('horned-hunters', 'horned-hunter', 'band--horned-hunter-special-skills-foul-odour'),
@@ -2105,7 +2031,6 @@ def test_foul_odour_exact_opponents_and_fire_strength(band, profile, rule):
     init.finish()
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_wraith_touch_single_unarmed_wound_and_liche_recovery():
     from mordheim_combat.modular.rounds import select_attack_replacement
     liche = canonical('restless-dead', 'liche', special_rule_ids=('band--restless-dead-special-skills-wraith-touch',))
@@ -2125,7 +2050,6 @@ def test_wraith_touch_single_unarmed_wound_and_liche_recovery():
     dice.finish()
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_titanic_strength_failed_wound_knocks_down_on_failed_strength():
     fighter = canonical('brood-of-ghurash-the-sc', 'broodmother', 'weapon.axe', special_rule_ids=('band--skill-titanic-strength',))
     foe = enemy()
@@ -2133,7 +2057,6 @@ def test_titanic_strength_failed_wound_knocks_down_on_failed_strength():
     assert result.hit and not result.wounded and result.defender.condition == Condition.KNOCKED_DOWN
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('magical,saved', [(False, True), (True, False)])
 def test_ethereal_hit_save_precedes_wound_and_ignores_magic(magical, saved):
     spirit = canonical('call-of-the-night-haint-mim', 'malignant-spirits', 'weapon.natural-attacks')
@@ -2146,7 +2069,6 @@ def test_ethereal_hit_save_precedes_wound_and_ignores_magic(magical, saved):
     assert not result.wounded
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_centigor_drunken_frenzy_expires_after_its_turn():
     centigor = canonical('beastmen-raiders', 'centigors', 'weapon.axe')
     foe = enemy()
@@ -2170,7 +2092,6 @@ def test_centigor_drunken_frenzy_expires_after_its_turn():
     dice.finish(); choices.finish()
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_fire_fear_preserves_branchnymph_printed_psychology_exception():
     from mordheim_combat.modular.psychology import resolve_fear
     nymph = canonical('fen-guard-mim', 'branchnymph', 'weapon.natural-attacks')
@@ -2184,7 +2105,6 @@ def test_fire_fear_preserves_branchnymph_printed_psychology_exception():
     dice.finish()
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_racial_hatred_and_noble_disdain_use_canonical_opponent_facts():
     from mordheim_combat.modular.contexts import _hit_reroll, _combined_effect
     hater = canonical('tileans', 'captain')
@@ -2204,7 +2124,6 @@ def test_racial_hatred_and_noble_disdain_use_canonical_opponent_facts():
                            _combined_effect(knight, knight.main_weapon), True, False)
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('fearing', [False, True])
 def test_wheelo_collision_precedes_blows_and_fear_does_not_cancel_charge(fearing):
     wheelo = canonical('snotlings-web', 'wheelo', 'weapon.dagger')
@@ -2228,7 +2147,6 @@ def test_wheelo_collision_precedes_blows_and_fear_does_not_cancel_charge(fearing
     dice.finish(); choices.finish()
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('sex', ['male', 'female'])
 def test_sea_singer_beauty_uses_explicit_sex_and_distinct_charge_tests(sex):
     from mordheim_combat.modular.psychology import resolve_fear
@@ -2247,7 +2165,6 @@ def test_sea_singer_beauty_uses_explicit_sex_and_distinct_charge_tests(sex):
             context=DuelContext(charging=('first',), active_participant='first')), StrictDice([]), StrictDecisions([]))
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_supplied_follow_me_command_expires_after_the_current_turn():
     fighter = enemy(trait_overrides={'active_command': 'follow-me-mine-pugnacious-ones'})
     fighter = replace(fighter, characteristics=replace(fighter.characteristics, initiative=4))
@@ -2261,7 +2178,6 @@ def test_supplied_follow_me_command_expires_after_the_current_turn():
     dice.finish()
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('command,condition', [(None, Condition.OUT),
     ('art-thou-ready-to-die-fighting', Condition.STUNNED)])
 def test_supplied_ready_to_die_command_changes_the_actual_injury(command, condition):
@@ -2280,7 +2196,6 @@ def test_supplied_ready_to_die_command_changes_the_actual_injury(command, condit
     dice.finish()
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_simple_night_goblin_animosity_blocks_only_its_own_turn():
     goblin = canonical('night-goblins-mic', 'big-boss', 'weapon.dagger')
     foe = enemy()
@@ -2301,7 +2216,6 @@ def test_simple_night_goblin_animosity_blocks_only_its_own_turn():
     assert 'mechanic.goblin-squabble' not in squig.global_effects.tags
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('species,fear', [('human', True), ('dwarf', False)])
 def test_gaoler_reputation_causes_fear_only_in_humans(species, fear):
     from mordheim_combat.modular.psychology import causes_fear
@@ -2310,7 +2224,6 @@ def test_gaoler_reputation_causes_fear_only_in_humans(species, fear):
     assert causes_fear(gaoler, foe) is fear
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('profile,eligible', [('halfling-thief', True), ('village-ogre', False)])
 def test_wizened_supplied_leader_reroll_has_halfling_recipients(profile, eligible):
     from mordheim_combat.modular.leadership import resolve_local_leadership
@@ -2333,7 +2246,6 @@ def test_wizened_supplied_leader_reroll_has_halfling_recipients(profile, eligibl
 
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_supplied_righteous_charge_is_mounted_and_expires_after_first_round():
     fighter = canonical('knights-of-the-bitter-moors-mim', 'questing-knight',
                        mounted=True, trait_overrides={'righteous_charge_active': True})
@@ -2347,7 +2259,6 @@ def test_supplied_righteous_charge_is_mounted_and_expires_after_first_round():
     dice.finish()
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('material,ward', [('material.normal', 4), ('material.gromril', 7), ('material.ithilmar', 7)])
 def test_ghost_pirate_ethereal_save_is_source_specific(material, ward):
     from mordheim_combat.modular.contexts import prepare_special_save_context
@@ -2362,7 +2273,6 @@ def test_ghost_pirate_ethereal_save_is_source_specific(material, ward):
         assert outcome.saved and outcome.wounded
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('fitting', ['axe', 'club', 'spear', 'morning-star'])
 def test_wheelo_fitting_modifies_impact_without_changing_crew(fitting):
     wheelo = canonical('snotlings-web', 'wheelo', 'weapon.dagger', trait_overrides={'wheelo_fitting': fitting})
@@ -2387,7 +2297,6 @@ def test_wheelo_fitting_modifies_impact_without_changing_crew(fitting):
     dice.finish()
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_norse_shield_and_bulwark_are_equipment_bound():
     from mordheim_combat.modular.contexts import prepare_armour_context
     fighter = canonical('hirelings.hired-sword.2b', 'hireling.hired-sword.norse-bearman-bodyguard',
@@ -2408,7 +2317,6 @@ def test_norse_shield_and_bulwark_are_equipment_bound():
     dice.finish()
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_bog_hunter_stink_applies_to_undead_enemies_too():
     fighter = canonical('hirelings.hired-sword.2b', 'hireling.hired-sword.bog-hunter', 'weapon.beastlash')
     foe = enemy(trait_overrides={'creature_kind': 'undead'})
@@ -2420,7 +2328,6 @@ def test_bog_hunter_stink_applies_to_undead_enemies_too():
     dice.finish()
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('aquatic,expected', [(False, 1), (True, 2)])
 def test_native_whaler_doubles_only_unsaved_aquatic_damage(aquatic, expected):
     fighter = canonical('hirelings.hired-sword.2b', 'hireling.hired-sword.whaler', 'weapon.spear')
@@ -2435,7 +2342,6 @@ def test_native_whaler_doubles_only_unsaved_aquatic_damage(aquatic, expected):
         require_optimized_support(fighter, foe)
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('nominated,sex,target', [(True, 'female', 3), (False, 'female', 4), (False, 'male', 4)])
 def test_native_pimp_bonus_requires_nominated_female_opponent(nominated, sex, target):
     fighter = canonical('hirelings.hired-sword.2b', 'hireling.hired-sword.halfling-pimp',
@@ -2448,7 +2354,6 @@ def test_native_pimp_bonus_requires_nominated_female_opponent(nominated, sex, ta
     assert result.hit_target == target and not result.hit
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_pimp_nomination_refuses_wrong_recipient_and_nonfemale_target():
     fighter = canonical('hirelings.hired-sword.2b', 'hireling.hired-sword.halfling-pimp',
         'weapon.dagger', trait_overrides={'flesh_peddler_mark': True})
@@ -2460,7 +2365,6 @@ def test_pimp_nomination_refuses_wrong_recipient_and_nonfemale_target():
     dice.finish()
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('charging,undead,success', [(False, True, False), (True, True, False),
     (True, True, True), (True, False, False)])
 def test_morrs_servant_fear_exception_has_both_charge_directions(charging, undead, success):
@@ -2495,7 +2399,6 @@ def test_morrs_servant_fear_exception_has_both_charge_directions(charging, undea
         require_optimized_support(priest, target)
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_native_morr_ceremonial_scythe_is_a_distinct_complete_weapon():
     priest = canonical('hirelings.hired-sword.2b',
         'hireling.hired-sword.priest-of-morr-miracle-workers', 'weapon.ceremonial-scythe')
@@ -2505,7 +2408,6 @@ def test_native_morr_ceremonial_scythe_is_a_distinct_complete_weapon():
     assert result.wounded and result.saved
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_native_verena_sword_only_keeps_owned_ceremonial_dagger_inactive():
     profile = 'hireling.hired-sword.priest-of-verena'
     priest = canonical('hirelings.hired-sword.2b', profile, 'weapon.sword',
@@ -2513,7 +2415,6 @@ def test_native_verena_sword_only_keeps_owned_ceremonial_dagger_inactive():
     assert strike(priest, enemy(), [('hit', 4), ('wound', 3)]).wounded is False
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('strength,roll,saved', [(3, 6, True), (3, 5, False), (4, None, False)])
 def test_native_ulric_pelt_is_strength_modified_armour_not_a_ward(strength, roll, saved):
     wolf = canonical('hirelings.hired-sword.2b', 'hireling.hired-sword.wolf-priest-of-ulric-miracle-workers', 'weapon.dagger')
@@ -2526,7 +2427,6 @@ def test_native_ulric_pelt_is_strength_modified_armour_not_a_ward(strength, roll
     assert result.saved is saved and result.damage == (0 if saved else 1)
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_ulric_pelt_contributes_once_and_the_printed_kit_refuses_other_armour():
     profile = 'hireling.hired-sword.wolf-priest-of-ulric-miracle-workers'
     wolf = canonical('hirelings.hired-sword.2b', profile, 'weapon.dagger', defence_ids=('defence.wolf-pelt-cloak',))
@@ -2534,7 +2434,6 @@ def test_ulric_pelt_contributes_once_and_the_printed_kit_refuses_other_armour():
         require_optimized_support(wolf, enemy())
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_ulric_pelt_protection_is_the_cloak_piece_and_leaves_with_the_cast_off_kit():
     from mordheim_combat.modular.equipment import equipment_for_state
     profile = 'hireling.hired-sword.wolf-priest-of-ulric-miracle-workers'
@@ -2557,7 +2456,6 @@ def test_ulric_pelt_protection_is_the_cloak_piece_and_leaves_with_the_cast_off_k
         assert stripped.main_weapon.tags == fighter.main_weapon.tags
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('rival,first_round', [(True, True), (True, False), (False, True)])
 def test_ulric_intense_rivals_reuses_first_round_hatred_only(rival, first_round):
     wolf = canonical('hirelings.hired-sword.2b', 'hireling.hired-sword.wolf-priest-of-ulric-miracle-workers', 'weapon.dagger')
@@ -2571,7 +2469,6 @@ def test_ulric_intense_rivals_reuses_first_round_hatred_only(rival, first_round)
     assert not result.hit
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('accept', [True, False])
 def test_native_war_honed_first_failure_cannot_be_reserved_for_a_later_test(accept):
     from mordheim_combat.modular.leadership import resolve_local_leadership
@@ -2595,7 +2492,6 @@ def test_native_war_honed_first_failure_cannot_be_reserved_for_a_later_test(acce
         resolve_local_leadership(fighter, state, StrictDice([]), StrictDecisions([]), 'unsafe', first=True)
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_war_honed_resource_survives_a_real_crude_belch_round():
     from mordheim_combat.modular.leadership import resolve_local_leadership
     halfling = canonical('halflings-mic', 'halfling-elder', 'weapon.mace', special_rule_ids=('halfling-elder--crude-belch',))
@@ -2618,7 +2514,6 @@ def test_war_honed_resource_survives_a_real_crude_belch_round():
         require_optimized_support(fighter, halfling)
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('traits,automatic', [({'species': 'orc'}, True), ({'species': 'goblin'}, True),
     ({'chaos_follower': True}, True), ({'creature_kind': 'daemon'}, True), ({'species': 'human'}, False), ({'species': 'skaven'}, True)])
 def test_optional_sigmar_enlightened_uses_only_the_supported_opponent_identity(traits, automatic):
@@ -2652,7 +2547,6 @@ def test_optional_sigmar_enlightened_uses_only_the_supported_opponent_identity(t
     dice.finish(); choices.finish()
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('facts,band_tags,reroll', [
     ({'species': 'skaven'}, (), True),
     ({'creature_kind': 'undead'}, (), True),
@@ -2686,7 +2580,6 @@ def test_righteous_fury_shared_sisters_skill_filters_targets_and_first_round(fac
         require_optimized_support(fighter, target)
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_native_aldred_completes_fellblade_and_its_orc_goblin_extension():
     fighter = canonical('hirelings.dramatis-personae.2b', 'hireling.dramatis.aldred-fellblade',
         'weapon.double-handed-weapon', armour_id='armour.heavy-armour',
@@ -2723,7 +2616,6 @@ def test_native_aldred_completes_fellblade_and_its_orc_goblin_extension():
     assert not empty.main_weapon.parry
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('drinking,ws,strength,own_attacks,own_hit,enemy_hit', [
     (2, 4, 3, 3, 3, 4), (3, 5, 4, 3, 3, 4),
     (4, 5, 4, 3, 4, 5), (5, 5, 5, 3, 3, 4), (6, 5, 4, 5, 3, 4),
@@ -2755,7 +2647,6 @@ def test_native_snorri_drinking_results_persist_in_both_player_turns(drinking, w
         require_optimized_support(fighter, target)
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_snorri_requires_a_participating_result_without_changing_other_profiles():
     # Ordinary psychology immunity still cancels generic Frenzy.
     ordinary = enemy(trait_overrides={'frenzy': True})
@@ -2764,7 +2655,6 @@ def test_snorri_requires_a_participating_result_without_changing_other_profiles(
     assert not initialize_fighter(ordinary, StrictDice([]), 'plain').frenzy
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('band,profile,weapon,owned', [
     ('hirelings.hired-sword.2b', 'hireling.hired-sword.fire-eater', 'weapon.fist', ('fire_stick',)),
     ('hirelings.dramatis-personae.2b', 'hireling.dramatis.armen-abbas', 'weapon.sword',
@@ -2786,7 +2676,6 @@ def test_shooting_movement_and_postbattle_hireling_clauses_do_not_block_melee(ba
     assert not any(tag in fighter.global_effects.tags for tag in ('skill.acrobat', 'skill.leap', 'skill.dodge'))
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('item', ['holy_relic', 'holy_relic_pilgrim_only', 'arcane_candelabrum'])
 def test_carried_relic_passes_only_first_required_leadership_test(item):
     from mordheim_combat.modular.leadership import resolve_local_leadership
@@ -2806,7 +2695,6 @@ def test_carried_relic_passes_only_first_required_leadership_test(item):
         require_optimized_support(fighter, foe)
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_arcane_candelabrum_keeps_brazier_attack_but_uses_one_hand():
     fighter = enemy(weapon='weapon.arcane-candelabrum', off_hand_id='weapon.sword')
     assert not fighter.main_weapon.two_handed
@@ -2820,7 +2708,6 @@ def test_arcane_candelabrum_keeps_brazier_attack_but_uses_one_hand():
     assert outcome.hit and not outcome.wounded
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('skills', [
     ('sign-of-sigmar', 'righteous-fury'), ('sign-of-sigmar', 'absolute-faith'),
     ('sign-of-sigmar', 'protection-of-sigmar'), ('righteous-fury', 'absolute-faith'),
@@ -2847,7 +2734,6 @@ def test_native_sister_chooses_two_source_skills_and_completes_a_duel_round(skil
     assert len(result.attacks) == 3
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('nature,expected_ws', [('living', 2), ('daemon', 3), ('undead', 3)])
 def test_shallya_aura_affects_both_contacting_duelists_except_daemons_and_undead(nature, expected_ws):
     from mordheim_combat.modular.contexts import prepare_hit_context
@@ -2879,7 +2765,6 @@ def test_shallya_aura_affects_both_contacting_duelists_except_daemons_and_undead
     assert phases.resolve_hit(context, StrictDice([])).success
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_shallya_strictures_only_choose_legal_initial_chargers_and_recognize_onogal():
     priest = enemy(skill_ids=('mechanic.shallya-strictures',))
     ordinary = enemy(trait_overrides={'chaos_follower': True})
@@ -2903,7 +2788,6 @@ def test_shallya_strictures_only_choose_legal_initial_chargers_and_recognize_ono
 
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_son_of_ulric_removes_the_native_unarmed_penalties():
     base = canonical('hirelings.hired-sword.2b',
         'hireling.hired-sword.wolf-priest-of-ulric-miracle-workers', 'weapon.fist')
@@ -2916,7 +2800,6 @@ def test_son_of_ulric_removes_the_native_unarmed_penalties():
     assert outcome.wounded and not outcome.saved
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('band,profile,origin,expected', [
     ('witch-hunters', 'witch-hunters', None, 5),
     ('sisters-of-sigmar', 'sigmarite-sister', None, 5),
@@ -2938,7 +2821,6 @@ def test_symbol_of_unity_qualifies_the_opposing_warband(band, profile, origin, e
             strike(unknown, priest, [])
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('house,own_profile,target_profile,first_round,reroll', [
     ('fierezza', 'commander', 'mercenary-captain', True, True),
     ('fierezza', 'commander', 'warriors', True, False),
@@ -2967,7 +2849,6 @@ def test_house_guard_pride_requires_fierezza_heroes_on_both_sides(house, own_pro
                 StrictDice([]), key="x", first_round=True)
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_pikewall_uses_incoming_charge_and_the_active_first_strike_weapon():
     for weapon, charger, reroll in [('weapon.pike', 'second', True),
                                    ('weapon.mace', 'second', False),
@@ -2992,7 +2873,6 @@ def test_pikewall_uses_incoming_charge_and_the_active_first_strike_weapon():
             state = result.state
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('kind,handler,passes', [('ordinary', None, False),
     ('handled', 3, False), ('handled', 9, True), ('large-predator', 3, False)])
 def test_tranquil_fauna_uses_handler_leadership_without_cancelling_charge(kind, handler, passes):
@@ -3032,7 +2912,6 @@ def test_tranquil_fauna_uses_handler_leadership_without_cancelling_charge(kind, 
         assert len(again.attacks) == 2 and not again.state.second.charm_attack_blocked
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_tranquil_fauna_does_not_guess_animal_or_handler_facts():
     pid = 'hireling.hired-sword.druid-priest-of-taal'
     priest = canonical('hirelings.hired-sword.2b', pid, 'weapon.dagger',
@@ -3051,7 +2930,6 @@ def test_tranquil_fauna_does_not_guess_animal_or_handler_facts():
             resolve_round(priest, animal, state, StrictDice([]), StrictDecisions([]))
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('count', [1, 2])
 def test_native_eagle_friend_has_separate_first_strike_strength_three_attacks(count):
     pid = 'hireling.hired-sword.war-priestess-of-myrmidia'
@@ -3079,7 +2957,6 @@ def test_native_eagle_friend_has_separate_first_strike_strength_three_attacks(co
     assert result.state.second.wounds == target.characteristics.wounds
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_eagle_friend_disappears_with_the_owner_and_respects_tranquil_fauna():
     pid = 'hireling.hired-sword.war-priestess-of-myrmidia'
     fighter = canonical('hirelings.hired-sword.2b', pid, 'weapon.dagger',
@@ -3102,7 +2979,6 @@ def test_eagle_friend_disappears_with_the_owner_and_respects_tranquil_fauna():
     assert not result.attacks
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_snerik_keeps_his_source_only_cloak_without_a_fake_duel_effect():
     pid = 'hireling.dramatis.snerik-night-goblin-scout'
     cloak = pid + '.item.camouflage-cloak'
@@ -3120,7 +2996,6 @@ def test_snerik_keeps_his_source_only_cloak_without_a_fake_duel_effect():
     assert len(result.attacks) == 3
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('vision,nominated', [(value, True) for value in range(1, 7)] + [(6, False)])
 def test_guiding_dream_rolls_once_and_applies_only_to_the_nominated_hero(vision, nominated):
     fighter = canonical('dreamwalkers-cult-of-morr-fbg', 'dreamer', 'weapon.sword',
@@ -3154,7 +3029,6 @@ def test_guiding_dream_rolls_once_and_applies_only_to_the_nominated_hero(vision,
     assert continued.state.first.strength == state.first.strength
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_guiding_dream_refuses_a_nominated_nonhero_and_foreign_mark():
     fighter = canonical('dreamwalkers-cult-of-morr-fbg', 'dreamer',
         trait_overrides={'guiding_dream_target': True})
@@ -3164,7 +3038,6 @@ def test_guiding_dream_refuses_a_nominated_nonhero_and_foreign_mark():
     dice.finish()
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_strigoi_iron_sinews_is_optional_and_changes_real_wounding_once():
     band = 'survivors-of-strigos-sylv'
     base = canonical(band, 'strigoi-vampire', 'weapon.fist')
@@ -3183,7 +3056,6 @@ def test_strigoi_iron_sinews_is_optional_and_changes_real_wounding_once():
         assert outcome.wounded == expected
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('bloodline,first_round,frenzy,rerolled', [
     ('blood-dragon', True, False, True), ('strigoi', True, False, False),
     ('necrarch', False, False, False), ('lahmian', True, True, False),
@@ -3205,7 +3077,6 @@ def test_strigoi_kindred_hatred_checks_bloodline_and_preserves_frenzy_and_timing
     assert fighter.characteristics.strength == 4
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_kindred_hatred_requires_bloodline_only_for_vampire_opponents():
     fighter = canonical('survivors-of-strigos-sylv', 'strigoi-vampire', 'weapon.fist')
     init = StrictDice([]); own = initialize_fighter(fighter, init, 'owner')
@@ -3224,7 +3095,6 @@ def test_kindred_hatred_requires_bloodline_only_for_vampire_opponents():
     dice.finish()
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('profile', ['rememberer', 'stubbles', 'axe-hurlers'])
 def test_non_slayer_hatred_grant_is_recipient_specific_and_lost_with_psychology_immunity(profile):
     fighter = canonical('dwarf-slayer-cult-web', profile, 'weapon.axe')
@@ -3245,7 +3115,6 @@ def test_non_slayer_hatred_grant_is_recipient_specific_and_lost_with_psychology_
         assert 'mechanic.hatred-orcs-goblins' not in canonical('dwarf-slayer-cult-web', excluded, 'weapon.axe').global_effects.tags
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('condition_id,tag', [
     ('campaign.condition.immune-to-fear', 'mechanic.fear-immunity'),
     ('condition.immune-to-psychology', 'mechanic.psychology-immunity'),
@@ -3262,7 +3131,6 @@ def test_supplied_immunity_condition_consumes_no_fear_test_dice(condition_id, ta
     assert result.state.engaged and not result.state.second.fear_hit_sixes
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_fear_immunity_is_not_psychology_immunity_in_the_real_stupidity_test():
     from mordheim_combat.modular.psychology import resolve_stupidity
     foe = enemy()
@@ -3283,7 +3151,6 @@ def test_fear_immunity_is_not_psychology_immunity_in_the_real_stupidity_test():
     assert not state.first.stupidity_failed
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('first_round', [True, False])
 def test_supplied_hatred_condition_tests_any_enemy_in_the_first_round_only(first_round):
     from mordheim_combat.modular.contexts import _hit_reroll
@@ -3306,7 +3173,6 @@ def test_supplied_hatred_condition_tests_any_enemy_in_the_first_round_only(first
     assert _hit_reroll(immune, foe, immune.main_weapon, immune.global_effects, True, False) is False
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_kasgal_dwarf_hard_head_and_hard_to_kill_bind_the_shared_injury_chart():
     dwarf = canonical('adventurers-kaz', 'dwarf', 'weapon.fist')
     assert 'concussion_immune' in dwarf.global_effects.tags

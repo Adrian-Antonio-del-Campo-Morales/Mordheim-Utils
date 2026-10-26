@@ -70,10 +70,12 @@ def test_art_of_silent_death_criticals_are_always_resolved_on_to_wound():
     assert _critical_wound_threshold(cathay, dagger, False) == 6
 
 
-def test_black_hunger_adds_attack_and_resolves_armour_ignoring_backlash(vector_case):
+def test_black_hunger_profile_defers_attack_bonus_until_activation(vector_case):
     case = vector_case("test_shared_families/test_black_hunger_adds_attack_and_resolves_armour_ignoring_backlash-0-0")
     fighter = case.first
-    assert fighter.global_effects.attacks_bonus == 1
+    # The bonus belongs to activation during the bearer's turn, not construction.
+    # The actual backlash is checked in test_complex_sequences.py.
+    assert fighter.global_effects.attacks_bonus == 0
     assert "mechanic.black-hunger" in fighter.global_effects.tags
 
 

@@ -33,7 +33,7 @@ import pytest
 
 from mordheim_combat.modular.pools import _resolve_attack_pool
 from mordheim_combat.modular.state import initialize_fighter
-from mordheim_combat_lab.verification.dice import StrictDecisions, StrictDice
+from tests.engines.shared.dice import StrictDecisions, StrictDice
 from mordheim_core.models import Characteristics, CompiledFighter, EffectSet
 
 POOL_KEY = 'provenance'

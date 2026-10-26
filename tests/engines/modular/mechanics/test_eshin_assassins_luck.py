@@ -21,7 +21,7 @@ from __future__ import annotations
 
 from mordheim_combat.modular.attacks import resolve_reference_attack
 from mordheim_combat.modular.state import initialize_fighter
-from mordheim_combat_lab.verification.dice import StrictDecisions, StrictDice
+from tests.engines.shared.dice import StrictDecisions, StrictDice
 import pytest
 
 

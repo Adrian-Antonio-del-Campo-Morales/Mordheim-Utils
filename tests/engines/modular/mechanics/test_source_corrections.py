@@ -80,7 +80,7 @@ def test_equal_strike_first_tiers_use_initiative_for_two_spears(precompiled):
 @pytest.mark.parametrize('charging', [False, True])
 @pytest.mark.parametrize('initiative', [1, 6])
 def test_m04_strike_last_controls_whole_round_order(charging, initiative):
-    from mordheim_combat_lab.verification.dice import StrictDice
+    from tests.engines.shared.dice import StrictDice
     a = fighter(initiative=initiative, main_weapon_id='weapon.double-handed-weapon')
     b = fighter(initiative=7 - initiative)
     dice = StrictDice([{'key': 'round.0.second.attack.0.hit', 'value': 1},
@@ -93,7 +93,7 @@ def test_m04_strike_last_controls_whole_round_order(charging, initiative):
 @pytest.mark.parametrize('initiative', [1, 6])
 @pytest.mark.parametrize('round_index', [0, 1])
 def test_m05_spear_order_uses_initiative_in_both_charge_directions(charging, initiative, round_index):
-    from mordheim_combat_lab.verification.dice import StrictDice
+    from tests.engines.shared.dice import StrictDice
     a = fighter(initiative=initiative, main_weapon_id='weapon.spear')
     b = fighter(initiative=7 - initiative, main_weapon_id='weapon.spear')
     order = ('first', 'second') if initiative == 6 else ('second', 'first')
@@ -128,7 +128,7 @@ def test_natural_six_fails_characteristic_tests(value):
 def test_ranald_cannot_turn_a_natural_six_into_a_passed_characteristic_test(precompiled):
     from mordheim_core.models import EffectSet
     from mordheim_combat.modular.contexts import OwnedRollDice
-    from mordheim_combat_lab.verification.dice import StrictDice, StrictDecisions
+    from tests.engines.shared.dice import StrictDice, StrictDecisions
     owner = replace(precompiled().first, global_effects=EffectSet(tags=('mechanic.ranalds-luck',)))
     dice = StrictDice([{'key': 'test', 'value': 6}])
     choices = StrictDecisions([{'key': 'test.ranalds-luck.plus', 'value': False},
@@ -142,7 +142,7 @@ def test_ranald_cannot_turn_a_natural_six_into_a_passed_characteristic_test(prec
 @pytest.mark.parametrize('armour,remaining', [('armour.no-armour', 0), ('armour.attlas-plate-mail', 1)])
 def test_attlas_fortitude_delays_the_actual_injury_after_an_unsaved_wound(precompiled, armour, remaining):
     from mordheim_combat.modular.state import initialize_duel
-    from mordheim_combat_lab.verification.dice import StrictDice, StrictDecisions
+    from tests.engines.shared.dice import StrictDice, StrictDecisions
     from mordheim_core.models import DuelContext
     compiled = precompiled()
     wearer, opponent = compiled.first, compiled.second
@@ -219,7 +219,7 @@ def test_spittle_tests_on_hit_even_when_wounding_fails(precompiled):
 
 @pytest.mark.parametrize('save', ['armour', 'ward'])
 def test_m21_spittle_precedes_successful_saving_throws(save):
-    from mordheim_combat_lab.verification.dice import StrictDice
+    from tests.engines.shared.dice import StrictDice
     from mordheim_core.models import EffectSet
     a = fighter(main_poison_id='poison.spider-spittle')
     b = fighter(armour_id='armour.heavy-armour') if save == 'armour' else replace(
@@ -288,7 +288,7 @@ def test_only_active_player_recovers_before_combat(precompiled):
 @pytest.mark.parametrize('paralyzed', [False, True])
 def test_m07_four_player_turns_preserve_recovery_fire_and_paralysis_ownership(precompiled, paralyzed):
     from mordheim_core.models import EffectSet
-    from mordheim_combat_lab.verification.dice import StrictDice
+    from tests.engines.shared.dice import StrictDice
     # Animal Friendship excludes ordinary animals. Supply that qualification
     # so the unchanged four-turn tape isolates recovery ownership.
     effects = EffectSet(tags=('animal_friendship', 'species.animal', 'species.normal-animal'))
@@ -449,7 +449,7 @@ def test_rapier_first_continuation_really_requires_five_to_hit(precompiled):
 
 @pytest.mark.parametrize('ending', ['miss', 'save', 'critical'])
 def test_m10_barrage_three_continuations_cap_and_full_resolution(precompiled, ending):
-    from mordheim_combat_lab.verification.dice import StrictDice
+    from tests.engines.shared.dice import StrictDice
     compiled = precompiled()
     a, b = compiled.first, compiled.second
     rolls = [{'key': 'a.hit', 'value': 4}, {'key': 'a.wound', 'value': 1}]
@@ -469,7 +469,7 @@ def test_m10_barrage_three_continuations_cap_and_full_resolution(precompiled, en
 
 
 def test_m10_barrage_can_be_declined_without_another_roll(precompiled):
-    from mordheim_combat_lab.verification.dice import StrictDice, StrictDecisions
+    from tests.engines.shared.dice import StrictDice, StrictDecisions
     compiled = precompiled()
     a, b = compiled.first, compiled.second
     dice = StrictDice([{'key': 'a.hit', 'value': 4}, {'key': 'a.wound', 'value': 1}])
@@ -525,7 +525,7 @@ def test_brace_of_pistols_is_two_attacks_even_for_a_three_attack_profile(precomp
 @pytest.mark.parametrize('attacks', [1, 2, 3])
 @pytest.mark.parametrize('off_hand', [None, 'weapon.dagger', 'weapon.pistol'])
 def test_m09_pistol_allocation_and_next_turn_fallback(attacks, off_hand):
-    from mordheim_combat_lab.verification.dice import StrictDice
+    from tests.engines.shared.dice import StrictDice
     a = fighter(attacks=attacks, initiative=6, main_weapon_id='weapon.pistol', off_hand_id=off_hand)
     b = fighter(toughness=4, wounds=10, initiative=1)
     count = 2 if off_hand == 'weapon.pistol' else attacks + 1 if off_hand else 1
@@ -568,7 +568,7 @@ def test_disease_dagger_infects_even_if_the_ordinary_wound_fails(precompiled):
 
 @pytest.mark.parametrize('test_roll', range(1, 7))
 def test_m17_infection_toughness_test_faces(test_roll):
-    from mordheim_combat_lab.verification.dice import StrictDice
+    from tests.engines.shared.dice import StrictDice
     a, b = fighter(main_weapon_id='weapon.disease-dagger'), fighter()
     dice = StrictDice([{'key': 'a.hit', 'value': 6},
         {'key': 'a.infection', 'value': test_roll}, {'key': 'a.wound', 'value': 1}])
@@ -579,7 +579,7 @@ def test_m17_infection_toughness_test_faces(test_roll):
 
 
 def test_m17_undead_or_possessed_skips_infection_test(precompiled):
-    from mordheim_combat_lab.verification.dice import StrictDice
+    from tests.engines.shared.dice import StrictDice
     from mordheim_core.models import EffectSet
     compiled = precompiled()
     a = compiled.first
@@ -591,7 +591,7 @@ def test_m17_undead_or_possessed_skips_infection_test(precompiled):
 
 
 def test_d13_the_infection_wound_takes_no_save_but_the_dagger_keeps_its_own(precompiled):
-    from mordheim_combat_lab.verification.dice import StrictDice
+    from tests.engines.shared.dice import StrictDice
     compiled = precompiled()
     a = compiled.first
     armoured = compiled.second
@@ -690,7 +690,7 @@ def test_serpent_staff_replaces_profile_attacks_and_parries(precompiled):
 
 
 def test_m27_declining_staff_power_keeps_normal_attacks_stats_and_parry(precompiled):
-    from mordheim_combat_lab.verification.dice import StrictDice, StrictDecisions
+    from tests.engines.shared.dice import StrictDice, StrictDecisions
     compiled = precompiled()
     a, b = compiled.first, compiled.second
     dice = StrictDice([{'key': 'round.1.second.attack.0.hit', 'value': 4},
@@ -719,7 +719,7 @@ def test_trap_blade_breaks_the_weapon_and_next_round_uses_unarmed_fallback(preco
 
 @pytest.mark.parametrize('parry_roll,weapon', [(1, 'weapon.sword'), (5, 'weapon.sword'), (5, 'weapon.fist')])
 def test_m25_failed_parry_trap_and_unarmed_boundaries(precompiled, parry_roll, weapon):
-    from mordheim_combat_lab.verification.dice import StrictDice
+    from tests.engines.shared.dice import StrictDice
     compiled = precompiled()
     a, b = compiled.first, compiled.second
     rolls = [{'key': 'p.attack.0.hit', 'value': 4}, {'key': 'p.attack.0.parry', 'value': parry_roll}]
@@ -736,7 +736,7 @@ def test_m25_failed_parry_trap_and_unarmed_boundaries(precompiled, parry_roll, w
 
 @pytest.mark.parametrize('off_hand', [None, 'weapon.dagger'])
 def test_m25_break_preserves_prepared_hits_and_projects_surviving_equipment(precompiled, off_hand):
-    from mordheim_combat_lab.verification.dice import StrictDice
+    from tests.engines.shared.dice import StrictDice
     from mordheim_combat.modular.equipment import equipment_for_state
     compiled = precompiled()
     a, b = compiled.first, compiled.second
@@ -812,7 +812,7 @@ def test_blackblood_reacts_to_a_close_combat_wound_but_not_to_burning_or_spines(
     ``cult-of-the-possessed/special-rules.yaml`` as ``trait.acid-blood``.
     """
     from mordheim_combat.modular.aftermath import _react_to_wound, _spines
-    from mordheim_combat_lab.verification.dice import StrictDice
+    from tests.engines.shared.dice import StrictDice
     blackblood = cult_mutant(mutation='band--mutations-blackblood')
     assert 'acid_blood' in blackblood.global_effects.tags
     attacker = fighter(ws=4, strength=6)

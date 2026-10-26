@@ -15,8 +15,8 @@ import pytest
 from mordheim_combat.modular.leadership import resolve_local_leadership
 from mordheim_combat.modular.psychology import resolve_fear
 from mordheim_combat.modular.state import initialize_duel
-from mordheim_combat_lab.verification.parity._replay import replay_duel
-from mordheim_combat_lab.verification.dice import StrictDecisions, StrictDice
+from tests.engines.modular.replay import replay_duel
+from tests.engines.shared.dice import StrictDecisions, StrictDice
 from mordheim_core.models import DuelContext, FighterBuild
 
 

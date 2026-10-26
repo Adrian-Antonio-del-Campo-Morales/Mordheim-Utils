@@ -6,7 +6,7 @@ from mordheim_combat.modular.attacks import resolve_reference_attack
 from mordheim_combat.modular.contexts import _combined_effect, prepare_hit_context
 from mordheim_combat.modular.rounds import resolve_round
 from mordheim_combat.modular.state import initialize_fighter, initialize_duel
-from mordheim_combat_lab.verification.dice import StrictDice, StrictDecisions
+from tests.engines.shared.dice import StrictDice, StrictDecisions
 from mordheim_core.models import Characteristics, DuelContext, FighterBuild
 
 

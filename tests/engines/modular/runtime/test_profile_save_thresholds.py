@@ -22,10 +22,10 @@ from mordheim_combat.modular.contexts import prepare_armour_context, prepare_spe
 from mordheim_combat.modular.state import initialize_fighter
 
 
-from mordheim_combat_lab.verification.dice import StrictDecisions, StrictDice
+from tests.engines.shared.dice import StrictDecisions, StrictDice
 
 
-from mordheim_combat_lab.verification.parity._replay import replay_duel
+from tests.engines.modular.replay import replay_duel
 
 
 import sys
@@ -50,11 +50,6 @@ BOGLAR = ("underworld-alliance-mim", "boglars")
 WARPSTONE_TROLL = ("underworld-alliance-mim", "warpstone-troll")
 
 
-@pytest.fixture
-def _frozen_compiles(compiled_builds, monkeypatch):
-    """Use frozen build results for the explicitly migrated preparations."""
-    monkeypatch.setattr(
-        sys.modules[__name__], "compile_fighter", compiled_builds.fighter)
 
 
 def profile(pair, **options):
@@ -96,7 +91,6 @@ def attack(attacker, defender, rolls, **options):
     return result
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_control_compilations_do_not_change_between_boglar_attacks():
     troll_before = profile(WARPSTONE_TROLL)
     attack(mace(), profile(BOGLAR), [roll("a.hit", 6), roll("a.wound", 4), roll("a.special.regeneration", 4), roll("a.injury.0", 1)])

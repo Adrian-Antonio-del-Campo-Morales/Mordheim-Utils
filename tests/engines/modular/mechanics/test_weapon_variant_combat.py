@@ -15,7 +15,7 @@ from mordheim_combat.modular.rounds import apply_round_weapon_attack_modifiers
 from mordheim_combat.modular.state import initialize_fighter
 from mordheim_combat.phases import armour_target, resolve_armour
 from mordheim_combat.phases import resolve_special_save, resolve_wound
-from mordheim_combat_lab.verification.dice import StrictDecisions, StrictDice
+from tests.engines.shared.dice import StrictDecisions, StrictDice
 import sys
 
 from mordheim_core.models import Characteristics, FighterBuild
@@ -38,11 +38,6 @@ def _frozen_compiles(compiled_builds, monkeypatch):
 
 
 
-@pytest.fixture
-def _frozen_compiles(compiled_builds, monkeypatch):
-    """Use frozen build results for the explicitly migrated preparations."""
-    monkeypatch.setattr(
-        sys.modules[__name__], "compile_fighter", compiled_builds.fighter)
 
 
 def build(main_weapon_id, armour_id="armour.no-armour", off_hand_id=None, **options):
@@ -90,14 +85,12 @@ def test_the_ladle_leaves_an_unarmoured_defender_with_only_its_shield(precompile
     assert armour_target(stage) == 6
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_an_ordinary_mace_still_lets_the_worn_armour_save():
     armoured = build("weapon.mace", armour_id="armour.heavy-armour")
     assert armour_target(armour_stage(build("weapon.mace"), armoured)) == 5
     assert armour_target(armour_stage(build("weapon.ladle"), armoured)) > 6
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_the_cleaver_attack_costs_the_defender_one_point_of_armour_save():
     armoured = build("weapon.mace", armour_id="armour.heavy-armour")
     # The printed -1 to the save is the axe modifier and the bearer keeps its
@@ -120,7 +113,6 @@ def test_the_cleaver_wounds_at_the_bearer_strength(precompiled):
     assert result.success is True
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_the_ladle_denies_an_equipment_ward_and_keeps_a_skill_save(precompiled):
     """The printed clause keeps saves \"from shields or skills\" only."""
     compiled = precompiled()
@@ -169,7 +161,6 @@ def test_the_cathayan_longsword_grants_no_extra_armour_penalty(precompiled):
     assert resolve_armour(stage, StrictDice([{"key": "armour", "value": 5}])).saved is True
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_the_starsword_denies_armour_while_its_ward_exception_saves():
     """Design ruling 2026-10-14: the printed Dodge save is the ward face."""
     starsword = build("weapon.starsword").main_weapon

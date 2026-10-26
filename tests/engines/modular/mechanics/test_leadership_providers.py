@@ -14,7 +14,7 @@ import sys
 
 from mordheim_combat.modular.leadership import resolve_local_leadership
 from mordheim_combat.modular.state import initialize_duel
-from mordheim_combat_lab.verification.dice import StrictDecisions, StrictDice
+from tests.engines.shared.dice import StrictDecisions, StrictDice
 from mordheim_core.models import Characteristics, DuelContext, FighterBuild, LocalParticipant
 import pytest
 

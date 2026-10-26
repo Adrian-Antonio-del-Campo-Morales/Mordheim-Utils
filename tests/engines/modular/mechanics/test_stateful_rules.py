@@ -69,11 +69,6 @@ class RecordingTurnDice:
         return 1
 
 
-@pytest.fixture
-def _frozen_compiles(compiled_builds, monkeypatch):
-    """Use frozen build results for the explicitly migrated preparations."""
-    monkeypatch.setattr(
-        sys.modules[__name__], "compile_fighter", compiled_builds.fighter)
 
 
 def fighter(*, ws=3, strength=3, toughness=3, wounds=1, initiative=3, attacks=1, **options):
@@ -297,7 +292,6 @@ def test_reference_fire_persists_until_recovery_succeeds(precompiled):
     assert not extinguished.on_fire
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_reference_spines_acid_blood_and_contagious_are_real_reactions():
     ordinary = fighter(wounds=2)
     spined = replace(ordinary, global_effects=EffectSet(tags=("spines",)))

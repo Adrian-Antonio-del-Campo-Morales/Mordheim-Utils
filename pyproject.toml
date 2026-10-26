@@ -1,42 +1,26 @@
 [build-system]
-requires = ["setuptools>=69", "cython>=3.1"]
+requires = ["setuptools>=69"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "mordheim-utils"
 version = "2.0.0a1"
-description = "Shared Mordheim tooling: knowledge-driven duel engine and campaign manager"
+description = "Minimal precompiled-test slice for modular and NumPy combat engines"
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = [
-    "numpy>=1.24,<3",
-    "PyYAML>=6,<7",
-    "openpyxl>=3.1,<4",
-    "Pillow>=10,<13",
-    "jsonschema>=4.18,<5",
-    "mini-racer==0.14.1",
-]
-
-[project.scripts]
-mordheim-combat-lab = "mordheim_combat_lab.cli.commands:main"
+dependencies = ["numpy>=1.24,<3"]
 
 [project.optional-dependencies]
-dev = ["pytest>=8.0", "pytest-xdist>=3.6,<4", "coverage>=7.0", "wheel>=0.43", "pyinstaller>=6.0"]
+dev = ["pytest>=8.0", "pytest-xdist>=3.6,<4"]
 
 [tool.setuptools.packages.find]
-where = ["packages/python/combat-engine", "packages/python/roster-construction", "packages/python/core", "packages/python/knowledge", "apps/combat-lab"]
-
-[tool.setuptools.package-data]
-mordheim_construction = ["_eligibility.js"]
+where = ["packages/python/combat-engine", "packages/python/core"]
 
 [tool.pytest.ini_options]
-pythonpath = ["packages/python/combat-engine", "packages/python/roster-construction", "packages/python/core", "packages/python/knowledge", "apps/combat-lab"]
-testpaths = ["tests"]
+pythonpath = [".", "packages/python/combat-engine", "packages/python/core"]
+testpaths = ["tests/engines/modular", "tests/engines/vectorized", "tests/engines/shared"]
 addopts = "--strict-markers"
-# Test categories annotate what a test protects. Registering them here makes
-# `pytest -m <category>` a normal selection and rejects unknown markers.
 markers = [
-    "evidence: evidence generation, coverage, provenance and certification records",
-    "packaging: the built or packaged product contains required usable artefacts",
-    "performance: a measured execution or delivery budget is met",
+    "evidence: fixture and contract evidence",
+    "performance: runtime and execution measurements",
 ]

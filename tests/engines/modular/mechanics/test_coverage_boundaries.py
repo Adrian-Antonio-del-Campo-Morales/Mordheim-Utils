@@ -7,7 +7,7 @@ import pytest
 from mordheim_combat.modular import attacks
 from mordheim_combat.modular.state import initialize_fighter
 from mordheim_combat.phases import Condition
-from mordheim_combat_lab.verification.dice import StrictDecisions, StrictDice
+from tests.engines.shared.dice import StrictDecisions, StrictDice
 
 
 @pytest.mark.parametrize('removed', ['attacker', 'defender'])

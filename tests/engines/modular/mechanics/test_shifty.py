@@ -11,7 +11,7 @@ import pytest
 from mordheim_combat import phases
 from mordheim_combat.modular.rounds import resolve_round
 from mordheim_combat.modular.state import initialize_duel
-from mordheim_combat_lab.verification.dice import StrictDecisions, StrictDice
+from tests.engines.shared.dice import StrictDecisions, StrictDice
 from mordheim_core.models import Characteristics, DuelContext, EffectSet, FighterBuild
 
 
@@ -303,7 +303,7 @@ def test_pistol_only_bonus_stacks_with_the_ordinary_pistol_attack(precompiled, o
 
 
 def test_removing_provisional_binding_is_detected_by_the_timing_fixture(precompiled):
-    from mordheim_combat_lab.verification.reports import EvidenceMismatch
+    from tests.engines.shared.dice import EvidenceMismatch
     compiled = precompiled()
     first, second = compiled.first, compiled.second
     mutated = replace(first, global_effects=replace(first.global_effects,
@@ -313,7 +313,7 @@ def test_removing_provisional_binding_is_detected_by_the_timing_fixture(precompi
 
 
 def test_promoting_entire_pool_is_detected_by_the_timing_fixture(precompiled, monkeypatch):
-    from mordheim_combat_lab.verification.reports import EvidenceMismatch
+    from tests.engines.shared.dice import EvidenceMismatch
     original = phases.resolve_priority
 
     def wrong_priority(context):
@@ -367,7 +367,7 @@ def test_bonus_reuses_existing_whip_tie_without_splitting_warrior_order(precompi
 
 
 def test_public_modular_replay_observes_terminal_state_after_bonus(precompiled):
-    from mordheim_combat_lab.verification.parity import replay_duel
+    from tests.engines.modular.replay import replay_duel
     compiled = precompiled()
     result = replay_duel(compiled.first, compiled.second, backend='modular',
         context=DuelContext(charging=('second',), active_participant='second'),

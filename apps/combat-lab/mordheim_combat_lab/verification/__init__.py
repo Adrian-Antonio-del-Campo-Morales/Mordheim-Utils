@@ -1,1 +1,0 @@
-"""verification — area API."""

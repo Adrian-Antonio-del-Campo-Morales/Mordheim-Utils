@@ -19,7 +19,7 @@ from mordheim_combat.modular.pools import _resolve_attack_pool
 from mordheim_combat.modular.psychology import resolve_fear
 from mordheim_combat.modular.rounds import resolve_crude_belch
 from mordheim_combat.modular.state import AttackOutcome, initialize_duel, initialize_fighter
-from mordheim_combat_lab.verification.dice import StrictDecisions, StrictDice
+from tests.engines.shared.dice import StrictDecisions, StrictDice
 from mordheim_core.dice import ScriptedDice
 from mordheim_core.models import DuelContext
 

@@ -58,11 +58,14 @@ def test_charge_conditions_are_isolated_per_vector_row(vector_case):
 def test_random_profile_characteristics_are_rolled_per_simulation_row(vector_case):
     from mordheim_combat.vectorized import _new_state
     case=vector_case("test_vectorized_engine/test_random_profile_characteristics_are_rolled_per_simulation_row-0-0")
-    condemned,spawn=case.first,case.second
-    condemned_state=_new_state(condemned,200,np.random.default_rng(41));spawn_state=_new_state(spawn,200,np.random.default_rng(42))
+    condemned=case.first
+    condemned_state=_new_state(condemned,200,np.random.default_rng(41))
     assert condemned_state.weapon_skill.min()>=1 and condemned_state.weapon_skill.max()<=6
     assert condemned_state.strength.min()>=1 and condemned_state.strength.max()<=6
     assert condemned_state.toughness.min()>=1 and condemned_state.toughness.max()<=6
     assert condemned_state.attacks.min()>=1 and condemned_state.attacks.max()<=3
-    assert spawn_state.attacks.min()>=2 and spawn_state.attacks.max()<=7
-    assert np.unique(condemned_state.weapon_skill).size>1 and np.unique(spawn_state.attacks).size>1
+    for values in (condemned_state.weapon_skill, condemned_state.strength,
+                   condemned_state.toughness, condemned_state.attacks):
+        assert np.unique(values).size>1
+    # Spawn's D6+1 is rolled per round, not by _new_state. Its live attack
+    # pool is covered by test_spawn_special_attacks_replaces_the_pool_with_one_die_plus_one.

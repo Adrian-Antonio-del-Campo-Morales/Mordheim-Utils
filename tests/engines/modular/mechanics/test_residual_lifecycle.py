@@ -8,7 +8,7 @@ import pytest
 from mordheim_combat.modular.rounds import resolve_round
 from mordheim_combat.modular.state import initialize_duel, initialize_fighter
 from mordheim_combat.phases import Condition
-from mordheim_combat_lab.verification.dice import StrictDice, StrictDecisions
+from tests.engines.shared.dice import StrictDice, StrictDecisions
 from mordheim_core.models import Characteristics, DuelContext, FighterBuild, LocalParticipant
 
 

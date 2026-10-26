@@ -32,7 +32,7 @@ Synthetic input provenance (engine composition only, not canonical legality):
 from mordheim_combat import phases
 from mordheim_combat.modular.rounds import resolve_round
 from mordheim_combat.modular.state import initialize_duel
-from mordheim_combat_lab.verification.dice import StrictDecisions, StrictDice
+from tests.engines.shared.dice import StrictDecisions, StrictDice
 from mordheim_core.models import Characteristics, CompiledFighter, DuelContext, EffectSet
 import pytest
 

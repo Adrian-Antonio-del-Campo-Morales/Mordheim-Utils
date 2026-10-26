@@ -26,7 +26,7 @@ from mordheim_combat.modular.contexts import (
 from mordheim_combat.modular.state import _parry_capacity, initialize_fighter
 from mordheim_combat.modular.pools import _resolve_attack_pool, _resolve_prepared_defences
 from mordheim_combat.modular.contexts import OwnedRollDice, prepare_hit_context
-from mordheim_combat_lab.verification.dice import StrictDice, StrictDecisions
+from tests.engines.shared.dice import StrictDice, StrictDecisions
 from mordheim_core.dice import RollRequest
 compile_fighter = None
 from mordheim_core.models import Characteristics, EffectSet, FighterBuild
@@ -97,7 +97,6 @@ def test_an_unchosen_elf_gets_no_parry_from_the_shared_skill_table(precompiled):
     assert _parry_capacity(plain) == 0
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_chosen_of_the_white_tower_rerolls_only_a_sword_or_buckler_parry(precompiled):
     # ``first`` is the recorded dagger elf and ``second`` the sword elf; the
     # buckler arming is a third build the corpus does not carry.
@@ -249,7 +248,6 @@ def armour(attacker_strength, defender, weapon="weapon.mace", incoming=None):
     return phases.armour_target(context), context
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_fen_guard_bark_skin_caps_the_strength_penalty_at_six(precompiled):
     # ``first`` is the recorded dryads; the attackers stay synthetic controls.
     dryads = precompiled().first
@@ -258,7 +256,6 @@ def test_fen_guard_bark_skin_caps_the_strength_penalty_at_six(precompiled):
     assert armour(6, dryads)[0] == 6
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_fen_guard_bark_skin_cutting_edge_is_exempt_from_the_strength_cap(precompiled):
     # ``first`` is the recorded dryads; the axe attackers stay synthetic controls.
     dryads = precompiled().first
@@ -283,7 +280,6 @@ def test_fen_guard_bark_skin_cutting_edge_denies_the_die_on_a_real_attack(precom
     assert axe.saved is False and axe.damage == 1
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_fen_guard_bark_skin_fire_ignores_only_the_hide_save(precompiled):
     # ``first`` is the recorded dryads and ``second`` the fimir of the other
     # band; the Strength 3 attacker stays a synthetic control.
@@ -308,7 +304,6 @@ def test_fen_guard_bark_skin_fire_weapon_denies_the_die_on_a_real_attack(precomp
     assert result.saved is False and result.damage == 1
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_halfling_layers_of_fat_ignores_enemy_strength(precompiled):
     # ``first`` is the recorded halfling elder; the Strength 6 attacker stays a
     # synthetic control.
@@ -318,7 +313,6 @@ def test_halfling_layers_of_fat_ignores_enemy_strength(precompiled):
     assert target == 6
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_companion_filly_odd_covering_is_a_five_plus_save_negated_by_magic(precompiled):
     # ``first`` is the recorded companion filly; the Strength 6 attacker stays a
     # synthetic control.
@@ -330,7 +324,6 @@ def test_companion_filly_odd_covering_is_a_five_plus_save_negated_by_magic(preco
     assert armour(6, filly, incoming=EffectSet(tags=("attack.magical",)))[0] == 7
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_companion_filly_covering_matches_the_dame_precedent(precompiled):
     # ``first`` is the recorded dame; the Strength 6 attacker stays a synthetic
     # control.
@@ -568,7 +561,6 @@ def test_djinn_curse_modifies_enemy_melee_hits_and_each_ordinary_save_once(preco
     assert (special.ward_save, special.regeneration_save) == (6, 5)
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_corruption_can_force_one_eligible_successful_hit_to_reroll_without_rerolling_a_reroll():
     unit, target = attacker(), attacker()
     target = replace(target, global_effects=replace(target.global_effects,
@@ -589,7 +581,6 @@ def test_corruption_can_force_one_eligible_successful_hit_to_reroll_without_rero
     dice.finish()
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_rememberer_uses_one_selected_pool_with_variant_recipient_and_expiry_limits():
     unit = canonical("dwarf-slayers-kaz", "giant-slayer", "weapon.mace",
         condition_ids=("condition.rememberer-kaz-support",))
@@ -629,7 +620,6 @@ def test_rememberer_uses_one_selected_pool_with_variant_recipient_and_expiry_lim
     decisions.finish()
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_shaggy_hide_combines_normal_armour_but_respects_the_specific_leather_exception(precompiled):
     # ``first`` is the recorded chieftain in light armour and shield, ``second``
     # the free toughened-leather build of the same case.
@@ -641,7 +631,6 @@ def test_shaggy_hide_combines_normal_armour_but_respects_the_specific_leather_ex
     assert armour(3, free)[0] == 6
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_achilles_heel_criticals_when_needing_six_and_stampede_denies_only_charge_armour():
     unit, target = attacker(), attacker()
     unit = replace(unit, global_effects=replace(unit.global_effects,
@@ -951,7 +940,6 @@ def test_trip_roll_belongs_to_the_jester_and_uses_no_wound_die(precompiled):
     dice.finish(); decisions.finish()
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_excellent_reflexes_has_one_special_save_with_a_source_bound_dodge_upgrade(precompiled):
     # ``first`` is the recorded robber without the dodge and ``second`` the same
     # profile with the source-bound condition selected.
@@ -1084,7 +1072,6 @@ def test_native_ranger_may_reroll_a_successful_own_wound_and_must_keep_the_worse
     ('hireling.dramatis.countess-marianna-chevaux-vampire-assassin','hirelings.dramatis-personae.1a','weapon.rapier'),
     ('hireling.dramatis.sigmund-spindle-the-harvester-of-flesh','hirelings.dramatis-personae.2a','weapon.scythe')])
 @pytest.mark.parametrize('injury,condition',[(1,phases.Condition.STANDING),(3,phases.Condition.STANDING),(5,phases.Condition.OUT)])
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_native_marianna_and_sigmund_source_distinct_no_pain_compositions(profile,band,weapon,injury,condition):
     unit,target = attacker(strength=6),canonical(band,profile,weapon)
     dice = StrictDice([{'key':'x.hit','value':6},{'key':'x.wound','value':3},
@@ -1162,7 +1149,6 @@ def test_intrinsic_djinn_save_is_unmodifiable_but_luck_replacement_is_an_ordinar
     ("mechanic.djinn-ethereal", "x.special.ward", 5),
 ])
 @pytest.mark.parametrize("passes", [False, True])
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_active_curse_preserves_the_printed_unmodifiable_save(source, key, face, passes):
     unit, target = attacker(), attacker()
     unit = replace(unit, global_effects=replace(unit.global_effects,
@@ -1407,7 +1393,6 @@ def dwarf_combatant(main_weapon, off_hand):
                      off_hand_id=off_hand)
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_dwarf_axe_with_sword_gains_the_printed_failed_parry_reroll():
     for combo in (("weapon.dwarf-axe", "weapon.sword"), ("weapon.sword", "weapon.dwarf-axe")):
         fighter = dwarf_combatant(*combo)

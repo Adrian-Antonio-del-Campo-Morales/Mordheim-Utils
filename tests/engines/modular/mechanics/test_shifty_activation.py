@@ -12,7 +12,7 @@ import pytest
 from mordheim_combat.modular import duel, simulate_duel as simulate_modular
 from mordheim_combat.modular.rounds import resolve_round
 from mordheim_combat.modular.state import initialize_duel
-from mordheim_combat_lab.verification.dice import StrictDecisions, StrictDice
+from tests.engines.shared.dice import StrictDecisions, StrictDice
 from mordheim_core.models import Characteristics, DuelContext, DuelRequest, FighterBuild
 
 

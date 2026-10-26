@@ -63,12 +63,26 @@ def test_disability_guardian_unarmed_and_onogal_have_observable_runtime_effects(
     assert marked.global_effects.poison_immunity
 
 
-def test_animal_friendship_prevents_normal_animals_from_attacking_in_the_duel(vector_case):
-    case = vector_case("test_rule_families_a/test_animal_friendship_prevents_normal_animals_from_attacking_in_the_duel-0-0")
-    friend, animal = case.first, case.second
-    assert "species.animal" in animal.global_effects.tags
-    result = simulate_duel(DuelRequest(friend, animal, 40, seed=12, maximum_rounds=20))
-    assert result.second_wins == 0
+def test_animal_friendship_removes_the_normal_animal_attack_pool(shared_cases):
+    from mordheim_combat.vectorized._operators import opposed_attack_count
+
+    case = shared_cases[
+        "e2e/mechanic/mechanic.animal-friendship/the-animals-whole-pool-never-attacks-the-bearer"
+    ]
+    animal, friend = case.first, case.second
+    assert "species.normal-animal" in animal.global_effects.tags
+    # The local operator is implemented, but the canonical mechanic remains
+    # explicitly pending at the public optimized-backend admission boundary.
+    pool = np.array([animal.characteristics.attacks], dtype=np.int16)
+    assert pool[0] > 0
+    assert opposed_attack_count(
+        animal, friend, pool, first_round=True,
+    ).tolist() == [0]
+    assert opposed_attack_count(
+        animal, animal, pool, first_round=True,
+    ).tolist() == pool.tolist()
+    with pytest.raises(ValueError, match="Local modifier variants"):
+        simulate_duel(DuelRequest(friend, animal, 40, seed=12, maximum_rounds=20))
 
 
 def test_contagious_retaliates_and_mark_of_old_ones_is_spent_only_once(vector_case):

@@ -18,7 +18,7 @@ import pytest
 from mordheim_combat import phases
 from mordheim_combat.modular.rounds import resolve_round
 from mordheim_combat.modular.state import initialize_duel
-from mordheim_combat_lab.verification.dice import StrictDice
+from tests.engines.shared.dice import StrictDice
 from mordheim_core.models import Characteristics, DuelContext, FighterBuild
 
 

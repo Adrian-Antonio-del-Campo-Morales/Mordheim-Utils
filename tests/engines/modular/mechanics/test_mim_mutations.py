@@ -8,7 +8,7 @@ from mordheim_combat.modular.pools import electrical_touch_weapon
 from mordheim_combat.modular.mutations import apply_brand, fighter_for_mutations, select_mutation_tail
 from mordheim_combat.modular.state import initialize_fighter
 from mordheim_combat.phases import has_tag, Condition
-from mordheim_combat_lab.verification.dice import StrictDice
+from tests.engines.shared.dice import StrictDice
 import sys
 
 from mordheim_core.models import Characteristics, EffectSet, FighterBuild, CarriedEquipment
@@ -34,11 +34,6 @@ CASE = ('unit/modular/test_mim_mutations/'
         'test_stat_mutations_preserve_temporary_losses_and_crystal_locks_only_subsequent_mutation-0-0')
 
 
-@pytest.fixture
-def _frozen_compiles(compiled_builds, monkeypatch):
-    """Use frozen build results for the explicitly migrated preparations."""
-    monkeypatch.setattr(
-        sys.modules[__name__], "compile_fighter", compiled_builds.fighter)
 
 
 @pytest.fixture(scope='module')
@@ -169,7 +164,6 @@ def test_extra_arm_does_not_create_weapon_and_can_equip_one_real_stowed_copy(cha
     assert sum(item.item_id == 'axe' for item in equipped.mutation_equipment) == 1
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_extra_arm_moves_one_existing_poisoned_copy_with_its_own_clean_snapshot(chart,human):
     unit = compile_fighter(FighterBuild('mordheim',human.characteristics,
         main_weapon_id='weapon.sword',off_hand_id='weapon.sword',
@@ -238,7 +232,6 @@ def test_spiked_tail_is_an_alternative_not_a_second_simultaneous_tail(chart,huma
     assert len(tails) == 1 and has_tag(tails[0],'rule.scorpion-tail')
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_scaled_skin_composes_physical_light_armour_and_shield(chart,human):
     unit = compile_fighter(FighterBuild('mordheim',human.characteristics,main_weapon_id='weapon.sword',
         off_hand_id='defence.shield',armour_id='armour.light-armour'))
@@ -331,7 +324,6 @@ def test_the_metal_armour_identity_leaves_with_the_armour_burning_body_destroys(
     assert view.armour_save == 7
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
 def test_the_supplied_metal_armour_fact_follows_the_worn_metal_defences(chart,human):
     # ``metal_armour`` is a supplied fact about the fighter's worn kit, so the
     # identity lasts while any of that kit is worn and leaves with the last of

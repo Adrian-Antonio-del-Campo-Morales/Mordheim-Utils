@@ -23,8 +23,8 @@ from mordheim_combat import phases
 from mordheim_combat.modular.attacks import resolve_reference_attack
 from mordheim_combat.modular.contexts import prepare_armour_context, prepare_special_save_context
 from mordheim_combat.modular.state import initialize_fighter
-from mordheim_combat_lab.verification.dice import StrictDecisions, StrictDice
-from mordheim_combat_lab.verification.parity._replay import replay_duel
+from tests.engines.shared.dice import StrictDecisions, StrictDice
+from tests.engines.modular.replay import replay_duel
 import sys
 
 from mordheim_core.models import Characteristics, DuelContext, EffectSet, FighterBuild
@@ -49,11 +49,6 @@ BOGLAR = ("underworld-alliance-mim", "boglars")
 WARPSTONE_TROLL = ("underworld-alliance-mim", "warpstone-troll")
 
 
-@pytest.fixture
-def _frozen_compiles(compiled_builds, monkeypatch):
-    """Use frozen build results for the explicitly migrated preparations."""
-    monkeypatch.setattr(
-        sys.modules[__name__], "compile_fighter", compiled_builds.fighter)
 
 
 def profile(pair, **options):

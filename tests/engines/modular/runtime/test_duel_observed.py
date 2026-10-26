@@ -1,37 +1,18 @@
 """The observed oracle leg must reproduce the counting oracle exactly."""
-import sys
 from mordheim_combat.modular.duel import simulate_duel_observed
 from mordheim_combat.modular.duel import simulate_duel_reference
-from tests.engines.fixtures.precompiled_catalog import benchmark_scenarios
+from tests.engines.fixtures.precompiled_catalog import benchmark_case_key
 import numpy as np
 import pytest
 
 
-# The frozen-build loader is the only compilation route in this module: the
-# fixture below replaces this name with ``load_builds(...).fighter``, so every
-# builder keeps its complete FighterBuild and the local ``replace`` calls stay
-# untouched, while nothing compiles here.
-compile_fighter = None
+def _pair(cases, scenario_id: str = "basic"):
+    case = cases[benchmark_case_key(scenario_id)]
+    return case.first, case.second, case.limits
 
 
-@pytest.fixture(autouse=True)
-def _frozen_compiles(compiled_builds, monkeypatch):
-    """Inject the common loader callable; ``compiled_builds`` is wired by conftest."""
-    monkeypatch.setattr(
-        sys.modules[__name__], "compile_fighter", compiled_builds.fighter)
-
-
-
-
-def _pair(scenario_id: str = "basic"):
-    scenario = next(
-        item for item in benchmark_scenarios() if item.id == scenario_id
-    )
-    return compile_fighter(scenario.first), compile_fighter(scenario.second), scenario
-
-
-def test_observed_totals_reproduce_the_reference_sample():
-    first, second, scenario = _pair()
+def test_observed_totals_reproduce_the_reference_sample(cases):
+    first, second, scenario = _pair(cases)
     simulations, seed = 400, 2026
     observed = simulate_duel_observed(
         first, second, simulations, seed=seed,
@@ -47,8 +28,8 @@ def test_observed_totals_reproduce_the_reference_sample():
     assert observed.as_result() == reference
 
 
-def test_observed_arrays_are_replayable_and_in_range():
-    first, second, scenario = _pair("stateful")
+def test_observed_arrays_are_replayable_and_in_range(cases):
+    first, second, scenario = _pair(cases, "stateful")
     simulations = 300
     left = simulate_duel_observed(
         first, second, simulations, seed=7,
@@ -67,13 +48,13 @@ def test_observed_arrays_are_replayable_and_in_range():
         assert getattr(left, value).shape == (simulations,)
 
 
-def test_unresolved_duels_report_the_full_round_budget():
+def test_unresolved_duels_report_the_full_round_budget(cases):
     # The 75-round long scenario is the most likely to leave duels open; the
     # invariant is structural: a duel that never resolved ran out of its round
     # budget (both fighters still active), so it must have executed every
     # round.  A simultaneous mutual KO also counts as unresolved but ends
     # mid-budget with both conditions OUT.
-    first, second, scenario = _pair("long")
+    first, second, scenario = _pair(cases, "long")
     observed = simulate_duel_observed(
         first, second, 200, seed=11, maximum_rounds=scenario.maximum_rounds,
     )
@@ -85,8 +66,8 @@ def test_unresolved_duels_report_the_full_round_budget():
         == scenario.maximum_rounds
 
 
-def test_observed_validates_its_bounds():
-    first, second, scenario = _pair()
+def test_observed_validates_its_bounds(cases):
+    first, second, scenario = _pair(cases)
     import pytest
     with pytest.raises(ValueError):
         simulate_duel_observed(first, second, 0, maximum_rounds=scenario.maximum_rounds)

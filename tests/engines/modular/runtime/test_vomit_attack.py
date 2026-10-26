@@ -22,13 +22,12 @@ from mordheim_combat.modular.rounds import resolve_round, select_attack_replacem
 from mordheim_combat.modular.state import initialize_duel, initialize_fighter
 
 
-from mordheim_combat.native._combat_compile import compile_duel
 
 
 from mordheim_combat.vectorized import available_backends, simulate_batch, simulate_duel, simulate_duel_parallel
 
 
-from mordheim_combat_lab.verification.dice import StrictDecisions, StrictDice
+from tests.engines.shared.dice import StrictDecisions, StrictDice
 
 
 import sys
@@ -50,11 +49,6 @@ def _frozen_compiles(compiled_builds, monkeypatch):
 RULE = "warpstone-troll--vomit-attack"
 
 
-@pytest.fixture
-def _frozen_compiles(compiled_builds, monkeypatch):
-    """Use frozen build results for the explicitly migrated preparations."""
-    monkeypatch.setattr(
-        sys.modules[__name__], "compile_fighter", compiled_builds.fighter)
 
 
 def troll(selected=True):
@@ -72,8 +66,7 @@ def opponent(**options):
     ))
 
 
-@pytest.mark.usefixtures("_frozen_compiles")
-@pytest.mark.parametrize("backend", ["auto", "numpy", "native"])
+@pytest.mark.parametrize("backend", ["auto", "numpy"])
 def test_unported_option_is_refused_before_optimized_execution(backend):
     """NumPy executes the connected option; the native gate still refuses it.
 
@@ -102,9 +95,8 @@ def test_low_level_optimized_entries_do_not_silently_drop_the_option(precompiled
     # dropping it. Explicit Leadership keeps the charging fear test valid.
     led = precompiled(0).second
     second = precompiled(1).second
-    for call in (lambda: compile_duel_plan(first, second), lambda: compile_duel(first, second)):
-        with pytest.raises(ValueError, match="modular engine"):
-            call()
+    with pytest.raises(ValueError, match="modular engine"):
+        compile_duel_plan(first, second)
     assert sum(simulate_batch(first, led, 1, np.random.default_rng(0), 1)) == 1
     parallel = simulate_duel_parallel(DuelRequest(first, led, simulations=1))
     assert parallel.first_wins + parallel.second_wins + parallel.unresolved == 1

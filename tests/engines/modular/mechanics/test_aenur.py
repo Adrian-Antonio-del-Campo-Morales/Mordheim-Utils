@@ -13,7 +13,7 @@ from mordheim_combat.modular.contexts import (
 )
 from mordheim_combat.modular.state import initialize_fighter
 from mordheim_combat.phases import resolve_wound
-from mordheim_combat_lab.verification.dice import StrictDice
+from tests.engines.shared.dice import StrictDice
 import pytest
 
 BAND = "hirelings.dramatis-personae.core"

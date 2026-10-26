@@ -7,7 +7,7 @@ from mordheim_combat.modular.attacks import resolve_reference_attack
 from mordheim_combat.modular.equipment import equipment_for_state
 from mordheim_combat.modular.rounds import resolve_round
 from mordheim_combat.modular.state import initialize_duel, initialize_fighter
-from mordheim_combat_lab.verification.dice import StrictDice, StrictDecisions
+from tests.engines.shared.dice import StrictDice, StrictDecisions
 from mordheim_core.models import DuelContext
 
 PID = 'hireling.dramatis.abdul-alhazred-the-mad-sorcerer'

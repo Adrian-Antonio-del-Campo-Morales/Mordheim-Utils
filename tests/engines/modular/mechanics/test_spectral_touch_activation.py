@@ -16,10 +16,8 @@ from mordheim_combat.modular import duel
 from mordheim_combat.modular.pools import _resolve_attack_pool
 from mordheim_combat.modular.rounds import resolve_round
 from mordheim_combat.modular.state import initialize_duel, initialize_fighter
-from mordheim_combat.native._combat_compile import compile_duel
 from mordheim_combat.vectorized import simulate_batch, simulate_duel, simulate_duel_parallel
-from mordheim_combat_lab.application.catalogue import CombatCatalogue
-from mordheim_combat_lab.verification.dice import StrictDecisions, StrictDice
+from tests.engines.shared.dice import StrictDecisions, StrictDice
 from mordheim_core.models import Characteristics, DuelContext, DuelRequest
 
 BAND = 'call-of-the-night-haint-mim'
@@ -61,15 +59,6 @@ def test_canonical_binding_compiles_exact_consumer_tag_and_legal_natural_weapon(
     assert 'weapon.natural-attacks' in host.main_weapon.tags
     assert host.off_hand is None
     assert host.extra_attacks == ()
-
-
-def test_catalogue_profile_status_and_build_share_the_canonical_route(host):
-    catalogue = CombatCatalogue()
-    profile = next(p for p in catalogue.profiles('mordheim', BAND) if p.profile_id == 'spirit-hosts')
-    rule = next(r for r in catalogue.profile_rules(profile) if r.id == RULE)
-    assert rule.runtime_grant
-    assert 'additional wound' in rule.effect
-    assert TAG in host.global_effects.tags
 
 
 @pytest.mark.parametrize('faces,damages', [((6, 5, 1), (1, 0, 0)),

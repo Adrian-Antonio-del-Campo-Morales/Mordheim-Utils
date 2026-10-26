@@ -12,7 +12,7 @@ from mordheim_combat.modular.aftermath import _react_to_wound
 from mordheim_combat.modular.attacks import resolve_reference_attack
 from mordheim_combat.modular.pools import _resolve_attack_pool
 from mordheim_combat.modular.state import initialize_fighter
-from mordheim_combat_lab.verification.dice import StrictDecisions, StrictDice
+from tests.engines.shared.dice import StrictDecisions, StrictDice
 from mordheim_core.models import Characteristics, EffectSet, FighterBuild
 
 
@@ -377,7 +377,7 @@ def test_established_extra_wound_prevents_barrage_even_when_saved(saved, path):
     rolls = [roll(f'{key}.hit', 6), roll(f'{key}.spectral-touch.armour', 6 if saved else 1),
              roll(f'{key}.wound', 1)]
     if path == 'replay':
-        from mordheim_combat_lab.verification.parity._replay import replay_duel
+        from tests.engines.modular.replay import replay_duel
         from mordheim_core.models import DuelContext
         rolls.append(roll('round.0.second.attack.0.hit', 1))
         result = replay_duel(a, b, backend='modular', rolls=rolls,
@@ -434,7 +434,7 @@ def test_barrage_prerequisite_detects_isolated_mutations(monkeypatch, mutation):
 
 
 def test_pending_spirit_host_tag_reaches_actual_modular_duel_driver(precompiled):
-    from mordheim_combat_lab.verification.parity._replay import replay_duel
+    from tests.engines.modular.replay import replay_duel
     from mordheim_core.models import DuelContext
     a, b = precompiled().first, precompiled().second
     result = replay_duel(a, b, backend='modular',

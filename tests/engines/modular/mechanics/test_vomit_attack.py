@@ -14,9 +14,8 @@ from mordheim_combat.kernel import compile_duel_plan
 from mordheim_combat.modular.pools import _resolve_attack_pool
 from mordheim_combat.modular.rounds import resolve_round, select_attack_replacement
 from mordheim_combat.modular.state import initialize_duel, initialize_fighter
-from mordheim_combat.native._combat_compile import compile_duel
 from mordheim_combat.vectorized import simulate_batch, simulate_duel, simulate_duel_parallel
-from mordheim_combat_lab.verification.dice import StrictDecisions, StrictDice
+from tests.engines.shared.dice import StrictDecisions, StrictDice
 import sys
 
 from mordheim_core.models import Characteristics, DuelContext, DuelRequest, EffectSet, FighterBuild
@@ -39,11 +38,6 @@ def _frozen_compiles(compiled_builds, monkeypatch):
 RULE = "warpstone-troll--vomit-attack"
 
 
-@pytest.fixture
-def _frozen_compiles(compiled_builds, monkeypatch):
-    """Use frozen build results for the explicitly migrated preparations."""
-    monkeypatch.setattr(
-        sys.modules[__name__], "compile_fighter", compiled_builds.fighter)
 
 
 def troll(selected=True):

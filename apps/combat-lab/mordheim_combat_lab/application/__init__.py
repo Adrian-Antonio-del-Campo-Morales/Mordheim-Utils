@@ -1,1 +1,0 @@
-"""application — area API."""

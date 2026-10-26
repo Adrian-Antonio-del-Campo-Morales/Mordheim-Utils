@@ -13,7 +13,7 @@ from mordheim_combat.modular import contexts
 from mordheim_combat.modular.psychology import resolve_fear
 from mordheim_combat.modular.rounds import resolve_round
 from mordheim_combat.modular.state import initialize_duel, initialize_fighter
-from mordheim_combat_lab.verification.dice import StrictDecisions, StrictDice
+from tests.engines.shared.dice import StrictDecisions, StrictDice
 from mordheim_core.models import Characteristics, DuelContext, FighterBuild
 import pytest
 

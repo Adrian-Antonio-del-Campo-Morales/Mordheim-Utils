@@ -6,7 +6,7 @@ import pytest
 
 from mordheim_combat.modular.rounds import resolve_crude_belch, resolve_round
 from mordheim_combat.modular.state import initialize_duel
-from mordheim_combat_lab.verification.dice import StrictDice, StrictDecisions
+from tests.engines.shared.dice import StrictDice, StrictDecisions
 from mordheim_core.models import Characteristics, FighterBuild, DuelContext, LocalParticipant
 
 

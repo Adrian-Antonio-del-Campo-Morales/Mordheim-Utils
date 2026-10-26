@@ -138,7 +138,6 @@ def test_the_gaze_spares_a_psychology_immune_target(precompiled):
 
 # --- the two Seduction copies ----------------------------------------------
 
-@pytest.mark.usefixtures('_frozen_compiles')
 def test_lahmia_seduction_controls_only_the_printed_male_recipient(precompiled):
     compiled = precompiled()
     owner, victim = compiled.first, compiled.second
