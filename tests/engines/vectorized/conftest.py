@@ -1,4 +1,4 @@
-"""Frozen precompiled cases for the vectorized engine tests (T08).
+"""Frozen precompiled cases and build snapshots for the vectorized tests (T08).
 
 The corpus is generated once from the reviewed sources and never recompiled
 here.  A missing key is an error: nothing in this package reads the knowledge
@@ -10,9 +10,12 @@ from pathlib import Path
 
 import pytest
 
+from tools.verification.compiled_builds import BuildSnapshots
+from tools.verification.compiled_builds import load_builds
 from tools.verification.compiled_cases import load_cases
 
 CORPUS = Path(__file__).resolve().parents[1] / "fixtures" / "compiled-cases.json"
+BUILDS = Path(__file__).resolve().parents[1] / "fixtures" / "compiled-builds.json"
 PREFIX = "unit/vectorized/"
 
 
@@ -29,3 +32,9 @@ def vector_case():
             raise AssertionError(f"missing precompiled case {key}") from error
 
     return resolve
+
+
+@pytest.fixture(scope="session")
+def compiled_builds() -> BuildSnapshots:
+    """The frozen ``compile_fighter`` results, loaded once for the session."""
+    return load_builds(BUILDS)

@@ -5,7 +5,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
-import { readArtefactReader } from "../../../../rules/knowledge/support/kb-artefact";
+import { readArtefactReader } from "../../../../knowledge/support/kb-artefact";
 
 import { createService } from "@src/features/campaign/default-deps";
 import { CampaignAppProvider } from "@src/features/campaign/useCampaignApp";

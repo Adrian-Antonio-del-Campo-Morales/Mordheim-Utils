@@ -23,7 +23,6 @@ SELECTOR_NAMES = (
 )
 
 
-@pytest.mark.phase7_warband
 def test_editor_roundtrips_a_supplied_fear_condition_and_explicit_leadership(editor):
     build = FighterBuild('mordheim', Characteristics(3, 3, 3, 2, 3, 1, leadership=7),
                          main_weapon_id='weapon.mace', trait_overrides={'causes_fear': True})
@@ -36,7 +35,6 @@ def test_editor_roundtrips_a_supplied_fear_condition_and_explicit_leadership(edi
     assert 'mechanic.causes-fear' not in compile_fighter(editor.build()).global_effects.tags
 
 
-@pytest.mark.phase7_warband
 def test_editor_roundtrips_a_supplied_canonical_condition(editor):
     """The editor passes canonical ids through; it keeps no second table."""
     assert 'condition.hatred' in editor.condition_vars
@@ -52,7 +50,6 @@ def test_editor_roundtrips_a_supplied_canonical_condition(editor):
 
 
 # The editor exposes and re-projects its supplied facts; nothing is compiled here.
-@pytest.mark.phase7_warband
 def test_editor_exposes_residual_supplied_facts(editor):
     facts = {key: True for key in ("slave", "scourge_armed", "spellcaster", "metal_armour", "devoted_vampire_down", "devoted_vampire_killed")}
     build = FighterBuild('mordheim', Characteristics(3, 3, 3, 2, 3, 1, leadership=7),
@@ -94,7 +91,6 @@ def _assert_selectors_populated(editor, band_name: str, profile_name: str) -> No
         )
 
 
-@pytest.mark.phase7_warband
 def test_sweep_every_band_and_profile_keeps_all_selectors_populated(editor):
     assert editor._band_packages, "the editor must expose the full band catalogue"
     checked = 0
@@ -112,7 +108,6 @@ def test_sweep_every_band_and_profile_keeps_all_selectors_populated(editor):
     assert checked > 0, "no profile was visited; the sweep is vacuous"
 
 
-@pytest.mark.phase7_warband
 def test_free_selection_keeps_all_selectors_populated(editor):
     editor.band.set(FREE_SELECTION)
     editor._band_changed()
@@ -123,7 +118,6 @@ def test_free_selection_keeps_all_selectors_populated(editor):
     _assert_selectors_populated(editor, FREE_SELECTION, "-")
 
 
-@pytest.mark.phase7_warband
 def test_composite_profile_with_null_characteristics_renders_and_builds(editor):
     """The plague cart declares null characteristics and must not crash."""
     band_name = next(
@@ -145,7 +139,6 @@ def test_composite_profile_with_null_characteristics_renders_and_builds(editor):
     assert build.characteristics.weapon_skill >= 0
 
 
-@pytest.mark.phase7_warband
 def test_sister_superior_weapon_selector_is_populated(editor):
     """Regression: the Sister Superior weapon dropdown used to open empty."""
     band_name = next(
@@ -171,7 +164,6 @@ def test_sister_superior_weapon_selector_is_populated(editor):
 
 
 
-@pytest.mark.phase7_warband
 def test_editor_roundtrips_supplied_stupidity_conditions_and_handler_value(root):
     editor = FighterEditor(root, 'Stupidity', CombatCatalogue())
     build = FighterBuild('mordheim', Characteristics(3, 3, 3, 2, 2, 1, leadership=7),
@@ -192,7 +184,6 @@ def test_editor_roundtrips_supplied_stupidity_conditions_and_handler_value(root)
     editor.destroy()
 
 
-@pytest.mark.phase7_warband
 def test_editor_roundtrips_explicit_elf_identity_without_overriding_profile_default(root):
     editor = FighterEditor(root, 'Identity', CombatCatalogue())
     editor.load_build(FighterBuild('mordheim', band_id='high-elves-lus', profile_id='seaguard', main_weapon_id='weapon.dagger'))
@@ -240,7 +231,6 @@ def test_editor_roundtrips_explicit_elf_identity_without_overriding_profile_defa
     editor.destroy()
 
 
-@pytest.mark.phase7_warband
 def test_editor_roundtrips_snorri_prebattle_drinking_result(root):
     editor = FighterEditor(root, 'Snorri', CombatCatalogue())
     build = FighterBuild('mordheim', band_id='hirelings.dramatis-personae.2b',
@@ -258,7 +248,6 @@ def test_editor_roundtrips_snorri_prebattle_drinking_result(root):
     editor.destroy()
 
 
-@pytest.mark.phase7_warband
 def test_editor_roundtrips_native_sister_starting_skill_choices(root):
     editor = FighterEditor(root, 'Sister', CombatCatalogue())
     try:
@@ -276,7 +265,6 @@ def test_editor_roundtrips_native_sister_starting_skill_choices(root):
         editor.destroy()
 
 
-@pytest.mark.phase7_warband
 def test_editor_roundtrips_house_and_qualified_animal_facts(root):
     editor = FighterEditor(root, 'Qualified facts', CombatCatalogue())
     try:
@@ -298,7 +286,6 @@ def test_editor_roundtrips_house_and_qualified_animal_facts(root):
         editor.destroy()
 
 
-@pytest.mark.phase7_warband
 def test_editor_roundtrips_condemned_permanent_results(root):
     editor = FighterEditor(root, 'Condemned', CombatCatalogue())
     try:
@@ -315,7 +302,6 @@ def test_editor_roundtrips_condemned_permanent_results(root):
 
 
 # Main claim: the compiled fighter carries the rune effect; the menu is secondary.
-@pytest.mark.phase7_warband
 def test_editor_roundtrips_supplied_runes_on_selected_equipment(root):
     editor = FighterEditor(root, 'Inscribed equipment', CombatCatalogue())
     try:
@@ -339,7 +325,6 @@ def test_editor_roundtrips_supplied_runes_on_selected_equipment(root):
         editor.destroy()
 
 
-@pytest.mark.phase7_warband
 def test_editor_roundtrips_native_eagle_count_and_snerik_source_kit(root):
     editor = FighterEditor(root, 'Native companions', CombatCatalogue())
     try:

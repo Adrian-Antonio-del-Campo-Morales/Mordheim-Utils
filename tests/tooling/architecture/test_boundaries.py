@@ -19,7 +19,6 @@ PACKAGE_ROOTS = {
 PACKAGE_IMPORT_ROOTS = tuple(sorted({str(path.parent) for path in PACKAGE_ROOTS.values()}))
 
 # The whole file asserts import boundaries between the packages.
-pytestmark = pytest.mark.phase0_preflight
 
 SHARED_PACKAGES = ("mordheim_core", "mordheim_knowledge", "mordheim_construction", "mordheim_combat")
 RUNTIME_AREAS = ("application", "persistence", "ui")
@@ -71,6 +70,7 @@ def test_runtime_areas_do_not_import_verification_or_archive():
 def test_importing_package_is_lazy_about_ui_and_verification():
     command = [sys.executable, "-c", "import sys,mordheim_combat_lab; "
                "assert 'tkinter' not in sys.modules; "
-               "assert 'mordheim_combat_lab.verification.audit' not in sys.modules"]
+               "assert not any(name.startswith('mordheim_combat_lab.verification') "
+               "for name in sys.modules)"]
     environment = {**os.environ, "PYTHONPATH": os.pathsep.join(PACKAGE_IMPORT_ROOTS)}
     subprocess.run(command, cwd=ROOT, env=environment, check=True)

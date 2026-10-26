@@ -9,7 +9,7 @@
  */
 
 import { resolve } from "node:path";
-import { readArtefactDocument } from "../../../../rules/knowledge/support/kb-artefact";
+import { readArtefactDocument } from "../../../../knowledge/support/kb-artefact";
 import { describe, expect, it } from "vitest";
 
 import {

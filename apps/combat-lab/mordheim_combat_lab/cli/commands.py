@@ -68,31 +68,47 @@ def _parity_sample_timing(item) -> str:
     )
 
 
-def _structural_errors(knowledge, specs) -> tuple[list[str], int]:
+def _structural_errors(knowledge) -> tuple[list[str], int]:
     """Structural layer of ``verify`` (the former ``validate`` command).
 
     Runs the editorial contract of every maintained document (band packages,
     catalogue, hireling and campaign catalogues, registry), the execution
-    contract, the phase-verification audit and the default compilation of
-    every band profile. Returns the error list and the compiled profile count.
+    contract, binding contracts and the default compilation of every band
+    profile. Returns the error list and the compiled profile count.
     """
     from mordheim_construction.compiler import compile_fighter
     from mordheim_construction.contracts import validate_execution_contract
     from mordheim_core.models import FighterBuild
     from mordheim_knowledge.editorial_schemas import validate_knowledge_base
-    from mordheim_knowledge.loader import load_bands
+    from mordheim_knowledge.loader import load_bands, load_execution_contract, runtime_bindings
     from mordheim_combat_lab.verification.structural import (
-        audit_phase_verification,
+        _binding_contract_error,
+        _catalogue_binding_errors,
         required_profile_build,
     )
 
     errors = list(validate_knowledge_base(knowledge))
     errors.extend(validate_execution_contract("mordheim", knowledge))
-    report = audit_phase_verification("mordheim", knowledge, specs)
-    errors.extend(report.errors)
+    execution_ids = {
+        str(row.get("id") or "")
+        for row in load_execution_contract("mordheim", knowledge).get("mechanics") or ()
+    }
     compiled = 0
     for collection in ("mordheim", "trollheim"):
         for band in load_bands(collection, knowledge):
+            for rule in band.special_rules:
+                runtime = rule.get("runtime") or {}
+                if runtime.get("scope") != "YES" or runtime.get("implemented") != "YES":
+                    continue
+                bindings = runtime_bindings(rule)
+                if not bindings:
+                    errors.append(
+                        f"{band.band['id']}/{rule['id']}: implemented rule has no binding"
+                    )
+                for binding in bindings:
+                    error = _binding_contract_error(binding, execution_ids)
+                    if error:
+                        errors.append(f"{rule['id']}: {error}")
             for profile in band.profiles:
                 try:
                     # Supply the profile's printed mandatory initial choice from
@@ -116,69 +132,31 @@ def _structural_errors(knowledge, specs) -> tuple[list[str], int]:
                         errors.append(f"{collection}/{band.band['id']}/{profile['id']}: {error}")
                 else:
                     compiled += 1
+    errors.extend(_catalogue_binding_errors(knowledge, execution_ids))
     return errors, compiled
 
 
 def verify_command(args) -> int:
-    """Validate the knowledge base and run the semantic specifications.
-
-    The structural layer always runs first (the gate the old ``validate``
-    command enforced). ``--structural`` stops there; otherwise the semantic
-    specifications run against the modular engine. ``--inventory`` keeps its
-    fast JSON-only path.
-    """
+    """Validate KB structure and default construction, without semantic tests."""
     from mordheim_knowledge.loader import knowledge_root
-    from mordheim_combat_lab.verification.audit import verify_semantics
     from mordheim_combat_lab.verification.inventory import inventory
 
     knowledge = Path(args.knowledge).resolve() if args.knowledge else knowledge_root()
-    specs = Path(args.specs).resolve() if args.specs else None
     if args.inventory:
         print(json.dumps([asdict(item) for item in inventory(knowledge)],
                          ensure_ascii=True, indent=2))
         return 0
-    errors, compiled = _structural_errors(knowledge, specs)
-    if args.structural:
-        if args.json:
-            print(json.dumps({"structural_complete": not errors,
-                              "structural_errors": errors,
-                              "profiles_compiled": compiled},
-                             ensure_ascii=True, indent=2))
-        else:
-            for error in errors:
-                print(f"FAIL: {error}")
-            if errors:
-                print("structural_complete=False")
-            else:
-                print(f"structural_complete=True; {compiled} profiles compile with "
-                      "their default construction")
-            print("semantic layer skipped (--structural)")
-        return int(bool(errors))
-    semantic = verify_semantics(knowledge, specs)
-    payload = {"structural_complete": not errors,
-               "structural_errors": errors,
-               "profiles_compiled": compiled,
-               "semantic_complete": semantic.semantic_complete, **asdict(semantic)}
+    errors, compiled = _structural_errors(knowledge)
+    payload = {"structural_complete": not errors, "structural_errors": errors,
+               "profiles_compiled": compiled}
     if args.json:
         print(json.dumps(payload, ensure_ascii=True, indent=2))
     else:
-        print(f"structural_complete={not errors} ({compiled} profiles compile)")
-        print(f"semantic_complete={semantic.semantic_complete}")
-        print(f"{len(semantic.verified)}/{len(semantic.obligations)} obligations verified; "
-              f"{len(semantic.pending)} pending; "
-              f"{sum(len(item.passed_cases) for item in semantic.fixtures)} passed cases; "
-              f"{sum(len(item.killed_mutations) for item in semantic.fixtures)} detected mutations")
-        required = [item for item in semantic.interaction_assessments
-                    if item.verification_requirement == "required"]
-        print(f"interaction_policy={semantic.interaction_policy}; "
-              f"{len(required) - len(semantic.required_pending_interactions)}/{len(required)} required interactions covered; "
-              f"{len(semantic.required_pending_interactions)} required pending")
-        for error in (*errors, *semantic.errors):
+        for error in errors:
             print(f"FAIL: {error}")
-        if semantic.pending:
-            print("PENDING: use --json for the effect-by-effect backlog.")
-    return int(bool(errors or semantic.errors or
-                    args.require_complete and not semantic.semantic_complete))
+        print(f"structural_complete={not errors}; {compiled} profiles compile with "
+              "their default construction")
+    return int(bool(errors))
 
 
 def _deep_benchmark_command(args, scenarios, installed) -> int:
@@ -707,8 +685,9 @@ def _battery_command(args, profile: str) -> int:
     from mordheim_combat.vectorized import simulate_batch_observed
     from mordheim_combat_lab.verification.parity import _battery_cases as catalog
     from mordheim_combat_lab.verification.parity._battery_runner import (
-        combine_reports, run_battery,
+        battery_report, battery_results, prepare_cases,
     )
+    from mordheim_combat_lab.verification.parity._runner import run_parity
     from mordheim_combat_lab.verification.parity._report import (
         battery_failure_kind, battery_report_markdown, battery_report_payload,
     )
@@ -751,16 +730,21 @@ def _battery_command(args, profile: str) -> int:
     # One compiled input and one modular sample per case, shared by every
     # requested candidate: the oracle is paid for once, not per backend.
     reuse: dict = {}
-    reports = tuple(
-        run_battery(
-            cases, profile=profile, backend=name, rows=rows, reuse=reuse,
-            workers=getattr(args, "workers", 1),
+    results: list = []
+    for name in requested:
+        prepared, failures = prepare_cases(
+            cases, backend=name, rows=rows, reuse=reuse,
         )
-        for name in requested
-    )
-    report = reports[0] if len(reports) == 1 else combine_reports(
-        reports, profile=profile, backend=backend,
-    )
+        run = run_parity(
+            prepared, backends=(name,), reference="modular",
+            candidate="observed",
+            workers=getattr(args, "workers", 1),
+            repeat_candidate=True, cache=reuse,
+        ) if prepared else None
+        results.extend(battery_results(
+            cases, () if run is None else run.rows, failures,
+        ))
+    report = battery_report(tuple(results), cases, profile=profile)
     elapsed = time.perf_counter() - started
     payload = battery_report_payload(
         report, profile=profile, backend=backend,
@@ -861,7 +845,157 @@ def _battery_command(args, profile: str) -> int:
     )))
 
 
+def _catalog_parity_command(args) -> int:
+    """Execute the fixture catalogues through the existing unified runner."""
+    from mordheim_combat_lab.verification.parity import ParityCase, ParityRow, run_parity
+    from mordheim_core.dice import ScriptedDecisions
+    from mordheim_knowledge.paths import project_root
+
+    started = time.perf_counter()
+    catalog = args.catalog or "all"
+    backend = args.backend or "numpy"
+    profile = args.profile
+    if profile is not None and catalog == "precompiled":
+        print("Parity configuration error: --profile filters battery cases only.", file=sys.stderr)
+        return 2
+    if (args.level is not None or args.pair_set is not None or args.truncations
+            or args.deep_simulations is not None):
+        print("Parity configuration error: --catalog uses catalogue selection, not --level/--pair-set/--truncations/--deep-simulations.", file=sys.stderr)
+        return 2
+    if args.rows is not None:
+        print("Parity configuration error: use --simulations with --catalog, not --rows.", file=sys.stderr)
+        return 2
+    try:
+        from tests.engines.fixtures import precompiled_catalog, battery_catalogue
+        from tools.verification.compiled_cases import load_cases
+    except ImportError as error:
+        print(f"Catalogue execution requires the source checkout and its test fixtures: {error}", file=sys.stderr)
+        return 2
+
+    requested = ("numpy", "native") if backend == "all" else (backend,)
+    prepared = []
+    failures = []
+    order = []
+
+    def failed(label, size, horizon, error):
+        for engine in requested:
+            failures.append(ParityRow(
+                case=label, backend=engine, maximum_rounds=horizon,
+                simulations=size, status="NOT_RUN", detail=f"Preparation failed: {type(error).__name__}: {error}",
+            ))
+
+    if catalog in ("precompiled", "all"):
+        corpus_path = project_root() / "tests/engines/fixtures/compiled-cases.json"
+        try:
+            frozen = load_cases(corpus_path)
+        except Exception as error:
+            print(f"Cannot load frozen corpus (no compilation fallback): {error}", file=sys.stderr)
+            return 2
+        keys = (*precompiled_catalog.BENCHMARK_CASE_KEYS.values(),
+                *precompiled_catalog.PARITY_CASE_KEYS.values())
+        for key in keys:
+            order.append(key)
+            size, horizon = args.simulations or 1, 50
+            try:
+                item = frozen[key]
+                size = args.simulations or item.limits.simulations
+                horizon = item.limits.maximum_rounds
+                if any(item.initial_state.values()) or item.dice or item.decisions:
+                    raise ValueError("this frozen case requires initial-state overrides or an exact replay; no inputs will be silently ignored")
+                prepared.append(ParityCase(
+                    label=key, first=item.first, second=item.second,
+                    maximum_rounds=horizon, simulations=size, seed=item.limits.seed,
+                    context=item.context,
+                ))
+            except Exception as error:
+                failed(key, size, horizon, error)
+
+    if catalog in ("battery", "all"):
+        from mordheim_construction.compiler import compile_fighter
+        from mordheim_knowledge.loader import knowledge_root
+        root = knowledge_root()
+        for item in battery_catalogue.battery_cases(profile or "deep"):
+            label = "battery/" + item.id
+            order.append(label)
+            size = args.simulations or item.rows
+            limit = battery_catalogue.input_limit(item)
+            if limit:
+                prepared.append(ParityCase(
+                    label=label, first=None, second=None, simulations=size,
+                    maximum_rounds=item.maximum_rounds, blocked_by=limit,
+                ))
+                continue
+            try:
+                first = compile_fighter(item.first, root)
+                second = compile_fighter(item.second, root)
+                context = battery_catalogue.resolve_context(item.context, root)
+                prepared.append(ParityCase(
+                    label=label, first=first, second=second,
+                    simulations=size, maximum_rounds=item.maximum_rounds,
+                    seed=item.seed, context=context,
+                    decisions=ScriptedDecisions(dict(item.decisions)),
+                    magnitudes=battery_catalogue.case_magnitudes(item),
+                ))
+            except Exception as error:
+                failed(label, size, item.maximum_rounds, error)
+
+    completed = 0
+
+    def progress():
+        nonlocal completed
+        if not args.json:
+            print(f"Sampled {completed + 1}/{len(prepared)}: {prepared[completed].label}", flush=True)
+        completed += 1
+
+    run = run_parity(
+        prepared, backends=requested, candidate="observed", workers=args.workers,
+        seed=args.seed, on_progress=progress,
+    )
+    positions = {label: index for index, label in enumerate(order)}
+    rows = sorted((*run.rows, *failures), key=lambda row: positions[row.case])
+    reference_only = backend == "modular"
+    success = "COMPLETED" if reference_only else "PASS"
+    summary = {
+        "completed": sum(row.status == "COMPLETED" for row in rows),
+        "passed": sum(row.status == "PASS" for row in rows),
+        "failed": sum(row.status not in {"COMPLETED", "PASS", "INCOMPATIBLE"} for row in rows),
+        "blocked": sum(row.status == "INCOMPATIBLE" for row in rows),
+    }
+    payload = {
+        "catalog": catalog, "profile": profile or ("deep" if catalog != "precompiled" else None),
+        "backend": backend, "reference_only": reference_only,
+        "complete": bool(rows) and all(row.status == success for row in rows),
+        "parity_approved": not reference_only and bool(rows) and all(row.approved for row in rows),
+        "summary": summary, "modular_duels": run.modular_duels,
+        "elapsed_seconds": time.perf_counter() - started,
+        "results": [asdict(row) for row in rows],
+    }
+    content = json.dumps(payload, ensure_ascii=True, indent=2) + "\n"
+    if args.output:
+        output = Path(args.output).resolve()
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(content, encoding="utf-8")
+    if args.json:
+        print(content, end="")
+    else:
+        for row in rows:
+            print(f"{row.status}: {row.case} [{row.backend}] n={row.simulations} rounds={row.maximum_rounds} {row.detail}")
+        print("Summary: " + ", ".join(f"{key}={value}" for key, value in summary.items()))
+        if reference_only:
+            print("Modular execution only: these results do not approve statistical parity or rule correctness.")
+        if args.output:
+            print(f"REPORT: {Path(args.output).resolve()}")
+    return int(not rows or summary["failed"] > 0 or (
+        args.require_complete and not payload["complete"]
+    ))
+
+
 def parity_command(args) -> int:
+    if getattr(args, "catalog", None) is not None or getattr(args, "backend", None) == "modular":
+        return _catalog_parity_command(args)
+    if getattr(args, "simulations", None) is not None:
+        print("Parity configuration error: --simulations requires --catalog.", file=sys.stderr)
+        return 2
     # P03: ``--profile`` selects the renewed battery; every historical selector
     # (``--level``, ``--pair-set``, ``--truncations``) keeps its old meaning when
     # ``--profile`` is absent.  An explicit legacy selector plus ``--profile`` is
@@ -950,12 +1084,13 @@ def parity_command(args) -> int:
     from mordheim_combat_lab.cli.benchmarking import benchmark_scenarios
     from mordheim_combat_lab.cli.benchmarking import compile_benchmark_fighters
     from mordheim_combat_lab.cli.benchmarking import deep_test_scenarios
+    from mordheim_combat_lab.verification.parity import ParityCase
     from mordheim_combat_lab.verification.parity import compare_statistical_parity
-    from mordheim_combat_lab.verification.parity import compare_truncation_parity
+    from mordheim_combat_lab.verification.parity import run_parity
+    from mordheim_combat_lab.verification.parity import statistical_result
     from mordheim_combat_lab.verification.parity import parity_report_markdown
     from mordheim_combat_lab.verification.parity import parity_report_payload
     from mordheim_combat_lab.verification.parity import verify_vectorized_parity
-    from mordheim_combat_lab.verification.parity import verify_specification_parity
 
     deep_scenarios = (
         deep_test_scenarios(pair_set)
@@ -963,7 +1098,6 @@ def parity_command(args) -> int:
     )
 
     report = verify_vectorized_parity()
-    specification_report = verify_specification_parity()
     statistical = ()
     if args.statistical:
         from mordheim_combat.modular.parallel import resolve_oracle_workers
@@ -999,8 +1133,6 @@ def parity_command(args) -> int:
     deep_native_installed = False
     if args.deep:
         from mordheim_combat.vectorized import available_backends
-        from mordheim_combat_lab.verification.parity import DeepPair
-        from mordheim_combat_lab.verification.parity import certify_deep
 
         installed = available_backends()
         deep_native_installed = "native" in installed
@@ -1016,12 +1148,12 @@ def parity_command(args) -> int:
                 "--deep-cross-simulations to scale it down too.",
                 file=sys.stderr,
             )
-        pairs = tuple(
-            DeepPair(
-                scenario.id,
+        segments = tuple(
+            (
+                scenario,
                 *compile_benchmark_fighters(scenario),
                 scenario.maximum_rounds,
-                simulations=(
+                (
                     args.deep_simulations
                     if args.deep_simulations is not None
                     else (25_000 if scenario.maximum_rounds > 50 else 100_000)
@@ -1029,15 +1161,15 @@ def parity_command(args) -> int:
             )
             for scenario in deep_scenarios
         )
-        requested_duels = sum(pair.simulations for pair in pairs)
+        requested_duels = sum(segment[4] for segment in segments)
         if args.deep_simulations is not None:
             breakdown = (
-                f"{pair_set} set: {len(pairs)} pairs x "
+                f"{pair_set} set: {len(segments)} pairs x "
                 f"{args.deep_simulations:,}"
             )
         else:
-            regular = sum(pair.simulations == 100_000 for pair in pairs)
-            long_pairs = sum(pair.simulations != 100_000 for pair in pairs)
+            regular = sum(segment[4] == 100_000 for segment in segments)
+            long_pairs = sum(segment[4] != 100_000 for segment in segments)
             parts = []
             if regular:
                 parts.append(f"{regular} pairs at 100k")
@@ -1054,23 +1186,60 @@ def parity_command(args) -> int:
             )
             return 2
         progress = None if args.json else BenchmarkProgress(
-            len(pairs) * (2 if deep_native_installed else 1)
+            len(segments) * (2 if deep_native_installed else 1)
         )
-        deep_samples, modular_duels = certify_deep(
-            pairs,
-            simulations=(
-                args.deep_simulations
-                if args.deep_simulations is not None else 100_000
+        matrix = run_parity(
+            tuple(
+                ParityCase(
+                    label=f"matrix:{scenario.id}", first=first,
+                    second=second, maximum_rounds=maximum_rounds,
+                    simulations=simulations, seed=args.seed,
+                )
+                for scenario, first, second, maximum_rounds, simulations
+                in segments
             ),
-            cross_simulations=args.deep_cross_simulations, seed=args.seed,
-            native_installed="native" in installed,
-            on_progress=progress.advance if progress is not None else None,
+            backends=(
+                ("numpy", "native") if deep_native_installed else ("numpy",)
+            ),
+            candidate="counts",
             workers=args.workers,
+            on_progress=progress.advance if progress is not None else None,
             escalate=True,
             max_modular_duels=args.max_modular_duels,
         )
+        cross = None
+        if deep_native_installed:
+            cross = run_parity(
+                tuple(
+                    ParityCase(
+                        label=f"cross:{scenario.id}", first=first,
+                        second=second, maximum_rounds=maximum_rounds,
+                        simulations=args.deep_cross_simulations,
+                        seed=args.seed,
+                    )
+                    for scenario, first, second, maximum_rounds, _simulations
+                    in segments
+                ),
+                backends=("native",),
+                reference="numpy",
+                candidate="counts",
+                workers=args.workers,
+                on_progress=progress.advance if progress is not None else None,
+            )
         if progress is not None:
             progress.finish()
+        by_case: dict[str, list] = {}
+        for row in matrix.rows:
+            by_case.setdefault(row.case, []).append(row)
+        for row in (() if cross is None else cross.rows):
+            by_case.setdefault(row.case, []).append(row)
+        deep_samples = tuple(
+            statistical_result(row)
+            for scenario, *_rest in segments
+            for label in (f"matrix:{scenario.id}", f"cross:{scenario.id}")
+            for row in by_case.get(label, ())
+        )
+        modular_duels = matrix.modular_duels
     truncation_samples = ()
     if args.truncations:
         from mordheim_combat_lab.verification.parity import TRUNCATION_HORIZONS
@@ -1080,28 +1249,35 @@ def parity_command(args) -> int:
         rows: list = []
         for scenario in deep_scenarios:
             first, second = compile_benchmark_fighters(scenario)
-            for row in compare_truncation_parity(
-                scenario.id, first, second,
-                args.truncation_simulations, seed=args.seed,
-                maximum_rounds=scenario.maximum_rounds,
-                horizons=TRUNCATION_HORIZONS,
+            run = run_parity(
+                (
+                    ParityCase(
+                        label=scenario.id, first=first, second=second,
+                        maximum_rounds=scenario.maximum_rounds,
+                        simulations=args.truncation_simulations,
+                        seed=args.seed,
+                    ),
+                ),
+                backends=("numpy",),
+                candidate="counts",
                 workers=args.workers,
+                horizons=TRUNCATION_HORIZONS,
                 on_progress=(truncation_progress.advance
                              if truncation_progress is not None else None),
-            ):
-                rows.append(row)
+            )
+            rows.extend(statistical_result(row) for row in run.rows)
         if truncation_progress is not None:
             truncation_progress.finish()
         truncation_samples = tuple(rows)
     complete = (
-        report.complete and specification_report.complete
+        report.complete
         and all(item.passed for item in statistical)
         and all(item.passed for item in deep_samples)
         and all(item.passed for item in truncation_samples)
     )
     elapsed = time.perf_counter() - started
     payload = parity_report_payload(
-        report, statistical, specification_report, deep=deep_samples,
+        report, statistical, deep=deep_samples,
         truncations=truncation_samples, elapsed_seconds=elapsed,
         deep_pair_set=pair_set if args.deep else None,
         truncation_pair_set=pair_set if args.truncations else None,
@@ -1124,18 +1300,10 @@ def parity_command(args) -> int:
             f"{len(report.pending)} pending; {len(report.divergences)} divergences"
         )
         print(f"exact_checks={','.join(report.exact_checks)}")
-        print(
-            f"specifications: {len(specification_report.passed)} PASS; "
-            f"{len(specification_report.pending)} PENDING_ADAPTER; "
-            f"{len(specification_report.divergences)} DIVERGENCE; "
-            f"{len(specification_report.out_of_scope)} OUT_OF_SCOPE"
-        )
         for divergence in report.divergences:
             print(f"DIVERGENCE: {divergence}")
         for pending in report.pending:
             print(f"PENDING: {pending}")
-        for divergence in specification_report.divergences:
-            print(f"SPEC DIVERGENCE: {divergence}")
         for item in statistical:
             print(
                 f"STATISTICAL: {item.scenario}/{item.backend} "
@@ -1186,50 +1354,44 @@ def parity_command(args) -> int:
 
 
 def test_report_command(args) -> int:
-    import csv
+    """Generate technical results and optionally statistical parity results."""
     from collections import Counter
-    started = time.perf_counter()
+    import csv
     from mordheim_combat_lab.cli.benchmarking import BenchmarkProgress
     from mordheim_combat_lab.cli.benchmarking import benchmark_scenarios
-    from mordheim_combat_lab.verification.specifications import load_fixtures
-    from mordheim_combat_lab.verification.reporting import run_technical_tests
-    from mordheim_combat_lab.verification.reporting import write_semantic_report
-
-    # One unit per semantic specification, plus one per statistical scenario.
-    # The bar closes before the pytest phase, which prints its own dots.
+    from mordheim_combat_lab.verification.reporting import generate_test_report
     from mordheim_combat_lab.report_naming import timestamped_report_path
+
+    started = time.perf_counter()
     output = (Path(args.output).resolve() if args.output else
               timestamped_report_path("outputs", "test-report", "")).resolve()
-    units = len(load_fixtures()) + (
-        len(benchmark_scenarios()) if args.statistical else 0
+    progress = BenchmarkProgress(len(benchmark_scenarios())) if args.statistical else None
+    statistical_path, technical_path, rows, technical_exit = generate_test_report(
+        output, statistical=args.statistical, simulations=args.statistical_simulations,
+        seed=args.seed, workers=args.workers,
+        on_progress=progress.advance if progress is not None else None,
     )
-    progress = BenchmarkProgress(units)
-    semantic_path, semantic_rows = write_semantic_report(
-        output, statistical=args.statistical,
-        simulations=args.statistical_simulations, seed=args.seed,
-        on_progress=progress.advance, workers=args.workers,
-    )
-    progress.finish()
-    technical_path = output / "technical-tests.csv"
-    technical_exit = run_technical_tests(technical_path)
-    semantic_counts = Counter(str(row.get("passes", "")) for row in semantic_rows)
+    if progress is not None:
+        progress.finish()
+    statistical_counts = Counter(str(row.get("passes", "")) for row in rows)
     with technical_path.open("r", encoding="utf-8-sig", newline="") as stream:
         technical_rows = tuple(csv.DictReader(stream, delimiter=";"))
     technical_counts = Counter(str(row.get("status", "")) for row in technical_rows)
-    print("semantic: " + ", ".join(
-        f"{status}={semantic_counts.get(status, 0)}"
-        for status in ("PASS", "FAIL", "PENDING", "OUT_OF_SCOPE")
-    ))
+    if statistical_path is not None:
+        print("statistical: " + ", ".join(
+            f"{status}={statistical_counts.get(status, 0)}"
+            for status in ("PASS", "FAIL", "PENDING", "OUT_OF_SCOPE")
+        ))
+        print(f"STATISTICAL REPORT: {statistical_path}")
     print("technical: " + ", ".join(
         f"{status}={technical_counts.get(status, 0)}"
         for status in ("PASS", "FAIL", "ERROR", "SKIP", "XFAIL", "XPASS", "NOT_RUN")
     ))
-    print(f"SEMANTIC REPORT: {semantic_path}")
     print(f"TECHNICAL REPORT: {technical_path}")
     print(f"Elapsed: {time.perf_counter() - started:.2f}s")
-    semantic_failed = semantic_counts.get("FAIL", 0) > 0
-    incomplete = semantic_counts.get("PENDING", 0) > 0
-    return int(bool(technical_exit or semantic_failed or (args.require_complete and incomplete)))
+    failed = statistical_counts.get("FAIL", 0) > 0
+    incomplete = statistical_counts.get("PENDING", 0) > 0
+    return int(bool(technical_exit or failed or (args.require_complete and incomplete)))
 
 
 def coverage_gate_command(args) -> int:
@@ -1345,30 +1507,25 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
                         formatter_class=_HelpFormatter).set_defaults(handler=ui_command)
 
     verification = commands.add_parser(
-        "verify", help="validate the KB and run the semantic specifications",
+        "verify", help="validate KB structure and default construction",
         description="Validate the knowledge base and its structural connections "
-                    "(editorial schemas, execution contract, phase verification, "
-                    "default profile compilation) and run the semantic "
-                    "specifications against the modular engine.",
+                    "(editorial schemas, execution contract, default profile "
+                    "compilation). Game rules are checked by the modular "
+                    "mechanics and E2E suites.",
         formatter_class=_HelpFormatter)
     verify_paths = verification.add_argument_group("paths")
     verify_paths.add_argument("--knowledge", metavar="PATH",
                               help="override the knowledge base location")
-    verify_paths.add_argument("--specs", metavar="PATH",
-                              help="override the specifications directory")
     verify_layers = verification.add_argument_group("layers")
     verify_layers.add_argument("--structural", action="store_true",
-                               help="stop after the structural layer (the former "
-                                    "`validate` command); the semantic layer is "
-                                    "skipped")
+                               help="compatibility option; verification is structural only")
     verify_output = verification.add_argument_group("output and strictness")
     verify_output.add_argument("--inventory", action="store_true",
                                help="print the rule inventory as JSON and exit")
     verify_output.add_argument("--json", action="store_true",
                                help="print the verification payload as JSON")
     verify_output.add_argument("--require-complete", action="store_true",
-                               help="fail unless every obligation is verified "
-                                    "(pending items are allowed otherwise)")
+                               help="compatibility option; structural errors always fail")
     verification.set_defaults(handler=verify_command)
 
     audit = commands.add_parser(
@@ -1380,8 +1537,8 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
     audit_paths.add_argument("--knowledge", metavar="PATH",
                              help="override the knowledge base location")
     audit_paths.add_argument("--specs", metavar="PATH",
-                             help="override the specifications directory")
-    audit.add_argument("--inventory-only", action="store_true", help="read development inventory without executing semantic tests")
+                             help="override the structural specifications directory")
+    audit.add_argument("--inventory-only", action="store_true", help="compatibility option; audit exports inventory only")
     audit.add_argument("--historical-origins", "--t13", dest="t13", action="store_true",
                        help="restrict to historical plan origins (the legacy --t13 spelling is still accepted)")
     audit.add_argument("--family", help="filter by a mechanism family")
@@ -1419,9 +1576,9 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
              "(repeatable)")
     coverage_output = coverage.add_argument_group("budget and output")
     coverage_output.add_argument(
-        "--budget", default="tests/tooling/verification/fixtures/coverage/budget.json", metavar="PATH",
+        "--budget", default="tests/tooling/coverage/fixtures/budget.json", metavar="PATH",
         help="coverage budget file to check against (default: "
-             "tests/tooling/verification/fixtures/coverage/budget.json)")
+             "tests/tooling/coverage/fixtures/budget.json)")
     coverage_output.add_argument(
         "--update-budget", action="store_true",
         help="write the measured covered lines as the new budget instead of "
@@ -1539,6 +1696,15 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
         epilog="--level selects the certification preset; the size of each layer "
                "is tuned with the --*-simulations options.",
         formatter_class=_HelpFormatter)
+    catalog_options = parity.add_argument_group("fixture catalogues")
+    catalog_options.add_argument(
+        "--catalog", choices=("precompiled", "battery", "all"), default=None,
+        help="select frozen cases, build-based battery cases, or both; without --profile all cases are selected",
+    )
+    catalog_options.add_argument(
+        "--simulations", type=_positive, default=None, metavar="DUELS",
+        help="with --catalog, override samples per case; otherwise use each frozen limit or battery row count",
+    )
     parity_samples = parity.add_argument_group("certification samples")
     parity_samples.add_argument(
         "--level", choices=("deterministic", "statistical", "deep"),
@@ -1616,15 +1782,14 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
     battery.add_argument(
         "--profile", choices=("quick", "complete", "deep"), default=None,
         metavar="PROFILE",
-        help="run the renewed statistical scenario battery instead of the "
-             "historical certificate; profiles are cumulative "
+        help="filter battery cases; with --catalog the default is the full deep profile; profiles are cumulative "
              "(quick is contained in complete, complete in deep) and default "
              "to the NumPy candidate",
     )
     battery.add_argument(
-        "--backend", choices=("numpy", "native", "all"), default=None,
+        "--backend", choices=("modular", "numpy", "native", "all"), default=None,
         metavar="ENGINE",
-        help="candidate for --profile or --level statistical: numpy, native "
+        help="modular runs only the reference (defaults to --catalog all); numpy, native "
              "(never falls back to NumPy) or all. Statistical defaults to "
              "installed backends; explicit native/all requires native. "
              "Profiles default to numpy and report availability per backend",
@@ -1638,13 +1803,12 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
 
     test_report = commands.add_parser(
         "test-report", help="generate the human-readable parity and technical test CSVs",
-        description="Generate the Excel-friendly CSVs of semantic parity and technical "
-                    "tests into an output directory.",
+        description="Generate technical-test CSVs and optional statistical parity "
+                    "results into an output directory.",
         formatter_class=_HelpFormatter)
     test_report_content = test_report.add_argument_group("content")
     test_report_content.add_argument("--statistical", action="store_true",
-                                     help="add the five statistical parity rows to "
-                                          "the semantic CSV")
+                                     help="also generate the statistical parity CSV")
     test_report_content.add_argument("--statistical-simulations", type=_positive, default=100_000,
                                      metavar="DUELS",
                                      help="duels per engine and scenario for --statistical")
@@ -1659,7 +1823,7 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
     )
     test_report_output = test_report.add_argument_group("output and strictness")
     test_report_output.add_argument("--output", metavar="PATH",
-                                    help="directory for the two CSVs (default: outputs/test-report)")
+                                    help="directory for generated CSVs (default: outputs/test-report)")
     test_report_output.add_argument("--require-complete", action="store_true",
                                     help="fail when pending items or missing backends "
                                          "would keep the report from being complete")

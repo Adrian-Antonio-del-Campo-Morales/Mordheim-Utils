@@ -1,0 +1,111 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/skill.sigmar-s-sign
+# scaffold_fingerprint: 4e4fe3b0d74033f4f4a3492168242453c9c16904f62a5f9aeb970a34668ee95a
+# authoring_status: PARTIAL
+# authoring_progress: the single admitted clause carries two authored scenarios for the
+#   first-round reduction of an Undead attacker's pool and the Daemon exclusion. The
+#   printed minimum of one attack is recorded as a structured dependency in its clause
+#   note (normative text, input, blocked assertion and missing capability), not left as
+#   a bare no-consumer claim. REVIEWED still requires manual semantic review and#   execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: sigmar-s-sign (scope: YES)
+# PARTIAL[sigmar-s-sign]: 2 scenarios cover the first-round reduction of an Undead
+#   attacker's pool and the Daemon exclusion, which keeps both of its attacks. The
+#   printed floor ("to a minimum of 1", normative text of the admitted clause) is a
+#   structured dependency, with its concrete datum on record instead of a bare claim.
+#   Input: an Undead attacker whose printed pool is exactly one Attack (the file's own
+#   mace attacker shape) meeting this carrier, so the reduction and the floor both
+#   want to fire on the same pool. Assertion that is blocked: the pre-floor pool size
+#   of round 0 - for a one-attack attacker the reduced and the unreduced pool are both
+#   one attack, so the resolved attacks tape cannot separate them and any scenario
+#   asserting the floor on it would be asserting the reduction twice. Missing
+#   capability: a pre-floor pool-size observation in the round snapshot (for example a
+#   state.<side>.pool_size field or an equivalent assertion key on the attack pool)
+#   while apply_opponent_attack_modifiers keeps its own floor; with that datum the
+#   pair (reduction reaching 0 pre-floor; resolved pool of 1) becomes authorable.
+#   Which of the two shapes the snapshot should carry belongs to the coordinator;
+#   neither is asserted here.
+# origin_id:
+#   mechanic/skill.sigmar-s-sign
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   e490634e73fff6c7fa9802f3f91f710d8abf51001386b332045cbcb11e6ae70a
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Undead and Possessed enemies lose one attack in the first round.
+# Semantic contract (check analysis_status before treating as accepted):
+#   An Undead or Possessed opponent loses its first attack against this warrior in the first round of hand-to-hand combat, to a minimum of 1. Observable: the opponent's attack count is one lower in round 0.
+# effect_id:
+#   skill.sigmar-s-sign
+# relation:
+#   related
+# parameters:
+#   {"attack_reduction":1}
+# conditions:
+#   {"trigger":"first round against an Undead or Possessed (non-Daemon) attacker","recipient":"this warrior acting as defender","duration":"first round","exceptions":"daemons are excluded"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Cross-family attack-count reduction (block A granularity) recorded under the C assignment; implemented in apply_opponent_attack_modifiers. Surface reuse candidate: {"family":"skill.sigmar-s-sign","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the exact printed target, charge direction, round/phase, weapon prerequisite and supplied-state restriction. Preserve attack floors and first-round resources; a charge-turn bonus is not automatically a first-duel-round-only bonus, and no nearby-group counting is introduced.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# The Undead attacker has two Attacks and the defender carries the Sign, so the first
+# round reduces its pool to one: the tape declares that single attack die, and an
+# unreduced pool would have requested the second one.  The attack is read against the
+# defender's own profile and wounds him.
+- audit_id: mechanic/skill.sigmar-s-sign
+  id: the-undead-attacker-loses-one-attack-in-the-first-round
+  covers: [sigmar-s-sign]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.sigmar-s-sign]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: undead}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 2}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.wounded: true, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed exception: a Daemon attacker keeps its whole pool, so both of its attacks
+# are resolved and the tape carries both attack dice.
+- audit_id: mechanic/skill.sigmar-s-sign
+  id: a-daemon-attacker-keeps-its-attacks
+  covers: [sigmar-s-sign]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.sigmar-s-sign]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: daemon}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 2}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {attacks.1.hit: false, attacks.2.hit: false, state.first.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

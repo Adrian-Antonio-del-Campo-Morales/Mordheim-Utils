@@ -1,11 +1,14 @@
-"""Frozen precompiled cases for the shared engine contracts (T01/T02).
+"""Frozen precompiled cases for shared fixtures and engine contracts (T01/T02).
 
-These tests cover phase operators, context and kernel planning that several
-backends share.  They read the frozen corpus produced by T06 and never build a
-fighter through the knowledge base or the construction compiler.
+The remaining shared tests cover codec validation, duel-context contracts and
+kernel planning that several backends share.  They read the frozen corpus
+produced by T06 and never build a fighter through the knowledge base or the
+construction compiler.
 
 ``precompiled()`` resolves the case captured for the running test invocation
 from its provenance (``unit/shared/<file>/<test>-<parameter-set>-<case>``).
+Tests moved outside this directory use ``shared_precompiled`` in
+``tests/engines/conftest.py`` to keep the same historical keys.
 """
 from __future__ import annotations
 

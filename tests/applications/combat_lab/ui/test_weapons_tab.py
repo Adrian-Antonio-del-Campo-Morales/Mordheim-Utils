@@ -70,7 +70,6 @@ def _run_and_wait(root, tab):
     assert not tab._running, "the analysis thread did not finish"
 
 
-@pytest.mark.phase7_warband
 def test_weapons_tab_requires_a_selection(root):
     catalogue = CombatCatalogue()
     editor = _StubCandidateEditor(catalogue, None)
@@ -86,7 +85,6 @@ def test_weapons_tab_requires_a_selection(root):
     assert tab.status.get() == "Select at least one weapon to compare."
 
 
-@pytest.mark.phase7_warband
 def test_weapons_tab_popover_lists_legal_weapons_and_counts(root):
     catalogue = CombatCatalogue()
     choice = ProfileChoice("mordheim", "sisters-of-sigmar", "sister-superior", "Sister Superior")
@@ -106,7 +104,6 @@ def test_weapons_tab_popover_lists_legal_weapons_and_counts(root):
     assert f"({len(expected)} / {len(expected)})" in tab.weapons_button.cget("text")
 
 
-@pytest.mark.phase7_warband
 def test_weapons_tab_runs_selected_weapons(root):
     catalogue = CombatCatalogue()
     choice = ProfileChoice("mordheim", "sisters-of-sigmar", "sister-superior", "Sister Superior")
@@ -128,7 +125,6 @@ def test_weapons_tab_runs_selected_weapons(root):
         assert tab.tree.set(row, "optimal"), "missing win-rate cell"
 
 
-@pytest.mark.phase7_warband
 def test_weapons_tab_runs_free_hand_from_real_editor(root):
     catalogue = CombatCatalogue()
     editor = FighterEditor(root, "Candidate", catalogue)
@@ -157,7 +153,6 @@ def test_weapons_tab_runs_free_hand_from_real_editor(root):
 
 
 # No widget is asserted here: the claim is the worker/battery step itself.
-@pytest.mark.phase7_warband
 def test_weapons_worker_simulates_free_hand_without_a_display():
     tab = object.__new__(WeaponAnalysisTab)
     tab.catalogue = CombatCatalogue()
@@ -176,7 +171,6 @@ def test_weapons_worker_simulates_free_hand_without_a_display():
     assert tab._worker_progress == 2
 
 
-@pytest.mark.phase7_warband
 def test_weapons_tab_passes_workers_to_the_battery_service(root):
     catalogue = CombatCatalogue()
     choice = ProfileChoice("mordheim", "sisters-of-sigmar", "sister-superior", "Sister Superior")
@@ -196,7 +190,6 @@ def test_weapons_tab_passes_workers_to_the_battery_service(root):
     assert tab.tree.set(rows[0], "main") == "Mace"
 
 
-@pytest.mark.phase7_warband
 def test_weapons_tab_never_fails_with_an_empty_error(root):
     catalogue = CombatCatalogue()
     editor = _StubCandidateEditor(catalogue, None)

@@ -1,8 +1,7 @@
 """Deterministic line-coverage gate for the combat engines.
 
-The semantic-specification corpus and the parity adapters certify the
-engines *per rule*, but nothing measures whether every reachable engine line
-is exercised by a deterministic test.  This module runs the deterministic
+The modular mechanics and E2E suites check rule behavior; this module measures
+which engine lines the selected tests exercise. It runs the deterministic
 engine suites under ``coverage`` and compares the result against a committed
 *budget*: a per-file list of statement lines that must remain exercised.
 
@@ -31,20 +30,18 @@ from typing import Mapping
 ROOT = Path(__file__).resolve().parents[4]
 
 #: Suites that exercise engine behaviour without statistical noise: both
-#: drivers' unit suites, the shared phase tests and the parity layer (exact
-#: operator checks plus the semantic-specification corpus that replays every
-#: rule against the vectorized engine).  Statistical/deep samples are not
-#: included: they certify *interaction*, and a flaky sample should never gate
-#: coverage.
+#: drivers' unit suites, the remaining shared/native context contracts, the
+#: native runtime replay contract and the small statistical smoke comparisons.
+#: Deep statistical campaigns are not included: they certify *interaction*, and
+#: a flaky sample should never gate coverage.
 DEFAULT_SUITES = (
     "tests/engines/modular",
     "tests/engines/vectorized",
-    "tests/engines/shared/test_phases.py",
-    "tests/engines/shared/test_duel_context.py",
-    "tests/engines/shared/test_exact_phases.py",
-    "tests/engines/shared/test_interactions.py",
-    "tests/engines/parity/test_duel_replay.py",
-    "tests/engines/parity/test_parity.py",
+    "tests/engines/shared/contracts/test_duel_context.py",
+    "tests/engines/native/runtime/test_duel_context.py",
+    "tests/engines/native/runtime/test_duel_replay_native.py",
+    "tests/tooling/parity/test_runner.py",
+    "tests/engines/parity/statistical/test_parity_statistics.py",
 )
 
 #: Areas of the engine tracked by the gate, keyed by the sub-path under

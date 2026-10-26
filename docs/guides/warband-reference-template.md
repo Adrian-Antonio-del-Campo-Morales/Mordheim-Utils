@@ -333,12 +333,12 @@ From the repository root, run applicable new and existing tests, including:
 ```powershell
 python tools/knowledge/generate_knowledge_web.py
 python tools/knowledge/generate_knowledge_web.py --check
-python -m pytest tests/rules/knowledge/web/test_knowledge_artefact.py tests/rules/knowledge/web/test_presentation_contract.py tests/rules/knowledge/web/test_kb_artefact_inventory.py tests/rules/knowledge/web/test_kb_artefact_performance.py
+python -m pytest tests/knowledge/web/test_knowledge_artefact.py tests/knowledge/web/test_presentation_contract.py tests/knowledge/web/test_kb_artefact_inventory.py tests/knowledge/web/test_kb_artefact_performance.py
 npm run test --workspace campaign-web-core -- rules-catalogue
 npm run test --workspace warband-manager-web -- rules-page
 npm run typecheck
 npm run build
-python tools/mordheim-utils.py check-presentation
+python tools/mordheim-utils.py check presentation
 ```
 
 The two filtered npm commands cover existing regressions, not automatically

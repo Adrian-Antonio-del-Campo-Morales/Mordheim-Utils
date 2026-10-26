@@ -71,10 +71,7 @@ the assigned change. These scope limits also apply to coordinators and delegated
   With several agents, default to two workers per active agent; a single
   integrated run may use four when resources are free. Avoid `-n auto`, nested
   pools and concurrent checks that write the same files. Keep timing-sensitive
-  checks and shared-resource operations serial.
-- The phased launcher keeps its existing phase barriers: use `test-sequence
-  --workers N`; do not combine it with raw `-n` or `--dist`, or redesign its
-  scheduler as part of this rework. Collection-only runs stay serial.
+  checks and shared-resource operations serial. Collection-only runs stay serial.
 - Vitest already parallelizes files. Run selected files from their workspace
   with `--maxWorkers=2` while other agents are active; do not add concurrent
   test execution inside files. Do not parallelize benchmark measurements merely

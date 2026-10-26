@@ -41,7 +41,7 @@ resolved presentation text.
 From the repository root:
 
 ```powershell
-python tools/mordheim-utils.py check-presentation
+python tools/mordheim-utils.py check presentation
 ```
 
 The equivalent command from `apps/warband-manager-web` is:
@@ -66,11 +66,11 @@ it with a cast or suppression.
 
 The static gate (steps 1–4) is about **security of presentation**: it proves,
 from the source, that every value that reaches a GUI sink travels through the
-resolvers and presentation types. Its 700+ findings are "the detector cannot
+resolvers and presentation types. Its findings mean "the detector cannot
 demonstrate protection", not confirmed leaks.
 
 The dynamic layer (step 5, `tools/web/presentation-completeness-audit.mjs` plus
-`tests/tooling/web/presentation-completeness-sweep.test.tsx`) is about
+`tests/applications/warband_manager/presentation/completeness/presentation-completeness-sweep.test.tsx`) is about
 **visible completeness**: it executes the real consumers (the `RulesCatalogue`,
 the rendered shell pages, loaded v5 campaigns, the PDF text model) against the
 real generated artefacts in ES and EN, captures what a person would actually
@@ -117,7 +117,7 @@ the report to inspect the layer directly.
 
 The "Reglas compartidas" defect (band-local rows published in the shared stem as
 generic fallbacks) is guarded by
-`tests/tooling/web/presentation-completeness-regression.test.tsx`, which stays red
+`tests/applications/warband_manager/presentation/completeness/presentation-completeness-regression.test.tsx`, which stays red
 whenever the generator, the catalogue or the data leak band-local rows into the
 special-rules category again.
 
@@ -248,7 +248,7 @@ and detector coverage must preserve provenance across that boundary.
 7. Assert that the localized semantic name is present and the known technical
    ID is absent.
 8. Cover accessible labels, tooltips and exports when the field reaches them.
-9. Run `python tools/mordheim-utils.py check-presentation` and inspect the
+9. Run `python tools/mordheim-utils.py check presentation` and inspect the
    report, not only the exit code.
 10. For a new output mechanism, add detector coverage and a regression proving
     that a deliberate leak fails.

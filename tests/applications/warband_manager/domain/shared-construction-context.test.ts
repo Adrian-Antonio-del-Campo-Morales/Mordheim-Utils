@@ -19,7 +19,7 @@ interface Case {
   validation_codes: string[];
 }
 const cases: Case[] = JSON.parse(readFileSync(
-  new URL("../../../rules/construction/fixtures/eligibility/construction-context.json", import.meta.url), "utf8"));
+  new URL("../../../construction/fixtures/eligibility/construction-context.json", import.meta.url), "utf8"));
 
 describe("shared construction context contract", () => {
   it("an inseparable suit prohibits another suit or cloak, not shields or helmets", () => {

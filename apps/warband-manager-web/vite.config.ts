@@ -2,20 +2,18 @@ import { fileURLToPath, URL } from "node:url";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-// Category selection uses Vitest's native projects: one project per phase
-// category over the maintained test tree. Test identities, names and
-// parametrizations are unchanged; `--project <name>` selects a category and
-// the default run still executes every project. Vitest 3.2 has no per-test
-// tag, so the category is resolved per file: general architecture keeps the
-// preflight category, and the built-bundle/font guards (which skip without a
-// build) form the packaging category.
+// Grouping uses Vitest's native projects: one project per suite family over
+// the maintained test tree. Test identities, names and parametrizations are
+// unchanged; `--project <name>` selects a group and the default run still
+// executes every project. Vitest 3.2 has no per-test tag, so the group is
+// resolved per file: architecture boundaries, the built-bundle/font guards
+// (which skip without a build) and the application suites.
 const REPO_TESTS = fileURLToPath(new URL("../../tests/", import.meta.url)).replaceAll("\\", "/");
 const APPLICATIONS = `${REPO_TESTS}applications/warband_manager/`;
 const WEB_APPLICATIONS = [
   `${APPLICATIONS}features/**/*.test.{ts,tsx}`,
   `${APPLICATIONS}presentation/**/*.test.{ts,tsx}`,
 ];
-const TOOLING = `${REPO_TESTS}tooling/web/`;
 const BOUNDARIES = `${REPO_TESTS}tooling/architecture/web-boundaries.test.ts`;
 const FONT = `${APPLICATIONS}packaging/font-publication.test.ts`;
 const BUNDLE = `${APPLICATIONS}packaging/bundle-boundaries.test.ts`;
@@ -52,7 +50,7 @@ export default defineConfig(() => ({
     projects: [
       {
         extends: true as const,
-        test: { name: "phase0_preflight", include: [BOUNDARIES] },
+        test: { name: "architecture", include: [BOUNDARIES] },
       },
       {
         extends: true as const,
@@ -61,8 +59,8 @@ export default defineConfig(() => ({
       {
         extends: true as const,
         test: {
-          name: "phase7_warband",
-          include: [...WEB_APPLICATIONS, `${TOOLING}**/*.test.{ts,tsx}`],
+          name: "web",
+          include: [...WEB_APPLICATIONS],
           exclude: [BOUNDARIES, FONT, BUNDLE],
         },
       },

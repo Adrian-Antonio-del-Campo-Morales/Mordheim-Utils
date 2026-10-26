@@ -1,19 +1,16 @@
 name: CI
 
 # Web application validation workflow.
-# A failure of the KB validation, the v4 contract checks, the Python tests,
+# A failure of the KB validation, the campaign-file v5 contract checks, the Python tests,
 # the TypeScript tests or the web build must block the pipeline. Publishing
 # is a separate, gated workflow (deploy-pages.yml) that runs only after this
 # one succeeds on the default branch.
 #
-# The deep artefact audits and the bilingual parity vectors of
-# `tests/python/web` are not part of this pipeline: they re-parse the 3 MB
-# generated artefact once per test and took more than half of the Python job's
-# wall clock (5:54 of 12:05), while the generation step here and the bundle
-# guardrails in the TypeScript job already protect the artefact the application
-# ships. Run them locally with `python tools/mordheim-utils.py run-ci` or
-# `python -m pytest tests/python/web` after touching the KB, the generator or
-# the contracts.
+# The Python regression net below runs `tests/knowledge`, including the
+# artefact audits and bilingual parity vectors under `tests/knowledge/web`.
+# Run the same selection locally with `python tools/mordheim-utils.py check ci`,
+# or only the web audits with `python -m pytest tests/knowledge/web`, after
+# touching the KB, the generator or the contracts.
 
 on:
   push:
@@ -48,20 +45,19 @@ jobs:
           python tools/knowledge/generate_knowledge_web.py
           python tools/knowledge/generate_knowledge_web.py --check
 
-      # The fast net: contracts, architecture, the knowledge catalogue and the
-      # shared eligibility bridge. The artefact audits and parity vectors of
-      # `tests/python/web` are deliberately excluded (see the header).
+      # The fast net: contracts, architecture, the knowledge catalogue, the
+      # web artefact audits and the shared eligibility bridge.
       - name: Run the Python regression net
-        run: python -m pytest tests/applications/warband_manager/persistence/campaign_file tests/tooling/architecture tests/rules/knowledge tests/rules/construction/test_shared_eligibility.py -q
+        run: python -m pytest tests/applications/warband_manager/persistence/campaign_file tests/tooling/architecture tests/knowledge tests/construction/test_shared_eligibility.py -q
 
       # The modular engine E2E battery is listed separately: the Python
-      # regression net above deliberately excludes tests/E2E.  This step runs
+      # regression net above deliberately excludes tests/integration/e2e.  This step runs
       # the strict support checks, the full-loop proofs, the declared scenarios
       # and the shared-variant isolation checks, and reconciles them against
       # the audit register.  Incomplete admitted-clause coverage is reported,
       # and fails only under MORDHEIM_E2E_REQUIRE_COMPLETE=1.
       - name: Run the modular engine E2E battery
-        run: python -m pytest tests/rules/integration/e2e -q --ignore=tests/rules/integration/e2e/test_non_regression.py
+        run: python -m pytest tests/integration/e2e -q --ignore=tests/integration/e2e/integrity/test_non_regression.py
 
       # Separated from the battery so a lost accepted scenario, clause
       # reference or identity is visible on its own rather than hidden among
@@ -69,7 +65,7 @@ jobs:
       # evidence/coverage-baseline.yaml set-wise; counts alone would let a
       # reviewed scenario be substituted by another one.
       - name: Check accepted E2E coverage has not regressed
-        run: python -m pytest tests/rules/integration/e2e/test_non_regression.py -q
+        run: python -m pytest tests/integration/e2e/integrity/test_non_regression.py -q
 
       - name: Verify the artefact is deterministic and untouched by a rebuild
         run: python tools/knowledge/generate_knowledge_web.py --check

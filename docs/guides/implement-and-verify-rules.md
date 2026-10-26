@@ -1,349 +1,136 @@
 # Implement and verify rules
 
-Prerequisites: [Architecture](../reference/architecture.md) (the path of a
-rule, engine layers) and [Verification](../reference/verification.md) (what
-each layer certifies).
+Prerequisites: [Architecture](../reference/architecture.md) and
+[Verification](../reference/verification.md).
 
-For current modular implementation, follow the
-[modular implementation guide](modular-engine-implementation.md). Implement
-only the modular behavior; the optimized ports and broad certification steps
-below belong to later, separately authorized batches.
+The modular engine is the rule reference. Its mechanics tests establish the
+expected behaviour from written sources; E2E tests exercise the connected
+KB/compiler/modular pipeline. Statistical parity compares NumPy and native
+with that reference. The former semantic YAML runner and NumPy operation
+adapters are retired; no parallel specification corpus is required.
 
 ## Implement combat behaviour
 
-1. Classify the effect as construction, modifier, local resolution or
-   stateful flow.
-2. Put equipment/skill eligibility, variants and loadout prerequisites in
-   [the shared eligibility module](../reference/eligibility.md). Use
-   `mordheim_construction` for duel compilation, `mordheim_core.effects`,
-   `mordheim_combat.phases` or `mordheim_combat/modular` for combat execution.
-3. Share the context preparer between orchestrator and verifier.
-4. Inject `DiceSource` and `DecisionPolicy`; never consult global randomness
-   or the UI.
-5. Add a phase test or the minimal mini-sequence.
+1. Identify the source clause, recipient, activation, boundaries and exclusions.
+   Preserve its identity and consult [adopted rulings](../decisions/design-rulings.md).
+2. Classify the effect as construction, modifier, local resolution or stateful flow.
+3. Keep equipment/skill eligibility, variants and loadout prerequisites in
+   [shared eligibility](../reference/eligibility.md). Use `mordheim_construction`
+   for duel compilation, `mordheim_core.effects`, `mordheim_combat.phases` or
+   `mordheim_combat.modular` for combat execution.
+4. Reuse existing context preparation and phase operators. Inject `DiceSource`
+   and `DecisionPolicy`; never consult global randomness or the UI.
+5. Express the rule and its relevant limits in
+   `tests/engines/modular/mechanics/`. Reuse exact frozen inputs where available.
+   Do not substitute a similar fighter or weaken an assertion for a missing key.
+6. Use `tests/integration/e2e/` for the connection from actual construction to
+   observed modular results. Real compilation/eligibility and KB contracts
+   belong in `tests/construction/` and `tests/knowledge/` respectively.
 
-Example: fire-blocked regeneration compiles as data and is consumed by the
-context and the special-save phase.
+Tests should distinguish activation, non-activation, boundaries, consumption,
+expiry and applicable interactions. Use explicit dice/decisions for local
+results and short sequences for stateful timing. Expectations come from the
+written source and adopted rulings, not from the current engine output.
 
-Done when the binding reaches an observable result and activation, absence,
-limits and architecture tests pass.
+`tests/engines/modular/runtime/` checks simulator contracts such as cancellation,
+phase ordering, reproducibility, observation and parallel execution. It does
+not replace the mechanics assertions.
 
 ## Use the development queue
 
-For routine planning, generate the current inventory without running the semantic corpus:
-
 ```powershell
-python tools/mordheim-utils.py report rules --inventory-only --historical-origins --output outputs/audit/development
+python tools/mordheim-utils.py check report rules --inventory-only --historical-origins --output outputs/audit/development
 ```
 
-Use `combat-audit.csv` as the operational list. Filter `--work-status implementation_required`
-for admitted effects needing implementation; `--family <mechanism>` groups related effects.
-`development_family` uses the existing origin register's mechanism names. All filters apply
-to both CSVs. Remove `--historical-origins` to inspect effects not recorded in that
-historical plan; the legacy `--t13` spelling is still accepted.
+Use `combat-audit.csv` as the operational list. `--work-status implementation_required`
+selects admitted effects needing implementation; `--family <mechanism>` groups
+related effects. `development_family` uses the existing origin register's names.
+The legacy `--t13` spelling of `--historical-origins` remains compatible.
 
-| combat_work_status | Next step |
+An inventory export is a structural/planning snapshot, not executed behavioural
+proof. Legacy `semantic_status`, `semantic_reason` and related CSV fields must
+not be read as a newly passed semantic suite: that runner has been retired.
+Export success means files were written. It does not certify mechanics, E2E
+or statistical parity.
+
+| Work status | Next step |
 | --- | --- |
-| `implementation_required` | Implement the complete included effect. |
-| `implemented_pending_verification` | Review retained evidence and repair missing/stale verification metadata; do not assume the effect needs reimplementation. |
-| `deferred_scope_review` | Review scope/prerequisites before implementation. `LATER` is not an exclusion. |
+| `implementation_required` | Implement the complete admitted effect. |
+| `implemented_pending_verification` | Review actual mechanics/E2E evidence before changing the implementation. |
+| `deferred_scope_review` | Review scope and prerequisites; `LATER` is not an exclusion. |
 | `needs_classification` | Classify against the current 1v1 duel scope. |
-| `needs_ruling` | Resolve an explicit unanswered specification question. |
-| `needs_question_review` | Reconcile a historical question before implementing an admitted unimplemented effect; it may already be answered or superseded. |
-| `needs_target_reconciliation` | Locate the current clause for an unmatched historical origin. |
+| `needs_ruling` | Resolve a concrete unanswered source question. |
+| `needs_question_review` | Reconcile historical questions with current adopted decisions. |
+| `needs_target_reconciliation` | Locate the current clause and existing implementation. |
+| `verified_modular` | No modular implementation work remains; optimized ports stay separate. |
 | `excluded` | No duel implementation work. |
-| `verified_modular` | Modular semantic evidence passed; optimized ports remain separate. |
 
-`canonical_id` reconciles historical bindings with current source identities; mixed clauses
-remain separate runtime rows. `effect_text` resolves shared rule references. `question_status`
-and `decision_reference` expose accepted Q/F decisions from `docs/decisions/design-rulings.md`.
-Historical questions without a recorded answer are `needs_review`, not automatically new
-requests to the user. `next_action` gives the work appropriate to each row.
+Bindings and `implemented: YES` are declarations, not independent behavioural
+proof. Planned bindings require explicit `implemented: NO`; active bindings
+require scope `YES`. The structural audit checks binding references and default
+profile construction, not whether each combat rule produces the correct result.
 
-`audit_mode=inventory` explicitly means no semantic execution. Dependencies listed in
-`semantic_dependencies` are verification dependencies, not proof of a functional blocker.
-A binding is a contract reference, not an implementation certificate. Planned
-bindings require explicit `implemented: NO` and are returned only with
-`include_pending=True`. Active bindings require both `implemented: YES` and
-effect `scope: YES`; contradictory declarations are rejected by the loader.
-The structural audit checks active contracts against the maintained mechanic,
-trait, profile and compiler contracts for band rules, catalogued skills and
-hireling rules. Consumer/observable checks remain separate from semantic proof.
+The source-scope review applies only when source identity and text hash match;
+changed text needs review again. Historical dispositions never remove current
+KB candidates, and old report statuses never establish current execution.
+Never edit generated CSVs to close a rule. Change canonical declarations,
+implementation or owned tests, then regenerate the relevant report when authorized.
 
-The KB's `implemented=YES` is a declaration, not independent behavioural proof. Items and
-other sources absent from the semantic inventory retain that limitation in `semantic_reason`.
-Quick-mode risk is `not_assessed`; no successful verification is inferred. CSVs are generated
-snapshots: regenerate after source changes; edit canonical data/specifications, never the CSV.
-Use the full command below only when semantic verification is needed, preferably at a batch
-boundary. A successful export exit code means the files were written, not that all rules passed.
+## Record decisions
 
-## Verify rules
+Keep permanent interpretations and their rationale in
+[design-rulings.md](../decisions/design-rulings.md), with the exact source.
+Historical references to retired semantic specifications are provenance, not
+an instruction to restore the old runner. Preserve adopted decisions.
 
-To consult the global status before editing specifications:
+Use `TODO.md` for concrete unresolved defects and unanswered questions. A missing
+source must be identified exactly; do not invent a rule. A source ambiguity,
+a missing implementation and a failed test are different kinds of pending work.
+A ruling by itself does not prove implementation or correct execution.
 
-```powershell
-python tools/mordheim-utils.py report rules
-```
+## Validate the owned change
 
-The command generates two Excel-friendly CSVs under `outputs/audit/`, with
-the same timestamp: `combat-audit-<timestamp>.csv` contains core combat rules
-and mechanics, editorial effects (including unimplemented, excluded and
-unclassified effects), item effects and printed effects in other catalogue/band files,
-plus historical combat candidates requiring reconciliation.
-The inventory scans every KB YAML file recursively, including nested entries in
-files already represented by their main catalogue. Anonymous effects use a
-file/local-path identity; `rule_ref` text is resolved when available. Equipment
-notes, descriptions and restriction prose remain explicit `UNCLASSIFIED`
-candidates until reviewed, rather than being guessed into or out of duel scope.
-Profile traits, recorded unresolved concepts and dangling rule-list references
-also remain visible; resolved rule-list references reuse their definitions.
-Historical dispositions cannot remove current KB candidates. This covers
-the supported source fields, not a semantic guarantee about arbitrary prose.
-The [source scope review](../../sources/knowledge/verification/source-scope-review.csv)
-classifies previously unclassified candidates and records the printed text,
-reason and category. The audit applies it only to still-unclassified records
-whose source file and text hash match; explicit KB scope takes precedence and
-changed text returns to classification. `scope_basis=reviewed_source` distinguishes
-this review from canonical runtime metadata. `scope_category=construction`
-means legal kit/access/projection, not a new combat operator. Inclusion neither
-activates a binding nor asserts implementation: unknown execution remains
-`needs_target_reconciliation`, to locate/reuse existing behavior first.
-The partition is live, not a number kept here: run
-`python tools/mordheim-utils.py report rules` and read `scope`, `review_status`
-and `semantic_reason` per row. Mixed records include only their individual
-consequence; acquisition, casting, areas/groups, terrain, flight and post-duel
-procedures remain excluded.
-`rules-audit-<timestamp>.csv` contains the source records from warbands,
-skills, items and other catalogues. The reports intentionally overlap: a rule's editorial
-classification and its combat implementation are separate concerns. IDs and
-bindings allow cross-referencing them.
-Combat semantic evidence comes from the modular verifier; it does not certify
-NumPy or native parity. Limitable with `--scope YES`, `--status pending` and
-`--output <directory>` (which writes `combat-audit.csv` and `rules-audit.csv`).
-It is read-only with respect to the KB, the specifications and the code.
+1. Inspect existing mechanics, construction and E2E checks before adding another.
+2. Run the smallest relevant checks only when execution is authorized. Test
+   execution and broader integration/certification are separate scopes.
+3. Check structural KB/contracts with `check verify`. `--structural` is accepted only
+   as a compatibility flag: verification is structural only and does not run a
+   semantic scenario corpus.
+4. For optimized-engine changes, use the existing statistical scenario catalogue
+   against the modular oracle when that verification is authorized. Do not add
+   NumPy per-operation YAML adapters as another rule-authoring system.
+5. Record the revision, selection, outcome and limits. A static check, collection,
+   skipped native test or successful export is not a passing functional result.
 
-`combat_work_status` distinguishes implementation work from semantic evidence
-and historical scope/target reconciliation. The legacy `t13_origin`,
-`t13_disposition`, `t13_lots` and `t13_question_id` columns are retained for
-compatibility with earlier exports and are empty for current rows; they trace
-candidates to the retired origin register. Planning dispositions are
-historical, not execution evidence
-or current admission: the governing 1v1 scope decision can supersede them.
-Their canonical `scope` and semantic status remain unchanged. If a historical
-target no longer exists in the audit, a `planning_effect` row keeps the origin
-visible as `needs_target_reconciliation`, with implementation `UNKNOWN`.
-Reconcile against current source clauses and adopted decisions before
-implementing. Custom KBs were never joined to that retired plan.
+A reusable reproduction should fail before the fix and pass after it, while
+preserving unrelated behaviour. Broad batteries, benchmarks, generated data and
+publication are not implied by a local rule change.
 
-The combat report conservatively retains unclassified printed effects: absence
-of an executable binding cannot establish that a rule is irrelevant to combat.
-Pure campaign/data-only origins explicitly classified in the historical plan
-are omitted unless they currently have an included effect or binding. Mixed
-origins stay visible.
-Items use their canonical `combat_status`, `mechanic_id` and explicit simulation
-mappings; a mapping is not independent evidence that every item clause works.
-Other catalogue effects without runtime metadata remain `UNCLASSIFIED`, never
-automatically implemented. `effect_text` preserves the printed effect for review.
-Pending semantic reasons include the applicable specification errors, including
-stale scope/source fingerprints; implementation declarations do not override them.
+## Equipment and selection
 
-Missing scope metadata is reported as `scope = UNCLASSIFIED`,
-`semantic_status = unclassified`, `review_status = needs_classification` and
-`implemented = UNKNOWN`. It is not an exclusion. Explicit `NO` and `LATER`
-classifications are distinct: `NO` is `out_of_scope`, while `LATER` is `deferred`; an included but unbound effect remains
-pending. These report states do not change the canonical YAML scope vocabulary.
+The eligibility implementation lives in
+`packages/typescript/domain/eligibility/index.ts`; Python uses its generated
+bundle through `mordheim_construction/eligibility.py`. Do not duplicate the
+rule tables in Python, campaign adapters or UI selectors. Follow the
+[construction boundary](../reference/eligibility.md#construction-boundary-for-phased-implementation).
 
-### Review questions and decisions
-
-The CSV separates the work status (`review_status`) from the semantic
-evidence (`semantic_status`). To see which decisions need an answer, filter
-`review_status = needs_ruling`, not every `pending` row.
-
-| review_status | Meaning |
-| --- | --- |
-| `needs_ruling` | There is an explicit question with no documented answer yet. |
-| `needs_classification` | Scope has not been declared; classify the editorial effect before judging coverage. |
-| `blocked_by_dependency` | No unanswered question of its own, but a dependency still needs verification. |
-| `ready` | Implementation, source research or verification remains; no explicit unanswered decision or unverified dependency. Does not mean the rule already works. |
-| `verified` | The required semantic evidence is approved. |
-| `not_applicable` | Effect outside the active scope. |
-
-To generate only the questions without replacing the full report:
-
-```powershell
-python tools/mordheim-utils.py report rules --review-status needs_ruling --output outputs/audit/questions
-```
-
-`question` keeps the question even once it is resolved. `ruling` holds the
-adopted answer and its rationale. `interpretation` is the general explanation
-of the specification: it does not imply that a question or an extra decision
-existed.
-
-These data are edited in the corresponding YAML specification under
-`tests/rules/integration/specs/semantic/`, **never manually in the generated CSV**. The status
-is computed; `review_status` is not written into the YAML. Real resolved
-example:
-
-```yaml
-question: Does the Duelist of Hochland's Swordmaster grant re-rolling a failed
-  parry in addition to matching the hit?
-ruling: >-
-  No. Resolved through the Hochland Bandits / Duelist / Swordmaster text: it only grants the tie and
-  requires equipment that allows parrying. It does not grant a re-roll; sword plus buckler keeps its
-  own independent re-roll.
-```
-
-If an answer is missing, omit `ruling` and keep `pending` with the reason for
-the block. The loader rejects an unanswered question that is not marked
-pending. When it is resolved, keep `question`, add `ruling` and remove or
-update `pending` according to the remaining work. An answer does not verify
-the rule: the scenarios, their dependencies and mutations must be updated and
-executed. If the source changes, the footprint invalidates the previous
-evidence as before. A decision history that was never documented is not
-automatically rebuilt; it is incorporated while reviewing each specification.
-
-See `tests/rules/integration/specs/semantic/grants/editorial-hochland-swordmaster.yaml` for a
-resolved question and `tests/rules/integration/specs/semantic/rules/contextual-bonuses-and-rulings.yaml`
-for pending questions.
-
-### Procedure
-
-1. Run `python tools/mordheim-utils.py verify --inventory`.
-2. Add under `tests/rules/integration/specs/semantic/` the source, interpretation, category,
-   cases, interaction and reviewed footprints.
-3. Cover activation, non-activation, boundaries and consumption; use
-   mini-sequences only for state or flow.
-4. Declare exact dice and decisions; use fractions for distributions.
-5. Add a mutation detected by behaviour, not only by the same compiled field.
-6. Run `python -m pytest tests/rules/integration/test_semantics.py -q` and
-   `python tools/mordheim-utils.py verify --json`.
-7. When the new evidence reaches the interaction matrix, certify the
-   vectorized/native engines against the modular oracle with
-   `python tools/mordheim-utils.py parity --require-complete` — a new spec
-   exercises the same case operations on the vectorized engine and must show
-   `PASS`, not `PENDING_ADAPTER` or `DIVERGENCE`.
-
-If a ruling is missing, mark it pending. Done when the obligation,
-dependencies, interactions and mutations are approved.
-
-### Equipment and selection scenarios
-
-Equipment and skill decisions are maintained in
-`packages/typescript/domain/eligibility/index.ts`. The Python compiler calls
-its generated bundle through `mordheim_construction/eligibility.py`; do not
-reintroduce rule tables in Python, campaign adapters or UI selectors. Regenerate
-the bundle and run its shared Python/TypeScript cases after changing those rules.
-The wrappers in `restrictions.py` remain live verification seams: the mutations
-below disable individual controls through those wrappers without replacing
-the rule implementation.
-
-Start with the [existing construction boundary](../reference/eligibility.md#construction-boundary-for-phased-implementation).
-For a pre-centralization finding, first reproduce it with current KB facts,
-direct shared decisions and the actual consumer. Classify the missing part
-before editing: canonical facts/bindings, adapter transport, a shared decision,
-compiled effects or combat behavior. Do not treat a runtime-support refusal as
-illegal equipment/skill eligibility or reimplement a closed Web construction
-flow in Python. Shared-decision repairs require affected browser and embedded
-consumer regressions; effect-only repairs stay with the compiler/engine.
-
-For equipment restrictions, `equipment_choices` runs the real compiler for
-every `context.choices` construction and returns `result.accepted` and
-`result.rejected` (with the exact reason). It does not compute legality by
-itself. See `tests/rules/integration/specs/semantic/grants/editorial-savage-equipment.yaml`: it
-checks legal weapons, prohibited armour and the neighbouring profile without
-the restriction. A prohibition test must not pass merely because the item is
-not in the warrior's list. The isolated mutation
-`suppress-bound-equipment-restrictions` disables only that control and
-restores it on exit.
-
-For skill choices, special rules, variants and `energy_focus_attacks`, use
-`selection_choices`. It returns the accepted option lists and the exact
-rejection reasons after calling the real compiler; it does not decide
-legality by itself. The case must start from a valid construction and declare
-the alternative selections in `context.choices`. See
-`tests/rules/integration/specs/semantic/grants/editorial-required-initial-choices.yaml`: it
-tests zero, one and two choices and temporarily removes the requirement with
-`suppress-required-initial-choices` to prove the test detects its absence.
-
-Distinguish an ambiguous source from an implementation limitation when writing
-`pending`. A rule that also forbids acquiring upgrades after recruitment is
-not verified by checking only its initial amount. The files
-`tests/rules/integration/specs/semantic/grants/editorial-recruitment-and-magic-gaps.yaml` and
-`tests/rules/integration/specs/semantic/rules/construction-verification-gaps.yaml` document
-those pendings; they provide no approved evidence and do not all require a
-user decision.
-
-### Interaction risk and priority
-
-The audit separates technical risk from the current requirement:
-
-| Field | Values |
-| --- | --- |
-| `risk_level` | `critical`, `high`, `medium`, `low` |
-| `verification_requirement` | `required`, `recommended`, `optional`, `not_applicable` |
-| `interaction_status` | `tested`, `covered_by_composition`, `independent`, `illegal`, `pending`, `needs_ruling` |
-
-The policy lives in `tests/rules/integration/specs/interaction-policy.yaml`. By default,
-`critical` and `high` are `required`, `medium` is `recommended` and `low` is
-`optional`. Only unresolved required interactions block `semantic_complete`;
-the rest stay visible to broaden coverage later.
-
-The automatic classification starts from the concepts each rule reads and
-writes. Persistent state, wounds and shared resources are critical; attacks,
-priority and shared saves are high risk. A review can override the
-classification through `overrides`, leaving reason and evidence:
-
-```yaml
-overrides:
-- bindings: [<binding-a>, <binding-b>]
-  risk_level: medium
-  verification_requirement: recommended
-  status: covered_by_composition
-  risk_reasons: [generic_additive_operator]
-  evidence: [operator:stack]
-```
-
-An override is a reviewed semantic decision, not a mechanism to make the
-report pass. It must explain why a generic composition, an incompatibility or
-an existing test covers the pair. The file carries the ten `illegal`
-body-armour × body-armour entries: each names two bindings that can never be
-granted to one fighter (a single `armour_id` slot per `FighterBuild`) and
-records the construction evidence instead of a pair spec.
-
-Pairs that are not overridden are closed by authored interaction specs
-(`semantic/interactions/`), one per pair, with composition + boundary cases
-and a detected mutation. The per-cluster case patterns are summarized in the
-[verification reference](../reference/verification.md) and detailed in
-`tests/rules/integration/specs/README.md`; the live matrix status is whatever `verify` reports
-when you run it — the executable reports are the source of truth, not any
-number written here.
+Construction tests should start from a valid build and distinguish the exact
+restriction from unrelated failures. Cover legal alternatives, prohibited
+choices and a neighbouring unrestricted recipient when relevant. A prohibition
+must not pass merely because an item is absent from the equipment list.
+Keep initial recruitment and later advances separate when the source does.
 
 ## Diagnose a failure
 
-1. Reduce the problem to compilation, phase, mini-sequence or integration.
-2. Reproduce with explicit dice and decisions.
-3. Inspect the binding, the compiled value, the context, the resolver and the
-   state transfer.
-4. Compare against the written source, not the vectorized engine.
-5. Fix the owning responsibility and add a regression.
+Reduce the failure to canonical data, construction, a phase, a short sequence
+or the connected pipeline. Inspect the binding, compiled value, context,
+resolver and state transfer. Compare with written sources, not the optimized
+engine. Fix the narrowest responsible layer and preserve useful evidence.
 
-Done when the reproduction fails before, passes after, and expresses the
-cause of the defect.
+## Local context and strict replay
 
-## Local context and strict engine replay
-
-The local-context contract documents optional
-local participant IDs, numeric M/Ld preservation, explicit distances/contact, and
-independent charge/player-turn facts. Use `prepare_duel_context` in both production
-and verification; missing required facts must fail rather than become defaults.
-Combat Lab shares canonical KB data and the pure eligibility module with Warband
-Manager; campaign state/services and combat execution remain independent.
-
-For a small deterministic whole-duel proof, use
-`mordheim_combat_lab.verification.parity.replay_duel`. It exercises the
-actual modular, NumPy or compiled native driver with strict, fully consumed dice
-and decisions, then records terminal state/resources. Author each backend's legacy
-physical draw order explicitly; do not assume equal seeds imply equal streams.
-Native replay requires a rebuilt context-aware extension and never falls back.
-The foundation cases live in `tests/engines/parity/test_duel_replay.py`; new
-mechanisms still need source-derived specifications, interactions and mutations.
+Use `prepare_duel_context` for supplied identity, contact/distance and turn facts.
+Missing required facts must fail rather than become guessed defaults. Use the
+existing strict replay helper for focused whole-duel checks where useful;
+backend draw orders are explicit, and equal seeds do not imply equal streams.
+These helpers are not a replacement semantic YAML system.

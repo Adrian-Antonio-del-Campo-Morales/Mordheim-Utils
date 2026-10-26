@@ -20,7 +20,7 @@ import { describe, expect, it } from "vitest";
 import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 import { RulesCatalogue } from "@app/rules/rules-catalogue";
 import { classifyVisibleText } from "../../../../../tools/web/presentation-completeness-detector.mjs";
-import { readArtefactDocument } from "../../../../rules/knowledge/support/kb-artefact";
+import { readArtefactDocument } from "../../../../knowledge/support/kb-artefact";
 
 const PUBLISHED = resolve(process.cwd(), "..", "..", "outputs", "web-public", "knowledge", "knowledge-web.json");
 const DISPLAY = resolve(process.cwd(), "..", "..", "outputs", "web-public", "knowledge", "display-text.json");

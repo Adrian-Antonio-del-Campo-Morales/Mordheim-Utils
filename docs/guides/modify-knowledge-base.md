@@ -22,23 +22,23 @@ that guide's last section.
    and its HOWTO — the KB declares rules and tables, never a concrete
    campaign's state.
 5. Run `python tools/knowledge/maintenance/format_yaml.py --check sources/knowledge` (or `--write`,
-   then re-check), then `python tools/mordheim-utils.py verify --structural`.
+   then re-check), then `python tools/mordheim-utils.py check verify`.
    That gate also checks every maintained document against
    [`contracts/knowledge-editorial-v1`](../../contracts/knowledge-editorial-v1/README.md):
    when a document gains, renames or drops a field, extend its schema in the
    same change or the validation fails. A new YAML under a covered tree needs a
-   schema of its own — `tests/rules/knowledge/test_editorial_schemas.py` fails when a
+   schema of its own — `tests/knowledge/test_editorial_schemas.py` fails when a
    document escapes the contract. The same suite refuses a schema that admits
    more than the documents hold and a declaration the documents never exercise
    unless `tools/knowledge/audit_schema_strictness.py` can name the contract
    behind it, so a field added "just in case" is a review question, not a
-   silent allowance.
-6. If you change a reviewed obligation, review its scenario and footprint:
-   semantic specs pin KB targets by path and content digest, so a text edit
-   invalidates them loudly (`verify` reports the exact mismatch). Refresh
-   `sources[].digest` / `scope_digest` only after reviewing the changed text.
-7. Regenerate the generated reports you touched
-   (e.g. `python tools/knowledge/maintenance/price-collation.py`) instead of hand-editing them.
+   silent allowance (see
+   [Verification](../reference/verification.md#deterministic-modular-evidence)).
+6. If a reviewed obligation changes, review the corresponding modular mechanics,
+   construction and E2E expectations against the new text. Preserve adopted
+   rulings and source traceability; do not replace an expected result with current
+   engine output. The retired semantic YAML corpus is not a validation step.
+7. Regenerate the generated reports you touched instead of hand-editing them.
 
 Done when legal cases compile, illegal ones are rejected, and the affected
 evidence is reviewed or explicitly pending. See
@@ -72,7 +72,7 @@ For an authorized destructive merge:
 - document which IDs are retired and which campaign versions are accepted;
 - test the absence of retired IDs, reference resolution, recipients, bindings,
   affected campaign rules and read/write of the format;
-- run formatting, `verify --structural`, semantic evidence and parity before
+- run formatting, structural `verify`, the authorized mechanics/E2E checks and parity before
   publishing.
 
 Do not merge when the recipient changes, a contextual exception exists, the

@@ -16,7 +16,6 @@ export default tseslint.config(
     files: [
       "apps/warband-manager-web/src/**/*.{ts,tsx}",
       "tests/applications/warband_manager/**/*.{ts,tsx}",
-      "tests/tooling/web/**/*.{ts,tsx}",
     ],
     languageOptions: {
       ecmaVersion: 2022,
