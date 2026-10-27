@@ -77,7 +77,7 @@ def test_invalid_or_contradictory_facts_fail(changes):
 def test_context_free_and_empty_context_retain_rng_order_and_results(precompiled):
     unit = precompiled().first
     from mordheim_combat.modular.duel import simulate_duel_reference
-    from mordheim_combat.vectorized import simulate_duel
+    from mordheim_combat.native import simulate_duel
     assert simulate_duel_reference(unit, unit, 30, seed=9) == simulate_duel_reference(unit, unit, 30, seed=9, context=DuelContext())
     request = DuelRequest(unit, unit, 100, seed=11, batch_size=31)
-    assert simulate_duel(request, backend="numpy") == simulate_duel(replace(request, context=DuelContext()), backend="numpy")
+    assert simulate_duel(request) == simulate_duel(replace(request, context=DuelContext()))

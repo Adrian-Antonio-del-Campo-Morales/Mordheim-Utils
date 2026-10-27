@@ -1,11 +1,11 @@
-"""Modular-to-NumPy statistical-parity runner.
+"""Modular-to-native statistical-parity runner.
 
 A :class:`ParityCase` names one duel construction and its declared sample
 contract (round limit, sample width, seed).  ``run_parity`` performs the whole
 orchestration once:
 
 - sample the modular oracle once per case;
-- sample the NumPy candidate against that oracle with the documented six-sigma
+- sample the native candidate against that oracle with the documented six-sigma
   gate, and record the stages each row actually reached (executed, compared,
   approved);
 - expand a case at several round limits when ``horizons`` is supplied, which is
@@ -17,7 +17,7 @@ uses, with the candidate sample seeded ``seed + 1_000_003``.
 
 Cases are always prepared by the caller: precompiled fighters never trigger a
 compile or a compiler fallback.  The modular oracle is the only reference and
-the NumPy batch engine the only candidate; there is no native execution path.
+the compiled native engine the only candidate.
 """
 from __future__ import annotations
 
@@ -29,6 +29,8 @@ from typing import Iterable, Sequence
 
 from mordheim_combat.modular.parallel import resolve_oracle_workers
 from mordheim_combat.modular.parallel import run_oracle_sample
+from mordheim_combat.native import NativeIncompatible
+from mordheim_combat.native import NativeUnavailable
 
 from tools.verification.parity_statistical import (
     OUTCOME_LABELS,
@@ -124,11 +126,11 @@ def _comparison_from_result(result) -> MagnitudeComparison:
     return MagnitudeComparison(
         magnitude="winner",
         modular_rates=tuple(result.modular_rates),
-        candidate_rates=tuple(result.vectorized_rates),
+        candidate_rates=tuple(result.candidate_rates),
         tolerances=tuple(result.tolerances),
         passed=bool(result.passed),
         detail=_winner_detail(
-            result.modular_rates, result.vectorized_rates, result.tolerances,
+            result.modular_rates, result.candidate_rates, result.tolerances,
         ),
     )
 
@@ -145,7 +147,7 @@ def statistical_result(row: ParityRow) -> StatisticalParityResult:
         backend=row.backend,
         simulations=row.simulations,
         modular_rates=comparison.modular_rates,
-        vectorized_rates=comparison.candidate_rates,
+        candidate_rates=comparison.candidate_rates,
         tolerances=comparison.tolerances,
         passed=comparison.passed,
         reference_seconds=row.modular_seconds,
@@ -181,6 +183,20 @@ def _count_row(case, backend, simulations, reference_counts, modular_seconds):
             case.label, case.first, case.second, simulations, seed=case.seed,
             maximum_rounds=case.maximum_rounds, backend=backend,
             modular=reference_counts, reference_seconds=modular_seconds,
+        )
+    except NativeUnavailable as error:
+        # The candidate could not be executed at all: the campaign ran but this
+        # row has no comparison, so it is never approved.
+        return _row(
+            case.label, backend, case.maximum_rounds, simulations,
+            "NOT_RUN", modular_seconds=modular_seconds,
+            detail=f"NOT_RUN:native: {error}",
+        )
+    except NativeIncompatible as error:
+        return _row(
+            case.label, backend, case.maximum_rounds, simulations,
+            "INCOMPATIBLE", modular_seconds=modular_seconds,
+            detail=f"INCOMPATIBLE:plan: {error}",
         )
     except ValueError as error:
         # A declared input limit or an admission refusal means the candidate
@@ -269,7 +285,7 @@ def _expand(case: ParityCase, *, simulations: int, seed: int,
 
 def run_parity(
     cases: Iterable[ParityCase], *,
-    backends: Sequence[str] = ("numpy",),
+    backends: Sequence[str] = ("native",),
     candidate: str = "counts",
     simulations: int | None = None,
     seed: int | None = None,
@@ -281,7 +297,7 @@ def run_parity(
 
     ``candidate`` is ``"counts"``: winner-only aggregate samples compared with
     the documented six-sigma gate.  ``backends`` names the optimised engines to
-    certify, which is the NumPy batch engine.  ``simulations``, ``seed`` and
+    certify, which is the compiled native engine.  ``simulations``, ``seed`` and
     ``maximum_rounds`` override the per-case declaration.  ``workers`` is the
     modular-oracle process policy (``"auto"``, ``1`` for sequential, or a
     positive count); one pool is reused across the run, and chunking reproduces
@@ -294,7 +310,7 @@ def run_parity(
     if candidate != "counts":
         raise ValueError(f"unknown parity candidate surface: {candidate}")
     for backend in backends:
-        if backend != "numpy":
+        if backend != "native":
             raise ValueError(f"unknown optimized backend: {backend}")
     if workers is not None and str(workers).casefold() != "auto" and int(workers) < 1:
         raise ValueError("workers must be positive or auto")

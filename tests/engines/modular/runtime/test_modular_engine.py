@@ -18,9 +18,10 @@ from threading import Event
 
 
 def test_scalar_attack_pool_has_no_dependency_on_the_vectorized_engine(monkeypatch, precompiled):
-    import mordheim_combat.vectorized as engine
+    """Historical key: the modular pool never executes the optimized engine."""
+    import mordheim_combat.native as engine
 
-    monkeypatch.setattr(engine, "attack_count", lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError()))
+    monkeypatch.setattr(engine, "simulate_duel", lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError()))
     assert build_attacks(AttackPoolContext(precompiled().first)).attacks == 2
 
 
@@ -40,7 +41,8 @@ def test_reference_round_generates_priority_attacks_and_aftermath_itself(precomp
 
 
 def test_reference_duels_are_reproducible_without_calling_numpy_executor(monkeypatch, precompiled):
-    import mordheim_combat.vectorized as engine
+    """Historical key: reproducible reference duels never call the native engine."""
+    import mordheim_combat.native as engine
 
     monkeypatch.setattr(engine, "simulate_duel", lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError()))
     compiled = precompiled()

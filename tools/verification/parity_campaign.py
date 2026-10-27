@@ -1,4 +1,4 @@
-"""Independent command: modular-to-NumPy statistical parity over the catalogue.
+"""Independent command: modular-to-native statistical parity over the catalogue.
 
 The five parity tests compare a couple of frozen scenarios; this command walks
 the catalogue instead — 43 scenarios with uniform ``scenario/<name>``
@@ -9,17 +9,18 @@ campaign configuration, the report and the CLI; execution belongs to
 the whole selection.
 
 A row that was rejected, could not sample the oracle, was incompatible with the
-candidate or was never compared is recorded as such and is never counted as
-approved.  Parities are decided only
-by the six-sigma gate (0.25% floor) of
+native candidate or was never compared is recorded as such and is never counted
+as approved.  A missing or stale native extension is a configuration error, so
+the command exits before running a campaign that could not execute.  Parities
+are decided only by the six-sigma gate (0.25% floor) of
 :func:`tools.verification.parity_statistical.compare_statistical_parity`.
 
 Usage (from the repository root)::
 
     python -m tools.verification.parity_campaign --workers 8
     python -m tools.verification.parity_campaign --level long
-    python -m tools.verification.parity_campaign --id scenario/basic \
-        --id scenario/long --simulations 5000
+    python -m tools.verification.parity_campaign --level long \
+        --id scenario/basic --id scenario/long --simulations 5000
 
 The report is written to ``<output>/parity-campaign.json`` and
 ``<output>/parity-campaign.md``; the exit code is 0 only when every selected
@@ -35,6 +36,8 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable, Sequence
+
+from mordheim_combat.native import available_backends
 
 from tools.verification.compiled_cases import CompiledCaseError
 from tools.verification.compiled_cases import load_cases
@@ -159,7 +162,7 @@ def campaign_payload(
         "generated_at": generated_at or datetime.now(timezone.utc).isoformat(),
         "elapsed_seconds": elapsed_seconds,
         "oracle": "combat.modular (read-only)",
-        "candidate": "combat.vectorized (numpy)",
+        "candidate": "combat.native (compiled)",
         "outcome_labels": list(OUTCOME_LABELS),
         "config": dict(config),
         "complete": complete,
@@ -186,7 +189,7 @@ def campaign_markdown(payload: dict[str, object]) -> str:
     rejected = payload["rejected"]
     assert isinstance(rejected, list)
     lines = [
-        "# Modular-to-NumPy statistical parity campaign",
+        "# Modular-to-native statistical parity campaign",
         "",
         f"- Generated: `{payload['generated_at']}`",
         *([f"- Elapsed: `{payload['elapsed_seconds']:.1f}s`"]
@@ -226,8 +229,8 @@ def campaign_markdown(payload: dict[str, object]) -> str:
             "compared in that order.",
             "",
             "| Corpus key | Duels/engine | Rounds | Modular W/L/U | "
-            "NumPy W/L/U | Tolerance W/L/U | Difference W/L/U | Verdict | "
-            "Oracle s | NumPy s |",
+            "Native W/L/U | Tolerance W/L/U | Difference W/L/U | Verdict | "
+            "Oracle s | Native s |",
             "|---|---:|---:|---|---|---|---|---|---:|---:|",
         ))
         for row in rows:
@@ -275,7 +278,7 @@ def campaign_markdown(payload: dict[str, object]) -> str:
         "## Scope",
         "",
         "Each row compares the modular oracle's terminal outcome rates with the "
-        "NumPy backend on the compiled fighters frozen in the corpus, using the "
+        "native backend on the compiled fighters frozen in the corpus, using the "
         "six-sigma tolerance with the 0.25% floor. A scenario is `pass` only "
         "when both samples were obtained and every compared magnitude stayed "
         "within tolerance; `divergent` means a comparison was performed and "
@@ -305,7 +308,7 @@ def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="python -m tools.verification.parity_campaign",
         description=(
-            "Run modular-to-NumPy statistical parity over the frozen catalogue "
+            "Run modular-to-native statistical parity over the frozen catalogue "
             "and write a JSON and Markdown report."
         ),
     )
@@ -328,7 +331,7 @@ def _parser() -> argparse.ArgumentParser:
     )
     samples.add_argument(
         "--seed", type=int, default=2_026,
-        help="oracle seed; the NumPy sample uses seed + 1000003 (default: 2026)",
+        help="oracle seed; the native sample uses seed + 1000003 (default: 2026)",
     )
     samples.add_argument(
         "--rounds", type=_positive, default=None, metavar="N",
@@ -354,6 +357,14 @@ def _corpus_digest(path: Path) -> str:
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = _parser().parse_args(argv)
+    if not available_backends():
+        print(
+            "parity campaign: the native combat extension is not available or "
+            "was built for stale layouts; install the project with a working C "
+            "compiler and run the campaign again",
+            file=sys.stderr,
+        )
+        return 2
     try:
         chosen = select(level=args.level, keys=args.ids)
     except ValueError as error:
@@ -394,7 +405,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     started = time.perf_counter()
     run = run_parity(
-        cases_to_run, backends=("numpy",), candidate="counts",
+        cases_to_run, backends=("native",), candidate="counts",
         workers=args.workers,
     )
     elapsed = time.perf_counter() - started

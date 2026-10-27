@@ -1,9 +1,9 @@
-"""Aggregate statistical parity between the modular oracle and the NumPy backend
-using the six-sigma gate.
+"""Aggregate statistical parity between the modular oracle and the native
+backend using the six-sigma gate.
 
 Extracted from Combat Lab's parity tooling so the engine tests own their
-comparison.  The modular engine is the only correctness oracle and the NumPy
-batch engine the only certified candidate; there is no native execution here.
+comparison.  The modular engine is the only correctness oracle and the
+compiled native engine the only certified candidate.
 """
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ import math
 import time
 from dataclasses import dataclass
 
-from mordheim_combat import vectorized
+from mordheim_combat import native
 from mordheim_core.models import DuelRequest
 
 
@@ -23,7 +23,7 @@ class StatisticalParityResult:
     backend: str
     simulations: int
     modular_rates: tuple[float, float, float]
-    vectorized_rates: tuple[float, float, float]
+    candidate_rates: tuple[float, float, float]
     tolerances: tuple[float, float, float]
     passed: bool
     # Wall time of each engine's sample, at engine level: ``reference`` is the
@@ -121,16 +121,18 @@ def compare_outcome_rates(
     return modular_rates, candidate_rates, tolerances, passed
 
 
-def _parity_result(scenario: str, backend: str, simulations: int, modular, vector,
+def _parity_result(scenario: str, backend: str, simulations: int, modular, candidate,
                    reference_seconds: float, candidate_seconds: float) -> StatisticalParityResult:
     modular_counts = (modular.first_wins, modular.second_wins, modular.unresolved)
-    vector_counts = (vector.first_wins, vector.second_wins, vector.unresolved)
-    modular_rates, vector_rates, tolerances, passed = compare_outcome_rates(
-        modular_counts, vector_counts, simulations,
+    candidate_counts = (
+        candidate.first_wins, candidate.second_wins, candidate.unresolved,
+    )
+    modular_rates, candidate_rates, tolerances, passed = compare_outcome_rates(
+        modular_counts, candidate_counts, simulations,
     )
     return StatisticalParityResult(
         scenario=scenario, backend=backend, simulations=simulations,
-        modular_rates=modular_rates, vectorized_rates=vector_rates,
+        modular_rates=modular_rates, candidate_rates=candidate_rates,
         tolerances=tolerances, passed=passed,
         reference_seconds=reference_seconds, candidate_seconds=candidate_seconds,
     )
@@ -138,23 +140,23 @@ def _parity_result(scenario: str, backend: str, simulations: int, modular, vecto
 
 def compare_statistical_parity(
     scenario: str, first, second, simulations: int, *, seed: int = 2026,
-    maximum_rounds: int = 50, backend: str = "numpy", modular=None,
+    maximum_rounds: int = 50, backend: str = "native", modular=None,
     reference_seconds: float | None = None,
 ) -> StatisticalParityResult:
     """Compare independent aggregate samples using the documented six-sigma gate.
 
-    The modular engine is the only correctness oracle; ``backend`` selects the
-    certified candidate, which is the NumPy batch engine.  Pass a precomputed
-    ``modular`` result to certify a candidate against an oracle sample without
-    re-running the modular engine; when you do, pass ``reference_seconds``
-    (measured at the sampling site) so the result reports each engine's wall
-    time.  The candidate sample is timed here.
+    The modular engine is the only correctness oracle; ``backend`` names the
+    certified candidate, which is the compiled native engine.  Pass a
+    precomputed ``modular`` result to certify a candidate against an oracle
+    sample without re-running the modular engine; when you do, pass
+    ``reference_seconds`` (measured at the sampling site) so the result reports
+    each engine's wall time.  The candidate sample is timed here.
     """
     from mordheim_combat.modular.duel import simulate_duel_reference
 
     if simulations < 1:
         raise ValueError("statistical parity needs at least one simulation")
-    if backend != "numpy":
+    if backend != "native":
         raise ValueError(f"unsupported optimized backend: {backend}")
     if modular is None:
         started = time.perf_counter()
@@ -163,16 +165,15 @@ def compare_statistical_parity(
         )
         reference_seconds = time.perf_counter() - started
     candidate_started = time.perf_counter()
-    vector = vectorized.simulate_duel(
+    candidate = native.simulate_duel(
         DuelRequest(
             first, second, simulations, seed=seed + 1_000_003,
             maximum_rounds=maximum_rounds,
         ),
-        backend=backend,
     )
     candidate_seconds = time.perf_counter() - candidate_started
     return _parity_result(
-        scenario, backend, simulations, modular, vector,
+        scenario, backend, simulations, modular, candidate,
         reference_seconds if reference_seconds is not None else 0.0,
         candidate_seconds,
     )

@@ -1,4 +1,4 @@
-"""Real statistical comparisons of the vectorized backend against the oracle.
+"""Real statistical comparisons of the native backend against the oracle.
 
 Each case samples both engines and asserts the six-sigma outcome comparison;
 the frozen scenario and its round budget come from the corpus.
@@ -11,7 +11,7 @@ import pytest
 def test_statistical_parity_reports_three_outcomes_and_six_sigma_tolerances(cases):
     fighter = cases[scenario_key("basic")].first
     result = compare_statistical_parity("smoke", fighter, fighter, 20, seed=3)
-    assert len(result.modular_rates) == len(result.vectorized_rates) == 3
+    assert len(result.modular_rates) == len(result.candidate_rates) == 3
     assert len(result.tolerances) == 3
     assert all(tolerance >= .0025 for tolerance in result.tolerances)
 

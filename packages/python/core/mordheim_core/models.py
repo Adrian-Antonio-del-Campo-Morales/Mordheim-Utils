@@ -321,7 +321,7 @@ class ObservedDuelResult:
     counts the rounds actually executed before the duel ended (1..
     ``maximum_rounds``); a duel that runs out of its round budget is
     unresolved (``winner == 2``) and reports ``maximum_rounds``, mirroring
-    the vectorized driver's per-row round ledger.  ``first_condition`` /
+    the native driver's per-row round ledger.  ``first_condition`` /
     ``second_condition`` use the shared ``Condition`` codes.
     """
     winner: np.ndarray

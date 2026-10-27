@@ -1,12 +1,31 @@
 # Mordheim combat engines
 
-Modular and NumPy combat engines with shared models and precompiled test inputs.
-Requires Python 3.10 or later.
+The modular combat engine and the compiled native engine, with shared models and
+precompiled test inputs. The modular engine is the correctness oracle; the
+native extension is the optimized engine compared against it through statistical
+parity campaigns. Requires Python 3.10 or later.
 
 ## Installation
 
 Run the commands from the repository root. Creating a fresh environment avoids
 reusing dependencies from other projects.
+
+The installation compiles the native extension, so it needs a C compiler and the
+Python development headers:
+
+- **Windows**: Visual Studio Build Tools with the "Desktop development with C++"
+  workload (or a compatible GCC/Clang installation).
+- **Linux**: `build-essential` (or `gcc`/`clang`) and the Python development
+  package (`python3-dev`).
+- **macOS**: the Xcode Command Line Tools (`xcode-select --install`).
+
+`setuptools` and `Cython` are declared as build requirements in `pyproject.toml`
+and installed automatically by pip. NumPy remains a runtime dependency because
+the native engine uses it for its observation buffers.
+
+The native engine is not optional: a missing compiler or a failed Cython
+compilation aborts the installation instead of producing a package without the
+engine.
 
 ### Windows (PowerShell)
 
@@ -22,9 +41,9 @@ python3 -m venv .venv
 .venv/bin/python -m pip install -e ".[dev]"
 ```
 
-The engine dependency is NumPy. The `dev` extra installs pytest and pytest-xdist.
-The following examples use Windows paths; on Linux or macOS replace
-`.\.venv\Scripts\python.exe` with `.venv/bin/python`.
+The `dev` extra installs pytest and pytest-xdist. The following examples use
+Windows paths; on Linux or macOS replace `.\\.venv\\Scripts\\python.exe` with
+`.venv/bin/python`.
 
 ## Running tests
 
@@ -52,17 +71,23 @@ Replace the path to select another suite:
 |---|---|
 | `tests/engines/modular/mechanics` | Application of combat rules in the modular engine |
 | `tests/engines/modular/runtime` | Modular simulation, observations and execution contracts |
-| `tests/engines/vectorized/mechanics` | Rule operators and combat behavior in NumPy |
-| `tests/engines/vectorized/runtime` | NumPy batching, random inputs and execution contracts |
+| `tests/engines/native` | Native lowering, batch execution, replay and callback contracts |
 | `tests/engines/shared` | Shared contracts and precompiled-data checks |
-| `tests/engines/parity` | Modular-to-NumPy statistical parity, round truncation, campaign catalogue and reports |
+| `tests/engines/parity` | Modular-to-native statistical parity, round truncation, campaign catalogue and reports |
 
 For runtime tests that exercise internal process pools, use `-n 0` to avoid
-multiplying engine processes by pytest workers. To select one test, pass
+multiplying engine processes by pytest workers. Run the parity suite in series
+as shown below. The costly native certification cases are executed through the
+separate parity campaign, not the native test suite. To select one test, pass
 `path/to/test_file.py::test_name` instead of a directory.
 
+Native behavioural tests fail with the rebuild instructions when the extension
+is missing or was built for stale layouts. That failure marks an environment
+that cannot exercise the optimized engine; it is not a supported source
+installation. The explicit unavailability contract always runs.
+
 The cross-engine statistical comparison samples the modular oracle against the
-NumPy backend, so it is timing-sensitive and CPU-bound. Run it in series:
+native backend, so it is timing-sensitive and CPU-bound. Run it in series:
 
 ```powershell
 .\.venv\Scripts\python.exe -u -m pytest tests/engines/parity -n 0 -q --durations=10 --tb=short
@@ -75,13 +100,13 @@ frozen cases only and sample no engine.
 
 ## Statistical parity campaign
 
-The campaign command runs the modular oracle against the NumPy backend over the
+The campaign command runs the modular oracle against the native backend over the
 frozen catalogue: 43 scenarios under uniform `scenario/<name>` keys, selected
 as three cumulative levels. It writes a complete JSON and Markdown report to
 the output directory.
 
-The levels are cumulative and `small` is the default: `small` (8 cheap
-scenarios), `normal` (30, one representative per rule family) and `long` (43,
+The levels are cumulative and `small` is the default: `small` (8
+scenarios), `normal` (30 selected scenarios) and `long` (43,
 every scenario, including the 75-round grinds and the largest attack pools). A
 level selects scenarios only; every scenario keeps its own frozen round limit.
 
@@ -102,7 +127,7 @@ Run the same selection in series, or narrow it to concrete scenario keys:
 
 ```powershell
 .\.venv\Scripts\python.exe -m tools.verification.parity_campaign --workers 1 --simulations 1000 --output reports/parity-small
-.\.venv\Scripts\python.exe -m tools.verification.parity_campaign --id scenario/basic --id scenario/long --workers 8 --simulations 5000 --output reports/parity-basic
+.\.venv\Scripts\python.exe -m tools.verification.parity_campaign --level long --id scenario/basic --id scenario/long --workers 8 --simulations 5000 --output reports/parity-basic
 ```
 
 The report is written to `parity-campaign.json` and `parity-campaign.md` under
@@ -112,19 +137,22 @@ key, sample width, the three outcome rates of each engine, tolerances,
 differences, timings and verdict. `--simulations` sets one width for the
 selected set (default 1,000); it is execution configuration, not scenario
 data. `--seed` defaults to 2,026 and each scenario keeps its frozen round
-budget unless `--rounds` overrides it. `--workers auto` pools only samples
-estimated to take over about 20 seconds sequentially.
+budget unless `--rounds` overrides it. `--workers` only controls the modular
+oracle; the native sample runs sequentially. `--workers auto` pools only
+samples estimated to take over about 20 seconds sequentially.
 
 A scenario is reported as `pass` only when both samples were obtained and every
 compared magnitude stayed within tolerance; `divergent` means the comparison
 was performed and failed, and `not-run` means it was never performed. Rejected
 or missing corpus entries are listed explicitly, and a candidate admission
 refusal is reported as `INCOMPATIBLE` with its reason rather than as a parity
-failure. The report sets `certification_sample_complete` only when every row
-reached 100,000 duels per engine, so a narrower campaign is not presented as a
-certification. The exit code is 0 only when every selected scenario was
+failure. The `certification_sample_complete` field records whether every row reached
+100,000 duels per engine. This is a sample-size indicator, not certification
+of correctness or full rule coverage; consult the comparison verdicts separately. The exit code is 0 only when every selected scenario was
 compared and approved, 1 when the campaign ran but is incomplete, and 2 for a
-configuration or corpus error.
+configuration or corpus error. A missing or stale native extension is a
+configuration error (exit code 2): the campaign never reports a run it could not
+perform, and no engine substitution is attempted.
 
 The parity support tests are the `tests/engines/parity` command above: the five
 statistical comparisons plus the campaign's catalogue and report contracts.
@@ -152,13 +180,15 @@ Keep the JSON files when copying the project to another environment.
 | Path | Contents |
 |---|---|
 | `packages/python/combat-engine/mordheim_combat/modular` | Modular combat implementation |
-| `packages/python/combat-engine/mordheim_combat/vectorized` | NumPy combat implementation |
+| `packages/python/combat-engine/mordheim_combat/native` | Native engine: lowering helpers, public driver and Cython sources |
 | `packages/python/core/mordheim_core` | Shared models, context, dice and effects |
+| `setup.py` | Cython extension build configuration |
+| `tests/engines/native/replay.py` | Scripted native execution helper |
 | `tests/engines/shared/dice.py` | Strict scripted dice and decisions for tests |
 | `tests/engines/modular/replay.py` | Scripted modular execution helper |
 | `tools/verification/compiled_cases.py` | Frozen-case codec and loader |
 | `tools/verification/compiled_builds.py` | Frozen-build loader |
-| `tools/verification/parity_statistical.py` | Modular-to-NumPy statistical comparison and its result record |
+| `tools/verification/parity_statistical.py` | Modular-to-native statistical comparison and its result record |
 | `tools/verification/parity_runner.py` | Parity runner for cases, worker policy and round-truncation horizons |
 | `tools/verification/parity_catalog.py` | The 43 frozen scenarios, their corpus keys and selection rules |
 | `tools/verification/parity_campaign.py` | Campaign command, JSON/Markdown report and CLI |

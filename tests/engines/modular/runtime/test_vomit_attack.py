@@ -4,9 +4,6 @@
 from dataclasses import replace
 
 
-import numpy as np
-
-
 import pytest
 
 
@@ -24,7 +21,7 @@ from mordheim_combat.modular.state import initialize_duel, initialize_fighter
 
 
 
-from mordheim_combat.vectorized import available_backends, simulate_batch, simulate_duel, simulate_duel_parallel
+from mordheim_combat.native import simulate_duel
 
 
 from tests.engines.shared.dice import StrictDecisions, StrictDice
@@ -66,37 +63,21 @@ def opponent(**options):
     ))
 
 
-@pytest.mark.parametrize("backend", ["auto", "numpy"])
-def test_unported_option_is_refused_before_optimized_execution(backend):
-    """NumPy executes the connected option; the native gate still refuses it.
+def test_unported_option_is_refused_before_optimized_execution():
+    """The native gate refuses the optional Vomit Attack before dispatch.
 
-    The native gate names its first pending capability, which for this Troll is
-    a local modifier rather than the Vomit option, so its refusal is asserted
-    generically. Auto follows the first available backend. The NumPy request
-    supplies explicit Leadership because the
-    charging fear test needs it in both engines.
+    The gate names its first pending capability, which for this Troll is a
+    local modifier rather than the Vomit option, so its refusal is asserted
+    generically.
     """
-    selected = available_backends()[0] if backend == "auto" else backend
-    if selected == "numpy":
-        led = compile_fighter(FighterBuild(
-            "mordheim", Characteristics(3, 3, 3, 4, 1, 1, leadership=7),
-            main_weapon_id="weapon.sword",
-        ))
-        result = simulate_duel(DuelRequest(troll(), led, simulations=1), backend=backend)
-        assert result.first_wins + result.second_wins + result.unresolved == 1
-        return
     with pytest.raises(ValueError, match="modular engine"):
-        simulate_duel(DuelRequest(troll(), opponent(), simulations=1), backend=backend)
+        simulate_duel(DuelRequest(troll(), opponent(), simulations=1))
 
 
 def test_low_level_optimized_entries_do_not_silently_drop_the_option(precompiled):
     first = precompiled(0).first
-    # The accepted NumPy entries execute the connected option instead of
-    # dropping it. Explicit Leadership keeps the charging fear test valid.
-    led = precompiled(0).second
-    second = precompiled(1).second
+    second = precompiled(0).second
     with pytest.raises(ValueError, match="modular engine"):
-        compile_duel_plan(first, second)
-    assert sum(simulate_batch(first, led, 1, np.random.default_rng(0), 1)) == 1
-    parallel = simulate_duel_parallel(DuelRequest(first, led, simulations=1))
-    assert parallel.first_wins + parallel.second_wins + parallel.unresolved == 1
+        compile_duel_plan(first, second, backend="native")
+    with pytest.raises(ValueError, match="modular engine"):
+        simulate_duel(DuelRequest(first, second, simulations=1))

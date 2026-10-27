@@ -16,7 +16,6 @@ from mordheim_combat.modular import duel
 from mordheim_combat.modular.pools import _resolve_attack_pool
 from mordheim_combat.modular.rounds import resolve_round
 from mordheim_combat.modular.state import initialize_duel, initialize_fighter
-from mordheim_combat.vectorized import simulate_batch, simulate_duel, simulate_duel_parallel
 from tests.engines.shared.dice import StrictDecisions, StrictDice
 from mordheim_core.models import Characteristics, DuelContext, DuelRequest
 

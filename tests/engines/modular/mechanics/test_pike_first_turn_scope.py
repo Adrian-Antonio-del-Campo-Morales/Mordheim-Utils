@@ -10,9 +10,9 @@ The spear carries the same printed wording and the engine already scoped its
 strike-first layer to the first turn.  The pike carried only ``priority: 1`` and
 kept the layer in every round, so its printed clause was not delivered after the
 first turn.  ``resolve_priority`` now applies the same turn scope, and
-the local tests below record the pike cases.  The scope is a modular change: the optimized
-vectorized and native drivers still carry the unscoped flag, which needs its own
-porting dispatch.
+the local tests below record the pike cases.  The scope is a modular change: the
+native driver still carries the unscoped flag, which needs its own porting
+dispatch.
 """
 from __future__ import annotations
 

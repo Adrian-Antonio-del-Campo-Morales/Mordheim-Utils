@@ -38,7 +38,7 @@ def _row(
 ):
     return ParityRow(
         case=key,
-        backend="numpy",
+        backend="native",
         maximum_rounds=50,
         simulations=simulations,
         status=status,
@@ -177,6 +177,6 @@ def test_markdown_carries_the_configuration_and_per_outcome_evidence():
     assert "Corpus SHA256: `" in markdown
     assert "| Corpus key |" in markdown
     assert "50.000%/30.000%/20.000%" in markdown   # modular rates
-    assert "52.000%/29.000%/19.000%" in markdown   # NumPy rates
+    assert "52.000%/29.000%/19.000%" in markdown   # native rates
     assert "0.400%/0.400%/0.400%" in markdown      # tolerances
     assert "2.000%/1.000%/1.000%" in markdown      # differences

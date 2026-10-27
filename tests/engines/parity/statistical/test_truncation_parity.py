@@ -2,7 +2,7 @@
 
 The scenario pair and round budget come from the frozen corpus; horizons,
 samples, seeds and the six-sigma gate are unchanged.  Each row is a real
-comparison of the modular oracle and the vectorized backend, produced by the
+comparison of the modular oracle and the native backend, produced by the
 shared runner with ``horizons=``.
 """
 from tools.verification.parity_runner import TRUNCATION_HORIZONS
@@ -24,21 +24,21 @@ def _case(cases, scenario_id: str = "basic"):
 
 def test_truncation_rows_name_their_horizon_and_pass_smoke(cases):
     run = run_parity(
-        (_case(cases),), backends=("numpy",), candidate="counts",
+        (_case(cases),), backends=("native",), candidate="counts",
         simulations=400, horizons=TRUNCATION_HORIZONS,
     )
     rows = tuple(statistical_result(row) for row in run.rows)
     assert len(rows) == len(TRUNCATION_HORIZONS)
     for row, horizon in zip(rows, TRUNCATION_HORIZONS):
         assert row.scenario == f"basic@rounds={horizon}"
-        assert row.backend == "numpy"
+        assert row.backend == "native"
         assert row.simulations == 400
         assert row.passed  # six-sigma gate at small N is permissive
 
 
 def test_horizons_respect_the_round_budget(cases):
     run = run_parity(
-        (_case(cases, "long"),), backends=("numpy",), candidate="counts",
+        (_case(cases, "long"),), backends=("native",), candidate="counts",
         simulations=60, horizons=(2, 50, 75, 90),
     )
     assert [row.case for row in run.rows] == [
@@ -52,7 +52,7 @@ def test_truncation_rows_are_independent_samples_of_the_same_gate(cases):
     case = _case(cases)
     horizon = TRUNCATION_HORIZONS[0]
     run = run_parity(
-        (case,), backends=("numpy",), candidate="counts", simulations=300,
+        (case,), backends=("native",), candidate="counts", simulations=300,
         horizons=(horizon,),
     )
     row = statistical_result(run.rows[0])
@@ -62,5 +62,5 @@ def test_truncation_rows_are_independent_samples_of_the_same_gate(cases):
     )
     assert row.scenario == direct.scenario
     assert row.modular_rates == direct.modular_rates
-    assert row.vectorized_rates == direct.vectorized_rates
+    assert row.candidate_rates == direct.candidate_rates
     assert row.passed == direct.passed

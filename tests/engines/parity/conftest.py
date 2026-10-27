@@ -1,4 +1,4 @@
-"""Precompiled-case access for the modular-to-NumPy parity comparisons.
+"""Precompiled-case access for the modular-to-native parity comparisons.
 
 The parity comparisons do not build fighters through a knowledge base or a
 construction compiler.  They read the frozen corpus produced by the precompiled

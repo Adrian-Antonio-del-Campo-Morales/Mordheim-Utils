@@ -60,7 +60,7 @@ def simulate_duel_observed(
     remaining wounds, conditions) instead of only the three aggregate
     counts.  ``as_result()`` reproduces the aggregate sample exactly, so the
     observed leg can replace a counting leg without changing the certified
-    numbers.  ``resolution_rounds`` mirrors the vectorized driver's per-row
+    numbers.  ``resolution_rounds`` mirrors the native driver's per-row
     ledger: the rounds executed before the duel ended (1..maximum_rounds),
     with ``maximum_rounds`` for duels that ran out of budget. A failed initial
     charge ends this local engagement unresolved after its one attempted round.
@@ -105,7 +105,7 @@ def simulate_duel_observed(
 
 
 def simulate_duel(request) -> DuelResult:
-    """Accept the same `DuelRequest` consumed by the vectorized engine."""
+    """Accept the same `DuelRequest` consumed by the native entry point."""
     return simulate_duel_reference(
         request.first, request.second, request.simulations,
         seed=request.seed, maximum_rounds=request.maximum_rounds,

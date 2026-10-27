@@ -1,11 +1,11 @@
 [build-system]
-requires = ["setuptools>=69"]
+requires = ["setuptools>=69", "cython>=3.1"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "mordheim-utils"
 version = "2.0.0a1"
-description = "Minimal precompiled-test slice for modular and NumPy combat engines"
+description = "Mordheim combat: modular engine, compiled native engine and precompiled test data"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = ["numpy>=1.24,<3"]
@@ -16,9 +16,12 @@ dev = ["pytest>=8.0", "pytest-xdist>=3.6,<4"]
 [tool.setuptools.packages.find]
 where = ["packages/python/combat-engine", "packages/python/core"]
 
+[tool.setuptools.package-data]
+"mordheim_combat.native" = ["*.pyx", "*.pxd"]
+
 [tool.pytest.ini_options]
 pythonpath = [".", "packages/python/combat-engine", "packages/python/core"]
-testpaths = ["tests/engines/modular", "tests/engines/vectorized", "tests/engines/shared", "tests/engines/parity"]
+testpaths = ["tests/engines/modular", "tests/engines/native", "tests/engines/shared", "tests/engines/parity"]
 addopts = "--strict-markers"
 markers = [
     "evidence: fixture and contract evidence",

@@ -1,7 +1,7 @@
 """Codec and loader for the precompiled engine cases (T02).
 
-The corpus is a versioned, canonical JSON document shared by the modular,
-vectorized, native, parity and benchmark suites.  This module is deliberately
+The corpus is a versioned, canonical JSON document shared by the modular and
+native engines and the parity suite.  This module is deliberately
 independent of the knowledge base, the construction compiler and the combat
 packages: it only understands the core dataclasses it has to reconstruct.
 
