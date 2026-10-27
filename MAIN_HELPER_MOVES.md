@@ -129,3 +129,52 @@ an unprotected control. It also asserts that public simulation still rejects
 this pending canonical mechanic. No gate was bypassed or capability enabled.
 This replaces the previous full-duel zero-wins assertion. AST parsing only;
 no tests or simulations executed.
+
+## Modular-to-NumPy statistical parity and its runner
+
+Restored on `vectorized-slice` from `origin/main` (commit `bb1a9d98`), without
+the Combat Lab package:
+
+| Destination | Symbols | Previous source on main |
+|---|---|---|
+| `tools/verification/parity_statistical.py` | `StatisticalParityResult`, `OUTCOME_LABELS`, `outcome_counts`, `outcome_rates`, `six_sigma_tolerance`, `compare_outcome_rates`, `compare_statistical_parity` | Combat Lab `verification/parity/_statistical.py`, plus `StatisticalParityResult` from `_report.py` |
+| `tools/verification/parity_runner.py` | `TRUNCATION_HORIZONS`, `MagnitudeComparison`, `ParityCase`, `ParityRow`, `ParityRun`, `run_parity`, `statistical_result` | Combat Lab `verification/parity/_runner.py` |
+| `tests/engines/parity/conftest.py` | `cases` fixture over the frozen corpus | same path |
+| `tests/engines/parity/statistical/test_parity_statistics.py` | two statistical comparisons | same path |
+| `tests/engines/parity/statistical/test_truncation_parity.py` | three horizon comparisons | same path |
+
+The test files keep their bodies, sample sizes (20/40/400/60/300), seed 3, the
+six-sigma formula and the 0.25% tolerance floor; only the imports now name
+`tools.verification.parity_statistical` and `tools.verification.parity_runner`.
+`StatisticalParityResult` is the only class taken from `_report.py`; the report
+payload builders were not restored. `tests/engines/parity` is in `testpaths`.
+
+Deliberately not restored, because the five tests do not need them:
+
+- native execution: no native module, plan compilation, candidate sampling or
+  `backend="native"`; `compare_statistical_parity` accepts the NumPy candidate
+  only and `run_parity` rejects every other backend;
+- the observed per-duel surface: no `candidate="observed"`, rounds/wounds/
+  condition magnitudes, batch-repeat determinism or `simulate_batch_observed`,
+  and therefore no `OutcomeCodeError`, winner-code mapping, `_distribution`,
+  `_compare_case` or `_admission_tags`;
+- the NumPy-to-native cross reference, adaptive escalation, worker-pool chunks,
+  progress callbacks and blocked battery rows (battery catalogue not restored);
+- `_replay.py`, `_vectorized.py`, `parity_report_*` payloads, `pytest_reporter`
+  and the application/CLI entry points.
+
+`run_parity` remains the single runner: modular→NumPy execution and horizons are
+configurations of it, with no separate truncation runner and no compatibility
+wrapper. Oracle sampling is sequential through `simulate_duel_reference`,
+matching the original default `workers=1`. Engine admission is unchanged: the
+candidate still goes through `mordheim_combat.vectorized.simulate_duel`, which
+applies `require_optimized_support`, and a refusal becomes a `DIVERGENCE` row
+instead of being bypassed.
+
+To port to main: add these two modules under `tools/verification/`, redirect the
+three restored test files to them, keep `tests/engines/parity` in `testpaths`,
+and let the application parity package retain ownership of the native, battery,
+report and replay paths. No engine code, frozen JSON or catalogue changed.
+
+Verification was static only: AST parsing of the five files plus import and
+reference greps. No tests, collection, simulations or test-module imports ran.

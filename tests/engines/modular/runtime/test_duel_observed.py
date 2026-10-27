@@ -1,13 +1,13 @@
 """The observed oracle leg must reproduce the counting oracle exactly."""
 from mordheim_combat.modular.duel import simulate_duel_observed
 from mordheim_combat.modular.duel import simulate_duel_reference
-from tests.engines.fixtures.precompiled_catalog import benchmark_case_key
+from tests.engines.fixtures.precompiled_catalog import scenario_key
 import numpy as np
 import pytest
 
 
 def _pair(cases, scenario_id: str = "basic"):
-    case = cases[benchmark_case_key(scenario_id)]
+    case = cases[scenario_key(scenario_id)]
     return case.first, case.second, case.limits
 
 
