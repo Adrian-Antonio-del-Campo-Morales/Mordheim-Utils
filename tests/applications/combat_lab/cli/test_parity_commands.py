@@ -176,3 +176,35 @@ def test_fixture_catalogue_modular_options_reach_the_catalogue_command(monkeypat
     assert calls == [args]
     assert args.catalog == catalog and args.backend == "modular"
     assert args.workers == 8 and args.profile is None
+
+
+@pytest.mark.parametrize("level,count", [(None, 8), ("small", 8), ("normal", 30), ("long", 43)])
+def test_precompiled_catalogue_uses_unified_levels_and_execution_settings(monkeypatch, level, count):
+    from types import SimpleNamespace
+    from mordheim_combat_lab.cli import benchmarking, commands
+    from mordheim_combat_lab.verification import parity
+    from mordheim_construction import compiler
+    from tests.engines.fixtures.precompiled_catalog import scenarios_for_level
+
+    def no_compile(*args, **kwargs):
+        raise AssertionError("frozen scenarios must not compile fighters")
+
+    monkeypatch.setattr(compiler, "compile_fighter", no_compile)
+    selected = []
+
+    def run(cases, **kwargs):
+        selected.extend(cases)
+        return SimpleNamespace(rows=(), modular_duels=0)
+
+    monkeypatch.setattr(parity, "run_parity", run)
+    argv = ["parity", "--catalog", "precompiled", "--backend", "modular",
+            "--simulations", "7", "--seed", "19", "--json"]
+    if level is not None:
+        argv += ["--level", level]
+    # The stub emits no rows, so the command correctly reports an incomplete run.
+    assert commands.parity_command(commands.build_parser().parse_args(argv)) == 1
+    assert len(selected) == count
+    assert all(case.label.startswith("scenario/") for case in selected)
+    assert all(case.simulations == 7 and case.seed == 19 for case in selected)
+    for scenario in scenarios_for_level(level or "small"):
+        assert benchmarking.compile_benchmark_fighters(scenario)

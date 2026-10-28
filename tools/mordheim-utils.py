@@ -800,7 +800,7 @@ def _check_command_help(name: str) -> int:
              "Precompiled cases load frozen fighters; battery cases compile their builds.",
              "COMPLETED means executable, not parity approved; blocked cases were not run.",
              "One simulation checks one execution path; eight workers cannot split one duel.",
-             "Do not mix --catalog with historical --level/--pair-set presets."),
+             "Use --level small|normal|long with precompiled scenarios; historical --pair-set presets remain separate."),
         ),
         "coverage": (
             "Run the configured Python suites under coverage measurement, then check\n"

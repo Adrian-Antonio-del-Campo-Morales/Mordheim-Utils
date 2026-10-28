@@ -48,7 +48,7 @@ def _require_native() -> None:
 
 def test_native_compile_keeps_unarmed_fallback_for_later_pistol_rounds() -> None:
     """A main pistol becomes unarmed after opening round when no off-hand exists."""
-    case = _case("parity/deep/pistol-vs-parry")
+    case = _case("scenario/pistol-vs-parry")
     first, second = case.first, case.second
     context = compile_duel(first, second)
     compiled = context["sources_first"]
@@ -61,7 +61,7 @@ def test_native_compile_keeps_unarmed_fallback_for_later_pistol_rounds() -> None
 
 def test_native_compile_preserves_entangle_reaction_contract() -> None:
     """Entangle reaction is compiled as automatic fixed-strength attack."""
-    case = _case("parity/deep/entangle-vs-fencer")
+    case = _case("scenario/entangle-vs-fencer")
     first, second = case.first, case.second
     context = compile_duel(first, second)
     reaction = context["reactions_first"]["entangle"]
@@ -178,7 +178,7 @@ def test_native_frenzy_vs_heavy_is_certified_against_the_oracle() -> None:
     _require_native()
     from mordheim_combat_lab.verification.parity import compare_statistical_parity
 
-    case = _case("parity/deep/frenzy-vs-heavy")
+    case = _case("scenario/frenzy-vs-heavy")
     result = compare_statistical_parity(
         "frenzy-vs-heavy", case.first, case.second, 30_000, seed=2026,
         backend="native", maximum_rounds=case.limits.maximum_rounds,
@@ -203,7 +203,7 @@ def test_native_elite_vs_durable_is_certified_against_the_oracle() -> None:
     from mordheim_combat.modular.parallel import run_oracle_sample
     from mordheim_combat_lab.verification.parity import compare_statistical_parity
 
-    case = _case("parity/deep/elite-vs-durable")
+    case = _case("scenario/elite-vs-durable")
     workers = min(os.cpu_count() or 1, 8)
     with ProcessPoolExecutor(max_workers=workers) as pool:
         modular = run_oracle_sample(

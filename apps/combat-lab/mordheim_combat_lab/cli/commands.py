@@ -855,12 +855,16 @@ def _catalog_parity_command(args) -> int:
     catalog = args.catalog or "all"
     backend = args.backend or "numpy"
     profile = args.profile
+    if args.level is not None and catalog == "battery":
+        print("Parity configuration error: --level selects precompiled scenarios only.", file=sys.stderr)
+        return 2
     if profile is not None and catalog == "precompiled":
         print("Parity configuration error: --profile filters battery cases only.", file=sys.stderr)
         return 2
-    if (args.level is not None or args.pair_set is not None or args.truncations
+    if ((args.level is not None and args.level not in ("small", "normal", "long"))
+            or args.pair_set is not None or args.truncations
             or args.deep_simulations is not None):
-        print("Parity configuration error: --catalog uses catalogue selection, not --level/--pair-set/--truncations/--deep-simulations.", file=sys.stderr)
+        print("Parity configuration error: --catalog uses catalogue selection, --level small|normal|long, not --pair-set/--truncations/--deep-simulations.", file=sys.stderr)
         return 2
     if args.rows is not None:
         print("Parity configuration error: use --simulations with --catalog, not --rows.", file=sys.stderr)
@@ -891,20 +895,20 @@ def _catalog_parity_command(args) -> int:
         except Exception as error:
             print(f"Cannot load frozen corpus (no compilation fallback): {error}", file=sys.stderr)
             return 2
-        keys = (*precompiled_catalog.BENCHMARK_CASE_KEYS.values(),
-                *precompiled_catalog.PARITY_CASE_KEYS.values())
+        keys = tuple(precompiled_catalog.scenario_key(item.name)
+                     for item in precompiled_catalog.scenarios_for_level(args.level or "small"))
         for key in keys:
             order.append(key)
             size, horizon = args.simulations or 1, 50
             try:
                 item = frozen[key]
-                size = args.simulations or item.limits.simulations
+                size = args.simulations or args.statistical_simulations
                 horizon = item.limits.maximum_rounds
                 if any(item.initial_state.values()) or item.dice or item.decisions:
                     raise ValueError("this frozen case requires initial-state overrides or an exact replay; no inputs will be silently ignored")
                 prepared.append(ParityCase(
                     label=key, first=item.first, second=item.second,
-                    maximum_rounds=horizon, simulations=size, seed=item.limits.seed,
+                    maximum_rounds=horizon, simulations=size, seed=args.seed,
                     context=item.context,
                 ))
             except Exception as error:
@@ -963,6 +967,7 @@ def _catalog_parity_command(args) -> int:
     }
     payload = {
         "catalog": catalog, "profile": profile or ("deep" if catalog != "precompiled" else None),
+        "level": (args.level or "small") if catalog != "battery" else None,
         "backend": backend, "reference_only": reference_only,
         "complete": bool(rows) and all(row.status == success for row in rows),
         "parity_approved": not reference_only and bool(rows) and all(row.approved for row in rows),
@@ -1044,6 +1049,9 @@ def parity_command(args) -> int:
             "pass it with --profile quick|complete|deep.",
             file=sys.stderr,
         )
+        return 2
+    if getattr(args, "level", None) in ("small", "normal", "long"):
+        print("Parity configuration error: --level small|normal|long requires --catalog.", file=sys.stderr)
         return 2
     level = getattr(args, "level", None) or "deterministic"
     args.statistical = level == "statistical"
@@ -1611,7 +1619,7 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
     run_options.add_argument(
         "--scenario",
         choices=("all", *deep_scenario_ids),
-        default="all", help="scenario/pair id to measure; defaults to all five "
+        default="all", help="scenario/pair id to measure; defaults to the small "
                              "standard scenarios, or all selected pairs in --deep",
     )
     run_options.add_argument(
@@ -1636,9 +1644,9 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
     )
     deep_options.add_argument(
         "--pair-set", choices=("mini", "fast", "full"), default=None, metavar="SET",
-        help="pair set for --deep and --tts workloads: mini is the 10-pair "
-             "performance-survey set; fast is the 30-pair coverage-oriented set "
-             "for a roughly 10-15 minute pooled profile; full is the 42-pair "
+        help="pair set for --deep and --tts workloads: mini is the small "
+             "performance-survey set; fast is the normal coverage-oriented set "
+             "for a roughly 10-15 minute pooled profile; full is the 43-pair "
              "matrix (deep sweeps default to full)",
     )
     deep_options.add_argument(
@@ -1703,24 +1711,24 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
     )
     catalog_options.add_argument(
         "--simulations", type=_positive, default=None, metavar="DUELS",
-        help="with --catalog, override samples per case; otherwise use each frozen limit or battery row count",
+        help="with --catalog, override samples per case; otherwise use --statistical-simulations for frozen scenarios or the battery row count",
     )
     parity_samples = parity.add_argument_group("certification samples")
     parity_samples.add_argument(
-        "--level", choices=("deterministic", "statistical", "deep"),
+        "--level", choices=("deterministic", "statistical", "deep", "small", "normal", "long"),
         default=None, metavar="LEVEL",
-        help="historical certificate preset (default when --profile is absent): "
+        help="with --catalog: small (default), normal or long; otherwise historical certificate preset: "
              "deterministic runs the exact checks only; "
-             "statistical adds the aggregate six-sigma samples on the five "
+             "statistical adds the aggregate six-sigma samples on the small "
              "standard scenarios; deep runs the selected archetype pair set "
              "(fast or full) plus the numpy<->native cross at scale",
     )
     parity_samples.add_argument(
         "--pair-set", choices=("mini", "fast", "full"), default=None, metavar="SET",
-        help="pair set for --deep/--truncations: mini is the 10-pair "
-             "performance-survey set; fast is the 30-pair "
+        help="pair set for --deep/--truncations: mini is the small "
+             "performance-survey set; fast is the normal "
              "coverage-oriented set for a roughly 10-15 minute pooled run; "
-             "full is the 42-pair deep matrix (default)",
+             "full is the 43-pair deep matrix (default)",
     )
     parity_samples.add_argument("--statistical-simulations", type=_positive, default=100_000,
                                 metavar="DUELS",
@@ -1843,7 +1851,7 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
     calibration_scope = calibration.add_argument_group("coverage")
     calibration_scope.add_argument("--pairs", choices=("full", "fast", "mini"), default="full",
                                    help="duel-type coverage of the native sweeps "
-                                        "(default: full, all 42 pairs)")
+                                        "(default: full, all 43 scenarios)")
     calibration_scope.add_argument("--seed", type=int, default=7,
                                    help="random seed for every sweep")
     calibration_measure = calibration.add_argument_group("measurement")
