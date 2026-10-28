@@ -299,8 +299,39 @@ def effective_initiative(fighter: CompiledFighter, state: CombatState) -> np.nda
     return np.where(state.initiative_missing, ABSENT_INITIATIVE, numeric).astype(np.int32)
 
 def _characteristic_test(fighter: CompiledFighter, target: np.ndarray,
-                         rng: np.random.Generator, *, six_always_fails: bool = True) -> np.ndarray:
-    """Resolve a D6 characteristic test, including Blessed Sight's one reroll."""
+                         rng: np.random.Generator, *, six_always_fails: bool = True,
+                         state: CombatState | None = None, rows: np.ndarray | None = None,
+                         key: str | None = None, decisions=None,
+                         close_combat: bool = False) -> np.ndarray:
+    """Resolve a D6 characteristic test, including Blessed Sight's one reroll.
+
+    With ``state``/``rows``/``key`` the dice are *owned* rolls (port of the
+    modular ``phases._characteristic_test`` over ``OwnedRollDice``): Ranald's
+    Luck, Oracle / Augur, Luck and the Scryer act on them, and a six always
+    fails on the die's *natural* face, as the scalar ``original_roll`` check.
+    """
+    target = np.asarray(target)
+    if state is not None and rows is not None and key is not None:
+        from mordheim_combat.vectorized._owned import owned_roll
+
+        rows = np.asarray(rows, dtype=np.intp)
+        natural = rng.integers(1, 7, rows.size).astype(np.int16)
+        rolls = owned_roll(fighter, state, rows, rng, key, decisions=decisions,
+                           close_combat=close_combat, die=natural).values
+        passed = rolls <= target
+        if six_always_fails:
+            passed &= natural != 6
+        failed = ~passed
+        if failed.any() and has(fighter.global_effects, "skill.blessed-sight"):
+            natural = rng.integers(1, 7, int(failed.sum())).astype(np.int16)
+            rerolls = owned_roll(fighter, state, rows[failed], rng, f"{key}.reroll",
+                                 decisions=decisions, close_combat=close_combat,
+                                 die=natural).values
+            rerolled = rerolls <= target[failed]
+            if six_always_fails:
+                rerolled &= natural != 6
+            passed[failed] = rerolled
+        return passed
     rolls = rng.integers(1, 7, target.size)
     passed = rolls <= target
     if six_always_fails:
@@ -329,6 +360,12 @@ def attack_count(fighter: CompiledFighter, charging: np.ndarray, first_round: bo
     )
     result = (base_attacks.astype(np.int16,copy=True)+base-fighter.characteristics.attacks
               if base_attacks is not None else np.full(charging.size,base,dtype=np.int16))
+    if has(effect, "mechanic.sabretusk-charge") and charging.any():
+        # The printed clause replaces A1 with A2 on the charge; it is not a
+        # generic +1 (modular phases.build_attacks).
+        printed = (base_attacks.astype(np.int16) if base_attacks is not None
+                   else np.full(charging.size, fighter.characteristics.attacks, dtype=np.int16))
+        result = np.where(charging, result - printed + 2, result).astype(np.int16)
     if wounded is not None and has(effect,"maddened_with_pain"):
         result += wounded.astype(np.int16)
     if effect.charge_attacks_bonus and charging.any():
@@ -469,16 +506,20 @@ def allocate_attack_weapons(fighter: CompiledFighter, count: int, *, first_round
 def priority(fighter: CompiledFighter, opponent: CompiledFighter, first_round: bool,
              charging: np.ndarray, charged: np.ndarray, stood: np.ndarray) -> np.ndarray:
     weapon_priority = fighter.main_weapon.priority
+    if any(has(fighter.main_weapon, tag) for tag in phases.WHIPCRACK_WEAPON_TAGS):
+        # Only the whipcrack bonus strikes first (modular resolve_priority).
+        weapon_priority = 0
     if fighter.global_effects.strongman and weapon_priority < 0 and (
         fighter.main_weapon.two_handed or has(fighter.main_weapon, "weapon.broadsword")
     ):
         weapon_priority = 0
     if has(fighter.main_weapon, "weapon.long-boat-hook") and not first_round:
         weapon_priority = 0
-    # The spear's Strike First only applies in the first turn of hand-to-hand
-    # combat (mordheimer.net, close-combat weapons / Strike First), mirroring
-    # the long-boat-hook's first-round scope.
-    if has(fighter.main_weapon, "weapon.spear") and not first_round:
+    # The spear's and the pike's Strike First only apply in the first turn of
+    # hand-to-hand combat (mordheimer.net, close-combat weapons / Strike
+    # First), mirroring the long-boat-hook's first-round scope.
+    if (has(fighter.main_weapon, "weapon.spear")
+            or has(fighter.main_weapon, "weapon.pike")) and not first_round:
         weapon_priority = 0
     value = np.full(charging.size, weapon_priority + fighter.global_effects.priority, dtype=np.int8)
     if has(fighter.global_effects,"mechanic.strike-first-vs-skinks-always") and has(opponent.global_effects,"species.skink"):
@@ -494,6 +535,15 @@ def priority(fighter: CompiledFighter, opponent: CompiledFighter, first_round: b
             value[charged] = np.maximum(value[charged], 1)
     if not has(fighter.global_effects, "skill.always-strikes-first"):
         value[stood] = -1
+    # A profile that prints no Initiative strikes last (modular
+    # resolve_priority); Woven Mist lifts the bearer to the first tier and
+    # Frantic's explicit top priority outranks any dance or weapon.
+    if fighter.characteristics.initiative is None:
+        value[:] = -1
+    if has(fighter.global_effects, "dance.woven-mist-active"):
+        value = np.maximum(value, 1).astype(np.int8)
+    if has(fighter.global_effects, "mechanic.frantic"):
+        value[:] = 30
     return value
 
 

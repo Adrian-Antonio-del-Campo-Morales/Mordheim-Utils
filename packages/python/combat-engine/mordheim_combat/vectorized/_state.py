@@ -16,6 +16,8 @@ from __future__ import annotations
 import numpy as np
 
 from mordheim_combat.vectorized._types import (
+    DJINN_NONE,
+    RowResources,
     CombatState,
     KNOCKED_DOWN,
     STANDING,
@@ -253,13 +255,34 @@ def initialize_fighter(
         ),
         mutation_tail=np.full(count, -1, dtype=np.int8),
         effective_fighter=_objects(None, count),
+        resources=RowResources(count),
+        ranalds_luck_used=np.zeros(count, dtype=bool),
+        one_roll_reroll_used=np.zeros(count, dtype=bool),
+        feral_instinct_failed=np.zeros(count, dtype=bool),
+        lunatic_result=np.zeros(count, dtype=np.int8),
+        lunatic_stupidity=np.zeros(count, dtype=bool),
+        djinn_power=np.full(count, DJINN_NONE, dtype=np.int8),
+        last_djinn_power=np.full(count, DJINN_NONE, dtype=np.int8),
+        devoted_frenzy=np.zeros(count, dtype=bool),
+        danse_macabre_controlled=np.full(
+            count, has(effects, "condition.danse-macabre-controlled"), dtype=bool),
+        dodge_trick_active=np.zeros(count, dtype=bool),
+        banter_trick_active=np.zeros(count, dtype=bool),
+        trip_trick_active=np.zeros(count, dtype=bool),
+        mouth_sewn=np.zeros(count, dtype=bool),
+        drenok_fighting=np.zeros(count, dtype=bool),
+        electrical_available_at=np.zeros(count, dtype=np.int16),
+        charm_auto_hit=np.zeros(count, dtype=bool),
     )
+    # The modular state starts with these resources already spent.
+    if has(effects, "condition.poetry-inspired"):
+        state.resources.spend("poetry-inspiration-active")
     return state
 
 
 def require_characteristics(
     fighter: CompiledFighter, state: CombatState, rows: np.ndarray,
-    rng: np.random.Generator, needed,
+    rng: np.random.Generator, needed, decisions=None, key: str | None = None,
 ) -> None:
     """Roll an Inconsistency value only when the current operation needs it.
 
@@ -279,8 +302,16 @@ def require_characteristics(
             continue
         selected = rows[pending]
         rolls = np.zeros(selected.size, dtype=np.int16)
-        for _ in range(dice):
-            rolls += rng.integers(1, sides + 1, selected.size, dtype=np.int16)
+        for index in range(dice):
+            if decisions is not None and key is not None:
+                # The modular refresh draws these through ``OwnedRollDice``.
+                from mordheim_combat.vectorized._owned import owned_roll
+                rolls += owned_roll(
+                    fighter, state, selected, rng,
+                    f"{key}.characteristic.{characteristic}.{index}",
+                    decisions=decisions, sides=sides).values
+            else:
+                rolls += rng.integers(1, sides + 1, selected.size, dtype=np.int16)
         delta = state.random_modifiers[STATS.index(characteristic), selected]
         if characteristic == "S":
             delta = delta - state.torture_strength_loss[selected]

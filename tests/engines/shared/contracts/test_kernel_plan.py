@@ -1,5 +1,4 @@
 from dataclasses import fields
-from dataclasses import replace
 
 import pytest
 
@@ -23,19 +22,23 @@ def test_kernel_plan_contains_every_numeric_effect_field_and_stable_tag_masks(pr
     assert plan.optimization_eligible
 
 
-def test_numpy_and_native_admission_gates_are_independent(monkeypatch, precompiled):
-    """NumPy may advance without granting the still-frozen native backend."""
+def test_numpy_and_native_admission_gates_are_independent(precompiled):
+    """NumPy may advance without granting the still-frozen native backend.
+
+    Magical Void is a ported NumPy behaviour: the precompiled pair that carries
+    it is admitted by the NumPy gate, while the native gate (frozen until the
+    Cython port) and the legacy call without a backend still refuse it.
+    """
     compiled = precompiled()
     first = compiled.first
     second = compiled.second
-    pending = kernel.pending_capabilities("numpy")
-    assert "mechanic.magical-void" in pending.local_modifier_tags
+    native = kernel.pending_capabilities("native")
+    numpy = kernel.pending_capabilities("numpy")
+    assert "mechanic.magical-void" in native.local_modifier_tags
+    # The NumPy port dropped the behavior from its own gate only.
+    assert "mechanic.magical-void" not in numpy.local_modifier_tags
+    assert "mechanic.magical-void" in kernel.NUMPY_CONNECTED_TAGS
 
-    # A NumPy port drops the behavior from its own gate only.
-    monkeypatch.setitem(kernel._PENDING, "numpy", replace(
-        pending,
-        local_modifier_tags=pending.local_modifier_tags - {"mechanic.magical-void"},
-    ))
     kernel.require_optimized_support(first, second, backend="numpy")
     with pytest.raises(ValueError, match="Local modifier variants"):
         kernel.require_optimized_support(first, second, backend="native")

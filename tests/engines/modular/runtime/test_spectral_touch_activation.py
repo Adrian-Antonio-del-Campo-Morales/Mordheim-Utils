@@ -60,32 +60,41 @@ def plain(cases):
     ].second
 
 
+#: The oracle's own contract for this pair: the plain fighter prints no
+#: Leadership and must test Fear against the fear-causing host.
+LEADERSHIP_CONTRACT = 'explicit non-negative integer Leadership'
+
+
 @pytest.mark.parametrize('second', [False, True])
 @pytest.mark.parametrize('backend', ['auto', 'numpy'])
-def test_public_optimized_paths_refuse_unported_canonical_effect(host, plain, second, backend):
-    """The canonical host still carries another pending contract.
+def test_public_optimized_paths_share_the_oracle_contract(host, plain, second, backend):
+    """The canonical host is admitted by the NumPy gate.
 
-    ``trait.spectral-touch`` itself is connected to NumPy; the gate-level
-    admission is pinned by ``test_guard_also_rejects_weapon_scoped_spectral_
-    effect``. This host also carries a pending local-modifier contract, so
-    every optimized backend refuses before dispatch and names that first
-    contract, not Spectral Touch.
+    ``trait.spectral-touch`` and the host's other contracts are connected to
+    NumPy, so no optimized backend refuses before dispatch any more. The pair
+    itself is refused by the same rule in both engines: the plain fighter
+    prints no Leadership, so its Fear test raises the oracle's contract.
     """
     pair = (plain, host) if second else (host, plain)
-    with pytest.raises(ValueError, match='modular engine'):
+    with pytest.raises(ValueError, match=LEADERSHIP_CONTRACT):
+        simulate_modular(DuelRequest(*pair, simulations=1))
+    with pytest.raises(ValueError, match=LEADERSHIP_CONTRACT):
         simulate_duel(DuelRequest(*pair, simulations=1), backend=backend)
 
 
 @pytest.mark.parametrize('second', [False, True])
-def test_low_level_optimized_paths_refuse_before_execution(host, plain, second):
+def test_low_level_optimized_paths_share_the_oracle_contract(host, plain, second):
     pair = (plain, host) if second else (host, plain)
-    calls = (lambda: compile_duel_plan(*pair),
-             lambda: simulate_batch(*pair, 1, np.random.default_rng(0), 1),
+    # The legacy plan (no backend) keeps the frozen native gate and refuses
+    # before execution; the NumPy entries execute and raise the oracle's
+    # Leadership contract.
+    with pytest.raises(ValueError, match='modular engine'):
+        compile_duel_plan(*pair)
+    compile_duel_plan(*pair, backend='numpy')
+    calls = (lambda: simulate_batch(*pair, 1, np.random.default_rng(0), 1),
              lambda: simulate_duel_parallel(DuelRequest(*pair, simulations=1)))
-    # Every entry still refuses, but the host's pending local-modifier contract
-    # is named before the connected Spectral Touch behaviour.
     for call in calls:
-        with pytest.raises(ValueError, match='modular engine'):
+        with pytest.raises(ValueError, match=LEADERSHIP_CONTRACT):
             call()
 
 

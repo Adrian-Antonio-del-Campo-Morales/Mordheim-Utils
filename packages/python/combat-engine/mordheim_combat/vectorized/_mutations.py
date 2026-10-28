@@ -142,15 +142,18 @@ def fighter_for_row(
 def apply_brand_row(
     fighter: CompiledFighter, state: CombatState, row: int,
     option: MutationOption, rng: np.random.Generator,
-    decisions=None, key: str = "mutation",
+    decisions=None, key: str = "mutation", dice=None,
 ) -> CompiledFighter:
     """Acquire one brand on one row and return its projected fighter.
 
     The transition timing (when a row rolls its brand) belongs to the round
     integration; this helper only keeps the existing acquisition rule.
+    ``dice`` is the ``DiceSource`` the brand's own rolls use (the oracle hands
+    ``apply_brand`` the brander's owned dice); the row's plain generator is the
+    fallback.
     """
     current = read_mutation_state(state, row)
-    result = apply_brand(fighter, current, option, _RowDice(rng), decisions, key)
+    result = apply_brand(fighter, current, option, dice or _RowDice(rng), decisions, key)
     write_mutation_state(state, row, result)
     return fighter_for_row(fighter, state, row)
 

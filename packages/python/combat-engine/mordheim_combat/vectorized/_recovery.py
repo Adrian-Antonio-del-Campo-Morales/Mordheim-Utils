@@ -13,6 +13,7 @@ from mordheim_combat.vectorized._types import CombatState, OUT, has
 
 def revenant_recovery(
     fighter, state: CombatState, rows: np.ndarray, rng: np.random.Generator,
+    decisions=None, key: str = "revenant",
 ) -> None:
     """Q013: one 5+ attempt at the start of the bearer's own turn.
 
@@ -29,6 +30,9 @@ def revenant_recovery(
     eligible = rows[(state.condition[rows] != OUT) & (state.wounds[rows] < maximum)]
     if eligible.size == 0:
         return
-    healed = eligible[rng.integers(1, 7, eligible.size) >= 5]
+    from mordheim_combat.vectorized._owned import owned_roll
+
+    healed = eligible[owned_roll(fighter, state, eligible, rng, key,
+                                 decisions=decisions).values >= 5]
     if healed.size:
         state.wounds[healed] = np.minimum(maximum, state.wounds[healed] + 1)

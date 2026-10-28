@@ -8,6 +8,56 @@ from mordheim_core.models import CompiledFighter, EffectSet
 
 STANDING, KNOCKED_DOWN, STUNNED, PARALYZED, OUT = range(5)
 
+#: ``FighterState.djinn_power`` / ``last_djinn_power`` (``None`` / ``"curse"``
+#: / ``"luck"``) as an int8 column.
+DJINN_NONE, DJINN_CURSE, DJINN_LUCK = 0, 1, 2
+DJINN_POWER_NAMES = {DJINN_CURSE: "curse", DJINN_LUCK: "luck"}
+
+
+class RowResources:
+    """Per-row port of the modular ``FighterState.resources_spent`` set.
+
+    The scalar state keeps a frozenset of spent resource names; a batch keeps
+    one boolean column per name, created on first use.  ``spend`` marks rows,
+    ``spent`` reads a column (all-False when the name was never spent) and
+    ``release`` is the ``resources_spent - {name}`` transition.  Names are the
+    modular ones, so a ported clause spends exactly the string the oracle does.
+    """
+
+    __slots__ = ("count", "_columns")
+
+    def __init__(self, count: int) -> None:
+        self.count = int(count)
+        self._columns: dict[str, np.ndarray] = {}
+
+    def spent(self, name: str) -> np.ndarray:
+        column = self._columns.get(name)
+        if column is None:
+            column = np.zeros(self.count, dtype=bool)
+            self._columns[name] = column
+        return column
+
+    def available(self, name: str, rows: np.ndarray | None = None) -> np.ndarray:
+        column = ~self.spent(name)
+        return column if rows is None else column[rows]
+
+    def spend(self, name: str, rows: np.ndarray | None = None) -> None:
+        column = self.spent(name)
+        if rows is None:
+            column[:] = True
+        else:
+            column[rows] = True
+
+    def release(self, name: str, rows: np.ndarray | None = None) -> None:
+        column = self.spent(name)
+        if rows is None:
+            column[:] = False
+        else:
+            column[rows] = False
+
+    def names(self) -> tuple[str, ...]:
+        return tuple(sorted(self._columns))
+
 def _run_starts(values: np.ndarray) -> np.ndarray:
     """First index of each run in an ascending-sorted array (O(n), no sort)."""
     if values.size < 2:
@@ -99,6 +149,41 @@ class CombatState:
     #: Per-row cache of the projected ``CompiledFighter``.  ``None`` means the
     #: printed fighter is still the effective one; the mutation helpers fill it.
     effective_fighter: np.ndarray
+    # --- Phase 2: round actions, control powers and personal roll resources --
+    #: Generic per-row ``resources_spent`` (see :class:`RowResources`).  The
+    #: dedicated columns above keep their names; new ported clauses spend the
+    #: modular resource string here instead of adding a column each.
+    resources: RowResources
+    #: Ranald's Luck adjusted one owned roll by one, once per battle.
+    ranalds_luck_used: np.ndarray
+    #: Oracle / Augur re-rolled one owned roll, once per battle.
+    one_roll_reroll_used: np.ndarray
+    #: Feral Instinct: this own turn's Leadership test failed.
+    feral_instinct_failed: np.ndarray
+    #: Lunatics: this round's D6 and the Stupidity it imposes (4+).
+    lunatic_result: np.ndarray
+    lunatic_stupidity: np.ndarray
+    #: Djinn's Curse: the power chosen this turn and the one chosen last turn
+    #: (``DJINN_NONE`` / ``DJINN_CURSE`` / ``DJINN_LUCK``).
+    djinn_power: np.ndarray
+    last_djinn_power: np.ndarray
+    #: Devoted to the Vampire: the Frenzy the clause granted (not a rolled one).
+    devoted_frenzy: np.ndarray
+    #: Danse Macabre: still controlled until an own-turn test is passed.
+    danse_macabre_controlled: np.ndarray
+    #: Dark Jester: the one trick active this round, if any.
+    dodge_trick_active: np.ndarray
+    banter_trick_active: np.ndarray
+    trip_trick_active: np.ndarray
+    #: Needle and Thread: the victim's mouth is sewn shut.
+    mouth_sewn: np.ndarray
+    #: Drenok's Berserker: fighting on at zero Wounds this player turn.
+    drenok_fighting: np.ndarray
+    #: Electrical Touch: first round index at which the jolt is available again.
+    electrical_available_at: np.ndarray
+    #: A failed control test (Mark of Shornaal, Hypnotic Gaze) lets every
+    #: attack hit the victim automatically this phase.
+    charm_auto_hit: np.ndarray
 
 @dataclass(slots=True)
 class PreparedAttack:

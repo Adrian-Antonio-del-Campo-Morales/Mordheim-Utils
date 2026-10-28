@@ -1,4 +1,4 @@
-# Mordheim combat engines
+Mordheim combat engines
 
 Modular and NumPy combat engines with shared models and precompiled test inputs.
 Requires Python 3.10 or later.
@@ -81,7 +81,7 @@ as three cumulative levels. It writes a complete JSON and Markdown report to
 the output directory.
 
 The levels are cumulative and `small` is the default: `small` (8 cheap
-scenarios), `normal` (30, one representative per rule family) and `long` (43,
+scenarios), `normal` (30 selected scenarios) and `long` (43,
 every scenario, including the 75-round grinds and the largest attack pools). A
 level selects scenarios only; every scenario keeps its own frozen round limit.
 
@@ -102,7 +102,7 @@ Run the same selection in series, or narrow it to concrete scenario keys:
 
 ```powershell
 .\.venv\Scripts\python.exe -m tools.verification.parity_campaign --workers 1 --simulations 1000 --output reports/parity-small
-.\.venv\Scripts\python.exe -m tools.verification.parity_campaign --id scenario/basic --id scenario/long --workers 8 --simulations 5000 --output reports/parity-basic
+.\.venv\Scripts\python.exe -m tools.verification.parity_campaign --level long --id scenario/basic --id scenario/long --workers 8 --simulations 5000 --output reports/parity-basic
 ```
 
 The report is written to `parity-campaign.json` and `parity-campaign.md` under
@@ -120,14 +120,19 @@ compared magnitude stayed within tolerance; `divergent` means the comparison
 was performed and failed, and `not-run` means it was never performed. Rejected
 or missing corpus entries are listed explicitly, and a candidate admission
 refusal is reported as `INCOMPATIBLE` with its reason rather than as a parity
-failure. The report sets `certification_sample_complete` only when every row
-reached 100,000 duels per engine, so a narrower campaign is not presented as a
-certification. The exit code is 0 only when every selected scenario was
+failure. The `certification_sample_complete` field records whether every row reached
+100,000 duels per engine. This is a sample-size indicator, not certification
+of correctness or full rule coverage; consult the comparison verdicts separately. The exit code is 0 only when every selected scenario was
 compared and approved, 1 when the campaign ran but is incomplete, and 2 for a
 configuration or corpus error.
 
 The parity support tests are the `tests/engines/parity` command above: the five
 statistical comparisons plus the campaign's catalogue and report contracts.
+
+The NumPy admission gate (`mordheim_combat.kernel.NUMPY_PENDING`) is empty:
+every duel the modular engine accepts is admitted by the NumPy engine, which
+resolves each round with the modular engine's own `AlwaysAccept` default
+policy. The native gate (`NATIVE_PENDING`) stays frozen until a Cython port.
 
 A green run verifies the retained tests; it does not establish complete rule
 coverage or statistical equivalence between the engines. Parity is only

@@ -35,6 +35,7 @@ def test_observed_batch_preserves_per_row_terminal_state(vector_case):
     assert np.all((result.rounds >= 1) & (result.rounds <= 10))
     assert {name for name, _values in result.first_resources} == {
         "lucky-charm", "force-of-will", "mark-of-the-old-ones", "luck",
+        "ranalds-luck", "one-roll-reroll",
     }
 
 def test_initialised_rows_keep_independent_state_and_lazy_characteristics(vector_case):

@@ -36,7 +36,21 @@ def _broken_slots(fighter: CompiledFighter, broken: int) -> frozenset[str]:
         slots.add(fighter.main_hand_slot)
     if broken & 2:
         slots.add(fighter.off_hand_slot)
+    # Bits 4, 8, ... name the mutated hands (``mutation.hand.<slot>`` extra
+    # attacks) in the projected fighter's order, so a whip's disarm can break
+    # them as the modular ``_choose_whip_disarm`` candidates allow.
+    for index, slot in enumerate(mutation_hand_slots(fighter)):
+        if broken & (4 << index):
+            slots.add(slot)
     return frozenset(slots)
+
+
+def mutation_hand_slots(fighter: CompiledFighter) -> tuple[str, ...]:
+    """The ``mutation.hand.<slot>`` slots of the fighter's extra attacks, in order."""
+    return tuple(
+        tag.removeprefix("mutation.hand.")
+        for attack in fighter.extra_attacks for tag in attack.tags
+        if tag.startswith("mutation.hand."))
 
 
 def _row_state(

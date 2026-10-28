@@ -180,7 +180,10 @@ def test_parry_is_one_attempt_per_phase_and_respects_strength_limit(vector_case)
     remaining,blocked,_=_parry_hits(defender,effect,np.array([1]),np.array([2]),np.array([6]),state,FixedRng(6))
     assert remaining.tolist()==[1] and blocked.size==0
     fresh=_new_state(defender,1,np.random.default_rng(2))
-    remaining,blocked,_=_parry_hits(defender,effect,np.array([0,0]),np.array([3,5]),np.array([3,3]),fresh,FixedRng([6,6]))
+    # One parry attempt for the row: the defender's die is drawn for the one
+    # eligible (highest) hit only, as ``phases.resolve_parry`` draws none for
+    # an ineligible attempt.
+    remaining,blocked,_=_parry_hits(defender,effect,np.array([0,0]),np.array([3,5]),np.array([3,3]),fresh,FixedRng([6]))
     assert remaining.size==1 and blocked.size==1
 
 def test_unbeatable_warrior_parries_twice_with_two_parry_weapons(vector_case):

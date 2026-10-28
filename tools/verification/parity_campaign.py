@@ -316,7 +316,7 @@ def _parser() -> argparse.ArgumentParser:
              "(default: small)",
     )
     selection.add_argument(
-        "--id", dest="ids", action="append", default=(), metavar="KEY",
+        "--id", dest="ids", action="append", default=None, metavar="KEY",
         help="uniform corpus key to keep, repeatable (e.g. scenario/basic); "
              "must belong to the selected level",
     )
@@ -355,7 +355,7 @@ def _corpus_digest(path: Path) -> str:
 def main(argv: Sequence[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     try:
-        chosen = select(level=args.level, keys=args.ids)
+        chosen = select(level=args.level, keys=args.ids or ())
     except ValueError as error:
         print(f"parity campaign: {error}", file=sys.stderr)
         return 2

@@ -27,15 +27,15 @@ from mordheim_combat.vectorized._types import CombatState, has
 
 
 #: The per-battle Leadership resources the modular ``FighterState`` keeps in
-#: ``resources_spent``.  ``CombatState`` has no generic resource set, so the
-#: batch keeps them per row here; ``True`` means already spent.
+#: ``resources_spent``; ``True`` means already spent.  The personal roll
+#: resources (Ranald's Luck, Oracle / Augur, Luck) are not here: they belong
+#: to every owned roll of the fighter, so ``CombatState`` carries them and
+#: ``vectorized._owned`` spends them.
 @dataclass(slots=True)
 class LeadershipResources:
     holy_relic: np.ndarray
     first_failed: np.ndarray
     poetry_first: np.ndarray
-    one_roll_reroll: np.ndarray
-    ranalds_luck: np.ndarray
 
 
 def leadership_resources(count: int) -> LeadershipResources:
@@ -44,8 +44,6 @@ def leadership_resources(count: int) -> LeadershipResources:
         holy_relic=np.zeros(count, dtype=bool),
         first_failed=np.zeros(count, dtype=bool),
         poetry_first=np.zeros(count, dtype=bool),
-        one_roll_reroll=np.zeros(count, dtype=bool),
-        ranalds_luck=np.zeros(count, dtype=bool),
     )
 
 
@@ -153,48 +151,20 @@ def _personal_die(
 ) -> np.ndarray:
     """Port of ``OwnedRollDice.roll`` for one already-drawn die.
 
-    ``die_rerolled`` is this die's own flag, not the test's: the scalar wrapper
-    resets ``rerolled`` for every roll request, so a Scryer may repeat each die
-    of the same Leadership test.  The per-roll choices are taken once for the
-    row set, as every other batch decision in this engine is: a policy that
-    depends on the individual row is not asked per row here.
+    Delegates to the shared owned-roll layer (``vectorized._owned``), which
+    spends the per-battle resources on ``CombatState``.  ``die_rerolled`` is
+    this die's own flag, not the test's: the scalar wrapper resets
+    ``rerolled`` for every roll request, so a Scryer may repeat each die of
+    the same Leadership test.
     """
-    effects = fighter.global_effects
-    # Ranald's Luck: one owned roll is adjusted by one, once per battle.
-    if resources is not None and has(effects, "mechanic.ranalds-luck"):
-        available = ~resources.ranalds_luck[rows]
-        if available.any():
-            if decisions.choose(f"{key}.ranalds-luck.plus", fighter):
-                die = np.where(available, die + 1, die).astype(np.int16)
-                resources.ranalds_luck[rows[available]] = True
-            elif decisions.choose(f"{key}.ranalds-luck.minus", fighter):
-                die = np.where(available, die - 1, die).astype(np.int16)
-                resources.ranalds_luck[rows[available]] = True
-    # Oracle / Augur: one owned roll may be re-rolled, once per battle.
-    if (resources is not None and ".reroll" not in key
-            and any(has(effects, tag) for tag in
-                    ("mechanic.oracle", "mechanic.augur-one-roll-reroll"))):
-        available = ~resources.one_roll_reroll[rows]
-        if available.any() and decisions.choose(f"{key}.one-roll-reroll", fighter):
-            die = np.where(available, rng.integers(1, 7, rows.size), die).astype(np.int16)
-            resources.one_roll_reroll[rows[available]] = True
-            die_rerolled |= available
-    # Skill: Luck re-rolls one failed die of its bearer, once per battle.
-    if has(effects, "skill.luck") and ".reroll" not in key:
-        available = ~state.luck_used[rows] & ~die_rerolled
-        if available.any() and decisions.choose(f"{key}.luck", fighter):
-            die = np.where(available, rng.integers(1, 7, rows.size), die).astype(np.int16)
-            state.luck_used[rows[available]] = True
-            die_rerolled |= available
-    # Scryer re-rolls an owned close-combat die with no resource: the second
-    # result must be accepted, so only this die is left alone once re-rolled;
-    # the next die of the same test is a fresh owned roll and may repeat too.
-    if close_combat and has(effects, "mechanic.scryer") and ".reroll" not in key:
-        available = ~die_rerolled
-        if available.any() and decisions.choose(f"{key}.scryer", fighter):
-            die = np.where(available, rng.integers(1, 7, rows.size), die).astype(np.int16)
-            die_rerolled |= available
-    return die
+    from mordheim_combat.vectorized._owned import owned_roll
+
+    result = owned_roll(
+        fighter, state, rows, rng, key, decisions=decisions, die=die,
+        close_combat=close_combat,
+    )
+    die_rerolled |= result.rerolled
+    return result.values
 
 
 def _leadership_dice(
@@ -285,12 +255,10 @@ def resolve_local_leadership(
     first_failure = has(effects, "mechanic.first-failed-leadership-reroll")
     poetry = has(effects, "condition.poetry-victorious-leader")
     holy_relic = has(effects, "defence.holy-relic")
-    # ``skill.luck`` spends ``CombatState.luck_used``, so it needs no ledger;
-    # only the resources without a column require one.
-    roll_resource = any(has(effects, tag) for tag in
-                        ("mechanic.ranalds-luck", "mechanic.oracle",
-                         "mechanic.augur-one-roll-reroll"))
-    if resources is None and (first_failure or holy_relic or roll_resource or poetry):
+    # The personal roll resources (Ranald's Luck, Oracle / Augur, Luck) are
+    # ``CombatState`` columns spent by the owned-roll layer, so they need no
+    # ledger; only the Leadership-only resources require one.
+    if resources is None and (first_failure or holy_relic or poetry):
         # The scalar operator refuses to run a persistent resource without the
         # fighter state that carries it; dropping the spend silently would make
         # the second call in the same battle replay a used resource.

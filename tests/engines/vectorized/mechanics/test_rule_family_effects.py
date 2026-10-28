@@ -71,8 +71,8 @@ def test_animal_friendship_removes_the_normal_animal_attack_pool(shared_cases):
     ]
     animal, friend = case.first, case.second
     assert "species.normal-animal" in animal.global_effects.tags
-    # The local operator is implemented, but the canonical mechanic remains
-    # explicitly pending at the public optimized-backend admission boundary.
+    # The local operator is implemented and the canonical mechanic is admitted
+    # by the NumPy gate, so the public backend resolves the duel.
     pool = np.array([animal.characteristics.attacks], dtype=np.int16)
     assert pool[0] > 0
     assert opposed_attack_count(
@@ -81,8 +81,9 @@ def test_animal_friendship_removes_the_normal_animal_attack_pool(shared_cases):
     assert opposed_attack_count(
         animal, animal, pool, first_round=True,
     ).tolist() == pool.tolist()
-    with pytest.raises(ValueError, match="Local modifier variants"):
-        simulate_duel(DuelRequest(friend, animal, 40, seed=12, maximum_rounds=20))
+    result = simulate_duel(DuelRequest(friend, animal, 40, seed=12, maximum_rounds=20))
+    # The animal's whole pool never attacks the bearer, so it can never win.
+    assert result.simulations == 40 and result.second_wins == 0
 
 
 def test_contagious_retaliates_and_mark_of_old_ones_is_spent_only_once(vector_case):

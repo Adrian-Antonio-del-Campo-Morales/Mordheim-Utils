@@ -156,6 +156,12 @@ def _pending_snapshot() -> PendingCapabilities:
         "mechanic.fear-beastmen", "mechanic.hatred-beastmen",
         "condition.summoned-this-turn",
         "weapon.count-of-ventimiglias-misericordia",
+        # Phase 1 audit: behaviours the modular engine executes that no
+        # optimized backend ever ported and that the original snapshot did not
+        # list, so the NumPy gate admitted them and silently skipped the rule.
+        "mechanic.hypnotic-gaze", "mechanic.drenok-berserker", "mechanic.veskit-no-pain",
+        "weapon.whip-tc14", "mechanic.whip-master", "mechanic.plague-carrier",
+        "mechanic.mim-regeneration", "mechanic.black-hunger",
     }
     local_modifier_tags = {
         "mechanic.confound-and-confuse", "mechanic.dodge-sidestepper",
@@ -198,9 +204,118 @@ NUMPY_CONNECTED_TAGS = frozenset({
     "defence.eye-pendant", "mechanic.great-thirster", "mechanic.curse-of-the-revenant",
     "mechanic.death-blow", "mechanic.nominated-strike-first", "mechanic.noblesse-stomp",
     "mechanic.gaoler-grapple", "condition.netted", "mechanic.bitten-transform",
-    "mechanic.electrical-touch", "condition.alchemist-backleys-brew",
+    # ``mechanic.electrical-touch`` was listed here while NumPy only ported
+    # its priority-tie clause; the jolt itself (modular rounds.py) is not
+    # ported, so the tag is gated again until it is.
+    "condition.alchemist-backleys-brew",
     "condition.alchemist-addicted", "condition.alchemist-aberrantius-vigortia",
     "mechanic.leader-six",
+    # Phase 1 / Family B — per-attack context modifiers.  Armour, special
+    # saves and injury now run through the context ports in the live attack
+    # path (``_attacks._resolve_weapon_once``).
+    "mechanic.hatred-undead", "mechanic.hatred-beastmen", "mechanic.hatred-skaven",
+    "mechanic.hatred-dwarfs", "mechanic.hatred-orcs-goblins",
+    "mechanic.hatred-skaven-orcs-goblins", "mechanic.hatred-dwarfs-skaven",
+    "mechanic.hatred-dark-elves", "mechanic.hatred-high-elves",
+    "mechanic.hatred-human-warband", "mechanic.hatred-chaotic-warband",
+    "mechanic.kindred-hatred", "weapon.hellblade", "mechanic.ulric-intense-rivals",
+    "mechanic.sigmar-symbol-of-unity", "mechanic.noble-disdain", "mechanic.dueling-pride",
+    "mechanic.greenskin-traitor", "mechanic.andanti-knowledge",
+    "mechanic.pikewall", "mechanic.foul-odour", "mechanic.unholy-stink",
+    "mechanic.shallya-tranquil-aura", "mechanic.flesh-peddler", "skill.backstabber",
+    "skill.cutthroat", "mechanic.darting-steel", "mechanic.estalian-technique",
+    "mechanic.seaguard-spear-master", "mechanic.invincible-swordsman",
+    "skill.instinctive-warrior", "skill.chosen-of-the-white-tower", "mechanic.guiding-dream",
+    "condition.summoned-this-turn", "condition.tomb-robber-dodge-known",
+    "mechanic.ghost-pirate-ethereal", "mechanic.ethereal-hit-save",
+    "rule.thin-flesh", "rule.squishy", "rule.slay-large-creature", "skill.wound-valour",
+    "skill.righteous-fury", "mechanic.titanic-strength", "mechanic.marine-hunter",
+    "mechanic.wolf-rat-bite", "mechanic.achilles-heel", "mechanic.daemonic-flesh",
+    "mechanic.inured-to-pain", "mechanic.hard-to-rattle", "mechanic.corruption",
+    "mechanic.honorable", "mechanic.ravening-onslaught", "mechanic.torturer",
+    "weapon.skull-busta", "weapon.shock-rod", "weapon.count-of-ventimiglias-misericordia",
+    "defence.holy-relic", "mechanic.gypsy-ward", "mechanic.magical-void",
+    "mechanic.blessing-of-morr",
+    "mechanic.bat-injury-chart", "mechanic.fen-hard-to-kill", "mechanic.shallya-strictures",
+    "condition.djinns-curse-active", "condition.djinns-luck-active",
+    # Phase 1 / Family C — Leadership providers and re-rolls
+    # (``_leadership.resolve_local_leadership``).  Ranald's Luck, Oracle and
+    # Augur were admitted in Phase 5 (below), once ``vectorized._owned``
+    # offered them on every owned roll as the oracle does.
+    "mechanic.automatic-leadership", "mechanic.own-leadership", "mechanic.mob-leadership",
+    "mechanic.leader-twelve", "mechanic.handler-leadership", "mechanic.bear-handler",
+    "mechanic.relay-orders", "mechanic.slave-driver", "mechanic.songster",
+    "mechanic.dim-witted-leader", "mechanic.undivided-leader", "mechanic.wizened-halfling",
+    "mechanic.cold-blooded-leadership", "mechanic.cold-blooded-psychology",
+    "mechanic.broken-spirit", "mechanic.devoted", "condition.poetry-victorious-leader",
+    "mechanic.leadership-reroll", "mechanic.mandatory-leadership-reroll",
+    "mechanic.first-failed-leadership-reroll", "mechanic.sigmar-enlightened",
+    "mechanic.ghostly-howl",
+    # Phase 1 / Family D — psychology, charge gates and supplied start
+    # conditions.  Beauty of the Sea, Wheelo Impact, Impetuous Charge and the
+    # timed Petru conditions keep a modular-only round clause (Phase 3).
+    "mechanic.psychology-immunity", "mechanic.fears-fire", "mechanic.morrs-servant",
+    "mechanic.fear-beastmen", "mechanic.opposite-sex-charge-test",
+    "mechanic.slaanesh-charge-test", "mechanic.hypnotic-musk", "condition.goading-charge",
+    "mechanic.bear-handler-recipient", "condition.bear-handler-nearby",
+    "condition.nuttaz-charge", "condition.witch-finder-charge",
+    "mechanic.solkan-witch-finder", "mechanic.cannot-charge",
+    "condition.alchemist-strength", "condition.alchemist-resilience",
+    "condition.petru-fortitude", "weapon.beastlash",
+    # Phase 1 / Family E — tags no engine reads (effect values are compiled
+    # into the EffectSet), so both engines treat them identically.
+    "weapon.katana", "weapon.kanabo", "weapon.pry-bar", "weapon.wizards-staff",
+    "weapon.knuckledusters", "weapon.long-daggers", "weapon.arcane-candelabrum",
+    "weapon.ienh-khain", "mechanic.drug-immunity", "mechanic.brood-mentality",
+    "mechanic.myrmidia-eagle-friend", "mechanic.norse-shieldmaster",
+    "mechanic.sea-troll-slime", "mechanic.snorri-drunk", "mechanic.righteous-charge",
+    "mechanic.babbling-banter", "mechanic.dodge-sidestepper", "mechanic.beak",
+    "mechanic.prehensile-tail", "mechanic.herb-lore-self-heal", "poison.giggle-juice",
+    "condition.fungus-brew-dizzy",
+    # Phase 3 / Family F — own-turn actions, timed conditions and power
+    # selection (``vectorized._round_actions`` + driver round-start section).
+    # Drenok's wound half and the Inquisitor's brand consumers followed in
+    # Phase 4, Herb Lore's outside-combat clause in Phase 5 (below).
+    "mechanic.feral-instinct", "mechanic.herb-lore", "mechanic.rousing-sermon",
+    "mechanic.black-hunger", "mechanic.lunatics", "mechanic.inconsistency",
+    "condition.petru-strength", "condition.petru-resilience",
+    "condition.petru-debilitating", "condition.poetry-inspired",
+    "condition.command.art-thou-ready-to-die-fighting",
+    "condition.command.follow-me-mine-pugnacious-ones",
+    "condition.command.raise-our-insignia", "condition.righteous-charge",
+    "condition.danse-macabre-controlled", "condition.impetuous-charge",
+    "mechanic.djinns-curse", "mechanic.devoted-to-the-vampire",
+    "mechanic.sea-shanty", "mechanic.sea-shanty-psychology", "mechanic.deathblow",
+    "mechanic.persistent-frenzy",
+    # Phase 3 / Family G — control powers, tricks and fittings
+    # (``_driver._charm_gates``, ``_round_actions``, the Trip consumer in
+    # ``_attacks``).
+    "mechanic.mesmerising-dance", "mechanic.mark-of-shornaal", "mechanic.charm-immunity",
+    "mechanic.beauty-of-the-sea", "mechanic.hypnotic-gaze", "mechanic.questing-vow",
+    "mechanic.main-gauche-modes", "mechanic.confound-and-confuse",
+    "mechanic.mantle-of-crows", "mechanic.animal-friendship", "mechanic.wheelo-impact",
+    # Phase 4 / Family H — attack-pool composition and wound reactions
+    # (``_attacks``: hit, defence, wound, damage and injury clauses; the
+    # Electrical Touch jolt and Burning Body in ``_driver``; Frantic and
+    # Sabretusk in ``_operators``).  Drenok's wound half and the brands the
+    # Inquisitor inflicts (MiM regeneration, Plague Carrier, Burning Body)
+    # complete the Phase 3 deferrals.
+    "condition.rememberer-support", "mechanic.rememberer-large-only",
+    "mechanic.rememberer-large-or-tough", "condition.stampede-active",
+    "mechanic.magic-acorn", "mechanic.marianna-no-pain-jump-up", "mechanic.undead-construct",
+    "mechanic.hillman-lycanthrope", "mechanic.needle-and-thread", "mechanic.veskit-no-pain",
+    "mechanic.plague-carrier", "mechanic.mim-regeneration", "mechanic.drenok-berserker",
+    "mechanic.marks-of-ranald", "mechanic.giggle-juice-spray", "mechanic.festooned-with-pistols",
+    "rule.strikes-last-bite", "mechanic.frantic", "mechanic.sabretusk-charge",
+    "weapon.whip-tc14", "mechanic.whip-master", "mechanic.electrical-touch",
+    "mechanic.wraith-touch", "mechanic.solkan-inquisitor",
+    # Phase 5 — the personal roll resources act through ``vectorized._owned``
+    # at every owned roll under the driver's ``AlwaysAccept`` default (plan
+    # decision D12, the oracle's own round default); Herb Lore's outside-
+    # combat clause is unreachable in both drivers (a round never starts
+    # disengaged), so the engines agree by construction.
+    "mechanic.ranalds-luck", "mechanic.oracle", "mechanic.augur-one-roll-reroll",
+    "mechanic.herb-lore-outside-combat",
 })
 
 

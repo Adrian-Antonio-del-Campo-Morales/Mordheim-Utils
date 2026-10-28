@@ -53,7 +53,7 @@ def _adjust(state: CombatState, row: int, values: dict[str, int]) -> None:
 
 def resolve_alchemist(
     fighter, state: CombatState, rows: np.ndarray, rng: np.random.Generator,
-    resources: AlchemyResources, decisions=None,
+    resources: AlchemyResources, decisions=None, key: str = "alchemist",
 ) -> None:
     """Port of ``modular.alchemy.resolve_alchemist`` for a set of rows.
 
@@ -70,7 +70,9 @@ def resolve_alchemist(
         & has(fighter.global_effects, BACKLEY)
     ]
     if backley.size:
-        passed = _characteristic_test(fighter, state.toughness[backley], rng)
+        passed = _characteristic_test(
+            fighter, state.toughness[backley], rng, state=state, rows=backley,
+            key=f"{key}.alchemist-backley", decisions=decisions)
         for row in backley[passed]:
             penalties = dict(state.backley_penalties[int(row)])
             _adjust(state, int(row), {stat: penalty for stat, penalty in penalties.items()})
@@ -84,7 +86,10 @@ def resolve_alchemist(
     ]
     if addicted.size == 0:
         return
-    cured = addicted[rng.integers(1, 7, addicted.size) == 6]
+    from mordheim_combat.vectorized._owned import owned_roll
+
+    cured = addicted[owned_roll(fighter, state, addicted, rng, f"{key}.alchemist-brew",
+                                decisions=decisions).values == 6]
     for row in cured:
         resources.addiction_cured[int(row)] = True
         if not has(fighter.global_effects, VIGORTIA):
