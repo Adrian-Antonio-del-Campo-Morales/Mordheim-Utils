@@ -1,0 +1,240 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/mordheim--ghost-pirates-sar--skeleton-mates--undead--mechanic.causes-fea--d4dbff74937e.yaml",
+    "sha256": "dc0b1e3678837c50a3fe226bc79d439b2de78f058908552a2c028d1373a12d28",
+    "test_id": "rule/mordheim/ghost-pirates-sar/skeleton-mates--undead/mechanic.causes-fear::a-charged-opponent-that-fails-its-fear-test-hits-only-with-sixes"
+  },
+  "case_key": "e2e/rule/mordheim/ghost-pirates-sar/skeleton-mates--undead/mechanic.causes-fear/a-charged-opponent-that-fails-its-fear-test-hits-only-with-sixes",
+  "case": {
+    "case_key": "e2e/rule/mordheim/ghost-pirates-sar/skeleton-mates--undead/mechanic.causes-fear/a-charged-opponent-that-fails-its-fear-test-hits-only-with-sixes",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/mordheim/ghost-pirates-sar/skeleton-mates--undead/mechanic.causes-fear::a-charged-opponent-that-fails-its-fear-test-hits-only-with-sixes",
+      "path": "tests/integration/e2e/cases/grants/mordheim--ghost-pirates-sar--skeleton-mates--undead--mechanic.causes-fea--d4dbff74937e.yaml",
+      "sha256": "dc0b1e3678837c50a3fe226bc79d439b2de78f058908552a2c028d1373a12d28"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 10,
+          "strength": 8,
+          "toughness": 3,
+          "wounds": 3,
+          "initiative": 2,
+          "attacks": 1,
+          "movement": null,
+          "leadership": 7
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {},
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "ghost-pirates-sar:skeleton-mates",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 1,
+          "initiative": 3,
+          "attacks": 1,
+          "movement": 4,
+          "leadership": 7
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.dagger",
+            "material.normal"
+          ],
+          "target_armour_bonus": 1
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "mechanic.causes-fear",
+            "mechanic.psychology-immunity",
+            "skill.ignore-pain",
+            "armour.no-armour",
+            "poison_immune",
+            "nature.undead",
+            "undead_or_possessed",
+            "fighter-kind.hero",
+            "band.ghost-pirates-sar"
+          ],
+          "poison_immunity": true
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {
+          "tags": [
+            "skill.ignore-pain"
+          ]
+        },
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 3,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.causes-fear",
+            "mechanic.psychology-immunity",
+            "skill.ignore-pain",
+            "poison_immune",
+            "nature.undead",
+            "undead_or_possessed",
+            "fighter-kind.hero",
+            "band.ghost-pirates-sar"
+          ],
+          "poison_immunity": true
+        },
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.dagger",
+            "effect": {
+              "tags": [
+                "weapon.dagger",
+                "material.normal"
+              ],
+              "target_armour_bonus": 1
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [
+        "second"
+      ],
+      "active_participant": "second"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {},
+      "second": {
+        "attacks": 0
+      }
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "b4df9f0a48c5ae0f3fc7e6790d1374415325c77f711ac6949bf67171685accab",
+      "case_sha256": "7d34b0334a438075e35942fb2d4fe3e902f6089e823cb5d9db03a633f18bd3c6"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

@@ -1,0 +1,253 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/mordheim--horned-hunters--initiates--hang-the-bandit--unimplemented.horn--2597ee68c2b2.yaml",
+    "sha256": "797d14cfea6ef0e984e55690a57500f42056a238dd5e50f6890b2ce4aead477f",
+    "test_id": "rule/mordheim/horned-hunters/initiates--hang-the-bandit/unimplemented.horned-hunters.initiates.hang-the-bandit::the-same-miss-stands-against-an-unrelated-warband"
+  },
+  "case_key": "e2e/rule/mordheim/horned-hunters/initiates--hang-the-bandit/unimplemented.horned-hunters.initiates.hang-the-bandit/the-same-miss-stands-against-an-unrelated-warband",
+  "case": {
+    "case_key": "e2e/rule/mordheim/horned-hunters/initiates--hang-the-bandit/unimplemented.horned-hunters.initiates.hang-the-bandit/the-same-miss-stands-against-an-unrelated-warband",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/mordheim/horned-hunters/initiates--hang-the-bandit/unimplemented.horned-hunters.initiates.hang-the-bandit::the-same-miss-stands-against-an-unrelated-warband",
+      "path": "tests/integration/e2e/cases/grants/mordheim--horned-hunters--initiates--hang-the-bandit--unimplemented.horn--2597ee68c2b2.yaml",
+      "sha256": "797d14cfea6ef0e984e55690a57500f42056a238dd5e50f6890b2ce4aead477f"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "horned-hunters:initiates",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 2,
+          "initiative": 5,
+          "attacks": 1,
+          "movement": 4,
+          "leadership": 7
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "mechanic.hang-the-bandit",
+            "armour.no-armour",
+            "fighter-kind.hero",
+            "band.horned-hunters",
+            "warband-group.human"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 3,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.hang-the-bandit",
+            "fighter-kind.hero",
+            "band.horned-hunters",
+            "warband-group.human"
+          ]
+        },
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "tomb-guardians:tomb-guardians",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 4,
+          "toughness": 3,
+          "wounds": 1,
+          "initiative": 3,
+          "attacks": 1,
+          "movement": 4,
+          "leadership": 5
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.dagger",
+            "material.normal"
+          ],
+          "target_armour_bonus": 1
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "mechanic.causes-fear",
+            "mechanic.psychology-immunity",
+            "skill.ignore-pain",
+            "nature.undead",
+            "undead_or_possessed",
+            "armour.no-armour",
+            "poison_immune",
+            "fighter-kind.henchman",
+            "band.tomb-guardians",
+            "warband-group.evil",
+            "warband-group.undead"
+          ],
+          "poison_immunity": true
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {
+          "tags": [
+            "skill.ignore-pain"
+          ]
+        },
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 2,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.causes-fear",
+            "mechanic.psychology-immunity",
+            "skill.ignore-pain",
+            "nature.undead",
+            "undead_or_possessed",
+            "poison_immune",
+            "fighter-kind.henchman",
+            "band.tomb-guardians",
+            "warband-group.evil",
+            "warband-group.undead"
+          ],
+          "poison_immunity": true
+        },
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.dagger",
+            "effect": {
+              "tags": [
+                "weapon.dagger",
+                "material.normal"
+              ],
+              "target_armour_bonus": 1
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [
+        "first"
+      ],
+      "active_participant": "first"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {},
+      "second": {}
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "6f03ab1505343db0fed27b8240439d834e59c4e1bb68ace8e45f0f66bf84c079",
+      "case_sha256": "03ee0fd56adc1df901a320b51ee46a03bd5f45607af8203bec8bc92575ced7ad"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

@@ -134,8 +134,12 @@ def test_initial_state_round_trip_normalizes_sets_tuples_and_conditions():
     assert codec.decode_initial_state(encoded) == case.initial_state
 
 
-def test_document_round_trip_and_reproducible_bytes(tmp_path):
-    case = _case()
+@pytest.mark.parametrize("limits", [
+    codec.CaseLimits(1, 0, 100_000, 1),
+    codec.CaseLimits(maximum_rounds=50),
+])
+def test_document_round_trip_and_reproducible_bytes(tmp_path, limits):
+    case = _case(limits=limits)
     document = codec.encode_document([case], source=SOURCE, generator=GENERATOR)
     path = _write(tmp_path / "compiled-cases.json", document)
     loaded = codec.load_cases(path)

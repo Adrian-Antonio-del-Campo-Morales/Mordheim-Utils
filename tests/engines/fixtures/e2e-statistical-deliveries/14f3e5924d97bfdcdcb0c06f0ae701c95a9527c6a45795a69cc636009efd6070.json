@@ -1,0 +1,222 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/mechanics/mechanic.force-of-will.yaml",
+    "sha256": "4eb40586c0a601c7e8939af34fd1646ffda8b3e64dafb8e0fdde14c8677bd4f6",
+    "test_id": "mechanic/mechanic.force-of-will::the-toughness-test-stands-him-back-up"
+  },
+  "case_key": "e2e/mechanic/mechanic.force-of-will/the-toughness-test-stands-him-back-up",
+  "case": {
+    "case_key": "e2e/mechanic/mechanic.force-of-will/the-toughness-test-stands-him-back-up",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "mechanic/mechanic.force-of-will::the-toughness-test-stands-him-back-up",
+      "path": "tests/integration/e2e/cases/mechanics/mechanic.force-of-will.yaml",
+      "sha256": "4eb40586c0a601c7e8939af34fd1646ffda8b3e64dafb8e0fdde14c8677bd4f6"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 2,
+          "initiative": 5,
+          "attacks": 1,
+          "movement": null,
+          "leadership": null
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {},
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 1,
+          "initiative": 2,
+          "attacks": 1,
+          "movement": null,
+          "leadership": null
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "mechanic.force-of-will",
+            "armour.no-armour"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {
+          "tags": [
+            "mechanic.force-of-will"
+          ]
+        },
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.force-of-will"
+          ]
+        },
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [
+        "first"
+      ],
+      "active_participant": "first"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {},
+      "second": {}
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "03f732012b4da368c487990056f0af3153c7c0aac681fc282ebb46e49d92c7b2",
+      "case_sha256": "d9dc97dbed8e2745d35e6897ce39581fa5582d85fb3f10da59b3d608a784f947"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

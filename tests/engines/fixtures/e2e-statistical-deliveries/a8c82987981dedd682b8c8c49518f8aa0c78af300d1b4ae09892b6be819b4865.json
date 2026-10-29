@@ -1,0 +1,254 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/mordheim--clan-angrund-kep--band--dwarf-special-skills-master-of-blades--01be538204b7.yaml",
+    "sha256": "888bb17e9d2945598ab939fd9d012b253d0e75dbf069b4eda15888485e960f36",
+    "test_id": "rule/mordheim/clan-angrund-kep/band--dwarf-special-skills-master-of-blades/skill.sword-master::a-single-dwarf-axe-gets-no-reroll"
+  },
+  "case_key": "e2e/rule/mordheim/clan-angrund-kep/band--dwarf-special-skills-master-of-blades/skill.sword-master/a-single-dwarf-axe-gets-no-reroll",
+  "case": {
+    "case_key": "e2e/rule/mordheim/clan-angrund-kep/band--dwarf-special-skills-master-of-blades/skill.sword-master/a-single-dwarf-axe-gets-no-reroll",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/mordheim/clan-angrund-kep/band--dwarf-special-skills-master-of-blades/skill.sword-master::a-single-dwarf-axe-gets-no-reroll",
+      "path": "tests/integration/e2e/cases/grants/mordheim--clan-angrund-kep--band--dwarf-special-skills-master-of-blades--01be538204b7.yaml",
+      "sha256": "888bb17e9d2945598ab939fd9d012b253d0e75dbf069b4eda15888485e960f36"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 2,
+          "initiative": 5,
+          "attacks": 1,
+          "movement": null,
+          "leadership": null
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {},
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "clan-angrund-kep:dwarf-noble",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 2,
+          "initiative": 2,
+          "attacks": 1,
+          "movement": 3,
+          "leadership": 9
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.dwarf-axe",
+            "material.normal"
+          ],
+          "armour_penetration": 1,
+          "parry": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "mechanic.leader-six",
+            "skill.hard-to-kill",
+            "mechanic.hatred-skaven-orcs-goblins",
+            "skill.unbeatable-warrior",
+            "skill.sword-master",
+            "armour.no-armour",
+            "concussion_immune",
+            "species.dwarf",
+            "fighter-kind.hero",
+            "band.clan-angrund-kep",
+            "rule.dwarf-axe-parry-reroll"
+          ],
+          "out_of_action_threshold": 6
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {
+          "tags": [
+            "skill.hard-to-kill",
+            "skill.unbeatable-warrior",
+            "skill.sword-master"
+          ],
+          "out_of_action_threshold": 6
+        },
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 4,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {
+          "tags": [
+            "skill.unbeatable-warrior",
+            "skill.sword-master"
+          ]
+        },
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.leader-six",
+            "skill.hard-to-kill",
+            "mechanic.hatred-skaven-orcs-goblins",
+            "skill.unbeatable-warrior",
+            "skill.sword-master",
+            "concussion_immune",
+            "species.dwarf",
+            "fighter-kind.hero",
+            "band.clan-angrund-kep",
+            "rule.dwarf-axe-parry-reroll"
+          ],
+          "out_of_action_threshold": 6
+        },
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.dwarf-axe",
+            "effect": {
+              "tags": [
+                "weapon.dwarf-axe",
+                "material.normal"
+              ],
+              "armour_penetration": 1,
+              "parry": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [
+        "first"
+      ],
+      "active_participant": "first"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {},
+      "second": {
+        "attacks": 0
+      }
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "03d493152fb38e739834db0a5ab9c8bf2ba1263a04f2aecc103596563b487053",
+      "case_sha256": "83bb52e0535bfb2a78e0392246868771e92a19054302d003688b085d784b736e"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

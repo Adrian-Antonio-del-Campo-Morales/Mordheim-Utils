@@ -1,0 +1,244 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/trollheim--chaos-streets-undead-bloodlines--strigoi-vampire--fear--unimp--21df3fa67098.yaml",
+    "sha256": "77eb6ca03f1cf9fa6c065d07ced0c31305f6158cc182e0452579b1dc398b9e4d",
+    "test_id": "rule/trollheim/chaos-streets-undead-bloodlines/strigoi-vampire--fear/unimplemented.chaos-streets-undead-bloodlines.strigoi-vampire.fear::a-charged-opponent-that-passes-its-fear-test-fights-normally"
+  },
+  "case_key": "e2e/rule/trollheim/chaos-streets-undead-bloodlines/strigoi-vampire--fear/unimplemented.chaos-streets-undead-bloodlines.strigoi-vampire.fear/a-charged-opponent-that-passes-its-fear-test-fights-normally",
+  "case": {
+    "case_key": "e2e/rule/trollheim/chaos-streets-undead-bloodlines/strigoi-vampire--fear/unimplemented.chaos-streets-undead-bloodlines.strigoi-vampire.fear/a-charged-opponent-that-passes-its-fear-test-fights-normally",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/trollheim/chaos-streets-undead-bloodlines/strigoi-vampire--fear/unimplemented.chaos-streets-undead-bloodlines.strigoi-vampire.fear::a-charged-opponent-that-passes-its-fear-test-fights-normally",
+      "path": "tests/integration/e2e/cases/grants/trollheim--chaos-streets-undead-bloodlines--strigoi-vampire--fear--unimp--21df3fa67098.yaml",
+      "sha256": "77eb6ca03f1cf9fa6c065d07ced0c31305f6158cc182e0452579b1dc398b9e4d"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 10,
+          "strength": 8,
+          "toughness": 3,
+          "wounds": 3,
+          "initiative": 2,
+          "attacks": 1,
+          "movement": null,
+          "leadership": 7
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {},
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "chaos-streets-undead-bloodlines:strigoi-vampire",
+        "characteristics": {
+          "weapon_skill": 4,
+          "strength": 4,
+          "toughness": 4,
+          "wounds": 2,
+          "initiative": 5,
+          "attacks": 3,
+          "movement": 6,
+          "leadership": 8
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.natural-attacks",
+            "material.normal"
+          ]
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "mechanic.leader-six",
+            "mechanic.causes-fear",
+            "mechanic.psychology-immunity",
+            "skill.ignore-pain",
+            "armour.no-armour",
+            "skill.hatred",
+            "vampire",
+            "poison_immune",
+            "species.vampire",
+            "nature.undead",
+            "undead_or_possessed",
+            "fighter-kind.hero",
+            "band.chaos-streets-undead-bloodlines",
+            "warband-group.evil",
+            "warband-group.undead"
+          ],
+          "poison_immunity": true
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {
+          "tags": [
+            "skill.ignore-pain",
+            "skill.hatred"
+          ]
+        },
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 4,
+        "construction_tags": [
+          "compiler.vampiric-powers"
+        ],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {
+          "tags": [
+            "skill.ignore-pain",
+            "skill.hatred"
+          ]
+        },
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.leader-six",
+            "mechanic.causes-fear",
+            "mechanic.psychology-immunity",
+            "skill.ignore-pain",
+            "skill.hatred",
+            "vampire",
+            "poison_immune",
+            "species.vampire",
+            "nature.undead",
+            "undead_or_possessed",
+            "fighter-kind.hero",
+            "band.chaos-streets-undead-bloodlines",
+            "warband-group.evil",
+            "warband-group.undead"
+          ],
+          "poison_immunity": true
+        },
+        "mutation_options": [],
+        "mutation_equipment": [],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [
+        "second"
+      ],
+      "active_participant": "second"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {},
+      "second": {
+        "attacks": 0
+      }
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "e9da76123c9888678fc8d0a9d2bb8ed9e3c8709e7c04b5a3893d734f0a942c32",
+      "case_sha256": "26f8f61e623455a5178f83a3d4b29ee86ab716fde1731c7db59fe2e81482418f"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

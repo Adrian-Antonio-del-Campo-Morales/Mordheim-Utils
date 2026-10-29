@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "blocked",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/mechanics/weapon.poisoned-daggers.yaml",
+    "sha256": "5b4432420cc6f752452fa9d522d4660327ffbcd0011d37b9828c979d64478cb7",
+    "test_id": "mechanic/weapon.poisoned-daggers::a-natural-six-wounds-automatically-without-a-wound-die"
+  },
+  "case_key": "e2e/mechanic/weapon.poisoned-daggers/a-natural-six-wounds-automatically-without-a-wound-die",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E prescribes explicit decisions (round.0.first.attack.0.lotus-critical); the contract admits only the engine-default decision policy, and no general policy for randomly branched trajectories exists for these keys."
+}

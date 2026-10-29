@@ -1,0 +1,214 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/mordheim--forest-goblins--gigantic-spider--poisonous--trait.poisonous-in--2902a5e3dbcb.yaml",
+    "sha256": "e19fb66d9ed5412f631e8b2f301f109110d358d0e79e240f231f3c50032aaea9",
+    "test_id": "rule/mordheim/forest-goblins/gigantic-spider--poisonous/trait.poisonous-injury::the-poisonous-band-knocks-down-on-the-one"
+  },
+  "case_key": "e2e/rule/mordheim/forest-goblins/gigantic-spider--poisonous/trait.poisonous-injury/the-poisonous-band-knocks-down-on-the-one",
+  "case": {
+    "case_key": "e2e/rule/mordheim/forest-goblins/gigantic-spider--poisonous/trait.poisonous-injury/the-poisonous-band-knocks-down-on-the-one",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/mordheim/forest-goblins/gigantic-spider--poisonous/trait.poisonous-injury::the-poisonous-band-knocks-down-on-the-one",
+      "path": "tests/integration/e2e/cases/grants/mordheim--forest-goblins--gigantic-spider--poisonous--trait.poisonous-in--2902a5e3dbcb.yaml",
+      "sha256": "e19fb66d9ed5412f631e8b2f301f109110d358d0e79e240f231f3c50032aaea9"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "forest-goblins:gigantic-spider",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 5,
+          "toughness": 5,
+          "wounds": 3,
+          "initiative": 4,
+          "attacks": 1,
+          "movement": 6,
+          "leadership": 4
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.natural-attacks",
+            "material.normal"
+          ]
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "mechanic.causes-fear",
+            "mechanic.stupidity",
+            "armour.no-armour",
+            "poisonous_injury",
+            "fighter-kind.henchman",
+            "band.forest-goblins",
+            "warband-group.goblin",
+            "warband-group.orcs-and-goblins"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 4,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.causes-fear",
+            "mechanic.stupidity",
+            "poisonous_injury",
+            "fighter-kind.henchman",
+            "band.forest-goblins",
+            "warband-group.goblin",
+            "warband-group.orcs-and-goblins"
+          ]
+        },
+        "mutation_options": [],
+        "mutation_equipment": [],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 1,
+          "initiative": 2,
+          "attacks": 1,
+          "movement": null,
+          "leadership": null
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {},
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [],
+      "active_participant": "first"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {},
+      "second": {
+        "attacks": 0
+      }
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "b89e9ca523c3e69f4dd1c0f62aad20ce34a707268f08def2f081a4ffb9acf5c2",
+      "case_sha256": "cfaed83aca3c9d1da8b2d4069eea5a445d3ea1dd2b20468014ed29519172ca12"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

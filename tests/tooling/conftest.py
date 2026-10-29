@@ -1,7 +1,7 @@
 """Frozen-corpus access for tooling tests moved out of ``tests/engines/parity``.
 
 The parity catalogue, reporting and benchmark checks keep the historical
-``benchmark/...`` and ``parity/deep/...`` keys.  They read the engine corpus
+unified ``scenario/...`` keys.  They read the engine corpus
 directly; nothing here imports the construction compiler, the knowledge base or
 an engine, and no fighter is rebuilt.
 """

@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "blocked",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/mechanics/mechanic.unpredictable-attack.yaml",
+    "sha256": "b50a8e3ea7df5fa817cbadb01be976902a98ca4a64e4b9cf677c6b900bcefc43",
+    "test_id": "mechanic/mechanic.unpredictable-attack::the-declaration-names-which-attack-the-parry-cannot-stop"
+  },
+  "case_key": "e2e/mechanic/mechanic.unpredictable-attack/the-declaration-names-which-attack-the-parry-cannot-stop",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E prescribes explicit decisions (round.0.first.unpredictable-attack.0, round.0.first.unpredictable-attack.1); the contract admits only the engine-default decision policy, and no general policy for randomly branched trajectories exists for these keys."
+}

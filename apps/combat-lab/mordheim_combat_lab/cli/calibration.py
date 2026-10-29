@@ -24,8 +24,8 @@ model the app installs, so the pool decision runs on this machine's measured
 parallel efficiency instead of the shared conservative fit.
 
 Coverage and budget (defaults on the reference machine, ~8-10 minutes):
-native sweeps run the full 42-pair matrix at 1M samples/fighter; NumPy sweeps
-run the stratified 30-pair set at a quarter/half of the sizes, because its
+native sweeps run the full 43-scenario catalogue at 1M samples/fighter; NumPy sweeps
+run the normal catalogue level at a quarter/half of the sizes, because its
 duels cost ~3-5x more. ``--pairs mini`` trades coverage for a ~2 minute run.
 Every candidate is scored by the geometric mean of its per-pair ratio to the
 best candidate, so all duel types weigh the same regardless of absolute cost;
@@ -61,7 +61,7 @@ from mordheim_combat_lab.application.settings import (
     split_battery,
 )
 from mordheim_combat_lab.cli.scenarios import deep_test_scenarios
-from mordheim_construction.compiler import compile_fighter
+from mordheim_combat_lab.cli.benchmarking import compile_benchmark_fighters
 
 #: Batch candidates for the sequential sweep (the engines disagree: native
 #: collapses with large batches, numpy with small ones). The numpy sample size
@@ -116,7 +116,7 @@ def _geomean(values) -> float:
 def _pairs(pair_set: str):
     """Compiled (first, second, maximum_rounds, id) rows for one pair set."""
     return [
-        (compile_fighter(scenario.first), compile_fighter(scenario.second),
+        (*compile_benchmark_fighters(scenario),
          scenario.maximum_rounds or 50, scenario.id)
         for scenario in deep_test_scenarios(pair_set)
     ]

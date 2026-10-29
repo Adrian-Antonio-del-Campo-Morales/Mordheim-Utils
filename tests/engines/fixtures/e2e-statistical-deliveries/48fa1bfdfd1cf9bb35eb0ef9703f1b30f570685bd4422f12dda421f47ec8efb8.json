@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "blocked",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/mordheim--halflings-mic--halfling-elder--crude-belch--skill.crude-belch--3f37a71994ec.yaml",
+    "sha256": "b7ae221f2a8ccb6fd4509e44cfb8df4cbe6430013862eb2a2c2f1dad559290d1",
+    "test_id": "rule/mordheim/halflings-mic/halfling-elder--crude-belch/skill.crude-belch-halfling::even-an-only-attack-is-lost"
+  },
+  "case_key": "e2e/rule/mordheim/halflings-mic/halfling-elder--crude-belch/skill.crude-belch-halfling/even-an-only-attack-is-lost",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E prescribes explicit decisions (round.0.first.crude-belch); the contract admits only the engine-default decision policy, and no general policy for randomly branched trajectories exists for these keys."
+}

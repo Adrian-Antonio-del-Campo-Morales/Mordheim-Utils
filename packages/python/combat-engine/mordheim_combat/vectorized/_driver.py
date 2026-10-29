@@ -1713,9 +1713,15 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
         # ``resolve_round``: Revenant, then the Alchemist's brew, then
         # Stupidity and (round zero only) Fear.
         # Fear's ``hit_sixes`` is a per-round fact: the modular clears it at the
-        # start of every round, before the Psychology gates run again.
+        # start of every round, before the Psychology gates run again
+        # (``resolve_round``: ``replace(state.first, fear_hit_sixes=False)``).
+        # The state columns are what every attack path reads, so they are
+        # cleared with the ledgers -- a round-zero failure must not keep the
+        # warrior hitting on sixes for the rest of the duel.
         psychology[0].fear_hit_sixes[:] = False
         psychology[1].fear_hit_sixes[:] = False
+        state1.fear_hit_sixes[:] = False
+        state2.fear_hit_sixes[:] = False
         own_first = np.flatnonzero(unresolved & first_player_turn)
         own_second = np.flatnonzero(unresolved & ~first_player_turn)
         revenant_recovery(first, state1, own_first, rng)
@@ -1860,6 +1866,13 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
         # per-row fighter variation: the charging rows are tested with the
         # granted copy (which is immune to all Psychology) and the rest with
         # the printed fighter.  An unsplit batch keeps the single call.
+        # A round-zero Stupidity failure cancels the failing warrior's own
+        # initial charge, and the scalar operator lowers ``engaged`` with it
+        # (``modular/psychology.py``: ``engaged=state.engaged and
+        # any(charges)``), exactly as the Danse release above does.  Snapshot
+        # the masks so the cancellations of the four calls below can be told
+        # apart from charges that never existed.
+        charges_before_stupidity = (first_charges.copy(), second_charges.copy())
         sober_first = own_first[ledger.drunken_result[own_first] != 1]
         for sober_rows, acting_first, rc_suffix in _righteous_charge_split(
                 first, rc_rows1, sober_first):
@@ -1912,6 +1925,14 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
                 key_prefix=f"round.{round_index}.drunk",
             )
             second_charges = drunk_second.charges
+        if first_round:
+            cancelled_by_stupidity = (
+                (charges_before_stupidity[0] & ~first_charges)
+                | (charges_before_stupidity[1] & ~second_charges))
+            if cancelled_by_stupidity.any():
+                engaged = engaged & (
+                    ~cancelled_by_stupidity | first_charges | second_charges)
+                unresolved = unresolved & engaged
         if first_round:
             # Fear reads both warriors at once, so a split Righteous Charge is
             # resolved once per grant combination over its own disjoint rows;
@@ -2437,11 +2458,28 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
                               == p1.astype(np.int32))
         own_tie2 = shifty2 & (np.maximum(1, sp2.astype(np.int32))
                               == p2.astype(np.int32))
+        # A whipcrack bonus that meets the *opponent's* event at the same tier
+        # and Initiative is ordered by a fresh tie roll (``first_acts_before``
+        # with the ``whip-priority-tie`` key).  A tie with the bearer's own
+        # ordinary event keeps the pool order instead: when the bearer
+        # charges, the scalar pipeline folds the bonus into the pool rather
+        # than splitting an earlier event out, and the stable sort below
+        # already resolves equal scores in stack order.
+        raw1 = p1.astype(np.int32) * 100 + i1
+        raw2 = p2.astype(np.int32) * 100 + i2
+        whip1_scores = np.where(whip1_rows, 100 + i1, -10000).astype(np.int32)
+        whip2_scores = np.where(whip2_rows, 100 + i2, -10000).astype(np.int32)
+        whip1_ties = whip1_rows & (whip1_scores == raw2)
+        whip2_ties = whip2_rows & (whip2_scores == raw1)
+        if whip1_ties.any():
+            whip1_scores = whip1_scores + (whip1_ties & (rng.random(count) < .5))
+        if whip2_ties.any():
+            whip2_scores = whip2_scores + (whip2_ties & (rng.random(count) < .5))
         event_scores = np.stack((
             p1.astype(np.int32) * 100 + i1 + (priority_tie & first_acts),
             p2.astype(np.int32) * 100 + i2 + (priority_tie & ~first_acts),
-            np.where(whip1_rows, 100 + i1, -10000),
-            np.where(whip2_rows, 100 + i2, -10000),
+            whip1_scores,
+            whip2_scores,
             np.where(shifty1, np.maximum(1, sp1.astype(np.int32)) * 100 + i1
                      + own_tie1.astype(np.int32), -10000),
             np.where(shifty2, np.maximum(1, sp2.astype(np.int32)) * 100 + i2

@@ -1,15 +1,15 @@
 """Real statistical comparisons of the vectorized backend against the oracle.
 
 Each case samples both engines and asserts the six-sigma outcome comparison;
-the frozen benchmark pair and its round budget come from the corpus.
+the frozen scenario pair and its round budget come from the corpus.
 """
 from mordheim_combat_lab.verification.parity import compare_statistical_parity
-from tests.engines.fixtures.precompiled_catalog import benchmark_case_key
+from tests.engines.fixtures.precompiled_catalog import scenario_key
 import pytest
 
 
 def test_statistical_parity_reports_three_outcomes_and_six_sigma_tolerances(cases):
-    fighter = cases[benchmark_case_key("basic")].first
+    fighter = cases[scenario_key("basic")].first
     result = compare_statistical_parity("smoke", fighter, fighter, 20, seed=3)
     assert len(result.modular_rates) == len(result.vectorized_rates) == 3
     assert len(result.tolerances) == 3
@@ -17,7 +17,7 @@ def test_statistical_parity_reports_three_outcomes_and_six_sigma_tolerances(case
 
 
 def test_statistical_samples_record_per_engine_wall_times(cases):
-    case = cases[benchmark_case_key("basic")]
+    case = cases[scenario_key("basic")]
     result = compare_statistical_parity(
         "smoke", case.first, case.second, 40, seed=3,
         maximum_rounds=case.limits.maximum_rounds,

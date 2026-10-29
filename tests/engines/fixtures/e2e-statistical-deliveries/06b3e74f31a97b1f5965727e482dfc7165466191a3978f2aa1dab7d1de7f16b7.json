@@ -1,0 +1,222 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/mordheim--maneaters--sabretusks--fear--mechanic.causes-fear--a8a62b193c7e.yaml",
+    "sha256": "8480702e93c4711ff7a77678ec62f6c51c2698d237553775b21408c45443d5c7",
+    "test_id": "rule/mordheim/maneaters/sabretusks--fear/mechanic.causes-fear::a-charged-opponent-that-fails-its-fear-test-hits-only-with-sixes"
+  },
+  "case_key": "e2e/rule/mordheim/maneaters/sabretusks--fear/mechanic.causes-fear/a-charged-opponent-that-fails-its-fear-test-hits-only-with-sixes",
+  "case": {
+    "case_key": "e2e/rule/mordheim/maneaters/sabretusks--fear/mechanic.causes-fear/a-charged-opponent-that-fails-its-fear-test-hits-only-with-sixes",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/mordheim/maneaters/sabretusks--fear/mechanic.causes-fear::a-charged-opponent-that-fails-its-fear-test-hits-only-with-sixes",
+      "path": "tests/integration/e2e/cases/grants/mordheim--maneaters--sabretusks--fear--mechanic.causes-fear--a8a62b193c7e.yaml",
+      "sha256": "8480702e93c4711ff7a77678ec62f6c51c2698d237553775b21408c45443d5c7"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 10,
+          "strength": 8,
+          "toughness": 3,
+          "wounds": 3,
+          "initiative": 2,
+          "attacks": 1,
+          "movement": null,
+          "leadership": 7
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {},
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "maneaters:sabretusks",
+        "characteristics": {
+          "weapon_skill": 4,
+          "strength": 4,
+          "toughness": 4,
+          "wounds": 2,
+          "initiative": 4,
+          "attacks": 3,
+          "movement": 8,
+          "leadership": 4
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.natural-attacks",
+            "material.normal"
+          ]
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "mechanic.handler-leadership",
+            "mechanic.feral-instinct",
+            "mechanic.causes-fear",
+            "armour.no-armour",
+            "normal_animal",
+            "species.normal-animal",
+            "species.animal",
+            "fighter-kind.henchman",
+            "band.maneaters",
+            "warband-group.good-aligned",
+            "warband-group.ogre"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.handler-leadership",
+            "mechanic.feral-instinct",
+            "mechanic.causes-fear",
+            "normal_animal",
+            "species.normal-animal",
+            "species.animal",
+            "fighter-kind.henchman",
+            "band.maneaters",
+            "warband-group.good-aligned",
+            "warband-group.ogre"
+          ]
+        },
+        "mutation_options": [],
+        "mutation_equipment": [],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [
+        "second"
+      ],
+      "active_participant": "second"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {},
+      "second": {
+        "attacks": 0
+      }
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "2457ab05fae9de88268fe74dec18ad31568d33532adb7982ee2efae87f2a25ac",
+      "case_sha256": "4d0b488fb505731d52e1eb37be945b9dea0fdda67be55f3a2dcb6d5d371199bd"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

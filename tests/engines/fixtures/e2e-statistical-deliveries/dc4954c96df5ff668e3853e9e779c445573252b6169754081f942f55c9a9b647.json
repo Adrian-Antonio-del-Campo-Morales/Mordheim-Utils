@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "blocked",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/mechanics/mechanic.body-slam.yaml",
+    "sha256": "d8b869a4bd566ed8ab980694767e8a8df80886a99376d741f67c9f43c3c27e93",
+    "test_id": "mechanic/mechanic.body-slam::the-skill-wound-modifier-never-reaches-the-replacement-attack"
+  },
+  "case_key": "e2e/mechanic/mechanic.body-slam/the-skill-wound-modifier-never-reaches-the-replacement-attack",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E prescribes explicit decisions (round.0.first.body-slam); the contract admits only the engine-default decision policy, and no general policy for randomly branched trajectories exists for these keys."
+}

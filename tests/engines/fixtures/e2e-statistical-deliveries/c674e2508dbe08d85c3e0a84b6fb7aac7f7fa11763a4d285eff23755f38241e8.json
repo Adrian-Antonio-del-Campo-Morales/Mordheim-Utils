@@ -1,0 +1,232 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/mordheim--forest-goblins--red-toof-goblins--berserkers--trait.frenzy--81cae7082d1b.yaml",
+    "sha256": "fe1ed512c516e3779c1a0102f3f7f7dcccfbdcefeb7a0da5692f1675c89a1220",
+    "test_id": "rule/mordheim/forest-goblins/red-toof-goblins--berserkers/trait.frenzy::the-injury-that-knocks-the-red-toof-boy-down-ends-its-frenzy-and-standing-does-not-regrant-it"
+  },
+  "case_key": "e2e/rule/mordheim/forest-goblins/red-toof-goblins--berserkers/trait.frenzy/the-injury-that-knocks-the-red-toof-boy-down-ends-its-frenzy-and-standing-does-not-regrant-it",
+  "case": {
+    "case_key": "e2e/rule/mordheim/forest-goblins/red-toof-goblins--berserkers/trait.frenzy/the-injury-that-knocks-the-red-toof-boy-down-ends-its-frenzy-and-standing-does-not-regrant-it",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/mordheim/forest-goblins/red-toof-goblins--berserkers/trait.frenzy::the-injury-that-knocks-the-red-toof-boy-down-ends-its-frenzy-and-standing-does-not-regrant-it",
+      "path": "tests/integration/e2e/cases/grants/mordheim--forest-goblins--red-toof-goblins--berserkers--trait.frenzy--81cae7082d1b.yaml",
+      "sha256": "fe1ed512c516e3779c1a0102f3f7f7dcccfbdcefeb7a0da5692f1675c89a1220"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 8,
+          "strength": 8,
+          "toughness": 3,
+          "wounds": 3,
+          "initiative": 1,
+          "attacks": 1,
+          "movement": null,
+          "leadership": 7
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {},
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "forest-goblins:red-toof-goblins",
+        "characteristics": {
+          "weapon_skill": 2,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 1,
+          "initiative": 3,
+          "attacks": 1,
+          "movement": 4,
+          "leadership": 6
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.dagger",
+            "material.normal"
+          ],
+          "target_armour_bonus": 1
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour",
+            "frenzy",
+            "species.goblin",
+            "fighter-kind.henchman",
+            "band.forest-goblins",
+            "warband-group.goblin",
+            "warband-group.orcs-and-goblins"
+          ],
+          "frenzy": true
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 3,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "frenzy",
+            "species.goblin",
+            "fighter-kind.henchman",
+            "band.forest-goblins",
+            "warband-group.goblin",
+            "warband-group.orcs-and-goblins"
+          ],
+          "frenzy": true
+        },
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.dagger",
+            "effect": {
+              "tags": [
+                "weapon.dagger",
+                "material.normal"
+              ],
+              "target_armour_bonus": 1
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [
+        "first"
+      ],
+      "active_participant": "first"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {},
+      "second": {
+        "attacks": 1
+      }
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 2
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "fc6e8d2a7a6196e5d5b8c0c46fd76ded924e3dd8055135d056c23dfc8c1cde78",
+      "case_sha256": "08925db1569d283203dbcc02de7b2648288fbbf11492381f348129bb3147e035"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

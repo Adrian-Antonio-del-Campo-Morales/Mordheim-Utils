@@ -272,9 +272,10 @@ ordinary execution does not regenerate inputs or fall back to compilation when
 a frozen input is missing. Knowledge, construction and E2E tests retain their
 source-backed preparation.
 
-- `precompiled_catalog.py` groups the five benchmark definitions and the
-  42 deep definitions and resolves their existing frozen keys. The historical
-  groups are data selections, not independent runners.
+- `precompiled_catalog.py` defines 43 unified scenarios with stable
+  `scenario/<name>` keys. The cumulative levels `small`, `normal` and `long`
+  select the same inputs for parity, benchmarks and calibration; `long` includes
+  all 43. Seeds, sample widths and batch sizes are execution settings.
 - `battery_catalogue.py` and `battery_keys.py` describe build-based battery
   cases, variants and intended clause coverage. Their preparation still requires
   compilation; these are not additional precompiled inputs.
@@ -351,8 +352,10 @@ comparison campaign; neither substitutes for the other.
 
 The catalogue interface selects data independently of the engine:
 
-- `--catalog precompiled`: all five benchmark and 42 deep frozen cases, loaded
-  from `compiled-cases.json` with no compilation fallback.
+- `--catalog precompiled`: unified frozen scenarios loaded from
+  `compiled-cases.json` with no compilation fallback. `--level small` is the
+  default; `--level normal` expands the selection and `--level long` selects
+  all 43 scenarios.
 - `--catalog battery`: all build-based battery cases. `--profile quick`,
   `complete` or `deep` filters this catalogue; no profile selects the full deep set.
 - `--catalog all`: both catalogues. A profile filters only the battery portion.
@@ -362,7 +365,7 @@ The catalogue interface selects data independently of the engine:
   modular reference using the same runner. Here `all` names both candidates.
 
 ```powershell
-python tools/mordheim-utils.py check parity --catalog precompiled --backend modular --workers 8
+python tools/mordheim-utils.py check parity --catalog precompiled --level long --backend modular --workers 8
 python tools/mordheim-utils.py check parity --catalog battery --backend modular --workers 8
 python tools/mordheim-utils.py check parity --catalog all --backend modular --workers 8
 
@@ -373,8 +376,36 @@ python tools/mordheim-utils.py check parity --catalog all --backend modular --wo
 python tools/mordheim-utils.py check parity --catalog battery --profile quick --backend numpy --workers 8
 ```
 
-Without `--simulations`, each case keeps its declared frozen sample width or
-battery row count. `--workers 8` cannot split a single duel across workers.
+To reuse saved modular counts, sample only the candidate with
+`tools.verification.parity_samples`, then compare the stores. For the 43
+stored reference scenarios at 100,000 duels each:
+
+```bash
+python -m tools.verification.parity_samples sample --engine numpy --level long --simulations 100000 --seed 2026 --chunk 2500 --workers 2 --store outputs/parity-numpy
+python -m tools.verification.parity_samples compare --backend numpy --level long --simulations 100000 --store outputs/parity-numpy --reference-store tests/engines/parity/reference_samples/modular-100k
+```
+
+Sampling resumes finished chunks and refuses stale candidate records unless
+`--replace` is supplied. Comparison executes neither engine. It checks fighter
+fingerprints, seeds, round limits and sample coverage, and reports stored and
+current engine digests in `outputs/parity-numpy/compare/parity-campaign.json`
+alongside a Markdown report. Different modular digests mean the comparison
+uses a historical reference; it does not certify the current modular engine.
+The comparison covers first wins, second wins and unresolved duels using the
+existing six-sigma gate. Native sampling and comparison remain available;
+`compare` defaults to `--backend native`.
+
+`sample --workers N` runs up to N chunks in separate processes for all three
+engines (`modular`, `numpy`, `native`); the default is 1, in-process. The parent
+process saves completed chunks, so seeds and counts match sequential sampling
+with the same chunk size, and interrupted runs can resume. A first Ctrl+C stops
+new submissions and saves in-flight chunks; a second aborts immediately.
+`compare` and `status` read saved counts and do not use workers. Check coverage
+with `python -m tools.verification.parity_samples status --level long --store outputs/parity-numpy`;
+use `--id scenario/basic` to restrict any subcommand to one scenario.
+
+Without `--simulations`, precompiled scenarios use the command sample default;
+battery cases keep their declared row count. `--workers 8` cannot split a single duel across workers.
 Round limits and contexts remain those of each case; `--seed` sets the sample
 seed. Known unsupported inputs are reported as blocked, not silently discarded.
 Missing frozen entries and compilation/execution errors are failures. Use
@@ -383,8 +414,9 @@ Missing frozen entries and compilation/execution errors are failures. Use
 
 These catalogues require a source checkout with `tests/engines/fixtures` and
 its frozen JSON files. The battery also requires the KB/compiler. Catalogue
-selection is separate from the older `--level`/`--pair-set` options and cannot be
-combined with them. Existing historical invocations are otherwise unchanged.
+selection accepts `--level small|normal|long` for precompiled scenarios.
+Historical parity levels and `--pair-set` remain available outside catalogue
+selection; historical pair-set names map to the shared cumulative levels.
 
 ## Knowledge base
 

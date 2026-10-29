@@ -488,6 +488,25 @@ def statistical_result(row: ParityRow) -> StatisticalParityResult:
     )
 
 
+def parity_row(result: StatisticalParityResult, *, maximum_rounds: int) -> ParityRow:
+    """Project a stored-sample comparison onto the existing campaign row.
+
+    The inverse of :func:`statistical_result`: it lets a campaign replay a
+    sample recorded earlier (see ``tools.verification.parity_samples``)
+    without re-executing either engine.
+    """
+    comparison = _comparison_from_result(result)
+    return _row(
+        result.scenario, result.backend, maximum_rounds, result.simulations,
+        "PASS" if comparison.passed else "DIVERGENCE",
+        comparisons=(comparison,), executed=True, compared=True,
+        approved=comparison.passed,
+        modular_seconds=result.reference_seconds,
+        candidate_seconds=result.candidate_seconds,
+        detail="" if comparison.passed else f"DIVERGENCE: {comparison.detail}",
+    )
+
+
 def _row(
     case: str, backend: str, maximum_rounds: int, simulations: int, status: str,
     **options,

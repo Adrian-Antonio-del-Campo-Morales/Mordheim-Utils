@@ -1209,7 +1209,12 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
     )
     injury = injury_table[injury_rolls - lowest]
     if has(defender.global_effects, "injury_reroll_out") and not has(effect, "attack.fire"):
-        reroll = injury == OUT
+        # The oracle's production pipeline never sees a None policy:
+        # ``resolve_round`` substitutes ``AlwaysAccept`` before any attack
+        # resolves, so the reference rerolls every eligible Injury result --
+        # not only Out of Action.  Mirror that default here; an explicit
+        # policy still decides per row below.
+        reroll = np.ones(injury.size, dtype=bool)
         if decisions is not None:
             ordinals = {}
             for position, row in enumerate(injury_rows):

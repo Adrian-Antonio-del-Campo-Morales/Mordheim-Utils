@@ -1,0 +1,236 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/mordheim--beastmen-raiders--band--beastmen-special-skills-horned-one--sp--bc131f632594.yaml",
+    "sha256": "6845fa2cb1094d13b2575158214b6336d74f3372cd10fc64f2597e0e7f4ce27f",
+    "test_id": "rule/mordheim/beastmen-raiders/band--beastmen-special-skills-horned-one/special-rule.band--beastmen-special-skills-horned-one::a-bearer-that-does-not-charge-resolves-only-its-ordinary-attack"
+  },
+  "case_key": "e2e/rule/mordheim/beastmen-raiders/band--beastmen-special-skills-horned-one/special-rule.band--beastmen-special-skills-horned-one/a-bearer-that-does-not-charge-resolves-only-its-ordinary-attack",
+  "case": {
+    "case_key": "e2e/rule/mordheim/beastmen-raiders/band--beastmen-special-skills-horned-one/special-rule.band--beastmen-special-skills-horned-one/a-bearer-that-does-not-charge-resolves-only-its-ordinary-attack",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/mordheim/beastmen-raiders/band--beastmen-special-skills-horned-one/special-rule.band--beastmen-special-skills-horned-one::a-bearer-that-does-not-charge-resolves-only-its-ordinary-attack",
+      "path": "tests/integration/e2e/cases/grants/mordheim--beastmen-raiders--band--beastmen-special-skills-horned-one--sp--bc131f632594.yaml",
+      "sha256": "6845fa2cb1094d13b2575158214b6336d74f3372cd10fc64f2597e0e7f4ce27f"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "beastmen-raiders:beastmen-chieftain",
+        "characteristics": {
+          "weapon_skill": 4,
+          "strength": 4,
+          "toughness": 4,
+          "wounds": 1,
+          "initiative": 4,
+          "attacks": 1,
+          "movement": 5,
+          "leadership": 7
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "mechanic.leader-six",
+            "armour.no-armour",
+            "species.beastman",
+            "fighter-kind.hero",
+            "band.beastmen-raiders",
+            "warband-group.beastmen",
+            "warband-group.chaotic",
+            "warband-group.evil"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [
+          {
+            "tags": [
+              "rule.horned-one"
+            ]
+          }
+        ],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 3,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.leader-six",
+            "species.beastman",
+            "fighter-kind.hero",
+            "band.beastmen-raiders",
+            "warband-group.beastmen",
+            "warband-group.chaotic",
+            "warband-group.evil"
+          ]
+        },
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 4,
+          "wounds": 3,
+          "initiative": 1,
+          "attacks": 1,
+          "movement": null,
+          "leadership": null
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {},
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [],
+      "active_participant": "first"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {},
+      "second": {
+        "attacks": 0
+      }
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "428abc84b4a85ed279008a2ab31ba0bf890087fbe7d352b29510ab8e72710445",
+      "case_sha256": "a69aac2cb8dec3b48c5bb01b90ea11182dd67c75f83a1ff6443fdd427f3dc3ea"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

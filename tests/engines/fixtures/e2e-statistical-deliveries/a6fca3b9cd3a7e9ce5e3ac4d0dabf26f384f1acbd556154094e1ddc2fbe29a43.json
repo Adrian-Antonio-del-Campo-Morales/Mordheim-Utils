@@ -1,0 +1,237 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/mordheim--orc-mob--troll--regeneration--skill.regeneration--0a9e3ae9dab4.yaml",
+    "sha256": "26927b6df479d32be298ea212b50184735694de4c813f4c4c0f38112c1cb788e",
+    "test_id": "rule/mordheim/orc-mob/troll--regeneration/skill.regeneration::a-fire-attack-takes-the-wound-without-a-regeneration-roll"
+  },
+  "case_key": "e2e/rule/mordheim/orc-mob/troll--regeneration/skill.regeneration/a-fire-attack-takes-the-wound-without-a-regeneration-roll",
+  "case": {
+    "case_key": "e2e/rule/mordheim/orc-mob/troll--regeneration/skill.regeneration/a-fire-attack-takes-the-wound-without-a-regeneration-roll",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/mordheim/orc-mob/troll--regeneration/skill.regeneration::a-fire-attack-takes-the-wound-without-a-regeneration-roll",
+      "path": "tests/integration/e2e/cases/grants/mordheim--orc-mob--troll--regeneration--skill.regeneration--0a9e3ae9dab4.yaml",
+      "sha256": "26927b6df479d32be298ea212b50184735694de4c813f4c4c0f38112c1cb788e"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 10,
+          "strength": 8,
+          "toughness": 3,
+          "wounds": 3,
+          "initiative": 10,
+          "attacks": 1,
+          "movement": null,
+          "leadership": null
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.brazier-iron",
+            "attack.fire",
+            "material.normal"
+          ],
+          "strength_bonus": 1,
+          "two_handed": true,
+          "ignition_threshold": 5
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {},
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.brazier-iron",
+            "effect": {
+              "tags": [
+                "weapon.brazier-iron",
+                "attack.fire",
+                "material.normal"
+              ],
+              "strength_bonus": 1,
+              "two_handed": true,
+              "ignition_threshold": 5
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "orc-mob:troll",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 5,
+          "toughness": 4,
+          "wounds": 3,
+          "initiative": 1,
+          "attacks": 3,
+          "movement": 6,
+          "leadership": 4
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.natural-attacks",
+            "material.normal"
+          ]
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "mechanic.causes-fear",
+            "mechanic.stupidity",
+            "skill.regeneration",
+            "armour.no-armour",
+            "fighter-kind.henchman",
+            "band.orc-mob",
+            "warband-group.orc",
+            "warband-group.orcs-and-goblins"
+          ],
+          "regeneration_save": 4,
+          "regeneration_blocked_by_fire": true
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {
+          "tags": [
+            "skill.regeneration"
+          ],
+          "regeneration_save": 4,
+          "regeneration_blocked_by_fire": true
+        },
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 1,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {
+          "tags": [
+            "skill.regeneration"
+          ],
+          "regeneration_save": 4,
+          "regeneration_blocked_by_fire": true
+        },
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.causes-fear",
+            "mechanic.stupidity",
+            "skill.regeneration",
+            "fighter-kind.henchman",
+            "band.orc-mob",
+            "warband-group.orc",
+            "warband-group.orcs-and-goblins"
+          ],
+          "regeneration_save": 4,
+          "regeneration_blocked_by_fire": true
+        },
+        "mutation_options": [],
+        "mutation_equipment": [],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [],
+      "active_participant": "first"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {},
+      "second": {
+        "attacks": 0,
+        "wounds": 2
+      }
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "5cea12b78b9e48665ec3ba9450671fd60749067e90359d897e09bd64b54773e3",
+      "case_sha256": "acfa587e9d99613770d4413e79dfdc6041b0f9faa7ada7322233a359e78c5b83"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

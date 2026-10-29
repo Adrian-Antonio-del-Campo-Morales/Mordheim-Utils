@@ -1,0 +1,223 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/mordheim--clockworkers-sc--clockwork-fiend--construct--unimplemented.clo--9ad39f5c5271.yaml",
+    "sha256": "0c320e117c9db80497da1c4354dba5d2fe11e959a97231c8db3a5c3ff66d41b7",
+    "test_id": "rule/mordheim/clockworkers-sc/clockwork-fiend--construct/unimplemented.clockworkers-sc.clockwork-fiend.construct::a-stunned-result-leaves-the-construct-knocked-down"
+  },
+  "case_key": "e2e/rule/mordheim/clockworkers-sc/clockwork-fiend--construct/unimplemented.clockworkers-sc.clockwork-fiend.construct/a-stunned-result-leaves-the-construct-knocked-down",
+  "case": {
+    "case_key": "e2e/rule/mordheim/clockworkers-sc/clockwork-fiend--construct/unimplemented.clockworkers-sc.clockwork-fiend.construct/a-stunned-result-leaves-the-construct-knocked-down",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/mordheim/clockworkers-sc/clockwork-fiend--construct/unimplemented.clockworkers-sc.clockwork-fiend.construct::a-stunned-result-leaves-the-construct-knocked-down",
+      "path": "tests/integration/e2e/cases/grants/mordheim--clockworkers-sc--clockwork-fiend--construct--unimplemented.clo--9ad39f5c5271.yaml",
+      "sha256": "0c320e117c9db80497da1c4354dba5d2fe11e959a97231c8db3a5c3ff66d41b7"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 8,
+          "toughness": 3,
+          "wounds": 2,
+          "initiative": 2,
+          "attacks": 1,
+          "movement": null,
+          "leadership": null
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {},
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "clockworkers-sc:clockwork-fiend",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 5,
+          "toughness": 5,
+          "wounds": 3,
+          "initiative": 1,
+          "attacks": 3,
+          "movement": 5,
+          "leadership": 8
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.fist",
+            "material.normal"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "mechanic.psychology-immunity",
+            "skill.ignore-pain",
+            "mechanic.drug-immunity",
+            "mechanic.causes-fear",
+            "armour.no-armour",
+            "poison_immune",
+            "fighter-kind.henchman",
+            "band.clockworkers-sc"
+          ],
+          "poison_immunity": true
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {
+          "tags": [
+            "skill.ignore-pain"
+          ]
+        },
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 3,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.psychology-immunity",
+            "skill.ignore-pain",
+            "mechanic.drug-immunity",
+            "mechanic.causes-fear",
+            "poison_immune",
+            "fighter-kind.henchman",
+            "band.clockworkers-sc"
+          ],
+          "poison_immunity": true
+        },
+        "mutation_options": [],
+        "mutation_equipment": [],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [],
+      "active_participant": "first"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {},
+      "second": {
+        "attacks": 0,
+        "wounds": 1
+      }
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "04a41ba0fc2f13ce45ffd40f1ef20802bfb7e339d206eec2b2d563a6277998ed",
+      "case_sha256": "9356289c4ccdec4fdd4d2ae8c6adfed87a5b2bc1aba15972080ddc9b5479840e"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

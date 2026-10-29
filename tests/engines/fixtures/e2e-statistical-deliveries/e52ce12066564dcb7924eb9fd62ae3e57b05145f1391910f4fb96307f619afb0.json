@@ -1,0 +1,231 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/mordheim--undead--dire-wolves--no-pain--skill.ignore-pain--cfa7ca6fc789.yaml",
+    "sha256": "f70c639c52b38068303d5f25fc0c10de45f55cf45ff8467f161f97087ec7bdfc",
+    "test_id": "rule/mordheim/undead/dire-wolves--no-pain/skill.ignore-pain::a-stunned-result-becomes-knocked-down"
+  },
+  "case_key": "e2e/rule/mordheim/undead/dire-wolves--no-pain/skill.ignore-pain/a-stunned-result-becomes-knocked-down",
+  "case": {
+    "case_key": "e2e/rule/mordheim/undead/dire-wolves--no-pain/skill.ignore-pain/a-stunned-result-becomes-knocked-down",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/mordheim/undead/dire-wolves--no-pain/skill.ignore-pain::a-stunned-result-becomes-knocked-down",
+      "path": "tests/integration/e2e/cases/grants/mordheim--undead--dire-wolves--no-pain--skill.ignore-pain--cfa7ca6fc789.yaml",
+      "sha256": "f70c639c52b38068303d5f25fc0c10de45f55cf45ff8467f161f97087ec7bdfc"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 10,
+          "strength": 8,
+          "toughness": 3,
+          "wounds": 3,
+          "initiative": 10,
+          "attacks": 1,
+          "movement": null,
+          "leadership": null
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {},
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "undead:dire-wolves",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 4,
+          "toughness": 3,
+          "wounds": 1,
+          "initiative": 2,
+          "attacks": 1,
+          "movement": 9,
+          "leadership": 4
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.natural-attacks",
+            "material.normal"
+          ]
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "mechanic.causes-fear",
+            "mechanic.psychology-immunity",
+            "skill.ignore-pain",
+            "armour.no-armour",
+            "poison_immune",
+            "undead_or_possessed",
+            "charge_attack_bonus",
+            "nature.undead",
+            "fighter-kind.henchman",
+            "band.undead",
+            "warband-group.evil",
+            "warband-group.undead"
+          ],
+          "charge_attacks_bonus": 1,
+          "poison_immunity": true
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {
+          "tags": [
+            "skill.ignore-pain"
+          ]
+        },
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.causes-fear",
+            "mechanic.psychology-immunity",
+            "skill.ignore-pain",
+            "poison_immune",
+            "undead_or_possessed",
+            "charge_attack_bonus",
+            "nature.undead",
+            "fighter-kind.henchman",
+            "band.undead",
+            "warband-group.evil",
+            "warband-group.undead"
+          ],
+          "charge_attacks_bonus": 1,
+          "poison_immunity": true
+        },
+        "mutation_options": [],
+        "mutation_equipment": [],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [],
+      "active_participant": "first"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {},
+      "second": {
+        "attacks": 0,
+        "wounds": 1
+      }
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "30698cb919d6899dfe845286e25eac1520c216b3503fcdf90b950c4da326744f",
+      "case_sha256": "3c108c44ffd2a3b08cda30ac1116625fa78e277acf4b429d100f68fe7d6471ab"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

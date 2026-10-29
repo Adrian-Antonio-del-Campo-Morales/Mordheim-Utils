@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "blocked",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/trollheim--lustria-high-elves--band--high-elf-special-skills-luck--skill--027bdf24fab1.yaml",
+    "sha256": "b36637b1698f331c7ac4079275a1fffa392a3b92a00158ee15810afef261a855",
+    "test_id": "rule/trollheim/lustria-high-elves/band--high-elf-special-skills-luck/skill.luck::a-failed-wound-is-rolled-again"
+  },
+  "case_key": "e2e/rule/trollheim/lustria-high-elves/band--high-elf-special-skills-luck/skill.luck/a-failed-wound-is-rolled-again",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E prescribes explicit decisions (round.0.first.attack.0.hit.luck, round.0.first.attack.0.wound.luck); the contract admits only the engine-default decision policy, and no general policy for randomly branched trajectories exists for these keys."
+}

@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "not-applicable",
+  "case_key": "e2e/mechanic/armour.cathayan-quilted-silk/quilted-silk-is-refused-as-a-body-armour",
+  "case": null,
+  "decision_policy": null,
+  "reason": "Construction refusal: fighters.first declares armour_id: armour.cathayan-quilted-silk and the build refuses it in packages/python/roster-construction/mordheim_construction/compiler.py:715 with ValueError 'Cathayan quilted silk is an armour overlay and belongs in defence_ids', exactly the declared expect_error. The scenario declares no duel (single fighter, no duel_context, no rolls or expectations), so there is no combat configuration to freeze for statistical parity.",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/mechanics/armour.cathayan-quilted-silk.yaml",
+    "sha256": "8381c96a3d7846f074a7ad0655a8ca20bb21b1a98e8c97f7b2ef65fa59875212",
+    "test_id": "mechanic/armour.cathayan-quilted-silk::quilted-silk-is-refused-as-a-body-armour"
+  },
+  "magnitudes": [
+    "winner"
+  ]
+}

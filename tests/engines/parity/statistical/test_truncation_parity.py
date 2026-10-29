@@ -10,12 +10,12 @@ from mordheim_combat_lab.verification.parity import ParityCase
 from mordheim_combat_lab.verification.parity import compare_statistical_parity
 from mordheim_combat_lab.verification.parity import run_parity
 from mordheim_combat_lab.verification.parity import statistical_result
-from tests.engines.fixtures.precompiled_catalog import benchmark_case_key
+from tests.engines.fixtures.precompiled_catalog import scenario_key
 import pytest
 
 
 def _case(cases, scenario_id: str = "basic"):
-    case = cases[benchmark_case_key(scenario_id)]
+    case = cases[scenario_key(scenario_id)]
     return ParityCase(
         label=scenario_id, first=case.first, second=case.second,
         maximum_rounds=case.limits.maximum_rounds, seed=3,

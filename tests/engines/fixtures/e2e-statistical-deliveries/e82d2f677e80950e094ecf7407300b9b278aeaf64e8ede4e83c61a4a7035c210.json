@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "not-applicable",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/mordheim--savage-orcs-kaz--band--orc-special-skills--unimplemented.savag--76bb7d9ad5ee.yaml",
+    "sha256": "51b41004b094bddb18da5df14cd6cfbb0bfcdca7b8d7d2ead53bcda380010622",
+    "test_id": "rule/mordheim/savage-orcs-kaz/band--orc-special-skills/unimplemented.savage-orcs-kaz.band.orc-special-skills::a-special-skill-outside-the-inherited-table-is-refused"
+  },
+  "case_key": "e2e/rule/mordheim/savage-orcs-kaz/band--orc-special-skills/unimplemented.savage-orcs-kaz.band.orc-special-skills/a-special-skill-outside-the-inherited-table-is-refused",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E declares an expected construction refusal (\"skills are not available to savage-orcs-kaz/boss: ['skill.monster-slayer']\"); the build is refused with \"skills are not available to savage-orcs-kaz/boss: ['skill.monster-slayer']\", so no statistical scenario can be frozen."
+}

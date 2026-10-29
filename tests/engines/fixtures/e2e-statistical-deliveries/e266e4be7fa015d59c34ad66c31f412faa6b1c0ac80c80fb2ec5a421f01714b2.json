@@ -1,0 +1,190 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/mordheim--orc-pirates-sar--sea-troll--slimy--mechanic.sea-troll-slime--20bc44c1b894.yaml",
+    "sha256": "e52d6325c286df152c27b96eb25a315d7f4dfa540498d99303816e0d591d48e3",
+    "test_id": "rule/mordheim/orc-pirates-sar/sea-troll--slimy/mechanic.sea-troll-slime::a-natural-six-still-hits-the-sea-troll"
+  },
+  "case_key": "e2e/rule/mordheim/orc-pirates-sar/sea-troll--slimy/mechanic.sea-troll-slime/a-natural-six-still-hits-the-sea-troll",
+  "case": {
+    "case_key": "e2e/rule/mordheim/orc-pirates-sar/sea-troll--slimy/mechanic.sea-troll-slime/a-natural-six-still-hits-the-sea-troll",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/mordheim/orc-pirates-sar/sea-troll--slimy/mechanic.sea-troll-slime::a-natural-six-still-hits-the-sea-troll",
+      "path": "tests/integration/e2e/cases/grants/mordheim--orc-pirates-sar--sea-troll--slimy--mechanic.sea-troll-slime--20bc44c1b894.yaml",
+      "sha256": "e52d6325c286df152c27b96eb25a315d7f4dfa540498d99303816e0d591d48e3"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 2,
+          "initiative": 5,
+          "attacks": 1,
+          "movement": null,
+          "leadership": null
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.natural-attacks",
+            "material.normal"
+          ]
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {},
+        "mutation_options": [],
+        "mutation_equipment": [],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "orc-pirates-sar:sea-troll",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 2,
+          "initiative": 2,
+          "attacks": 1,
+          "movement": 6,
+          "leadership": 4
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.natural-attacks",
+            "material.normal"
+          ]
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "mechanic.sea-troll-slime",
+            "armour.no-armour",
+            "fighter-kind.henchman",
+            "band.orc-pirates-sar"
+          ],
+          "incoming_hit_modifier": -1
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 1,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.sea-troll-slime",
+            "fighter-kind.henchman",
+            "band.orc-pirates-sar"
+          ],
+          "incoming_hit_modifier": -1
+        },
+        "mutation_options": [],
+        "mutation_equipment": [],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [],
+      "active_participant": "first"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {},
+      "second": {}
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "138ab19d44ca785d87a5d3e1223202e8ed7085c66f6084cb97ef2f6dc0b661f2",
+      "case_sha256": "90fcb413adbcd704a51a15b17dc64d9c74d1b9b65e354db1c68ab56b16cef5fa"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

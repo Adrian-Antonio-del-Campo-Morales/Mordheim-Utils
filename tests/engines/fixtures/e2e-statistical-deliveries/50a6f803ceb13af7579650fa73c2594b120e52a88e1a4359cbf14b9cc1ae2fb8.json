@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "blocked",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/mordheim--watchmen-mim--private-sleuth--hypnotist--mechanic.hypnotist--0e3418d17278.yaml",
+    "sha256": "ca21e01ff9d3dce26a9b7ad4d1b29fbce682925cef0219a6d3784ac149d3aafe",
+    "test_id": "rule/mordheim/watchmen-mim/private-sleuth--hypnotist/mechanic.hypnotist::a-passed-leadership-test-leaves-the-target-free"
+  },
+  "case_key": "e2e/rule/mordheim/watchmen-mim/private-sleuth--hypnotist/mechanic.hypnotist/a-passed-leadership-test-leaves-the-target-free",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E prescribes explicit decisions (round.0.second.attack.0.hit.scryer, round.0.second.hypnotist); the contract admits only the engine-default decision policy, and no general policy for randomly branched trajectories exists for these keys."
+}

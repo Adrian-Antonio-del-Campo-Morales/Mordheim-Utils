@@ -13,7 +13,7 @@ from typing import Iterable
 
 from mordheim_combat_lab.cli.benchmarking import benchmark_scenarios
 from mordheim_combat.vectorized import available_backends
-from mordheim_construction.compiler import compile_fighter
+from mordheim_combat_lab.cli.benchmarking import compile_benchmark_fighters
 from mordheim_combat_lab.verification.parity import compare_statistical_parity
 
 
@@ -68,7 +68,7 @@ def statistical_report_rows(*, simulations: int = 100_000, seed: int = 2026,
         from mordheim_combat.modular.parallel import run_oracle_sample
         import time
 
-        first, second = compile_fighter(scenario.first), compile_fighter(scenario.second)
+        first, second = compile_benchmark_fighters(scenario)
         oracle_started = time.perf_counter()
         modular_result = run_oracle_sample(
             first, second, simulations, seed=seed,

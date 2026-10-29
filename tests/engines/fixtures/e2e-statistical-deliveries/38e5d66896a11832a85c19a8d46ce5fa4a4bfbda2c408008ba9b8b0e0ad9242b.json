@@ -1,0 +1,229 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/trollheim--lustria-savage-goblins--zomblins--no-pain--skill.ignore-pain--25b1ed23e332.yaml",
+    "sha256": "4029ca6a1a31beac3cb5e5208c11e6622ceb4ad0d1f50ac4fb3de2eab95dbfc0",
+    "test_id": "rule/trollheim/lustria-savage-goblins/zomblins--no-pain/skill.ignore-pain::a-stunned-result-becomes-knocked-down"
+  },
+  "case_key": "e2e/rule/trollheim/lustria-savage-goblins/zomblins--no-pain/skill.ignore-pain/a-stunned-result-becomes-knocked-down",
+  "case": {
+    "case_key": "e2e/rule/trollheim/lustria-savage-goblins/zomblins--no-pain/skill.ignore-pain/a-stunned-result-becomes-knocked-down",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/trollheim/lustria-savage-goblins/zomblins--no-pain/skill.ignore-pain::a-stunned-result-becomes-knocked-down",
+      "path": "tests/integration/e2e/cases/grants/trollheim--lustria-savage-goblins--zomblins--no-pain--skill.ignore-pain--25b1ed23e332.yaml",
+      "sha256": "4029ca6a1a31beac3cb5e5208c11e6622ceb4ad0d1f50ac4fb3de2eab95dbfc0"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 10,
+          "strength": 8,
+          "toughness": 3,
+          "wounds": 3,
+          "initiative": 10,
+          "attacks": 1,
+          "movement": null,
+          "leadership": null
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {},
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "lustria-savage-goblins:zomblins",
+        "characteristics": {
+          "weapon_skill": 2,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 1,
+          "initiative": 1,
+          "attacks": 1,
+          "movement": 4,
+          "leadership": 5
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.natural-attacks",
+            "material.normal"
+          ]
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "mechanic.causes-fear",
+            "mechanic.psychology-immunity",
+            "skill.ignore-pain",
+            "mechanic.fear-of-elves",
+            "armour.no-armour",
+            "poison_immune",
+            "fighter-kind.henchman",
+            "band.lustria-savage-goblins",
+            "warband-group.goblin",
+            "warband-group.orcs-and-goblins"
+          ],
+          "poison_immunity": true
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {
+          "tags": [
+            "skill.ignore-pain"
+          ]
+        },
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {
+          "tags": [
+            "skill.ignore-pain"
+          ]
+        },
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.causes-fear",
+            "mechanic.psychology-immunity",
+            "skill.ignore-pain",
+            "mechanic.fear-of-elves",
+            "poison_immune",
+            "fighter-kind.henchman",
+            "band.lustria-savage-goblins",
+            "warband-group.goblin",
+            "warband-group.orcs-and-goblins"
+          ],
+          "poison_immunity": true
+        },
+        "mutation_options": [],
+        "mutation_equipment": [],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [],
+      "active_participant": "first"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {},
+      "second": {
+        "attacks": 0,
+        "wounds": 1
+      }
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "e36bcd2926e4c2bb1a6f9bcffade0217f1272e6ceb59885a029348430814cb1d",
+      "case_sha256": "1070593184390940e6187bf89e51c48538e787bb13631238b8702dbaf35e4ae8"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

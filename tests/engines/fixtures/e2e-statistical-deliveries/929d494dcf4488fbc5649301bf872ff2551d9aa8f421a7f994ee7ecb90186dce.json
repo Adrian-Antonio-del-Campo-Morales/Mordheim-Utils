@@ -1,0 +1,351 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/mordheim--shadow-warriors--shadow-master--leader--mechanic.leader-six--6ab71eaa174c.yaml",
+    "sha256": "4c874d15ad68b433614c293fcff877ab45d48f37e98b1ecc83519ce0618cfa24",
+    "test_id": "rule/mordheim/shadow-warriors/shadow-master--leader/mechanic.leader-six::a-supplied-leader-that-is-not-standing-supplies-nothing"
+  },
+  "case_key": "e2e/rule/mordheim/shadow-warriors/shadow-master--leader/mechanic.leader-six/a-supplied-leader-that-is-not-standing-supplies-nothing",
+  "case": {
+    "case_key": "e2e/rule/mordheim/shadow-warriors/shadow-master--leader/mechanic.leader-six/a-supplied-leader-that-is-not-standing-supplies-nothing",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/mordheim/shadow-warriors/shadow-master--leader/mechanic.leader-six::a-supplied-leader-that-is-not-standing-supplies-nothing",
+      "path": "tests/integration/e2e/cases/grants/mordheim--shadow-warriors--shadow-master--leader--mechanic.leader-six--6ab71eaa174c.yaml",
+      "sha256": "4c874d15ad68b433614c293fcff877ab45d48f37e98b1ecc83519ce0618cfa24"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 3,
+          "initiative": 10,
+          "attacks": 1,
+          "movement": null,
+          "leadership": 7
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour",
+            "mechanic.causes-fear"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.causes-fear"
+          ]
+        },
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "shadow-warriors:shadow-warrior-novices",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 1,
+          "initiative": 5,
+          "attacks": 1,
+          "movement": 5,
+          "leadership": 7
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.dagger",
+            "material.normal"
+          ],
+          "target_armour_bonus": 1
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "mechanic.hatred-dark-elves",
+            "armour.no-armour",
+            "species.elf",
+            "species.high-elf",
+            "fighter-kind.henchman",
+            "band.shadow-warriors",
+            "warband-group.elf",
+            "warband-group.good-aligned",
+            "warband-group.high-elf"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 3,
+        "construction_tags": [
+          "compiler.forbid-item-categories"
+        ],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.hatred-dark-elves",
+            "species.elf",
+            "species.high-elf",
+            "fighter-kind.henchman",
+            "band.shadow-warriors",
+            "warband-group.elf",
+            "warband-group.good-aligned",
+            "warband-group.high-elf"
+          ]
+        },
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.dagger",
+            "effect": {
+              "tags": [
+                "weapon.dagger",
+                "material.normal"
+              ],
+              "target_armour_bonus": 1
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [
+        {
+          "participant_id": "leader",
+          "side_id": "second",
+          "fighter": {
+            "fighter_id": "shadow-warriors:shadow-master",
+            "characteristics": {
+              "weapon_skill": 5,
+              "strength": 3,
+              "toughness": 3,
+              "wounds": 1,
+              "initiative": 6,
+              "attacks": 1,
+              "movement": 5,
+              "leadership": 9
+            },
+            "main_weapon": {
+              "tags": [
+                "weapon.dagger",
+                "material.normal"
+              ],
+              "target_armour_bonus": 1
+            },
+            "off_hand": null,
+            "global_effects": {
+              "tags": [
+                "mechanic.leader-six",
+                "mechanic.hatred-dark-elves",
+                "armour.no-armour",
+                "species.elf",
+                "species.high-elf",
+                "fighter-kind.hero",
+                "band.shadow-warriors",
+                "warband-group.elf",
+                "warband-group.good-aligned",
+                "warband-group.high-elf"
+              ]
+            },
+            "armour_save": 7,
+            "helmet_save": 7,
+            "natural_armour_save": 7,
+            "off_hand_attacks": false,
+            "natural_armour_unmodified": false,
+            "injury_profile": 0,
+            "random_characteristics": [],
+            "natural_armour_worst_save": 7,
+            "shield_and_skill_effects": {},
+            "extra_attacks": [],
+            "missile_weapon_limit": 2,
+            "ballistic_skill": 5,
+            "construction_tags": [
+              "compiler.forbid-item-categories"
+            ],
+            "main_weapon_without_poison": null,
+            "off_hand_without_poison": null,
+            "mounted": false,
+            "unarmed_weapon": {
+              "tags": [
+                "weapon.fist"
+              ],
+              "strength_bonus": -1,
+              "target_armour_bonus": 1
+            },
+            "main_hand_slot": "main",
+            "off_hand_slot": "off",
+            "vomit_attack": null,
+            "stupidity_leadership": null,
+            "stupidity_leadership_bonus": 0,
+            "mob_allies": 0,
+            "animal_handler_leadership": null,
+            "skill_effects_only": {},
+            "global_effects_without_equipment": {
+              "tags": [
+                "mechanic.leader-six",
+                "mechanic.hatred-dark-elves",
+                "species.elf",
+                "species.high-elf",
+                "fighter-kind.hero",
+                "band.shadow-warriors",
+                "warband-group.elf",
+                "warband-group.good-aligned",
+                "warband-group.high-elf"
+              ]
+            },
+            "mutation_options": [],
+            "mutation_equipment": [
+              {
+                "item_id": "weapon.dagger",
+                "effect": {
+                  "tags": [
+                    "weapon.dagger",
+                    "material.normal"
+                  ],
+                  "target_armour_bonus": 1
+                },
+                "kind": "weapon",
+                "slot": "main",
+                "stat_bonuses": [],
+                "effect_without_poison": null
+              }
+            ],
+            "natural_armour_stacks": false,
+            "extra_attacks_without_poison": []
+          },
+          "condition": "knocked-down"
+        }
+      ],
+      "distances": [
+        [
+          "second",
+          "leader",
+          6
+        ]
+      ],
+      "contacts": null,
+      "terrain": [],
+      "charging": [
+        "first"
+      ],
+      "active_participant": "first"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {},
+      "second": {}
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "3c09526fdb2a2dfa1c565a0c20904b6848c46600f550b9436cf2fddf4768f8c0",
+      "case_sha256": "0278143d51f176e33d243b4f41d0159f29c2acee562261eff973c57783134f1c"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

@@ -165,8 +165,9 @@ python tools/mordheim-utils.py performance calibrate --pairs mini
 python tools/mordheim-utils.py performance calibrate --reset         # drop the profile
 ```
 
-The benchmark/parity/calibration CLIs retain their own scenario preparation and
-may compile from the KB; frozen pytest inputs do not change those defaults.
+Benchmark, parity and calibration share the unified precompiled scenario
+catalogue. Missing frozen scenarios fail instead of compiling replacements.
+The separate build-based parity battery still compiles its declared inputs.
 
 The command installs `calibration.json` beside the local preferences. Use
 `--no-install` for a read-only study, `--output PATH` for the full evidence and

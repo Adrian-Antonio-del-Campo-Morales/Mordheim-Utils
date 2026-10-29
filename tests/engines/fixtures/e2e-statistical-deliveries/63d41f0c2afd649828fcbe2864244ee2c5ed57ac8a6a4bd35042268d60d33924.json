@@ -1,0 +1,353 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/mordheim--dwarf-slayers-kaz--giant-slayer--leader--mechanic.leader-six--6d47f3089e55.yaml",
+    "sha256": "97baf85fe2d62d0fbb14b66de898237dcb1c3f9303e626de73864a603d3c175c",
+    "test_id": "rule/mordheim/dwarf-slayers-kaz/giant-slayer--leader/mechanic.leader-six::a-leader-beyond-the-printed-radius-supplies-nothing"
+  },
+  "case_key": "e2e/rule/mordheim/dwarf-slayers-kaz/giant-slayer--leader/mechanic.leader-six/a-leader-beyond-the-printed-radius-supplies-nothing",
+  "case": {
+    "case_key": "e2e/rule/mordheim/dwarf-slayers-kaz/giant-slayer--leader/mechanic.leader-six/a-leader-beyond-the-printed-radius-supplies-nothing",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/mordheim/dwarf-slayers-kaz/giant-slayer--leader/mechanic.leader-six::a-leader-beyond-the-printed-radius-supplies-nothing",
+      "path": "tests/integration/e2e/cases/grants/mordheim--dwarf-slayers-kaz--giant-slayer--leader--mechanic.leader-six--6d47f3089e55.yaml",
+      "sha256": "97baf85fe2d62d0fbb14b66de898237dcb1c3f9303e626de73864a603d3c175c"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 3,
+          "initiative": 10,
+          "attacks": 1,
+          "movement": null,
+          "leadership": 7
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour",
+            "mechanic.causes-fear"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.causes-fear"
+          ]
+        },
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "dwarf-slayers-kaz:clansmen",
+        "characteristics": {
+          "weapon_skill": 4,
+          "strength": 3,
+          "toughness": 4,
+          "wounds": 1,
+          "initiative": 2,
+          "attacks": 1,
+          "movement": 3,
+          "leadership": 7
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.dagger",
+            "material.normal"
+          ],
+          "target_armour_bonus": 1
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "skill.hard-to-kill",
+            "mechanic.hatred-orcs-goblins",
+            "armour.no-armour",
+            "concussion_immune",
+            "species.dwarf",
+            "fighter-kind.henchman",
+            "band.dwarf-slayers-kaz"
+          ],
+          "out_of_action_threshold": 6
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {
+          "tags": [
+            "skill.hard-to-kill"
+          ],
+          "out_of_action_threshold": 6
+        },
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 3,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "skill.hard-to-kill",
+            "mechanic.hatred-orcs-goblins",
+            "concussion_immune",
+            "species.dwarf",
+            "fighter-kind.henchman",
+            "band.dwarf-slayers-kaz"
+          ],
+          "out_of_action_threshold": 6
+        },
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.dagger",
+            "effect": {
+              "tags": [
+                "weapon.dagger",
+                "material.normal"
+              ],
+              "target_armour_bonus": 1
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [
+        {
+          "participant_id": "leader",
+          "side_id": "second",
+          "fighter": {
+            "fighter_id": "dwarf-slayers-kaz:giant-slayer",
+            "characteristics": {
+              "weapon_skill": 5,
+              "strength": 3,
+              "toughness": 4,
+              "wounds": 2,
+              "initiative": 2,
+              "attacks": 2,
+              "movement": 3,
+              "leadership": 9
+            },
+            "main_weapon": {
+              "tags": [
+                "weapon.dagger",
+                "material.normal"
+              ],
+              "target_armour_bonus": 1
+            },
+            "off_hand": null,
+            "global_effects": {
+              "tags": [
+                "mechanic.leader-six",
+                "identity.slayer",
+                "skill.hard-to-kill",
+                "mechanic.hatred-orcs-goblins",
+                "armour.no-armour",
+                "concussion_immune",
+                "fighter-kind.hero",
+                "band.dwarf-slayers-kaz"
+              ],
+              "out_of_action_threshold": 6
+            },
+            "armour_save": 7,
+            "helmet_save": 7,
+            "natural_armour_save": 7,
+            "off_hand_attacks": false,
+            "natural_armour_unmodified": false,
+            "injury_profile": 0,
+            "random_characteristics": [],
+            "natural_armour_worst_save": 7,
+            "shield_and_skill_effects": {
+              "tags": [
+                "skill.hard-to-kill"
+              ],
+              "out_of_action_threshold": 6
+            },
+            "extra_attacks": [],
+            "missile_weapon_limit": 2,
+            "ballistic_skill": 3,
+            "construction_tags": [],
+            "main_weapon_without_poison": null,
+            "off_hand_without_poison": null,
+            "mounted": false,
+            "unarmed_weapon": {
+              "tags": [
+                "weapon.fist"
+              ],
+              "strength_bonus": -1,
+              "target_armour_bonus": 1
+            },
+            "main_hand_slot": "main",
+            "off_hand_slot": "off",
+            "vomit_attack": null,
+            "stupidity_leadership": null,
+            "stupidity_leadership_bonus": 0,
+            "mob_allies": 0,
+            "animal_handler_leadership": null,
+            "skill_effects_only": {},
+            "global_effects_without_equipment": {
+              "tags": [
+                "mechanic.leader-six",
+                "identity.slayer",
+                "skill.hard-to-kill",
+                "mechanic.hatred-orcs-goblins",
+                "concussion_immune",
+                "fighter-kind.hero",
+                "band.dwarf-slayers-kaz"
+              ],
+              "out_of_action_threshold": 6
+            },
+            "mutation_options": [],
+            "mutation_equipment": [
+              {
+                "item_id": "weapon.dagger",
+                "effect": {
+                  "tags": [
+                    "weapon.dagger",
+                    "material.normal"
+                  ],
+                  "target_armour_bonus": 1
+                },
+                "kind": "weapon",
+                "slot": "main",
+                "stat_bonuses": [],
+                "effect_without_poison": null
+              }
+            ],
+            "natural_armour_stacks": false,
+            "extra_attacks_without_poison": []
+          },
+          "condition": "standing"
+        }
+      ],
+      "distances": [
+        [
+          "second",
+          "leader",
+          7.0
+        ]
+      ],
+      "contacts": null,
+      "terrain": [],
+      "charging": [
+        "first"
+      ],
+      "active_participant": "first"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {},
+      "second": {}
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "642f891634900a01082a0ac4f4077f6a43fcd7b324b9e1667ba9272bb78b39ed",
+      "case_sha256": "5e17c6c8390f1b66e46a456d27303f3accfa70bdb929574efc6c9b9dca915e37"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

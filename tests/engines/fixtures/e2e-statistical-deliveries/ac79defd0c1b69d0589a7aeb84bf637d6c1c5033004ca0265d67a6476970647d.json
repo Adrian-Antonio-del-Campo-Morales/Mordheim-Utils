@@ -1,0 +1,234 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/trollheim--lustria-pygmies--wild-lunatics--lunatics--unimplemented.lustr--2c4b8570648c.yaml",
+    "sha256": "dc90f81b993689f9c9eb49e89c8e6751bb936f41be231c3b296ebed9770c20ae",
+    "test_id": "rule/trollheim/lustria-pygmies/wild-lunatics--lunatics/unimplemented.lustria-pygmies.wild-lunatics.lunatics::the-supplied-frenzy-state-doubles-the-wild-lunatics-attack-count"
+  },
+  "case_key": "e2e/rule/trollheim/lustria-pygmies/wild-lunatics--lunatics/unimplemented.lustria-pygmies.wild-lunatics.lunatics/the-supplied-frenzy-state-doubles-the-wild-lunatics-attack-count",
+  "case": {
+    "case_key": "e2e/rule/trollheim/lustria-pygmies/wild-lunatics--lunatics/unimplemented.lustria-pygmies.wild-lunatics.lunatics/the-supplied-frenzy-state-doubles-the-wild-lunatics-attack-count",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/trollheim/lustria-pygmies/wild-lunatics--lunatics/unimplemented.lustria-pygmies.wild-lunatics.lunatics::the-supplied-frenzy-state-doubles-the-wild-lunatics-attack-count",
+      "path": "tests/integration/e2e/cases/grants/trollheim--lustria-pygmies--wild-lunatics--lunatics--unimplemented.lustr--2c4b8570648c.yaml",
+      "sha256": "dc90f81b993689f9c9eb49e89c8e6751bb936f41be231c3b296ebed9770c20ae"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 3,
+          "initiative": 1,
+          "attacks": 1,
+          "movement": null,
+          "leadership": 7
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.dagger",
+            "material.normal"
+          ],
+          "target_armour_bonus": 1
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour",
+            "mechanic.causes-fear"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.causes-fear"
+          ]
+        },
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.dagger",
+            "effect": {
+              "tags": [
+                "weapon.dagger",
+                "material.normal"
+              ],
+              "target_armour_bonus": 1
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "lustria-pygmies:wild-lunatics",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 2,
+          "toughness": 2,
+          "wounds": 1,
+          "initiative": 3,
+          "attacks": 1,
+          "movement": 4,
+          "leadership": 7
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.dagger",
+            "material.normal"
+          ],
+          "target_armour_bonus": 1
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "mechanic.psychology-immunity",
+            "mechanic.lunatics",
+            "armour.no-armour",
+            "fighter-kind.henchman",
+            "band.lustria-pygmies",
+            "warband-group.pygmy"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 3,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.psychology-immunity",
+            "mechanic.lunatics",
+            "fighter-kind.henchman",
+            "band.lustria-pygmies",
+            "warband-group.pygmy"
+          ]
+        },
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.dagger",
+            "effect": {
+              "tags": [
+                "weapon.dagger",
+                "material.normal"
+              ],
+              "target_armour_bonus": 1
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [
+        "first"
+      ],
+      "active_participant": "first"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {},
+      "second": {
+        "attacks": 1,
+        "frenzy": true
+      }
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "adae24e99199ebafc14b820caacad6086c8a9547e062b5a657b413519291b729",
+      "case_sha256": "457aeaa5dc47ed0e906d7f686502ce3408caa291e51f34dd1f986a1abb381818"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}
