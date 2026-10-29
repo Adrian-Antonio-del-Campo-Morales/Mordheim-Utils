@@ -41,9 +41,78 @@ COMPLEX_EVIDENCE = {
         "tests/engines/vectorized/test_complex_sequences.py::test_fire_persists_after_failed_recovery_and_stops_after_extinguishing",
 }
 
+#: Evidence that is discharged before either engine runs, so no vectorized
+#: source literal can carry it: the shared compiler already produced the effect.
+COMPILE_TIME_EVIDENCE = frozenset({"shared-construction", "compiled-extra-attacks"})
+
+#: Tags the vectorized engine consumes through a *computed* literal, which the
+#: source scan in ``verify_vectorized_parity`` cannot see.  Each value names the
+#: symbol in ``mordheim_combat/vectorized`` that performs the consumption; the
+#: symbol must itself appear in those sources, so a rename or removal drops the
+#: obligation back to pending instead of silently keeping it verified.  Add an
+#: entry only after confirming the consumer runs and agrees with the modular
+#: oracle -- never to paper over a missing port.
 INDIRECT_TAG_EVIDENCE = {
     "skill.shield-strike": "compiled-extra-attacks",
+    # ``_select_shadow_dance`` filters ``SHADOW_DANCES`` with ``f"dance.{dance}"``
+    # over the unprefixed names, so none of the four full tags is a literal.
+    # The driver calls it each round (``_driver._simulate_batch_core``) and the
+    # four tags are in ``NUMPY_CONNECTED_TAGS``, so the gate admits them.
+    "dance.whirling-death": "_select_shadow_dance",
+    "dance.storm-of-blades": "_select_shadow_dance",
+    "dance.the-shadows-coil": "_select_shadow_dance",
+    "dance.woven-mist": "_select_shadow_dance",
+    # ``_state.py::initialize_fighter`` reads the supplied permanent table
+    # result through ``f"condition.disability-{result}"``, exactly as the oracle
+    # does at ``modular/state.py:285``, so no full tag is ever a literal.  All
+    # six results are differentially validated: the ``mechanic-disability``
+    # specification carries one ``initialize`` case per result and all pass, and
+    # the resulting characteristics match the oracle for 1..6.
+    "condition.disability-1": "initialize_fighter",
+    "condition.disability-2": "initialize_fighter",
+    "condition.disability-3": "initialize_fighter",
+    "condition.disability-4": "initialize_fighter",
+    "condition.disability-5": "initialize_fighter",
+    "condition.disability-6": "initialize_fighter",
+    # Discharged by the *shared* ``phases.black_lotus_wounds``, which both
+    # engines call with the same arguments from matching wound contexts
+    # (``modular/contexts.py:699`` and ``_operators.py:974``).  There is one
+    # implementation, so the qualification cannot diverge; the scan simply never
+    # looks outside ``vectorized/``.
+    "poison.vampires-only": "black_lotus_wounds",
 }
+
+def _numpy_gated_tags() -> frozenset[str]:
+    """Tags the NumPy admission gate refuses, read from the gate itself.
+
+    ``require_optimized_support`` raises for any duel whose fighters carry one
+    of these, so the vectorized engine never executes the rule no matter what
+    its sources contain.  Such an obligation cannot be verified by a source
+    scan, and several are: the port was written ahead of the gate opening.
+    """
+    from mordheim_combat.kernel import pending_capabilities
+
+    pending = pending_capabilities("numpy")
+    return frozenset(
+        pending.residual_tags | pending.local_modifier_tags
+        | pending.weapon_profile_tags
+    )
+
+def _tag_evidence(tag: str, consumer: str, vector_source: str,
+                  gated: frozenset[str]) -> tuple[str, bool]:
+    """Return the evidence label for one tag obligation and whether it holds."""
+    if consumer == "construction":
+        return "shared-construction", True
+    if tag in gated:
+        # The gate refuses every duel carrying this tag: there is no vectorized
+        # runtime to verify, so the literal's presence proves nothing.
+        return "numpy-gate-refused", False
+    evidence = INDIRECT_TAG_EVIDENCE.get(tag)
+    if evidence is not None:
+        return evidence, evidence in COMPILE_TIME_EVIDENCE or evidence in vector_source
+    return "vectorized-runtime", any(
+        literal in vector_source for literal in (f'"{tag}"', f"'{tag}'")
+    )
 
 def _evidence_exists(reference: str) -> bool:
     relative, separator, test_name = reference.partition("::")
@@ -220,14 +289,9 @@ def verify_vectorized_parity() -> ParityReport:
         verified = evidence == "shared-construction" or f".{field}" in vector_source
         obligations.append(ParityObligation("field", field, consumer, evidence, verified))
 
+    gated = _numpy_gated_tags()
     for tag, consumer in sorted(MODULAR_TAG_CONSUMERS.items()):
-        evidence = (
-            "shared-construction" if consumer == "construction"
-            else INDIRECT_TAG_EVIDENCE.get(tag, "vectorized-runtime")
-        )
-        verified = evidence in {"shared-construction", "compiled-extra-attacks"} or any(
-            literal in vector_source for literal in (f'"{tag}"', f"'{tag}'")
-        )
+        evidence, verified = _tag_evidence(tag, consumer, vector_source, gated)
         obligations.append(ParityObligation("tag", tag, consumer, evidence, verified))
 
     for scenario in sorted(MODULAR_COMPLEX_SCENARIOS):

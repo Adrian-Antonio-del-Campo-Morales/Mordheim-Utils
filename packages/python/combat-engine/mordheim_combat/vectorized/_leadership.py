@@ -17,13 +17,13 @@ its resource spending.
 from __future__ import annotations
 
 import numpy as np
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 from mordheim_core.context import PreparedDuelContext
 from mordheim_core.dice import AlwaysAccept, DecisionPolicy
 from mordheim_core.models import CompiledFighter, EffectSet
 
-from mordheim_combat.vectorized._types import CombatState, has
+from mordheim_combat.vectorized._types import CombatState, OUT, STANDING, has
 
 
 #: The per-battle Leadership resources the modular ``FighterState`` keeps in
@@ -530,3 +530,225 @@ def resolve_local_leadership(
         ) <= reroll_values
         passed[pending_positions[rerollable]] = reroll_passed
     return passed
+
+
+# ---------------------------------------------------------------------------
+# Command conditions issued before the duel
+#
+# ``modular/rounds.py`` opens every round with one block that lights the
+# already-active individual Command effects its comment describes: "Only
+# already-active individual Command effects are supplied; no casting, no
+# issuing Knight, no range and no group lifecycle is simulated."  The three
+# Commands below are that block's Leadership-side members; the round driver
+# owns the call, exactly as the scalar round owns the block.
+# ---------------------------------------------------------------------------
+
+#: Printed exclusion of ``mechanic.sea-shanty``: the song reaches a living
+#: recipient only.  ``modular/rounds.py`` inlines this same tuple beside the
+#: test; it is a clause of the Shanty, not a shared engine predicate.
+SEA_SHANTY_NON_LIVING_TAGS = (
+    "nature.undead", "nature.possessed", "nature.daemon",
+    "nature.construct", "nature.non-living",
+)
+
+
+def _with_tags(fighter: CompiledFighter, *tags: str) -> CompiledFighter:
+    """A copy of ``fighter`` whose global effects also carry ``tags``."""
+    effect = fighter.global_effects
+    return replace(fighter, global_effects=replace(effect, tags=(*effect.tags, *tags)))
+
+
+def apply_command_conditions(fighter: CompiledFighter, *, round_index: int,
+                             ) -> CompiledFighter:
+    """Light this round's Leadership-side Command conditions on one bearer.
+
+    Port of the two Command clauses ``modular/rounds.py`` resolves in its
+    round-opening block:
+
+    * ``condition.command.follow-me-mine-pugnacious-ones`` adds
+      ``condition.command.follow-me-active`` in the opening round only.  The
+      consequence (its +1 To Hit in melee) is already ported in
+      ``vectorized/_operators.py``, which reads the ``-active`` tag.
+    * ``condition.command.raise-our-insignia`` adds
+      ``condition.command.raise-our-insignia-active`` in the opening round
+      only.  The consequence (the failed-Leadership re-roll) is already ported
+      in ``resolve_local_leadership`` above, which reads the ``-active`` tag.
+      The round driver must call :func:`expire_raise_our_insignia` at the
+      Shooting boundary, as the scalar round does.
+
+    The same oracle block also lights ``condition.righteous-charge-active``
+    and the Poetry attack bonus; neither is a Leadership rule and neither is
+    applied here.
+    """
+    if round_index != 0:
+        return fighter
+    effect = fighter.global_effects
+    tags = []
+    if has(effect, "condition.command.follow-me-mine-pugnacious-ones"):
+        tags.append("condition.command.follow-me-active")
+    if has(effect, "condition.command.raise-our-insignia"):
+        tags.append("condition.command.raise-our-insignia-active")
+    return _with_tags(fighter, *tags) if tags else fighter
+
+
+def expire_raise_our_insignia(fighter: CompiledFighter) -> CompiledFighter:
+    """Drop ``condition.command.raise-our-insignia-active`` from one bearer.
+
+    Raise Our Insignia expires at the Shooting boundary: after the supplied
+    Recovery/Movement tests (Stupidity and the opening round's Fear, both of
+    which still enjoy the re-roll) and before that phase's melee.  The scalar
+    round strips the tag at exactly that point.
+    """
+    effect = fighter.global_effects
+    if not has(effect, "condition.command.raise-our-insignia-active"):
+        return fighter
+    return replace(fighter, global_effects=replace(effect, tags=tuple(
+        tag for tag in effect.tags
+        if tag != "condition.command.raise-our-insignia-active")))
+
+
+def apply_death_fighting(
+    fighter: CompiledFighter, *, round_index: int, owner_first: bool,
+    initial_first_turn: np.ndarray,
+) -> tuple[CompiledFighter, np.ndarray | None]:
+    """Port of ``condition.command.art-thou-ready-to-die-fighting``.
+
+    The printed Command raises its bearer's out-of-action threshold to 6 (the
+    Hard to Kill chart) while it lasts.  The scalar round writes
+
+    ``round_index < (2 if initial_first == owner_first else 1)``
+
+    so the bearer keeps the threshold for the opening round always, and for
+    the second round only while he owned the opening player turn.  That owner
+    is a per-row fact in this engine (``initial_first_turn``), so the second
+    round is a row mask rather than a property of the compiled fighter.
+
+    Returns ``(fighter, rows)``.  ``fighter`` already carries the raised
+    threshold whenever every row is covered (the opening round), so the usual
+    case needs no row work at all.  ``rows`` is the boolean mask the driver
+    must still patch per row (the second round), or ``None`` when there is
+    nothing left to do.  Feed ``rows`` straight to
+    :func:`patch_death_fighting` once the per-row equipment is projected.
+    """
+    if not has(fighter.global_effects, "condition.command.art-thou-ready-to-die-fighting"):
+        return fighter, None
+    if round_index == 0:
+        return with_death_fighting_threshold(fighter), None
+    if round_index > 1:
+        return fighter, None
+    # The second round belongs to the bearer only while he opened the duel.
+    owner_opened = np.asarray(initial_first_turn, dtype=bool)
+    rows = owner_opened if owner_first else ~owner_opened
+    if rows.all():
+        return with_death_fighting_threshold(fighter), None
+    return (fighter, rows) if rows.any() else (fighter, None)
+
+
+def with_death_fighting_threshold(fighter: CompiledFighter) -> CompiledFighter:
+    """One bearer whose injury chart only puts him out on a natural six."""
+    return replace(fighter, global_effects=replace(
+        fighter.global_effects, out_of_action_threshold=6))
+
+
+def patch_death_fighting(equipment: dict[int, CompiledFighter],
+                         rows: np.ndarray | None,
+                         active: np.ndarray | None = None) -> None:
+    """Raise the out-of-action threshold of ``rows`` in a per-row projection.
+
+    ``equipment`` is the driver's row -> ``CompiledFighter`` map (the same one
+    Black Hunger patches).  ``rows`` is the mask :func:`apply_death_fighting`
+    returned; ``active`` optionally restricts the patch to the rows the round
+    still resolves.  A ``None`` mask is a no-op, so the driver needs no branch.
+    """
+    if rows is None:
+        return
+    selected = rows if active is None else rows & np.asarray(active, dtype=bool)
+    for value in np.flatnonzero(selected):
+        row = int(value)
+        equipment[row] = with_death_fighting_threshold(equipment[row])
+
+
+def sea_shanty_losses(
+    owner: CompiledFighter, target: CompiledFighter,
+    owner_state: CombatState, target_state: CombatState,
+    rows: np.ndarray, rng: np.random.Generator,
+    resources: LeadershipResources | None, decisions: DecisionPolicy | None,
+    context: PreparedDuelContext | None, *, first: bool, round_index: int,
+    first_player_turn: np.ndarray, engaged: np.ndarray,
+) -> np.ndarray:
+    """The Sea Shanty's optional contact song, per row.
+
+    Port of the Shanty branch of ``modular/rounds.py``'s combat-phase loop.
+    The singer is in base contact with his listener; the listener takes a
+    close-combat Leadership test and loses one attack this phase when he
+    fails.  Two printed sources share the behaviour and differ only in who may
+    be sung to:
+
+    * ``mechanic.sea-shanty`` reaches a living recipient only (the
+      :data:`SEA_SHANTY_NON_LIVING_TAGS` exclusion) and is sung in the
+      singer's own player turn.
+    * ``mechanic.sea-shanty-psychology`` is a Psychology source instead: it
+      excludes a Frenzied listener and a Psychology-immune one, and carries no
+      own-turn restriction at all.
+
+    A bearer of both sings the plain Shanty, as the scalar ``next(...)`` over
+    the two tags does.
+
+    ``resources`` is the **listener's** Leadership ledger, not the singer's:
+    the test belongs to ``target``.  ``first`` names the singer's side.  The
+    returned boolean array is aligned to the whole batch and marks the rows
+    where ``target`` loses one attack; the driver folds it into the same
+    attack-pool loss it already applies for the Halfling Elder's belch.
+    """
+    size = owner_state.wounds.size
+    lost = np.zeros(size, dtype=bool)
+    effect = owner.global_effects
+    shanty = next((tag for tag in ("mechanic.sea-shanty", "mechanic.sea-shanty-psychology")
+                   if has(effect, tag)), None)
+    if shanty is None:
+        return lost
+    # Supplied contact decides the song, exactly as the scalar round reads it:
+    # a supplied contact list replaces the sampled engagement outright.
+    contacting = np.asarray(engaged, dtype=bool)
+    if context is not None and context.facts.contacts is not None:
+        own_id = context.facts.first_id if first else context.facts.second_id
+        enemy_id = context.facts.second_id if first else context.facts.first_id
+        if not any({a, b} == {own_id, enemy_id} for a, b in context.facts.contacts):
+            return lost
+        contacting = np.ones(size, dtype=bool)
+    own_turn = np.asarray(first_player_turn, dtype=bool)
+    if not first:
+        own_turn = ~own_turn
+    excluded = np.zeros(size, dtype=bool)
+    if shanty == "mechanic.sea-shanty":
+        if any(has(target.global_effects, tag) for tag in SEA_SHANTY_NON_LIVING_TAGS):
+            return lost
+        # The plain Shanty is sung in its own player turn only.
+        own_shanty_phase = own_turn
+    else:
+        if has(target.global_effects, "mechanic.psychology-immunity"):
+            return lost
+        # Frenzy is a per-row fact of the listener, so its exclusion is too.
+        excluded = target_state.frenzy
+        own_shanty_phase = np.ones(size, dtype=bool)
+    # A Massively Built warrior who spent this round's turn sings nothing.
+    lost_owner_turn = owner_state.massively_built_lost_turn & own_turn
+    eligible = np.zeros(size, dtype=bool)
+    eligible[np.asarray(rows, dtype=np.intp)] = True
+    eligible &= contacting & own_shanty_phase & ~excluded & ~lost_owner_turn
+    eligible &= (owner_state.condition == STANDING) & ~owner_state.stupidity_failed
+    eligible &= ~(owner_state.grappled | owner_state.grappling)
+    eligible &= target_state.condition != OUT
+    tested = np.flatnonzero(eligible)
+    if tested.size == 0:
+        return lost
+    key = f"round.{round_index}.{'first' if first else 'second'}.sea-shanty"
+    policy = decisions or AlwaysAccept()
+    if not policy.choose(key, owner):
+        return lost
+    passed = resolve_local_leadership(
+        target, target_state, tested, first=not first, key=f"{key}.leadership",
+        rng=rng, context=context, decisions=decisions, resources=resources,
+        opponent=owner, close_combat=True)
+    lost[tested[~passed]] = True
+    return lost

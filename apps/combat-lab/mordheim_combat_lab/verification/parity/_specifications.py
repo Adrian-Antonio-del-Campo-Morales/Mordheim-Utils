@@ -8,6 +8,8 @@ from fractions import Fraction
 import numpy as np
 from mordheim_combat import phases
 from mordheim_combat import vectorized
+from mordheim_combat.kernel import require_optimized_support
+from mordheim_core.models import DuelContext
 from mordheim_core.models import EffectSet
 from mordheim_core.effects import merge_effects
 from mordheim_combat_lab.verification.dice import StrictDice
@@ -65,14 +67,16 @@ def _vector_attack_count(case: dict, root: Path) -> None:
 
 def _vector_priority(case: dict, root: Path) -> None:
     context = case.get("context", {})
-    if int(context.get("initiative_floor", 1)) != 1:
-        raise NotImplementedError("vectorized priority adapter lacks initiative_floor")
     modular = execute_case(case, root, StrictDice(case.get("rolls", ())))
     fighter = build_semantic_fighter(case.get("attacker", {}), root)
     opponent = build_semantic_fighter(case.get("defender", {}), root)
     state = vectorized._new_state(fighter, 1, np.random.default_rng(0))
     state.initiative_penalty[:] = int(context.get("initiative_penalty", 0))
     state.crimson_initiative[:] = int(context.get("initiative_bonus", 0))
+    # The floor reaches ``effective_initiative`` through the same state column
+    # the engine's spider-bite path writes (``PriorityContext.initiative_floor``
+    # on the modular side).
+    state.initiative_floor[:] = int(context.get("initiative_floor", 1))
     actual_priority = int(vectorized.priority(
         fighter, opponent, bool(context.get("first_round", False)),
         np.asarray([context.get("charging", False)]),
@@ -575,21 +579,58 @@ def _plain_initial_vector_state(state: vectorized.CombatState) -> dict[str, obje
         "hampered_hands": ['main'] * int(state.hampered_main[0]) + ['off'] * int(state.hampered_off[0]),
     }
 
+def _modelled_state(reference, modular):
+    """Restrict a modular state dump to the fields ``CombatState`` models.
+
+    ``execute_case`` dumps every field of the modular ``FighterState`` through
+    ``_plain``, including the modular-only columns (mutations, grapple, djinn,
+    lunacy, ...) that the batch ``CombatState`` deliberately does not carry.
+    Comparing the two dicts whole therefore reports a structural key-set
+    difference on *every* case instead of a behavioural one. ``reference`` is
+    the vectorized projection, whose keys are a strict subset of the modular
+    dump, so this keeps every field the vectorized engine actually models and
+    drops only the ones it has no column for.
+    """
+    if isinstance(reference, dict):
+        return {key: _modelled_state(value, modular[key])
+                for key, value in reference.items()}
+    if isinstance(reference, list):
+        return [_modelled_state(value, modular[index])
+                for index, value in enumerate(reference)]
+    return modular
+
+
+def _require_numpy_admission(*fighters: object) -> None:
+    """Skip a case whose fighters the NumPy admission gate still refuses.
+
+    The state adapters call ``_new_state`` directly, bypassing the gate that
+    ``simulate_batch`` applies. Without this check a deliberately unported rule
+    is reported as a vectorized divergence rather than as pending work.
+    """
+    try:
+        require_optimized_support(*fighters, backend="numpy")
+    except ValueError as error:
+        raise NotImplementedError(f"NumPy admission gate refuses this case: {error}") from None
+
+
 def _vector_initialize(case: dict, root: Path) -> None:
     modular = execute_case(case, root, StrictDice(case.get("rolls", ())))
     attacker = build_semantic_fighter(case.get("attacker", {}), root)
     defender = build_semantic_fighter(case.get("defender", {}), root)
+    _require_numpy_admission(attacker, defender)
     rng = _RollVectorRng(case)
     actual = {
         "attacker": _plain_initial_vector_state(vectorized._new_state(attacker, 1, rng)),
         "defender": _plain_initial_vector_state(vectorized._new_state(defender, 1, rng)),
     }
-    if actual != modular["result"]:
-        raise AssertionError(f"vectorized initialization={actual}, modular={modular['result']}")
+    expected = _modelled_state(actual, modular["result"])
+    if actual != expected:
+        raise AssertionError(f"vectorized initialization={actual}, modular={expected}")
 
 def _vector_recovery(case: dict, root: Path) -> None:
     modular = execute_case(case, root, StrictDice(case.get("rolls", ())))
     fighter = build_semantic_fighter(case.get("attacker", {}), root)
+    _require_numpy_admission(fighter, fighter)
     rng = _RollVectorRng(case)
     state = vectorized._new_state(fighter, 1, rng)
     overrides = case.get("attacker_state", {})
@@ -602,29 +643,88 @@ def _vector_recovery(case: dict, root: Path) -> None:
         stood = vectorized.recover_round_state(fighter, state)
         rounds.append({"state": _plain_initial_vector_state(state), "stood_up": bool(stood[0])})
     actual = {"rounds": rounds}
-    if actual != modular["result"]:
-        raise AssertionError(f"vectorized recovery={actual}, modular={modular['result']}")
+    expected = _modelled_state(actual, modular["result"])
+    if actual != expected:
+        raise AssertionError(f"vectorized recovery={actual}, modular={expected}")
 
 
 def _vector_round(case: dict, root: Path) -> None:
     attacker = build_semantic_fighter(case.get("attacker", {}), root)
     defender = build_semantic_fighter(case.get("defender", {}), root)
+    context = case.get("context", {})
+    overrides = (case.get("attacker_state", {}), case.get("defender_state", {}))
+    if all(values.get("condition") == "OUT" for values in overrides):
+        # State-only terminal case: no combat phase runs, only the scalar
+        # per-round state transition is compared.
+        rng = _RollVectorRng(case, strict=True)
+        attacker_state = vectorized._new_state(attacker, 1, rng)
+        defender_state = vectorized._new_state(defender, 1, rng)
+        _apply_vector_state_overrides(attacker_state, overrides[0])
+        _apply_vector_state_overrides(defender_state, overrides[1])
+        if int(context.get("round_index", 0)):
+            rows = np.asarray([0], dtype=np.int64)
+            vectorized._refresh_random_characteristics(attacker, attacker_state, rows, rng)
+            vectorized._refresh_random_characteristics(defender, defender_state, rows, rng)
+        rng.finish()
+        _compare_vector_expectations(case, root, {"result": {"state": {
+            "first": _plain_initial_vector_state(attacker_state),
+            "second": _plain_initial_vector_state(defender_state),
+        }}})
+        return
+    # Live round: the engine's own batch driver runs exactly the case's round,
+    # so sequencing stays in the engine and the adapter interprets nothing.
+    # An engine-unsupported rule is a gate refusal (pending port), while a
+    # case shape this adapter cannot express stays NotImplementedError.
+    _require_numpy_admission(attacker, defender)
+    if any(overrides):
+        raise NotImplementedError(
+            "vectorized round adapter runs live rounds from initialization only")
+    unsupported_context = set(context) - {"first_charged", "round_index"}
+    if unsupported_context:
+        raise NotImplementedError(
+            f"vectorized round adapter does not model context {sorted(unsupported_context)}")
+    first_charged = bool(context.get("first_charged", True))
+    round_index = int(context.get("round_index", 0))
     rng = _RollVectorRng(case, strict=True)
-    attacker_state = vectorized._new_state(attacker, 1, rng)
-    defender_state = vectorized._new_state(defender, 1, rng)
-    _apply_vector_state_overrides(attacker_state, case.get("attacker_state", {}))
-    _apply_vector_state_overrides(defender_state, case.get("defender_state", {}))
-    if attacker_state.condition[0] != int(phases.Condition.OUT) or defender_state.condition[0] != int(phases.Condition.OUT):
-        raise NotImplementedError("vectorized round adapter only supports state-only terminal cases")
-    if int(case.get("context", {}).get("round_index", 0)):
-        rows = np.asarray([0], dtype=np.int64)
-        vectorized._refresh_random_characteristics(attacker, attacker_state, rows, rng)
-        vectorized._refresh_random_characteristics(defender, defender_state, rows, rng)
-    rng.finish()
-    _compare_vector_expectations(case, root, {"result": {"state": {
-        "first": _plain_initial_vector_state(attacker_state),
-        "second": _plain_initial_vector_state(defender_state),
-    }}})
+    decisions = StrictDecisions(case.get("decisions", [])) if case.get("decisions") else None
+    observations: list[vectorized.VectorAttackObservation] = []
+    observed = vectorized.simulate_batch_observed(
+        attacker, defender, 1, rng, round_index + 1, decisions,
+        context=DuelContext(
+            charging=("first",) if first_charged else ("second",),
+            active_participant="first" if first_charged else "second",
+        ),
+        observations=observations, first_round_index=round_index,
+    )
+    try:
+        rng.finish()
+    except AssertionError as error:
+        raise AssertionError(
+            f"{error} after {len(observations)} resolved vectorized attacks; "
+            "the engine rolled a different sequence than the oracle's tape") from None
+    output = {"result": {
+        "state": {
+            "first": {"wounds": int(observed.first_wounds[0]),
+                      "condition": phases.Condition(int(observed.first_condition[0])).name},
+            "second": {"wounds": int(observed.second_wounds[0]),
+                       "condition": phases.Condition(int(observed.second_condition[0])).name},
+        },
+        "attacks": [_observation_plain(item) for item in observations],
+    }}
+    for path in case.get("expect", {}):
+        if path.startswith("result."):
+            try:
+                _lookup(output, path)
+            except IndexError:
+                # Fewer resolved attacks than the oracle: a behavioural gap,
+                # not a missing adapter capability.
+                raise AssertionError(
+                    f"{path}: vectorized resolved only "
+                    f"{len(output['result']['attacks'])} attacks") from None
+            except KeyError as error:
+                raise NotImplementedError(
+                    f"vectorized round adapter does not model {path} ({error})") from None
+    _compare_vector_expectations(case, root, output)
 
 
 def _apply_vector_state_overrides(state: vectorized.CombatState, values: dict) -> None:
@@ -956,12 +1056,22 @@ def _vector_pool(case: dict, root: Path) -> None:
     count = int(context.get("count", attacker_state.attacks[0]))
     observations: list[vectorized.VectorAttackObservation] = []
     decisions = StrictDecisions(case.get("decisions", [])) if case.get("decisions") else None
+    charging = np.asarray([context.get("charging", False)])
+    # The defender's Tentacle Grapple removes one nominated allocation; the
+    # engine's own forfeit resolver owns the nomination, as in the driver.
+    from mordheim_combat.vectorized._driver import _round_ledger, _tentacle_forfeit
+    forfeits, _lost_whip, extra_forfeits = _tentacle_forfeit(
+        attacker, defender.global_effects, np.asarray([0], dtype=np.int64),
+        np.asarray([count], dtype=np.int16), decisions, _round_ledger(1), 1,
+        "test", charging=charging, whip_rows=np.zeros(1, dtype=bool),
+    )
     vectorized.resolve_attacks(
         attacker, defender, np.asarray([0], dtype=np.int64),
         np.asarray([count], dtype=np.int16),
-        np.asarray([context.get("charging", False)]),
+        charging,
         attacker_state, defender_state, rng, bool(context.get("first_round", False)),
         decisions=decisions, observations=observations, decision_prefix="test",
+        forfeits=forfeits, extra_forfeits=extra_forfeits,
     )
     result: dict[str, object] = {
         "attacker": _plain_vector_attack_state(attacker_state),
@@ -983,20 +1093,16 @@ def _vector_replacement_pool(case: dict, root: Path) -> None:
     context = case.get("context", {})
     first_round = bool(context.get("first_round", False))
     charging_value = bool(context.get("charging", False))
-    decision = bool(case.get("decisions", ({"value": True},))[0]["value"])
-    removable: set[str] = set()
-    if (phases.has_tag(attacker.global_effects, "mechanic.anvil-head")
-            and first_round and charging_value and not decision):
-        removable.add("mechanic.anvil-head")
-    if (phases.has_tag(attacker.global_effects, "mechanic.death-blow")
-            and attacker.characteristics.attacks >= 2 and not decision):
-        removable.add("mechanic.death-blow")
-    selected = attacker
-    if removable:
-        selected = replace(attacker, global_effects=replace(
-            attacker.global_effects,
-            tags=tuple(tag for tag in attacker.global_effects.tags if tag not in removable),
-        ))
+    # The engine's own selector owns every replacement (Wraith Touch, Vomit,
+    # Serpent Staff, Anvil Head, Deathblow); the adapter interprets nothing.
+    selection_decisions = (StrictDecisions(case.get("decisions", []))
+                           if case.get("decisions") else None)
+    from mordheim_combat.vectorized._driver import _select_attack_replacement
+    selected = _select_attack_replacement(
+        attacker, first_round=first_round,
+        charging=np.asarray([charging_value]),
+        decisions=selection_decisions, key="test",
+    )
     declared = list(case.get("rolls", ()))
     if phases.has_tag(selected.global_effects, "mechanic.anvil-head"):
         hits = [item for item in declared if str(item.get("key", "")).endswith(".hit")]

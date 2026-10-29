@@ -253,6 +253,28 @@ def initialize_fighter(
         ),
         mutation_tail=np.full(count, -1, dtype=np.int8),
         effective_fighter=_objects(None, count),
+        drenok_fighting=np.zeros(count, dtype=bool),
+        # Once-per-battle markers: the modular state starts with an empty
+        # ``resources_spent``, so neither resource is spent at duel start.
+        magic_acorn_used=np.zeros(count, dtype=bool),
+        rememberer_used=np.zeros(count, dtype=bool),
+        # The pool-scoped ``rememberer-active.<key>`` marker: no pool is open
+        # when the batch initialises, and the driver clears it per pool.
+        rememberer_active=np.zeros(count, dtype=bool),
+        # A Jester trick is chosen per round by the decision policy, never at
+        # duel start; every slot opens dark.
+        banter_trick_active=np.zeros(count, dtype=bool),
+        dodge_trick_active=np.zeros(count, dtype=bool),
+        trip_trick_active=np.zeros(count, dtype=bool),
+        charm_auto_hit=np.zeros(count, dtype=bool),
+        # The only supplied condition among these columns, mirroring
+        # ``modular/state.py:301``.
+        danse_macabre_controlled=np.full(
+            count, has(effects, "condition.danse-macabre-controlled"), dtype=bool,
+        ),
+        mouth_sewn=np.zeros(count, dtype=bool),
+        giggle_juice_used=np.zeros(count, dtype=bool),
+        trip_trick_used=np.zeros(count, dtype=bool),
     )
     return state
 

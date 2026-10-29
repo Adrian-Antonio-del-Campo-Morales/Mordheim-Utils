@@ -10,7 +10,29 @@ from mordheim_core.dice import AlwaysAccept, DecisionPolicy
 from mordheim_core.effects import merge_effects
 from mordheim_core.models import CompiledFighter, EffectSet
 from mordheim_combat.vectorized._types import CombatState, KNOCKED_DOWN, OUT, OptionalPhasePlan, PARALYZED, PreparedAttack, STANDING, STUNNED, VectorAttackObservation, _claim_criticals, _critical_wound_threshold, _has_weapon_tag, _run_starts, has
-from mordheim_combat.vectorized._operators import _characteristic_test, armour_targets, attack_strength, hit_context, hit_reroll, hit_targets, injury_conditions, parry_capacity, parry_context, special_save_targets, wound_context, wound_targets
+from mordheim_combat.vectorized._operators import VectorWoundContext, _characteristic_test, armour_targets, attack_strength, combined_effect, hit_context, hit_reroll, hit_targets, injury_conditions, parry_capacity, parry_context, special_save_context, wound_context, wound_targets
+
+#: The Giggle Juice spray substitutes for one nominated attack of a pool; the
+#: profile is the oracle's (``modular/pools.py:430``) and never merges with the
+#: bearer's global effects (``_operators.combined_effect``).
+GIGGLE_JUICE_SPRAY = EffectSet(tags=("mechanic.giggle-juice-spray-attack",),
+                               automatic_hit=True, fixed_strength=2,
+                               injury_modifier=1)
+
+def _row_attack_key(key: str | np.ndarray | None, row: int) -> str | None:
+    """The oracle's ``{pool}.attack.{n}`` decision key for one duel row.
+
+    An attack the pool allocated to a hand sits at the same tuple position for
+    every row, so a plain string is enough.  The bearer's independent extra
+    attacks sit *after* that row's own allocated attacks in the oracle's weapon
+    tuple (``modular/pools.py::pool_attack_weapons``), so their index is a
+    per-row fact; those callers hand over a whole-batch object array indexed by
+    duel row instead.  Indexing by row (not by position inside ``active``)
+    keeps the key correct after ``_prepare_weapon_attack`` filters its rows.
+    """
+    if key is None or isinstance(key, str):
+        return key
+    return str(key[row])
 
 def _can_ignite(attacker: CompiledFighter, defender: CompiledFighter) -> bool:
     """Whether any ordinary attack in this matchup can set the defender on fire."""
@@ -172,9 +194,12 @@ def _compiled_attack_effect(
             weapon = attacker.main_weapon_without_poison
         elif weapon == attacker.off_hand and attacker.off_hand_without_poison is not None:
             weapon = attacker.off_hand_without_poison
-    effect = weapon if has(weapon,"mechanic.body-slam") else merge_effects(
-        weapon, attacker.global_effects,
-    )
+    # G03's ``combined_effect`` is the single definition of which attacks carry
+    # their own profile instead of merging the bearer's global effects: Body
+    # Slam, the Giggle Juice spray and the electrical touch.  This module used
+    # to name only Body Slam, which silently merged the bearer's globals into
+    # the spray; reuse the shared operator rather than keep a second copy.
+    effect = combined_effect(attacker, weapon)
     if has(effect, "mechanic.death-blow") and attacker.characteristics.attacks < 2:
         effect = replace(
             effect,
@@ -192,7 +217,19 @@ def _prepare_weapon_attack(attacker: CompiledFighter, defender: CompiledFighter,
                            attacker_state: CombatState, defender_state: CombatState,
                            rng: np.random.Generator,
     first_round: bool, *, melee_attack: bool = True,
-    needs_sixes: np.ndarray | bool | None = None) -> PreparedAttack | None:
+    needs_sixes: np.ndarray | bool | None = None,
+    decisions: DecisionPolicy | None = None,
+    key: str | np.ndarray | None = None,
+    pool_scoped: bool = False) -> PreparedAttack | None:
+    """``decisions``/``key`` are only needed by the optional To Hit rerolls the
+    bearer declares for this very attack (Whip Master, The Rememberer).  A
+    caller that offers no policy resolves the hit exactly as before.
+
+    ``key`` is either one string for the whole batch or a whole-batch object
+    array indexed by duel row (see ``_row_attack_key``).  ``pool_scoped`` is
+    the vectorized form of the oracle's ``rememberer_pool_key is not None``:
+    it is set by the attack-pool allocation and only there, so a standalone
+    reference attack never leaves the Rememberer's reroll active."""
     if active.size == 0:
         return None
     weapon, effect, _ = _compiled_attack_effect(attacker, defender, weapon)
@@ -271,6 +308,81 @@ def _prepare_weapon_attack(attacker: CompiledFighter, defender: CompiledFighter,
         if luck is not None:
             luck_failed = failed[luck[failed]]
             attacker_state.luck_used[active[luck_failed]] = True
+    # Whip Master: the bearer may reroll a single To Hit die of his Lash of
+    # Torment, and the second result stands however it falls (modular
+    # resolve_reference_attack).  It is offered once for this attack, never for
+    # an automatic hit (the oracle's ``hit.roll > 0``) and never on top of a die
+    # Hatred or Luck already rerolled (``not hit.rerolled``).
+    if (melee_attack and decisions is not None and key is not None
+            and has(weapon, "weapon.whip-tc14")
+            and has(effect, "mechanic.whip-master")):
+        offered = np.flatnonzero((rolls > 0) & ~rerolled)
+        retried = offered[np.fromiter(
+            (bool(decisions.choose(
+                f"{_row_attack_key(key, int(active[position]))}.whip-master", {
+                    "row": int(active[position]),
+                    "roll": int(rolls[position]),
+                    "target": int(hit_target[position]),
+                    "success": bool(successful[position]),
+                })) for position in offered),
+            dtype=bool, count=offered.size,
+        )] if offered.size else offered
+        if retried.size:
+            dice = rng.integers(1, 7, retried.size)
+            successful[retried] = dice >= hit_target[retried]
+            rolls[retried] = dice
+            natural[retried] = dice
+            rerolled[retried] = True
+    # The Rememberer: the Slayer hero his Rememberer accompanies rerolls one
+    # failed hand-to-hand hit against a Large opponent (the
+    # ``-large-or-tough`` grant extends that to Toughness 5+), once per battle
+    # (modular/attacks.py:259-276).  Taken inside an attack pool the spent
+    # reroll stays active for the rest of that pool and every later failed hit
+    # of the pool is rerolled without a new offer: that is the oracle's
+    # ``rememberer-active.<pool key>`` marker, kept here as the
+    # ``rememberer_active`` column.  The pool driver clears it when the pool
+    # ends; a standalone reference attack (``pool_scoped=False``) never sets
+    # it.  As in the oracle the reroll never stacks on a die Hatred, Luck or
+    # Whip Master already rerolled (``not hit.rerolled``).
+    if (melee_attack
+            and has(attacker.global_effects, "condition.rememberer-support")
+            and has(attacker.global_effects, "identity.slayer")
+            and has(attacker.global_effects, "fighter-kind.hero")
+            and any(has(attacker.global_effects, tag) for tag in (
+                "mechanic.rememberer-large-only",
+                "mechanic.rememberer-large-or-tough"))):
+        if has(defender.global_effects, "size.large"):
+            qualifies = np.ones(active.size, dtype=bool)
+        elif has(attacker.global_effects, "mechanic.rememberer-large-or-tough"):
+            qualifies = defender_state.toughness[active] >= 5
+        else:
+            qualifies = np.zeros(active.size, dtype=bool)
+        offered = np.flatnonzero(~successful & ~rerolled & qualifies)
+        if offered.size:
+            carried = attacker_state.rememberer_active[active[offered]]
+            fresh = ~carried & ~attacker_state.rememberer_used[active[offered]]
+            if decisions is not None and key is not None and fresh.any():
+                fresh &= np.fromiter(
+                    (bool(decisions.choose(
+                        f"{_row_attack_key(key, int(active[position]))}.rememberer", {
+                            "row": int(active[position]),
+                            "roll": int(rolls[position]),
+                            "target": int(hit_target[position]),
+                        })) if offer else False
+                     for position, offer in zip(offered, fresh)),
+                    dtype=bool, count=offered.size)
+            else:
+                fresh = np.zeros(offered.size, dtype=bool)
+            retried = offered[carried | fresh]
+            if retried.size:
+                dice = rng.integers(1, 7, retried.size)
+                successful[retried] = dice >= hit_target[retried]
+                rolls[retried] = dice
+                natural[retried] = dice
+                rerolled[retried] = True
+                attacker_state.rememberer_used[active[retried]] = True
+                if pool_scoped:
+                    attacker_state.rememberer_active[active[retried]] = True
     # Seaguard Spear Master: one failed hit in the opening round is rerolled,
     # spending the phase resource; each simulation row may spend its own.  A die
     # Hatred (or Luck) already rerolled is never repeated: modular keeps
@@ -303,6 +415,19 @@ def _prepare_weapon_attack(attacker: CompiledFighter, defender: CompiledFighter,
             natural[first_hits] = dies
             rerolled[first_hits] = True
             defender_state.corruption_used[active[first_hits]] = True
+    # Magic Acorn: a Hero's first missed hand-to-hand hit of the opening
+    # combat phase simply hits, once per battle (modular/attacks.py:304-309).
+    # The oracle only sets ``success``; the printed die is deliberately left
+    # alone (unlike Mark of the Old Ones, which rewrites it to the target), so
+    # the parry boundary still compares the face that was actually rolled.
+    if (melee_attack and first_round
+            and has(attacker.global_effects, "mechanic.magic-acorn")
+            and has(attacker.global_effects, "fighter-kind.hero")):
+        granted = np.flatnonzero(
+            ~successful & ~attacker_state.magic_acorn_used[active])
+        if granted.size:
+            successful[granted] = True
+            attacker_state.magic_acorn_used[active[granted]] = True
     if has(attacker.global_effects,"mechanic.mark-of-the-old-ones"):
         available=(~successful)&(~attacker_state.mark_of_old_ones_used[active])
         chosen=np.flatnonzero(available)
@@ -360,6 +485,20 @@ def _apply_hit_defences(
         hit_positions = hit_positions[~passed]
         hit_values = hit_values[~passed]
         natural_values = natural_values[~passed]
+    # Marks of Ranald: the Priest ducks past any hit on an unmodifiable 6+,
+    # whatever its Strength or source and including magical attacks.  Like the
+    # ethereal save the roll is made before critical effects and before the
+    # parry boundary, so it consumes no parry capacity and never also resolves
+    # later as a ward save (modular resolve_reference_attack, and the same
+    # position in ``_resolve_prepared_defences``).
+    if hit_rows.size and has(defender.global_effects, "mechanic.marks-of-ranald"):
+        ducked = rng.integers(1, 7, hit_rows.size) >= 6
+        if saved_rows is not None and ducked.any():
+            saved_rows[hit_rows[ducked]] = True
+        hit_rows = hit_rows[~ducked]
+        hit_positions = hit_positions[~ducked]
+        hit_values = hit_values[~ducked]
+        natural_values = natural_values[~ducked]
     hit_rows,parried_rows,survived=_parry_hits(
         defender,effect,hit_rows,hit_values,strength[hit_positions],defender_state,rng,parry_rows,
         attacker=attacker, attacker_state=attacker_state, weapon=weapon,
@@ -388,6 +527,53 @@ def _apply_hit_defences(
         hit_rows=hit_rows[kept]
         hit_positions=hit_positions[kept]
     return hit_rows, hit_positions
+
+def _keep_wound_rows(wound: VectorWoundContext, keep: np.ndarray) -> VectorWoundContext:
+    """Restrict a per-row wound contract to the positions still resolving.
+
+    An attack that ends before its To Wound die (Cold Steel, the Jester's
+    Trip replacement) drops its rows from every per-position array at once;
+    ``maximum_target`` is the weapon's, not a row's, so it is carried over.
+    """
+    return replace(
+        wound,
+        strength=wound.strength[keep], toughness=wound.toughness[keep],
+        modifier=wound.modifier[keep], automatic=wound.automatic[keep],
+        reroll=wound.reroll[keep], critical_threshold=wound.critical_threshold[keep],
+        critical_available=wound.critical_available[keep],
+        critical_on_reroll=wound.critical_on_reroll[keep],
+        critical_when_needing_six=wound.critical_when_needing_six[keep],
+        failure_still_wounds=wound.failure_still_wounds[keep],
+        unharmed=wound.unharmed[keep],
+    )
+
+
+def _trip_possible(attacker: CompiledFighter, weapon: EffectSet) -> bool:
+    """The profile-only half of ``_trip_eligible``: constant for a matchup.
+
+    Split out so the per-attack fast path can skip the trick without building
+    a per-row mask; it is never a second copy of the predicate, which stays
+    whole in :func:`_trip_eligible`.
+    """
+    return (has(attacker.global_effects, "mechanic.confound-and-confuse")
+            and not has(weapon, "effect.wraith-touch"))
+
+
+def _trip_eligible(attacker: CompiledFighter, attacker_state: CombatState,
+                   weapon: EffectSet, rows: np.ndarray) -> np.ndarray:
+    """Per-row port of ``modular/attacks.py::_trip_eligible`` (lines 41-53).
+
+    The Trip trick replaces the wound roll of attacks the bearer directs.  The
+    trip state lives on the state columns (``trip_trick_active`` is set per
+    combat turn by the round loop when the Confound-and-Confuse chooser
+    accepts the trip slot), never on the compiled profile, which never changes
+    between rounds; read it there.  ``trip_trick_used`` is the oracle's
+    ``"jester.trip"`` spent marker.
+    """
+    if not _trip_possible(attacker, weapon):
+        return np.zeros(rows.size, dtype=bool)
+    return attacker_state.trip_trick_active[rows] & ~attacker_state.trip_trick_used[rows]
+
 
 def _resolve_weapon(attacker: CompiledFighter, defender: CompiledFighter, weapon: EffectSet,
                     active: np.ndarray, charging: np.ndarray, attacker_state: CombatState,
@@ -433,7 +619,8 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
                     key: str = "test", melee_attack: bool = True,
                     needs_sixes: np.ndarray | bool | None = None) -> None:
     prepared = prepared or _prepare_weapon_attack(attacker,defender,weapon,active,charging,attacker_state,defender_state,rng,first_round,
-        melee_attack=melee_attack, needs_sixes=needs_sixes)
+        melee_attack=melee_attack, needs_sixes=needs_sixes,
+        decisions=decisions, key=key)
     if prepared is None:
         return
     weapon,effect,active,strength,armour_strength,hit_target,rolls,hit_rows = (
@@ -443,6 +630,13 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
         observation.hit_target = int(hit_target[0])
         observation.hit_roll = int(rolls[0])
         observation.hit = bool(hit_rows.size)
+    # The Giggle Juice spray is a poison: a target immune to poison takes the
+    # (automatic) hit and nothing else -- no defence, no wound, no injury
+    # (modular/attacks.py:191-193).
+    if has(weapon, "mechanic.giggle-juice-spray-attack") and (
+            defender.global_effects.poison_immunity
+            or has(defender.global_effects, "poison_immune")):
+        return
     knife_fighting=has(effect,"skill.knife-fighting") and (has(weapon,"weapon.dagger") or has(weapon,"weapon.yambiya"))
     if not defences_resolved:
         parries_before = defender_state.parry_remaining.copy()
@@ -486,12 +680,22 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
                 melee_attack=melee_attack,
             )
             if prepared_spectral is not None:
+                # The extra wound belongs to this attack's record: its wound,
+                # save and damage facts merge into the outer observation while
+                # the established hit roll stays untouched.
+                extra_observation = (VectorAttackObservation()
+                                     if observation is not None else None)
                 _resolve_weapon(
                     attacker, defender, spectral, spectral_rows, charging,
                     attacker_state, defender_state, rng, first_round,
                     prepared=prepared_spectral, defences_resolved=True,
-                    melee_attack=melee_attack,
+                    melee_attack=melee_attack, observation=extra_observation,
                 )
+                if observation is not None:
+                    observation.wounded |= extra_observation.wounded
+                    observation.saved |= extra_observation.saved
+                    observation.critical |= extra_observation.critical
+                    observation.damage += extra_observation.damage
                 alive = ((defender_state.condition[hit_rows] != OUT)
                          & (attacker_state.condition[hit_rows] != OUT))
                 hit_rows = hit_rows[alive]
@@ -543,7 +747,8 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
             infected = candidates[~infection_passed]
             if infected.size:
                 infection = EffectSet(
-                    tags=("effect.automatic-wound", "effect.no-critical"),
+                    tags=("effect.automatic-wound", "effect.no-critical",
+                          "effect.no-saves"),
                     fixed_strength=3, automatic_hit=True,
                     cannot_be_parried=True,
                 )
@@ -576,17 +781,7 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
         keep = ~wound.unharmed
         hit_rows, hit_positions = hit_rows[keep], hit_positions[keep]
         hit_values, natural_values = hit_values[keep], natural_values[keep]
-        wound = replace(
-            wound,
-            strength=wound.strength[keep], toughness=wound.toughness[keep],
-            modifier=wound.modifier[keep], automatic=wound.automatic[keep],
-            reroll=wound.reroll[keep], critical_threshold=wound.critical_threshold[keep],
-            critical_available=wound.critical_available[keep],
-            critical_on_reroll=wound.critical_on_reroll[keep],
-            critical_when_needing_six=wound.critical_when_needing_six[keep],
-            failure_still_wounds=wound.failure_still_wounds[keep],
-            unharmed=wound.unharmed[keep],
-        )
+        wound = _keep_wound_rows(wound, keep)
         if hit_rows.size == 0:
             return
     strength_hits = wound.strength
@@ -604,6 +799,48 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
         for position in np.flatnonzero(guaranteed_wound):
             if not decisions.choose(f"{key}.lotus-critical", int(hit_rows[position])):
                 automatic_wound[position] = True
+    # Trip (The Dark Jester / Confound and Confuse) is the round's chosen
+    # alternative for exactly one attack: after a single successful hit the
+    # bearer may give up that attack's wound roll and instead trip the
+    # opponent on the Jester's D6 of 2+ (modular/attacks.py:565-581).  The
+    # choice and the trip roll are resolved BEFORE the wound step, so no wound
+    # die is consumed and a printed wound reroll (Luck, Wound Valour) is never
+    # spent on a replaced roll; a 1 leaves the opponent standing and the attack
+    # simply ends.  The replacement is the application's, never simulated, so
+    # it is offered only where a decision policy answers for the bearer.
+    if melee_attack and decisions is not None and _trip_possible(attacker, weapon):
+        offered = (_trip_eligible(attacker, attacker_state, weapon, hit_rows)
+                   & (defender_state.condition[hit_rows] == STANDING))
+        tripped = np.zeros(hit_rows.size, dtype=bool)
+        for position in np.flatnonzero(offered):
+            row = int(hit_rows[position])
+            # ``trip_trick_used`` is the oracle's ``"jester.trip"``: an earlier
+            # attack of this same pool (or an Anvil Head repeat of this very
+            # array) may already have spent the one replacement allowed.
+            if attacker_state.trip_trick_used[row]:
+                continue
+            if not decisions.choose(f"{_row_attack_key(key, row)}.trip.hit", row):
+                continue
+            # The oracle spends the marker on acceptance, before the die: a
+            # failed trip roll still uses up the trick's one replacement.
+            attacker_state.trip_trick_used[row] = True
+            tripped[position] = True
+        if tripped.any():
+            knocked = hit_rows[tripped][rng.integers(1, 7, int(tripped.sum())) >= 2]
+            defender_state.condition[knocked] = KNOCKED_DOWN
+            defender_state.frenzy[knocked] &= has(
+                defender.global_effects, "mechanic.persistent-frenzy",
+            )
+            keep = ~tripped
+            hit_rows, hit_positions = hit_rows[keep], hit_positions[keep]
+            hit_values, natural_values = hit_values[keep], natural_values[keep]
+            strength_hits = strength_hits[keep]
+            armour_strength_hits = armour_strength_hits[keep]
+            targets = targets[keep]
+            automatic_wound, guaranteed_wound = automatic_wound[keep], guaranteed_wound[keep]
+            wound = _keep_wound_rows(wound, keep)
+            if hit_rows.size == 0:
+                return
     # Automatic wounds (e.g. a won bear hug) roll no die: the modular oracle
     # returns roll=0 for them, so drawing one here would shift every later
     # roll (special saves, injury) and diverge from the oracle.
@@ -644,7 +881,8 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
         barrage_rows.append(hit_rows[~wounded])
     wound_rows = hit_rows[wounded]
     if observation is not None:
-        observation.wounded = bool(wound_rows.size)
+        # Sticky across the attack's nested resolutions (Spectral Touch extra).
+        observation.wounded |= bool(wound_rows.size)
     # The Liche's Wraith Touch restores one wound on a landed strike, capped at
     # the printed profile (modular resolve_reference_attack).
     if (wound_rows.size and has(weapon, "effect.wraith-touch")
@@ -696,8 +934,18 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
         critical_results[critical] = (rng.integers(1, 7, int(critical.sum()))
             + effect.critical_injury_bonus + int(has(effect, "skill.web-of-steel")))
     magical_attack = has(effect,"attack.magical")
+    # Achilles Heel during an active stampede: a charging blow that rolls 5+ To
+    # Wound finds the gap and ignores armour entirely (modular
+    # resolve_reference_attack).  The oracle rewrites ``effect.ignore_armour``
+    # for that single attack; here the same fact is carried per row into
+    # ``armour_targets``, which already folds ``ignore`` and ``ignore_armour``.
+    stampede = False
+    if (melee_attack and first_round and has(effect, "mechanic.achilles-heel")
+            and has(effect, "condition.stampede-active")):
+        stampede = charging[wound_rows] & (wound_rolls[wounded] >= 5)
     save_target = armour_targets(
-        defender, wound_strength, effect, magical_attack, critical_results >= 3,
+        defender, wound_strength, effect, magical_attack,
+        (critical_results >= 3) | stampede,
     )
     saved = np.zeros(wound_rows.size, dtype=bool)
     eligible = save_target <= 6
@@ -731,26 +979,61 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
     critical_results = critical_results[~saved]
     if wound_rows.size == 0:
         return
-    ward, regeneration = special_save_targets(defender, effect)
-    if ward <= 6:
-        protected = rng.integers(1, 7, wound_rows.size) >= ward
+    # State-aware port of the oracle's call at ``modular/attacks.py:729``.  The
+    # stateless ``special_save_targets`` could not see the defender's live
+    # state, so the Dark Jester's Dodge trick (``mechanic.dodge-sidestepper``)
+    # never produced a save; ``special_save_context`` reads the per-row
+    # ``dodge_trick_active`` column and the rest of the oracle's save sources
+    # (Ladle shield/skill-only wards, Excellent Reflexes, the ethereal
+    # step-aside suppression, Ghost Pirate / Shadow's Coil, Gypsy Ward,
+    # Magical Void and both Djinn clauses).
+    #
+    # The context reports a blocked save as a separate flag instead of the
+    # stateless helper's "7" sentinel, so fold it back into the target here to
+    # keep ``phases.resolve_special_save``'s "roll only when <= 6 and not
+    # blocked" contract.  ``ward_unmodifiable`` (the intrinsic Djinn 5+) only
+    # selects an unmodifiable die in the oracle; this path applies no modifier
+    # to the ward die, so it needs no special handling.
+    special = special_save_context(
+        defender, effect, defender_state, wound_rows, melee_attack=melee_attack,
+    )
+    # Decisions like D13 declare the additional wound saves nothing; the
+    # ``effect.no-saves`` tag forces both the ward and the regeneration save
+    # blocked exactly as the oracle does right after building the context
+    # (modular/attacks.py ``effect.no-saves`` -> ward_blocked and
+    # regeneration_blocked).
+    no_saves = has(effect, "effect.no-saves")
+    ward = np.where(special.ward_blocked | no_saves, 7, special.ward_save)
+    regeneration = np.where(
+        special.regeneration_blocked | no_saves, 7, special.regeneration_save)
+    ward_eligible = ward <= 6
+    if ward_eligible.any():
+        protected = np.zeros(wound_rows.size, dtype=bool)
+        protected[ward_eligible] = (
+            rng.integers(1, 7, int(ward_eligible.sum())) >= ward[ward_eligible])
         if observation is not None and protected.any():
             observation.saved = True
         wound_rows = wound_rows[~protected]
         critical = critical[~protected]
         critical_results = critical_results[~protected]
-    if regeneration<=6 and wound_rows.size:
-        regenerated=rng.integers(1,7,wound_rows.size)>=regeneration
+        regeneration = regeneration[~protected]
+    regeneration_eligible = regeneration <= 6
+    if regeneration_eligible.any():
+        regenerated = np.zeros(wound_rows.size, dtype=bool)
+        regenerated[regeneration_eligible] = (
+            rng.integers(1, 7, int(regeneration_eligible.sum()))
+            >= regeneration[regeneration_eligible])
         if observation is not None and regenerated.any():
             observation.saved = True
-        wound_rows=wound_rows[~regenerated];critical=critical[~regenerated]
+        wound_rows = wound_rows[~regenerated]
+        critical = critical[~regenerated]
         critical_results = critical_results[~regenerated]
     if wound_rows.size == 0:
         return
     if defender.injury_profile==2:
         if observation is not None:
-            observation.damage = 1
-            observation.critical = bool(critical.any())
+            observation.damage += 1
+            observation.critical |= bool(critical.any())
         defender_state.condition[wound_rows]=OUT
         return
     condition_for_helpless = (
@@ -770,8 +1053,8 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
             and has(defender.global_effects, "species.aquatic")):
         damage *= 2
     if observation is not None:
-        observation.damage = int(damage[0])
-        observation.critical = bool(critical.any())
+        observation.damage += int(damage[0])
+        observation.critical |= bool(critical.any())
     affected_rows = wound_rows[_run_starts(wound_rows)]
     wounds_before = defender_state.wounds[affected_rows].copy()
     damage_rows = np.repeat(wound_rows, damage)
@@ -804,6 +1087,76 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
             )
     if has(effect, "poison.nightshade") and not poison_blocked:
         np.add.at(defender_state.initiative_penalty, damage_rows, 1)
+    # Hillman lycanthrope: one transformation attempt for each Wound this
+    # attack took off, stopping at the first 4+.  A change replaces injury
+    # resolution entirely and installs the source's distinct W2 wolf profile
+    # (modular _resolve_wound_damage).  Each row draws exactly the dice its own
+    # duel draws, because the attempts stop for a row as soon as it turns.
+    if (has(defender.global_effects, "mechanic.hillman-lycanthrope")
+            and not defender_state.hillman_wolf[damage_rows].all()):
+        lost = np.bincount(damage_rows, minlength=defender_state.wounds.size)
+        pending = np.unique(damage_rows[~defender_state.hillman_wolf[damage_rows]])
+        turned: list[np.ndarray] = []
+        for attempt in range(int(lost[pending].max(initial=0))):
+            trying = pending[lost[pending] > attempt]
+            if trying.size == 0:
+                break
+            changed = trying[rng.integers(1, 7, trying.size) >= 4]
+            if changed.size:
+                turned.append(changed)
+                pending = pending[~np.isin(pending, changed)]
+        if turned:
+            wolf = np.concatenate(turned)
+            defender_state.hillman_wolf[wolf] = True
+            defender_state.wounds[wolf] = 2
+            defender_state.condition[wolf] = STANDING
+            defender_state.weapon_skill[wolf] = 4
+            defender_state.strength[wolf] = 4
+            defender_state.toughness[wolf] = 4
+            defender_state.initiative[wolf] = 5
+            defender_state.attacks[wolf] = 2
+            defender_state.parry_remaining[wolf] = 0
+            kept_damage = ~np.isin(damage_rows, wolf)
+            damage_rows = damage_rows[kept_damage]
+            damage_critical_bonus = damage_critical_bonus[kept_damage]
+            damage_helpless = damage_helpless[kept_damage]
+            kept_rows = ~np.isin(affected_rows, wolf)
+            wounds_before = wounds_before[kept_rows]
+            affected_rows = affected_rows[kept_rows]
+            if damage_rows.size == 0:
+                return
+    # Drenok's Berserker rage: crossing to zero Wounds does not take him out
+    # of action if he makes a 4+, and that success keeps him standing for the
+    # whole player turn, so further damage in the same turn creates neither a
+    # new attempt nor an injury (modular/attacks.py:782-790).  The branch
+    # replaces injury resolution entirely, exactly as the oracle returns from
+    # it; the round loop re-rolls the 4+ at the start of each of his turns and
+    # clears ``drenok_fighting`` once he is healed above zero.
+    if affected_rows.size and has(defender.global_effects, "mechanic.drenok-berserker"):
+        crossing = (defender_state.wounds[affected_rows] <= 0) & ~np.isin(
+            affected_rows, wound_rows[helpless_wounds])
+        if crossing.any():
+            rows_crossing = affected_rows[crossing]
+            # Short-circuit in the oracle: a fighter already standing at zero
+            # Wounds draws no die at all for this later damage.
+            already = (defender_state.drenok_fighting[rows_crossing]
+                       & (wounds_before[crossing] <= 0))
+            fighting = already.copy()
+            pending = np.flatnonzero(~already)
+            if pending.size:
+                fighting[pending] = rng.integers(1, 7, pending.size) >= 4
+            defender_state.wounds[rows_crossing] = 0
+            defender_state.drenok_fighting[rows_crossing] = fighting
+            defender_state.condition[rows_crossing] = np.where(
+                fighting, STANDING, OUT).astype(defender_state.condition.dtype)
+            kept_damage = ~np.isin(damage_rows, rows_crossing)
+            damage_rows = damage_rows[kept_damage]
+            damage_critical_bonus = damage_critical_bonus[kept_damage]
+            damage_helpless = damage_helpless[kept_damage]
+            wounds_before = wounds_before[~crossing]
+            affected_rows = affected_rows[~crossing]
+            if damage_rows.size == 0:
+                return
     # Damage rows are ordered by duel row. The ordinal within each row tells
     # us which damage instance reaches zero wounds and therefore creates an
     # injury roll, without grouping each simulated duel in Python.
@@ -822,12 +1175,24 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
         return
     injury_rolls = rng.integers(1, 7, injury_rows.size) + effect.injury_modifier + int(knife_fighting)
     injury_rolls += damage_critical_bonus[injury_mask]
+    # A hillman who has not yet changed is harder to put down: -1 on Injury
+    # until the wolf form takes over (modular _resolve_wound_damage).
+    hillman_penalty = (
+        (~defender_state.hillman_wolf[injury_rows]).astype(injury_rolls.dtype)
+        if has(defender.global_effects, "mechanic.hillman-lycanthrope") else 0
+    )
+    injury_rolls -= hillman_penalty
     threshold = defender.global_effects.out_of_action_threshold
     injury_context=InjuryContext(
         out_threshold=threshold,
         injury_profile=defender.injury_profile,
-        hard_to_kill=has(defender.global_effects,"skill.hard-to-kill") or has(defender.global_effects,"skill.tough-as-steel"),
+        hard_to_kill=(has(defender.global_effects, "skill.hard-to-kill")
+                      or has(defender.global_effects, "mechanic.fen-hard-to-kill")
+                      and not has(effect, "attack.fire")),
+        true_grit=(has(defender.global_effects, "skill.tough-as-steel")
+                   or defender.global_effects.true_grit),
         concussion=effect.concussion,
+        shock=has(effect, "weapon.shock-rod"),
         concussion_immune=has(defender.global_effects,"concussion_immune"),
         fragile=has(defender.global_effects,"fragile_halflings"),
         poisonous=has(effect, "poisonous_injury") and not poison_blocked,
@@ -854,11 +1219,38 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
         if reroll.any():
             totals = (rng.integers(1, 7, int(reroll.sum())) + effect.injury_modifier
                       + int(knife_fighting) + damage_critical_bonus[injury_mask][reroll])
+            if not isinstance(hillman_penalty, int):
+                totals = totals - hillman_penalty[reroll]
             injury[reroll] = injury_conditions(totals, injury_context)
+    # Undead construct: on 4+ the construct simply ignores this Injury result.
+    # The Wound is still lost (the damage above already left the state) and the
+    # roll is not a pre-damage ward save, so it is made once per Injury result
+    # and only removes that result (modular _resolve_wound_damage).  A Djinn's
+    # Curse worsens the roll it needs by one.
+    if (injury_rows.size and has(defender.global_effects, "mechanic.undead-construct")
+            and not has(effect, "attack.magical")
+            and not effect.ignore_armour_except_shield_and_skills):
+        construct_target = 4 + int(has(effect, "condition.djinns-curse-active"))
+        ignored = rng.integers(1, 7, injury_rows.size) >= construct_target
+        injury_rows = injury_rows[~ignored]
+        injury = injury[~ignored]
+        if injury_rows.size == 0:
+            return
     injured = injury_rows[_run_starts(injury_rows)]
     highest_by_row = np.full(defender_state.condition.size, STANDING, dtype=np.int8)
     np.maximum.at(highest_by_row, injury_rows, injury)
     highest = highest_by_row[injured]
+    # Veskit's No Pain: every result short of Out of Action leaves him standing.
+    # Marianna's supplied No Pain + Jump Up pair returns her to her feet after a
+    # knockdown.  Both replace the aggregated result before the helmet and Thick
+    # Skull reaction, exactly as the oracle orders them
+    # (modular _resolve_wound_damage).
+    if has(defender.global_effects, "mechanic.veskit-no-pain"):
+        highest = np.where(highest != OUT, STANDING, highest).astype(np.int8)
+    if (has(defender.global_effects, "mechanic.marianna-no-pain-jump-up")
+            and has(defender.global_effects, "skill.jump-up")
+            and has(defender.global_effects, "skill.ignore-pain")):
+        highest = np.where(highest == KNOCKED_DOWN, STANDING, highest).astype(np.int8)
     stunned = highest == STUNNED
     # Hard to Rattle improves the helmet reaction to 4+ (fire is excluded); a
     # Skull Busta worsens a helmet (not Thick Skull) to 6+.
@@ -874,6 +1266,14 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
                           if defender.global_effects.thick_skull else helmet_save)
         converted = np.flatnonzero(stunned)[rng.integers(1, 7, int(stunned.sum())) >= threshold_roll]
         highest[converted] = KNOCKED_DOWN
+    # Needle and Thread: a victim this warrior stuns in hand-to-hand has his
+    # mouth sewn shut for the rest of the battle.  The oracle reads the
+    # condition *after* the helmet / Thick Skull reaction, so a stun the
+    # helmet downgraded sews nothing (modular/attacks.py:873-875).  Only the
+    # write half lives here; the Leadership bar the flag imposes is read
+    # elsewhere.
+    if melee_attack and has(attacker.global_effects, "mechanic.needle-and-thread"):
+        defender_state.mouth_sewn[injured[highest == STUNNED]] = True
     defender_state.condition[injured] = np.maximum(defender_state.condition[injured], highest)
     defender_state.frenzy[injured] &= highest == STANDING
     contagious_rows=injured[(highest==OUT)]
@@ -895,7 +1295,14 @@ def resolve_attacks(attacker: CompiledFighter, defender: CompiledFighter, rows: 
                     decision_prefix: str = "",
                     needs_sixes: np.ndarray | None = None,
                     forfeits: np.ndarray | None = None,
-                    extra_forfeits: np.ndarray | None = None) -> None:
+                    extra_forfeits: np.ndarray | None = None,
+                    single_bonus: bool = False) -> None:
+    """``single_bonus`` is the oracle's own pool flag
+    (``modular/pools.py::_resolve_attack_pool_body``): a separately timed
+    bonus pool (Whipcrack, Shifty) is not the warrior's allocated pool, so the
+    rules the oracle guards with ``not single_bonus`` -- here the Giggle Juice
+    spray -- must not fire in it.  The driver owns the flag; it defaults to the
+    ordinary pool so an un-updated caller keeps today's behaviour."""
     if rows.size == 0:
         return
     # Fear's mask is a per-round state fact, exactly as the modular
@@ -1001,7 +1408,13 @@ def resolve_attacks(attacker: CompiledFighter, defender: CompiledFighter, rows: 
         body_rows=np.empty(0,dtype=np.int64)
     if body_rows.size:
         body=EffectSet(tags=("mechanic.body-slam",),strength_bonus=1,hit_modifier=1)
-        prepared=_prepare_weapon_attack(attacker,defender,body,body_rows,charging,attacker_state,defender_state,rng,first_round)
+        # The oracle's body-slam pool is a one-weapon allocation resolved by
+        # the ordinary pool loop, so it is the pool's ``attack.0`` and it is
+        # pool-scoped for the Rememberer like any other allocated attack.
+        prepared=_prepare_weapon_attack(attacker,defender,body,body_rows,charging,attacker_state,defender_state,rng,first_round,
+            decisions=decisions,
+            key=f"{decision_prefix + '.' if decision_prefix else ''}attack.0",
+            pool_scoped=True)
         if prepared is not None:prepared_attacks.append(prepared)
         rows=rows[~np.isin(rows,body_rows)]
     offhand = attacker.off_hand_attacks and attacker.off_hand is not None
@@ -1031,12 +1444,78 @@ def resolve_attacks(attacker: CompiledFighter, defender: CompiledFighter, rows: 
         forfeits = np.full(attacker_state.wounds.size, -1, dtype=np.int16)
     if extra_forfeits is None:
         extra_forfeits = np.full(attacker_state.wounds.size, -1, dtype=np.int16)
+    # The oracle resolves one weapon tuple per pool: the allocated attacks
+    # first, then the bearer's independent extra attacks
+    # (``modular/pools.py::pool_attack_weapons``).  Compile the extra half once
+    # here, because three things index into that single tuple -- the
+    # Unpredictable declaration, the Giggle Juice spray and the per-attack
+    # decision keys -- and they must all agree on the ordering.
+    # ``pool_attack_weapons`` leaves these two to their own events and drops
+    # every independent contribution behind a whole-pool replacement.
+    vomit_weapon = any(has(attacker.main_weapon, tag)
+                       for tag in ("weapon.vomit-attack", "effect.wraith-touch"))
+    included_extras: list[tuple[int, EffectSet]] = [] if vomit_weapon else [
+        (extra_index, weapon)
+        for extra_index, weapon in enumerate(attacker.extra_attacks)
+        if not any(has(weapon, tag) for tag in
+                   ("rule.strikes-last-bite", "rule.eagle-friend"))
+        and (bool(charging[rows].any()) or not has(weapon, "rule.horned-one"))
+    ]
+    # Unpredictable nominates exactly one allocated attack, offered in
+    # allocation order (modular ``_declared_unpredictable_attack``); without a
+    # decision policy the first allocation keeps the established default.
+    unpredictable_index = -1
+    if has(attacker.global_effects, "mechanic.unpredictable-attack"):
+        unpredictable_index = 0 if decisions is None else next(
+            (offer for offer in range(maximum)
+             if decisions.choose(
+                 f"{decision_prefix}.unpredictable-attack.{offer}", attacker)), -1)
+    unparriable = EffectSet(cannot_be_parried=True,
+                            tags=("mechanic.unpredictable-attack",))
+    # Giggle Juice: the spray substitutes for ONE nominated position inside the
+    # already-allocated weapon tuple and leaves every other attack of the pool
+    # exactly as it was allocated -- it is not a whole-pool replacement
+    # (modular/pools.py:424-432).  Offered in the oracle's order, with the
+    # oracle's key, by the same positional mechanism the Unpredictable
+    # declaration above uses.  The resource is once per battle and lives per
+    # row, so a row that already sprayed keeps its printed weapon here.
+    giggle_index, giggle_rows = -1, None
+    giggle_used = getattr(attacker_state, "giggle_juice_used", None)
+    if (not single_bonus and decisions is not None and giggle_used is not None
+            and has(attacker.global_effects, "mechanic.giggle-juice-spray")
+            and not giggle_used[rows].all()):
+        giggle_index = next(
+            (offer for offer in range(maximum + len(included_extras))
+             if decisions.choose(
+                 f"{decision_prefix + '.' if decision_prefix else ''}"
+                 f"giggle-juice-attack.{offer}", attacker)), -1)
+        if giggle_index >= 0:
+            giggle_rows = rows[~giggle_used[rows]]
+            giggle_used[giggle_rows] = True
     for index in range(maximum):
         active = rows[(main_counts[rows] + off_counts[rows] > index)
                       & (defender_state.condition[rows] != OUT)
                       & (forfeits[rows] != index)]
         if active.size == 0:
             continue
+        # The pool's own allocation index is the oracle's attack index for both
+        # hands: a row reaches this position either with its main or with its
+        # off hand, never with both (modular ``pool_attack_weapons``).
+        attack_key = f"{decision_prefix + '.' if decision_prefix else ''}attack.{index}"
+        if index == giggle_index and giggle_rows is not None:
+            sprayed = active[np.isin(active, giggle_rows)]
+            if sprayed.size:
+                spray = (merge_effects(GIGGLE_JUICE_SPRAY, unparriable)
+                         if index == unpredictable_index else GIGGLE_JUICE_SPRAY)
+                prepared_spray = _prepare_weapon_attack(
+                    attacker, defender, spray, sprayed, charging, attacker_state,
+                    defender_state, rng, first_round, decisions=decisions,
+                    key=attack_key, pool_scoped=True)
+                if prepared_spray is not None:
+                    prepared_attacks.append(prepared_spray)
+                active = active[~np.isin(active, sprayed)]
+                if active.size == 0:
+                    continue
         use_off = index >= main_counts[active]
         main_weapon=(
             attacker.main_weapon_without_poison
@@ -1045,31 +1524,53 @@ def resolve_attacks(attacker: CompiledFighter, defender: CompiledFighter, rows: 
             and attacker.main_weapon_without_poison is not None
             else attacker.main_weapon
         )
-        if index==0 and has(attacker.global_effects,"mechanic.unpredictable-attack"):
-            main_weapon=merge_effects(main_weapon,EffectSet(cannot_be_parried=True,tags=("mechanic.unpredictable-attack",)))
-        main = _prepare_weapon_attack(attacker,defender,main_weapon,active[~use_off],charging,attacker_state,defender_state,rng,first_round)
+        off_weapon = attacker.off_hand
+        if index == unpredictable_index:
+            main_weapon = merge_effects(main_weapon, unparriable)
+            if off_weapon is not None:
+                off_weapon = merge_effects(off_weapon, unparriable)
+        main = _prepare_weapon_attack(attacker,defender,main_weapon,active[~use_off],charging,attacker_state,defender_state,rng,first_round,
+            decisions=decisions, key=attack_key, pool_scoped=True)
         if main is not None:
             prepared_attacks.append(main)
         if offhand:
-            off = _prepare_weapon_attack(attacker,defender,attacker.off_hand,active[use_off],charging,attacker_state,defender_state,rng,first_round)
+            off = _prepare_weapon_attack(attacker,defender,off_weapon,active[use_off],charging,attacker_state,defender_state,rng,first_round,
+                decisions=decisions, key=attack_key, pool_scoped=True)
             if off is not None:
                 prepared_attacks.append(off)
-    vomit_weapon = any(has(attacker.main_weapon, tag)
-                       for tag in ("weapon.vomit-attack", "effect.wraith-touch"))
-    for extra_index, weapon in enumerate(attacker.extra_attacks):
-        # ``pool_attack_weapons`` leaves these two to their own events and
-        # drops every independent contribution behind a whole-pool replacement.
-        if vomit_weapon or any(has(weapon, tag) for tag in
-                               ("rule.strikes-last-bite", "rule.eagle-friend")):
-            continue
-        if has(weapon, "rule.horned-one") and not charging[rows].any():
-            continue
+    # An extra attack sits after the row's OWN allocated attacks in the
+    # oracle's tuple, so its ``{pool}.attack.{n}`` key is a per-row fact: the
+    # batch may mix warriors with two and with three allocated attacks.  The
+    # per-row keys are handed over as a whole-batch object array, built from
+    # the handful of distinct allocated counts rather than per row.
+    allocated = (main_counts + off_counts).astype(np.int64)
+    for ordinal, (extra_index, weapon) in enumerate(included_extras):
         # Tentacle Grapple removes the nominated allocation from this exact
         # position, so the remaining extras keep the order the pool printed.
         extra_rows = rows[extra_forfeits[rows] != extra_index]
         if extra_rows.size == 0:
             continue
-        extra = _prepare_weapon_attack(attacker, defender, weapon, extra_rows, charging, attacker_state, defender_state, rng, first_round)
+        extra_keys = np.empty(attacker_state.wounds.size, dtype=object)
+        counts = allocated[extra_rows]
+        for value in np.unique(counts):
+            extra_keys[extra_rows[counts == value]] = (
+                f"{decision_prefix + '.' if decision_prefix else ''}"
+                f"attack.{int(value) + ordinal}")
+        if giggle_rows is not None and giggle_index == maximum + ordinal:
+            sprayed = extra_rows[np.isin(extra_rows, giggle_rows)]
+            if sprayed.size:
+                prepared_spray = _prepare_weapon_attack(
+                    attacker, defender, GIGGLE_JUICE_SPRAY, sprayed, charging,
+                    attacker_state, defender_state, rng, first_round,
+                    decisions=decisions, key=extra_keys, pool_scoped=True)
+                if prepared_spray is not None:
+                    prepared_attacks.append(prepared_spray)
+                extra_rows = extra_rows[~np.isin(extra_rows, sprayed)]
+                if extra_rows.size == 0:
+                    continue
+        extra = _prepare_weapon_attack(attacker, defender, weapon, extra_rows, charging,
+            attacker_state, defender_state, rng, first_round,
+            decisions=decisions, key=extra_keys, pool_scoped=True)
         if extra is not None: prepared_attacks.append(extra)
     if has(attacker.global_effects, "mechanic.ravening-onslaught"):
         # A natural six earns one more attack with the same weapon, and that
@@ -1085,6 +1586,7 @@ def resolve_attacks(attacker: CompiledFighter, defender: CompiledFighter, rows: 
                 repeat = _prepare_weapon_attack(
                     attacker, defender, prepared.weapon, prepared.active[sixes],
                     charging, attacker_state, defender_state, rng, first_round,
+                    pool_scoped=True,
                 )
                 if repeat is not None:
                     prepared_attacks.append(repeat)
@@ -1130,7 +1632,22 @@ def resolve_attacks(attacker: CompiledFighter, defender: CompiledFighter, rows: 
         )
     defences_resolved=False
     replaced_attack_indices: set[int] = set()
-    if attacker.global_effects.bear_hug and prepared_attacks:
+    # ``rule.bear-hug-unarmed`` (the Domnu) qualifies the replacement: the two
+    # attacks it consumes must both be unarmed.  The oracle reads the pool's
+    # first two allocated weapons (modular/pools.py bear-hug branch:
+    # ``all(has_tag(weapon, "weapon.fist") for weapon in weapons[:2])``), so an
+    # armed bearer never reaches the opposed roll and is never offered the
+    # decision.  The oracle only ever looks at attacks 0 and 1: qualification
+    # (``weapons[:2]``), survival (``prepared_tuple[:2]``) and consumption
+    # (``weapons[:2]``) all index the first two allocated attacks, so later
+    # attacks never feed or replace a Bear Hug.
+    bear_hug_unarmed = has(attacker.global_effects, "rule.bear-hug-unarmed")
+    bear_hug_fists = (
+        [has(prepared.weapon, "weapon.fist") for prepared in prepared_attacks[:2]]
+        if bear_hug_unarmed else None
+    )
+    if (attacker.global_effects.bear_hug and len(prepared_attacks) >= 2
+            and (bear_hug_fists is None or all(bear_hug_fists))):
         # Bear Hug depends on two surviving hits across separate attacks.  Move
         # the hit/parry boundary ahead of wound resolution, aggregate those
         # hits, then replace exactly one pair with the opposed Strength test.
@@ -1141,8 +1658,12 @@ def resolve_attacks(attacker: CompiledFighter, defender: CompiledFighter, rows: 
             )
             defended.append(replace(prepared,hit_rows=surviving))
         prepared_attacks=defended
+        # The oracle replaces exactly attacks 0 and 1 (``weapons[:2]``): a row
+        # qualifies only when both of those first two attacks still have a
+        # surviving, undefended hit, and the replacement consumes those two
+        # hits — never a later attack's.
         occurrences: dict[int,list[tuple[int,int]]]={}
-        for attack_index,prepared in enumerate(prepared_attacks):
+        for attack_index,prepared in enumerate(prepared_attacks[:2]):
             for position,row in enumerate(prepared.hit_rows):
                 occurrences.setdefault(int(row),[]).append((attack_index,position))
         policy=decisions or AlwaysAccept()
@@ -1150,7 +1671,9 @@ def resolve_attacks(attacker: CompiledFighter, defender: CompiledFighter, rows: 
         remove=[np.zeros(prepared.hit_rows.size,dtype=bool) for prepared in prepared_attacks]
         for row,positions in occurrences.items():
             key=f"{decision_prefix + '.' if decision_prefix else ''}bear-hug"
-            if len(positions)<2 or not policy.choose(key,{"row":row}):
+            if len(positions)<2:
+                continue
+            if not policy.choose(key,{"row":row}):
                 continue
             for attack_index,position in positions[:2]:
                 remove[attack_index][position]=True
