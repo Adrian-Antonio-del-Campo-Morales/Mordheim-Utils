@@ -1,5 +1,4 @@
 from dataclasses import fields
-from dataclasses import replace
 
 import pytest
 
@@ -23,19 +22,21 @@ def test_kernel_plan_contains_every_numeric_effect_field_and_stable_tag_masks(pr
     assert plan.optimization_eligible
 
 
-def test_numpy_and_native_admission_gates_are_independent(monkeypatch, precompiled):
+def test_numpy_and_native_admission_gates_are_independent(precompiled):
     """NumPy may advance without granting the still-frozen native backend."""
     compiled = precompiled()
     first = compiled.first
     second = compiled.second
-    pending = kernel.pending_capabilities("numpy")
-    assert "mechanic.magical-void" in pending.local_modifier_tags
+    # ``mechanic.magical-void`` is now a real NumPy port, so its own gate has
+    # already dropped it while the native gate still holds it back. The
+    # independence this test guards is therefore observable directly, with no
+    # need to simulate the port by patching the pending table.
+    assert "mechanic.magical-void" in kernel.NUMPY_CONNECTED_TAGS
+    assert "mechanic.magical-void" not in kernel.pending_capabilities(
+        "numpy").local_modifier_tags
+    assert "mechanic.magical-void" in kernel.pending_capabilities(
+        "native").local_modifier_tags
 
-    # A NumPy port drops the behavior from its own gate only.
-    monkeypatch.setitem(kernel._PENDING, "numpy", replace(
-        pending,
-        local_modifier_tags=pending.local_modifier_tags - {"mechanic.magical-void"},
-    ))
     kernel.require_optimized_support(first, second, backend="numpy")
     with pytest.raises(ValueError, match="Local modifier variants"):
         kernel.require_optimized_support(first, second, backend="native")
