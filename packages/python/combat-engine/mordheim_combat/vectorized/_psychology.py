@@ -35,6 +35,10 @@ __all__ = [
     "fears_opponent_fire",
     "psychology_resources",
     "resolve_fear",
+    "resolve_feral_instinct",
+    "resolve_lunatics",
+    "resolve_mark_of_shornaal",
+    "resolve_mesmerising_dance",
     "resolve_stupidity",
     "undead_foes_fear_immunity",
 ]
@@ -47,14 +51,42 @@ class PsychologyResources:
     ``fear_hit_sixes`` is the modular ``FighterState.fear_hit_sixes``: while
     set, a melee attack against that row hits on a natural 6 only.  The round
     driver clears it at the start of each turn, as ``resolve_round`` does.
+
+    The remaining columns are the ``FighterState`` facts the frozen
+    ``CombatState`` schema does not own.  They are battle-lived, exactly as the
+    modular fighter state is: the driver builds one ledger per side and keeps
+    it for the whole duel.
     """
 
     fear_hit_sixes: np.ndarray
+    #: ``FighterState.lunatic_result``: the chart face the Lunatics producer
+    #: rolled this round, 0 before the first roll.  Nothing in the accepted
+    #: engine reads it; the modular state records it, so the batch does too.
+    lunatic_result: np.ndarray
+    #: ``FighterState.lunatic_stupidity``: the accumulated Stupidity half of
+    #: the printed chart.  ``resolve_stupidity`` reads it as its
+    #: ``lunatic_stupidity`` argument.
+    lunatic_stupidity: np.ndarray
+    #: The once-per-battle ``mark-of-shornaal.passed`` resource of the row that
+    #: is tested, kept on the *tested* (target) side as the scalar round keeps
+    #: it on the target's ``resources_spent``.
+    shornaal_passed: np.ndarray
+    #: ``FighterState.feral_instinct_failed``: the own-turn Leadership failure
+    #: the modular state records.  Movement is outside the duel, so no phase of
+    #: either engine consumes it; the test itself still spends dice and the
+    #: fighter's Leadership resources.
+    feral_instinct_failed: np.ndarray
 
 
 def psychology_resources(count: int) -> PsychologyResources:
     """Fresh Psychology resources for ``count`` rows of one fighter."""
-    return PsychologyResources(fear_hit_sixes=np.zeros(count, dtype=bool))
+    return PsychologyResources(
+        fear_hit_sixes=np.zeros(count, dtype=bool),
+        lunatic_result=np.zeros(count, dtype=np.int8),
+        lunatic_stupidity=np.zeros(count, dtype=bool),
+        shornaal_passed=np.zeros(count, dtype=bool),
+        feral_instinct_failed=np.zeros(count, dtype=bool),
+    )
 
 
 @dataclass(frozen=True)
@@ -446,3 +478,191 @@ def resolve_fear(
             resources[index].fear_hit_sixes[testing[~passed]] = True
     return FearOutcome(charge_masks[0], charge_masks[1], engaged_mask,
                        failed[0], failed[1])
+
+
+def _label(first: bool) -> str:
+    """The modular side label a roll key is built from."""
+    return "first" if first else "second"
+
+
+def _prefix(key_prefix: str | None, round_index: int) -> str:
+    """The round prefix the scalar operator builds its roll keys from."""
+    return key_prefix if key_prefix is not None else f"round.{round_index}"
+
+
+def resolve_feral_instinct(
+    fighter: CompiledFighter, opponent: CompiledFighter, state: CombatState,
+    rows: np.ndarray, *, first: bool, round_index: int,
+    rng: np.random.Generator, resources: PsychologyResources,
+    leadership: LeadershipResources | None = None,
+    decisions: DecisionPolicy | None = None,
+    context: PreparedDuelContext | None = None,
+    key_prefix: str | None = None,
+) -> np.ndarray:
+    """Batch port of the Feral Instinct block in ``modular.rounds.resolve_round``.
+
+    The Sabretusk's keeper is out of the duel, so the printed consequence is a
+    movement restriction the duel never applies.  What the scalar round *does*
+    is take the Leadership test on the beast's own turn and record the failure
+    on its fighter state, which spends that row's Leadership resources and its
+    dice.  ``rows`` must therefore be the active player's own rows, exactly as
+    ``resolve_round`` reads ``state.first_player_turn`` before it tests.
+
+    The returned mask is aligned to ``rows``; only tested rows are written, so a
+    row that is out of action keeps the result its last own turn recorded.
+    """
+    rows = np.asarray(rows, dtype=np.intp)
+    failed = np.zeros(rows.size, dtype=bool)
+    if rows.size == 0 or not has(fighter.global_effects, "mechanic.feral-instinct"):
+        return failed
+    # ``current.active`` is ``condition != OUT``; the test has no other gate.
+    positions = np.flatnonzero(state.condition[rows] != OUT)
+    if positions.size == 0:
+        return failed
+    tested = rows[positions]
+    passed = resolve_local_leadership(
+        fighter, state, tested, first=first,
+        key=f"{_prefix(key_prefix, round_index)}.{_label(first)}.feral-instinct",
+        rng=rng, context=context, decisions=decisions, resources=leadership,
+        opponent=opponent,
+    )
+    resources.feral_instinct_failed[tested] = ~passed
+    failed[positions] = ~passed
+    return failed
+
+
+def resolve_lunatics(
+    fighter: CompiledFighter, state: CombatState, rows: np.ndarray, *,
+    first: bool, round_index: int, rng: np.random.Generator,
+    resources: PsychologyResources, key_prefix: str | None = None,
+) -> np.ndarray:
+    """Batch port of the Lunatics producer in ``modular.rounds.resolve_round``.
+
+    The printed chart is rolled for *both* warriors every round, not only on
+    the roller's own turn: ``resolve_round`` loops ``is_first in (True, False)``
+    with no turn and no condition gate, so this port does not add one either.
+    A 1-3 grants Frenzy and a 4-6 the turn's Stupidity, and both halves
+    accumulate -- the scalar round keeps ``current.frenzy or ...`` and
+    ``current.lunatic_stupidity or ...``.  Duration and stacking remain the
+    open source question the oracle flags; nothing is inferred here.
+
+    The returned array is the per-``rows`` chart face.
+    """
+    rows = np.asarray(rows, dtype=np.intp)
+    if rows.size == 0 or not has(fighter.global_effects, "mechanic.lunatics"):
+        return np.zeros(rows.size, dtype=np.int8)
+    rolls = rng.integers(1, 7, rows.size).astype(np.int8)
+    resources.lunatic_result[rows] = rolls
+    state.frenzy[rows] |= rolls <= 3
+    resources.lunatic_stupidity[rows] |= rolls >= 4
+    return rolls
+
+
+#: The printed exclusions of the Amazon dance: the charmed foe must be able to
+#: be charmed at all.
+MESMERISING_DANCE_IMMUNITY = ("nature.undead", "species.lizardman",
+                              "mechanic.charm-immunity")
+
+
+def _charm_source_rows(owner_state: CombatState, target_state: CombatState,
+                       rows: np.ndarray) -> np.ndarray:
+    """Rows where a charming owner can perform and the target can be charmed.
+
+    Both printed gates read the same facts the scalar round reads before either
+    dance: the performer stands, is not held, is not holding and did not fail
+    its Stupidity this turn, and the victim stands.
+    """
+    return rows[
+        (owner_state.condition[rows] == STANDING)
+        & ~owner_state.stupidity_failed[rows]
+        & ~owner_state.grappled[rows]
+        & ~owner_state.grappling[rows]
+        & (target_state.condition[rows] == STANDING)
+    ]
+
+
+def resolve_mesmerising_dance(
+    owner: CompiledFighter, target: CompiledFighter,
+    owner_state: CombatState, target_state: CombatState, rows: np.ndarray, *,
+    target_is_first: bool, round_index: int, rng: np.random.Generator,
+    blocked: np.ndarray, leadership: LeadershipResources | None = None,
+    decisions: DecisionPolicy | None = None,
+    context: PreparedDuelContext | None = None,
+    key_prefix: str | None = None,
+) -> np.ndarray:
+    """Batch port of the Mesmerising Dance gate in ``modular.rounds.resolve_round``.
+
+    An individual charm test at the start of the combat phase: the victim takes
+    an ordinary Leadership test in close combat and, failing it, strikes no one
+    this phase.  Defence is untouched -- the gate writes only ``blocked``.
+    Undead, Lizardmen and anything printed charm-immune never test at all.
+
+    ``blocked`` is the victim side's full-batch attack bar, updated in place,
+    and the returned mask is aligned to ``rows``.
+    """
+    rows = np.asarray(rows, dtype=np.intp)
+    newly_blocked = np.zeros(rows.size, dtype=bool)
+    if rows.size == 0 or not has(owner.global_effects, "mechanic.mesmerising-dance"):
+        return newly_blocked
+    if any(has(target.global_effects, tag) for tag in MESMERISING_DANCE_IMMUNITY):
+        return newly_blocked
+    testing = _charm_source_rows(owner_state, target_state, rows)
+    if testing.size == 0:
+        return newly_blocked
+    passed = resolve_local_leadership(
+        target, target_state, testing, first=target_is_first,
+        key=f"{_prefix(key_prefix, round_index)}.{_label(target_is_first)}.mesmerising-dance",
+        rng=rng, context=context, decisions=decisions, resources=leadership,
+        opponent=owner, close_combat=True)
+    lost = testing[~passed]
+    blocked[lost] = True
+    newly_blocked[np.isin(rows, lost)] = True
+    return newly_blocked
+
+
+def resolve_mark_of_shornaal(
+    owner: CompiledFighter, target: CompiledFighter,
+    owner_state: CombatState, target_state: CombatState, rows: np.ndarray, *,
+    target_is_first: bool, round_index: int, rng: np.random.Generator,
+    resources: PsychologyResources, blocked: np.ndarray,
+    auto_hit: np.ndarray | None = None,
+    leadership: LeadershipResources | None = None,
+    decisions: DecisionPolicy | None = None,
+    context: PreparedDuelContext | None = None,
+    key_prefix: str | None = None,
+) -> np.ndarray:
+    """Batch port of the Mark of Shornaal gate in ``modular.rounds.resolve_round``.
+
+    Three dice discarding the lowest, taken as a Psychology test, and once a row
+    has passed it never tests again for the rest of the battle
+    (``mark-of-shornaal.passed`` on the *victim's* spent resources, kept here in
+    that side's :class:`PsychologyResources`).  A failure both bars the victim's
+    attacks and makes every incoming hit automatic.
+
+    ``resources`` and ``leadership`` are the *victim's* ledgers, because the
+    victim is the model that tests and that spends.  ``blocked`` and
+    ``auto_hit`` are the victim side's full-batch arrays, updated in place; the
+    returned mask of newly failed rows is aligned to ``rows``.
+    """
+    rows = np.asarray(rows, dtype=np.intp)
+    newly_failed = np.zeros(rows.size, dtype=bool)
+    if rows.size == 0 or not has(owner.global_effects, "mechanic.mark-of-shornaal"):
+        return newly_failed
+    if has(target.global_effects, "mechanic.charm-immunity"):
+        return newly_failed
+    testing = _charm_source_rows(owner_state, target_state, rows)
+    testing = testing[~resources.shornaal_passed[testing]]
+    if testing.size == 0:
+        return newly_failed
+    passed = resolve_local_leadership(
+        target, target_state, testing, first=target_is_first,
+        key=f"{_prefix(key_prefix, round_index)}.{_label(target_is_first)}.shornaal",
+        rng=rng, context=context, decisions=decisions, resources=leadership,
+        psychology=True, discard_lowest=True, opponent=owner, close_combat=True)
+    resources.shornaal_passed[testing[passed]] = True
+    lost = testing[~passed]
+    blocked[lost] = True
+    if auto_hit is not None:
+        auto_hit[lost] = True
+    newly_failed[np.isin(rows, lost)] = True
+    return newly_failed

@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "blocked",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/mechanics/mechanic.first-failed-leadership-reroll.yaml",
+    "sha256": "d09600a18a19bc43a9b7aa0df55b0cdcdf2161fc319d269f1efda0cc787dbc94",
+    "test_id": "mechanic/mechanic.first-failed-leadership-reroll::the-first-failure-spends-the-resource-and-the-reroll-passes"
+  },
+  "case_key": "e2e/mechanic/mechanic.first-failed-leadership-reroll/the-first-failure-spends-the-resource-and-the-reroll-passes",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E prescribes explicit decisions (round.0.first.fear.charge.reroll); the contract admits only the engine-default decision policy, and no general policy for randomly branched trajectories exists for these keys."
+}

@@ -1,0 +1,232 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/mordheim--black-dwarfs--band--chaos-dwarf-special-skills-true-grit--skil--14ccee547b13.yaml",
+    "sha256": "7500ed5be3049c2ecf74cf8c050c528836b5eba9e86ae5acad17be34002a3640",
+    "test_id": "rule/mordheim/black-dwarfs/band--chaos-dwarf-special-skills-true-grit/skill.tough-as-steel::a-total-of-six-still-removes-the-bearer"
+  },
+  "case_key": "e2e/rule/mordheim/black-dwarfs/band--chaos-dwarf-special-skills-true-grit/skill.tough-as-steel/a-total-of-six-still-removes-the-bearer",
+  "case": {
+    "case_key": "e2e/rule/mordheim/black-dwarfs/band--chaos-dwarf-special-skills-true-grit/skill.tough-as-steel/a-total-of-six-still-removes-the-bearer",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/mordheim/black-dwarfs/band--chaos-dwarf-special-skills-true-grit/skill.tough-as-steel::a-total-of-six-still-removes-the-bearer",
+      "path": "tests/integration/e2e/cases/grants/mordheim--black-dwarfs--band--chaos-dwarf-special-skills-true-grit--skil--14ccee547b13.yaml",
+      "sha256": "7500ed5be3049c2ecf74cf8c050c528836b5eba9e86ae5acad17be34002a3640"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 2,
+          "initiative": 5,
+          "attacks": 1,
+          "movement": null,
+          "leadership": null
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.axe",
+            "material.normal"
+          ],
+          "armour_penetration": 1
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {},
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.axe",
+            "effect": {
+              "tags": [
+                "weapon.axe",
+                "material.normal"
+              ],
+              "armour_penetration": 1
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 1,
+          "initiative": 2,
+          "attacks": 1,
+          "movement": null,
+          "leadership": null
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "skill.tough-as-steel",
+            "armour.no-armour"
+          ],
+          "out_of_action_threshold": 6,
+          "true_grit": true
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {
+          "tags": [
+            "skill.tough-as-steel"
+          ],
+          "out_of_action_threshold": 6,
+          "true_grit": true
+        },
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {
+          "tags": [
+            "skill.tough-as-steel"
+          ],
+          "out_of_action_threshold": 6,
+          "true_grit": true
+        },
+        "global_effects_without_equipment": {
+          "tags": [
+            "skill.tough-as-steel"
+          ],
+          "out_of_action_threshold": 6,
+          "true_grit": true
+        },
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [],
+      "active_participant": "first"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {},
+      "second": {}
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "56c8243eca545453b5b1f8da9b7cc349b5da74a2dc850969af19c29a4533b182",
+      "case_sha256": "f677482f070120b806622d190b3d7c453e486b7fcc80ea030ba4c48cd2e90da4"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

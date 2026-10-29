@@ -1,0 +1,239 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/mordheim--lords-of-the-marsh-mim--fimir-warriors--stupidity--mechanic.st--c01751d5705a.yaml",
+    "sha256": "c6ac8e43486b54b0abd9a22f485debae6da0046812b3bd05b6d5f37b64d52392",
+    "test_id": "rule/mordheim/lords-of-the-marsh-mim/fimir-warriors--stupidity/mechanic.stupidity::an-already-frenzied-bearer-rolls-no-stupidity-die"
+  },
+  "case_key": "e2e/rule/mordheim/lords-of-the-marsh-mim/fimir-warriors--stupidity/mechanic.stupidity/an-already-frenzied-bearer-rolls-no-stupidity-die",
+  "case": {
+    "case_key": "e2e/rule/mordheim/lords-of-the-marsh-mim/fimir-warriors--stupidity/mechanic.stupidity/an-already-frenzied-bearer-rolls-no-stupidity-die",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/mordheim/lords-of-the-marsh-mim/fimir-warriors--stupidity/mechanic.stupidity::an-already-frenzied-bearer-rolls-no-stupidity-die",
+      "path": "tests/integration/e2e/cases/grants/mordheim--lords-of-the-marsh-mim--fimir-warriors--stupidity--mechanic.st--c01751d5705a.yaml",
+      "sha256": "c6ac8e43486b54b0abd9a22f485debae6da0046812b3bd05b6d5f37b64d52392"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "lords-of-the-marsh-mim:fimir-warriors",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 3,
+          "initiative": 2,
+          "attacks": 1,
+          "movement": 6,
+          "leadership": 7
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.dagger",
+            "material.normal"
+          ],
+          "target_armour_bonus": 1
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "mechanic.causes-fear",
+            "mechanic.stupidity",
+            "mechanic.cold-blooded-leadership",
+            "armour.no-armour",
+            "natural_armour_stacks",
+            "fighter-kind.henchman",
+            "band.lords-of-the-marsh-mim"
+          ]
+        },
+        "armour_save": 5,
+        "helmet_save": 7,
+        "natural_armour_save": 5,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 6,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [
+          {
+            "tags": [
+              "rule.spiked-tail"
+            ],
+            "strength_bonus": 1
+          }
+        ],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 2,
+        "construction_tags": [
+          "compiler.lizardmen-scaly-skin"
+        ],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.causes-fear",
+            "mechanic.stupidity",
+            "mechanic.cold-blooded-leadership",
+            "natural_armour_stacks",
+            "fighter-kind.henchman",
+            "band.lords-of-the-marsh-mim"
+          ]
+        },
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.dagger",
+            "effect": {
+              "tags": [
+                "weapon.dagger",
+                "material.normal"
+              ],
+              "target_armour_bonus": 1
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": true,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 3,
+          "initiative": 1,
+          "attacks": 1,
+          "movement": null,
+          "leadership": 7
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {},
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [
+        "first"
+      ],
+      "active_participant": "first"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {
+        "frenzy": true
+      },
+      "second": {}
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "d7e51bce1301c77bdba86961148032a049e74b66b870f1564de718210f71a0c2",
+      "case_sha256": "a1b22742d4b38526f10c0f9114e81fd77b689c3f376e073f07fd8a8d9ea083eb"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

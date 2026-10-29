@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "blocked",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/mechanics/weapon.weeping-blades.yaml",
+    "sha256": "c06b8f1fbb74d9a92183a34322cdc1d69637a721c341e41f40a8878070de7454",
+    "test_id": "mechanic/weapon.weeping-blades::the-venom-wounds-automatically-on-a-natural-six"
+  },
+  "case_key": "e2e/mechanic/weapon.weeping-blades/the-venom-wounds-automatically-on-a-natural-six",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E prescribes explicit decisions (round.0.first.attack.0.lotus-critical); the contract admits only the engine-default decision policy, and no general policy for randomly branched trajectories exists for these keys."
+}

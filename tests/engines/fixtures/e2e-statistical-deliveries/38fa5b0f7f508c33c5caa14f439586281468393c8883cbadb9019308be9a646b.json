@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "not-applicable",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/mordheim--adventurers-kaz--band--elf-special-skills--profile.skill-acces--bd5482cc68e9.yaml",
+    "sha256": "613471e9ca91cc8d4a6be0628131888c2236e7c816de159a1aab823b55e5d1e6",
+    "test_id": "rule/mordheim/adventurers-kaz/band--elf-special-skills/profile.skill-access::a-special-skill-outside-the-printed-table-is-refused"
+  },
+  "case_key": "e2e/rule/mordheim/adventurers-kaz/band--elf-special-skills/profile.skill-access/a-special-skill-outside-the-printed-table-is-refused",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E declares an expected construction refusal (\"skills are not available to adventurers-kaz/elf: ['skill.monster-slayer']\"); the build is refused with \"skills are not available to adventurers-kaz/elf: ['skill.monster-slayer']\", so no statistical scenario can be frozen."
+}

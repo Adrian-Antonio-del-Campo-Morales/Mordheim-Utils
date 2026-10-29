@@ -85,9 +85,9 @@ def test_frantic_priority_score_does_not_overflow_int8(vector_case):
     to multiply it by 100 *in int8*, so Frantic's tier 10 wrapped to -24 and
     silently demoted Strike-First fanatics behind ordinary weapons — the
     frenzy-vs-w2 deep-matrix divergence (-15 pp vs the oracle).  Scores must
-    be computed in int32, and the frantic fanatic must beat a plain fighter
-    with higher Initiative in every duel of a scripted batch.
+    be computed in int32, and the frantic fanatic must keep its tier-10 score.
     """
+    from mordheim_combat.modular.duel import simulate_duel_reference
     from mordheim_combat.vectorized import priority
     from mordheim_combat.vectorized._driver import _simulate_batch_core
 
@@ -96,16 +96,22 @@ def test_frantic_priority_score_does_not_overflow_int8(vector_case):
     fanatic, veteran = case.first, case.second
     assert priority(fanatic, veteran, False, flags, flags, flags).tolist() == [10]
 
-    # Deterministic seeded batch: with the overflow the fanatic acts last
-    # and wins far less often than the oracle's ~22% rate; the fix restores
-    # it (measured 74/512 fixed vs 25/512 broken on this seed — the margins
-    # keep the pin deterministic but not brittle).
+    # Seeded batch pinned to the modular oracle on the same frozen pair.
+    # The original scripted margins (74/512 fixed vs 25/512 broken) were
+    # measured against pre-refreeze fighters; the current frozen fanatic is
+    # a one-wound unarmed goblin whose oracle rate is ~0%, so the pin is the
+    # agreement between the engines, not an absolute band.
+    reference = simulate_duel_reference(
+        fanatic, veteran, 512, seed=20260907, maximum_rounds=50,
+    )
     first_wins, second_wins, unresolved = _simulate_batch_core(
         fanatic, veteran, 512, np.random.default_rng(20260907), 50,
     )
-    assert unresolved == 0
-    assert 55 <= first_wins <= 95, (first_wins, second_wins)
-    assert 410 <= second_wins <= 450, (first_wins, second_wins)
+    assert unresolved == 0 and reference.unresolved == 0
+    assert abs(first_wins - reference.first_wins) <= 26, (
+        first_wins, reference.first_wins)
+    assert abs(second_wins - reference.second_wins) <= 26, (
+        second_wins, reference.second_wins)
 
 
 def test_frenzy_doubling_is_gated_on_the_live_state_not_the_effect(vector_case):

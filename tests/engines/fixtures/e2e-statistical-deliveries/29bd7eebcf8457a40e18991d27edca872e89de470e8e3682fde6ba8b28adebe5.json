@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "blocked",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/mordheim--lothern-sea-patrol-sar--seaguards--spear-master--mechanic.seag--6f348b489bdd.yaml",
+    "sha256": "dfa31dd4edfb22ccc29b01b91506523641be9d9bcd461c0f756bda733d587530",
+    "test_id": "rule/mordheim/lothern-sea-patrol-sar/seaguards--spear-master/mechanic.seaguard-spear-master::the-chosen-failed-hit-is-taken-again-once"
+  },
+  "case_key": "e2e/rule/mordheim/lothern-sea-patrol-sar/seaguards--spear-master/mechanic.seaguard-spear-master/the-chosen-failed-hit-is-taken-again-once",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E prescribes explicit decisions (round.0.first.attack.0.spear-master); the contract admits only the engine-default decision policy, and no general policy for randomly branched trajectories exists for these keys."
+}

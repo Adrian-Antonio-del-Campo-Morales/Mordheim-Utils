@@ -199,7 +199,7 @@ def test_parry_selects_highest_hit_across_main_and_off_hand(monkeypatch, vector_
     case=vector_case("test_vectorized_engine/test_parry_selects_highest_hit_across_main_and_off_hand-0-0")
     attacker,defender=case.first,case.second
     attacker_state=engine._new_state(attacker,1,np.random.default_rng(1));defender_state=engine._new_state(defender,1,np.random.default_rng(2))
-    def prepare(_attacker,_defender,weapon,active,_charging,_attacker_state,_defender_state,_rng,_first_round):
+    def prepare(_attacker,_defender,weapon,active,_charging,_attacker_state,_defender_state,_rng,_first_round,**_kwargs):
         if active.size==0:return None
         roll=3 if engine.has(weapon,"weapon.mace") else 5
         return engine.PreparedAttack(

@@ -1,0 +1,242 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/mordheim--skaven-of-clan-pestilens-mou--plague-priest--frenzy--trait.fre--e1966e22ca6b.yaml",
+    "sha256": "40784fe4ba28c795cb32fc1848b50bbe8b9338929db0327f353cddd8c7e27990",
+    "test_id": "rule/mordheim/skaven-of-clan-pestilens-mou/plague-priest--frenzy/trait.frenzy::a-frenzied-plague-priest-takes-no-fear-test-for-the-charge-it-receives"
+  },
+  "case_key": "e2e/rule/mordheim/skaven-of-clan-pestilens-mou/plague-priest--frenzy/trait.frenzy/a-frenzied-plague-priest-takes-no-fear-test-for-the-charge-it-receives",
+  "case": {
+    "case_key": "e2e/rule/mordheim/skaven-of-clan-pestilens-mou/plague-priest--frenzy/trait.frenzy/a-frenzied-plague-priest-takes-no-fear-test-for-the-charge-it-receives",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/mordheim/skaven-of-clan-pestilens-mou/plague-priest--frenzy/trait.frenzy::a-frenzied-plague-priest-takes-no-fear-test-for-the-charge-it-receives",
+      "path": "tests/integration/e2e/cases/grants/mordheim--skaven-of-clan-pestilens-mou--plague-priest--frenzy--trait.fre--e1966e22ca6b.yaml",
+      "sha256": "40784fe4ba28c795cb32fc1848b50bbe8b9338929db0327f353cddd8c7e27990"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 3,
+          "initiative": 1,
+          "attacks": 1,
+          "movement": null,
+          "leadership": 7
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour",
+            "mechanic.causes-fear"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.causes-fear"
+          ]
+        },
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "skaven-of-clan-pestilens-mou:plague-priest",
+        "characteristics": {
+          "weapon_skill": 4,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 1,
+          "initiative": 5,
+          "attacks": 1,
+          "movement": 4,
+          "leadership": 7
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.dagger",
+            "material.normal"
+          ],
+          "target_armour_bonus": 1
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "mechanic.leader-six",
+            "skill.resilient",
+            "armour.no-armour",
+            "frenzy",
+            "fighter-kind.hero",
+            "band.skaven-of-clan-pestilens-mou"
+          ],
+          "incoming_strength_modifier": -1,
+          "frenzy": true
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 6,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {
+          "tags": [
+            "skill.resilient"
+          ],
+          "incoming_strength_modifier": -1
+        },
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 3,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.leader-six",
+            "skill.resilient",
+            "frenzy",
+            "fighter-kind.hero",
+            "band.skaven-of-clan-pestilens-mou"
+          ],
+          "incoming_strength_modifier": -1,
+          "frenzy": true
+        },
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.dagger",
+            "effect": {
+              "tags": [
+                "weapon.dagger",
+                "material.normal"
+              ],
+              "target_armour_bonus": 1
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [
+        "first"
+      ],
+      "active_participant": "first"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {},
+      "second": {
+        "attacks": 1
+      }
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "c2d93c63daa1128ef164690e4c33712c3f268ede099ffd07d9130809c1a72409",
+      "case_sha256": "e681f9beae20805f97cf2ad40152448c8413bfe4402bdfd9fcb4b485b676ab90"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

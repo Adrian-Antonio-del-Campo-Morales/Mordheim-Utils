@@ -31,7 +31,7 @@ from mordheim_combat.modular.state import initialize_duel, initialize_fighter
 from mordheim_combat.native._combat_compile import compile_duel
 
 
-from mordheim_combat.vectorized import simulate_batch, simulate_duel, simulate_duel_parallel
+from mordheim_combat.vectorized import available_backends, simulate_batch, simulate_duel, simulate_duel_parallel
 
 
 from mordheim_combat_lab.application.catalogue import CombatCatalogue
@@ -65,29 +65,45 @@ def plain(cases):
 @pytest.mark.parametrize('second', [False, True])
 @pytest.mark.parametrize('backend', ['auto', 'numpy', 'native'])
 def test_public_optimized_paths_refuse_unported_canonical_effect(host, plain, second, backend):
-    """The canonical host still carries another pending contract.
+    """Refusal follows the selected backend's support for the canonical host.
 
     ``trait.spectral-touch`` itself is connected to NumPy; the gate-level
     admission is pinned by ``test_guard_also_rejects_weapon_scoped_spectral_
-    effect``. This host also carries a pending local-modifier contract, so
-    every optimized backend refuses before dispatch and names that first
-    contract, not Spectral Touch.
+    effect``. The host's local-modifier contract keeps the native gate
+    refusing before dispatch. Auto follows the first available backend.
+    NumPy has since connected it, so its gate
+    admits the pair and execution surfaces the modular reference's own
+    refusal: this frozen defender carries no explicit Leadership, so the fear
+    test against the host is unresolvable on every engine.
     """
     pair = (plain, host) if second else (host, plain)
-    with pytest.raises(ValueError, match='modular engine'):
-        simulate_duel(DuelRequest(*pair, simulations=1), backend=backend)
+    selected = available_backends()[0] if backend == 'auto' else backend
+    if selected == 'numpy':
+        require_optimized_support(*pair, backend='numpy')
+        refusal = 'explicit non-negative integer Leadership'
+        with pytest.raises(ValueError, match=refusal):
+            simulate_modular(DuelRequest(*pair, simulations=1))
+        with pytest.raises(ValueError, match=refusal):
+            simulate_duel(DuelRequest(*pair, simulations=1), backend=backend)
+    else:
+        with pytest.raises(ValueError, match='modular engine'):
+            simulate_duel(DuelRequest(*pair, simulations=1), backend=backend)
 
 
 @pytest.mark.parametrize('second', [False, True])
 def test_low_level_optimized_paths_refuse_before_execution(host, plain, second):
     pair = (plain, host) if second else (host, plain)
-    calls = (lambda: compile_duel_plan(*pair), lambda: compile_duel(*pair),
-             lambda: simulate_batch(*pair, 1, np.random.default_rng(0), 1),
-             lambda: simulate_duel_parallel(DuelRequest(*pair, simulations=1)))
-    # Every entry still refuses, but the host's pending local-modifier contract
-    # is named before the connected Spectral Touch behaviour.
-    for call in calls:
+    # The native-gated entries still refuse before execution and name the
+    # host's pending local-modifier contract, not Spectral Touch.
+    for call in (lambda: compile_duel_plan(*pair), lambda: compile_duel(*pair)):
         with pytest.raises(ValueError, match='modular engine'):
+            call()
+    # The NumPy entries are fully connected: the gate admits the pair and
+    # execution surfaces the modular reference's refusal of the frozen
+    # defender's missing Leadership instead.
+    for call in (lambda: simulate_batch(*pair, 1, np.random.default_rng(0), 1),
+                 lambda: simulate_duel_parallel(DuelRequest(*pair, simulations=1))):
+        with pytest.raises(ValueError, match='explicit non-negative integer Leadership'):
             call()
 
 

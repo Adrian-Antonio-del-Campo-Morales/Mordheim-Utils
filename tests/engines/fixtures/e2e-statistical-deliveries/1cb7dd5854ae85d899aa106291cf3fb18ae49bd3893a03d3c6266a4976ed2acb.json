@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "blocked",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/mechanics/mechanic.undivided-leader.yaml",
+    "sha256": "df55e0d9c3814e015d75a5b62504175ba1bb109310e76e55f3b4bcc3dfb0ce8d",
+    "test_id": "mechanic/mechanic.undivided-leader::the-marked-leader-s-aura-rerolls-the-failed-test"
+  },
+  "case_key": "e2e/mechanic/mechanic.undivided-leader/the-marked-leader-s-aura-rerolls-the-failed-test",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E prescribes explicit decisions (round.0.first.stupidity.leader.marked-leader, round.0.first.stupidity.reroll); the contract admits only the engine-default decision policy, and no general policy for randomly branched trajectories exists for these keys."
+}

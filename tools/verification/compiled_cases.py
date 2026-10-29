@@ -82,10 +82,18 @@ class CaseOrigin:
 
 @dataclass(frozen=True, slots=True)
 class CaseLimits:
-    simulations: int
-    seed: int
-    batch_size: int
-    maximum_rounds: int
+    """Declared inputs of a frozen case.
+
+    The maintained scenario entries carry only their round budget: sample
+    widths, seeds and batch sizes are execution configuration, not scenario
+    data.  Historical cases keep the three sample fields, so both shapes load
+    and encode.
+    """
+
+    simulations: int | None = None
+    seed: int | None = None
+    batch_size: int | None = None
+    maximum_rounds: int = 50
 
 
 @dataclass(frozen=True, slots=True)
@@ -909,16 +917,28 @@ def decode_origin(raw: object, case_key: str = "<value>", field: str = "origin")
     )
 
 
+#: Round budget is required; the sample fields are optional so a scenario
+#: entry need not freeze execution metadata it no longer owns.
+_LIMIT_FIELDS = frozenset({"simulations", "seed", "batch_size", "maximum_rounds"})
+
+
 def _decode_limits(raw: object, case_key: str, field: str) -> CaseLimits:
     data = _mapping(raw, case_key, field)
-    _exact_keys(
-        data, frozenset({"simulations", "seed", "batch_size", "maximum_rounds"}),
-        case_key, field,
-    )
+    unknown = sorted(set(data) - _LIMIT_FIELDS)
+    if unknown:
+        _fail(case_key, field, "unknown field(s): " + ", ".join(unknown))
+    if "maximum_rounds" not in data:
+        _fail(case_key, field, "expected maximum_rounds")
+
+    def optional(name: str, *, minimum: int | None = None) -> int | None:
+        if name not in data:
+            return None
+        return _integer(data[name], case_key, f"{field}.{name}", minimum=minimum)
+
     return CaseLimits(
-        simulations=_integer(data["simulations"], case_key, f"{field}.simulations", minimum=1),
-        seed=_integer(data["seed"], case_key, f"{field}.seed"),
-        batch_size=_integer(data["batch_size"], case_key, f"{field}.batch_size", minimum=1),
+        simulations=optional("simulations", minimum=1),
+        seed=optional("seed"),
+        batch_size=optional("batch_size", minimum=1),
         maximum_rounds=_integer(
             data["maximum_rounds"], case_key, f"{field}.maximum_rounds", minimum=1
         ),
@@ -928,12 +948,12 @@ def _decode_limits(raw: object, case_key: str, field: str) -> CaseLimits:
 def encode_limits(value: CaseLimits) -> dict:
     if not isinstance(value, CaseLimits):
         raise CompiledCaseError("<value>", "limits", "expected CaseLimits")
-    return {
-        "simulations": value.simulations,
-        "seed": value.seed,
-        "batch_size": value.batch_size,
-        "maximum_rounds": value.maximum_rounds,
-    }
+    encoded = {"maximum_rounds": value.maximum_rounds}
+    for name in ("simulations", "seed", "batch_size"):
+        item = getattr(value, name)
+        if item is not None:
+            encoded[name] = item
+    return encoded
 
 
 def _encode_dice(values) -> list[dict]:

@@ -73,7 +73,10 @@ def test_art_of_silent_death_criticals_are_always_resolved_on_to_wound():
 def test_black_hunger_adds_attack_and_resolves_armour_ignoring_backlash(vector_case):
     case = vector_case("test_shared_families/test_black_hunger_adds_attack_and_resolves_armour_ignoring_backlash-0-0")
     fighter = case.first
-    assert fighter.global_effects.attacks_bonus == 1
+    # The printed +1 Attack is not a compiled bonus: the round driver applies
+    # it on the bearer's own turn only, together with the end-of-turn backlash
+    # (certified by ``mechanic-black-hunger/own-turn-attack-bonus``).
+    assert fighter.global_effects.attacks_bonus == 0
     assert "mechanic.black-hunger" in fighter.global_effects.tags
 
 

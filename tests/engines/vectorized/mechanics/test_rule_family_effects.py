@@ -1,6 +1,8 @@
 """Vectorized regressions of canonical rule families."""
 from __future__ import annotations
 
+from dataclasses import replace
+
 from mordheim_combat.vectorized import _new_state
 from mordheim_combat.vectorized import _prepare_weapon_attack
 from mordheim_combat.vectorized import attack_count
@@ -67,7 +69,16 @@ def test_animal_friendship_prevents_normal_animals_from_attacking_in_the_duel(ve
     case = vector_case("test_rule_families_a/test_animal_friendship_prevents_normal_animals_from_attacking_in_the_duel-0-0")
     friend, animal = case.first, case.second
     assert "species.animal" in animal.global_effects.tags
-    result = simulate_duel(DuelRequest(friend, animal, 40, seed=12, maximum_rounds=20))
+    assert "animal_friendship" in friend.global_effects.tags
+    # The rule (modular and vectorized alike) keys on ``species.normal-animal``,
+    # which the refrozen corpus dropped from this fighter; restore the premise
+    # without recompiling, as the observation tests do for their tags.
+    animal = replace(animal, global_effects=replace(
+        animal.global_effects,
+        tags=(*animal.global_effects.tags, "species.normal-animal")))
+    result = simulate_duel(
+        DuelRequest(friend, animal, 40, seed=12, maximum_rounds=20),
+        backend="numpy")
     assert result.second_wins == 0
 
 

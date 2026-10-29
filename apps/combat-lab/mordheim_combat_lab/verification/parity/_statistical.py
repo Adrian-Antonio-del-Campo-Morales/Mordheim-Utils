@@ -97,6 +97,36 @@ def compare_outcome_rates(
     return modular_rates, candidate_rates, tolerances, passed
 
 
+def compare_samples(
+    scenario: str, simulations: int,
+    modular_counts: tuple[int, int, int], candidate_counts: tuple[int, int, int],
+    *, backend: str = "native", reference_seconds: float = 0.0,
+    candidate_seconds: float = 0.0,
+) -> StatisticalParityResult:
+    """Compare stored outcome counts without executing either engine.
+
+    Keep the existing result shape and NumPy callers compatible; native
+    records can be compared without installing the native engine.
+    """
+    if backend not in ("numpy", "native"):
+        raise ValueError(f"unsupported optimized backend: {backend}")
+    for label, counts in (("modular", modular_counts), ("candidate", candidate_counts)):
+        if len(counts) != 3 or sum(counts) != simulations:
+            raise ValueError(
+                f"{label} counts {tuple(counts)!r} do not describe "
+                f"{simulations} duels"
+            )
+    modular_rates, vector_rates, tolerances, passed = compare_outcome_rates(
+        tuple(modular_counts), tuple(candidate_counts), simulations,
+    )
+    return StatisticalParityResult(
+        scenario=scenario, backend=backend, simulations=simulations,
+        modular_rates=modular_rates, vectorized_rates=vector_rates,
+        tolerances=tolerances, passed=passed,
+        reference_seconds=reference_seconds, candidate_seconds=candidate_seconds,
+    )
+
+
 def _parity_result(scenario: str, backend: str, simulations: int, modular, vector,
                    reference_seconds: float, candidate_seconds: float) -> StatisticalParityResult:
     modular_counts = (modular.first_wins, modular.second_wins, modular.unresolved)

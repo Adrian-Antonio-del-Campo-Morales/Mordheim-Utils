@@ -1,0 +1,272 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/trollheim--lustria-norse--band--norse-special-skills-shield-mastery--ski--717c6d3ed75a.yaml",
+    "sha256": "5e857d1d738930f43c55bd0d4cee02407de6b33a943fa6cf77ac31be90cb7745",
+    "test_id": "rule/trollheim/lustria-norse/band--norse-special-skills-shield-mastery/skill.shield-mastery::the-shield-keeps-its-armour-point-when-the-parry-fails"
+  },
+  "case_key": "e2e/rule/trollheim/lustria-norse/band--norse-special-skills-shield-mastery/skill.shield-mastery/the-shield-keeps-its-armour-point-when-the-parry-fails",
+  "case": {
+    "case_key": "e2e/rule/trollheim/lustria-norse/band--norse-special-skills-shield-mastery/skill.shield-mastery/the-shield-keeps-its-armour-point-when-the-parry-fails",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/trollheim/lustria-norse/band--norse-special-skills-shield-mastery/skill.shield-mastery::the-shield-keeps-its-armour-point-when-the-parry-fails",
+      "path": "tests/integration/e2e/cases/grants/trollheim--lustria-norse--band--norse-special-skills-shield-mastery--ski--717c6d3ed75a.yaml",
+      "sha256": "5e857d1d738930f43c55bd0d4cee02407de6b33a943fa6cf77ac31be90cb7745"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 2,
+          "initiative": 2,
+          "attacks": 1,
+          "movement": null,
+          "leadership": null
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {},
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "lustria-norse:jarl",
+        "characteristics": {
+          "weapon_skill": 4,
+          "strength": 4,
+          "toughness": 3,
+          "wounds": 1,
+          "initiative": 4,
+          "attacks": 2,
+          "movement": 4,
+          "leadership": 8
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": {},
+        "global_effects": {
+          "tags": [
+            "mechanic.leader-six",
+            "skill.shield-mastery",
+            "armour.light-armour",
+            "defence.shield",
+            "fighter-kind.hero",
+            "band.lustria-norse",
+            "warband-group.chaos-human",
+            "warband-group.chaotic",
+            "warband-group.human",
+            "warband-group.norse"
+          ],
+          "armour_save_bonus": 1
+        },
+        "armour_save": 5,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {
+          "tags": [
+            "skill.shield-mastery",
+            "defence.shield"
+          ],
+          "armour_save_bonus": 1
+        },
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 3,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {
+          "tags": [
+            "skill.shield-mastery"
+          ]
+        },
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.leader-six",
+            "skill.shield-mastery",
+            "fighter-kind.hero",
+            "band.lustria-norse",
+            "warband-group.chaos-human",
+            "warband-group.chaotic",
+            "warband-group.human",
+            "warband-group.norse"
+          ]
+        },
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          },
+          {
+            "item_id": "defence.shield",
+            "effect": {
+              "tags": [
+                "defence.shield"
+              ],
+              "armour_save_bonus": 1
+            },
+            "kind": "defence",
+            "slot": "off",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          },
+          {
+            "item_id": "armour.light-armour",
+            "effect": {
+              "tags": [
+                "armour.light-armour"
+              ],
+              "armour_save_bonus": 1
+            },
+            "kind": "armour",
+            "slot": "armour",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [
+        "first"
+      ],
+      "active_participant": "first"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {},
+      "second": {
+        "attacks": 0
+      }
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "597827a2971209776b64b40f61267dc3c6e5e7e827fe824960fcb62dae6ca65b",
+      "case_sha256": "512f4df4ad8f1e7f7a4c8492b91d2e1822cb1f0f933b09fd00e5ffc774bcfaf1"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

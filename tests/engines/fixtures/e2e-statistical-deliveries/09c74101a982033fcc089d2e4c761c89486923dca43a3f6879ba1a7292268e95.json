@@ -1,0 +1,240 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/mordheim--dwarf-rangers--band--hard-head--trait.concussion-immune--3a8f90169b56.yaml",
+    "sha256": "98cac80153195657a3edafb99d6a4e262b2039865a07ab899426097e6e36167c",
+    "test_id": "rule/mordheim/dwarf-rangers/band--hard-head/trait.concussion-immune::the-mace-no-longer-converts-a-two-into-a-stun"
+  },
+  "case_key": "e2e/rule/mordheim/dwarf-rangers/band--hard-head/trait.concussion-immune/the-mace-no-longer-converts-a-two-into-a-stun",
+  "case": {
+    "case_key": "e2e/rule/mordheim/dwarf-rangers/band--hard-head/trait.concussion-immune/the-mace-no-longer-converts-a-two-into-a-stun",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/mordheim/dwarf-rangers/band--hard-head/trait.concussion-immune::the-mace-no-longer-converts-a-two-into-a-stun",
+      "path": "tests/integration/e2e/cases/grants/mordheim--dwarf-rangers--band--hard-head--trait.concussion-immune--3a8f90169b56.yaml",
+      "sha256": "98cac80153195657a3edafb99d6a4e262b2039865a07ab899426097e6e36167c"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 10,
+          "strength": 8,
+          "toughness": 3,
+          "wounds": 3,
+          "initiative": 10,
+          "attacks": 1,
+          "movement": null,
+          "leadership": null
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {},
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "dwarf-rangers:beardlings",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 4,
+          "wounds": 1,
+          "initiative": 2,
+          "attacks": 1,
+          "movement": 3,
+          "leadership": 8
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.dagger",
+            "material.normal"
+          ],
+          "target_armour_bonus": 1
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "skill.hard-to-kill",
+            "mechanic.hatred-orcs-goblins",
+            "armour.no-armour",
+            "concussion_immune",
+            "fighter-kind.henchman",
+            "band.dwarf-rangers",
+            "warband-group.dwarf",
+            "warband-group.good-aligned"
+          ],
+          "out_of_action_threshold": 6
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {
+          "tags": [
+            "skill.hard-to-kill"
+          ],
+          "out_of_action_threshold": 6
+        },
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 2,
+        "construction_tags": [
+          "compiler.no-arcane-lore"
+        ],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "skill.hard-to-kill",
+            "mechanic.hatred-orcs-goblins",
+            "concussion_immune",
+            "fighter-kind.henchman",
+            "band.dwarf-rangers",
+            "warband-group.dwarf",
+            "warband-group.good-aligned"
+          ],
+          "out_of_action_threshold": 6
+        },
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.dagger",
+            "effect": {
+              "tags": [
+                "weapon.dagger",
+                "material.normal"
+              ],
+              "target_armour_bonus": 1
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [],
+      "active_participant": "first"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {},
+      "second": {
+        "attacks": 0,
+        "wounds": 1
+      }
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "f8033a317c104a7a16779de64d1bd3ae2ef6c452546938c92634842acb337eae",
+      "case_sha256": "35d461d22099f856d91136bee3c62cfa7ab5d7f4b4fa9101f7f5bd9426da147d"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

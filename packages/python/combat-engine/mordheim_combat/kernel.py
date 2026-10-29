@@ -152,6 +152,12 @@ def _pending_snapshot() -> PendingCapabilities:
         "mechanic.herb-lore-outside-combat", "mechanic.magic-acorn",
         "mechanic.undead-construct", "mechanic.marianna-no-pain-jump-up",
         "mechanic.festooned-with-pistols",
+        # NOT ``mechanic.death-blow``.  Two different rules whose names differ
+        # only by a hyphen: this one is the Slayer's optional attack-pool
+        # option (``modular/rounds.py::select_attack_replacement``) and is
+        # unported; ``mechanic.death-blow`` is the connected rule implemented
+        # in ``vectorized/_attacks.py`` and listed in ``NUMPY_CONNECTED_TAGS``
+        # below.  Porting by name match will connect the wrong one.
         "mechanic.deathblow",
         "mechanic.fear-beastmen", "mechanic.hatred-beastmen",
         "condition.summoned-this-turn",
@@ -196,15 +202,111 @@ NUMPY_CONNECTED_TAGS = frozenset({
     "dance.whirling-death", "dance.storm-of-blades", "dance.the-shadows-coil",
     "dance.woven-mist", "mechanic.hypnotist", "mechanic.taal-tranquil-fauna",
     "defence.eye-pendant", "mechanic.great-thirster", "mechanic.curse-of-the-revenant",
+    # ``mechanic.death-blow`` is not the Slayer's ``mechanic.deathblow``; see
+    # the note beside that tag in ``_pending_snapshot`` above.
     "mechanic.death-blow", "mechanic.nominated-strike-first", "mechanic.noblesse-stomp",
     "mechanic.gaoler-grapple", "condition.netted", "mechanic.bitten-transform",
     "mechanic.electrical-touch", "condition.alchemist-backleys-brew",
     "condition.alchemist-addicted", "condition.alchemist-aberrantius-vigortia",
     "mechanic.leader-six",
+    # Phase 4: the 8 printed weapon profiles.  Six compile entirely to generic
+    # EffectSet fields the vectorized operators already consume (katana: S+1/
+    # parry/two-handed; kanabo: S+1/concussion/two-handed; knuckledusters:
+    # paired; long-daggers: parry/paired + weapon.dagger; pry-bar: parry/
+    # concussion; wizards-staff: parry/concussion/two-handed).  Skull Busta's
+    # helmet branch was already in ``vectorized/_attacks.py``; Shock Rod's
+    # stun-on-1-4 branch landed with this entry.  Specs confirmed at the
+    # phase-8 verification task per PLAN §11.
+    "weapon.katana", "weapon.kanabo", "weapon.knuckledusters",
+    "weapon.long-daggers", "weapon.pry-bar", "weapon.shock-rod",
+    "weapon.skull-busta", "weapon.wizards-staff",
+    # Final phase 5-7 pass: the last 14, unblocked by lifting the G02 freeze on
+    # the CombatState schema (12 new per-row columns) plus three consumer-side
+    # fixes (per-pool rememberer clear, the state-aware special-save path, and
+    # the Jester trick declaration).  PLAN section 14.
+    "condition.danse-macabre-controlled", "condition.rememberer-support",
+    "mechanic.babbling-banter", "mechanic.confound-and-confuse", "mechanic.djinns-curse",
+    "mechanic.dodge-sidestepper", "mechanic.drenok-berserker",
+    "mechanic.giggle-juice-spray", "mechanic.herb-lore-outside-combat",
+    "mechanic.hypnotic-gaze", "mechanic.magic-acorn", "mechanic.needle-and-thread",
+    "mechanic.rememberer-large-only", "mechanic.rememberer-large-or-tough",
+    # Phases 5-7 (supplied conditions, local modifiers, stateful residuals).
+    # 135 of these already had a working vectorized consumer written ahead of
+    # the gate (see PLAN sections 9 and 13); 30 were ported or fixed in this pass.
+    # Specifications are confirmed in bulk at the phase-8 verification task
+    # per PLAN section 11 -- these are connected on implementation, not on proof.
+    "condition.alchemist-resilience", "condition.alchemist-strength",
+    "condition.bear-handler-nearby", "condition.command.art-thou-ready-to-die-fighting",
+    "condition.command.follow-me-mine-pugnacious-ones",
+    "condition.command.raise-our-insignia", "condition.djinns-curse-active",
+    "condition.djinns-luck-active", "condition.fungus-brew-dizzy",
+    "condition.goading-charge", "condition.impetuous-charge", "condition.nuttaz-charge",
+    "condition.petru-debilitating", "condition.petru-fortitude",
+    "condition.petru-resilience", "condition.petru-strength", "condition.poetry-inspired",
+    "condition.poetry-victorious-leader", "condition.righteous-charge",
+    "condition.stampede-active", "condition.summoned-this-turn",
+    "condition.tomb-robber-dodge-known", "condition.witch-finder-charge",
+    "defence.holy-relic", "mechanic.achilles-heel", "mechanic.andanti-knowledge",
+    "mechanic.animal-friendship", "mechanic.augur-one-roll-reroll",
+    "mechanic.automatic-leadership", "mechanic.bat-injury-chart", "mechanic.beak",
+    "mechanic.bear-handler", "mechanic.bear-handler-recipient",
+    "mechanic.beauty-of-the-sea", "mechanic.blessing-of-morr", "mechanic.broken-spirit",
+    "mechanic.brood-mentality", "mechanic.cannot-charge", "mechanic.charm-immunity",
+    "mechanic.cold-blooded-leadership", "mechanic.cold-blooded-psychology",
+    "mechanic.corruption", "mechanic.daemonic-flesh", "mechanic.darting-steel",
+    "mechanic.deathblow", "mechanic.devoted", "mechanic.devoted-to-the-vampire",
+    "mechanic.dim-witted-leader", "mechanic.drug-immunity", "mechanic.dueling-pride",
+    "mechanic.estalian-technique", "mechanic.ethereal-hit-save", "mechanic.fear-beastmen",
+    "mechanic.fears-fire", "mechanic.fen-hard-to-kill", "mechanic.feral-instinct",
+    "mechanic.festooned-with-pistols", "mechanic.first-failed-leadership-reroll",
+    "mechanic.flesh-peddler", "mechanic.foul-odour", "mechanic.frantic",
+    "mechanic.ghost-pirate-ethereal", "mechanic.ghostly-howl", "mechanic.greenskin-traitor",
+    "mechanic.guiding-dream", "mechanic.gypsy-ward", "mechanic.handler-leadership",
+    "mechanic.hard-to-rattle", "mechanic.hatred-beastmen",
+    "mechanic.hatred-chaotic-warband", "mechanic.hatred-dark-elves",
+    "mechanic.hatred-dwarfs", "mechanic.hatred-dwarfs-skaven", "mechanic.hatred-high-elves",
+    "mechanic.hatred-human-warband", "mechanic.hatred-orcs-goblins",
+    "mechanic.hatred-skaven", "mechanic.hatred-skaven-orcs-goblins",
+    "mechanic.hatred-undead", "mechanic.herb-lore", "mechanic.herb-lore-self-heal",
+    "mechanic.hillman-lycanthrope", "mechanic.honorable", "mechanic.hypnotic-musk",
+    "mechanic.inconsistency", "mechanic.inured-to-pain", "mechanic.invincible-swordsman",
+    "mechanic.kindred-hatred", "mechanic.leader-twelve", "mechanic.leadership-reroll",
+    "mechanic.lunatics", "mechanic.magical-void", "mechanic.main-gauche-modes",
+    "mechanic.mandatory-leadership-reroll", "mechanic.mantle-of-crows",
+    "mechanic.marianna-no-pain-jump-up", "mechanic.marine-hunter",
+    "mechanic.mark-of-shornaal", "mechanic.marks-of-ranald", "mechanic.mesmerising-dance",
+    "mechanic.mob-leadership", "mechanic.morrs-servant", "mechanic.myrmidia-eagle-friend",
+    "mechanic.noble-disdain", "mechanic.norse-shieldmaster", "mechanic.ogre-unarmed",
+    "mechanic.opposite-sex-charge-test", "mechanic.oracle", "mechanic.own-leadership",
+    "mechanic.persistent-frenzy", "mechanic.pikewall", "mechanic.prehensile-tail",
+    "mechanic.psychology-immunity", "mechanic.questing-vow", "mechanic.ranalds-luck",
+    "mechanic.ravening-onslaught", "mechanic.relay-orders", "mechanic.righteous-charge",
+    "mechanic.rousing-sermon", "mechanic.sabretusk-charge", "mechanic.sea-shanty",
+    "mechanic.sea-shanty-psychology", "mechanic.sea-troll-slime",
+    "mechanic.seaguard-spear-master", "mechanic.shallya-strictures",
+    "mechanic.shallya-tranquil-aura", "mechanic.sigmar-enlightened",
+    "mechanic.sigmar-symbol-of-unity", "mechanic.slaanesh-charge-test",
+    "mechanic.slave-driver", "mechanic.snorri-drunk", "mechanic.solkan-inquisitor",
+    "mechanic.solkan-witch-finder", "mechanic.songster", "mechanic.titanic-strength",
+    "mechanic.torturer", "mechanic.ulric-intense-rivals", "mechanic.undead-construct",
+    "mechanic.undivided-leader", "mechanic.unholy-stink", "mechanic.veskit-no-pain",
+    "mechanic.wheelo-impact", "mechanic.whip-master", "mechanic.wizened-halfling",
+    "mechanic.wolf-rat-bite", "mechanic.wraith-touch", "poison.giggle-juice",
+    "rule.bear-hug-unarmed", "rule.slay-large-creature", "rule.squishy",
+    "rule.strikes-last-bite", "rule.thin-flesh", "skill.backstabber",
+    "skill.chosen-of-the-white-tower", "skill.cutthroat", "skill.instinctive-warrior",
+    "skill.righteous-fury", "skill.wound-valour", "weapon.arcane-candelabrum",
+    "weapon.barbed-whip", "weapon.beastlash", "weapon.count-of-ventimiglias-misericordia",
+    "weapon.hellblade", "weapon.ienh-khain", "weapon.thinglash",
 })
 
 
 #: Non-tag behaviours whose NumPy runtime path is now complete.
+#: ``spectral-touch`` and ``vomit`` were temporarily withdrawn while their
+#: semantic specifications diverged; both were restored once
+#: ``spirit-host-spectral-touch/*`` and ``warpstone-troll-vomit-option/*``
+#: passed against the modular oracle (the vomit divergence turned out to be a
+#: parity-adapter defect, not an engine one).
 NUMPY_CONNECTED_BEHAVIOURS = frozenset({
     "effect-values", "vomit", "spectral-touch", "shifty", "killing-blow",
 })

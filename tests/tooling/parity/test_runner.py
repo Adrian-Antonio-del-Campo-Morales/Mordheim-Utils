@@ -27,7 +27,7 @@ from mordheim_combat_lab.verification.parity._statistical import (
     outcome_rates,
     six_sigma_tolerance,
 )
-from tests.engines.fixtures.precompiled_catalog import benchmark_case_key
+from tests.engines.fixtures.precompiled_catalog import scenario_key
 
 
 
@@ -191,7 +191,7 @@ def test_parallel_oracle_preserves_seed_ranges_and_all_terminal_rows():
 
 
 def _pair(cases, scenario_id: str = "basic"):
-    return cases[benchmark_case_key(scenario_id)]
+    return cases[scenario_key(scenario_id)]
 
 
 def _case(cases, *, label, simulations, scenario_id="basic"):
@@ -336,7 +336,7 @@ def test_runner_escalates_and_clamps_to_the_ceiling(cases):
 
 
 def test_no_fitting_horizon_is_rejected(cases):
-    case = cases[benchmark_case_key("basic")]
+    case = cases[scenario_key("basic")]
     with pytest.raises(ValueError, match="no truncation horizon"):
         run_parity(
             (ParityCase(

@@ -99,6 +99,61 @@ class CombatState:
     #: Per-row cache of the projected ``CompiledFighter``.  ``None`` means the
     #: printed fighter is still the effective one; the mutation helpers fill it.
     effective_fighter: np.ndarray
+    # --- Per-row facts the modular ``FighterState`` keeps ------------------
+    # Every column below mirrors one ``modular/state.py::FighterState`` field
+    # (or one ``resources_spent`` marker) that had no array before.  Each is
+    # allocated in ``_state.initialize_fighter``; only
+    # ``danse_macabre_controlled`` is seeded from a supplied condition, the
+    # rest start ``False`` and are earned (or spent) inside the duel.
+    #: Drenok Berserker: the fighter is standing at zero Wounds for this player
+    #: turn (``modular/attacks.py:785``, ``modular/rounds.py:278``).  The round
+    #: loop clears it once the fighter is healed above zero and re-rolls the 4+
+    #: at the start of each of the bearer's own turns.
+    drenok_fighting: np.ndarray
+    #: Once-per-battle hit substitutions, the array form of the modular
+    #: ``resources_spent`` markers ``"magic-acorn"`` and ``"rememberer"``
+    #: (``modular/attacks.py:305-308`` and ``:260-273``).  Same lifetime as
+    #: ``luck_used``/``mark_of_old_ones_used``: never cleared by the round.
+    magic_acorn_used: np.ndarray
+    rememberer_used: np.ndarray
+    #: The modular ``"rememberer-active.<pool key>"`` marker
+    #: (``modular/attacks.py:268-274``, cleared in
+    #: ``modular/pools.py::_resolve_attack_pool``).  Once the Rememberer's
+    #: single reroll is spent on an attack *inside an attack pool*, every later
+    #: attack of that same pool rerolls too, without a new decision; the
+    #: marker dies with the pool.  Because a row is only ever inside one pool
+    #: at a time, the pool key needs no storage: this is a plain per-row flag
+    #: and the CONTRACT is that the attack-pool driver clears it
+    #: (``state.rememberer_active[:] = False``, or on the pool's rows) when the
+    #: pool finishes, exactly where ``_resolve_attack_pool`` subtracts the
+    #: marker.  A standalone reference attack (modular ``rememberer_pool_key is
+    #: None``) must never set it, matching the oracle.
+    rememberer_active: np.ndarray
+    #: The Dark Jester's Confound and Confuse slots: one trick per combat turn,
+    #: supplied by the decision policy, cleared and re-chosen every round
+    #: (``modular/rounds.py:90`` and ``:728-743``).
+    banter_trick_active: np.ndarray
+    dodge_trick_active: np.ndarray
+    trip_trick_active: np.ndarray
+    #: Hypnotic Gaze / charm: attacks against this row hit automatically.  The
+    #: modular engine re-derives it in every phase, so the driver must copy its
+    #: round-ledger value here each phase and clear it with the ledger.
+    charm_auto_hit: np.ndarray
+    #: Danse Macabre: the row is under the supplied controlled state.  It is
+    #: seeded from ``condition.danse-macabre-controlled`` and the round loop
+    #: lifts it on a passed test (``modular/rounds.py:378-383``).
+    danse_macabre_controlled: np.ndarray
+    #: Needle and Thread: a melee stun sews the victim's mouth shut for the
+    #: rest of the battle (``modular/attacks.py:873-875``).
+    mouth_sewn: np.ndarray
+    #: Clown's Giggle Juice spray: the oracle spends ``"giggle-juice"`` in
+    #: ``resources_spent``.  Once per battle, never cleared.
+    giggle_juice_used: np.ndarray
+    #: Dark Jester's Trip trick: the oracle spends ``"jester.trip"`` for the
+    #: one wound replacement the trick allows.  NOT once per battle -- the
+    #: oracle clears it in the same ``replace`` that declares each turn's trick
+    #: (``modular/rounds.py:741``), so it is one replacement per declaration.
+    trip_trick_used: np.ndarray
 
 @dataclass(slots=True)
 class PreparedAttack:

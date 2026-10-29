@@ -1,0 +1,226 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/mordheim--ogre-hunting-party-web--ogre-hunter--dont-fight-with-eating-kn--ba79814c5461.yaml",
+    "sha256": "d190cc4e0f6787f1a6758d5dcd95fbc74c9ab5dfc57d2ce13b415f2fe51e7672",
+    "test_id": "rule/mordheim/ogre-hunting-party-web/ogre-hunter--dont-fight-with-eating-knives/unimplemented.ogre-hunting-party-web.ogre-hunter.dont-fight-with-eating-knives::an-unarmed-ogre-hunter-ignores-the-printed-minus-one-strength"
+  },
+  "case_key": "e2e/rule/mordheim/ogre-hunting-party-web/ogre-hunter--dont-fight-with-eating-knives/unimplemented.ogre-hunting-party-web.ogre-hunter.dont-fight-with-eating-knives/an-unarmed-ogre-hunter-ignores-the-printed-minus-one-strength",
+  "case": {
+    "case_key": "e2e/rule/mordheim/ogre-hunting-party-web/ogre-hunter--dont-fight-with-eating-knives/unimplemented.ogre-hunting-party-web.ogre-hunter.dont-fight-with-eating-knives/an-unarmed-ogre-hunter-ignores-the-printed-minus-one-strength",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/mordheim/ogre-hunting-party-web/ogre-hunter--dont-fight-with-eating-knives/unimplemented.ogre-hunting-party-web.ogre-hunter.dont-fight-with-eating-knives::an-unarmed-ogre-hunter-ignores-the-printed-minus-one-strength",
+      "path": "tests/integration/e2e/cases/grants/mordheim--ogre-hunting-party-web--ogre-hunter--dont-fight-with-eating-kn--ba79814c5461.yaml",
+      "sha256": "d190cc4e0f6787f1a6758d5dcd95fbc74c9ab5dfc57d2ce13b415f2fe51e7672"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "ogre-hunting-party-web:ogre-hunter",
+        "characteristics": {
+          "weapon_skill": 4,
+          "strength": 4,
+          "toughness": 4,
+          "wounds": 3,
+          "initiative": 3,
+          "attacks": 2,
+          "movement": 6,
+          "leadership": 8
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "target_armour_bonus": 1
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "mechanic.causes-fear",
+            "mechanic.leader-six",
+            "mechanic.ogre-unarmed",
+            "armour.no-armour",
+            "species.ogre",
+            "fighter-kind.hero",
+            "band.ogre-hunting-party-web"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 3,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.causes-fear",
+            "mechanic.leader-six",
+            "mechanic.ogre-unarmed",
+            "species.ogre",
+            "fighter-kind.hero",
+            "band.ogre-hunting-party-web"
+          ]
+        },
+        "mutation_options": [],
+        "mutation_equipment": [],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 4,
+          "wounds": 3,
+          "initiative": 1,
+          "attacks": 1,
+          "movement": null,
+          "leadership": 7
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.heavy-armour",
+            "condition.metal-armour"
+          ]
+        },
+        "armour_save": 5,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {},
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          },
+          {
+            "item_id": "armour.heavy-armour",
+            "effect": {
+              "tags": [
+                "armour.heavy-armour",
+                "condition.metal-armour"
+              ],
+              "armour_save_bonus": 2
+            },
+            "kind": "armour",
+            "slot": "armour",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [
+        "first"
+      ],
+      "active_participant": "first"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {},
+      "second": {}
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "c5760a561f5473b5de22cbf96e8422ac6e145d517a4d89b5a9faab6936f5d376",
+      "case_sha256": "55600b7c033266f4e13e7505a74e3d8800bb4c43149ec46cd18655389982524e"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

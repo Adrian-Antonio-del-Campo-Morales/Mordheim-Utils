@@ -1,0 +1,241 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/mordheim--halflings-mic--halfling-elder--layers-of-fat--trait.natural-ar--e04eb51d825c.yaml",
+    "sha256": "b12974635b95051bc01c9ec55f8d854a3e497e55044622a519d0c2f80841f830",
+    "test_id": "rule/mordheim/halflings-mic/halfling-elder--layers-of-fat/trait.natural-armour-save::worn-light-armour-keeps-the-same-six"
+  },
+  "case_key": "e2e/rule/mordheim/halflings-mic/halfling-elder--layers-of-fat/trait.natural-armour-save/worn-light-armour-keeps-the-same-six",
+  "case": {
+    "case_key": "e2e/rule/mordheim/halflings-mic/halfling-elder--layers-of-fat/trait.natural-armour-save/worn-light-armour-keeps-the-same-six",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/mordheim/halflings-mic/halfling-elder--layers-of-fat/trait.natural-armour-save::worn-light-armour-keeps-the-same-six",
+      "path": "tests/integration/e2e/cases/grants/mordheim--halflings-mic--halfling-elder--layers-of-fat--trait.natural-ar--e04eb51d825c.yaml",
+      "sha256": "b12974635b95051bc01c9ec55f8d854a3e497e55044622a519d0c2f80841f830"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 10,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 3,
+          "initiative": 10,
+          "attacks": 1,
+          "movement": null,
+          "leadership": null
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {},
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "halflings-mic:halfling-elder",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 1,
+          "initiative": 5,
+          "attacks": 1,
+          "movement": 4,
+          "leadership": 9
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.dagger",
+            "material.normal"
+          ],
+          "target_armour_bonus": 1
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "mechanic.leader-six",
+            "armour.light-armour",
+            "natural_armour_unmodified",
+            "natural_armour_stacks",
+            "species.halfling",
+            "fighter-kind.hero",
+            "band.halflings-mic"
+          ]
+        },
+        "armour_save": 5,
+        "helmet_save": 7,
+        "natural_armour_save": 6,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": true,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 5,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.leader-six",
+            "natural_armour_unmodified",
+            "natural_armour_stacks",
+            "species.halfling",
+            "fighter-kind.hero",
+            "band.halflings-mic"
+          ]
+        },
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.dagger",
+            "effect": {
+              "tags": [
+                "weapon.dagger",
+                "material.normal"
+              ],
+              "target_armour_bonus": 1
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          },
+          {
+            "item_id": "armour.light-armour",
+            "effect": {
+              "tags": [
+                "armour.light-armour"
+              ],
+              "armour_save_bonus": 1
+            },
+            "kind": "armour",
+            "slot": "armour",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": true,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [],
+      "active_participant": "first"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {},
+      "second": {
+        "attacks": 0
+      }
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "1ee64ac90c206efd9a6c777f56ef535754f97e20285ac0e919f6a0fde5dbca91",
+      "case_sha256": "f36d3388ce6132c55a2d8ea5ab39885b2b9fb425fb70a71f29ca4f565e2f5bea"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

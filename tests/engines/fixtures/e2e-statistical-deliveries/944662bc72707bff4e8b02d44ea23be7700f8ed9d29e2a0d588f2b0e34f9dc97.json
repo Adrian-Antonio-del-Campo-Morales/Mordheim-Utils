@@ -1,0 +1,326 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/mordheim--battle-monks-of-cathay--raging-peasants--mob--unimplemented.ba--4d26e0433ed1.yaml",
+    "sha256": "724e348a099c6d43f99f1ad3a4f17d299a0d1b803682afa413906764c6274149",
+    "test_id": "rule/mordheim/battle-monks-of-cathay/raging-peasants--mob/unimplemented.battle-monks-of-cathay.raging-peasants.mob::the-supplied-leader-is-not-a-source-for-a-raging-peasant"
+  },
+  "case_key": "e2e/rule/mordheim/battle-monks-of-cathay/raging-peasants--mob/unimplemented.battle-monks-of-cathay.raging-peasants.mob/the-supplied-leader-is-not-a-source-for-a-raging-peasant",
+  "case": {
+    "case_key": "e2e/rule/mordheim/battle-monks-of-cathay/raging-peasants--mob/unimplemented.battle-monks-of-cathay.raging-peasants.mob/the-supplied-leader-is-not-a-source-for-a-raging-peasant",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/mordheim/battle-monks-of-cathay/raging-peasants--mob/unimplemented.battle-monks-of-cathay.raging-peasants.mob::the-supplied-leader-is-not-a-source-for-a-raging-peasant",
+      "path": "tests/integration/e2e/cases/grants/mordheim--battle-monks-of-cathay--raging-peasants--mob--unimplemented.ba--4d26e0433ed1.yaml",
+      "sha256": "724e348a099c6d43f99f1ad3a4f17d299a0d1b803682afa413906764c6274149"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 3,
+          "initiative": 10,
+          "attacks": 1,
+          "movement": null,
+          "leadership": 7
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour",
+            "mechanic.causes-fear"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.causes-fear"
+          ]
+        },
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "battle-monks-of-cathay:raging-peasants",
+        "characteristics": {
+          "weapon_skill": 2,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 1,
+          "initiative": 3,
+          "attacks": 1,
+          "movement": 4,
+          "leadership": 6
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.fist",
+            "material.normal"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "mechanic.mob-leadership",
+            "mechanic.own-leadership",
+            "armour.no-armour",
+            "fighter-kind.henchman",
+            "band.battle-monks-of-cathay",
+            "warband-group.good-aligned",
+            "warband-group.human",
+            "rule.unarmed-without-penalties"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 2,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 2,
+        "construction_tags": [
+          "compiler.strictures"
+        ],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.mob-leadership",
+            "mechanic.own-leadership",
+            "fighter-kind.henchman",
+            "band.battle-monks-of-cathay",
+            "warband-group.good-aligned",
+            "warband-group.human"
+          ]
+        },
+        "mutation_options": [],
+        "mutation_equipment": [],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [
+        {
+          "participant_id": "leader",
+          "side_id": "second",
+          "fighter": {
+            "fighter_id": "battle-monks-of-cathay:emissary",
+            "characteristics": {
+              "weapon_skill": 3,
+              "strength": 3,
+              "toughness": 3,
+              "wounds": 1,
+              "initiative": 4,
+              "attacks": 1,
+              "movement": 4,
+              "leadership": 8
+            },
+            "main_weapon": {
+              "tags": [
+                "weapon.dagger",
+                "material.normal"
+              ],
+              "target_armour_bonus": 1
+            },
+            "off_hand": null,
+            "global_effects": {
+              "tags": [
+                "mechanic.leader-six",
+                "armour.no-armour",
+                "fighter-kind.hero",
+                "band.battle-monks-of-cathay",
+                "warband-group.good-aligned",
+                "warband-group.human"
+              ]
+            },
+            "armour_save": 7,
+            "helmet_save": 7,
+            "natural_armour_save": 7,
+            "off_hand_attacks": false,
+            "natural_armour_unmodified": false,
+            "injury_profile": 0,
+            "random_characteristics": [],
+            "natural_armour_worst_save": 7,
+            "shield_and_skill_effects": {},
+            "extra_attacks": [],
+            "missile_weapon_limit": 2,
+            "ballistic_skill": 4,
+            "construction_tags": [
+              "compiler.strictures"
+            ],
+            "main_weapon_without_poison": null,
+            "off_hand_without_poison": null,
+            "mounted": false,
+            "unarmed_weapon": {
+              "tags": [
+                "weapon.fist"
+              ],
+              "strength_bonus": -1,
+              "target_armour_bonus": 1
+            },
+            "main_hand_slot": "main",
+            "off_hand_slot": "off",
+            "vomit_attack": null,
+            "stupidity_leadership": null,
+            "stupidity_leadership_bonus": 0,
+            "mob_allies": 0,
+            "animal_handler_leadership": null,
+            "skill_effects_only": {},
+            "global_effects_without_equipment": {
+              "tags": [
+                "mechanic.leader-six",
+                "fighter-kind.hero",
+                "band.battle-monks-of-cathay",
+                "warband-group.good-aligned",
+                "warband-group.human"
+              ]
+            },
+            "mutation_options": [],
+            "mutation_equipment": [
+              {
+                "item_id": "weapon.dagger",
+                "effect": {
+                  "tags": [
+                    "weapon.dagger",
+                    "material.normal"
+                  ],
+                  "target_armour_bonus": 1
+                },
+                "kind": "weapon",
+                "slot": "main",
+                "stat_bonuses": [],
+                "effect_without_poison": null
+              }
+            ],
+            "natural_armour_stacks": false,
+            "extra_attacks_without_poison": []
+          },
+          "condition": "standing"
+        }
+      ],
+      "distances": [
+        [
+          "second",
+          "leader",
+          4
+        ]
+      ],
+      "contacts": null,
+      "terrain": [],
+      "charging": [
+        "first"
+      ],
+      "active_participant": "first"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {},
+      "second": {}
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "e14ef242e5de056a6732343bbbb5fca6c992199b7127ebf0e40ceac4e9eda49e",
+      "case_sha256": "164340aff10d6d31fa8b8ee43ca0c218e27f7ed7930c8f56d09f0c5813f1a6eb"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

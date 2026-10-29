@@ -1,0 +1,265 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/trollheim--chaos-streets-undead-bloodlines--necrarch-vampire--no-strengt--8f7b2c1e7cba.yaml",
+    "sha256": "95aee2ee9115d0c3f152426572b11f09f99c19c5732b596d47a0ec4bf1f1b966",
+    "test_id": "rule/trollheim/chaos-streets-undead-bloodlines/necrarch-vampire--no-strength-skills/compiler.forbid-skill-categories::the-same-strength-skill-is-admitted-on-another-bloodline"
+  },
+  "case_key": "e2e/rule/trollheim/chaos-streets-undead-bloodlines/necrarch-vampire--no-strength-skills/compiler.forbid-skill-categories/the-same-strength-skill-is-admitted-on-another-bloodline",
+  "case": {
+    "case_key": "e2e/rule/trollheim/chaos-streets-undead-bloodlines/necrarch-vampire--no-strength-skills/compiler.forbid-skill-categories/the-same-strength-skill-is-admitted-on-another-bloodline",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/trollheim/chaos-streets-undead-bloodlines/necrarch-vampire--no-strength-skills/compiler.forbid-skill-categories::the-same-strength-skill-is-admitted-on-another-bloodline",
+      "path": "tests/integration/e2e/cases/grants/trollheim--chaos-streets-undead-bloodlines--necrarch-vampire--no-strengt--8f7b2c1e7cba.yaml",
+      "sha256": "95aee2ee9115d0c3f152426572b11f09f99c19c5732b596d47a0ec4bf1f1b966"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "chaos-streets-undead-bloodlines:blood-dragon-vampire",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 2,
+          "initiative": 5,
+          "attacks": 1,
+          "movement": 6,
+          "leadership": 8
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "skill.mighty-blow",
+            "mechanic.leader-six",
+            "mechanic.causes-fear",
+            "mechanic.psychology-immunity",
+            "skill.ignore-pain",
+            "armour.no-armour",
+            "vampire",
+            "poison_immune",
+            "species.vampire",
+            "nature.undead",
+            "undead_or_possessed",
+            "fighter-kind.hero",
+            "band.chaos-streets-undead-bloodlines",
+            "warband-group.evil",
+            "warband-group.undead"
+          ],
+          "strength_bonus": 1,
+          "poison_immunity": true
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {
+          "tags": [
+            "skill.mighty-blow",
+            "skill.ignore-pain"
+          ],
+          "strength_bonus": 1
+        },
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 4,
+        "construction_tags": [
+          "compiler.vampiric-powers",
+          "compiler.warrior-s-code"
+        ],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {
+          "tags": [
+            "skill.mighty-blow",
+            "skill.ignore-pain"
+          ],
+          "strength_bonus": 1
+        },
+        "global_effects_without_equipment": {
+          "tags": [
+            "skill.mighty-blow",
+            "mechanic.leader-six",
+            "mechanic.causes-fear",
+            "mechanic.psychology-immunity",
+            "skill.ignore-pain",
+            "vampire",
+            "poison_immune",
+            "species.vampire",
+            "nature.undead",
+            "undead_or_possessed",
+            "fighter-kind.hero",
+            "band.chaos-streets-undead-bloodlines",
+            "warband-group.evil",
+            "warband-group.undead"
+          ],
+          "strength_bonus": 1,
+          "poison_immunity": true
+        },
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 2,
+          "initiative": 2,
+          "attacks": 1,
+          "movement": null,
+          "leadership": 7
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {},
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [],
+      "active_participant": "first"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {
+        "attacks": 0
+      },
+      "second": {
+        "attacks": 0
+      }
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "25d6f6314c3d2f818c83b40bdc1fbfeba06f0fc013bccf49888d16c136586ff3",
+      "case_sha256": "9f863ad4aaebb26b283419d3e79a6163084d34d3b720b9504584933dd1a1b2ff"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

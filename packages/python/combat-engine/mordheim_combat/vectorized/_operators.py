@@ -106,6 +106,8 @@ def injury_conditions(totals: np.ndarray, context: InjuryContext) -> np.ndarray:
         result = np.where(totals >= 6, OUT, np.where(totals >= 4, STUNNED, KNOCKED_DOWN))
     if context.concussion and not context.concussion_immune:
         result[(totals >= 2) & (totals <= 4)] = STUNNED
+    if context.shock:
+        result[(totals >= 1) & (totals <= 4)] = STUNNED
     if context.injury_profile == 1:
         result = np.where(totals >= 4, OUT, np.where(totals >= 2, STUNNED, KNOCKED_DOWN))
     elif context.injury_profile == 3:
@@ -329,18 +331,29 @@ def attack_count(fighter: CompiledFighter, charging: np.ndarray, first_round: bo
     )
     result = (base_attacks.astype(np.int16,copy=True)+base-fighter.characteristics.attacks
               if base_attacks is not None else np.full(charging.size,base,dtype=np.int16))
+    if has(effect, "mechanic.sabretusk-charge") and charging.any():
+        # ``phases.build_attacks``: the printed clause replaces the Attacks
+        # characteristic with 2 on the charge; it is not a generic +1, so the
+        # substitution happens before every bonus is added on top.
+        result[charging] = 2 + base - fighter.characteristics.attacks
     if wounded is not None and has(effect,"maddened_with_pain"):
         result += wounded.astype(np.int16)
     if effect.charge_attacks_bonus and charging.any():
         result += charging.astype(np.int16) * effect.charge_attacks_bonus
     if first_round and effect.first_round_charge_attacks_bonus and charging.any():
         result += charging.astype(np.int16) * effect.first_round_charge_attacks_bonus
-    if has(fighter.main_weapon, "weapon.fist") and not ignores_unarmed_penalties(effect):
+    if has(fighter.main_weapon, "weapon.fist") and phases.unarmed_attack_cap_applies(effect):
         result[:] = 1
         extra_weapon_attack = 0
-    if has(effect,"skill.unarmed-fighting") and has(fighter.main_weapon,"weapon.fist"):
+    # ``phases.build_attacks``: a natural-attack body is unarmed in the same
+    # sense as the neutral fist, and the two skills count the same empty hands
+    # once — hence the ``elif`` chain mirroring the oracle.
+    if has(effect, "skill.unarmed-fighting") and (
+        has(fighter.main_weapon, "weapon.fist")
+        or has(fighter.main_weapon, "weapon.natural-attacks")
+    ):
         result += 1
-    if has(effect,"skill.art-of-silent-death") and (has(fighter.main_weapon,"weapon.fist") or has(fighter.main_weapon,"weapon.fighting-claws")):
+    elif has(effect,"skill.art-of-silent-death") and (has(fighter.main_weapon,"weapon.fist") or has(fighter.main_weapon,"weapon.fighting-claws")):
         result += 1
     if has(effect,"skill.inspiring-sermon"):
         result += np.asarray(player_turn, dtype=np.int16)
@@ -354,9 +367,11 @@ def attack_count(fighter: CompiledFighter, charging: np.ndarray, first_round: bo
         if has(effect, "skill.ferocious-charge"):
             result[charging] *= 2
     result += extra_weapon_attack
-    if has(fighter.main_weapon, "weapon.fist") and not ignores_unarmed_penalties(effect):
-        result[:] = 1
-    if has(fighter.main_weapon, "weapon.vomit-attack"):
+    if has(fighter.main_weapon, "weapon.fist") and phases.unarmed_attack_cap_applies(effect):
+        # ``phases.build_attacks`` caps at 1; it never raises a zeroed pool.
+        result = np.minimum(result, np.int16(1))
+    if (has(fighter.main_weapon, "weapon.vomit-attack")
+            or has(fighter.main_weapon, "effect.wraith-touch")):
         result[:] = 1
     if has(effect, "skill.sweep") and fighter.main_weapon.two_handed:
         # Sweep replaces the warrior's normal attacks with a single Initiative
@@ -368,7 +383,7 @@ def attack_count(fighter: CompiledFighter, charging: np.ndarray, first_round: bo
     ))
     if main_pistol:
         if first_round:
-            if off_pistol and fighter.off_hand_attacks:
+            if off_pistol:
                 result[:] = 2
             elif not fighter.off_hand_attacks:
                 result[:] = 1
@@ -475,10 +490,11 @@ def priority(fighter: CompiledFighter, opponent: CompiledFighter, first_round: b
         weapon_priority = 0
     if has(fighter.main_weapon, "weapon.long-boat-hook") and not first_round:
         weapon_priority = 0
-    # The spear's Strike First only applies in the first turn of hand-to-hand
-    # combat (mordheimer.net, close-combat weapons / Strike First), mirroring
-    # the long-boat-hook's first-round scope.
-    if has(fighter.main_weapon, "weapon.spear") and not first_round:
+    # The spear's and the pike's printed Strike First only applies in the first
+    # turn of hand-to-hand combat (mordheimer.net, close-combat weapons /
+    # Strike First), mirroring the long-boat-hook's first-round scope.
+    if (has(fighter.main_weapon, "weapon.spear")
+            or has(fighter.main_weapon, "weapon.pike")) and not first_round:
         weapon_priority = 0
     value = np.full(charging.size, weapon_priority + fighter.global_effects.priority, dtype=np.int8)
     if has(fighter.global_effects,"mechanic.strike-first-vs-skinks-always") and has(opponent.global_effects,"species.skink"):
@@ -494,6 +510,20 @@ def priority(fighter: CompiledFighter, opponent: CompiledFighter, first_round: b
             value[charged] = np.maximum(value[charged], 1)
     if not has(fighter.global_effects, "skill.always-strikes-first"):
         value[stood] = -1
+    # ``phases.resolve_priority``: a profile that prints no Initiative fights
+    # outside the Initiative order — it strikes last and the first-round charge
+    # floor never raises it.  ``effective_initiative``'s ``ABSENT_INITIATIVE``
+    # only orders rows *within* a tier; the oracle also demotes the tier itself.
+    if fighter.characteristics.initiative is None:
+        value[:] = -1
+    if has(fighter.global_effects, "dance.woven-mist-active"):
+        value = np.maximum(value, np.int8(1))
+    if has(fighter.global_effects, "mechanic.frantic"):
+        # ``phases.priority_order``: Frantic's explicit top priority is applied
+        # last, so it ignores weapon penalties, ordinary Initiative and the
+        # stand-up demotion alike.  30 is well inside int8, and the driver
+        # widens to int32 before scaling the tier, so no overflow remains.
+        value[:] = 30
     return value
 
 
@@ -721,13 +751,17 @@ def hit_reroll(
                              and has(effect, "condition.devoted-killer-hatred")), dtype=bool)
         | kindred_rows
         | imposed_rows
-        | (charge_rows & has(effect, "skill.infallible"))
+        # Infallible rerolls on any charge, not only the first round's
+        # (modular ``_hit_reroll``: ``charging and skill.infallible``).
+        | (charge & has(effect, "skill.infallible"))
         | (charge_rows & has(effect, "skill.axe-expert") & any(
             has(weapon, tag) for tag in ("weapon.axe", "weapon.dwarf-axe")))
         | (charge_rows & has(effect, "skill.expert-swordsman") & any(
             has(weapon, tag) for tag in ("weapon.sword", "weapon.weeping-blades")))
-        | (charge_rows & has(effect, "skill.crack-shot") & any(
-            has(weapon, tag) for tag in ("weapon.pistol", "weapon.duelling-pistol")))
+        # Crack Shot is first-round-only but does not require the charge
+        # (modular: ``first_round and skill.crack-shot`` with a pistol).
+        | np.full(size, bool(first_round and has(effect, "skill.crack-shot") and any(
+            has(weapon, tag) for tag in ("weapon.pistol", "weapon.duelling-pistol"))), dtype=bool)
         | (charge & has(attacker.global_effects, "dagger_master") & any(
             has(weapon, tag) for tag in ("weapon.dagger", "weapon.yambiya")))
         | np.full(size, bool(has(effect, "skill.weapons-of-the-north") and any(

@@ -1,0 +1,235 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/mordheim--lizardmen--band--bite-attack--compiler.bite-attack--fe3485f68a46.yaml",
+    "sha256": "fea05083185593e0bb2daab52e70daeb4dcae70224881305124e856abdd528ab",
+    "test_id": "rule/mordheim/lizardmen/band--bite-attack/compiler.bite-attack::a-skink-of-the-band-does-not-receive-the-bite-attack"
+  },
+  "case_key": "e2e/rule/mordheim/lizardmen/band--bite-attack/compiler.bite-attack/a-skink-of-the-band-does-not-receive-the-bite-attack",
+  "case": {
+    "case_key": "e2e/rule/mordheim/lizardmen/band--bite-attack/compiler.bite-attack/a-skink-of-the-band-does-not-receive-the-bite-attack",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/mordheim/lizardmen/band--bite-attack/compiler.bite-attack::a-skink-of-the-band-does-not-receive-the-bite-attack",
+      "path": "tests/integration/e2e/cases/grants/mordheim--lizardmen--band--bite-attack--compiler.bite-attack--fe3485f68a46.yaml",
+      "sha256": "fea05083185593e0bb2daab52e70daeb4dcae70224881305124e856abdd528ab"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 2,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 3,
+          "initiative": 2,
+          "attacks": 1,
+          "movement": null,
+          "leadership": null
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {},
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "lizardmen:skink-braves",
+        "characteristics": {
+          "weapon_skill": 2,
+          "strength": 3,
+          "toughness": 2,
+          "wounds": 1,
+          "initiative": 4,
+          "attacks": 1,
+          "movement": 6,
+          "leadership": 6
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.stone-axe",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "mechanic.cold-blooded-psychology",
+            "armour.no-armour",
+            "lizardman",
+            "natural_armour_stacks",
+            "species.lizardman",
+            "fighter-kind.henchman",
+            "band.lizardmen",
+            "warband-group.good-aligned",
+            "warband-group.lizardmen",
+            "species.skink"
+          ]
+        },
+        "armour_save": 6,
+        "helmet_save": 7,
+        "natural_armour_save": 6,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 6,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 3,
+        "construction_tags": [
+          "compiler.lizardmen-scaly-skin",
+          "compiler.saurus-skill-prohibitions"
+        ],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.cold-blooded-psychology",
+            "lizardman",
+            "natural_armour_stacks",
+            "species.lizardman",
+            "fighter-kind.henchman",
+            "band.lizardmen",
+            "warband-group.good-aligned",
+            "warband-group.lizardmen",
+            "species.skink"
+          ]
+        },
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.stone-axe",
+            "effect": {
+              "tags": [
+                "weapon.stone-axe",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": true,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [],
+      "active_participant": "second"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {},
+      "second": {}
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "cfd935e6a85987944bdb08ff8ea3fa2e17042b4b2b84f18744fd88cb413b070c",
+      "case_sha256": "10d76346420a057b65708b47e7c7ab57b2d945ea2f0a732c9de248117132b43b"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

@@ -1,0 +1,238 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/mordheim--restless-dead--scarecrows--flammable--trait.caught-fire-thresh--72a05d7e6fab.yaml",
+    "sha256": "36faf6ce26c1524c853c369e0688218f2c27f68f43be8645f96df7597d8f7ff3",
+    "test_id": "rule/mordheim/restless-dead/scarecrows--flammable/trait.caught-fire-threshold::the-scarecrow-catches-fire-on-a-declared-three"
+  },
+  "case_key": "e2e/rule/mordheim/restless-dead/scarecrows--flammable/trait.caught-fire-threshold/the-scarecrow-catches-fire-on-a-declared-three",
+  "case": {
+    "case_key": "e2e/rule/mordheim/restless-dead/scarecrows--flammable/trait.caught-fire-threshold/the-scarecrow-catches-fire-on-a-declared-three",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/mordheim/restless-dead/scarecrows--flammable/trait.caught-fire-threshold::the-scarecrow-catches-fire-on-a-declared-three",
+      "path": "tests/integration/e2e/cases/grants/mordheim--restless-dead--scarecrows--flammable--trait.caught-fire-thresh--72a05d7e6fab.yaml",
+      "sha256": "36faf6ce26c1524c853c369e0688218f2c27f68f43be8645f96df7597d8f7ff3"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 1,
+          "initiative": 3,
+          "attacks": 1,
+          "movement": null,
+          "leadership": null
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.brazier-iron",
+            "attack.fire",
+            "material.normal"
+          ],
+          "strength_bonus": 1,
+          "two_handed": true,
+          "ignition_threshold": 5
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {},
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.brazier-iron",
+            "effect": {
+              "tags": [
+                "weapon.brazier-iron",
+                "attack.fire",
+                "material.normal"
+              ],
+              "strength_bonus": 1,
+              "two_handed": true,
+              "ignition_threshold": 5
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "restless-dead:scarecrows",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 1,
+          "initiative": 3,
+          "attacks": 2,
+          "movement": 5,
+          "leadership": 10
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.natural-attacks",
+            "material.normal"
+          ]
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "mechanic.causes-fear",
+            "mechanic.psychology-immunity",
+            "skill.ignore-pain",
+            "armour.no-armour",
+            "poison_immune",
+            "flammable",
+            "injury_reroll_out",
+            "nature.undead",
+            "undead_or_possessed",
+            "fighter-kind.henchman",
+            "band.restless-dead",
+            "warband-group.evil",
+            "warband-group.undead"
+          ],
+          "poison_immunity": true,
+          "caught_fire_threshold": 3
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {
+          "tags": [
+            "skill.ignore-pain"
+          ]
+        },
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.causes-fear",
+            "mechanic.psychology-immunity",
+            "skill.ignore-pain",
+            "poison_immune",
+            "flammable",
+            "injury_reroll_out",
+            "nature.undead",
+            "undead_or_possessed",
+            "fighter-kind.henchman",
+            "band.restless-dead",
+            "warband-group.evil",
+            "warband-group.undead"
+          ],
+          "poison_immunity": true,
+          "caught_fire_threshold": 3
+        },
+        "mutation_options": [],
+        "mutation_equipment": [],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [],
+      "active_participant": "first"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {},
+      "second": {
+        "attacks": 0
+      }
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "bc7e233622e7aa24da6585951361149bee334d7350eaefecf605ae733361e56b",
+      "case_sha256": "7c63e14062f943c764952cd6e856faaefa4493b994a7c4a397ec401e402539ff"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

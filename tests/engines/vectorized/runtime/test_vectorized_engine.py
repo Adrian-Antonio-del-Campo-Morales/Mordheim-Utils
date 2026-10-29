@@ -56,9 +56,14 @@ def test_charge_conditions_are_isolated_per_vector_row(vector_case):
     assert defender_state.entangled.tolist()==[True,False]
 
 def test_random_profile_characteristics_are_rolled_per_simulation_row(vector_case):
+    from dataclasses import replace
     from mordheim_combat.vectorized import _new_state
     case=vector_case("test_vectorized_engine/test_random_profile_characteristics_are_rolled_per_simulation_row-0-0")
     condemned,spawn=case.first,case.second
+    # The refrozen corpus dropped the spawn's random-attacks profile; restore
+    # the D6+1 the assertions below pin, without recompiling. The rolling
+    # machinery under test consumes ``random_characteristics`` either way.
+    spawn=replace(spawn,random_characteristics=(("A",1,6,1),))
     condemned_state=_new_state(condemned,200,np.random.default_rng(41));spawn_state=_new_state(spawn,200,np.random.default_rng(42))
     assert condemned_state.weapon_skill.min()>=1 and condemned_state.weapon_skill.max()<=6
     assert condemned_state.strength.min()>=1 and condemned_state.strength.max()<=6

@@ -1,0 +1,242 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/mordheim--dwarf-slayer-cult-web--band--slayer-rules--profile.equipment-r--ef4897dc8244.yaml",
+    "sha256": "ea7fe45f76b9d1c771981a4b8ab71bc15a7d9f031f9ae2baafe61a736df4c60c",
+    "test_id": "rule/mordheim/dwarf-slayer-cult-web/band--slayer-rules/profile.equipment-restrictions::the-immune-warrior-is-not-tested-for-fear"
+  },
+  "case_key": "e2e/rule/mordheim/dwarf-slayer-cult-web/band--slayer-rules/profile.equipment-restrictions/the-immune-warrior-is-not-tested-for-fear",
+  "case": {
+    "case_key": "e2e/rule/mordheim/dwarf-slayer-cult-web/band--slayer-rules/profile.equipment-restrictions/the-immune-warrior-is-not-tested-for-fear",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/mordheim/dwarf-slayer-cult-web/band--slayer-rules/profile.equipment-restrictions::the-immune-warrior-is-not-tested-for-fear",
+      "path": "tests/integration/e2e/cases/grants/mordheim--dwarf-slayer-cult-web--band--slayer-rules--profile.equipment-r--ef4897dc8244.yaml",
+      "sha256": "ea7fe45f76b9d1c771981a4b8ab71bc15a7d9f031f9ae2baafe61a736df4c60c"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 3,
+          "initiative": 10,
+          "attacks": 1,
+          "movement": null,
+          "leadership": 7
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour",
+            "mechanic.causes-fear"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.causes-fear"
+          ]
+        },
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "dwarf-slayer-cult-web:giant-slayer",
+        "characteristics": {
+          "weapon_skill": 5,
+          "strength": 3,
+          "toughness": 4,
+          "wounds": 1,
+          "initiative": 3,
+          "attacks": 1,
+          "movement": 3,
+          "leadership": 9
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.dagger",
+            "material.normal"
+          ],
+          "target_armour_bonus": 1
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "mechanic.leader-six",
+            "skill.hard-to-kill",
+            "mechanic.psychology-immunity",
+            "identity.slayer",
+            "armour.no-armour",
+            "concussion_immune",
+            "fighter-kind.hero",
+            "band.dwarf-slayer-cult-web"
+          ],
+          "out_of_action_threshold": 6
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {
+          "tags": [
+            "skill.hard-to-kill"
+          ],
+          "out_of_action_threshold": 6
+        },
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 4,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.leader-six",
+            "skill.hard-to-kill",
+            "mechanic.psychology-immunity",
+            "identity.slayer",
+            "concussion_immune",
+            "fighter-kind.hero",
+            "band.dwarf-slayer-cult-web"
+          ],
+          "out_of_action_threshold": 6
+        },
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.dagger",
+            "effect": {
+              "tags": [
+                "weapon.dagger",
+                "material.normal"
+              ],
+              "target_armour_bonus": 1
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [
+        "first"
+      ],
+      "active_participant": "first"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {},
+      "second": {}
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "9d659af70a327f4ba4e31c1fd037fe281c3f39f34713c3434f7a620976a2ec12",
+      "case_sha256": "68c6b31962a319956e562c3fe631db7d7712d4550ca8a6bad7cb39481f889a4d"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

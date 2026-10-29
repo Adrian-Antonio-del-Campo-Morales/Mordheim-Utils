@@ -1,0 +1,238 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/trollheim--lustria-lizardmen--skink-priest--scaly-skin-6plus--trait.natu--bb03392aea17.yaml",
+    "sha256": "61801e39851fe86b0c7d961538ce950ed3db106f6653e3301f01ad082265669b",
+    "test_id": "rule/trollheim/lustria-lizardmen/skink-priest--scaly-skin-6plus/trait.natural-armour-worst-save::the-kroxigor-saves-on-its-own-4"
+  },
+  "case_key": "e2e/rule/trollheim/lustria-lizardmen/skink-priest--scaly-skin-6plus/trait.natural-armour-worst-save/the-kroxigor-saves-on-its-own-4",
+  "case": {
+    "case_key": "e2e/rule/trollheim/lustria-lizardmen/skink-priest--scaly-skin-6plus/trait.natural-armour-worst-save/the-kroxigor-saves-on-its-own-4",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/trollheim/lustria-lizardmen/skink-priest--scaly-skin-6plus/trait.natural-armour-worst-save::the-kroxigor-saves-on-its-own-4",
+      "path": "tests/integration/e2e/cases/grants/trollheim--lustria-lizardmen--skink-priest--scaly-skin-6plus--trait.natu--bb03392aea17.yaml",
+      "sha256": "61801e39851fe86b0c7d961538ce950ed3db106f6653e3301f01ad082265669b"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 2,
+          "initiative": 7,
+          "attacks": 1,
+          "movement": null,
+          "leadership": null
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {},
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "lustria-lizardmen:kroxigor",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 5,
+          "toughness": 4,
+          "wounds": 3,
+          "initiative": 1,
+          "attacks": 3,
+          "movement": 6,
+          "leadership": 8
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.halberd",
+            "material.normal"
+          ],
+          "strength_bonus": 1,
+          "two_handed": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "mechanic.causes-fear",
+            "mechanic.cold-blooded-psychology",
+            "armour.no-armour",
+            "lizardman",
+            "natural_armour_stacks",
+            "species.lizardman",
+            "fighter-kind.henchman",
+            "band.lustria-lizardmen",
+            "warband-group.good-aligned",
+            "warband-group.lizardmen",
+            "species.animal"
+          ]
+        },
+        "armour_save": 4,
+        "helmet_save": 7,
+        "natural_armour_save": 4,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 6,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [
+          "compiler.lizardmen-scaly-skin"
+        ],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.causes-fear",
+            "mechanic.cold-blooded-psychology",
+            "lizardman",
+            "natural_armour_stacks",
+            "species.lizardman",
+            "fighter-kind.henchman",
+            "band.lustria-lizardmen",
+            "warband-group.good-aligned",
+            "warband-group.lizardmen",
+            "species.animal"
+          ]
+        },
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.halberd",
+            "effect": {
+              "tags": [
+                "weapon.halberd",
+                "material.normal"
+              ],
+              "strength_bonus": 1,
+              "two_handed": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": true,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [],
+      "active_participant": "first"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {},
+      "second": {}
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "1133b741621fac4f7260e978c6067a3d7411b18419376bb14f20976d090d1ee7",
+      "case_sha256": "87efd9608f1702b240853055fb3eededc9f264592b7a02cb9ea6ba91d3244ecf"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

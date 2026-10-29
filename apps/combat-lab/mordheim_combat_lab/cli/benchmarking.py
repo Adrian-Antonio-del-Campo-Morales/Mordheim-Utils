@@ -9,8 +9,8 @@ from __future__ import annotations
 
 from dataclasses import asdict
 from dataclasses import dataclass
-from dataclasses import replace
 from datetime import datetime, timezone
+from functools import lru_cache
 import csv
 import json
 from pathlib import Path
@@ -25,7 +25,6 @@ import numpy as np
 
 from mordheim_combat.modular.duel import simulate_duel as simulate_modular_duel
 from mordheim_combat.vectorized import simulate_duel
-from mordheim_construction.compiler import compile_fighter
 from mordheim_core.models import Characteristics
 from mordheim_core.models import CompiledFighter
 from mordheim_core.models import DuelRequest
@@ -85,63 +84,23 @@ from mordheim_combat_lab.cli.scenarios import (  # noqa: E402
     BenchmarkScenario,
     deep_test_scenarios,
     benchmark_scenarios,
-    _build,
 )
 def compile_benchmark_fighters(
     scenario: BenchmarkScenario,
 ) -> tuple[CompiledFighter, CompiledFighter]:
-    """Compile a matrix scenario, applying only its benchmark attack tags.
+    """Load a maintained scenario's frozen fighters, without recompiling."""
+    from tests.engines.fixtures.precompiled_catalog import scenario_key
 
-    The tags are deliberately applied after normal construction.  This keeps
-    synthetic coverage probes out of the engine and KB while still sending
-    the exact resulting ``EffectSet`` through modular, NumPy and native.
-    """
-    compiled = []
-    for build, tags in (
-        (scenario.first, scenario.first_attack_tags),
-        (scenario.second, scenario.second_attack_tags),
-    ):
-        fighter = compile_fighter(build)
-        if tags:
-            weapon = replace(
-                fighter.main_weapon,
-                tags=tuple(dict.fromkeys((*fighter.main_weapon.tags, *tags))),
-            )
-            fighter = replace(fighter, main_weapon=weapon)
-        compiled.append(fighter)
-    return compiled[0], compiled[1]
+    case = _frozen_scenarios()[scenario_key(scenario.id)]
+    return case.first, case.second
 
 
-def deep_test_scenarios(pair_set: str = "full") -> tuple[BenchmarkScenario, ...]:
-    """Return one of the maintained deep-testing pair sets.
+@lru_cache(maxsize=1)
+def _frozen_scenarios():
+    from mordheim_knowledge.paths import project_root
+    from tools.verification.compiled_cases import load_cases
 
-    ``full`` is the maintained 42-pair matrix. ``fast`` is a 30-pair
-    coverage-oriented subset: it retains every distinct non-default compiled
-    effect axis represented by the current full matrix (including the
-    synthetic blessed boundary), the long-round timing representative, the
-    high-value orchestration amplifiers and every newly added rule-family
-    boundary, while omitting redundant baselines and mirrors. It deliberately
-    keeps ``heavy-grind`` and ``ithilmar-duel`` because they add the only
-    long-round and Ithilmar axes otherwise lost from the fast set.
-
-    ``mini`` is a 10-pair performance-survey subset: one cheap-to-expensive
-    representative per cost axis (batch overhead, typical pool, 75-round
-    grind) and per behaviour family (conditional attacks, special saves,
-    stacked saves, poison, frenzy, pool manipulation, random
-    characteristics).
-
-    The set selection is benchmark metadata only. It does not alter fighter
-    construction or any combat/KB implementation. ``blessed-vs-regen`` still
-    uses the benchmark-only ``attack.blessed`` tag described above.
-    """
-    try:
-        selected_ids = DEEP_SCENARIO_SET_IDS[pair_set]
-    except KeyError as error:
-        raise ValueError(
-            f"unknown deep pair set {pair_set!r}; choose 'mini', 'fast' or 'full'"
-        ) from error
-    by_id = {scenario.id: scenario for scenario in DEEP_SCENARIOS}
-    return tuple(by_id[scenario_id] for scenario_id in selected_ids)
+    return load_cases(project_root() / "tests/engines/fixtures/compiled-cases.json")
 
 
 @dataclass(frozen=True, slots=True)

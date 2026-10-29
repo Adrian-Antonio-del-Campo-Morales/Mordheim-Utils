@@ -17,6 +17,7 @@ from mordheim_combat_lab.verification.parity._report import (
     parity_report_payload,
 )
 from mordheim_combat_lab.verification.parity._vectorized import verify_vectorized_parity
+from mordheim_combat_lab.verification.parity._statistical import compare_samples
 from mordheim_combat_lab.verification.parity._statistical import compare_statistical_parity
 from mordheim_combat_lab.verification.parity._runner import (
     TRUNCATION_HORIZONS,
@@ -24,6 +25,7 @@ from mordheim_combat_lab.verification.parity._runner import (
     ParityCase,
     ParityRow,
     ParityRun,
+    parity_row,
     run_parity,
     statistical_result,
 )

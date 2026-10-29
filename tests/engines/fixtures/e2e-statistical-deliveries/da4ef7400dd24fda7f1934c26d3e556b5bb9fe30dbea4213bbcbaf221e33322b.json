@@ -1,0 +1,241 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/mordheim--call-of-the-night-haint-mim--cairn-wraith--immune-to-psycholog--d3c3994e408d.yaml",
+    "sha256": "916f3a82b1fe550f1e33c31a4fb1ab9324ee1ebaa08855491a1638b73d725974",
+    "test_id": "rule/mordheim/call-of-the-night-haint-mim/cairn-wraith--immune-to-psychology/mechanic.psychology-immunity::the-immune-warrior-is-not-tested-for-fear"
+  },
+  "case_key": "e2e/rule/mordheim/call-of-the-night-haint-mim/cairn-wraith--immune-to-psychology/mechanic.psychology-immunity/the-immune-warrior-is-not-tested-for-fear",
+  "case": {
+    "case_key": "e2e/rule/mordheim/call-of-the-night-haint-mim/cairn-wraith--immune-to-psychology/mechanic.psychology-immunity/the-immune-warrior-is-not-tested-for-fear",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/mordheim/call-of-the-night-haint-mim/cairn-wraith--immune-to-psychology/mechanic.psychology-immunity::the-immune-warrior-is-not-tested-for-fear",
+      "path": "tests/integration/e2e/cases/grants/mordheim--call-of-the-night-haint-mim--cairn-wraith--immune-to-psycholog--d3c3994e408d.yaml",
+      "sha256": "916f3a82b1fe550f1e33c31a4fb1ab9324ee1ebaa08855491a1638b73d725974"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 3,
+          "initiative": 7,
+          "attacks": 1,
+          "movement": null,
+          "leadership": 7
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.chainsaw-sword",
+            "material.normal"
+          ],
+          "armour_penetration": 2
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "mechanic.causes-fear",
+            "armour.no-armour"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {},
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.chainsaw-sword",
+            "effect": {
+              "tags": [
+                "weapon.chainsaw-sword",
+                "material.normal"
+              ],
+              "armour_penetration": 2
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "call-of-the-night-haint-mim:cairn-wraith",
+        "characteristics": {
+          "weapon_skill": 4,
+          "strength": 3,
+          "toughness": 2,
+          "wounds": 3,
+          "initiative": 2,
+          "attacks": 1,
+          "movement": 5,
+          "leadership": 8
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.dagger",
+            "material.normal"
+          ],
+          "target_armour_bonus": 1
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "mechanic.ethereal-hit-save",
+            "mechanic.causes-fear",
+            "mechanic.psychology-immunity",
+            "skill.ignore-pain",
+            "armour.no-armour",
+            "poison_immune",
+            "nature.undead",
+            "undead_or_possessed",
+            "fighter-kind.hero",
+            "band.call-of-the-night-haint-mim"
+          ],
+          "poison_immunity": true
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {
+          "tags": [
+            "skill.ignore-pain"
+          ]
+        },
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 2,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.ethereal-hit-save",
+            "mechanic.causes-fear",
+            "mechanic.psychology-immunity",
+            "skill.ignore-pain",
+            "poison_immune",
+            "nature.undead",
+            "undead_or_possessed",
+            "fighter-kind.hero",
+            "band.call-of-the-night-haint-mim"
+          ],
+          "poison_immunity": true
+        },
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.dagger",
+            "effect": {
+              "tags": [
+                "weapon.dagger",
+                "material.normal"
+              ],
+              "target_armour_bonus": 1
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [
+        "first"
+      ],
+      "active_participant": "first"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {},
+      "second": {}
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "2b8afbfff272218ace5c22262aa543d54d6f2c595f024f94a39b4efc6b383fe9",
+      "case_sha256": "54b5ccffda0fac005392554d77e4f4ba26d2cb90e3cfd7e82cb6a87c2e5a1f84"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

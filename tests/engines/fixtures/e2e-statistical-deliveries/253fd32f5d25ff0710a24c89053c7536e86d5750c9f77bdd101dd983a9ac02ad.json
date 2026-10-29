@@ -1,0 +1,226 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/trollheim--lustria-lizardmen--kroxigor--fear--unimplemented.lustria-liza--17173e582a2a.yaml",
+    "sha256": "420aef95c62fc6c325452f45677ef7699779f3281b045a32c3eeb31f6fcc9c4a",
+    "test_id": "rule/trollheim/lustria-lizardmen/kroxigor--fear/unimplemented.lustria-lizardmen.kroxigor.fear::a-charged-opponent-that-passes-its-fear-test-fights-normally"
+  },
+  "case_key": "e2e/rule/trollheim/lustria-lizardmen/kroxigor--fear/unimplemented.lustria-lizardmen.kroxigor.fear/a-charged-opponent-that-passes-its-fear-test-fights-normally",
+  "case": {
+    "case_key": "e2e/rule/trollheim/lustria-lizardmen/kroxigor--fear/unimplemented.lustria-lizardmen.kroxigor.fear/a-charged-opponent-that-passes-its-fear-test-fights-normally",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/trollheim/lustria-lizardmen/kroxigor--fear/unimplemented.lustria-lizardmen.kroxigor.fear::a-charged-opponent-that-passes-its-fear-test-fights-normally",
+      "path": "tests/integration/e2e/cases/grants/trollheim--lustria-lizardmen--kroxigor--fear--unimplemented.lustria-liza--17173e582a2a.yaml",
+      "sha256": "420aef95c62fc6c325452f45677ef7699779f3281b045a32c3eeb31f6fcc9c4a"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 10,
+          "strength": 8,
+          "toughness": 3,
+          "wounds": 3,
+          "initiative": 2,
+          "attacks": 1,
+          "movement": null,
+          "leadership": 7
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {},
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "lustria-lizardmen:kroxigor",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 5,
+          "toughness": 4,
+          "wounds": 3,
+          "initiative": 1,
+          "attacks": 3,
+          "movement": 6,
+          "leadership": 8
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.fist",
+            "material.normal"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "mechanic.causes-fear",
+            "mechanic.cold-blooded-psychology",
+            "armour.no-armour",
+            "lizardman",
+            "natural_armour_stacks",
+            "species.lizardman",
+            "fighter-kind.henchman",
+            "band.lustria-lizardmen",
+            "warband-group.good-aligned",
+            "warband-group.lizardmen",
+            "species.animal"
+          ]
+        },
+        "armour_save": 4,
+        "helmet_save": 7,
+        "natural_armour_save": 4,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 6,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [
+          "compiler.lizardmen-scaly-skin"
+        ],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.causes-fear",
+            "mechanic.cold-blooded-psychology",
+            "lizardman",
+            "natural_armour_stacks",
+            "species.lizardman",
+            "fighter-kind.henchman",
+            "band.lustria-lizardmen",
+            "warband-group.good-aligned",
+            "warband-group.lizardmen",
+            "species.animal"
+          ]
+        },
+        "mutation_options": [],
+        "mutation_equipment": [],
+        "natural_armour_stacks": true,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [
+        "second"
+      ],
+      "active_participant": "second"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {},
+      "second": {
+        "attacks": 0
+      }
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "d88317381775a61fb75304dfc9733d57f00cef5003d9dd07b6bb07e0a5b94817",
+      "case_sha256": "c23d9676c18e8f1fc770348d5399992b563bf8604c918e0caf08127b64ecac99"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

@@ -1,0 +1,233 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/mordheim--adventurers-kaz--barbarian--frenzy--trait.frenzy--3e65ad29e457.yaml",
+    "sha256": "cbf6d2751277f2ce7bc8ca009246ed3ac7b46c4474fe46e08e83635eec4d5db7",
+    "test_id": "rule/mordheim/adventurers-kaz/barbarian--frenzy/trait.frenzy::a-frenzied-barbarian-auto-passes-the-head-injury-stupidity-test"
+  },
+  "case_key": "e2e/rule/mordheim/adventurers-kaz/barbarian--frenzy/trait.frenzy/a-frenzied-barbarian-auto-passes-the-head-injury-stupidity-test",
+  "case": {
+    "case_key": "e2e/rule/mordheim/adventurers-kaz/barbarian--frenzy/trait.frenzy/a-frenzied-barbarian-auto-passes-the-head-injury-stupidity-test",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/mordheim/adventurers-kaz/barbarian--frenzy/trait.frenzy::a-frenzied-barbarian-auto-passes-the-head-injury-stupidity-test",
+      "path": "tests/integration/e2e/cases/grants/mordheim--adventurers-kaz--barbarian--frenzy--trait.frenzy--3e65ad29e457.yaml",
+      "sha256": "cbf6d2751277f2ce7bc8ca009246ed3ac7b46c4474fe46e08e83635eec4d5db7"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "adventurers-kaz:barbarian",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 4,
+          "toughness": 4,
+          "wounds": 1,
+          "initiative": 3,
+          "attacks": 1,
+          "movement": 4,
+          "leadership": 10
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.morning-star",
+            "material.normal"
+          ],
+          "first_round_strength_bonus": 1
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "mechanic.dim-witted-leader",
+            "mechanic.leader-six",
+            "armour.no-armour",
+            "frenzy",
+            "fighter-kind.hero",
+            "band.adventurers-kaz"
+          ],
+          "frenzy": true
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 3,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.dim-witted-leader",
+            "mechanic.leader-six",
+            "frenzy",
+            "fighter-kind.hero",
+            "band.adventurers-kaz"
+          ],
+          "frenzy": true
+        },
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.morning-star",
+            "effect": {
+              "tags": [
+                "weapon.morning-star",
+                "material.normal"
+              ],
+              "first_round_strength_bonus": 1
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 3,
+          "initiative": 1,
+          "attacks": 1,
+          "movement": null,
+          "leadership": 7
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {},
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [
+        "first"
+      ],
+      "active_participant": "first"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {
+        "attacks": 1,
+        "resources_spent": [
+          "disability.6"
+        ]
+      },
+      "second": {}
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "6c698cc1a99dff1e70f7b2092c0e670e3aaed57ae101da2ad3ef05588c84f707",
+      "case_sha256": "680bb70294f87a00b42356adf432722c0a62f6ab27e8370abef92c39fad99fb8"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}
