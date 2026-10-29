@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "blocked",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/mordheim--house-guard-sc--adjutant--relay-orders--unimplemented.house-gu--8c4d410e5ddf.yaml",
+    "sha256": "a7d188c5f5298859f0a83bc9ec6c1140861ba0bebab183af38f55f0378f8f5e3",
+    "test_id": "rule/mordheim/house-guard-sc/adjutant--relay-orders/unimplemented.house-guard-sc.adjutant.relay-orders::the-supplied-adjutant-relays-the-commanders-leadership"
+  },
+  "case_key": "e2e/rule/mordheim/house-guard-sc/adjutant--relay-orders/unimplemented.house-guard-sc.adjutant.relay-orders/the-supplied-adjutant-relays-the-commanders-leadership",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E prescribes explicit decisions (round.0.first.stupidity.leader.adjutant); the contract admits only the engine-default decision policy, and no general policy for randomly branched trajectories exists for these keys."
+}

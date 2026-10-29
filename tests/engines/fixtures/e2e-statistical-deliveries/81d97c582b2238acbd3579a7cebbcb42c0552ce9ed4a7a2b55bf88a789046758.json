@@ -1,0 +1,226 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/mordheim--strigoi-kaz--charnel-guard--cunning--unimplemented.strigoi-kaz--ad82bb7c379c.yaml",
+    "sha256": "36dda058d4e32296f36703b64be28af9295fc3ce916e08406e0f9bbf372c8957",
+    "test_id": "rule/mordheim/strigoi-kaz/charnel-guard--cunning/unimplemented.strigoi-kaz.charnel-guard.cunning::the-trained-charnel-guard-may-use-a-weapon-outside-its-ordinary-allowance"
+  },
+  "case_key": "e2e/rule/mordheim/strigoi-kaz/charnel-guard--cunning/unimplemented.strigoi-kaz.charnel-guard.cunning/the-trained-charnel-guard-may-use-a-weapon-outside-its-ordinary-allowance",
+  "case": {
+    "case_key": "e2e/rule/mordheim/strigoi-kaz/charnel-guard--cunning/unimplemented.strigoi-kaz.charnel-guard.cunning/the-trained-charnel-guard-may-use-a-weapon-outside-its-ordinary-allowance",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/mordheim/strigoi-kaz/charnel-guard--cunning/unimplemented.strigoi-kaz.charnel-guard.cunning::the-trained-charnel-guard-may-use-a-weapon-outside-its-ordinary-allowance",
+      "path": "tests/integration/e2e/cases/grants/mordheim--strigoi-kaz--charnel-guard--cunning--unimplemented.strigoi-kaz--ad82bb7c379c.yaml",
+      "sha256": "36dda058d4e32296f36703b64be28af9295fc3ce916e08406e0f9bbf372c8957"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "strigoi-kaz:charnel-guard",
+        "characteristics": {
+          "weapon_skill": 4,
+          "strength": 3,
+          "toughness": 4,
+          "wounds": 1,
+          "initiative": 3,
+          "attacks": 2,
+          "movement": 4,
+          "leadership": 6
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "mechanic.causes-fear",
+            "armour.no-armour",
+            "fighter-kind.hero",
+            "band.strigoi-kaz"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 3,
+        "construction_tags": [
+          "compiler.weapons-training-exception"
+        ],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.causes-fear",
+            "fighter-kind.hero",
+            "band.strigoi-kaz"
+          ]
+        },
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 2,
+          "initiative": 2,
+          "attacks": 1,
+          "movement": null,
+          "leadership": null
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.dagger",
+            "material.normal"
+          ],
+          "target_armour_bonus": 1
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {},
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.dagger",
+            "effect": {
+              "tags": [
+                "weapon.dagger",
+                "material.normal"
+              ],
+              "target_armour_bonus": 1
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [],
+      "active_participant": "first"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {
+        "attacks": 0
+      },
+      "second": {
+        "attacks": 0
+      }
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "1c0947e904ef5b5a105ee8c338279b52d93160560304d5212d432098f0f73e0d",
+      "case_sha256": "f5583b5c654c6a4c863ad74690df32793b83d5e7cedd1086fd8458cc5968dba5"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

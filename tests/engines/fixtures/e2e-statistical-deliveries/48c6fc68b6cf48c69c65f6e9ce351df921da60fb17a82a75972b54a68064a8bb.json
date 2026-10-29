@@ -1,0 +1,216 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/mordheim--adventurers-kaz--barbarian--frenzy--trait.frenzy--3e65ad29e457.yaml",
+    "sha256": "cbf6d2751277f2ce7bc8ca009246ed3ac7b46c4474fe46e08e83635eec4d5db7",
+    "test_id": "rule/mordheim/adventurers-kaz/barbarian--frenzy/trait.frenzy::the-injury-that-knocks-the-barbarian-down-ends-its-frenzy-and-standing-does-not-regrant-it"
+  },
+  "case_key": "e2e/rule/mordheim/adventurers-kaz/barbarian--frenzy/trait.frenzy/the-injury-that-knocks-the-barbarian-down-ends-its-frenzy-and-standing-does-not-regrant-it",
+  "case": {
+    "case_key": "e2e/rule/mordheim/adventurers-kaz/barbarian--frenzy/trait.frenzy/the-injury-that-knocks-the-barbarian-down-ends-its-frenzy-and-standing-does-not-regrant-it",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/mordheim/adventurers-kaz/barbarian--frenzy/trait.frenzy::the-injury-that-knocks-the-barbarian-down-ends-its-frenzy-and-standing-does-not-regrant-it",
+      "path": "tests/integration/e2e/cases/grants/mordheim--adventurers-kaz--barbarian--frenzy--trait.frenzy--3e65ad29e457.yaml",
+      "sha256": "cbf6d2751277f2ce7bc8ca009246ed3ac7b46c4474fe46e08e83635eec4d5db7"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 8,
+          "strength": 8,
+          "toughness": 3,
+          "wounds": 3,
+          "initiative": 1,
+          "attacks": 1,
+          "movement": null,
+          "leadership": 7
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {},
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "adventurers-kaz:barbarian",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 4,
+          "toughness": 4,
+          "wounds": 1,
+          "initiative": 3,
+          "attacks": 1,
+          "movement": 4,
+          "leadership": 10
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.fist",
+            "material.normal"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "mechanic.dim-witted-leader",
+            "mechanic.leader-six",
+            "armour.no-armour",
+            "frenzy",
+            "fighter-kind.hero",
+            "band.adventurers-kaz"
+          ],
+          "frenzy": true
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 3,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.dim-witted-leader",
+            "mechanic.leader-six",
+            "frenzy",
+            "fighter-kind.hero",
+            "band.adventurers-kaz"
+          ],
+          "frenzy": true
+        },
+        "mutation_options": [],
+        "mutation_equipment": [],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [
+        "first"
+      ],
+      "active_participant": "first"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {},
+      "second": {
+        "attacks": 1
+      }
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 2
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "0c0bb7c320e74a9d6abc21dd5ec1c2de373e9649997fd933517bbe1da5302ba4",
+      "case_sha256": "32a39e82c86b70c274ef396523474b009f2349240b8c7a4db3d129fb0f2d746a"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

@@ -1,0 +1,247 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/mordheim--carnival-of-chaos--nurglings--immune-to-poison--trait.poison-i--380385c522c4.yaml",
+    "sha256": "693681f68b0917337106066d105e9e24165c5290bcacdb898657db33e1020a1e",
+    "test_id": "rule/mordheim/carnival-of-chaos/nurglings--immune-to-poison/trait.poison-immune::the-poisoned-wound-keeps-its-wound-and-loses-its-rider"
+  },
+  "case_key": "e2e/rule/mordheim/carnival-of-chaos/nurglings--immune-to-poison/trait.poison-immune/the-poisoned-wound-keeps-its-wound-and-loses-its-rider",
+  "case": {
+    "case_key": "e2e/rule/mordheim/carnival-of-chaos/nurglings--immune-to-poison/trait.poison-immune/the-poisoned-wound-keeps-its-wound-and-loses-its-rider",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/mordheim/carnival-of-chaos/nurglings--immune-to-poison/trait.poison-immune::the-poisoned-wound-keeps-its-wound-and-loses-its-rider",
+      "path": "tests/integration/e2e/cases/grants/mordheim--carnival-of-chaos--nurglings--immune-to-poison--trait.poison-i--380385c522c4.yaml",
+      "sha256": "693681f68b0917337106066d105e9e24165c5290bcacdb898657db33e1020a1e"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 10,
+          "strength": 8,
+          "toughness": 3,
+          "wounds": 3,
+          "initiative": 10,
+          "attacks": 1,
+          "movement": null,
+          "leadership": null
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal",
+            "poison.nightshade"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {},
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal",
+                "poison.nightshade"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            }
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "carnival-of-chaos:nurglings",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 2,
+          "wounds": 1,
+          "initiative": 3,
+          "attacks": 1,
+          "movement": 4,
+          "leadership": 10
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.natural-attacks",
+            "material.normal"
+          ]
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "mechanic.automatic-leadership",
+            "armour.no-armour",
+            "poison_immune",
+            "undead_or_possessed",
+            "cloud_of_flies",
+            "natural_armour_negated_by_magic",
+            "magical_attacks",
+            "nature.daemon",
+            "attack.magical",
+            "fighter-kind.henchman",
+            "band.carnival-of-chaos",
+            "warband-group.chaos-human",
+            "warband-group.chaotic",
+            "warband-group.human"
+          ],
+          "poison_immunity": true,
+          "natural_armour_negated_by_magic": true
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 5,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [
+          "compiler.blessings-of-nurgle"
+        ],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.automatic-leadership",
+            "poison_immune",
+            "undead_or_possessed",
+            "cloud_of_flies",
+            "natural_armour_negated_by_magic",
+            "magical_attacks",
+            "nature.daemon",
+            "attack.magical",
+            "fighter-kind.henchman",
+            "band.carnival-of-chaos",
+            "warband-group.chaos-human",
+            "warband-group.chaotic",
+            "warband-group.human"
+          ],
+          "poison_immunity": true,
+          "natural_armour_negated_by_magic": true
+        },
+        "mutation_options": [],
+        "mutation_equipment": [],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [],
+      "active_participant": "first"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {},
+      "second": {
+        "attacks": 0,
+        "wounds": 1
+      }
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "b9141fbd0f0c9079694490afe09612e23b4f6fdec1f473d059f9c27aa2fe5fee",
+      "case_sha256": "92730997f8323e5e630b6bc94a927f08f0a29d3c614713adeff1b64d2b2430a6"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

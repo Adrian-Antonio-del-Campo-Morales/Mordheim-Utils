@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "blocked",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/mechanics/weapon.serpent-whip.yaml",
+    "sha256": "856ff6e2ff2d8ec9681baca7333f99e6489bb0bf842ad7fb504217459e3fb17d",
+    "test_id": "mechanic/weapon.serpent-whip::a-natural-six-wounds-automatically-without-a-wound-die"
+  },
+  "case_key": "e2e/mechanic/weapon.serpent-whip/a-natural-six-wounds-automatically-without-a-wound-die",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E prescribes explicit decisions (round.0.first.attack.0.lotus-critical); the contract admits only the engine-default decision policy, and no general policy for randomly branched trajectories exists for these keys."
+}

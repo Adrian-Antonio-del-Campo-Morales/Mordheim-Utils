@@ -1,0 +1,260 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/trollheim--khemri-lahmian-brotherhood--band--lahmian-special-skills-lost--d0c346490915.yaml",
+    "sha256": "00c47de8cf71305b5bf7b1b25c093ee7a5cd96ce94e84d07e60edbaf23d887f9",
+    "test_id": "rule/trollheim/khemri-lahmian-brotherhood/band--lahmian-special-skills-lost-innocence/skill.always-strikes-first::the-recipient-strikes-before-higher-initiative"
+  },
+  "case_key": "e2e/rule/trollheim/khemri-lahmian-brotherhood/band--lahmian-special-skills-lost-innocence/skill.always-strikes-first/the-recipient-strikes-before-higher-initiative",
+  "case": {
+    "case_key": "e2e/rule/trollheim/khemri-lahmian-brotherhood/band--lahmian-special-skills-lost-innocence/skill.always-strikes-first/the-recipient-strikes-before-higher-initiative",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/trollheim/khemri-lahmian-brotherhood/band--lahmian-special-skills-lost-innocence/skill.always-strikes-first::the-recipient-strikes-before-higher-initiative",
+      "path": "tests/integration/e2e/cases/grants/trollheim--khemri-lahmian-brotherhood--band--lahmian-special-skills-lost--d0c346490915.yaml",
+      "sha256": "00c47de8cf71305b5bf7b1b25c093ee7a5cd96ce94e84d07e60edbaf23d887f9"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "khemri-lahmian-brotherhood:lahmian-vampire",
+        "characteristics": {
+          "weapon_skill": 4,
+          "strength": 4,
+          "toughness": 4,
+          "wounds": 2,
+          "initiative": 5,
+          "attacks": 2,
+          "movement": 6,
+          "leadership": 8
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "mechanic.leader-six",
+            "mechanic.causes-fear",
+            "mechanic.psychology-immunity",
+            "skill.ignore-pain",
+            "nature.undead",
+            "undead_or_possessed",
+            "skill.always-strikes-first",
+            "armour.no-armour",
+            "vampire",
+            "poison_immune",
+            "species.vampire",
+            "fighter-kind.hero",
+            "band.khemri-lahmian-brotherhood",
+            "warband-group.evil",
+            "warband-group.undead"
+          ],
+          "priority": 1,
+          "poison_immunity": true
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {
+          "tags": [
+            "skill.ignore-pain",
+            "skill.always-strikes-first"
+          ],
+          "priority": 1
+        },
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 4,
+        "construction_tags": [
+          "compiler.foreign-or-native-background"
+        ],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {
+          "tags": [
+            "skill.always-strikes-first",
+            "skill.ignore-pain"
+          ],
+          "priority": 1
+        },
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.leader-six",
+            "mechanic.causes-fear",
+            "mechanic.psychology-immunity",
+            "skill.ignore-pain",
+            "nature.undead",
+            "undead_or_possessed",
+            "skill.always-strikes-first",
+            "vampire",
+            "poison_immune",
+            "species.vampire",
+            "fighter-kind.hero",
+            "band.khemri-lahmian-brotherhood",
+            "warband-group.evil",
+            "warband-group.undead"
+          ],
+          "priority": 1,
+          "poison_immunity": true
+        },
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 2,
+          "initiative": 10,
+          "attacks": 1,
+          "movement": null,
+          "leadership": null
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {},
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [],
+      "active_participant": "first"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {},
+      "second": {}
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "d879c7df610e6e7e8fb399aecaae571ebaa2770b8041560f36af863b715d6b25",
+      "case_sha256": "9eaefb06923a41db18d96f207d4afde21b5d27a8d9d48139a2501c62e3d348ad"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

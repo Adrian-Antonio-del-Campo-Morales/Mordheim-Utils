@@ -1,0 +1,245 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/mordheim--battle-monks-of-cathay--band--battle-monks-special-skills--pro--eae5e2007f26.yaml",
+    "sha256": "1d3ac15a8c253d013c2ddcd336dc86d492b21ae54d0c9aa382d2f0f8441c96f6",
+    "test_id": "rule/mordheim/battle-monks-of-cathay/band--battle-monks-special-skills/profile.skill-access::a-published-member-of-the-band-table-is-selectable"
+  },
+  "case_key": "e2e/rule/mordheim/battle-monks-of-cathay/band--battle-monks-special-skills/profile.skill-access/a-published-member-of-the-band-table-is-selectable",
+  "case": {
+    "case_key": "e2e/rule/mordheim/battle-monks-of-cathay/band--battle-monks-special-skills/profile.skill-access/a-published-member-of-the-band-table-is-selectable",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/mordheim/battle-monks-of-cathay/band--battle-monks-special-skills/profile.skill-access::a-published-member-of-the-band-table-is-selectable",
+      "path": "tests/integration/e2e/cases/grants/mordheim--battle-monks-of-cathay--band--battle-monks-special-skills--pro--eae5e2007f26.yaml",
+      "sha256": "1d3ac15a8c253d013c2ddcd336dc86d492b21ae54d0c9aa382d2f0f8441c96f6"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "battle-monks-of-cathay:dragon-monks",
+        "characteristics": {
+          "weapon_skill": 4,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 1,
+          "initiative": 4,
+          "attacks": 1,
+          "movement": 4,
+          "leadership": 8
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.sword",
+            "material.normal"
+          ],
+          "parry": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "skill.unarmed-fighting",
+            "skill.unarmed-critical-strikes",
+            "mechanic.energy-focus",
+            "armour.no-armour",
+            "fighter-kind.hero",
+            "band.battle-monks-of-cathay",
+            "warband-group.good-aligned",
+            "warband-group.human"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {
+          "tags": [
+            "skill.unarmed-fighting",
+            "skill.unarmed-critical-strikes"
+          ]
+        },
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 3,
+        "construction_tags": [
+          "compiler.forbid-item-categories",
+          "compiler.strictures"
+        ],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {
+          "tags": [
+            "mechanic.energy-focus",
+            "skill.unarmed-critical-strikes"
+          ]
+        },
+        "global_effects_without_equipment": {
+          "tags": [
+            "skill.unarmed-fighting",
+            "skill.unarmed-critical-strikes",
+            "mechanic.energy-focus",
+            "fighter-kind.hero",
+            "band.battle-monks-of-cathay",
+            "warband-group.good-aligned",
+            "warband-group.human"
+          ]
+        },
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.sword",
+            "effect": {
+              "tags": [
+                "weapon.sword",
+                "material.normal"
+              ],
+              "parry": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 2,
+          "initiative": 2,
+          "attacks": 1,
+          "movement": null,
+          "leadership": null
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.sword",
+            "material.normal"
+          ],
+          "parry": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {},
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.sword",
+            "effect": {
+              "tags": [
+                "weapon.sword",
+                "material.normal"
+              ],
+              "parry": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [],
+      "active_participant": "first"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {
+        "attacks": 0
+      },
+      "second": {
+        "attacks": 0
+      }
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "f8f373606f7c9e99bac59c278a68b6b8d43a78cebb5d1475ead228b4aaa4f837",
+      "case_sha256": "3227f8dd45bc4afb181c6b128237b1bd19b957003680d6fa600973a23ab71e71"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

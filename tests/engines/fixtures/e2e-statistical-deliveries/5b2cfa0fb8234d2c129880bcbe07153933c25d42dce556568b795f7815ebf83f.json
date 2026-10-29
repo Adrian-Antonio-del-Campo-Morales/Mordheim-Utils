@@ -1,0 +1,240 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/trollheim--khemri-tomb-guardians--band--immune-to-psychology--unimplemen--5a9a5b592b3e.yaml",
+    "sha256": "4201168b11086753cee3bffca3c37be4cc6507995a745ec17e81f4fdd57db693",
+    "test_id": "rule/trollheim/khemri-tomb-guardians/band--immune-to-psychology/unimplemented.khemri-tomb-guardians.band.immune-to-psychology::the-immune-warrior-takes-no-stupidity-test"
+  },
+  "case_key": "e2e/rule/trollheim/khemri-tomb-guardians/band--immune-to-psychology/unimplemented.khemri-tomb-guardians.band.immune-to-psychology/the-immune-warrior-takes-no-stupidity-test",
+  "case": {
+    "case_key": "e2e/rule/trollheim/khemri-tomb-guardians/band--immune-to-psychology/unimplemented.khemri-tomb-guardians.band.immune-to-psychology/the-immune-warrior-takes-no-stupidity-test",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/trollheim/khemri-tomb-guardians/band--immune-to-psychology/unimplemented.khemri-tomb-guardians.band.immune-to-psychology::the-immune-warrior-takes-no-stupidity-test",
+      "path": "tests/integration/e2e/cases/grants/trollheim--khemri-tomb-guardians--band--immune-to-psychology--unimplemen--5a9a5b592b3e.yaml",
+      "sha256": "4201168b11086753cee3bffca3c37be4cc6507995a745ec17e81f4fdd57db693"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 3,
+          "initiative": 10,
+          "attacks": 1,
+          "movement": null,
+          "leadership": 7
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {},
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "khemri-tomb-guardians:tomb-lord",
+        "characteristics": {
+          "weapon_skill": 4,
+          "strength": 4,
+          "toughness": 4,
+          "wounds": 2,
+          "initiative": 3,
+          "attacks": 1,
+          "movement": 4,
+          "leadership": 8
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.fist",
+            "material.normal"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "mechanic.leader-six",
+            "mechanic.causes-fear",
+            "mechanic.psychology-immunity",
+            "skill.ignore-pain",
+            "nature.undead",
+            "undead_or_possessed",
+            "armour.no-armour",
+            "flammable",
+            "poison_immune",
+            "fighter-kind.hero",
+            "band.khemri-tomb-guardians",
+            "warband-group.evil",
+            "warband-group.undead"
+          ],
+          "poison_immunity": true
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {
+          "tags": [
+            "skill.ignore-pain"
+          ]
+        },
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 3,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {
+          "tags": [
+            "skill.ignore-pain"
+          ]
+        },
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.leader-six",
+            "mechanic.causes-fear",
+            "mechanic.psychology-immunity",
+            "skill.ignore-pain",
+            "nature.undead",
+            "undead_or_possessed",
+            "flammable",
+            "poison_immune",
+            "fighter-kind.hero",
+            "band.khemri-tomb-guardians",
+            "warband-group.evil",
+            "warband-group.undead"
+          ],
+          "poison_immunity": true
+        },
+        "mutation_options": [],
+        "mutation_equipment": [],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [],
+      "active_participant": "second"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {
+        "attacks": 0
+      },
+      "second": {
+        "resources_spent": [
+          "disability.6"
+        ]
+      }
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "1311e0e1f376738ef547586d4473b2fdc4a05af83222ff48153d7aec47b81023",
+      "case_sha256": "3a398ea00ec403a3d4fdac2a916b00f093838ba4e51003ecf6367d73a35494be"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

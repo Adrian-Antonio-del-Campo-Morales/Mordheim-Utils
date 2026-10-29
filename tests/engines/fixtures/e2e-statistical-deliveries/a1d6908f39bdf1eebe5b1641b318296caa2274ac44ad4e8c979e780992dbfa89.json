@@ -1,0 +1,231 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/mordheim--bretonnian-chapel-guard--knights-errant--impetuous--unimplemen--22d25fbd0d9b.yaml",
+    "sha256": "dcc5c9486a40057d51447cfea5e7199c35cd9c0590e7ceb614ff7f0c334c2afc",
+    "test_id": "rule/mordheim/bretonnian-chapel-guard/knights-errant--impetuous/unimplemented.bretonnian-chapel-guard.knights-errant.impetuous::an-ordinary-charge-into-the-same-enemy-still-owes-the-fear-test"
+  },
+  "case_key": "e2e/rule/mordheim/bretonnian-chapel-guard/knights-errant--impetuous/unimplemented.bretonnian-chapel-guard.knights-errant.impetuous/an-ordinary-charge-into-the-same-enemy-still-owes-the-fear-test",
+  "case": {
+    "case_key": "e2e/rule/mordheim/bretonnian-chapel-guard/knights-errant--impetuous/unimplemented.bretonnian-chapel-guard.knights-errant.impetuous/an-ordinary-charge-into-the-same-enemy-still-owes-the-fear-test",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/mordheim/bretonnian-chapel-guard/knights-errant--impetuous/unimplemented.bretonnian-chapel-guard.knights-errant.impetuous::an-ordinary-charge-into-the-same-enemy-still-owes-the-fear-test",
+      "path": "tests/integration/e2e/cases/grants/mordheim--bretonnian-chapel-guard--knights-errant--impetuous--unimplemen--22d25fbd0d9b.yaml",
+      "sha256": "dcc5c9486a40057d51447cfea5e7199c35cd9c0590e7ceb614ff7f0c334c2afc"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "bretonnian-chapel-guard:knights-errant",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 1,
+          "initiative": 3,
+          "attacks": 1,
+          "movement": 4,
+          "leadership": 7
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.dagger",
+            "material.normal"
+          ],
+          "target_armour_bonus": 1
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour",
+            "fighter-kind.hero",
+            "band.bretonnian-chapel-guard",
+            "warband-group.good-aligned",
+            "warband-group.human"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 3,
+        "construction_tags": [
+          "compiler.chivalry"
+        ],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "fighter-kind.hero",
+            "band.bretonnian-chapel-guard",
+            "warband-group.good-aligned",
+            "warband-group.human"
+          ]
+        },
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.dagger",
+            "effect": {
+              "tags": [
+                "weapon.dagger",
+                "material.normal"
+              ],
+              "target_armour_bonus": 1
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 8,
+          "strength": 8,
+          "toughness": 3,
+          "wounds": 3,
+          "initiative": 1,
+          "attacks": 1,
+          "movement": null,
+          "leadership": 7
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.dagger",
+            "material.normal"
+          ],
+          "target_armour_bonus": 1
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour",
+            "mechanic.causes-fear"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.causes-fear"
+          ]
+        },
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.dagger",
+            "effect": {
+              "tags": [
+                "weapon.dagger",
+                "material.normal"
+              ],
+              "target_armour_bonus": 1
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [
+        "first"
+      ],
+      "active_participant": "first"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {},
+      "second": {}
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "8fd1c46b20ff6ff1b59e1b35f7aa6c6492580aac3197fb055d4ecb630b599d5b",
+      "case_sha256": "e16cb1e466a35967834afa5dbc2686977b2a9b1fa2d7b7aad25eb2bda09a85c0"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

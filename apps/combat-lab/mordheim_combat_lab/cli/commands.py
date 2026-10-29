@@ -995,7 +995,115 @@ def _catalog_parity_command(args) -> int:
     ))
 
 
+def _e2e_parity_command(args) -> int:
+    """Execute explicitly selected precompiled E2E deliveries.
+
+    A separate entry point for the E2E catalogue keeps the 43 precompiled
+    scenarios and the battery path untouched; sampling and the six-sigma gate
+    are still the shared runner's.
+    """
+    from tools.verification import e2e_parity
+
+    selections = list(getattr(args, "e2e", None) or ())
+    selection_file = getattr(args, "e2e_selection_file", None)
+    if selection_file:
+        try:
+            selections.extend(e2e_parity.read_selection_file(Path(selection_file)))
+        except OSError as error:
+            print(f"Parity configuration error: cannot read --e2e-selection-file: {error}",
+                  file=sys.stderr)
+            return 2
+    if not selections and not selection_file:
+        index, _ = e2e_parity.discover(
+            Path(args.e2e_deliveries) if getattr(args, "e2e_deliveries", None) else None)
+        selections = sorted(index)
+        if not selections:
+            print("Parity configuration error: no E2E deliveries found.", file=sys.stderr)
+            return 2
+    if getattr(args, "level", None) is not None or getattr(args, "profile", None) is not None:
+        print("Parity configuration error: --catalog e2e is configured with "
+              "--simulations/--seed/--workers/--magnitudes; --level and "
+              "--profile select other catalogues.", file=sys.stderr)
+        return 2
+    if (getattr(args, "pair_set", None) is not None
+            or getattr(args, "truncations", False)
+            or getattr(args, "deep_simulations", None) is not None):
+        print("Parity configuration error: --catalog e2e does not use "
+              "--pair-set/--truncations/--deep-simulations.", file=sys.stderr)
+        return 2
+    simulations = getattr(args, "simulations", None)
+    if simulations is None:
+        print("Parity configuration error: --catalog e2e requires an explicit "
+              "--simulations <DUELS> sample width.", file=sys.stderr)
+        return 2
+    backend = getattr(args, "backend", None) or "numpy"
+    if backend == "modular":
+        print("Parity configuration error: --catalog e2e compares a candidate; "
+              "choose numpy, native or all.", file=sys.stderr)
+        return 2
+    try:
+        magnitudes = e2e_parity.parse_magnitudes(getattr(args, "magnitudes", None))
+    except e2e_parity.MagnitudeError as error:
+        print(f"Parity configuration error: {error}", file=sys.stderr)
+        return 2
+    deliveries = (Path(args.e2e_deliveries)
+                  if getattr(args, "e2e_deliveries", None) else None)
+    output_md = getattr(args, "output_md", None)
+    if args.output and output_md and Path(args.output).resolve() == Path(output_md).resolve():
+        print("Parity configuration error: --output and --output-md must use different paths.",
+              file=sys.stderr)
+        return 2
+    try:
+        payload, code = e2e_parity.execute(
+            selections,
+            simulations=simulations,
+            seed=args.seed,
+            backend=backend,
+            workers=getattr(args, "workers", None),
+            magnitudes=magnitudes,
+            deliveries=deliveries,
+        )
+    except e2e_parity.SelectionError as error:
+        print(f"Parity configuration error: {error}", file=sys.stderr)
+        return 2
+    content = json.dumps(payload, ensure_ascii=True, indent=2) + "\n"
+    e2e_parity.write_reports(
+        payload, output=Path(args.output) if args.output else None,
+        output_md=Path(output_md) if output_md else None,
+    )
+    if args.json:
+        print(content, end="")
+    else:
+        for item in payload["results"]:
+            print(f"{item['outcome'].upper()}: {item['case_key']} {item['detail']}".rstrip())
+        summary = payload["summary"]
+        print("Summary: " + ", ".join(
+            f"{name}={value}" for name, value in summary.items()))
+        print("Compared magnitudes: "
+              + ", ".join(payload["options"]["magnitudes"]))
+        print("Samples only: this connection does not certify statistical "
+              "parity or engine compatibility.")
+        if args.output:
+            print(f"REPORT: {Path(args.output).resolve()}")
+        if output_md:
+            print(f"MARKDOWN: {Path(output_md).resolve()}")
+    return code
+
+
 def parity_command(args) -> int:
+    if getattr(args, "level", None) == "e2e":
+        if getattr(args, "catalog", None) not in (None, "precompiled", "e2e"):
+            print("Parity configuration error: --level e2e cannot select a battery catalogue.",
+                  file=sys.stderr)
+            return 2
+        args.catalog = "e2e"
+        args.level = None
+    if getattr(args, "catalog", None) == "e2e":
+        return _e2e_parity_command(args)
+    if getattr(args, "output_md", None):
+        print("Parity configuration error: --output-md currently requires --catalog e2e or --level e2e.",
+              file=sys.stderr)
+        return 2
     if getattr(args, "catalog", None) is not None or getattr(args, "backend", None) == "modular":
         return _catalog_parity_command(args)
     if getattr(args, "simulations", None) is not None:
@@ -1706,18 +1814,40 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
         formatter_class=_HelpFormatter)
     catalog_options = parity.add_argument_group("fixture catalogues")
     catalog_options.add_argument(
-        "--catalog", choices=("precompiled", "battery", "all"), default=None,
-        help="select frozen cases, build-based battery cases, or both; without --profile all cases are selected",
+        "--catalog", choices=("precompiled", "battery", "all", "e2e"), default=None,
+        help="select frozen cases, build-based battery cases, both, or explicitly selected precompiled E2E deliveries (--e2e); without --profile all cases are selected",
     )
     catalog_options.add_argument(
         "--simulations", type=_positive, default=None, metavar="DUELS",
         help="with --catalog, override samples per case; otherwise use --statistical-simulations for frozen scenarios or the battery row count",
     )
+    e2e_options = parity.add_argument_group("precompiled E2E connection")
+    e2e_options.add_argument(
+        "--e2e", action="append", default=[], metavar="CASE_KEY",
+        help="with --catalog e2e, a delivery case_key or audit_id::id "
+             "(repeatable; the selection is always explicit)",
+    )
+    e2e_options.add_argument(
+        "--e2e-selection-file", metavar="PATH",
+        help="with --catalog e2e, read one case_key or audit_id::id per "
+             "line ('#' comments allowed)",
+    )
+    e2e_options.add_argument(
+        "--e2e-deliveries", metavar="DIR",
+        help="with --catalog e2e, override the delivery directory",
+    )
+    e2e_options.add_argument(
+        "--magnitudes", metavar="LIST", default=None,
+        help="with --catalog e2e, comma-separated observed magnitudes: "
+             "winner (mandatory), wounds, condition, rounds; default "
+             "winner,wounds,condition. Deliveries declare winner only; "
+             "this flag widens the campaign without rewriting them",
+    )
     parity_samples = parity.add_argument_group("certification samples")
     parity_samples.add_argument(
-        "--level", choices=("deterministic", "statistical", "deep", "small", "normal", "long"),
+        "--level", choices=("deterministic", "statistical", "deep", "small", "normal", "long", "e2e"),
         default=None, metavar="LEVEL",
-        help="with --catalog: small (default), normal or long; otherwise historical certificate preset: "
+        help="e2e selects all E2E deliveries; with --catalog: small (default), normal or long; otherwise historical certificate preset: "
              "deterministic runs the exact checks only; "
              "statistical adds the aggregate six-sigma samples on the small "
              "standard scenarios; deep runs the selected archetype pair set "
@@ -1782,6 +1912,8 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
                                help="fail unless the certificate is complete; with "
                                     "--profile a missing, incompatible or "
                                     "unexecuted scenario also fails")
+    parity_output.add_argument("--output-md", metavar="PATH",
+                               help="with the E2E catalogue, save a Markdown summary independently of --output")
     parity_output.add_argument("--output", metavar="PATH",
                                help="save the report as .json or .md (deep defaults to "
                                     "deep.json for full, deep-fast.json for fast "

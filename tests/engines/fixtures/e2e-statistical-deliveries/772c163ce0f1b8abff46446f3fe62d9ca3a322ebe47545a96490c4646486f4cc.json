@@ -1,0 +1,263 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/mordheim--clan-angrund-kep--band--dwarf-special-skills-thick-skull--skil--feb29a6b71e5.yaml",
+    "sha256": "7cf85247cb2a81ad6741af1588c3872df8b6ea89e79e908e8e7b630a7a246818",
+    "test_id": "rule/mordheim/clan-angrund-kep/band--dwarf-special-skills-thick-skull/skill.thick-skull::the-helmet-raises-the-save-to-two"
+  },
+  "case_key": "e2e/rule/mordheim/clan-angrund-kep/band--dwarf-special-skills-thick-skull/skill.thick-skull/the-helmet-raises-the-save-to-two",
+  "case": {
+    "case_key": "e2e/rule/mordheim/clan-angrund-kep/band--dwarf-special-skills-thick-skull/skill.thick-skull/the-helmet-raises-the-save-to-two",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/mordheim/clan-angrund-kep/band--dwarf-special-skills-thick-skull/skill.thick-skull::the-helmet-raises-the-save-to-two",
+      "path": "tests/integration/e2e/cases/grants/mordheim--clan-angrund-kep--band--dwarf-special-skills-thick-skull--skil--feb29a6b71e5.yaml",
+      "sha256": "7cf85247cb2a81ad6741af1588c3872df8b6ea89e79e908e8e7b630a7a246818"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 2,
+          "initiative": 5,
+          "attacks": 1,
+          "movement": null,
+          "leadership": null
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {},
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "clan-angrund-kep:dwarf-noble",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 1,
+          "initiative": 2,
+          "attacks": 1,
+          "movement": 3,
+          "leadership": 9
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "mechanic.leader-six",
+            "skill.hard-to-kill",
+            "mechanic.hatred-skaven-orcs-goblins",
+            "skill.thick-skull",
+            "armour.no-armour",
+            "defence.helmet",
+            "concussion_immune",
+            "species.dwarf",
+            "fighter-kind.hero",
+            "band.clan-angrund-kep"
+          ],
+          "thick_skull": true,
+          "out_of_action_threshold": 6
+        },
+        "armour_save": 7,
+        "helmet_save": 4,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {
+          "tags": [
+            "skill.hard-to-kill",
+            "skill.thick-skull"
+          ],
+          "thick_skull": true,
+          "out_of_action_threshold": 6
+        },
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 4,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {
+          "tags": [
+            "skill.thick-skull"
+          ],
+          "thick_skull": true
+        },
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.leader-six",
+            "skill.hard-to-kill",
+            "mechanic.hatred-skaven-orcs-goblins",
+            "skill.thick-skull",
+            "concussion_immune",
+            "species.dwarf",
+            "fighter-kind.hero",
+            "band.clan-angrund-kep"
+          ],
+          "thick_skull": true,
+          "out_of_action_threshold": 6
+        },
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          },
+          {
+            "item_id": "defence.helmet",
+            "effect": {
+              "tags": [
+                "defence.helmet"
+              ]
+            },
+            "kind": "defence",
+            "slot": "defence.0",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [
+        "first"
+      ],
+      "active_participant": "first"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {},
+      "second": {
+        "attacks": 0
+      }
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "0c7647d760ebc2ca226b4ef2c1f477e7cc54d08525f4985452e010aa534a433a",
+      "case_sha256": "b6743b38421f00db53fea08b6f52f8b9016918435764a594cc08cc76df814a73"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

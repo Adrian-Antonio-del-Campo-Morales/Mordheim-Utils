@@ -1,0 +1,240 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "translated",
+  "source": {
+    "revision": "d1fea7f1a1d9f492d426e3cf5672be6a09c6b235",
+    "path": "tests/integration/e2e/cases/grants/trollheim--khemri-lahmian-brotherhood--beloved--devoted-to-the-vampire--2bc0b1fa0142.yaml",
+    "sha256": "c90e15f2c904f3a4693c9bc5ee91cd797c60da7c12935337d78dfbf584019bf9",
+    "test_id": "rule/trollheim/khemri-lahmian-brotherhood/beloved--devoted-to-the-vampire/unimplemented.khemri-lahmian-brotherhood.beloved.devoted-to-the-vampire::the-supplied-devoted-frenzy-state-doubles-the-beloved-attack-count"
+  },
+  "case_key": "e2e/rule/trollheim/khemri-lahmian-brotherhood/beloved--devoted-to-the-vampire/unimplemented.khemri-lahmian-brotherhood.beloved.devoted-to-the-vampire/the-supplied-devoted-frenzy-state-doubles-the-beloved-attack-count",
+  "case": {
+    "case_key": "e2e/rule/trollheim/khemri-lahmian-brotherhood/beloved--devoted-to-the-vampire/unimplemented.khemri-lahmian-brotherhood.beloved.devoted-to-the-vampire/the-supplied-devoted-frenzy-state-doubles-the-beloved-attack-count",
+    "origin": {
+      "kind": "e2e",
+      "node_id": "rule/trollheim/khemri-lahmian-brotherhood/beloved--devoted-to-the-vampire/unimplemented.khemri-lahmian-brotherhood.beloved.devoted-to-the-vampire::the-supplied-devoted-frenzy-state-doubles-the-beloved-attack-count",
+      "path": "tests/integration/e2e/cases/grants/trollheim--khemri-lahmian-brotherhood--beloved--devoted-to-the-vampire--2bc0b1fa0142.yaml",
+      "sha256": "c90e15f2c904f3a4693c9bc5ee91cd797c60da7c12935337d78dfbf584019bf9"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 3,
+          "initiative": 1,
+          "attacks": 1,
+          "movement": null,
+          "leadership": 7
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour",
+            "mechanic.causes-fear"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.causes-fear"
+          ]
+        },
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "khemri-lahmian-brotherhood:beloved",
+        "characteristics": {
+          "weapon_skill": 4,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 1,
+          "initiative": 4,
+          "attacks": 1,
+          "movement": 4,
+          "leadership": 8
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "mechanic.devoted-to-the-vampire",
+            "mechanic.devoted-killer-hatred",
+            "mechanic.accustomed-to-fear",
+            "armour.no-armour",
+            "fighter-kind.hero",
+            "band.khemri-lahmian-brotherhood",
+            "warband-group.evil",
+            "warband-group.undead"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 4,
+        "construction_tags": [
+          "compiler.foreign-or-native-background"
+        ],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.devoted-to-the-vampire",
+            "mechanic.devoted-killer-hatred",
+            "mechanic.accustomed-to-fear",
+            "fighter-kind.hero",
+            "band.khemri-lahmian-brotherhood",
+            "warband-group.evil",
+            "warband-group.undead"
+          ]
+        },
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [
+        "first"
+      ],
+      "active_participant": "first"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {},
+      "second": {
+        "attacks": 1,
+        "frenzy": true
+      }
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "8fbc3a132f412ba91066b22f5616df30d86cdcc9024f78e4639e372e81d595f6",
+      "case_sha256": "9f68885e44d2e7a6d077cc8a8697bc01155d08ceda1da36ef9c02c5e677c54dd"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}
