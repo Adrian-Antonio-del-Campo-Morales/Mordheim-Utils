@@ -10,3 +10,6 @@
 
 *.pdf binary
 *.exe binary
+
+# Keep saved parity samples byte-stable across Windows and Linux checkouts.
+tests/engines/parity/reference_samples/**/*.json text eol=lf
