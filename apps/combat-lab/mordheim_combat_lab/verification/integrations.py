@@ -11,10 +11,24 @@ from mordheim_combat_lab.verification.dice import StrictDecisions
 from mordheim_combat_lab.verification.dice import StrictDice
 from mordheim_combat_lab.verification.reports import EvidenceMismatch
 from mordheim_combat_lab.verification.reports import INTEGRATION_CHECKS
-from mordheim_combat_lab.verification.scenarios import _build
+from mordheim_construction.compiler import compile_fighter
+from mordheim_core.models import Characteristics, FighterBuild
 from pathlib import Path
 from threading import Event
 from unittest.mock import patch
+
+
+def _build(values: dict, root: Path):
+    values = dict(values)
+    if "characteristics" in values:
+        values["characteristics"] = Characteristics(**values["characteristics"])
+    elif not values.get("profile_id"):
+        values["characteristics"] = Characteristics(3, 3, 3, 3, 3, 1)
+    for name in ("defence_ids", "skill_ids", "preparation_ids", "special_rule_ids", "variant_ids",
+                 "condition_ids"):
+        if name in values:
+            values[name] = tuple(values[name])
+    return compile_fighter(FighterBuild("mordheim", **values), root)
 
 
 def verify_integrations(root: Path) -> tuple[tuple[str, ...], tuple[str, ...]]:

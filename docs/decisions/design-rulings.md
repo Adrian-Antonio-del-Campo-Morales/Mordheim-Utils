@@ -6,13 +6,19 @@ reviewed text that motivated it is linked where it lives (KB file, spec, or
 code). This page is consultable on its own; audit findings and development
 history are not part of the permanent design record.
 
-Rulings that answer a specific spec `question` are additionally recorded next
-to the spec (`ruling:` field in `tests/rules/integration/specs/semantic/**`); this page collects
-the ones with lasting design impact plus the decisions that were taken outside
-a single spec.
+The former semantic YAML specifications also carried `question`/`ruling` fields.
+That test system has been retired. References to those specifications in older
+decisions are historical provenance, not instructions to restore it. This page
+retains the permanent rulings and their rationale; the retirement does not revoke
+any adopted decision. New rule evidence belongs in modular mechanics and E2E tests.
 
 ## Duel engine (modular oracle)
 
+- **Hochland Duelist Swordmaster matches the hit; it does not grant a failed-parry reroll.**
+  The tie benefit requires equipment that permits parrying. Sword plus buckler
+  retains its own independent reroll. This adopted answer was previously quoted
+  in the semantic authoring guide and is retained here when that guide's
+  semantic procedure is retired.
 - **Netter consumes a supplied victim.** Throwing the net, resolving escape
   and charge movement are outside the duel. Keep `condition.netted` and its
   close-combat/recovery consequences; do not grant a net-throwing technique.

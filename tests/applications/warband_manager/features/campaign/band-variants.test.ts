@@ -1,7 +1,7 @@
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
-import { readArtefactReader } from "../../../../rules/knowledge/support/kb-artefact";
+import { readArtefactReader } from "../../../../knowledge/support/kb-artefact";
 import { activeBandRuleIds, warbandVariants } from "@domain/campaign/band-variants";
 import { createService } from "@src/features/campaign/default-deps";
 

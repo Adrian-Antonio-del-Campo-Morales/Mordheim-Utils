@@ -16,8 +16,8 @@
  * 2. Table localization: every published prose row resolved in both locales
  *    through the reader, compared against its published translations.
  * 3. Accessible tooltips: `knowledgeHintDetails` for every catalogue entry.
- * 4. Rendered surfaces: the dynamic sweep test (`tests/web/tools/
- *    presentation-completeness-sweep.test.tsx`) renders the rules page and all
+ * 4. Rendered surfaces: the dynamic sweep test (`tests/applications/warband_manager/
+ *    presentation/completeness/presentation-completeness-sweep.test.tsx`) renders the rules page and all
  *    categories, the band picker, band construction, equipment/market, a loaded
  *    campaign, history, advances, the record-battle panel with real scenario
  *    rewards, the exploration panel with a resolved result, and the PDF text
@@ -39,7 +39,7 @@ import { classifyVisibleText, classifyCategoryRow, FINDING_CLASSES } from "./pre
 const TOOL_DIR = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = resolve(TOOL_DIR, "..", "..");
 const ARTEFACT_DIR = resolve(REPO_ROOT, "outputs", "web-public", "knowledge");
-const SWEEP_TEST = resolve(REPO_ROOT, "tests", "web", "tools", "presentation-completeness-sweep.test.tsx");
+const SWEEP_TEST = resolve(REPO_ROOT, "tests", "applications", "warband_manager", "presentation", "completeness", "presentation-completeness-sweep.test.tsx");
 
 /** The catalogue categories whose rows resolve as prose rules. */
 const RULE_STEMS = [["special-rules", "special-rules"], ["profile-special-rules", "band-rules"], ["conditions", "conditions"], ["core-combat", "core-rules"]];
@@ -328,7 +328,7 @@ export function buildCompletenessReport(result) {
       return `- ${layer.surface}: ${layer.findings.length} hallazgos${summary}`;
     }),
     "",
-    "Interpretación y resolución por clase: docs/reference/web-presentation.md, sección «Visible completeness». Reproducción: `python tools/mordheim-utils.py check-presentation` (paso 5) o `npm run audit:completeness` en apps/warband-manager-web.",
+    "Interpretación y resolución por clase: docs/reference/web-presentation.md, sección «Visible completeness». Reproducción: `python tools/mordheim-utils.py check presentation` (paso 5) o `npm run audit:completeness` en apps/warband-manager-web.",
     "",
   ];
   return lines.join("\n");

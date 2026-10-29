@@ -154,7 +154,7 @@ in the source catalogue but are not offered as editable stat profiles.
 
 See the [source clarifications](../decisions/design-rulings.md#f074-source-clarifications)
 for accepted recipient interpretations; current contracts and evidence remain
-in the [semantic CSV](../../sources/knowledge/verification/clause-contracts.csv).
+in the [clause register](../../sources/knowledge/verification/clause-contracts.csv).
 
 `EquipmentLimits.exempt_profile_ids` exempts a profile only from `required_tag`;
 `max_missile_weapons` still applies. For Outlaws, the Cleric may omit the bow
@@ -220,9 +220,9 @@ choice or contribute to a whole-set limit. Unknown selected or owned ids still
 receive the access check. The maintained transport regressions exercise the
 installed catalogue, in addition to the direct fixture exports.
 
-The shared fixture `tests/rules/construction/fixtures/eligibility/construction-context.json` runs
+The shared fixture `tests/construction/fixtures/eligibility/construction-context.json` runs
 through the direct TypeScript exports and through the embedded Python runtime
-(`tests/rules/construction/test_construction_context_parity.py`), so both
+(`tests/construction/test_construction_context_parity.py`), so both
 entry points must return equivalent decisions for equivalent facts.
 
 ## Consumer workflows
@@ -313,7 +313,7 @@ Legitimately retained by each product:
   confirmation order, canonical Weapons Training/Expert ids, restriction-note
   messages and the `starting_grant` quantity convention. The web's default
   combined operation retains its existing `fixed` convention. The 77-case
-  `tests/rules/construction/fixtures/eligibility/warrior-equipment.json` records the entry decisions
+  `tests/construction/fixtures/eligibility/warrior-equipment.json` records the entry decisions
   and is exercised by direct TypeScript, embedded JavaScript and Python gates.
 
 ## Changing rules
@@ -324,7 +324,7 @@ Legitimately retained by each product:
 
 CI checks bundle freshness and both consumers. The Python freshness test runs the maintained generator in check mode, which rebuilds the bundle in memory and compares the whole artifact, so a body edit that preserves the banner digest still fails. Regeneration is required when either `index.ts` or `bridge.ts` changes. Python installation declares `mini-racer==0.14.1`; this is a runtime dependency, not an optional fallback to duplicated Python decisions.
 
-The local `python tools/mordheim-utils.py run-ci` gate includes the same bundle
+The local `python tools/mordheim-utils.py check ci` gate includes the same bundle
 check and Python transport tests. Windows packaging collects the JavaScript
 resource and MiniRacer's native runtime. Rebuild changed eligibility sources
 before creating an executable; the target machine needs neither Node nor a server.

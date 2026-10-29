@@ -1,20 +1,22 @@
 # Verification
 
-How the repository maximizes confidence that the vectorized (NumPy) and native
-engines behave exactly like the modular oracle — **without** spending the
-compute that exhaustive pair-by-pair statistical certification would require.
+The modular engine is the rule reference: source-derived checks in
+`tests/engines/modular/mechanics/` verify rules, and
+`tests/integration/e2e/` verifies the KB/compiler/modular path. Each engine's
+`runtime/` checks simulator contracts. Statistical parity compares NumPy and
+native with the modular oracle.
 
-The core decision: the statistical six-sigma layer is **not** the primary
-guarantee that individual rules work, and it never can be. Rule-level
-correctness is certified *deterministically*, cheaply and at engine-code
-granularity; the statistical layer is demoted to what it can actually see
-(interaction between rules and joint drift), and every expensive pair must
-justify itself by covering something no deterministic test covers.
+The semantic YAML test runner and NumPy per-operation adapters are retired.
+There is no second semantic authoring or certification system. This change
+does not establish that current mechanics/E2E coverage is complete or that any
+unexecuted tests pass. Structural audits, corpus contracts and evidence records
+remain separate from behavioural proof.
 
 ## Engine test fixtures
 
 Tests are grouped under `tests/engines/{modular,vectorized,native,shared,parity}`;
-KB, construction and integration checks remain under `tests/rules` and retain
+KB, construction and integration checks live under `tests/knowledge`,
+`tests/construction` and `tests/integration`, respectively, and retain
 access to the compiler and source indexes.
 
 `tests/engines/fixtures/compiled-cases.json` stores execution cases; its
@@ -24,16 +26,16 @@ The exporter is `tools/knowledge/export_compiled_cases.py`.
 
 `tests/engines/fixtures/compiled-builds.json` stores compiled fighters keyed by
 the complete `FighterBuild` and normalized root. Load it through
-`tools/verification/compiled_builds.py`; modular tests use the session fixture
-`compiled_builds` and its `fighter(build, root)` callable. Preserve all original
-builder arguments and subsequent transformations. Missing entries fail explicitly.
+`tools/verification/compiled_builds.py`; modular and vectorized tests use the
+session fixture `compiled_builds` and its `fighter(build, root)` callable.
+Preserve all original builder arguments and subsequent transformations. Missing
+entries fail explicitly.
 Regenerate with `python tools/verification/generate_compiled_builds.py --write`;
 the generator preserves existing frozen entries and adds newly captured builds.
 Use a single writer for each generated document.
 
-Deliberate compilation rejections in mixed tests keep the real compiler
-(Khemrian Seduction, Shadow Dances, Knight of Purity and Magic Acorn).
-The vectorized `cripple` exception is tracked in `TODO.md`.
+Deliberate compilation rejections live in `tests/construction/` and keep the
+real compiler; combat assertions stay in the modular mechanics suite.
 No import or file-access blocking instrumentation is required.
 
 These are two independent formats: cases preserve scenario roles and execution
@@ -47,14 +49,14 @@ Snapshot generation preserves existing entries; it does not automatically refres
 frozen results after a KB/compiler change. Review any intended data update explicitly.
 
 A fixture update may read the KB; an ordinary engine test loads the checked-in
-results. `verify`, `parity`, `benchmark` and `calibrate` retain their application
-CLI defaults and may still compile scenarios. Their tests using fixtures do not
+results. `check verify`, `check parity`, `performance benchmark` and
+`performance calibrate` retain their application CLI defaults and may still compile scenarios. Their tests using fixtures do not
 imply those commands have switched to precompiled input.
 
 To smoke-test the connection without a statistical campaign:
 
 ```powershell
-python -u -m pytest tests/engines/vectorized/test_parallel_numpy.py::test_single_batch_samples_are_unchanged_by_the_parallel_path -v --tb=short
+python -u -m pytest tests/engines/vectorized/runtime/test_parallel_numpy.py::test_single_batch_samples_are_unchanged_by_the_parallel_path -v --tb=short
 python -u -m pytest tests/engines/native/test_native_engine.py::test_native_accumulates_counts_across_batches -v --tb=short
 ```
 
@@ -64,18 +66,15 @@ connection for those paths; they do not certify every fixture or pending rule.
 Classify missing keys, bad deserialization and wrong participant bindings as
 preparation defects before interpreting engine output differences.
 
-Migration verification on 2026-10-23: integrated collection found 13,148 tests;
-both workspace typechecks passed. Manual modular/shared runs passed 1,384 tests
-plus the three parallel-oracle tests. Focused NumPy sequential/parallel and native
-batch-accumulation checks each passed using precompiled inputs. These connection
+Migration verification on 2026-10-23: integrated collection completed, both
+workspace typechecks passed, manual modular/shared runs (including the
+parallel-oracle checks) passed, and focused NumPy sequential/parallel and native
+batch-accumulation checks passed using precompiled inputs. These connection
 checks do not certify unimplemented optimized-engine rules.
 
 ## Modular integration closure
 
-The [test classification reference](test-sequence.md) defines the phase
-categories, assignment criteria and execution/repair dependencies, and the
-`test-sequence` launcher implements that Python order. Successful selected
-commands alone do not establish modular closure.
+Successful selected commands alone do not establish modular closure.
 
 As of 2026-10-18, the admitted implementation queue is closed. This is
 implementation disposition, not certification. The register itself is the
@@ -86,9 +85,9 @@ admission/kit corrections have focused evidence; integrated verification
 remains outstanding.
 
 Modular integration closure includes the E2E battery in
-`tests/rules/integration/e2e/`: declared scenarios, coverage inventory and
+`tests/integration/e2e/`: declared scenarios, coverage inventory and
 accepted-evidence non-regression checks. Run it with
-`python -m pytest tests/rules/integration/e2e -q` on the same integrated revision
+`python -m pytest tests/integration/e2e -q` on the same integrated revision
 as the other modular checks. Source-derived authoring and semantic review
 remain separate from execution; static corpus validation alone is insufficient.
 
@@ -96,7 +95,7 @@ The multi-engine certification layers below are subsequent work. Modular closure
 does not include optimized-backend parity, statistical or engine coverage
 campaigns, NumPy/native implementation or optimized-port certification.
 
-1. Run the existing modular, construction, modular semantic and modular E2E
+1. Run the existing modular, construction and modular E2E
    checks together on one integrated revision.
 2. Include the relevant type, generated eligibility bundle, editorial contract
    and CSV conservation checks.
@@ -116,32 +115,33 @@ only missing discriminators for behaviour, limits, consumption, expiry or
 composition. Record unresolved concrete defects in [the backlog](../../TODO.md).
 A genuinely missing source must be identified exactly; do not invent a rule.
 
-## The layers
+## Verification responsibilities
 
-| Layer | Certifies | Artifacts / commands | Cost | Runs when |
-| --- | --- | --- | --- | --- |
-| L0 structure | KB + compiled fighters are well-formed and connected | `verify --structural`, structural contract `tests/rules/integration/specs/structural/` | seconds | every change |
-| L1 per-rule determinism | each rule behaves as written, both engines, exact distributions | semantic specs with scripted dice + exhaustive finite brute force; exact operator checks; native backend where exposed | seconds–minutes | every change |
-| L2 whole-duel determinism | orchestration: acting order, reply phases, stateful timing | round-truncation outcome parity (`parity --truncations`); observed-mode samples | minutes | engine-touching changes |
-| L3 interaction, statistical | joint behaviour of many rules over real archetype duels | 6σ marginal gate; deep archetype matrix; numpy↔native cross at scale | minutes–hours | certification, deep on demand |
-| L4 engine-code coverage | no reachable engine line lacks a deterministic test; the tests can tell engines apart | coverage drift gate; engine mutation catalogue | ~3–10 min | engine-touching changes |
-| L5 process | gates are run, certificates are versioned and reproducible | certificate schema, committed budgets, `--seed` | n/a | every change |
+| Responsibility | Owned checks | What a passing result establishes |
+| --- | --- | --- |
+| KB and construction | `tests/knowledge/`, `tests/construction/`, structural `verify` | Data contracts, admission and compiled representation for the checked inputs. |
+| Modular rules | `tests/engines/modular/mechanics/` | Source-defined consequences and relevant boundaries of the reference implementation. |
+| Connected pipeline | `tests/integration/e2e/` | Configuration, real compilation and observed modular execution agree for the declared scenario. |
+| Simulator operation | Each engine's `runtime/` and shared contracts | Execution, context, reproducibility and lifecycle guarantees. |
+| Optimized-engine equivalence | Statistical parity and truncation scenarios | Observed distributions agree within the declared tolerances and sample limits. |
+| Test infrastructure | Tooling, corpus contracts and coverage checks | The specified measurement/detection mechanism works; no blanket rule certificate. |
 
-L0 is documented in [the KB guide](knowledge-base.md); this document focuses
-on L1–L5.
+Run only the validation authorized for the change. Large batteries and
+certification campaigns are separate work, not an automatic consequence of
+editing a rule.
 
 ## Runtime budget
 
 Equipment and skill eligibility has its own cross-consumer checks:
-`tests/rules/construction/fixtures/eligibility/decisions.json` is exercised by both
+`tests/construction/fixtures/eligibility/decisions.json` is exercised by both
 `tests/applications/warband_manager/domain/shared-eligibility.test.ts` and
-`tests/rules/construction/test_shared_eligibility.py`. The latter runs the
+`tests/construction/test_shared_eligibility.py`. The latter runs the
 actual embedded JavaScript, checks the bundle against a fresh generation,
 parallel calls and recovery after a validation error. `npm run check:eligibility` rebuilds in memory and
 rejects a stale checked-in bundle. Construction and application/UI suites prove
 the adapters' behavior; these checks do not certify a choice's duel effect.
 
-Both CI and `run-ci` include the bundle check and Python transport tests.
+Both CI and `check ci` include the bundle check and Python transport tests.
 
 For phased integration, apply the
 [existing construction boundary](eligibility.md#construction-boundary-for-phased-implementation).
@@ -151,63 +151,52 @@ compiled effect and correct battle behavior require distinct evidence. F035
 classifies historical construction findings against the current implementation;
 it does not require rebuilding the shared module or repeating accepted Web phases.
 
-Run affected deterministic files or node IDs for ordinary changes; the full
-`deterministic` scope is a broader coverage/integration selection. Deep parity, truncation,
-coverage mutation and benchmark matrices are certification jobs for engine
+Run affected deterministic files or node IDs for ordinary changes; broad
+selections such as `tests modular` are not a per-edit default. Deep parity, truncation,
+coverage and benchmark matrices are certification jobs for engine
 changes and releases; use their focused CLI options while developing. The
 commands and current defaults are discoverable through
-`python tools/mordheim-utils.py --help` and the relevant subcommand help.
+`python tools/mordheim-utils.py --help`, the group help and
+`tests <selection> --help`.
 
-## L1 — deterministic per-rule evidence (both engines)
+## Deterministic modular evidence
 
-- The **semantic specifications** (`tests/rules/integration/specs/semantic/`) declare exact dice
-  and decisions and compare the *distribution* the engines induce, computed by
-  exhaustive finite enumeration where the domain is small enough (up to 6⁶
-  rolls per case) — no sampling, no tolerance. Each case is replayed against
-  the modular oracle *and* the vectorized engine with scripted rolls
-  reordered by semantic role.
-- The **exact operator checks** (`_vectorized.py` inventory, run by
-  `test_vectorized_parity_inventory_is_complete_and_exact_checks_pass`) compare
-  the engines field-by-field on small exhaustive domains: hit/wound 11×11,
-  armour across strengths, injury 1..12, attack pools, priority, keyed-dice
-  replay. These checks exercise the **engine's real operators** — the exact
-  checks must drive the engine's own code, not a delegating helper, so a
-  duplicated projection cannot hide untested behavior (see L4).
-- Per-rule evidence is tied to the knowledge inventory. Use
-  `verify --inventory` for current obligations and gaps.
+Mechanics tests state expectations from the written rule, not from engine
+output. Use explicit dice and decisions for local results and short sequences
+for stateful interactions. Cover activation, non-activation, limits, resource
+consumption, expiry and relevant composition in the owning tests.
 
-New rules land here first. This layer is why adding a rule does **not**
-require adding a statistical pair.
+E2E cases exercise actual KB/compiler/modular integration. Their declaration,
+coverage and accepted-evidence checks are useful but not behavioural proof by
+themselves: the scenarios must also be executed successfully.
 
-## L2 — whole-duel orchestration, deterministically
+Structural verification is reached through `check verify` (the application's
+`verify` command). It checks the editorial and execution contracts, validates
+binding contracts and compiles every band profile with its default
+construction. It is a structural gate; the modular mechanics and E2E suites
+own rule behaviour.
 
-Per-rule checks prove each rule fires correctly in isolation; they are weak
-at proving the *duel driver* composes phases in the right order — a defect in
-how phases are sequenced can leave every individual rule green.
+The cross-engine deterministic replay suite was retired; each engine keeps its
+own deterministic replay and operator checks, and optimized engines remain
+compared through the statistical scenarios. These checks are not the retired
+semantic adapter system.
 
-The **round-truncation outcome parity** (`_truncations.py`, CLI
-`parity --truncations`) certifies the outcome distribution at each configured
-horizon on every selected deep-matrix pair: both engines run the pair with
-`maximum_rounds = h` and the three
-outcome rates (first / second / unresolved) must stay inside the same
-six-sigma gate used for full duels. A defect that shifts *when* duels resolve
-pushes one or more horizon rows apart (rows are labelled
-`<scenario>@rounds=<h>`) while the final aggregate marginals still agree —
-exactly the class of divergence the aggregate gate cannot see. The budget is
-controlled by `--truncation-simulations`; the oracle leg is shared per horizon
-and poolable with `--workers`.
+## Simulator and whole-duel checks
 
-**Round-ledger convention.** Resolution round is not an engine-agnostic
-observable: duels resolved by round-start phases (fire, Force-of-Will
-sustain) are attributed to different round numbers by each driver's ledger.
-Outcome *after exactly h rounds* is engine-agnostic — an unresolved duel
-counts as unresolved in both drivers — which is why the truncation sweep
-compares outcomes at each horizon rather than resolution-round histograms.
+Runtime tests distinguish seeded reproducibility, cancellation, batch totals,
+parallel execution and observation. The modular total-only and observed paths
+must agree on the same inputs; their purpose is simulator consistency, not a
+second rule implementation.
+
+`parity --truncations` compares outcome distributions at several round horizons.
+It is a statistical comparison, even when fixed seeds make its runs reproducible.
+It can reveal timing drift hidden by final aggregate totals; it does not replace
+source-derived mechanics expectations.
 
 ## L3 — interaction, statistical, at scale
 
-What remains for statistics is *interaction*: many rules composed over real
-archetype duels, watched for joint drift. The 6σ marginal gate
+Statistics compare optimized-engine behaviour with the modular reference over
+curated archetype duels, covering rule variants and their interactions. The 6σ marginal gate
 (`--level statistical`, `--level deep`) compares first/second/unresolved rates on the
 42-pair archetype matrix (glass cannons, brutes, elites, tanks, parry,
 mechanics like regeneration-vs-fire, ward saves, entangle, the
@@ -230,8 +219,8 @@ Two properties keep this honest:
 - the gate is deterministic in the seed: `--seed` fixes the streams, so a
   failure is reproducible.
 
-A pair belongs in this layer only when it exercises an interaction axis no
-deterministic case covers (see *When to add a pair*).
+Choose pairs for meaningful rule variants, boundaries and interactions, not
+for the Cartesian product of all profiles (see *When to add a pair*).
 
 ### Pair sets and current rule-coverage estimate
 
@@ -254,26 +243,29 @@ WS/Strength bonuses; first-round bonuses; random characteristics; bear hug and
 caught-fire threshold; and mundane-only ward/unmodified natural armour.
 
 This is a statistical interaction estimate, not overall rule correctness or
-Python line coverage. Deterministic semantic cases and operator checks remain
+Python line coverage. Source-derived modular mechanics and E2E assertions remain
 the authority for individual rules. Several probes use benchmark-only
 trait/attack tags because the current catalogue has no legal selectable
 producer; they do not modify the KB or engines. No additional broad matchup
 variants are recommended until a new missing axis is demonstrated.
 
-## L4 — coverage gate and engine mutation
+## L4 — coverage gate
 
-Two gates measure whether the deterministic corpus is *complete enough*,
-which no amount of naming discipline can assert by itself.
+The coverage gate measures whether the deterministic corpus is *complete
+enough*, which no amount of naming discipline can assert by itself.
 
-**Coverage drift gate** (`coverage-gate`). The deterministic suites
+**Coverage drift gate** (`python -m mordheim_combat_lab coverage-gate`, wrapped as
+`check coverage`). The engine and parity smoke suites
 (`tests/engines/modular`, `tests/engines/vectorized`,
-`tests/engines/shared/test_phases.py`, `tests/engines/shared/test_duel_context.py`,
-`tests/engines/shared/test_exact_phases.py`, `tests/engines/shared/test_interactions.py`,
-`tests/engines/parity/test_duel_replay.py`, `tests/engines/parity/test_parity.py`) run under
+`tests/engines/shared/contracts/test_duel_context.py`,
+`tests/engines/native/runtime/test_duel_context.py`,
+`tests/engines/native/runtime/test_duel_replay_native.py`,
+`tests/tooling/parity/test_runner.py`,
+`tests/engines/parity/statistical/test_parity_statistics.py`) run under
 `coverage` and the result is compared against a committed budget
-(`tests/tooling/verification/fixtures/coverage/budget.json`, schema `mordheim-coverage-budget/v1`):
-the engine statements that were exercised when the budget was written (the
-committed file lists every line). The gate **fails when any
+(`tests/tooling/coverage/fixtures/budget.json`, schema `mordheim-coverage-budget/v1`):
+the engine statements that were exercised when the budget was written; the
+committed file records the covered statement lines per module. The gate **fails when any
 budgeted line stops being exercised** — a line became dead code, or its test
 lost the path; both need a decision, not silence. The budget stores raw
 statement line numbers, so moving code can also invalidate indexes. Compare
@@ -284,64 +276,35 @@ and regenerates the reviewed budget.
 
 A measurement is valid only after pytest exits successfully. Failed tests,
 collection/interruption/internal errors, invalid usage and empty collection
-abort measurement. Both budget update entry points preserve their destination
-when measurement fails. The CLI also preserves the destination when a requested
-area floor fails during an update. The umbrella deterministic scope includes the same
-context/replay suites as this gate.
+abort measurement. The CLI preserves its destination when measurement fails,
+and also when a requested area floor fails during an update. The engine
+directories this gate measures are also covered by `tests modular` and
+`tests vectorized`; the parity runner self-check is `tests parity tooling` and
+must be selected separately.
 
 After reviewing source movement and real witness gaps:
 
 ```bash
-python tools/mordheim-utils.py coverage-gate                      # check (drift gate)
-python tools/verification/update-coverage-budget.py                            # regenerate after adding tests
-python tools/mordheim-utils.py coverage-gate --area-floor modular:95 --area-floor vectorized:93
+python tools/mordheim-utils.py check coverage                      # check (drift gate)
+python tools/mordheim-utils.py check coverage --update-budget      # regenerate after adding tests
+python tools/mordheim-utils.py check coverage --area-floor modular:95 --area-floor vectorized:93
 ```
 
 The discipline is code first, deterministic evidence with it, budget
 regenerated in the same change. `--area-floor AREA:PCT` optionally adds a
 percentage floor so a brand-new area cannot start empty.
 
-**Engine mutation harness** (`engine_mutation.py`,
-`tools/verification/mutate-engine.py`). Where the semantic specs mutate *rules* (proving
-the specs detect rule defects), this harness mutates *engine code*: a
-catalogue of single-token defects is applied to a staged copy of
-`mordheim_combat` (the live tree is never touched), the deterministic
-detector suites run against the stage, and the mutant is **killed** when at
-least one test fails. A surviving mutant is a real gap — some reachable
-engine decision has no deterministic test that can tell it apart from the
-oracle — and every survivor is a directive to add one deterministic test,
-**never** a statistical pair.
+## Process and certificates
 
-The catalogue (wound-ramp off-by-one, wound-impossible tail, armour strength
-modifier, injury stun threshold, paired extra attack, hit much-weaker flip)
-is fully killed — every mutant is detected. A survivor is not a bug in the
-harness: it exposes an untested engine decision, and the response is always a
-deterministic test that can tell the two versions apart:
+Keep executed evidence tied to revision, inputs, suites, seeds and sample sizes.
+A successful static check, collection or export is not a passing functional
+result. A skipped native extension is not native execution. An empty admission
+ledger or matching inventory count is not behavioural certification.
 
-```bash
-python tools/verification/mutate-engine.py                 # full catalogue (≈3–5 min)
-python tools/verification/mutate-engine.py --mutant wound-ramp-off-by-one --json   # one mutant
-```
-
-## L5 — process and certificates
-
-- **Every change** touching the engines must leave green: unit suites,
-  semantic specs, deterministic parity inventory, and `coverage-gate` — all
-  of the deterministic suites at once with `tests --scope deterministic`
-  (the same selection the coverage gate measures).
-- **Engine-touching changes** additionally run `parity --truncations` — the
-  `--level` presets of `parity` select the statistical/deep certification
-  tiers, see [Develop and release](../guides/develop-and-release.md) — and,
-  for vectorized/native code, the mutation catalogue.
-- **Deep statistical runs** (`parity --level deep`, hours) are certification
-  runs, executed on demand or before a release — never the default loop.
-  Because L1/L2/L4 already pin each rule and each engine line, the deep layer
-  only watches interaction drift.
-- Certificates are versioned. The parity certificate is schema
-  `mordheim-combat-parity/v2`: it adds the `truncations` block (horizon rows
-  with their own `complete` flag) and records top-level `elapsed_seconds`;
-  statistical/deep rows carry engine-level wall times. Every certificate and
-  budget pins its seed/suites so a reported divergence is reproducible.
+Use focused checks for routine changes, reuse valid results and record unresolved
+concrete defects in `TODO.md`. Run broad statistical/deep certification only when
+explicitly requested. Never refresh a coverage budget, fingerprint or generated
+report merely to hide lost evidence.
 
 ## Renewed statistical scenario battery
 
@@ -355,19 +318,19 @@ other.
 
 ```bash
 # minimal battery (11 prepared cases; execution evidence is separate)
-python -X utf8 tools/mordheim-utils.py parity --profile quick --output outputs/parity/battery-quick.json
+python -X utf8 tools/mordheim-utils.py check parity --profile quick --output outputs/parity/battery-quick.json
 
 # both candidates, per-backend coverage
-python -X utf8 tools/mordheim-utils.py parity --profile complete --backend all --output outputs/parity/battery-complete.json
+python -X utf8 tools/mordheim-utils.py check parity --profile complete --backend all --output outputs/parity/battery-complete.json
 
 # markdown certificate and strict gate
-python -X utf8 tools/mordheim-utils.py parity --profile deep --output outputs/parity/battery-deep.md --require-complete
+python -X utf8 tools/mordheim-utils.py check parity --profile deep --output outputs/parity/battery-deep.md --require-complete
 
 # smaller sample width for calibration, never for acceptance
-python -X utf8 tools/mordheim-utils.py parity --profile quick --rows 256 --output outputs/parity/battery-quick-256.json
+python -X utf8 tools/mordheim-utils.py check parity --profile quick --rows 256 --output outputs/parity/battery-quick-256.json
 
 # 1000 duels per case, up to 10 modular-oracle worker processes
-python -X utf8 tools/mordheim-utils.py parity --profile quick --backend numpy --rows 1000 --workers 10 --output outputs/parity/battery-quick-1000.json
+python -X utf8 tools/mordheim-utils.py check parity --profile quick --backend numpy --rows 1000 --workers 10 --output outputs/parity/battery-quick-1000.json
 ```
 
 `--workers N|auto` also applies to all three profiles. It partitions each
@@ -394,23 +357,23 @@ the profile denominator. It is never executed as a different scenario. The
 certificate lists those limits (`limits`), so a partial run cannot be read as
 complete coverage.
 
-The reviewed catalogue declares 122 cases (11 exclusive to `quick`, 103 to
-`complete`, 8 to `deep`; cumulative 11/114/122). 118 are prepared by static
-reading of the catalogue, the compiler and both consumers; four keep a real
-limit. `c03-petru-potion` needs a campaign-only potion table the KB marks out of
-scope; `v01-restriction` needs a charge the construction rejects before any
-sample exists; and `v14-handler`/`v14-handler-absent` need an engine change: the
-canonical bear-and-tamer build auto-exempts the bear's Stupidity inside the
-handler radius and its Fear test never occurs because the bear itself causes
-Fear, so the handler branch has no test left to lend to. The `deep` profile composes already
-justified situations (fear → charge → parry, leadership → psychology, extra
-attacks → defensive capacity, armour → parry, order → attacks and reactions →
-injury) and adds no new rule material.
+The catalogue in `_battery_cases.py` is the authority on case counts; the
+certificate's `coverage` block reports the declared, prepared, executed and
+approved totals of the run. Profiles are cumulative: `quick` is the small
+regression set, `complete` adds the bulk of the catalogue, and `deep` adds its
+own long-horizon and interaction cases (fear → charge → parry, leadership →
+retest, extra attacks → defensive capacity, armour → parry, order → attacks and
+spines → injury). Two cases keep a real input limit. `c03-petru-potion` needs a
+campaign-only potion table the KB marks out of scope, and `v01-restriction`
+needs a charge the construction rejects before any sample exists. Both remain in
+the profile denominator as `INCOMPATIBLE` with their cause.
 
-`--backend` defaults to `numpy`. `native` never falls back to NumPy: a missing,
-stale or unsupported extension is `NOT_RUN:native-*` and never a comparison.
-`--backend`/`--rows` without `--profile` and `--rows` with `--require-complete`
-are rejected with code 2; the historical route without `--profile` is unchanged.
+`--backend` defaults to `numpy` for a profile. `native` never falls back to
+NumPy: a missing, stale or unsupported extension is `NOT_RUN:native-*` and never
+a comparison. A battery `--backend` is valid only with `--profile`; on the
+historical route it is accepted only with `--level statistical` and no
+`--truncations`. `--rows` requires `--profile` and is rejected together with
+`--require-complete`. These configuration errors exit with code 2.
 
 The certificate is schema `mordheim-combat-parity-battery/v3`. Per case it
 records the stages actually reached — `executed` (both samples obtained),
@@ -449,19 +412,17 @@ with/without-rule contrast over the oracle belongs to the later campaign, and
 `complete`/`accepted` are execution semantics over the required scenarios of the
 profile, not semantic coverage of every internal rule.
 
-## What each layer cannot see (and who covers it)
+## Limits of the evidence
 
-- Sampling noise hides branches rarer than ~10⁻³ even at deep scale → L1 exact
-  enumeration and L2 truncation sweeps cover the deterministic cases; a rule
-  with a genuinely rare branch needs a deterministic case, not more duels.
-- L1 cannot see composition order across rules → L2 truncation rows and L3
-  archetype pairs.
-- L3 marginal rates cannot see *when* duels resolve → L2 truncations.
-- Coverage alone cannot tell a *wrong* line from a *covered* line → L1 exact
-  checks and L4 mutation catalogue.
-- Two engines may share a wrong reading of a rule (oracle included) → L1
-  specs are reviewed against the written sources, never against engine
-  output; see `tests/rules/integration/specs/README.md`.
+Statistical agreement does not prove the source interpretation: modular mechanics
+and E2E expectations must be reviewed against the written rules and adopted
+rulings. Rare branches may require a focused modular test rather than more random
+sampling. Conversely, deterministic modular checks do not prove optimized-engine
+equivalence: the selected statistical scenarios must actually run on both engines.
+
+Coverage records execution paths, not correct answers. Corpus inventory records
+scenario references, not passing scenarios. Keep declarations, preparation,
+execution and acceptance distinct in every report.
 
 ## Why "thousands of pairs" is the wrong lever
 
@@ -486,23 +447,19 @@ of the selected scenario. Prefer material with/without-rule contrasts where
 useful, record sensitivity limits and avoid the Cartesian product of matchups.
 Keep the matrix curated by justified behaviour, without a fixed scenario quota.
 
-## Reports and the interaction matrix
+## Reports
 
-`report tests` writes Excel-friendly CSVs (`outputs/test-report/`);
-`parity` saves versioned certificates (`outputs/parity/`); options, statuses
-and presets are documented in [Develop and release](../guides/develop-and-release.md).
+`check report tests` writes technical test results and, when requested, statistical
+comparison rows under `outputs/test-report/`. It does not run or approve a
+semantic YAML corpus. `check parity` writes versioned statistical certificates under
+`outputs/parity/`; `check report rules` exports structural/planning inventory without
+claiming new semantic verification. Legacy semantic columns in existing CSVs
+are historical fields, not current certificates.
 
-The **interaction matrix** — how every required interaction pair of the
-verification gate is closed — is documented per cluster in the verification
-corpus README (`tests/rules/integration/specs/README.md`): the nine cluster files of
-`tests/rules/integration/specs/semantic/interactions/`, the authoring recipe (one spec per pair
-with composition + boundary cases, strict dice, ≥1 detected mutation) and the
-10 reviewed `illegal` overrides in `tests/rules/integration/specs/interaction-policy.yaml`
-(body-armour × body-armour pairs that can never co-occur in legal
-construction). The matrix is complete — run `python tools/mordheim-utils.py
-verify --inventory` for the live status (required interactions covered,
-pending, divergences); the executable reports are the source of truth, not a
-number written here.
+The retired interaction-specification matrix and its policy file no longer gate
+verification. Rule interactions belong to modular mechanics/E2E and the curated
+statistical scenario catalogue. Adopted decisions remain in
+[design-rulings.md](../decisions/design-rulings.md).
 
 ## Local context and strict engine replay
 
@@ -519,5 +476,7 @@ actual modular, NumPy or compiled native driver with strict, fully consumed dice
 and decisions, then records terminal state/resources. Author each backend's legacy
 physical draw order explicitly; do not assume equal seeds imply equal streams.
 Native replay requires a rebuilt context-aware extension and never falls back.
-The foundation cases live in `tests/engines/parity/test_duel_replay.py`; new
-mechanisms still need source-derived specifications, interactions and mutations.
+The native replay cases live in
+`tests/engines/native/runtime/test_duel_replay_native.py`; new
+mechanisms are specified and checked in modular mechanics/E2E tests, with
+statistical scenarios for optimized-engine comparison.

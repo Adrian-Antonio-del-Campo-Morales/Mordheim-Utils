@@ -110,9 +110,9 @@ def _compiling_names(tree: ast.Module, source: str) -> set[str]:
 
 
 def discover() -> dict[str, list[str]]:
-    """``{file stem: [test names that still prepare through the compiler]}``."""
+    """``{relative module path: [tests still preparing through the compiler]}``."""
     pending: dict[str, list[str]] = {}
-    for path in sorted(MODULAR.glob("test_*.py")):
+    for path in sorted(MODULAR.rglob("test_*.py")):
         source = path.read_text(encoding="utf-8")
         tree = ast.parse(source)
         reaching = _compiling_names(tree, source)
@@ -129,7 +129,7 @@ def discover() -> dict[str, list[str]]:
             ):
                 names.append(node.name)
         if names:
-            pending[path.stem] = names
+            pending[path.relative_to(MODULAR).with_suffix("").as_posix()] = names
     return pending
 
 
@@ -377,7 +377,7 @@ class Precompiled:
 
     def __init__(self, cases, stem, test, parameter_set):
         self.cases = cases
-        self.stem = stem
+        self.stem = Path(stem).name
         self.test = test
         self.parameter_set = parameter_set
 
@@ -399,7 +399,8 @@ def _load_corpus():
 
 def _import_module(stem: str):
     path = MODULAR / f"{stem}.py"
-    spec = importlib.util.spec_from_file_location(f"capture_{stem}", path)
+    module_name = "capture_" + stem.replace("/", "_")
+    spec = importlib.util.spec_from_file_location(module_name, path)
     module = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
@@ -690,12 +691,18 @@ def capture(pending: dict[str, list[str]], frozen: dict[str, dict] | None = None
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--write", action="store_true", help="write the frozen document")
-    parser.add_argument("--file", help="only this test file stem (debugging)")
+    parser.add_argument("--file", help="test file stem or relative module path (debugging)")
     options = parser.parse_args()
 
     pending = discover()
     if options.file:
-        pending = {options.file: pending[options.file]}
+        selected = {
+            name: tests for name, tests in pending.items()
+            if name == options.file or Path(name).name == options.file
+        }
+        if not selected:
+            parser.error(f"no compiling test module matches {options.file!r}")
+        pending = selected
 
     frozen = _existing_entries()
     result = capture(pending, frozen)

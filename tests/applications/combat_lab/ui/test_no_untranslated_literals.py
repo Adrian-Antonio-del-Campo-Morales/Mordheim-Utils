@@ -15,7 +15,6 @@ from pathlib import Path
 import pytest
 
 # The scan protects the visible surface from untranslated prose.
-pytestmark = pytest.mark.phase7_warband
 
 UI_PACKAGES = (
     Path(__file__).resolve().parents[4] / "apps" / "combat-lab" / "mordheim_combat_lab" / "ui",

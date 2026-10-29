@@ -1,4 +1,4 @@
-"""Generation of a human coverage report without modifying KB or specs."""
+"""Editorial inventory and structural audit export without semantic execution."""
 from __future__ import annotations
 
 from csv import DictReader, DictWriter
@@ -6,14 +6,11 @@ from dataclasses import asdict, dataclass, replace
 import json
 from hashlib import sha256
 import re
-from types import SimpleNamespace
 from pathlib import Path
 
 from mordheim_knowledge.loader import knowledge_root, read_yaml
 from mordheim_knowledge.paths import project_root
-from mordheim_combat_lab.verification.audit import verify_semantics
 from mordheim_combat_lab.verification.inventory import binding_key, inventory
-from mordheim_combat_lab.verification.interactions import REQUIREMENT_ORDER, RISK_ORDER
 
 
 @dataclass(frozen=True)
@@ -54,7 +51,7 @@ class AuditRow:
     question_status: str = "none"
     decision_reference: str = ""
     next_action: str = ""
-    audit_mode: str = "semantic"
+    audit_mode: str = "inventory"
     scope_basis: str = "kb"
     scope_category: str = ""
 
@@ -70,32 +67,13 @@ def _source_fields(source: dict | str | None) -> tuple[str, str]:
     return _text(source.get("section")), _text(source.get("url"))
 
 
-def _scenario_evidence(report) -> tuple[dict[str, list[str]], dict[str, list[str]], dict[str, str]]:
-    scenarios: dict[str, list[str]] = {}
-    pending = dict(report.pending)
-    # Fixtures in the result preserve target IDs, while interpretations remain
-    # in the independent source specifications. Rulings are loaded separately
-    # by build_audit_rows to avoid turning runtime output into an oracle.
-    for fixture in report.fixtures:
-        for target in fixture.targets:
-            scenarios.setdefault(target, []).append(fixture.id)
-            errors = getattr(fixture, "errors", ())
-            if errors and target in pending:
-                pending[target] = " | ".join(dict.fromkeys([
-                    pending[target], *(f"{fixture.id}: {error}" for error in errors),
-                ]))
-    interactions: dict[str, list[str]] = {}
-    for pair in report.verified_interactions:
-        for binding in pair:
-            interactions.setdefault(binding, []).append(" + ".join(pair))
-    return scenarios, interactions, pending
-
-
 def build_audit_rows(knowledge: Path | None = None, specs: Path | None = None, *,
                      inventory_only: bool = False) -> tuple[AuditRow, ...]:
-    """Combine the editorial inventory, scope and actually executed evidence."""
-    from mordheim_combat_lab.verification.specifications import load_fixtures
+    """Export editorial structure; legacy semantic columns remain unverified.
 
+    ``specs`` and ``inventory_only`` remain accepted for existing callers. The
+    semantic runner was retired; neither argument can enable its execution.
+    """
     root = Path(knowledge) if knowledge else knowledge_root()
     documents = {}
     covered_nodes = set()
@@ -105,36 +83,10 @@ def build_audit_rows(knowledge: Path | None = None, specs: Path | None = None, *
             documents[path] = read_yaml(path)
         return documents[path]
 
-    report = (SimpleNamespace(obligations=inventory(root), verified=(), fixtures=(),
-                              pending=(), verified_interactions=())
-              if inventory_only else verify_semantics(root, specs))
     shared_path = root / "catalog/rules/special-rules.yaml"
     shared = {rule["id"]: rule for rule in
               (document(shared_path).get("rules", []) if shared_path.exists() else [])}
-    obligations = {item.id: item for item in report.obligations}
-    verified = set(report.verified)
-    scenarios, interactions, pending = _scenario_evidence(report)
-    interpretations: dict[str, list[str]] = {}
-    questions: dict[str, list[str]] = {}
-    rulings: dict[str, list[str]] = {}
-    unresolved_questions: set[str] = set()
-    interaction_risks: dict[str, list] = {}
-    for assessment in getattr(report, "interaction_assessments", ()):
-        for binding in assessment.bindings:
-            interaction_risks.setdefault(binding, []).append(assessment)
-    for fixture in load_fixtures(specs):
-        interpretation = _text(fixture.get("interpretation"))
-        for source in fixture.get("sources", []):
-            if interpretation:
-                interpretations.setdefault(source["target"], []).append(interpretation)
-            target = source["target"]
-            if fixture.get("question"):
-                questions.setdefault(target, []).append(fixture["question"])
-                if not fixture.get("ruling"):
-                    unresolved_questions.add(target)
-            if fixture.get("ruling"):
-                rulings.setdefault(target, []).append(fixture["ruling"])
-
+    obligations = {item.id: item for item in inventory(root)}
     rows: list[AuditRow] = []
 
     def append(*, identifier: str, kind: str, name: str, source_file: str,
@@ -152,48 +104,31 @@ def build_audit_rows(knowledge: Path | None = None, specs: Path | None = None, *
         elif scope != "YES":
             structural, semantic, semantic_reason = "not_applicable", "out_of_scope", reason
         elif obligation is None:
-            structural, semantic = "missing", "not_run" if inventory_only else "pending"
-            semantic_reason = "There is no semantic obligation for this included effect."
+            structural, semantic = "missing", "not_run"
+            semantic_reason = "No structural obligation is linked; semantic verification was retired."
         else:
             structural = "linked" if obligation.binding != "unbound" else "unbound"
-            semantic = "not_run" if inventory_only else ("verified" if identifier in verified else "pending")
-            semantic_reason = ("Semantic verification was not run." if inventory_only else
-                               "" if semantic == "verified" else pending.get(identifier, "Incomplete evidence."))
+            semantic = "not_run"
+            semantic_reason = "Semantic verification was retired; mechanics and E2E tests provide behavioral checks."
         section, url = _source_fields(source)
         review_status = classify_review_status(
             scope=scope, verified=semantic == "verified",
-            needs_ruling=identifier in unresolved_questions,
-            missing_dependencies=bool(not inventory_only and obligation and set(obligation.dependencies) - verified),
+            needs_ruling=False,
+            missing_dependencies=False,
         )
-        assessments = interaction_risks.get(key, []) if scope == "YES" else []
-        if assessments:
-            risk_level = max((item.risk_level for item in assessments), key=RISK_ORDER.__getitem__)
-            requirement = max((item.verification_requirement for item in assessments),
-                              key=REQUIREMENT_ORDER.__getitem__)
-            statuses = sorted({item.status for item in assessments})
-            reasons = sorted({reason for item in assessments for reason in item.risk_reasons})
-            evidence = sorted({evidence for item in assessments for evidence in item.evidence})
-        elif scope == "YES" and inventory_only:
-            risk_level, requirement, statuses, reasons, evidence = "not_assessed", "not_assessed", ["not_run"], [], []
-        elif scope == "YES":
-            risk_level, requirement, statuses, reasons, evidence = "low", "optional", ["independent"], [], []
+        if scope == "YES":
+            risk_level, requirement, statuses = "not_assessed", "not_assessed", ["not_run"]
         else:
-            risk_level, requirement, statuses, reasons, evidence = "not_applicable", "not_applicable", ["not_applicable"], [], []
+            risk_level, requirement, statuses = "not_applicable", "not_applicable", ["not_applicable"]
         rows.append(replace(AuditRow(
             identifier, kind, name, source_file, section, url, scope, reason,
             "UNKNOWN" if scope == "UNCLASSIFIED" else ("YES" if implemented else "NO"),
             key, structural, semantic, semantic_reason,
-            "; ".join(sorted(set(scenarios.get(identifier, [])))),
-            "; ".join(sorted(set(interactions.get(key, [])))),
-            " | ".join(dict.fromkeys(rulings.get(identifier, []))),
-            review_status,
-            " | ".join(dict.fromkeys(questions.get(identifier, []))),
-            " | ".join(dict.fromkeys(interpretations.get(identifier, []))),
-            risk_level, requirement, "; ".join(statuses),
-            "; ".join(reasons), "; ".join(evidence),
+            "", "", "", review_status, "", "",
+            risk_level, requirement, "; ".join(statuses), "", "",
         ), effect_text=effect_text, canonical_id=canonical_id or identifier.rsplit("/", 1)[-1],
            semantic_dependencies="; ".join(obligation.dependencies if obligation else ()),
-           audit_mode="inventory" if inventory_only else "semantic"))
+           audit_mode="inventory"))
 
     scope_doc = document(root / "registry/runtime-scope.yaml")
     exclusions = {row["id"]: row.get("reason", "") for row in scope_doc.get("mechanic_exclusions", [])}

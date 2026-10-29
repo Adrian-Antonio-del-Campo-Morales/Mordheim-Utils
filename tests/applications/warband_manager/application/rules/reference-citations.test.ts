@@ -15,7 +15,7 @@ import { unavailableText } from "@adapters/knowledge-reader/presentation";
 import { resolveLimitCitations } from "@app/rules/reference-citations";
 import { RulesCatalogue } from "@app/rules/rules-catalogue";
 import { WarbandReferences } from "@app/rules/warband-reference";
-import { readArtefactDocument, readArtefactReader } from "../../../../rules/knowledge/support/kb-artefact";
+import { readArtefactDocument, readArtefactReader } from "../../../../knowledge/support/kb-artefact";
 
 const ARTEFACT_PATH = resolve(__dirname, "../../../../../outputs/web-public/knowledge/knowledge-web.json");
 const real = () => readArtefactReader(ARTEFACT_PATH);

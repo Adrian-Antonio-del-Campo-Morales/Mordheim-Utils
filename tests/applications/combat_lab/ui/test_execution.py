@@ -14,7 +14,6 @@ from threading import Event
 # runtime request, including cancellation delivery.
 
 
-@pytest.mark.phase7_warband
 def test_execution_settings_build_a_runtime_request():
     fighter = compile_fighter(FighterBuild("mordheim", Characteristics(3, 3, 3, 1, 3, 1)))
     cancel_event = Event()
@@ -27,13 +26,11 @@ def test_execution_settings_build_a_runtime_request():
 
 
 # The settings object rejects an invalid request shape before it is used.
-@pytest.mark.phase7_warband
 def test_execution_settings_reject_non_positive_runtime_limits():
     with pytest.raises(ValueError):
         DuelExecutionSettings(0, 0, 100, 25)
 
 
-@pytest.mark.phase7_warband
 def test_execution_settings_passes_cancellation_to_the_runtime():
     fighter = compile_fighter(FighterBuild("mordheim", Characteristics(3, 3, 3, 1, 3, 1)))
     cancel_event = Event()

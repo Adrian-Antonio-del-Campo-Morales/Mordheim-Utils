@@ -24,7 +24,7 @@ import { presentationOutput } from "@src/features/campaign/presentation-output";
 import { textNumber } from "@src/features/campaign/presentation-values";
 import { CampaignAppProvider, useCampaignApp } from "@src/features/campaign/useCampaignApp";
 import { ExplorationPanel } from "@src/features/exploration/ExplorationPanel";
-import { readArtefactReader } from "../../../../rules/knowledge/support/kb-artefact";
+import { readArtefactReader } from "../../../../knowledge/support/kb-artefact";
 
 type Locale = "es" | "en";
 

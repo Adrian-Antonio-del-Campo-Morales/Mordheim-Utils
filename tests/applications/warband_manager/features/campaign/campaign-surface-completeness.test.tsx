@@ -22,7 +22,7 @@ import { CampaignSlice } from "@src/features/campaign/CampaignSlice";
 import { createService } from "@src/features/campaign/default-deps";
 import type { CampaignAppService } from "@src/features/campaign/types";
 import { CampaignAppProvider } from "@src/features/campaign/useCampaignApp";
-import { readArtefactReader } from "../../../../rules/knowledge/support/kb-artefact";
+import { readArtefactReader } from "../../../../knowledge/support/kb-artefact";
 
 const adapter = new CampaignFileV5Adapter();
 const knowledge: ArtefactKnowledgeReader = readArtefactReader(

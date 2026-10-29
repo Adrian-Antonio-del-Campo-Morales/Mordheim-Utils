@@ -21,7 +21,7 @@
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
-import { readArtefactDocument } from "../../../rules/knowledge/support/kb-artefact";
+import { readArtefactDocument } from "../../../knowledge/support/kb-artefact";
 
 const GENERATED = "build/generated/knowledge-web";
 

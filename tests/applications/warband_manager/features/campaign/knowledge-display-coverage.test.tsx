@@ -3,7 +3,7 @@ import "@testing-library/jest-dom/vitest";
 import { describe, expect, it } from "vitest";
 
 import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
-import { readArtefactReader } from "../../../../rules/knowledge/support/kb-artefact";
+import { readArtefactReader } from "../../../../knowledge/support/kb-artefact";
 import { knowledgeHintDetails } from "@src/features/campaign/KnowledgeHintDetails";
 import { knowledgeDescription, knowledgeText } from "@src/features/campaign/displayText";
 

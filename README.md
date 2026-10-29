@@ -30,7 +30,7 @@ Combat Lab uses the checked-in eligibility JavaScript through MiniRacer, so it d
 ```powershell
 python -m pip install -e ".[dev]"
 npm ci
-python tools/mordheim-utils.py doctor
+python tools/mordheim-utils.py tests env
 ```
 
 The editable Python install makes the packages in this source checkout importable. `npm ci` installs both npm workspaces from the root lockfile. For Combat Lab alone, omit `npm ci`.
@@ -41,7 +41,7 @@ Generate the browser's knowledge data before the first launch:
 
 ```powershell
 python tools/knowledge/generate_knowledge_web.py
-python tools/mordheim-utils.py campaign-manager
+python tools/mordheim-utils.py app warband-manager
 ```
 
 Open the local URL printed by Vite. To choose a port, append `--port 5199 --strictPort`. Stop the server with `Ctrl+C`.
@@ -51,7 +51,7 @@ Open the local URL printed by Vite. To choose a port, append `--port 5199 --stri
 ### Open Combat Lab
 
 ```powershell
-python tools/mordheim-utils.py combat-lab
+python tools/mordheim-utils.py app combat-lab
 ```
 
 The installed `mordheim-combat-lab` entry point and `python -m mordheim_combat_lab` also expose the application CLI. Use `python -m mordheim_combat_lab --help` to explore its commands.
@@ -64,23 +64,22 @@ The modular engine is the correctness oracle. NumPy and optional native backends
 
 ## Common commands
 
-The source-checkout launcher delegates to application commands and repository tools. Run `python tools/mordheim-utils.py --help` for the full list, or append `--help` to a command for its options.
+The source-checkout launcher is task-oriented: app launchers (`app combat-lab`, `app warband-manager`), test selections (`tests env`, `tests combat-lab`, `tests warband-manager`, `tests modular`, `tests vectorized`, `tests native`, `tests kb`), performance measurements (`performance benchmark`, `performance calibrate`) and checks/reports (`check`). Run `python tools/mordheim-utils.py --help` for the hierarchy, `<group> --help` for a group, or `<selection> <subsection> --help` for one test selection's files and copyable examples.
 
 | Task | Command |
 | --- | --- |
-| Check the local environment | `python tools/mordheim-utils.py doctor` |
-| Validate KB structure | `python tools/mordheim-utils.py verify --structural` |
-| Validate the KB and semantic specifications | `python tools/mordheim-utils.py verify` |
-| Generate the rule inventory | `python tools/mordheim-utils.py report rules` |
-| Generate test reports | `python tools/mordheim-utils.py report tests` |
-| Choose Python test scopes and focused checks | `python tools/mordheim-utils.py tests --help` |
-| Run the original modular E2E corpus | `python tools/mordheim-utils.py tests --scope e2e -q` |
-| Check engine parity | `python tools/mordheim-utils.py parity --require-complete` |
-| Measure local engine optima | `python tools/mordheim-utils.py calibrate` |
-| Run the web presentation checks | `python tools/mordheim-utils.py check-presentation` |
-| Run the local CI validation gates | `python tools/mordheim-utils.py run-ci` |
+| Check the local environment | `python tools/mordheim-utils.py tests env` |
+| Validate KB structure and connections | `python tools/mordheim-utils.py check verify` |
+| Generate the rule inventory | `python tools/mordheim-utils.py check report rules` |
+| Generate test reports | `python tools/mordheim-utils.py check report tests` |
+| Choose test selections and focused checks | `python tools/mordheim-utils.py tests --help` |
+| Run the original modular E2E corpus | `python tools/mordheim-utils.py tests kb e2e -q` |
+| Check engine parity | `python tools/mordheim-utils.py check parity --require-complete` |
+| Measure local engine optima | `python tools/mordheim-utils.py performance calibrate` |
+| Run the web presentation checks | `python tools/mordheim-utils.py check presentation` |
+| Run the local CI validation gates | `python tools/mordheim-utils.py check ci` |
 
-Reports and local working artefacts belong under ignored `outputs/`. Copyable examples for file/node selections, worker counts, phase filters, saved reports and workspace checks are in the [command recipes](docs/reference/tools.md#command-recipes-and-configuration).
+Reports and local working artefacts belong under ignored `outputs/`. Copyable examples for file/node selections, worker counts, name filters, saved reports and workspace checks are in the [launcher reference](docs/reference/tools.md#command-groups).
 
 ## Development
 
@@ -106,11 +105,19 @@ Unlike browser assets, the generated `_eligibility.js` is versioned and must be 
 
 ### Checks and web build
 
-Choose checks for the area you changed. Python scopes follow responsibilities: `modular`, `vectorized`, `native`, `shared`, `parity`, `rules`, `applications` and `tooling`; narrower legacy scopes such as `construction` and `knowledge` remain available. Use `tests --help` for exact selections. Extra pytest arguments are forwarded; use direct pytest paths/node IDs for an exact file selection rather than adding a path to a broad scope.
+Choose a named selection from the test tree: `tests modular mechanics`, `tests kb e2e`, `tests kb construction` or `tests parity tooling`. Use `tests --list` to list every test file without importing it (Python and JavaScript/TypeScript); `<selection> --list` lists only the languages that selection's runner executes. `tests --help` shows the hierarchy. Vitest runs through `tests warband-manager web` or `tests tooling web`. No arguments displays help, and an explicit file, directory or pytest node ID replaces the selection's own paths; options are forwarded to the selected runner unchanged.
 
-Engine suites load versioned inputs from `tests/engines/fixtures/` through the existing loaders and conftest fixtures. Normal test runs do not regenerate them. The original E2E corpus remains in `tests/rules/integration/e2e/`; rules, construction and E2E tests retain their compiler/KB workflow, as do documented compilation-rejection exceptions. Fixture loading is separate from whether an optimized engine implements every rule. See [engine test fixtures](docs/reference/verification.md#engine-test-fixtures).
+Cross-cutting suites keep their own selections: `tests parity` (statistical comparisons and the tools that check them), `tests shared` (engine contracts and frozen inputs) and `tests tooling` (architecture, launcher and coverage checks).
 
-For routine edits, run only affected checks. Reserve `--scope all`, `deterministic`, `engines`, `run-ci` and statistical parity campaigns for explicitly broader validation. Parallelize independent focused pytest selections with `-n 2 --dist=load`; keep inner process-pool tests serial. For ordered phases use `test-sequence --workers N`, without raw xdist flags.
+Engine suites load versioned inputs from `tests/engines/fixtures/` through the existing loaders and conftest fixtures. Normal test runs do not regenerate them. The original E2E corpus remains in `tests/integration/e2e/`; rules, construction and E2E tests retain their compiler/KB workflow, as do documented compilation-rejection exceptions. Fixture loading is separate from whether an optimized engine implements every rule. See [engine test fixtures](docs/reference/verification.md#engine-test-fixtures).
+
+Modular tests are separated into `tests/engines/modular/mechanics` for game-rule
+application and `tests/engines/modular/runtime` for simulator structure and
+execution contracts. `tests modular` includes both; choose `mechanics` or `runtime` to narrow it.
+Knowledge declarations and bindings live in `tests/knowledge/combat`,
+and real compilation and eligibility checks in `tests/construction`.
+
+For routine edits, run only affected checks. Reserve `tests modular`, `tests vectorized`, `check ci` and statistical parity campaigns for explicitly broader validation. Parallelize independent focused pytest selections with `-n 8 --dist=load`; keep inner process-pool tests serial.
 
 Run npm commands from the repository root after generating the browser knowledge data:
 
@@ -123,7 +130,7 @@ npm run build
 
 `npm test` runs the TypeScript package and web suites. `npm run lint` includes the presentation gate; `npm run build` typechecks and builds the web application into `apps/warband-manager-web/dist/`.
 
-See [Test classification and execution order](docs/reference/test-sequence.md) for the phase categories and repair order, and [Develop and release](docs/guides/develop-and-release.md) for release checks, coverage, mutation testing, benchmarks and calibration. Expensive parity and certification runs are separate from the focused edit loop.
+See [Tools and launcher](docs/reference/tools.md#selections) for test selection and runner argument forwarding, and [Develop and release](docs/guides/develop-and-release.md) for release checks, coverage, benchmarks and calibration. Expensive parity and certification runs are separate from the focused edit loop.
 
 ## Repository layout
 
@@ -136,9 +143,9 @@ See [Test classification and execution order](docs/reference/test-sequence.md) f
 | `sources/knowledge/` | Canonical YAML knowledge base |
 | `contracts/` | Campaign-file and knowledge editorial schemas |
 | `tests/engines/` | Modular, NumPy, native, shared and parity tests; versioned precompiled fixtures |
-| `tests/rules/` | KB, construction and integration tests, including original E2E and semantic corpora |
+| `tests/knowledge/`, `tests/construction/`, `tests/integration/` | KB, construction and integration tests, including the original E2E corpus |
 | `tests/applications/` | Combat Lab and Warband Manager tests across languages |
-| `tests/tooling/` | Launcher, architecture, evidence, verification and web-tool checks |
+| `tests/tooling/` | Launcher, architecture, coverage and parity tooling checks |
 | `tools/` | Launcher, knowledge generation, verification, web checks and Windows packaging |
 | `docs/` | References, guides, design decisions and backlog |
 

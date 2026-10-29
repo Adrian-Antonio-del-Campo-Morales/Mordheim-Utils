@@ -84,17 +84,6 @@ creation price. Use `price_override` only when the warband source explicitly
 states a market-price exception; pairs, discounts and variable costs use
 structured `purchase_options`.
 
-Review differences with:
-
-```powershell
-python tools/knowledge/maintenance/price-collation.py
-```
-
-The generated report under `outputs/knowledge/` is the live review queue.
-Reviewed non-exceptions belong in
-`tools/knowledge/maintenance/price-collation-resolutions.csv`; do not copy
-counts or queue contents into documentation.
-
 ## Adding campaign knowledge
 
 1. Add or update the canonical YAML and its source references. Leave

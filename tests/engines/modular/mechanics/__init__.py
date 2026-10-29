@@ -1,0 +1,1 @@
+"""Modular game-rule checks."""

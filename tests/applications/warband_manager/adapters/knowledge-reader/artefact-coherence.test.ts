@@ -18,7 +18,7 @@
 import { describe, expect, it } from "vitest";
 import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { readArtefactDocument } from "../../../../rules/knowledge/support/kb-artefact";
+import { readArtefactDocument } from "../../../../knowledge/support/kb-artefact";
 
 const ARTEFACT_PATH = fileURLToPath(
   new URL("../../../../../outputs/web-public/knowledge/knowledge-web.json", import.meta.url),

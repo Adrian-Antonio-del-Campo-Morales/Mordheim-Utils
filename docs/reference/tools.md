@@ -8,188 +8,383 @@ Specialized scripts are grouped by purpose, not language or caller.
 
 | Tool | Purpose |
 |---|---|
-| `tools/mordheim-utils.py` | Launch applications and centralize tests, local CI, verification, reports, benchmarks, parity and diagnostics. |
+| `tools/mordheim-utils.py` | Launch applications and centralize tests, checks, performance measurements, reports and diagnostics. |
 
-The [test classification reference](test-sequence.md) defines the phase
-categories and their dependency order. `test-sequence` executes Python in that
-order; the TypeScript/web suites select the same categories through native
-Vitest projects from their own commands.
+## Command groups
 
-## Selecting tests with the launcher
+The launcher has four groups. Commands live below them, with named
+subsections where a group has several maintained selections. No arguments
+prints the hierarchy; nothing starts a broad run by accident.
 
-Run commands from the repository root. `tests --help` lists the actual scope
-paths without collecting tests; `tests -- --help` displays pytest's options.
-The launcher prepares Python package paths and forwards pytest's exit status.
+```powershell
+python tools/mordheim-utils.py --help
+python tools/mordheim-utils.py app --help
+python tools/mordheim-utils.py tests --help
+python tools/mordheim-utils.py performance --help
+python tools/mordheim-utils.py check --help
+```
 
-| Scope | Selection |
+| Group | Purpose |
 |---|---|
-| `modular`, `vectorized`, `native`, `shared`, `parity` | The corresponding directory under `tests/engines/`; parity also includes its benchmark tests |
-| `engines` | All five engine suites, including parity and benchmark checks |
-| `rules` | Knowledge, construction and integration, including E2E |
-| `knowledge` | `tests/rules/knowledge` and declarative integration specs |
-| `construction`, `e2e` | `tests/rules/construction` or `tests/rules/integration/e2e` |
-| `applications` | All Python application tests; Vitest is run separately |
-| `tooling`, `architecture` | All Python tooling tests, or only tooling architecture |
-| `ui` | Combat Lab UI checks |
-| `cli` | Launcher, Combat Lab CLI and parity benchmark checks |
-| `verification` | Parity, verification tooling and semantic/structural integration runners |
-| `deterministic` | Broad modular/vectorized/shared/replay/parity selection used by the coverage workflow |
-| `all` (default) | The complete `tests/` Python selection |
+| `app` | Open the desktop Combat Lab or start the Campaign Manager dev server. |
+| `tests` | Run a named pytest/Vitest selection or the environment diagnostics. |
+| `performance` | Measure engine execution and this machine's optima. |
+| `check` | Validate, measure or generate artefacts: verification, reports, parity, coverage, presentation and local CI. |
 
-Scopes select paths, not an engine backend or a phase. They may overlap and do
-not run prerequisites. In particular, `deterministic` is a broad selection, not
-a promise of a fast or passing optimized-engine run. Full campaigns are not a
-routine prerequisite for editing a fixture or moving a test.
+```powershell
+# Independent examples, not a sequence
+python tools/mordheim-utils.py app combat-lab
+python tools/mordheim-utils.py app warband-manager --port 5199 --strictPort
+python tools/mordheim-utils.py tests modular mechanics -n 8 --dist=load -q
+python tools/mordheim-utils.py tests modular runtime -q
+python tools/mordheim-utils.py tests kb -n 8 --dist=load -q
+python tools/mordheim-utils.py performance benchmark --scenario basic --simulations 1000 --repeats 3
+python tools/mordheim-utils.py performance calibrate --pairs mini --no-install
+python tools/mordheim-utils.py check verify --json
+python tools/mordheim-utils.py check report rules --output outputs/audit
+python tools/mordheim-utils.py check parity --profile quick --require-complete
+python tools/mordheim-utils.py check coverage --json
+python tools/mordheim-utils.py check presentation
+python tools/mordheim-utils.py check ci
+```
+
+Use `<group> <command> --help` for what a command executes and which parser owns
+its options. Measurement, audit and report commands may run tests, simulations
+or write outputs; displaying help executes none of them.
+
+## App launchers
+
+```powershell
+python tools/mordheim-utils.py app combat-lab
+python tools/mordheim-utils.py app warband-manager [vite args ...]
+```
+
+`app combat-lab` runs `python -m mordheim_combat_lab ui` (Tkinter) and takes no
+arguments. `app warband-manager` runs `npm run dev` in
+`apps/warband-manager-web` and forwards its arguments to Vite.
+
+## Help at each level
+
+The main help is a short command map. Use the next level for the actual
+selection, useful options, side effects and copyable examples:
+
+```powershell
+python tools/mordheim-utils.py -h
+python tools/mordheim-utils.py tests -h
+python tools/mordheim-utils.py tests modular -h
+python tools/mordheim-utils.py tests modular mechanics -h
+python tools/mordheim-utils.py check parity -h
+python tools/mordheim-utils.py performance benchmark -h
+python tools/mordheim-utils.py check report tests -h
+```
+
+For the complete underlying application options, use `--help-full` on a
+performance command, `check verify`, `check parity`, `check coverage` or a
+report kind. This opens its parser help, not a measurement or test campaign:
+
+```powershell
+python tools/mordheim-utils.py performance benchmark --help-full
+python tools/mordheim-utils.py check parity --help-full
+python tools/mordheim-utils.py check report rules --help-full
+```
+
+For pytest's own help, pass it after the separator:
+
+```powershell
+python tools/mordheim-utils.py tests modular mechanics -- --help
+```
+
+`--list` reads file names only. `--collect-only` imports test modules and
+collects cases but does not execute bodies. Eight-worker examples are intended
+for independent tests; runtime tests with inner pools remain serial.
+
+## Tests: purpose and selection
+
+The testing strategy has three complementary layers:
+
+- **Modular mechanics:** check game rules directly in the reference engine,
+  where failures are easiest to isolate and debug.
+- **Source-backed integration:** knowledge contracts, construction tests and
+  E2E scenarios check the KB -> compiler -> modular combat path.
+- **Statistical parity:** compare NumPy/native result distributions with the
+  modular reference. The deterministic cross-engine replay suite was removed.
+
+Each engine also has runtime checks for execution, observations, state,
+reproducibility and parallelism. Counts-only and observed modular simulation
+both remain useful. Shared tests protect common contracts and frozen inputs;
+tooling tests protect the comparators and execution infrastructure. Application
+behavior is tested separately. These layers are complementary: selecting one
+layer does not order or imply the others.
+
+### Selections
+
+The hierarchy mirrors the launcher: **app launchers** (`combat-lab`,
+`warband-manager`), **tests** (`env`, `combat-lab`, `warband-manager`,
+`modular`, `vectorized`, `native`, `kb`) and **performance** (`benchmark`,
+`calibrate`). Three cross-cutting test selections keep the integrity suites
+reachable without forcing them into those categories: `parity` (statistical
+comparisons and their tooling), `shared` (common engine contracts and frozen
+inputs) and `tooling` (architecture, launcher and coverage checks).
+
+Each test selection maps to maintained paths. Run `tests <selection> --help`
+for its files, its subsections and copyable examples, or
+`tests <selection> <subsection> --help` for one subsection.
+
+| Selection | Subsection | Runs |
+|---|---|---|
+| `env` | none | Environment, dependency and engine diagnostics in process (`tests env`), not a test suite. |
+| `combat-lab` | none | `pytest tests/applications/combat_lab`. |
+| `warband-manager` | `python` | `pytest tests/applications/warband_manager`. |
+| `warband-manager` | `web` | Vitest in `packages/typescript` and `apps/warband-manager-web`. |
+| `modular` | `mechanics` | `pytest tests/engines/modular/mechanics`. |
+| `modular` | `runtime` | `pytest tests/engines/modular/runtime`. |
+| `vectorized` | `mechanics` | `pytest tests/engines/vectorized/mechanics`. |
+| `vectorized` | `runtime` | `pytest tests/engines/vectorized/runtime`. |
+| `native` | `runtime` | `pytest tests/engines/native/runtime` (the bare selection also runs `tests/engines/native/test_native_engine.py`). |
+| `kb` | none | `pytest tests/knowledge`. |
+| `kb` | `construction` | `pytest tests/construction`. |
+| `kb` | `e2e` | `pytest tests/integration/e2e`. |
+| `parity` | `statistical` | `pytest tests/engines/parity/statistical`. |
+| `parity` | `tooling` | `pytest tests/tooling/parity`. |
+| `shared` | none | `pytest tests/engines/shared`. |
+| `tooling` | `architecture` | `pytest tests/tooling/architecture`. |
+| `tooling` | `web` | Vitest `architecture` project in both workspaces (purity and web boundaries). |
+| `tooling` | `launcher` | `pytest tests/tooling/launcher`. |
+| `tooling` | `coverage` | `pytest tests/tooling/coverage`. |
+
+Selection rules:
+
+- A bare selection runs what its help says. `tests modular` runs mechanics and
+  runtime; `tests tooling` runs architecture, launcher and coverage;
+  `tests parity` runs statistical and tooling.
+- `tests kb` runs the **knowledge** suite only; there is no `knowledge`
+  subsection alias. Construction and E2E are large batteries and stay separate
+  selections instead of being bundled silently.
+- `tests warband-manager` has no shared default: pytest and Vitest do not accept
+  the same options, so choose `python` or `web`.
+- Several subsections can be named together: `tests modular mechanics runtime`.
+- `tests env` is the diagnostics entry point: it runs in process and takes no
+  runner options. There is no separate `doctor` command.
 
 ```powershell
 python tools/mordheim-utils.py tests --help
-python tools/mordheim-utils.py tests --scope shared --collect-only -q
-python tools/mordheim-utils.py tests --scope modular -k selected_test -q
-python -u -m pytest tests/engines/native/test_native_engine.py::test_native_accumulates_counts_across_batches -v --tb=short
-python tools/mordheim-utils.py test-sequence --scope modular --workers 2 -q --output outputs/test-runs/modular.txt
+python tools/mordheim-utils.py tests modular --help
+python tools/mordheim-utils.py tests modular mechanics --help
+python tools/mordheim-utils.py tests kb e2e --help
+python tools/mordheim-utils.py tests kb --list
+python tools/mordheim-utils.py tests kb e2e -q
+python tools/mordheim-utils.py tests modular mechanics -n 8 --dist=load -q
+python tools/mordheim-utils.py tests modular runtime -q
 ```
 
-For a specific file or node ID, call pytest directly: appending a path after
-`--scope` adds to the scope selection, rather than replacing it. Use
-`-n 2 --dist=load` for independent focused checks, without nested process pools.
-Run process-pool and timing-sensitive tests serially; collection stays serial.
-For phase ordering use `test-sequence --workers N`, never raw `-n`/`--dist`.
-Vitest already parallelizes files; limit selected workspace runs with
-`--maxWorkers=2` while other work is active. Keep output visible and reuse valid
-results instead of repeating large selections.
+### Listing, collection and filtering
 
-### Command recipes and configuration
-
-All examples below run from the repository root in PowerShell. Choose one
-selection for the work at hand; this is a menu, not a checklist to run in full.
-
-**Inspect or collect without executing test bodies.** Collection still imports
-modules and loads data; E2E/semantic collection can be substantial.
+- `tests --list` prints every Python and Vitest test file on disk without
+  importing anything. `<selection> --list` narrows it to that selection and to
+  the languages its runner can execute (pytest selections list `.py` files,
+  Vitest selections list `.test.ts`/`.test.tsx`/`.test.mjs` files); it does not
+  apply a runner's include/exclude rules.
+- `--collect-only` asks pytest to import modules, load fixtures and collect
+  actual cases, without running their bodies. Keep it serial.
+- `-k` filters Python test names; `file.py::function[param]` selects a precise
+  Python case; quote parameterized node IDs in the shell.
+- An explicit file, directory or node ID **replaces** the selection's paths, so
+  no unrelated suite is appended. Everything after `--` goes to the runner
+  unchanged.
+- Vitest positional arguments are filename filters; use the workspace project
+  names (`--project architecture|web|packaging|typescript|knowledge-parity`)
+  when a project selection is clearer.
 
 ```powershell
-python tools/mordheim-utils.py tests --help
-python tools/mordheim-utils.py test-sequence --steps
-python -u -m pytest tests/engines/shared/test_kernel_plan.py --collect-only -q
-python tools/mordheim-utils.py tests --scope e2e --collect-only -q
+python tools/mordheim-utils.py tests --list
+python tools/mordheim-utils.py tests tooling --list
+python tools/mordheim-utils.py tests modular mechanics --collect-only -q
+python tools/mordheim-utils.py tests modular mechanics -k leadership -n 8 --dist=load -q
+python tools/mordheim-utils.py tests parity statistical -q
+python tools/mordheim-utils.py tests shared tests/engines/shared/fixtures/test_precompiled_catalog.py::test_suite_scenarios_are_admitted_by_the_frozen_corpus -q
+python tools/mordheim-utils.py tests modular mechanics tests/engines/modular/mechanics/test_abdul_eye_pendant.py -q
 ```
 
-**One file, a named test, or a filtered component.** A pytest node ID has the
-form `path.py::function`; quote the whole node ID when selecting a parameter
-such as `path.py::function[parameter-id]`.
+### Python versus Vitest
+
+Python/pytest is the default for selections that have Python tests.
+JavaScript/TypeScript tests share the repository test tree, so choose the
+language explicitly with the subsection: `warband-manager python|web` and
+`tooling architecture|web`. The launcher converts repository test paths to
+workspace-relative filters for Vitest; the workspace configuration keeps its
+includes, exclusions and project boundaries. Do not pass Python node IDs to
+Vitest.
 
 ```powershell
-python -u -m pytest tests/engines/shared/test_kernel_plan.py -q --tb=short
-python -u -m pytest tests/engines/native/test_native_engine.py::test_native_accumulates_counts_across_batches -v --durations=5 --tb=short
-python tools/mordheim-utils.py tests --scope modular -k "leadership and not parallel" -q --tb=short
-python tools/mordheim-utils.py tests --scope construction -m phase2_construction -q --tb=short
+python tools/mordheim-utils.py tests warband-manager python -n 8 --dist=load -q
+python tools/mordheim-utils.py tests warband-manager web --maxWorkers=8
+python tools/mordheim-utils.py tests tooling web --maxWorkers=8
+python tools/mordheim-utils.py tests warband-manager web -t "display" --maxWorkers=8
 ```
 
-`-k` matches names; `-m` matches category markers. Neither guarantees a nonempty
-selection. Pytest exit code 5 means no tests were collected, not a successful
-validation. `--scope modular` selects test files; it is not a backend override
-for individual mixed tests.
+### Execution options and limits
 
-**Independent checks with two workers.** This example runs only the two named
-files. Increase to four workers for an integrated run when resources are free;
-avoid `-n auto` and concurrent writers to shared generated data.
-
-```powershell
-python -u -m pytest tests/engines/shared/test_kernel_plan.py tests/tooling/launcher/test_umbrella.py -n 2 --dist=load -q --durations=10 --tb=short
-```
-
-**Inner process pools stay serial at the pytest level.** These existing tests
-load frozen inputs and exercise the NumPy or native path. Run them separately,
-without `-n`; do not multiply internal workers by xdist workers.
-
-```powershell
-python -u -m pytest tests/engines/vectorized/test_parallel_numpy.py::test_single_batch_samples_are_unchanged_by_the_parallel_path -v --durations=5 --tb=short
-python -u -m pytest tests/engines/modular/test_parallel_oracle.py -q --durations=5 --tb=short
-```
-
-**Selected phases and saved output.** `--step 2` executes only construction;
-it does not run phases 0 and 1 first. `--workers 2` parallelizes within a phase
-and waits for it to finish before starting the next selected phase. Reports
-remain visible and are stored under ignored `outputs/`.
-
-```powershell
-python tools/mordheim-utils.py test-sequence --step 2 --scope construction --workers 2 -q --output outputs/test-runs/construction.txt
-python tools/mordheim-utils.py test-sequence --scope modular --sequence-plan -qq
-python tools/mordheim-utils.py test-sequence --scope modular --workers 2 -q --output outputs/test-runs/modular.txt
-```
-
-Do not add `-n` or `--dist` to these commands. `--sequence-plan` is serial and
-collects without running bodies; `--steps` is the fast static list.
-
-| Option | Purpose / limit |
+| Option | Meaning |
 |---|---|
-| `-q` / `-v` | Compact output / individual test outcomes, including skips |
-| `--tb=short` | Short failure tracebacks without hiding the failure |
-| `--durations=10` | Show the ten slowest setup/call/teardown durations |
-| `-n 2 --dist=load` | Raw pytest: distribute independent tests across two workers |
-| `--workers 2` | `test-sequence` only: preserve barriers between phase sessions |
-| `-x` / `--maxfail=3` | Explicit early stop after one / three failures; default continues |
-| `--lf` | Rerun last failures from local pytest cache; not a complete selection or certification |
-| `--collect-only` | Discover/import tests without executing their bodies; keep serial |
-| `--output PATH` | `test-sequence` only: overwrite a UTF-8 combined-output report and preserve exit status |
+| `--list` | List test files without imports or case collection |
+| `--collect-only` | Pytest case collection, with imports and fixture data loading |
+| `-k expression` | Filter Python names/node IDs |
+| `-n 8 --dist=load` | Eight pytest workers for independent checks |
+| `--maxWorkers=8` | Eight Vitest workers |
+| `-t pattern` | Vitest test-name filter |
+| `-q` / `-v`, `--tb=short`, `--durations=10` | Python output and failure diagnostics |
+| `-x` / `--maxfail=3`, `--lf` | Python early stopping or cached failures |
 
-**TypeScript/web selections and project configuration.** npm runs in the chosen
-workspace; file filters below are relative to that workspace. Vitest already
-parallelizes files. `--project` selects a configured project, not a Python scope.
+Eight workers are examples, not forced defaults. Keep collection, internal
+process-pool tests, shared writers and timing-sensitive measurements serial.
+Do not multiply inner workers by xdist workers. A skip does not prove native
+execution; exit code 5 means an empty Python selection. Listing/collection and
+runner self-checks do not certify rule behavior or statistical equivalence.
+
+| Command | Parallel option |
+|---|---|
+| `tests` / direct pytest | `-n 8 --dist=load` for independent tests |
+| Vitest via npm | `--maxWorkers=8`; file parallelism is already built in |
+| `check parity` | `--workers 8` for modular-reference sampling; `--workers auto` uses the runner's automatic policy |
+| `check report tests --statistical` | `--workers 8` for its statistical reference samples |
+| `performance benchmark` | `--processes 8` for explicit multicore measurements |
+| `performance calibrate` | Already measures worker configurations; no extra worker option |
+| `tests env`, `check verify`, `check report rules`, `check coverage`, `check presentation`, `check ci`, `app` | No worker-count option exposed by these entries; do not append unsupported flags |
+
+Keep `tests parity statistical` serial: its cases run their own modular-oracle sampling, so an outer xdist pool multiplies workers and distorts the comparison.
+
+For time-to-solution measurements, the benchmark command can compare strategies:
 
 ```powershell
-npm run typecheck --workspace campaign-web-core
-npm run typecheck --workspace warband-manager-web
-npm test --workspace campaign-web-core -- ../../tests/applications/warband_manager/domain/shared-eligibility-reconciliation.test.ts --maxWorkers=2
-npm test --workspace campaign-web-core -- --project phase0_preflight --maxWorkers=2
-npm test --workspace warband-manager-web -- --project phase0_preflight --maxWorkers=2
+python tools/mordheim-utils.py performance benchmark --tts --pair-set mini --backend numpy --strategies "sequential,processes=8,parallel=8"
 ```
 
-The package projects are `phase0_preflight`, `phase1_kb_contracts` and
-`phase7_warband`; the web projects are `phase0_preflight`, `phase7_warband` and
-`packaging`. Web packaging checks need their generated/build assets; choosing a
-project does not build them. Use `npm run build` before selecting post-build
-bundle checks. Ordinary web/KB checks may also need
-`python tools/knowledge/generate_knowledge_web.py`.
+Keep benchmark measurements isolated from other workloads. Do not wrap parity
+or benchmarks in xdist, and do not add `-n` to tests that create inner process
+pools. Broad engine selections may include those tests, so their unfiltered
+examples stay serial. Collection and typechecks are not accelerated by xdist.
 
-**Maintain build snapshots only when inputs are missing or intentionally
-changed.** Ordinary test runs do not need these commands. Capture can read the
-KB and compile missing configurations even without `--write`; it is not a
-read-only check of the frozen document. `--file` takes a test file stem.
+### Inputs and catalogues
+
+Engine tests load checked-in `compiled-cases.json` and `compiled-builds.json`
+under `tests/engines/fixtures/`. Their loaders and conftest fixtures are required;
+ordinary execution does not regenerate inputs or fall back to compilation when
+a frozen input is missing. Knowledge, construction and E2E tests retain their
+source-backed preparation.
+
+- `precompiled_catalog.py` groups the five benchmark definitions and the
+  42 deep definitions and resolves their existing frozen keys. The historical
+  groups are data selections, not independent runners.
+- `battery_catalogue.py` and `battery_keys.py` describe build-based battery
+  cases, variants and intended clause coverage. Their preparation still requires
+  compilation; these are not additional precompiled inputs.
+- `run_parity` is the unified statistical runner; round horizons, sample budgets
+  and escalation are configuration, not separate execution systems.
+
+Do not regenerate frozen inputs merely to move tests or change imports. To
+maintain build snapshots explicitly, use the existing capture/publish workflow:
 
 ```powershell
 python tools/verification/generate_compiled_builds.py --help
-python tools/verification/generate_compiled_builds.py --file test_leadership_providers
-python tools/verification/generate_compiled_builds.py --file test_leadership_providers --write
 ```
 
-The second command captures preparations and writes its diagnostic report under
-`outputs/`, without publishing the snapshot. The third publishes to
-`tests/engines/fixtures/compiled-builds.json`, retaining the union of existing
-frozen entries. Use one writer and inspect the diff; neither command refreshes
-all existing fighters against a changed KB automatically. `compiled-cases.json`
-uses the separate `export_cases(...)` API and its manifest; do not pass it to
-the build-snapshot generator.
+Review the intended inputs and diff before publishing. `compiled-cases.json`
+uses the separate `tools/knowledge/export_compiled_cases.py` API; it is not an
+input to the build-snapshot generator.
 
-### Precompiled inputs and source-backed integration
+### TypeScript and web
 
-Engine execution tests load `compiled-cases.json` and `compiled-builds.json`
-from `tests/engines/fixtures/`; their loaders and conftest fixtures are required
-as well. Existing test runs need no regeneration. See the
-[fixture workflow](verification.md#engine-test-fixtures) for maintenance and
-explicit compiler exceptions. Construction/KB/E2E checks remain under
-`tests/rules/` and continue to test the original source-backed path.
+Vitest runs separately in its npm workspaces. The package projects are
+`architecture`, `knowledge-parity` and `typescript`; the web projects are
+`architecture`, `web` and `packaging`. These are project-defined filters, not
+launcher selections. Asset-dependent packaging checks require their build inputs.
+`tests warband-manager web` runs every project in both workspaces, including the
+TypeScript `knowledge-parity` vectors; `tests tooling web` selects only the two
+`architecture` projects.
 
-A successful connection check proves that a frozen input reaches the selected
-backend. It does not establish support for pending rules or statistical parity.
-Missing snapshots, invalid fixtures and broken paths are preparation defects;
-wrong results and explicitly unsupported mechanics need separate engine triage.
-Native skips are not execution evidence.
+```powershell
+python tools/mordheim-utils.py tests tooling web --maxWorkers=8
+python tools/mordheim-utils.py tests warband-manager web --project web --maxWorkers=8
+```
 
-`verify`, `parity`, `benchmark` and `calibrate` delegate to their own application
-commands. Migrating their pytest tests to frozen inputs does not change the
-CLI's default preparation: those commands may still compile against the KB.
-Consult each command's help before a campaign; there is no launcher switch that
-makes all commands read precompiled fixtures.
+Vitest already parallelizes files. Do not add another parallel runner inside
+individual tests. The pytest targets do not change application preparation or
+select a CLI backend.
+
+## Performance
+
+`performance benchmark` runs `python -m mordheim_combat_lab benchmark` and
+`performance calibrate` runs `python -m mordheim_combat_lab calibrate`; their
+arguments belong to those commands. A small sample illustrates the command, not
+performance certification. Calibration can still be costly with the `mini` pair
+selection, and the saved profile changes later measurements on this machine.
+
+## Checks and reports
+
+Each entry explains what it executes in `<entry> --help`.
+
+| Entry | Executes |
+|---|---|
+| `check verify` | `python -m mordheim_combat_lab verify`: KB structure, editorial schemas, execution contract, binding contracts and default profile compilation. It is a structural gate, not the knowledge or E2E test suites (see [Verification](verification.md#deterministic-modular-evidence)). |
+| `check report rules` | `python -m mordheim_combat_lab audit`: separate combat-mechanic and editorial-rule CSVs in `outputs/audit/`. |
+| `check report tests` | `python -m mordheim_combat_lab test-report`: parity and technical test reports. |
+| `check parity` | `python -m mordheim_combat_lab parity`: the statistical parity campaign against the modular reference. Its pytest checks are `tests parity statistical`. |
+| `check coverage` | `python -m mordheim_combat_lab coverage-gate`: measure deterministic engine coverage and check the recorded budget; `--update-budget` replaces it deliberately after review. |
+| `check presentation` | `npm run check:presentation` in `apps/warband-manager-web`: detector tests, strict deep text audit and dynamic visible-completeness audit. |
+| `check ci` | Local integration gate, in order: KB generation and freshness, the Python net (campaign-file, architecture and `tests/knowledge`, including its `web/` audits), shared-eligibility transport, the eligibility bundle, TypeScript typecheck/tests, and web typecheck/lint/tests/build plus bundle guards. It does not run the modular E2E battery or its non-regression control, which CI runs as separate steps; add `tests kb e2e` for integration changes. |
+
+```powershell
+python tools/mordheim-utils.py check verify --json
+python tools/mordheim-utils.py check report rules --output outputs/audit
+python tools/mordheim-utils.py check report tests --statistical --workers 8 --output outputs/test-report
+python tools/mordheim-utils.py check parity --profile quick --backend numpy --workers 8 --require-complete
+python tools/mordheim-utils.py check coverage --json
+python tools/mordheim-utils.py check presentation
+python tools/mordheim-utils.py check ci
+```
+
+`check ci` runs its configured checks and builds; it is not a complete
+engine-certification campaign. Use `tests` for suites and `check parity` for the
+comparison campaign; neither substitutes for the other.
+
+## Selecting parity catalogues and modular-only execution
+
+The catalogue interface selects data independently of the engine:
+
+- `--catalog precompiled`: all five benchmark and 42 deep frozen cases, loaded
+  from `compiled-cases.json` with no compilation fallback.
+- `--catalog battery`: all build-based battery cases. `--profile quick`,
+  `complete` or `deep` filters this catalogue; no profile selects the full deep set.
+- `--catalog all`: both catalogues. A profile filters only the battery portion.
+- `--backend modular`: execute the reference only. Rows report `COMPLETED`,
+  errors or input limits, with no comparison or parity approval.
+- `--backend numpy`, `native` or `all`: compare those candidates against the
+  modular reference using the same runner. Here `all` names both candidates.
+
+```powershell
+python tools/mordheim-utils.py check parity --catalog precompiled --backend modular --workers 8
+python tools/mordheim-utils.py check parity --catalog battery --backend modular --workers 8
+python tools/mordheim-utils.py check parity --catalog all --backend modular --workers 8
+
+# One duel per scenario: checks executability, not statistical equivalence
+python tools/mordheim-utils.py check parity --catalog all --backend modular --workers 8 --simulations 1
+
+# Compare a selected battery profile against NumPy
+python tools/mordheim-utils.py check parity --catalog battery --profile quick --backend numpy --workers 8
+```
+
+Without `--simulations`, each case keeps its declared frozen sample width or
+battery row count. `--workers 8` cannot split a single duel across workers.
+Round limits and contexts remain those of each case; `--seed` sets the sample
+seed. Known unsupported inputs are reported as blocked, not silently discarded.
+Missing frozen entries and compilation/execution errors are failures. Use
+`--require-complete` to also return failure when any selected case is blocked.
+`--json` and `--output outputs/modular-scenarios.json` record the results.
+
+These catalogues require a source checkout with `tests/engines/fixtures` and
+its frozen JSON files. The battery also requires the KB/compiler. Catalogue
+selection is separate from the older `--level`/`--pair-set` options and cannot be
+combined with them. Existing historical invocations are otherwise unchanged.
 
 ## Knowledge base
 
@@ -200,7 +395,10 @@ Permanent validation and generation:
 | `tools/knowledge/export_compiled_cases.py` | Python export API for explicit compiled case plans; reads the KB during fixture generation. |
 | `tools/knowledge/audit_kb_conformance.py` | Check canonical knowledge against the expected model. |
 | `tools/knowledge/audit_schema_strictness.py` | Detect gaps and unintended permissiveness in editorial schemas. |
+| `tools/knowledge/clause_registry.py` | Query, prepare and guarded-apply edits to the maintained clause register; previews by default and preserves the CSV when conservation checks fail. |
+| `tools/knowledge/clause_registry_validation.py` | Structural checks for the clause register's fields, vocabularies, references and row conservation; imported by `clause_registry.py`. |
 | `tools/knowledge/generate_knowledge_web.py` | Generate deterministic JSON consumed by the web application. |
+| `tools/knowledge/artefact_document.py` | Load the complete generated web KB artefact (initial document plus prose, display-text and catalogue fragments) for tools and tests. |
 | `tools/knowledge/normalize_open_fields.py` | Normalize controlled vocabulary in open editorial fields. |
 | `tools/knowledge/presentation_contract.py` | Build the presentable-text contract used by UI audits. |
 
@@ -218,7 +416,6 @@ Reproducible editorial maintenance:
 |---|---|
 | `tools/knowledge/maintenance/format_yaml.py` | Check or apply canonical YAML formatting without semantic changes. |
 | `tools/knowledge/maintenance/normalize_names.py` | Check or fix names and IDs according to KB conventions. |
-| `tools/knowledge/maintenance/price-collation.py` | Compare catalogue prices and produce reports using reviewed resolutions. |
 
 ## Verification
 
@@ -227,9 +424,6 @@ Reproducible editorial maintenance:
 | `tools/verification/compiled_cases.py` | Load and validate frozen execution cases. |
 | `tools/verification/compiled_builds.py` | Load fighters by complete build identity and normalized root. |
 | `tools/verification/generate_compiled_builds.py` | Capture missing build preparations and publish the union with frozen entries (`--write`); not part of ordinary test execution. |
-| `tools/verification/mutate-engine.py` | Run controlled mutations to prove tests detect faults. |
-| `tools/verification/refresh_spec_digests.py` | Refresh or check executable-specification digests. |
-| `tools/verification/update-coverage-budget.py` | Recalculate the versioned deterministic coverage budget. |
 
 ## Web interface
 
@@ -239,8 +433,12 @@ Reproducible editorial maintenance:
 | `tools/web/presentation-audit.mjs` | Detect visible text without validated resolution or provenance. |
 | `tools/web/presentation-flow-audit.mjs` | Trace raw text to presentation sinks. |
 | `tools/web/presentation-type-audit.mjs` | Detect forged resolved-text types. |
+| `tools/web/presentation-completeness-audit.mjs` | Dynamic visible-completeness audit: execute the real consumers against the generated artefacts and classify every visible value (step 5 of `check presentation`). |
+| `tools/web/presentation-completeness-detector.mjs` | Shared pure classifier for visible completeness, used by the dynamic audit and its self-tests. |
+| `tools/web/presentation-gate.mjs` | Single entry point of `npm run check:presentation`; runs every phase unconditionally and preserves each phase's output and exit status. |
+| `tools/web/load-kb-artefact.mjs` | Load generated KB artefacts for the completeness tools through the same TypeScript helper the test suites use. |
 
-Their tests live in `tests/tooling/web/`, not under `tools/`.
+Their tests live in `tests/applications/warband_manager/presentation/completeness/`, not under `tools/`.
 
 ## Windows packaging
 
@@ -255,6 +453,7 @@ Their tests live in `tests/tooling/web/`, not under `tools/`.
 Keep a tool only when it is owned by a current documented workflow, a test or
 CI gate, the central launcher, or a repeatable operation over active data.
 Permanent audits own invariants after a migration: `audit_kb_conformance.py`
-rejects duplicated `rule_ref` prose, while schemas and
-the knowledge pipeline guards reject the retired `summary` key. Remove one-off
-migrations and diagnostics after their result is materialized.
+reports rules that reference a shared rule and also restate its prose
+(informational, not a failure), while schemas and the knowledge pipeline guards
+reject the retired `summary` key. Remove one-off migrations and diagnostics
+after their result is materialized.

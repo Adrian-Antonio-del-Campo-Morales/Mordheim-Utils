@@ -24,14 +24,12 @@ from mordheim_core.models import FighterBuild
 
 # Reading a stored preference falls back when the value is absent or out of range.
 # The visible value is what this helper feeds; no storage write is exercised.
-@pytest.mark.phase7_warband
 def test_preference_int_uses_default_for_invalid_or_out_of_range_values():
     assert _preference_int({"count": "20"}, "count", 10, 1) == 20
     assert _preference_int({"count": "bad"}, "count", 10, 1) == 10
     assert _preference_int({"count": 0}, "count", 10, 1) == 10
 
 
-@pytest.mark.phase7_warband
 def test_equipment_tab_displays_controls_and_results_table():
     try:
         root = tk.Tk()
@@ -70,7 +68,6 @@ def root():
     instance.destroy()
 
 
-@pytest.mark.phase7_warband
 def test_choicebox_dropdown_stays_in_sync_with_set_options(root):
     var = ChoiceVar("weapon.mace")
     box = ChoiceBox(root, var)
@@ -82,7 +79,6 @@ def test_choicebox_dropdown_stays_in_sync_with_set_options(root):
     assert box.get() == "Mace"
 
 
-@pytest.mark.phase7_warband
 def test_choicebox_dropdown_clears_the_label_when_the_value_is_not_an_option(root):
     var = ChoiceVar("weapon.fist")
     box = ChoiceBox(root, var)
@@ -93,7 +89,6 @@ def test_choicebox_dropdown_clears_the_label_when_the_value_is_not_an_option(roo
     assert var.variable.get() == ""
 
 
-@pytest.mark.phase7_warband
 def test_free_selection_build_compiles_with_runtime_equipment():
     catalogue = CombatCatalogue()
     sword = next(item_id for item_id, name in catalogue.weapons(None) if name == "Sword")
@@ -111,7 +106,6 @@ def test_free_selection_build_compiles_with_runtime_equipment():
     assert fighter.fighter_id == "custom:custom"
 
 
-@pytest.mark.phase7_warband
 def test_free_selection_build_compiles_with_an_implemented_warband_skill():
     fighter = compile_fighter(FighterBuild(
         "mordheim",
@@ -122,7 +116,6 @@ def test_free_selection_build_compiles_with_an_implemented_warband_skill():
     assert fighter.fighter_id == "custom:custom"
 
 
-@pytest.mark.phase7_warband
 def test_workbook_round_trip_preserves_stable_build_ids_and_result(tmp_path):
     candidate = FighterBuild(
         "mordheim", collection="mordheim", band_id="mercenaries", profile_id="mercenary-captain",
@@ -144,7 +137,6 @@ def test_workbook_round_trip_preserves_stable_build_ids_and_result(tmp_path):
     assert restored_result == result
 
 
-@pytest.mark.phase7_warband
 def test_workbook_rejects_unknown_or_corrupt_files(tmp_path):
     path = tmp_path / "not-a-workbook.xlsx"
     path.write_text("not an Excel file", encoding="utf-8")
@@ -153,11 +145,9 @@ def test_workbook_rejects_unknown_or_corrupt_files(tmp_path):
         load_ui_workbook(path)
 
 
-@pytest.mark.phase7_warband
 def test_motta_uses_the_legacy_cost_regularisation():
     assert motta_score(1.0, 10.0) == 50.73997463001903
 
 
-@pytest.mark.phase7_warband
 def test_motta_requires_a_known_cost():
     assert motta_score(2.0, None) is None

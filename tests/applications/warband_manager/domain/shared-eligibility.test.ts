@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import * as eligibility from "@domain/eligibility/index";
 
 interface Case { name: string; operation: "equipmentIssue" | "skillIssue" | "equipmentSetIssues"; args: unknown[]; codes: string[] }
-const cases: Case[] = JSON.parse(readFileSync(new URL("../../../rules/construction/fixtures/eligibility/decisions.json", import.meta.url), "utf8"));
+const cases: Case[] = JSON.parse(readFileSync(new URL("../../../construction/fixtures/eligibility/decisions.json", import.meta.url), "utf8"));
 
 describe("shared browser and desktop decision contract", () => {
   for (const row of cases) it(row.name, () => {
@@ -27,7 +27,7 @@ interface RecipientCase {
   offers: string[];
 }
 const recipients: RecipientCase[] = JSON.parse(readFileSync(
-  new URL("../../../rules/construction/fixtures/eligibility/entry-recipients.json", import.meta.url), "utf8"));
+  new URL("../../../construction/fixtures/eligibility/entry-recipients.json", import.meta.url), "utf8"));
 const emptyCatalogue = { packages: {}, foreign_packages: {}, mechanics: {}, mappings: {}, skills: {} };
 
 describe("printed entry recipients", () => {

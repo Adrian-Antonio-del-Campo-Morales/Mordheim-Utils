@@ -26,7 +26,7 @@ import {
 
 interface Fixture { readonly items: Readonly<Record<string, ItemFacts>> }
 const { items } = JSON.parse(readFileSync(
-  new URL("../../../rules/construction/fixtures/eligibility/silence-equipment.json", import.meta.url), "utf8",
+  new URL("../../../construction/fixtures/eligibility/silence-equipment.json", import.meta.url), "utf8",
 )) as Fixture;
 
 const EMPTY_CATALOGUE: Catalogue = {

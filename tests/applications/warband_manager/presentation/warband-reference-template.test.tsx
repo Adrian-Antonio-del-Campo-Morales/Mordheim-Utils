@@ -6,7 +6,7 @@ import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 import { WarbandReferences } from "@app/rules/warband-reference";
 import { WarbandsBrowser } from "@src/features/rules/WarbandsBrowser";
 import { WarbandReferenceTemplate } from "@src/features/rules/WarbandReferenceTemplate";
-import { readArtefactReader } from "../../../rules/knowledge/support/kb-artefact";
+import { readArtefactReader } from "../../../knowledge/support/kb-artefact";
 
 const realReader = () => readArtefactReader(resolve(__dirname, "../../../../outputs/web-public/knowledge/knowledge-web.json"));
 const emptyReader = () => ArtefactKnowledgeReader.from({ schema_version: 1, ruleset: "test", bands: [{ id: "empty", name: "Empty", name_i18n: { es: "Vacía" }, grade: "core" }], profiles: [], items: [], skills: [], campaign: {} });

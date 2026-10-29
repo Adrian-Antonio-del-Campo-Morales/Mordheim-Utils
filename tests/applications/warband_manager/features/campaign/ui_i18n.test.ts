@@ -8,7 +8,7 @@ import {
 } from "@adapters/knowledge-reader/index";
 import type { ArtefactRow } from "@adapters/knowledge-reader/artefact-types";
 import { knowledgeName } from "@src/features/campaign/displayText";
-import { readArtefactDocument } from "../../../../rules/knowledge/support/kb-artefact";
+import { readArtefactDocument } from "../../../../knowledge/support/kb-artefact";
 
 /** Locate the repo root (walk up from cwd until the contract dir exists). */
 function repoRoot(): string {
