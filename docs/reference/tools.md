@@ -359,6 +359,10 @@ The catalogue interface selects data independently of the engine:
 - `--catalog battery`: all build-based battery cases. `--profile quick`,
   `complete` or `deep` filters this catalogue; no profile selects the full deep set.
 - `--catalog all`: both catalogues. A profile filters only the battery portion.
+- `--catalog e2e` or `--level e2e`: frozen E2E statistical deliveries.
+  With no identifiers, selects every delivery, including blocked and
+  non-applicable entries; their reasons remain visible without running them.
+  See [E2E campaigns](#e2e-statistical-campaigns) below.
 - `--backend modular`: execute the reference only. Rows report `COMPLETED`,
   errors or input limits, with no comparison or parity approval.
 - `--backend numpy`, `native` or `all`: compare those candidates against the
@@ -406,11 +410,64 @@ use `--id scenario/basic` to restrict any subcommand to one scenario.
 
 Without `--simulations`, precompiled scenarios use the command sample default;
 battery cases keep their declared row count. `--workers 8` cannot split a single duel across workers.
-Round limits and contexts remain those of each case; `--seed` sets the sample
-seed. Known unsupported inputs are reported as blocked, not silently discarded.
-Missing frozen entries and compilation/execution errors are failures. Use
-`--require-complete` to also return failure when any selected case is blocked.
-`--json` and `--output outputs/modular-scenarios.json` record the results.
+Round limits and contexts remain those of each case, except E2E campaigns,
+which use a maximum of 50 rounds independently of the original test horizon;
+`--seed` sets the sample seed. Known unsupported inputs are reported as blocked,
+not silently discarded. Missing frozen entries and compilation/execution errors
+are failures. Use `--require-complete` to also return failure when any selected
+case is blocked. `--json` and `--output outputs/modular-scenarios.json` record
+the results.
+
+### E2E statistical campaigns
+
+E2E campaigns reuse frozen combat configurations with random dice, rather than
+replaying the original test's scripted dice and exact assertions. Combats run
+until termination or 50 rounds. Preparing a delivery does not establish engine
+compatibility or statistical parity. The [delivery format and admission rules](verification.md#e2e-statistical-deliveries)
+define which inputs can execute.
+
+To persist one engine's W/L/U counts for later comparison:
+
+```powershell
+python -m tools.verification.parity_samples sample --engine modular --level e2e --simulations 100000 --seed 2026 --chunk 250 --workers 14 --store outputs/parity-modular-e2e
+python -m tools.verification.parity_samples status --level e2e --store outputs/parity-modular-e2e
+python -m tools.verification.parity_samples sample --engine numpy --level e2e --simulations 100000 --seed 2026 --chunk 250 --workers 14 --store outputs/parity-numpy-e2e
+python -m tools.verification.parity_samples compare --backend numpy --level e2e --simulations 100000 --store outputs/parity-numpy-e2e --reference-store outputs/parity-modular-e2e
+```
+
+`sample`, `status` and `compare` accept repeatable `--id` values containing an
+E2E key or `audit_id::id`. `sample --rounds N` explicitly overrides the campaign
+horizon. Existing records with different horizons or chunk sizes cannot be
+extended into the same experiment; use another store or explicitly replace them.
+Sample files use `e2e__<sha256(case_key UTF-8)>.json` names to avoid long Windows
+paths. This store retains winner counts only, not wounds or condition distributions.
+Sampling returns 1 if any selected cases remain unexecuted, while preserving
+completed samples for resumption.
+
+Workers share a bounded queue across scenarios, so an available worker can
+start the next case before the previous case's last chunk finishes. The parent
+alone writes records. Graceful interruption stops submissions and saves in-flight
+chunks; completed samples remain reusable.
+
+To execute both engines and compare distributions directly:
+
+```powershell
+python tools/mordheim-utils.py check parity --level e2e --simulations 1000 --workers 2 --backend numpy --magnitudes winner,wounds,condition --output outputs/e2e-parity/all.json --output-md outputs/e2e-parity/all.md
+```
+
+Use repeatable `--e2e <case_key|audit_id::id>` or `--e2e-selection-file FILE` to
+narrow that selection; the file accepts one identifier per line and `#` comments.
+E2E direct comparisons accept candidate backends `numpy`, `native` or `all`;
+`modular` alone is not accepted on this path. `winner` is mandatory;
+`--magnitudes` can additionally select `wounds`, `condition` and `rounds` without
+changing the frozen deliveries. `--output` writes JSON only and `--output-md`
+writes Markdown only; both can be requested with different paths from one run.
+
+Reports distinguish approval, measured divergence, reference/candidate execution
+failures and unexecuted deliveries. Blocked, not-applicable, stale, invalid and
+incompatible cases retain their reasons. Candidate exceptions are execution
+failures, not measured divergences. A small successful sample does not certify
+full engine parity.
 
 These catalogues require a source checkout with `tests/engines/fixtures` and
 its frozen JSON files. The battery also requires the KB/compiler. Catalogue

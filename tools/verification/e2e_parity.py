@@ -43,6 +43,7 @@ from typing import Iterable, Mapping, Sequence
 
 SCHEMA = "mordheim-e2e-parity-connection/v1"
 DELIVERY_SCHEMA = "mordheim-e2e-statistical-delivery/v1"
+CAMPAIGN_MAXIMUM_ROUNDS = 50
 DELIVERY_FIELDS = frozenset({
     "schema", "status", "source", "case_key", "case", "decision_policy",
     "magnitudes", "reason",
@@ -477,7 +478,7 @@ def build_parity_case(admission: Admission, *, simulations: int, seed: int,
         label=case.case_key,
         first=case.first,
         second=case.second,
-        maximum_rounds=case.limits.maximum_rounds,
+        maximum_rounds=CAMPAIGN_MAXIMUM_ROUNDS,
         simulations=simulations,
         seed=seed,
         magnitudes=tuple(magnitudes),

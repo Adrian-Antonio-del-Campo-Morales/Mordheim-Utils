@@ -18,6 +18,112 @@ from tools.verification import parity_samples as store
 from tools.verification.parity_catalog import CampaignScenario
 
 
+@pytest.mark.parametrize("interrupt", [False, True])
+def test_shared_queue_crosses_scenario_boundary_and_resumes(cases, tmp_path, monkeypatch, interrupt):
+    from concurrent.futures import ThreadPoolExecutor
+    from dataclasses import replace
+    from threading import Event
+
+    base = _scenario(cases)
+    scenarios = [replace(base, key=f"scenario/queue-{rounds}", case=replace(
+        base.case, limits=replace(base.case.limits, maximum_rounds=rounds),
+    )) for rounds in (1, 2)]
+    next_case_started = Event()
+    stop = Event()
+    calls = []
+
+    def chunk(first, second, start, count, seed, maximum_rounds, context=None):
+        calls.append((maximum_rounds, start))
+        if not interrupt and maximum_rounds == 1 and start == 0:
+            # The slow tail of A can finish only after B starts. A per-case
+            # barrier would time out here, regardless of machine speed.
+            assert next_case_started.wait(5), "next scenario waited for the slow tail"
+        if maximum_rounds == 2:
+            next_case_started.set()
+        return store.SampleChunk(start, count, count, 0, 0, 0.0, "t")
+
+    monkeypatch.setattr(store, "run_modular_chunk", chunk)
+
+    def log(message):
+        if interrupt and "saved" in message:
+            stop.set()
+
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        list(store.sample_scenarios(
+            "modular", scenarios, tmp_path, simulations=2, seed=2026,
+            chunk_size=1, executor=executor, workers=2, stop=stop, log=log,
+        ))
+    if interrupt:
+        assert sorted(calls) == [(1, 0), (1, 1)]
+        assert not store.sample_path(tmp_path, "modular", scenarios[1].key).exists()
+    else:
+        assert next_case_started.is_set()
+    before = store.sample_path(tmp_path, "modular", scenarios[0].key).read_bytes()
+    list(store.sample_scenarios(
+        "modular", scenarios, tmp_path, simulations=2, seed=2026, chunk_size=1,
+    ))
+    assert sorted(calls) == [(1, 0), (1, 1), (2, 0), (2, 1)]
+    assert store.sample_path(tmp_path, "modular", scenarios[0].key).read_bytes() == before
+    for scenario in scenarios:
+        record = store.load_sample(store.sample_path(tmp_path, "modular", scenario.key))
+        assert record.coverage() == 2
+        assert record.maximum_rounds == scenario.case.limits.maximum_rounds
+
+
+def test_e2e_selection_keeps_non_runnable_deliveries_and_rejects_unknown_ids():
+    from tools.verification import e2e_parity
+    from tests.engines.parity.statistical.test_e2e_parity import CASES
+
+    args = store._parser().parse_args([
+        "status", "--level", "e2e",
+        *[value for key in CASES.values() for value in ("--id", key)],
+    ])
+    scenarios, rejected, chosen = store._selection(args)
+    assert {key for key, _ in chosen} == set(CASES.values())
+    assert {scenario.key for scenario in scenarios} == {CASES["simple"]}
+    assert scenarios[0].case.limits.maximum_rounds == 50
+    reasons = dict(rejected)
+    assert reasons[CASES["blocked"]].startswith("blocked:")
+    assert reasons[CASES["not_applicable"]].startswith("not-applicable:")
+    assert "initial_state" in reasons[CASES["initial_state"]]
+    args.ids = []
+    _, _, chosen = store._selection(args)
+    assert {key for key, _ in chosen} == set(e2e_parity.discover()[0])
+    args.ids = ["e2e/unknown"]
+    with pytest.raises(store.SampleStoreError):
+        store._selection(args)
+
+
+def test_e2e_cli_samples_resumes_and_compares(tmp_path):
+    from tests.engines.parity.statistical.test_e2e_parity import CASES
+
+    key = CASES["simple"]
+    selection = ["--level", "e2e", "--id", key, "--store", str(tmp_path)]
+    command = ["sample", "--engine", "modular", *selection,
+               "--simulations", "2", "--chunk", "1", "--workers", "2"]
+    assert store.main(command) == 0
+    path = store.sample_path(tmp_path, "modular", key)
+    record = store.load_sample(path)
+    assert record is not None and record.coverage() == 2
+    assert record.maximum_rounds == 50
+    original = path.read_bytes()
+    # A completed sample must resume without rewriting or running more duels.
+    assert store.main(command) == 0
+    assert path.read_bytes() == original
+    # A new explicit horizon must never append to the old experiment.
+    assert store.main([*command, "--rounds", "3"]) == 2
+    assert path.read_bytes() == original
+    assert store.main([*command, "--rounds", "3", "--store", str(tmp_path / "override")]) == 0
+    overridden = store.load_sample(store.sample_path(tmp_path / "override", "modular", key))
+    assert overridden is not None and overridden.maximum_rounds == 3
+    assert store.main(["status", *selection]) == 0
+    assert store.main(["compare", "--backend", "numpy", *selection]) == 1
+    report = json.loads((tmp_path / "compare" / "parity-campaign.json").read_text())
+    assert report["config"]["scenario_keys"] == [key]
+    assert report["config"]["corpus"].endswith("e2e-statistical-deliveries")
+    assert report["scenarios"][0]["status"] == "NOT_RUN"
+
+
 def _scenario(cases, name="basic") -> CampaignScenario:
     key = scenario_key(name)
     return CampaignScenario(key, name, cases[key])

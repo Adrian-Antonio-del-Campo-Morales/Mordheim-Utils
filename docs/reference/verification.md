@@ -72,6 +72,56 @@ parallel-oracle checks) passed, and focused NumPy sequential/parallel and native
 batch-accumulation checks passed using precompiled inputs. These connection
 checks do not certify unimplemented optimized-engine rules.
 
+## E2E statistical deliveries
+
+`tools/verification/e2e_parity.py` discovers and validates the frozen inputs for
+[E2E statistical campaigns](tools.md#e2e-statistical-campaigns). Deliveries live in
+`tests/engines/fixtures/e2e-statistical-deliveries/<sha256(case_key UTF-8)>.json`.
+Their keys are `e2e/<audit_id>/<id>` and their source test identifiers are
+`audit_id::id`. See the [encoded example](../examples/e2e-statistical-parity.json).
+
+Each document contains exactly these fields:
+
+| Field | Contract |
+|---|---|
+| `schema` | `mordheim-e2e-statistical-delivery/v1`. |
+| `status` | `translated`, `blocked` or `not-applicable`. |
+| `source` | Exactly `revision` (preparation commit), `path` (repository-relative YAML), `sha256` (YAML bytes) and `test_id`. |
+| `case_key` | The E2E key matching `source.test_id`. |
+| `case` | `compiled_cases.encode_case` output for translated entries; otherwise `null`. |
+| `decision_policy` | `{"kind":"engine-default"}` for translated entries; otherwise `null`. |
+| `magnitudes` | `["winner"]`; extra campaign observables are execution options. |
+| `reason` | `null` for translated entries; otherwise a concrete, nonempty reason. |
+
+Preparation preserves both compiled fighters, complete context including local
+participants, auxiliary participants, initial state and synthetic labels where
+present. Reuse a frozen entry only after checking correspondence with the current
+YAML; otherwise prepare it with the existing `export_cases` API. Compilation is
+preparation work, not part of statistical execution. Missing fighters or inputs
+must not be invented or simplified to make a case admissible.
+
+Translated cases have current E2E origin metadata, empty `determinism.dice` and
+`determinism.decisions`, null `expectations` and `benchmark`, and only
+`maximum_rounds` in `limits`. That stored limit preserves the original E2E value
+(1 when omitted); campaigns independently use 50 rounds by default. Seeds,
+simulation counts, chunk sizes and workers are execution settings.
+Recalculate fingerprints with `encode_case` and check an exact codec round trip,
+identity and the current YAML hash. A matching key alone does not prove freshness.
+
+Explicit scripted decisions are blocked until a general policy for random
+trajectories is supported; removing the script does not prove equivalence with
+`engine-default`. Admission checks that the engines' default decision policies
+correspond. Expected construction refusals are `not-applicable`; expected runtime
+refusals and unrepresentable input data are `blocked` pending review. An unexpected
+exporter error is not evidence of a construction refusal.
+
+The shared execution path currently cannot express `initial_state` overrides or
+`auxiliary_participants`; those inputs remain `incompatible` with a concrete reason.
+Stale source hashes and invalid documents cannot execute. `translated` describes
+prepared data, not engine compatibility, correct original E2E expectations or
+approved statistical parity. No engine fallback or partial execution may conceal
+unsupported inputs.
+
 ## Modular integration closure
 
 Successful selected commands alone do not establish modular closure.

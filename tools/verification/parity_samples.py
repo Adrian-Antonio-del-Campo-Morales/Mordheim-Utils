@@ -318,7 +318,8 @@ def sample_path(store: Path, engine: str, corpus_key: str) -> Path:
     """``<store>/<engine>/<scenario>.json`` for a uniform corpus key."""
     if engine not in ENGINES:
         raise ValueError(f"unknown engine {engine!r}")
-    name = corpus_key.replace("/", "__")
+    name = ("e2e__" + hashlib.sha256(corpus_key.encode()).hexdigest()
+            if corpus_key.startswith("e2e/") else corpus_key.replace("/", "__"))
     return Path(store) / engine / f"{name}.json"
 
 
@@ -504,94 +505,110 @@ def open_sample(
     )
 
 
+def sample_scenarios(
+    engine: str, scenarios: Iterable[CampaignScenario], store: Path, *, simulations: int,
+    seed: int, maximum_rounds: int | None = None, chunk_size: int = DEFAULT_CHUNK,
+    executor: ProcessPoolExecutor | None = None, workers: int = 1,
+    replace_stale: bool = False, stop: threading.Event | None = None, log=None,
+):
+    """Yield saved records using one bounded chunk queue across all scenarios.
+
+    Only the parent writes records. Each scenario's mutable record is shared
+    by its in-flight jobs, and released once its last chunk has been saved.
+    A graceful stop drains in-flight work without opening further scenarios.
+    """
+    stopped = lambda: stop is not None and stop.is_set()
+    run_chunk = {
+        "modular": run_modular_chunk,
+        "native": run_native_chunk,
+        "numpy": run_numpy_chunk,
+    }[engine]
+
+    def jobs():
+        for scenario in scenarios:
+            if stopped():
+                return
+            rounds = maximum_rounds or scenario.case.limits.maximum_rounds
+            path, record = open_sample(
+                engine, scenario, store, seed=seed, maximum_rounds=rounds,
+                chunk_size=chunk_size, replace_stale=replace_stale,
+            )
+            pending = missing_chunks(record, simulations)
+            # Shared only by this scenario's jobs; updated by the parent.
+            state = [record, 0]
+            if log:
+                log(f"{engine:7} {scenario.key}: {len(pending)} chunk(s) to run "
+                    f"({sum(count for _start, count in pending)} duels)")
+            if not pending:
+                if log:
+                    log(f"{engine:7} {scenario.key}: stored coverage {record.coverage()} "
+                        f">= {simulations}, nothing to run")
+                yield scenario, path, state, len(pending), None
+            for start, count in pending:
+                options = (() if engine == "modular" else (chunk_size,)) + (
+                    rounds, scenario.case.context,
+                )
+                arguments = (scenario.case.first, scenario.case.second, start, count,
+                             record.engine_seed, *options)
+                yield scenario, path, state, len(pending), arguments
+
+    def save(job, chunk):
+        scenario, path, state, total, _arguments = job
+        record = _with_chunk(state[0], chunk)
+        save_sample(path, record)
+        state[0] = record
+        state[1] += 1
+        if log:
+            log(f"{engine:7} {scenario.key}: chunk {chunk.start}+{chunk.count} "
+                f"saved ({state[1]}/{total}, {chunk.seconds:.2f}s)")
+        return scenario, record
+
+    queue = iter(jobs())
+    in_flight = {}
+    exhausted = False
+    try:
+        while True:
+            while not exhausted and not stopped() and len(in_flight) < max(1, workers):
+                job = next(queue, None)
+                if job is None:
+                    exhausted = True
+                    break
+                if job[4] is None:
+                    yield job[0], job[2][0]
+                elif executor is None:
+                    yield save(job, run_chunk(*job[4]))
+                else:
+                    in_flight[executor.submit(run_chunk, *job[4])] = job
+            if not in_flight:
+                break
+            finished, _running = wait(in_flight, return_when=FIRST_COMPLETED)
+            for future in finished:
+                job = in_flight.pop(future)
+                yield save(job, future.result())
+    finally:
+        for future in in_flight:
+            future.cancel()
+
+
 def sample_scenario(
     engine: str, scenario: CampaignScenario, store: Path, *, simulations: int,
     seed: int, maximum_rounds: int, chunk_size: int = DEFAULT_CHUNK,
     executor: ProcessPoolExecutor | None = None, workers: int = 1,
     replace_stale: bool = False, stop: threading.Event | None = None, log=None,
 ) -> SampleRecord:
-    """Bring the stored sample of one scenario up to ``simulations`` duels.
-
-    Each finished chunk is written before the next one starts.  With an
-    ``executor`` the selected engine's chunks run in parallel, at most ``workers`` in
-    flight, and are written as they complete.  A set ``stop`` event (the
-    command sets it on the first SIGINT/SIGTERM) submits no further chunk and
-    returns once the in-flight chunks are saved, so a graceful stop loses no
-    finished work. Without an executor, chunks run sequentially in-process.
-    """
-    path, record = open_sample(
-        engine, scenario, store, seed=seed, maximum_rounds=maximum_rounds,
-        chunk_size=chunk_size, replace_stale=replace_stale,
-    )
-    pending = missing_chunks(record, simulations)
-    if not pending:
-        if log:
-            log(f"{engine:7} {scenario.key}: stored coverage {record.coverage()} >= {simulations}, nothing to run")
-        return record
-    if log:
-        log(f"{engine:7} {scenario.key}: {len(pending)} chunk(s) to run "
-            f"({sum(count for _start, count in pending)} duels)")
-    case = scenario.case
-    started = time.perf_counter()
-    done = 0
-    stopped = lambda: stop is not None and stop.is_set()
-
-    def _save(chunk: SampleChunk) -> None:
-        nonlocal record, done
-        record = _with_chunk(record, chunk)
-        save_sample(path, record)
-        done += 1
-        if log:
-            log(f"{engine:7} {scenario.key}: chunk {chunk.start}+{chunk.count} "
-                f"saved ({done}/{len(pending)}, {chunk.seconds:.2f}s)")
-
-    run_chunk = {
-        "modular": run_modular_chunk,
-        "native": run_native_chunk,
-        "numpy": run_numpy_chunk,
-    }[engine]
-    chunk_options = (() if engine == "modular" else (chunk_size,)) + (
-        maximum_rounds, case.context,
-    )
-    if executor is None:
-        for start, count in pending:
-            if stopped():
-                break
-            _save(run_chunk(
-                case.first, case.second, start, count, record.engine_seed,
-                *chunk_options,
-            ))
-    else:
-        queue = iter(pending)
-        in_flight: set = set()
-
-        def _submit() -> None:
-            if stopped():
-                return
-            for start, count in queue:
-                in_flight.add(executor.submit(
-                    run_chunk, case.first, case.second, start, count,
-                    record.engine_seed, *chunk_options,
-                ))
-                return
-
-        for _ in range(max(1, workers)):
-            _submit()
-        try:
-            while in_flight:
-                finished, _running = wait(in_flight, return_when=FIRST_COMPLETED)
-                for future in finished:
-                    in_flight.discard(future)
-                    _save(future.result())
-                    _submit()
-        except BaseException:
-            for future in in_flight:
-                future.cancel()
-            raise
-    if log:
-        log(f"{engine:7} {scenario.key}: coverage {record.coverage()} "
-            f"in {time.perf_counter() - started:.1f}s wall"
-            + (" (stopped early)" if stopped() and record.coverage() < simulations else ""))
+    """Bring one scenario up to the target with the shared chunk scheduler."""
+    record = None
+    for _scenario, record in sample_scenarios(
+        engine, (scenario,), store, simulations=simulations, seed=seed,
+        maximum_rounds=maximum_rounds, chunk_size=chunk_size, executor=executor,
+        workers=workers, replace_stale=replace_stale, stop=stop, log=log,
+    ):
+        pass
+    if record is None:
+        _path, record = open_sample(
+            engine, scenario, store, seed=seed, maximum_rounds=maximum_rounds,
+            chunk_size=chunk_size, replace_stale=replace_stale,
+        )
     return record
 
 
@@ -691,8 +708,8 @@ def _positive(value: str) -> int:
 def _add_selection(parser: argparse.ArgumentParser) -> None:
     group = parser.add_argument_group("scenario selection")
     group.add_argument(
-        "--level", choices=LEVELS, default="small",
-        help="cumulative scenario level: small 8, normal 30, long 43 (default: small)",
+        "--level", choices=(*LEVELS, "e2e"), default="small",
+        help="cumulative scenario level: small, normal, long; or all E2E deliveries (default: small)",
     )
     group.add_argument(
         "--id", dest="ids", action="append", default=[], metavar="KEY",
@@ -723,7 +740,7 @@ def _parser() -> argparse.ArgumentParser:
     sample.add_argument("--seed", type=int, default=2_026,
                         help="oracle seed; candidate samples use seed + 1000003 (default: 2026)")
     sample.add_argument("--rounds", type=_positive, default=None, metavar="N",
-                        help="override every scenario's round budget (default: frozen limits)")
+                        help="override every scenario's round budget (default: 50 for E2E, frozen limits otherwise)")
     sample.add_argument("--chunk", type=_positive, default=DEFAULT_CHUNK, metavar="DUELS",
                         help=f"duels per stored chunk / candidate batch (default: {DEFAULT_CHUNK})")
     sample.add_argument("--workers", type=_positive, default=1, metavar="N",
@@ -748,6 +765,32 @@ def _parser() -> argparse.ArgumentParser:
 
 
 def _selection(args) -> tuple[tuple[CampaignScenario, ...], tuple[tuple[str, str], ...], tuple[tuple[str, str], ...]]:
+    if args.level == "e2e":
+        from tools.verification import e2e_parity
+
+        index, defects = e2e_parity.discover()
+        if defects or not index:
+            raise SampleStoreError("; ".join(defects) or "the E2E delivery catalogue is empty")
+        try:
+            deliveries = e2e_parity.select(index, args.ids or list(index))
+        except e2e_parity.SelectionError as error:
+            raise SampleStoreError(str(error)) from error
+        scenarios, rejected, chosen = [], [], []
+        policy = e2e_parity.decision_policy_evidence()
+        for delivery in deliveries:
+            chosen.append((delivery.case_key, delivery.test_id))
+            validation = e2e_parity.validate(delivery)
+            admission = e2e_parity.admit(
+                delivery.with_validation(validation), policy_corresponds=policy["corresponds"],
+            )
+            if admission.state == "admitted":
+                case = replace(admission.case, limits=replace(
+                    admission.case.limits, maximum_rounds=e2e_parity.CAMPAIGN_MAXIMUM_ROUNDS,
+                ))
+                scenarios.append(CampaignScenario(delivery.case_key, delivery.test_id, case))
+            else:
+                rejected.append((delivery.case_key, f"{admission.state}: {admission.detail}"))
+        return tuple(scenarios), tuple(rejected), tuple(chosen)
     chosen = select(level=args.level, keys=args.ids)
     cases = load_cases(CORPUS)
     scenarios, rejected = load(chosen, cases)
@@ -793,26 +836,21 @@ def _run_sample(args) -> int:
              "chunk(s), nothing new is started; repeat to abort immediately")
 
     previous = {sig: signal.signal(sig, _request_stop) for sig in (signal.SIGINT, signal.SIGTERM)}
-    incomplete: list[str] = [key for key, _reason in rejected]
+    incomplete = {key for key, _reason in rejected} | {scenario.key for scenario in scenarios}
     aborted = False
     try:
-        for scenario in scenarios:
-            if stop.is_set():
-                incomplete.append(scenario.key)
-                continue
-            rounds = args.rounds or scenario.case.limits.maximum_rounds
-            try:
-                record = sample_scenario(
-                    args.engine, scenario, store, simulations=args.simulations,
-                    seed=args.seed, maximum_rounds=rounds, chunk_size=args.chunk,
-                    executor=pool, workers=args.workers, replace_stale=args.replace,
-                    stop=stop, log=_log,
-                )
-            except SampleStoreError as error:
-                print(f"parity samples: {error}", file=sys.stderr)
-                return 2
-            if record.coverage() < args.simulations:
-                incomplete.append(scenario.key)
+        try:
+            for scenario, record in sample_scenarios(
+                args.engine, scenarios, store, simulations=args.simulations,
+                seed=args.seed, maximum_rounds=args.rounds, chunk_size=args.chunk,
+                executor=pool, workers=args.workers, replace_stale=args.replace,
+                stop=stop, log=_log,
+            ):
+                if record.coverage() >= args.simulations:
+                    incomplete.discard(scenario.key)
+        except SampleStoreError as error:
+            print(f"parity samples: {error}", file=sys.stderr)
+            return 2
     except KeyboardInterrupt:
         aborted = True
     finally:
@@ -825,7 +863,7 @@ def _run_sample(args) -> int:
              + (" (in-flight chunks were abandoned)" if aborted else ""))
         return 130
     if incomplete:
-        _log(f"incomplete: {', '.join(incomplete)}")
+        _log(f"incomplete: {', '.join(sorted(incomplete))}")
         return 1
     _log(f"complete: {len(scenarios)} scenario(s) at >= {args.simulations} duels")
     return 0
@@ -842,6 +880,13 @@ def _run_compare(args) -> int:
                                      reference_store=Path(args.reference_store) if args.reference_store else None)
         rows.append(row)
         provenance.append(record)
+    corpus = CORPUS
+    if args.level == "e2e":
+        from tools.verification import e2e_parity
+
+        corpus = e2e_parity.deliveries_directory()
+    corpus_digest = (_digest_files(corpus.glob("*.json")) if corpus.is_dir()
+                     else hashlib.sha256(corpus.read_bytes()).hexdigest())
     config = {
         "level": args.level,
         "scenario_keys": [key for key, _name in chosen],
@@ -852,8 +897,8 @@ def _run_compare(args) -> int:
         }) or None,
         "maximum_rounds": None,
         "workers": "stored samples",
-        "corpus": CORPUS.relative_to(CORPUS.parents[3]).as_posix(),
-        "corpus_sha256": hashlib.sha256(CORPUS.read_bytes()).hexdigest(),
+        "corpus": corpus.relative_to(_ROOT).as_posix(),
+        "corpus_sha256": corpus_digest,
         "store": store.as_posix(),
         "candidate_backend": args.backend,
         "modular_digest": engine_digest("modular"),

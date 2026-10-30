@@ -53,6 +53,14 @@ def test_selection_is_explicit_and_accepts_both_identifiers():
     index, _ = e2e_parity.discover()
     delivery = e2e_parity.resolve(index, CASES["simple"])
     assert delivery is not None
+    validated = delivery.with_validation(e2e_parity.validate(delivery))
+    admission = e2e_parity.admit(validated)
+    assert admission.case.limits.maximum_rounds == 1
+    campaign_case = e2e_parity.build_parity_case(
+        admission, simulations=2, seed=2026, magnitudes=("winner",),
+    )
+    assert campaign_case.maximum_rounds == 50
+    assert admission.case.limits.maximum_rounds == 1
     assert e2e_parity.resolve(index, "mechanic/defence.kite-shield::"
                                      "the-composed-floor-is-carried-as-the-compiled-armour-save")
     with pytest.raises(e2e_parity.SelectionError):
