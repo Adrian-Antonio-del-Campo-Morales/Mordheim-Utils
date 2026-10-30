@@ -449,6 +449,19 @@ start the next case before the previous case's last chunk finishes. The parent
 alone writes records. Graceful interruption stops submissions and saves in-flight
 chunks; completed samples remain reusable.
 
+By default, sampling prints one start line and one completion line per case;
+completion includes elapsed wall time for that case in the current invocation,
+including worker scheduling and saving. Concurrent cases can overlap, so these
+times should not be summed as campaign duration. Already-complete cases report
+that nothing needs running. `sample --verbose` additionally prints each saved
+chunk. Errors, unexecuted-case reasons and the campaign summary remain visible.
+
+On Windows, access/sharing locks during the atomic sample-file replacement
+trigger up to six retries with increasing waits (2.55 seconds total). A persistent
+lock still fails, leaving the previous sample intact and the new temporary file
+available; unrelated I/O errors fail immediately. Retrying the replacement does
+not rerun duels or change the sample counts.
+
 To execute both engines and compare distributions directly:
 
 ```powershell

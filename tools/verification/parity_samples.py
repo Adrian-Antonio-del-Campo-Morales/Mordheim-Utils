@@ -336,7 +336,7 @@ def load_sample(path: Path) -> SampleRecord | None:
 
 
 def save_sample(path: Path, record: SampleRecord) -> None:
-    """Write the record atomically (temporary file then rename)."""
+    """Write atomically, tolerating brief Windows access/sharing locks."""
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".tmp")
@@ -344,7 +344,16 @@ def save_sample(path: Path, record: SampleRecord) -> None:
         json.dumps(record.to_json(), ensure_ascii=True, indent=1) + "\n",
         encoding="utf-8",
     )
-    os.replace(temporary, path)
+    # A reader or scanner can briefly deny replacement on Windows. Keep the
+    # closed temporary file and retry only the rename, never the simulation.
+    for delay in (0.05, 0.1, 0.2, 0.4, 0.8, 1.0, None):
+        try:
+            os.replace(temporary, path)
+            return
+        except PermissionError as error:
+            if getattr(error, "winerror", None) not in (5, 32, 33) or delay is None:
+                raise
+            time.sleep(delay)
 
 
 # ---------------------------------------------------------------------------
@@ -510,6 +519,7 @@ def sample_scenarios(
     seed: int, maximum_rounds: int | None = None, chunk_size: int = DEFAULT_CHUNK,
     executor: ProcessPoolExecutor | None = None, workers: int = 1,
     replace_stale: bool = False, stop: threading.Event | None = None, log=None,
+    verbose: bool = False,
 ):
     """Yield saved records using one bounded chunk queue across all scenarios.
 
@@ -528,6 +538,7 @@ def sample_scenarios(
         for scenario in scenarios:
             if stopped():
                 return
+            started = time.perf_counter()
             rounds = maximum_rounds or scenario.case.limits.maximum_rounds
             path, record = open_sample(
                 engine, scenario, store, seed=seed, maximum_rounds=rounds,
@@ -535,14 +546,16 @@ def sample_scenarios(
             )
             pending = missing_chunks(record, simulations)
             # Shared only by this scenario's jobs; updated by the parent.
-            state = [record, 0]
+            state = [record, 0, started]
             if log:
-                log(f"{engine:7} {scenario.key}: {len(pending)} chunk(s) to run "
-                    f"({sum(count for _start, count in pending)} duels)")
+                detail = f"; {len(pending)} chunk(s) to run" if verbose else ""
+                log(f"{engine:7} {scenario.key}: started "
+                    f"({sum(count for _start, count in pending)} duels remaining{detail})")
             if not pending:
                 if log:
-                    log(f"{engine:7} {scenario.key}: stored coverage {record.coverage()} "
-                        f">= {simulations}, nothing to run")
+                    log(f"{engine:7} {scenario.key}: complete in "
+                        f"{time.perf_counter() - started:.2f}s; stored coverage "
+                        f"{record.coverage()} >= {simulations}, nothing to run")
                 yield scenario, path, state, len(pending), None
             for start, count in pending:
                 options = (() if engine == "modular" else (chunk_size,)) + (
@@ -558,9 +571,12 @@ def sample_scenarios(
         save_sample(path, record)
         state[0] = record
         state[1] += 1
-        if log:
+        if log and verbose:
             log(f"{engine:7} {scenario.key}: chunk {chunk.start}+{chunk.count} "
                 f"saved ({state[1]}/{total}, {chunk.seconds:.2f}s)")
+        if log and state[1] == total:
+            log(f"{engine:7} {scenario.key}: complete in "
+                f"{time.perf_counter() - state[2]:.2f}s; coverage {record.coverage()}")
         return scenario, record
 
     queue = iter(jobs())
@@ -595,13 +611,14 @@ def sample_scenario(
     seed: int, maximum_rounds: int, chunk_size: int = DEFAULT_CHUNK,
     executor: ProcessPoolExecutor | None = None, workers: int = 1,
     replace_stale: bool = False, stop: threading.Event | None = None, log=None,
+    verbose: bool = False,
 ) -> SampleRecord:
     """Bring one scenario up to the target with the shared chunk scheduler."""
     record = None
     for _scenario, record in sample_scenarios(
         engine, (scenario,), store, simulations=simulations, seed=seed,
         maximum_rounds=maximum_rounds, chunk_size=chunk_size, executor=executor,
-        workers=workers, replace_stale=replace_stale, stop=stop, log=log,
+        workers=workers, replace_stale=replace_stale, stop=stop, log=log, verbose=verbose,
     ):
         pass
     if record is None:
@@ -747,6 +764,8 @@ def _parser() -> argparse.ArgumentParser:
                         help="worker processes for any engine (default: 1)")
     sample.add_argument("--replace", action="store_true",
                         help="discard a stored sample whose identity or engine digest differs")
+    sample.add_argument("--verbose", action="store_true",
+                        help="also log each saved chunk (default: case start and completion only)")
 
     compare = commands.add_parser("compare", help="decide stored pairs and write the report")
     _add_selection(compare)
@@ -844,7 +863,7 @@ def _run_sample(args) -> int:
                 args.engine, scenarios, store, simulations=args.simulations,
                 seed=args.seed, maximum_rounds=args.rounds, chunk_size=args.chunk,
                 executor=pool, workers=args.workers, replace_stale=args.replace,
-                stop=stop, log=_log,
+                stop=stop, log=_log, verbose=args.verbose,
             ):
                 if record.coverage() >= args.simulations:
                     incomplete.discard(scenario.key)

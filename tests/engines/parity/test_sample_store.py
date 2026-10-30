@@ -51,7 +51,7 @@ def test_shared_queue_crosses_scenario_boundary_and_resumes(cases, tmp_path, mon
     with ThreadPoolExecutor(max_workers=2) as executor:
         list(store.sample_scenarios(
             "modular", scenarios, tmp_path, simulations=2, seed=2026,
-            chunk_size=1, executor=executor, workers=2, stop=stop, log=log,
+            chunk_size=1, executor=executor, workers=2, stop=stop, log=log, verbose=True,
         ))
     if interrupt:
         assert sorted(calls) == [(1, 0), (1, 1)]
@@ -129,6 +129,30 @@ def _scenario(cases, name="basic") -> CampaignScenario:
     return CampaignScenario(key, name, cases[key])
 
 
+@pytest.mark.parametrize("verbose", [False, True])
+def test_sample_cli_logs_case_elapsed_time_and_optional_chunks(cases, tmp_path, monkeypatch, capsys, verbose):
+    scenario = _scenario(cases)
+    ticks = iter((10.0, 12.0, 20.0, 21.0))
+    monkeypatch.setattr(store.time, "perf_counter", lambda: next(ticks))
+    monkeypatch.setattr(store, "run_modular_chunk", lambda first, second, start, count, *args:
+                        store.SampleChunk(start, count, count, 0, 0, 0.0, "t"))
+    command = ["sample", "--engine", "modular", "--id", scenario.key,
+               "--simulations", "2", "--chunk", "1", "--store", str(tmp_path)]
+    if verbose:
+        command.append("--verbose")
+    assert store.main(command) == 0
+    lines = [line for line in capsys.readouterr().out.splitlines() if scenario.key in line]
+    assert len(lines) == (4 if verbose else 2)
+    assert ": started " in lines[0]
+    assert ": complete in 2.00s; coverage 2" in lines[-1]
+    assert sum("saved" in line for line in lines) == (2 if verbose else 0)
+    # Already-complete cases keep the same two-line summary without rerunning.
+    assert store.main(command) == 0
+    lines = [line for line in capsys.readouterr().out.splitlines() if scenario.key in line]
+    assert len(lines) == 2
+    assert ": complete in 1.00s;" in lines[-1] and "nothing to run" in lines[-1]
+
+
 # -- pure planning ---------------------------------------------------------
 
 def test_required_chunks_tile_the_sample_and_keep_the_tail_short():
@@ -168,6 +192,50 @@ def test_missing_chunks_replace_a_narrower_tail():
     )
     assert store.missing_chunks(record, 5) == ()
     assert store.missing_chunks(record, 10) == ((4, 4), (8, 2))
+
+
+@pytest.mark.parametrize("winerror,failures,attempts", [
+    (5, 2, 3), (32, 2, 3), (33, 2, 3),
+    (5, 100, 7), (None, 100, 1), (28, 100, 1),
+])
+def test_save_sample_retries_only_transient_windows_locks(
+    tmp_path, monkeypatch, winerror, failures, attempts,
+):
+    from dataclasses import replace
+
+    path = tmp_path / "sample.json"
+    original = store.SampleRecord("modular", "scenario/x", "x", 1, 50, 1, "abc", "digest", {})
+    store.save_sample(path, original)
+    old_bytes = path.read_bytes()
+    updated = replace(original, chunks=(store.SampleChunk(0, 1, 1, 0, 0, 0.0, "t"),))
+    real_replace = store.os.replace
+    calls = []
+    delays = []
+
+    def locked_replace(source, destination):
+        calls.append((source, destination))
+        assert path.read_bytes() == old_bytes
+        assert store.load_sample(source) == updated
+        if len(calls) <= failures:
+            error = OSError(28, "disk full") if winerror == 28 else PermissionError("locked")
+            if winerror is not None:
+                error.winerror = winerror
+            raise error
+        real_replace(source, destination)
+
+    monkeypatch.setattr(store.os, "replace", locked_replace)
+    monkeypatch.setattr(store.time, "sleep", delays.append)
+    if failures < attempts:
+        store.save_sample(path, updated)
+        assert store.load_sample(path) == updated
+        assert not path.with_suffix(".json.tmp").exists()
+    else:
+        with pytest.raises(OSError):
+            store.save_sample(path, updated)
+        assert path.read_bytes() == old_bytes
+        assert store.load_sample(path.with_suffix(".json.tmp")) == updated
+    assert len(calls) == attempts
+    assert delays == [0.05, 0.1, 0.2, 0.4, 0.8, 1.0][:attempts - 1]
 
 
 # -- engine digests ---------------------------------------------------------
@@ -282,7 +350,7 @@ def test_interrupted_sample_resumes_with_only_the_missing_chunks(cases, tmp_path
     seen: list[str] = []
     resumed = store.sample_scenario(
         engine, scenario, tmp_path, simulations=20, seed=11, maximum_rounds=50,
-        chunk_size=5, log=seen.append,
+        chunk_size=5, log=seen.append, verbose=True,
     )
     assert sum("saved" in line for line in seen) == 2
     assert resumed.coverage() == 20
