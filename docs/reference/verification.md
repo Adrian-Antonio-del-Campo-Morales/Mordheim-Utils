@@ -60,17 +60,32 @@ python -u -m pytest tests/engines/vectorized/runtime/test_parallel_numpy.py::tes
 python -u -m pytest tests/engines/native/test_native_engine.py::test_native_accumulates_counts_across_batches -v --tb=short
 ```
 
-Keep these runs serial: the NumPy sample uses its own worker pool. A native skip
-does not prove native execution. Successful samples establish the file-to-backend
+Engine tests can run together with `-n 6 --dist=load`. Ordinary checks sample
+sequentially; tests of concurrency retain real pools capped at two workers.
+Collection remains serial. A native skip does not prove native execution. Successful samples establish the file-to-backend
 connection for those paths; they do not certify every fixture or pending rule.
 Classify missing keys, bad deserialization and wrong participant bindings as
 preparation defects before interpreting engine output differences.
 
-Migration verification on 2026-10-23: integrated collection completed, both
-workspace typechecks passed, manual modular/shared runs (including the
-parallel-oracle checks) passed, and focused NumPy sequential/parallel and native
-batch-accumulation checks passed using precompiled inputs. These connection
-checks do not certify unimplemented optimized-engine rules.
+## Engine and parity test selection
+
+`tests/engines/modular`, `vectorized` and `native` check each engine's own
+behavior. `shared` checks common contracts and frozen inputs. Modular tests
+do not require another backend to reject a supported rule.
+
+`tests/engines/parity/statistical` contains statistical comparisons and the
+catalogue, report and sample-store checks that support them. There is no
+separate deterministic parity suite. The launcher selects these tests with
+`python tools/mordheim-utils.py tests parity statistical -n 6 --dist=load -q`.
+This selection is not the complete large-sample certification campaign.
+
+For campaigns using saved modular references, use
+`python -m tools.verification.parity_samples`: `sample --engine numpy` or
+`sample --engine native` stores candidate batches, then `compare` reads the
+candidate store and the modular `--reference-store` without rerunning the
+oracle. Samples record inputs, seeds, round limits and source digests; inspect
+that provenance before interpreting historical references as current evidence.
+See [the tools reference](tools.md) for sampling and comparison commands.
 
 ## E2E statistical deliveries
 
@@ -126,13 +141,9 @@ unsupported inputs.
 
 Successful selected commands alone do not establish modular closure.
 
-As of 2026-10-18, the admitted implementation queue is closed. This is
-implementation disposition, not certification. The register itself is the
-authority on admitted keys and pending work: read it through
-`python -X utf8 tools/knowledge/clause_registry.py query --pending`, which
-prints an empty list when no clause is pending. Catalogue contracts and
-admission/kit corrections have focused evidence; integrated verification
-remains outstanding.
+The admitted clause register records implementation scope and pending work.
+Inspect it with `python -X utf8 tools/knowledge/clause_registry.py query --pending`.
+An empty queue does not certify runtime behavior or engine parity.
 
 Modular integration closure includes the E2E battery in
 `tests/integration/e2e/`: declared scenarios, coverage inventory and

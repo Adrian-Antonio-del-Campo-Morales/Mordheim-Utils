@@ -73,7 +73,7 @@ def test_body_only_divergence_fails_without_rewriting_the_checked_file(tmp_path)
 def test_parallel_desktop_calls_keep_their_own_facts():
     def decide(case):
         return codes(call(case["operation"], *case["args"]))
-    with ThreadPoolExecutor(max_workers=4) as pool:
+    with ThreadPoolExecutor(max_workers=2) as pool:
         assert list(pool.map(decide, CASES * 3)) == [case["codes"] for case in CASES * 3]
 
 

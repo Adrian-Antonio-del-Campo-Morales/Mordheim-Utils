@@ -4,7 +4,6 @@ from dataclasses import replace
 
 import pytest
 
-from mordheim_combat.kernel import require_optimized_support
 from mordheim_combat.modular.attacks import resolve_reference_attack
 from mordheim_combat.modular.pools import _resolve_attack_pool
 from mordheim_combat.modular.state import initialize_fighter
@@ -64,12 +63,6 @@ def test_canonical_six_wounds_once_without_a_wound_or_critical_die(precompiled, 
     result = attack(a, foe, [('a.hit', 6)])
     assert result.damage == 1 and result.defender.wounds == 3
     assert not result.critical and result.attacker.critical_available
-    # Wights and Grave Guards also carry pending native local modifiers
-    # (causes-fear/psychology-immunity) that the gate names before Killing
-    # Blow. The invariant under test is that the entry refuses before it can
-    # silently drop the behaviour, not which pending capability is named.
-    with pytest.raises(ValueError, match='modular engine'):
-        require_optimized_support(a, foe)
 
 
 def test_adjacent_hit_and_foreign_profile_still_roll_to_wound(precompiled):

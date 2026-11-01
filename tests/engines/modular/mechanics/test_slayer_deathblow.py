@@ -15,7 +15,6 @@ from dataclasses import replace
 import pytest
 
 from mordheim_combat import phases
-from mordheim_combat.kernel import require_optimized_support
 from mordheim_combat.modular.contexts import _injury_context
 from mordheim_combat.modular.rounds import resolve_round
 from mordheim_combat.modular.state import initialize_duel

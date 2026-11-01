@@ -4,10 +4,10 @@ note: Current included compiler, trait and mechanic binding memberships of imple
   and Trollheim. Counts.rules counts memberships, not distinct rules or complete-clause semantic certification.
   Compound excluded or deferred clauses remain in their canonical runtime records.
 counts:
-  families: 260
+  families: 261
   rules: 998
   kinds:
-    compiler: 65
+    compiler: 66
     mechanic: 157
     trait: 38
 families:
@@ -363,7 +363,9 @@ families:
   basis: unique-effect
   members:
   - trollheim-cult-of-the-possessed/the-possessed--mutations
-- id: mechanic.netter
+# Only the supplied caught-victim state is admitted; the net-charge producer
+# remains excluded in the canonical rule's runtime effects.
+- id: condition.netted
   kind: mechanic
   implemented: 'YES'
   basis: unique-effect
@@ -825,7 +827,6 @@ families:
   members:
   - bretonnian-chapel-guard/battle-pilgrims--hatred
   - chaos-streets-undead-bloodlines/strigoi-vampire--hatred-everyone
-  - khemri-tomb-guardians/necrotect--hatred
   - order-of-the-mare-web/pilgrims--hatred
   - sons-of-hashut/band--chaos-dwarfs-special-skills-unlimited-hatred
 - id: mechanic.hatred-dark-elves
@@ -1000,7 +1001,6 @@ families:
   - black-dwarfs/band--hard-head
   - chaos-streets-dwarf-treasure-hunters/band--hard-head
   - chaos-streets-pit-fighters/dwarf-troll-slayer--hard-head
-  - clan-angrund-kep/band--dwarf-special-skills-thick-skull
   - clan-angrund-kep/band--hard-head
   - clockworkers-sc/dwarf-engineer--hard-head
   - dwarf-rangers/band--hard-head
@@ -1020,7 +1020,6 @@ families:
   - black-dwarfs/band--hard-to-kill
   - chaos-streets-dwarf-treasure-hunters/band--hard-to-kill
   - chaos-streets-pit-fighters/dwarf-troll-slayer--hard-to-kill
-  - clan-angrund-kep/band--dwarf-special-skills-true-grit
   - clan-angrund-kep/band--hard-to-kill
   - clockworkers-sc/dwarf-engineer--hard-to-kill
   - dwarf-rangers/band--hard-to-kill
@@ -1520,6 +1519,12 @@ families:
   basis: unique-effect
   members:
   - beastmen-raiders/centigors--trample
+- id: profile-rule.necrotect--hatred
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - khemri-tomb-guardians/necrotect--hatred
 - id: profile-rule.fanatics--frantic
   kind: compiler
   implemented: 'YES'
@@ -1817,6 +1822,7 @@ families:
   - black-orcs/band--black-orc-special-skills-ard-ead
   - chaos-streets-dwarf-treasure-hunters/band--dwarf-special-skills-thick-skull
   - chaos-streets-greenskins/band--orc-special-skills-ard-ead
+  - clan-angrund-kep/band--dwarf-special-skills-thick-skull
   - dwarf-rangers/band--dwarf-special-skills-thick-skull
   - dwarf-treasure-hunters/band--dwarf-special-skills-thick-skull
   - orc-mob/band--orc-special-skills-ard-ead
@@ -1828,6 +1834,7 @@ families:
   members:
   - black-dwarfs/band--chaos-dwarf-special-skills-true-grit
   - chaos-streets-dwarf-treasure-hunters/band--dwarf-special-skills-true-grit
+  - clan-angrund-kep/band--dwarf-special-skills-true-grit
   - dwarf-rangers/band--dwarf-special-skills-true-grit
   - dwarf-treasure-hunters/band--dwarf-special-skills-true-grit
   - khemri-cursed-of-karak-zorn/band--karak-zorn-special-skills-hard-as-steel

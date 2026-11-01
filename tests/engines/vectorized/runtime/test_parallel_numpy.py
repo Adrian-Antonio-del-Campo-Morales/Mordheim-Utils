@@ -29,7 +29,7 @@ def test_parallel_numpy_matches_the_sequential_driver_exactly(vector_case):
     )
     sequential = simulate_duel(request, backend="numpy")
     assert sequential.first_wins + sequential.second_wins + sequential.unresolved == simulations
-    for workers in (1, 2, 4):
+    for workers in (1, 2):
         pooled = simulate_duel_parallel(request, workers=workers)
         assert pooled == sequential
     # Reproducible across separate calls with the same split.

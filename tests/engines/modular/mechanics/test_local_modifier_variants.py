@@ -12,7 +12,6 @@ from mordheim_combat.modular.rounds import select_shadow_dance
 from mordheim_combat.modular.state import initialize_duel, initialize_fighter
 from mordheim_combat.phases import Condition
 from mordheim_combat.phases import AttackPoolContext, build_attacks
-from mordheim_combat.kernel import require_optimized_support
 from mordheim_combat_lab.verification.dice import StrictDecisions, StrictDice
 import sys
 
@@ -301,8 +300,6 @@ def test_priest_bite_follows_both_double_handed_weapons_and_uses_only_own_streng
     assert result.attacks[-1].wounded is wounded  # S3 needs 4, rather than the weapon's S5.
     assert not result.attacks[-1].saved  # No fist armour bonus.
     assert (result.state.second if priest_first else result.state.first).wounds == (1 if wounded else 2)
-    with pytest.raises(ValueError, match='modular'):
-        require_optimized_support(first, second)
 
 
 @pytest.mark.parametrize('injury,condition', [(1, Condition.KNOCKED_DOWN), (5, Condition.OUT)])
@@ -367,8 +364,6 @@ def test_sabretusk_charge_replaces_profile_attacks_only_during_actual_charge(cha
     result = resolve_round(cub, foe, state, dice, choices)
     dice.finish(); choices.finish()
     assert len(result.attacks) == expected + 1
-    with pytest.raises(ValueError, match='modular'):
-        require_optimized_support(cub, foe)
 
 
 @pytest.mark.usefixtures("_frozen_compiles")
@@ -414,8 +409,6 @@ def test_seaguard_can_save_one_reroll_for_a_later_miss_and_bonus_expires_after_f
     later = resolve_round(guard, foe, result.state, dice, choices)
     dice.finish(); choices.finish()
     assert later.state.second.wounds == 1  # S3 now needs 4; no repeat resource.
-    with pytest.raises(ValueError, match='modular'):
-        require_optimized_support(guard, foe)
 
 
 @pytest.mark.usefixtures("_frozen_compiles")
@@ -594,8 +587,6 @@ def test_bitter_valour_rerolls_wounds_using_natural_strength(strength, weapon, q
         [('hit', 4), ('wound', 1)] + ([('wound.reroll', 4)] if qualifies else []))
     assert result.wounded is qualifies
     assert not strike(knight, enemy(5), [('hit', 1)]).hit
-    with pytest.raises(ValueError, match='modular'):
-        require_optimized_support(knight, enemy())
 
 
 def test_slimy_makes_four_miss_but_keeps_natural_six_and_named_control(precompiled):
@@ -634,8 +625,6 @@ def test_wolf_rat_bite_uses_strength_four_without_an_armour_penalty():
     assert strike(rat, enemy(armour='armour.light-armour'),
         [('hit', 4), ('wound', 3), ('armour', 6)]).saved
     assert not strike(rat, enemy(), [('hit', 4), ('wound', 2)]).wounded
-    with pytest.raises(ValueError, match='modular'):
-        require_optimized_support(rat, enemy())
 
 
 @pytest.mark.parametrize('face,immune,wounded', [(6, False, True), (5, False, False), (6, True, False)])
@@ -748,8 +737,6 @@ def test_domnu_gypsy_ward_only_applies_to_magical_attacks(precompiled, magical, 
     if face is not None: rolls.append(('special.ward', face))
     if not saved: rolls.append(('injury.0', 1))
     assert strike(incoming, domnu, rolls).saved is saved
-    with pytest.raises(ValueError, match='modular'):
-        require_optimized_support(incoming, domnu)
 
 
 def test_domnu_conditional_ward_preserves_a_stronger_save_and_can_survive_a_mundane_only_one(precompiled):
@@ -787,8 +774,6 @@ def test_mourngul_onslaught_recurses_on_physical_sixes_and_retains_pool_interrup
     else:
         assert [a.hit_roll for a in result.attacks[:-1]] == hits
         assert result.state.second.wounds == 2
-    with pytest.raises(ValueError, match='modular'):
-        require_optimized_support(mourngul, opponent)
 
 
 # Fear uses the same canonical compiler, round pipeline and strict tapes.
@@ -1065,8 +1050,6 @@ def test_acquired_fear_reaches_the_same_real_charge_test(source):
     result = resolve_round(owner, foe, state, dice, StrictDecisions([]))
     dice.finish()
     assert not result.state.engaged and not result.attacks
-    with pytest.raises(ValueError, match='modular'):
-        require_optimized_support(owner, foe)
 
 
 @pytest.mark.parametrize('hand,animal', [('main', True), ('off', True), ('main', False)])
@@ -1117,8 +1100,6 @@ def test_cold_blooded_psychology_uses_lowest_two_in_the_real_fear_charge(band, f
     assert result.state.engaged is passed
     assert bool(result.attacks) is passed
     assert result.state.failed_charges == (frozenset() if passed else frozenset({'second'}))
-    with pytest.raises(ValueError, match='modular'):
-        require_optimized_support(skink, enemy())
 
 
 @pytest.mark.parametrize('band,profile,faces,passed,attacks', [
@@ -1176,8 +1157,6 @@ def test_craven_can_fail_a_fear_charge_even_when_the_fimir_causes_fear(profile):
     result = fear_round(fighter, rolls, charging='second')
     assert not result.state.engaged and not result.attacks
     assert result.state.failed_charges == frozenset({'second'})
-    with pytest.raises(ValueError, match='modular'):
-        require_optimized_support(fighter, enemy())
 
 
 @pytest.mark.usefixtures("_frozen_compiles")
@@ -1227,8 +1206,6 @@ def test_stupidity_failure_cancels_only_the_initial_voluntary_charge(precompiled
     assert result.state.first.stupidity_failed
     assert result.state.failed_charges == frozenset({'first'})
     assert fighter.global_effects.tags.count('mechanic.stupidity') == 1
-    with pytest.raises(ValueError, match='modular'):
-        require_optimized_support(fighter, foe)
 
 
 def test_stupidity_persists_through_enemy_turn_then_pass_restores_attacks(precompiled):
@@ -1462,8 +1439,6 @@ def test_elf_hatred_filters_individual_identity_and_first_combat_turn(band, prof
                                          dice, key='x', first_round=first_round)
         dice.finish()
         assert not result.hit
-    with pytest.raises(ValueError, match='modular'):
-        require_optimized_support(warrior, wanted)
 
 
 @pytest.mark.usefixtures("_frozen_compiles")
@@ -1546,8 +1521,6 @@ def test_fear_immunity_skips_the_test_without_general_leadership_immunity(band, 
     with pytest.raises(ValueError, match='Leadership'):
         resolve_local_leadership(fighter, result.state, StrictDice([]), StrictDecisions([]),
                                  'ld', first=False, psychology=True, stupidity=True)
-    with pytest.raises(ValueError, match='modular'):
-        require_optimized_support(fighter, enemy())
 
 
 @pytest.mark.usefixtures("_frozen_compiles")
@@ -1569,8 +1542,6 @@ def test_explicit_automatic_leadership_passes_without_dice_or_borrowed_leader(ba
         assert resolve_local_leadership(fighter, state, dice, decisions, 'ld', first=True, **kwargs)
     assert not resolve_stupidity(fighter, enemy(), state, dice, decisions).first.stupidity_failed
     dice.finish(); decisions.finish()
-    with pytest.raises(ValueError, match='modular'):
-        require_optimized_support(fighter, enemy())
 
 
 @pytest.mark.usefixtures("_frozen_compiles")
@@ -1602,8 +1573,6 @@ def test_psychology_immunity_cancels_individual_tests_and_benefits_only(band, pr
     tape = StrictDice([{'key': 'x.hit', 'value': 1}, {'key': 'x.hit.reroll', 'value': 1}])
     resolve_reference_attack(fighter, foe, a, d, weapon, tape, key='x')
     tape.finish(); dice.finish(); decisions.finish()
-    with pytest.raises(ValueError, match='modular'):
-        require_optimized_support(fighter, foe)
 
 
 @pytest.mark.usefixtures("_frozen_compiles")
@@ -1645,8 +1614,6 @@ def test_spawn_explicit_automatic_leadership_preserves_its_separate_preparation(
     assert resolve_local_leadership(spawn, state, dice, decisions, 'ld', first=True)
     assert resolve_local_leadership(spawn, state, dice, decisions, 'fear', first=True, psychology=True, fear=True)
     dice.finish(); decisions.finish()
-    with pytest.raises(ValueError, match='modular'):
-        require_optimized_support(spawn, enemy())
 
 
 @pytest.mark.usefixtures("_frozen_compiles")
@@ -1702,8 +1669,6 @@ def test_bloated_squishy_overrides_no_pain_per_q037_ruling(precompiled):
     assert 'rule.squishy' in bloated.global_effects.tags
     result = strike(incoming, bloated, [('hit', 4), ('wound', 5), ('injury.0', 4)])
     assert result.defender.condition == Condition.STUNNED
-    with pytest.raises(ValueError, match='modular'):
-        require_optimized_support(bloated, incoming)
 
 
 @pytest.mark.usefixtures("_frozen_compiles")
@@ -1793,8 +1758,6 @@ def test_frantic_ignores_weapon_penalties_low_initiative_and_standing_up():
     state = initialize_duel(slow, foe, dice, context=DuelContext(charging=('second',), active_participant='second'))
     assert len(resolve_round(slow, foe, state, dice, decisions).attacks) == 2
     dice.finish(); decisions.finish()
-    with pytest.raises(ValueError, match='modular'):
-        require_optimized_support(fanatic, foe)
 
 
 @pytest.mark.usefixtures("_frozen_compiles")
@@ -2431,8 +2394,6 @@ def test_native_whaler_doubles_only_unsaved_aquatic_damage(aquatic, expected):
     result = resolve_reference_attack(fighter, foe, a, d, fighter.main_weapon, dice, key='x')
     dice.finish()
     assert result.damage == expected and result.defender.wounds == 4 - expected
-    with pytest.raises(ValueError, match='modular'):
-        require_optimized_support(fighter, foe)
 
 
 @pytest.mark.usefixtures("_frozen_compiles")
@@ -2491,8 +2452,6 @@ def test_morrs_servant_fear_exception_has_both_charge_directions(charging, undea
         else: assert result.second.fear_hit_sixes
     else:
         assert result.engaged and not result.second.fear_hit_sixes
-    with pytest.raises(ValueError, match='modular'):
-        require_optimized_support(priest, target)
 
 
 @pytest.mark.usefixtures("_frozen_compiles")
@@ -2530,8 +2489,6 @@ def test_native_ulric_pelt_is_strength_modified_armour_not_a_ward(strength, roll
 def test_ulric_pelt_contributes_once_and_the_printed_kit_refuses_other_armour():
     profile = 'hireling.hired-sword.wolf-priest-of-ulric-miracle-workers'
     wolf = canonical('hirelings.hired-sword.2b', profile, 'weapon.dagger', defence_ids=('defence.wolf-pelt-cloak',))
-    with pytest.raises(ValueError, match='modular'):
-        require_optimized_support(wolf, enemy())
 
 
 @pytest.mark.usefixtures("_frozen_compiles")
@@ -2614,8 +2571,6 @@ def test_war_honed_resource_survives_a_real_crude_belch_round():
         psychology=True, opponent=halfling, return_state=True)
     assert not passed and 'leadership.first-failed' in current.resources_spent
     dice.finish(); decisions.finish()
-    with pytest.raises(ValueError, match='modular'):
-        require_optimized_support(fighter, halfling)
 
 
 @pytest.mark.usefixtures("_frozen_compiles")
@@ -2682,8 +2637,6 @@ def test_righteous_fury_shared_sisters_skill_filters_targets_and_first_round(fac
             tape, key='f', first_round=first)
         tape.finish()
         assert not result.hit
-    with pytest.raises(ValueError, match='modular'):
-        require_optimized_support(fighter, target)
 
 
 @pytest.mark.usefixtures("_frozen_compiles")
@@ -2751,8 +2704,6 @@ def test_native_snorri_drinking_results_persist_in_both_player_turns(drinking, w
         assert not any(attack.hit for attack in result.attacks)
         state = result.state
     assert state.first.frenzy is (drinking == 6)
-    with pytest.raises(ValueError, match='modular'):
-        require_optimized_support(fighter, target)
 
 
 @pytest.mark.usefixtures("_frozen_compiles")
@@ -2802,8 +2753,6 @@ def test_carried_relic_passes_only_first_required_leadership_test(item):
     dice.finish(); decisions.finish()
     with pytest.raises(ValueError, match='returned fighter state'):
         resolve_local_leadership(fighter, state, StrictDice([]), StrictDecisions([]), 'unsafe', first=True)
-    with pytest.raises(ValueError):
-        require_optimized_support(fighter, foe)
 
 
 @pytest.mark.usefixtures("_frozen_compiles")

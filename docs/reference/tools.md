@@ -95,8 +95,8 @@ python tools/mordheim-utils.py tests modular mechanics -- --help
 ```
 
 `--list` reads file names only. `--collect-only` imports test modules and
-collects cases but does not execute bodies. Eight-worker examples are intended
-for independent tests; runtime tests with inner pools remain serial.
+collects cases but does not execute bodies. Use `-n 6 --dist=load` to distribute
+engine tests; concurrency contracts retain real inner pools capped at two workers.
 
 ## Tests: purpose and selection
 
@@ -235,9 +235,10 @@ python tools/mordheim-utils.py tests warband-manager web -t "display" --maxWorke
 | `-q` / `-v`, `--tb=short`, `--durations=10` | Python output and failure diagnostics |
 | `-x` / `--maxfail=3`, `--lf` | Python early stopping or cached failures |
 
-Eight workers are examples, not forced defaults. Keep collection, internal
-process-pool tests, shared writers and timing-sensitive measurements serial.
-Do not multiply inner workers by xdist workers. A skip does not prove native
+Worker counts are examples, not forced defaults. Keep collection, shared
+writers and timing-sensitive measurements serial. Engine concurrency contracts
+use inner pools of at most two workers; other test execution is distributed by
+xdist. A skip does not prove native
 execution; exit code 5 means an empty Python selection. Listing/collection and
 runner self-checks do not certify rule behavior or statistical equivalence.
 
@@ -251,7 +252,9 @@ runner self-checks do not certify rule behavior or statistical equivalence.
 | `performance calibrate` | Already measures worker configurations; no extra worker option |
 | `tests env`, `check verify`, `check report rules`, `check coverage`, `check presentation`, `check ci`, `app` | No worker-count option exposed by these entries; do not append unsupported flags |
 
-Keep `tests parity statistical` serial: its cases run their own modular-oracle sampling, so an outer xdist pool multiplies workers and distorts the comparison.
+`tests parity statistical -n 6 --dist=load -q` is supported. Ordinary sampling
+checks use sequential inner execution; tests specifically verifying concurrent
+queues or process scheduling retain pools capped at two workers.
 
 For time-to-solution measurements, the benchmark command can compare strategies:
 
@@ -259,10 +262,10 @@ For time-to-solution measurements, the benchmark command can compare strategies:
 python tools/mordheim-utils.py performance benchmark --tts --pair-set mini --backend numpy --strategies "sequential,processes=8,parallel=8"
 ```
 
-Keep benchmark measurements isolated from other workloads. Do not wrap parity
-or benchmarks in xdist, and do not add `-n` to tests that create inner process
-pools. Broad engine selections may include those tests, so their unfiltered
-examples stay serial. Collection and typechecks are not accelerated by xdist.
+Keep benchmark measurements isolated from other workloads. Do not wrap real
+parity campaigns or benchmarks in xdist; their CLI worker controls remain
+independent of pytest. Engine pytest selections can run together with `-n 6`.
+Collection and typechecks are not accelerated by xdist.
 
 ### Inputs and catalogues
 

@@ -5,7 +5,6 @@ import pytest
 from mordheim_core.models import Characteristics, DuelContext, DuelRequest, FighterBuild, LocalParticipant
 from mordheim_core.context import prepare_duel_context
 from mordheim_core.dice import ScriptedDice
-from mordheim_combat.kernel import compile_duel_plan
 from mordheim_combat.modular.state import initialize_duel
 from mordheim_combat.modular.rounds import resolve_round
 

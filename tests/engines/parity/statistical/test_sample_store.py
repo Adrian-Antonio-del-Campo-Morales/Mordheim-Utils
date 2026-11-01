@@ -100,7 +100,7 @@ def test_e2e_cli_samples_resumes_and_compares(tmp_path):
     key = CASES["simple"]
     selection = ["--level", "e2e", "--id", key, "--store", str(tmp_path)]
     command = ["sample", "--engine", "modular", *selection,
-               "--simulations", "2", "--chunk", "1", "--workers", "2"]
+               "--simulations", "2", "--chunk", "1", "--workers", "1"]
     assert store.main(command) == 0
     path = store.sample_path(tmp_path, "modular", key)
     record = store.load_sample(path)

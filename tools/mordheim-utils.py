@@ -162,7 +162,7 @@ TESTS_SECTIONS = {
                                "e2e": "-q"},
     },
     "parity": {
-        "summary": "statistical comparisons and the tooling that checks them",
+        "summary": "statistical engine comparisons and their tooling",
         "dirs": ("tests/engines/parity", "tests/tooling/parity"),
         "subsections": {
             "statistical": (("pytest", ("tests/engines/parity/statistical",)),),
@@ -172,8 +172,8 @@ TESTS_SECTIONS = {
             ("pytest", ("tests/engines/parity/statistical",)),
             ("pytest", ("tests/tooling/parity",)),
         ),
-        # The statistical runner creates its own process pools: keep pytest serial.
-        "example_options": "-q",
+        # Concurrency contracts retain real pools bounded to two workers.
+        "example_options": "-n 6 --dist=load -q",
     },
     "shared": {
         "summary": "shared engine contracts and frozen-input integrity",
@@ -350,7 +350,7 @@ def _tests_help(name: str | None = None) -> str:
             "  python tools/mordheim-utils.py tests warband-manager web --maxWorkers=8",
             "", "Use section/subsection names, not engines/modular/runtime as a section.",
             "Explicit existing test paths/node IDs after a section replace its default paths.",
-            "No sequencer or phase ordering. Tests with inner pools stay serial in pytest.",
+            "No sequencer or phase ordering. Concurrency tests use bounded inner pools.",
             "`check parity` runs catalogued scenarios; `tests parity` tests that infrastructure",
             "and the existing engine comparisons. See docs/reference/tools.md.",
         ))
@@ -387,7 +387,7 @@ def _tests_help(name: str | None = None) -> str:
     if name != "env":
         lines.extend(("", "Runner options:",
                       "  pytest: -k NAME, -q, -v, --tb=short, --durations=10, --collect-only",
-                      "  pytest: -n 8 --dist=load only for independent checks; keep inner pools serial.",
+                      "  pytest: -n 6 --dist=load; concurrency contracts retain inner pools of at most two.",
                       "  Vitest selections: --maxWorkers=8; pytest flags do not apply.",
                       "  Arguments after -- are passed to the runner, including its own --help."))
     return "\n".join(lines) + "\n"
@@ -431,7 +431,7 @@ def _subsection_help(name: str, sub: str, section) -> str:
         if "-n" in options:
             lines.append(f"  {prefix} -k selected_test -n 8 --dist=load -q --tb=short")
         lines.extend(("", "An explicit existing file or file.py::test_name replaces these paths.",
-                      "No prerequisites are added. Collection and tests with internal pools stay serial."))
+                      "No prerequisites are added. Collection stays serial; concurrency contracts use bounded pools."))
     else:
         lines.extend(("", "Options:", "  --list          files on disk, without running Vitest",
                       "  --maxWorkers=8  eight Vitest workers",
@@ -1054,7 +1054,7 @@ Help and discovery:
 
 No arguments display help. Examples are choices, not a required sequence.
 `tests parity` checks tests; `check parity` executes catalogued engine scenarios.
-Eight workers are examples, not forced defaults. Keep inner-pool tests serial.
+Worker counts are examples, not forced defaults. Concurrency contracts use bounded pools.
 Guide: docs/reference/tools.md
 """
 

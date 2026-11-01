@@ -10,12 +10,9 @@ from dataclasses import replace
 import numpy as np
 import pytest
 
-from mordheim_combat.kernel import compile_duel_plan
 from mordheim_combat.modular.pools import _resolve_attack_pool
 from mordheim_combat.modular.rounds import resolve_round, select_attack_replacement
 from mordheim_combat.modular.state import initialize_duel, initialize_fighter
-from mordheim_combat.native._combat_compile import compile_duel
-from mordheim_combat.vectorized import simulate_batch, simulate_duel, simulate_duel_parallel
 from mordheim_combat_lab.verification.dice import StrictDecisions, StrictDice
 import sys
 
