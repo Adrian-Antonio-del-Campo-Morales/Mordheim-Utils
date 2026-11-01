@@ -12,9 +12,15 @@ cdef struct Rng
 cdef struct EffectC
 cdef struct SourceC
 cdef struct FighterC
+cdef struct SideC
 cdef struct DuelC
+cdef struct TablesC
+cdef struct ParticipantC
+cdef struct ContextC
+cdef struct GroupsC
 cdef struct StateC
 cdef struct PreparedC
+cdef struct BatchC
 
 
 cdef int apply_hit_defences_c(DuelC* d, int atk_side, SourceC* src,

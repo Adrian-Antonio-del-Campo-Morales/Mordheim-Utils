@@ -91,7 +91,7 @@ def test_local_pairs_preserve_normal_strength_armour_and_injury(band, profile, w
     ('silent-brotherhood-sc', 'poisoner', 'weapon.long-daggers', 'long_daggers'),
     ('low-kings-mim', 'racketeer', 'weapon.knuckledusters', 'knuckledusters'),
 ])
-def test_local_pair_access_hands_and_unported_boundary(band, profile, weapon, item):
+def test_local_pair_access_hands_and_native_admission(band, profile, weapon, item):
     c = catalogue()
     choice = next(row for row in c.profiles('mordheim', band) if row.profile_id == profile)
     assert weapon in dict(c.weapons(choice))
@@ -103,8 +103,7 @@ def test_local_pair_access_hands_and_unported_boundary(band, profile, weapon, it
             fighter(band, profile, weapon, off_hand_id=off)
     with pytest.raises(ValueError, match='equipment is not available'):
         fighter('grave-robbers-sylv', 'graver', weapon)
-    with pytest.raises(ValueError, match='modular'):
-        require_optimized_support(unit, target())
+    require_optimized_support(unit, target(), backend='native')
     if item == 'long_daggers':
         for henchman in ('brotherhood-agents', 'brotherhood-novices'):
             ordinary = next(row for row in c.profiles('mordheim', band) if row.profile_id == henchman)
@@ -175,12 +174,11 @@ def test_darksteel_uses_critical_damage_and_wicked_edge_not_wound_rerolls():
     ('weapon.wizards-staff', 'sorcerous-society-lotd4', 'magus'),
     ('weapon.katana', 'pirates-of-the-cathayan-sea-sar', 'disgraced-warlord'),
 ])
-def test_two_handed_profiles_refuse_an_additional_weapon_and_unported_execution(weapon, band, profile):
+def test_two_handed_profiles_refuse_an_additional_weapon_and_admit_native_execution(weapon, band, profile):
     unit = fighter(band, profile, weapon)
     with pytest.raises(ValueError, match='occupies both hands'):
         fighter(band, profile, weapon, off_hand_id='weapon.dagger')
-    with pytest.raises(ValueError, match='modular'):
-        require_optimized_support(unit, target())
+    require_optimized_support(unit, target(), backend='native')
 
 
 def test_skull_busta_strength_expires_and_concussion_remains():
@@ -226,7 +224,7 @@ def test_skull_busta_preserves_no_pain_and_thick_skull_reactions():
         assert result.defender.condition == Condition.KNOCKED_DOWN
 
 
-def test_skull_busta_canonical_access_active_combinations_and_modular_boundary():
+def test_skull_busta_canonical_access_active_combinations_and_native_admission():
     c = catalogue()
     choice = next(row for row in c.profiles('mordheim', 'savage-orcs-kaz') if row.profile_id == 'boyz')
     assert 'weapon.skull-busta' in dict(c.weapons(choice))
@@ -247,8 +245,7 @@ def test_skull_busta_canonical_access_active_combinations_and_modular_boundary()
         assert any('only be combined with shields' in issue['message'] for issue in issues)
     with pytest.raises(ValueError, match='equipment is not available'):
         fighter('grave-robbers-sylv', 'graver', 'weapon.skull-busta')
-    with pytest.raises(ValueError, match='modular'):
-        require_optimized_support(unit, target())
+    require_optimized_support(unit, target(), backend='native')
 
 
 def test_spirit_knife_is_local_to_the_used_hand_and_keeps_its_armour_modifier():
@@ -271,12 +268,8 @@ def test_spirit_knife_is_local_to_the_used_hand_and_keeps_its_armour_modifier():
     saved = attack(attacker, target(wounds=2, armour_id='armour.light-armour'), attacker.off_hand,
         [('item.hit', 6), ('item.spectral-touch.armour', 5), ('item.wound', 1)])
     assert saved.defender.wounds == 2
-    # The knife's own printed modifier is a pending native local modifier and
-    # the gate names it before Spectral Touch. Refusal before any silent drop
-    # is the invariant; the spectral-specific gate is pinned synthetically in
-    # tests/python/combat/modular/test_spectral_touch_activation.py.
-    with pytest.raises(ValueError, match='modular engine'):
-        require_optimized_support(attacker, target())
+    # The native port now admits both the knife modifier and Spectral Touch.
+    require_optimized_support(attacker, target(), backend='native')
 
 
 @lru_cache
@@ -353,7 +346,7 @@ def test_shock_rod_strikes_before_faster_enemy_in_real_round():
     assert len(result.attacks) == 1
 
 
-def test_shock_rod_access_two_hands_and_modular_boundary():
+def test_shock_rod_access_two_hands_and_native_admission():
     c = catalogue()
     for profile, allowed in (('chieftain', True), ('packmasters', True),
                              ('sorcerer', False), ('underlings', False), ('clanrats', False)):
@@ -369,5 +362,4 @@ def test_shock_rod_access_two_hands_and_modular_boundary():
         fighter('skaven-of-clan-pristekk-sc', 'packmasters', 'weapon.shock-rod', off_hand_id='weapon.dagger')
     with pytest.raises(ValueError, match='equipment is not available'):
         fighter('grave-robbers-sylv', 'graver', 'weapon.shock-rod')
-    with pytest.raises(ValueError, match='modular'):
-        require_optimized_support(unit, target())
+    require_optimized_support(unit, target(), backend='native')

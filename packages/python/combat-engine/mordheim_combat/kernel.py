@@ -325,8 +325,177 @@ def _numpy_gate() -> PendingCapabilities:
 
 #: NumPy admission gate. Port groups replace this value when a behavior lands.
 NUMPY_PENDING = _numpy_gate()
-#: Native admission gate: frozen until the Cython port covers the behavior.
-NATIVE_PENDING = _pending_snapshot()
+#: Behaviors whose Cython runtime path is connected end to end
+#: (``native/_combat_native.pyx``): the Psychology and Leadership port.
+#: Ranald's Luck, the Oracle, the Augur and the Scryer dice mechanics are
+#: ported for Leadership dice but stay gated until the native attack dice
+#: offer them too.  The charge restrictions (Cannot Charge, Shallyan
+#: Strictures) are read by the native charge sampling.
+NATIVE_CONNECTED_TAGS = frozenset({
+    # Psychology: Fear, Stupidity, immunities, charms, charge gates
+    "mechanic.causes-fear", "mechanic.psychology-immunity", "mechanic.stupidity",
+    "condition.stupidity-exempt", "mechanic.cold-blooded-psychology",
+    "mechanic.fear-immunity", "mechanic.fear-reroll", "mechanic.craven",
+    "mechanic.fears-fire", "mechanic.fear-human", "mechanic.fear-beastmen",
+    "mechanic.morrs-servant", "mechanic.beauty-of-the-sea", "mechanic.charm-immunity",
+    "mechanic.hypnotic-musk", "condition.goading-charge", "mechanic.mark-of-shornaal",
+    "mechanic.mesmerising-dance", "mechanic.opposite-sex-charge-test",
+    "mechanic.slaanesh-charge-test", "mechanic.hypnotist", "mechanic.taal-tranquil-fauna",
+    "mechanic.bear-handler", "mechanic.bear-handler-recipient", "condition.bear-handler-nearby",
+    "mechanic.cannot-charge", "mechanic.shallya-strictures",
+    # The supplied net: the victim starts Knocked Down and cuts itself
+    # free in its own recovery (``init_state_c`` / ``phase_stand_up_c``).
+    "condition.netted",
+    # Leadership: leaders, handlers, relics, re-rolls and dice conventions
+    "mechanic.leader-six", "mechanic.leader-twelve", "mechanic.automatic-leadership",
+    "mechanic.handler-leadership", "mechanic.cold-blooded-leadership",
+    "mechanic.own-leadership", "mechanic.mob-leadership", "mechanic.leadership-reroll",
+    "mechanic.mandatory-leadership-reroll", "mechanic.first-failed-leadership-reroll",
+    "mechanic.broken-spirit", "mechanic.devoted", "mechanic.dim-witted-leader",
+    "mechanic.ghostly-howl", "mechanic.relay-orders", "mechanic.songster",
+    "mechanic.slave-driver", "mechanic.sigmar-enlightened", "mechanic.undivided-leader",
+    "mechanic.wizened-halfling", "defence.holy-relic", "condition.poetry-victorious-leader",
+    "condition.command.raise-our-insignia", "mechanic.questing-vow",
+    # Hatred and the rest of ``modular/contexts.py::_hit_reroll``, folded by
+    # the compile layer through the oracle's own predicate.  ``pikewall`` is
+    # excluded: its offer reads ``condition.being-charged``, which the
+    # compiled round does not set yet.
+    "mechanic.hatred-orcs-goblins", "mechanic.hatred-skaven",
+    "mechanic.hatred-dwarfs", "mechanic.hatred-skaven-orcs-goblins",
+    "mechanic.hatred-dwarfs-skaven", "mechanic.hatred-undead",
+    "mechanic.hatred-beastmen", "mechanic.hatred-dark-elves",
+    "mechanic.hatred-high-elves", "mechanic.hatred-human-warband",
+    "mechanic.hatred-chaotic-warband", "mechanic.kindred-hatred",
+    "mechanic.greenskin-traitor", "mechanic.ulric-intense-rivals",
+    "mechanic.noble-disdain", "mechanic.dueling-pride", "skill.righteous-fury",
+    # The eight printed weapon profiles: six compile to generic EffectSet
+    # fields the compiled operators already consume, and the Shock Rod's
+    # stun band and Basha's helmet clause are ported in the injury table.
+    "weapon.katana", "weapon.kanabo", "weapon.knuckledusters",
+    "weapon.long-daggers", "weapon.pry-bar", "weapon.shock-rod",
+    "weapon.skull-busta", "weapon.wizards-staff",
+    # The injury table's supplied shapes and its post-table reactions.
+    "mechanic.bat-injury-chart", "mechanic.fen-hard-to-kill",
+    "mechanic.hard-to-rattle", "mechanic.inured-to-pain",
+    "mechanic.undead-construct", "mechanic.veskit-no-pain",
+    "mechanic.marianna-no-pain-jump-up", "mechanic.needle-and-thread",
+    "mechanic.blessing-of-morr", "rule.squishy",
+    "weapon.count-of-ventimiglias-misericordia",
+    # The supplied ethereal save face (an ``effect-values`` consumer).
+    "mechanic.ethereal-hit-save", "mechanic.ghost-pirate-ethereal",
+    # Personal re-roll resources.  LIMIT: the compiled core offers them at
+    # the Leadership, To Hit and To Wound dice; the oracle also offers them
+    # at the armour, injury and parry dice, which are not wrapped yet.
+    "mechanic.ranalds-luck", "mechanic.oracle", "mechanic.augur-one-roll-reroll",
+    # Pikewall reads ``condition.being-charged``, which the folded re-roll
+    # table now carries as its own dimension; Thin Flesh lowers the wound
+    # target's Toughness.
+    "mechanic.pikewall", "rule.thin-flesh",
+    # Own-turn recovery options: the Revenant's regeneration, Herb Lore, the
+    # Rousing Sermon and the Alchemist's brew.
+    "mechanic.curse-of-the-revenant", "mechanic.herb-lore",
+    "mechanic.herb-lore-outside-combat", "mechanic.rousing-sermon",
+    "condition.alchemist-backleys-brew", "condition.alchemist-addicted",
+    "condition.alchemist-aberrantius-vigortia",
+    # The Dark Jester's per-turn chooser and its three consumers:
+    # Babbling Banter's To Hit swing, the Dodge trick's 4+ melee save
+    # and the Trip trick's wound replacement.
+    "mechanic.confound-and-confuse",
+    # The Djinn's two powers and every consumer of them: the To Hit swing
+    # against the bearer, the worsened ward, regeneration and armour of its
+    # victim, and the construct's raised threshold.
+    "mechanic.djinns-curse", "condition.djinns-curse-active",
+    "condition.djinns-luck-active",
+    # The four learned Shadow Dances and their consumers.
+    "dance.whirling-death", "dance.storm-of-blades", "dance.the-shadows-coil",
+    "dance.woven-mist",
+    # The Main Gauche's two declared modes.
+    "mechanic.main-gauche-modes",
+    # The Rememberer's printed re-roll.
+    "condition.rememberer-support", "mechanic.rememberer-large-only",
+    "mechanic.rememberer-large-or-tough",
+    # The Inquisitor's brand and the per-row mutation projection it feeds.
+    "mechanic.solkan-inquisitor",
+    # Catalogue tags with no engine read at all: their behaviour is already
+    # carried by the generic EffectSet fields, or by another tag that is
+    # ported (the Jester's chooser owns Banter and the Sidestepper dodge).
+    "condition.fungus-brew-dizzy", "mechanic.babbling-banter", "mechanic.beak",
+    "mechanic.brood-mentality", "mechanic.dodge-sidestepper", "mechanic.drug-immunity",
+    "mechanic.herb-lore-self-heal", "mechanic.myrmidia-eagle-friend",
+    "mechanic.norse-shieldmaster", "mechanic.prehensile-tail",
+    "mechanic.righteous-charge", "mechanic.sea-troll-slime", "mechanic.snorri-drunk",
+    "poison.giggle-juice", "weapon.arcane-candelabrum", "weapon.ienh-khain",
+    # Duel-start conditions, applied by ``init_state_c`` and the oracle's own
+    # ``validate_duel_start``.
+    "condition.alchemist-resilience", "condition.alchemist-strength",
+    "condition.petru-fortitude", "condition.nuttaz-charge",
+    "condition.witch-finder-charge", "mechanic.solkan-witch-finder",
+    "mechanic.guiding-dream", "skill.instinctive-warrior",
+    "skill.chosen-of-the-white-tower",
+    # ``modular/contexts.py`` modifiers, folded per compiled source.
+    "condition.summoned-this-turn", "condition.tomb-robber-dodge-known",
+    "mechanic.andanti-knowledge", "mechanic.darting-steel",
+    "mechanic.estalian-technique", "mechanic.flesh-peddler", "mechanic.foul-odour",
+    "mechanic.gypsy-ward", "mechanic.magical-void", "mechanic.shallya-tranquil-aura",
+    "mechanic.sigmar-symbol-of-unity", "mechanic.unholy-stink",
+    "mechanic.wolf-rat-bite", "rule.slay-large-creature", "skill.cutthroat",
+    "skill.wound-valour", "weapon.hellblade", "mechanic.seaguard-spear-master",
+    "mechanic.invincible-swordsman", "mechanic.daemonic-flesh", "skill.backstabber",
+    "mechanic.achilles-heel", "condition.stampede-active",
+    # ``modular/attacks.py`` and ``modular/aftermath.py`` clauses.
+    "mechanic.corruption", "mechanic.magic-acorn", "mechanic.marks-of-ranald",
+    "mechanic.titanic-strength", "mechanic.marine-hunter", "mechanic.honorable",
+    "mechanic.hillman-lycanthrope", "mechanic.torturer", "mechanic.great-thirster",
+    "mechanic.ravening-onslaught", "mechanic.sabretusk-charge", "mechanic.frantic",
+    "mechanic.animal-friendship", "mechanic.mantle-of-crows",
+    # Per-turn producers of ``modular/rounds.py``.
+    "mechanic.lunatics", "mechanic.centigor-drunken", "mechanic.goblin-squabble",
+    "mechanic.fungus-rowdy", "mechanic.feral-instinct", "mechanic.bitten-transform",
+    "mechanic.devoted-to-the-vampire", "condition.danse-macabre-controlled",
+    "condition.petru-debilitating", "condition.petru-resilience",
+    "condition.petru-strength", "condition.poetry-inspired",
+    "mechanic.persistent-frenzy", "mechanic.sea-shanty",
+    "mechanic.sea-shanty-psychology", "mechanic.crude-belch-ogre",
+    "skill.crude-belch-halfling", "mechanic.gaoler-grapple",
+    "condition.command.art-thou-ready-to-die-fighting",
+    "condition.command.follow-me-mine-pugnacious-ones", "condition.righteous-charge",
+    # The Festooned pistol-club survives through ``equipment_for_state``, which
+    # the per-row projection already runs.
+    "mechanic.festooned-with-pistols",
+    # The last group: Beastbane's Fear of animals (the oracle's own
+    # ``causes_fear`` already carries it), the Wraith Touch replacement and
+    # its automatic wound, the separately timed bite and Noblesse stomp, the
+    # lazy Inconsistency profile, the Impetuous release, the Giggle Juice
+    # spray and the electrical jolt.
+    "weapon.beastlash", "mechanic.wraith-touch", "rule.strikes-last-bite",
+    "mechanic.noblesse-stomp", "mechanic.inconsistency",
+    "condition.impetuous-charge", "mechanic.giggle-juice-spray",
+    "mechanic.electrical-touch",
+    # The Slayer's printed Deathblow and the Wheelo's collision.
+    "mechanic.deathblow", "mechanic.wheelo-impact",
+})
+
+#: Non-tag behaviours whose Cython runtime path is complete.  Shifty's bonus
+#: strike is scheduled against the two ordinary pools by the same priority
+#: key the oracle inserts it with (``schedule_shifty_c``).
+NATIVE_CONNECTED_BEHAVIOURS = frozenset({
+    "effect-values", "vomit", "spectral-touch", "killing-blow", "shifty",
+})
+
+
+def _native_gate() -> PendingCapabilities:
+    """The native gate minus every behavior the compiled core now executes."""
+    base = _pending_snapshot()
+    return PendingCapabilities(
+        base.residual_tags - NATIVE_CONNECTED_TAGS,
+        base.local_modifier_tags - NATIVE_CONNECTED_TAGS,
+        base.weapon_profile_tags - NATIVE_CONNECTED_TAGS,
+        base.behaviours - NATIVE_CONNECTED_BEHAVIOURS,
+    )
+
+
+#: Native admission gate: the snapshot minus the Cython-ported behaviors.
+NATIVE_PENDING = _native_gate()
 _PENDING: dict[str, PendingCapabilities] = {
     "numpy": NUMPY_PENDING,
     "native": NATIVE_PENDING,

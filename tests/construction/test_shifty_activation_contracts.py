@@ -3,9 +3,9 @@
 The selectable Halfling Shifty skill is admitted through the canonical
 ``FighterBuild``/``compile_fighter`` route and through the catalogue offer, and it
 is refused for every profile that does not print it.  Every check below asserts on
-the compiled output, on the catalogue round trip or on the backend gate that
-refuses an unported skill, never on a duel round; that is why they belong to the
-construction suite.
+the compiled output, the catalogue round trip or admission to optimized
+backends, never on a duel round; that is why they belong to the construction
+suite.
 """
 from functools import lru_cache
 
@@ -14,7 +14,7 @@ import pytest
 
 from mordheim_combat.kernel import compile_duel_plan
 from mordheim_combat.native._combat_compile import compile_duel
-from mordheim_combat.vectorized import available_backends, simulate_batch, simulate_duel, simulate_duel_parallel
+from mordheim_combat.vectorized import available_backends, simulate_batch, simulate_duel
 from mordheim_combat_lab.application.catalogue import CombatCatalogue
 from mordheim_construction.compiler import compile_fighter
 from mordheim_construction.selection import available_special_rules
@@ -94,44 +94,28 @@ def test_foreign_profile_cannot_bypass_recipients_with_raw_mechanic_id():
 
 @pytest.mark.parametrize('second', [False, True])
 @pytest.mark.parametrize('backend', ['auto', 'numpy', 'native'])
-def test_optimized_entries_explicitly_refuse_the_unported_canonical_skill(second, backend, opponent):
-    """The accepted NumPy gate executes Shifty; the native gate still refuses it.
-
-    ``NUMPY_CONNECTED_BEHAVIOURS`` declares the connected NumPy port, while
-    ``NATIVE_PENDING`` keeps the whole snapshot. ``auto`` resolves to the first
-    installed backend (native when the extension is built, otherwise NumPy), so
-    the gate it follows is the one that backend selects. The Elder also carries
-    its innate Leader contract, which the native gate rejects before Shifty, so
-    the refusal is asserted generically here.
-    """
+def test_optimized_entries_execute_the_canonical_skill(second, backend, opponent):
+    """Both optimized backends admit the canonical Shifty and Leader contracts."""
+    if backend == 'native' and 'native' not in available_backends():
+        pytest.skip('native combat backend is not compiled in this environment')
     pair = (opponent, hero()) if second else (hero(), opponent)
     request = DuelRequest(*pair, simulations=1)
-    executes = backend == 'numpy' or (backend == 'auto' and available_backends()[0] == 'numpy')
-    if executes:
-        result = simulate_duel(request, backend=backend)
-        assert result.first_wins + result.second_wins + result.unresolved == 1
-        return
-    with pytest.raises(ValueError, match='modular engine'):
-        simulate_duel(request, backend=backend)
+    result = simulate_duel(request, backend=backend)
+    assert result.first_wins + result.second_wins + result.unresolved == 1
 
 
-def test_low_level_optimized_entries_refuse_without_losing_other_guards(opponent):
-    """Native entries refuse Shifty; the connected NumPy entries execute it.
-
-    ``compile_duel_plan``/``compile_duel`` default to the native gate, which
-    still rejects the skill. ``simulate_batch``/``simulate_duel_parallel`` run
-    the accepted NumPy port, which now applies the same contract instead of
-    refusing it.
-    """
+def test_low_level_optimized_entries_admit_the_canonical_skill(opponent):
+    """Compilation and NumPy execution retain selected and absent Shifty profiles."""
     cook = hero(profile='halfling-cook')
-    for call in (lambda: compile_duel_plan(cook, opponent), lambda: compile_duel(cook, opponent)):
-        with pytest.raises(ValueError, match='Shifty.*modular'):
-            call()
+    plan = compile_duel_plan(cook, opponent)
+    assert plan.optimization_eligible
+    assert 'skill.shifty' in plan.tag_ids
+    compile_duel(cook, opponent)
     assert sum(simulate_batch(cook, opponent, 1, np.random.default_rng(0), 1)) == 1
-    parallel = simulate_duel_parallel(DuelRequest(cook, opponent, simulations=1))
-    assert parallel.first_wins + parallel.second_wins + parallel.unresolved == 1
-    # The Elder now has an innate modular-only Leader contract, independently
-    # of selected Shifty. A Cook without either contract remains supported.
-    with pytest.raises(ValueError, match='Local modifier.*modular'):
-        compile_duel_plan(hero(selected=False), opponent)
-    compile_duel_plan(hero(profile='halfling-cook', selected=False), opponent)
+    # Innate Leader and absent Shifty remain valid independently of selection.
+    for profile in ('halfling-elder', 'halfling-cook'):
+        absent = hero(profile=profile, selected=False)
+        absent_plan = compile_duel_plan(absent, opponent)
+        assert absent_plan.optimization_eligible
+        assert 'skill.shifty' not in absent_plan.tag_ids
+        compile_duel(absent, opponent)

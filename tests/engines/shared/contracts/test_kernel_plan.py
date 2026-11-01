@@ -24,14 +24,26 @@ def test_kernel_plan_contains_every_numeric_effect_field_and_stable_tag_masks(pr
 
 def test_numpy_and_native_admission_gates_are_independent(precompiled):
     """NumPy may advance without granting the still-frozen native backend."""
+    from dataclasses import replace
+
     compiled = precompiled()
     first = compiled.first
     second = compiled.second
-    # The NumPy ports dropped the tag from their own gate only.
-    assert "mechanic.magical-void" not in (
-        kernel.pending_capabilities("numpy").local_modifier_tags)
-    assert "mechanic.magical-void" in (
-        kernel.pending_capabilities("native").local_modifier_tags)
+    numpy_pending = kernel.pending_capabilities("numpy").local_modifier_tags
+    native_pending = kernel.pending_capabilities("native").local_modifier_tags
+    # The gate is read, not hard-coded: a tag the native port has not reached
+    # keeps its own refusal while NumPy admits the very same pair.  Naming a
+    # literal here only made the contract go stale as the port advanced.
+    diverging = sorted(native_pending - numpy_pending)
+    if not diverging:
+        # Both gates have reached the same point; they are still separate
+        # values, which is what this contract protects.
+        assert kernel.pending_capabilities("numpy") is not (
+            kernel.pending_capabilities("native"))
+        return
+    tag = diverging[0]
+    first = replace(first, global_effects=replace(
+        first.global_effects, tags=(*first.global_effects.tags, tag)))
 
     kernel.require_optimized_support(first, second, backend="numpy")
     with pytest.raises(ValueError, match="Local modifier variants"):

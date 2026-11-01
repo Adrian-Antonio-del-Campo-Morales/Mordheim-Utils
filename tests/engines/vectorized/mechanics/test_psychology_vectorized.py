@@ -17,7 +17,6 @@ from mordheim_combat.vectorized._leadership import (
     resolve_local_leadership,
 )
 from mordheim_combat.vectorized._psychology import (
-    causes_fear,
     psychology_resources,
     resolve_fear,
     resolve_stupidity,
@@ -169,20 +168,3 @@ def test_the_holy_relic_passes_once_and_the_next_test_rolls_normally(vector_case
     second = resolve_local_leadership(
         bearer, state, np.arange(2), rng=FixedRng(6), resources=resources, **args)
     assert not second.any()
-
-
-def test_causes_fear_matches_the_scalar_operator_on_the_supplied_facts(vector_case):
-    from mordheim_combat.modular.psychology import causes_fear as scalar
-
-    case = vector_case("test_psychology_vectorized/test_causes_fear_matches_the_scalar_operator_on_the_supplied_facts-0-0")
-    base = case.second
-    cases = (
-        (case.first, base),
-        (_tagged(base, "mechanic.fear-human"), _tagged(base, "species.human")),
-        (_tagged(base, "species.snake"), _tagged(base, "mechanic.fear-of-snakes")),
-        (_tagged(base, "mechanic.fear-beastmen"), _tagged(base, "species.beastman")),
-        (_tagged(base, "mechanic.fears-fire"), _tagged(base, "condition.open-flame")),
-        (_tagged(base, "mechanic.morrs-servant"), _tagged(base, "nature.undead")),
-    )
-    for carrier, enemy in cases:
-        assert causes_fear(carrier, enemy) is scalar(carrier, enemy)

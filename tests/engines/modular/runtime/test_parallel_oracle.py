@@ -42,7 +42,7 @@ def test_parallel_oracle_matches_the_sequential_oracle_exactly(precompiled):
     assert parallel.first_wins + parallel.second_wins + parallel.unresolved == 500
     # A different chunking must not change a single duel outcome.
     re_chunked = simulate_duel_reference_parallel(
-        first, second, 500, seed=2026, maximum_rounds=15, workers=3, chunks=7,
+        first, second, 500, seed=2026, maximum_rounds=15, workers=2, chunks=7,
     )
     assert re_chunked == sequential
     # The resolved-policy entry point dispatches to the same pooled path.

@@ -18,7 +18,6 @@ from __future__ import annotations
 
 import pytest
 
-from mordheim_combat.kernel import require_optimized_support
 from mordheim_combat.modular.rounds import resolve_round
 from mordheim_combat.modular.state import initialize_duel
 from mordheim_combat.phases import Condition
@@ -68,9 +67,6 @@ def test_the_printed_table_stuns_on_one_to_three_and_takes_out_on_four_to_six(
     assert [piece.item_id for piece in owner.mutation_equipment if piece.item_id == ITEM] == [ITEM]
     assert "weapon.sword" in owner.main_weapon.tags
     assert owner.main_weapon.parry is True
-    # The optimized ports cannot express this table, so the duel stays modular.
-    with pytest.raises(ValueError, match="modular"):
-        require_optimized_support(owner, foe)
     # 1-3 is stunned where the core chart would knock the victim down, and 4
     # takes it out of action where the core chart would still only stun.
     assert strike(owner, foe, face) == condition
