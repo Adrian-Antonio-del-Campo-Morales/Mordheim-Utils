@@ -776,7 +776,9 @@ class _RoundLedger:
     array per simulation, exactly like G05's LeadershipResources.
     """
 
-    drunken_result: np.ndarray
+    #: One per duelist: the modular ``FighterState.drunken_result``.  A shared
+    #: array would let one side's expiry clear the other side's fresh roll.
+    drunken_result: list[np.ndarray]
     animosity_failed: np.ndarray
     crude_belch_ogre_used: np.ndarray
     entranced: np.ndarray
@@ -815,7 +817,8 @@ class _RoundLedger:
 
 def _round_ledger(count: int) -> _RoundLedger:
     return _RoundLedger(
-        drunken_result=np.zeros(count, dtype=np.int8),
+        drunken_result=[np.zeros(count, dtype=np.int8),
+                        np.zeros(count, dtype=np.int8)],
         animosity_failed=np.zeros(count, dtype=bool),
         crude_belch_ogre_used=np.zeros(count, dtype=bool),
         entranced=np.zeros(count, dtype=bool),
@@ -1817,28 +1820,30 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
                          resources=psychology[1])
         # Centigor Drunk: a fresh result each own turn, lapsing when the turn
         # passes.  A 6 grants Frenzy; a 1 prints Stupidity for that turn only.
+        # Each side keeps its own result, and a lapsed result expires before
+        # the own-turn roll replaces it (modular/rounds.py:600-611).
+        expired1 = unresolved & ~first_player_turn & (ledger.drunken_result[0] != 0)
+        if expired1.any():
+            ledger.drunken_result[0][expired1] = 0
+            state1.stupidity_failed[expired1] = False
+            state1.frenzy[expired1] = has(first.global_effects, "frenzy")
+        expired2 = unresolved & first_player_turn & (ledger.drunken_result[1] != 0)
+        if expired2.any():
+            ledger.drunken_result[1][expired2] = 0
+            state2.stupidity_failed[expired2] = False
+            state2.frenzy[expired2] = has(second.global_effects, "frenzy")
         drunk1 = own_first[has(first.global_effects, "mechanic.centigor-drunken")]
         if drunk1.size:
             rolls = rng.integers(1, 7, drunk1.size)
-            ledger.drunken_result[drunk1] = rolls
+            ledger.drunken_result[0][drunk1] = rolls
             state1.frenzy[drunk1] = rolls == 6
             state1.stupidity_failed[drunk1] = False
         drunk2 = own_second[has(second.global_effects, "mechanic.centigor-drunken")]
         if drunk2.size:
             rolls = rng.integers(1, 7, drunk2.size)
-            ledger.drunken_result[drunk2] = rolls
+            ledger.drunken_result[1][drunk2] = rolls
             state2.frenzy[drunk2] = rolls == 6
             state2.stupidity_failed[drunk2] = False
-        expired1 = ~first_player_turn & (ledger.drunken_result != 0)
-        if expired1.any():
-            ledger.drunken_result[expired1] = 0
-            state1.stupidity_failed[expired1] = False
-            state1.frenzy[expired1] = has(first.global_effects, "frenzy")
-        expired2 = first_player_turn & (ledger.drunken_result != 0)
-        if expired2.any():
-            ledger.drunken_result[expired2] = 0
-            state2.stupidity_failed[expired2] = False
-            state2.frenzy[expired2] = has(second.global_effects, "frenzy")
         # Devoted to the Vampire re-reads the supplied condition of the Lahmian
         # Vampire its recipient follows, every combat phase and for both turns.
         devoted_hatred1 = _devoted_to_the_vampire(
@@ -1873,7 +1878,7 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
         # the masks so the cancellations of the four calls below can be told
         # apart from charges that never existed.
         charges_before_stupidity = (first_charges.copy(), second_charges.copy())
-        sober_first = own_first[ledger.drunken_result[own_first] != 1]
+        sober_first = own_first[ledger.drunken_result[0][own_first] != 1]
         for sober_rows, acting_first, rc_suffix in _righteous_charge_split(
                 first, rc_rows1, sober_first):
             stupidity_first = resolve_stupidity(
@@ -1887,7 +1892,7 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             first_charges = stupidity_first.charges
         # The Drunk result already prints its own Psychology immunity, so the
         # grant adds nothing to that group and it is tested as before.
-        drunk_rows1 = own_first[ledger.drunken_result[own_first] == 1]
+        drunk_rows1 = own_first[ledger.drunken_result[0][own_first] == 1]
         if drunk_rows1.size:
             drunk_first = resolve_stupidity(
                 _tagged_rows(first, drunk_rows1,
@@ -1897,10 +1902,11 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
                 charges=first_charges, rng=rng, leadership=leadership[0],
                 decisions=decisions, context=prepared,
                 lunatic_stupidity=psychology[0].lunatic_stupidity,
+                drunken_result=ledger.drunken_result[0],
                 key_prefix=f"round.{round_index}.drunk",
             )
             first_charges = drunk_first.charges
-        sober_second = own_second[ledger.drunken_result[own_second] != 1]
+        sober_second = own_second[ledger.drunken_result[1][own_second] != 1]
         for sober_rows, acting_second, rc_suffix in _righteous_charge_split(
                 second, rc_rows2, sober_second):
             stupidity_second = resolve_stupidity(
@@ -1912,7 +1918,7 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
                 key_prefix=f"round.{round_index}{rc_suffix}",
             )
             second_charges = stupidity_second.charges
-        drunk_rows2 = own_second[ledger.drunken_result[own_second] == 1]
+        drunk_rows2 = own_second[ledger.drunken_result[1][own_second] == 1]
         if drunk_rows2.size:
             drunk_second = resolve_stupidity(
                 first, _tagged_rows(second, drunk_rows2,
@@ -1922,6 +1928,7 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
                 charges=second_charges, rng=rng, leadership=leadership[1],
                 decisions=decisions, context=prepared,
                 lunatic_stupidity=psychology[1].lunatic_stupidity,
+                drunken_result=ledger.drunken_result[1],
                 key_prefix=f"round.{round_index}.drunk",
             )
             second_charges = drunk_second.charges

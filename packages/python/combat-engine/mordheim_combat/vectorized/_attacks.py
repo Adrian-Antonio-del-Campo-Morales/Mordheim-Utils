@@ -3,14 +3,14 @@ boundaries and wound resolution."""
 from __future__ import annotations
 
 import numpy as np
-from dataclasses import replace
+from dataclasses import fields, replace
 from functools import lru_cache
-from mordheim_combat.phases import InjuryContext, bear_hug_wins, ignores_unarmed_penalties
+from mordheim_combat.phases import bear_hug_wins, ignores_unarmed_penalties
 from mordheim_core.dice import AlwaysAccept, DecisionPolicy
 from mordheim_core.effects import merge_effects
 from mordheim_core.models import CompiledFighter, EffectSet
 from mordheim_combat.vectorized._types import CombatState, KNOCKED_DOWN, OUT, OptionalPhasePlan, PARALYZED, PreparedAttack, STANDING, STUNNED, VectorAttackObservation, _claim_criticals, _critical_wound_threshold, _has_weapon_tag, _run_starts, has
-from mordheim_combat.vectorized._operators import VectorWoundContext, _characteristic_test, armour_targets, attack_strength, combined_effect, hit_context, hit_reroll, hit_targets, injury_conditions, parry_capacity, parry_context, special_save_context, wound_context, wound_targets
+from mordheim_combat.vectorized._operators import VectorWoundContext, _characteristic_test, armour_context, armour_target_values, attack_strength, combined_effect, hit_context, hit_reroll, hit_targets, VectorInjuryContext, injury_context, injury_results, parry_capacity, parry_context, special_save_context, wound_context, wound_targets
 
 #: The Giggle Juice spray substitutes for one nominated attack of a pool; the
 #: profile is the oracle's (``modular/pools.py:430``) and never merges with the
@@ -740,7 +740,7 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
     if has(weapon, "weapon.disease-dagger") and not poison_blocked and not has(
         defender.global_effects, "undead_or_possessed"
     ):
-        candidates = hit_rows[hit_values == 6]
+        candidates = hit_rows[natural_values == 6]
         if candidates.size:
             infection_passed = _characteristic_test(
                 defender, defender_state.toughness[candidates], rng,
@@ -751,7 +751,7 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
                     tags=("effect.automatic-wound", "effect.no-critical",
                           "effect.no-saves"),
                     fixed_strength=3, automatic_hit=True,
-                    cannot_be_parried=True,
+                    cannot_be_parried=True, ignore_armour=True,
                 )
                 _resolve_weapon(
                     attacker, defender, infection, infected,
@@ -908,13 +908,6 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
             )
     if wound_rows.size == 0:
         return
-    wound_strength = armour_strength_hits[wounded].copy()
-    if has(effect,"skill.monster-slayer-effective-strength-armour"):
-        raw_targets = wound_targets(strength_hits, wound.toughness, effect.maximum_wound_target)
-        boosted = raw_targets[wounded] > 4
-        wound_strength[boosted] = np.maximum(
-            wound_strength[boosted], wound.toughness[wounded][boosted],
-        )
     critical_candidates = (
         rolled_success[wounded]
         & wound.critical_available[wounded]
@@ -935,20 +928,23 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
     if critical.any():
         critical_results[critical] = (rng.integers(1, 7, int(critical.sum()))
             + effect.critical_injury_bonus + int(has(effect, "skill.web-of-steel")))
-    magical_attack = has(effect,"attack.magical")
     # Achilles Heel during an active stampede: a charging blow that rolls 5+ To
     # Wound finds the gap and ignores armour entirely (modular
     # resolve_reference_attack).  The oracle rewrites ``effect.ignore_armour``
-    # for that single attack; here the same fact is carried per row into
-    # ``armour_targets``, which already folds ``ignore`` and ``ignore_armour``.
+    # for that single attack; here the same fact is carried per row into the
+    # armour context, whose ``ignore_armour`` already folds the effect's own.
     stampede = False
     if (melee_attack and first_round and has(effect, "mechanic.achilles-heel")
             and has(effect, "condition.stampede-active")):
         stampede = charging[wound_rows] & (wound_rolls[wounded] >= 5)
-    save_target = armour_targets(
-        defender, wound_strength, effect, magical_attack,
-        (critical_results >= 3) | stampede,
+    armour = armour_context(
+        attacker, defender, attacker_state, defender_state, weapon, effect,
+        wound_rows, first_round=first_round, charging=charging[wound_rows],
+        melee_attack=melee_attack,
     )
+    save_target = armour_target_values(replace(
+        armour, ignore_armour=armour.ignore_armour | (critical_results >= 3) | stampede,
+    ))
     saved = np.zeros(wound_rows.size, dtype=bool)
     eligible = save_target <= 6
     if eligible.any():
@@ -1175,41 +1171,25 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
     if defender.injury_profile == 4:
         defender_state.condition[injury_rows[_run_starts(injury_rows)]] = OUT
         return
-    injury_rolls = rng.integers(1, 7, injury_rows.size) + effect.injury_modifier + int(knife_fighting)
-    injury_rolls += damage_critical_bonus[injury_mask]
+    # Faithful port of the oracle's context (modular _injury_context): the
+    # modifier already carries knife-fighting, Blessing of Morr against the
+    # undead and Inured to Pain; the thresholds carry the Misericordia and bat
+    # charts, and No Pain is gated by Squishy.
+    context = injury_context(defender, effect, defender_state, injury_rows)
+    modifier = context.modifier.copy()
+    # Backstabber's Injury half: +1 during the first round of the combat the
+    # unseen charge opened (modular _resolve_wound_damage_body).
+    if (melee_attack and first_round
+            and has(attacker.global_effects, "skill.backstabber")
+            and has(attacker.global_effects, "condition.unseen-charge")):
+        modifier += charging[injury_rows].astype(modifier.dtype)
     # A hillman who has not yet changed is harder to put down: -1 on Injury
     # until the wolf form takes over (modular _resolve_wound_damage).
-    hillman_penalty = (
-        (~defender_state.hillman_wolf[injury_rows]).astype(injury_rolls.dtype)
-        if has(defender.global_effects, "mechanic.hillman-lycanthrope") else 0
-    )
-    injury_rolls -= hillman_penalty
-    threshold = defender.global_effects.out_of_action_threshold
-    injury_context=InjuryContext(
-        out_threshold=threshold,
-        injury_profile=defender.injury_profile,
-        hard_to_kill=(has(defender.global_effects, "skill.hard-to-kill")
-                      or has(defender.global_effects, "mechanic.fen-hard-to-kill")
-                      and not has(effect, "attack.fire")),
-        true_grit=(has(defender.global_effects, "skill.tough-as-steel")
-                   or defender.global_effects.true_grit),
-        concussion=effect.concussion,
-        shock=has(effect, "weapon.shock-rod"),
-        concussion_immune=has(defender.global_effects,"concussion_immune"),
-        fragile=has(defender.global_effects,"fragile_halflings"),
-        poisonous=has(effect, "poisonous_injury") and not poison_blocked,
-        survivor=has(defender.global_effects,"survivor"),
-        head_crusher=has(effect,"skill.head-crusher"),
-        ignore_pain=has(defender.global_effects,"skill.ignore-pain"),
-        jump_up=has(defender.global_effects,"skill.jump-up"),
-        mandrake=has(defender.global_effects,"preparation.mandrake-root"),
-    )
-    lowest = int(injury_rolls.min(initial=0))
-    highest_roll = int(injury_rolls.max(initial=0))
-    injury_table = injury_conditions(
-        np.arange(lowest, highest_roll + 1, dtype=np.int16), injury_context,
-    )
-    injury = injury_table[injury_rolls - lowest]
+    if has(defender.global_effects, "mechanic.hillman-lycanthrope"):
+        modifier -= (~defender_state.hillman_wolf[injury_rows]).astype(modifier.dtype)
+    injury_totals = (rng.integers(1, 7, injury_rows.size).astype(np.int16)
+                     + modifier + damage_critical_bonus[injury_mask])
+    injury = injury_results(injury_totals, context)
     if has(defender.global_effects, "injury_reroll_out") and not has(effect, "attack.fire"):
         # The oracle's production pipeline never sees a None policy:
         # ``resolve_round`` substitutes ``AlwaysAccept`` before any attack
@@ -1224,11 +1204,12 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
                 ordinals[int(row)] = index + 1
                 reroll[position] = decisions.choose(f"{key}.injury.{index}.reroll-choice", int(injury[position]))
         if reroll.any():
-            totals = (rng.integers(1, 7, int(reroll.sum())) + effect.injury_modifier
-                      + int(knife_fighting) + damage_critical_bonus[injury_mask][reroll])
-            if not isinstance(hillman_penalty, int):
-                totals = totals - hillman_penalty[reroll]
-            injury[reroll] = injury_conditions(totals, injury_context)
+            sub = VectorInjuryContext(*(getattr(context, item.name)[reroll]
+                                        for item in fields(VectorInjuryContext)))
+            totals = (rng.integers(1, 7, int(reroll.sum())).astype(np.int16)
+                      + modifier[reroll] + damage_critical_bonus[injury_mask][reroll])
+            injury[reroll] = injury_results(totals, sub)
+            injury_totals[reroll] = totals
     # Undead construct: on 4+ the construct simply ignores this Injury result.
     # The Wound is still lost (the damage above already left the state) and the
     # roll is not a pre-damage ward save, so it is made once per Injury result
@@ -1241,8 +1222,22 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
         ignored = rng.integers(1, 7, injury_rows.size) >= construct_target
         injury_rows = injury_rows[~ignored]
         injury = injury[~ignored]
+        injury_totals = injury_totals[~ignored]
         if injury_rows.size == 0:
             return
+    # Inured to Pain: a final total of zero or less ignores this damage,
+    # including its lost Wound (modular _resolve_wound_damage_body).
+    if has(defender.global_effects, "mechanic.inured-to-pain"):
+        refunded = injury_totals <= 0
+        if refunded.any():
+            rows_refunded = injury_rows[refunded]
+            np.add.at(defender_state.wounds, rows_refunded, 1)
+            if has(effect, "poison.nightshade") and not poison_blocked:
+                np.add.at(defender_state.initiative_penalty, rows_refunded, -1)
+            injury_rows = injury_rows[~refunded]
+            injury = injury[~refunded]
+            if injury_rows.size == 0:
+                return
     injured = injury_rows[_run_starts(injury_rows)]
     highest_by_row = np.full(defender_state.condition.size, STANDING, dtype=np.int8)
     np.maximum.at(highest_by_row, injury_rows, injury)
@@ -1385,11 +1380,11 @@ def resolve_attacks(attacker: CompiledFighter, defender: CompiledFighter, rows: 
                 # Bull Charge substitutes the wound step: an undefended hit is
                 # consumed by the knockdown, but the target's armour save can
                 # still stop it (modular _resolve_reference_attack_body).
-                positions=np.searchsorted(prepared.active,hit_rows)
-                save_target=armour_targets(
-                    defender,prepared.strength[positions],prepared.effect,
-                    has(prepared.effect,"attack.magical"),
-                )
+                save_target=armour_target_values(armour_context(
+                    attacker,defender,attacker_state,defender_state,
+                    prepared.weapon,prepared.effect,hit_rows,
+                    first_round=first_round,charging=charging[hit_rows],
+                ))
                 save_eligible=save_target<=6
                 saved=np.zeros(hit_rows.size,dtype=bool)
                 if save_eligible.any():
