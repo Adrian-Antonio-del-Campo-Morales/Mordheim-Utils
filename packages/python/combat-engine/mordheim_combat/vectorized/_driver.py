@@ -594,7 +594,8 @@ GRAPPLE_IMMUNITY = ("nature.undead", "nature.daemon", "nature.dead",
 def _grapple_declaration(owner: CompiledFighter, target: CompiledFighter,
                          owner_state: CombatState, target_state: CombatState,
                          rows: np.ndarray, decisions, ledger: "_RoundLedger",
-                         blocked: np.ndarray, key: str) -> np.ndarray:
+                         blocked: np.ndarray, key: str, *,
+                         owner_index: int = 0) -> np.ndarray:
     """Port of the Torturer's hold declaration for one side."""
     declared = np.zeros(owner_state.wounds.size, dtype=bool)
     if not any(has(owner.global_effects, tag) for tag in GRAPPLER_TAGS):
@@ -608,7 +609,7 @@ def _grapple_declaration(owner: CompiledFighter, target: CompiledFighter,
         & (target_state.condition[rows] != OUT)
         & ~blocked[rows]
         & ~owner_state.on_fire[rows]
-        & ~ledger.animosity_failed[rows]
+        & ~ledger.animosity_failed[owner_index][rows]
         & ~owner_state.stupidity_failed[rows]
         & ~owner_state.grappled[rows]
         & ~owner_state.grappling[rows]
@@ -815,7 +816,9 @@ class _RoundLedger:
     #: One per duelist: the modular ``FighterState.drunken_result``.  A shared
     #: array would let one side's expiry clear the other side's fresh roll.
     drunken_result: list[np.ndarray]
-    animosity_failed: np.ndarray
+    #: One per duelist: a shared array would silence the failing side's
+    #: opponent too (``silent1``/``silent2`` both read it).
+    animosity_failed: list[np.ndarray]
     crude_belch_ogre_used: np.ndarray
     entranced: np.ndarray
     charm_blocked: np.ndarray
@@ -855,7 +858,8 @@ def _round_ledger(count: int) -> _RoundLedger:
     return _RoundLedger(
         drunken_result=[np.zeros(count, dtype=np.int8),
                         np.zeros(count, dtype=np.int8)],
-        animosity_failed=np.zeros(count, dtype=bool),
+        animosity_failed=[np.zeros(count, dtype=bool),
+                          np.zeros(count, dtype=bool)],
         crude_belch_ogre_used=np.zeros(count, dtype=bool),
         entranced=np.zeros(count, dtype=bool),
         charm_blocked=np.zeros(count, dtype=bool),
@@ -1955,17 +1959,18 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             second, state2, state1, active_rows, ledger, 1)
         # Animosity is tested only in the warrior's own turn: a 1 fails, and the
         # Fungus Brew's Rowdy result widens the band to 1-2.
-        ledger.animosity_failed[:] = False
+        ledger.animosity_failed[0][:] = False
+        ledger.animosity_failed[1][:] = False
         if any(has(first.global_effects, tag) for tag in ANIMOSITY_SOURCES):
             rows = own_first[state1.condition[own_first] == STANDING]
             if rows.size:
                 threshold = 2 if has(first.global_effects, "mechanic.fungus-rowdy") else 1
-                ledger.animosity_failed[rows] = rng.integers(1, 7, rows.size) <= threshold
+                ledger.animosity_failed[0][rows] = rng.integers(1, 7, rows.size) <= threshold
         if any(has(second.global_effects, tag) for tag in ANIMOSITY_SOURCES):
             rows = own_second[state2.condition[own_second] == STANDING]
             if rows.size:
                 threshold = 2 if has(second.global_effects, "mechanic.fungus-rowdy") else 1
-                ledger.animosity_failed[rows] = rng.integers(1, 7, rows.size) <= threshold
+                ledger.animosity_failed[1][rows] = rng.integers(1, 7, rows.size) <= threshold
         # The player turn is per row, so each side's Stupidity gate is resolved
         # over its own active rows instead of assuming one scalar turn.  Rows
         # whose Drunk result is 1 carry the this-turn Stupidity the result
@@ -2155,6 +2160,10 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             _resolve_weapon(first,second,entangle_effect,entangled2,charge1,state1,state2,rng,False,
                             needs_sixes=state1.fear_hit_sixes)
         charged1, charged2 = charge2, charge1
+        # Mirror the per-row "being charged" fact for the hit operators
+        # (modular tags the charged warrior ``condition.being-charged``).
+        state1.being_charged[:] = charged1
+        state2.being_charged[:] = charged2
         # The Inquisitor's judgement brands the enemy before this phase's
         # equipment is projected, so the brand is already on the victim's row.
         branded2 = _inquisitor_brands(
@@ -2330,10 +2339,10 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
         # it once, and it owns only the rows it is legal for.
         grapple1 = _grapple_declaration(
             attack_first, second, state1, state2, active_rows, decisions, ledger,
-            blocked_first, f'round.{round_index}.first')
+            blocked_first, f'round.{round_index}.first', owner_index=0)
         grapple2 = _grapple_declaration(
             attack_second, first, state2, state1, active_rows, decisions, ledger,
-            blocked_second, f'round.{round_index}.second')
+            blocked_second, f'round.{round_index}.second', owner_index=1)
         if grapple1.any():
             held = _grapple_fighter(attack_first)
             for row in np.flatnonzero(grapple1):
@@ -2465,10 +2474,10 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
         deathblow_pool2 = attacks2.copy()
         # A warrior silenced by Stupidity, Animosity, a charm gate, fire, a net
         # or a spent lost turn contributes no pool at all.
-        silent1 = (state1.stupidity_failed | ledger.animosity_failed
+        silent1 = (state1.stupidity_failed | ledger.animosity_failed[0]
                    | blocked_first | state1.netted | state1.on_fire
                    | grapple1 | state1.grappled | state1.grappling)
-        silent2 = (state2.stupidity_failed | ledger.animosity_failed
+        silent2 = (state2.stupidity_failed | ledger.animosity_failed[1]
                    | blocked_second | state2.netted | state2.on_fire
                    | grapple2 | state2.grappled | state2.grappling)
         # An addicted Alchemist takes no action of his own until the own-turn

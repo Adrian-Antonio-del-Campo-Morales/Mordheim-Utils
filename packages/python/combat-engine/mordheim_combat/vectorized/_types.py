@@ -76,6 +76,10 @@ class CombatState:
     #: ``PsychologyResources.fear_hit_sixes`` here each round so every attack
     #: path (weapons, bonuses, holds) reads the same mask.
     fear_hit_sixes: np.ndarray
+    #: Per-row "the opponent charged this warrior" fact of the opening round,
+    #: mirrored from the driver's charge masks each round so the hit operators
+    #: can read the Pikewall qualifier (modular's ``condition.being-charged``).
+    being_charged: np.ndarray
     #: Close-combat hold, per row: the victim is held and the holder grips it.
     grappled: np.ndarray
     grappling: np.ndarray

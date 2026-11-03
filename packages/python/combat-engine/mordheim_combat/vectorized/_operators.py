@@ -738,9 +738,6 @@ def hit_reroll(
         np.full(size, bool(effect.reroll_hits), dtype=bool)
         | np.full(size, bool(first_round and has(effect, "mechanic.first-round-hit-reroll")), dtype=bool)
         | np.full(size, bool(pride), dtype=bool)
-        | np.full(size, bool(first_round and has(effect, "mechanic.pikewall")
-                             and has(effect, "condition.being-charged")
-                             and weapon.priority > 0), dtype=bool)
         | (charge_rows & bool(effect.charge_reroll_hits))
         | (charge & has(effect, "rule.berserk-charge") & any(
             has(weapon, tag) for tag in (
@@ -930,6 +927,10 @@ def hit_context(
         attacker, defender, weapon, effect, rows,
         first_round=first_round, charging=charge, frenzy=attacker_state.frenzy[rows],
     )
+    # Pikewall rerolls a failed hit while its bearer is the one being charged;
+    # the fact is per row (modular prepare_hit_context reads the tagged copy).
+    if first_round and has(effect, "mechanic.pikewall") and weapon.priority > 0:
+        reroll = reroll | attacker_state.being_charged[rows]
     luck = (
         allow_luck and has(effect, "skill.luck")
         and ~attacker_state.luck_used[rows] & ~reroll

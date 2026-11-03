@@ -291,11 +291,14 @@ def _prepare_weapon_attack(attacker: CompiledFighter, defender: CompiledFighter,
     # once more to mark which rows actually spent Luck.
     luck = None
     if has(effect, "skill.luck"):
-        luck = (~attacker_state.luck_used[active] & ~hit_reroll(
+        granted = hit_reroll(
             attacker, defender, weapon, effect, active,
             first_round=first_round, charging=charge_rows,
             frenzy=attacker_state.frenzy[active],
-        ))
+        )
+        if first_round and has(effect, "mechanic.pikewall") and weapon.priority > 0:
+            granted = granted | attacker_state.being_charged[active]
+        luck = ~attacker_state.luck_used[active] & ~granted
     reroll = context.reroll
     rerolled = np.zeros(active.size, dtype=bool)
     failed = np.flatnonzero(reroll & ~successful)

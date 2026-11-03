@@ -237,6 +237,7 @@ def initialize_fighter(
         ),
         netted=np.full(count, netted, dtype=bool),
         fear_hit_sixes=np.zeros(count, dtype=bool),
+        being_charged=np.zeros(count, dtype=bool),
         grappled=np.zeros(count, dtype=bool),
         grappling=np.zeros(count, dtype=bool),
         backley_penalties=_objects(tuple(backley.items()), count),
