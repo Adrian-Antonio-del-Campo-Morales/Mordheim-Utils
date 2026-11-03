@@ -94,21 +94,28 @@ def test_e2e_selection_keeps_non_runnable_deliveries_and_rejects_unknown_ids():
         store._selection(args)
 
 
-def test_e2e_cli_samples_resumes_and_compares(tmp_path):
+@pytest.mark.parametrize("compress", [False, True])
+def test_e2e_cli_samples_resumes_and_compares(tmp_path, compress):
     from tests.engines.parity.statistical.test_e2e_parity import CASES
 
     key = CASES["simple"]
     selection = ["--level", "e2e", "--id", key, "--store", str(tmp_path)]
     command = ["sample", "--engine", "modular", *selection,
                "--simulations", "2", "--chunk", "1", "--workers", "1"]
+    if compress:
+        command.append("--compress")
     assert store.main(command) == 0
     path = store.sample_path(tmp_path, "modular", key)
+    assert path.name.endswith(".json.gz" if compress else ".json")
     record = store.load_sample(path)
     assert record is not None and record.coverage() == 2
     assert record.maximum_rounds == 50
     original = path.read_bytes()
     # A completed sample must resume without rewriting or running more duels.
     assert store.main(command) == 0
+    assert path.read_bytes() == original
+    # Resuming without the flag preserves compressed records too.
+    assert store.main([arg for arg in command if arg != "--compress"]) == 0
     assert path.read_bytes() == original
     # A new explicit horizon must never append to the old experiment.
     assert store.main([*command, "--rounds", "3"]) == 2
@@ -161,7 +168,8 @@ def test_required_chunks_tile_the_sample_and_keep_the_tail_short():
     assert store.required_chunks(8, 4) == ((0, 4), (4, 4))
 
 
-def test_record_coverage_prefix_and_cut_points(tmp_path):
+@pytest.mark.parametrize("suffix", [".json", ".json.gz"])
+def test_record_coverage_prefix_and_cut_points(tmp_path, suffix):
     chunk = lambda start, count: store.SampleChunk(start, count, count, 0, 0, 0.0, "t")
     record = store.SampleRecord(
         "modular", "scenario/x", "x", 1, 50, 4, "abc", "digest", {},
@@ -175,12 +183,14 @@ def test_record_coverage_prefix_and_cut_points(tmp_path):
     with pytest.raises(store.SampleStoreError, match="fewer than the 12"):
         record.counts(12)
     # Round trip through the on-disk document.
-    path = tmp_path / "r.json"
+    path = store.sample_path(tmp_path, "modular", "scenario/x").with_suffix(suffix)
     store.save_sample(path, record)
     again = store.load_sample(path)
     assert again is not None
     assert sorted(c.start for c in again.chunks) == [0, 4, 12]
     assert again.counts(8) == record.counts(8)
+    assert store.sample_path(tmp_path, "modular", "scenario/x") == path
+    assert store.load_sample(path.with_suffix("") if suffix == ".json.gz" else path) == again
     assert store.load_sample(tmp_path / "absent.json") is None
 
 

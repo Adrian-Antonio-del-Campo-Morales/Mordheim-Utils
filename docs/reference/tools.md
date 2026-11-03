@@ -392,6 +392,32 @@ python -m tools.verification.parity_samples sample --engine numpy --level long -
 python -m tools.verification.parity_samples compare --backend numpy --level long --simulations 100000 --store outputs/parity-numpy --reference-store tests/engines/parity/reference_samples/modular-100k
 ```
 
+The stored E2E campaigns at 100,000 duels per delivery are also versioned:
+`tests/engines/parity/reference_samples/modular-e2e-100k` (oracle) and
+`tests/engines/parity/reference_samples/numpy-e2e-100k` (candidate). Each store
+contains 2,678 records with seed 2026 and a 50-round limit, preserving the
+original counts, chunks, timestamps, environment and engine digests from
+`outputs/parity-modular-e2e/modular` and `outputs/parity-numpy-e2e/numpy`.
+Versioned reference samples use lossless `.json.gz` compression. Readers accept
+both `.json` and `.json.gz`; when both exist, plain JSON takes precedence.
+Use `sample --compress` to write new samples directly as `.json.gz`. Without
+the flag, new samples use JSON. Existing samples keep their format when resumed,
+with or without the flag. Gzip retains every original byte, including
+metadata and chunk details; it does not aggregate or discard observations.
+
+The NumPy store records historical candidate results, including divergences;
+its inclusion does not establish parity acceptance.
+
+```bash
+python -m tools.verification.parity_samples compare --backend numpy --level e2e --simulations 100000 --store tests/engines/parity/reference_samples/numpy-e2e-100k --reference-store tests/engines/parity/reference_samples/modular-e2e-100k --output outputs/parity-e2e-stored/compare
+```
+
+For example, generate a compressed E2E oracle store:
+
+```bash
+python -m tools.verification.parity_samples sample --engine modular --level e2e --simulations 100000 --seed 2026 --chunk 500 --workers 2 --compress --store outputs/parity-modular-e2e
+```
+
 Sampling resumes finished chunks and refuses stale candidate records unless
 `--replace` is supplied. Comparison executes neither engine. It checks fighter
 fingerprints, seeds, round limits and sample coverage, and reports stored and

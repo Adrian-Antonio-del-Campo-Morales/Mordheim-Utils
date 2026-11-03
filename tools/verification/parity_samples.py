@@ -32,6 +32,10 @@ reproduce the engines' own sampling exactly:
 - NumPy chunks use the canonical ``batch_segment`` stream for their batch
   index, matching a NumPy request with ``batch_size=chunk``.
 
+Stores accept plain JSON and losslessly compressed ``.json.gz`` records.
+New records use JSON unless ``sample --compress`` is supplied; resuming an
+existing record preserves its format.
+
 A record names the fighters it sampled (the corpus ``inputs_sha256`` of the
 case) and the engine it ran as a source digest.  The modular digest covers
 only the modular engine and the shared core, so a change confined to the
@@ -58,6 +62,7 @@ campaign's codes (0 complete, 1 incomplete, 2 configuration error).
 from __future__ import annotations
 
 import argparse
+import gzip
 import hashlib
 import json
 import math
@@ -315,22 +320,29 @@ class SampleRecord:
 
 
 def sample_path(store: Path, engine: str, corpus_key: str) -> Path:
-    """``<store>/<engine>/<scenario>.json`` for a uniform corpus key."""
+    """Resolve an existing JSON/gzip sample, or a new JSON path."""
     if engine not in ENGINES:
         raise ValueError(f"unknown engine {engine!r}")
     name = ("e2e__" + hashlib.sha256(corpus_key.encode()).hexdigest()
             if corpus_key.startswith("e2e/") else corpus_key.replace("/", "__"))
-    return Path(store) / engine / f"{name}.json"
+    path = Path(store) / engine / f"{name}.json"
+    compressed = path.with_suffix(".json.gz")
+    return compressed if not path.exists() and compressed.exists() else path
 
 
 def load_sample(path: Path) -> SampleRecord | None:
     """Return the record at ``path`` or ``None`` when there is none yet."""
     path = Path(path)
+    if not path.exists() and path.suffix == ".json":
+        path = path.with_suffix(".json.gz")
     if not path.exists():
         return None
     try:
-        raw = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, ValueError) as error:
+        data = path.read_bytes()
+        if data.startswith(b"\x1f\x8b"):
+            data = gzip.decompress(data)
+        raw = json.loads(data.decode("utf-8"))
+    except (OSError, EOFError, ValueError) as error:
         raise SampleStoreError(f"{path}: unreadable sample: {error}") from error
     return SampleRecord.from_json(raw, str(path))
 
@@ -340,10 +352,10 @@ def save_sample(path: Path, record: SampleRecord) -> None:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".tmp")
-    temporary.write_text(
-        json.dumps(record.to_json(), ensure_ascii=True, indent=1) + "\n",
-        encoding="utf-8",
-    )
+    data = (json.dumps(record.to_json(), ensure_ascii=True, indent=1) + "\n").encode("utf-8")
+    if path.suffix == ".gz":
+        data = gzip.compress(data, compresslevel=9, mtime=0)
+    temporary.write_bytes(data)
     # A reader or scanner can briefly deny replacement on Windows. Keep the
     # closed temporary file and retry only the rename, never the simulation.
     for delay in (0.05, 0.1, 0.2, 0.4, 0.8, 1.0, None):
@@ -489,6 +501,7 @@ def _identity_mismatch(stored: SampleRecord, wanted: SampleRecord) -> str | None
 def open_sample(
     engine: str, scenario: CampaignScenario, store: Path, *, seed: int,
     maximum_rounds: int, chunk_size: int, replace_stale: bool = False,
+    compress: bool = False,
 ) -> tuple[Path, SampleRecord]:
     """Load the record to extend, or start a fresh one.
 
@@ -502,6 +515,8 @@ def open_sample(
     )
     stored = load_sample(path)
     if stored is None:
+        if compress:
+            path = path.with_suffix(".json.gz")
         return path, wanted
     mismatch = _identity_mismatch(stored, wanted)
     if mismatch is None:
@@ -519,7 +534,7 @@ def sample_scenarios(
     seed: int, maximum_rounds: int | None = None, chunk_size: int = DEFAULT_CHUNK,
     executor: ProcessPoolExecutor | None = None, workers: int = 1,
     replace_stale: bool = False, stop: threading.Event | None = None, log=None,
-    verbose: bool = False,
+    verbose: bool = False, compress: bool = False,
 ):
     """Yield saved records using one bounded chunk queue across all scenarios.
 
@@ -542,7 +557,7 @@ def sample_scenarios(
             rounds = maximum_rounds or scenario.case.limits.maximum_rounds
             path, record = open_sample(
                 engine, scenario, store, seed=seed, maximum_rounds=rounds,
-                chunk_size=chunk_size, replace_stale=replace_stale,
+                chunk_size=chunk_size, replace_stale=replace_stale, compress=compress,
             )
             pending = missing_chunks(record, simulations)
             # Shared only by this scenario's jobs; updated by the parent.
@@ -611,20 +626,20 @@ def sample_scenario(
     seed: int, maximum_rounds: int, chunk_size: int = DEFAULT_CHUNK,
     executor: ProcessPoolExecutor | None = None, workers: int = 1,
     replace_stale: bool = False, stop: threading.Event | None = None, log=None,
-    verbose: bool = False,
+    verbose: bool = False, compress: bool = False,
 ) -> SampleRecord:
     """Bring one scenario up to the target with the shared chunk scheduler."""
     record = None
     for _scenario, record in sample_scenarios(
         engine, (scenario,), store, simulations=simulations, seed=seed,
         maximum_rounds=maximum_rounds, chunk_size=chunk_size, executor=executor,
-        workers=workers, replace_stale=replace_stale, stop=stop, log=log, verbose=verbose,
+        workers=workers, replace_stale=replace_stale, stop=stop, log=log, verbose=verbose, compress=compress,
     ):
         pass
     if record is None:
         _path, record = open_sample(
             engine, scenario, store, seed=seed, maximum_rounds=maximum_rounds,
-            chunk_size=chunk_size, replace_stale=replace_stale,
+            chunk_size=chunk_size, replace_stale=replace_stale, compress=compress,
         )
     return record
 
@@ -734,7 +749,7 @@ def _add_selection(parser: argparse.ArgumentParser) -> None:
     )
     parser.add_argument(
         "--store", default="reports/parity-store", metavar="DIR",
-        help="directory holding <engine>/<scenario>.json samples "
+        help="directory holding <engine>/<scenario>.json[.gz] samples "
              "(default: reports/parity-store)",
     )
 
@@ -762,6 +777,8 @@ def _parser() -> argparse.ArgumentParser:
                         help=f"duels per stored chunk / candidate batch (default: {DEFAULT_CHUNK})")
     sample.add_argument("--workers", type=_positive, default=1, metavar="N",
                         help="worker processes for any engine (default: 1)")
+    sample.add_argument("--compress", action="store_true",
+                        help="write new samples as lossless .json.gz; existing samples keep their format")
     sample.add_argument("--replace", action="store_true",
                         help="discard a stored sample whose identity or engine digest differs")
     sample.add_argument("--verbose", action="store_true",
@@ -863,7 +880,7 @@ def _run_sample(args) -> int:
                 args.engine, scenarios, store, simulations=args.simulations,
                 seed=args.seed, maximum_rounds=args.rounds, chunk_size=args.chunk,
                 executor=pool, workers=args.workers, replace_stale=args.replace,
-                stop=stop, log=_log, verbose=args.verbose,
+                stop=stop, log=_log, verbose=args.verbose, compress=args.compress,
             ):
                 if record.coverage() >= args.simulations:
                     incomplete.discard(scenario.key)

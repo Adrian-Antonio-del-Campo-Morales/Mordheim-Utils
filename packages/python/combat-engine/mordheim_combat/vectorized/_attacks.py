@@ -701,6 +701,7 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
                 hit_rows = hit_rows[alive]
                 hit_positions = hit_positions[alive]
                 hit_values = hit_values[alive]
+                natural_values = natural_values[alive]
                 if hit_rows.size == 0:
                     return
     if has(weapon,"weapon.kusara-kama"):
@@ -761,6 +762,7 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
                 hit_rows = hit_rows[alive]
                 hit_positions = hit_positions[alive]
                 hit_values = hit_values[alive]
+                natural_values = natural_values[alive]
     if has(effect, "poison.spider-spittle") and not poison_blocked:
         candidates = hit_rows[defender_state.condition[hit_rows] == STANDING]
         failed_tests = ~_characteristic_test(defender, defender_state.toughness[candidates], rng)
