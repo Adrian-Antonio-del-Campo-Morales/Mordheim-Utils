@@ -158,12 +158,29 @@ campaign). The corrections, grouped by cause:
   residual, fungus-brew and leader-six groups. Pikewall additionally reads a
   per-row being-charged fact instead of a never-applied whole-batch tag.
 
+Two residual deviations surfaced while refreshing the stored samples on the
+corrected engine and were fixed the same day: the vectorized priority
+operator let a whip bearer's ordinary pool inherit the whipcrack bonus tier
+(modular zeroes a whip weapon's declared priority for the pool), and the
+Tranquil Fauna bar required a standing priest where the oracle only asks
+that he is in action.
+
+The stored NumPy sample store
+(`tests/engines/parity/reference_samples/numpy-e2e-100k`) was refreshed on
+2026-11-03: the 53 formerly divergent records plus the 26 approved records
+whose counts moved under the corrected engine were replaced with fresh
+100,000-duel samples (seed 2026, single engine digest); the other 2,599
+compared records are byte-identical to the weekend campaign. Deciding the
+full catalogue from the stored pair now yields 2,678 compared, 2,678
+approved, 0 divergent.
+
 ### Remaining verification work
 
-- The corrections are global behavioural changes; a fresh full E2E campaign
-  (modular references are still valid; re-sample only NumPy) is needed before
-  the next certification to confirm no approved scenario regressed. A
-  12-scenario spot-check across the touched paths passed on 2026-11-03.
+- The corrections are global behavioural changes. A static tag scan found 59
+  approved scenarios on the touched paths; all were re-sampled at 100k and
+  approved, and the stored store was refreshed. Scenarios outside that scan
+  keep their weekend samples; a fresh full NumPy re-sample remains the
+  cheapest way to certify the long tail (the modular references stay valid).
 - The Lahmia copy's printed hit-gated attack-release is not ported (per-row
   hit provenance is not tracked); its only release remains the victim's own
   Recovery-phase test. No stored scenario exercises it.
