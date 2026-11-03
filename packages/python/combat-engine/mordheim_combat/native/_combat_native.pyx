@@ -3085,11 +3085,20 @@ cdef int resolve_weapon_c(DuelC* d, int atk_side, SourceC* src,
                 damage_helpless[k] = helpless[i]
                 k += 1
         # Pre-subtraction wounds per distinct row (affected rows = run starts).
+        # Zero-damage entries (a helpless kill leaves the Wound total
+        # untouched) never enter ``damage_rows``, so they must not own a
+        # ``wounds_before`` slot either: the injury loop below advances one
+        # slot per *damage* run, and a skipped entry would desynchronise every
+        # later row's pre-subtraction Wounds.
         k = 0
+        c2 = -1
         for i in range(m):
-            if i == 0 or wound_rows[i] != wound_rows[i - 1]:
+            if damage_values[i] == 0:
+                continue
+            if c2 == -1 or wound_rows[i] != c2:
                 wounds_before[k] = s_def.wounds[wound_rows[i]]
                 k += 1
+            c2 = wound_rows[i]
         # np.subtract.at: every damage instance subtracts one wound.
         for i in range(total):
             s_def.wounds[damage_rows[i]] = <int16_t>(s_def.wounds[damage_rows[i]] - 1)
@@ -3217,21 +3226,31 @@ cdef int resolve_weapon_c(DuelC* d, int atk_side, SourceC* src,
             if injury_crit[i] >= 5:
                 t += 2
             injury_rolls[i] = <int8_t>t
-        # Injury reroll on high rolls (Hard to Kill / Tough as Steel).
+        # Injury reroll (Hard to Kill / Tough as Steel).  The oracle's
+        # production pipeline substitutes ``AlwaysAccept`` before any attack
+        # resolves, so without an explicit policy every eligible Injury
+        # result is re-rolled -- not only Out of Action -- and the re-roll
+        # carries the same modifiers as the first roll.
         if defender.injury_reroll_out and not src.fire:
-            t = 6 if defender.hard_to_kill or defender.true_grit else defender.out_of_action_threshold
             for i in range(inj_count):
-                # With a policy the oracle asks per injury instance; without
-                # one it re-rolls exactly the results that take the warrior
-                # out of action.
                 if decisions is not None and attack_key is not None:
                     if not decide_cached_c(decisions, cache,
                                            attack_key + ".injury." + str(i) + ".reroll-choice",
                                            int(injury_rows[i])):
                         continue
-                elif injury_rolls[i] < t:
-                    continue
-                injury_rolls[i] = <int8_t>rng_draw_safe(rng, 1, 6)
+                t = (rng_draw_safe(rng, 1, 6) + eff.v[<int>F_INJURY_MODIFIER]
+                     + s_atk.injury_bonus_row[injury_rows[i]])
+                if src.knife_fighting_injury:
+                    t += 1
+                if src.blessing_of_morr:
+                    t += 1
+                if defender.inured_to_pain:
+                    t -= 1
+                if defender.lycanthrope_self and not s_def.hillman_wolf[injury_rows[i]]:
+                    t -= 1
+                if injury_crit[i] >= 5:
+                    t += 2
+                injury_rolls[i] = <int8_t>t
         # Injury conditions.
         injury = <int8_t*>malloc(inj_count * sizeof(int8_t))
         if injury == NULL:
@@ -3810,7 +3829,10 @@ cdef int resolve_attacks_c(DuelC* d, int atk_side, const int* rows, int rows_n,
         memcpy(phase_cond, s_def.condition, n)
         for i in range(rows_n):
             row = rows[i]
-            if phase_cond[row] == STUNNED:
+            # The immediate finish of a phase-start-stunned defender is part
+            # of resolving an attack: a pool whose every attack is suppressed
+            # (Stupidity, burning) resolves nothing and leaves him Stunned.
+            if phase_cond[row] == STUNNED and attacks[row] > 0:
                 s_def.condition[row] = OUT
             remaining[i] = row
         # Bull-charge reaction (first round only).
@@ -4257,7 +4279,10 @@ cdef int resolve_attacks_c(DuelC* d, int atk_side, const int* rows, int rows_n,
                     tmp_prep.hit_rows[k] = tmp_prep.hit_rows[i]
                     tmp_prep.hit_positions[k] = tmp_prep.hit_positions[i]
                     k += 1
-                tmp_prep.hit_n = k
+                # Write the shrunken count through the pointer: ``tmp_prep``
+                # is a by-value copy, so assigning its ``hit_n`` would leave
+                # the consumed hits in the pool (and duplicate shifted rows).
+                prepared[index][0].hit_n = k
             if n_hug:
                 hug_a_rolls = <int*>malloc(n_hug * sizeof(int))
                 hug_d_rolls = <int*>malloc(n_hug * sizeof(int))
@@ -4457,6 +4482,10 @@ cdef int attack_count_c(TablesC* t, int side, StateC* s, const int8_t* charging,
         if first_round and f.ferocious_charge and charging[i]:
             result *= 2
         result += extra
+        # The oracle re-applies the unarmed cap after Frenzy doubling and the
+        # extra-weapon attack (``phases.build_attacks``: ``min(attacks, 1)``).
+        if f.fist_penalized and result > 1:
+            result = 1
         if f.vomit or f.sweep_main:
             result = 1
         if f.main_pistol and first_round:
@@ -5177,6 +5206,11 @@ cdef struct BatchC:
     int16_t* shifty_saved
     int32_t* shifty_projection
     int shifty_choice[2]
+    int whip_index[2]
+    int whip_count[2]
+    int8_t* whip_on[2]
+    int8_t* whip_slot[2]
+    int8_t* whip_done[2]
     int replacement_count[2]
     TablesC tables
     StateC s1
@@ -5227,6 +5261,9 @@ cdef void batch_free_c(BatchC* b) noexcept:
     free(b.shifty_on[0]); free(b.shifty_on[1])
     free(b.shifty_slot[0]); free(b.shifty_slot[1])
     free(b.shifty_done[0]); free(b.shifty_done[1])
+    free(b.whip_on[0]); free(b.whip_on[1])
+    free(b.whip_slot[0]); free(b.whip_slot[1])
+    free(b.whip_done[0]); free(b.whip_done[1])
     free(b.deathblow_pool[0]); free(b.deathblow_pool[1])
     free(b.shifty_saved); free(b.shifty_projection)
     free(b.active_rows); free(b.rows); free(b.reply)
@@ -5271,6 +5308,12 @@ cdef int batch_alloc_c(BatchC* b, int count) except -1:
     b.shifty_slot[1] = <int8_t*>calloc(n, 1)
     b.shifty_done[0] = <int8_t*>calloc(n, 1)
     b.shifty_done[1] = <int8_t*>calloc(n, 1)
+    b.whip_on[0] = <int8_t*>calloc(n, 1)
+    b.whip_on[1] = <int8_t*>calloc(n, 1)
+    b.whip_slot[0] = <int8_t*>calloc(n, 1)
+    b.whip_slot[1] = <int8_t*>calloc(n, 1)
+    b.whip_done[0] = <int8_t*>calloc(n, 1)
+    b.whip_done[1] = <int8_t*>calloc(n, 1)
     b.deathblow_pool[0] = <int16_t*>calloc(n, sizeof(int16_t))
     b.deathblow_pool[1] = <int16_t*>calloc(n, sizeof(int16_t))
     b.shifty_saved = <int16_t*>calloc(n, sizeof(int16_t))
@@ -5294,6 +5337,9 @@ cdef int batch_alloc_c(BatchC* b, int count) except -1:
             or b.jolt_done[0] == NULL or b.jolt_done[1] == NULL
             or b.shifty_on[0] == NULL or b.shifty_on[1] == NULL
             or b.shifty_slot[0] == NULL or b.shifty_slot[1] == NULL
+            or b.whip_on[0] == NULL or b.whip_on[1] == NULL
+            or b.whip_slot[0] == NULL or b.whip_slot[1] == NULL
+            or b.whip_done[0] == NULL or b.whip_done[1] == NULL
             or b.rows == NULL or b.reply == NULL or b.paralyze_rows == NULL
             or b.paralyze_targets == NULL or b.paralyze_results == NULL
             or not state_ok(&b.s1) or not state_ok(&b.s2)):
@@ -7418,9 +7464,12 @@ cdef int phase_pools_c(BatchC* b, object decisions, object first_py,
         if f2.animal_friendship_effective:
             b.attacks1[i] = 0
         if b.first_round:
-            if f1.serpent_whip and (b.charge1[i] or b.charge2[i]):
+            # A charging bearer keeps the Whipcrack bonus inside its pool;
+            # the charged bearer's bonus is split into its own Strike First
+            # event by ``schedule_whip_c`` below (``modular/rounds.py``).
+            if f1.serpent_whip and b.charge1[i] and b.attacks1[i] > 0:
                 b.attacks1[i] = <int16_t>(b.attacks1[i] + 1)
-            if f2.serpent_whip and (b.charge2[i] or b.charge1[i]):
+            if f2.serpent_whip and b.charge2[i] and b.attacks2[i] > 0:
                 b.attacks2[i] = <int16_t>(b.attacks2[i] + 1)
             if f1.boar_spear and b.charge2[i]:
                 b.attacks2[i] = <int16_t>(b.attacks2[i] - 1)
@@ -7465,9 +7514,105 @@ cdef int phase_pools_c(BatchC* b, object decisions, object first_py,
     for i in range(b.count):
         if b.p1[i] == b.p2[i] and b.ini1[i] == b.ini2[i]:
             b.first_acts[i] = <int8_t>rng_coin(&b.rng)
+    if schedule_whip_c(b) < 0:
+        return -1
     if schedule_shifty_c(b, decisions, first_py, second_py) < 0:
         return -1
     return schedule_electrical_c(b, decisions, first_py, second_py)
+
+
+cdef int schedule_whip_c(BatchC* b) except -1:
+    """Schedule the charged bearer's Whipcrack bonus.
+
+    The printed bonus joins the bearer's pool when he charges; only when he
+    is *charged* is it split out as its own earlier event at the whip's
+    Strike First tier, ``max(1, whip.priority)``, ordered against the
+    enemy's pool by tier, Initiative and the printed tie roll
+    (``modular/rounds.py`` whipcrack insertion).
+    """
+    cdef int side, i, row, bp, ep, oini, eini
+    cdef FighterC* bonus
+    cdef StateC* s
+    cdef bint before
+    for side in range(2):
+        for i in range(b.count):
+            b.whip_on[side][i] = 0
+            b.whip_slot[side][i] = 0
+            b.whip_done[side][i] = 0
+        if not b.first_round or b.whip_count[side] == 0:
+            continue
+        s = side_state(b, side)
+        bonus = &b.tables.sides[side][b.whip_index[side]].f
+        for i in range(b.n_active):
+            row = b.active_rows[i]
+            # Only a charged, standing bearer with a live pool splits the
+            # bonus out (a suppressed pool resolves nothing at all).
+            if not side_charges(b, 1 - side)[row] or s.condition[row] != STANDING:
+                continue
+            if (b.attacks1[row] if side == 0 else b.attacks2[row]) <= 0:
+                continue
+            b.whip_on[side][row] = 1
+            bp = bonus.weapon_priority
+            if bp < 1:
+                bp = 1
+            ep = (b.p2[row] if side == 0 else b.p1[row])
+            oini = (b.ini1[row] if side == 0 else b.ini2[row])
+            eini = (b.ini2[row] if side == 0 else b.ini1[row])
+            if bp > ep:
+                before = 1
+            elif bp < ep:
+                before = 0
+            else:
+                before = oini > eini
+                if oini == eini:
+                    before = rng_coin(&b.rng)
+            b.whip_slot[side][row] = 0 if before else 1
+    return 0
+
+
+cdef int whip_event_c(BatchC* b, int side, bint leading, object decisions,
+                      object subject) except -1:
+    """Resolve the scheduled Whipcrack bonus strikes due to strike now.
+
+    One attack with the whip-only projection, exactly like the Shifty bonus:
+    ``leading`` selects the rows whose bonus beat the enemy's earlier pool;
+    otherwise it resolves immediately before its bearer's own pool.
+    """
+    cdef int i, row, m = 0
+    cdef int16_t* one
+    cdef StateC* s = side_state(b, side)
+    if b.whip_count[side] == 0 or not b.first_round:
+        return 0
+    for i in range(b.n_active):
+        row = b.active_rows[i]
+        if not b.whip_on[side][row] or b.whip_done[side][row]:
+            continue
+        if leading and b.whip_slot[side][row] != 0:
+            continue
+        if s.condition[row] != STANDING:
+            continue
+        # ``b.rows``/``b.reply`` hold the caller's pool row lists; use the
+        # recovery scratch, which is idle during the attack phase.
+        b.paralyze_rows[m] = row
+        m += 1
+    if m == 0:
+        return 0
+    one = b.attacks1 if side == 0 else b.attacks2
+    for i in range(m):
+        row = b.paralyze_rows[i]
+        b.whip_done[side][row] = 1
+        b.shifty_saved[row] = one[row]
+        one[row] = 1
+        b.shifty_projection[row] = s.projection[row]
+        s.projection[row] = b.whip_index[side]
+    if attack_event_c(b, side, b.paralyze_rows, m, decisions,
+                      None, ".whipcrack") < 0:
+        return -1
+    for i in range(m):
+        row = b.paralyze_rows[i]
+        one[row] = b.shifty_saved[row]
+        s.projection[row] = b.shifty_projection[row]
+    return 0
 
 
 cdef int schedule_electrical_c(BatchC* b, object decisions, object first_py,
@@ -7752,7 +7897,11 @@ cdef int phase_attacks_c(BatchC* b, object decisions, object first_py, object se
     # A bonus whose priority beat the enemy's pool strikes before everything.
     if shifty_event_c(b, 0, 1, decisions, first_py) < 0:
         return -1
+    if whip_event_c(b, 0, 1, decisions, first_py) < 0:
+        return -1
     if shifty_event_c(b, 1, 1, decisions, second_py) < 0:
+        return -1
+    if whip_event_c(b, 1, 1, decisions, second_py) < 0:
         return -1
     if jolt_event_c(b, 0, 1, decisions, first_py) < 0:
         return -1
@@ -7766,6 +7915,8 @@ cdef int phase_attacks_c(BatchC* b, object decisions, object first_py, object se
             n_rows += 1
     if shifty_event_c(b, 0, 0, decisions, first_py) < 0:
         return -1
+    if whip_event_c(b, 0, 0, decisions, first_py) < 0:
+        return -1
     if jolt_event_c(b, 0, 0, decisions, first_py) < 0:
         return -1
     if attack_event_c(b, 0, b.rows, n_rows, decisions, first_py) < 0:
@@ -7776,6 +7927,8 @@ cdef int phase_attacks_c(BatchC* b, object decisions, object first_py, object se
             b.reply[n_reply] = i
             n_reply += 1
     if shifty_event_c(b, 1, 0, decisions, second_py) < 0:
+        return -1
+    if whip_event_c(b, 1, 0, decisions, second_py) < 0:
         return -1
     if jolt_event_c(b, 1, 0, decisions, second_py) < 0:
         return -1
@@ -7789,6 +7942,8 @@ cdef int phase_attacks_c(BatchC* b, object decisions, object first_py, object se
             n_rows += 1
     if shifty_event_c(b, 1, 0, decisions, second_py) < 0:
         return -1
+    if whip_event_c(b, 1, 0, decisions, second_py) < 0:
+        return -1
     if jolt_event_c(b, 1, 0, decisions, second_py) < 0:
         return -1
     if attack_event_c(b, 1, b.rows, n_rows, decisions, second_py) < 0:
@@ -7799,6 +7954,8 @@ cdef int phase_attacks_c(BatchC* b, object decisions, object first_py, object se
             b.reply[n_reply] = i
             n_reply += 1
     if shifty_event_c(b, 0, 0, decisions, first_py) < 0:
+        return -1
+    if whip_event_c(b, 0, 0, decisions, first_py) < 0:
         return -1
     if jolt_event_c(b, 0, 0, decisions, first_py) < 0:
         return -1
@@ -8087,6 +8244,10 @@ cdef int _run_batch(object table, int count, uint64_t seed, int maximum_rounds,
             b.shifty_count[_side] = min(len(_modes), 2)
             for _offer in range(b.shifty_count[_side]):
                 b.shifty_index[_side][_offer] = <int>table.intern(_label, _modes[_offer])
+            _modes = (getattr(table, "whip_fighters", None) or {}).get(_label, ())
+            b.whip_count[_side] = min(len(_modes), 1)
+            if b.whip_count[_side]:
+                b.whip_index[_side] = <int>table.intern(_label, _modes[0])
         if sync_projections_c(&b.tables, table) < 0:
             raise MemoryError("native projection table allocation failed")
         if fill_context(context, &b.ctx) < 0:

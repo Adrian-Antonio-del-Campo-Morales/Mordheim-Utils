@@ -10,7 +10,7 @@ not certify the current tree, and unverified reports are not confirmed defects.
 | Work | Current disposition | Next step |
 | --- | --- | --- |
 | Modular integration | Implementation received; strict E2E completeness remains unconfirmed | Check the live coverage inventory before claiming global closure. |
-| Optimized engines | Vectorized port integrated; native implementation on `native-engine-implmentation` | Investigate the seven native divergences below and qualify each backend separately. |
+| Optimized engines | Both backends pass the full 43-scenario campaign at 100k duels against the stored modular references (NumPy 43/43 on 2026-11-02; native 43/43 on 2026-11-03 after five corrections) | Investigate the sub-gate shared offsets below with a fresh oracle sample before the next certification. |
 | Web artefacts | `outputs/web-public/knowledge/knowledge-web.json` is absent in this checkout | Generate before running web KB tests; Dwarf inheritance projection remains unverified. |
 | Combat Lab popover | Historical reported failure; not rechecked | Reproduce the two focused UI cases before diagnosing. |
 | Knowledge and translations | Deferred follow-ups | Use canonical references and live review queues. |
@@ -65,10 +65,13 @@ from the obsolete October admission counts. Native implementation exists on
 `native-engine-implmentation`, but its statistical acceptance is pending.
 Implementation, focused rule tests and large-sample parity are distinct claims.
 
-Current priority: investigate the native stored-sample divergences below,
-first distinguishing historical-reference differences from current engine
-behavior. Keep tolerances and reference provenance intact. Qualify NumPy and
-native separately; do not infer one backend's support from the other.
+The seven native stored-sample divergences recorded here on 2026-10-28 were
+root-caused and corrected on 2026-11-03 (see "Resolved native divergences"
+below). Both backends now pass the full catalogue at 100,000 duels per
+scenario against the stored modular references. Keep tolerances and reference
+provenance intact. Qualify NumPy and native separately; native was ported
+from the NumPy engine, so agreement between the two candidates never
+exonerates a deviation they share — only the modular oracle does.
 
 The renewed statistical catalogue still has explicit input limits:
 `c03-petru-potion` needs out-of-scope campaign preparation, and
@@ -87,9 +90,8 @@ before fixing it or declaring it resolved.
 | Finding | Remaining check |
 | --- | --- |
 | Netted recovery stance (`v09-netted`) | Compare the victim's stance after cutting free and own-turn recovery; the current vectorized path excludes newly freed rows from standing. |
-| Wounds after a helpless melee kill | Confirm whether NumPy subtracts wounds that the modular leaves unchanged when taking a helpless defender out. |
+| Wounds after a helpless melee kill | Confirmed on 2026-11-02: NumPy subtracts wounds that the modular leaves unchanged. The deviation is confined to the wounds ledger (winner rates are unaffected), but it is also what keeps NumPy's damage-to-injury run alignment correct — a fix must restore the alignment the way the corrected native capture does (skip zero-damage entries), not merely stop subtracting. |
 | Black Hunger backlash (`q11-black-hunger`) | Confirm that later backlash hits stop for inactive rows and that Force of Will is offered at the same stage as the modular. The current loop still uses the initial active-row set. |
-| Bear-hug row ordering (`c05-bear-hug`) | Reproduce the reported out-of-bounds error and check repeated/unsorted rows before `searchsorted`; do not assume the old exception still occurs. |
 
 ## Knowledge gaps
 
@@ -135,68 +137,97 @@ approved scope change in
 | Which hireling references are unresolved? | `unresolved_references` in hireling YAML. |
 | Which decisions are binding? | [Design rulings](docs/decisions/design-rulings.md). |
 
-## Native parity divergences (100,000 duels per scenario)
+## Resolved native divergences (2026-11-03)
 
-The user-run stored-sample comparison in
-`outputs/parity-native/compare/parity-campaign.json` reports 43 compared,
-36 approved and 7 divergent. Candidate sample digests match the currently
-loaded native engine; the saved modular digest differs from current sources.
-Inputs, seeds and round budgets match between samples. Root causes are not
-yet established; do not alter tolerances or replace accepted references to
-hide these differences.
+The seven stored-sample divergences recorded on 2026-10-28 were root-caused
+and corrected in `native/_combat_native.pyx` and `native/_combat_compile.py`.
+After the corrections the native campaign reports **43 compared, 43 approved,
+0 divergent** at 100,000 duels per scenario against the untouched references
+in `tests/engines/parity/reference_samples/modular-100k`
+(`outputs/parity-native-fixed/compare/parity-campaign.json`). The native
+suite passes 68/68 (the two `runtime/test_duel_context.py` cases were not run
+because they execute the modular engine, which that validation excluded).
+The modular implementation and the accepted references were not changed.
 
-| Scenario | Largest absolute outcome difference |
-| --- | --- |
-| `stateful` | 2.070 percentage points |
-| `regen-vs-fire` | 2.392 percentage points |
-| `unarmed-vs-steel` | 2.410 percentage points |
-| `triple-weapon-vs-parry` | 1.200 percentage points |
-| `frenzy-vs-w2` | 0.976 percentage points |
-| `trained-bear-vs-scarecrow` | 3.607 percentage points |
-| `silent-walker-vs-cold-one` | 4.081 percentage points |
+The five corrections, for provenance:
 
-Investigation uses the modular as the oracle. Do not modify modular code;
-report suspected modular defects to the user for a decision.
-A diagnostic sample of 5,000 current-modular duels per scenario stays near the
-historical reference rates. It is saved in `outputs/parity-diagnosis-modular`;
-this does not replace the accepted references or certify the current oracle.
+1. **Injury-run misalignment** (undocumented until 2026-11-02; caused
+   `stateful`, `triple-weapon-vs-parry` and the former 4–5σ near-misses):
+   `resolve_weapon_c` captured `wounds_before` per run of `wound_rows`
+   including zero-damage helpless kills, while the injury loop advanced per
+   run of `damage_rows`, which exclude them; every row after a helpless kill
+   in the same call read another row's pre-subtraction Wounds. The capture
+   now skips zero-damage entries. Only reproducible in batches of two or
+   more rows. The old hints recorded here (Force of Will, parry) were
+   disproved by bisection.
+2. **Bear Hug consumption** (`trained-bear-vs-scarecrow`, and the
+   `c05-bear-hug` out-of-bounds error): the pool compaction wrote its
+   shrunken `hit_n` to a by-value struct copy, so the two consumed hits
+   still resolved and stale shifted rows reached the downstream row lookups.
+   The count is now written through the pointer.
+3. **Injury reroll semantics** (`trained-bear-vs-scarecrow` residual):
+   without an explicit policy the native rerolled only out-of-action-level
+   totals, with an unmodified die. The oracle's production default rerolls
+   every eligible Injury result and re-applies the roll modifiers; native
+   now mirrors it.
+4. **Final unarmed attack cap** (`frenzy-vs-w2`, and the floor-masked
+   `frenzy-vs-heavy` inflation): `attack_count_c` now re-applies
+   `min(attacks, 1)` after Frenzy doubling, as `phases.build_attacks` does.
+5. **Stunned finish with zero attacks** (`regen-vs-fire`,
+   `silent-walker-vs-cold-one`): the phase-start-stunned conversion to OUT
+   is now gated on the attacking pool having at least one attack, and the
+   charged whip bearer's bonus (`unarmed-vs-steel`) is scheduled as its own
+   Strike First event with a whip-only projection
+   (`schedule_whip_c`/`whip_event_c`, mirroring the Shifty machinery), with
+   `weapon.barbed-whip` and `weapon.thinglash` added to the whip tag set.
 
-### Located native defects (not yet applied to repository code)
+## Sub-gate observations from the 2026-11-03 three-way comparison
 
-- **Missing final unarmed attack cap:** `native/_combat_native.pyx::attack_count_c`
-  caps penalized fists before Frenzy but omits the final cap from
-  `phases.build_attacks`. The fanatic can retain two attacks instead of one.
-  Relevant to `frenzy-vs-w2`.
-- **Automatic finish with zero attacks:** `resolve_attacks_c` takes an already
-  STUNNED target OUT before checking the attack count. `phase_attacks_c` can
-  dispatch that pool for a standing attacker whose Stupidity or burning has
-  suppressed all attacks. A two-round fixed-dice Cold One replay reproduced
-  an OUT result while the modular correctly leaves the target STUNNED.
-  Relevant to `silent-walker-vs-cold-one` and `regen-vs-fire`.
-- **Whip bonus timing:** `phase_pools_c` adds the whip bonus to the normal pool;
-  it does not schedule the charged bearer's separate Strike First event from
-  modular `resolve_round`. Relevant to `unarmed-vs-steel`.
+All 43 scenarios pass the six-sigma gate for both backends, but three results
+deserve attention before they are read as clean. The stored modular samples
+were not re-run; every figure below compares current candidate samples with
+the frozen 100k references.
 
-A temporary native extension under `/tmp/mordheim-native-probe` applied only
-the first two changes. At 100,000 native duels per scenario, `frenzy-vs-w2`,
-`regen-vs-fire` and `silent-walker-vs-cold-one` fell within the original saved
-reference tolerances. The other four scenarios still diverged. This is causal
-diagnostic evidence, not a committed fix or a replacement sample. Production
-engine sources/binary, modular implementation and accepted references were
-not changed.
+- **`stateful` — both backends share a +0.65pp offset.** A 1,000,000-duel
+  NumPy sample puts its first-win rate at 26.160% against the stored modular
+  25.511% (z ≈ 4.5, now dominated by the reference's own 100k noise); the
+  corrected native sample agrees with NumPy (26.337%, cross z ≈ 1.2). Either
+  the stored modular sample is an unlucky draw, or the two ports share a
+  small real deviation — Force of Will rescue/sustain sequencing and
+  brazier ignition are the mechanics unique to this pair. Because native is
+  a port of NumPy, their agreement cannot distinguish the two explanations;
+  only a fresh oracle sample can.
+- **`unarmed-vs-steel` — both backends share a −0.50pp offset.** NumPy at
+  1,000,000 duels: 22.248% first-win vs the stored 22.750% (z ≈ 3.6);
+  native agrees (22.146%). The shared mechanic is the Whipcrack bonus,
+  whose native port was written against the NumPy implementation, so a
+  subtle NumPy deviation from the oracle (event insertion or tie handling)
+  would be invisible to the cross-check.
+- **`skill-stack-vs-hitter` — the two candidates disagree with each other
+  (cross z ≈ 3.6 at 100k: NumPy 88.88%, native 88.37%, modular 88.75%
+  between them).** Both pass against the oracle, but a 3.6σ candidate split
+  on a reroll-stacking scenario (Expert Fighter, Infinite Hatred, Red Fury,
+  Sure Strike) suggests the two ports order or gate a reroll differently.
+  Escalate both candidates on this pair before the next certification.
 
-### Remaining native investigation
+Recommended follow-up, in order: draw one fresh modular sample for
+`stateful`, `unarmed-vs-steel` and `skill-stack-vs-hitter` (the existing
+chunked store makes this resumable) and re-decide the three offsets; until
+then, treat the stored references for those pairs as 100k draws whose ~4σ
+agreement band these candidates currently sit at the edge of.
 
-- `stateful`: removing Force of Will narrows the diagnostic gap; disabling
-  ignition alone does not. Inspect rescue and sustain behavior within attacks.
-- `trained-bear-vs-scarecrow`: removing Bear Hug changes the modular distribution
-  substantially but barely changes native results. Disabling injury rerolls
-  does not eliminate the gap; investigate the replacement and synthetic attack
-  path rather than blaming the reroll alone.
-- `triple-weapon-vs-parry`: the diagnostic gap persists with one axe attack and
-  no off-hand, so multiweapon allocation alone does not explain it. Inspect
-  parry and wound/injury handling. Removing parry narrowed the initial gap but
-  the small diagnostic modular samples do not conclusively isolate a cause.
+Latent items found during the same investigation, not visible in any current
+scenario:
 
-No evidence so far requires changing the modular. Do not close these entries
-until the native corrections are applied and focused validation passes.
+- `phase_attacks_c` computes its pool row list into `b.rows` and then calls
+  `shifty_event_c`/`jolt_event_c`, which overwrite `b.rows` when they fire;
+  a first-round Shifty or jolt bearer in a multi-row batch can make the
+  following pool resolve stale rows. The new whip event deliberately uses a
+  different scratch buffer; the Shifty and jolt paths should be audited.
+- The native Bear Hug pairs surviving hits across the whole prepared pool,
+  while the oracle only ever consumes attacks 0 and 1; no current profile
+  grants a hugger three or more attacks, so the difference is unreachable
+  today.
+- The rare-outcome scan (modular rate < 2%) found no remaining
+  floor-masked relative deviations in either backend; the former
+  `frenzy-vs-heavy` 5× first-win inflation disappeared with correction 4.

@@ -577,7 +577,8 @@ def _compile_fighter(me: CompiledFighter, foe: CompiledFighter) -> dict:
             has(weapon, tag)
             for weapon in (main, off)
             if weapon is not None
-            for tag in ("weapon.steel-whip", "weapon.beastlash", "weapon.pirate-scourge", "weapon.serpent-whip")
+            for tag in ("weapon.steel-whip", "weapon.beastlash", "weapon.pirate-scourge",
+                        "weapon.serpent-whip", "weapon.barbed-whip", "weapon.thinglash")
         ),
         "boar_spear": has(main, "weapon.boar-spear"),
         "sigmar_effective": bool(
@@ -698,8 +699,14 @@ def _compile_fighter(me: CompiledFighter, foe: CompiledFighter) -> dict:
         ),
         "energy_focus_attacks": int(g.energy_focus_attacks),
         "maddened": has(g, "maddened_with_pain"),
-        # priority scalars
-        "weapon_priority": int(main.priority),
+        # priority scalars.  A whipcrack weapon's printed tier belongs to its
+        # separately timed bonus only; the ordinary pool strikes at zero
+        # (``phases.resolve_priority``).
+        "weapon_priority": 0 if any(
+            has(main, tag) for tag in (
+                "weapon.steel-whip", "weapon.beastlash", "weapon.pirate-scourge",
+                "weapon.serpent-whip", "weapon.barbed-whip", "weapon.thinglash")
+        ) else int(main.priority),
         "priority_global": int(g.priority),
         "spear": has(main, "weapon.spear"),
         "opponent_always_first": has(foe.global_effects, "skill.always-strikes-first"),
@@ -1186,6 +1193,28 @@ def shifty_weapons(me: CompiledFighter) -> list[CompiledFighter]:
     return [main, only(off, me.off_hand_without_poison, me.off_hand_slot)]
 
 
+def whipcrack_fighters(me: CompiledFighter) -> list[CompiledFighter]:
+    """The charged bearer's Whipcrack bonus projection.
+
+    The oracle splits the charged bearer's bonus attack into its own Strike
+    First event resolved with the whip alone (``modular/rounds.py``); the
+    projection keeps the whip's hand slot and drops every other contribution,
+    exactly like the Shifty nomination above.
+    """
+    from mordheim_combat.modular.equipment import whipcrack_weapon
+    whip = whipcrack_weapon(me)
+    if whip is None:
+        return []
+    if whip == me.main_weapon:
+        clean, slot = me.main_weapon_without_poison, me.main_hand_slot
+    else:
+        clean, slot = me.off_hand_without_poison, me.off_hand_slot
+    return [replace(me, main_weapon=whip, main_weapon_without_poison=clean,
+                    main_hand_slot=slot, off_hand=None,
+                    off_hand_without_poison=None, off_hand_attacks=False,
+                    extra_attacks=())]
+
+
 def mutation_row_state(row_state=None):
     """One row's mutation facts as the state ``modular.mutations`` reads.
 
@@ -1280,6 +1309,12 @@ class ProjectionTable:
         self.shifty_fighters = {
             "first": shifty_weapons(first),
             "second": shifty_weapons(second),
+        }
+        #: The charged bearer's Whipcrack bonus strike, projected onto the
+        #: whip alone so the separately timed event keeps its own profile.
+        self.whip_fighters = {
+            "first": whipcrack_fighters(first),
+            "second": whipcrack_fighters(second),
         }
         #: Per-row mutation state, the object-valued half of the oracle's
         #: ``FighterState`` that no C column can hold.  A row appears here
