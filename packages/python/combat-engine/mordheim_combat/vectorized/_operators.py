@@ -484,6 +484,11 @@ def allocate_attack_weapons(fighter: CompiledFighter, count: int, *, first_round
 def priority(fighter: CompiledFighter, opponent: CompiledFighter, first_round: bool,
              charging: np.ndarray, charged: np.ndarray, stood: np.ndarray) -> np.ndarray:
     weapon_priority = fighter.main_weapon.priority
+    if any(has(fighter.main_weapon, tag) for tag in phases.WHIPCRACK_WEAPON_TAGS):
+        # Only the whipcrack bonus strikes first; the ordinary attacks resolve
+        # in the bearer's own order instead of inheriting the bonus tier the
+        # weapon declares (modular phases.resolve_priority).
+        weapon_priority = 0
     if fighter.global_effects.strongman and weapon_priority < 0 and (
         fighter.main_weapon.two_handed or has(fighter.main_weapon, "weapon.broadsword")
     ):
