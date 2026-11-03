@@ -267,6 +267,11 @@ STATE_COLUMN_ALIASES = {
     "mutation_weapon_limbs": ("projection",),
     "mutated_hands": ("projection",),
     "backley_penalties": ("backley_strength", "backley_initiative"),
+    # The vectorized driver mirrors its per-round charge masks into
+    # ``CombatState.being_charged`` for the hit operators; this engine already
+    # hands the defender's charge rows (``def_charges``) to the same
+    # resolution, so no stored column backs the mirror.
+    "being_charged": (),
 }
 
 # Capacity gates (kept in sync with _combat_compile).  Compile-time
