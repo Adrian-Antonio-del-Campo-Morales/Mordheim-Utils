@@ -430,6 +430,11 @@ def _charm_gates(owner_first: CompiledFighter, owner_second: CompiledFighter,
         # supplied Leadership; an ordinary animal simply cannot strike.
         if (has(owner.global_effects, "mechanic.taal-tranquil-fauna")
                 and has(target.global_effects, "species.animal")):
+            # The aura asks only that its bearer is in action: a knocked-down
+            # or stunned priest still bars the animal (modular rounds.py:890,
+            # ``own.active`` rather than Standing).
+            calmed = rows[(owner_state.condition[rows] != OUT)
+                          & (target_state.condition[rows] == STANDING)]
             conditional = any(has(target.global_effects, tag) for tag in
                               ("fauna-animal.handled", "fauna-animal.large-predator"))
             ordinary = (has(target.global_effects, "fauna-animal.ordinary")
@@ -440,12 +445,12 @@ def _charm_gates(owner_first: CompiledFighter, owner_second: CompiledFighter,
                         "Tranquil Fauna requires the qualified Animal Handler's Leadership")
                 # The oracle's resolve_leadership: 2D6 against the handler's
                 # supplied value, with no six-always-fails rule.
-                totals = (rng.integers(1, 7, eligible.size)
-                          + rng.integers(1, 7, eligible.size))
+                totals = (rng.integers(1, 7, calmed.size)
+                          + rng.integers(1, 7, calmed.size))
                 passed = totals <= target.animal_handler_leadership
-                blocked[eligible[~passed]] = True
+                blocked[calmed[~passed]] = True
             elif ordinary:
-                blocked[eligible] = True
+                blocked[calmed] = True
             else:
                 raise ValueError(
                     "Tranquil Fauna requires the animal's explicit "
