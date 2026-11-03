@@ -11,7 +11,7 @@ not certify the current tree, and unverified reports are not confirmed defects.
 | --- | --- | --- |
 | Modular integration | Implementation received; strict E2E completeness remains unconfirmed | Check the live coverage inventory before claiming global closure. |
 | Optimized engines | Both backends pass the full 43-scenario campaign at 100k duels against the stored modular references (NumPy 43/43 on 2026-11-02; native 43/43 on 2026-11-03 after five corrections) | Investigate the sub-gate shared offsets below with a fresh oracle sample before the next certification. |
-| E2E statistical parity (modular vs NumPy) | 2,678 of 2,678 executable deliveries compared at 100k duels from the stored weekend samples; 2,625 approved, 53 divergent (2026-11-03) | Root-cause the 27 divergent mechanic groups listed below, worst gaps first. |
+| E2E statistical parity (modular vs NumPy) | All 53 divergences of the 2026-11-03 decision were corrected and re-approved by focalized 100k rechecks the same day | Re-sample NumPy across the full catalogue against the stored modular references before the next certification. |
 
 ## Modular integration and E2E coverage
 
@@ -82,7 +82,7 @@ before fixing it or declaring it resolved.
 | Finding | Remaining check |
 | --- | --- |
 | Netted recovery stance (`v09-netted`) | Compare the victim's stance after cutting free and own-turn recovery; the current vectorized path excludes newly freed rows from standing. |
-| Wounds after a helpless melee kill | Confirmed on 2026-11-02: NumPy subtracts wounds that the modular leaves unchanged. The deviation is confined to the wounds ledger (winner rates are unaffected), but it is also what keeps NumPy's damage-to-injury run alignment correct — a fix must restore the alignment the way the corrected native capture does (skip zero-damage entries), not merely stop subtracting. |
+| Wounds after a helpless melee kill | Confirmed on 2026-11-02: NumPy subtracts wounds that the modular leaves unchanged. Partially corrected on 2026-11-03: the helpless kill's damage is now the printed 1 (so Acid Blood/Contagious react once), but the wound subtraction itself remains. The residue is confined to the wounds ledger (winner rates are unaffected); a full fix must keep the damage-to-injury alignment (skip zero-damage entries), not merely stop subtracting. |
 | Black Hunger backlash (`q11-black-hunger`) | Confirm that later backlash hits stop for inactive rows and that Force of Will is offered at the same stage as the modular. The current loop still uses the initial active-row set. |
 
 ## Knowledge gaps
@@ -103,150 +103,69 @@ Scope changes are governed by
 [`runtime-scope.yaml`](sources/knowledge/registry/runtime-scope.yaml);
 accepted decisions belong in [Design rulings](docs/decisions/design-rulings.md).
 
-## E2E statistical divergences, modular vs NumPy (2026-11-03)
+## E2E statistical divergences, modular vs NumPy
 
-Decided from the stored weekend sample stores (`outputs/parity-numpy-e2e`,
-`outputs/parity-modular-e2e`; seed 2026, 100,000 duels per scenario, 50
-rounds, six-sigma winner gate; report `reports/parity-final/parity-campaign.json`).
-Totals: 2,678 compared, 2,625 approved, 53 divergent. The 13 formerly
-unsampleable deliveries were repaired and integrated (11 approved, 2 joined
-the divergent set). The modular oracle is authoritative.
+The 2026-11-03 decision from the stored weekend sample stores
+(`tests/engines/parity/reference_samples/modular-e2e-100k` and
+`numpy-e2e-100k`; seed 2026, 100,000 duels per scenario, 50 rounds,
+six-sigma winner gate) compared 2,678 of 2,678 executable deliveries:
+2,625 approved, 53 divergent. The modular oracle is authoritative.
 
-The 53 scenarios are grouped below by the suspected root cause, from a static
-comparison of `modular/` + `phases.py` against `vectorized/` (2026-11-03).
-Hypotheses are code-reading conclusions, not confirmed fixes; reproduce each
-before correcting.
+All 53 divergences were root-caused and corrected on 2026-11-03, and every
+affected scenario was re-sampled at 100,000 duels against the stored modular
+references and approved by the same gate (focalized checks, not a fresh
+campaign). The corrections, grouped by cause:
 
-### RC1 — attack path uses the legacy armour-save helper (11 scenarios)
+- **Armour path (RC1, 11 scenarios).** Both attack-path call sites now use
+  the faithful `armour_context`/`armour_target_values` ports (Ladle,
+  Cutthroat, Norse Bulwark, fist exception, knocked-down ignoring,
+  Misericordia dagger penalty). The disease-dagger pair also needed the
+  infection wound to ignore armour and to trigger on the natural six; the
+  Norse shieldmaster pair was Centigor Drunken contamination (RC5).
+- **Injury context (RC2, 4 scenarios).** The inline injury rebuild was
+  replaced by the `injury_context`/`injury_results` ports (Squishy's No Pain
+  gate, Blessing of Morr against the undead, Misericordia chart, Inured to
+  Pain's modifier and zero-total wound refund, Backstabber's first-round
+  injury bonus).
+- **Wheelo impact (RC3, 3 scenarios).** The collision step was ported:
+  impact hits before any blow, the spear counter-impact, the morning star's
+  Strength-5 first impact, axe penetration and club concussion.
+- **Special-event scheduling (RC4, 4 scenarios).** The whip bonus splits out
+  only when the bearer is charged and uses `max(1, whip.priority)`; the
+  strikes-last bite is gated by the phase allocation, standing bearer,
+  natural slot and no poisoned alternative; a helpless kill's damage is the
+  printed 1 (so Acid Blood and Contagious react exactly once); the tentacle
+  grapple loss is per phase.
+- **Centigor Drunken (RC5, 3 scenarios).** Per-side ledger arrays, expiry
+  before the own-turn roll, and the drunken result now gates the Stupidity
+  test's psychology immunity, so a roll of 1 forces the test and the round-0
+  charge cancel happens.
+- **Shared test helpers (RC6, 9 scenarios).** Tranquil Fauna rolls the
+  oracle's 2D6 handler test; Contagious fires on any close-combat wound that
+  leaves the bearer out (helpless kills included); the six Force of Will
+  scenarios were fixed by allocating pool events from the phase-start
+  condition, so a mid-phase rescue never grants an event the helpless phase
+  start did not allocate.
+- **Control powers (RC7, 5 scenarios).** Seduction gained its per-copy
+  exclusions, the Lahmia male-only fact and own-turn establishment, the
+  Khemrian own-test and attack-release; Enchanting Beauty's -1 is applied
+  before the Psychology tests; the addicted Alchemist takes no action until
+  cured; the bitten result of 1 grants the printed this-turn Madness
+  Stupidity, lapsing with the turn.
+- **Shared animosity ledger (RC8, 14 scenarios).** `animosity_failed` is now
+  one array per duelist: the shared ledger silenced the failing goblin's
+  opponent too, which was the single cause behind the hatred, pikewall
+  residual, fungus-brew and leader-six groups. Pikewall additionally reads a
+  per-row being-charged fact instead of a never-applied whole-batch tag.
 
-`vectorized/_attacks.py:948` and `:1389` call the old `armour_targets`
-(`_operators.py:247`) instead of the faithful ports `armour_context` /
-`armour_target_values` (`_operators.py:1083/1156`), which are never called.
-Ladle's shield-only override, Cutthroat's +1 armour penetration, Norse
-Bulwark's axe-and-shield improvement, the fist save-bonus exception and
-knocked-down armour ignoring are all dropped. One call-site swap is the
-candidate fix.
+### Remaining verification work
 
-- `e2e/mechanic/weapon.ladle/ladle-denies-a-worn-suit-its-save`
-- `e2e/mechanic/weapon.ladle/ladle-leaves-the-shields-own-save-available`
-- `e2e/mechanic/weapon.ladle/ladle-shield-save-fails-on-five`
-- `e2e/mechanic/skill.cutthroat/cutthroat-dagger-pair-worsens-the-save`
-- `e2e/rule/mordheim/silent-brotherhood-sc/band--skill-cutthroat/skill.cutthroat/cutthroat-dagger-pair-worsens-the-save`
-- `e2e/mechanic/mechanic.norse-bulwark/an-axe-and-shield-save-holds-on-five`
-- `e2e/mechanic/mechanic.norse-shieldmaster/the-shield-parries-the-blow`
-- `e2e/mechanic/mechanic.norse-shieldmaster/the-same-shield-still-contributes-its-save-throw`
-- `e2e/mechanic/weapon.disease-dagger/disease-dagger-improves-a-worn-save-by-one`
-- `e2e/mechanic/weapon.disease-dagger/disease-dagger-worn-save-fails-one-below-the-improved-target`
-- `e2e/mechanic/weapon.misericordia/misericordia-keeps-the-dagger-penalty-against-a-standing-opponent`
-
-### RC2 — injury roll rebuilt inline instead of using `injury_context` (4 scenarios)
-
-`vectorized/_attacks.py:1188-1205` rebuilds the injury context by hand; the
-faithful port `_operators.injury_context` (`_operators.py:1425`) has no call
-sites. The inline copy misses the squishy gate on No Pain, Blessing of
-Morr's +1 against undead, and inured-to-pain.
-
-- `e2e/mechanic/rule.squishy/no-pain-cannot-quiet-the-stun-under-squishy`
-- `e2e/rule/mordheim/ghost-pirates-sar/the-bloated--squishy/rule.squishy/no-pain-cannot-quiet-the-stun-under-squishy`
-- `e2e/mechanic/mechanic.blessing-of-morr/the-bonus-lifts-the-injury-roll-to-a-stun`
-- `e2e/rule/mordheim/vampire-hunters-of-sylvania-lotd5/band--special-skill-blessing-of-morr/mechanic.blessing-of-morr/the-blessing-lifts-the-injury-roll-to-a-stun`
-
-### RC3 — Wheelo impact hits are unported (3 scenarios)
-
-`modular/rounds.py:1081-1110` resolves impact hits before any blow, with the
-spear/morning-star/axe/club fittings; nothing in `vectorized/` implements the
-step (`wheelo` appears only in `_psychology.py:461`).
-
-- `e2e/mechanic/mechanic.wheelo-impact/a-charging-wheelo-resolves-its-impact-hits-before-any-blow`
-- `e2e/mechanic/mechanic.wheelo-skill-modifications/the-spear-fitted-wheelo-still-hits-a-charger-once`
-- `e2e/mechanic/mechanic.wheelo-skill-modifications/the-morning-star-first-impact-resolves-at-strength-five`
-
-### RC4 — special-event scheduling diverges (whip split, bite gating) (4 scenarios)
-
-`vectorized/_driver.py:2266` splits the whip bonus on `charge | charged`
-(modular splits only when charged, `modular/rounds.py:1417`), and uses a
-fixed priority tier (`_driver.py:2470`) instead of `max(1, whip.priority)`.
-The strikes-last bite (`_driver.py:2660-2678`) skips the attack-count gate
-and the `main_hand_slot='natural'` / poison-stripping of
-`modular/rounds.py:1379-1389`. `_tentacle_forfeit` (`_driver.py:656`) reuses
-the whip rows and marks one forfeit per battle instead of per phase.
-
-- `e2e/mechanic/weapon.serpent-whip/serpent-whip-bonus-strikes-first-when-its-bearer-is-charged`
-- `e2e/rule/mordheim/shallows-beasts-mim/mutant-priest--bite-attack/compiler.strikes-last-bite/the-bite-is-an-extra-attack-that-strikes-after-the-weapon-attacks`
-- `e2e/rule/mordheim/shallows-beasts-mim/mutant-priest--bite-attack/compiler.strikes-last-bite/the-bite-uses-the-priests-own-strength-not-the-weapons-bonus`
-- `e2e/rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-tentacle/special-rule.band--mutations-tentacle/without-the-mutation-the-attacker-keeps-both-attacks`
-
-### RC5 — Centigor Drunken shared-ledger expiry bug (3 scenarios)
-
-NumPy stores one `ledger.drunken_result` array for both sides
-(`_driver.py:779/818`) and its expiry step (`_driver.py:1832-1839`) clears a
-fresh roll on the owner's own turn, so a roll of 1 never forces Stupidity
-and the round-0 charge cancel never happens — which is why modular leaves
-~15% unresolved and NumPy 0%. The expiry also resets the wrong side's state.
-
-- `e2e/mechanic/mechanic.centigor-drunken/results-two-to-five-do-nothing`
-- `e2e/mechanic/mechanic.centigor-drunken/a-roll-of-six-grants-frenzy`
-- `e2e/mechanic/mechanic.centigor-drunken/a-roll-of-one-forces-the-stupidity-test`
-
-### RC6 — ad-hoc test rolls instead of the shared test helpers (9 scenarios)
-
-Tranquil Fauna rolls one D6 against Leadership (`_driver.py:438-439`) where
-modular rolls 2D6 (`modular/rounds.py:902`, `phases.py:908`). Force of Will
-and Contagious use `_characteristic_test` without the `require_characteristics`
-guard or the Blessed Sight reroll, and Contagious also drops the
-`reactive_damage > 0` trigger condition (`_attacks.py:1286` vs
-`modular/aftermath.py:81-95`). Audit every inline `rng.integers(1, 7, ...)`
-test in `vectorized/` against the modular helper it shadows.
-
-- `e2e/mechanic/mechanic.taal-tranquil-fauna/a-handled-animal-attacks-only-on-its-handlers-passed-test`
-- `e2e/mechanic/mechanic.taal-tranquil-fauna/a-handled-animal-that-fails-its-handlers-test-cannot-attack`
-- `e2e/mechanic/mechanic.force-of-will/a-failed-test-leaves-him-out`
-- `e2e/mechanic/mechanic.force-of-will/the-toughness-test-stands-him-back-up`
-- `e2e/rule/mordheim/pit-fighters/band--pit-fighter-skill-force-of-will/mechanic.force-of-will/a-failed-test-leaves-him-out`
-- `e2e/rule/mordheim/pit-fighters/band--pit-fighter-skill-force-of-will/mechanic.force-of-will/the-toughness-test-stands-him-back-up`
-- `e2e/rule/trollheim/chaos-streets-pit-fighters/band--pit-fighter-skill-force-of-will/mechanic.force-of-will/a-failed-test-leaves-him-out`
-- `e2e/rule/trollheim/chaos-streets-pit-fighters/band--pit-fighter-skill-force-of-will/mechanic.force-of-will/the-toughness-test-stands-him-back-up`
-- `e2e/rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-contagious/unimplemented.skaven-clan-pestilens.band.clan-pestilens-special-skills-contagious/the-same-selection-with-rotten-body-is-accepted`
-
-### RC7 — control-power and compulsion qualifiers dropped or mis-ordered (5 scenarios)
-
-NumPy's seduction (`_driver.py:518-548`) ignores `male_only`, the Khemrian
-`own_test` pre-test, and copy-specific exemption lists
-(`modular/rounds.py:130-137, 1018-1027`) — both seduction cases converge on
-the no-effect baseline (0.800). The addicted Alchemist loses his attacks in
-modular (`modular/rounds.py:1258, 1365`) but still fights in NumPy.
-Enchanting Beauty's -1 tag is applied after the Stupidity test
-(`_driver.py:2017` vs modular `rounds.py:425/674`), so the penalty misses
-the test it should flip. The transform residual (~1.4pp) is unexplained; the
-cast-off itself is ported — check the Madness Stupidity on `bitten_result == 1`.
-
-- `e2e/rule/trollheim/chaos-streets-undead-bloodlines/band--lahmia-power-seduction/unimplemented.band-lahmia-power-seduction/a-female-target-is-outside-the-printed-recipient`
-- `e2e/rule/trollheim/khemri-lahmian-brotherhood/band--lahmian-special-skills-seduction/unimplemented.khemri-lahmian-brotherhood.band.lahmian-special-skills-seduction/a-failed-own-test-leaves-the-victim-unbarred`
-- `e2e/rule/trollheim/chaos-streets-undead-bloodlines/lahmia-vampire--enchanting-beauty/unimplemented.chaos-streets-undead-bloodlines.lahmia-vampire.enchanting-beauty/the-printed-penalty-turns-a-passing-total-into-a-failure`
-- `e2e/rule/mordheim/masters-of-horror-sylv/mad-scientist--alchemist/unimplemented.masters-of-horror-sylv.special.alchemist/the-supplied-addicted-scientist-takes-no-action-of-its-own`
-- `e2e/rule/mordheim/masters-of-horror-sylv/the-bitten--transform/unimplemented.masters-of-horror-sylv.the-bitten.transform/transforming-casts-off-the-worn-armour`
-
-### RC8 — cause not yet located by static reading (14 scenarios)
-
-The ported predicates compared equal line for line; the deviation is
-upstream of them. Candidates: which enemy tags reach the compiled hatred
-qualifier, NumPy's whole-batch scalar `being-charged` for Pikewall
-(`_operators.py:741` cannot vary per row when charges are cancelled),
-`ledger.animosity_failed` cleared every round for Fungus Brew
-(`_driver.py:1851`), and the callers of the identical `leader-six` aura
-check (`vectorized/_leadership.py:86-128`). Trace these before fixing.
-
-- `e2e/rule/mordheim/crooked-moon-kep/band--hate-stunties-and-skaven/mechanic.hatred-dwarfs-skaven/a-first-round-miss-is-rerolled-against-a-qualifying-dwarf`
-- `e2e/rule/mordheim/crooked-moon-kep/band--hate-stunties-and-skaven/mechanic.hatred-dwarfs-skaven/the-printed-exempt-profile-receives-no-reroll`
-- `e2e/rule/mordheim/crooked-moon-kep/band--hate-stunties-and-skaven/mechanic.hatred-dwarfs-skaven/the-same-miss-stands-without-the-qualifying-dwarf`
-- `e2e/rule/mordheim/night-goblins-mic/band--hate-stunties/unimplemented.night-goblins-mic.band.hate-stunties/a-first-round-miss-is-rerolled-against-a-qualifying-dwarf`
-- `e2e/rule/mordheim/night-goblins-mic/band--hate-stunties/unimplemented.night-goblins-mic.band.hate-stunties/the-printed-exempt-profile-receives-no-reroll`
-- `e2e/rule/mordheim/night-goblins-mic/band--hate-stunties/unimplemented.night-goblins-mic.band.hate-stunties/the-same-miss-stands-without-the-qualifying-dwarf`
-- `e2e/mechanic/mechanic.pikewall/the-charged-pikeman-rerolls-a-failed-hit`
-- `e2e/rule/mordheim/house-guard-sc/pikemen--pikewall/mechanic.pikewall/the-charged-pikeman-rerolls-a-failed-hit`
-- `e2e/rule/mordheim/night-goblins-web/shaman--fungus-brew/unimplemented.night-goblins-web.shaman.fungus-brew/a-supplied-rowdy-result-suppresses-the-affected-warriors-attacks-on-a-rolled-two`
-- `e2e/rule/mordheim/night-goblins-web/shaman--fungus-brew/unimplemented.night-goblins-web.shaman.fungus-brew/the-widened-rowdy-band-stops-at-two-so-a-rolled-three-leaves-the-attack-standing`
-- `e2e/rule/mordheim/night-goblins-web/shaman--fungus-brew/unimplemented.night-goblins-web.shaman.fungus-brew/the-supplied-numbed-result-gives-the-printed-six-plus-save-against-a-strength-six-blow`
-- `e2e/rule/mordheim/night-goblins-mic/big-boss--leader/mechanic.leader-six/a-leader-beyond-the-printed-radius-supplies-nothing`
-- `e2e/rule/mordheim/night-goblins-mic/big-boss--leader/mechanic.leader-six/a-supplied-leader-on-the-other-side-supplies-nothing`
-- `e2e/rule/mordheim/night-goblins-mic/big-boss--leader/mechanic.leader-six/a-supplied-leader-that-is-not-standing-supplies-nothing`
+- The corrections are global behavioural changes; a fresh full E2E campaign
+  (modular references are still valid; re-sample only NumPy) is needed before
+  the next certification to confirm no approved scenario regressed. A
+  12-scenario spot-check across the touched paths passed on 2026-11-03.
+- The Lahmia copy's printed hit-gated attack-release is not ported (per-row
+  hit provenance is not tracked); its only release remains the victim's own
+  Recovery-phase test. No stored scenario exercises it.
+- The native engine was not updated; it shares none of these fixes and must
+  be re-qualified against the modular oracle separately.
