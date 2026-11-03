@@ -1044,6 +1044,10 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
     damage = (rng.integers(1, effect.damage_die_sides + 1, wound_rows.size)
               if effect.damage_die_sides else np.full(wound_rows.size, max(1, effect.damage)))
     damage = np.maximum(damage, np.where(critical, 2, 1))
+    # A helpless kill is one printed wound: the oracle fixes damage = 1 before
+    # any weapon die or critical can raise it (modular/attacks.py:746-751), so
+    # the wound reactions (Acid Blood, Contagious) fire exactly once.
+    damage[helpless_wounds] = 1
     if has(defender.global_effects,"flammable") and has(effect,"attack.fire"):
         damage *= 2
     # Marine Hunter: every wound it inflicts on an aquatic creature is doubled.
