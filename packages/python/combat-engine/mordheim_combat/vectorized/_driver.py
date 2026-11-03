@@ -438,8 +438,11 @@ def _charm_gates(owner_first: CompiledFighter, owner_second: CompiledFighter,
                 if target.animal_handler_leadership is None:
                     raise ValueError(
                         "Tranquil Fauna requires the qualified Animal Handler's Leadership")
-                rolls = rng.integers(1, 7, eligible.size)
-                passed = (rolls <= target.animal_handler_leadership) & (rolls != 6)
+                # The oracle's resolve_leadership: 2D6 against the handler's
+                # supplied value, with no six-always-fails rule.
+                totals = (rng.integers(1, 7, eligible.size)
+                          + rng.integers(1, 7, eligible.size))
+                passed = totals <= target.animal_handler_leadership
                 blocked[eligible[~passed]] = True
             elif ordinary:
                 blocked[eligible] = True
@@ -1260,6 +1263,58 @@ def _patch_righteous_charge(equipment: dict[int, CompiledFighter],
             tags=(*base.global_effects.tags, *RIGHTEOUS_CHARGE_TAGS)))
 
 
+def _resolve_wheelo_impact(owner: CompiledFighter, target: CompiledFighter,
+                           rows: np.ndarray, charges_own: np.ndarray,
+                           charges_other: np.ndarray, owner_state: CombatState,
+                           target_state: CombatState,
+                           rng: np.random.Generator) -> None:
+    """Port of the Wheelo collision (modular/rounds.py:1082-1115).
+
+    A charging Wheelo resolves D6/2 (rounded up) impact hits before any blow;
+    the spear fitting grants one counter-impact when the Wheelo is itself
+    charged.  Impacts are automatic unparriable Strength 4 hits (5 on the
+    morning star's first impact), the axe fitting adds one point of armour
+    penetration and the club fitting concussion.  The collision carries none
+    of the bearer's own effects and is not a hand-to-hand attack.
+    """
+    if not has(owner.global_effects, "mechanic.wheelo-impact") or rows.size == 0:
+        return
+    charging = charges_own[rows]
+    counter = charges_other[rows] & has(owner.global_effects, "wheelo.fitting.spear")
+    eligible = ((charging | counter)
+                & (owner_state.condition[rows] != OUT)
+                & (target_state.condition[rows] != OUT))
+    rows = rows[eligible]
+    charging = charging[eligible]
+    if rows.size == 0:
+        return
+    counts = np.ones(rows.size, dtype=np.int64)
+    if charging.any():
+        counts[charging] = (rng.integers(1, 7, int(charging.sum())) + 1) // 2
+    morning_star = has(owner.global_effects, "wheelo.fitting.morning-star")
+    penetration = int(has(owner.global_effects, "wheelo.fitting.axe"))
+    concussion = has(owner.global_effects, "wheelo.fitting.club")
+    for index in range(int(counts.max(initial=0))):
+        active = rows[(counts > index)
+                      & (owner_state.condition[rows] != OUT)
+                      & (target_state.condition[rows] != OUT)]
+        if active.size == 0:
+            continue
+        weapon = EffectSet(
+            fixed_strength=5 if morning_star and index == 0 else 4,
+            automatic_hit=True, cannot_be_parried=True,
+            armour_penetration=penetration, concussion=concussion,
+        )
+        source = replace(owner, main_weapon=weapon, main_weapon_without_poison=None,
+                         off_hand=None, off_hand_without_poison=None,
+                         off_hand_attacks=False, extra_attacks=(),
+                         global_effects=EffectSet())
+        _resolve_weapon(source, target, weapon, active,
+                        np.zeros(owner_state.wounds.size, dtype=bool),
+                        owner_state, target_state, rng, False,
+                        melee_attack=False)
+
+
 def _resolve_mantle_of_crows(owner: CompiledFighter, target: CompiledFighter,
                              rows: np.ndarray, owner_state: CombatState,
                              target_state: CombatState,
@@ -1636,6 +1691,10 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
         if rounds is not None:
             rounds[unresolved] += 1
         state1.parry_used[:] = False; state2.parry_used[:] = False
+        # The printed tentacle loss is a per-phase resource: the oracle clears
+        # ``tentacle-grapple`` from ``resources_spent`` at every round start.
+        ledger.tentacle_used[0][:] = False
+        ledger.tentacle_used[1][:] = False
         state1.seaguard_used[:] = False; state2.seaguard_used[:] = False
         state1.corruption_used[:] = False; state2.corruption_used[:] = False
         state1.parry_remaining[:] = _parry_capacity(first)
@@ -1992,6 +2051,13 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             if optional.second_netter:
                 rows=np.flatnonzero(unresolved&charge2)
                 _resolve_netter_charge(second,first,rows,state2,state1,rng)
+        # A Wheelo's collision is resolved before crew and enemy weapon blows
+        # (modular/rounds.py:1082); charge flags only exist in the first round.
+        if first_round:
+            _resolve_wheelo_impact(first, second, active_rows, charge1, charge2,
+                                   state1, state2, rng)
+            _resolve_wheelo_impact(second, first, active_rows, charge2, charge1,
+                                   state2, state1, rng)
         # The Crow Master's Mantle opens the combat phase, before the mutual
         # Spines hits and before any warrior's own blows.
         _resolve_mantle_of_crows(first, second, active_rows, state1, state2, rng)
@@ -2262,16 +2328,17 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
                 defer_grapple=True)
         whip1 = _whipcrack_weapon(attack_first)
         whip2 = _whipcrack_weapon(attack_second)
+        # The whip bonus joins the bearer's own pool when he charges; it is
+        # split out as its own earlier event only when he is charged, which is
+        # the printed timing (modular/rounds.py:1409-1417).
         whip1_active = bool(
-            first_round and whip1 is not None
-            and (charge1 | charged1).any()
+            first_round and whip1 is not None and charged1.any()
         )
         whip2_active = bool(
-            first_round and whip2 is not None
-            and (charge2 | charged2).any()
+            first_round and whip2 is not None and charged2.any()
         )
-        whip1_rows = (charge1 | charged1) if whip1_active else np.zeros(count, dtype=bool)
-        whip2_rows = (charge2 | charged2) if whip2_active else np.zeros(count, dtype=bool)
+        whip1_rows = charged1.copy() if whip1_active else np.zeros(count, dtype=bool)
+        whip2_rows = charged2.copy() if whip2_active else np.zeros(count, dtype=bool)
         whip1_rows &= attacks1 > 0
         whip2_rows &= attacks2 > 0
         ordinary_attacks1 = attacks1 - whip1_rows.astype(np.int16) - shifty1.astype(np.int16)
@@ -2474,8 +2541,12 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
         # already resolves equal scores in stack order.
         raw1 = p1.astype(np.int32) * 100 + i1
         raw2 = p2.astype(np.int32) * 100 + i2
-        whip1_scores = np.where(whip1_rows, 100 + i1, -10000).astype(np.int32)
-        whip2_scores = np.where(whip2_rows, 100 + i2, -10000).astype(np.int32)
+        # The bonus's tier is the whip's own declared priority, raised to the
+        # first tier at minimum (modular: ``max(1, whip.priority)``).
+        whip1_tier = max(1, whip1.priority) if whip1 is not None else 1
+        whip2_tier = max(1, whip2.priority) if whip2 is not None else 1
+        whip1_scores = np.where(whip1_rows, whip1_tier * 100 + i1, -10000).astype(np.int32)
+        whip2_scores = np.where(whip2_rows, whip2_tier * 100 + i2, -10000).astype(np.int32)
         whip1_ties = whip1_rows & (whip1_scores == raw2)
         whip2_ties = whip2_rows & (whip2_scores == raw1)
         if whip1_ties.any():
@@ -2508,6 +2579,13 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             if whip2 is not None else attack_second
         )
 
+        # Pool allocations belong to the phase: the oracle computes each
+        # warrior's counts before the event loop, so a warrior who was not
+        # standing at allocation time (a helpless victim rescued mid-phase by
+        # Force of Will included) has no event this phase, even though his
+        # live condition is STANDING again by the time the position fires.
+        allocated1 = state1.condition == STANDING
+        allocated2 = state2.condition == STANDING
         # A declared hold resolves as its own single natural attack: a hit that
         # is not parried forces the victim's Strength-2 test, and failure puts
         # both warriors in the hold.
@@ -2543,42 +2621,42 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
         for event_index in range(10):
             event = event_order[event_index]
             rows_first = np.flatnonzero(
-                unresolved & (state1.condition == STANDING)
+                unresolved & allocated1 & (state1.condition == STANDING)
                 & (event == 0) & ((ordinary_attacks1 > 0)
                                   | (mim_extra1 & ~silent1))
             )
             rows_second = np.flatnonzero(
-                unresolved & (state2.condition == STANDING)
+                unresolved & allocated2 & (state2.condition == STANDING)
                 & (event == 1) & ((ordinary_attacks2 > 0)
                                   | (mim_extra2 & ~silent2))
             )
             rows_whip1 = np.flatnonzero(
-                unresolved & (state1.condition == STANDING)
+                unresolved & allocated1 & (state1.condition == STANDING)
                 & (event == 2) & whip1_rows
             )
             rows_whip2 = np.flatnonzero(
-                unresolved & (state2.condition == STANDING)
+                unresolved & allocated2 & (state2.condition == STANDING)
                 & (event == 3) & whip2_rows
             )
             rows_shifty1 = np.flatnonzero(
-                unresolved & (state1.condition == STANDING)
+                unresolved & allocated1 & (state1.condition == STANDING)
                 & (event == 4) & shifty1 & ~silent1
             )
             rows_shifty2 = np.flatnonzero(
-                unresolved & (state2.condition == STANDING)
+                unresolved & allocated2 & (state2.condition == STANDING)
                 & (event == 5) & shifty2 & ~silent2
             )
             rows_strike1 = np.flatnonzero(
-                unresolved & (state1.condition == STANDING)
+                unresolved & allocated1 & (state1.condition == STANDING)
                 & (event == 6) & strike1_rows)
             rows_strike2 = np.flatnonzero(
-                unresolved & (state2.condition == STANDING)
+                unresolved & allocated2 & (state2.condition == STANDING)
                 & (event == 7) & strike2_rows)
             rows_stomp1 = np.flatnonzero(
-                unresolved & (state1.condition == STANDING)
+                unresolved & allocated1 & (state1.condition == STANDING)
                 & (event == 8) & stomp1_rows)
             rows_stomp2 = np.flatnonzero(
-                unresolved & (state2.condition == STANDING)
+                unresolved & allocated2 & (state2.condition == STANDING)
                 & (event == 9) & stomp2_rows)
             if rows_first.size:
                 _resolve_attacks_by_equipment(equipment1, equipment2, rows_first,
@@ -2664,19 +2742,29 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
                     state2, state1, rng, first_round, decisions,
                     f'round.{round_index}.second.stomp',
                     observations=observations, single_bonus=True)
-        # The Priest's bite is its own final event, after both pools.
-        for attacker, defender, a_state, d_state, charge, other, label in (
-            (attack_first, second, state1, state2, charge1, equipment2, 'first'),
-            (attack_second, first, state2, state1, charge2, equipment1, 'second'),
+        # The Priest's bite is its own final event, after both pools.  It is
+        # scheduled only for a warrior whose phase allocation produced attacks
+        # (modular/rounds.py:1376-1389), it is a natural-slot attack, and it
+        # carries no poisoned-weapon alternative.
+        for attacker, defender, a_state, d_state, charge, other, pool, quiet, \
+                allocated, label in (
+            (attack_first, second, state1, state2, charge1, equipment2,
+             attacks1, silent1, allocated1, 'first'),
+            (attack_second, first, state2, state1, charge2, equipment1,
+             attacks2, silent2, allocated2, 'second'),
         ):
-            rows = np.flatnonzero(unresolved & (a_state.condition != OUT))
+            rows = np.flatnonzero(unresolved & allocated & ~quiet & (pool > 0)
+                                  & (a_state.condition != OUT))
             for bite_index, weapon in enumerate(
                     w for w in attacker.extra_attacks
                     if has(w, "rule.strikes-last-bite")):
                 if rows.size == 0:
                     continue
                 bite = replace(attacker, main_weapon=weapon, off_hand=None,
-                               off_hand_attacks=False, extra_attacks=())
+                               off_hand_attacks=False, extra_attacks=(),
+                               main_hand_slot='natural',
+                               main_weapon_without_poison=None,
+                               off_hand_without_poison=None)
                 _resolve_attacks_by_equipment(
                     {row: bite for row in range(count)}, other, rows,
                     np.ones(count, dtype=np.int16), charge, a_state, d_state,

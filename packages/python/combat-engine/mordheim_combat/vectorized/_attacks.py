@@ -1059,6 +1059,24 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
     damage_critical_bonus = np.repeat(np.where(critical_results >= 5, 2, 0), damage)
     damage_helpless = np.repeat(helpless_wounds, damage)
     np.subtract.at(defender_state.wounds, damage_rows, 1)
+
+    def _contagious_reaction() -> None:
+        # Contagious (modular/aftermath.py:81-115): a close-combat wound that
+        # leaves the bearer out of action -- a helpless kill included -- tests
+        # the attacker's Toughness; a failed test costs him one of his own
+        # wounds.  Called exactly once per attack, at whichever exit this
+        # resolution takes after its damage has been applied.
+        if (not melee_attack or not has(defender.global_effects, "contagious")
+                or has(attacker.global_effects, "undead_or_possessed")):
+            return
+        out_rows = affected_rows[defender_state.condition[affected_rows] == OUT]
+        if out_rows.size == 0:
+            return
+        passed = _characteristic_test(attacker, attacker_state.toughness[out_rows], rng)
+        infected = out_rows[~passed]
+        attacker_state.wounds[infected] -= 1
+        attacker_state.condition[infected[attacker_state.wounds[infected] <= 0]] = OUT
+
     # Torturer: a close-combat wound weakens its victim by one Strength until
     # the end of the duel, once per wounding attack (modular _react_to_wound).
     if (melee_attack and has(attacker.global_effects, "mechanic.torturer")
@@ -1122,6 +1140,7 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
             wounds_before = wounds_before[kept_rows]
             affected_rows = affected_rows[kept_rows]
             if damage_rows.size == 0:
+                _contagious_reaction()
                 return
     # Drenok's Berserker rage: crossing to zero Wounds does not take him out
     # of action if he makes a 4+, and that success keeps him standing for the
@@ -1154,6 +1173,7 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
             wounds_before = wounds_before[~crossing]
             affected_rows = affected_rows[~crossing]
             if damage_rows.size == 0:
+                _contagious_reaction()
                 return
     # Damage rows are ordered by duel row. The ordinal within each row tells
     # us which damage instance reaches zero wounds and therefore creates an
@@ -1167,9 +1187,11 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
     )
     injury_rows = damage_rows[injury_mask]
     if injury_rows.size == 0:
+        _contagious_reaction()
         return
     if defender.injury_profile == 4:
         defender_state.condition[injury_rows[_run_starts(injury_rows)]] = OUT
+        _contagious_reaction()
         return
     # Faithful port of the oracle's context (modular _injury_context): the
     # modifier already carries knife-fighting, Blessing of Morr against the
@@ -1224,6 +1246,7 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
         injury = injury[~ignored]
         injury_totals = injury_totals[~ignored]
         if injury_rows.size == 0:
+            _contagious_reaction()
             return
     # Inured to Pain: a final total of zero or less ignores this damage,
     # including its lost Wound (modular _resolve_wound_damage_body).
@@ -1237,6 +1260,7 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
             injury_rows = injury_rows[~refunded]
             injury = injury[~refunded]
             if injury_rows.size == 0:
+                _contagious_reaction()
                 return
     injured = injury_rows[_run_starts(injury_rows)]
     highest_by_row = np.full(defender_state.condition.size, STANDING, dtype=np.int8)
@@ -1278,16 +1302,7 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
         defender_state.mouth_sewn[injured[highest == STUNNED]] = True
     defender_state.condition[injured] = np.maximum(defender_state.condition[injured], highest)
     defender_state.frenzy[injured] &= highest == STANDING
-    contagious_rows=injured[(highest==OUT)]
-    if (contagious_rows.size and has(defender.global_effects,"contagious")
-            and not has(attacker.global_effects,"undead_or_possessed")):
-        passed = _characteristic_test(attacker, attacker_state.toughness[contagious_rows], rng,
-                                      six_always_fails=True)
-        infected=contagious_rows[~passed]
-        attacker_state.wounds[infected]-=1
-        defeated=infected[attacker_state.wounds[infected]<=0]
-        if defeated.size:
-            attacker_state.condition[defeated]=OUT
+    _contagious_reaction()
 
 def resolve_attacks(attacker: CompiledFighter, defender: CompiledFighter, rows: np.ndarray,
                     attacks: np.ndarray, charging: np.ndarray, attacker_state: CombatState,
