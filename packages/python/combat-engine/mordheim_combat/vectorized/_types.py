@@ -143,6 +143,9 @@ class CombatState:
     #: modular engine re-derives it in every phase, so the driver must copy its
     #: round-ledger value here each phase and clear it with the ledger.
     charm_auto_hit: np.ndarray
+    #: A successful To Hit roll against this fighter in the current phase,
+    #: before parries/saves or wounds; Lahmia Seduction ends on any such hit.
+    hit_this_phase: np.ndarray
     #: Danse Macabre: the row is under the supplied controlled state.  It is
     #: seeded from ``condition.danse-macabre-controlled`` and the round loop
     #: lifts it on a passed test (``modular/rounds.py:378-383``).

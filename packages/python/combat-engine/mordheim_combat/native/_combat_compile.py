@@ -518,6 +518,11 @@ def _compile_fighter(me: CompiledFighter, foe: CompiledFighter) -> dict:
         "natural_armour_negated_by_magic": bool(g.natural_armour_negated_by_magic),
         "armour_cannot_be_ignored": bool(g.armour_cannot_be_ignored),
         "armour_save_floor": int(g.armour_save_floor),
+        "armour_specialist": bool(
+            has(g, "skill.armour-specialist") and not me.mounted
+            and has(g, "armour.heavy-armour")
+            and any(has(me.shield_and_skill_effects, tag)
+                    for tag in ("defence.shield", "defence.kite-shield"))),
         "out_of_action_threshold": int(g.out_of_action_threshold),
         "caught_fire_threshold": int(g.caught_fire_threshold),
         "poison_immune": bool(g.poison_immunity or has(g, "poison_immune")),
@@ -567,6 +572,7 @@ def _compile_fighter(me: CompiledFighter, foe: CompiledFighter) -> dict:
         "netter": has(g, "mechanic.netter"),
         "spines": has(g, "spines"),
         "black_hunger": has(g, "mechanic.black-hunger"),
+        "combat_charge": has(g, "skill.combat-charge"),
         "force_of_will": has(g, "mechanic.force-of-will"),
         "entangle": bool(
             has(main, "weapon.chained-squig")

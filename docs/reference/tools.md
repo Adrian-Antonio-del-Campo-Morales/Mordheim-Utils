@@ -561,14 +561,14 @@ not rerun duels or change the sample counts.
 To execute both engines and compare distributions directly:
 
 ```powershell
-python tools/mordheim-utils.py check parity --level e2e --simulations 1000 --workers 2 --backend numpy --magnitudes winner,wounds,condition --output outputs/e2e-parity/all.json --output-md outputs/e2e-parity/all.md
+python tools/mordheim-utils.py check parity --level e2e --simulations 1000 --workers 2 --backend numpy --output outputs/e2e-parity/all.json --output-md outputs/e2e-parity/all.md
 ```
 
 Use repeatable `--e2e <case_key|audit_id::id>` or `--e2e-selection-file FILE` to
 narrow that selection; the file accepts one identifier per line and `#` comments.
 E2E direct comparisons accept candidate backends `numpy`, `native` or `all`;
 `modular` alone is not accepted on this path. `winner` is mandatory;
-`--magnitudes` can additionally select `wounds`, `condition` and `rounds` without
+`--magnitudes` can additionally select `rounds` without
 changing the frozen deliveries. `--output` writes JSON only and `--output-md`
 writes Markdown only; both can be requested with different paths from one run.
 

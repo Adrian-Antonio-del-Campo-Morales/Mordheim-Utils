@@ -813,4 +813,5 @@ def prepare_armour_context(
         flaming_attack=has_tag(effect, "attack.fire"),
         natural_armour_negated_by_fire=defender.global_effects.natural_armour_negated_by_fire,
         incoming_save_modifier=int(has_tag(effect, "condition.djinns-curse-active")),
+        strength_penalty_cap=phases.armour_specialist_strength_cap(defender, effect, armour_save),
     )

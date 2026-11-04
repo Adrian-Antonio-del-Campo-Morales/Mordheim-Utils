@@ -11,10 +11,8 @@ observed surface so the duel context is preserved.  It never compiles fighters,
 never replays the E2E dice script, never reads expectations, and never treats a
 translated delivery as proof of engine compatibility.
 
-Observables are an execution decision: deliveries declare ``["winner"]`` (the
-delivery contract's minimum), while a campaign may ask the same frozen inputs
-for ``wounds`` and ``condition``.  Those names are the runner's own magnitudes;
-no new statistical criterion is introduced here.
+Deliveries declare ``["winner"]``. Campaigns compare winner rates by default
+and may additionally compare the number of rounds.
 
 Outcome vocabulary (per case, after aggregation across candidate backends):
 
@@ -77,9 +75,8 @@ SOURCE_FIELDS = frozenset({"revision", "path", "sha256", "test_id"})
 DELIVERY_STATUSES = ("translated", "blocked", "not-applicable")
 
 #: Magnitudes the shared observed runner can compare, in its own vocabulary.
-MAGNITUDES = ("winner", "wounds", "condition", "rounds")
-#: Campaign default: winner plus both final wounds and both final conditions.
-DEFAULT_MAGNITUDES = ("winner", "wounds", "condition")
+MAGNITUDES = ("winner", "rounds")
+DEFAULT_MAGNITUDES = ("winner",)
 
 #: Outcomes that make a run fail (a declared non-scenario does not).
 FAILING_OUTCOMES = frozenset({
@@ -628,9 +625,7 @@ def execute(
     if backend not in {"numpy", "native", "all"}:
         raise ValueError(f"unsupported candidate backend {backend!r}")
     requested = ("numpy", "native") if backend == "all" else (backend,)
-    magnitudes = tuple(magnitudes)
-    if "winner" not in magnitudes:
-        raise MagnitudeError("winner is mandatory")
+    magnitudes = parse_magnitudes(",".join(magnitudes))
 
     directory = deliveries or deliveries_directory(root)
     index, discovery_defects = discover(directory)

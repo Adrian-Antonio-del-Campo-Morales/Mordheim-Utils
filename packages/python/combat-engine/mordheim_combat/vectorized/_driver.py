@@ -13,7 +13,7 @@ from mordheim_core.models import CompiledFighter, DuelContext, DuelRequest, Duel
 from mordheim_combat.modular.state import maximum_wounds
 from mordheim_combat.vectorized._types import CombatState, KNOCKED_DOWN, OUT, PARALYZED, STANDING, STUNNED, VectorAttackObservation, VectorBatchObservation, _parry_capacity, has
 from mordheim_combat.vectorized._operators import _characteristic_test, allocate_attack_weapons, attack_count, effective_initiative, opposed_attack_count, priority, round_weapon_attack_count
-from mordheim_combat.vectorized._attacks import _optional_phase_plan, _prepare_weapon_attack, _resolve_weapon, resolve_attacks
+from mordheim_combat.vectorized._attacks import _optional_phase_plan, _prepare_weapon_attack, _resolve_weapon, _resolve_weapon_once, resolve_attacks
 from mordheim_combat.vectorized._alchemy import alchemy_resources, resolve_alchemist
 from mordheim_combat.vectorized._equipment import equipment_for_rows, phase_equipment, staff_power
 from mordheim_combat.vectorized._leadership import apply_command_conditions, apply_death_fighting, expire_raise_our_insignia, leadership_resources, patch_death_fighting, resolve_local_leadership, sea_shanty_losses
@@ -1557,13 +1557,14 @@ def _black_hunger_backlash(fighter: CompiledFighter, state: CombatState,
     backlash=EffectSet(tags=("mechanic.black-hunger-backlash","effect.no-critical"),fixed_strength=3,
                        automatic_hit=True,cannot_be_parried=True,ignore_armour=True)
     for index in range(3):
-        hit_rows=active[hits>index]
+        hit_rows=active[(hits>index)&(state.condition[active]!=OUT)]
         if hit_rows.size==0:continue
         observation=VectorAttackObservation(hit=True) if observations is not None else None
-        _resolve_weapon(fighter,fighter,backlash,hit_rows,np.zeros(state.wounds.size,dtype=bool),state,state,rng,False,
+        # Backlash stops at OUT; its one Force of Will rescue follows all hits.
+        _resolve_weapon_once(fighter,fighter,backlash,hit_rows,np.zeros(state.wounds.size,dtype=bool),state,state,rng,False,
             melee_attack=False,observation=observation)
         if observation is not None:observations.append(observation)
-        _rescue_force_of_will(fighter,state,hit_rows,rng)
+    _rescue_force_of_will(fighter,state,active,rng)
 
 def _resolve_fire(victim: CompiledFighter, opponent: CompiledFighter,
                    victim_state: CombatState, opponent_state: CombatState,
@@ -1684,6 +1685,8 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
         unresolved = (state1.condition != OUT) & (state2.condition != OUT) & engaged
         if not unresolved.any():
             break
+        state1.hit_this_phase[:] = False
+        state2.hit_this_phase[:] = False
         if round_index:
             active_rows = np.flatnonzero(unresolved)
             refresh_random_characteristics(
@@ -1748,8 +1751,8 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
         # ``mechanic.spawn-special-attacks`` replaces the built pool after the
         # attack count (resolve_spawn_attack_count): one die per warrior and
         # round, never behind a whole-pool vomit/wraith replacement.
-        # A netted fighter spends its own turn cutting free: it drops to Knocked
-        # Down and does not stand in that same turn (modular freed_from_net).
+        # Cutting free drops the fighter to Knocked Down before own-turn
+        # recovery stands it; ``freed`` still gates the Djinn declaration.
         netted1 = (state1.netted & first_player_turn
                    & np.isin(state1.condition, (STANDING, KNOCKED_DOWN)))
         netted2 = (state2.netted & ~first_player_turn
@@ -1760,8 +1763,8 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
         state2.condition[netted2] = KNOCKED_DOWN
         stunned1 = (state1.condition == STUNNED) & first_player_turn
         stunned2 = (state2.condition == STUNNED) & ~first_player_turn
-        stood1 = (state1.condition == KNOCKED_DOWN) & first_player_turn & ~netted1
-        stood2 = (state2.condition == KNOCKED_DOWN) & ~first_player_turn & ~netted2
+        stood1 = (state1.condition == KNOCKED_DOWN) & first_player_turn
+        stood2 = (state2.condition == KNOCKED_DOWN) & ~first_player_turn
         state1.condition[stunned1] = KNOCKED_DOWN; state2.condition[stunned2] = KNOCKED_DOWN
         state1.condition[stood1 & ~stunned1] = STANDING; state2.condition[stood2 & ~stunned2] = STANDING
         paralyzed1 = (state1.condition == PARALYZED) & first_player_turn
@@ -2132,6 +2135,15 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             second = expire_raise_our_insignia(second)
         charge1 = first_charges if first_round else np.zeros(count,dtype=bool)
         charge2 = second_charges if first_round else np.zeros(count,dtype=bool)
+        combat_charge_rows = []
+        for fighter, current, charges in ((first, state1, charge1), (second, state2, charge2)):
+            rows = (np.flatnonzero(unresolved & charges)
+                    if has(fighter.global_effects, "skill.combat-charge")
+                    else np.empty(0, dtype=np.int64))
+            if rows.size:
+                require_characteristics(fighter, current, rows, rng, ("WS",))
+                current.weapon_skill[rows] += 1
+            combat_charge_rows.append(rows)
         if first_round:
             if optional.first_netter:
                 rows=np.flatnonzero(unresolved&charge1)
@@ -2881,16 +2893,17 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
                     rng, first_round, decisions,
                     f'round.{round_index}.{label}.last-bite.{bite_index}',
                     observations=observations, single_bonus=True)
-        # Seduction's printed release: the Khemrian copy ends the control when
-        # the Vampire attacks her victim at all (modular/rounds.py:1799-1810).
-        # The Lahmia copy releases only when an attack hits; per-row hit
-        # provenance is not yet tracked here, so that half keeps the victim's
-        # own Recovery-phase test as its only release.
+        # The Khemrian copy ends on an attack; Lahmia requires a hit, even
+        # when a defence or failed wound roll prevents all damage. Release
+        # after the phase's attacks, matching modular/rounds.py.
         if ledger.seduction_controlled.any():
-            for owner_fighter, attacked in ((first, attacked_this_round1),
-                                            (second, attacked_this_round2)):
+            for owner_fighter, target_state, attacked in (
+                    (first, state2, attacked_this_round1),
+                    (second, state1, attacked_this_round2)):
                 if has(owner_fighter.global_effects, "mechanic.lahmian-seduction"):
                     ledger.seduction_controlled[attacked] = False
+                elif has(owner_fighter.global_effects, "mechanic.lahmia-seduction"):
+                    ledger.seduction_controlled[attacked & target_state.hit_this_phase] = False
         # Deathblow: a Slayer taken out before his own allocation still strikes
         # with the pool captured above; once he has struck, the skill is spent.
         # Only the printed Slayer skill ``mechanic.deathblow`` drives this
@@ -2935,6 +2948,8 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             _black_hunger_backlash(first,state1,np.flatnonzero(hunger1),rng,observations)
         if optional.second_black_hunger:
             _black_hunger_backlash(second,state2,np.flatnonzero(hunger2),rng,observations)
+        state1.weapon_skill[combat_charge_rows[0]] -= 1
+        state2.weapon_skill[combat_charge_rows[1]] -= 1
     a=int(np.count_nonzero((state2.condition==OUT)&(state1.condition!=OUT)))
     b=int(np.count_nonzero((state1.condition==OUT)&(state2.condition!=OUT)))
     if observe:

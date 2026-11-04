@@ -442,6 +442,7 @@ def _prepare_weapon_attack(attacker: CompiledFighter, defender: CompiledFighter,
             rolls[chosen]=hit_target[chosen]
             attacker_state.mark_of_old_ones_used[active[chosen]]=True
     hit_rows = active[successful]
+    defender_state.hit_this_phase[hit_rows] = True
     if has(defender.global_effects,"mechanic.spider-infested"):
         missed=active[~successful]
         np.add.at(attacker_state.initiative_penalty,missed,1)
@@ -1044,19 +1045,21 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
     )
     helpless_wounds = (condition_for_helpless == KNOCKED_DOWN) & melee_attack
     defender_state.condition[wound_rows[helpless_wounds]] = OUT
-    damage = (rng.integers(1, effect.damage_die_sides + 1, wound_rows.size)
-              if effect.damage_die_sides else np.full(wound_rows.size, max(1, effect.damage)))
+    damage = np.full(wound_rows.size, max(1, effect.damage))
+    if effect.damage_die_sides and (~helpless_wounds).any():
+        damage[~helpless_wounds] = rng.integers(
+            1, effect.damage_die_sides + 1, int((~helpless_wounds).sum()))
     damage = np.maximum(damage, np.where(critical, 2, 1))
     # A helpless kill is one printed wound: the oracle fixes damage = 1 before
     # any weapon die or critical can raise it (modular/attacks.py:746-751), so
     # the wound reactions (Acid Blood, Contagious) fire exactly once.
-    damage[helpless_wounds] = 1
     if has(defender.global_effects,"flammable") and has(effect,"attack.fire"):
         damage *= 2
     # Marine Hunter: every wound it inflicts on an aquatic creature is doubled.
     if (has(attacker.global_effects, "mechanic.marine-hunter")
             and has(defender.global_effects, "species.aquatic")):
         damage *= 2
+    damage[helpless_wounds] = 1
     if observation is not None:
         observation.damage += int(damage[0])
         observation.critical |= bool(critical.any())
@@ -1065,7 +1068,9 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
     damage_rows = np.repeat(wound_rows, damage)
     damage_critical_bonus = np.repeat(np.where(critical_results >= 5, 2, 0), damage)
     damage_helpless = np.repeat(helpless_wounds, damage)
-    np.subtract.at(defender_state.wounds, damage_rows, 1)
+    # A helpless kill reports one damage for reactions but preserves the
+    # victim's Wounds. Keep those entries aligned with the Injury masks.
+    np.subtract.at(defender_state.wounds, damage_rows[~damage_helpless], 1)
 
     def _contagious_reaction() -> None:
         # Contagious (modular/aftermath.py:81-115): a close-combat wound that

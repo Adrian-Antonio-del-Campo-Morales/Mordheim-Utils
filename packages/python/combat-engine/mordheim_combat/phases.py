@@ -577,6 +577,21 @@ class ArmourContext:
     flaming_attack: bool = False
     natural_armour_negated_by_fire: bool = False
     incoming_save_modifier: int = 0
+    strength_penalty_cap: int | None = None
+
+
+def armour_specialist_strength_cap(
+    defender: CompiledFighter, effect: EffectSet, armour_save: int,
+) -> int | None:
+    """Only the worn Heavy Armour's Strength penalty is limited by this feat."""
+    if (has_tag(defender.global_effects, "skill.armour-specialist")
+            and has_tag(defender.global_effects, "armour.heavy-armour")
+            and not defender.mounted
+            and any(has_tag(defender.shield_and_skill_effects, tag)
+                    for tag in ("defence.shield", "defence.kite-shield"))
+            and not effect.ignore_armour_except_shield_and_skills):
+        return max(0, 5 - armour_save)
+    return None
 
 
 @dataclass(frozen=True, slots=True)
@@ -602,7 +617,10 @@ class ArmourResult:
 
 
 def armour_target(context: ArmourContext) -> int:
-    modifier = max(0, context.strength - 3) + context.armour_penetration - context.target_armour_bonus
+    strength_penalty = max(0, context.strength - 3)
+    if context.strength_penalty_cap is not None:
+        strength_penalty = min(strength_penalty, context.strength_penalty_cap)
+    modifier = strength_penalty + context.armour_penetration - context.target_armour_bonus
     armour = context.armour_save + modifier + context.incoming_save_modifier
     natural = context.natural_armour_save
     if not context.natural_armour_unmodified:

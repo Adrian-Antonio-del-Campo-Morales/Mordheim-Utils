@@ -404,16 +404,44 @@ rules:
     - squires
 - id: band--knights-feats-maldred
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
+    - id: profile.skill-access.combat-charge
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.skill-access
+        parameters:
+          category: special
+          profile_ids:
+          - questing-knights
+          skills:
+          - skill.combat-charge
+    - id: profile.skill-access.armour-specialist
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.skill-access
+        parameters:
+          category: special
+          profile_ids:
+          - questing-knights
+          skills:
+          - skill.armour-specialist
     - id: unimplemented.disciples-of-maldred-mou.band.knights-feats-maldred
       scope: 'NO'
       binding: null
       reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+        Sword master is not published by this binding; its separate contract
+        remains pending. Lancer is excluded by the separate scope decision below.
+    - id: excluded.knights-feats.lancer
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Lancer is outside the duel scope by user decision adopted 2026-11-03.
+        Its mounted charge continuation is excluded, not pending implementation.
   name: Knights Feats
   effect: >-
     1 - Combat charge: the character gains +1 attack and +1 WS when he charges. 2 - Lancer: the

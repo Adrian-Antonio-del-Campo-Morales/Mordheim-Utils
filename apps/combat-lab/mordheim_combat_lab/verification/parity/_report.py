@@ -800,7 +800,7 @@ def battery_report_markdown(payload: dict[str, object]) -> str:
         "", "## Scope of this certificate", "",
         "A case is compared on the terminal outcome distributions of both "
         "engines: `winner` (first win, second win, unresolved) always, plus "
-        "`rounds`, `wounds` and `condition` when the case declares them. The "
+        "`rounds` when the case declares it. The "
         "criterion is the six-sigma tolerance of the historical certificate; no "
         "internal counter, flag or hash is required.",
         "",

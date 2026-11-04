@@ -110,8 +110,30 @@ def test_compare_case_always_compares_the_winner_and_rejects_unknown_magnitudes(
     assert comparisons[0].modular_rates[0] == pytest.approx(0.5)
     assert comparisons[0].candidate_rates[0] == pytest.approx(0.5)
     assert failure is None
-    with pytest.raises(ValueError):
-        _runner._compare_case(("parry-attempts",), oracle, oracle, 1)
+    for magnitude in ("parry-attempts", "wounds", "condition"):
+        with pytest.raises(ValueError):
+            _runner._compare_case((magnitude,), oracle, oracle, 1)
+
+
+@pytest.mark.parametrize("magnitude", ["wounds", "condition"])
+@pytest.mark.parametrize("surface", ["counts", "observed"])
+def test_removed_magnitudes_are_rejected_before_sampling(monkeypatch, magnitude, surface):
+    def forbidden(*args, **kwargs):
+        pytest.fail("an unsupported magnitude must not sample either engine")
+
+    monkeypatch.setattr(_runner, "_observed_reference", forbidden)
+    monkeypatch.setattr(_runner, "_candidate_sample", forbidden)
+    run = run_parity((
+        ParityCase("removed", None, None, simulations=2,
+                   magnitudes=("winner", magnitude)),
+    ), candidate=surface, workers=1)
+    assert run.modular_duels == 0
+    assert len(run.rows) == 1
+    row = run.rows[0]
+    assert row.status == "NOT_RUN"
+    assert magnitude in row.detail and "unsupported statistical magnitude" in row.detail
+    assert not row.executed and not row.compared and not row.approved
+    assert not row.comparisons
 
 
 def test_blocked_case_is_never_executed_or_compared():

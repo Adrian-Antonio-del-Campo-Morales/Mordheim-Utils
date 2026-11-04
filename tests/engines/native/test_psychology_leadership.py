@@ -133,3 +133,26 @@ def test_hypnotic_gaze_bars_the_victim_and_makes_hits_against_it_automatic():
     tape.finish()
     assert "round.0.first.hypnotic-gaze" in policy.keys
     assert int(result.second_wounds[0]) == second.characteristics.wounds
+
+
+def test_lahmia_seduction_releases_on_a_hit_without_wounds_and_retains_recovery():
+    first, second = _pair()
+    first = _tagged(first, "mechanic.lahmia-seduction")
+    second = _tagged(second, "sex.male")
+    regain = "round.1.second.lahmia-seduction.regain-control"
+    for script, needs_recovery in (
+        # Failed control test; hit without a wound; both attack next turn.
+        ((6, 6, 6, 1, 1, 1), False),
+        # A miss preserves control; failed Recovery keeps the victim barred.
+        ((6, 6, 1, 6, 6, 1), True),
+        # A miss preserves control; successful Recovery lets both attack.
+        ((6, 6, 1, 1, 1, 1, 1), True),
+    ):
+        tape, policy = _Tape(*script), _Accept()
+        result = native.simulate_batch_observed(
+            first, second, 1, tape, 2, policy, context=_STILL)
+        tape.finish()
+        assert (regain in policy.keys) is needs_recovery
+        assert int(result.rounds[0]) == 2
+        assert int(result.first_wounds[0]) == first.characteristics.wounds
+        assert int(result.second_wounds[0]) == second.characteristics.wounds

@@ -19,6 +19,53 @@ class FixedRng:
         return result if size is not None else result.item()
 
 
+def test_lahmia_seduction_releases_only_hit_rows_and_keeps_recovery(monkeypatch, vector_case):
+    from mordheim_combat.vectorized import _driver as driver
+    from mordheim_core.models import DuelContext
+
+    plain = vector_case(
+        "test_psychology_vectorized/test_the_holy_relic_passes_once_and_the_next_test_rolls_normally-0-0"
+    ).second
+    owner = replace(plain, global_effects=EffectSet(tags=("mechanic.lahmia-seduction",)),
+                    characteristics=replace(plain.characteristics, initiative=5))
+    victim = replace(plain, global_effects=EffectSet(tags=("sex.male",)),
+                     characteristics=replace(plain.characteristics, initiative=2))
+
+    class Tape(FixedRng):
+        def integers(self, low, high=None, size=None, dtype=None):
+            result = super().integers(low, high, size, dtype)
+            assert np.size(result) == (size if size is not None else 1)
+            return result
+
+        def random(self, size=None):
+            assert size == 0  # distinct Initiative values need no tie dice
+            return np.empty(0)
+
+    class Accept:
+        def choose(self, key, context=None):
+            return True
+
+    # All three victims are controlled. Only row 0 is hit, without a wound.
+    # Next turn, row 1 fails Recovery and row 2 passes: rows 0 and 2 may strike.
+    tape = Tape([6, 6, 6], [6, 6, 6], [4, 1, 1], [1],
+                [6, 1], [6, 1], [1, 1, 1], [1, 1])
+    pools = []
+    original = driver.resolve_attacks
+
+    def record(*args, **kwargs):
+        pools.append((kwargs["decision_prefix"], args[2].tolist()))
+        return original(*args, **kwargs)
+
+    monkeypatch.setattr(driver, "resolve_attacks", record)
+    result = driver.simulate_batch_observed(
+        owner, victim, 3, tape, 2, Accept(),
+        context=DuelContext(charging=(), active_participant="first"))
+    assert not tape.values
+    assert pools == [("round.0.first", [0, 1, 2]),
+                     ("round.1.first", [0, 1, 2]), ("round.1.second", [0, 2])]
+    assert result.second_wounds.tolist() == [victim.characteristics.wounds] * 3
+
+
 def test_frenzy_persists_and_pistols_only_fire_in_the_first_round(vector_case):
     from mordheim_combat.vectorized import attack_count
 
@@ -313,6 +360,30 @@ def test_luck_rerolls_failed_armour_save(vector_case):
     assert observation.saved
     assert defender_state.wounds.tolist() == [3]
     assert defender_state.luck_used.tolist() == [True]
+
+
+def test_helpless_kill_keeps_wounds_and_mixed_row_injuries_aligned(vector_case):
+    from mordheim_combat.vectorized import KNOCKED_DOWN, OUT, STANDING, _new_state
+    from mordheim_combat.vectorized._attacks import _resolve_weapon
+
+    plain = vector_case(
+        "test_psychology_vectorized/test_the_holy_relic_passes_once_and_the_next_test_rolls_normally-0-0"
+    ).second
+    attacker = replace(plain, global_effects=EffectSet())
+    defender = replace(plain, global_effects=EffectSet(), armour_save=7,
+                       helmet_save=7, natural_armour_save=7)
+    first = _new_state(attacker, 2, np.random.default_rng(1))
+    second = _new_state(defender, 2, np.random.default_rng(2))
+    second.condition[:] = [KNOCKED_DOWN, STANDING]
+    second.wounds[:] = [2, 1]
+    weapon = EffectSet(tags=("effect.no-critical",), automatic_hit=True, damage=2)
+    # Only the standing row takes two damage and draws two Injury dice.
+    dice = FixedRng([4, 4], [1, 6])
+    _resolve_weapon(attacker, defender, weapon, np.arange(2), np.zeros(2, dtype=bool),
+                    first, second, dice, False)
+    assert not dice.values
+    assert second.condition.tolist() == [OUT, OUT]
+    assert second.wounds.tolist() == [2, -1]
 
 
 def test_same_warrior_cannot_finish_a_defender_stunned_by_its_previous_attack(vector_case):

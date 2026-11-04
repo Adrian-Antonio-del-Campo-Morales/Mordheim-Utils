@@ -1066,6 +1066,27 @@ def resolve_round(
     first_charged, second_charged = state.initial_charge_flags
     first_charging = first_round and first_charged
     second_charging = first_round and second_charged
+    combat_charge = (
+        first_charging and has_tag(first.global_effects, "skill.combat-charge"),
+        second_charging and has_tag(second.global_effects, "skill.combat-charge"),
+    )
+    # These are phase-local copies: WS also applies when defending against
+    # the reply, and the Attack bonus uses the existing pool calculation.
+    for index, active in enumerate(combat_charge):
+        if not active:
+            continue
+        fighter = first if index == 0 else second
+        current = first_state if index == 0 else second_state
+        current = require_characteristics(fighter, current, dice,
+            f"round.{state.round_index}.{'first' if index == 0 else 'second'}.combat-charge",
+            ('WS',), decisions)
+        current = replace(current, weapon_skill=current.weapon_skill + 1)
+        fighter = replace(fighter, global_effects=replace(fighter.global_effects,
+            attacks_bonus=fighter.global_effects.attacks_bonus + 1))
+        if index == 0:
+            first, first_state = fighter, current
+        else:
+            second, second_state = fighter, current
     # Keep incoming charge provenance separate from the duelist's own charge.
     for side, charged in (("first", second_charging), ("second", first_charging)):
         fighter = first if side == "first" else second
@@ -1812,6 +1833,10 @@ def resolve_round(
                 first_state = current
             else:
                 second_state = current
+    if combat_charge[0]:
+        first_state = replace(first_state, weapon_skill=first_state.weapon_skill - 1)
+    if combat_charge[1]:
+        second_state = replace(second_state, weapon_skill=second_state.weapon_skill - 1)
     trace = tuple(dict.fromkeys((
         *(state.trace if state.round_index == 0 else ()), Phase.PRIORITY, Phase.ATTACKS,
         *(phase for outcome in outcomes for phase in outcome.trace), Phase.AFTERMATH,

@@ -30,8 +30,8 @@ Two evidence surfaces are preserved because they certify different contracts:
   truncation certificate, with the candidate sample seeded ``seed + 1_000_003``.
   Its candidate is sampled without context or decisions, so cases carrying
   either are refused on this surface (``ValueError``).
-- ``candidate="observed"`` keeps per-duel rows so ``rounds``, ``wounds`` and
-  ``condition`` can be compared, and re-samples the candidate once to prove the
+- ``candidate="observed"`` keeps per-duel rows so ``rounds`` can be compared,
+  and re-samples the candidate once to prove the
   batch is deterministic.  This is the battery contract.  Its native
   candidate replays the native core with a NumPy ``Generator``
   (:data:`NATIVE_OBSERVED_NOTE`); the production native seeding is not
@@ -118,8 +118,8 @@ class OutcomeCodeError(ValueError):
 class MagnitudeComparison:
     """One compared magnitude, with the rates the two engines produced.
 
-    ``magnitude`` is the compared label (``winner``, ``rounds``,
-    ``wounds[first]``…); ``passed`` is the six-sigma decision on it.  Rates are
+    ``magnitude`` is the compared label (``winner`` or ``rounds``);
+    ``passed`` is the six-sigma decision on it.  Rates are
     in oracle code order: for ``winner`` 0=first win, 1=second win, 2=unresolved.
     """
 
@@ -486,34 +486,6 @@ def _compare_case(
                 "rounds", np.asarray(oracle.resolution_rounds),
                 np.asarray(candidate.rounds), rows,
             )
-        elif name == "wounds":
-            first = _distribution(
-                "wounds[first]", np.asarray(oracle.first_wounds),
-                np.asarray(candidate.first_wounds), rows,
-            )
-            second = _distribution(
-                "wounds[second]", np.asarray(oracle.second_wounds),
-                np.asarray(candidate.second_wounds), rows,
-            )
-            for item in (first, second):
-                comparisons.append(item)
-                if not item.passed and failure is None:
-                    failure = item
-            continue
-        elif name == "condition":
-            first = _distribution(
-                "condition[first]", np.asarray(oracle.first_condition),
-                np.asarray(candidate.first_condition), rows,
-            )
-            second = _distribution(
-                "condition[second]", np.asarray(oracle.second_condition),
-                np.asarray(candidate.second_condition), rows,
-            )
-            for item in (first, second):
-                comparisons.append(item)
-                if not item.passed and failure is None:
-                    failure = item
-            continue
         else:
             raise ValueError(f"unknown statistical magnitude {name!r}")
         comparisons.append(comparison)
@@ -697,6 +669,13 @@ def _case_rows(
         return _invalid_rows(
             case, backends, simulations,
             "NOT_RUN:case-definition: winner must always be compared owner=P01",
+        ), 0
+    unsupported = sorted(set(magnitudes) - {"winner", "rounds"})
+    if unsupported:
+        return _invalid_rows(
+            case, backends, simulations,
+            "NOT_RUN:case-definition: unsupported statistical magnitude(s): "
+            + ", ".join(unsupported),
         ), 0
     if reference == "numpy" or candidate == "counts":
         if magnitudes != _COUNT_MAGNITUDES:
@@ -1070,7 +1049,7 @@ def run_parity(
     ``reference`` is ``"modular"`` (the oracle) or ``"numpy"`` (the cross layer,
     which certifies native against a NumPy sample).  ``candidate`` is
     ``"counts"`` (winner-only aggregate samples) or ``"observed"`` (per-duel
-    rows, needed for ``rounds``/``wounds``/``condition``).  ``simulations``,
+    rows, needed for ``rounds``).  ``simulations``,
     ``seed`` and ``maximum_rounds`` override the per-case declaration.
     ``horizons`` expands each case at several round limits (round truncation).
     ``escalate`` re-certifies suspicious winner-only cases at

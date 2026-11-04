@@ -120,6 +120,8 @@ def _pending_snapshot() -> PendingCapabilities:
     rejecting everything this snapshot names until Cython is ported.
     """
     residual_tags = {
+        "skill.combat-charge",
+        "skill.armour-specialist",
         "mechanic.feral-instinct", "mechanic.slave-driver", "mechanic.opposite-sex-charge-test",
         "mechanic.relay-orders", "mechanic.songster", "mechanic.devoted", "mechanic.broken-spirit",
         "mechanic.invincible-swordsman", "mechanic.djinns-curse", "mechanic.greenskin-traitor",
@@ -194,6 +196,8 @@ def _pending_snapshot() -> PendingCapabilities:
 #: Behaviors whose NumPy runtime path is connected end to end.  The native
 #: gate keeps rejecting all of them until Cython ports the same behavior.
 NUMPY_CONNECTED_TAGS = frozenset({
+    "skill.armour-specialist",
+    "skill.combat-charge",
     # Round integration (G06)
     "mechanic.stupidity", "condition.stupidity-exempt", "mechanic.causes-fear",
     "mechanic.fear-human", "mechanic.fear-immunity", "mechanic.fear-reroll",
@@ -332,6 +336,8 @@ NUMPY_PENDING = _numpy_gate()
 #: offer them too.  The charge restrictions (Cannot Charge, Shallyan
 #: Strictures) are read by the native charge sampling.
 NATIVE_CONNECTED_TAGS = frozenset({
+    "skill.armour-specialist",
+    "skill.combat-charge",
     # Psychology: Fear, Stupidity, immunities, charms, charge gates
     "mechanic.causes-fear", "mechanic.psychology-immunity", "mechanic.stupidity",
     "condition.stupidity-exempt", "mechanic.cold-blooded-psychology",

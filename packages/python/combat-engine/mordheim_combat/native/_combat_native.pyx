@@ -202,6 +202,7 @@ STATE_COLUMNS = (
     "hit_this_phase",
     "attacked_this_phase",
     "attacks_bonus_row",
+    "combat_charge_active",
     "injury_bonus_row",
     "rousing_sermon_used",
     "backley_used",
@@ -488,6 +489,7 @@ cdef struct FighterC:
     bint natural_armour_negated_by_magic
     bint armour_cannot_be_ignored
     int armour_save_floor
+    bint armour_specialist
     int out_of_action_threshold
     bint poison_immune
     bint luck
@@ -578,6 +580,7 @@ cdef struct FighterC:
     bint netter
     bint spines
     bint black_hunger
+    bint combat_charge
     bint force_of_will
     bint entangle
     bint can_burn
@@ -922,6 +925,7 @@ cdef struct StateC:
     int8_t* hit_this_phase
     int8_t* attacked_this_phase
     int8_t* attacks_bonus_row
+    int8_t* combat_charge_active
     int8_t* injury_bonus_row
     int8_t* rousing_sermon_used
     int8_t* backley_used
@@ -1132,6 +1136,7 @@ cdef void fill_fighter(object d, FighterC* out, object sources, object reactions
     out.natural_armour_negated_by_magic = _flag(d, "natural_armour_negated_by_magic")
     out.armour_cannot_be_ignored = _flag(d, "armour_cannot_be_ignored")
     out.armour_save_floor = _int(d, "armour_save_floor")
+    out.armour_specialist = _flag(d, "armour_specialist")
     out.out_of_action_threshold = _int(d, "out_of_action_threshold")
     out.poison_immune = _flag(d, "poison_immune")
     out.luck = _flag(d, "luck")
@@ -1221,6 +1226,7 @@ cdef void fill_fighter(object d, FighterC* out, object sources, object reactions
     out.netter = _flag(d, "netter")
     out.spines = _flag(d, "spines")
     out.black_hunger = _flag(d, "black_hunger")
+    out.combat_charge = _flag(d, "combat_charge")
     out.force_of_will = _flag(d, "force_of_will")
     out.entangle = _flag(d, "entangle")
     out.can_burn = _flag(d, "can_burn")
@@ -1504,6 +1510,7 @@ cdef void state_alloc(StateC* s, int n) noexcept:
     s.hit_this_phase = <int8_t*>calloc(n if n > 0 else 1, sizeof(int8_t))
     s.attacked_this_phase = <int8_t*>calloc(n if n > 0 else 1, sizeof(int8_t))
     s.attacks_bonus_row = <int8_t*>calloc(n if n > 0 else 1, sizeof(int8_t))
+    s.combat_charge_active = <int8_t*>calloc(n if n > 0 else 1, sizeof(int8_t))
     s.injury_bonus_row = <int8_t*>calloc(n if n > 0 else 1, sizeof(int8_t))
     s.rousing_sermon_used = <int8_t*>calloc(n if n > 0 else 1, sizeof(int8_t))
     s.backley_used = <int8_t*>calloc(n if n > 0 else 1, sizeof(int8_t))
@@ -1560,6 +1567,8 @@ cdef void state_alloc(StateC* s, int n) noexcept:
 
 cdef bint state_ok(StateC* s) noexcept:
     """True when every column of the state was allocated."""
+    if s.combat_charge_active == NULL:
+        return False
     return not (s.wounds == NULL or s.condition == NULL or s.initiative_penalty == NULL or s.initiative_floor == NULL or s.frenzy == NULL or s.lucky_charm == NULL or s.crimson_initiative == NULL or s.attack_penalty == NULL or s.entangled == NULL or s.parry_used == NULL or s.parry_remaining == NULL or s.seaguard_used == NULL or s.corruption_used == NULL or s.critical_used == NULL or s.force_of_will_used == NULL or s.force_of_will_active == NULL or s.force_of_will_penalty == NULL or s.disability == NULL or s.mark_of_old_ones_used == NULL or s.luck_used == NULL or s.on_fire == NULL or s.weapon_skill == NULL or s.strength == NULL or s.toughness == NULL or s.initiative == NULL or s.attacks == NULL or s.broken_hands == NULL or s.hampered_main == NULL or s.hampered_off == NULL or s.starting_wounds == NULL or s.initiative_missing == NULL or s.random_rolled == NULL or s.random_modifiers == NULL or s.torture_strength_loss == NULL or s.guiding_dream_result == NULL or s.stupidity_failed == NULL or s.massively_built_lost_turn == NULL or s.netted == NULL or s.fear_hit_sixes == NULL or s.grappled == NULL or s.grappling == NULL or s.backley_strength == NULL or s.backley_initiative == NULL or s.mutation_count == NULL or s.atrophied_arms == NULL or s.atrophied_legs == NULL or s.transformed == NULL or s.equipment_cast_off == NULL or s.hillman_wolf == NULL or s.mutation_tail == NULL or s.projection == NULL or s.drenok_fighting == NULL or s.magic_acorn_used == NULL or s.rememberer_used == NULL or s.rememberer_active == NULL or s.banter_trick_active == NULL or s.dodge_trick_active == NULL or s.trip_trick_active == NULL or s.charm_auto_hit == NULL or s.danse_macabre_controlled == NULL or s.mouth_sewn == NULL or s.giggle_juice_used == NULL or s.trip_trick_used == NULL or s.holy_relic_used == NULL or s.first_failed_used == NULL or s.poetry_first_used == NULL or s.one_roll_reroll_used == NULL or s.ranalds_luck_used == NULL or s.lunatic_result == NULL or s.lunatic_stupidity == NULL or s.shornaal_passed == NULL or s.feral_instinct_failed == NULL or s.charm_blocked == NULL or s.entranced == NULL or s.seduction_controlled == NULL or s.drunken_result == NULL or s.animosity_failed == NULL or s.beauty_passed == NULL or s.charm_attack_blocked == NULL or s.hypnotized == NULL or s.hit_this_phase == NULL or s.attacked_this_phase == NULL or s.attacks_bonus_row == NULL or s.injury_bonus_row == NULL or s.rousing_sermon_used == NULL or s.backley_used == NULL or s.addiction_cured == NULL or s.black_hunger_active == NULL or s.djinn_power == NULL or s.last_djinn_power == NULL or s.last_dance == NULL or s.bitten_result == NULL or s.devoted_frenzy == NULL or s.crude_belch_ogre_used == NULL or s.backley_spent == NULL or s.addicted_spent == NULL or s.petru_spent == NULL or s.first_attack_lost == NULL or s.shanty_loss == NULL or s.hit_penalty == NULL or s.poetry_active == NULL or s.impetuous_released == NULL or s.mutation_tail_choice == NULL or s.gauche_parry == NULL or s.deathblow_used == NULL or s.dance_shadows_coil == NULL or s.dance_woven_mist == NULL or s.main_gauche_attacks == NULL or s.shadows_coil_active == NULL or s.woven_mist_active == NULL or s.freed_this_turn == NULL or s.mutation_projection == NULL or s.shifty_projection == NULL or s.shifty_row == NULL or s.gauche_mode == NULL or s.whole_choice == NULL or s.anvil_removed == NULL or s.death_blow_removed == NULL or s.petru_debilitating_spent == NULL or s.petru_strength_spent == NULL or s.petru_resilience_spent == NULL or s.out_threshold_row == NULL or s.follow_me_active == NULL or s.righteous_active == NULL or s.attack_loss_row == NULL or s.hit_penalty_row == NULL or s.crude_belch_used == NULL or s.miss_first_attack == NULL or s.wheelo_first_impact == NULL or s.electrical_available_at == NULL or s.grapple_declared == NULL or s.jolt_declared == NULL or s.death_fighting == NULL or s.pool_loss_row == NULL or s.electrical_forfeit == NULL)
 
 
@@ -1647,6 +1656,7 @@ cdef void state_free(StateC* s) noexcept:
     free(s.hit_this_phase)
     free(s.attacked_this_phase)
     free(s.attacks_bonus_row)
+    free(s.combat_charge_active)
     free(s.injury_bonus_row)
     free(s.rousing_sermon_used)
     free(s.backley_used)
@@ -1825,6 +1835,7 @@ cdef int armour_target_c(FighterC* d, int strength, SourceC* src,
                          bint magical_attack, bint ignored) noexcept:
     cdef int modifier = 0
     cdef int delta = strength - 3
+    cdef int strength_limit
     if delta > 0:
         modifier = delta
     modifier += src.effect.v[<int>F_ARMOUR_PENETRATION] + src.armour_penetration_extra
@@ -1845,6 +1856,14 @@ cdef int armour_target_c(FighterC* d, int strength, SourceC* src,
         # so the worn save loses exactly what the natural save lent it.
         natural = 7
         armour += 7 - d.natural_armour_save if d.natural_armour_save < 7 else 0
+    if d.armour_specialist and not src.effect.v[<int>F_IGNORE_ARMOUR_EXCEPT_SHIELD_AND_SKILLS]:
+        # Only Strength's worn-armour penalty is capped at 5+. Other save
+        # modifiers and natural armour keep their existing arithmetic.
+        strength_limit = 5 - (armour - modifier)
+        if strength_limit < 0:
+            strength_limit = 0
+        if delta > strength_limit:
+            armour -= delta - strength_limit
     cdef int target = armour if armour < natural else natural
     ignored = ignored or src.effect.v[<int>F_IGNORE_ARMOUR] != 0
     if ignored:
@@ -4464,6 +4483,8 @@ cdef int attack_count_c(TablesC* t, int side, StateC* s, const int8_t* charging,
             # The printed clause replaces A1 with A2; it is not a generic +1.
             result = 2
         result += f.attacks_bonus_total
+        if s.combat_charge_active[i]:
+            result += 1
         if f.maddened and s.wounds[i] < f.w:
             result += 1
         if f.charge_attacks_bonus and charging[i]:
@@ -4823,7 +4844,7 @@ cdef int black_hunger_backlash_c(DuelC* d, int side, StateC* s, Rng* rng,
     cdef int m = 0
     for i in range(rows_n):
         row = rows[i]
-        if s.condition[row] != OUT:
+        if s.black_hunger_active[row] and s.condition[row] != OUT:
             active[m] = row
             m += 1
     cdef PreparedC prep
@@ -4858,7 +4879,8 @@ cdef int black_hunger_backlash_c(DuelC* d, int side, StateC* s, Rng* rng,
                     return -1
                 prepared_free(&prep)
     free(active); free(hit_rows); free(hits)
-    return 0
+    # The oracle stops the sequence at OUT and only then offers its rescue.
+    return rescue_force_of_will_c(f, s, rows, rows_n, rng)
 
 
 cdef int resolve_fire_c(DuelC* d, int victim_side, StateC* s_victim,
@@ -6731,6 +6753,7 @@ cdef int phase_own_turn_recovery_c(BatchC* b, object decisions, object first_py,
         for i in range(b.count):
             s.attacks_bonus_row[i] = 0
             s.injury_bonus_row[i] = 0
+            s.black_hunger_active[i] = 0
         maximum = f.base_wounds
         # The Revenant's regeneration: one 5+ attempt per own turn, never
         # remembered when it fails.
@@ -6976,6 +6999,7 @@ cdef int phase_own_turn_recovery_c(BatchC* b, object decisions, object first_py,
                 row = b.active_rows[i]
                 if (turn[row] and not s.grappled[row] and not s.grappling[row]
                         and not s.netted[row] and s.condition[row] != OUT):
+                    s.black_hunger_active[row] = 1
                     s.attacks_bonus_row[row] = <int8_t>(s.attacks_bonus_row[row] + 1)
     return 0
 
@@ -7276,6 +7300,9 @@ cdef int phase_pre_combat_c(BatchC* b, object decisions, object table,
     remaining openers (Crude Belch, the Inquisitor's brands, the mutation
     tail, Main Gauche modes, the Jester's trick, the Shadow Dance, the Sea
     Shanty, the Mantle of Crows) still land here."""
+    cdef int side, i, row
+    cdef StateC* s
+    cdef FighterC* f
     if songs_and_belches_c(b, decisions, first_py, second_py) < 0:
         return -1
     if mutations_c(b, decisions, table, first_py, second_py) < 0:
@@ -7288,7 +7315,20 @@ cdef int phase_pre_combat_c(BatchC* b, object decisions, object table,
         return -1
     if charms_c(b, decisions, first_py, second_py) < 0:
         return -1
-    return grapple_c(b, decisions, first_py, second_py)
+    if grapple_c(b, decisions, first_py, second_py) < 0:
+        return -1
+    # Combat Charge is phase-local and follows the finalized charge gates.
+    if b.first_round:
+        for side in range(2):
+            s = side_state(b, side)
+            for i in range(b.n_active):
+                row = b.active_rows[i]
+                f = fighter_at(&b.tables, side, s, row)
+                if side_charges(b, side)[row] and f.combat_charge:
+                    require_characteristic_c(s, f, row, 0, &b.rng, b.count)
+                    s.weapon_skill[row] += 1
+                    s.combat_charge_active[row] = 1
+    return 0
 
 
 cdef int phase_reactions_c(BatchC* b) except -1:
@@ -8097,7 +8137,8 @@ cdef int phase_aftermath_c(BatchC* b) except -1:
     """Seduction's release and the Black Hunger's backlash on its bearer."""
     cdef GroupsC g
     cdef DuelC v
-    cdef int k, side
+    cdef int k, side, i
+    cdef StateC* s
     seduction_release_c(b)
     if group_rows_c(&b.s1, &b.s2, b.active_rows, b.n_active, &g) < 0:
         return -1
@@ -8112,6 +8153,12 @@ cdef int phase_aftermath_c(BatchC* b) except -1:
                         return -1
     finally:
         groups_free(&g)
+    for side in range(2):
+        s = side_state(b, side)
+        for i in range(b.count):
+            if s.combat_charge_active[i]:
+                s.weapon_skill[i] -= 1
+                s.combat_charge_active[i] = 0
     return 0
 
 

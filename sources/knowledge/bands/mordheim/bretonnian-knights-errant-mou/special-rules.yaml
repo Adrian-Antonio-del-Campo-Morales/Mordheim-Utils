@@ -89,12 +89,37 @@ rules:
         id: profile.skill-access
         parameters:
           category: special
-          # Only the feat with a canonical, executable skill record is published.
-          # Combat charge, Lancer and Armour specialist keep their printed text in
-          # this rule but have no catalogue record or operator yet, so the list
-          # must not admit them as selectable no-ops.
+          # Lancer is outside the duel scope (user decision, 2026-11-03).
           skills:
           - skill.sword-master
+    - id: profile.skill-access.combat-charge
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.skill-access
+        parameters:
+          category: special
+          profile_ids:
+          - knights-errant
+          skills:
+          - skill.combat-charge
+    - id: profile.skill-access.armour-specialist
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.skill-access
+        parameters:
+          category: special
+          profile_ids:
+          - knights-errant
+          skills:
+          - skill.armour-specialist
+    - id: excluded.knights-feats.lancer
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Lancer is outside the duel scope by user decision adopted 2026-11-03.
+        Its mounted charge continuation is excluded, not pending implementation.
   name: Knights Feats
   effect: >-
     Knights Errant may choose to use the following skill list instead of the standard skill

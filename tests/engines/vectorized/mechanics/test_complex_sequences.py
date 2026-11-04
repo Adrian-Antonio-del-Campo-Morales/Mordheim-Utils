@@ -1,6 +1,8 @@
 """Minimal sequences of complex rules."""
 from __future__ import annotations
 
+from dataclasses import replace
+from mordheim_core.models import DuelContext, EffectSet
 from mordheim_combat.vectorized import KNOCKED_DOWN
 from mordheim_combat.vectorized import OUT
 from mordheim_combat.vectorized import STANDING
@@ -72,3 +74,50 @@ def test_black_hunger_backlash_is_a_real_self_attack_after_the_round(vector_case
     assert state.condition[0] == STANDING
     _black_hunger_backlash(hungry, state, np.array([0]), ScriptedRng(1, 6, 6, 6))
     assert state.condition[0] == OUT
+
+
+def test_netted_fighter_stands_after_cutting_free_only_on_its_own_turn(vector_case):
+    from mordheim_combat.vectorized import simulate_batch_observed
+
+    plain = vector_case(
+        "test_psychology_vectorized/test_the_holy_relic_passes_once_and_the_next_test_rolls_normally-0-0"
+    ).second
+    netted = replace(plain, global_effects=EffectSet(tags=("condition.netted",)))
+
+    class Misses:
+        def integers(self, low, high=None, size=None, dtype=None):
+            return np.full(size if size is not None else (), 1, dtype=dtype or np.int64)
+
+        def random(self, size=None):
+            return np.zeros(size if size is not None else ())
+
+    result = simulate_batch_observed(
+        netted, netted, 1, Misses(), 1,
+        context=DuelContext(charging=(), active_participant="first"))
+    assert result.first_condition.tolist() == [STANDING]
+    assert result.second_condition.tolist() == [KNOCKED_DOWN]
+
+
+def test_black_hunger_stops_removed_rows_and_rescues_after_all_backlash_hits(vector_case):
+    plain = vector_case(
+        "test_psychology_vectorized/test_the_holy_relic_passes_once_and_the_next_test_rolls_normally-0-0"
+    ).second
+    hungry = replace(plain,
+        global_effects=EffectSet(tags=("mechanic.black-hunger", "mechanic.force-of-will")),
+        characteristics=replace(plain.characteristics, wounds=1))
+
+    class Tape(ScriptedRng):
+        def integers(self, low, high=None, size=None, dtype=None):
+            result = super().integers(low, high, size, dtype)
+            assert np.size(result) == (size if size is not None else 1)
+            return result
+
+    # Row 0 goes OUT on the first of three hits. Row 1 survives all three;
+    # only then does row 0 draw its successful Force of Will rescue.
+    tape = Tape([3, 3], [6, 1], [6], [1], [1], [1])
+    state = _new_state(hungry, 2, ScriptedRng())
+    _black_hunger_backlash(hungry, state, np.array([0, 1]), tape)
+    assert not tape.values
+    assert state.condition.tolist() == [STANDING, STANDING]
+    assert state.wounds.tolist() == [1, 1]
+    assert state.force_of_will_used.tolist() == [True, False]

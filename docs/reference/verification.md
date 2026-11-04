@@ -112,7 +112,7 @@ Each document contains exactly these fields:
 | `case_key` | The E2E key matching `source.test_id`. |
 | `case` | `compiled_cases.encode_case` output for translated entries; otherwise `null`. |
 | `decision_policy` | `{"kind":"engine-default"}` for translated entries; otherwise `null`. |
-| `magnitudes` | `["winner"]`; extra campaign observables are execution options. |
+| `magnitudes` | `["winner"]`; campaigns may optionally add `rounds`. |
 | `reason` | `null` for translated entries; otherwise a concrete, nonempty reason. |
 
 Preparation preserves both compiled fighters, complete context including local
@@ -418,9 +418,8 @@ merging another engine's duels into the sample.
 
 The comparison is statistical. `winner` (first win, second win, unresolved) is
 always compared with the six-sigma tolerance shared with the historical
-certificate (`_statistical.six_sigma_tolerance`, floor 0.25%). `rounds`,
-`wounds` and `condition` are added when the case declares them, because both
-sampling paths already publish those distributions. Internal counters, typed
+certificate (`_statistical.six_sigma_tolerance`, floor 0.25%). `rounds`
+is added when the case declares it. Internal counters, typed
 witnesses, activation flags, equipment hashes and checkpoints are **not**
 required: `expect`, `positive_control` and `witness_value` remain declaration
 data and never gate execution or approval.

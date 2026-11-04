@@ -136,7 +136,7 @@ def test_initial_state_is_reported_incompatible():
     assert code == 1
 
 
-def test_unresolved_winner_cannot_hide_a_wounds_divergence():
+def test_winner_comparison_ignores_terminal_wounds_and_conditions():
     from mordheim_combat_lab.verification.parity._runner import _compare_case
     from mordheim_core.models import ObservedDuelResult
 
@@ -154,42 +154,33 @@ def test_unresolved_winner_cannot_hide_a_wounds_divergence():
 
     # Oracle 2 = unresolved; candidate 0 = unresolved in its own convention.
     comparisons, failure = _compare_case(
-        ("winner", "wounds", "condition"),
+        ("winner",),
         sample([0] * 40, 2), sample([3] * 40, 0), 40,
     )
-    labels = {item.magnitude for item in comparisons}
-    assert labels == {
-        "winner", "wounds[first]", "wounds[second]",
-        "condition[first]", "condition[second]",
-    }
-    winner = next(item for item in comparisons if item.magnitude == "winner")
-    wounds = next(item for item in comparisons if item.magnitude == "wounds[first]")
-    assert winner.passed is True
-    assert wounds.passed is False
-    assert failure is not None and failure.magnitude == "wounds[first]"
+    assert [item.magnitude for item in comparisons] == ["winner"]
+    assert comparisons[0].passed is True
+    assert failure is None
 
 
-def test_cli_runs_one_case_with_three_magnitudes(tmp_path):
+def test_cli_defaults_to_winner_only(tmp_path, monkeypatch):
     from mordheim_combat_lab.cli.commands import main
 
+    def execute(identifiers, **options):
+        assert identifiers == [CASES["simple"]]
+        assert options["magnitudes"] == ("winner",)
+        return {"schema": e2e_parity.SCHEMA, "options": {
+            "magnitudes": list(options["magnitudes"])},
+            "results": [], "summary": {}}, 0
+
+    monkeypatch.setattr(e2e_parity, "execute", execute)
     output = tmp_path / "e2e.json"
-    code = main([
+    assert main([
         "parity", "--catalog", "e2e", "--e2e", CASES["simple"],
         "--simulations", "8", "--seed", "7", "--workers", "1",
-        "--magnitudes", "winner,wounds,condition", "--output", str(output),
-    ])
-    assert code == 0
+        "--output", str(output),
+    ]) == 0
     payload = json.loads(output.read_text(encoding="utf-8"))
-    assert payload["schema"] == e2e_parity.SCHEMA
-    assert payload["options"]["magnitudes"] == ["winner", "wounds", "condition"]
-    assert payload["options"]["simulations"] == 8
-    assert payload["certifies_parity"] is False
-    result = payload["results"][0]
-    assert result["case_key"] == CASES["simple"]
-    assert result["outcome"] == "approved"
-    magnitudes = {item["magnitude"] for item in result["engines"][0]["comparisons"]}
-    assert {"winner", "wounds[first]", "wounds[second]",
-            "condition[first]", "condition[second]"} <= magnitudes
+    assert payload["options"]["magnitudes"] == ["winner"]
 
 
 def test_cli_refuses_unknown_identifier_and_missing_sample_width(tmp_path):
@@ -261,12 +252,18 @@ def test_cli_reads_a_selection_file(tmp_path):
     ]) == 0
 
 
-def test_magnitudes_require_winner_and_known_names():
-    assert e2e_parity.parse_magnitudes("winner,wounds") == ("winner", "wounds")
+@pytest.mark.parametrize("removed", ["wounds", "condition"])
+def test_removed_magnitudes_are_rejected_before_sampling(removed):
+    from mordheim_combat_lab.cli.commands import main
+
+    assert e2e_parity.parse_magnitudes(None) == ("winner",)
+    assert e2e_parity.parse_magnitudes("winner,rounds") == ("winner", "rounds")
     with pytest.raises(e2e_parity.MagnitudeError):
-        e2e_parity.parse_magnitudes("wounds,condition")
+        e2e_parity.parse_magnitudes("winner," + removed)
     with pytest.raises(e2e_parity.MagnitudeError):
-        e2e_parity.parse_magnitudes("winner,nonsense")
+        e2e_parity.execute([], simulations=1, magnitudes=("winner", removed))
+    assert main(["parity", "--catalog", "e2e", "--e2e", CASES["simple"],
+                 "--simulations", "1", "--magnitudes", "winner," + removed]) == 2
 
 
 @pytest.mark.parametrize("selector", [
@@ -313,11 +310,11 @@ def test_cli_markdown_and_json_share_results_without_sampling(tmp_path, monkeypa
     payload = {
         "repository": {"branch": "test", "revision": "abc"},
         "options": {"backend": "numpy", "simulations": 1, "seed": 7,
-                    "magnitudes": ["winner", "wounds"]},
+                    "magnitudes": ["winner"]},
         "summary": {"selected": 3, "approved": 1, "divergent": 1, "incompatible": 1},
         "results": [
             {"case_key": "e2e/pass", "outcome": "approved", "detail": ""},
-            {"case_key": "e2e/diff", "outcome": "divergence", "detail": "wounds | <different>\nvalue"},
+            {"case_key": "e2e/diff", "outcome": "divergence", "detail": "winner | <different>\nvalue"},
             {"case_key": "e2e/state", "outcome": "incompatible", "detail": "initial_state"},
         ],
         "checks": {"delivery_warnings": ["source warning"]},
@@ -342,7 +339,7 @@ def test_cli_markdown_and_json_share_results_without_sampling(tmp_path, monkeypa
     if "md" in formats:
         text = (tmp_path / "report.md").read_text(encoding="utf-8")
         assert "| selected | 3 |" in text
-        assert "wounds &#124; &lt;different&gt;<br>value" in text
+        assert "winner &#124; &lt;different&gt;<br>value" in text
         assert "initial_state" in text and "source warning" in text
 
 

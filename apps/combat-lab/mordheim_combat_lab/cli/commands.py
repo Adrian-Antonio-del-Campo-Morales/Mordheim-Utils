@@ -1935,8 +1935,7 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
     e2e_options.add_argument(
         "--magnitudes", metavar="LIST", default=None,
         help="with --catalog e2e, comma-separated observed magnitudes: "
-             "winner (mandatory), wounds, condition, rounds; default "
-             "winner,wounds,condition. Deliveries declare winner only; "
+             "winner (mandatory), rounds; default winner. Deliveries declare winner only; "
              "this flag widens the campaign without rewriting them",
     )
     parity_samples = parity.add_argument_group("certification samples")
