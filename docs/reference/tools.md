@@ -408,6 +408,16 @@ metadata and chunk details; it does not aggregate or discard observations.
 The NumPy store records historical candidate results, including divergences;
 its inclusion does not establish parity acceptance.
 
+`tests/engines/parity/reference_samples/native-e2e-100k` preserves the native
+campaign from `outputs/parity-native-e2e-20261103/native`: 2,678 records with
+100,000 duels each, seed 2026 and a 50-round limit. Its scenario set matches
+the 2,678-record modular oracle. Its `.json.gz` files preserve
+every source byte, including counts, chunks, timestamps, environment and
+engine digests. Inclusion does not establish parity acceptance.
+The import was verified with the sample-store reader for all 2,678 records,
+checking byte-for-byte copies, contiguous chunks and outcome totals;
+no simulations were rerun.
+
 ```bash
 python -m tools.verification.parity_samples compare --backend numpy --level e2e --simulations 100000 --store tests/engines/parity/reference_samples/numpy-e2e-100k --reference-store tests/engines/parity/reference_samples/modular-e2e-100k --output outputs/parity-e2e-stored/compare
 ```
