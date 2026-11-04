@@ -21,7 +21,8 @@ distinguishes implementation closure from certification.
   coverage gate and what each one can prove.
 - [Tools and launcher](reference/tools.md) — the `mordheim-utils.py` app
   launchers, test selections, performance measurements, checks, parallel
-  execution and maintained scripts.
+  execution, the per-worktree environment setup (`setup_worktree.py`) and
+  maintained scripts.
 - [Frozen engine inputs](reference/verification.md#engine-test-fixtures) — loaders,
   regeneration and the boundary with source-backed rules/E2E checks.
 - [Web presentation](reference/web-presentation.md) — localization, provenance
@@ -44,8 +45,9 @@ Contracts:
   — the Rules → Warbands sheet: read model, fixed section order and the
   generator metadata it reads.
 - [Use and extend campaign knowledge](guides/campaign-knowledge.md)
-- [Develop and release](guides/develop-and-release.md) — the fast loop, the
-  release gates, measured performance optima and per-machine calibration.
+- [Develop and release](guides/develop-and-release.md) — worktree set-up, the
+  fast loop, the release gates, measured performance optima and per-machine
+  calibration.
 
 ## Decisions
 

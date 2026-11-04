@@ -26,16 +26,41 @@ Outcome vocabulary (per case, after aggregation across candidate backends):
                        it is never reported as a measured divergence.
 ``execution-failure``  the runner could not execute/compare (malformed batch,
                        non-deterministic batch, unmapped outcome code…).
-``incompatible``       a frozen input or the engine could not express the case.
+``backend-unavailable`` the explicitly requested candidate backend cannot run
+                       at all (native extension missing, stale context version
+                       or without the batch observation entry).  This is a
+                       fault of the run, not of the case, so it fails the run
+                       and, with ``--backend all``, it is not masked by the
+                       other backend's approval (each engine record keeps its
+                       own outcome).
+``incompatible``       a frozen input or the engine could not express the case
+                       (including a native plan the extension rejects).
 ``blocked`` / ``not-applicable``  the delivery itself declares no scenario.
 ``invalid-delivery`` / ``stale-delivery``  the file breaks the contract or its
                        source YAML changed since it was produced.
+
+Exit code: 1 when any case has a failing outcome (``FAILING_OUTCOMES``) or the
+run itself failed (``checks.run_failures``): an unreadable, duplicate or keyless
+file in the delivery directory (``checks.discovery_defects``), a decision-policy
+probe that raised or found the engine defaults disagreeing, or a run where no
+case was compared although some selected case was not a declared non-scenario.
+Honest incompatibilities are counted and do not fail a run that compared at
+least one case; a selection made only of blocked / not-applicable deliveries
+exits 0.
+
+Provenance (``payload["provenance"]``, built by the shared
+``mordheim_combat_lab.provenance.run_provenance``): the commit, branch and dirty state
+of the checkout, the directories the engine packages were imported from, a
+source digest per engine involved (modular plus the requested candidates) and
+the native build hash when ``native`` is requested.  Results computed by an
+older engine are reused on purpose, so uncommitted sources or engine packages
+imported from outside this checkout only raise a prominent
+``PROVENANCE WARNING`` recorded in the payload; they never change the exit code.
 """
 from __future__ import annotations
 
 import hashlib
 import json
-import subprocess
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -59,8 +84,20 @@ DEFAULT_MAGNITUDES = ("winner", "wounds", "condition")
 #: Outcomes that make a run fail (a declared non-scenario does not).
 FAILING_OUTCOMES = frozenset({
     "invalid-delivery", "stale-delivery", "reference-failure",
-    "candidate-failure", "execution-failure", "divergence",
+    "candidate-failure", "execution-failure", "backend-unavailable",
+    "divergence",
 })
+#: Declared non-scenarios: a selection made only of these compares nothing and
+#: still succeeds.
+DECLARED_OUTCOMES = frozenset({"blocked", "not-applicable"})
+#: Runner messages (``_runner._native_engine``) meaning the requested native
+#: backend cannot run at all, as opposed to rejecting one duel plan.
+BACKEND_UNAVAILABLE_MESSAGES = (
+    "native extension is not installed",
+    "native extension context version is stale",
+    "native extension has no batch observation entry",
+    "native extension effect layout is stale",
+)
 ENTRY_OUTCOMES = {"blocked": "blocked", "not-applicable": "not-applicable"}
 #: Admission states whose outcome name is more explicit in the report.
 ADMISSION_OUTCOMES = {
@@ -69,6 +106,7 @@ ADMISSION_OUTCOMES = {
     "blocked": "blocked",
     "not-applicable": "not-applicable",
     "incompatible": "incompatible",
+    "policy-unverified": "execution-failure",
 }
 
 
@@ -93,22 +131,19 @@ def case_filename(case_key: str) -> str:
 
 
 def head_revision(root: Path | None = None) -> str | None:
-    try:
-        return subprocess.check_output(
-            ["git", "rev-parse", "HEAD"], text=True, cwd=str(root or repository_root()),
-        ).strip()
-    except (OSError, subprocess.CalledProcessError):
-        return None
+    return _source_revision(root or repository_root())["commit"]
 
 
 def branch_name(root: Path | None = None) -> str | None:
-    try:
-        return subprocess.check_output(
-            ["git", "rev-parse", "--abbrev-ref", "HEAD"], text=True,
-            cwd=str(root or repository_root()),
-        ).strip()
-    except (OSError, subprocess.CalledProcessError):
-        return None
+    return _source_revision(root or repository_root())["branch"]
+
+
+def _source_revision(root: Path) -> dict:
+    """Commit/branch/dirty state of ``root`` via the shared provenance helper."""
+    bootstrap_paths(repository_root())
+    from mordheim_combat_lab.provenance import source_revision
+
+    return source_revision(root)
 
 
 def _sha256(path: Path) -> str:
@@ -341,7 +376,7 @@ def validate(
         defects.append("a translated delivery must carry the encoded case")
         return Validation(tuple(defects), tuple(warnings), stale)
 
-    _bootstrap_paths(root)
+    bootstrap_paths(root)
     from tools.verification.compiled_cases import decode_case, encode_case
 
     try:
@@ -404,7 +439,12 @@ def expressiveness(case) -> list[str]:
 
 
 def decision_policy_evidence() -> dict:
-    """Probe both engines' defaults; ``engine-default`` is not assumed equal."""
+    """Probe both engines' defaults; ``engine-default`` is not assumed equal.
+
+    ``probe_failed`` separates a probe that raised (engine API drift: the
+    correspondence is unknown) from a measured disagreement.  ``execute`` fails
+    the run in both cases, because no translated case can be compared.
+    """
     keys = (
         "round.0.first.vomit-attack",
         "round.0.first.attack.0.lotus-critical",
@@ -416,11 +456,12 @@ def decision_policy_evidence() -> dict:
 
         modular = {key: AlwaysAccept().choose(key) for key in keys}
         candidate = {key: _choose(None, key, None) for key in keys}
-    except Exception as error:  # engine API drift is an incompatibility, not a crash
+    except Exception as error:  # engine API drift: recorded, then fails the run
         return {
             "kind": "engine-default",
             "probes": keys,
             "corresponds": False,
+            "probe_failed": True,
             "detail": (
                 "decision-policy probe failed: "
                 f"{type(error).__name__}: {error}"
@@ -437,6 +478,7 @@ def decision_policy_evidence() -> dict:
         "modular": modular,
         "candidate": candidate,
         "corresponds": corresponds,
+        "probe_failed": False,
         "detail": (
             "both defaults accept every probed optional decision"
             if corresponds else
@@ -447,8 +489,14 @@ def decision_policy_evidence() -> dict:
 
 def admit(
     delivery: Delivery, *, policy_corresponds: bool = True,
+    policy_probe_failed: bool = False,
 ) -> Admission:
-    """Decide whether the shared runner can execute this delivery."""
+    """Decide whether the shared runner can execute this delivery.
+
+    ``policy_probe_failed`` marks a decision-policy probe that raised: the
+    case is then ``policy-unverified`` (reported as ``execution-failure``), not
+    an honest incompatibility.
+    """
     if delivery.defects:
         if delivery.stale:
             return Admission("stale", "; ".join(delivery.defects))
@@ -458,6 +506,11 @@ def admit(
         return Admission(ENTRY_OUTCOMES[delivery.status], detail)
     if delivery.case is None:
         return Admission("invalid", "translated delivery has no decoded case")
+    if policy_probe_failed:
+        return Admission(
+            "policy-unverified",
+            "decision_policy: the engine-default probe failed; correspondence unknown",
+        )
     if not policy_corresponds:
         return Admission(
             "incompatible",
@@ -513,6 +566,16 @@ def classify_row(row) -> tuple[str, str]:
             return "execution-failure", detail
         return "divergence", detail
     # NOT_RUN: separate "the engine cannot express this" from "we failed".
+    # A missing or stale native extension means the requested backend cannot
+    # run at all, which is a fault of the run rather than of the case.
+    # The runner reports a missing or stale extension under its own prefixes;
+    # older runners used ``native-plan`` with one of the messages above.
+    if detail.startswith(("NOT_RUN:native-unavailable", "NOT_RUN:native-stale")):
+        return "backend-unavailable", detail
+    if detail.startswith("NOT_RUN:native-plan") and any(
+        message in detail for message in BACKEND_UNAVAILABLE_MESSAGES
+    ):
+        return "backend-unavailable", detail
     if detail.startswith(("NOT_RUN:native-plan", "NOT_RUN:decision-script")):
         return "incompatible", detail
     return "execution-failure", detail
@@ -521,7 +584,7 @@ def classify_row(row) -> tuple[str, str]:
 def aggregate(outcomes: Sequence[str]) -> str:
     """Aggregate per-backend outcomes for one case."""
     for name in ("reference-failure", "candidate-failure", "execution-failure",
-                 "divergence"):
+                 "backend-unavailable", "divergence"):
         if name in outcomes:
             return name
     if outcomes and all(item == "approved" for item in outcomes):
@@ -552,12 +615,14 @@ def execute(
 ) -> tuple[dict, int]:
     """Validate, admit and sample the explicitly selected deliveries.
 
-    Returns ``(payload, exit_code)``.  Failing outcomes make the exit code 1;
-    declared non-scenarios (blocked / not-applicable) and honest
-    incompatibilities are counted but do not fail the run.
+    Returns ``(payload, exit_code)``.  Failing outcomes and run failures
+    (discovery defects, a failed or disagreeing decision-policy probe, nothing
+    compared) make the exit code 1; declared non-scenarios (blocked /
+    not-applicable) and honest incompatibilities are counted but do not fail a
+    run that compared at least one case.  Provenance differences only warn.
     """
     root = repository_root()
-    _bootstrap_paths(root)
+    bootstrap_paths(root)
     if simulations < 1:
         raise ValueError("simulations must be at least one")
     if backend not in {"numpy", "native", "all"}:
@@ -570,8 +635,26 @@ def execute(
     directory = deliveries or deliveries_directory(root)
     index, discovery_defects = discover(directory)
     selected = select(index, identifiers)
-    head = head_revision(root)
+    # Imports the engine packages, so it must follow bootstrap_paths.
+    from mordheim_combat_lab.provenance import run_provenance
+
+    provenance = run_provenance(root, ("modular", *requested))
+    head = provenance["revision"]["commit"]
     policy = decision_policy_evidence()
+    run_failures: list[str] = []
+    if discovery_defects:
+        run_failures.append(
+            f"{len(discovery_defects)} delivery file(s) in {directory} could not "
+            "be indexed (see checks.discovery_defects); the catalogue is corrupt"
+        )
+    if policy.get("probe_failed"):
+        run_failures.append(
+            f"{policy['detail']}; no translated case can be admitted"
+        )
+    elif not policy["corresponds"]:
+        run_failures.append(
+            f"{policy['detail']}; no translated case can be compared"
+        )
 
     results: list[CaseResult] = []
     prepared = []
@@ -580,7 +663,10 @@ def execute(
         validation = validate(delivery, root, head=head, require_head=require_head)
         warnings.extend(f"{delivery.path.name}: {note}" for note in validation.warnings)
         delivery = delivery.with_validation(validation)
-        admission = admit(delivery, policy_corresponds=policy["corresponds"])
+        admission = admit(
+            delivery, policy_corresponds=policy["corresponds"],
+            policy_probe_failed=bool(policy.get("probe_failed")),
+        )
         if admission.state == "admitted":
             parity_case = build_parity_case(
                 admission, simulations=simulations, seed=seed, magnitudes=magnitudes,
@@ -663,13 +749,29 @@ def execute(
             engines=tuple(engine_records),
         ))
 
+    compared = sum(1 for item in results if item.stages.get("compared"))
+    undeclared = [item for item in results if item.outcome not in DECLARED_OUTCOMES]
+    if compared == 0 and undeclared:
+        run_failures.append(
+            f"no case was compared: {len(undeclared)} selected case(s) are not "
+            "declared non-scenarios (blocked / not-applicable), yet none reached "
+            "the six-sigma gate"
+        )
+    for message in run_failures:
+        print(f"E2E PARITY RUN FAILURE: {message}", file=sys.stderr, flush=True)
+
     summary = _summary(results, len(selected))
+    summary["discovery_defects"] = len(discovery_defects)
+    summary["run_failures"] = len(run_failures)
+    source = provenance["revision"]
     payload = {
         "schema": SCHEMA,
         "connection": "e2e-precompiled",
         "repository": {
-            "root": str(root), "revision": head, "branch": branch_name(root),
+            "root": str(root), "revision": head, "branch": source["branch"],
+            "dirty": source["dirty"], "dirty_paths": source["dirty_paths"],
         },
+        "provenance": provenance,
         "deliveries": str(directory),
         "selection": [delivery.case_key for delivery in selected],
         "options": {
@@ -684,13 +786,14 @@ def execute(
             "decision_policy": policy,
             "discovery_defects": discovery_defects,
             "delivery_warnings": warnings,
+            "run_failures": run_failures,
         },
         "summary": summary,
         "certifies_parity": False,
         "sample_only": True,
         "results": [_result_payload(item) for item in results],
     }
-    exit_code = 1 if any(
+    exit_code = 1 if run_failures or any(
         item.outcome in FAILING_OUTCOMES for item in results
     ) else 0
     return payload, exit_code
@@ -736,8 +839,11 @@ def report_markdown(payload: dict) -> str:
                       "| Cantidad | Motivo |", "|---:|---|"]
             lines.extend(f"| {count} | {cell(reason)} |"
                          for reason, count in reasons.most_common())
-    for key in ("discovery_defects", "delivery_warnings"):
-        notes = payload.get("checks", {}).get(key, [])
+    sections = [(key, payload.get("checks", {}).get(key, [])) for key in
+                ("run_failures", "discovery_defects", "delivery_warnings")]
+    sections.append(("provenance_warnings",
+                     payload.get("provenance", {}).get("warnings", [])))
+    for key, notes in sections:
         if notes:
             lines += ["", f"## {key}", ""]
             lines.extend(f"- {cell(note)}" for note in notes)
@@ -782,8 +888,10 @@ def _summary(results: Sequence[CaseResult], selected: int) -> dict:
         "reference_failures": count("reference-failure"),
         "candidate_failures": count("candidate-failure"),
         "execution_failures": count("execution-failure"),
+        "backend_unavailable": count("backend-unavailable"),
         "failed": count("invalid-delivery", "stale-delivery", "reference-failure",
-                        "candidate-failure", "execution-failure"),
+                        "candidate-failure", "execution-failure",
+                        "backend-unavailable"),
     }
 
 
@@ -803,7 +911,14 @@ def _result_payload(result: CaseResult) -> dict:
     }
 
 
-def _bootstrap_paths(root: Path) -> None:
+def bootstrap_paths(root: Path) -> None:
+    """Put this checkout's packages first on ``sys.path``.
+
+    Call it before any engine module is imported: a module the process already
+    holds keeps its old origin, while process-pool workers re-import from the
+    reordered path, so a late call can split the parent and its workers across
+    two copies of the engine.
+    """
     for relative in (
         ".", "packages/python/core", "packages/python/combat-engine",
         "packages/python/knowledge", "packages/python/roster-construction",

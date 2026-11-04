@@ -15,8 +15,14 @@ local-CI entry points.
 Delegated commands keep their own parsers (the Combat Lab CLI, pytest and
 Vitest). Local help offers practical examples; --help-full exposes the complete
 application parser for performance/check/report commands. Running from a source
-checkout is enough: child processes get the configured package roots on their
-``PYTHONPATH``.
+checkout is enough: child processes run with this interpreter and get this
+checkout's package roots first on their ``PYTHONPATH``, so they import this
+checkout even when the interpreter's editable install points at another copy.
+
+``tests`` runs each pytest group of a selection as its own process (areas that
+hold an inner process pool drop xdist options), accepts explicit targets only
+inside the selection, always asks pytest for skip reasons, and fails
+``tests native`` up front when the compiled extension does not import.
 """
 
 from __future__ import annotations
@@ -137,7 +143,7 @@ TESTS_SECTIONS = {
         "subsection_options": {"mechanics": "-n 8 --dist=load -q"},
     },
     "native": {
-        "summary": "native engine checks (skipped when the extension is absent)",
+        "summary": "native engine checks (fails when the extension is absent)",
         "dirs": ("tests/engines/native",),
         "subsections": {
             "runtime": (("pytest", ("tests/engines/native/runtime",)),),
@@ -145,6 +151,9 @@ TESTS_SECTIONS = {
         # The native suite also has a root-level engine file outside runtime/.
         "runs": (("pytest", ("tests/engines/native",)),),
         "example_options": "-q",
+        # Every native test importorskips the extension: without it pytest
+        # would exit 0 with everything skipped, so the launcher fails first.
+        "requires_native": True,
     },
     "kb": {
         "summary": "knowledge base; construction and E2E are separate selections",
@@ -183,27 +192,44 @@ TESTS_SECTIONS = {
         "example_options": "-q",
     },
     "tooling": {
-        "summary": "repository tooling: architecture, launcher and coverage checks",
+        "summary": "repository tooling: architecture, launcher, coverage and report tools",
         "dirs": ("tests/tooling/architecture", "tests/tooling/launcher",
-                 "tests/tooling/coverage"),
+                 "tests/tooling/coverage", "tests/tooling/verification"),
         "subsections": {
             "architecture": (("pytest", ("tests/tooling/architecture",)),),
             "web": (("vitest", ("--project", "architecture")),),
             "launcher": (("pytest", ("tests/tooling/launcher",)),),
             "coverage": (("pytest", ("tests/tooling/coverage",)),),
+            "verification": (("pytest", ("tests/tooling/verification",)),),
         },
         "runs": (
             ("pytest", ("tests/tooling/architecture", "tests/tooling/launcher",
-                        "tests/tooling/coverage")),
+                        "tests/tooling/coverage", "tests/tooling/verification")),
         ),
         "example_options": "-q",
         "subsection_options": {"architecture": "-n 8 --dist=load -q",
-                               "launcher": "-n 8 --dist=load -q"},
+                               "launcher": "-n 8 --dist=load -q",
+                               "verification": "-n 8 --dist=load -q"},
     },
 }
 
 #: Python test files are recognised by name; the launcher never rewrites them.
 TEST_FILE_SUFFIXES = (".test.ts", ".test.tsx", ".test.mjs")
+
+#: Test areas that start their own process pool.  They always run in their
+#: own pytest process, without xdist options, whatever the selection.
+SERIAL_PYTEST_PATHS = (
+    "tests/engines/modular/runtime",
+    "tests/engines/vectorized/runtime",
+)
+
+#: Short test summary: failures, errors and skip reasons, so a skipped suite
+#: never looks like a passing one.  A later ``-r`` from the user replaces it.
+PYTEST_REPORT_CHARS = "-rfEs"
+
+#: pytest-xdist options dropped for serial areas: those taking a value, and
+#: the ``--option=value`` / ``-nN`` spellings.
+_XDIST_VALUE_OPTIONS = ("-n", "--numprocesses", "--dist", "--maxprocesses")
 
 
 def _environment() -> dict:
@@ -349,7 +375,11 @@ def _tests_help(name: str | None = None) -> str:
             "  python tools/mordheim-utils.py tests kb construction -n 8 --dist=load -q",
             "  python tools/mordheim-utils.py tests warband-manager web --maxWorkers=8",
             "", "Use section/subsection names, not engines/modular/runtime as a section.",
-            "Explicit existing test paths/node IDs after a section replace its default paths.",
+            "Explicit existing test paths/node IDs after a section replace its default paths;",
+            "they must lie inside that selection's directories.",
+            "Each default path group runs as its own pytest process; runtime areas with an",
+            "inner process pool (modular/vectorized runtime) drop -n/--dist and stay serial.",
+            "The exit status is non-zero when any group fails. Skip reasons are always listed.",
             "No sequencer or phase ordering. Concurrency tests use bounded inner pools.",
             "`check parity` runs catalogued scenarios; `tests parity` tests that infrastructure",
             "and the existing engine comparisons. See docs/reference/tools.md.",
@@ -364,7 +394,8 @@ def _tests_help(name: str | None = None) -> str:
         "warband-manager": "Choose python (persistence/contracts) or web (Vitest). Neither is selected implicitly.",
         "modular": "Mechanics checks game rules. Runtime checks simulation, state, observations and parallelism.",
         "vectorized": "Existing NumPy mechanics/runtime checks; statistical engine equivalence is tested separately.",
-        "native": "Test the compiled engine and its runtime. Without the extension tests may skip, not pass.",
+        "native": "Test the compiled engine and its runtime. If the extension does not import, the launcher\n"
+                  "fails before pytest runs (exit 1); remaining skips are listed with their reasons.",
         "kb": "The bare section runs knowledge contracts only. construction and e2e are explicit alternatives.",
         "parity": "statistical runs engine comparisons; tooling tests the comparator/runner. Bare selection runs both.",
         "shared": "Common engine contracts and frozen-corpus codec/catalogue integrity; no complete rule battery.",
@@ -381,8 +412,11 @@ def _tests_help(name: str | None = None) -> str:
     if section["dirs"]:
         lines.extend(("", "Discovery and selection:",
                       f"  tests {name} --list        file listing, no imports; may include subsection files",
-                      "  Existing file/directory/node IDs replace the default selection.",
-                      "  Quote parameterized node IDs. Multiple subsections select their union."))
+                      "  Existing file/directory/node IDs inside " + ", ".join(section["dirs"]),
+                      "  replace the default selection (after a subsection: inside its own paths);",
+                      "  paths of other selections are rejected.",
+                      "  Quote parameterized node IDs. Multiple subsections select their union.",
+                      "  Each pytest group runs as its own process; (serial) groups drop -n/--dist."))
     lines.extend(("", "Examples:", *["  " + example for example in _selection_examples(name, section)]))
     if name != "env":
         lines.extend(("", "Runner options:",
@@ -399,7 +433,8 @@ def _describe_runs(runs) -> str:
     parts = []
     for kind, payload in runs:
         if kind == "pytest":
-            parts.append("pytest " + " ".join(payload))
+            serial = " (serial)" if any(_is_serial(path) for path in payload) else ""
+            parts.append("pytest " + " ".join(payload) + serial)
         elif kind == "vitest":
             extra = " ".join(payload)
             parts.append("Vitest in both workspaces" + (f" ({extra})" if extra else ""))
@@ -430,7 +465,9 @@ def _subsection_help(name: str, sub: str, section) -> str:
                       f"  {prefix} --list", f"  {prefix} --collect-only -q"))
         if "-n" in options:
             lines.append(f"  {prefix} -k selected_test -n 8 --dist=load -q --tb=short")
-        lines.extend(("", "An explicit existing file or file.py::test_name replaces these paths.",
+        if all(_is_serial(path) for path in directories):
+            lines.extend(("", "This area starts its own process pool: -n/--dist are dropped here."))
+        lines.extend(("", "An explicit existing file or file.py::test_name inside these paths replaces them.",
                       "No prerequisites are added. Collection stays serial; concurrency contracts use bounded pools."))
     else:
         lines.extend(("", "Options:", "  --list          files on disk, without running Vitest",
@@ -477,6 +514,94 @@ def _existing_target(argument: str) -> Path | None:
     if not candidate.exists() or not candidate.is_relative_to(TESTS_ROOT):
         return None
     return candidate
+
+
+def _is_serial(path: str | Path) -> bool:
+    """Whether a test path is, or contains, an area with its own process pool."""
+    candidate = (REPO_ROOT / str(path).partition("::")[0]).resolve()
+    for relative in SERIAL_PYTEST_PATHS:
+        serial = (REPO_ROOT / relative).resolve()
+        if candidate.is_relative_to(serial) or serial.is_relative_to(candidate):
+            return True
+    return False
+
+
+def _is_compact_xdist(argument: str) -> bool:
+    """``--dist=load``, ``--numprocesses=8``, ``-n8`` or ``-nauto``."""
+    if argument.startswith(tuple(option + "=" for option in _XDIST_VALUE_OPTIONS)):
+        return True
+    if argument.startswith("-n") and not argument.startswith("--"):
+        value = argument[2:]
+        return value.isdigit() or value in ("auto", "logical")
+    return False
+
+
+def _strip_xdist(options: list[str]) -> tuple[list[str], list[str]]:
+    """Split pytest-xdist options from the others: ``(kept, dropped)``."""
+    kept: list[str] = []
+    dropped: list[str] = []
+    iterator = iter(options)
+    for argument in iterator:
+        if argument in _XDIST_VALUE_OPTIONS:
+            dropped.append(argument)
+            value = next(iterator, None)
+            if value is not None:
+                dropped.append(value)
+        elif _is_compact_xdist(argument):
+            dropped.append(argument)
+        else:
+            kept.append(argument)
+    return kept, dropped
+
+
+def _outside_selection(targets: list[str], roots) -> list[str]:
+    """The explicit targets that lie outside every one of ``roots``."""
+    resolved = [(REPO_ROOT / root).resolve() for root in roots]
+    outside = []
+    for target in targets:
+        path = _existing_target(target)
+        if path is None or not any(path.is_relative_to(root) for root in resolved):
+            outside.append(target)
+    return outside
+
+
+def _pytest_invocations(runs, python_targets: list[str], dirs) -> list[tuple[list[str], bool]]:
+    """``(paths, serial)`` for each pytest process of a selection.
+
+    Every ``runs`` entry is its own process.  Explicit targets are grouped by
+    the run (or, failing that, the section directory) that contains them, in
+    first-seen order, so they keep the per-run separation too.
+    """
+    pytest_runs = [payload for kind, payload in runs if kind == "pytest"]
+    if not python_targets:
+        return [(list(payload), any(_is_serial(path) for path in payload))
+                for payload in pytest_runs]
+    owners = [(index, (REPO_ROOT / path).resolve())
+              for index, payload in enumerate(pytest_runs) for path in payload]
+    owners += [(("dir", path), (REPO_ROOT / path).resolve()) for path in dirs]
+    groups: dict[object, list[str]] = {}
+    for target in python_targets:
+        resolved = _existing_target(target)
+        key = next((owner for owner, root in owners
+                    if resolved is not None and resolved.is_relative_to(root)), target)
+        groups.setdefault(key, []).append(target)
+    return [(paths, any(_is_serial(path) for path in paths)) for paths in groups.values()]
+
+
+def _native_extension_error() -> str | None:
+    """``None`` when the native extension imports in a test child, else why not.
+
+    The probe runs exactly like the test run: this interpreter, the repository
+    as working directory and the launcher's ``PYTHONPATH``.
+    """
+    probe = subprocess.run(
+        [sys.executable, "-c", "import mordheim_combat._combat_native"],
+        cwd=REPO_ROOT, env=_environment(), capture_output=True, text=True,
+    )
+    if probe.returncode == 0:
+        return None
+    lines = [line for line in probe.stderr.splitlines() if line.strip()]
+    return lines[-1] if lines else f"import exited with status {probe.returncode}"
 
 
 def _partition_arguments(
@@ -643,15 +768,39 @@ def tests_command(args: list[str]) -> int:
         print("tests: this selection runs pytest; use a web selection instead",
               file=sys.stderr)
         return 2
+    # Explicit targets stay inside the selection: a chosen subsection admits
+    # its own paths, a bare section its directories.  Otherwise another
+    # area's tests would run under this label and with its options.
+    label = " ".join(["tests", name, *chosen])
+    python_roots = pytest_paths if chosen else list(section["dirs"])
+    outside = (_outside_selection(python_targets, python_roots)
+               + _outside_selection(web_targets, section["dirs"]))
+    if outside:
+        print(f"{label}: {', '.join(outside)} lies outside this selection "
+              f"({', '.join(python_roots if python_targets else section['dirs'])}); "
+              "use the selection that owns it (tests --list shows every file)",
+              file=sys.stderr)
+        return 2
 
     if diagnostics:
         return diagnostics_command()
 
+    if (pytest_paths and section.get("requires_native")
+            and not any(argument in ("-h", "--help") for argument in options)):
+        error = _native_extension_error()
+        if error is not None:
+            print(f"{label}: the native extension mordheim_combat._combat_native does "
+                  f"not import ({error}).\nEvery native test would be skipped, so "
+                  "nothing was run. Build the extension (see docs/guides/"
+                  "develop-and-release.md) and retry.", file=sys.stderr)
+            return 1
+
     status = 0
     if pytest_paths:
         # An explicit file, directory or node ID replaces the selection paths.
-        targets = python_targets or pytest_paths
-        status = _run_module("pytest", *targets, *options)
+        status = _run_pytest_groups(
+            label, _pytest_invocations(runs, python_targets, section["dirs"]), options,
+        )
         if status:
             return status
     for extra in vitest_runs:
@@ -659,6 +808,38 @@ def tests_command(args: list[str]) -> int:
         if status:
             return status
     return status
+
+
+def _run_pytest_groups(label: str, invocations, options: list[str]) -> int:
+    """Run each ``(paths, serial)`` group as its own pytest process.
+
+    Test failures (exit 1) do not stop later groups; any other failure
+    (interrupted, internal or usage error) does.  "No tests collected" (5)
+    only counts when no group collected anything, so ``-k`` may match in one
+    group alone.  The result is the first real failure, else 0 (or 5).
+    """
+    results: list[tuple[list[str], int]] = []
+    for paths, serial in invocations:
+        group_options = options
+        if serial:
+            group_options, dropped = _strip_xdist(options)
+            if dropped:
+                print(f"{label}: {' '.join(paths)} starts its own process pool; "
+                      f"running it serially without {' '.join(dropped)}",
+                      file=sys.stderr, flush=True)
+        if len(invocations) > 1:
+            print(f"== {label}: pytest {' '.join(paths)} ==", flush=True)
+        status = _run_module("pytest", *paths, PYTEST_REPORT_CHARS, *group_options)
+        results.append((paths, status))
+        if status not in (0, 1, 5):
+            break
+    if len(invocations) > 1:
+        print(f"== {label}: " + "; ".join(
+            f"{' '.join(paths)} exit {status}" for paths, status in results) + " ==")
+    failures = [status for _, status in results if status not in (0, 5)]
+    if failures:
+        return failures[0]
+    return 5 if all(status == 5 for _, status in results) else 0
 
 
 # ---------------------------------------------------------------------------
@@ -998,6 +1179,44 @@ def diagnostics_command() -> int:
             print(f"{label}: import failed (module not found)")
         else:
             print(f"{label}: importable")
+    return _checkout_isolation()
+
+
+def _checkout_isolation() -> int:
+    """What this interpreter imports without the launcher's path set-up.
+
+    The launcher puts this checkout first on ``sys.path`` for itself and its
+    children, which hides an interpreter whose editable install points at
+    another checkout.  Plain ``python`` (and tools run without the launcher)
+    would then run that other checkout's engine, so it is a failure.
+    """
+    spec = importlib.util.spec_from_file_location(
+        "setup_worktree", Path(__file__).with_name("setup_worktree.py"))
+    setup_worktree = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(setup_worktree)
+    probe, isolation_problems = setup_worktree.probe, setup_worktree.isolation_problems
+
+    try:
+        report = probe(Path(sys.executable),
+                       (*setup_worktree.PROJECT_MODULES, setup_worktree.NATIVE_MODULE))
+    except RuntimeError as error:
+        print(f"checkout isolation: could not probe the interpreter ({error})")
+        return 1
+    local_venv = (REPO_ROOT / ".venv").resolve()
+    print(f"interpreter prefix: {report['prefix']}"
+          + ("" if Path(report["prefix"]).resolve() == local_venv
+             else f" (not this checkout's {local_venv}; fine for CI, use "
+                  "python3 tools/setup_worktree.py for a worktree)"))
+    problems = isolation_problems(REPO_ROOT, report, require_native=False,
+                                  require_local_venv=False)
+    if problems:
+        print("checkout isolation: FAILED; without the launcher this interpreter runs "
+              "another checkout:")
+        for problem in problems:
+            print(f"  - {problem}")
+        print("fix: python3 tools/setup_worktree.py, then activate this checkout's .venv")
+        return 1
+    print("checkout isolation: plain imports resolve to this checkout")
     return 0
 
 
@@ -1023,7 +1242,7 @@ Tests:
   tests kb                    KB contracts; construction/E2E are subsections
   tests parity                statistical comparison tests and runner checks
   tests shared                common engine contracts and frozen inputs
-  tests tooling               launcher, architecture and coverage-tool checks
+  tests tooling               launcher, architecture, coverage and report tools
 
 Performance:
   performance benchmark       measure engine speed on selected scenarios
@@ -1039,6 +1258,8 @@ Checks and reports:
   check ci                    local regression checks, typechecks and web build
 
 Start here:
+  python3 tools/setup_worktree.py   (once per checkout or worktree: its own .venv)
+  python tools/mordheim-utils.py tests env
   python tools/mordheim-utils.py tests modular mechanics -h
   python tools/mordheim-utils.py tests modular mechanics -n 8 --dist=load -q
   python tools/mordheim-utils.py check parity --catalog all --backend modular --workers 8 --simulations 1

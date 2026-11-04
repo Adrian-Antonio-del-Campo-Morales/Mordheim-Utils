@@ -46,7 +46,10 @@ weaken an assertion to satisfy a missing key. Generate a missing entry explicitl
 from its original build; intentional compiler rejections are not missing snapshots.
 The case exporter is a Python API (`export_cases`), not a command-line generator.
 Snapshot generation preserves existing entries; it does not automatically refresh
-frozen results after a KB/compiler change. Review any intended data update explicitly.
+frozen results after a KB/compiler change. It records a fingerprint of the KB
+and compiler sources and prints a provenance warning when frozen entries were
+compiled from other sources; it exits 1 on compile failures or blocked
+consumers. Review any intended data update explicitly.
 
 A fixture update may read the KB; an ordinary engine test loads the checked-in
 results. `check verify`, `check parity`, `performance benchmark` and
@@ -83,9 +86,13 @@ For campaigns using saved modular references, use
 `python -m tools.verification.parity_samples`: `sample --engine numpy` or
 `sample --engine native` stores candidate batches, then `compare` reads the
 candidate store and the modular `--reference-store` without rerunning the
-oracle. Samples record inputs, seeds, round limits and source digests; inspect
-that provenance before interpreting historical references as current evidence.
-See [the tools reference](tools.md) for sampling and comparison commands.
+oracle. Samples record inputs, seeds, round limits, the source digest of
+everything each engine executes, the source commit, the dirty state and the
+native build. Reusing samples from older engines is expected: every provenance
+difference is reported as a prominent warning and recorded in the report, but
+never blocks a comparison. A historical reference is still not evidence about
+the current engine. See [the tools reference](tools.md) for sampling and
+comparison commands.
 
 ## E2E statistical deliveries
 
@@ -126,12 +133,15 @@ identity and the current YAML hash. A matching key alone does not prove freshnes
 Explicit scripted decisions are blocked until a general policy for random
 trajectories is supported; removing the script does not prove equivalence with
 `engine-default`. Admission checks that the engines' default decision policies
-correspond. Expected construction refusals are `not-applicable`; expected runtime
+correspond; a probe that fails or finds them disagreeing fails the run, because
+no case could be compared. Expected construction refusals are `not-applicable`; expected runtime
 refusals and unrepresentable input data are `blocked` pending review. An unexpected
 exporter error is not evidence of a construction refusal.
 
 The shared execution path currently cannot express `initial_state` overrides or
 `auxiliary_participants`; those inputs remain `incompatible` with a concrete reason.
+A run that compares no case exits non-zero unless every selected case is
+blocked or not-applicable, and delivery discovery defects fail it too.
 Stale source hashes and invalid documents cannot execute. `translated` describes
 prepared data, not engine compatibility, correct original E2E expectations or
 approved statistical parity. No engine fallback or partial execution may conceal
@@ -384,10 +394,10 @@ python -X utf8 tools/mordheim-utils.py check parity --profile quick --output out
 # both candidates, per-backend coverage
 python -X utf8 tools/mordheim-utils.py check parity --profile complete --backend all --output outputs/parity/battery-complete.json
 
-# markdown certificate and strict gate
-python -X utf8 tools/mordheim-utils.py check parity --profile deep --output outputs/parity/battery-deep.md --require-complete
+# markdown certificate and strict gate at an acceptance width
+python -X utf8 tools/mordheim-utils.py check parity --profile deep --rows 7200 --output outputs/parity/battery-deep.md --require-complete
 
-# smaller sample width for calibration, never for acceptance
+# smaller sample width for calibration; its cases are UNDERPOWERED, never approved
 python -X utf8 tools/mordheim-utils.py check parity --profile quick --rows 256 --output outputs/parity/battery-quick-256.json
 
 # 1000 duels per case, up to 10 modular-oracle worker processes
@@ -401,6 +411,10 @@ are capped to available CPUs, and `auto` uses the historical cost threshold.
 Candidate batches are unchanged, and `--backend all` still shares the modular
 sample between candidates. The report records `oracle_workers_requested` as
 the requested policy, not a claim that every case used that many processes.
+Every oracle and candidate pool (battery, statistical certificate, stored
+samples) checks at start-up that each worker imported the parent's engine
+files; a worker that resolved another engine copy stops the run instead of
+merging another engine's duels into the sample.
 
 The comparison is statistical. `winner` (first win, second win, unresolved) is
 always compared with the six-sigma tolerance shared with the historical
@@ -430,29 +444,48 @@ needs a charge the construction rejects before any sample exists. Both remain in
 the profile denominator as `INCOMPATIBLE` with their cause.
 
 `--backend` defaults to `numpy` for a profile. `native` never falls back to
-NumPy: a missing, stale or unsupported extension is `NOT_RUN:native-*` and never
-a comparison. A battery `--backend` is valid only with `--profile`; on the
-historical route it is accepted only with `--level statistical` and no
-`--truncations`. `--rows` requires `--profile` and is rejected together with
-`--require-complete`. These configuration errors exit with code 2.
+NumPy: a missing or stale extension is `NOT_RUN:native-unavailable` or
+`NOT_RUN:native-stale`, an error that makes the run exit 1, and a plan the
+extension cannot express is `NOT_RUN:native-plan`, a dependency. Neither is a
+comparison. The battery's native rows replay the native core with the NumPy
+random generator, so they do not exercise production native seeding; reports
+say so. A battery `--backend` is valid only with `--profile`; on the
+historical route it is accepted only with `--level statistical` or
+`--level deep` and no `--truncations`. A deep certificate records requested and
+available backends and is incomplete when a requested native backend is
+missing. `--rows` requires `--profile`; these configuration errors exit with
+code 2. Without `--rows` every case keeps its declared width (64 rows). That
+width is a smoke check: its cases are `UNDERPOWERED`, so a strict
+`--require-complete` run needs `--rows` of at least 7,200, the smallest width
+that can detect a 5-point shift. `--rows` replaces every case's width and the
+certificate records it as `preparation.rows_override` (Markdown: "Rows"), so
+an overridden certificate is never read as one at the declared widths.
 
 The certificate is schema `mordheim-combat-parity-battery/v3`. Per case it
 records the stages actually reached — `executed` (both samples obtained),
 `compared` (at least one magnitude compared) and `approved` (all magnitudes
-within tolerance) — plus every `comparisons[]` entry with the modular and
-candidate rates and tolerances. `coverage` aggregates `declared`, `case_ids`,
+within tolerance, with a sample able to detect a 5-point shift) — plus every
+`comparisons[]` entry with the modular and candidate rates and tolerances. A
+case whose rows cannot detect that shift (`MAX_DETECTABLE_DIFFERENCE`; at
+least 7,200 rows are needed) is `UNDERPOWERED`: compared, never approved, and
+it keeps the run incomplete; each case reports its
+`minimum_detectable_difference`. `coverage` aggregates `declared`, `case_ids`,
 `prepared` (no real input limit), `executed`, `compared`, `approved`,
-`divergent`, `incompatible`, `not_run`, `errors`, `dependency` and
-`sensitivity_pending`. `magnitudes` reports how many comparisons of each
+`divergent`, `incompatible`, `not_run`, `errors`, `dependency`,
+`underpowered` and `sensitivity_pending`. `magnitudes` reports how many comparisons of each
 magnitude stayed within tolerance, and `variants`/`clauses` keep the same stages
 per variant and canonical clause.
 
 Own errors (`NOT_RUN:compile`, `NOT_RUN:decision-script`,
 `NOT_RUN:case-definition`, `NOT_RUN:outcome-codes`, an unexpected exception, a
-batch-shape or determinism failure and any divergence) make the command exit 1
-**even without `--require-complete`**. Real input limits and an absent backend are dependencies:
-they leave the run partial and only `--require-complete` turns that into a
-failure. The CLI and the report share one classification
+batch-shape or determinism failure, a candidate exception, a missing or stale
+requested native backend and any divergence) make the command exit 1
+**even without `--require-complete`**. Real input limits and plans the native
+extension cannot express are dependencies: they leave the run partial and only
+`--require-complete` turns that into a failure. Pool workers that import a
+different engine copy than the parent stop the run with exit code 2. The
+certificate records the source revision, dirty state, engine digests and
+native build; provenance differences only warn. The CLI and the report share one classification
 (`battery_failure_kind`), so a bucket cannot contradict the exit code.
 
 Each engine's winner convention is validated before normalisation (oracle
@@ -512,7 +545,11 @@ Keep the matrix curated by justified behaviour, without a fixed scenario quota.
 
 `check report tests` writes technical test results and, when requested, statistical
 comparison rows under `outputs/test-report/`. It does not run or approve a
-semantic YAML corpus. `check parity` writes versioned statistical certificates under
+semantic YAML corpus. Skipped and expected-failure tests are reported as `SKIP`
+and `XFAIL`, never as passes. The CSV left by an earlier run is removed before
+pytest starts, so a run that crashes before writing its own reports the CSV as
+missing instead of reusing stale results; from a source checkout the child
+pytest imports that checkout's packages. `check parity` writes versioned statistical certificates under
 `outputs/parity/`; `check report rules` exports structural/planning inventory without
 claiming new semantic verification. Legacy semantic columns in existing CSVs
 are historical fields, not current certificates.

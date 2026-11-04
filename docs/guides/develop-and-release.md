@@ -3,7 +3,9 @@
 Two loops: a fast local loop after a focused change, and the certification
 gates that run rarely (engine changes, releases). Commands assume an editable
 Python install and installed Node dependencies; `python tools/mordheim-utils.py
-tests env` reports what is actually available.
+tests env` reports what is actually available. Each git worktree needs its own
+`.venv`: create it with `python3 tools/setup_worktree.py` before running
+anything in a new worktree.
 
 ## Fast development loop
 
@@ -153,7 +155,11 @@ python tools/mordheim-utils.py performance benchmark -n 100000 --backend numpy -
 python tools/mordheim-utils.py performance benchmark -n 100000 --backend numpy --baseline outputs/benchmarks/numpy-before.json --require-improvement --output outputs/benchmarks/numpy-after.json
 ```
 
-The gate's thresholds belong to the command, not to this document. Store raw
+Both runs must use the same measurement design (simulations, batch size, seed,
+warmups, repeats, `--processes` and backends); a baseline unit missing from the
+current run fails the gate. A baseline from another machine, engine or revision
+prints a provenance warning and is still compared, so read its result in that
+light. The gate's thresholds belong to the command, not to this document. Store raw
 results under ignored `outputs/benchmarks/`; do not copy measured throughput or
 machine-specific optima into maintained documentation.
 
@@ -173,6 +179,17 @@ The command installs `calibration.json` beside the local preferences. Use
 `--no-install` for a read-only study, `--output PATH` for the full evidence and
 `--json` for machine-readable output. A parity failure invalidates timing
 results and must be fixed before interpreting performance.
+
+Calibration warms every pool worker (spawn and engine import) before timing,
+so start-up cost is measured once, by the spawn probe, and never inflates a
+worker candidate. The worker sweep runs at each backend's calibrated
+sequential batch, the batch comparisons actually use, and the profile records
+it as `method.worker_sweep_batch`; a profile whose sweep used another batch
+installs no speedup curve for that backend. The profile also records the
+machine, engine digests, native build and source revision. Applying it on
+another machine or after an engine change prints a provenance warning but
+still applies it, and its batch sizes change the sampled NumPy and native
+results for a given seed, so recalibrate after such changes.
 
 ## Windows packaging
 

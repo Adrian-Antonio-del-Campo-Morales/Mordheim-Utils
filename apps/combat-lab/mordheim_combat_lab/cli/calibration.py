@@ -1,6 +1,6 @@
 """calibrate: measure this machine's optima and install a calibration profile.
 
-Sweeps the optimized-compatible part of the deep scenario matrix across the three configuration axes the Combat Lab resolves at run
+Sweeps the optimized-compatible part of the deep scenario matrix across the configuration axes the Combat Lab resolves at run
 time, for both engines, and writes ``calibration.json`` next to the user
 preferences. The app loads that profile at startup
 (:func:`mordheim_combat_lab.application.settings.apply_calibration`), so the
@@ -11,11 +11,28 @@ Measured axes (candidates in parentheses):
 * sequential batch — ``application.settings.DEFAULT_BATCH_SIZES``
   (native 2.5k/5k/10k/20k; numpy 25k/50k/100k, sized so every candidate
 yields at least three batches at the sweep size)
-* pooled batch — ``POOLED_BATCH_SIZES``
-  (native 2.5k/5k/10k/20k; numpy 12.5k/25k/50k/100k)
 * pool workers — ``POOL_WORKERS``
-  (native 8/10/12/14/16; numpy 4/6/8/10)
+  (native 8/10/12/14/16; numpy 4/6/8/10), measured at the winning
+  sequential batch: comparisons never change a fighter's batch when they pool
+  (the batch selects the random streams), so the worker sweep and the speedup
+  curve derived from it describe the configuration that actually runs. The
+  pooled sample is raised when needed so the largest worker candidate still
+  gets a batch per worker (numpy at 100k: 1M samples). There is no separate
+  pooled-batch axis any more.
 * pool spawn cost — ``POOL_SPAWN_SECONDS`` (median of repeated spawns)
+
+Spawn cost is accounted exactly once. Every timed pooled sweep first warms
+its executor (all workers spawned and the engine imported in each), so the
+pooled walls — and the speedup curve derived from them — measure only the
+simulation; the spawn-plus-import cost is measured separately and charged
+once by ``application.settings.battery_pool_plan``. Without the warm-up the
+first timed pair of every candidate paid the spawn under forkserver/spawn,
+biasing the sweep toward fewer workers and double-counting it in the plan.
+
+The profile records its ``provenance`` (CPU count, platform, Python/NumPy,
+per-engine source digests, native build hash, source revision). Loading a
+profile measured elsewhere prints a ``PROVENANCE WARNING`` and still applies
+it (see ``application.settings.apply_calibration``).
 
 The raw evidence also yields the machine's **pool speedup curve**:
 ``application.settings.measured_pool_speedups`` turns the sequential/pooled
@@ -49,14 +66,15 @@ from mordheim_combat.vectorized import available_backends
 from mordheim_combat.vectorized import batch_plan
 from mordheim_combat.vectorized import simulate_duel
 from mordheim_combat_lab.application.settings import (
+    CALIBRATION_ENGINES,
     CALIBRATION_SCHEMA,
     DEFAULT_BATCH_SIZES,
-    POOLED_BATCH_SIZES,
     POOL_SPAWN_SECONDS,
     POOL_WORKERS,
     DuelExecutionSettings,
     apply_calibration,
     measured_pool_speedups,
+    measurement_provenance,
     simulate_battery,
     split_battery,
 )
@@ -71,12 +89,6 @@ from mordheim_combat_lab.cli.benchmarking import compile_benchmark_fighters
 SEQUENTIAL_BATCH_CANDIDATES = {
     "native": (2_500, 5_000, 10_000, 20_000),
     "numpy": (25_000, 50_000, 100_000),
-}
-
-#: Batch candidates for the pooled sweep.
-POOLED_BATCH_CANDIDATES = {
-    "native": (2_500, 5_000, 10_000, 20_000),
-    "numpy": (12_500, 25_000, 50_000, 100_000),
 }
 
 #: Worker candidates per backend (numpy regresses past 8: memory bandwidth).
@@ -161,10 +173,12 @@ def _sequential_walls(pairs, backend, samples, batch, seed):
 
 
 def _pooled_walls(pairs, backend, samples, batch, workers, seed):
+    """Pooled wall per pair, timed on an already-warm executor (no spawn)."""
     segments = len(split_battery(samples, batch, workers))
     executor = ProcessPoolExecutor(max_workers=segments)
     walls = []
     try:
+        warm_executor(executor, segments)
         for first, second, rounds, _identifier in pairs:
             settings = DuelExecutionSettings(samples, seed, batch, rounds)
             started = time.perf_counter()
@@ -176,17 +190,58 @@ def _pooled_walls(pairs, backend, samples, batch, workers, seed):
     return walls
 
 
-def _spawn_probe(_index):
-    return 0
+def _warm_worker(pause: float) -> int:
+    """Import the engine in a pool worker and report the worker's pid.
+
+    Unpickling this function already imports this module (and through it the
+    vectorized driver and the battery workers); the native extension is
+    imported explicitly. ``pause`` keeps an early worker busy so the other
+    queued warm-ups reach workers that are still starting.
+    """
+    import mordheim_combat.vectorized  # noqa: F401
+    try:
+        from mordheim_combat import _combat_native  # noqa: F401
+    except ImportError:
+        pass
+    if pause:
+        time.sleep(pause)
+    return os.getpid()
+
+
+#: Rounds of warm-up tasks before giving up on reaching every worker.
+WARM_ATTEMPTS = 20
+WARM_PAUSE_SECONDS = 0.05
+
+
+def warm_executor(executor, workers: int, *, attempts: int = WARM_ATTEMPTS,
+                  pause: float = WARM_PAUSE_SECONDS) -> int:
+    """Spawn every worker of ``executor`` and import the engine in each.
+
+    Submits rounds of ``workers`` warm-up tasks until ``workers`` distinct
+    pids answered (or ``attempts`` rounds ran) and returns how many workers
+    were reached. Timing after this call measures simulation only.
+    """
+    workers = max(1, workers)
+    seen: set[int] = set()
+    for _ in range(max(1, attempts)):
+        seen.update(executor.map(_warm_worker, [pause] * workers))
+        if len(seen) >= workers:
+            break
+    return len(seen)
 
 
 def measure_spawn(workers: int, repetitions: int = 3) -> float:
-    """Median wall seconds of creating, feeding and tearing down one pool."""
+    """Median wall seconds of creating, warming and tearing down one pool.
+
+    Each repetition spawns the pool, imports the engine in every worker and
+    shuts it down: the whole cost a comparison pays once per pooled run and
+    the only place spawn enters the pool decision.
+    """
     walls = []
     for _ in range(max(1, repetitions)):
         started = time.perf_counter()
         with ProcessPoolExecutor(max_workers=max(1, workers)) as executor:
-            list(executor.map(_spawn_probe, range(max(1, workers))))
+            list(executor.map(_warm_worker, [0.0] * max(1, workers)))
         walls.append(time.perf_counter() - started)
     return round(statistics.median(walls), 4)
 
@@ -217,7 +272,7 @@ def _sweep(label, pairs, candidates, measure, log) -> dict:
 def run_calibration(pair_set: str = "full", *, seed: int = 7,
                     sequential_samples: int = SEQUENTIAL_SAMPLES,
                     pooled_samples: int = POOLED_SAMPLES,
-                    sequential_batches=None, pooled_batches=None,
+                    sequential_batches=None,
                     worker_candidates=None, spawn_repetitions: int = 3,
                     log=print, pair_source=None) -> dict:
     """Measure this machine and return the calibration payload.
@@ -227,8 +282,13 @@ def run_calibration(pair_set: str = "full", *, seed: int = 7,
     the prepared ``(first, second, maximum_rounds, id)`` rows of a pair set;
     the default compiles the scenario definitions, while the tests pass the
     frozen precompiled corpus so a sweep never reads the knowledge base.
+
+    The payload records ``provenance`` and, in ``method.worker_sweep_batch``,
+    the batch each backend's worker sweep ran at (its sequential winner).
     """
     source = pair_source or _pairs
+    # Recorded before measuring: the engine the sweeps run is the one described.
+    provenance = measurement_provenance(CALIBRATION_ENGINES)
     backends = set(available_backends())
     native_available = "native" in backends
     numpy_set = "mini" if pair_set == "mini" else "fast"
@@ -250,7 +310,6 @@ def run_calibration(pair_set: str = "full", *, seed: int = 7,
             raise ValueError(f"pair set {name!r} has no optimized-compatible calibration duels")
     candidates = {
         "sequential_batch": sequential_batches or SEQUENTIAL_BATCH_CANDIDATES,
-        "pooled_batch": pooled_batches or POOLED_BATCH_CANDIDATES,
         "workers": worker_candidates or WORKER_CANDIDATES,
     }
     samples = {
@@ -271,27 +330,23 @@ def run_calibration(pair_set: str = "full", *, seed: int = 7,
     # Work units per phase, for the progress ETA (candidates x pairs).
     units = sum(
         len(candidates["sequential_batch"][backend]) * len(pairs[backend])
-        + len(candidates["pooled_batch"][backend]) * len(pairs[backend])
         + len(candidates["workers"][backend]) * len(pairs[backend])
         for backend in order
     )
     _PROGRESS.update(completed=0, total=units, started=time.perf_counter())
 
     evidence: dict = {}
-    winners: dict = {"batch_sizes": {}, "pooled_batch_sizes": {},
-                     "pool_workers": {}, "spawn_seconds": {}}
+    winners: dict = {"batch_sizes": {}, "pool_workers": {}, "spawn_seconds": {}}
+    sweep_batches: dict = {}
     for backend in order:
         backend_pairs = pairs[backend]
         backend_samples = samples[backend]
         row = {}
         log(f"{backend}: {len(backend_pairs)} duel types, "
-            f"sequential at {backend_samples['sequential']:,}, "
-            f"pooled at {backend_samples['pooled']:,}")
+            f"sequential at {backend_samples['sequential']:,}")
 
-        # One pass per axis, with a deliberate order: the pooled batch is
-        # measured under the reference worker count, then the workers are
-        # tuned against the winning batch — iterating to a fixed point would
-        # multiply the runtime for a second-order correction.
+        # The batch is chosen sequentially, then the workers are tuned at that
+        # same batch: it is the batch comparisons run, pooled or not.
         sequential = _sweep(
             "sequential batch", backend_pairs,
             candidates["sequential_batch"][backend],
@@ -304,23 +359,19 @@ def run_calibration(pair_set: str = "full", *, seed: int = 7,
         winner = _winner(scores, DEFAULT_BATCH_SIZES[backend])
         winners["batch_sizes"][backend] = int(winner)
 
-        pooled = _sweep(
-            "pooled batch", backend_pairs,
-            candidates["pooled_batch"][backend],
-            lambda batch: _pooled_walls(
-                backend_pairs, backend, backend_samples["pooled"], batch,
-                POOL_WORKERS[backend], seed),
-            log)
-        row["pooled_batch"] = {"seconds": {str(key): value for key, value in pooled.items()},
-                               "scores": {str(key): value for key, value in _scores(pooled).items()}}
-        scores = _scores(pooled)
-        winner = _winner(scores, POOLED_BATCH_SIZES[backend])
-        winners["pooled_batch_sizes"][backend] = int(winner)
+        sweep_batch = int(winner)
+        sweep_batches[backend] = sweep_batch
+        needed = max(candidates["workers"][backend]) * sweep_batch
+        if backend_samples["pooled"] < needed:
+            log(f"  pooled sample raised {backend_samples['pooled']:,} -> {needed:,} "
+                f"so every worker candidate gets a {sweep_batch:,} batch")
+            backend_samples["pooled"] = needed
+        log(f"  pool workers at batch {sweep_batch:,}, "
+            f"pooled at {backend_samples['pooled']:,}")
 
         # Worker counts above the batch count split identically (the plan caps
         # segments at batches), so they measure pool size, not parallelism.
-        pooled_batch = winners["pooled_batch_sizes"][backend]
-        batches = len(batch_plan(backend_samples["pooled"], pooled_batch))
+        batches = len(batch_plan(backend_samples["pooled"], sweep_batch))
         worker_options = tuple(
             count for count in candidates["workers"][backend] if count <= batches)
         if len(worker_options) < len(candidates["workers"][backend]):
@@ -332,7 +383,7 @@ def run_calibration(pair_set: str = "full", *, seed: int = 7,
             "pool workers", backend_pairs, worker_options,
             lambda count: _pooled_walls(
                 backend_pairs, backend, backend_samples["pooled"],
-                pooled_batch, count, seed),
+                sweep_batch, count, seed),
             log)
         row["pooled_workers"] = {"seconds": {str(key): value for key, value in workers.items()},
                                  "scores": {str(key): value for key, value in _scores(workers).items()}}
@@ -356,16 +407,17 @@ def run_calibration(pair_set: str = "full", *, seed: int = 7,
             "processor": platform.processor(),
             "cpu_count": os.cpu_count(),
         },
+        "provenance": provenance,
         "method": {
             "pair_sets": sets,
             "excluded_pairs": {backend: excluded_pairs[backend] for backend in order},
             "pair_ids": {backend: [row[3] for row in pairs[backend]] for backend in order},
             "samples": samples,
+            "worker_sweep_batch": sweep_batches,
             "candidates": {key: {backend: list(value[backend]) for backend in order}
                            for key, value in candidates.items()},
         },
         "batch_sizes": winners["batch_sizes"],
-        "pooled_batch_sizes": winners["pooled_batch_sizes"],
         "pool_workers": winners["pool_workers"],
         "spawn_seconds": winners["spawn_seconds"],
         "evidence": evidence,
@@ -375,7 +427,7 @@ def run_calibration(pair_set: str = "full", *, seed: int = 7,
 
 
 def _reference_value(section: str, backend: str):
-    return {"batch_sizes": DEFAULT_BATCH_SIZES, "pooled_batch_sizes": POOLED_BATCH_SIZES,
+    return {"batch_sizes": DEFAULT_BATCH_SIZES,
             "pool_workers": POOL_WORKERS, "spawn_seconds": POOL_SPAWN_SECONDS}[section][backend]
 
 
@@ -383,7 +435,7 @@ def print_summary(payload: dict, log=print) -> None:
     """Human-readable comparison of the measured winners against the defaults."""
     log("")
     log(f"measured optima ({payload['elapsed_seconds']:.0f}s total):")
-    for section in ("batch_sizes", "pooled_batch_sizes", "pool_workers", "spawn_seconds"):
+    for section in ("batch_sizes", "pool_workers", "spawn_seconds"):
         values = payload.get(section, {})
         for backend, value in values.items():
             reference = _reference_value(section, backend)

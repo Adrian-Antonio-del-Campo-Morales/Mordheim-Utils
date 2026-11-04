@@ -16,7 +16,7 @@ contracts/campaign-file-v5                  neutral persistence contract and fix
 tests                                      Python, TypeScript and web integration tests
 ```
 
-`pyproject.toml` and the test configuration list the package roots explicitly; editable installation from the repository root is the supported Python setup.
+`pyproject.toml` and the test configuration list the package roots explicitly; editable installation from the repository root is the supported Python setup. An editable install records absolute paths, so every checkout or git worktree has its own `.venv`, created and verified by `python3 tools/setup_worktree.py`; a shared venv would import another checkout's packages and native extension.
 
 ## Dependency boundaries
 
@@ -50,6 +50,11 @@ TypeScript domain/eligibility → browser domain/application adapters
   [phased-work boundary](eligibility.md#construction-boundary-for-phased-implementation).
 - `mordheim_combat` consumes compiled fighters and never loads YAML.
 - Combat Lab `application` is Tkinter-free; its `ui` owns windows, widgets and thread coordination.
+  Runtime areas (`application`, `persistence`, `ui`) never import `verification`.
+  Result provenance (engine source digests, native build hash, source revision
+  and the `PROVENANCE WARNING` format) lives in `mordheim_combat_lab.provenance`,
+  shared by the verification tools and by runtime services such as benchmark
+  baselines and calibration profiles.
   Its theme and interface translations live in `mordheim_combat_lab.ui.theme`
   and `mordheim_combat_lab.ui.i18n`.
 - TypeScript campaign `application` owns use cases and state transitions; the React UI presents results and forwards actions.
@@ -90,7 +95,7 @@ and compiles its own facts; it does not consume campaign `special_rules`.
 
 ### Native candidate
 
-`mordheim_combat/native/` contains the optional Cython implementation and its pure-Python compile/folding layer. The extension is `mordheim_combat._combat_native`. Machines without a compatible compiler retain the NumPy backend. `available_backends()` reports what is actually installed.
+`mordheim_combat/native/` contains the optional Cython implementation and its pure-Python compile/folding layer. The extension is `mordheim_combat._combat_native`; it is built from `_combat_native.pyx` (and `.pxd`), and the Cython output `_combat_native.c` that every build regenerates is ignored, not versioned. The compile layer reuses helpers of the vectorized and modular packages and runs through `vectorized.simulate_duel`, so native results also depend on those sources; the native engine digest covers them, while the built extension's hash is recorded separately because it differs between machines. Machines without a compatible compiler retain the NumPy backend. `available_backends()` reports what is actually installed.
 
 ## Campaign Manager
 

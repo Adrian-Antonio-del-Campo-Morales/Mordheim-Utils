@@ -107,3 +107,16 @@ def test_a_missing_frozen_case_is_reported_and_never_replaced(cases):
     assert [scenario.key for scenario in scenarios] == ["scenario/basic"]
     assert [key for key, _reason in rejected] == ["scenario/long"]
     assert "no case" in rejected[0][1]
+
+
+def test_inputs_the_samplers_cannot_pass_on_reject_the_case(cases):
+    from dataclasses import replace
+
+    basic = cases["scenario/basic"]
+    scenarios, rejected = load(
+        select(level="long", keys=("scenario/basic",)),
+        {"scenario/basic": replace(basic, initial_state={"first": {"attacks": 0}})},
+    )
+    assert scenarios == ()
+    assert rejected[0][0] == "scenario/basic"
+    assert rejected[0][1].startswith("incompatible: initial_state overrides")

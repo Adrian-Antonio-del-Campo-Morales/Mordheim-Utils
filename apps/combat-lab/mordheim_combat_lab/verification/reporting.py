@@ -154,27 +154,72 @@ def write_statistical_report(output: Path, *,
     return statistical_path, statistical_rows
 
 
+#: Candidate source checkout of this package (see ``_checkout_root``).
+_CHECKOUT = Path(__file__).resolve().parents[4]
+_PACKAGE_ROOTS = (
+    "packages/python/combat-engine", "packages/python/roster-construction",
+    "packages/python/core", "packages/python/knowledge", "apps/combat-lab", ".",
+)
+
+
+def _checkout_root() -> Path | None:
+    if (_CHECKOUT / "pyproject.toml").is_file() and (_CHECKOUT / "tests").is_dir():
+        return _CHECKOUT
+    return None
+
+
 def run_technical_tests(path: Path) -> int:
+    """Run the repository's pytest suite and write its technical CSV to ``path``.
+
+    From a source checkout the child runs in that checkout with its package
+    roots first on ``PYTHONPATH``: the reporter plugin is imported before
+    pytest's ``pythonpath`` setting applies, so it would otherwise resolve
+    through whatever editable install the interpreter has.  A CSV left at
+    ``path`` by an earlier run is removed first; a CSV that this run did not
+    write is reported as missing, never reused.
+    """
+    import os
+    import time
+
     path = Path(path)
-    environment = dict(__import__("os").environ)
+    environment = dict(os.environ)
     environment["MORDHEIM_TEST_REPORT_CSV"] = str(path.resolve())
+    checkout = _checkout_root()
+    if checkout is not None:
+        existing = environment.get("PYTHONPATH")
+        environment["PYTHONPATH"] = os.pathsep.join(
+            [*(str(checkout / root) for root in _PACKAGE_ROOTS), *([existing] if existing else [])]
+        )
     command = [
         sys.executable, "-m", "pytest", "-p",
         "mordheim_combat_lab.verification.pytest_reporter", "-p", "no:cacheprovider", "-q",
     ]
+    started = time.time()
     try:
-        exit_code = subprocess.run(command, env=environment, check=False).returncode
+        path.unlink()
+        removed = True
+    except FileNotFoundError:
+        removed = True
+    except OSError:  # cannot remove it: only a newer file counts as this run's
+        removed = False
+    try:
+        exit_code = subprocess.run(
+            command, env=environment, check=False,
+            cwd=None if checkout is None else str(checkout),
+        ).returncode
     except Exception as error:
         write_csv(path, TECHNICAL_COLUMNS, ({
             "test_id": "pytest/session", "status": "ERROR", "error": str(error), "passes": "FAIL",
         },))
         return 1
-    if not path.is_file():
+    produced = path.is_file() and (removed or path.stat().st_mtime > started)
+    if not produced:
         write_csv(path, TECHNICAL_COLUMNS, ({
             "test_id": "pytest/session", "status": "ERROR",
-            "error": "pytest did not create its report", "passes": "FAIL",
+            "error": f"pytest did not create its report (exit status {exit_code})",
+            "passes": "FAIL",
         },))
-        return 1
+        return exit_code or 1
     return exit_code
 
 

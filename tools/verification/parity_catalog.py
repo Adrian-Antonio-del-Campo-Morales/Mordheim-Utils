@@ -16,6 +16,7 @@ from tests.engines.fixtures.precompiled_catalog import LEVELS
 from tests.engines.fixtures.precompiled_catalog import SCENARIO_KEYS
 from tests.engines.fixtures.precompiled_catalog import scenarios_for_level
 from tools.verification.compiled_cases import CompiledCase
+from tools.verification.e2e_parity import expressiveness
 
 CORPUS = Path(__file__).resolve().parents[2] / "tests" / "engines" / "fixtures" / "compiled-cases.json"
 
@@ -73,7 +74,9 @@ def load(
 
     Returns the ready scenarios and, per entry the corpus does not contain, the
     ``(key, reason)`` pair a report must list as not run.  A missing frozen case
-    is never replaced by a compiled fighter.
+    is never replaced by a compiled fighter, and a case carrying inputs the
+    samplers cannot pass on (initial-state overrides, auxiliary participants,
+    scripted dice or decisions) is rejected rather than sampled without them.
     """
     scenarios: list[CampaignScenario] = []
     rejected: list[tuple[str, str]] = []
@@ -81,6 +84,10 @@ def load(
         case = cases.get(key)
         if case is None:
             rejected.append((key, f"the frozen corpus has no case {key}"))
+            continue
+        limits = expressiveness(case)
+        if limits:
+            rejected.append((key, "incompatible: " + "; ".join(limits)))
             continue
         scenarios.append(CampaignScenario(key, name, case))
     return tuple(scenarios), tuple(rejected)

@@ -23,8 +23,9 @@ Interface (stable for fixtures and for the snapshot generator)
 ``load_builds(path) -> BuildSnapshots``
     Reads and validates a frozen document.  A missing file, an unknown schema or
     version, a mismatched entry key, a root that is not ``null`` or a normalized
-    repository-relative path, or a mismatched document fingerprint raises
-    ``CompiledBuildError``.
+    repository-relative path, a mismatched document fingerprint or a malformed
+    source fingerprint raises ``CompiledBuildError``.  ``BuildSnapshots.sources``
+    exposes the recorded source fingerprints (empty for older documents).
 
 ``BuildSnapshots.fighter(build, root=None) -> CompiledFighter``
     Returns the stored fighter for exactly that request, normalizing the root
@@ -34,7 +35,7 @@ Interface (stable for fixtures and for the snapshot generator)
     raises ``MissingCompiledBuild`` with its key; no build is compiled and no
     similar build is substituted.
 
-``encode_entry(build, fighter, root=None)`` / ``encode_document(entries)``
+``encode_entry(build, fighter, root=None)`` / ``encode_document(entries, sources=())``
     Generation side of the same format: ``(key, entry)`` and the canonical
     document.  Serialization is the existing codec (``canonical_json``,
     ``encode_compiled_fighter``); this module adds no second encoding system.
@@ -53,8 +54,18 @@ Document format (UTF-8 JSON, canonical, no timestamps)
           "fighter": {...}                     # encode_compiled_fighter output
         }
       },
-      "fingerprints": {"entries_sha256": "<sha256 of schema+version+entries>"}
+      "fingerprints": {
+        "entries_sha256": "<sha256 of schema+version+entries>",
+        "sources_sha256": ["<sha256 of KB + compiler sources>", ...]   # optional
+      }
     }
+
+``fingerprints.sources_sha256`` lists, sorted, every KB+compiler source digest
+(``generate_compiled_builds.sources_fingerprint``) whose compilations the
+document holds; ``"unrecorded"`` stands for entries written before digests were
+recorded.  Frozen entries are never refreshed, so several digests mean mixed
+provenance.  The list is outside ``entries_sha256``: documents without it stay
+valid, and it never changes an entry's identity.
 
 ``request.root`` is ``null`` for the default root, ``"."`` for the repository
 root itself, or a normalized POSIX path relative to the repository (for example
@@ -91,6 +102,10 @@ SCHEMA_VERSION = 1
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
 _DOCUMENT_FIELDS = frozenset({"schema", "schema_version", "entries", "fingerprints"})
+_FINGERPRINT_FIELDS = frozenset({"entries_sha256", "sources_sha256"})
+
+#: Source-digest placeholder for entries frozen before digests were recorded.
+UNRECORDED_SOURCES = "unrecorded"
 _ENTRY_FIELDS = frozenset({"request", "fighter"})
 _REQUEST_FIELDS = frozenset({"build", "root"})
 
@@ -215,28 +230,52 @@ def _entries_fingerprint(entries: Mapping[str, Mapping]) -> str:
     }).encode("utf-8")).hexdigest()
 
 
-def encode_document(entries: Iterable[tuple[FighterBuild, CompiledFighter, object]]) -> dict:
-    """Build the canonical document from ``(build, fighter, root)`` triples."""
+def _valid_source_digest(value: object) -> bool:
+    return value == UNRECORDED_SOURCES or (
+        isinstance(value, str) and len(value) == 64
+        and all(character in "0123456789abcdef" for character in value)
+    )
+
+
+def encode_document(entries: Iterable[tuple[FighterBuild, CompiledFighter, object]],
+                    sources: Iterable[str] = ()) -> dict:
+    """Build the canonical document from ``(build, fighter, root)`` triples.
+
+    ``sources`` are the KB+compiler digests the entries were compiled from;
+    none omits ``fingerprints.sources_sha256``.
+    """
     frozen: dict[str, dict] = {}
     for build, fighter, root in entries:
         key, entry = encode_entry(build, fighter, root)
         if key in frozen:
             _fail(key, "entries", "duplicate key")
         frozen[key] = entry
+    fingerprints: dict[str, object] = {"entries_sha256": _entries_fingerprint(frozen)}
+    recorded = sorted(set(sources))
+    if recorded:
+        invalid = [value for value in recorded if not _valid_source_digest(value)]
+        if invalid:
+            _fail("<document>", "fingerprints.sources_sha256",
+                  f"not a SHA-256 digest: {invalid[0]!r}")
+        fingerprints["sources_sha256"] = recorded
     return {
         "schema": SCHEMA,
         "schema_version": SCHEMA_VERSION,
         "entries": frozen,
-        "fingerprints": {"entries_sha256": _entries_fingerprint(frozen)},
+        "fingerprints": fingerprints,
     }
 
 
 class BuildSnapshots:
     """Validated frozen builds; ``fighter()`` is the ``compile_fighter`` replacement."""
 
-    def __init__(self, entries: Mapping[str, Mapping], *, path: str = "<document>"):
+    def __init__(self, entries: Mapping[str, Mapping], *, path: str = "<document>",
+                 sources: tuple[str, ...] = ()):
         self._entries = entries
         self.path = path
+        #: KB+compiler source digests recorded by the generator; empty when
+        #: the document predates them.
+        self.sources = sources
 
     def __len__(self) -> int:
         return len(self._entries)
@@ -287,7 +326,17 @@ def load_builds(path) -> BuildSnapshots:
             _fail(key, "fighter", "expected an object")
         entries[key] = entry
     fingerprints = _mapping(data["fingerprints"], "<document>", "fingerprints")
-    _exact_keys(fingerprints, frozenset({"entries_sha256"}), "<document>", "fingerprints")
+    unknown = sorted(set(fingerprints) - _FINGERPRINT_FIELDS)
+    if unknown:
+        _fail("<document>", "fingerprints", "unknown field(s): " + ", ".join(unknown))
+    if "entries_sha256" not in fingerprints:
+        _fail("<document>", "fingerprints", "missing field(s): entries_sha256")
     if fingerprints["entries_sha256"] != _entries_fingerprint(entries):
         _fail("<document>", "fingerprints", "stored fingerprint does not match the entries")
-    return BuildSnapshots(entries, path=str(location))
+    sources = fingerprints.get("sources_sha256", [])
+    if (not isinstance(sources, list)
+            or not all(_valid_source_digest(value) for value in sources)
+            or sources != sorted(set(sources))):
+        _fail("<document>", "fingerprints.sources_sha256",
+              "expected a sorted list of distinct SHA-256 digests or 'unrecorded'")
+    return BuildSnapshots(entries, path=str(location), sources=tuple(sources))

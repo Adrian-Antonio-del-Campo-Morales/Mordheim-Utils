@@ -56,13 +56,13 @@ def _row(
 
 def test_payload_records_identity_rates_tolerances_differences_and_timings():
     payload = campaign_payload(
-        (_row("scenario/basic"),), config=_config(["scenario/basic"]),
+        (_row("scenario/basic", simulations=100_000),), config=_config(["scenario/basic"]),
         elapsed_seconds=16.0,
     )
     record, = payload["scenarios"]
     assert record["corpus_key"] == "scenario/basic"
     assert record["scenario"] == "basic"
-    assert record["simulations_per_engine"] == 1_000
+    assert record["simulations_per_engine"] == 100_000
     assert record["maximum_rounds"] == 50
     assert record["executed"] and record["compared"] and record["approved"]
     assert record["verdict"] == "pass"
@@ -180,3 +180,33 @@ def test_markdown_carries_the_configuration_and_per_outcome_evidence():
     assert "52.000%/29.000%/19.000%" in markdown   # NumPy rates
     assert "0.400%/0.400%/0.400%" in markdown      # tolerances
     assert "2.000%/1.000%/1.000%" in markdown      # differences
+
+
+def test_markdown_shows_the_revision_and_every_provenance_warning():
+    config = _config(["scenario/basic"], provenance={
+        "revision": {"commit": "c" * 40, "dirty": True},
+        "warnings": ["the checkout has uncommitted changes"],
+    })
+    payload = campaign_payload((_row("scenario/basic", simulations=100_000),), config=config)
+    payload["provenance_warnings"] = ["2 stored modular sample(s) produced by another modular engine version"]
+    markdown = campaign_markdown(payload)
+    assert f"Source revision: `{'c' * 40}` (dirty: `True`)" in markdown
+    assert "## Provenance warnings" in markdown
+    assert "- **WARNING:** the checkout has uncommitted changes" in markdown
+    assert "- **WARNING:** 2 stored modular sample(s)" in markdown
+    assert payload["complete"]  # warnings never change the verdict
+
+
+def test_a_sample_too_small_to_detect_a_shift_is_underpowered_not_approved():
+    small, large = _row("scenario/basic", simulations=1_000), _row("scenario/long", simulations=100_000)
+    payload = campaign_payload((small, large), config=_config(["scenario/basic", "scenario/long"]))
+    by_key = {record["corpus_key"]: record for record in payload["scenarios"]}
+    assert by_key["scenario/basic"]["verdict"] == "underpowered"
+    assert not by_key["scenario/basic"]["approved"]
+    assert by_key["scenario/basic"]["minimum_detectable_difference"] == pytest.approx(0.1342, abs=1e-4)
+    assert by_key["scenario/long"]["verdict"] == "pass"
+    assert payload["coverage"]["underpowered"] == 1 and payload["coverage"]["approved"] == 1
+    assert payload["complete"] is False
+    # A divergence stays a divergence however small the sample.
+    divergent = _row("scenario/basic", simulations=1_000, status="DIVERGENCE", approved=False, passed=False)
+    assert campaign_payload((divergent,), config=_config(["scenario/basic"]))["scenarios"][0]["verdict"] == "divergent"

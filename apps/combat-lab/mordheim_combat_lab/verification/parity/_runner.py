@@ -11,17 +11,31 @@ performs the whole orchestration once:
   record the stages each row actually reached (executed, compared, approved);
 - expand a case at several round limits when ``horizons`` is supplied, which is
   how round truncation is configured instead of using a separate runner;
-- re-certify suspicious rows at a larger orcale sample when ``escalate`` is set,
-  bounded by ``max_modular_duels``.
+- re-certify suspicious rows at a larger oracle sample when ``escalate`` is set,
+  bounded by ``max_modular_duels`` (charged with the duels actually executed).
+
+The pooled oracle runs in worker processes that re-import the engine from
+``sys.path`` under the platform's default start method (forkserver on Linux
+with Python 3.14, spawn on Windows).  Each worker verifies at start-up that it
+imported the same ``mordheim_combat``/``mordheim_core`` (and native extension,
+when native is requested) files as the parent; a mismatch breaks the pool and
+``run_parity`` raises :class:`ParityPoolError` — a failed run, never a
+divergence.  No explicit ``mp_context`` is passed: the check holds for every
+start method, so the default is kept.
 
 Two evidence surfaces are preserved because they certify different contracts:
 
 - ``candidate="counts"`` compares the three terminal outcome counts through
   :func:`compare_statistical_parity` (winner only).  This is the deep and
   truncation certificate, with the candidate sample seeded ``seed + 1_000_003``.
+  Its candidate is sampled without context or decisions, so cases carrying
+  either are refused on this surface (``ValueError``).
 - ``candidate="observed"`` keeps per-duel rows so ``rounds``, ``wounds`` and
   ``condition`` can be compared, and re-samples the candidate once to prove the
-  batch is deterministic.  This is the battery contract.
+  batch is deterministic.  This is the battery contract.  Its native
+  candidate replays the native core with a NumPy ``Generator``
+  (:data:`NATIVE_OBSERVED_NOTE`); the production native seeding is not
+  exercised there.
 
 Cases are always prepared by the caller: precompiled fighters never trigger a
 compile or a compiler fallback; the battery compiles its own catalogue builds
@@ -32,8 +46,10 @@ from __future__ import annotations
 import time
 from collections import Counter
 from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures.process import BrokenProcessPool
 from contextlib import ExitStack
-from dataclasses import dataclass, replace
+from dataclasses import dataclass, is_dataclass, replace
+from pathlib import Path
 from typing import Callable, Iterable, Sequence
 
 import numpy as np
@@ -50,7 +66,16 @@ from mordheim_combat_lab.verification.parity._statistical import (
     compare_outcome_rates,
     compare_statistical_parity,
     outcome_counts,
+    minimum_detectable_difference,
     six_sigma_tolerance,
+)
+
+#: How the observed surface samples the native candidate.  It replays the
+#: native core through ``simulate_batch_observed`` with a NumPy ``Generator``;
+#: production ``simulate_duel(backend="native")`` seeds its own PCG32 streams,
+#: which this surface therefore does not exercise.
+NATIVE_OBSERVED_NOTE = (
+    "native core with NumPy RNG; production native seeding not exercised"
 )
 
 #: Horizons swept by a truncation certification.  Cases keep only the horizons
@@ -71,6 +96,18 @@ _COUNT_MAGNITUDES = ("winner",)
 
 class _NativeUnavailable(RuntimeError):
     """The native extension is absent, stale or cannot run this plan."""
+
+
+class _NativeMissing(_NativeUnavailable):
+    """The native extension is absent or stale: a requested backend is missing.
+
+    Unlike a plan the extension declines (a capability limit), this is a fault
+    of the run's environment and fails the command.
+    """
+
+
+class ParityPoolError(RuntimeError):
+    """The oracle worker pool failed; the run is void, not divergent."""
 
 
 class OutcomeCodeError(ValueError):
@@ -132,6 +169,14 @@ class ParityRow:
     detail: str = ""
     escalated: bool = False
     blocked_by: str | None = None
+    #: The reference sample came from the run's cache; ``modular_seconds`` is
+    #: then the original sample's wall time, not time spent by this row.
+    reference_cached: bool = False
+
+    @property
+    def minimum_detectable_difference(self) -> float:
+        """Smallest rate difference this row's sample width is sure to flag."""
+        return minimum_detectable_difference(max(1, self.simulations))
 
     @property
     def winner(self) -> MagnitudeComparison | None:
@@ -150,16 +195,61 @@ class ParityRun:
 
 
 def _native_engine():
-    """Return the native module only when it is version-compatible."""
+    """Return the native module only when it is version-compatible.
+
+    Mirrors ``vectorized.available_backends``: the effect layout
+    (``N_EFFECT_FIELDS``) and the context version must both match, otherwise
+    the extension is stale and raises :class:`_NativeMissing` here instead of a
+    ``ValueError`` later reported as a divergence.
+    """
     try:
         from mordheim_combat import _combat_native as engine
     except ImportError as error:  # pragma: no cover - optional extension
-        raise _NativeUnavailable("native extension is not installed") from error
+        raise _NativeMissing("native extension is not installed") from error
+    from mordheim_combat.kernel import EFFECT_VALUE_FIELDS
+
+    if getattr(engine, "N_EFFECT_FIELDS", None) != len(EFFECT_VALUE_FIELDS):
+        raise _NativeMissing("native extension effect layout is stale")
     if getattr(engine, "CONTEXT_VERSION", None) != 1:
-        raise _NativeUnavailable("native extension context version is stale")
+        raise _NativeMissing("native extension context version is stale")
     if not hasattr(engine, "simulate_batch_observed"):
-        raise _NativeUnavailable("native extension has no batch observation entry")
+        raise _NativeMissing("native extension has no batch observation entry")
     return engine
+
+
+def _engine_origins(native: bool) -> dict[str, str]:
+    """Resolved files of the engine modules this process actually imported."""
+    import mordheim_combat
+    import mordheim_core
+
+    origins = {
+        "mordheim_combat": mordheim_combat.__file__,
+        "mordheim_core": mordheim_core.__file__,
+    }
+    if native:
+        from mordheim_combat import _combat_native
+
+        origins["mordheim_combat._combat_native"] = _combat_native.__file__
+    return {name: str(Path(path).resolve()) for name, path in origins.items()}
+
+
+def _check_worker_origins(native: bool, expected: dict[str, str]) -> None:
+    """Pool initializer: a worker must run the very engine its parent labels.
+
+    Raising here breaks the pool; ``run_parity`` turns the resulting
+    ``BrokenProcessPool`` into :class:`ParityPoolError`.
+    """
+    try:
+        actual = _engine_origins(native)
+    except ImportError as error:
+        raise RuntimeError(f"worker cannot import the parent's engine: {error}") from error
+    if actual != expected:
+        differing = ", ".join(
+            f"{name}: worker {actual.get(name)} != parent {expected.get(name)}"
+            for name in sorted(set(actual) | set(expected))
+            if actual.get(name) != expected.get(name)
+        )
+        raise RuntimeError(f"oracle worker imported a different engine ({differing})")
 
 
 def _candidate_sample(
@@ -552,6 +642,48 @@ def _reference_failure_rows(case, backends, simulations, detail, *, executed=Fal
     )
 
 
+def _identity(value) -> str | None:
+    """A content identity for a context or decision script in a cache key.
+
+    Dataclasses (``DuelContext``) are identified by their field values; other
+    objects with instance state (``ScriptedDecisions``) by that state; anything
+    else by its object identity, which can only miss, never alias.
+    """
+    if value is None:
+        return None
+    if is_dataclass(value):
+        return repr(value)
+    state = getattr(value, "__dict__", None)
+    if state is not None:
+        return f"{type(value).__qualname__}{sorted(state.items())!r}"
+    return f"{type(value).__qualname__}@{id(value)}"
+
+
+def _cache_key(case: ParityCase, simulations: int) -> tuple:
+    """Everything the modular sample depends on besides the case's fighters.
+
+    ``label`` names the fighters; seed, round limit, context and decisions are
+    keyed explicitly so a cache shared between runs or settings can never return
+    a sample drawn for different ones.
+    """
+    return (
+        "oracle", case.label, int(simulations), int(case.seed),
+        int(case.maximum_rounds), _identity(case.context),
+        _identity(case.decisions),
+    )
+
+
+def _pool_failure(error: BaseException) -> ParityPoolError:
+    return ParityPoolError(
+        "the modular-oracle worker pool failed "
+        f"({type(error).__name__}: {error}). A worker most likely imported a "
+        "different engine than this process (see 'Exception in initializer' "
+        "above) or crashed; the run is void and was not compared. Rerun with "
+        "--workers 1 or fix the environment so every process imports the same "
+        "engine."
+    )
+
+
 def _case_rows(
     case: ParityCase, simulations: int, *, backends: Sequence[str], reference: str,
     candidate: str, workers: int | None, executor, cache: dict | None,
@@ -573,18 +705,21 @@ def _case_rows(
                 "NOT_RUN:case-definition: aggregate counts compare only the winner",
             ), 0
 
-    key = f"{case.label}@{simulations}"
+    key = _cache_key(case, simulations)
     cached = None if cache is None else cache.get(key)
     modular_duels = 0
     if reference == "modular":
         if cached is not None:
-            oracle, modular_seconds = cached, 0.0
+            # The original sample's wall time; rows are flagged as cached.
+            oracle, modular_seconds = cached
         else:
             started = time.perf_counter()
             try:
                 oracle = _observed_reference(
                     case, simulations, workers=workers, executor=executor,
                 )
+            except BrokenProcessPool as error:
+                raise _pool_failure(error) from error
             except KeyError as error:
                 return _reference_failure_rows(
                     case, backends, simulations,
@@ -598,7 +733,7 @@ def _case_rows(
             modular_seconds = time.perf_counter() - started
             modular_duels = simulations
             if cache is not None:
-                cache[key] = oracle
+                cache[key] = (oracle, modular_seconds)
     else:
         started = time.perf_counter()
         try:
@@ -630,7 +765,7 @@ def _case_rows(
         return (_row(
             case.label, "modular", case.maximum_rounds, simulations, "COMPLETED",
             executed=True, compared=False, approved=False,
-            modular_seconds=modular_seconds,
+            modular_seconds=modular_seconds, reference_cached=cached is not None,
             detail="Modular reference completed; no engine comparison performed.",
         ),), modular_duels
 
@@ -645,6 +780,8 @@ def _case_rows(
                 case, backend, simulations, oracle, modular_seconds,
                 magnitudes, repeat_candidate=repeat_candidate,
             ))
+    if cached is not None and reference == "modular":
+        rows = [replace(row, reference_cached=True) for row in rows]
     return tuple(rows), modular_duels
 
 
@@ -694,7 +831,15 @@ def _observed_row(
             backend, case.first, case.second, simulations, case.seed,
             case.maximum_rounds, case.decisions, case.context,
         )
+    except _NativeMissing as error:
+        # A requested backend that is absent or stale fails the run.
+        return _row(
+            case.label, backend, case.maximum_rounds, simulations,
+            "NOT_RUN", modular_seconds=modular_seconds,
+            detail=f"NOT_RUN:native-unavailable: {error}",
+        )
     except _NativeUnavailable as error:
+        # The extension declined this plan: a capability limit.
         return _row(
             case.label, backend, case.maximum_rounds, simulations,
             "NOT_RUN", modular_seconds=modular_seconds,
@@ -705,14 +850,6 @@ def _observed_row(
             case.label, backend, case.maximum_rounds, simulations,
             "NOT_RUN", modular_seconds=modular_seconds,
             detail=f"NOT_RUN:decision-script:{_decision_key(error)} owner=P01",
-        )
-    except (AttributeError, TypeError) as error:
-        return _row(
-            case.label, backend, case.maximum_rounds, simulations,
-            "INCOMPATIBLE", modular_seconds=modular_seconds,
-            detail=(
-                f"INCOMPATIBLE:candidate-sample:{type(error).__name__}: {error}"
-            ),
         )
     except ValueError as error:
         message = str(error)
@@ -733,6 +870,8 @@ def _observed_row(
             detail=f"DIVERGENCE:exception:ValueError: {message}",
         )
     except Exception as error:
+        # Any other crash of the candidate — TypeError and AttributeError
+        # included — is an own error of the run, never a declared capability.
         return _row(
             case.label, backend, case.maximum_rounds, simulations,
             "DIVERGENCE", modular_seconds=modular_seconds,
@@ -853,10 +992,10 @@ def escalation_plan(
     and noise) or when its unresolved rate shows the timing-prone profile the
     flat gate is blind to.  Conclusive failures (six sigma and above) are not
     re-run.  Escalated sizes are ``base * factor``, allocated greedily in
-    priority order until ``remaining`` duels run out.
+    priority order until ``remaining`` duels run out.  Each escalation costs
+    its whole new size: the larger sample is drawn afresh, not extended.
     """
     prepared = tuple(prepared)
-    sizes = {case.label: size for case, size in prepared}
     plan = []
     for case, size in prepared:
         own = [row for row in rows if row.case == case.label]
@@ -871,11 +1010,10 @@ def escalation_plan(
     chosen = []
     budget = remaining
     for case, new_size, _worst, _unresolved in plan:
-        extra = new_size - sizes[case.label]
         if budget is not None:
-            if extra > budget:
+            if new_size > budget:
                 continue
-            budget -= extra
+            budget -= new_size
         chosen.append((case, new_size))
     return tuple(chosen)
 
@@ -936,10 +1074,20 @@ def run_parity(
     ``seed`` and ``maximum_rounds`` override the per-case declaration.
     ``horizons`` expands each case at several round limits (round truncation).
     ``escalate`` re-certifies suspicious winner-only cases at
-    ``escalation_factor`` times the sample, bounded by ``max_modular_duels``.
-    ``cache`` reuses modular samples and is keyed by ``<label>@<simulations>``.
+    ``escalation_factor`` times the sample, bounded by ``max_modular_duels``:
+    the ceiling is checked against the modular duels this run actually
+    executed, an escalation costs its whole new sample, and ``modular_duels``
+    reports every executed duel (cache hits cost nothing).
+    ``cache`` reuses modular samples keyed by label, sample width, seed, round
+    limit, context and decisions; rows served from it carry
+    ``reference_cached=True`` and the original sample's ``modular_seconds``.
     ``backends=("modular",)`` executes only the reference and returns COMPLETED
     rows with compared/approved false. Readiness and compilation stay with the caller.
+
+    Raises ``ValueError`` for an invalid configuration — including a
+    ``candidate="counts"`` case carrying a context or decisions, which that
+    surface cannot pass to the candidate — and :class:`ParityPoolError` when the
+    oracle worker pool fails (e.g. a worker imported another engine copy).
     """
     cases = tuple(cases)
     backends = tuple(backends)
@@ -962,6 +1110,19 @@ def run_parity(
         raise ValueError("the NumPy reference compares aggregate counts only")
     if workers is not None and str(workers).casefold() != "auto" and int(workers) < 1:
         raise ValueError("workers must be positive or auto")
+    if candidate == "counts":
+        carrying = [
+            case.label for case in cases
+            if case.blocked_by is None
+            and (case.context is not None or case.decisions is not None)
+        ]
+        if carrying:
+            raise ValueError(
+                "the aggregate counts surface samples the candidate without a "
+                "duel context or scripted decisions, so it would compare a "
+                "different duel than the oracle; use candidate='observed' for "
+                "case(s) " + ", ".join(carrying)
+            )
 
     expanded: list[ParityCase] = []
     for case in cases:
@@ -988,10 +1149,20 @@ def run_parity(
     modular_duels = 0
     with ExitStack() as stack:
         pool_size = max((count or 1 for count in worker_counts), default=1)
-        executor = (
-            stack.enter_context(ProcessPoolExecutor(max_workers=pool_size))
-            if pool_size > 1 else None
-        )
+        executor = None
+        if pool_size > 1:
+            # Workers re-import the engine (default start method); each one
+            # checks it loaded the parent's files before running anything.
+            native = "native" in backends
+            if native:
+                try:
+                    _engine_origins(True)
+                except ImportError:
+                    native = False  # native rows report the missing backend
+            executor = stack.enter_context(ProcessPoolExecutor(
+                max_workers=pool_size, initializer=_check_worker_origins,
+                initargs=(native, _engine_origins(native)),
+            ))
         for item, count in zip(expanded, worker_counts):
             item_rows, duels = _case_rows(
                 item, item.simulations, backends=backends, reference=reference,
@@ -1004,13 +1175,9 @@ def run_parity(
                 on_progress()
 
         if escalate and expanded:
-            base_duels = (
-                sum(item.simulations for item in expanded)
-                if reference == "modular" else 0
-            )
             remaining = (
                 None if max_modular_duels is None
-                else max_modular_duels - base_duels
+                else max_modular_duels - modular_duels
             )
             plan = escalation_plan(
                 tuple((item, item.simulations) for item in expanded), rows,
@@ -1025,7 +1192,7 @@ def run_parity(
                         workers, new_size, item.maximum_rounds),
                     executor=executor, cache=cache, repeat_candidate=False,
                 )
-                modular_duels += duels - item.simulations
+                modular_duels += duels
                 rows = [row for row in rows if row.case != item.label]
                 rows.extend(replace(row, escalated=True) for row in replacement)
                 if on_progress is not None:
@@ -1036,8 +1203,10 @@ def run_parity(
 
 __all__ = (
     "MagnitudeComparison",
+    "NATIVE_OBSERVED_NOTE",
     "OutcomeCodeError",
     "ParityCase",
+    "ParityPoolError",
     "ParityRow",
     "ParityRun",
     "TRUNCATION_HORIZONS",

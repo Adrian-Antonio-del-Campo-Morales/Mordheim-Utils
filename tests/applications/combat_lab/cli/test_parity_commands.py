@@ -95,10 +95,34 @@ def test_parity_cli_separates_the_battery_from_the_historical_certificate():
     # --backend needs a profile or statistical; --rows still needs a profile.
     assert parity_command(parser.parse_args(["parity", "--backend", "native"])) == 2
     assert parity_command(parser.parse_args(["parity", "--rows", "8"])) == 2
-    # Calibration never stands in for acceptance.
-    assert parity_command(parser.parse_args([
-        "parity", "--profile", "quick", "--rows", "8", "--require-complete",
-    ])) == 2
+    # --rows is accepted together with --require-complete (acceptance at a
+    # chosen width); see test_rows_override_reaches_preparation_and_the_report.
+    accepted = parser.parse_args([
+        "parity", "--profile", "quick", "--rows", "8000", "--require-complete",
+    ])
+    assert accepted.rows == 8000 and accepted.require_complete
+
+
+@pytest.mark.parametrize("rows", [None, 8000])
+def test_rows_override_reaches_preparation_and_the_report(monkeypatch, capsys, rows):
+    import json
+    from types import SimpleNamespace
+
+    from mordheim_combat_lab.cli import commands as cli
+    from mordheim_combat_lab.verification.parity import _battery_cases as catalog
+    from mordheim_combat_lab.verification.parity import _battery_runner as runner
+
+    widths = []
+    monkeypatch.setattr(catalog, "battery_cases", lambda profile: ())
+    monkeypatch.setattr(runner, "prepare_cases",
+                        lambda cases, **kwargs: widths.append(kwargs["rows"]) or ((), {}))
+    monkeypatch.setattr(runner, "battery_report", lambda *a, **k: _battery_report(()))
+    args = SimpleNamespace(profile="quick", backend="numpy", rows=rows, json=True,
+                           output=None, require_complete=True)
+    cli._battery_command(args, "quick")
+    assert widths == [rows]  # None keeps every case's declared width
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["preparation"]["rows_override"] == rows
 
 
 @pytest.mark.parametrize("backend,installed,expected", [

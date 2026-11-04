@@ -260,14 +260,21 @@ def _source_tree(tmp_path, monkeypatch):
     monkeypatch.setattr(store, "_CORE", tmp_path / "core")
 
 
-def test_modular_digest_sources_exclude_the_native_package_and_kernel(tmp_path, monkeypatch):
+def test_digest_sources_follow_what_each_engine_executes(tmp_path, monkeypatch):
     _source_tree(tmp_path, monkeypatch)
+    for directory in ("vectorized",):
+        (store._COMBAT / directory).mkdir(parents=True, exist_ok=True)
+    (store._COMBAT / "modular" / "state.py").write_text("# modular helper\n")
+    (store._COMBAT / "vectorized" / "_driver.py").write_text("# vectorized driver\n")
     modular = {p.as_posix() for p in store._modular_sources()}
-    assert not any("/native/" in p or p.endswith("/kernel.py") for p in modular)
+    assert not any("/native/" in p or "/vectorized/" in p or p.endswith("/kernel.py") for p in modular)
     native = {p.as_posix() for p in store._native_sources()}
     assert any("/native/_combat_native.pyx" in p for p in native)
     assert any(p.endswith("/kernel.py") for p in native)
-    assert not any("/modular/" in p for p in native)
+    # The candidates import modular and vectorized helpers, so those count.
+    assert any(p.endswith("/modular/state.py") for p in native)
+    assert any(p.endswith("/vectorized/_driver.py") for p in native)
+    assert not any(p.endswith(".so") or p.endswith(".pyd") for p in native)
     assert store.engine_digest("modular") != store.engine_digest("native")
 
 
@@ -374,7 +381,12 @@ def test_interrupted_sample_resumes_with_only_the_missing_chunks(cases, tmp_path
     assert any("nothing to run" in line for line in seen)
 
 
-def test_stale_or_mismatched_sample_is_refused_unless_replaced(cases, tmp_path):
+def _modular_chunk(first, second, start, count, seed, maximum_rounds, context=None):
+    return store.SampleChunk(start, count, count, 0, 0, 0.0, "test")
+
+
+def test_identity_mismatch_is_refused_but_another_engine_version_only_warns(cases, tmp_path, monkeypatch, capsys):
+    monkeypatch.setattr(store, "run_modular_chunk", _modular_chunk)
     scenario = _scenario(cases)
     store.sample_scenario(
         "modular", scenario, tmp_path, simulations=2, seed=1, maximum_rounds=50,
@@ -388,13 +400,39 @@ def test_stale_or_mismatched_sample_is_refused_unless_replaced(cases, tmp_path):
     raw = json.loads(path.read_text())
     raw["engine_digest"] = "0" * 64
     path.write_text(json.dumps(raw))
-    with pytest.raises(store.SampleStoreError, match="engine digest changed"):
-        store.open_sample("modular", scenario, tmp_path, seed=1, maximum_rounds=50, chunk_size=2)
+    _path, stored = store.open_sample("modular", scenario, tmp_path, seed=1, maximum_rounds=50, chunk_size=2)
+    assert len(stored.chunks) == 1
+    capsys.readouterr()
+    extended = store.sample_scenario(
+        "modular", scenario, tmp_path, simulations=4, seed=1, maximum_rounds=50, chunk_size=2,
+    )
+    err = capsys.readouterr().err
+    assert "PROVENANCE WARNING" in err and "mixes engine versions" in err
+    old, new = sorted(extended.chunks, key=lambda chunk: chunk.start)
+    assert old.provenance is None
+    assert new.provenance["engine_digest"] == store.engine_digest("modular")
+    assert extended.engine_digest == "0" * 64  # the record keeps its own origin
+    assert store.load_sample(path).chunks == extended.chunks
     _path, fresh = store.open_sample(
         "modular", scenario, tmp_path, seed=1, maximum_rounds=50, chunk_size=2,
         replace_stale=True,
     )
     assert fresh.chunks == ()
+
+
+def test_a_source_change_during_the_run_marks_the_chunks_saved_after_it(cases, tmp_path, monkeypatch, capsys):
+    monkeypatch.setattr(store, "run_modular_chunk", _modular_chunk)
+    calls = iter(range(1000))
+    # Run start and record creation see "a"; every later save sees "b".
+    monkeypatch.setattr(store, "engine_digest",
+                        lambda engine: ("a" if next(calls) < 2 else "b") * 64)
+    record = store.sample_scenario(
+        "modular", _scenario(cases), tmp_path, simulations=4, seed=1, maximum_rounds=50, chunk_size=2,
+    )
+    assert "changed during this run" in capsys.readouterr().err
+    assert record.engine_digest == "a" * 64
+    assert all(chunk.provenance["sources_changed_during_run"] for chunk in record.chunks)
+    assert {chunk.provenance["engine_digest_at_save"] for chunk in record.chunks} == {"b" * 64}
 
 
 def _native_chunk(first, second, start, count, seed, chunk_size, maximum_rounds, context=None):
@@ -404,6 +442,7 @@ def _native_chunk(first, second, start, count, seed, chunk_size, maximum_rounds,
 @pytest.mark.parametrize("backend", ["native", "numpy"])
 def test_compare_stored_reports_missing_samples_as_not_run_and_pairs_as_rows(cases, tmp_path, monkeypatch, backend):
     monkeypatch.setattr(store, "run_native_chunk", _native_chunk)
+    monkeypatch.setattr(store, "run_modular_chunk", _modular_chunk)
     scenario = _scenario(cases)
     row, _ = store.compare_stored(scenario, tmp_path, backend=backend)
     assert row.status == "NOT_RUN" and f"no stored modular and {backend} sample" in row.detail
@@ -421,11 +460,49 @@ def test_compare_stored_reports_missing_samples_as_not_run_and_pairs_as_rows(cas
         "--store", str(tmp_path), "--reference-store", str(reference),
         "--simulations", "4",
     ])
-    assert result == (0 if row.status == "PASS" else 1)
+    # Four duels stay within any tolerance but cannot decide anything.
+    assert result == 1
     report = json.loads((tmp_path / "compare" / "parity-campaign.json").read_text())
     assert report["config"]["candidate_backend"] == backend
+    assert report["scenarios"][0]["verdict"] in ("underpowered", "divergent")
     row, _ = store.compare_stored(scenario, tmp_path, simulations=3, backend=backend, reference_store=reference)
     assert row.status == "NOT_RUN" and "cannot be cut at 3" in row.detail
+
+
+@pytest.mark.parametrize("backend", ["native", "numpy"])
+def test_compare_decides_stale_samples_and_warns_about_them(cases, tmp_path, monkeypatch, capsys, backend):
+    monkeypatch.setattr(store, "run_native_chunk", _native_chunk)
+    monkeypatch.setattr(store, "run_numpy_chunk", _native_chunk)
+    monkeypatch.setattr(store, "run_modular_chunk", _modular_chunk)
+    # Independent of this checkout's own state: samples taken at a clean commit.
+    monkeypatch.setattr(store, "_REVISION", {"commit": "c" * 40, "dirty": False})
+    scenario = _scenario(cases)
+    reference = tmp_path / "reference"
+    # Stubbed chunks: a sample wide enough for an approvable verdict costs nothing.
+    store.sample_scenario("modular", scenario, reference, simulations=8_000, seed=5, maximum_rounds=50, chunk_size=4_000)
+    store.sample_scenario(backend, scenario, tmp_path, simulations=8_000, seed=5, maximum_rounds=50, chunk_size=4_000)
+    path = store.sample_path(reference, "modular", scenario.key)
+    raw = json.loads(path.read_text())
+    raw["engine_digest"] = "0" * 64
+    raw["environment"]["dirty"] = True
+    path.write_text(json.dumps(raw))
+    row, provenance = store.compare_stored(scenario, tmp_path, backend=backend, reference_store=reference)
+    assert row.compared and row.status == "PASS"  # the verdict ignores provenance
+    warnings = provenance["modular"]["warnings"]
+    assert any("another modular engine version" in item for item in warnings)
+    assert any("uncommitted changes" in item for item in warnings)
+    assert provenance[backend]["warnings"] == []
+    capsys.readouterr()
+    command = ["compare", "--backend", backend, "--id", scenario.key, "--store", str(tmp_path),
+               "--reference-store", str(reference), "--simulations", "8000"]
+    assert store.main(command) == 0
+    out = capsys.readouterr()
+    assert "PROVENANCE WARNING: 1 stored modular sample(s) produced by another modular engine version" in out.err
+    report = json.loads((tmp_path / "compare" / "parity-campaign.json").read_text())
+    assert len(report["provenance_warnings"]) == 2
+    assert report["config"]["recorded_engine_digests"]["modular"] == ["0" * 64]
+    markdown = (tmp_path / "compare" / "parity-campaign.md").read_text()
+    assert "## Provenance warnings" in markdown
 
 
 @pytest.mark.parametrize("engine", ["numpy", "native"])
@@ -460,3 +537,30 @@ def test_candidate_cli_workers_preserve_sequential_chunks(cases, tmp_path, engin
     assert resumed is not None
     assert resumed.counts(12) == sequential.counts(12)
     assert [chunk for chunk in resumed.to_json()["chunks"] if chunk["start"] != 5] == kept
+
+
+def test_an_engine_imported_from_elsewhere_is_digested_where_it_ran(cases, tmp_path, monkeypatch, capsys):
+    scenario = _scenario(cases)
+    real = store._COMBAT
+    expected = store.engine_digest("numpy")
+    monkeypatch.setattr(store, "_COMBAT", tmp_path / "elsewhere" / "mordheim_combat")
+    command = ["sample", "--engine", "numpy", "--id", scenario.key, "--simulations", "4",
+               "--chunk", "2", "--store", str(tmp_path / "store")]
+    assert store.main(command) == 0
+    assert "PROVENANCE WARNING: mordheim_combat was imported from" in capsys.readouterr().err
+    assert store._COMBAT == real.resolve()
+    record = store.load_sample(store.sample_path(tmp_path / "store", "numpy", scenario.key))
+    assert record.engine_digest == expected
+
+
+def test_pool_workers_must_import_the_parent_engine(cases, tmp_path, monkeypatch, capsys):
+    scenario = _scenario(cases)
+    origins = store.engine_origins("numpy")
+    # The parent claims another engine copy; every real worker then disagrees.
+    monkeypatch.setattr(store, "check_engine_origins",
+                        lambda engine: {**origins, "mordheim_combat": "/elsewhere/__init__.py"})
+    command = ["sample", "--engine", "numpy", "--id", scenario.key, "--simulations", "4",
+               "--chunk", "2", "--workers", "2", "--store", str(tmp_path / "store")]
+    assert store.main(command) == 2
+    assert "worker pool failed" in capsys.readouterr().err
+    assert store.load_sample(store.sample_path(tmp_path / "store", "numpy", scenario.key)) is None

@@ -36,6 +36,14 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable, Sequence
 
+from tools.verification.e2e_parity import bootstrap_paths
+from tools.verification.e2e_parity import repository_root
+
+# Before any engine import, so the parent and the oracle pool's workers
+# import the engine from this checkout.
+bootstrap_paths(repository_root())
+
+from mordheim_combat_lab.provenance import run_provenance
 from tools.verification.compiled_cases import CompiledCaseError
 from tools.verification.compiled_cases import load_cases
 from tools.verification.parity_catalog import CORPUS
@@ -47,6 +55,9 @@ from mordheim_combat_lab.verification.parity import ParityCase
 from mordheim_combat_lab.verification.parity import ParityRow
 from mordheim_combat_lab.verification.parity import run_parity
 from mordheim_combat_lab.verification.parity._statistical import OUTCOME_LABELS
+from mordheim_combat_lab.verification.parity._statistical import MAX_DETECTABLE_DIFFERENCE
+from mordheim_combat_lab.verification.parity._statistical import minimum_detectable_difference
+from mordheim_combat_lab.verification.parity._statistical import underpowered
 
 SCHEMA = "mordheim-combat-parity-campaign/v1"
 
@@ -66,9 +77,15 @@ def _scenario_name(corpus_key: str) -> str:
 
 
 def _verdict(row: ParityRow) -> str:
-    """``pass``, ``divergent`` or ``not-run``; only an approved row passes."""
+    """``pass``, ``underpowered``, ``divergent`` or ``not-run``.
+
+    Only an approved row passes, and only when its sample could have detected
+    a ``MAX_DETECTABLE_DIFFERENCE`` shift: a narrower sample that stayed within
+    tolerance is ``underpowered``, compared but not approved.  A divergence is
+    a divergence at any width.
+    """
     if row.status == "PASS" and row.approved:
-        return "pass"
+        return "underpowered" if underpowered(row.simulations) else "pass"
     if row.status == "DIVERGENCE":
         return "divergent"
     return "not-run"
@@ -98,9 +115,12 @@ def _row_record(row: ParityRow) -> dict[str, object]:
         "simulations_per_engine": row.simulations,
         "executed": bool(row.executed),
         "compared": bool(row.compared),
-        "approved": bool(row.approved),
+        "approved": _verdict(row) == "pass",
         "status": row.status,
         "verdict": _verdict(row),
+        "minimum_detectable_difference": (
+            minimum_detectable_difference(row.simulations) if row.simulations else None
+        ),
         "magnitudes": [_magnitude(item) for item in row.comparisons],
         "reference_seconds": row.modular_seconds,
         "candidate_seconds": row.candidate_seconds,
@@ -144,6 +164,7 @@ def campaign_payload(
         "compared": sum(1 for record in records if record["compared"]),
         "approved": sum(1 for record in records if record["approved"]),
         "divergent": statuses.count("DIVERGENCE"),
+        "underpowered": sum(1 for record in records if record["verdict"] == "underpowered"),
         "incompatible": statuses.count("INCOMPATIBLE"),
         "not_run": statuses.count("NOT_RUN") + len(rejected_records),
         "rejected": len(rejected_records),
@@ -167,6 +188,7 @@ def campaign_payload(
         "complete": complete,
         "certification_sample_complete": certification,
         "certification_minimum_simulations_per_engine": CERTIFICATION_SIMULATIONS,
+        "maximum_detectable_difference": MAX_DETECTABLE_DIFFERENCE,
         "coverage": coverage,
         "scenarios": records,
         "rejected": rejected_records,
@@ -175,6 +197,26 @@ def campaign_payload(
 
 def _percent_values(values: Sequence[float]) -> str:
     return "/".join(f"{_PERCENT * value:.3f}%" for value in values)
+
+
+def _provenance_lines(payload: dict[str, object]) -> list[str]:
+    """Revision and provenance warnings; warnings are shown, never hidden."""
+    config = payload["config"]
+    assert isinstance(config, dict)
+    block = config.get("provenance")
+    lines: list[str] = []
+    if isinstance(block, dict):
+        revision = block.get("revision") or {}
+        lines.append(
+            f"- Source revision: `{revision.get('commit') or 'unknown'}`"
+            f" (dirty: `{revision.get('dirty')}`)"
+        )
+    warnings = [*(block.get("warnings", ()) if isinstance(block, dict) else ()),
+                *payload.get("provenance_warnings", ())]
+    if warnings:
+        lines.extend(("", "## Provenance warnings", ""))
+        lines.extend(f"- **WARNING:** {message}" for message in warnings)
+    return lines
 
 
 def campaign_markdown(payload: dict[str, object]) -> str:
@@ -210,6 +252,7 @@ def campaign_markdown(payload: dict[str, object]) -> str:
         f"`{payload['certification_sample_complete']}` "
         f"(minimum `{payload['certification_minimum_simulations_per_engine']:,}` "
         "duels per engine)",
+        *_provenance_lines(payload),
         "",
         "## Coverage",
         "",
@@ -217,7 +260,7 @@ def campaign_markdown(payload: dict[str, object]) -> str:
         "|---|---:|",
     ]
     for name in ("selected", "rows", "executed", "compared", "approved",
-                 "divergent", "incompatible", "not_run", "rejected"):
+                 "underpowered", "divergent", "incompatible", "not_run", "rejected"):
         lines.append(f"| {name} | {coverage.get(name, 0)} |")
     if rows:
         lines.extend((
@@ -281,7 +324,10 @@ def campaign_markdown(payload: dict[str, object]) -> str:
         f"{candidate_name} backend on the compiled fighters frozen in the corpus, using the "
         "six-sigma tolerance with the 0.25% floor. A scenario is `pass` only "
         "when both samples were obtained and every compared magnitude stayed "
-        "within tolerance; `divergent` means a comparison was performed and "
+        "within tolerance with a sample that could detect a "
+        f"{_PERCENT * payload.get('maximum_detectable_difference', 0.05):.0f}-point "
+        "shift; `underpowered` means it stayed within a tolerance too wide to "
+        "decide anything; `divergent` means a comparison was performed and "
         "failed, and `not-run` means it was never performed.",
         "",
         "This campaign certifies outcome-distribution parity on the maintained "
@@ -368,6 +414,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"parity campaign: cannot load the frozen corpus: {error}", file=sys.stderr)
         return 2
     scenarios, rejected = load(chosen, cases)
+    # The counts surface samples both engines without a duel context; a case
+    # that needs one is not run rather than compared on a different duel.
+    rejected = (*rejected, *(
+        (scenario.key, "incompatible: the counts surface cannot pass a duel context")
+        for scenario in scenarios if scenario.case.context is not None
+    ))
+    scenarios = tuple(scenario for scenario in scenarios if scenario.case.context is None)
     for key, reason in rejected:
         print(f"NOT_RUN: {key}: {reason}", file=sys.stderr)
 
@@ -380,6 +433,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "workers": args.workers,
         "corpus": CORPUS.relative_to(CORPUS.parents[3]).as_posix(),
         "corpus_sha256": _corpus_digest(CORPUS),
+        "provenance": run_provenance(repository_root(), ("modular", "numpy")),
     }
     cases_to_run = tuple(
         ParityCase(
@@ -419,7 +473,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     print(
         f"parity campaign: {coverage['selected']} selected, "
         f"{coverage['compared']} compared, {coverage['approved']} approved, "
-        f"{coverage['divergent']} divergent, "
+        f"{coverage['underpowered']} underpowered, {coverage['divergent']} divergent, "
         f"{coverage['incompatible']} incompatible, "
         f"{coverage['not_run']} not run, {coverage['rejected']} rejected"
     )

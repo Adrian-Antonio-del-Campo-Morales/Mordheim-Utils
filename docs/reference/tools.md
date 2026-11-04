@@ -9,6 +9,7 @@ Specialized scripts are grouped by purpose, not language or caller.
 | Tool | Purpose |
 |---|---|
 | `tools/mordheim-utils.py` | Launch applications and centralize tests, checks, performance measurements, reports and diagnostics. |
+| `tools/setup_worktree.py` | Give a checkout or git worktree its own `.venv` (editable install with the `dev` extra, native extension built in place, optional `npm ci` with `--node`) and verify that every project package and the native extension import from that checkout; `--check` only verifies. Standard library only, so it runs before a venv exists. |
 
 ## Command groups
 
@@ -42,7 +43,7 @@ python tools/mordheim-utils.py performance benchmark --scenario basic --simulati
 python tools/mordheim-utils.py performance calibrate --pairs mini --no-install
 python tools/mordheim-utils.py check verify --json
 python tools/mordheim-utils.py check report rules --output outputs/audit
-python tools/mordheim-utils.py check parity --profile quick --require-complete
+python tools/mordheim-utils.py check parity --profile quick --rows 7200 --require-complete
 python tools/mordheim-utils.py check coverage --json
 python tools/mordheim-utils.py check presentation
 python tools/mordheim-utils.py check ci
@@ -124,7 +125,8 @@ The hierarchy mirrors the launcher: **app launchers** (`combat-lab`,
 `calibrate`). Three cross-cutting test selections keep the integrity suites
 reachable without forcing them into those categories: `parity` (statistical
 comparisons and their tooling), `shared` (common engine contracts and frozen
-inputs) and `tooling` (architecture, launcher and coverage checks).
+inputs) and `tooling` (architecture, launcher, coverage and verification-tool
+checks).
 
 Each test selection maps to maintained paths. Run `tests <selection> --help`
 for its files, its subsections and copyable examples, or
@@ -151,12 +153,22 @@ for its files, its subsections and copyable examples, or
 | `tooling` | `web` | Vitest `architecture` project in both workspaces (purity and web boundaries). |
 | `tooling` | `launcher` | `pytest tests/tooling/launcher`. |
 | `tooling` | `coverage` | `pytest tests/tooling/coverage`. |
+| `tooling` | `verification` | `pytest tests/tooling/verification`. |
 
 Selection rules:
 
 - A bare selection runs what its help says. `tests modular` runs mechanics and
-  runtime; `tests tooling` runs architecture, launcher and coverage;
-  `tests parity` runs statistical and tooling.
+  runtime; `tests tooling` runs architecture, launcher, coverage and
+  verification; `tests parity` runs statistical and tooling.
+- Each path group of a selection runs as its own pytest process, so options
+  apply per group. `tests/engines/modular/runtime` and
+  `tests/engines/vectorized/runtime` own inner process pools and always run
+  serially: xdist options (`-n`, `--dist`, ...) are dropped for them with a
+  notice. Every pytest call adds `-rfEs`, so skip reasons stay visible; a
+  later `-r` of yours overrides it.
+- `tests native` first imports the native extension with the same interpreter
+  and paths; without it the launcher exits 1 instead of reporting a run in
+  which every test was skipped.
 - `tests kb` runs the **knowledge** suite only; there is no `knowledge`
   subsection alias. Construction and E2E are large batteries and stay separate
   selections instead of being bundled silently.
@@ -164,7 +176,12 @@ Selection rules:
   the same options, so choose `python` or `web`.
 - Several subsections can be named together: `tests modular mechanics runtime`.
 - `tests env` is the diagnostics entry point: it runs in process and takes no
-  runner options. There is no separate `doctor` command.
+  runner options. There is no separate `doctor` command. It also imports the
+  project packages and the native extension with the current interpreter in a
+  clean process, without the launcher's path set-up, and exits 1 when they
+  resolve to another checkout; an interpreter outside this checkout's `.venv`
+  is only noted, since CI installs into its own Python. Fix a failure with
+  `python3 tools/setup_worktree.py`.
 
 ```powershell
 python tools/mordheim-utils.py tests --help
@@ -189,8 +206,11 @@ python tools/mordheim-utils.py tests modular runtime -q
 - `-k` filters Python test names; `file.py::function[param]` selects a precise
   Python case; quote parameterized node IDs in the shell.
 - An explicit file, directory or node ID **replaces** the selection's paths, so
-  no unrelated suite is appended. Everything after `--` goes to the runner
-  unchanged.
+  no unrelated suite is appended. It must lie inside the selection (the chosen
+  subsection's paths, otherwise the section's directories); anything else is
+  refused with exit code 2, so `tests vectorized tests/engines/modular/...`
+  cannot run the modular engine under another label. Everything after `--`
+  goes to the runner unchanged, apart from the serial-group rule above.
 - Vitest positional arguments are filename filters; use the workspace project
   names (`--project architecture|web|packaging|typescript|knowledge-parity`)
   when a project selection is clearer.
@@ -239,7 +259,8 @@ Worker counts are examples, not forced defaults. Keep collection, shared
 writers and timing-sensitive measurements serial. Engine concurrency contracts
 use inner pools of at most two workers; other test execution is distributed by
 xdist. A skip does not prove native
-execution; exit code 5 means an empty Python selection. Listing/collection and
+execution; exit code 5 means that every Python group of the selection was
+empty. Listing/collection and
 runner self-checks do not certify rule behavior or statistical equivalence.
 
 | Command | Parallel option |
@@ -322,6 +343,19 @@ select a CLI backend.
 arguments belong to those commands. A small sample illustrates the command, not
 performance certification. Calibration can still be costly with the `mini` pair
 selection, and the saved profile changes later measurements on this machine.
+Its batch sizes also change the NumPy and native sampled results for a given
+seed, because each batch draws its own random stream. The profile records the
+machine, engine digests, native build and source revision; one applied on
+another machine or engine prints a provenance warning and is still used.
+
+A benchmark baseline gate compares only like measurements: simulations, batch
+size, seed, warmups, repeats, `--processes` and the backend list must match,
+or the gate exits 2. A (scenario, backend) pair the baseline measured but the
+current run did not, such as a native unit that failed, fails the gate.
+Differences in machine, engine digests, build or revision are reported as
+provenance warnings and never fail it. With `--processes N` the report gives
+the pool's wall time and sample concurrency, which is not a speedup over a
+sequential run.
 
 ## Checks and reports
 
@@ -341,11 +375,17 @@ Each entry explains what it executes in `<entry> --help`.
 python tools/mordheim-utils.py check verify --json
 python tools/mordheim-utils.py check report rules --output outputs/audit
 python tools/mordheim-utils.py check report tests --statistical --workers 8 --output outputs/test-report
-python tools/mordheim-utils.py check parity --profile quick --backend numpy --workers 8 --require-complete
+python tools/mordheim-utils.py check parity --profile quick --backend numpy --rows 7200 --workers 8 --require-complete
 python tools/mordheim-utils.py check coverage --json
 python tools/mordheim-utils.py check presentation
 python tools/mordheim-utils.py check ci
 ```
+
+Battery profiles run each case at its declared width (64 rows) unless `--rows`
+replaces it. The declared width only smoke-checks a profile: its cases are
+reported `UNDERPOWERED`, so a strict `--require-complete` gate needs
+`--rows 7200` or more; see the [verification reference](verification.md) for
+the power rule.
 
 `check ci` runs its configured checks and builds; it is not a complete
 engine-certification campaign. Use `tests` for suites and `check parity` for the
@@ -428,14 +468,31 @@ For example, generate a compressed E2E oracle store:
 python -m tools.verification.parity_samples sample --engine modular --level e2e --simulations 100000 --seed 2026 --chunk 500 --workers 2 --compress --store outputs/parity-modular-e2e
 ```
 
-Sampling resumes finished chunks and refuses stale candidate records unless
-`--replace` is supplied. Comparison executes neither engine. It checks fighter
-fingerprints, seeds, round limits and sample coverage, and reports stored and
-current engine digests in `outputs/parity-numpy/compare/parity-campaign.json`
-alongside a Markdown report. Different modular digests mean the comparison
-uses a historical reference; it does not certify the current modular engine.
-The comparison covers first wins, second wins and unresolved duels using the
-existing six-sigma gate. Native sampling and comparison remain available;
+Sampling resumes finished chunks. Comparison executes neither engine. It
+checks fighter fingerprints, seeds, round limits and sample coverage, and
+decides every pair with the existing six-sigma gate over first wins, second
+wins and unresolved duels.
+
+Stored samples are meant to outlive engine changes, so provenance never blocks.
+Each record keeps the source digest of everything its engine executes (a
+modular change moves all three digests, because the candidates import modular
+helpers), the source commit, whether the checkout was dirty and, for native,
+the built extension's SHA-256. `compare` still decides samples taken by another
+engine version, from uncommitted sources or before revisions were recorded,
+and prints each such difference as a `PROVENANCE WARNING` grouped per engine
+with the number of samples it affects; the report repeats them under
+`provenance_warnings` and lists recorded and current digests in its config.
+A comparison against a historical reference does not certify the current
+engine. `sample` extends a record from another engine version with a warning,
+and each new chunk then records its own provenance; `--replace` discards such
+a record instead. Only a different experiment identity (fighters, seed, round
+limit or chunk size) is refused. A row whose sample cannot detect a 5-point
+shift (fewer than 7,200 duels) is `underpowered`, compared but never approved.
+
+The sampled engine is digested where it was imported from, with a warning when
+that is not this checkout. Pool workers must import exactly the parent's engine
+files; otherwise the run stops with exit code 2, because a single sample would
+mix engines. Native sampling and comparison remain available;
 `compare` defaults to `--backend native`.
 
 `sample --workers N` runs up to N chunks in separate processes for all three
@@ -518,7 +575,13 @@ writes Markdown only; both can be requested with different paths from one run.
 Reports distinguish approval, measured divergence, reference/candidate execution
 failures and unexecuted deliveries. Blocked, not-applicable, stale, invalid and
 incompatible cases retain their reasons. Candidate exceptions are execution
-failures, not measured divergences. A small successful sample does not certify
+failures, not measured divergences. A requested native backend that is missing
+or stale is `backend-unavailable` and fails the run, while a native plan that
+cannot express a case stays `incompatible`. Delivery discovery defects, a failed
+or disagreeing decision-policy probe and a run that compared no case (unless
+every selected case is blocked or not-applicable) also fail it. The payload
+records the source revision, dirty state, engine digests and native build;
+provenance differences only warn. A small successful sample does not certify
 full engine parity.
 
 These catalogues require a source checkout with `tests/engines/fixtures` and
@@ -564,7 +627,8 @@ Reproducible editorial maintenance:
 |---|---|
 | `tools/verification/compiled_cases.py` | Load and validate frozen execution cases. |
 | `tools/verification/compiled_builds.py` | Load fighters by complete build identity and normalized root. |
-| `tools/verification/generate_compiled_builds.py` | Capture missing build preparations and publish the union with frozen entries (`--write`); not part of ordinary test execution. |
+| `tools/diagnostics/zscores.py` | Rank a saved `parity-campaign.json` by gate ratio (difference over the campaign tolerance; above 1 is a failed comparison) and raw z-score, over every compared magnitude. Reads the report only; runs no engine. |
+| `tools/verification/generate_compiled_builds.py` | Capture missing build preparations and publish the union with frozen entries (`--write`); not part of ordinary test execution. Records a KB and compiler fingerprint, warns when frozen entries were compiled from other sources, and exits 1 on compile failures or blocked consumers. |
 
 ## Web interface
 
