@@ -435,9 +435,13 @@ python -m tools.verification.parity_samples compare --backend numpy --level long
 The stored E2E campaigns at 100,000 duels per delivery are also versioned:
 `tests/engines/parity/reference_samples/modular-e2e-100k` (oracle) and
 `tests/engines/parity/reference_samples/numpy-e2e-100k` (candidate). Each store
-contains 2,678 records with seed 2026 and a 50-round limit, preserving the
-original counts, chunks, timestamps, environment and engine digests from
-`outputs/parity-modular-e2e/modular` and `outputs/parity-numpy-e2e/numpy`.
+contains 2,678 records with seed 2026 and a 50-round limit. Modular retains its
+original oracle samples. The NumPy and Native candidate stores were refreshed
+on 2026-11-04 from the E2E stores under
+`D:/DEVEL/CC CLI/outputs BCKPU/parity-refresh-20261104-c10000/e2e/`,
+preserving the original compressed files byte for byte, including counts,
+chunks, timestamps, environment and engine digests. Each candidate record has
+100,000 duels in ten 10,000-duel chunks, produced from clean commit `38f4c12f`.
 Versioned reference samples use lossless `.json.gz` compression. Readers accept
 both `.json` and `.json.gz`; when both exist, plain JSON takes precedence.
 Use `sample --compress` to write new samples directly as `.json.gz`. Without
@@ -445,18 +449,16 @@ the flag, new samples use JSON. Existing samples keep their format when resumed,
 with or without the flag. Gzip retains every original byte, including
 metadata and chunk details; it does not aggregate or discard observations.
 
-The NumPy store records historical candidate results, including divergences;
-its inclusion does not establish parity acceptance.
-
-`tests/engines/parity/reference_samples/native-e2e-100k` preserves the native
-campaign from `outputs/parity-native-e2e-20261103/native`: 2,678 records with
-100,000 duels each, seed 2026 and a 50-round limit. Its scenario set matches
-the 2,678-record modular oracle. Its `.json.gz` files preserve
-every source byte, including counts, chunks, timestamps, environment and
-engine digests. Inclusion does not establish parity acceptance.
-The import was verified with the sample-store reader for all 2,678 records,
-checking byte-for-byte copies, contiguous chunks and outcome totals;
-no simulations were rerun.
+`tests/engines/parity/reference_samples/native-e2e-100k` holds the corresponding
+Native candidate store. Both candidate scenario sets match the 2,678-record
+Modular oracle. The refreshed comparisons report 2,677 approved and 1 divergent
+for NumPy, and 2,567 approved and 111 divergent for Native. Another 2,485 E2E
+deliveries are rejected before sampling and remain explicit in the reports.
+These are stored candidate results, not parity acceptance.
+The import was verified with the sample-store reader for all 5,356 candidate
+records, checking byte-for-byte copies, input fingerprints, seed, round limits,
+contiguous chunks, outcome totals and current engine digests. All stored
+Modular references remained byte-identical; no simulations were rerun.
 
 ```bash
 python -m tools.verification.parity_samples compare --backend numpy --level e2e --simulations 100000 --store tests/engines/parity/reference_samples/numpy-e2e-100k --reference-store tests/engines/parity/reference_samples/modular-e2e-100k --output outputs/parity-e2e-stored/compare

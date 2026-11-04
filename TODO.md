@@ -11,7 +11,7 @@ not certify the current tree, and unverified reports are not confirmed defects.
 | --- | --- | --- |
 | Modular integration | Implementation received; strict E2E completeness remains unconfirmed | Check the live coverage inventory before claiming global closure. |
 | Optimized engines | Last recorded 43-scenario campaign at 100k duels: NumPy 43/43 on 2026-11-02 and Native 43/43 on 2026-11-03; later rule changes have focused checks only | Qualify the current revision against Modular, checking reference provenance and affected inputs first. |
-| E2E statistical parity | Last recorded stored comparison: 2,678 compared, 2,678 approved, 0 divergent for NumPy; samples span older engine revisions | Refresh candidate samples across the E2E catalogue and qualify NumPy and Native separately against valid Modular references. |
+| E2E statistical parity | Refreshed candidates from clean `38f4c12f`: 2,678 compared per engine; NumPy 1 divergent, Native 111 divergent | Investigate the recorded divergences and qualify both engines against valid Modular references. |
 
 ## Modular integration and E2E coverage
 
@@ -82,7 +82,7 @@ Scope changes are governed by
 [`runtime-scope.yaml`](sources/knowledge/registry/runtime-scope.yaml);
 accepted decisions belong in [Design rulings](docs/decisions/design-rulings.md).
 
-## E2E statistical parity, modular vs NumPy
+## E2E statistical parity, Modular vs optimized backends
 
 The decision pair lives in `tests/engines/parity/reference_samples/`
 (`modular-e2e-100k` is the oracle reference, `numpy-e2e-100k` the candidate;
@@ -92,15 +92,18 @@ Decide it without running either engine via
 numpy --store <numpy store> --reference-store <modular store>`; re-sample
 individual scenarios with `sample --engine numpy --id <case_key>`. The
 Modular oracle is authoritative; the last recorded comparison of the stored
-pair reported 2,678 compared, 2,678 approved, 0 divergent. It does not certify
-the subsequent local engine changes.
+pair, refreshed on 2026-11-04 from clean commit `38f4c12f`, reports 2,678
+compared, 2,677 approved and 1 divergent. The corresponding Native store
+(`native-e2e-100k`) reports 2,678 compared, 2,567 approved and 111 divergent.
+Each candidate record contains 100,000 duels in ten 10,000-duel chunks.
+Another 2,485 deliveries are rejected before sampling in each report.
+The refresh preserves candidate results; it does not establish parity acceptance.
 
 Remaining verification work:
 
-- Check reference provenance and which inputs are affected by the subsequent
-  Modular changes before reusing the stored oracle; refresh references only
-  where needed. The existing candidate samples span older engine revisions.
-  Re-sample NumPy across the full E2E catalogue against valid Modular references
-  before the next certification.
-- The native engine must be qualified against the modular oracle separately
-  across the E2E catalogue; focused rule checks do not establish that acceptance.
+- Investigate NumPy's divergent `profile.fist` case for the Battle Monks of
+  Cathay Raging Peasants (`the-fist-does-not-grant-the-enemy-the-dagger-save-bonus`).
+- Investigate the 111 Native divergences separately against the Modular oracle.
+- Check reference provenance and which inputs are affected by the Modular
+  changes before claiming current-engine certification. The saved oracle was
+  retained unchanged; matching frozen inputs alone does not certify later rules.
