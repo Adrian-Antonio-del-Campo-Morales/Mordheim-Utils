@@ -83,3 +83,69 @@ def test_no_op_resource_merges_leave_resources_exactly_as_the_body_did():
     # pre-existing resource survives untouched.
     assert result.attacker.resources_spent == frozenset({"already"})
     assert result.defender.resources_spent == frozenset()
+
+
+def test_fold_spent_resources_is_the_identity_when_nothing_new_was_spent():
+    from mordheim_combat.modular.state import fold_spent_resources
+
+    state = FighterState(wounds=1, resources_spent=frozenset({"luck"}))
+    assert fold_spent_resources(state, FighterState(wounds=1)) is state
+    assert fold_spent_resources(state, FighterState(wounds=1, resources_spent=frozenset({"luck"}))) is state
+    folded = fold_spent_resources(state, FighterState(wounds=1, resources_spent=frozenset({"oracle"})))
+    assert folded.resources_spent == frozenset({"luck", "oracle"})
+    assert folded.wounds == 1
+
+
+def test_start_round_state_skips_the_copy_only_when_every_field_is_already_set():
+    from dataclasses import replace as std_replace
+    from mordheim_combat.modular.aftermath import _start_round_state
+    from mordheim_combat.modular.state import _parry_capacity
+    from mordheim_combat.phases import Condition
+
+    fighter, _ = compile_benchmark_fighters(benchmark_scenarios()[0])
+    settled = FighterState(wounds=1, parries_remaining=_parry_capacity(fighter))
+    assert _start_round_state(fighter, settled) == (settled, False)
+    assert _start_round_state(fighter, settled)[0] is settled
+    for changed in (
+        std_replace(settled, condition=Condition.KNOCKED_DOWN),
+        std_replace(settled, parries_remaining=settled.parries_remaining + 1),
+        std_replace(settled, critical_available=False),
+        std_replace(settled, attack_penalty=1),
+        std_replace(settled, hampered_hands=("main",)),
+        std_replace(settled, resources_spent=frozenset({"tentacle-grapple"})),
+    ):
+        result, stood = _start_round_state(fighter, changed)
+        assert result == std_replace(
+            changed, condition=(Condition.STANDING if changed.condition == Condition.KNOCKED_DOWN
+                                else changed.condition),
+            parries_remaining=_parry_capacity(fighter), critical_available=True,
+            attack_penalty=0, hampered_hands=(),
+            resources_spent=changed.resources_spent - {"tentacle-grapple"})
+        assert stood == (changed.condition == Condition.KNOCKED_DOWN)
+
+
+def test_rare_rule_gates_cover_their_tables():
+    from mordheim_combat.modular import rounds
+
+    assert rounds._LAHMIA_TAGS == {power for power, *_ in rounds.LAHMIA_POWERS}
+    assert rounds._CONTROL_TAGS == {power.tag for power in rounds.CONTROL_POWERS}
+    assert rounds._DANCE_TAGS == {f"dance.{dance}" for dance in rounds.SHADOW_DANCES}
+    assert rounds._PETRU_TAGS == {tag for tag, *_ in rounds._PETRU_TABLE}
+    # Every gated block's owner tags are probed inside the block it guards.
+    source = open(rounds.__file__, encoding="utf-8").read()
+    for tags in (rounds._SHANTY_TAGS, rounds._CHARM_OWNER_TAGS, rounds._HYPNOTIST_TAGS,
+                 rounds._FAUNA_TAGS):
+        for tag in tags:
+            assert f'"{tag}"' in source, tag
+
+
+def test_select_shadow_dance_without_dances_leaves_the_state_untouched():
+    from mordheim_combat.modular.rounds import select_shadow_dance
+    from mordheim_core.dice import AlwaysAccept
+
+    fighter, _ = compile_benchmark_fighters(benchmark_scenarios()[0])
+    current = FighterState(wounds=1)
+    assert select_shadow_dance(fighter, current, AlwaysAccept(), key="k") == (fighter, current)
+    assert select_shadow_dance(fighter, current, AlwaysAccept(), key="k")[1] is current
+    remembered = FighterState(wounds=1, last_shadow_dance="woven-mist")
+    assert select_shadow_dance(fighter, remembered, AlwaysAccept(), key="k")[1].last_shadow_dance is None

@@ -8,6 +8,7 @@ from mordheim_combat.modular.attacks import resolve_reference_attack
 from mordheim_combat.modular.contexts import OwnedRollDice
 from mordheim_combat.modular.state import AttackOutcome
 from mordheim_combat.modular.state import FighterState
+from mordheim_combat.modular.state import fold_spent_resources
 from mordheim_combat.modular.state import _parry_capacity
 from mordheim_combat.modular.state import require_characteristics
 from mordheim_combat.phases import Condition
@@ -19,7 +20,7 @@ from mordheim_core.models import EffectSet
 
 
 def _personal_resources(state: FighterState, dice: OwnedRollDice) -> FighterState:
-    return replace(state, resources_spent=state.resources_spent | dice.state.resources_spent)
+    return fold_spent_resources(state, dice.state)
 
 
 def _reaction_source(fighter: CompiledFighter) -> CompiledFighter:
@@ -129,10 +130,17 @@ def _start_round_state(fighter: CompiledFighter, state: FighterState, *, recover
         else Condition.STANDING if stood
         else state.condition
     )
+    parries = _parry_capacity(fighter)
+    resources = (state.resources_spent - {"tentacle-grapple"}
+                 if "tentacle-grapple" in state.resources_spent else state.resources_spent)
+    if (condition == state.condition and parries == state.parries_remaining
+            and state.critical_available and state.attack_penalty == 0
+            and not state.hampered_hands and resources is state.resources_spent):
+        return state, stood
     return replace(
-        state, condition=condition, parries_remaining=_parry_capacity(fighter),
+        state, condition=condition, parries_remaining=parries,
         critical_available=True, attack_penalty=0, hampered_hands=(),
-        resources_spent=state.resources_spent - {"tentacle-grapple"},
+        resources_spent=resources,
     ), stood
 
 

@@ -275,7 +275,9 @@ def _resolve_attack_pool(attacker, defender, attacker_state, defender_state, cou
     first, second, outcomes = _resolve_attack_pool_body(
         attacker, defender, attacker_state, defender_state, count, dice, **options)
     marker = f"rememberer-active.{options['key']}"
-    return replace(first, resources_spent=first.resources_spent - {marker}), second, outcomes
+    if marker in first.resources_spent:
+        first = replace(first, resources_spent=first.resources_spent - {marker})
+    return first, second, outcomes
 
 
 def _resolve_attack_pool_body(

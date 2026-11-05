@@ -27,7 +27,7 @@ def pistol_as_club(weapon: EffectSet) -> EffectSet:
 
 def whipcrack_weapon(fighter: CompiledFighter) -> EffectSet | None:
     for weapon in (fighter.main_weapon, fighter.off_hand):
-        if weapon is not None and any(has_tag(weapon, tag) for tag in WHIPCRACK_WEAPON_TAGS):
+        if weapon is not None and not WHIPCRACK_WEAPON_TAGS.isdisjoint(weapon.tags):
             return weapon
     return None
 

@@ -238,7 +238,7 @@ def first_acts_before(first: PriorityResult, second: PriorityResult,
 def resolve_priority(context: PriorityContext) -> PriorityResult:
     fighter, opponent = context.fighter, context.opponent
     weapon_priority = fighter.main_weapon.priority
-    if any(has_tag(fighter.main_weapon, tag) for tag in WHIPCRACK_WEAPON_TAGS):
+    if not WHIPCRACK_WEAPON_TAGS.isdisjoint(fighter.main_weapon.tags):
         # Only the whipcrack bonus strikes first; the ordinary attacks resolve
         # in the bearer's own order instead of inheriting the bonus tier the
         # weapon declares.
