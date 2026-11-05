@@ -67,7 +67,7 @@ OUTCOMES = ("winner", "rounds", "wounds", "condition")
 #: Terminal magnitudes a statistical case may compare.  ``winner`` is always
 #: compared; the rest are optional and only used when the case declares them
 #: and both engines expose them with the same meaning.
-STATISTICAL_MAGNITUDES = ("winner", "rounds", "wounds", "condition")
+STATISTICAL_MAGNITUDES = ("winner", "rounds")
 
 WitnessKind = Literal["counter", "flag", "category", "direct-result", "hash"]
 Predicate = Literal[

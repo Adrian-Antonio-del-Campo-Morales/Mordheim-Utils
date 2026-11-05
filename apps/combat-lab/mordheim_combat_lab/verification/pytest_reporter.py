@@ -1,4 +1,10 @@
-"""Internal pytest plugin used by ``mordheim_combat_lab test-report``."""
+"""Internal pytest plugin used by ``mordheim_combat_lab test-report``.
+
+``status`` is the pytest outcome; ``passes`` is the verdict column: ``PASS``
+only for a test that ran and passed, ``FAIL`` for failures, errors and
+unexpected passes, and ``SKIP``/``XFAIL`` for tests that did not prove
+anything (a skipped or expected-failure test never counts as a pass).
+"""
 from __future__ import annotations
 
 import os
@@ -36,7 +42,7 @@ def pytest_runtest_logreport(report):
     was_xfail = getattr(report, "wasxfail", None)
     if report.skipped:
         row["status"] = "XFAIL" if was_xfail else "SKIP"
-        row["passes"] = "PASS"
+        row["passes"] = row["status"]
     elif report.when == "call" and report.passed:
         row["status"] = "XPASS" if was_xfail else "PASS"
         row["passes"] = "FAIL" if was_xfail else "PASS"

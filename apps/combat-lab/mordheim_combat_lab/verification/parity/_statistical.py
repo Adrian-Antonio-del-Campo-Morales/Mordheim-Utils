@@ -72,6 +72,26 @@ def six_sigma_tolerance(left: float, right: float, simulations: int) -> float:
     )
 
 
+#: Largest rate difference a certifying sample may be unable to detect.  The
+#: six-sigma tolerance is widest at a 50% rate, so ``six_sigma_tolerance(.5,
+#: .5, n)`` is the smallest difference a sample of ``n`` duels per engine is
+#: guaranteed to flag.  Above this ceiling a passing row proves too little —
+#: at 64 rows the tolerance is ~0.53, so even an inverted rule can pass — and
+#: it is reported ``UNDERPOWERED`` instead of approved.  0.05 needs at least
+#: 7 200 duels per engine; the gate itself is unchanged.
+MAX_DETECTABLE_DIFFERENCE = 0.05
+
+
+def minimum_detectable_difference(simulations: int) -> float:
+    """Worst-case six-sigma tolerance (rate 0.5 on both sides) for ``simulations``."""
+    return six_sigma_tolerance(.5, .5, simulations)
+
+
+def underpowered(simulations: int) -> bool:
+    """True when a sample this size cannot detect ``MAX_DETECTABLE_DIFFERENCE``."""
+    return minimum_detectable_difference(simulations) > MAX_DETECTABLE_DIFFERENCE
+
+
 def compare_outcome_rates(
     modular_counts: tuple[int, int, int],
     candidate_counts: tuple[int, int, int],
@@ -149,7 +169,10 @@ def compare_statistical_parity(
     """Compare independent aggregate samples using the documented six-sigma gate.
 
     The modular engine is the only correctness oracle; ``backend`` selects the
-    optimized candidate to certify against it ("numpy" or "native").  Pass a
+    optimized candidate to certify against it ("numpy" or "native").  Both
+    samples are drawn without a duel context or scripted decisions: a case that
+    needs either must use the runner's observed surface (``run_parity`` refuses
+    such cases on this counts path instead of comparing different duels).  Pass a
     precomputed ``modular`` result to certify several candidates against the
     same oracle sample without re-running the modular engine; when you do,
     pass ``reference_seconds`` (measured at the sampling site) so the result

@@ -237,6 +237,7 @@ def initialize_fighter(
         ),
         netted=np.full(count, netted, dtype=bool),
         fear_hit_sixes=np.zeros(count, dtype=bool),
+        being_charged=np.zeros(count, dtype=bool),
         grappled=np.zeros(count, dtype=bool),
         grappling=np.zeros(count, dtype=bool),
         backley_penalties=_objects(tuple(backley.items()), count),
@@ -267,6 +268,7 @@ def initialize_fighter(
         dodge_trick_active=np.zeros(count, dtype=bool),
         trip_trick_active=np.zeros(count, dtype=bool),
         charm_auto_hit=np.zeros(count, dtype=bool),
+        hit_this_phase=np.zeros(count, dtype=bool),
         # The only supplied condition among these columns, mirroring
         # ``modular/state.py:301``.
         danse_macabre_controlled=np.full(

@@ -32,13 +32,27 @@ reproduce the engines' own sampling exactly:
 - NumPy chunks use the canonical ``batch_segment`` stream for their batch
   index, matching a NumPy request with ``batch_size=chunk``.
 
+Stores accept plain JSON and losslessly compressed ``.json.gz`` records.
+New records use JSON unless ``sample --compress`` is supplied; resuming an
+existing record preserves its format.
+
 A record names the fighters it sampled (the corpus ``inputs_sha256`` of the
-case) and the engine it ran as a source digest.  The modular digest covers
-only the modular engine and the shared core, so a change confined to the
-native sources never invalidates an oracle sample; the native digest covers
-the native sources, the kernel boundary and the built extension.  A stored
-record whose identity no longer matches is refused rather than silently
-extended; ``--replace`` discards it.
+case) and the engine it ran as a source digest of everything that engine
+executes (``mordheim_combat_lab.provenance.engine_sources``): a
+change confined to the native sources never moves the modular digest, while a
+modular change moves all three, because the candidates import modular helpers.
+The record's environment also keeps the source commit, whether the checkout
+was dirty and, for native, the built extension's SHA-256.
+
+Old samples are meant to be reused, so provenance never blocks: ``compare``
+decides stored pairs produced by other engine versions and reports every
+difference as a prominent warning (stderr and report), and ``sample`` extends
+such a record with a warning, each new chunk recording its own provenance
+(``--replace`` discards the record instead).  Only a different experiment
+identity (fighters, seed, rounds or chunk size) is refused.  The engine is
+digested where it was imported from; pool workers must import exactly the
+parent's engine, or the run stops, because that would mix engines inside one
+sample.
 
 Usage (from the repository root)::
 
@@ -58,6 +72,7 @@ campaign's codes (0 complete, 1 incomplete, 2 configuration error).
 from __future__ import annotations
 
 import argparse
+import gzip
 import hashlib
 import json
 import math
@@ -70,6 +85,7 @@ import threading
 from concurrent.futures import FIRST_COMPLETED
 from concurrent.futures import ProcessPoolExecutor
 from concurrent.futures import wait
+from concurrent.futures.process import BrokenProcessPool
 from dataclasses import asdict
 from dataclasses import dataclass
 from dataclasses import replace
@@ -77,7 +93,20 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable, Mapping, Sequence
 
+from tools.verification.e2e_parity import bootstrap_paths
+from tools.verification.e2e_parity import repository_root
+
+# Before any engine import: the digests below hash this checkout, so the parent
+# and every pool worker must import the engine from it too.
+bootstrap_paths(repository_root())
+
 from mordheim_core.models import DuelRequest
+
+from mordheim_combat_lab.provenance import digest_files
+from mordheim_combat_lab.provenance import engine_sources
+from mordheim_combat_lab.provenance import native_build_sha256
+from mordheim_combat_lab.provenance import provenance_warning
+from mordheim_combat_lab.provenance import source_revision
 
 from tools.verification.compiled_cases import CompiledCaseError
 from tools.verification.compiled_cases import load_cases
@@ -114,86 +143,138 @@ class SampleStoreError(ValueError):
 
 
 # ---------------------------------------------------------------------------
-# Engine digests
+# Engine digests and provenance
 # ---------------------------------------------------------------------------
 
 def _digest_files(paths: Iterable[Path]) -> str:
-    digest = hashlib.sha256()
-    for path in sorted(set(paths)):
-        # The built native extension is resolved through its import location,
-        # which need not sit under ``_ROOT`` (an out-of-tree build, or a test
-        # that repoints ``_ROOT``). Fall back to the bare file name so the
-        # digest stays machine-independent; the contents are hashed below
-        # either way.
-        try:
-            label = path.relative_to(_ROOT).as_posix()
-        except ValueError:
-            label = path.name
-        digest.update(label.encode())
-        digest.update(b"\0")
-        digest.update(path.read_bytes() if path.exists() else b"<missing>")
-        digest.update(b"\0")
-    return digest.hexdigest()
+    return digest_files(paths, _ROOT)
 
 
 def _modular_sources() -> tuple[Path, ...]:
-    return (
-        *sorted((_COMBAT / "modular").glob("*.py")),
-        _COMBAT / "phases.py",
-        *sorted(_CORE.glob("*.py")),
-    )
+    return engine_sources("modular", _COMBAT, _CORE)
 
 
 def _native_sources() -> tuple[Path, ...]:
-    built: list[Path] = []
-    try:
-        from mordheim_combat import _combat_native
-    except ImportError:
-        pass
-    else:
-        built.append(Path(_combat_native.__file__))
-    return (
-        *sorted((_COMBAT / "native").glob("*.py")),
-        *sorted((_COMBAT / "native").glob("*.pyx")),
-        *sorted((_COMBAT / "native").glob("*.pxd")),
-        _COMBAT / "kernel.py",
-        _COMBAT / "phases.py",
-        *sorted(_CORE.glob("*.py")),
-        *built,
-    )
+    return engine_sources("native", _COMBAT, _CORE)
 
 
 def engine_digest(engine: str) -> str:
     """Source digest of one engine: what a stored sample was produced by.
 
-    ``modular`` hashes the modular package, the shared phase library and the
-    core models; ``native`` hashes the native package (Python, Cython and the
-    built extension), the kernel boundary, the phase library and the core.
-    NumPy hashes its vectorized package, kernel, shared phases and core.
-    The native digest deliberately excludes ``modular/*.py`` so that a native
-    rebuild is the only thing that moves it; the modular digest excludes the
-    native package and the kernel so a native change never moves it.
+    It hashes every source the engine executes (``provenance.engine_sources``),
+    including what a candidate imports from the other engines: a native-only
+    change never moves the modular or NumPy digests, but a modular change moves
+    all three.  The built native extension is not part of it: its bytes differ
+    between machines for identical sources, so records keep it separately as
+    ``environment.native_build_sha256``.
     """
-    if engine == "modular":
-        return _digest_files(_modular_sources())
-    if engine == "numpy":
-        return _digest_files((*sorted((_COMBAT / "vectorized").glob("*.py")),
-                              _COMBAT / "kernel.py", _COMBAT / "phases.py",
-                              *sorted(_CORE.glob("*.py"))))
-    if engine == "native":
-        return _digest_files(_native_sources())
-    raise ValueError(f"unknown engine {engine!r}; choose one of {', '.join(ENGINES)}")
+    if engine not in ENGINES:
+        raise ValueError(f"unknown engine {engine!r}; choose one of {', '.join(ENGINES)}")
+    return _digest_files(engine_sources(engine, _COMBAT, _CORE))
 
 
-def _environment() -> dict[str, object]:
+_REVISION: dict[str, object] | None = None
+
+
+def _revision() -> dict[str, object]:
+    """Commit and dirty state of this checkout, read once per run."""
+    global _REVISION
+    if _REVISION is None:
+        revision = source_revision(_ROOT)
+        _REVISION = {"commit": revision["commit"], "dirty": revision["dirty"]}
+    return _REVISION
+
+
+def _environment(engine: str | None = None) -> dict[str, object]:
     import numpy
 
-    return {
+    revision = _revision()
+    environment: dict[str, object] = {
         "python": platform.python_version(),
         "platform": platform.platform(),
         "numpy": numpy.__version__,
         "cpu_count": os.cpu_count(),
+        "commit": revision["commit"],
+        "dirty": revision["dirty"],
     }
+    if engine == "native":
+        environment["native_build_sha256"] = native_build_sha256()
+    return environment
+
+
+#: What a chunk's provenance names; a chunk records it only when it differs
+#: from the record it was added to (an older record extended by a newer run).
+PROVENANCE_FIELDS = ("engine_digest", "native_build_sha256", "commit", "dirty")
+
+
+def current_provenance(engine: str) -> dict[str, object]:
+    """The provenance a chunk run now would carry."""
+    environment = _environment(engine)
+    return {
+        "engine_digest": engine_digest(engine),
+        **{name: environment.get(name) for name in PROVENANCE_FIELDS[1:]
+           if name != "native_build_sha256" or engine == "native"},
+    }
+
+
+def record_provenance(record: "SampleRecord") -> dict[str, object]:
+    """The provenance a record was created with (``None`` where unrecorded)."""
+    return {
+        "engine_digest": record.engine_digest,
+        **{name: record.environment.get(name) for name in PROVENANCE_FIELDS[1:]
+           if name != "native_build_sha256" or record.engine == "native"},
+    }
+
+
+def engine_origins(engine: str) -> dict[str, str]:
+    """Resolved files of the engine modules this process actually imported."""
+    import mordheim_combat
+    import mordheim_core
+
+    origins = {"mordheim_combat": mordheim_combat.__file__, "mordheim_core": mordheim_core.__file__}
+    if engine == "native":
+        from mordheim_combat import _combat_native
+
+        origins["mordheim_combat._combat_native"] = _combat_native.__file__
+    return {name: str(Path(path).resolve()) for name, path in origins.items()}
+
+
+def check_engine_origins(engine: str) -> dict[str, str]:
+    """Digest the engine that was actually imported, warning when it is foreign.
+
+    ``engine_digest`` hashes the sources under ``_COMBAT``/``_CORE``.  When the
+    packages were imported from elsewhere (another checkout, an installed
+    copy) the digest roots are moved to the imported packages, so records
+    describe the engine that ran, and the difference is reported prominently.
+    """
+    global _COMBAT, _CORE
+    origins = engine_origins(engine)
+    for name in ("mordheim_combat", "mordheim_core"):
+        imported = Path(origins[name]).parent
+        root = (_COMBAT if name == "mordheim_combat" else _CORE).resolve()
+        if imported != root:
+            provenance_warning(
+                f"{name} was imported from {imported.as_posix()}, not from this "
+                f"checkout ({root.as_posix()}); samples are digested and labelled "
+                "with the imported copy"
+            )
+            if name == "mordheim_combat":
+                _COMBAT = imported
+            else:
+                _CORE = imported
+    return origins
+
+
+def _check_worker_origins(engine: str, expected: dict[str, str]) -> None:
+    """Pool initializer: a worker must run the very engine the parent digested."""
+    actual = engine_origins(engine)
+    if actual != expected:
+        differing = ", ".join(
+            f"{name}: worker {actual.get(name)} != parent {expected.get(name)}"
+            for name in sorted(set(actual) | set(expected))
+            if actual.get(name) != expected.get(name)
+        )
+        raise RuntimeError(f"worker imported a different engine ({differing})")
 
 
 # ---------------------------------------------------------------------------
@@ -211,6 +292,9 @@ class SampleChunk:
     unresolved: int
     seconds: float
     completed_at: str
+    #: Set only when this chunk was produced under another provenance than
+    #: its record's (``PROVENANCE_FIELDS``); ``None`` means "as the record".
+    provenance: Mapping[str, object] | None = None
 
     def __post_init__(self) -> None:
         if self.start < 0 or self.count < 1:
@@ -289,9 +373,11 @@ class SampleRecord:
 
     def to_json(self) -> dict[str, object]:
         body = asdict(self)
-        body["chunks"] = [asdict(chunk) for chunk in sorted(
-            self.chunks, key=lambda item: item.start,
-        )]
+        body["chunks"] = [
+            {name: value for name, value in asdict(chunk).items()
+             if name != "provenance" or value is not None}
+            for chunk in sorted(self.chunks, key=lambda item: item.start)
+        ]
         return {"schema": SCHEMA, **body}
 
     @classmethod
@@ -315,22 +401,29 @@ class SampleRecord:
 
 
 def sample_path(store: Path, engine: str, corpus_key: str) -> Path:
-    """``<store>/<engine>/<scenario>.json`` for a uniform corpus key."""
+    """Resolve an existing JSON/gzip sample, or a new JSON path."""
     if engine not in ENGINES:
         raise ValueError(f"unknown engine {engine!r}")
     name = ("e2e__" + hashlib.sha256(corpus_key.encode()).hexdigest()
             if corpus_key.startswith("e2e/") else corpus_key.replace("/", "__"))
-    return Path(store) / engine / f"{name}.json"
+    path = Path(store) / engine / f"{name}.json"
+    compressed = path.with_suffix(".json.gz")
+    return compressed if not path.exists() and compressed.exists() else path
 
 
 def load_sample(path: Path) -> SampleRecord | None:
     """Return the record at ``path`` or ``None`` when there is none yet."""
     path = Path(path)
+    if not path.exists() and path.suffix == ".json":
+        path = path.with_suffix(".json.gz")
     if not path.exists():
         return None
     try:
-        raw = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, ValueError) as error:
+        data = path.read_bytes()
+        if data.startswith(b"\x1f\x8b"):
+            data = gzip.decompress(data)
+        raw = json.loads(data.decode("utf-8"))
+    except (OSError, EOFError, ValueError) as error:
         raise SampleStoreError(f"{path}: unreadable sample: {error}") from error
     return SampleRecord.from_json(raw, str(path))
 
@@ -340,10 +433,10 @@ def save_sample(path: Path, record: SampleRecord) -> None:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".tmp")
-    temporary.write_text(
-        json.dumps(record.to_json(), ensure_ascii=True, indent=1) + "\n",
-        encoding="utf-8",
-    )
+    data = (json.dumps(record.to_json(), ensure_ascii=True, indent=1) + "\n").encode("utf-8")
+    if path.suffix == ".gz":
+        data = gzip.compress(data, compresslevel=9, mtime=0)
+    temporary.write_bytes(data)
     # A reader or scanner can briefly deny replacement on Windows. Keep the
     # closed temporary file and retry only the rename, never the simulation.
     for delay in (0.05, 0.1, 0.2, 0.4, 0.8, 1.0, None):
@@ -468,32 +561,47 @@ def _fresh_record(engine: str, scenario: CampaignScenario, *, seed: int,
         engine=engine, corpus_key=scenario.key, scenario=scenario.name,
         seed=seed, maximum_rounds=maximum_rounds, chunk_size=chunk_size,
         inputs_sha256=str(scenario.case.fingerprints.get("inputs_sha256", "")),
-        engine_digest=engine_digest(engine), environment=_environment(),
+        engine_digest=engine_digest(engine), environment=_environment(engine),
         created_at=_now(),
     )
 
 
 def _identity_mismatch(stored: SampleRecord, wanted: SampleRecord) -> str | None:
+    """The experiment-identity field that differs; chunks cannot be pooled then."""
     for field in ("engine", "corpus_key", "seed", "maximum_rounds", "chunk_size",
                   "inputs_sha256"):
         if getattr(stored, field) != getattr(wanted, field):
             return f"{field} {getattr(stored, field)!r} != {getattr(wanted, field)!r}"
-    if stored.engine_digest != wanted.engine_digest:
-        return (
-            f"{stored.engine} engine digest changed "
-            f"({stored.engine_digest[:12]} -> {wanted.engine_digest[:12]})"
-        )
     return None
+
+
+def provenance_changes(recorded: Mapping[str, object], current: Mapping[str, object]) -> list[str]:
+    """Human descriptions of every provenance field that differs."""
+    changes = []
+    for name in PROVENANCE_FIELDS:
+        if name not in recorded and name not in current:
+            continue
+        before, after = recorded.get(name), current.get(name)
+        if before is None and name != "dirty":
+            changes.append(f"{name} not recorded")
+        elif before != after:
+            show = (lambda value: value[:12] if isinstance(value, str) else repr(value))
+            changes.append(f"{name} {show(before)} -> {show(after)}")
+    return changes
 
 
 def open_sample(
     engine: str, scenario: CampaignScenario, store: Path, *, seed: int,
     maximum_rounds: int, chunk_size: int, replace_stale: bool = False,
+    compress: bool = False,
 ) -> tuple[Path, SampleRecord]:
     """Load the record to extend, or start a fresh one.
 
-    A stored record whose identity (inputs, seed, rounds, chunk size or engine
-    digest) differs from the request is an error unless ``replace_stale``.
+    A stored record whose experiment identity (inputs, seed, rounds or chunk
+    size) differs from the request is an error unless ``replace_stale``.  A
+    record produced by another engine version is extended with a provenance
+    warning (its new chunks carry their own provenance), or discarded when
+    ``replace_stale``.
     """
     path = sample_path(store, engine, scenario.key)
     wanted = _fresh_record(
@@ -502,16 +610,21 @@ def open_sample(
     )
     stored = load_sample(path)
     if stored is None:
+        if compress:
+            path = path.with_suffix(".json.gz")
         return path, wanted
     mismatch = _identity_mismatch(stored, wanted)
-    if mismatch is None:
+    changes = provenance_changes(record_provenance(stored), record_provenance(wanted))
+    if mismatch is None and not changes:
         return path, stored
     if replace_stale:
         return path, wanted
-    raise SampleStoreError(
-        f"{path}: stored sample does not match this request ({mismatch}); "
-        "pass --replace to discard it, or use another --store"
-    )
+    if mismatch is not None:
+        raise SampleStoreError(
+            f"{path}: stored sample does not match this request ({mismatch}); "
+            "pass --replace to discard it, or use another --store"
+        )
+    return path, stored
 
 
 def sample_scenarios(
@@ -519,7 +632,7 @@ def sample_scenarios(
     seed: int, maximum_rounds: int | None = None, chunk_size: int = DEFAULT_CHUNK,
     executor: ProcessPoolExecutor | None = None, workers: int = 1,
     replace_stale: bool = False, stop: threading.Event | None = None, log=None,
-    verbose: bool = False,
+    verbose: bool = False, compress: bool = False,
 ):
     """Yield saved records using one bounded chunk queue across all scenarios.
 
@@ -533,6 +646,11 @@ def sample_scenarios(
         "native": run_native_chunk,
         "numpy": run_numpy_chunk,
     }[engine]
+    # Every chunk of this run is attributed to the provenance current when it
+    # started (pool workers import the engine once); a source change seen at
+    # a later save is flagged on the chunks saved after it.
+    started_with = current_provenance(engine)
+    changed_during_run: list[str] = []
 
     def jobs():
         for scenario in scenarios:
@@ -542,9 +660,17 @@ def sample_scenarios(
             rounds = maximum_rounds or scenario.case.limits.maximum_rounds
             path, record = open_sample(
                 engine, scenario, store, seed=seed, maximum_rounds=rounds,
-                chunk_size=chunk_size, replace_stale=replace_stale,
+                chunk_size=chunk_size, replace_stale=replace_stale, compress=compress,
             )
             pending = missing_chunks(record, simulations)
+            changes = provenance_changes(record_provenance(record), started_with)
+            if pending and changes:
+                provenance_warning(
+                    f"extending the {engine} sample of {scenario.key}, which was "
+                    f"produced under another provenance ({'; '.join(changes)}); "
+                    "the new chunks record their own provenance, so this record "
+                    "mixes engine versions (pass --replace to discard it instead)"
+                )
             # Shared only by this scenario's jobs; updated by the parent.
             state = [record, 0, started]
             if log:
@@ -567,6 +693,20 @@ def sample_scenarios(
 
     def save(job, chunk):
         scenario, path, state, total, _arguments = job
+        provenance = dict(started_with)
+        now = engine_digest(engine)
+        if now != started_with["engine_digest"]:
+            if not changed_during_run:
+                changed_during_run.append(now)
+                provenance_warning(
+                    f"the {engine} engine sources changed during this run "
+                    f"({started_with['engine_digest'][:12]} -> {now[:12]}); chunks "
+                    "saved from now on may come from either version and are marked "
+                    "sources_changed_during_run"
+                )
+            provenance.update(sources_changed_during_run=True, engine_digest_at_save=now)
+        if provenance_changes(record_provenance(state[0]), provenance) or len(provenance) > len(started_with):
+            chunk = replace(chunk, provenance=provenance)
         record = _with_chunk(state[0], chunk)
         save_sample(path, record)
         state[0] = record
@@ -611,20 +751,20 @@ def sample_scenario(
     seed: int, maximum_rounds: int, chunk_size: int = DEFAULT_CHUNK,
     executor: ProcessPoolExecutor | None = None, workers: int = 1,
     replace_stale: bool = False, stop: threading.Event | None = None, log=None,
-    verbose: bool = False,
+    verbose: bool = False, compress: bool = False,
 ) -> SampleRecord:
     """Bring one scenario up to the target with the shared chunk scheduler."""
     record = None
     for _scenario, record in sample_scenarios(
         engine, (scenario,), store, simulations=simulations, seed=seed,
         maximum_rounds=maximum_rounds, chunk_size=chunk_size, executor=executor,
-        workers=workers, replace_stale=replace_stale, stop=stop, log=log, verbose=verbose,
+        workers=workers, replace_stale=replace_stale, stop=stop, log=log, verbose=verbose, compress=compress,
     ):
         pass
     if record is None:
         _path, record = open_sample(
             engine, scenario, store, seed=seed, maximum_rounds=maximum_rounds,
-            chunk_size=chunk_size, replace_stale=replace_stale,
+            chunk_size=chunk_size, replace_stale=replace_stale, compress=compress,
         )
     return record
 
@@ -640,9 +780,35 @@ def _not_run(key: str, maximum_rounds: int, simulations: int, detail: str, *, ba
     )
 
 
+def _record_warnings(record: SampleRecord, current: Mapping[str, object]) -> list[str]:
+    """Why a stored record may not describe the current engine (never fatal)."""
+    recorded = record_provenance(record)
+    warnings = []
+    if recorded["engine_digest"] != current["engine_digest"]:
+        warnings.append(f"produced by another {record.engine} engine version "
+                        f"(digest {recorded['engine_digest'][:12]}, current "
+                        f"{current['engine_digest'][:12]})")
+    if record.engine == "native" and recorded.get("native_build_sha256") not in (
+            None, current.get("native_build_sha256")):
+        warnings.append("produced by another native build (expected across machines "
+                        "and compilers; sources are compared by the engine digest)")
+    if recorded.get("commit") is None:
+        warnings.append("no source revision recorded (sampled before revisions were kept)")
+    if recorded.get("dirty"):
+        warnings.append(f"produced from a checkout with uncommitted changes "
+                        f"(commit {str(recorded.get('commit'))[:12]}); it matches no commit")
+    mixed = [chunk for chunk in record.chunks if chunk.provenance is not None]
+    if mixed:
+        changed = sum(1 for chunk in mixed if chunk.provenance.get("sources_changed_during_run"))
+        warnings.append(f"{len(mixed)} of {len(record.chunks)} chunk(s) were added under "
+                        "another provenance than the record's"
+                        + (f", {changed} while the sources were changing" if changed else ""))
+    return warnings
+
+
 def compare_stored(
     scenario: CampaignScenario, store: Path, *, simulations: int | None = None, backend: str = "native",
-    reference_store: Path | None = None,
+    reference_store: Path | None = None, current: Mapping[str, Mapping[str, object]] | None = None,
 ) -> tuple[ParityRow, dict[str, object]]:
     """Decide one scenario from its two stored samples.
 
@@ -650,6 +816,11 @@ def compare_stored(
     both samples cover.  Returns the row and a provenance record naming the
     files, digests and coverage that produced it.  A missing, mismatched or
     too-narrow sample yields a ``NOT_RUN`` row, never a verdict.
+
+    Samples produced by another engine version than ``current`` (the current
+    provenance per engine, computed here when omitted) are still compared:
+    each difference is listed in the engine's ``warnings`` so the caller can
+    report it, but it never changes the verdict.
     """
     if backend not in ("native", "numpy"):
         raise ValueError(f"unsupported candidate backend: {backend}")
@@ -665,12 +836,15 @@ def compare_stored(
         except SampleStoreError as error:
             return _not_run(scenario.key, rounds, simulations or 0, str(error), backend=backend), provenance
         records[engine] = record
+        now = (current or {}).get(engine) or current_provenance(engine)
         provenance[engine] = None if record is None else {
             "path": path.as_posix(), "coverage": record.coverage(),
             "seed": record.seed, "maximum_rounds": record.maximum_rounds,
             "chunk_size": record.chunk_size, "engine_digest": record.engine_digest,
             "inputs_sha256": record.inputs_sha256,
-            "current_engine_digest": engine_digest(engine),
+            "current_engine_digest": now["engine_digest"],
+            "recorded": record_provenance(record),
+            "warnings": _record_warnings(record, now),
         }
     missing = [engine for engine, record in records.items() if record is None]
     if missing:
@@ -734,7 +908,7 @@ def _add_selection(parser: argparse.ArgumentParser) -> None:
     )
     parser.add_argument(
         "--store", default="reports/parity-store", metavar="DIR",
-        help="directory holding <engine>/<scenario>.json samples "
+        help="directory holding <engine>/<scenario>.json[.gz] samples "
              "(default: reports/parity-store)",
     )
 
@@ -762,6 +936,8 @@ def _parser() -> argparse.ArgumentParser:
                         help=f"duels per stored chunk / candidate batch (default: {DEFAULT_CHUNK})")
     sample.add_argument("--workers", type=_positive, default=1, metavar="N",
                         help="worker processes for any engine (default: 1)")
+    sample.add_argument("--compress", action="store_true",
+                        help="write new samples as lossless .json.gz; existing samples keep their format")
     sample.add_argument("--replace", action="store_true",
                         help="discard a stored sample whose identity or engine digest differs")
     sample.add_argument("--verbose", action="store_true",
@@ -796,6 +972,10 @@ def _selection(args) -> tuple[tuple[CampaignScenario, ...], tuple[tuple[str, str
             raise SampleStoreError(str(error)) from error
         scenarios, rejected, chosen = [], [], []
         policy = e2e_parity.decision_policy_evidence()
+        if not policy["corresponds"]:
+            # Without corresponding default policies no stored pair means
+            # anything; this is a fault of the run, not of the samples' age.
+            raise SampleStoreError(f"cannot admit E2E deliveries: {policy['detail']}")
         for delivery in deliveries:
             chosen.append((delivery.case_key, delivery.test_id))
             validation = e2e_parity.validate(delivery)
@@ -837,11 +1017,15 @@ def _run_sample(args) -> int:
     for key, reason in rejected:
         print(f"NOT_RUN: {key}: {reason}", file=sys.stderr)
     store = Path(args.store)
+    global _REVISION
+    _REVISION = None
+    origins = check_engine_origins(args.engine)
     _log(f"{args.engine} digest {engine_digest(args.engine)[:12]}; store {store.as_posix()}; "
          f"{len(scenarios)} scenario(s), target {args.simulations} duels, chunk {args.chunk}")
     pool = None
     if args.workers > 1:
-        pool = ProcessPoolExecutor(max_workers=args.workers)
+        pool = ProcessPoolExecutor(max_workers=args.workers, initializer=_check_worker_origins,
+                                   initargs=(args.engine, origins))
 
     # First SIGINT/SIGTERM: stop submitting, save the in-flight chunks, exit
     # 130.  Second one: abandon the in-flight chunks (they are not saved).
@@ -863,12 +1047,17 @@ def _run_sample(args) -> int:
                 args.engine, scenarios, store, simulations=args.simulations,
                 seed=args.seed, maximum_rounds=args.rounds, chunk_size=args.chunk,
                 executor=pool, workers=args.workers, replace_stale=args.replace,
-                stop=stop, log=_log, verbose=args.verbose,
+                stop=stop, log=_log, verbose=args.verbose, compress=args.compress,
             ):
                 if record.coverage() >= args.simulations:
                     incomplete.discard(scenario.key)
         except SampleStoreError as error:
             print(f"parity samples: {error}", file=sys.stderr)
+            return 2
+        except BrokenProcessPool as error:
+            # A worker whose engine differs from the parent's fails its
+            # initializer (reported above); nothing it ran was saved.
+            print(f"parity samples: worker pool failed: {error}", file=sys.stderr)
             return 2
     except KeyboardInterrupt:
         aborted = True
@@ -894,11 +1083,16 @@ def _run_compare(args) -> int:
     started = time.perf_counter()
     rows: list[ParityRow] = []
     provenance: list[dict[str, object]] = []
+    current = {engine: current_provenance(engine) for engine in ("modular", args.backend)}
     for scenario in scenarios:
         row, record = compare_stored(scenario, store, simulations=args.simulations, backend=args.backend,
-                                     reference_store=Path(args.reference_store) if args.reference_store else None)
+                                     reference_store=Path(args.reference_store) if args.reference_store else None,
+                                     current=current)
         rows.append(row)
         provenance.append(record)
+    warnings = _grouped_warnings(provenance)
+    for message in warnings:
+        provenance_warning(message)
     corpus = CORPUS
     if args.level == "e2e":
         from tools.verification import e2e_parity
@@ -920,14 +1114,21 @@ def _run_compare(args) -> int:
         "corpus_sha256": corpus_digest,
         "store": store.as_posix(),
         "candidate_backend": args.backend,
-        "modular_digest": engine_digest("modular"),
-        f"{args.backend}_digest": engine_digest(args.backend),
+        # The engines that produced the compared samples, and today's engines.
+        "recorded_engine_digests": {
+            engine: sorted({item[engine]["engine_digest"] for item in provenance
+                            if isinstance(item.get(engine), dict)})
+            for engine in current
+        },
+        "current_engine_digests": {engine: value["engine_digest"] for engine, value in current.items()},
+        "current_revision": _revision(),
     }
     payload = campaign_payload(
         rows, config=config, rejected=rejected,
         elapsed_seconds=time.perf_counter() - started,
     )
     payload["source"] = "stored samples (tools.verification.parity_samples)"
+    payload["provenance_warnings"] = warnings
     payload["samples"] = provenance
     output = Path(args.output) if args.output else store / "compare"
     output.mkdir(parents=True, exist_ok=True)
@@ -940,15 +1141,30 @@ def _run_compare(args) -> int:
     print(
         f"parity samples: {coverage['selected']} selected, "
         f"{coverage['compared']} compared, {coverage['approved']} approved, "
+        f"{coverage['underpowered']} underpowered, "
         f"{coverage['divergent']} divergent, {coverage['not_run']} not run"
     )
     for row in payload["scenarios"]:
         if row["verdict"] != "pass":
             print(f"{row['status']}: {row['corpus_key']}: {row['detail']}")
+    if warnings:
+        print(f"parity samples: {len(warnings)} provenance warning(s); see above and the report")
     print(f"complete={payload['complete']}")
     print(f"report={json_path.as_posix()}")
     print(f"report={markdown_path.as_posix()}")
     return 0 if payload["complete"] else 1
+
+
+def _grouped_warnings(provenance: Sequence[Mapping[str, object]]) -> list[str]:
+    """One line per distinct (engine, warning), with the number of samples it hits."""
+    groups: dict[tuple[str, str], int] = {}
+    for item in provenance:
+        for engine, block in item.items():
+            if isinstance(block, dict):
+                for message in block.get("warnings", ()):
+                    groups[(engine, message)] = groups.get((engine, message), 0) + 1
+    return [f"{count} stored {engine} sample(s) {message}"
+            for (engine, message), count in groups.items()]
 
 
 def _run_status(args) -> int:
@@ -974,6 +1190,10 @@ def _run_status(args) -> int:
             expected = str(scenario.case.fingerprints.get("inputs_sha256", ""))
             if record.inputs_sha256 != expected:
                 state += ", OTHER FIGHTERS"
+            if any(chunk.provenance is not None for chunk in record.chunks):
+                state += ", MIXED chunk provenance"
+            if record.environment.get("dirty"):
+                state += ", from uncommitted sources"
             print(
                 f"{scenario.key:42} {engine:7} {record.coverage():>8} {record.chunk_size:>6} "
                 f"{record.seed:>8} {record.maximum_rounds:>6} {record.engine_digest[:12]} {state}"

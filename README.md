@@ -35,6 +35,17 @@ python tools/mordheim-utils.py tests env
 
 The editable Python install makes the packages in this source checkout importable. `npm ci` installs both npm workspaces from the root lockfile. For Combat Lab alone, omit `npm ci`.
 
+**Every checkout or git worktree needs its own virtual environment.** An editable install records absolute paths, so a venv shared between worktrees imports the packages and the native extension of whichever checkout created it. In a new worktree, run the setup tool with any Python 3.10+ instead of the commands above:
+
+```bash
+python3 tools/setup_worktree.py           # create or repair .venv, install, build native, verify
+python3 tools/setup_worktree.py --node    # also run npm ci for this worktree
+python3 tools/setup_worktree.py --check   # verify only
+source .venv/bin/activate
+```
+
+It exits 1 and names every offending import when the checkout is not isolated. `tests env` runs the same import check for the current interpreter.
+
 ### Run Campaign Manager locally
 
 Generate the browser's knowledge data before the first launch:
@@ -105,9 +116,9 @@ Unlike browser assets, the generated `_eligibility.js` is versioned and must be 
 
 ### Checks and web build
 
-Choose a named selection from the test tree: `tests modular mechanics`, `tests kb e2e`, `tests kb construction` or `tests parity tooling`. Use `tests --list` to list every test file without importing it (Python and JavaScript/TypeScript); `<selection> --list` lists only the languages that selection's runner executes. `tests --help` shows the hierarchy. Vitest runs through `tests warband-manager web` or `tests tooling web`. No arguments displays help, and an explicit file, directory or pytest node ID replaces the selection's own paths; options are forwarded to the selected runner unchanged.
+Choose a named selection from the test tree: `tests modular mechanics`, `tests kb e2e`, `tests kb construction` or `tests parity tooling`. Use `tests --list` to list every test file without importing it (Python and JavaScript/TypeScript); `<selection> --list` lists only the languages that selection's runner executes. `tests --help` shows the hierarchy. Vitest runs through `tests warband-manager web` or `tests tooling web`. No arguments displays help, and an explicit file, directory or pytest node ID inside the selection replaces its own paths (targets outside it are refused). Options are forwarded to the selected runner, except that serial runtime groups drop xdist options and every pytest call reports skip reasons.
 
-Cross-cutting suites keep their own selections: `tests parity` (statistical comparisons and the tools that check them), `tests shared` (engine contracts and frozen inputs) and `tests tooling` (architecture, launcher and coverage checks).
+Cross-cutting suites keep their own selections: `tests parity` (statistical comparisons and the tools that check them), `tests shared` (engine contracts and frozen inputs) and `tests tooling` (architecture, launcher, coverage and verification-tool checks).
 
 Engine suites load versioned inputs from `tests/engines/fixtures/` through the existing loaders and conftest fixtures. Normal test runs do not regenerate them. The original E2E corpus remains in `tests/integration/e2e/`; rules, construction and E2E tests retain their compiler/KB workflow, as do documented compilation-rejection exceptions. Fixture loading is separate from whether an optimized engine implements every rule. See [engine test fixtures](docs/reference/verification.md#engine-test-fixtures).
 
@@ -145,7 +156,7 @@ See [Tools and launcher](docs/reference/tools.md#selections) for test selection 
 | `tests/engines/` | Modular, NumPy, native, shared and parity tests; versioned precompiled fixtures |
 | `tests/knowledge/`, `tests/construction/`, `tests/integration/` | KB, construction and integration tests, including the original E2E corpus |
 | `tests/applications/` | Combat Lab and Warband Manager tests across languages |
-| `tests/tooling/` | Launcher, architecture, coverage and parity tooling checks |
+| `tests/tooling/` | Launcher, architecture, coverage, verification and parity tooling checks |
 | `tools/` | Launcher, knowledge generation, verification, web checks and Windows packaging |
 | `docs/` | References, guides, design decisions and backlog |
 

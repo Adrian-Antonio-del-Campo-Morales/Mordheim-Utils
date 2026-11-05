@@ -7,7 +7,6 @@ from mordheim_combat_lab.application.settings import (
     DuelExecutionSettings,
     battery_pool_plan,
     default_batch_size,
-    pool_batch_size,
     resolve_battery_settings,
     split_battery,
 )
@@ -88,24 +87,11 @@ def test_battery_pool_plan_activation_points():
     assert plan(250_000, 3) == 14
     assert plan(500_000, 1) == 14
     assert plan(1_000_000, 1) == 14
-    # The numpy fallback tops out at 8 workers (memory-bandwidth bound),
-    # and counts segments with the pooled batch (25k), not the sequential
-    # 100k: at 100k samples the default batch was a single batch, so the
-    # numpy fallback could never pool at all.
+    # The numpy fallback tops out at 8 workers (memory-bandwidth bound) and
+    # counts segments with the batch the fighters really run: comparisons keep
+    # the baseline's batch, so a 100k sample at batch 100k is one batch and
+    # cannot pool, while the same sample at 25k splits in four.
     assert plan(1_000_000, 1, NUMPY_BASELINE_SECONDS[1_000_000], "numpy", 100_000) == 8
-    assert plan(100_000, 1, 0.25, "numpy", 100_000) is None  # one narrow fighter
-    assert plan(100_000, 4, 0.25, "numpy", 100_000) == 8  # 25k splits it in four
-
-
-def test_pool_batch_size_rewrites_only_the_numpy_legacy_default():
-    legacy_numpy = DuelExecutionSettings(1_000_000, 7, 100_000, 20)
-    assert pool_batch_size("numpy", legacy_numpy) == 25_000
-
-    # Explicit batches stand (the legacy global default is the sentinel).
-    explicit = DuelExecutionSettings(1_000_000, 7, 40_000, 20)
-    assert pool_batch_size("numpy", explicit) == 40_000
-
-    # Native keeps its measured pool optimum (within 4% of the best point).
-    native = DuelExecutionSettings(1_000_000, 7, 5_000, 20)
-    assert pool_batch_size("native", native) == 5_000
-    assert pool_batch_size("auto", legacy_numpy) == 100_000
+    assert plan(100_000, 4, 0.25, "numpy", 100_000) is None  # a single batch
+    assert plan(100_000, 1, 0.25, "numpy", 25_000) is None  # one narrow fighter
+    assert plan(100_000, 4, 0.25, "numpy", 25_000) == 8

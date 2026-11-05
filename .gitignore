@@ -18,8 +18,9 @@ dist/
 *.pyd
 # The compiled native extension: *.pyd covers Windows, *.so the other hosts.
 *.so
-src/mordheim_combat_lab/_combat_fast.c
-src/mordheim_combat/native/_combat_native.c
+# Cython output, regenerated from _combat_native.pyx by every build (setup.py).
+packages/python/combat-engine/mordheim_combat/native/_combat_native.c
+packages/python/combat-engine/mordheim_combat/native/_combat_native.cpp
 MordheimCombatLab_startup_error.txt
 outputs/
 reports/

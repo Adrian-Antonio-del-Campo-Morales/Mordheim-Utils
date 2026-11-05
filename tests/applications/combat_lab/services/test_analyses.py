@@ -157,3 +157,41 @@ def test_add_improvement_items_mixes_skills_and_attributes():
 
     assert "skill.mighty-blow" in mixed.skill_ids
     assert mixed.characteristics.attacks == base.characteristics.attacks + 2
+
+
+@pytest.mark.parametrize("pool_decision", [None, 8])
+def test_pool_decision_never_changes_the_candidates_batch(monkeypatch, pool_decision):
+    """Baseline and candidates share one batch (common random numbers) whether
+    or not the wall-time-driven pool engages; engines and pool are stubbed."""
+    import concurrent.futures
+    from types import SimpleNamespace
+    from mordheim_combat_lab.application import analyses
+
+    outcome = SimpleNamespace(first_win_rate=.5, second_win_rate=.4, unresolved_rate=.1)
+    runs = []
+
+    class Pool:
+        def __init__(self, max_workers):
+            self.max_workers = max_workers
+
+        def shutdown(self):
+            pass
+
+    monkeypatch.setattr(concurrent.futures, "ProcessPoolExecutor", Pool)
+    monkeypatch.setattr(analyses, "compile_fighter", lambda build: build)
+    monkeypatch.setattr(analyses, "resolve_fighter_settings",
+                        lambda settings, first, second: (settings, "numpy"))
+    monkeypatch.setattr(analyses, "battery_pool_plan", lambda *args: pool_decision)
+    monkeypatch.setattr(analyses, "simulate_duel", lambda request: (
+        runs.append(("sequential", request.batch_size)) or outcome))
+    monkeypatch.setattr(analyses, "simulate_battery", lambda first, second, settings, *a, **k: (
+        runs.append(("pooled", settings.batch_size)) or outcome))
+    observed = []
+    compare_builds(build(), build(), (ComparisonCandidate("mace", "Mace", build("weapon.mace")),),
+                   DuelExecutionSettings(1_000_000, 3, 100_000, 5), Event(),
+                   observe=observed.append)
+    mode = "pooled" if pool_decision else "sequential"
+    assert runs == [("sequential", 100_000), (mode, 100_000)]
+    (payload,) = observed
+    assert payload["pool"]["workers"] == (pool_decision or 0)
+    assert payload["candidates"][0]["batch_size"] == payload["baseline"]["batch_size"]

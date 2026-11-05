@@ -7,8 +7,11 @@ on internal events: no witness, counter, flag, hash or positive control is
 required to execute or approve a case.
 
 This module owns what is battery-specific: catalogue validation, the declared
-input limits, compilation, clause keys, and the report with its coverage and
-stage accounting.  Execution is the shared :func:`run_parity`; the caller
+input limits, compilation, clause keys, the statistical-power verdict and the
+report with its coverage and stage accounting.  A row that passes the gate
+with fewer duels than needed to detect ``MAX_DETECTABLE_DIFFERENCE`` (7 200 per
+engine for 0.05; the declared default is 64) is ``UNDERPOWERED``: compared,
+not approved, and the certificate stays incomplete.  Execution is the shared :func:`run_parity`; the caller
 prepares here, runs once, and builds one report from the rows.  A precompiled
 case never reaches this path, so no compiler fallback exists.
 """
@@ -29,6 +32,7 @@ from ._battery_cases import (
     required_variants,
     resolve_context,
 )
+from ._report import UNDERPOWERED
 from ._runner import (
     MagnitudeComparison,
     ParityCase,
@@ -36,13 +40,19 @@ from ._runner import (
     _NativeUnavailable,
     _native_engine,
 )
+from ._statistical import (
+    MAX_DETECTABLE_DIFFERENCE,
+    minimum_detectable_difference,
+    underpowered,
+)
 
 #: Worst-first order used to merge the per-backend rows of one case.
 _STATUS_SEVERITY = {
     "DIVERGENCE": 0,
     "NOT_RUN": 1,
     "INCOMPATIBLE": 2,
-    "PASS": 3,
+    UNDERPOWERED: 3,
+    "PASS": 4,
 }
 
 #: Prefix of a compiled-input entry in the caller's ``reuse`` mapping.
@@ -78,6 +88,8 @@ class BatteryCaseResult:
     detail: str = ""
     #: The real input limitation that prevented execution, when one exists.
     blocked_by: str | None = None
+    #: The modular sample was reused from an earlier backend of the same run.
+    reference_cached: bool = False
 
 
 @dataclass(frozen=True, slots=True)
@@ -92,6 +104,7 @@ class BatteryReport:
     incompatible: tuple[str, ...]
     not_run: tuple[str, ...]
     missing_variants: tuple[str, ...]
+    underpowered: tuple[str, ...] = ()
 
 
 def _variant(case):
@@ -106,6 +119,7 @@ def _result(
     modular_seconds: float = 0.0, candidate_seconds: float = 0.0,
     executed: bool = False, compared: bool = False, approved: bool = False,
     comparisons: tuple[MagnitudeComparison, ...] = (), blocked_by: str | None = None,
+    reference_cached: bool = False,
 ) -> BatteryCaseResult:
     return BatteryCaseResult(
         case=str(case.id),
@@ -128,6 +142,7 @@ def _result(
         candidate_seconds=candidate_seconds,
         detail=detail,
         blocked_by=blocked_by,
+        reference_cached=reference_cached,
     )
 
 
@@ -141,7 +156,8 @@ def prepare_cases(
     could not run (input limit, invalid definition, compile failure, absent
     native backend).  Compiled inputs are cached in ``reuse`` under
     ``("compiled", case, rows)``; the modular sample is cached there by the
-    runner under ``<case>@<rows>``.  Nothing is read from disk.
+    runner under its ``("oracle", case, rows, seed, rounds, context,
+    decisions)`` key.  Nothing is read from disk.
     """
     knowledge = root or knowledge_root()
     prepared: list[ParityCase] = []
@@ -216,11 +232,32 @@ def prepare_cases(
     return tuple(prepared), failures
 
 
+def _power_verdict(row: ParityRow) -> tuple[str, bool, str]:
+    """``(status, approved, detail)`` once the sample's power is accounted for.
+
+    A passing row whose minimum detectable difference exceeds
+    ``MAX_DETECTABLE_DIFFERENCE`` proves too little to approve.
+    """
+    if row.status != "PASS" or not underpowered(row.simulations):
+        return row.status, row.approved, row.detail
+    detail = (
+        f"UNDERPOWERED: minimum detectable difference "
+        f"{minimum_detectable_difference(row.simulations):.4f} > "
+        f"{MAX_DETECTABLE_DIFFERENCE} at {row.simulations} rows"
+    )
+    if row.detail:
+        detail += f"; {row.detail}"
+    return UNDERPOWERED, False, detail
+
+
 def battery_results(
     cases: Sequence, rows: Sequence[ParityRow],
     failures: dict[str, BatteryCaseResult] | None = None,
 ) -> tuple[BatteryCaseResult, ...]:
-    """Merge one run's rows with the preparation failures, in catalogue order."""
+    """Merge one run's rows with the preparation failures, in catalogue order.
+
+    A passing row with too few duels becomes ``UNDERPOWERED`` here.
+    """
     failures = failures or {}
     by_case = {row.case: row for row in rows}
     results = []
@@ -230,12 +267,14 @@ def battery_results(
             results.append(failure)
             continue
         row = by_case[str(case.id)]
+        status, approved, detail = _power_verdict(row)
         results.append(_result(
-            case, row.backend, row.status, rows=row.simulations,
-            detail=row.detail, modular_seconds=row.modular_seconds,
+            case, row.backend, status, rows=row.simulations,
+            detail=detail, modular_seconds=row.modular_seconds,
             candidate_seconds=row.candidate_seconds, executed=row.executed,
-            compared=row.compared, approved=row.approved,
+            compared=row.compared, approved=approved,
             comparisons=row.comparisons, blocked_by=row.blocked_by,
+            reference_cached=row.reference_cached,
         ))
     return tuple(results)
 
@@ -264,7 +303,8 @@ def battery_report(
 
     Every per-backend row survives in ``results``; the case-level tuples carry
     the worst status of each case, so ``--backend all`` certifies a case only
-    when every requested backend passed it.  ``complete``/``accepted`` keep
+    when every requested backend passed it.  An ``UNDERPOWERED`` case keeps the
+    report incomplete.  ``complete``/``accepted`` keep
     their execution meaning and are never ``all([])``.
     """
     results = tuple(results)
@@ -280,6 +320,7 @@ def battery_report(
         _by_status(merged, "DIVERGENCE")
         + _by_status(merged, "INCOMPATIBLE")
         + _by_status(merged, "NOT_RUN")
+        + _by_status(merged, UNDERPOWERED)
     )
     complete = bool(results) and not bad and not missing
     return BatteryReport(
@@ -293,6 +334,7 @@ def battery_report(
         incompatible=_by_status(merged, "INCOMPATIBLE"),
         not_run=_by_status(merged, "NOT_RUN"),
         missing_variants=missing,
+        underpowered=_by_status(merged, UNDERPOWERED),
     )
 
 

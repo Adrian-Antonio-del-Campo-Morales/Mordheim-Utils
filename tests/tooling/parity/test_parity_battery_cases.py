@@ -103,15 +103,19 @@ def test_absence_cases_have_a_positive_control_of_the_same_variant():
 
 def test_statistical_magnitudes_always_include_the_winner():
     """The comparison is terminal outcomes, never a witness name."""
-    assert STATISTICAL_MAGNITUDES[0] == "winner"
+    from mordheim_combat_lab.verification.parity import _battery_cases
+
+    assert STATISTICAL_MAGNITUDES == ("winner", "rounds")
+    assert _battery_cases.STATISTICAL_MAGNITUDES == STATISTICAL_MAGNITUDES
     assert set(STATISTICAL_MAGNITUDES) <= set(OUTCOMES)
     parry = _case("q04-parry-attempt")
-    assert case_magnitudes(parry) == ("winner", "rounds", "wounds", "condition")
+    assert case_magnitudes(parry) == ("winner", "rounds")
+    assert _battery_cases.case_magnitudes(parry) == ("winner", "rounds")
     # A witness declared as an observable is ignored, not turned into a gate.
     only_witness = replace(
         parry, observables=("parry-attempts", "wounds", "winner"),
     )
-    assert case_magnitudes(only_witness) == ("winner", "wounds")
+    assert case_magnitudes(only_witness) == ("winner",)
     assert case_magnitudes(
         replace(parry, observables=("winner", "winner", "rounds")),
     ) == ("winner", "rounds")

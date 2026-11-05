@@ -84,6 +84,14 @@ the assigned change. These scope limits also apply to coordinators and delegated
   in the existing task document; do not create additional verification reports.
   Focused checks do not certify the full functional suite.
 
+## Worktree environment
+
+Each checkout or git worktree runs its own `.venv`, project packages and native
+extension. Before running Python in a new worktree, run
+`python3 tools/setup_worktree.py` (or `--check` to verify) and use
+`.venv/bin/python`; never reuse another checkout's venv, whose editable install
+imports that checkout's sources.
+
 ## Pending problems and human decisions
 
 Use `TODO.md` for concrete unresolved defects and problems.

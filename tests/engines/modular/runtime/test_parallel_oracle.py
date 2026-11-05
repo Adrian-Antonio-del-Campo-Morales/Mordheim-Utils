@@ -65,3 +65,22 @@ def test_parallel_oracle_matches_the_sequential_oracle_exactly(precompiled):
         first, second, 250, seed=2026, maximum_rounds=15)
     assert reversed_duels == simulate_duel_reference(
         second, first, 250, seed=2026, maximum_rounds=15)
+
+
+def test_oracle_pool_workers_must_import_the_parent_engine():
+    # No duel runs here: only the pool's worker check is exercised.
+    from concurrent.futures.process import BrokenProcessPool
+    import os as _os
+
+    from mordheim_combat.modular import parallel
+
+    parallel._check_worker_engine(parallel._engine_files())
+    with pytest.raises(RuntimeError, match="another engine copy"):
+        parallel._check_worker_engine(("/elsewhere/mordheim_combat/__init__.py", "x"))
+    with parallel._pool(1) as pool:
+        assert pool.submit(_os.getpid).result() > 0
+    from concurrent.futures import ProcessPoolExecutor
+    with ProcessPoolExecutor(1, initializer=parallel._check_worker_engine,
+                             initargs=(("/elsewhere", "x"),)) as pool:
+        with pytest.raises(BrokenProcessPool):
+            pool.submit(_os.getpid).result()

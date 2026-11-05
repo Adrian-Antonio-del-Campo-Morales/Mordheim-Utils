@@ -56,6 +56,9 @@ def parity_report_payload(
     elapsed_seconds: float | None = None,
     deep_pair_set: str | None = None,
     truncation_pair_set: str | None = None,
+    backends: dict[str, object] | None = None,
+    provenance: dict[str, object] | None = None,
+    oracle_workers: dict[str, object] | None = None,
 ) -> dict[str, object]:
     """Return a serializable, self-describing parity certificate.
 
@@ -64,6 +67,13 @@ def parity_report_payload(
     when a payload is assembled from already-computed samples. ``deep_pair_set``
     and ``truncation_pair_set`` identify which maintained scenario collection
     produced each optional section.
+
+    ``backends`` records the ``requested``, ``available`` and ``missing``
+    candidate backends; a non-empty ``missing`` (an explicitly requested
+    backend that is not installed) makes the certificate incomplete.
+    ``provenance`` is the run's source/build block and ``oracle_workers`` the
+    requested and resolved oracle worker counts; provenance warnings are
+    recorded, never failures.
     """
     samples = tuple(statistical)
     statistical_passed = all(item.passed for item in samples)
@@ -74,14 +84,18 @@ def parity_report_payload(
     deep_passed = all(item.passed for item in deep_samples)
     truncation_samples = tuple(truncations)
     truncations_passed = all(item.passed for item in truncation_samples)
+    missing = tuple((backends or {}).get("missing") or ())
     return {
         "schema": "mordheim-combat-parity/v2",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "elapsed_seconds": elapsed_seconds,
         "oracle": "combat.modular (read-only)",
         "candidate": "combat.vectorized",
+        "backends": dict(backends) if backends is not None else None,
+        "oracle_workers": dict(oracle_workers) if oracle_workers is not None else None,
+        "provenance": dict(provenance) if provenance is not None else None,
         "complete": report.complete and statistical_passed and deep_passed
-        and (not truncation_samples or truncations_passed),
+        and (not truncation_samples or truncations_passed) and not missing,
         "certification_sample_complete": certification,
         "certification_minimum_simulations_per_engine": CERTIFICATION_SIMULATIONS,
         "deterministic": {
@@ -140,6 +154,46 @@ def parity_report_payload(
 
     }
 
+def _certificate_context_lines(payload: dict[str, object]) -> list[str]:
+    """Backends, oracle workers and provenance of a historical certificate."""
+    lines: list[str] = []
+    backends = payload.get("backends")
+    if isinstance(backends, dict):
+        lines.append(
+            f"- Backends requested: `{backends.get('requested')}` available: "
+            f"`{backends.get('available')}`"
+        )
+        if backends.get("missing"):
+            lines.append(
+                f"- **INCOMPLETE: requested backend(s) unavailable: "
+                f"{', '.join(backends['missing'])}**"
+            )
+    workers = payload.get("oracle_workers")
+    if isinstance(workers, dict):
+        resolved = workers.get("resolved") or {}
+        lines.append(
+            f"- Oracle workers requested: `{workers.get('requested')}` "
+            f"(MORDHEIM_PARALLEL_ORACLE_WORKERS=`{workers.get('environment')}`), "
+            f"resolved per sample: `{sorted(set(resolved.values()), key=str)}`"
+        )
+    provenance = payload.get("provenance")
+    if isinstance(provenance, dict):
+        revision = provenance.get("revision") or {}
+        lines.append(
+            f"- Commit: `{revision.get('commit')}` dirty: `{revision.get('dirty')}`"
+        )
+        lines.extend(
+            f"- Engine digest {name}: `{digest}`"
+            for name, digest in (provenance.get("engine_digests") or {}).items()
+        )
+        lines.append(f"- Native build SHA-256: `{provenance.get('native_build_sha256')}`")
+        lines.extend(
+            f"- **PROVENANCE WARNING:** {message}"
+            for message in provenance.get("warnings") or ()
+        )
+    return lines
+
+
 def parity_report_markdown(payload: dict[str, object]) -> str:
     deterministic = payload["deterministic"]
     assert isinstance(deterministic, dict)
@@ -154,6 +208,7 @@ def parity_report_markdown(payload: dict[str, object]) -> str:
           else ["- Elapsed: not recorded"]),
         f"- Oracle: `{payload['oracle']}`",
         f"- Candidate: `{payload['candidate']}`",
+        *_certificate_context_lines(payload),
         f"- Overall pass: `{payload['complete']}`",
         f"- Certification-sized sample: `{payload['certification_sample_complete']}`",
         f"- Deterministic checks: `{len(deterministic['exact_checks'])}`",
@@ -224,10 +279,27 @@ def parity_report_markdown(payload: dict[str, object]) -> str:
 
 BATTERY_SCHEMA = "mordheim-combat-parity-battery/v3"
 
+#: Details of an explicitly requested backend that is absent or stale (not
+#: installed, stale effect layout or context version, no batch observation
+#: entry).  A missing requested backend is a fault of the run, not a declared
+#: capability limit; ``NOT_RUN:native-plan`` (the extension declined the plan)
+#: stays a dependency.
+NATIVE_UNAVAILABLE_PREFIXES = (
+    "NOT_RUN:native-unavailable",
+    "NOT_RUN:native-stale",
+)
+
+#: Final status of a row that passed the six-sigma gate with a sample too small
+#: to detect ``MAX_DETECTABLE_DIFFERENCE``: compared, never approved, and it
+#: keeps the certificate incomplete (``--require-complete`` fails), without
+#: being an own error of a plain run.
+UNDERPOWERED = "UNDERPOWERED"
+
 #: Details that mean the battery itself could not compile the scenario, read its
 #: decisions, obtain both samples or compare their distributions.  They are own
 #: errors: the command fails even without ``--require-complete``.
 BATTERY_ERROR_PREFIXES = (
+    *NATIVE_UNAVAILABLE_PREFIXES,
     "NOT_RUN:compile",
     "NOT_RUN:decision-script",
     "NOT_RUN:case-definition",
@@ -243,12 +315,16 @@ def battery_failure_kind(status: str, detail: str) -> str | None:
     """Classify one result as ``"error"``, ``"dependency"`` or ``None``.
 
     ``error`` means the run itself failed: the harness could not compile the
-    scenario, read its decisions, obtain both samples or compare them, or the
-    outcome distributions diverged.  ``dependency`` means a declared capability
-    is absent: a real input limit the API cannot express (initial state, per-row
-    decisions) or a backend that cannot run the case (``NOT_RUN:native-*``).
-    A dependency leaves the run partial, never passed.  This is the one
-    classification the CLI exit code and the report buckets both use.
+    scenario, read its decisions, obtain both samples or compare them, the
+    candidate crashed (``DIVERGENCE:exception``, TypeError/AttributeError
+    included), a requested backend is absent or stale
+    (:data:`NATIVE_UNAVAILABLE_PREFIXES`), or the outcome distributions
+    diverged.  ``dependency`` means a declared capability is absent: a real
+    input limit the API cannot express (initial state, per-row decisions) or a
+    backend that declines the plan (``NOT_RUN:native-plan``).  A dependency
+    leaves the run partial, never passed.  ``UNDERPOWERED`` is neither: it only
+    keeps the certificate incomplete.  This is the one classification the CLI
+    exit code and the report buckets both use.
     """
     if status == "DIVERGENCE":
         return "error"
@@ -304,6 +380,7 @@ def _battery_counts(results: Iterable) -> dict[str, int]:
         "divergent": statuses.count("DIVERGENCE"),
         "incompatible": statuses.count("INCOMPATIBLE"),
         "not_run": statuses.count("NOT_RUN"),
+        "underpowered": statuses.count(UNDERPOWERED),
         "errors": kinds.count("error"),
         "dependencies": kinds.count("dependency"),
     }
@@ -320,6 +397,14 @@ def _battery_comparison_row(item) -> dict[str, object]:
     }
 
 
+def _minimum_detectable(rows) -> float | None:
+    from mordheim_combat_lab.verification.parity._statistical import (
+        minimum_detectable_difference,
+    )
+
+    return None if not rows else minimum_detectable_difference(int(rows))
+
+
 def _battery_case_row(result) -> dict[str, object]:
     detail = str(getattr(result, "detail", "") or "")
     comparisons = tuple(getattr(result, "comparisons", ()) or ())
@@ -331,6 +416,10 @@ def _battery_case_row(result) -> dict[str, object]:
         "backend": str(getattr(result, "backend", "")),
         "status": str(result.status),
         "rows": getattr(result, "rows", None),
+        # Smallest rate difference the row width is sure to flag (the
+        # six-sigma tolerance at a 50% rate).
+        "minimum_detectable_difference": _minimum_detectable(
+            getattr(result, "rows", None)),
         "seed": getattr(result, "seed", None),
         "horizon": getattr(result, "horizon", None),
         "executed": bool(getattr(result, "executed", False)),
@@ -347,6 +436,9 @@ def _battery_case_row(result) -> dict[str, object]:
         # needs the later with/without contrast of a campaign.
         "sensitivity": "pending",
         "modular_seconds": getattr(result, "modular_seconds", 0.0),
+        # True when the modular sample was reused from an earlier backend's
+        # run; ``modular_seconds`` is then that original sample's time.
+        "modular_cached": bool(getattr(result, "reference_cached", False)),
         "candidate_seconds": getattr(result, "candidate_seconds", 0.0),
         "detail": detail,
     }
@@ -362,8 +454,14 @@ def battery_report_payload(
     elapsed_seconds: float | None = None,
     backends: Iterable[str] | None = None,
     versions: dict[str, object] | None = None,
+    provenance: dict[str, object] | None = None,
+    rows_override: int | None = None,
 ) -> dict[str, object]:
     """Return the renewed statistical battery certificate.
+
+    ``rows_override`` is the ``--rows`` width that replaced every case's
+    declared width (``None`` when the declared widths ran); it is recorded so
+    an overridden certificate is never read as one at the declared widths.
 
     The payload describes preparation and, when it happened, execution.  It
     never turns a declared or limited case into a compared one: each row carries
@@ -371,7 +469,18 @@ def battery_report_payload(
     the magnitudes it compared with their rates and tolerances.  ``complete`` and
     ``accepted`` keep their execution meaning; ``sensitivity`` stays pending
     until a campaign contrasts each scenario with and without its rule.
+
+    A row that passed the gate with a sample too small to detect
+    ``MAX_DETECTABLE_DIFFERENCE`` is ``UNDERPOWERED``: counted as compared, never
+    approved.  ``provenance`` is the run's source/build block
+    (``mordheim_combat_lab.provenance.run_provenance``); its warnings are recorded,
+    never treated as failures.
     """
+    from mordheim_combat_lab.verification.parity._runner import NATIVE_OBSERVED_NOTE
+    from mordheim_combat_lab.verification.parity._statistical import (
+        MAX_DETECTABLE_DIFFERENCE,
+    )
+
     results = tuple(getattr(report, "results", ()) or ())
     rows = tuple(_battery_case_row(result) for result in results)
     ran = any(row["executed"] for row in rows)
@@ -385,8 +494,8 @@ def battery_report_payload(
         variant = str(row["variant"])
         bucket = variants.setdefault(variant, {
             "cases": 0, "executed": 0, "compared": 0, "approved": 0,
-            "divergent": 0, "incompatible": 0, "not_run": 0, "errors": 0,
-            "sensitivity_pending": 0, "dependencies": set(),
+            "divergent": 0, "incompatible": 0, "not_run": 0, "underpowered": 0,
+            "errors": 0, "sensitivity_pending": 0, "dependencies": set(),
         })
         bucket["cases"] += 1
         status = str(row["status"])
@@ -401,6 +510,8 @@ def battery_report_payload(
             bucket["incompatible"] += 1
         elif status == "NOT_RUN":
             bucket["not_run"] += 1
+        elif status == UNDERPOWERED:
+            bucket["underpowered"] += 1
         # Every case still needs the later with/without contrast.
         bucket["sensitivity_pending"] += 1
         if row["dependency"] and row["owner"]:
@@ -420,7 +531,7 @@ def battery_report_payload(
             label = str(key)
             clause = clauses.setdefault(label, {
                 "cases": 0, "executed": 0, "compared": 0, "approved": 0,
-                "divergent": 0, "incompatible": 0,
+                "divergent": 0, "incompatible": 0, "underpowered": 0,
             })
             clause["cases"] += 1
             for stage in ("executed", "compared", "approved"):
@@ -430,6 +541,8 @@ def battery_report_payload(
                 clause["incompatible"] += 1
             elif status == "DIVERGENCE":
                 clause["divergent"] += 1
+            elif status == UNDERPOWERED:
+                clause["underpowered"] += 1
 
     for bucket in variants.values():
         bucket["dependencies"] = sorted(bucket["dependencies"])
@@ -446,6 +559,7 @@ def battery_report_payload(
         "divergent": totals["divergent"],
         "incompatible": totals["incompatible"],
         "not_run": totals["not_run"],
+        "underpowered": totals["underpowered"],
         "errors": totals["errors"],
         "dependency": totals["dependencies"],
         "sensitivity_pending": case_ids,
@@ -461,12 +575,16 @@ def battery_report_payload(
             selected = [row for row in rows if row["backend"] == name]
             statuses = [row["status"] for row in selected]
             available = bool(selected) and not all(
-                status == "NOT_RUN" and row["dependency"]
+                status == "NOT_RUN" and (
+                    row["dependency"]
+                    or str(row["detail"]).startswith(NATIVE_UNAVAILABLE_PREFIXES)
+                )
                 for status, row in zip(statuses, selected)
             )
             backend_rows.append({
                 "backend": name,
                 "available": available,
+                "note": NATIVE_OBSERVED_NOTE if name == "native" else "",
                 "cases": len(selected),
                 "executed": sum(1 for row in selected if row["executed"]),
                 "compared": sum(1 for row in selected if row["compared"]),
@@ -474,6 +592,7 @@ def battery_report_payload(
                 "errors": sum(1 for row in selected if row["failure"] == "error"),
                 "incompatible": statuses.count("INCOMPATIBLE"),
                 "not_run": statuses.count("NOT_RUN"),
+                "underpowered": statuses.count(UNDERPOWERED),
             })
 
     levels = {"quick": 0, "complete": 0, "deep": 0}
@@ -496,6 +615,7 @@ def battery_report_payload(
             "backend_runs": len(results),
             "levels": levels,
             "rows": sorted({int(row["rows"] or 0) for row in rows if row["rows"]}),
+            "rows_override": rows_override,
             "seeds": sorted({int(row["seed"]) for row in rows
                              if row["seed"] is not None}),
             "horizons": sorted({int(row["horizon"]) for row in rows
@@ -506,6 +626,21 @@ def battery_report_payload(
         "accepted": bool(getattr(report, "accepted", False)),
         "scope": str(getattr(report, "scope", "provided")),
         "missing_variants": list(getattr(report, "missing_variants", ()) or ()),
+        "power": {
+            "max_detectable_difference": MAX_DETECTABLE_DIFFERENCE,
+            "underpowered": totals["underpowered"],
+            "minimum_detectable_difference_by_rows": {
+                str(width): _minimum_detectable(width)
+                for width in sorted({int(row["rows"]) for row in rows if row["rows"]})
+            },
+            "note": (
+                "a row passing the six-sigma gate is approved only when its "
+                "minimum detectable difference (the tolerance at a 50% rate) "
+                f"is at most {MAX_DETECTABLE_DIFFERENCE}; otherwise it is "
+                "UNDERPOWERED"
+            ),
+        },
+        "provenance": dict(provenance) if provenance is not None else None,
         "cases": rows,
         "variants": variants,
         "clauses": clauses,
@@ -561,6 +696,10 @@ def battery_report_markdown(payload: dict[str, object]) -> str:
         f"- Profile: `{preparation.get('profile') or 'provided'}`",
         f"- Execution: `{payload['execution']}`",
         f"- Cases: `{preparation.get('cases')}`",
+        f"- Rows: `{preparation.get('rows')}` ("
+        + (f"`--rows {preparation['rows_override']}` override of the declared widths"
+           if preparation.get("rows_override") else "declared widths")
+        + ")",
         f"- Seeds: `{preparation.get('seeds')}`",
         f"- Horizons: `{preparation.get('horizons')}`",
         f"- Catalog: `{preparation.get('catalog_sha256')}`",
@@ -572,9 +711,35 @@ def battery_report_markdown(payload: dict[str, object]) -> str:
         "|---|---:|",
     ]
     for name in ("declared", "case_ids", "prepared", "executed", "compared",
-                 "approved", "divergent", "incompatible", "not_run", "errors",
-                 "dependency", "sensitivity_pending"):
+                 "approved", "divergent", "incompatible", "not_run",
+                 "underpowered", "errors", "dependency", "sensitivity_pending"):
         lines.append(f"| {name} | {coverage.get(name, 0)} |")
+    power = payload.get("power")
+    if isinstance(power, dict):
+        lines.extend((
+            "", "## Statistical power", "",
+            f"- Maximum detectable difference allowed: "
+            f"`{power['max_detectable_difference']}`",
+            f"- Underpowered rows (passed the gate, not approved): "
+            f"`{power['underpowered']}`",
+            "",
+            "| Rows per engine | Minimum detectable difference |",
+            "|---:|---:|",
+        ))
+        for width, value in power["minimum_detectable_difference_by_rows"].items():
+            lines.append(f"| {width} | {value:.4f} |")
+    provenance = payload.get("provenance")
+    if isinstance(provenance, dict):
+        revision = provenance.get("revision") or {}
+        lines.extend((
+            "", "## Provenance", "",
+            f"- Commit: `{revision.get('commit')}` dirty: `{revision.get('dirty')}`",
+            *[f"- Engine digest {name}: `{digest}`"
+              for name, digest in (provenance.get("engine_digests") or {}).items()],
+            f"- Native build SHA-256: `{provenance.get('native_build_sha256')}`",
+            *[f"- **PROVENANCE WARNING:** {message}"
+              for message in provenance.get("warnings") or ()],
+        ))
     if magnitudes:
         lines.extend((
             "", "## Magnitudes compared", "",
@@ -590,20 +755,21 @@ def battery_report_markdown(payload: dict[str, object]) -> str:
         lines.extend((
             "", "## Backend availability", "",
             "| Backend | Available | Cases | Executed | Compared | Approved "
-            "| Incompatible | Not run |",
-            "|---|---|---:|---:|---:|---:|---:|---:|",
+            "| Incompatible | Not run | Underpowered | Note |",
+            "|---|---|---:|---:|---:|---:|---:|---:|---:|---|",
         ))
         for row in backend_rows:
             lines.append(
                 f"| {row['backend']} | {row['available']} | {row['cases']} | "
                 f"{row['executed']} | {row['compared']} | {row['approved']} | "
-                f"{row['incompatible']} | {row['not_run']} |"
+                f"{row['incompatible']} | {row['not_run']} | "
+                f"{row.get('underpowered', 0)} | {row.get('note') or '—'} |"
             )
     lines.extend((
         "", "## Variants", "",
         "| Variant | Cases | Executed | Compared | Approved | Incompatible "
-        "| Not run | Sensitivity pending | Dependencies |",
-        "|---|---:|---:|---:|---:|---:|---:|---:|---|",
+        "| Not run | Underpowered | Sensitivity pending | Dependencies |",
+        "|---|---:|---:|---:|---:|---:|---:|---:|---:|---|",
     ))
     for variant in sorted(variants):
         row = variants[variant]
@@ -612,7 +778,8 @@ def battery_report_markdown(payload: dict[str, object]) -> str:
         lines.append(
             f"| {variant} | {row['cases']} | {row['executed']} | "
             f"{row['compared']} | {row['approved']} | {row['incompatible']} | "
-            f"{row['not_run']} | {row['sensitivity_pending']} | {dependencies} |"
+            f"{row['not_run']} | {row.get('underpowered', 0)} | "
+            f"{row['sensitivity_pending']} | {dependencies} |"
         )
     limits = payload.get("limits")
     lines.extend(("", "## Real input limits", ""))
@@ -633,13 +800,14 @@ def battery_report_markdown(payload: dict[str, object]) -> str:
         "", "## Scope of this certificate", "",
         "A case is compared on the terminal outcome distributions of both "
         "engines: `winner` (first win, second win, unresolved) always, plus "
-        "`rounds`, `wounds` and `condition` when the case declares them. The "
+        "`rounds` when the case declares it. The "
         "criterion is the six-sigma tolerance of the historical certificate; no "
         "internal counter, flag or hash is required.",
         "",
         "`executed` means both samples were obtained, `compared` that at least "
         "one magnitude was compared and `approved` that all of them stayed "
-        "within tolerance. A prepared case with a real input limit (initial "
+        "within tolerance with enough duels to detect the maximum detectable "
+        "difference; a smaller passing sample is `UNDERPOWERED`. A prepared case with a real input limit (initial "
         "state, per-row decisions) is `INCOMPATIBLE` with its cause and stays in "
         "the denominator; it is never replaced by a weaker scenario.",
         "",

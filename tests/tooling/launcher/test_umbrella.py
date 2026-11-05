@@ -13,6 +13,16 @@ EXPLICIT_PYTHON_FILE = "tests/engines/modular/mechanics/test_abdul_eye_pendant.p
 EXPLICIT_NODE_ID = (EXPLICIT_PYTHON_FILE
                     + "::test_printed_kit_compiles_and_worn_ward_uses_four_plus")
 EXPLICIT_WEB_FILE = "tests/applications/warband_manager/features/campaign/displayText.test.ts"
+RUNTIME_FILE = "tests/engines/modular/runtime/test_phases.py"
+REPORT = "-rfEs"
+
+
+def _pytest(*arguments):
+    """The launcher's pytest command line for ``arguments``."""
+    paths = [argument for argument in arguments if not argument.startswith("-")
+             and argument.startswith("tests/")]
+    options = [argument for argument in arguments if argument not in paths]
+    return [sys.executable, "-m", "pytest", *paths, REPORT, *options]
 
 
 @pytest.fixture()
@@ -21,6 +31,9 @@ def cli():
     module = importlib.util.module_from_spec(spec)
     assert spec.loader is not None
     spec.loader.exec_module(module)
+    # Never probe the real extension from a unit test; tests that need the
+    # probe's outcome replace this stub.
+    module._native_extension_error = lambda: None
     return module
 
 
@@ -110,56 +123,204 @@ def test_performance_commands_forward_to_the_lab(cli, monkeypatch, name):
 
 
 @pytest.mark.parametrize("arguments, expected", [
-    (["tests", "combat-lab"], ["tests/applications/combat_lab"]),
-    (["tests", "modular"], [MODULAR_MECHANICS, MODULAR_RUNTIME]),
-    (["tests", "modular", "mechanics"], [MODULAR_MECHANICS]),
-    (["tests", "modular", "mechanics", "runtime"], [MODULAR_MECHANICS, MODULAR_RUNTIME]),
-    (["tests", "warband-manager", "python"], ["tests/applications/warband_manager"]),
-    (["tests", "vectorized", "mechanics"], ["tests/engines/vectorized/mechanics"]),
-    (["tests", "vectorized", "runtime"], ["tests/engines/vectorized/runtime"]),
-    (["tests", "native"], ["tests/engines/native"]),
-    (["tests", "native", "runtime"], ["tests/engines/native/runtime"]),
-    (["tests", "kb"], ["tests/knowledge"]),
-    (["tests", "kb", "construction"], ["tests/construction"]),
-    (["tests", "kb", "e2e"], ["tests/integration/e2e"]),
-    (["tests", "parity"], ["tests/engines/parity/statistical", "tests/tooling/parity"]),
-    (["tests", "parity", "statistical"], ["tests/engines/parity/statistical"]),
-    (["tests", "parity", "tooling"], ["tests/tooling/parity"]),
-    (["tests", "shared"], ["tests/engines/shared"]),
-    (["tests", "tooling"], ["tests/tooling/architecture", "tests/tooling/launcher",
-                            "tests/tooling/coverage"]),
-    (["tests", "tooling", "launcher"], ["tests/tooling/launcher"]),
-    (["tests", "tooling", "coverage"], ["tests/tooling/coverage"]),
+    (["tests", "combat-lab"], [["tests/applications/combat_lab"]]),
+    (["tests", "modular"], [[MODULAR_MECHANICS], [MODULAR_RUNTIME]]),
+    (["tests", "modular", "mechanics"], [[MODULAR_MECHANICS]]),
+    (["tests", "modular", "mechanics", "runtime"], [[MODULAR_MECHANICS], [MODULAR_RUNTIME]]),
+    (["tests", "warband-manager", "python"], [["tests/applications/warband_manager"]]),
+    (["tests", "vectorized"], [["tests/engines/vectorized/mechanics"],
+                               ["tests/engines/vectorized/runtime"]]),
+    (["tests", "vectorized", "mechanics"], [["tests/engines/vectorized/mechanics"]]),
+    (["tests", "vectorized", "runtime"], [["tests/engines/vectorized/runtime"]]),
+    (["tests", "native"], [["tests/engines/native"]]),
+    (["tests", "native", "runtime"], [["tests/engines/native/runtime"]]),
+    (["tests", "kb"], [["tests/knowledge"]]),
+    (["tests", "kb", "construction"], [["tests/construction"]]),
+    (["tests", "kb", "e2e"], [["tests/integration/e2e"]]),
+    (["tests", "parity"], [["tests/engines/parity/statistical"], ["tests/tooling/parity"]]),
+    (["tests", "parity", "statistical"], [["tests/engines/parity/statistical"]]),
+    (["tests", "parity", "tooling"], [["tests/tooling/parity"]]),
+    (["tests", "shared"], [["tests/engines/shared"]]),
+    (["tests", "tooling"], [["tests/tooling/architecture", "tests/tooling/launcher",
+                             "tests/tooling/coverage", "tests/tooling/verification"]]),
+    (["tests", "tooling", "launcher"], [["tests/tooling/launcher"]]),
+    (["tests", "tooling", "coverage"], [["tests/tooling/coverage"]]),
+    (["tests", "tooling", "verification"], [["tests/tooling/verification"]]),
 ])
-def test_tests_select_the_mapped_pytest_paths(cli, monkeypatch, arguments, expected):
+def test_each_run_of_a_selection_is_its_own_pytest_process(cli, monkeypatch, arguments,
+                                                           expected):
     calls = _record(cli, monkeypatch)
     assert cli.main(arguments) == 0
-    assert calls == [[sys.executable, "-m", "pytest", *expected]]
+    assert calls == [[sys.executable, "-m", "pytest", *paths, REPORT] for paths in expected]
 
 
 def test_runner_options_are_forwarded_verbatim(cli, monkeypatch):
     calls = _record(cli, monkeypatch)
     arguments = ["-n", "8", "--dist=load", "-q", "--tb=short", "-k", "leadership"]
     assert cli.main(["tests", "modular", "mechanics", *arguments]) == 0
-    assert calls == [[sys.executable, "-m", "pytest", MODULAR_MECHANICS, *arguments]]
+    assert calls == [_pytest(MODULAR_MECHANICS, *arguments)]
+
+
+@pytest.mark.parametrize("section", ["modular", "vectorized"])
+def test_runtime_with_an_inner_pool_drops_xdist_options(cli, monkeypatch, capsys, section):
+    calls = _record(cli, monkeypatch)
+    arguments = ["-n", "8", "--dist=load", "-q", "-k", "not slow"]
+    assert cli.main(["tests", section, *arguments]) == 0
+    mechanics = f"tests/engines/{section}/mechanics"
+    runtime = f"tests/engines/{section}/runtime"
+    assert calls == [_pytest(mechanics, *arguments),
+                     _pytest(runtime, "-q", "-k", "not slow")]
+    assert "-n 8 --dist=load" in capsys.readouterr().err
+
+
+@pytest.mark.parametrize("options", [["-n8"], ["-nauto"], ["--numprocesses=4"],
+                                     ["--numprocesses", "4"], ["-n", "2", "--dist", "load"],
+                                     ["--maxprocesses=2"]])
+def test_every_xdist_spelling_is_dropped_for_serial_runtime(cli, monkeypatch, options):
+    calls = _record(cli, monkeypatch)
+    assert cli.main(["tests", "modular", "runtime", *options, "-q"]) == 0
+    assert calls == [_pytest(MODULAR_RUNTIME, "-q")]
+
+
+def test_a_failing_run_does_not_hide_the_others(cli, monkeypatch):
+    calls = []
+
+    def fake(*argv):
+        calls.append(list(argv))
+        return 1 if MODULAR_MECHANICS in argv else 0
+
+    monkeypatch.setattr(cli, "_run", fake)
+    assert cli.main(["tests", "modular"]) == 1
+    assert len(calls) == 2
+
+
+def test_a_failure_in_the_last_run_is_reported(cli, monkeypatch):
+    monkeypatch.setattr(cli, "_run", lambda *argv: 1 if MODULAR_RUNTIME in argv else 0)
+    assert cli.main(["tests", "modular"]) == 1
+
+
+def test_an_interrupted_run_stops_the_selection(cli, monkeypatch):
+    calls = []
+    monkeypatch.setattr(cli, "_run", lambda *argv: calls.append(argv) or 2)
+    assert cli.main(["tests", "modular"]) == 2
+    assert len(calls) == 1
+
+
+@pytest.mark.parametrize("statuses, expected", [((5, 0), 0), ((0, 5), 0), ((5, 5), 5)])
+def test_no_tests_collected_counts_only_when_no_run_collects(cli, monkeypatch, statuses,
+                                                             expected):
+    pending = list(statuses)
+    monkeypatch.setattr(cli, "_run", lambda *argv: pending.pop(0))
+    assert cli.main(["tests", "modular", "-k", "leadership"]) == expected
 
 
 def test_double_dash_is_not_forwarded(cli, monkeypatch):
     calls = _record(cli, monkeypatch)
     assert cli.main(["tests", "kb", "e2e", "--", "-q"]) == 0
-    assert calls == [[sys.executable, "-m", "pytest", "tests/integration/e2e", "-q"]]
+    assert calls == [_pytest("tests/integration/e2e", "-q")]
 
 
 def test_an_explicit_file_replaces_the_selection_paths(cli, monkeypatch):
     calls = _record(cli, monkeypatch)
     assert cli.main(["tests", "modular", "mechanics", EXPLICIT_PYTHON_FILE, "-q"]) == 0
-    assert calls == [[sys.executable, "-m", "pytest", EXPLICIT_PYTHON_FILE, "-q"]]
+    assert calls == [_pytest(EXPLICIT_PYTHON_FILE, "-q")]
 
 
 def test_an_explicit_node_id_replaces_the_selection_paths(cli, monkeypatch):
     calls = _record(cli, monkeypatch)
     assert cli.main(["tests", "modular", "mechanics", EXPLICIT_NODE_ID, "-q"]) == 0
-    assert calls == [[sys.executable, "-m", "pytest", EXPLICIT_NODE_ID, "-q"]]
+    assert calls == [_pytest(EXPLICIT_NODE_ID, "-q")]
+
+
+def test_explicit_targets_keep_the_runs_separate(cli, monkeypatch):
+    calls = _record(cli, monkeypatch)
+    assert cli.main(["tests", "modular", EXPLICIT_PYTHON_FILE, RUNTIME_FILE,
+                     "-n", "8", "-q"]) == 0
+    assert calls == [_pytest(EXPLICIT_PYTHON_FILE, "-n", "8", "-q"),
+                     _pytest(RUNTIME_FILE, "-q")]
+
+
+def test_an_explicit_directory_containing_runtime_runs_serially(cli, monkeypatch):
+    calls = _record(cli, monkeypatch)
+    assert cli.main(["tests", "modular", "tests/engines/modular", "-n", "8"]) == 0
+    assert calls == [_pytest("tests/engines/modular")]
+
+
+@pytest.mark.parametrize("arguments", [
+    ["tests", "vectorized", MODULAR_RUNTIME],
+    ["tests", "vectorized", RUNTIME_FILE + "::test_x"],
+    ["tests", "modular", "mechanics", RUNTIME_FILE],
+    ["tests", "tooling", "tests/tooling/parity"],
+    ["tests", "native", "tests/engines"],
+    ["tests", "warband-manager", "web", "tests/tooling/architecture/web-boundaries.test.ts"],
+])
+def test_explicit_targets_outside_the_selection_are_rejected(cli, monkeypatch, capsys,
+                                                            arguments):
+    calls = _record(cli, monkeypatch)
+    workspaces = _record_workspaces(cli, monkeypatch)
+    assert cli.main(arguments) == 2
+    assert "outside this selection" in capsys.readouterr().err
+    assert calls == [] and workspaces == []
+
+
+def test_a_bare_section_accepts_targets_in_its_other_directories(cli, monkeypatch):
+    calls = _record(cli, monkeypatch)
+    assert cli.main(["tests", "kb", "tests/construction", "-q"]) == 0
+    assert calls == [_pytest("tests/construction", "-q")]
+
+
+def test_native_fails_when_the_extension_does_not_import(cli, monkeypatch, capsys):
+    calls = _record(cli, monkeypatch)
+    monkeypatch.setattr(cli, "_native_extension_error",
+                        lambda: "ModuleNotFoundError: No module named 'x'")
+    assert cli.main(["tests", "native", "-q"]) == 1
+    error = capsys.readouterr().err
+    assert "does not import" in error and "No module named" in error
+    assert calls == []
+
+
+def test_native_runs_when_the_extension_imports(cli, monkeypatch):
+    calls = _record(cli, monkeypatch)
+    probes = []
+    monkeypatch.setattr(cli, "_native_extension_error", lambda: probes.append(1))
+    assert cli.main(["tests", "native", "runtime", "-q"]) == 0
+    assert probes == [1]
+    assert calls == [_pytest("tests/engines/native/runtime", "-q")]
+
+
+def test_other_selections_do_not_probe_the_native_extension(cli, monkeypatch):
+    _record(cli, monkeypatch)
+    monkeypatch.setattr(cli, "_native_extension_error", lambda: pytest.fail("probed"))
+    assert cli.main(["tests", "vectorized", "mechanics"]) == 0
+
+
+def test_the_native_probe_uses_the_test_interpreter_and_paths(cli, monkeypatch):
+    seen = {}
+
+    class Result:
+        returncode = 1
+        stderr = "Traceback\nImportError: no extension\n"
+
+    def fake_run(argv, **kwargs):
+        seen.update(argv=argv, **kwargs)
+        return Result()
+
+    monkeypatch.setattr(cli.subprocess, "run", fake_run)
+    spec = importlib.util.spec_from_file_location("launcher_probe", CLI_SCRIPT)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    assert module._native_extension_error() == "ImportError: no extension"
+    assert seen["argv"][0] == sys.executable
+    assert seen["cwd"] == module.REPO_ROOT
+    assert seen["env"]["PYTHONPATH"].split(cli.os.pathsep)[:len(module.PACKAGE_ROOTS)] == [
+        str(path) for path in module.PACKAGE_ROOTS]
+
+
+def test_children_get_this_checkout_first_on_their_path(cli, monkeypatch):
+    monkeypatch.setenv("PYTHONPATH", "/elsewhere")
+    paths = cli._environment()["PYTHONPATH"].split(cli.os.pathsep)
+    assert paths == [*(str(path) for path in cli.PACKAGE_ROOTS), "/elsewhere"]
+    assert all(path.is_relative_to(cli.REPO_ROOT) for path in cli.PACKAGE_ROOTS)
 
 
 def test_an_unknown_positional_does_not_launch_pytest(cli, monkeypatch):
@@ -280,8 +441,7 @@ def test_listing_every_test_file_does_not_import_or_run(cli, monkeypatch, capsys
 def test_collection_is_forwarded_separately_from_listing(cli, monkeypatch):
     calls = _record(cli, monkeypatch)
     assert cli.main(["tests", "modular", "mechanics", "--collect-only", "-q"]) == 0
-    assert calls == [[sys.executable, "-m", "pytest", MODULAR_MECHANICS,
-                      "--collect-only", "-q"]]
+    assert calls == [_pytest(MODULAR_MECHANICS, "--collect-only", "-q")]
 
 
 def test_env_runs_diagnostics_without_a_test_suite(cli, monkeypatch):

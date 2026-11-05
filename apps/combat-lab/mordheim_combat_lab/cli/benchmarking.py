@@ -4,11 +4,22 @@ Runs the maintained end-to-end scenarios against the modular, NumPy and
 native engines, supports single-configuration runs (with baseline
 comparison gates) and size sweeps over simulation counts and batch
 sizes, and renders results as console tables, JSON, CSV or Markdown.
+
+Baseline gate (:func:`gate_against_baseline`): the stored ``configuration``
+is the *measurement design* — simulations, batch size, seed, warmups,
+repeats, processes, pool start method and backend list. Any recorded field
+that differs makes the two measurements incomparable and is an error. The
+``provenance`` block (CPU count, platform, Python/NumPy, per-engine source
+digests, native build hash, source revision) describes *where* it was
+measured: differences only raise a ``PROVENANCE WARNING`` recorded in the
+gate, because old baselines are reused on purpose. A baseline (scenario,
+backend) result with no current result fails the gate explicitly.
 """
 from __future__ import annotations
 
 from dataclasses import asdict
 from dataclasses import dataclass
+from dataclasses import replace
 from datetime import datetime, timezone
 from functools import lru_cache
 import csv
@@ -19,6 +30,7 @@ from statistics import median
 from time import perf_counter
 from typing import Callable
 from typing import Iterable
+from typing import Mapping
 from typing import Sequence
 
 import numpy as np
@@ -55,12 +67,28 @@ class BenchmarkComparison:
 
 
 @dataclass(frozen=True, slots=True)
+class BenchmarkMissing:
+    """A baseline (scenario, backend) result the current run did not produce."""
+    scenario: str
+    backend: str
+    reason: str
+
+
+@dataclass(frozen=True, slots=True)
 class BenchmarkGate:
+    """Outcome of the baseline gate.
+
+    ``missing`` lists baseline results without a current counterpart (each
+    one fails the gate); ``provenance_warnings`` records the provenance
+    differences that were reported but did not block the comparison.
+    """
     passed: bool
     improved: bool
     regressed: bool
     comparisons: tuple[BenchmarkComparison, ...]
     detail: str
+    missing: tuple[BenchmarkMissing, ...] = ()
+    provenance_warnings: tuple[str, ...] = ()
 
 
 BENCHMARK_SCHEMA = "mordheim-combat-benchmark/v1"
@@ -688,20 +716,47 @@ def print_tts_study_summary(
     _print_ascii_table(headers, rows)
 
 
+def _pool_start_method() -> str:
+    """Start method a default ``ProcessPoolExecutor`` uses, without fixing it."""
+    import multiprocessing
+
+    return (multiprocessing.get_start_method(allow_none=True)
+            or multiprocessing.get_all_start_methods()[0])
+
+
 def benchmark_payload(
     results: tuple[BenchmarkResult, ...] | list[BenchmarkResult],
     unavailable: tuple[dict[str, str], ...] | list[dict[str, str]], *,
     simulations: int, batch_size: int, seed: int, warmups: int, repeats: int,
+    processes: int = 1, backends: Sequence[str] | None = None,
 ) -> dict[str, object]:
-    """Build a durable single-configuration benchmark artifact."""
+    """Build a durable single-configuration benchmark artifact.
+
+    ``configuration`` is the measurement design the baseline gate requires to
+    match: besides the sizes it records ``processes`` (pooled units contend
+    for cores, which changes per-unit throughput), the pool ``start_method``
+    (``None`` when sequential) and the requested ``backends`` (sorted; when
+    omitted, derived from the results and unavailable entries, which together
+    name every requested backend). ``provenance`` records where it ran
+    (:func:`mordheim_combat_lab.application.settings.measurement_provenance`).
+    """
+    from mordheim_combat_lab.application.settings import measurement_provenance
+
+    if backends is None:
+        backends = [item.backend for item in results]
+        backends += [str(row["backend"]) for row in unavailable if "backend" in row]
+    backend_list = sorted(set(backends))
     return {
         "schema": BENCHMARK_SCHEMA,
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "environment": _environment(),
         "configuration": {
             "simulations": simulations, "batch_size": batch_size, "seed": seed,
-            "warmups": warmups, "repeats": repeats,
+            "warmups": warmups, "repeats": repeats, "processes": processes,
+            "start_method": _pool_start_method() if processes > 1 else None,
+            "backends": backend_list,
         },
+        "provenance": measurement_provenance(backend_list),
         "results": [asdict(item) for item in results],
         "unavailable": list(unavailable),
     }
@@ -712,8 +767,8 @@ class BenchmarkUnit:
     """One parallelizable benchmark work unit: a scenario measurement.
 
     Everything the worker needs is embedded (fighters are compiled there, so
-    the payload stays plain data). ``batch`` names the unit in the speedup
-    report and reuses the request's ``batch_size`` semantics.
+    the payload stays plain data). ``batch`` is the unit's label in the
+    pooled-execution report (:func:`speedup_payload`).
     """
     scenario: BenchmarkScenario
     backend: str
@@ -737,15 +792,16 @@ def _unit_worker(unit: BenchmarkUnit) -> BenchmarkResult:
 def run_benchmark_units(
     units: Sequence[BenchmarkUnit], *, processes: int = 1,
     on_progress: Callable[[], None] | None = None,
-) -> tuple[tuple[BenchmarkResult, ...], tuple[tuple[str, float], ...]]:
+) -> tuple[tuple[BenchmarkResult, ...], tuple[tuple[str, float], ...],
+           tuple[tuple[BenchmarkUnit, str], ...]]:
     """Run units sequentially, or through a process pool when ``processes > 1``.
 
-    Returns ``(results, timings, failures)``. ``timings`` pairs ``unit.batch`` names with
-    each unit's measured wall seconds (sum of its samples; 0.0 if the unit
-    failed) — in pool mode the pool transport (pickling + IPC) is included,
-    so reported speedup is what the machine actually delivered.
-    ``failures`` pairs the failed units with their ``RuntimeError`` message so
-    callers can report them like the sequential path does.
+    Returns ``(results, timings, failures)``. ``timings`` pairs ``unit.batch``
+    names with each unit's engine-sample seconds (sum of its timed repeats,
+    measured inside the worker; 0.0 if the unit failed). Warmups, pickling
+    and IPC are not in it. ``failures`` pairs the failed units with their
+    ``RuntimeError`` message so callers can report them like the sequential
+    path does.
 
     Workers run ``unit.simulations`` duels; every unit gets the same ``seed`",
     so a unit measured sequentially and in pool mode produces the same
@@ -816,15 +872,19 @@ def run_benchmark_units(
 def speedup_payload(
     timings: Sequence[tuple[str, float]], *, pool_wall: float, processes: int,
 ) -> dict[str, object] | None:
-    """Assemble the real-speedup report from pooled per-unit worker samples.
+    """Report what a pooled execution measured — and nothing it did not.
 
-    ``timings`` carries each unit's measured engine seconds (worker-side);
+    ``timings`` carries each unit's engine-sample seconds (worker-side);
     ``pool_wall`` is the measured wall time of the whole pooled execution.
-    The sequential equivalent of every unit is estimated by splitting the
-    wall by each unit's share of the total worker samples — re-running the
-    identical sweep sequentially would double the wall time of full deep
-    profiles, so the estimate is reused instead. Returns ``None`` when there
-    is no comparable timing data (all units failed, or zero wall time).
+    Rows list each unit's ``worker_seconds`` only: no sequential run is made,
+    so no per-unit sequential time or speedup is known. The single pool-level
+    figure is ``sample_concurrency`` = ``engine_sample_seconds / wall_seconds``
+    — the average number of timed engine samples in flight. It is *not* a
+    speedup over a sequential run: it ignores warmups and setup, and pooled
+    samples run slower than sequential ones under contention.
+
+    Returns ``None`` when there is no timing data (all units failed, or zero
+    wall time).
     """
     worker_totals = {
         name: seconds for name, seconds in timings if name and seconds > 0
@@ -832,19 +892,24 @@ def speedup_payload(
     total = sum(worker_totals.values())
     if total <= 0 or pool_wall <= 0:
         return None
-    rows = []
-    for name, seconds in sorted(worker_totals.items()):
-        sequential_estimate = pool_wall * seconds / total
-        rows.append({
-            "unit": name, "worker_seconds": seconds,
-            "estimated_sequential_seconds": sequential_estimate,
-            "speedup": seconds / sequential_estimate,
-        })
+    concurrency = total / pool_wall
     return {
-        "mode": "worker-estimate-vs-wall", "processes": processes,
-        "wall_seconds": pool_wall, "speedup": total / pool_wall,
-        "rows": rows,
+        "mode": "pooled-sample-concurrency", "processes": processes,
+        "wall_seconds": pool_wall, "engine_sample_seconds": total,
+        "sample_concurrency": concurrency,
+        "rows": [{"unit": name, "worker_seconds": seconds}
+                 for name, seconds in sorted(worker_totals.items())],
     }
+
+
+def format_parallel_summary(report: Mapping[str, object]) -> str:
+    """Console line for a :func:`speedup_payload` report."""
+    return (
+        f"Pooled execution: {report['processes']} processes; "
+        f"{report['engine_sample_seconds']:.2f}s of engine samples in "
+        f"{report['wall_seconds']:.2f}s wall -> sample concurrency "
+        f"{report['sample_concurrency']:.2f} (not a speedup over a sequential run)"
+    )
 
 
 def sweep_payload(
@@ -950,6 +1015,11 @@ def _markdown_report(payload: dict[str, object]) -> str:
                 f"- {row['scenario']}/{row['backend']}: "
                 f"{row['change_ratio']:+.2%} [{row['status']}]"
             )
+        for row in comparison.get("missing", ()):
+            lines.append(
+                f"- {row['scenario']}/{row['backend']}: [MISSING] {row['reason']}")
+        for warning in comparison.get("provenance_warnings", ()):
+            lines.append(f"- {warning}")
         lines.append("")
     lines.append("## Results")
     lines.append("")
@@ -964,16 +1034,41 @@ def _markdown_report(payload: dict[str, object]) -> str:
     return "\n".join(lines)
 
 
+def _missing_reason(scenario: str, backend: str,
+                    unavailable: Sequence[Mapping[str, object]]) -> str:
+    for row in unavailable:
+        if row.get("backend") == backend and row.get("scenario") == scenario:
+            return str(row.get("reason", "failed"))
+    for row in unavailable:
+        if row.get("backend") == backend and "scenario" not in row:
+            return str(row.get("reason", "backend unavailable"))
+    return "not measured in the current run"
+
+
 def compare_with_baseline(
     results: tuple[BenchmarkResult, ...] | list[BenchmarkResult],
     baseline: dict[str, object], *, improvement_threshold: float = .10,
     regression_threshold: float = .05,
+    unavailable: Sequence[Mapping[str, object]] = (),
 ) -> BenchmarkGate:
-    """Apply the agreed optimization gate to comparable NumPy/native results."""
+    """Apply the agreed optimization gate to comparable NumPy/native results.
+
+    Every NumPy/native (scenario, backend) result of the baseline must have a
+    current counterpart: one that is missing — the unit raised, the backend
+    is not compiled, the scenario was not run — fails the gate, with the
+    reason taken from ``unavailable`` when it names the pair or backend.
+    """
     previous = {
         (str(item["scenario"]), str(item["backend"])): float(item["simulations_per_second"])
         for item in baseline["results"]
     }
+    measured = {(item.scenario, item.backend) for item in results}
+    missing = tuple(
+        BenchmarkMissing(scenario, backend,
+                         _missing_reason(scenario, backend, unavailable))
+        for scenario, backend in sorted(previous)
+        if backend != "modular" and (scenario, backend) not in measured
+    )
     comparisons = []
     for item in results:
         if item.backend == "modular" or (item.scenario, item.backend) not in previous:
@@ -991,7 +1086,13 @@ def compare_with_baseline(
         ))
     improved = any(item.status == "IMPROVED" for item in comparisons)
     regressed = any(item.status == "REGRESSED" for item in comparisons)
-    if not comparisons:
+    if missing:
+        detail = (
+            f"{len(missing)} baseline result(s) have no current measurement: "
+            + "; ".join(f"{item.scenario}/{item.backend} ({item.reason})"
+                        for item in missing)
+        )
+    elif not comparisons:
         detail = "no comparable NumPy/native results found in baseline"
     elif regressed:
         detail = "at least one scenario exceeds the allowed regression"
@@ -999,8 +1100,104 @@ def compare_with_baseline(
         detail = "no scenario reaches the required improvement"
     else:
         detail = "required improvement reached without disallowed regressions"
-    return BenchmarkGate(bool(comparisons) and improved and not regressed,
-                         improved, regressed, tuple(comparisons), detail)
+    return BenchmarkGate(
+        bool(comparisons) and improved and not regressed and not missing,
+        improved, regressed, tuple(comparisons), detail, missing,
+    )
+
+
+def check_baseline_configuration(
+    current: Mapping[str, object], recorded: object,
+) -> list[str]:
+    """Validate the measurement design; return the fields the baseline lacks.
+
+    Raises ``ValueError`` when a field both configurations record differs:
+    such measurements are not comparable. Fields the current run records but
+    an older baseline does not are returned so the caller can warn — they
+    are assumed to match.
+    """
+    if not isinstance(recorded, Mapping):
+        raise ValueError("baseline has no configuration block")
+    differing = [key for key in current
+                 if key in recorded and recorded[key] != current[key]]
+    differing += [key for key in recorded if key not in current]
+    if differing:
+        raise ValueError(
+            "baseline measurement design differs from the current benchmark in "
+            f"{', '.join(differing)}; the measurements are not comparable: "
+            f"expected {dict(current)}, found {dict(recorded)}"
+        )
+    return [key for key in current if key not in recorded]
+
+
+def baseline_provenance_warnings(
+    payload: Mapping[str, object], baseline: Mapping[str, object], *,
+    unrecorded_design: Sequence[str] = (), stream=None,
+) -> tuple[str, ...]:
+    """Print and return the provenance warnings of a baseline comparison.
+
+    One warning for design fields the baseline predates (``unrecorded_design``)
+    and one for a missing or differing ``provenance`` block; never raises.
+    """
+    from mordheim_combat_lab.application.settings import provenance_differences
+    from mordheim_combat_lab.provenance import provenance_warning
+
+    advice = (
+        "Throughput changes may reflect that rather than the code under test; the "
+        "gate still runs. Re-save the baseline (--save-baseline) here for a "
+        "like-for-like comparison."
+    )
+    warnings = []
+    if unrecorded_design:
+        configuration = payload.get("configuration")
+        configuration = configuration if isinstance(configuration, Mapping) else {}
+        assumed = ", ".join(f"{key}={configuration.get(key)!r}" for key in unrecorded_design)
+        warnings.append(provenance_warning(
+            "the benchmark baseline predates recording "
+            f"{', '.join(unrecorded_design)}; assuming they match the current run "
+            f"({assumed}), which cannot be verified.", stream=stream))
+    current_provenance = payload.get("provenance")
+    current_provenance = current_provenance if isinstance(current_provenance, Mapping) else {}
+    recorded = baseline.get("provenance")
+    if not isinstance(recorded, Mapping):
+        warnings.append(provenance_warning(
+            "the benchmark baseline records no provenance, so the machine, engine "
+            f"sources and native build it was measured on are unknown. {advice}",
+            stream=stream))
+    else:
+        differences = provenance_differences(recorded, current_provenance)
+        if differences:
+            warnings.append(provenance_warning(
+                "the benchmark baseline was measured on another machine or engine: "
+                + "; ".join(differences) + f". {advice}", stream=stream))
+    return tuple(warnings)
+
+
+def gate_against_baseline(
+    payload: Mapping[str, object], baseline: Mapping[str, object],
+    results: tuple[BenchmarkResult, ...] | list[BenchmarkResult], *,
+    improvement_threshold: float = .10, regression_threshold: float = .05,
+    stream=None,
+) -> BenchmarkGate:
+    """Full baseline gate for one single-configuration run.
+
+    Raises ``ValueError`` when the measurement designs differ
+    (:func:`check_baseline_configuration`). Provenance differences and
+    design fields an older baseline does not record are printed as
+    ``PROVENANCE WARNING`` and recorded in ``provenance_warnings``; they never
+    fail the gate. Missing current results do (:func:`compare_with_baseline`).
+    """
+    configuration = payload["configuration"]
+    assert isinstance(configuration, Mapping)
+    unrecorded = check_baseline_configuration(configuration, baseline.get("configuration"))
+    warnings = baseline_provenance_warnings(
+        payload, baseline, unrecorded_design=unrecorded, stream=stream)
+    gate = compare_with_baseline(
+        results, dict(baseline), improvement_threshold=improvement_threshold,
+        regression_threshold=regression_threshold,
+        unavailable=payload.get("unavailable", ()),  # type: ignore[arg-type]
+    )
+    return replace(gate, provenance_warnings=warnings)
 
 
 def _render_rows(results, unavailable) -> tuple[list[list[str]], list[str]]:
@@ -1082,6 +1279,11 @@ def print_gate(gate: BenchmarkGate, *, improvement: float, regression: float) ->
             f"  {item.scenario}/{item.backend}: {item.change_ratio:+.2%} "
             f"[{item.status}]"
         )
+    for item in gate.missing:
+        print(f"  {item.scenario}/{item.backend}: [MISSING] {item.reason}")
+    if gate.provenance_warnings:
+        print(f"  ({len(gate.provenance_warnings)} provenance warning(s) recorded "
+              "in the report; see above)")
     print(f"Performance gate: {'PASS' if gate.passed else 'FAIL'} - {gate.detail}")
 
 

@@ -255,6 +255,9 @@ def armour_targets(defender: CompiledFighter, strength: np.ndarray,
         - effect.target_armour_bonus
     )
     armour = defender.armour_save + modifier
+    strength_cap = phases.armour_specialist_strength_cap(defender, effect, defender.armour_save)
+    if strength_cap is not None:
+        armour -= strength_penetration - np.minimum(strength_penetration, strength_cap)
     natural = np.full(strength.size, defender.natural_armour_save, dtype=np.int16)
     if not defender.natural_armour_unmodified:
         # Mirror the canonical contract: the strength and target-bonus part is
@@ -338,6 +341,8 @@ def attack_count(fighter: CompiledFighter, charging: np.ndarray, first_round: bo
         result[charging] = 2 + base - fighter.characteristics.attacks
     if wounded is not None and has(effect,"maddened_with_pain"):
         result += wounded.astype(np.int16)
+    if first_round and has(effect, "skill.combat-charge"):
+        result += charging.astype(np.int16)
     if effect.charge_attacks_bonus and charging.any():
         result += charging.astype(np.int16) * effect.charge_attacks_bonus
     if first_round and effect.first_round_charge_attacks_bonus and charging.any():
@@ -484,6 +489,11 @@ def allocate_attack_weapons(fighter: CompiledFighter, count: int, *, first_round
 def priority(fighter: CompiledFighter, opponent: CompiledFighter, first_round: bool,
              charging: np.ndarray, charged: np.ndarray, stood: np.ndarray) -> np.ndarray:
     weapon_priority = fighter.main_weapon.priority
+    if any(has(fighter.main_weapon, tag) for tag in phases.WHIPCRACK_WEAPON_TAGS):
+        # Only the whipcrack bonus strikes first; the ordinary attacks resolve
+        # in the bearer's own order instead of inheriting the bonus tier the
+        # weapon declares (modular phases.resolve_priority).
+        weapon_priority = 0
     if fighter.global_effects.strongman and weapon_priority < 0 and (
         fighter.main_weapon.two_handed or has(fighter.main_weapon, "weapon.broadsword")
     ):
@@ -738,9 +748,6 @@ def hit_reroll(
         np.full(size, bool(effect.reroll_hits), dtype=bool)
         | np.full(size, bool(first_round and has(effect, "mechanic.first-round-hit-reroll")), dtype=bool)
         | np.full(size, bool(pride), dtype=bool)
-        | np.full(size, bool(first_round and has(effect, "mechanic.pikewall")
-                             and has(effect, "condition.being-charged")
-                             and weapon.priority > 0), dtype=bool)
         | (charge_rows & bool(effect.charge_reroll_hits))
         | (charge & has(effect, "rule.berserk-charge") & any(
             has(weapon, tag) for tag in (
@@ -930,6 +937,10 @@ def hit_context(
         attacker, defender, weapon, effect, rows,
         first_round=first_round, charging=charge, frenzy=attacker_state.frenzy[rows],
     )
+    # Pikewall rerolls a failed hit while its bearer is the one being charged;
+    # the fact is per row (modular prepare_hit_context reads the tagged copy).
+    if first_round and has(effect, "mechanic.pikewall") and weapon.priority > 0:
+        reroll = reroll | attacker_state.being_charged[rows]
     luck = (
         allow_luck and has(effect, "skill.luck")
         and ~attacker_state.luck_used[rows] & ~reroll
@@ -1078,6 +1089,7 @@ class VectorArmourContext:
     flaming_attack: bool
     natural_armour_negated_by_fire: bool
     incoming_save_modifier: int
+    strength_penalty_cap: int | None = None
 
 
 def armour_context(
@@ -1150,13 +1162,17 @@ def armour_context(
         has(effect, "attack.fire"),
         defender.global_effects.natural_armour_negated_by_fire,
         int(has(effect, "condition.djinns-curse-active")),
+        phases.armour_specialist_strength_cap(defender, effect, armour_save),
     )
 
 
 def armour_target_values(context: VectorArmourContext) -> np.ndarray:
     """Port of ``modular.phases.armour_target`` over the projected context."""
+    strength_penalty = np.maximum(0, context.armour_strength - 3)
+    if context.strength_penalty_cap is not None:
+        strength_penalty = np.minimum(strength_penalty, context.strength_penalty_cap)
     modifier = (
-        np.maximum(0, context.armour_strength - 3)
+        strength_penalty
         + context.armour_penetration
         - context.target_armour_bonus
     )

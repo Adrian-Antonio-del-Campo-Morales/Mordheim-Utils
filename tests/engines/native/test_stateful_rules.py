@@ -77,6 +77,35 @@ def _run(first, second, *script, rounds=1, policy=None, context=_STILL):
     return result, dice, policy
 
 
+def test_netted_fighter_stands_after_cutting_free_only_on_its_own_turn():
+    first, second = _pair()
+    first, second = (_tagged(fighter, "condition.netted") for fighter in (first, second))
+    result, _, _ = _run(first, second)
+    assert int(result.first_condition[0]) == 0
+    assert int(result.second_condition[0]) == 1
+
+
+def test_black_hunger_stops_on_out_then_rescues_and_only_runs_after_activation():
+    first, second = _pair()
+    hungry = _tagged(first, "mechanic.black-hunger", "mechanic.force-of-will")
+    # Two Hunger-enhanced attacks and the reply miss. The first backlash hit
+    # takes the bearer OUT; the two remaining hits stop before the rescue.
+    script = [1, 1, 1, 3, 6, 6, 1]
+    result, dice, _ = _run(hungry, second, *script)
+    assert not dice.script and dice.log == script
+    assert int(result.first_condition[0]) == 0
+    assert int(result.first_wounds[0]) == 1
+    assert dict(result.first_resources)["force-of-will"].tolist() == [True]
+
+    # On the opponent's turn the Hunger is not activated: one ordinary blow
+    # each and no backlash die are drawn.
+    dice = _Dice(1, 1)
+    native.simulate_batch_observed(
+        hungry, second, 1, dice, 1, _Policy(),
+        context=DuelContext(charging=(), active_participant="second"))
+    assert not dice.script and dice.log == [1, 1]
+
+
 def test_thin_flesh_lowers_the_wound_target_by_one_point_of_toughness():
     first, second = _pair()
     # Strength 3 against Toughness 3 needs a 4; Thin Flesh makes it a 3, so a

@@ -16,6 +16,121 @@ CALIBRATION_SCHEMA = "mordheim-combat-lab-calibration/v1"
 #: Measured overrides layered on top of the reference-machine constants below.
 _CALIBRATION: dict[str, dict] = {}
 
+#: Provenance warnings raised by the last :func:`apply_calibration` call.
+_CALIBRATION_WARNINGS: tuple[str, ...] = ()
+
+#: Engines whose sources and build a calibration profile describes.
+CALIBRATION_ENGINES = ("numpy", "native")
+
+
+def measurement_provenance(engines, *, emit: bool = True) -> dict[str, object]:
+    """Machine and engine identity a timing measurement depends on.
+
+    The shared :func:`run_provenance` block (revision, imported package
+    directories, per-engine source digests, native build hash, warnings)
+    plus the machine: CPU count, platform and the Python/NumPy versions.
+    ``emit`` prints the block's own warnings (dirty tree, foreign imports).
+    """
+    import os
+    import platform
+
+    import numpy
+    from mordheim_combat_lab.provenance import run_provenance
+    from mordheim_knowledge.paths import project_root
+
+    block = run_provenance(project_root(), tuple(engines), emit=emit)
+    block.update({
+        "cpu_count": os.cpu_count(),
+        "platform": platform.platform(),
+        "machine": platform.machine(),
+        "python": platform.python_version(),
+        "numpy": numpy.__version__,
+    })
+    return block
+
+
+def provenance_differences(recorded: Mapping[str, object],
+                           current: Mapping[str, object]) -> list[str]:
+    """Readable differences between a stored and the current provenance.
+
+    Compares the machine (CPU count, platform, Python, NumPy), the source
+    digest of every engine both blocks describe, the native build hash and
+    the revision (commit and dirty state). A field the stored block lacks is
+    reported as unrecorded: an unknown origin is a difference too.
+    """
+    from mordheim_combat_lab.provenance import describe_difference
+
+    notes: list[str] = []
+    for key, label in (("cpu_count", "CPU count"), ("platform", "platform"),
+                       ("python", "Python version"), ("numpy", "NumPy version"),
+                       ("native_build_sha256", "native build")):
+        if key not in recorded:
+            notes.append(f"{label} not recorded")
+            continue
+        note = describe_difference(label, recorded[key], current.get(key))
+        if note:
+            notes.append(note)
+    old_digests = recorded.get("engine_digests")
+    new_digests = current.get("engine_digests")
+    new_digests = new_digests if isinstance(new_digests, Mapping) else {}
+    if not isinstance(old_digests, Mapping):
+        notes.append("engine source digests not recorded")
+    else:
+        for engine in sorted(new_digests):
+            if engine not in old_digests:
+                notes.append(f"{engine} source digest not recorded")
+                continue
+            note = describe_difference(f"{engine} engine sources",
+                                       old_digests[engine], new_digests[engine])
+            if note:
+                notes.append(note)
+    old_revision = recorded.get("revision")
+    new_revision = current.get("revision")
+    new_revision = new_revision if isinstance(new_revision, Mapping) else {}
+    if not isinstance(old_revision, Mapping):
+        notes.append("source revision not recorded")
+    else:
+        for key, label in (("commit", "commit"), ("dirty", "uncommitted-changes flag")):
+            note = describe_difference(label, old_revision.get(key), new_revision.get(key))
+            if note:
+                notes.append(note)
+    return notes
+
+
+def calibration_provenance_warnings() -> tuple[str, ...]:
+    """Provenance warnings recorded when the installed profile was applied."""
+    return _CALIBRATION_WARNINGS
+
+
+def _check_calibration_provenance(payload: Mapping[str, object]) -> tuple[str, ...]:
+    """Warn (never refuse) when a profile was measured on another machine/engine."""
+    from mordheim_combat_lab.provenance import provenance_warning
+
+    consequence = (
+        "It is applied anyway, but its timings may not describe this setup, and "
+        "its batch sizes change the per-batch random streams: NumPy/native sampled "
+        "results differ from runs under the reference defaults or another profile. "
+        "Re-run `mordheim-combat-lab calibrate` to measure this machine and engine."
+    )
+    recorded = payload.get("provenance")
+    if not isinstance(recorded, Mapping):
+        return (provenance_warning(
+            "the calibration profile records no provenance (written before machine "
+            "and engine identity were stored), so the machine and engine build it "
+            f"was measured on are unknown. {consequence}"),)
+    try:
+        current = measurement_provenance(CALIBRATION_ENGINES, emit=False)
+    except Exception as error:  # startup must never break on a provenance probe
+        return (provenance_warning(
+            f"could not determine this machine's provenance ({error}) to check the "
+            f"calibration profile against it. {consequence}"),)
+    differences = provenance_differences(recorded, current)
+    if not differences:
+        return ()
+    return (provenance_warning(
+        "the calibration profile was measured on another machine or engine build: "
+        + "; ".join(differences) + f". {consequence}"),)
+
 
 def _strict_int(value):
     """Integer coercion that rejects fractional values instead of truncating."""
@@ -42,25 +157,33 @@ def apply_calibration(payload: Mapping[str, object] | None) -> dict:
 
     ``payload`` is the JSON document written by the ``calibrate`` command
     (schema :data:`CALIBRATION_SCHEMA`). Recognised sections: ``batch_sizes``,
-    ``pooled_batch_sizes``, ``pool_workers`` and ``spawn_seconds`` — each maps
+    ``pool_workers`` and ``spawn_seconds`` — each maps
     backend names (``auto``/``native``/``numpy``) to values clamped to a sane
     range. The pool speedup curve is not a stored section: it is re-derived
     per backend from the profile's raw ``evidence``
     (:func:`measured_pool_speedups`), so the decision runs on this machine's
     measured parallel efficiency instead of the shared conservative fit.
     Unknown keys, foreign schemas and out-of-range values are ignored: an
-    edited or truncated file must never break startup. Passing ``None`` or an
+    edited or truncated file must never break startup; the ``pooled_batch_sizes``
+    section of older profiles is ignored too (comparisons never switch batch
+    when they pool). Passing ``None`` or an
     empty payload restores the reference defaults; both return the applied
     sections so callers can report what took effect.
+
+    Provenance is checked, never enforced: when the profile's recorded
+    ``provenance`` (CPU count, platform, Python/NumPy, engine source digests,
+    native build, revision) differs from this process — or is missing — a
+    ``PROVENANCE WARNING`` is printed and kept in
+    :func:`calibration_provenance_warnings`, and the profile is still applied.
     """
-    global _CALIBRATION
+    global _CALIBRATION, _CALIBRATION_WARNINGS
     _CALIBRATION = {}
+    _CALIBRATION_WARNINGS = ()
     if not isinstance(payload, Mapping) or payload.get("schema") != CALIBRATION_SCHEMA:
         return {}
     applied: dict[str, dict] = {}
     for section, defaults, cast, low, high in (
         ("batch_sizes", DEFAULT_BATCH_SIZES, _strict_int, 500, 2_000_000),
-        ("pooled_batch_sizes", POOLED_BATCH_SIZES, _strict_int, 500, 2_000_000),
         ("pool_workers", POOL_WORKERS, _strict_int, 2, 64),
         ("spawn_seconds", POOL_SPAWN_SECONDS, float, 0.01, 10.0),
     ):
@@ -80,6 +203,8 @@ def apply_calibration(payload: Mapping[str, object] | None) -> dict:
     if curves:
         _CALIBRATION["pool_speedups"] = curves
         applied["pool_speedups"] = curves
+    if applied:
+        _CALIBRATION_WARNINGS = _check_calibration_provenance(payload)
     return applied
 
 
@@ -191,13 +316,16 @@ POOL_SPAWN_SECONDS = {"auto": 0.24, "native": 0.24, "numpy": 0.20}
 POOL_PER_BATTERY_OVERHEAD_SECONDS = 0.002  # submits, pickling and drains
 POOL_SAFETY_FACTOR = 1.25  # spawn must be beaten by this margin
 
-#: Measured batch for pooled batteries whose sequential optimum cannot fill
-#: the pool (numpy only): 100k at 1M leaves 10 batches over 8 workers, so two
-#: segments carry two batches and the wall pays 1.6x the ideal. At 25k the 40
-#: batches spread 5-per-worker exactly: measured 4.3-4.8x pooled vs 3.1-3.4x
-#: at 100k (1M, 8 workers, two pairs), and 4.14x vs 2.76x at 400k. Native
-#: keeps its batch — at 1M its 5k sits within 4% of the best measured point.
-POOLED_BATCH_SIZES = {"native": 5_000, "numpy": 25_000}
+#: Backends with a pooled battery path (and so a measured speedup curve).
+POOL_BACKENDS = ("native", "numpy")
+
+#: Pooled batches older calibration profiles swept their workers at when the
+#: profile carries no ``pooled_batch_sizes`` entry. Read only to interpret old
+#: evidence: comparisons pool at the fighters' own batch (the batch selects
+#: the per-batch random streams, so the baseline and every candidate share it
+#: whatever the pool decision), and a curve measured at another batch does not
+#: describe the configuration that runs.
+_LEGACY_POOLED_BATCH_SIZES = {"native": 5_000, "numpy": 25_000}
 
 
 def pool_workers(backend: str) -> int:
@@ -218,25 +346,6 @@ def pool_spawn_seconds(backend: str) -> float:
     return float(_calibrated_value("spawn_seconds", key, fallback))
 
 
-def pool_batch_size(backend: str, settings: "DuelExecutionSettings") -> int:
-    """Batch for a pooled battery's fighters (measured per backend).
-
-    NumPy's sequential optimum (100k) starves the pool, so pooled NumPy runs
-    switch to the measured pooled batch; native keeps its sequential optimum
-    unless calibration measured a different one. Only the app's own defaults
-    are rewritten — a batch the caller chose explicitly (anything different
-    from the legacy global default and the resolved engine default) stands,
-    mirroring :func:`resolve_fighter_settings`; the baseline keeps the
-    sequential batch because it measures per-duel cost without a pool.
-    """
-    fallback = POOLED_BATCH_SIZES.get(backend)
-    if fallback is None:
-        return settings.batch_size
-    if settings.batch_size not in (LEGACY_GLOBAL_BATCH_SIZE, default_batch_size(backend)):
-        return settings.batch_size
-    return int(_calibrated_value("pooled_batch_sizes", backend, fallback))
-
-
 def _geometric_mean(values) -> float:
     return math.exp(sum(math.log(value) for value in values) / len(values))
 
@@ -245,12 +354,19 @@ def measured_pool_speedups(payload: Mapping[str, object]) -> dict[str, dict[int,
     """Per-machine pool speedup curves derived from a profile's raw evidence.
 
     The calibration's worker sweep measures the *same* pairs sequentially and
-    pooled (at the winning pooled batch) for every worker candidate, so each
-    pair yields a per-duel ratio of sequential cost to pooled cost and each
-    worker count yields one curve point: the geometric mean of those ratios,
-    keyed by the pool's segment count. Points are clamped to ``[1, segments]``
-    — a pool cannot outrun its own segment count, and a measured loss is
-    recorded as "no gain" (the policy then stays sequential).
+    pooled for every worker candidate, both at the calibrated sequential batch
+    — the batch comparisons run, pooled or not — so each pair yields a
+    per-duel ratio of sequential cost to pooled cost and each worker count
+    yields one curve point: the geometric mean of those ratios, keyed by the
+    pool's segment count. Points are clamped to ``[1, segments]`` — a pool
+    cannot outrun its own segment count, and a measured loss is recorded as
+    "no gain" (the policy then stays sequential).
+
+    The sweep batch is ``method.worker_sweep_batch``; older profiles swept at
+    their pooled batch (``pooled_batch_sizes``). A backend whose sweep batch
+    differs from its sequential batch yields no curve — that measurement
+    describes a configuration comparisons no longer run — and the shared
+    conservative curve applies instead.
 
     Returns ``{backend: {segments: speedup}}``, empty when the payload carries
     no usable evidence (foreign schema, missing sweeps, degenerate walls).
@@ -265,26 +381,34 @@ def measured_pool_speedups(payload: Mapping[str, object]) -> dict[str, dict[int,
     samples = samples if isinstance(samples, Mapping) else {}
     sequential_batches = payload.get("batch_sizes")
     sequential_batches = sequential_batches if isinstance(sequential_batches, Mapping) else {}
-    pooled_batches = payload.get("pooled_batch_sizes")
-    pooled_batches = pooled_batches if isinstance(pooled_batches, Mapping) else {}
+    sweep_batches = method.get("worker_sweep_batch")
+    legacy_batches = payload.get("pooled_batch_sizes")
+    if not isinstance(sweep_batches, Mapping):
+        sweep_batches = None
+        legacy_batches = legacy_batches if isinstance(legacy_batches, Mapping) else {}
 
     curves: dict[str, dict[int, float]] = {}
     for backend, row in evidence.items():
-        if backend not in POOLED_BATCH_SIZES or not isinstance(row, Mapping):
+        if backend not in POOL_BACKENDS or not isinstance(row, Mapping):
             continue
         backend_samples = samples.get(backend)
         backend_samples = backend_samples if isinstance(backend_samples, Mapping) else {}
         sequential_samples = _bounded(backend_samples.get("sequential"), 1, 1 << 40, _strict_int)
         pooled_samples = _bounded(backend_samples.get("pooled"), 1, 1 << 40, _strict_int)
-        pooled_batch = _bounded(pooled_batches.get(backend), 1, 2_000_000, _strict_int)
-        if pooled_batch is None:
-            pooled_batch = POOLED_BATCH_SIZES.get(backend)
         sequential_batch = _bounded(sequential_batches.get(backend), 1, 2_000_000, _strict_int)
         if sequential_batch is None:
             sequential_batch = DEFAULT_BATCH_SIZES[backend]
+        if sweep_batches is not None:
+            sweep_batch = _bounded(sweep_batches.get(backend), 1, 2_000_000, _strict_int)
+        else:
+            sweep_batch = _bounded(legacy_batches.get(backend), 1, 2_000_000, _strict_int)
+            if sweep_batch is None:
+                sweep_batch = _LEGACY_POOLED_BATCH_SIZES[backend]
+        if sweep_batch != sequential_batch:
+            continue
         sequential_table = row.get("sequential_batch")
         pooled_table = row.get("pooled_workers")
-        if sequential_samples is None or pooled_samples is None or not pooled_batch:
+        if sequential_samples is None or pooled_samples is None:
             continue
         if not isinstance(sequential_table, Mapping) or not isinstance(pooled_table, Mapping):
             continue
@@ -303,7 +427,7 @@ def measured_pool_speedups(payload: Mapping[str, object]) -> dict[str, dict[int,
                 continue
             if len(pooled_walls) != len(sequential_walls):
                 continue
-            segments = len(split_battery(pooled_samples, pooled_batch, workers))
+            segments = len(split_battery(pooled_samples, sweep_batch, workers))
             if segments < 2:
                 continue
             ratios = []
@@ -352,7 +476,7 @@ def calibrated_pool_speedups(backend: str) -> dict[int, float]:
     section = _CALIBRATION.get("pool_speedups")
     if not isinstance(section, Mapping):
         return {}
-    if backend in POOLED_BATCH_SIZES:
+    if backend in POOL_BACKENDS:
         keys = (backend,)
     elif backend == "auto":
         keys = ("native", "numpy")
@@ -425,12 +549,19 @@ def battery_pool_plan(baseline_seconds: float, settings: "DuelExecutionSettings"
     estimated saving across the remaining fighters comfortably beats its
     spawn cost (measured constants; this machine's measured speedup curve when
     a calibration profile is installed, the shared conservative one otherwise).
+
+    Segments are counted with ``settings.batch_size`` — the batch the pooled
+    fighters really run, since comparisons keep the baseline's batch — and the
+    calibrated speedup curve was measured at that same (calibrated sequential)
+    batch, so the estimate describes the configuration that runs. The
+    spawn cost is charged here exactly once: the calibration warms its pools
+    before timing, so the measured speedup curve excludes worker spawn and
+    engine imports, and ``pool_spawn_seconds`` carries them alone.
     """
     if fighters < 1 or settings.simulations < 2:
         return None
     workers = pool_workers(backend)
-    pool_batch = pool_batch_size(backend, settings)
-    segments = len(split_battery(settings.simulations, pool_batch, workers))
+    segments = len(split_battery(settings.simulations, settings.batch_size, workers))
     if segments < 2:
         return None
     saving = (baseline_seconds * (1.0 - 1.0 / pool_speedup(segments, backend))

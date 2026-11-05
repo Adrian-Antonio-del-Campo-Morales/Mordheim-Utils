@@ -1249,6 +1249,22 @@ mechanics:
   trigger: attack
   application: attack
   stacking: stack
+- id: skill.armour-specialist
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.armour-specialist
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.combat-charge
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.combat-charge
+  trigger: passive
+  application: fighter
+  stacking: stack
 - id: skill.always-strikes-first
   handler: effect-set
   parameters:

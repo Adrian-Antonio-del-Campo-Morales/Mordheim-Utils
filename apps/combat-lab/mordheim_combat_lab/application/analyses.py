@@ -11,7 +11,6 @@ from .catalogue import SkillChoice
 from .settings import (
     DuelExecutionSettings,
     battery_pool_plan,
-    pool_batch_size,
     resolve_fighter_settings,
     simulate_battery,
     split_battery,
@@ -59,9 +58,16 @@ def compare_builds(baseline: FighterBuild, enemy: FighterBuild,
     fixed sample-size threshold misjudges heavy grinds and cheap duels
     alike). ``workers`` overrides that decision: ``0`` forces the in-process
     path, a positive count pools, ``None`` lets the measurement decide. When
-    the pool engages it is created once per run and shared by every fighter,
-    and NumPy fighters switch to the measured pooled batch
-    (:func:`pool_batch_size`) — its sequential optimum starves the pool.
+    the pool engages it is created once per run and shared by every fighter.
+
+    The pool never changes a fighter's batch size: the batch selects the
+    per-batch random streams, and pooled batteries replay exactly the
+    sequential streams *at the same batch*. Keeping every fighter on its
+    resolved batch therefore keeps the candidates on common random numbers
+    with the baseline and makes the results independent of the pool decision
+    (which hangs on the baseline's wall time, i.e. on machine load). The
+    price is pool efficiency for NumPy, whose 100k optimum fills fewer
+    segments than the measured pooled batch would.
 
     ``observe`` (optional) receives one JSON-safe payload with the run's
     per-fighter resolutions — simulations, batch size, the engine actually
@@ -126,10 +132,6 @@ def compare_builds(baseline: FighterBuild, enemy: FighterBuild,
                 rejected.append((candidate, str(error)))
             else:
                 candidate_settings, backend = resolve_fighter_settings(settings, fighter, compiled_enemy)
-                if battery_pool is not None:
-                    candidate_settings = replace(
-                        candidate_settings,
-                        batch_size=pool_batch_size(backend, candidate_settings))
                 result, seconds = _run(fighter, candidate_settings, battery_pool)
                 results.append(ComparisonResult(candidate, result.first_win_rate,
                     result.first_win_rate - baseline_result.first_win_rate,

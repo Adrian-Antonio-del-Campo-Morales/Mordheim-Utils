@@ -13,7 +13,7 @@ from mordheim_core.models import CompiledFighter, DuelContext, DuelRequest, Duel
 from mordheim_combat.modular.state import maximum_wounds
 from mordheim_combat.vectorized._types import CombatState, KNOCKED_DOWN, OUT, PARALYZED, STANDING, STUNNED, VectorAttackObservation, VectorBatchObservation, _parry_capacity, has
 from mordheim_combat.vectorized._operators import _characteristic_test, allocate_attack_weapons, attack_count, effective_initiative, opposed_attack_count, priority, round_weapon_attack_count
-from mordheim_combat.vectorized._attacks import _optional_phase_plan, _prepare_weapon_attack, _resolve_weapon, resolve_attacks
+from mordheim_combat.vectorized._attacks import _optional_phase_plan, _prepare_weapon_attack, _resolve_weapon, _resolve_weapon_once, resolve_attacks
 from mordheim_combat.vectorized._alchemy import alchemy_resources, resolve_alchemist
 from mordheim_combat.vectorized._equipment import equipment_for_rows, phase_equipment, staff_power
 from mordheim_combat.vectorized._leadership import apply_command_conditions, apply_death_fighting, expire_raise_our_insignia, leadership_resources, patch_death_fighting, resolve_local_leadership, sea_shanty_losses
@@ -430,6 +430,11 @@ def _charm_gates(owner_first: CompiledFighter, owner_second: CompiledFighter,
         # supplied Leadership; an ordinary animal simply cannot strike.
         if (has(owner.global_effects, "mechanic.taal-tranquil-fauna")
                 and has(target.global_effects, "species.animal")):
+            # The aura asks only that its bearer is in action: a knocked-down
+            # or stunned priest still bars the animal (modular rounds.py:890,
+            # ``own.active`` rather than Standing).
+            calmed = rows[(owner_state.condition[rows] != OUT)
+                          & (target_state.condition[rows] == STANDING)]
             conditional = any(has(target.global_effects, tag) for tag in
                               ("fauna-animal.handled", "fauna-animal.large-predator"))
             ordinary = (has(target.global_effects, "fauna-animal.ordinary")
@@ -438,11 +443,14 @@ def _charm_gates(owner_first: CompiledFighter, owner_second: CompiledFighter,
                 if target.animal_handler_leadership is None:
                     raise ValueError(
                         "Tranquil Fauna requires the qualified Animal Handler's Leadership")
-                rolls = rng.integers(1, 7, eligible.size)
-                passed = (rolls <= target.animal_handler_leadership) & (rolls != 6)
-                blocked[eligible[~passed]] = True
+                # The oracle's resolve_leadership: 2D6 against the handler's
+                # supplied value, with no six-always-fails rule.
+                totals = (rng.integers(1, 7, calmed.size)
+                          + rng.integers(1, 7, calmed.size))
+                passed = totals <= target.animal_handler_leadership
+                blocked[calmed[~passed]] = True
             elif ordinary:
-                blocked[eligible] = True
+                blocked[calmed] = True
             else:
                 raise ValueError(
                     "Tranquil Fauna requires the animal's explicit "
@@ -520,33 +528,66 @@ def _charm_gates(owner_first: CompiledFighter, owner_second: CompiledFighter,
         seduction = next((tag for tag in ("mechanic.lahmia-seduction",
                                           "mechanic.lahmian-seduction")
                           if has(owner.global_effects, tag)), None)
-        if seduction is not None and not any(
-                has(target.global_effects, tag) for tag in
-                ("mechanic.psychology-immunity", "nature.undead", "nature.daemon")):
-            controlled = eligible[ledger.seduction_controlled[eligible]]
-            own_turn = eligible[first_player_turn[eligible] == target_is_first]
-            release_rows = np.intersect1d(controlled, own_turn, assume_unique=True)
-            if release_rows.size and _choose(
-                    decisions, f"round.{round_index}.{label}.seduction-release", target):
-                passed = resolve_local_leadership(
-                    target, target_state, release_rows, first=target_is_first,
-                    key=f"round.{round_index}.{label}.seduction-release", rng=rng,
-                    context=context, decisions=decisions,
-                    resources=leadership[1 if owner_is_first else 0],
-                    opponent=owner, close_combat=True)
-                ledger.seduction_controlled[release_rows[passed]] = False
-            free = eligible[~ledger.seduction_controlled[eligible]]
-            if free.size and _choose(
-                    decisions, f"round.{round_index}.{label}.{seduction}.establish", target):
-                passed = resolve_local_leadership(
-                    target, target_state, free, first=target_is_first,
-                    key=f"round.{round_index}.{label}.{seduction}", rng=rng,
-                    context=context, decisions=decisions,
-                    resources=leadership[1 if owner_is_first else 0],
-                    psychology=True, own_value_only=True, opponent=owner,
-                    close_combat=True)
-                ledger.seduction_controlled[free[~passed]] = True
-            blocked[eligible[ledger.seduction_controlled[eligible]]] = True
+        if seduction is not None:
+            lahmia = seduction == "mechanic.lahmia-seduction"
+            # Each printed copy carries exactly its own exclusions (modular
+            # CONTROL_POWERS): the Lahmia copy exempts the undead, daemons and
+            # the Stupid; the Khemrian copy only Psychology immunity.
+            exempt = (("mechanic.psychology-immunity", "nature.undead",
+                       "nature.daemon", "mechanic.stupidity") if lahmia
+                      else ("mechanic.psychology-immunity",))
+            if not any(has(target.global_effects, tag) for tag in exempt):
+                standing = rows[target_state.condition[rows] == STANDING]
+                controlled = standing[ledger.seduction_controlled[standing]]
+                release_rows = controlled[
+                    first_player_turn[controlled] == target_is_first]
+                if release_rows.size and _choose(
+                        decisions, f"round.{round_index}.{label}.seduction-release", target):
+                    passed = resolve_local_leadership(
+                        target, target_state, release_rows, first=target_is_first,
+                        key=f"round.{round_index}.{label}.seduction-release", rng=rng,
+                        context=context, decisions=decisions,
+                        resources=leadership[1 if owner_is_first else 0],
+                        opponent=owner, close_combat=True)
+                    ledger.seduction_controlled[release_rows[passed]] = False
+                allowed = True
+                if lahmia:
+                    # Printed "one male enemy": the fact is supplied, never
+                    # inferred from the profile or the warband.
+                    if not any(has(target.global_effects, tag)
+                               for tag in ("sex.male", "sex.female")):
+                        raise ValueError(
+                            "Lahmia Seduction requires the opponent's explicit male/female fact")
+                    allowed = has(target.global_effects, "sex.male")
+                free = eligible[~ledger.seduction_controlled[eligible]
+                                & ~owner_state.stupidity_failed[eligible]
+                                & ~owner_state.grappled[eligible]
+                                & ~owner_state.grappling[eligible]]
+                if lahmia:
+                    # The Lahmia copy acts only during her own turn.
+                    free = free[first_player_turn[free] != target_is_first]
+                if allowed and free.size and _choose(
+                        decisions, f"round.{round_index}.{label}.{seduction}.establish", target):
+                    if not lahmia:
+                        # The Khemrian copy prints the Vampire's own Leadership
+                        # test before her choice; a failure leaves the victim.
+                        owner_passed = resolve_local_leadership(
+                            owner, owner_state, free, first=not target_is_first,
+                            key=f"round.{round_index}.{label}.{seduction}.own-test",
+                            rng=rng, context=context, decisions=decisions,
+                            resources=leadership[0 if owner_is_first else 1],
+                            opponent=target, close_combat=True)
+                        free = free[owner_passed]
+                    if free.size:
+                        passed = resolve_local_leadership(
+                            target, target_state, free, first=target_is_first,
+                            key=f"round.{round_index}.{label}.{seduction}", rng=rng,
+                            context=context, decisions=decisions,
+                            resources=leadership[1 if owner_is_first else 0],
+                            psychology=True, own_value_only=True, opponent=owner,
+                            close_combat=True)
+                        ledger.seduction_controlled[free[~passed]] = True
+                blocked[rows[ledger.seduction_controlled[rows]]] = True
     return blocked_first, blocked_second
 
 
@@ -558,7 +599,8 @@ GRAPPLE_IMMUNITY = ("nature.undead", "nature.daemon", "nature.dead",
 def _grapple_declaration(owner: CompiledFighter, target: CompiledFighter,
                          owner_state: CombatState, target_state: CombatState,
                          rows: np.ndarray, decisions, ledger: "_RoundLedger",
-                         blocked: np.ndarray, key: str) -> np.ndarray:
+                         blocked: np.ndarray, key: str, *,
+                         owner_index: int = 0) -> np.ndarray:
     """Port of the Torturer's hold declaration for one side."""
     declared = np.zeros(owner_state.wounds.size, dtype=bool)
     if not any(has(owner.global_effects, tag) for tag in GRAPPLER_TAGS):
@@ -572,7 +614,7 @@ def _grapple_declaration(owner: CompiledFighter, target: CompiledFighter,
         & (target_state.condition[rows] != OUT)
         & ~blocked[rows]
         & ~owner_state.on_fire[rows]
-        & ~ledger.animosity_failed[rows]
+        & ~ledger.animosity_failed[owner_index][rows]
         & ~owner_state.stupidity_failed[rows]
         & ~owner_state.grappled[rows]
         & ~owner_state.grappling[rows]
@@ -776,8 +818,12 @@ class _RoundLedger:
     array per simulation, exactly like G05's LeadershipResources.
     """
 
-    drunken_result: np.ndarray
-    animosity_failed: np.ndarray
+    #: One per duelist: the modular ``FighterState.drunken_result``.  A shared
+    #: array would let one side's expiry clear the other side's fresh roll.
+    drunken_result: list[np.ndarray]
+    #: One per duelist: a shared array would silence the failing side's
+    #: opponent too (``silent1``/``silent2`` both read it).
+    animosity_failed: list[np.ndarray]
     crude_belch_ogre_used: np.ndarray
     entranced: np.ndarray
     charm_blocked: np.ndarray
@@ -815,8 +861,10 @@ class _RoundLedger:
 
 def _round_ledger(count: int) -> _RoundLedger:
     return _RoundLedger(
-        drunken_result=np.zeros(count, dtype=np.int8),
-        animosity_failed=np.zeros(count, dtype=bool),
+        drunken_result=[np.zeros(count, dtype=np.int8),
+                        np.zeros(count, dtype=np.int8)],
+        animosity_failed=[np.zeros(count, dtype=bool),
+                          np.zeros(count, dtype=bool)],
         crude_belch_ogre_used=np.zeros(count, dtype=bool),
         entranced=np.zeros(count, dtype=bool),
         charm_blocked=np.zeros(count, dtype=bool),
@@ -1257,6 +1305,58 @@ def _patch_righteous_charge(equipment: dict[int, CompiledFighter],
             tags=(*base.global_effects.tags, *RIGHTEOUS_CHARGE_TAGS)))
 
 
+def _resolve_wheelo_impact(owner: CompiledFighter, target: CompiledFighter,
+                           rows: np.ndarray, charges_own: np.ndarray,
+                           charges_other: np.ndarray, owner_state: CombatState,
+                           target_state: CombatState,
+                           rng: np.random.Generator) -> None:
+    """Port of the Wheelo collision (modular/rounds.py:1082-1115).
+
+    A charging Wheelo resolves D6/2 (rounded up) impact hits before any blow;
+    the spear fitting grants one counter-impact when the Wheelo is itself
+    charged.  Impacts are automatic unparriable Strength 4 hits (5 on the
+    morning star's first impact), the axe fitting adds one point of armour
+    penetration and the club fitting concussion.  The collision carries none
+    of the bearer's own effects and is not a hand-to-hand attack.
+    """
+    if not has(owner.global_effects, "mechanic.wheelo-impact") or rows.size == 0:
+        return
+    charging = charges_own[rows]
+    counter = charges_other[rows] & has(owner.global_effects, "wheelo.fitting.spear")
+    eligible = ((charging | counter)
+                & (owner_state.condition[rows] != OUT)
+                & (target_state.condition[rows] != OUT))
+    rows = rows[eligible]
+    charging = charging[eligible]
+    if rows.size == 0:
+        return
+    counts = np.ones(rows.size, dtype=np.int64)
+    if charging.any():
+        counts[charging] = (rng.integers(1, 7, int(charging.sum())) + 1) // 2
+    morning_star = has(owner.global_effects, "wheelo.fitting.morning-star")
+    penetration = int(has(owner.global_effects, "wheelo.fitting.axe"))
+    concussion = has(owner.global_effects, "wheelo.fitting.club")
+    for index in range(int(counts.max(initial=0))):
+        active = rows[(counts > index)
+                      & (owner_state.condition[rows] != OUT)
+                      & (target_state.condition[rows] != OUT)]
+        if active.size == 0:
+            continue
+        weapon = EffectSet(
+            fixed_strength=5 if morning_star and index == 0 else 4,
+            automatic_hit=True, cannot_be_parried=True,
+            armour_penetration=penetration, concussion=concussion,
+        )
+        source = replace(owner, main_weapon=weapon, main_weapon_without_poison=None,
+                         off_hand=None, off_hand_without_poison=None,
+                         off_hand_attacks=False, extra_attacks=(),
+                         global_effects=EffectSet())
+        _resolve_weapon(source, target, weapon, active,
+                        np.zeros(owner_state.wounds.size, dtype=bool),
+                        owner_state, target_state, rng, False,
+                        melee_attack=False)
+
+
 def _resolve_mantle_of_crows(owner: CompiledFighter, target: CompiledFighter,
                              rows: np.ndarray, owner_state: CombatState,
                              target_state: CombatState,
@@ -1457,13 +1557,14 @@ def _black_hunger_backlash(fighter: CompiledFighter, state: CombatState,
     backlash=EffectSet(tags=("mechanic.black-hunger-backlash","effect.no-critical"),fixed_strength=3,
                        automatic_hit=True,cannot_be_parried=True,ignore_armour=True)
     for index in range(3):
-        hit_rows=active[hits>index]
+        hit_rows=active[(hits>index)&(state.condition[active]!=OUT)]
         if hit_rows.size==0:continue
         observation=VectorAttackObservation(hit=True) if observations is not None else None
-        _resolve_weapon(fighter,fighter,backlash,hit_rows,np.zeros(state.wounds.size,dtype=bool),state,state,rng,False,
+        # Backlash stops at OUT; its one Force of Will rescue follows all hits.
+        _resolve_weapon_once(fighter,fighter,backlash,hit_rows,np.zeros(state.wounds.size,dtype=bool),state,state,rng,False,
             melee_attack=False,observation=observation)
         if observation is not None:observations.append(observation)
-        _rescue_force_of_will(fighter,state,hit_rows,rng)
+    _rescue_force_of_will(fighter,state,active,rng)
 
 def _resolve_fire(victim: CompiledFighter, opponent: CompiledFighter,
                    victim_state: CombatState, opponent_state: CombatState,
@@ -1584,6 +1685,8 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
         unresolved = (state1.condition != OUT) & (state2.condition != OUT) & engaged
         if not unresolved.any():
             break
+        state1.hit_this_phase[:] = False
+        state2.hit_this_phase[:] = False
         if round_index:
             active_rows = np.flatnonzero(unresolved)
             refresh_random_characteristics(
@@ -1633,6 +1736,10 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
         if rounds is not None:
             rounds[unresolved] += 1
         state1.parry_used[:] = False; state2.parry_used[:] = False
+        # The printed tentacle loss is a per-phase resource: the oracle clears
+        # ``tentacle-grapple`` from ``resources_spent`` at every round start.
+        ledger.tentacle_used[0][:] = False
+        ledger.tentacle_used[1][:] = False
         state1.seaguard_used[:] = False; state2.seaguard_used[:] = False
         state1.corruption_used[:] = False; state2.corruption_used[:] = False
         state1.parry_remaining[:] = _parry_capacity(first)
@@ -1644,8 +1751,8 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
         # ``mechanic.spawn-special-attacks`` replaces the built pool after the
         # attack count (resolve_spawn_attack_count): one die per warrior and
         # round, never behind a whole-pool vomit/wraith replacement.
-        # A netted fighter spends its own turn cutting free: it drops to Knocked
-        # Down and does not stand in that same turn (modular freed_from_net).
+        # Cutting free drops the fighter to Knocked Down before own-turn
+        # recovery stands it; ``freed`` still gates the Djinn declaration.
         netted1 = (state1.netted & first_player_turn
                    & np.isin(state1.condition, (STANDING, KNOCKED_DOWN)))
         netted2 = (state2.netted & ~first_player_turn
@@ -1656,8 +1763,8 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
         state2.condition[netted2] = KNOCKED_DOWN
         stunned1 = (state1.condition == STUNNED) & first_player_turn
         stunned2 = (state2.condition == STUNNED) & ~first_player_turn
-        stood1 = (state1.condition == KNOCKED_DOWN) & first_player_turn & ~netted1
-        stood2 = (state2.condition == KNOCKED_DOWN) & ~first_player_turn & ~netted2
+        stood1 = (state1.condition == KNOCKED_DOWN) & first_player_turn
+        stood2 = (state2.condition == KNOCKED_DOWN) & ~first_player_turn
         state1.condition[stunned1] = KNOCKED_DOWN; state2.condition[stunned2] = KNOCKED_DOWN
         state1.condition[stood1 & ~stunned1] = STANDING; state2.condition[stood2 & ~stunned2] = STANDING
         paralyzed1 = (state1.condition == PARALYZED) & first_player_turn
@@ -1793,6 +1900,12 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
                                          (second, state2, own_second)):
             if not has(fighter.global_effects, "mechanic.bitten-transform"):
                 continue
+            # Madness prints "Stupidity this turn": the result is dropped at
+            # every turn boundary, and with it the one Stupidity failure a
+            # result of 1 caused (modular rounds.py:442-444).
+            lapsed = unresolved & (ledger.bitten_result == 1)
+            state.stupidity_failed[lapsed] = False
+            ledger.bitten_result[unresolved] = 0
             rows = own_rows[~(state.transformed[own_rows] & engaged[own_rows])]
             if rows.size == 0:
                 continue
@@ -1815,30 +1928,37 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
         resolve_lunatics(second, state2, all_rows, first=False,
                          round_index=round_index, rng=rng,
                          resources=psychology[1])
+        # Opponent-supplied Leadership facts arrive before any Psychology test
+        # reads them (modular rounds.py:425): Enchanting Beauty's -1 must reach
+        # the Stupidity and Fear tests of this very phase.
+        first = _apply_opponent_leadership(first, second)
+        second = _apply_opponent_leadership(second, first)
         # Centigor Drunk: a fresh result each own turn, lapsing when the turn
         # passes.  A 6 grants Frenzy; a 1 prints Stupidity for that turn only.
+        # Each side keeps its own result, and a lapsed result expires before
+        # the own-turn roll replaces it (modular/rounds.py:600-611).
+        expired1 = unresolved & ~first_player_turn & (ledger.drunken_result[0] != 0)
+        if expired1.any():
+            ledger.drunken_result[0][expired1] = 0
+            state1.stupidity_failed[expired1] = False
+            state1.frenzy[expired1] = has(first.global_effects, "frenzy")
+        expired2 = unresolved & first_player_turn & (ledger.drunken_result[1] != 0)
+        if expired2.any():
+            ledger.drunken_result[1][expired2] = 0
+            state2.stupidity_failed[expired2] = False
+            state2.frenzy[expired2] = has(second.global_effects, "frenzy")
         drunk1 = own_first[has(first.global_effects, "mechanic.centigor-drunken")]
         if drunk1.size:
             rolls = rng.integers(1, 7, drunk1.size)
-            ledger.drunken_result[drunk1] = rolls
+            ledger.drunken_result[0][drunk1] = rolls
             state1.frenzy[drunk1] = rolls == 6
             state1.stupidity_failed[drunk1] = False
         drunk2 = own_second[has(second.global_effects, "mechanic.centigor-drunken")]
         if drunk2.size:
             rolls = rng.integers(1, 7, drunk2.size)
-            ledger.drunken_result[drunk2] = rolls
+            ledger.drunken_result[1][drunk2] = rolls
             state2.frenzy[drunk2] = rolls == 6
             state2.stupidity_failed[drunk2] = False
-        expired1 = ~first_player_turn & (ledger.drunken_result != 0)
-        if expired1.any():
-            ledger.drunken_result[expired1] = 0
-            state1.stupidity_failed[expired1] = False
-            state1.frenzy[expired1] = has(first.global_effects, "frenzy")
-        expired2 = first_player_turn & (ledger.drunken_result != 0)
-        if expired2.any():
-            ledger.drunken_result[expired2] = 0
-            state2.stupidity_failed[expired2] = False
-            state2.frenzy[expired2] = has(second.global_effects, "frenzy")
         # Devoted to the Vampire re-reads the supplied condition of the Lahmian
         # Vampire its recipient follows, every combat phase and for both turns.
         devoted_hatred1 = _devoted_to_the_vampire(
@@ -1847,17 +1967,18 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             second, state2, state1, active_rows, ledger, 1)
         # Animosity is tested only in the warrior's own turn: a 1 fails, and the
         # Fungus Brew's Rowdy result widens the band to 1-2.
-        ledger.animosity_failed[:] = False
+        ledger.animosity_failed[0][:] = False
+        ledger.animosity_failed[1][:] = False
         if any(has(first.global_effects, tag) for tag in ANIMOSITY_SOURCES):
             rows = own_first[state1.condition[own_first] == STANDING]
             if rows.size:
                 threshold = 2 if has(first.global_effects, "mechanic.fungus-rowdy") else 1
-                ledger.animosity_failed[rows] = rng.integers(1, 7, rows.size) <= threshold
+                ledger.animosity_failed[0][rows] = rng.integers(1, 7, rows.size) <= threshold
         if any(has(second.global_effects, tag) for tag in ANIMOSITY_SOURCES):
             rows = own_second[state2.condition[own_second] == STANDING]
             if rows.size:
                 threshold = 2 if has(second.global_effects, "mechanic.fungus-rowdy") else 1
-                ledger.animosity_failed[rows] = rng.integers(1, 7, rows.size) <= threshold
+                ledger.animosity_failed[1][rows] = rng.integers(1, 7, rows.size) <= threshold
         # The player turn is per row, so each side's Stupidity gate is resolved
         # over its own active rows instead of assuming one scalar turn.  Rows
         # whose Drunk result is 1 carry the this-turn Stupidity the result
@@ -1873,7 +1994,14 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
         # the masks so the cancellations of the four calls below can be told
         # apart from charges that never existed.
         charges_before_stupidity = (first_charges.copy(), second_charges.copy())
-        sober_first = own_first[ledger.drunken_result[own_first] != 1]
+        # Madness is a this-turn Stupidity granted to the bearer of a bitten
+        # result of 1 (modular rounds.py:626-632), with no Psychology immunity.
+        mad1 = (ledger.bitten_result == 1) if has(
+            first.global_effects, "mechanic.bitten-transform") else np.zeros(count, dtype=bool)
+        mad2 = (ledger.bitten_result == 1) if has(
+            second.global_effects, "mechanic.bitten-transform") else np.zeros(count, dtype=bool)
+        sober_first = own_first[(ledger.drunken_result[0][own_first] != 1)
+                                & ~mad1[own_first]]
         for sober_rows, acting_first, rc_suffix in _righteous_charge_split(
                 first, rc_rows1, sober_first):
             stupidity_first = resolve_stupidity(
@@ -1887,7 +2015,7 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             first_charges = stupidity_first.charges
         # The Drunk result already prints its own Psychology immunity, so the
         # grant adds nothing to that group and it is tested as before.
-        drunk_rows1 = own_first[ledger.drunken_result[own_first] == 1]
+        drunk_rows1 = own_first[ledger.drunken_result[0][own_first] == 1]
         if drunk_rows1.size:
             drunk_first = resolve_stupidity(
                 _tagged_rows(first, drunk_rows1,
@@ -1897,10 +2025,25 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
                 charges=first_charges, rng=rng, leadership=leadership[0],
                 decisions=decisions, context=prepared,
                 lunatic_stupidity=psychology[0].lunatic_stupidity,
+                drunken_result=ledger.drunken_result[0],
                 key_prefix=f"round.{round_index}.drunk",
             )
             first_charges = drunk_first.charges
-        sober_second = own_second[ledger.drunken_result[own_second] != 1]
+        mad_rows1 = own_first[mad1[own_first]
+                              & (ledger.drunken_result[0][own_first] != 1)]
+        if mad_rows1.size:
+            mad_first = resolve_stupidity(
+                _tagged_rows(first, mad_rows1, ("mechanic.stupidity",)),
+                second, state1, state2, mad_rows1,
+                first_player_turn=True, round_index=round_index,
+                charges=first_charges, rng=rng, leadership=leadership[0],
+                decisions=decisions, context=prepared,
+                lunatic_stupidity=psychology[0].lunatic_stupidity,
+                key_prefix=f"round.{round_index}.madness",
+            )
+            first_charges = mad_first.charges
+        sober_second = own_second[(ledger.drunken_result[1][own_second] != 1)
+                                  & ~mad2[own_second]]
         for sober_rows, acting_second, rc_suffix in _righteous_charge_split(
                 second, rc_rows2, sober_second):
             stupidity_second = resolve_stupidity(
@@ -1912,7 +2055,7 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
                 key_prefix=f"round.{round_index}{rc_suffix}",
             )
             second_charges = stupidity_second.charges
-        drunk_rows2 = own_second[ledger.drunken_result[own_second] == 1]
+        drunk_rows2 = own_second[ledger.drunken_result[1][own_second] == 1]
         if drunk_rows2.size:
             drunk_second = resolve_stupidity(
                 first, _tagged_rows(second, drunk_rows2,
@@ -1922,9 +2065,23 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
                 charges=second_charges, rng=rng, leadership=leadership[1],
                 decisions=decisions, context=prepared,
                 lunatic_stupidity=psychology[1].lunatic_stupidity,
+                drunken_result=ledger.drunken_result[1],
                 key_prefix=f"round.{round_index}.drunk",
             )
             second_charges = drunk_second.charges
+        mad_rows2 = own_second[mad2[own_second]
+                               & (ledger.drunken_result[1][own_second] != 1)]
+        if mad_rows2.size:
+            mad_second = resolve_stupidity(
+                first, _tagged_rows(second, mad_rows2, ("mechanic.stupidity",)),
+                state1, state2, mad_rows2,
+                first_player_turn=False, round_index=round_index,
+                charges=second_charges, rng=rng, leadership=leadership[1],
+                decisions=decisions, context=prepared,
+                lunatic_stupidity=psychology[1].lunatic_stupidity,
+                key_prefix=f"round.{round_index}.madness",
+            )
+            second_charges = mad_second.charges
         if first_round:
             cancelled_by_stupidity = (
                 (charges_before_stupidity[0] & ~first_charges)
@@ -1978,6 +2135,15 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             second = expire_raise_our_insignia(second)
         charge1 = first_charges if first_round else np.zeros(count,dtype=bool)
         charge2 = second_charges if first_round else np.zeros(count,dtype=bool)
+        combat_charge_rows = []
+        for fighter, current, charges in ((first, state1, charge1), (second, state2, charge2)):
+            rows = (np.flatnonzero(unresolved & charges)
+                    if has(fighter.global_effects, "skill.combat-charge")
+                    else np.empty(0, dtype=np.int64))
+            if rows.size:
+                require_characteristics(fighter, current, rows, rng, ("WS",))
+                current.weapon_skill[rows] += 1
+            combat_charge_rows.append(rows)
         if first_round:
             if optional.first_netter:
                 rows=np.flatnonzero(unresolved&charge1)
@@ -1985,6 +2151,13 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             if optional.second_netter:
                 rows=np.flatnonzero(unresolved&charge2)
                 _resolve_netter_charge(second,first,rows,state2,state1,rng)
+        # A Wheelo's collision is resolved before crew and enemy weapon blows
+        # (modular/rounds.py:1082); charge flags only exist in the first round.
+        if first_round:
+            _resolve_wheelo_impact(first, second, active_rows, charge1, charge2,
+                                   state1, state2, rng)
+            _resolve_wheelo_impact(second, first, active_rows, charge2, charge1,
+                                   state2, state1, rng)
         # The Crow Master's Mantle opens the combat phase, before the mutual
         # Spines hits and before any warrior's own blows.
         _resolve_mantle_of_crows(first, second, active_rows, state1, state2, rng)
@@ -2004,6 +2177,10 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             _resolve_weapon(first,second,entangle_effect,entangled2,charge1,state1,state2,rng,False,
                             needs_sixes=state1.fear_hit_sixes)
         charged1, charged2 = charge2, charge1
+        # Mirror the per-row "being charged" fact for the hit operators
+        # (modular tags the charged warrior ``condition.being-charged``).
+        state1.being_charged[:] = charged1
+        state2.being_charged[:] = charged2
         # The Inquisitor's judgement brands the enemy before this phase's
         # equipment is projected, so the brand is already on the victim's row.
         branded2 = _inquisitor_brands(
@@ -2012,10 +2189,6 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
         branded1 = _inquisitor_brands(
             second, original_first, state2, state1, active_rows, rng, decisions,
             'second', round_index)
-        # Opponent-supplied Leadership facts, then the phase's dance, then the
-        # whole-pool declaration: the same order the scalar round uses.
-        first = _apply_opponent_leadership(first, second)
-        second = _apply_opponent_leadership(second, first)
         # The Main Gauche's mode is declared for the turn before any whole-pool
         # replacement can take the off hand away.
         first = _main_gauche_mode(first, decisions, f'round.{round_index}.first')
@@ -2183,10 +2356,10 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
         # it once, and it owns only the rows it is legal for.
         grapple1 = _grapple_declaration(
             attack_first, second, state1, state2, active_rows, decisions, ledger,
-            blocked_first, f'round.{round_index}.first')
+            blocked_first, f'round.{round_index}.first', owner_index=0)
         grapple2 = _grapple_declaration(
             attack_second, first, state2, state1, active_rows, decisions, ledger,
-            blocked_second, f'round.{round_index}.second')
+            blocked_second, f'round.{round_index}.second', owner_index=1)
         if grapple1.any():
             held = _grapple_fighter(attack_first)
             for row in np.flatnonzero(grapple1):
@@ -2255,16 +2428,17 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
                 defer_grapple=True)
         whip1 = _whipcrack_weapon(attack_first)
         whip2 = _whipcrack_weapon(attack_second)
+        # The whip bonus joins the bearer's own pool when he charges; it is
+        # split out as its own earlier event only when he is charged, which is
+        # the printed timing (modular/rounds.py:1409-1417).
         whip1_active = bool(
-            first_round and whip1 is not None
-            and (charge1 | charged1).any()
+            first_round and whip1 is not None and charged1.any()
         )
         whip2_active = bool(
-            first_round and whip2 is not None
-            and (charge2 | charged2).any()
+            first_round and whip2 is not None and charged2.any()
         )
-        whip1_rows = (charge1 | charged1) if whip1_active else np.zeros(count, dtype=bool)
-        whip2_rows = (charge2 | charged2) if whip2_active else np.zeros(count, dtype=bool)
+        whip1_rows = charged1.copy() if whip1_active else np.zeros(count, dtype=bool)
+        whip2_rows = charged2.copy() if whip2_active else np.zeros(count, dtype=bool)
         whip1_rows &= attacks1 > 0
         whip2_rows &= attacks2 > 0
         ordinary_attacks1 = attacks1 - whip1_rows.astype(np.int16) - shifty1.astype(np.int16)
@@ -2317,12 +2491,18 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
         deathblow_pool2 = attacks2.copy()
         # A warrior silenced by Stupidity, Animosity, a charm gate, fire, a net
         # or a spent lost turn contributes no pool at all.
-        silent1 = (state1.stupidity_failed | ledger.animosity_failed
+        silent1 = (state1.stupidity_failed | ledger.animosity_failed[0]
                    | blocked_first | state1.netted | state1.on_fire
                    | grapple1 | state1.grappled | state1.grappling)
-        silent2 = (state2.stupidity_failed | ledger.animosity_failed
+        silent2 = (state2.stupidity_failed | ledger.animosity_failed[1]
                    | blocked_second | state2.netted | state2.on_fire
                    | grapple2 | state2.grappled | state2.grappling)
+        # An addicted Alchemist takes no action of his own until the own-turn
+        # cure roll frees him (modular rounds.py:1365-1367, alchemist_addicted).
+        if has(first.global_effects, "condition.alchemist-addicted"):
+            silent1 |= ~alchemy[0].addiction_cured
+        if has(second.global_effects, "condition.alchemist-addicted"):
+            silent2 |= ~alchemy[1].addiction_cured
         lost_turn1 = state1.massively_built_lost_turn & first_player_turn
         lost_turn2 = state2.massively_built_lost_turn & ~first_player_turn
         silent1 |= lost_turn1
@@ -2467,8 +2647,12 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
         # already resolves equal scores in stack order.
         raw1 = p1.astype(np.int32) * 100 + i1
         raw2 = p2.astype(np.int32) * 100 + i2
-        whip1_scores = np.where(whip1_rows, 100 + i1, -10000).astype(np.int32)
-        whip2_scores = np.where(whip2_rows, 100 + i2, -10000).astype(np.int32)
+        # The bonus's tier is the whip's own declared priority, raised to the
+        # first tier at minimum (modular: ``max(1, whip.priority)``).
+        whip1_tier = max(1, whip1.priority) if whip1 is not None else 1
+        whip2_tier = max(1, whip2.priority) if whip2 is not None else 1
+        whip1_scores = np.where(whip1_rows, whip1_tier * 100 + i1, -10000).astype(np.int32)
+        whip2_scores = np.where(whip2_rows, whip2_tier * 100 + i2, -10000).astype(np.int32)
         whip1_ties = whip1_rows & (whip1_scores == raw2)
         whip2_ties = whip2_rows & (whip2_scores == raw1)
         if whip1_ties.any():
@@ -2501,6 +2685,13 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             if whip2 is not None else attack_second
         )
 
+        # Pool allocations belong to the phase: the oracle computes each
+        # warrior's counts before the event loop, so a warrior who was not
+        # standing at allocation time (a helpless victim rescued mid-phase by
+        # Force of Will included) has no event this phase, even though his
+        # live condition is STANDING again by the time the position fires.
+        allocated1 = state1.condition == STANDING
+        allocated2 = state2.condition == STANDING
         # A declared hold resolves as its own single natural attack: a hit that
         # is not parried forces the victim's Strength-2 test, and failure puts
         # both warriors in the hold.
@@ -2533,47 +2724,50 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
                     rng, first_round, decisions,
                     f'round.{round_index}.{label}.eagle.{bird_index}',
                     observations=observations, single_bonus=True)
+        attacked_this_round1 = np.zeros(count, dtype=bool)
+        attacked_this_round2 = np.zeros(count, dtype=bool)
         for event_index in range(10):
             event = event_order[event_index]
             rows_first = np.flatnonzero(
-                unresolved & (state1.condition == STANDING)
+                unresolved & allocated1 & (state1.condition == STANDING)
                 & (event == 0) & ((ordinary_attacks1 > 0)
                                   | (mim_extra1 & ~silent1))
             )
             rows_second = np.flatnonzero(
-                unresolved & (state2.condition == STANDING)
+                unresolved & allocated2 & (state2.condition == STANDING)
                 & (event == 1) & ((ordinary_attacks2 > 0)
                                   | (mim_extra2 & ~silent2))
             )
             rows_whip1 = np.flatnonzero(
-                unresolved & (state1.condition == STANDING)
+                unresolved & allocated1 & (state1.condition == STANDING)
                 & (event == 2) & whip1_rows
             )
             rows_whip2 = np.flatnonzero(
-                unresolved & (state2.condition == STANDING)
+                unresolved & allocated2 & (state2.condition == STANDING)
                 & (event == 3) & whip2_rows
             )
             rows_shifty1 = np.flatnonzero(
-                unresolved & (state1.condition == STANDING)
+                unresolved & allocated1 & (state1.condition == STANDING)
                 & (event == 4) & shifty1 & ~silent1
             )
             rows_shifty2 = np.flatnonzero(
-                unresolved & (state2.condition == STANDING)
+                unresolved & allocated2 & (state2.condition == STANDING)
                 & (event == 5) & shifty2 & ~silent2
             )
             rows_strike1 = np.flatnonzero(
-                unresolved & (state1.condition == STANDING)
+                unresolved & allocated1 & (state1.condition == STANDING)
                 & (event == 6) & strike1_rows)
             rows_strike2 = np.flatnonzero(
-                unresolved & (state2.condition == STANDING)
+                unresolved & allocated2 & (state2.condition == STANDING)
                 & (event == 7) & strike2_rows)
             rows_stomp1 = np.flatnonzero(
-                unresolved & (state1.condition == STANDING)
+                unresolved & allocated1 & (state1.condition == STANDING)
                 & (event == 8) & stomp1_rows)
             rows_stomp2 = np.flatnonzero(
-                unresolved & (state2.condition == STANDING)
+                unresolved & allocated2 & (state2.condition == STANDING)
                 & (event == 9) & stomp2_rows)
             if rows_first.size:
+                attacked_this_round1[rows_first] = True
                 _resolve_attacks_by_equipment(equipment1, equipment2, rows_first,
                     ordinary_attacks1, charge1, state1, state2, rng, first_round,
                     decisions, f'round.{round_index}.first', forfeits=forfeit1,
@@ -2583,6 +2777,7 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
                 if optional.first_force_of_will:_rescue_force_of_will(first,state1,rows_first,rng)
                 if optional.second_force_of_will:_rescue_force_of_will(second,state2,rows_first,rng)
             if rows_second.size:
+                attacked_this_round2[rows_second] = True
                 _resolve_attacks_by_equipment(equipment2, equipment1, rows_second,
                     ordinary_attacks2, charge2, state2, state1, rng, first_round,
                     decisions, f'round.{round_index}.second', forfeits=forfeit2,
@@ -2592,6 +2787,7 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
                 if optional.first_force_of_will:_rescue_force_of_will(first,state1,rows_second,rng)
                 if optional.second_force_of_will:_rescue_force_of_will(second,state2,rows_second,rng)
             if rows_whip1.size:
+                attacked_this_round1[rows_whip1] = True
                 _resolve_attacks_by_equipment(
                     {row: whip1_fighter for row in range(count)}, equipment2,
                     rows_whip1, np.ones(count,dtype=np.int16), charge1, state1,
@@ -2602,6 +2798,7 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
                 if optional.first_force_of_will:_rescue_force_of_will(first,state1,rows_whip1,rng)
                 if optional.second_force_of_will:_rescue_force_of_will(second,state2,rows_whip1,rng)
             if rows_whip2.size:
+                attacked_this_round2[rows_whip2] = True
                 _resolve_attacks_by_equipment(
                     {row: whip2_fighter for row in range(count)}, equipment1,
                     rows_whip2, np.ones(count,dtype=np.int16), charge2, state2,
@@ -2612,6 +2809,7 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
                 if optional.first_force_of_will:_rescue_force_of_will(first,state1,rows_whip2,rng)
                 if optional.second_force_of_will:_rescue_force_of_will(second,state2,rows_whip2,rng)
             if rows_shifty1.size:
+                attacked_this_round1[rows_shifty1] = True
                 _resolve_attacks_by_equipment(
                     {row: shifty1_fighter for row in range(count)}, equipment2,
                     rows_shifty1, np.ones(count, dtype=np.int16), charge1,
@@ -2622,6 +2820,7 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
                 if optional.first_force_of_will:_rescue_force_of_will(first,state1,rows_shifty1,rng)
                 if optional.second_force_of_will:_rescue_force_of_will(second,state2,rows_shifty1,rng)
             if rows_shifty2.size:
+                attacked_this_round2[rows_shifty2] = True
                 _resolve_attacks_by_equipment(
                     {row: shifty2_fighter for row in range(count)}, equipment1,
                     rows_shifty2, np.ones(count, dtype=np.int16), charge2,
@@ -2632,18 +2831,21 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
                 if optional.first_force_of_will:_rescue_force_of_will(first,state1,rows_shifty2,rng)
                 if optional.second_force_of_will:_rescue_force_of_will(second,state2,rows_shifty2,rng)
             if rows_strike1.size:
+                attacked_this_round1[rows_strike1] = True
                 _resolve_attacks_by_equipment(
                     {row: strike1[1] for row in range(count)}, equipment2,
                     rows_strike1, np.ones(count, dtype=np.int16), charge1,
                     state1, state2, rng, first_round, decisions,
                     f'round.{round_index}.first.strike-first', observations=observations)
             if rows_strike2.size:
+                attacked_this_round2[rows_strike2] = True
                 _resolve_attacks_by_equipment(
                     {row: strike2[1] for row in range(count)}, equipment1,
                     rows_strike2, np.ones(count, dtype=np.int16), charge2,
                     state2, state1, rng, first_round, decisions,
                     f'round.{round_index}.second.strike-first', observations=observations)
             if rows_stomp1.size:
+                attacked_this_round1[rows_stomp1] = True
                 _resolve_attacks_by_equipment(
                     {row: stomp1_fighter for row in range(count)}, equipment2,
                     rows_stomp1, np.ones(count, dtype=np.int16), charge1,
@@ -2651,31 +2853,57 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
                     f'round.{round_index}.first.stomp',
                     observations=observations, single_bonus=True)
             if rows_stomp2.size:
+                attacked_this_round2[rows_stomp2] = True
                 _resolve_attacks_by_equipment(
                     {row: stomp2_fighter for row in range(count)}, equipment1,
                     rows_stomp2, np.ones(count, dtype=np.int16), charge2,
                     state2, state1, rng, first_round, decisions,
                     f'round.{round_index}.second.stomp',
                     observations=observations, single_bonus=True)
-        # The Priest's bite is its own final event, after both pools.
-        for attacker, defender, a_state, d_state, charge, other, label in (
-            (attack_first, second, state1, state2, charge1, equipment2, 'first'),
-            (attack_second, first, state2, state1, charge2, equipment1, 'second'),
+        # The Priest's bite is its own final event, after both pools.  It is
+        # scheduled only for a warrior whose phase allocation produced attacks
+        # (modular/rounds.py:1376-1389), it is a natural-slot attack, and it
+        # carries no poisoned-weapon alternative.
+        for attacker, defender, a_state, d_state, charge, other, pool, quiet, \
+                allocated, label in (
+            (attack_first, second, state1, state2, charge1, equipment2,
+             attacks1, silent1, allocated1, 'first'),
+            (attack_second, first, state2, state1, charge2, equipment1,
+             attacks2, silent2, allocated2, 'second'),
         ):
-            rows = np.flatnonzero(unresolved & (a_state.condition != OUT))
+            rows = np.flatnonzero(unresolved & allocated & ~quiet & (pool > 0)
+                                  & (a_state.condition == STANDING))
             for bite_index, weapon in enumerate(
                     w for w in attacker.extra_attacks
                     if has(w, "rule.strikes-last-bite")):
                 if rows.size == 0:
                     continue
+                if label == 'first':
+                    attacked_this_round1[rows] = True
+                else:
+                    attacked_this_round2[rows] = True
                 bite = replace(attacker, main_weapon=weapon, off_hand=None,
-                               off_hand_attacks=False, extra_attacks=())
+                               off_hand_attacks=False, extra_attacks=(),
+                               main_hand_slot='natural',
+                               main_weapon_without_poison=None,
+                               off_hand_without_poison=None)
                 _resolve_attacks_by_equipment(
                     {row: bite for row in range(count)}, other, rows,
                     np.ones(count, dtype=np.int16), charge, a_state, d_state,
                     rng, first_round, decisions,
                     f'round.{round_index}.{label}.last-bite.{bite_index}',
                     observations=observations, single_bonus=True)
+        # The Khemrian copy ends on an attack; Lahmia requires a hit, even
+        # when a defence or failed wound roll prevents all damage. Release
+        # after the phase's attacks, matching modular/rounds.py.
+        if ledger.seduction_controlled.any():
+            for owner_fighter, target_state, attacked in (
+                    (first, state2, attacked_this_round1),
+                    (second, state1, attacked_this_round2)):
+                if has(owner_fighter.global_effects, "mechanic.lahmian-seduction"):
+                    ledger.seduction_controlled[attacked] = False
+                elif has(owner_fighter.global_effects, "mechanic.lahmia-seduction"):
+                    ledger.seduction_controlled[attacked & target_state.hit_this_phase] = False
         # Deathblow: a Slayer taken out before his own allocation still strikes
         # with the pool captured above; once he has struck, the skill is spent.
         # Only the printed Slayer skill ``mechanic.deathblow`` drives this
@@ -2720,6 +2948,8 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             _black_hunger_backlash(first,state1,np.flatnonzero(hunger1),rng,observations)
         if optional.second_black_hunger:
             _black_hunger_backlash(second,state2,np.flatnonzero(hunger2),rng,observations)
+        state1.weapon_skill[combat_charge_rows[0]] -= 1
+        state2.weapon_skill[combat_charge_rows[1]] -= 1
     a=int(np.count_nonzero((state2.condition==OUT)&(state1.condition!=OUT)))
     b=int(np.count_nonzero((state1.condition==OUT)&(state2.condition!=OUT)))
     if observe:

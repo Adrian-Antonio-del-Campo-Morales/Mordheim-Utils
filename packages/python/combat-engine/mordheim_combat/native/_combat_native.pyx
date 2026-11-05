@@ -202,6 +202,7 @@ STATE_COLUMNS = (
     "hit_this_phase",
     "attacked_this_phase",
     "attacks_bonus_row",
+    "combat_charge_active",
     "injury_bonus_row",
     "rousing_sermon_used",
     "backley_used",
@@ -267,6 +268,11 @@ STATE_COLUMN_ALIASES = {
     "mutation_weapon_limbs": ("projection",),
     "mutated_hands": ("projection",),
     "backley_penalties": ("backley_strength", "backley_initiative"),
+    # The vectorized driver mirrors its per-round charge masks into
+    # ``CombatState.being_charged`` for the hit operators; this engine already
+    # hands the defender's charge rows (``def_charges``) to the same
+    # resolution, so no stored column backs the mirror.
+    "being_charged": (),
 }
 
 # Capacity gates (kept in sync with _combat_compile).  Compile-time
@@ -401,6 +407,9 @@ cdef struct SourceC:
     bint hardy
     bint magical
     bint no_critical
+    bint critical_on_reroll
+    bint no_saves
+    bint non_melee
     bint kusara
     bint chained
     bint anvil
@@ -421,6 +430,9 @@ cdef struct SourceC:
     bint shallya_self
     bint shallya_foe
     int strength_fr_bonus
+    bint seaguard_reroll
+    bint trap_blade
+    bint trap_main
     int strength_charge_fr_bonus
     int strength_fire_bonus
     bint wolf_rat_bite
@@ -483,6 +495,10 @@ cdef struct FighterC:
     bint natural_armour_negated_by_magic
     bint armour_cannot_be_ignored
     int armour_save_floor
+    int shield_skill_armour_save
+    bint norse_bulwark
+    bint eshin_robes
+    bint armour_specialist
     int out_of_action_threshold
     bint poison_immune
     bint luck
@@ -573,6 +589,7 @@ cdef struct FighterC:
     bint netter
     bint spines
     bint black_hunger
+    bint combat_charge
     bint force_of_will
     bint entangle
     bint can_burn
@@ -752,6 +769,7 @@ cdef struct SideC:
     SourceC giggle
     SourceC jolt
     SourceC impact
+    SourceC impact_more
 
 
 # The pair of compiled sides one row group is simulated with.  A view,
@@ -917,6 +935,7 @@ cdef struct StateC:
     int8_t* hit_this_phase
     int8_t* attacked_this_phase
     int8_t* attacks_bonus_row
+    int8_t* combat_charge_active
     int8_t* injury_bonus_row
     int8_t* rousing_sermon_used
     int8_t* backley_used
@@ -1036,6 +1055,9 @@ cdef void fill_source(object d, SourceC* out) except *:
     out.hardy = _flag(f, "hardy")
     out.magical = _flag(f, "magical")
     out.no_critical = _flag(f, "no_critical")
+    out.critical_on_reroll = 1 if f.get("critical_on_reroll", True) else 0
+    out.no_saves = _flag(f, "no_saves")
+    out.non_melee = _flag(f, "non_melee")
     out.kusara = _flag(f, "kusara")
     out.chained = _flag(f, "chained")
     out.anvil = _flag(f, "anvil")
@@ -1056,6 +1078,9 @@ cdef void fill_source(object d, SourceC* out) except *:
     out.shallya_self = _flag(f, "shallya_self")
     out.shallya_foe = _flag(f, "shallya_foe")
     out.strength_fr_bonus = <int>f.get("strength_fr_bonus", 0)
+    out.seaguard_reroll = _flag(f, "seaguard_reroll")
+    out.trap_blade = _flag(f, "trap_blade")
+    out.trap_main = _flag(f, "trap_main")
     out.strength_charge_fr_bonus = <int>f.get("strength_charge_fr_bonus", 0)
     out.strength_fire_bonus = <int>f.get("strength_fire_bonus", 0)
     out.wolf_rat_bite = _flag(f, "wolf_rat_bite")
@@ -1127,6 +1152,10 @@ cdef void fill_fighter(object d, FighterC* out, object sources, object reactions
     out.natural_armour_negated_by_magic = _flag(d, "natural_armour_negated_by_magic")
     out.armour_cannot_be_ignored = _flag(d, "armour_cannot_be_ignored")
     out.armour_save_floor = _int(d, "armour_save_floor")
+    out.shield_skill_armour_save = <int>d.get("shield_skill_armour_save", 7)
+    out.norse_bulwark = _flag(d, "norse_bulwark")
+    out.eshin_robes = _flag(d, "eshin_robes")
+    out.armour_specialist = _flag(d, "armour_specialist")
     out.out_of_action_threshold = _int(d, "out_of_action_threshold")
     out.poison_immune = _flag(d, "poison_immune")
     out.luck = _flag(d, "luck")
@@ -1216,6 +1245,7 @@ cdef void fill_fighter(object d, FighterC* out, object sources, object reactions
     out.netter = _flag(d, "netter")
     out.spines = _flag(d, "spines")
     out.black_hunger = _flag(d, "black_hunger")
+    out.combat_charge = _flag(d, "combat_charge")
     out.force_of_will = _flag(d, "force_of_will")
     out.entangle = _flag(d, "entangle")
     out.can_burn = _flag(d, "can_burn")
@@ -1407,6 +1437,8 @@ cdef void fill_side(object compiled, SideC* out) except *:
     fill_source(compiled["reactions"]["giggle"], &out.giggle)
     fill_source(compiled["reactions"]["jolt"], &out.jolt)
     fill_source(compiled["reactions"]["impact"], &out.impact)
+    fill_source(compiled["reactions"].get("impact_more", compiled["reactions"]["impact"]),
+                &out.impact_more)
 
 
 # ---------------------------------------------------------------------------
@@ -1499,6 +1531,7 @@ cdef void state_alloc(StateC* s, int n) noexcept:
     s.hit_this_phase = <int8_t*>calloc(n if n > 0 else 1, sizeof(int8_t))
     s.attacked_this_phase = <int8_t*>calloc(n if n > 0 else 1, sizeof(int8_t))
     s.attacks_bonus_row = <int8_t*>calloc(n if n > 0 else 1, sizeof(int8_t))
+    s.combat_charge_active = <int8_t*>calloc(n if n > 0 else 1, sizeof(int8_t))
     s.injury_bonus_row = <int8_t*>calloc(n if n > 0 else 1, sizeof(int8_t))
     s.rousing_sermon_used = <int8_t*>calloc(n if n > 0 else 1, sizeof(int8_t))
     s.backley_used = <int8_t*>calloc(n if n > 0 else 1, sizeof(int8_t))
@@ -1555,6 +1588,8 @@ cdef void state_alloc(StateC* s, int n) noexcept:
 
 cdef bint state_ok(StateC* s) noexcept:
     """True when every column of the state was allocated."""
+    if s.combat_charge_active == NULL:
+        return False
     return not (s.wounds == NULL or s.condition == NULL or s.initiative_penalty == NULL or s.initiative_floor == NULL or s.frenzy == NULL or s.lucky_charm == NULL or s.crimson_initiative == NULL or s.attack_penalty == NULL or s.entangled == NULL or s.parry_used == NULL or s.parry_remaining == NULL or s.seaguard_used == NULL or s.corruption_used == NULL or s.critical_used == NULL or s.force_of_will_used == NULL or s.force_of_will_active == NULL or s.force_of_will_penalty == NULL or s.disability == NULL or s.mark_of_old_ones_used == NULL or s.luck_used == NULL or s.on_fire == NULL or s.weapon_skill == NULL or s.strength == NULL or s.toughness == NULL or s.initiative == NULL or s.attacks == NULL or s.broken_hands == NULL or s.hampered_main == NULL or s.hampered_off == NULL or s.starting_wounds == NULL or s.initiative_missing == NULL or s.random_rolled == NULL or s.random_modifiers == NULL or s.torture_strength_loss == NULL or s.guiding_dream_result == NULL or s.stupidity_failed == NULL or s.massively_built_lost_turn == NULL or s.netted == NULL or s.fear_hit_sixes == NULL or s.grappled == NULL or s.grappling == NULL or s.backley_strength == NULL or s.backley_initiative == NULL or s.mutation_count == NULL or s.atrophied_arms == NULL or s.atrophied_legs == NULL or s.transformed == NULL or s.equipment_cast_off == NULL or s.hillman_wolf == NULL or s.mutation_tail == NULL or s.projection == NULL or s.drenok_fighting == NULL or s.magic_acorn_used == NULL or s.rememberer_used == NULL or s.rememberer_active == NULL or s.banter_trick_active == NULL or s.dodge_trick_active == NULL or s.trip_trick_active == NULL or s.charm_auto_hit == NULL or s.danse_macabre_controlled == NULL or s.mouth_sewn == NULL or s.giggle_juice_used == NULL or s.trip_trick_used == NULL or s.holy_relic_used == NULL or s.first_failed_used == NULL or s.poetry_first_used == NULL or s.one_roll_reroll_used == NULL or s.ranalds_luck_used == NULL or s.lunatic_result == NULL or s.lunatic_stupidity == NULL or s.shornaal_passed == NULL or s.feral_instinct_failed == NULL or s.charm_blocked == NULL or s.entranced == NULL or s.seduction_controlled == NULL or s.drunken_result == NULL or s.animosity_failed == NULL or s.beauty_passed == NULL or s.charm_attack_blocked == NULL or s.hypnotized == NULL or s.hit_this_phase == NULL or s.attacked_this_phase == NULL or s.attacks_bonus_row == NULL or s.injury_bonus_row == NULL or s.rousing_sermon_used == NULL or s.backley_used == NULL or s.addiction_cured == NULL or s.black_hunger_active == NULL or s.djinn_power == NULL or s.last_djinn_power == NULL or s.last_dance == NULL or s.bitten_result == NULL or s.devoted_frenzy == NULL or s.crude_belch_ogre_used == NULL or s.backley_spent == NULL or s.addicted_spent == NULL or s.petru_spent == NULL or s.first_attack_lost == NULL or s.shanty_loss == NULL or s.hit_penalty == NULL or s.poetry_active == NULL or s.impetuous_released == NULL or s.mutation_tail_choice == NULL or s.gauche_parry == NULL or s.deathblow_used == NULL or s.dance_shadows_coil == NULL or s.dance_woven_mist == NULL or s.main_gauche_attacks == NULL or s.shadows_coil_active == NULL or s.woven_mist_active == NULL or s.freed_this_turn == NULL or s.mutation_projection == NULL or s.shifty_projection == NULL or s.shifty_row == NULL or s.gauche_mode == NULL or s.whole_choice == NULL or s.anvil_removed == NULL or s.death_blow_removed == NULL or s.petru_debilitating_spent == NULL or s.petru_strength_spent == NULL or s.petru_resilience_spent == NULL or s.out_threshold_row == NULL or s.follow_me_active == NULL or s.righteous_active == NULL or s.attack_loss_row == NULL or s.hit_penalty_row == NULL or s.crude_belch_used == NULL or s.miss_first_attack == NULL or s.wheelo_first_impact == NULL or s.electrical_available_at == NULL or s.grapple_declared == NULL or s.jolt_declared == NULL or s.death_fighting == NULL or s.pool_loss_row == NULL or s.electrical_forfeit == NULL)
 
 
@@ -1642,6 +1677,7 @@ cdef void state_free(StateC* s) noexcept:
     free(s.hit_this_phase)
     free(s.attacked_this_phase)
     free(s.attacks_bonus_row)
+    free(s.combat_charge_active)
     free(s.injury_bonus_row)
     free(s.rousing_sermon_used)
     free(s.backley_used)
@@ -1818,28 +1854,53 @@ cdef int injury_condition_c(int total, FighterC* d, SourceC* src,
 
 cdef int armour_target_c(FighterC* d, int strength, SourceC* src,
                          bint magical_attack, bint ignored) noexcept:
-    cdef int modifier = 0
     cdef int delta = strength - 3
-    if delta > 0:
-        modifier = delta
-    modifier += src.effect.v[<int>F_ARMOUR_PENETRATION] + src.armour_penetration_extra
-    modifier -= src.effect.v[<int>F_TARGET_ARMOUR_BONUS]
-    cdef int armour = d.armour_save + modifier
-    cdef int natural = d.natural_armour_save
+    cdef int strength_limit
+    cdef int strength_penalty = delta if delta > 0 else 0
+    cdef int penetration = src.effect.v[<int>F_ARMOUR_PENETRATION] + src.armour_penetration_extra
+    cdef int target_bonus = src.effect.v[<int>F_TARGET_ARMOUR_BONUS]
+    cdef int modifier = strength_penalty + penetration - target_bonus
+    cdef bint ladle = src.effect.v[<int>F_IGNORE_ARMOUR_EXCEPT_SHIELD_AND_SKILLS] != 0
+    cdef int armour_save = d.armour_save
+    cdef int natural_save = d.natural_armour_save
+    cdef int natural_worst = d.natural_armour_worst_save
+    if ladle:
+        # Printed Ladle: only shields and skills may save, so worn and
+        # natural armour are denied while those selections keep their save.
+        armour_save = d.shield_skill_armour_save
+        natural_save = 7
+        natural_worst = 7
+    if d.norse_bulwark:
+        # Norse Bulwark: an axe and a shield improve the save by one.
+        armour_save = armour_save - 1 if armour_save > 2 else 2
+    cdef int armour = armour_save + modifier
+    cdef int natural = natural_save
     if not d.natural_armour_unmodified:
-        natural += modifier
-    if natural > d.natural_armour_worst_save:
-        natural = d.natural_armour_worst_save
+        # ``phases.armour_target``: only the Strength penalty (and the
+        # dagger bonus) is capped at the worst natural save; armour
+        # penetration is added after the cap.
+        natural += strength_penalty - target_bonus
+        if natural > natural_worst:
+            natural = natural_worst
+        natural += penetration
     if d.natural_armour_negated_by_magic and magical_attack:
         natural = 7
     if src.daemonic_flesh_negated:
         # Daemonic Flesh keeps no natural armour against a blessed attack.
         natural = 7
-    if d.natural_armour_negated_by_fire and src.fire:
+    if d.natural_armour_negated_by_fire and src.fire and not ladle:
         # The natural save also contributed to the worn-armour combination,
         # so the worn save loses exactly what the natural save lent it.
         natural = 7
         armour += 7 - d.natural_armour_save if d.natural_armour_save < 7 else 0
+    if d.armour_specialist and not src.effect.v[<int>F_IGNORE_ARMOUR_EXCEPT_SHIELD_AND_SKILLS]:
+        # Only Strength's worn-armour penalty is capped at 5+. Other save
+        # modifiers and natural armour keep their existing arithmetic.
+        strength_limit = 5 - (armour - modifier)
+        if strength_limit < 0:
+            strength_limit = 0
+        if delta > strength_limit:
+            armour -= delta - strength_limit
     cdef int target = armour if armour < natural else natural
     ignored = ignored or src.effect.v[<int>F_IGNORE_ARMOUR] != 0
     if ignored:
@@ -1847,7 +1908,9 @@ cdef int armour_target_c(FighterC* d, int strength, SourceC* src,
             target = d.armour_save_floor
         else:
             target = 7
-    if d.armour_save_floor <= 6 and target > d.armour_save_floor and not (ignored and magical_attack):
+    # ``phases.armour_target``: the floor protects only a save that is not
+    # ignored; an ignored save keeps the replacement chosen above.
+    if d.armour_save_floor <= 6 and target > d.armour_save_floor and not ignored:
         target = d.armour_save_floor
     return target
 
@@ -2291,6 +2354,18 @@ cdef int prepare_attack_c(FighterC* atk, FighterC* defender, SourceC* src,
                 successful[i] = 1
             if luck_used_here[i]:
                 atk_state.luck_used[out.active[i]] = 1
+    # Seaguard Spear Master: one failed opening-round hit per row is rolled
+    # again; a die Hatred (or Luck) already rerolled is never repeated.
+    if src.seaguard_reroll and first_round:
+        for i in range(count):
+            row = out.active[i]
+            if (not successful[i] and not want_reroll[i]
+                    and not atk_state.seaguard_used[row]):
+                atk_state.seaguard_used[row] = 1
+                roll = rng_draw_safe(rng, 1, 6)
+                out.rolls[i] = <int8_t>roll
+                if roll >= out.hit_target[i]:
+                    successful[i] = 1
     free(want_reroll)
     free(luck_used_here)
     # The Magic Acorn turns one missed opening blow of a Hero into a hit.
@@ -2386,6 +2461,10 @@ cdef int resolve_weapon_c(DuelC* d, int atk_side, SourceC* src,
     cdef int8_t* wounded = NULL
     cdef int8_t* extra_hits = NULL
     cdef int8_t* extra_wounds = NULL
+    cdef int* barrage_rows = NULL
+    cdef int n_barrage = 0
+    cdef SourceC barrage_src
+    cdef PreparedC barrage_prep
     cdef int8_t* rerolls = NULL
     cdef int8_t* auto_w = NULL
     cdef int8_t* crit_roll = NULL
@@ -2480,9 +2559,22 @@ cdef int resolve_weapon_c(DuelC* d, int atk_side, SourceC* src,
             armour_strength_hits[i] = prepared.armour_strength[hit_positions[i]]
         # Kusara-kama and chained-squig weapon reactions.
         if src.kusara:
+            # The hit hampers one hand (the main hand unless the bearer
+            # fights with both and declines); the reply loses that hand's
+            # weapon, keeping the published minimum of one attack.
             for i in range(n):
                 if hit_values[i] >= 5:
-                    s_def.attack_penalty[hit_rows[i]] = <int8_t>(s_def.attack_penalty[hit_rows[i]] + 1)
+                    row = hit_rows[i]
+                    s_def.attack_penalty[row] = <int8_t>(s_def.attack_penalty[row] + 1)
+                    if (defender.off_hand_attacks and defender.off_present
+                            and decisions is not None
+                            and not decide_cached_c(
+                                decisions, cache,
+                                (attack_key + ".kusara-main-hand") if attack_key is not None
+                                else "kusara-main-hand", defender_py)):
+                        s_def.hampered_off[row] = <int16_t>(s_def.hampered_off[row] + 1)
+                    else:
+                        s_def.hampered_main[row] = <int16_t>(s_def.hampered_main[row] + 1)
         if src.chained:
             for i in range(n):
                 s_def.entangled[hit_rows[i]] = 1
@@ -2588,7 +2680,7 @@ cdef int resolve_weapon_c(DuelC* d, int atk_side, SourceC* src,
                     n_spittle += 1
             if n_spittle:
                 characteristic_tests_c(defender, infection_rows, n_spittle,
-                                       infection_targets, rng, 0, infection_results)
+                                       infection_targets, rng, 1, infection_results)
                 k = 0
                 for i in range(n_spittle):
                     if not infection_results[i]:
@@ -2775,33 +2867,6 @@ cdef int resolve_weapon_c(DuelC* d, int atk_side, SourceC* src,
             wounded[i] = 1 if automatic_wound[i] or (
                 (src.lotus or src.wight_blades) and hit_values[i] == 6
             ) or wound_rolls[i] >= targets[i] else 0
-        # Rapier: an extra hit and an extra wound roll for every failed row, in
-        # two full-array passes (NumPy draw order).
-        if src.rapier:
-            extra_hits = <int8_t*>malloc(n * sizeof(int8_t))
-            extra_wounds = <int8_t*>malloc(n * sizeof(int8_t))
-            if extra_hits == NULL or extra_wounds == NULL:
-                rc = -1
-                return rc
-            for i in range(n):
-                extra_hits[i] = 0
-                if not wounded[i]:
-                    extra_hits[i] = <int8_t>rng_draw_safe(rng, 1, 6)
-            for i in range(n):
-                extra_wounds[i] = 0
-                if not wounded[i]:
-                    extra_wounds[i] = <int8_t>rng_draw_safe(rng, 1, 6)
-            for i in range(n):
-                if not wounded[i]:
-                    t = prepared.hit_target[hit_positions[i]] + 1
-                    if t > 6:
-                        t = 6
-                    if extra_hits[i] >= t and extra_wounds[i] >= targets[i]:
-                        wounded[i] = 1
-            free(extra_hits)
-            free(extra_wounds)
-            extra_hits = NULL
-            extra_wounds = NULL
         # Manbane: a natural 1 on the wound roll always fails.
         if src.manbane:
             for i in range(n):
@@ -2813,7 +2878,8 @@ cdef int resolve_weapon_c(DuelC* d, int atk_side, SourceC* src,
                 if not wounded[i] and not s_atk.luck_used[hit_rows[i]]:
                     roll = rng_draw_safe(rng, 1, 6)
                     wound_rolls[i] = <int8_t>roll
-                    critical_rolls[i] = <int8_t>roll
+                    if src.critical_on_reroll:
+                        critical_rolls[i] = <int8_t>roll
                     wounded[i] = 1 if roll >= targets[i] else 0
                     s_atk.luck_used[hit_rows[i]] = 1
         # Rerolled wound rolls (single full-array draw over the failed rows).
@@ -2827,9 +2893,14 @@ cdef int resolve_weapon_c(DuelC* d, int atk_side, SourceC* src,
                 if not wounded[i]:
                     rerolls[i] = <int8_t>rng_draw_safe(rng, 1, 6)
             for i in range(n):
-                if not wounded[i] and rerolls[i] >= targets[i]:
-                    wounded[i] = 1
+                if not wounded[i] and rerolls[i]:
+                    # The second die stands, and (Devil's Toxin apart) it
+                    # is the die the critical reads (``critical_on_reroll``).
                     wound_rolls[i] = rerolls[i]
+                    if src.critical_on_reroll:
+                        critical_rolls[i] = rerolls[i]
+                    if rerolls[i] >= targets[i]:
+                        wounded[i] = 1
             free(rerolls)
             rerolls = NULL
         # Mark of the Old Ones: one guaranteed wound roll per row and battle.
@@ -2862,6 +2933,46 @@ cdef int resolve_weapon_c(DuelC* d, int atk_side, SourceC* src,
                     s_def.condition[row] = KNOCKED_DOWN
                     if not defender.persistent_frenzy:
                         s_def.frenzy[row] = 0
+        # Rapier Barrage (``modular/attacks.py::resolve_reference_attack``):
+        # a hit that fails to wound grants another full attack at a further
+        # -1 to hit, and that attack may itself continue the barrage.  The
+        # rows that wounded and the rows that continue are disjoint, so the
+        # continuation is resolved here, before this step's damage.
+        if src.rapier and src.hit_mod_base > -12:
+            barrage_rows = <int*>malloc(n * sizeof(int))
+            if barrage_rows == NULL:
+                rc = -1
+                return rc
+            n_barrage = 0
+            for i in range(n):
+                row = hit_rows[i]
+                if (not wounded[i] and s_atk.condition[row] != OUT
+                        and s_def.condition[row] != OUT):
+                    barrage_rows[n_barrage] = row
+                    n_barrage += 1
+            if n_barrage:
+                barrage_src = src[0]
+                barrage_src.hit_mod_base -= 1
+                memset(&barrage_prep, 0, sizeof(PreparedC))
+                prepared_ok = prepare_attack_c(
+                    atk, defender, &barrage_src, barrage_rows, n_barrage, charging,
+                    s_atk, s_def, rng, first_round, &barrage_prep, decisions,
+                    (attack_key + ".barrage") if attack_key is not None else None,
+                    cache, attacker_py)
+                if prepared_ok < 0:
+                    rc = -1
+                    return rc
+                if prepared_ok > 0:
+                    if resolve_weapon_c(d, atk_side, &barrage_src, &barrage_prep, charging,
+                                        s_atk, s_def, rng, first_round, phase_condition,
+                                        0, NULL, 0, 0, decisions, always_accept,
+                                        attacker_py, defender_py, None,
+                                        (attack_key + ".barrage") if attack_key is not None else None,
+                                        cache) < 0:
+                        prepared_free(&barrage_prep)
+                        rc = -1
+                        return rc
+                    prepared_free(&barrage_prep)
         # Collect the wounded rows with their per-row context.
         auto_w = <int8_t*>malloc(n * sizeof(int8_t))
         crit_roll = <int8_t*>malloc(n * sizeof(int8_t))
@@ -2938,6 +3049,9 @@ cdef int resolve_weapon_c(DuelC* d, int atk_side, SourceC* src,
             save_target[i] = <int8_t>armour_target_c(
                 defender, wound_strength[i], src, src.magical,
                 critical[i] >= 3
+                # Misericordia: armour is ignored against a Knocked Down foe.
+                or (src.effect.v[<int>F_IGNORE_ARMOUR_AGAINST_KNOCKED_DOWN]
+                    and s_def.condition[wound_rows[i]] == KNOCKED_DOWN)
                 # Achilles Heel: a stampeding charge wound of five or more
                 # finds the gap and ignores armour entirely.
                 or (src.achilles_stampede and first_round
@@ -2958,7 +3072,14 @@ cdef int resolve_weapon_c(DuelC* d, int atk_side, SourceC* src,
                         attack_key + ".armour" if attack_key is not None else "armour",
                         decisions, cache, defender_py, 1, &owned_wound_rerolled) >= t:
                     saved[i] = 1
-        if defender.luck:
+        if defender.eshin_robes:
+            # Eshin Assassin robes reroll every failed armour save once; the
+            # reroll replaces, rather than consumes, the Luck skill's.
+            for i in range(m):
+                if save_target[i] <= 6 and not saved[i]:
+                    if rng_draw_safe(rng, 1, 6) >= max(2, save_target[i]):
+                        saved[i] = 1
+        elif defender.luck:
             for i in range(m):
                 row = wound_rows[i]
                 if save_target[i] <= 6 and not saved[i] and not s_def.luck_used[row]:
@@ -3008,6 +3129,10 @@ cdef int resolve_weapon_c(DuelC* d, int atk_side, SourceC* src,
                 # Luck grants 4+, or only 6+ where no ordinary ward applies.
                 ward_t = 6 if ward_t > 6 else 4
             regen_t = src.regeneration
+            if src.no_saves:
+                # Ruling D13: the wound allows no saving throw of any kind.
+                ward_t = 7
+                regen_t = 7
             if s_atk.djinn_power[row] == 1:
                 ward_t += 1
                 regen_t += 1
@@ -3041,10 +3166,11 @@ cdef int resolve_weapon_c(DuelC* d, int atk_side, SourceC* src,
             else:
                 t = s_def.condition[row]
             # The oracle's ``helpless_at_start``: a defender already Knocked
-            # Down or Paralyzed when the pool began.  It is taken out with
-            # ``damage=1`` and its Wound total is left untouched, so the row
-            # is removed from the damage pass entirely.
-            helpless[i] = 1 if (t == KNOCKED_DOWN or t == PARALYZED) else 0
+            # Down when the pool began (``modular/pools.py``).  It is taken
+            # out with ``damage=1`` and its Wound total is left untouched, so
+            # the row is removed from the damage pass entirely.  A Paralyzed
+            # defender is hit automatically but its wound resolves normally.
+            helpless[i] = 1 if (t == KNOCKED_DOWN and not src.non_melee) else 0
             if helpless[i]:
                 s_def.condition[row] = OUT
         # Damage application.
@@ -3085,11 +3211,20 @@ cdef int resolve_weapon_c(DuelC* d, int atk_side, SourceC* src,
                 damage_helpless[k] = helpless[i]
                 k += 1
         # Pre-subtraction wounds per distinct row (affected rows = run starts).
+        # Zero-damage entries (a helpless kill leaves the Wound total
+        # untouched) never enter ``damage_rows``, so they must not own a
+        # ``wounds_before`` slot either: the injury loop below advances one
+        # slot per *damage* run, and a skipped entry would desynchronise every
+        # later row's pre-subtraction Wounds.
         k = 0
+        c2 = -1
         for i in range(m):
-            if i == 0 or wound_rows[i] != wound_rows[i - 1]:
+            if damage_values[i] == 0:
+                continue
+            if c2 == -1 or wound_rows[i] != c2:
                 wounds_before[k] = s_def.wounds[wound_rows[i]]
                 k += 1
+            c2 = wound_rows[i]
         # np.subtract.at: every damage instance subtracts one wound.
         for i in range(total):
             s_def.wounds[damage_rows[i]] = <int16_t>(s_def.wounds[damage_rows[i]] - 1)
@@ -3102,6 +3237,12 @@ cdef int resolve_weapon_c(DuelC* d, int atk_side, SourceC* src,
             dmg_counts[i] = 0
         for i in range(total):
             dmg_counts[damage_rows[i]] += 1
+        # A helpless kill subtracts no Wound but records one point of damage,
+        # so the wound reactions fire exactly once for it
+        # (``modular/attacks.py`` damage = 1, ``aftermath._react_to_wound``).
+        for i in range(m):
+            if helpless[i] and dmg_counts[wound_rows[i]] == 0:
+                dmg_counts[wound_rows[i]] = 1
         t = 0
         for i in range(s_def.n):
             if dmg_counts[i] > t:
@@ -3133,6 +3274,22 @@ cdef int resolve_weapon_c(DuelC* d, int atk_side, SourceC* src,
                         rc = -1
                         return rc
                     prepared_free(&acid_prep)
+        # Contagious answers every close-combat wound that leaves the bearer
+        # out of action; a helpless kill never reaches the injury loop below,
+        # so it is tested here (``modular/aftermath.py``).
+        if defender.contagious and not atk.undead_or_possessed and not src.non_melee:
+            c2 = -1
+            for i in range(m):
+                row = wound_rows[i]
+                if not helpless[i] or row == c2:
+                    continue
+                c2 = row
+                if s_atk.condition[row] == OUT:
+                    continue
+                if not characteristic_test_one_c(atk, s_atk, row, s_atk.toughness[row], rng, 1):
+                    s_atk.wounds[row] = <int16_t>(s_atk.wounds[row] - 1)
+                    if s_atk.wounds[row] <= 0:
+                        s_atk.condition[row] = OUT
         # Nightshade poison: initiative penalty per wound.
         if src.nightshade:
             for i in range(m):
@@ -3159,9 +3316,15 @@ cdef int resolve_weapon_c(DuelC* d, int atk_side, SourceC* src,
                     s_def.parry_remaining[row] = 0
         # The Torturer saps a living victim's Strength with every wound it
         # actually suffers.
-        if src.torturer:
-            for i in range(total):
-                row = damage_rows[i]
+        if src.torturer and not src.non_melee:
+            # One point of Strength per wounding attack, whatever its damage
+            # (``modular/aftermath.py``: ``reactive_damage > 0``).
+            c2 = -1
+            for i in range(m):
+                row = wound_rows[i]
+                if row == c2 or dmg_counts[row] == 0:
+                    continue
+                c2 = row
                 if s_def.strength[row] > 1:
                     s_def.strength[row] = <int16_t>(s_def.strength[row] - 1)
                 s_def.torture_strength_loss[row] = <int8_t>(
@@ -3217,21 +3380,31 @@ cdef int resolve_weapon_c(DuelC* d, int atk_side, SourceC* src,
             if injury_crit[i] >= 5:
                 t += 2
             injury_rolls[i] = <int8_t>t
-        # Injury reroll on high rolls (Hard to Kill / Tough as Steel).
+        # Injury reroll (Hard to Kill / Tough as Steel).  The oracle's
+        # production pipeline substitutes ``AlwaysAccept`` before any attack
+        # resolves, so without an explicit policy every eligible Injury
+        # result is re-rolled -- not only Out of Action -- and the re-roll
+        # carries the same modifiers as the first roll.
         if defender.injury_reroll_out and not src.fire:
-            t = 6 if defender.hard_to_kill or defender.true_grit else defender.out_of_action_threshold
             for i in range(inj_count):
-                # With a policy the oracle asks per injury instance; without
-                # one it re-rolls exactly the results that take the warrior
-                # out of action.
                 if decisions is not None and attack_key is not None:
                     if not decide_cached_c(decisions, cache,
                                            attack_key + ".injury." + str(i) + ".reroll-choice",
                                            int(injury_rows[i])):
                         continue
-                elif injury_rolls[i] < t:
-                    continue
-                injury_rolls[i] = <int8_t>rng_draw_safe(rng, 1, 6)
+                t = (rng_draw_safe(rng, 1, 6) + eff.v[<int>F_INJURY_MODIFIER]
+                     + s_atk.injury_bonus_row[injury_rows[i]])
+                if src.knife_fighting_injury:
+                    t += 1
+                if src.blessing_of_morr:
+                    t += 1
+                if defender.inured_to_pain:
+                    t -= 1
+                if defender.lycanthrope_self and not s_def.hillman_wolf[injury_rows[i]]:
+                    t -= 1
+                if injury_crit[i] >= 5:
+                    t += 2
+                injury_rolls[i] = <int8_t>t
         # Injury conditions.
         injury = <int8_t*>malloc(inj_count * sizeof(int8_t))
         if injury == NULL:
@@ -3342,7 +3515,8 @@ cdef int resolve_weapon_c(DuelC* d, int atk_side, SourceC* src,
                     and s_atk.condition[row] == STANDING):
                 # The kill itself rouses the Great Thirster.
                 s_atk.frenzy[row] = 1
-            if highest == OUT and defender.contagious and not atk.undead_or_possessed:
+            if (highest == OUT and defender.contagious and not atk.undead_or_possessed
+                    and not src.non_melee):
                 contagious[n_contagious] = row
                 n_contagious += 1
             i = j
@@ -3375,6 +3549,7 @@ cdef int resolve_weapon_c(DuelC* d, int atk_side, SourceC* src,
         free(critical_rolls)
         free(wounded)
         free(extra_hits)
+        free(barrage_rows)
         free(extra_wounds)
         free(rerolls)
         free(auto_w)
@@ -3664,6 +3839,18 @@ cdef int apply_hit_defences_c(DuelC* d, int atk_side, SourceC* src,
     )
     if survivor_n < 0:
         return -1
+    # Sword-breaker: a parried blow is trapped on 4+, breaking the hand that
+    # held the striking weapon (the main hand only when its own weapon
+    # struck).  The break survives the attack; the next phase's equipment
+    # projection substitutes the backup weapon or the fist.
+    if n - survivor_n and src.trap_blade:
+        for i in range(n - survivor_n):
+            row = parried[i]
+            if rng_draw_safe(rng, 1, 6) >= 4:
+                if not (s_atk.broken_hands[row] & 1) and src.trap_main:
+                    s_atk.broken_hands[row] = <uint8_t>(s_atk.broken_hands[row] | 1)
+                else:
+                    s_atk.broken_hands[row] = <uint8_t>(s_atk.broken_hands[row] | 2)
     # Spider-infested defenders slow attackers whose hits were parried.
     if n - survivor_n and defender.spider_infested:
         for i in range(n - survivor_n):
@@ -3759,6 +3946,9 @@ cdef int resolve_attacks_c(DuelC* d, int atk_side, const int* rows, int rows_n,
     cdef int* remaining = NULL
     cdef int* main_rows = NULL
     cdef int* off_rows = NULL
+    cdef int* main_lim = NULL
+    cdef int* off_lim = NULL
+    cdef int lim_total, lim_off, lim_main, orig_main, orig_off, lim_pen
     cdef PreparedC** prepared = NULL
     cdef int* prepared_n = NULL  # scalar in a pointer cell for the cleanup path
     cdef int** selected = NULL
@@ -3780,6 +3970,7 @@ cdef int resolve_attacks_c(DuelC* d, int atk_side, const int* rows, int rows_n,
     cdef PreparedC tmp_prep
     cdef PreparedC* tmp_ptr = NULL
     cdef SourceC* src = NULL
+    cdef SourceC onslaught_src
     cdef bint two_parries, offhand, use_off, any_charging
     cdef int n_bull = 0, n_body = 0, n_main = 0, n_off = 0, surv_n
     cdef int prepared_count = 0, max_prepared = 0, n_hug = 0, n_won = 0
@@ -3803,16 +3994,30 @@ cdef int resolve_attacks_c(DuelC* d, int atk_side, const int* rows, int rows_n,
         remaining = <int*>malloc(rows_n * sizeof(int))
         main_rows = <int*>malloc(n * sizeof(int))
         off_rows = <int*>malloc(n * sizeof(int))
+        main_lim = <int*>malloc(n * sizeof(int))
+        off_lim = <int*>malloc(n * sizeof(int))
         if (phase_cond == NULL or work_rows == NULL or remaining == NULL
-                or main_rows == NULL or off_rows == NULL):
+                or main_rows == NULL or off_rows == NULL
+                or main_lim == NULL or off_lim == NULL):
             rc = -1
             return rc
         memcpy(phase_cond, s_def.condition, n)
+        remaining_n = 0
         for i in range(rows_n):
             row = rows[i]
-            if phase_cond[row] == STUNNED:
+            # The Honourable strike nothing at a foe already Knocked Down or
+            # Stunned: the whole pool is skipped before any attack resolves,
+            # so a stunned foe is not finished either (``modular/pools.py``).
+            if atk.main.honorable and (phase_cond[row] == KNOCKED_DOWN
+                                       or phase_cond[row] == STUNNED):
+                continue
+            # The immediate finish of a phase-start-stunned defender is part
+            # of resolving an attack: a pool whose every attack is suppressed
+            # (Stupidity, burning) resolves nothing and leaves him Stunned.
+            if phase_cond[row] == STUNNED and attacks[row] > 0:
                 s_def.condition[row] = OUT
-            remaining[i] = row
+            remaining[remaining_n] = row
+            remaining_n += 1
         # Bull-charge reaction (first round only).
         if first_round:
             for i in range(remaining_n):
@@ -3959,13 +4164,48 @@ cdef int resolve_attacks_c(DuelC* d, int atk_side, const int* rows, int rows_n,
                     remaining[k] = row
                     k += 1
                 remaining_n = k
+        # A hampered hand (Kusari-kama) removes that hand's weapon from the
+        # allocation, keeping one attack (``vectorized._attacks`` port of
+        # ``modular/pools.py``).  Rows without a penalty keep the legacy
+        # index allocation below (``main_lim`` -1).
+        for i in range(remaining_n):
+            row = remaining[i]
+            main_lim[row] = -1
+            off_lim[row] = 0
+            if ((s_atk.hampered_main[row] or s_atk.hampered_off[row]
+                    or s_atk.attack_penalty[row])
+                    and not atk.main_pistol and not atk.off_pistol):
+                lim_total = attacks[row]
+                lim_off = 1 if (atk.off_hand_attacks and atk.off_present != 0
+                                and lim_total > 1) else 0
+                lim_main = lim_total - lim_off
+                orig_main = lim_main
+                orig_off = lim_off
+                if s_atk.hampered_main[row] + s_atk.hampered_off[row] > 0:
+                    lim_pen = s_atk.hampered_main[row]
+                else:
+                    lim_pen = s_atk.attack_penalty[row]
+                lim_main -= lim_pen
+                if lim_main < 0:
+                    lim_main = 0
+                lim_off -= s_atk.hampered_off[row]
+                if lim_off < 0:
+                    lim_off = 0
+                if lim_main + lim_off == 0 and lim_total > 0:
+                    if orig_main > 0:
+                        lim_main = 1
+                    elif orig_off > 0:
+                        lim_off = 1
+                main_lim[row] = lim_main
+                off_lim[row] = lim_off
         # Weapon allocation over the attack pool.
         for index in range(maximum):
             m = 0
             for i in range(remaining_n):
                 row = remaining[i]
                 # The blow the electrical touch forfeited is never allocated.
-                if (attacks[row] > index and s_def.condition[row] != OUT
+                if (((attacks[row] if main_lim[row] < 0 else main_lim[row] + off_lim[row]) > index)
+                        and s_def.condition[row] != OUT
                         and s_atk.electrical_forfeit[row] != index):
                     work_rows[m] = row
                     m += 1
@@ -3979,6 +4219,8 @@ cdef int resolve_attacks_c(DuelC* d, int atk_side, const int* rows, int rows_n,
                 row = work_rows[i]
                 if atk.main_pistol:
                     use_off = offhand and (not first_round or index > 0)
+                elif main_lim[row] >= 0:
+                    use_off = offhand and index >= main_lim[row]
                 else:
                     use_off = offhand and index == attacks[row] - 1
                     if atk.off_pistol and not first_round:
@@ -4115,7 +4357,10 @@ cdef int resolve_attacks_c(DuelC* d, int atk_side, const int* rows, int rows_n,
                 e += 1
                 if n_main == 0:
                     continue
-                ok = prepare_attack_c(atk, defender, &tmp_prep.src, main_rows, n_main,
+                # ``prepare_attack_c`` clears its output before copying the
+                # source, so the source must not live inside ``tmp_prep``.
+                onslaught_src = tmp_prep.src
+                ok = prepare_attack_c(atk, defender, &onslaught_src, main_rows, n_main,
                                       charging, s_atk, s_def, rng, first_round, &tmp_prep,
                                       decisions,
                                       decision_prefix + ".attack." + str(prepared_count),
@@ -4257,7 +4502,10 @@ cdef int resolve_attacks_c(DuelC* d, int atk_side, const int* rows, int rows_n,
                     tmp_prep.hit_rows[k] = tmp_prep.hit_rows[i]
                     tmp_prep.hit_positions[k] = tmp_prep.hit_positions[i]
                     k += 1
-                tmp_prep.hit_n = k
+                # Write the shrunken count through the pointer: ``tmp_prep``
+                # is a by-value copy, so assigning its ``hit_n`` would leave
+                # the consumed hits in the pool (and duplicate shifted rows).
+                prepared[index][0].hit_n = k
             if n_hug:
                 hug_a_rolls = <int*>malloc(n_hug * sizeof(int))
                 hug_d_rolls = <int*>malloc(n_hug * sizeof(int))
@@ -4338,6 +4586,8 @@ cdef int resolve_attacks_c(DuelC* d, int atk_side, const int* rows, int rows_n,
         free(remaining)
         free(main_rows)
         free(off_rows)
+        free(main_lim)
+        free(off_lim)
         free(best_roll)
         free(owner)
         free(second_roll)
@@ -4434,6 +4684,8 @@ cdef int attack_count_c(TablesC* t, int side, StateC* s, const int8_t* charging,
             # The printed clause replaces A1 with A2; it is not a generic +1.
             result = 2
         result += f.attacks_bonus_total
+        if s.combat_charge_active[i]:
+            result += 1
         if f.maddened and s.wounds[i] < f.w:
             result += 1
         if f.charge_attacks_bonus and charging[i]:
@@ -4457,6 +4709,10 @@ cdef int attack_count_c(TablesC* t, int side, StateC* s, const int8_t* charging,
         if first_round and f.ferocious_charge and charging[i]:
             result *= 2
         result += extra
+        # The oracle re-applies the unarmed cap after Frenzy doubling and the
+        # extra-weapon attack (``phases.build_attacks``: ``min(attacks, 1)``).
+        if f.fist_penalized and result > 1:
+            result = 1
         if f.vomit or f.sweep_main:
             result = 1
         if f.main_pistol and first_round:
@@ -4789,7 +5045,7 @@ cdef int black_hunger_backlash_c(DuelC* d, int side, StateC* s, Rng* rng,
     cdef int m = 0
     for i in range(rows_n):
         row = rows[i]
-        if s.condition[row] != OUT:
+        if s.black_hunger_active[row] and s.condition[row] != OUT:
             active[m] = row
             m += 1
     cdef PreparedC prep
@@ -4824,7 +5080,8 @@ cdef int black_hunger_backlash_c(DuelC* d, int side, StateC* s, Rng* rng,
                     return -1
                 prepared_free(&prep)
     free(active); free(hit_rows); free(hits)
-    return 0
+    # The oracle stops the sequence at OUT and only then offers its rescue.
+    return rescue_force_of_will_c(f, s, rows, rows_n, rng)
 
 
 cdef int resolve_fire_c(DuelC* d, int victim_side, StateC* s_victim,
@@ -5177,6 +5434,11 @@ cdef struct BatchC:
     int16_t* shifty_saved
     int32_t* shifty_projection
     int shifty_choice[2]
+    int whip_index[2]
+    int whip_count[2]
+    int8_t* whip_on[2]
+    int8_t* whip_slot[2]
+    int8_t* whip_done[2]
     int replacement_count[2]
     TablesC tables
     StateC s1
@@ -5227,6 +5489,9 @@ cdef void batch_free_c(BatchC* b) noexcept:
     free(b.shifty_on[0]); free(b.shifty_on[1])
     free(b.shifty_slot[0]); free(b.shifty_slot[1])
     free(b.shifty_done[0]); free(b.shifty_done[1])
+    free(b.whip_on[0]); free(b.whip_on[1])
+    free(b.whip_slot[0]); free(b.whip_slot[1])
+    free(b.whip_done[0]); free(b.whip_done[1])
     free(b.deathblow_pool[0]); free(b.deathblow_pool[1])
     free(b.shifty_saved); free(b.shifty_projection)
     free(b.active_rows); free(b.rows); free(b.reply)
@@ -5271,6 +5536,12 @@ cdef int batch_alloc_c(BatchC* b, int count) except -1:
     b.shifty_slot[1] = <int8_t*>calloc(n, 1)
     b.shifty_done[0] = <int8_t*>calloc(n, 1)
     b.shifty_done[1] = <int8_t*>calloc(n, 1)
+    b.whip_on[0] = <int8_t*>calloc(n, 1)
+    b.whip_on[1] = <int8_t*>calloc(n, 1)
+    b.whip_slot[0] = <int8_t*>calloc(n, 1)
+    b.whip_slot[1] = <int8_t*>calloc(n, 1)
+    b.whip_done[0] = <int8_t*>calloc(n, 1)
+    b.whip_done[1] = <int8_t*>calloc(n, 1)
     b.deathblow_pool[0] = <int16_t*>calloc(n, sizeof(int16_t))
     b.deathblow_pool[1] = <int16_t*>calloc(n, sizeof(int16_t))
     b.shifty_saved = <int16_t*>calloc(n, sizeof(int16_t))
@@ -5294,6 +5565,9 @@ cdef int batch_alloc_c(BatchC* b, int count) except -1:
             or b.jolt_done[0] == NULL or b.jolt_done[1] == NULL
             or b.shifty_on[0] == NULL or b.shifty_on[1] == NULL
             or b.shifty_slot[0] == NULL or b.shifty_slot[1] == NULL
+            or b.whip_on[0] == NULL or b.whip_on[1] == NULL
+            or b.whip_slot[0] == NULL or b.whip_slot[1] == NULL
+            or b.whip_done[0] == NULL or b.whip_done[1] == NULL
             or b.rows == NULL or b.reply == NULL or b.paralyze_rows == NULL
             or b.paralyze_targets == NULL or b.paralyze_results == NULL
             or not state_ok(&b.s1) or not state_ok(&b.s2)):
@@ -6680,6 +6954,7 @@ cdef int phase_own_turn_recovery_c(BatchC* b, object decisions, object first_py,
         for i in range(b.count):
             s.attacks_bonus_row[i] = 0
             s.injury_bonus_row[i] = 0
+            s.black_hunger_active[i] = 0
         maximum = f.base_wounds
         # The Revenant's regeneration: one 5+ attempt per own turn, never
         # remembered when it fails.
@@ -6925,6 +7200,7 @@ cdef int phase_own_turn_recovery_c(BatchC* b, object decisions, object first_py,
                 row = b.active_rows[i]
                 if (turn[row] and not s.grappled[row] and not s.grappling[row]
                         and not s.netted[row] and s.condition[row] != OUT):
+                    s.black_hunger_active[row] = 1
                     s.attacks_bonus_row[row] = <int8_t>(s.attacks_bonus_row[row] + 1)
     return 0
 
@@ -6969,7 +7245,7 @@ cdef int phase_equipment_c(BatchC* b, object table, object row_projections) exce
     Wounds cannot exceed the maximum of its projection
     (``modular/rounds.py`` post-projection clamp).
     """
-    cdef int i, side, index
+    cdef int i, side, index, r
     cdef StateC* s
     cdef FighterC* f
     if row_projections is not None:
@@ -6987,6 +7263,28 @@ cdef int phase_equipment_c(BatchC* b, object table, object row_projections) exce
                 if sync_projections_c(&b.tables, table) < 0:
                     return -1
                 s.projection[i] = index
+    # A broken hand (Sword-breaker) or the Bitten's transformation changes the
+    # equipment this row fights with (``modular.equipment.equipment_for_state``
+    # through the NumPy engine's ``phase_equipment``).  Only rows this step
+    # projected itself are re-projected; other projections keep their owner.
+    for side in range(2):
+        label = "first" if side == 0 else "second"
+        s = &b.s1 if side == 0 else &b.s2
+        owned = None
+        for i in range(b.n_active):
+            r = b.active_rows[i]
+            if not (s.broken_hands[r] or s.transformed[r] or s.equipment_cast_off[r]):
+                continue
+            if owned is None:
+                owned = table.equipment_indices[label]
+            if s.projection[r] != 0 and s.projection[r] not in owned:
+                continue
+            index = <int>table.equipment_row(
+                label, s.broken_hands[r], s.transformed[r], s.equipment_cast_off[r],
+                b.first_round)
+            if sync_projections_c(&b.tables, table) < 0:
+                return -1
+            s.projection[r] = index
     for i in range(b.n_active):
         index = b.active_rows[i]
         f = fighter_at(&b.tables, 0, &b.s1, index)
@@ -7099,6 +7397,10 @@ cdef int phase_stand_up_c(BatchC* b, object round_counts) except -1:
         b.s2.critical_used[i] = 0
         b.s1.attack_penalty[i] = 0
         b.s2.attack_penalty[i] = 0
+        b.s1.hampered_main[i] = 0
+        b.s2.hampered_main[i] = 0
+        b.s1.hampered_off[i] = 0
+        b.s2.hampered_off[i] = 0
     for side in range(2):
         s = &b.s1 if side == 0 else &b.s2
         player_turn = b.player_turn1 if side == 0 else b.player_turn2
@@ -7225,6 +7527,9 @@ cdef int phase_pre_combat_c(BatchC* b, object decisions, object table,
     remaining openers (Crude Belch, the Inquisitor's brands, the mutation
     tail, Main Gauche modes, the Jester's trick, the Shadow Dance, the Sea
     Shanty, the Mantle of Crows) still land here."""
+    cdef int side, i, row
+    cdef StateC* s
+    cdef FighterC* f
     if songs_and_belches_c(b, decisions, first_py, second_py) < 0:
         return -1
     if mutations_c(b, decisions, table, first_py, second_py) < 0:
@@ -7237,7 +7542,20 @@ cdef int phase_pre_combat_c(BatchC* b, object decisions, object table,
         return -1
     if charms_c(b, decisions, first_py, second_py) < 0:
         return -1
-    return grapple_c(b, decisions, first_py, second_py)
+    if grapple_c(b, decisions, first_py, second_py) < 0:
+        return -1
+    # Combat Charge is phase-local and follows the finalized charge gates.
+    if b.first_round:
+        for side in range(2):
+            s = side_state(b, side)
+            for i in range(b.n_active):
+                row = b.active_rows[i]
+                f = fighter_at(&b.tables, side, s, row)
+                if side_charges(b, side)[row] and f.combat_charge:
+                    require_characteristic_c(s, f, row, 0, &b.rng, b.count)
+                    s.weapon_skill[row] += 1
+                    s.combat_charge_active[row] = 1
+    return 0
 
 
 cdef int phase_reactions_c(BatchC* b) except -1:
@@ -7250,6 +7568,7 @@ cdef int phase_reactions_c(BatchC* b) except -1:
     cdef SideC* mine
     cdef SideC* foe
     cdef int k, i, row, m, gn, side, ok
+    cdef int impact_max, impact_index, impact_n
     cdef int* gr
     if b.first_round:
         for side in range(2):
@@ -7299,20 +7618,43 @@ cdef int phase_reactions_c(BatchC* b) except -1:
                         m += 1
                 if m == 0:
                     continue
-                src = &mine.impact
-                ok = prepare_attack_c(&mine.f, &foe.f, src, b.rows, m, NULL,
-                                      side_state(b, side), side_state(b, 1 - side),
-                                      &b.rng, 0, &crow_prep)
-                if ok < 0:
-                    return -1
-                if ok > 0:
-                    if resolve_weapon_c(&v, side, src, &crow_prep, NULL,
-                                        side_state(b, side), side_state(b, 1 - side),
-                                        &b.rng, 0, NULL, 0, NULL, 0, 0, None, 1,
-                                        None, None, None) < 0:
-                        prepared_free(&crow_prep)
+                # A charging Wheelo lands (D6+1)//2 impacts; the spear's
+                # counter-impact is a single hit.  Only the first impact of a
+                # morning star resolves at Strength 5.
+                impact_max = 1
+                for i in range(m):
+                    row = b.rows[i]
+                    if side_charges(b, side)[row]:
+                        b.reply[i] = (rng_draw_safe(&b.rng, 1, 6) + 1) // 2
+                    else:
+                        b.reply[i] = 1
+                    if b.reply[i] > impact_max:
+                        impact_max = b.reply[i]
+                for impact_index in range(impact_max):
+                    impact_n = 0
+                    for i in range(m):
+                        row = b.rows[i]
+                        if (b.reply[i] > impact_index
+                                and side_state(b, side).condition[row] != OUT
+                                and side_state(b, 1 - side).condition[row] != OUT):
+                            b.paralyze_rows[impact_n] = row
+                            impact_n += 1
+                    if impact_n == 0:
+                        continue
+                    src = &mine.impact if impact_index == 0 else &mine.impact_more
+                    ok = prepare_attack_c(&mine.f, &foe.f, src, b.paralyze_rows, impact_n, NULL,
+                                          side_state(b, side), side_state(b, 1 - side),
+                                          &b.rng, 0, &crow_prep)
+                    if ok < 0:
                         return -1
-                    prepared_free(&crow_prep)
+                    if ok > 0:
+                        if resolve_weapon_c(&v, side, src, &crow_prep, NULL,
+                                            side_state(b, side), side_state(b, 1 - side),
+                                            &b.rng, 0, NULL, 0, NULL, 0, 0, None, 1,
+                                            None, None, None) < 0:
+                            prepared_free(&crow_prep)
+                            return -1
+                        prepared_free(&crow_prep)
         finally:
             groups_free(&g)
     # The Crow Master's Mantle opens the combat phase, before the mutual
@@ -7418,9 +7760,12 @@ cdef int phase_pools_c(BatchC* b, object decisions, object first_py,
         if f2.animal_friendship_effective:
             b.attacks1[i] = 0
         if b.first_round:
-            if f1.serpent_whip and (b.charge1[i] or b.charge2[i]):
+            # A charging bearer keeps the Whipcrack bonus inside its pool;
+            # the charged bearer's bonus is split into its own Strike First
+            # event by ``schedule_whip_c`` below (``modular/rounds.py``).
+            if f1.serpent_whip and b.charge1[i] and b.attacks1[i] > 0:
                 b.attacks1[i] = <int16_t>(b.attacks1[i] + 1)
-            if f2.serpent_whip and (b.charge2[i] or b.charge1[i]):
+            if f2.serpent_whip and b.charge2[i] and b.attacks2[i] > 0:
                 b.attacks2[i] = <int16_t>(b.attacks2[i] + 1)
             if f1.boar_spear and b.charge2[i]:
                 b.attacks2[i] = <int16_t>(b.attacks2[i] - 1)
@@ -7439,15 +7784,17 @@ cdef int phase_pools_c(BatchC* b, object decisions, object first_py,
                 if b.attacks1[i] < 1:
                     b.attacks1[i] = 1
         # The oracle silences the whole pool of a warrior on fire, held or
-        # holding, controlled by the Danse Macabre or failing Stupidity
-        # (``modular/rounds.py`` pool suppression).
+        # holding, controlled by the Danse Macabre, failing Stupidity or still
+        # addicted to its own brew (``modular/rounds.py`` pool suppression).
         if (b.s1.on_fire[i] or b.s1.stupidity_failed[i] or b.s1.danse_macabre_controlled[i]
                 or b.s1.grappled[i] or b.s1.grappling[i] or b.s1.charm_attack_blocked[i]
-                or b.s1.entranced[i] or b.s1.animosity_failed[i]):
+                or b.s1.entranced[i] or b.s1.animosity_failed[i]
+                or (f1.alchemist_addicted and not b.s1.addiction_cured[i])):
             b.attacks1[i] = 0
         if (b.s2.on_fire[i] or b.s2.stupidity_failed[i] or b.s2.danse_macabre_controlled[i]
                 or b.s2.grappled[i] or b.s2.grappling[i] or b.s2.charm_attack_blocked[i]
-                or b.s2.entranced[i] or b.s2.animosity_failed[i]):
+                or b.s2.entranced[i] or b.s2.animosity_failed[i]
+                or (f2.alchemist_addicted and not b.s2.addiction_cured[i])):
             b.attacks2[i] = 0
         b.p1[i] = <int8_t>priority_row_c(f1, b.first_round, b.charge1[i], b.charge2[i],
                                          b.stood1[i], b.s1.dance_woven_mist[i])
@@ -7462,12 +7809,117 @@ cdef int phase_pools_c(BatchC* b, object decisions, object first_py,
     for i in range(b.count):
         b.deathblow_pool[0][i] = b.attacks1[i]
         b.deathblow_pool[1][i] = b.attacks2[i]
+    # Only a warrior standing when the pools are allocated strikes this round
+    # (``modular/rounds.py``: ``condition != STANDING`` zeroes the count).  A
+    # fighter down now and rescued later in the phase (Force of Will) does
+    # not gain a pool of its own in the same round.
+    for i in range(b.count):
+        if b.s1.condition[i] != STANDING:
+            b.attacks1[i] = 0
+        if b.s2.condition[i] != STANDING:
+            b.attacks2[i] = 0
     for i in range(b.count):
         if b.p1[i] == b.p2[i] and b.ini1[i] == b.ini2[i]:
             b.first_acts[i] = <int8_t>rng_coin(&b.rng)
+    if schedule_whip_c(b) < 0:
+        return -1
     if schedule_shifty_c(b, decisions, first_py, second_py) < 0:
         return -1
     return schedule_electrical_c(b, decisions, first_py, second_py)
+
+
+cdef int schedule_whip_c(BatchC* b) except -1:
+    """Schedule the charged bearer's Whipcrack bonus.
+
+    The printed bonus joins the bearer's pool when he charges; only when he
+    is *charged* is it split out as its own earlier event at the whip's
+    Strike First tier, ``max(1, whip.priority)``, ordered against the
+    enemy's pool by tier, Initiative and the printed tie roll
+    (``modular/rounds.py`` whipcrack insertion).
+    """
+    cdef int side, i, row, bp, ep, oini, eini
+    cdef FighterC* bonus
+    cdef StateC* s
+    cdef bint before
+    for side in range(2):
+        for i in range(b.count):
+            b.whip_on[side][i] = 0
+            b.whip_slot[side][i] = 0
+            b.whip_done[side][i] = 0
+        if not b.first_round or b.whip_count[side] == 0:
+            continue
+        s = side_state(b, side)
+        bonus = &b.tables.sides[side][b.whip_index[side]].f
+        for i in range(b.n_active):
+            row = b.active_rows[i]
+            # Only a charged, standing bearer with a live pool splits the
+            # bonus out (a suppressed pool resolves nothing at all).
+            if not side_charges(b, 1 - side)[row] or s.condition[row] != STANDING:
+                continue
+            if (b.attacks1[row] if side == 0 else b.attacks2[row]) <= 0:
+                continue
+            b.whip_on[side][row] = 1
+            bp = bonus.weapon_priority
+            if bp < 1:
+                bp = 1
+            ep = (b.p2[row] if side == 0 else b.p1[row])
+            oini = (b.ini1[row] if side == 0 else b.ini2[row])
+            eini = (b.ini2[row] if side == 0 else b.ini1[row])
+            if bp > ep:
+                before = 1
+            elif bp < ep:
+                before = 0
+            else:
+                before = oini > eini
+                if oini == eini:
+                    before = rng_coin(&b.rng)
+            b.whip_slot[side][row] = 0 if before else 1
+    return 0
+
+
+cdef int whip_event_c(BatchC* b, int side, bint leading, object decisions,
+                      object subject) except -1:
+    """Resolve the scheduled Whipcrack bonus strikes due to strike now.
+
+    One attack with the whip-only projection, exactly like the Shifty bonus:
+    ``leading`` selects the rows whose bonus beat the enemy's earlier pool;
+    otherwise it resolves immediately before its bearer's own pool.
+    """
+    cdef int i, row, m = 0
+    cdef int16_t* one
+    cdef StateC* s = side_state(b, side)
+    if b.whip_count[side] == 0 or not b.first_round:
+        return 0
+    for i in range(b.n_active):
+        row = b.active_rows[i]
+        if not b.whip_on[side][row] or b.whip_done[side][row]:
+            continue
+        if leading and b.whip_slot[side][row] != 0:
+            continue
+        if s.condition[row] != STANDING:
+            continue
+        # ``b.rows``/``b.reply`` hold the caller's pool row lists; use the
+        # recovery scratch, which is idle during the attack phase.
+        b.paralyze_rows[m] = row
+        m += 1
+    if m == 0:
+        return 0
+    one = b.attacks1 if side == 0 else b.attacks2
+    for i in range(m):
+        row = b.paralyze_rows[i]
+        b.whip_done[side][row] = 1
+        b.shifty_saved[row] = one[row]
+        one[row] = 1
+        b.shifty_projection[row] = s.projection[row]
+        s.projection[row] = b.whip_index[side]
+    if attack_event_c(b, side, b.paralyze_rows, m, decisions,
+                      None, ".whipcrack") < 0:
+        return -1
+    for i in range(m):
+        row = b.paralyze_rows[i]
+        one[row] = b.shifty_saved[row]
+        s.projection[row] = b.shifty_projection[row]
+    return 0
 
 
 cdef int schedule_electrical_c(BatchC* b, object decisions, object first_py,
@@ -7752,19 +8204,29 @@ cdef int phase_attacks_c(BatchC* b, object decisions, object first_py, object se
     # A bonus whose priority beat the enemy's pool strikes before everything.
     if shifty_event_c(b, 0, 1, decisions, first_py) < 0:
         return -1
+    if whip_event_c(b, 0, 1, decisions, first_py) < 0:
+        return -1
     if shifty_event_c(b, 1, 1, decisions, second_py) < 0:
+        return -1
+    if whip_event_c(b, 1, 1, decisions, second_py) < 0:
         return -1
     if jolt_event_c(b, 0, 1, decisions, first_py) < 0:
         return -1
     if jolt_event_c(b, 1, 1, decisions, second_py) < 0:
         return -1
+    # A silenced warrior (Stupidity, fire, a charm...) contributes no pool at
+    # all, so its independent extra attacks do not strike either: only rows
+    # with an allocated pool take part (``vectorized._driver`` event rows).
     # First fighter acts first.
     n_rows = 0
     for i in range(b.count):
-        if b.unresolved[i] and b.s1.condition[i] == STANDING and b.first_acts[i]:
+        if (b.unresolved[i] and b.s1.condition[i] == STANDING and b.first_acts[i]
+                and b.attacks1[i] > 0):
             b.rows[n_rows] = i
             n_rows += 1
     if shifty_event_c(b, 0, 0, decisions, first_py) < 0:
+        return -1
+    if whip_event_c(b, 0, 0, decisions, first_py) < 0:
         return -1
     if jolt_event_c(b, 0, 0, decisions, first_py) < 0:
         return -1
@@ -7772,10 +8234,13 @@ cdef int phase_attacks_c(BatchC* b, object decisions, object first_py, object se
         return -1
     n_reply = 0
     for i in range(b.count):
-        if b.unresolved[i] and b.s2.condition[i] == STANDING and b.first_acts[i]:
+        if (b.unresolved[i] and b.s2.condition[i] == STANDING and b.first_acts[i]
+                and b.attacks2[i] > 0):
             b.reply[n_reply] = i
             n_reply += 1
     if shifty_event_c(b, 1, 0, decisions, second_py) < 0:
+        return -1
+    if whip_event_c(b, 1, 0, decisions, second_py) < 0:
         return -1
     if jolt_event_c(b, 1, 0, decisions, second_py) < 0:
         return -1
@@ -7784,10 +8249,13 @@ cdef int phase_attacks_c(BatchC* b, object decisions, object first_py, object se
     # Second fighter acts first.
     n_rows = 0
     for i in range(b.count):
-        if b.unresolved[i] and b.s2.condition[i] == STANDING and not b.first_acts[i]:
+        if (b.unresolved[i] and b.s2.condition[i] == STANDING and not b.first_acts[i]
+                and b.attacks2[i] > 0):
             b.rows[n_rows] = i
             n_rows += 1
     if shifty_event_c(b, 1, 0, decisions, second_py) < 0:
+        return -1
+    if whip_event_c(b, 1, 0, decisions, second_py) < 0:
         return -1
     if jolt_event_c(b, 1, 0, decisions, second_py) < 0:
         return -1
@@ -7795,10 +8263,13 @@ cdef int phase_attacks_c(BatchC* b, object decisions, object first_py, object se
         return -1
     n_reply = 0
     for i in range(b.count):
-        if b.unresolved[i] and b.s1.condition[i] == STANDING and not b.first_acts[i]:
+        if (b.unresolved[i] and b.s1.condition[i] == STANDING and not b.first_acts[i]
+                and b.attacks1[i] > 0):
             b.reply[n_reply] = i
             n_reply += 1
     if shifty_event_c(b, 0, 0, decisions, first_py) < 0:
+        return -1
+    if whip_event_c(b, 0, 0, decisions, first_py) < 0:
         return -1
     if jolt_event_c(b, 0, 0, decisions, first_py) < 0:
         return -1
@@ -7935,7 +8406,8 @@ cdef int phase_aftermath_c(BatchC* b) except -1:
     """Seduction's release and the Black Hunger's backlash on its bearer."""
     cdef GroupsC g
     cdef DuelC v
-    cdef int k, side
+    cdef int k, side, i
+    cdef StateC* s
     seduction_release_c(b)
     if group_rows_c(&b.s1, &b.s2, b.active_rows, b.n_active, &g) < 0:
         return -1
@@ -7950,6 +8422,12 @@ cdef int phase_aftermath_c(BatchC* b) except -1:
                         return -1
     finally:
         groups_free(&g)
+    for side in range(2):
+        s = side_state(b, side)
+        for i in range(b.count):
+            if s.combat_charge_active[i]:
+                s.weapon_skill[i] -= 1
+                s.combat_charge_active[i] = 0
     return 0
 
 
@@ -8087,6 +8565,10 @@ cdef int _run_batch(object table, int count, uint64_t seed, int maximum_rounds,
             b.shifty_count[_side] = min(len(_modes), 2)
             for _offer in range(b.shifty_count[_side]):
                 b.shifty_index[_side][_offer] = <int>table.intern(_label, _modes[_offer])
+            _modes = (getattr(table, "whip_fighters", None) or {}).get(_label, ())
+            b.whip_count[_side] = min(len(_modes), 1)
+            if b.whip_count[_side]:
+                b.whip_index[_side] = <int>table.intern(_label, _modes[0])
         if sync_projections_c(&b.tables, table) < 0:
             raise MemoryError("native projection table allocation failed")
         if fill_context(context, &b.ctx) < 0:

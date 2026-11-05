@@ -97,8 +97,9 @@ def test_battery_payload_records_stages_limits_and_pending_sensitivity():
     assert coverage["compared"] == 2
     assert coverage["approved"] == 1
     assert coverage["divergent"] == 1
-    assert coverage["errors"] == 2
-    assert coverage["dependency"] == 2
+    # A requested backend that is absent or stale is an own error now.
+    assert coverage["errors"] == 3
+    assert coverage["dependency"] == 1
     assert set(payload["magnitudes"]) == {"winner", "rounds"}
     assert payload["limits"] == {"c": "state:G00/G02"}
     assert payload["sensitivity"]["demonstrated"] == []
@@ -146,7 +147,10 @@ def test_malformed_outcome_codes_are_an_own_error_not_a_dependency():
 
     detail = "NOT_RUN:outcome-codes: oracle winner code(s) [3] outside [0, 1, 2]"
     assert battery_failure_kind("NOT_RUN", detail) == "error"
-    assert battery_failure_kind("NOT_RUN", "NOT_RUN:native-stale: absent") == "dependency"
+    assert battery_failure_kind("NOT_RUN", "NOT_RUN:native-stale: absent") == "error"
+    assert battery_failure_kind(
+        "NOT_RUN", "NOT_RUN:native-plan: native extension does not support "
+        "this duel plan") == "dependency"
 
 
 def test_battery_report_is_incomplete_with_missing_variants(monkeypatch):

@@ -10,10 +10,14 @@ oracle **duel for duel** — bit-for-bit identical totals, independent of how
 many workers or chunks are used.
 
 Threads would buy nothing here (pure Python holds the GIL), so the pool uses
-processes; the default start method is ``spawn`` on Windows and ``fork`` on
-POSIX, both supported by this module because the worker is a top-level
-function and every argument (compiled fighters, results) is a plain frozen
-dataclass.
+processes; the default start method is ``spawn`` on Windows and macOS and,
+since Python 3.14, ``forkserver`` on Linux (``fork`` before).  All are
+supported because the worker is a top-level function and every argument
+(compiled fighters, results) is a plain frozen dataclass.  With ``spawn`` and
+``forkserver`` the workers import the engine afresh from ``sys.path``, so they
+run the parent's engine only if both resolve the same package copy; callers
+that label results with an engine digest must check that (see
+``tools.verification.parity_samples``).
 """
 from __future__ import annotations
 
@@ -27,6 +31,33 @@ from mordheim_core.models import DuelContext
 from mordheim_core.models import CompiledFighter
 from mordheim_core.models import DuelResult
 from mordheim_core.models import SimulationCancelled
+
+
+def _engine_files() -> tuple[str, str]:
+    """Files the engine packages of this process were imported from."""
+    import mordheim_combat
+    import mordheim_core
+
+    return mordheim_combat.__file__, mordheim_core.__file__
+
+
+def _check_worker_engine(expected: tuple[str, str]) -> None:
+    """Pool initializer: a worker must run the parent's engine copy.
+
+    Spawned and forkserver workers re-import from ``sys.path``; a worker that
+    resolved another copy would merge another engine's duels into the
+    sample, so it fails (the pool breaks) instead of running.
+    """
+    actual = _engine_files()
+    if actual != expected:
+        raise RuntimeError(
+            f"oracle worker imported another engine copy ({actual}); the parent runs {expected}"
+        )
+
+
+def _pool(workers: int) -> ProcessPoolExecutor:
+    return ProcessPoolExecutor(max_workers=workers, initializer=_check_worker_engine,
+                               initargs=(_engine_files(),))
 
 
 def chunk_ranges(total: int, chunks: int) -> tuple[tuple[int, int], ...]:
@@ -151,7 +182,7 @@ def simulate_duel_reference_parallel(
     units = chunks if chunks is not None else available
     if units < 1:
         raise ValueError("chunks must be positive")
-    with ProcessPoolExecutor(max_workers=min(available, units)) as pool:
+    with _pool(min(available, units)) as pool:
         return _run_chunks(
             first, second, simulations, seed=seed,
             maximum_rounds=maximum_rounds, decisions=decisions, context=context,
@@ -188,7 +219,7 @@ def run_oracle_sample(
             maximum_rounds=maximum_rounds, decisions=decisions, context=context,
             units=workers, executor=executor, cancel_event=cancel_event,
         )
-    with ProcessPoolExecutor(max_workers=workers) as pool:
+    with _pool(workers) as pool:
         return _run_chunks(
             first, second, simulations, seed=seed,
             maximum_rounds=maximum_rounds, decisions=decisions, context=context,

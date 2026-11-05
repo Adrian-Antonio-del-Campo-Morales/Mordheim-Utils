@@ -31,6 +31,20 @@ Artifacts
     builder calls, compile failures and module-scope preparations.
 
 The existing ``compiled-cases.json`` corpus and its manifest are never touched.
+
+Source provenance and exit status
+---------------------------------
+
+Requests already frozen are served from the document and never recompiled
+(see docs/reference/verification.md, "Engine test fixtures").  The document
+records, in ``fingerprints.sources_sha256``, the digest of the KB sources
+(``sources/knowledge``) and of the construction compiler package that compiled
+its entries.  When the current sources differ from a recorded digest, the
+generator prints a PROVENANCE WARNING and records it in the coverage report:
+the frozen fighters are reused as they are, from other sources.  That warning
+never blocks generation.  The exit status is 1 when any build failed to
+compile or any consumer stayed blocked (the snapshot is still written with
+``--write``), otherwise 0.
 """
 from __future__ import annotations
 
@@ -50,6 +64,7 @@ for relative in (
     if str(ROOT / relative) not in sys.path:
         sys.path.insert(0, str(ROOT / relative))
 
+from tools.verification.compiled_builds import UNRECORDED_SOURCES  # noqa: E402
 from tools.verification.compiled_builds import build_key  # noqa: E402
 from tools.verification.compiled_cases import canonical_json  # noqa: E402
 
@@ -59,6 +74,9 @@ MODULAR = ROOT / "tests/engines/modular"
 ENGINE_ROOT = (ROOT / "packages/python/combat-engine").resolve()
 ENGINE_PREFIX = str(ENGINE_ROOT) + os.sep
 CORPUS = ROOT / "tests/engines/fixtures/compiled-cases.json"
+#: Inputs that decide a compiled fighter: the canonical KB and the compiler.
+KNOWLEDGE_SOURCES = Path("sources/knowledge")
+COMPILER_PACKAGE = Path("packages/python/roster-construction/mordheim_construction")
 COVERAGE_SCHEMA = "t07-build-snapshot-coverage"
 _MISSING = object()
 _COMPILED = object()
@@ -183,7 +201,9 @@ class Recorder:
 
     A request already frozen in the snapshot is served from the document
     instead of the compiler, so a regeneration reuses accepted results and only
-    compiles what is genuinely new.
+    compiles what is genuinely new.  The key covers the request only, not the
+    KB/compiler sources: ``main`` warns when the document records other
+    sources than the current ones (``sources_warning``).
     """
 
     def __init__(self, real, frozen: dict[str, dict] | None = None):
@@ -557,6 +577,67 @@ def _existing_entries() -> dict[str, dict]:
     return json.loads(SNAPSHOT.read_text(encoding="utf-8"))["entries"]
 
 
+def _recorded_sources() -> list[str]:
+    """Source digests the frozen document records (``unrecorded`` if none)."""
+    if not SNAPSHOT.exists():
+        return []
+    from tools.verification.compiled_builds import load_builds
+
+    return list(load_builds(SNAPSHOT).sources) or [UNRECORDED_SOURCES]
+
+
+def _shown(path: Path) -> str:
+    """A repository-relative path when possible, for messages."""
+    try:
+        return path.relative_to(ROOT).as_posix()
+    except ValueError:
+        return str(path)
+
+
+def construction_sources(root: Path = ROOT) -> tuple[Path, ...]:
+    """Every KB source and compiler file whose bytes can change a fighter."""
+    paths = []
+    for relative in (KNOWLEDGE_SOURCES, COMPILER_PACKAGE):
+        paths += [
+            path for path in (root / relative).rglob("*")
+            if path.is_file() and "__pycache__" not in path.parts
+            and path.suffix not in (".pyc", ".pyo")
+        ]
+    return tuple(sorted(paths))
+
+
+def sources_fingerprint(root: Path = ROOT) -> str:
+    """Digest of the KB and compiler sources (``fingerprints.sources_sha256``)."""
+    from mordheim_combat_lab.provenance import digest_files
+
+    return digest_files(construction_sources(root), root)
+
+
+def sources_warning(recorded: list[str], current: str, frozen: int) -> str | None:
+    """Warn when frozen fighters come from other KB/compiler sources.
+
+    Returns the printed warning, or ``None`` when every recorded digest is
+    the current one (or nothing is frozen).  Never raises: frozen entries are
+    reused by policy, the warning only makes their provenance visible.
+    """
+    other = [digest for digest in recorded if digest != current]
+    if not frozen or not other:
+        return None
+    from mordheim_combat_lab.provenance import provenance_warning
+
+    described = ", ".join(
+        "unrecorded (frozen before source digests existed)" if digest == UNRECORDED_SOURCES
+        else digest[:12] for digest in other
+    )
+    return provenance_warning(
+        f"{frozen} frozen fighters in {_shown(SNAPSHOT)} were compiled "
+        f"from other KB/compiler sources (recorded {described}; current {current[:12]}). "
+        "They are reused unchanged, as the frozen-entry policy requires: this run does not "
+        "show what the current KB/compiler would produce for them. Review and regenerate "
+        "those entries deliberately if the change should alter them."
+    )
+
+
 def _decode_build(fields: dict):
     """A stored request's ``FighterBuild``; defaults are materialized already."""
     from mordheim_core.models import Characteristics, FighterBuild
@@ -688,11 +769,13 @@ def capture(pending: dict[str, list[str]], frozen: dict[str, dict] | None = None
     }
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
     parser.add_argument("--write", action="store_true", help="write the frozen document")
     parser.add_argument("--file", help="test file stem or relative module path (debugging)")
-    options = parser.parse_args()
+    options = parser.parse_args(argv)
 
     pending = discover()
     if options.file:
@@ -705,6 +788,9 @@ def main() -> int:
         pending = selected
 
     frozen = _existing_entries()
+    recorded_sources = _recorded_sources() if frozen else []
+    current_sources = sources_fingerprint()
+    warning = sources_warning(recorded_sources, current_sources, len(frozen))
     result = capture(pending, frozen)
     consumers = result["consumers"]
     blocked = result["blocked"]
@@ -753,6 +839,9 @@ def main() -> int:
         "skipped_consumers": dict(sorted(result["skipped"].items())),
         "skipped_consumers_count": len(result["skipped"]),
         "coverage": dict(sorted(consumers.items())),
+        "sources_sha256": current_sources,
+        "recorded_sources_sha256": recorded_sources,
+        "provenance_warnings": [warning] if warning else [],
     }
 
     if options.write:
@@ -780,7 +869,11 @@ def main() -> int:
             (entry["build"], entry["fighter"], entry["root"])
             for _, entry in sorted(result["entries"].items())
         ]
-        document = encode_document(frozen_entries + additions)
+        # Preserved entries keep their recorded sources; new ones add today's.
+        sources = set(recorded_sources)
+        if additions:
+            sources.add(current_sources)
+        document = encode_document(frozen_entries + additions, sources=sources)
 
         missing = sorted(set(frozen) - set(document["entries"]))
         changed = sorted(
@@ -826,7 +919,7 @@ def main() -> int:
         if mismatched:
             raise SystemExit(f"loader mismatch for {len(mismatched)} entries")
 
-        report["snapshot"] = str(SNAPSHOT.relative_to(ROOT))
+        report["snapshot"] = _shown(SNAPSHOT)
         report["snapshot_entries"] = len(loaded)
         report["preserved_entries"] = len(frozen)
         report["loader_verified"] = len(loaded)
@@ -848,7 +941,20 @@ def main() -> int:
         "unique_builds": report["unique_builds"],
         "compile_failures": len(report["compile_failures"]),
         "snapshot_entries": report.get("snapshot_entries"),
+        "provenance_warnings": len(report["provenance_warnings"]),
     }, indent=1))
+    if warning:
+        from mordheim_combat_lab.provenance import provenance_warning
+
+        provenance_warning(warning.removeprefix("PROVENANCE WARNING: "))
+    failures = len(report["compile_failures"])
+    if failures or blocked:
+        print(
+            f"FAILED: {failures} compile failure(s) and {len(blocked)} blocked "
+            f"consumer(s); see {_shown(COVERAGE)}",
+            file=sys.stderr,
+        )
+        return 1
     return 0
 
 

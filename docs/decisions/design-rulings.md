@@ -14,6 +14,13 @@ any adopted decision. New rule evidence belongs in modular mechanics and E2E tes
 
 ## Duel engine (modular oracle)
 
+- **Lancer is outside the duel scope.** Exclude the entire Knights Feats
+  entry, including its mounted charge continuation, in Bretonnian Knights
+  Errant, Bretonnian Brigands and Disciples of Maldred. Keep the printed
+  text as source provenance and leave the feat unavailable; this is an
+  exclusion rather than pending implementation. Combat Charge, Armour
+  Specialist and existing Sword Master access remain separate.
+  (User decision adopted 2026-11-03.)
 - **Hochland Duelist Swordmaster matches the hit; it does not grant a failed-parry reroll.**
   The tie benefit requires equipment that permits parrying. Sword plus buckler
   retains its own independent reroll. This adopted answer was previously quoted

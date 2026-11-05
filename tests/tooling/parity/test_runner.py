@@ -110,8 +110,30 @@ def test_compare_case_always_compares_the_winner_and_rejects_unknown_magnitudes(
     assert comparisons[0].modular_rates[0] == pytest.approx(0.5)
     assert comparisons[0].candidate_rates[0] == pytest.approx(0.5)
     assert failure is None
-    with pytest.raises(ValueError):
-        _runner._compare_case(("parry-attempts",), oracle, oracle, 1)
+    for magnitude in ("parry-attempts", "wounds", "condition"):
+        with pytest.raises(ValueError):
+            _runner._compare_case((magnitude,), oracle, oracle, 1)
+
+
+@pytest.mark.parametrize("magnitude", ["wounds", "condition"])
+@pytest.mark.parametrize("surface", ["counts", "observed"])
+def test_removed_magnitudes_are_rejected_before_sampling(monkeypatch, magnitude, surface):
+    def forbidden(*args, **kwargs):
+        pytest.fail("an unsupported magnitude must not sample either engine")
+
+    monkeypatch.setattr(_runner, "_observed_reference", forbidden)
+    monkeypatch.setattr(_runner, "_candidate_sample", forbidden)
+    run = run_parity((
+        ParityCase("removed", None, None, simulations=2,
+                   magnitudes=("winner", magnitude)),
+    ), candidate=surface, workers=1)
+    assert run.modular_duels == 0
+    assert len(run.rows) == 1
+    row = run.rows[0]
+    assert row.status == "NOT_RUN"
+    assert magnitude in row.detail and "unsupported statistical magnitude" in row.detail
+    assert not row.executed and not row.compared and not row.approved
+    assert not row.comparisons
 
 
 def test_blocked_case_is_never_executed_or_compared():
@@ -311,28 +333,60 @@ def test_escalation_plan_respects_the_modular_ceiling(cases):
     prepared, rows = _prepared_matrix(cases)
     plan = escalation_plan(
         prepared, rows, factor=2, sigma=3.0, unresolved=0.01,
-        remaining=10_000,
+        remaining=20_000,
     )
-    # Only the highest-priority case fits in the remaining budget.
+    # Each escalation costs its whole new sample (20 000 duels, drawn
+    # afresh): only the highest-priority case fits in the remaining budget.
     assert [case.label for case, _ in plan] == ["matrix:border"]
 
 
-def test_runner_escalates_and_clamps_to_the_ceiling(cases):
+def _stub_counts_path(monkeypatch):
+    """Synthetic oracle and candidate for the counts surface; no engine runs."""
+    from mordheim_combat_lab.verification.parity._statistical import compare_samples
+
+    executed = []
+
+    def reference(case, size, **options):
+        executed.append((case.label, size))
+        return observation(winner=[0, 1] * (size // 2))
+
+    def compare(label, first, second, size, **options):
+        half = size // 2
+        return compare_samples(
+            label, size, (half, size - half, 0), (half, size - half, 0),
+            backend=options["backend"],
+        )
+
+    monkeypatch.setattr(_runner, "_observed_reference", reference)
+    monkeypatch.setattr(_runner, "compare_statistical_parity", compare)
+    return executed
+
+
+def test_runner_escalates_and_clamps_to_the_ceiling(monkeypatch):
+    executed = _stub_counts_path(monkeypatch)
     cases_ = tuple(
-        _case(cases, label=f"matrix:{label}", simulations=60)
+        ParityCase(f"matrix:{label}", None, None, simulations=60)
         for label in ("a", "b", "c")
     )
     run = run_parity(
         cases_, backends=("numpy",), candidate="counts",
-        escalate=True, escalate_sigma=0.0, max_modular_duels=240,
+        escalate=True, escalate_sigma=0.0, max_modular_duels=300,
     )
-    # Base 180 duels; exactly one case fits an escalation to 120 under the
-    # 240-duel ceiling (tie-breaks keep insertion order: "a").
+    # Base 180 duels; an escalation re-draws the whole 120-duel sample, so
+    # exactly one fits the 300-duel ceiling (tie-breaks keep insertion order).
     assert {row.case: row.simulations for row in run.rows} == {
         "matrix:a": 120, "matrix:b": 60, "matrix:c": 60,
     }
     assert sum(row.escalated for row in run.rows) == 1
-    assert run.modular_duels == 240
+    assert run.modular_duels == sum(size for _, size in executed) == 300
+
+    executed.clear()
+    tight = run_parity(
+        cases_, backends=("numpy",), candidate="counts",
+        escalate=True, escalate_sigma=0.0, max_modular_duels=299,
+    )
+    assert not any(row.escalated for row in tight.rows)
+    assert tight.modular_duels == sum(size for _, size in executed) == 180
 
 
 def test_no_fitting_horizon_is_rejected(cases):
