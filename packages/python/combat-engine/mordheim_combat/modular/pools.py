@@ -2,7 +2,7 @@
 from __future__ import annotations
 from mordheim_combat import phases
 
-from dataclasses import replace
+from mordheim_combat.modular._fast_replace import replace
 from types import SimpleNamespace
 from mordheim_combat.phases import _characteristic_test
 from mordheim_combat.modular.aftermath import _react_to_wound
@@ -112,8 +112,7 @@ def pool_attack_weapons(
     hand slot the pool allocated for that position, and the remainder keeps the
     allocation it was printed with instead of a shorter pool re-deriving one.
     """
-    vomit = any(has_tag(attacker.main_weapon, tag) for tag in
-                ("weapon.vomit-attack", "effect.wraith-touch"))
+    vomit = _vomit_attacker(attacker)
     if single_bonus:
         return (attacker.main_weapon,)
     if body_slam:
@@ -124,11 +123,21 @@ def pool_attack_weapons(
     if whip is not None:
         weapons += (whip,)
     if not vomit:
-        weapons += tuple(weapon for weapon in attacker.extra_attacks
-                         if not any(has_tag(weapon, tag) for tag in
-                                    ("rule.strikes-last-bite", "rule.eagle-friend"))
-                         and (charging or not has_tag(weapon, "rule.horned-one")))
+        weapons += _pool_extra_attacks(attacker, charging)
     return weapons
+
+
+def _vomit_attacker(attacker: CompiledFighter) -> bool:
+    return any(has_tag(attacker.main_weapon, tag) for tag in
+               ("weapon.vomit-attack", "effect.wraith-touch"))
+
+
+def _pool_extra_attacks(attacker: CompiledFighter, charging: bool) -> tuple[EffectSet, ...]:
+    """The bearer's independent extra attacks the ordinary pool resolves."""
+    return tuple(weapon for weapon in attacker.extra_attacks
+                 if not any(has_tag(weapon, tag) for tag in
+                            ("rule.strikes-last-bite", "rule.eagle-friend"))
+                 and (charging or not has_tag(weapon, "rule.horned-one")))
 
 
 def _prepared_hit(prepared: AttackOutcome):
@@ -266,7 +275,9 @@ def _resolve_attack_pool(attacker, defender, attacker_state, defender_state, cou
     first, second, outcomes = _resolve_attack_pool_body(
         attacker, defender, attacker_state, defender_state, count, dice, **options)
     marker = f"rememberer-active.{options['key']}"
-    return replace(first, resources_spent=first.resources_spent - {marker}), second, outcomes
+    if marker in first.resources_spent:
+        first = replace(first, resources_spent=first.resources_spent - {marker})
+    return first, second, outcomes
 
 
 def _resolve_attack_pool_body(

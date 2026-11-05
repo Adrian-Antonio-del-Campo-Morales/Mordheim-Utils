@@ -1,5 +1,5 @@
 """Source-qualified local Leadership tests; geometry is supplied by the caller."""
-from dataclasses import replace
+from mordheim_combat.modular._fast_replace import replace
 from mordheim_combat import phases
 from mordheim_combat.modular.state import DuelState, FighterState
 from mordheim_core.dice import DecisionPolicy, DiceSource, RollRequest

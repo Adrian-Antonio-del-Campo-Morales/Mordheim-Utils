@@ -2,7 +2,7 @@
 from __future__ import annotations
 from mordheim_combat import phases
 
-from dataclasses import replace
+from mordheim_combat.modular._fast_replace import replace
 from types import SimpleNamespace
 from mordheim_combat.phases import _characteristic_test
 from mordheim_combat.modular.contexts import _attack_strength
@@ -17,6 +17,7 @@ from mordheim_combat.modular.contexts import prepare_wound_context
 from mordheim_combat.modular.contexts import weapon_against_opponent
 from mordheim_combat.modular.contexts import OwnedRollDice
 from mordheim_combat.modular.state import AttackOutcome
+from mordheim_combat.modular.state import fold_spent_resources
 from mordheim_combat.modular.state import FighterState
 from mordheim_combat.modular.state import require_characteristics
 from mordheim_combat.phases import BearHugContext
@@ -134,9 +135,19 @@ def _resolve_reference_attack_once(attacker, defender, attacker_state, defender_
         close_combat=options.get("melee_attack", True))
     result = _resolve_reference_attack_body(attacker, defender, attacker_state, defender_state,
         weapon, dice, attacker_dice=own, defender_dice=enemy, self_attack=self_hit, **options)
-    return replace(result,
-        attacker=replace(result.attacker, resources_spent=result.attacker.resources_spent | own.state.resources_spent),
-        defender=replace(result.defender, resources_spent=result.defender.resources_spent | enemy.state.resources_spent))
+    # Fold the resources the owned dice spent into the resulting states. When
+    # the owned set is already contained in the result's set the union is the
+    # identity, so the (full-state) rebuild is skipped: identical outcome.
+    changes = {}
+    if not own.state.resources_spent <= result.attacker.resources_spent:
+        changes["attacker"] = replace(
+            result.attacker,
+            resources_spent=result.attacker.resources_spent | own.state.resources_spent)
+    if not enemy.state.resources_spent <= result.defender.resources_spent:
+        changes["defender"] = replace(
+            result.defender,
+            resources_spent=result.defender.resources_spent | enemy.state.resources_spent)
+    return replace(result, **changes) if changes else result
 
 
 def _resolve_reference_attack_body(
@@ -327,10 +338,8 @@ def _resolve_reference_attack_body(
             hit_target=hit.target, trace=trace, natural_hit_six=natural_hit_six,
             disarm_slot=disarm_slot,
         )
-    attacker_state = replace(attacker_state,
-        resources_spent=attacker_state.resources_spent | attacker_dice.state.resources_spent)
-    defender_state = replace(defender_state,
-        resources_spent=defender_state.resources_spent | defender_dice.state.resources_spent)
+    attacker_state = fold_spent_resources(attacker_state, attacker_dice.state)
+    defender_state = fold_spent_resources(defender_state, defender_dice.state)
     if (not defences_resolved and not ethereal_resolved
             and phases.has_tag(defender.global_effects, "mechanic.ethereal-hit-save")
             and not phases.has_tag(effect, "attack.magical")):
@@ -505,10 +514,8 @@ def _resolve_reference_attack_body(
         # on it either.
         infection = EffectSet(tags=("effect.automatic-wound", "effect.no-critical", "effect.no-saves"),
             automatic_hit=True, cannot_be_parried=True, fixed_strength=3, ignore_armour=True)
-        attacker_state = replace(attacker_state,
-            resources_spent=attacker_state.resources_spent | attacker_dice.state.resources_spent)
-        defender_state = replace(defender_state,
-            resources_spent=defender_state.resources_spent | defender_dice.state.resources_spent)
+        attacker_state = fold_spent_resources(attacker_state, attacker_dice.state)
+        defender_state = fold_spent_resources(defender_state, defender_dice.state)
         extra = resolve_reference_attack(attacker, defender, attacker_state, defender_state,
             infection, dice, key=f"{key}.infection-wound", melee_attack=False,
             defences_resolved=True, decisions=decisions)
@@ -578,17 +585,14 @@ def _resolve_reference_attack_body(
         return AttackOutcome(attacker_state, defender_state, hit=True,
             hit_roll=hit.roll, hit_target=hit.target, trace=trace,
             natural_hit_six=natural_hit_six)
-    attacker_state = replace(attacker_state,
-        resources_spent=attacker_state.resources_spent | attacker_dice.state.resources_spent)
-    defender_state = replace(defender_state,
-        resources_spent=defender_state.resources_spent | defender_dice.state.resources_spent)
+    attacker_state = fold_spent_resources(attacker_state, attacker_dice.state)
+    defender_state = fold_spent_resources(defender_state, defender_dice.state)
     attacker_dice.state = attacker_state
     attacker_dice.rerolled = False
     wound = phases.resolve_wound(wound_context, attacker_dice)
     if attacker_dice.rerolled:
         wound = replace(wound, rerolled=True)
-    attacker_state = replace(attacker_state,
-        resources_spent=attacker_state.resources_spent | attacker_dice.state.resources_spent)
+    attacker_state = fold_spent_resources(attacker_state, attacker_dice.state)
     if wound.critical and attacker_dice.original_roll is not None:
         wound = replace(wound, critical=attacker_dice.original_roll >= wound_context.critical_threshold)
     if luck_for_wound and wound.rerolled:
@@ -634,10 +638,8 @@ def _resolve_reference_attack_body(
     if wound.critical:
         critical = phases.resolve_critical(attacker_dice, key=f"{key}.critical",
             modifier=effect.critical_injury_bonus + int(phases.has_tag(effect, "skill.web-of-steel")))
-    attacker_state = replace(attacker_state,
-        resources_spent=attacker_state.resources_spent | attacker_dice.state.resources_spent)
-    defender_state = replace(defender_state,
-        resources_spent=defender_state.resources_spent | defender_dice.state.resources_spent)
+    attacker_state = fold_spent_resources(attacker_state, attacker_dice.state)
+    defender_state = fold_spent_resources(defender_state, defender_dice.state)
     result = _resolve_wound_damage(
         attacker, defender, attacker_state, defender_state, weapon, effect,
         wound, critical, dice, key=key, first_round=first_round, charging=charging,
@@ -660,9 +662,11 @@ def _resolve_wound_damage(attacker, defender, attacker_state, defender_state, we
         close_combat=options.get("melee_attack", True))
     result = _resolve_wound_damage_body(attacker, defender, attacker_state, defender_state,
         weapon, effect, wound, critical, dice, attacker_dice=own, defender_dice=enemy, **options)
-    return replace(result,
-        attacker=replace(result.attacker, resources_spent=result.attacker.resources_spent | own.state.resources_spent),
-        defender=replace(result.defender, resources_spent=result.defender.resources_spent | enemy.state.resources_spent))
+    attacker_state = fold_spent_resources(result.attacker, own.state)
+    defender_state = fold_spent_resources(result.defender, enemy.state)
+    if attacker_state is result.attacker and defender_state is result.defender:
+        return result
+    return replace(result, attacker=attacker_state, defender=defender_state)
 
 
 def _resolve_wound_damage_body(

@@ -54,6 +54,9 @@ class BenchmarkResult:
     samples_seconds: tuple[float, ...]
     median_seconds: float
     simulations_per_second: float
+    #: Wall seconds spent in the untimed warm-up executions, so command
+    #: summaries can separate them from genuine setup overhead.
+    warmup_seconds: float = 0.0
 
 
 @dataclass(frozen=True, slots=True)
@@ -117,7 +120,7 @@ def compile_benchmark_fighters(
     scenario: BenchmarkScenario,
 ) -> tuple[CompiledFighter, CompiledFighter]:
     """Load a maintained scenario's frozen fighters, without recompiling."""
-    from tests.engines.fixtures.precompiled_catalog import scenario_key
+    from mordheim_combat_lab.cli.scenarios import scenario_key
 
     case = _frozen_scenarios()[scenario_key(scenario.id)]
     return case.first, case.second
@@ -126,8 +129,9 @@ def compile_benchmark_fighters(
 @lru_cache(maxsize=1)
 def _frozen_scenarios():
     from mordheim_knowledge.paths import project_root
-    from tools.verification.compiled_cases import load_cases
+    from mordheim_combat_lab.cli.scenarios import load_checkout_module
 
+    load_cases = load_checkout_module("tools.verification.compiled_cases").load_cases
     return load_cases(project_root() / "tests/engines/fixtures/compiled-cases.json")
 
 
@@ -233,10 +237,21 @@ def run_benchmark(
     scenario: BenchmarkScenario, *, simulations: int, batch_size: int,
     seed: int, backend: str, warmups: int, repeats: int,
     on_progress: Callable[[], None] | None = None,
+    profiler=None,
+    fighters: tuple[CompiledFighter, CompiledFighter] | None = None,
 ) -> BenchmarkResult:
+    """Measure one (scenario, backend) configuration.
+
+    ``profiler`` is an optional ``cProfile.Profile``: when given, every timed
+    repeat runs under it (warm-ups stay unprofiled). Profiler instrumentation
+    slows the engine, so profiled timings describe where the time goes, not
+    how fast the engine is — the caller must not feed them to a baseline gate.
+    ``fighters`` supplies the scenario's precompiled pair; pool workers get
+    it from the parent so they never load the frozen catalogue themselves.
+    """
     if backend not in {"modular", "numpy", "native"}:
         raise ValueError(f"unknown benchmark backend: {backend}")
-    first, second = compile_benchmark_fighters(scenario)
+    first, second = fighters or compile_benchmark_fighters(scenario)
     request = DuelRequest(
         first, second, simulations, seed=seed, batch_size=batch_size,
         maximum_rounds=scenario.maximum_rounds,
@@ -248,22 +263,47 @@ def run_benchmark(
         else:
             simulate_duel(request, backend=backend)
 
+    warmup_started = perf_counter()
     for _ in range(warmups):
         execute()
         if on_progress is not None:
             on_progress()
+    warmup_seconds = perf_counter() - warmup_started if warmups else 0.0
     samples = []
     for _ in range(repeats):
         started = perf_counter()
-        execute()
+        if profiler is not None:
+            profiler.enable()
+        try:
+            execute()
+        finally:
+            if profiler is not None:
+                profiler.disable()
         samples.append(perf_counter() - started)
         if on_progress is not None:
             on_progress()
     middle = median(samples)
     return BenchmarkResult(
         scenario.id, backend, simulations, batch_size, repeats, tuple(samples),
-        middle, simulations / middle,
+        middle, simulations / middle, warmup_seconds,
     )
+
+
+def write_profile(profiler, path: Path) -> None:
+    """Dump one backend's collected profile as a ``pstats`` file."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    profiler.dump_stats(str(path))
+
+
+def render_profile(profiler, *, limit: int = 15) -> str:
+    """Top functions of one backend's collected profile, by cumulative time."""
+    import io
+    import pstats
+
+    stream = io.StringIO()
+    stats = pstats.Stats(profiler, stream=stream)
+    stats.sort_stats("cumulative").print_stats(limit)
+    return stream.getvalue().rstrip()
 
 
 # Time-to-solution (--tts): the workload is fixed and whole execution
@@ -305,8 +345,12 @@ class TtsStrategyResult:
 def parse_tts_strategies(value: str | None) -> tuple[str, ...]:
     """Parse the ``--tts`` strategy list into canonical strategy tokens.
 
-    Accepts ``sequential``, ``processes=N`` and ``parallel=N`` (N >= 2; N=1
-    canonicalizes to ``sequential``). Defaults to the three-way comparison.
+    Accepts ``sequential``, ``processes=N`` (one scenario per worker),
+    ``parallel=N`` (each scenario split inside a pool of N) and
+    ``parallel=N:C`` (the same, with the sample split into C chunks instead
+    of N; modular only, where more chunks than workers smooths uneven duel
+    lengths). N >= 2; N=1 canonicalizes to ``sequential``. Defaults to the
+    three-way comparison.
     """
     if value is None or not value.strip():
         return ("sequential", "processes=4", "parallel=4")
@@ -319,38 +363,117 @@ def parse_tts_strategies(value: str | None) -> tuple[str, ...]:
             strategies.append(token)
             continue
         mode, separator, number = token.partition("=")
-        number = number.strip()
+        number, colon, chunks = number.strip().partition(":")
+        chunks = chunks.strip()
         if (not separator or mode not in {"processes", "parallel"}
-                or not number.isdigit() or int(number) < 1):
+                or not number.isdigit() or int(number) < 1
+                or (colon and (mode != "parallel" or not chunks.isdigit()
+                               or int(chunks) < 1))):
             raise ValueError(
                 f"invalid TTS strategy {token!r}; use 'sequential', "
-                f"'processes=N' or 'parallel=N'")
-        if int(number) == 1:
+                f"'processes=N', 'parallel=N' or 'parallel=N:C'")
+        if int(number) == 1 and not chunks:
             strategies.append("sequential")
             continue
-        strategies.append(f"{mode}={int(number)}")
+        if chunks and int(chunks) < int(number):
+            raise ValueError(
+                f"invalid TTS strategy {token!r}: the chunk count must be at "
+                f"least the worker count")
+        strategies.append(
+            f"{mode}={int(number)}" + (f":{int(chunks)}" if chunks else ""))
     if not strategies:
         raise ValueError("no TTS strategies provided")
     return tuple(dict.fromkeys(strategies))
 
 
+def parse_tts_strategy(strategy: str) -> tuple[str, int, int | None]:
+    """Split a canonical token into ``(mode, processes, chunks)``.
+
+    ``sequential`` maps to ``("sequential", 1, None)``; ``chunks`` is only
+    set for ``parallel=N:C``.
+    """
+    if strategy == "sequential":
+        return "sequential", 1, None
+    mode, _, rest = strategy.partition("=")
+    number, _, chunks = rest.partition(":")
+    return mode, int(number), (int(chunks) if chunks else None)
+
+
+def tts_strategy_applies(strategy: str, backend: str) -> bool:
+    """Whether a backend can execute a strategy.
+
+    ``sequential`` and ``processes=N`` apply to every engine. ``parallel=N``
+    splits one scenario's sample inside a pool: the NumPy driver splits its
+    batch plan, the modular oracle its duel index range (bit-for-bit equal
+    to the sequential sample), so both apply; the native engine runs whole
+    samples only. Explicit chunk counts (``parallel=N:C``) exist only for
+    the modular split — the NumPy split is fixed by the batch size.
+    """
+    mode, _processes, chunks = parse_tts_strategy(strategy)
+    if mode != "parallel":
+        return True
+    if backend == "modular":
+        return True
+    return backend == "numpy" and chunks is None
+
+
 def _tts_sequential_worker(
     scenario: BenchmarkScenario, *, simulations: int, batch_size: int, seed: int,
     backend: str = "numpy",
+    fighters: tuple[CompiledFighter, CompiledFighter] | None = None,
 ) -> tuple[float, tuple[int, int, int]]:
     """One workload pass for one scenario in-process; returns (wall, totals).
 
-    Module-level so the scenario-pool strategy can submit it directly.
+    Module-level so the scenario-pool strategy can submit it directly; the
+    pool passes ``fighters`` so workers never load the frozen catalogue.
     """
-    first, second = compile_benchmark_fighters(scenario)
+    first, second = fighters or compile_benchmark_fighters(scenario)
     request = DuelRequest(
         first, second, simulations, seed=seed, batch_size=batch_size,
         maximum_rounds=scenario.maximum_rounds,
     )
     started = perf_counter()
-    result = simulate_duel(request, backend=backend)
+    if backend == "modular":
+        result = simulate_modular_duel(request)
+    else:
+        result = simulate_duel(request, backend=backend)
     return perf_counter() - started, (
         result.first_wins, result.second_wins, result.unresolved)
+
+
+def _tts_modular_chunk_pass(
+    scenarios: Sequence[BenchmarkScenario], *, simulations: int, seed: int,
+    processes: int, chunks: int | None,
+    on_progress: Callable[[], None] | None = None,
+) -> tuple[float, list[tuple[str, float]], list[int]]:
+    """One modular workload pass with every scenario split over one pool.
+
+    Mirrors how a campaign runs the oracle: the pool is spawned once per pass
+    (its cost is inside the wall) and each scenario's duel range is split
+    into ``chunks`` units (default: one per worker) through the parallel
+    oracle, which reproduces the sequential totals duel for duel.
+    """
+    from mordheim_combat.modular.parallel import oracle_pool, run_oracle_sample
+
+    per_scenario: list[tuple[str, float]] = []
+    totals = [0, 0, 0]
+    started = perf_counter()
+    with oracle_pool(processes) as pool:
+        for scenario in scenarios:
+            first, second = compile_benchmark_fighters(scenario)
+            scenario_started = perf_counter()
+            result = run_oracle_sample(
+                first, second, simulations, seed=seed,
+                maximum_rounds=scenario.maximum_rounds, workers=processes,
+                executor=pool, chunks=chunks,
+            )
+            per_scenario.append((scenario.id, perf_counter() - scenario_started))
+            totals[0] += result.first_wins
+            totals[1] += result.second_wins
+            totals[2] += result.unresolved
+            if on_progress is not None:
+                on_progress()
+    return perf_counter() - started, per_scenario, totals
 
 
 def _tts_parallel_scenario_worker(
@@ -405,11 +528,16 @@ def run_tts_strategy(
     total solving time, not per-sample stability); ``wall_seconds`` reports
     the median of the repeat walls. The strategy token selects how the
     workload parallelizes: not at all (``sequential``), scenario by scenario
-    in a process pool (``processes=N``), or — NumPy only — each scenario's
-    batch plan split over a pool (``parallel=N``).
+    in a process pool (``processes=N``), or each scenario split inside a
+    pool (``parallel=N``): the NumPy driver splits its batch plan, the
+    modular oracle its duel range into ``C`` chunks (``parallel=N:C``,
+    default one per worker) on one pool spawned per pass.
     """
     if repeats < 1:
         raise ValueError("repeats must be >= 1")
+    if not tts_strategy_applies(strategy, backend):
+        raise ValueError(f"strategy {strategy!r} does not apply to the {backend} engine")
+    mode, processes, chunks = parse_tts_strategy(strategy)
 
     def one_pass() -> tuple[float, list[tuple[str, float]], list[int]]:
         if strategy == "sequential":
@@ -427,8 +555,6 @@ def run_tts_strategy(
                 if on_progress is not None:
                     on_progress()
             return perf_counter() - started, per_scenario, totals
-        mode, _, number = strategy.partition("=")
-        processes = int(number)
         if mode == "processes":
             from concurrent.futures import ProcessPoolExecutor
             started = perf_counter()
@@ -438,6 +564,7 @@ def run_tts_strategy(
                         _tts_sequential_worker, scenario,
                         simulations=simulations, batch_size=batch_size,
                         seed=seed, backend=backend,
+                        fighters=compile_benchmark_fighters(scenario),
                     ): scenario
                     for scenario in scenarios
                 }
@@ -452,6 +579,11 @@ def run_tts_strategy(
                         on_progress()
             return perf_counter() - started, per_scenario, totals
         if mode == "parallel":
+            if backend == "modular":
+                return _tts_modular_chunk_pass(
+                    scenarios, simulations=simulations, seed=seed,
+                    processes=processes, chunks=chunks, on_progress=on_progress,
+                )
             per_scenario = []
             totals = [0, 0, 0]
             started = perf_counter()
@@ -476,11 +608,9 @@ def run_tts_strategy(
         walls.append(wall)
         engine += sum(seconds for _name, seconds in per_scenario)
     assert totals is not None and per_scenario is not None
-    mode_label = ("sequential" if strategy == "sequential"
-                  else strategy.partition("=")[0] + "-pool")
+    mode_label = "sequential" if mode == "sequential" else mode + "-pool"
     return TtsStrategyResult(
-        strategy, mode_label,
-        1 if strategy == "sequential" else int(strategy.partition("=")[2]),
+        strategy, mode_label, processes,
         median(walls), engine / repeats,
         tuple(totals), tuple(per_scenario),
         backend=backend, repeat_walls=tuple(walls),
@@ -585,17 +715,17 @@ def run_tts_study_cell(
     seed: int, repeats: int,
     on_progress: Callable[[], None] | None = None,
 ) -> tuple[TtsStrategyResult, ...]:
-    """Run every (strategy, backend) combination on one workload cell.
+    """Run every applicable (strategy, backend) combination on one cell.
 
-    ``parallel=N`` is skipped for non-NumPy backends (it is a NumPy-driver
-    pool); the results are the rows of the cell's ranking. All combinations
-    execute the same per-batch streams, so their totals must agree — the
-    caller cross-checks them as a parity gate.
+    Strategies a backend cannot execute (:func:`tts_strategy_applies`) are
+    skipped; the results are the rows of the cell's ranking. Within one
+    backend every strategy executes the same duel streams, so the totals
+    must agree — the caller cross-checks them as a parity gate.
     """
     results: list[TtsStrategyResult] = []
     for backend in backends:
         for strategy in strategies:
-            if strategy.startswith("parallel=") and backend != "numpy":
+            if not tts_strategy_applies(strategy, backend):
                 continue
             results.append(run_tts_strategy(
                 strategy, scenarios, simulations=simulations,
@@ -686,33 +816,39 @@ def tts_cell_winners(
 def print_tts_study_summary(
     cells: Sequence[dict[str, object]], *, pair_set: str | None = None,
 ) -> None:
-    """Final console table: one row per study cell with its winners."""
+    """Final console table: per cell and engine, the best strategy.
+
+    Each row answers the planning question for one engine — how to split
+    this workload — with the best strategy's wall time, its speedup over
+    that engine's sequential pass (when measured) and the runner-up. The
+    overall fastest engine/strategy of the cell is marked with ``*``.
+    """
     scope = f" ({pair_set} pair set)" if pair_set else ""
     print(f"Time-to-solution study{scope}: "
-          f"{len(cells)} cell(s), winners per cell:")
-    headers = ["Simulations", "Batch", "Winner", "Wall (s)",
-               "Runner-up", "Wall (s)"]
+          f"{len(cells)} cell(s), best strategy per engine:")
+    headers = ["Simulations", "Batch", "Engine", "Best strategy", "Wall (s)",
+               "vs sequential", "Runner-up", "Wall (s)"]
     rows = []
     for cell in cells:
-        winners: list[dict[str, object]] = cell["winners"]  # type: ignore[assignment]
-        overall = next(
-            (item for item in winners if item.get("overall")), winners[0])
-        runner_up = next(
-            (item for item in winners
-             if item is not overall and item.get("backend") != overall["backend"]),
-            None)
-        if runner_up is None:
-            runner_up = next(
-                (item for item in winners if item is not overall), None)
-        rows.append([
-            f"{cell['simulations']:,}", f"{cell['batch_size']:,}",
-            f"{overall['backend']}/{overall['strategy']}",
-            f"{overall['wall_seconds']:.2f}",
-            (f"{runner_up['backend']}/{runner_up['strategy']}"
-             if runner_up is not None else "-"),
-            (f"{runner_up['wall_seconds']:.2f}"
-             if runner_up is not None else "-"),
-        ])
+        results: Sequence[TtsStrategyResult] = cell["results"]  # type: ignore[assignment]
+        ordered = sorted(results, key=lambda item: item.wall_seconds)
+        overall = ordered[0] if ordered else None
+        for backend in dict.fromkeys(item.backend for item in ordered):
+            same = [item for item in ordered if item.backend == backend]
+            best = same[0]
+            runner_up = same[1] if len(same) > 1 else None
+            sequential = next(
+                (item for item in same if item.strategy == "sequential"), None)
+            speedup = (
+                f"{sequential.wall_seconds / best.wall_seconds:.2f}x"
+                if sequential is not None and best.wall_seconds > 0 else "-")
+            rows.append([
+                f"{cell['simulations']:,}", f"{cell['batch_size']:,}",
+                backend + (" *" if best is overall else ""),
+                best.strategy, f"{best.wall_seconds:.2f}", speedup,
+                runner_up.strategy if runner_up is not None else "-",
+                f"{runner_up.wall_seconds:.2f}" if runner_up is not None else "-",
+            ])
     _print_ascii_table(headers, rows)
 
 
@@ -766,9 +902,12 @@ def benchmark_payload(
 class BenchmarkUnit:
     """One parallelizable benchmark work unit: a scenario measurement.
 
-    Everything the worker needs is embedded (fighters are compiled there, so
-    the payload stays plain data). ``batch`` is the unit's label in the
-    pooled-execution report (:func:`speedup_payload`).
+    Everything the worker needs is embedded. ``fighters`` carries the
+    scenario's precompiled pair (plain frozen dataclasses) so a pool worker
+    never parses the frozen catalogue — that load costs seconds and would
+    otherwise be paid once per worker process and distort pooled timings.
+    ``batch`` is the unit's label in the pooled-execution report
+    (:func:`speedup_payload`).
     """
     scenario: BenchmarkScenario
     backend: str
@@ -778,6 +917,7 @@ class BenchmarkUnit:
     warmups: int
     repeats: int
     batch: str = ""
+    fighters: tuple[CompiledFighter, CompiledFighter] | None = None
 
 
 def _unit_worker(unit: BenchmarkUnit) -> BenchmarkResult:
@@ -785,7 +925,7 @@ def _unit_worker(unit: BenchmarkUnit) -> BenchmarkResult:
     return run_benchmark(
         unit.scenario, simulations=unit.simulations, batch_size=unit.batch_size,
         seed=unit.seed, backend=unit.backend, warmups=unit.warmups,
-        repeats=unit.repeats,
+        repeats=unit.repeats, fighters=unit.fighters,
     )
 
 
@@ -1051,12 +1191,14 @@ def compare_with_baseline(
     regression_threshold: float = .05,
     unavailable: Sequence[Mapping[str, object]] = (),
 ) -> BenchmarkGate:
-    """Apply the agreed optimization gate to comparable NumPy/native results.
+    """Apply the agreed optimization gate to every comparable engine result.
 
-    Every NumPy/native (scenario, backend) result of the baseline must have a
-    current counterpart: one that is missing — the unit raised, the backend
-    is not compiled, the scenario was not run — fails the gate, with the
-    reason taken from ``unavailable`` when it names the pair or backend.
+    All three engines participate: modular results gate modular optimization
+    work exactly like the NumPy/native ones. Every (scenario, backend) result
+    of the baseline must have a current counterpart: one that is missing —
+    the unit raised, the backend is not compiled, the scenario was not run —
+    fails the gate, with the reason taken from ``unavailable`` when it names
+    the pair or backend.
     """
     previous = {
         (str(item["scenario"]), str(item["backend"])): float(item["simulations_per_second"])
@@ -1067,11 +1209,11 @@ def compare_with_baseline(
         BenchmarkMissing(scenario, backend,
                          _missing_reason(scenario, backend, unavailable))
         for scenario, backend in sorted(previous)
-        if backend != "modular" and (scenario, backend) not in measured
+        if (scenario, backend) not in measured
     )
     comparisons = []
     for item in results:
-        if item.backend == "modular" or (item.scenario, item.backend) not in previous:
+        if (item.scenario, item.backend) not in previous:
             continue
         old = previous[(item.scenario, item.backend)]
         if old <= 0:
@@ -1093,7 +1235,7 @@ def compare_with_baseline(
                         for item in missing)
         )
     elif not comparisons:
-        detail = "no comparable NumPy/native results found in baseline"
+        detail = "no comparable engine results found in baseline"
     elif regressed:
         detail = "at least one scenario exceeds the allowed regression"
     elif not improved:
@@ -1289,13 +1431,15 @@ def print_gate(gate: BenchmarkGate, *, improvement: float, regression: float) ->
 
 def print_elapsed_summary(
     *, elapsed_seconds: float, engine_seconds: float, processes: int = 1,
+    warmup_seconds: float = 0.0,
 ) -> None:
     """Console summary of the whole command's wall time vs engine samples.
 
-    ``engine_seconds`` sums every timed repeat execution (warmups are not
-    recorded in ``samples_seconds``). Sequentially it can never exceed the
-    wall time, so the remainder is genuine setup/overhead; in pool mode the
-    samples ran concurrently and may legitimately exceed it.
+    ``engine_seconds`` sums every timed repeat execution and
+    ``warmup_seconds`` the untimed warm-up executions, so the sequential
+    remainder is genuine setup/overhead (interpreter start, catalogue load),
+    not hidden engine work. In pool mode the samples ran concurrently and
+    their sum may legitimately exceed the wall time.
     """
     if processes > 1:
         print(
@@ -1303,10 +1447,11 @@ def print_elapsed_summary(
             f"the {engine_seconds:.2f}s of engine samples ran concurrently)."
         )
         return
-    overhead = max(0.0, elapsed_seconds - engine_seconds)
+    overhead = max(0.0, elapsed_seconds - engine_seconds - warmup_seconds)
+    warmups = f"{warmup_seconds:.2f}s in warm-ups, " if warmup_seconds else ""
     print(
         f"Total wall time: {elapsed_seconds:.2f}s (sequential; "
-        f"{engine_seconds:.2f}s in engine samples, "
+        f"{engine_seconds:.2f}s in engine samples, {warmups}"
         f"{overhead:.2f}s setup and overhead)."
     )
 

@@ -148,20 +148,60 @@ Generated reports live under ignored `outputs/` — never hand-edit them:
 
 ## Performance work
 
-Benchmark changes against a saved baseline:
+Benchmark changes against a saved baseline. The default `-n 100` is a smoke
+size; choose a real sample per engine (the modular oracle runs a few hundred
+duels per second, the optimized engines tens to hundreds of thousands):
 
 ```powershell
 python tools/mordheim-utils.py performance benchmark -n 100000 --backend numpy --save-baseline outputs/benchmarks/numpy-before.json
 python tools/mordheim-utils.py performance benchmark -n 100000 --backend numpy --baseline outputs/benchmarks/numpy-before.json --require-improvement --output outputs/benchmarks/numpy-after.json
+python tools/mordheim-utils.py performance benchmark -n 2000 --backend modular --save-baseline outputs/benchmarks/modular-before.json
 ```
 
 Both runs must use the same measurement design (simulations, batch size, seed,
 warmups, repeats, `--processes` and backends); a baseline unit missing from the
-current run fails the gate. A baseline from another machine, engine or revision
-prints a provenance warning and is still compared, so read its result in that
-light. The gate's thresholds belong to the command, not to this document. Store raw
-results under ignored `outputs/benchmarks/`; do not copy measured throughput or
-machine-specific optima into maintained documentation.
+current run fails the gate. The gate covers all three engines, so modular
+optimization work uses the same save/compare workflow. A baseline from another
+machine, engine or revision prints a provenance warning and is still compared,
+so read its result in that light. The gate's thresholds belong to the command,
+not to this document. Store raw results under ignored `outputs/benchmarks/`; do
+not copy measured throughput or machine-specific optima into maintained
+documentation. Reference baselines kept for comparison across optimization
+work live in [`benchmarks/baselines/`](../../benchmarks/baselines/README.md),
+each with its measurement design and provenance.
+
+To find where the time goes before optimizing, profile a single-configuration
+sequential run:
+
+```powershell
+python tools/mordheim-utils.py performance benchmark --backend modular --scenario basic stateful -n 2000 --profile
+```
+
+It prints each backend's top functions by cumulative time and writes
+per-backend `.pstats` files under `outputs/benchmarks/` for `pstats`/
+`snakeviz`. Profiled timings include cProfile overhead and cannot feed a
+baseline gate. For multicore modular samples, the parity tools pool the
+unchanged scalar oracle through `mordheim_combat.modular.parallel` (bit-for-bit
+equal totals); its auto-pooling threshold uses coarse measured oracle rates
+recorded in that module — refresh them when modular throughput changes
+materially.
+
+To plan a large campaign (many scenarios, thousands of duels each), measure
+how each engine should split the work before running it:
+
+```powershell
+python tools/mordheim-utils.py performance benchmark --tts --pair-set full --backend modular numpy native -n 5000 --strategies "sequential,processes=12,parallel=12,parallel=12:48" --output outputs/benchmarks/tts-plan.json
+```
+
+The study runs the whole workload under every applicable strategy per engine
+and ranks them by total wall time, pool spawns included. `processes=N` runs
+one scenario per worker, `parallel=N` splits each scenario inside a pool (the
+modular oracle by duel range, NumPy by batch plan) and `parallel=N:C` sets the
+modular chunk count, which matters when duel lengths are uneven. Within an
+engine every strategy reproduces identical totals, so the study also gates
+the parallel paths. Scale the sample to the engine: a modular cell at a few
+thousand duels across the full catalogue already takes minutes, while the
+optimized engines need large sizes before pooling pays for its spawn cost.
 
 Calibrate after hardware, engine or combat-rule changes:
 

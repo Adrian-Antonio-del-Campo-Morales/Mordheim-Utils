@@ -42,9 +42,12 @@ class SeededDice:
 
     def __init__(self, seed: int = 0) -> None:
         self._rng = np.random.default_rng(seed)
+        # Bound once: the same generator method, one attribute lookup fewer
+        # per roll. The draw itself (bounds, order, stream) is unchanged.
+        self._integers = self._rng.integers
 
     def roll(self, request: RollRequest) -> int:
-        return int(self._rng.integers(1, request.sides + 1))
+        return int(self._integers(1, request.sides + 1))
 
 
 class ScriptedDice:

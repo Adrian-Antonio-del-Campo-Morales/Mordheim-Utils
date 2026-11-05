@@ -18,11 +18,12 @@ def test_chunk_ranges_partition_contiguously_and_exactly():
 
 
 def test_resolve_oracle_workers_gates_auto_by_estimated_time():
-    # auto: pool only samples whose estimated sequential time is >= ~20 s.
-    assert resolve_oracle_workers(None, 10_000, 50, cpu=8) is None      # ~10 s
-    assert resolve_oracle_workers(None, 100_000, 50, cpu=8) == 8         # ~100 s
-    assert resolve_oracle_workers(None, 1_000, 75, cpu=8) is None        # ~13 s
-    assert resolve_oracle_workers(None, 2_000, 75, cpu=8) == 8           # ~26 s
+    # auto: pool only samples whose estimated sequential time is >= ~20 s
+    # (standard ~400 duels/s, long ~18 duels/s; see _ORACLE_RATE_*).
+    assert resolve_oracle_workers(None, 4_000, 50, cpu=8) is None       # ~10 s
+    assert resolve_oracle_workers(None, 100_000, 50, cpu=8) == 8        # ~250 s
+    assert resolve_oracle_workers(None, 200, 75, cpu=8) is None         # ~11 s
+    assert resolve_oracle_workers(None, 500, 75, cpu=8) == 8            # ~28 s
     assert resolve_oracle_workers("auto", 100_000, 50, cpu=8) == 8
     assert resolve_oracle_workers("auto", 100_000, 50, cpu=1) is None   # one core
     # explicit counts are honored, capped to the machine; 1 stays sequential.

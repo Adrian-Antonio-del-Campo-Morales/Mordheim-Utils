@@ -172,6 +172,7 @@ def _deep_benchmark_command(args, scenarios, installed) -> int:
     from time import perf_counter
 
     from mordheim_combat_lab.cli.benchmarking import BenchmarkProgress
+    from mordheim_combat_lab.cli.benchmarking import compile_benchmark_fighters
     from mordheim_combat_lab.cli.benchmarking import deep_benchmark_plan
     from mordheim_combat_lab.cli.benchmarking import print_deep_benchmark_header
     from mordheim_combat_lab.cli.benchmarking import print_sweep_table
@@ -223,6 +224,7 @@ def _deep_benchmark_command(args, scenarios, installed) -> int:
                 warmups=0 if backend == "modular" else args.warmups,
                 repeats=1 if backend == "modular" else args.repeats,
                 batch=f"{scenario_id}/{backend}/{simulations}/{batch_size}",
+                fighters=compile_benchmark_fighters(by_id[scenario_id]),
             )
             for scenario_id, backend, simulations, batch_size in plan.runs
         ]
@@ -256,6 +258,7 @@ def _deep_benchmark_command(args, scenarios, installed) -> int:
         progress.finish()
     elapsed_seconds = perf_counter() - command_started
     engine_seconds = sum(sum(item.samples_seconds) for item in results)
+    warmup_seconds = sum(item.warmup_seconds for item in results)
     payload = sweep_payload(
         results, unavailable, simulation_sizes=vector_sizes,
         batch_sizes=batch_sizes, seed=args.seed, warmups=args.warmups,
@@ -265,6 +268,7 @@ def _deep_benchmark_command(args, scenarios, installed) -> int:
     payload["modular_reference_simulations"] = plan.modular_simulations
     payload["elapsed_seconds"] = elapsed_seconds
     payload["engine_seconds"] = engine_seconds
+    payload["warmup_seconds"] = warmup_seconds
     speedup_summary = None
     if pool_wall is not None:
         from mordheim_combat_lab.cli.benchmarking import speedup_payload
@@ -290,7 +294,7 @@ def _deep_benchmark_command(args, scenarios, installed) -> int:
             print(speedup_summary)
         print_elapsed_summary(
             elapsed_seconds=elapsed_seconds, engine_seconds=engine_seconds,
-            processes=processes,
+            processes=processes, warmup_seconds=warmup_seconds,
         )
         for entry in plan.excluded:
             print(f"{entry['backend']} not available: {entry['reason']}")
@@ -301,15 +305,15 @@ def _deep_benchmark_command(args, scenarios, installed) -> int:
 
 def _tts_benchmark_command(args, scenarios, pair_set) -> int:
     """Time-to-solution study: run every (simulations x batch size) cell of
-    the workload through every (strategy x backend) combination and rank the
-    combinations by the wall time of solving the cell completely. The
-    identical per-batch streams cross-check strategy vs strategy and native
-    vs numpy totals as a parity gate."""
+    the workload through every applicable (strategy x backend) combination
+    and rank the combinations by the wall time of solving the cell
+    completely. Within one backend every strategy executes the same duel
+    streams, so their totals cross-check as a parity gate."""
     from mordheim_combat_lab.cli.benchmarking import (
         BenchmarkProgress, parse_sizes, parse_tts_strategies,
         print_tts_study_summary, run_tts_study_cell, tts_backend_parity,
         tts_backend_rates, tts_cell_payload, tts_cell_winners,
-        tts_study_payload, write_report,
+        tts_strategy_applies, tts_study_payload, write_report,
     )
     from time import perf_counter
 
@@ -324,39 +328,54 @@ def _tts_benchmark_command(args, scenarios, pair_set) -> int:
               "strategies; pass at least two, e.g. "
               "--strategies 'sequential,processes=4,parallel=4'", file=sys.stderr)
         return 2
-    backends = tuple(args.backend)
-    if "modular" in backends:
-        print("Benchmark configuration error: --tts measures the optimized "
-              "engines only; drop modular", file=sys.stderr)
-        return 2
     backends = tuple(
-        backend for backend in ("numpy", "native") if backend in backends)
-    if not backends:
-        print("Benchmark configuration error: --tts needs --backend numpy "
-              "(and optionally native)", file=sys.stderr)
+        backend for backend in ("modular", "numpy", "native")
+        if backend in tuple(args.backend))
+    applicable = {
+        backend: tuple(strategy for strategy in strategies
+                       if tts_strategy_applies(strategy, backend))
+        for backend in backends
+    }
+    inapplicable = [backend for backend, rows in applicable.items() if len(rows) < 2]
+    if inapplicable:
+        print("Benchmark configuration error: fewer than two of the requested "
+              f"strategies apply to {', '.join(inapplicable)} (parallel=N:C is "
+              "modular-only, parallel=N applies to modular and numpy)",
+              file=sys.stderr)
         return 2
     simulation_sizes = parse_sizes(args.simulation_sizes, args.simulations)
     batch_sizes = parse_sizes(args.batch_sizes, args.batch_size)
     repeats = max(1, int(getattr(args, "repeats", 1) or 1))
     scenario_count = len(scenarios)
-    # Only combinations that will actually run (parallel=N is numpy-only).
-    combinations_per_cell = sum(
-        1 for backend in backends for strategy in strategies
-        if not (strategy.startswith("parallel=") and backend != "numpy"))
-    total_combinations = (len(simulation_sizes) * len(batch_sizes)
-                          * combinations_per_cell * scenario_count * repeats)
+    # The modular oracle has no batch axis: it runs once per simulation size
+    # and its rows are reused in that size's other batch cells.
+    optimized = tuple(backend for backend in backends if backend != "modular")
+    combinations_per_cell = sum(len(applicable[backend]) for backend in optimized)
+    modular_combinations = len(applicable.get("modular", ()))
+    total_combinations = (
+        len(simulation_sizes) * len(batch_sizes) * combinations_per_cell
+        + len(simulation_sizes) * modular_combinations
+    ) * scenario_count * repeats
     progress = None if args.json else BenchmarkProgress(total_combinations)
     command_started = perf_counter()
     cells: list[dict[str, object]] = []
     parity_reports: list[dict[str, object]] = []
     rate_rows: list[dict[str, float | str]] = []
     for simulations in simulation_sizes:
+        modular_rows = None
         for batch_size in batch_sizes:
+            cell_backends = backends if modular_rows is None else optimized
             cell_results = run_tts_study_cell(
-                strategies, backends, scenarios, simulations=simulations,
+                strategies, cell_backends, scenarios, simulations=simulations,
                 batch_size=batch_size, seed=args.seed, repeats=repeats,
                 on_progress=progress.advance if progress is not None else None,
             )
+            if "modular" in backends:
+                if modular_rows is None:
+                    modular_rows = tuple(
+                        item for item in cell_results if item.backend == "modular")
+                else:
+                    cell_results = modular_rows + tuple(cell_results)
             parity_reports.append(tts_backend_parity(cell_results))
             rate_rows.extend(tts_backend_rates(
                 cell_results, simulations=simulations,
@@ -408,6 +427,7 @@ def benchmark_command(args) -> int:
     from mordheim_combat_lab.cli.benchmarking import BenchmarkProgress
     from mordheim_combat_lab.cli.benchmarking import benchmark_payload
     from mordheim_combat_lab.cli.benchmarking import benchmark_scenarios
+    from mordheim_combat_lab.cli.benchmarking import compile_benchmark_fighters
     from mordheim_combat_lab.cli.benchmarking import gate_against_baseline
     from mordheim_combat_lab.cli.benchmarking import load_benchmark_payload
     from mordheim_combat_lab.cli.benchmarking import parse_sizes
@@ -459,9 +479,19 @@ def benchmark_command(args) -> int:
                   "strategies with --strategies; --processes belongs to the "
                   "standard throughput modes", file=sys.stderr)
             return 2
-        if args.backend and "native" in args.backend and "numpy" not in args.backend:
-            print("Benchmark configuration error: --tts runs the numpy engine "
-                  "for the batch-pool strategies; include numpy in --backend",
+    if getattr(args, "profile", False):
+        if args.deep or args.tts or sweep:
+            print("Benchmark configuration error: --profile applies to "
+                  "single-configuration runs only (no --deep/--tts/size sweeps)",
+                  file=sys.stderr)
+            return 2
+        if max(1, int(getattr(args, "processes", 1) or 1)) > 1:
+            print("Benchmark configuration error: --profile needs the "
+                  "sequential path; drop --processes", file=sys.stderr)
+            return 2
+        if args.baseline or args.save_baseline or args.require_improvement:
+            print("Benchmark configuration error: profiled timings include "
+                  "instrumentation overhead and cannot feed a baseline gate",
                   file=sys.stderr)
             return 2
 
@@ -472,19 +502,29 @@ def benchmark_command(args) -> int:
     if args.tts and pair_set is not None:
         from mordheim_combat_lab.cli.benchmarking import deep_test_scenarios
         scenarios = deep_test_scenarios(pair_set)
-    if args.scenario != "all":
-        scenarios = tuple(item for item in scenarios if item.id == args.scenario)
-    if not scenarios:
-        scope = (
-            f"the {pair_set} deep pair set"
-            if args.deep or (args.tts and pair_set is not None)
-            else "the standard benchmark suite")
-        print(
-            f"Benchmark configuration error: scenario {args.scenario!r} is not "
-            f"available in {scope}",
-            file=sys.stderr,
-        )
-        return 2
+    requested_scenarios = tuple(dict.fromkeys(args.scenario))
+    if "all" not in requested_scenarios:
+        if not (args.deep or (args.tts and pair_set is not None)):
+            # Explicit ids select from the whole frozen catalogue: naming a
+            # scenario outside the small default suite is the point.
+            from mordheim_combat_lab.cli.benchmarking import deep_test_scenarios
+            scenarios = deep_test_scenarios("full")
+        available = {item.id for item in scenarios}
+        unknown = [name for name in requested_scenarios if name not in available]
+        scenarios = tuple(
+            item for item in scenarios if item.id in requested_scenarios)
+        if unknown or not scenarios:
+            scope = (
+                f"the {pair_set} deep pair set"
+                if args.deep or (args.tts and pair_set is not None)
+                else "the standard benchmark suite")
+            names = ", ".join(repr(name) for name in (unknown or requested_scenarios))
+            print(
+                f"Benchmark configuration error: scenario(s) {names} not "
+                f"available in {scope}",
+                file=sys.stderr,
+            )
+            return 2
     if args.tts:
         return _tts_benchmark_command(args, scenarios, pair_set)
     from time import perf_counter
@@ -508,6 +548,7 @@ def benchmark_command(args) -> int:
     unavailable = []
     processes = max(1, int(getattr(args, "processes", 1) or 1))
     timings = []
+    profilers: dict[str, object] = {}
     if processes > 1:
         from mordheim_combat_lab.cli.benchmarking import BenchmarkUnit
         from mordheim_combat_lab.cli.benchmarking import run_benchmark_units
@@ -528,6 +569,7 @@ def benchmark_command(args) -> int:
                             seed=args.seed, warmups=args.warmups,
                             repeats=args.repeats,
                             batch=f"{scenario.id}/{backend}/{simulations}/{batch_size}",
+                            fighters=compile_benchmark_fighters(scenario),
                         ))
         pool_started = perf_counter()
         results, timings, failures = run_benchmark_units(
@@ -552,12 +594,18 @@ def benchmark_command(args) -> int:
                         })
                         continue
                     for scenario in scenarios:
+                        profiler = None
+                        if getattr(args, "profile", False):
+                            import cProfile
+                            profiler = profilers.setdefault(
+                                backend, cProfile.Profile())
                         try:
                             results.append(run_benchmark(
                                 scenario, simulations=simulations, batch_size=batch_size,
                                 seed=args.seed, backend=backend, warmups=args.warmups,
                                 repeats=args.repeats,
                                 on_progress=progress.advance if progress is not None else None,
+                                profiler=profiler,
                             ))
                         except RuntimeError as error:
                             unavailable.append({
@@ -570,6 +618,16 @@ def benchmark_command(args) -> int:
 
     elapsed_seconds = perf_counter() - command_started
     engine_seconds = sum(sum(item.samples_seconds) for item in results)
+    warmup_seconds = sum(item.warmup_seconds for item in results)
+    profile_paths: dict[str, Path] = {}
+    if profilers:
+        from mordheim_combat_lab.cli.benchmarking import write_profile
+        from mordheim_combat_lab.report_naming import timestamped_report_path
+        for backend, profiler in profilers.items():
+            path = timestamped_report_path(
+                Path(args.profile_output), f"profile-{backend}", ".pstats")
+            write_profile(profiler, path)
+            profile_paths[backend] = path
     speedup_summary = None
     speedup_report = None
     if pool_wall is not None:
@@ -590,6 +648,7 @@ def benchmark_command(args) -> int:
             payload["parallel_speedup"] = speedup_report
         payload["elapsed_seconds"] = elapsed_seconds
         payload["engine_seconds"] = engine_seconds
+        payload["warmup_seconds"] = warmup_seconds
         if args.output:
             write_report(Path(args.output), payload)
 
@@ -604,7 +663,7 @@ def benchmark_command(args) -> int:
                 print(speedup_summary)
             print_elapsed_summary(
                 elapsed_seconds=elapsed_seconds, engine_seconds=engine_seconds,
-                processes=processes,
+                processes=processes, warmup_seconds=warmup_seconds,
             )
             if args.output:
                 print(f"Report: {Path(args.output).resolve()}")
@@ -619,6 +678,11 @@ def benchmark_command(args) -> int:
         payload["parallel_speedup"] = speedup_report
     payload["elapsed_seconds"] = elapsed_seconds
     payload["engine_seconds"] = engine_seconds
+    payload["warmup_seconds"] = warmup_seconds
+    if profile_paths:
+        payload["profiled"] = True
+        payload["profile_outputs"] = {
+            backend: str(path) for backend, path in profile_paths.items()}
     gate = None
     if args.baseline:
         try:
@@ -647,8 +711,16 @@ def benchmark_command(args) -> int:
             print(speedup_summary)
         print_elapsed_summary(
             elapsed_seconds=elapsed_seconds, engine_seconds=engine_seconds,
-            processes=processes,
+            processes=processes, warmup_seconds=warmup_seconds,
         )
+        if profilers:
+            from mordheim_combat_lab.cli.benchmarking import render_profile
+            print("Profiled timings include cProfile overhead; use them for "
+                  "hotspots, not throughput claims.")
+            for backend, profiler in profilers.items():
+                print(f"\nProfile ({backend}), top functions by cumulative time:")
+                print(render_profile(profiler))
+                print(f"Profile data: {profile_paths[backend].resolve()}")
         if gate is not None:
             print_gate(gate, improvement=args.min_improvement,
                        regression=args.max_regression)
@@ -855,8 +927,13 @@ def _catalog_parity_command(args) -> int:
         print("Parity configuration error: use --simulations with --catalog, not --rows.", file=sys.stderr)
         return 2
     try:
-        from tests.engines.fixtures import precompiled_catalog, battery_catalogue
-        from tools.verification.compiled_cases import load_cases
+        from mordheim_combat_lab.cli.scenarios import load_checkout_module
+        precompiled_catalog = load_checkout_module(
+            "tests.engines.fixtures.precompiled_catalog")
+        battery_catalogue = load_checkout_module(
+            "tests.engines.fixtures.battery_catalogue")
+        load_cases = load_checkout_module(
+            "tools.verification.compiled_cases").load_cases
     except ImportError as error:
         print(f"Catalogue execution requires the source checkout and its test fixtures: {error}", file=sys.stderr)
         return 2
@@ -1802,12 +1879,16 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
         description="Measure the combat engines (modular, NumPy, native) in a single "
                     "configuration, a size sweep, a --deep large-scale profile or "
                     "the --tts time-to-solution study.",
-        epilog="Recommended shapes, measured optima and calibration live in "
-               "docs/guides/develop-and-release.md.",
+        epilog="Measurement procedure and the baseline-gate workflow live in "
+               "docs/guides/develop-and-release.md; measured optima are "
+               "machine-local (performance calibrate).",
         formatter_class=_HelpFormatter)
     run_options = benchmark.add_argument_group("run configuration")
-    run_options.add_argument("-n", "--simulations", type=_positive, default=100_000,
-                             metavar="DUELS", help="simulations per scenario and engine")
+    run_options.add_argument("-n", "--simulations", type=_positive, default=100,
+                             metavar="DUELS",
+                             help="simulations per scenario and engine (the small "
+                                  "default is a smoke run; pass real sizes for "
+                                  "measurements)")
     run_options.add_argument("--seed", type=int, default=2026,
                              help="random seed for the engines")
     run_options.add_argument("--batch-size", type=_positive, default=100_000,
@@ -1819,10 +1900,11 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
         help="engines to measure (one or more); defaults to modular, vectorized and native",
     )
     run_options.add_argument(
-        "--scenario",
+        "--scenario", nargs="+",
         choices=("all", *deep_scenario_ids),
-        default="all", help="scenario/pair id to measure; defaults to the small "
-                             "standard scenarios, or all selected pairs in --deep",
+        default=("all",), metavar="ID",
+        help="scenario/pair ids to measure (one or more); defaults to the small "
+             "standard scenarios, or all selected pairs in --deep",
     )
     run_options.add_argument(
         "--warmups", type=_warmups, default=1, metavar="N",
@@ -1867,18 +1949,33 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
     tts_options.add_argument(
         "--tts", action="store_true",
         help="time-to-solution study: run every (simulation size x batch size) "
-             "cell of the workload through every (strategy x backend) "
-             "combination and rank them by total wall time (spawns included); "
-             "--pair-set selects the combat-type workload, --simulation-sizes "
-             "and --batch-sizes the grid, --repeats the per-cell median; the "
-             "identical per-batch streams double as a parity gate across "
-             "strategies and backends",
+             "cell of the workload through every applicable (strategy x "
+             "backend) combination, including the modular oracle, and rank "
+             "them by total wall time (spawns included); --pair-set selects "
+             "the combat-type workload, --simulation-sizes and --batch-sizes "
+             "the grid (modular ignores the batch axis and runs once per "
+             "size), --repeats the per-cell median; within a backend the "
+             "identical duel streams double as a parity gate across strategies",
     )
     tts_options.add_argument(
         "--strategies", metavar="LIST",
-        help="comma separated strategies for --tts: sequential, processes=N, "
-             "parallel=N (default: sequential,processes=4,parallel=4; "
-             "parallel=N runs on numpy only)",
+        help="comma separated strategies for --tts: sequential (one process), "
+             "processes=N (one scenario per worker), parallel=N (each scenario "
+             "split inside a pool of N: numpy splits its batch plan, modular "
+             "its duel range) and parallel=N:C (modular only: split into C "
+             "chunks over N workers) (default: sequential,processes=4,parallel=4)",
+    )
+    profile_options = benchmark.add_argument_group("profiling")
+    profile_options.add_argument(
+        "--profile", action="store_true",
+        help="run the timed repeats under cProfile, print each backend's top "
+             "functions and write per-backend .pstats files; single-"
+             "configuration sequential runs only, and the profiled timings "
+             "cannot feed a baseline gate (instrumentation slows the engine)",
+    )
+    profile_options.add_argument(
+        "--profile-output", metavar="DIR", default="outputs/benchmarks",
+        help="directory for the profile-<backend>-<timestamp>.pstats files",
     )
     report_options = benchmark.add_argument_group("comparison gates and reports")
     report_options.add_argument("--json", action="store_true",

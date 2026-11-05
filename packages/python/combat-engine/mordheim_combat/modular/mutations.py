@@ -1,5 +1,5 @@
 """Source-defined MiM brands acquired by one of the two current duelists."""
-from dataclasses import replace
+from mordheim_combat.modular._fast_replace import replace
 
 from mordheim_core.dice import RollRequest
 from mordheim_core.effects import merge_effects

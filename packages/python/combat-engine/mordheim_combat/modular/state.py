@@ -3,7 +3,8 @@ from __future__ import annotations
 from mordheim_combat import phases
 
 from dataclasses import dataclass
-from dataclasses import replace
+from mordheim_combat.modular._fast_replace import register
+from mordheim_combat.modular._fast_replace import replace
 from mordheim_combat.phases import Condition
 from mordheim_combat.phases import Phase
 from mordheim_combat.phases import has_tag
@@ -121,6 +122,12 @@ class DuelState:
         return initial == (self.round_index % 2 == 0)
 
 
+# The two state classes rebuilt on nearly every engine step take the compiled
+# fast-replace path (registration refuses any class with __post_init__).
+register(FighterState)
+register(DuelState)
+
+
 @dataclass(frozen=True, slots=True)
 class AttackOutcome:
     attacker: FighterState
@@ -147,6 +154,35 @@ class AttackOutcome:
 class CombatRoundResult:
     state: DuelState
     attacks: tuple[AttackOutcome, ...]
+
+
+# Per-attack and per-round result records rebuilt by every attack step, and
+# the frozen compiled/context records the round projects (none defines
+# __post_init__; registration refuses any that would).
+for _record in (
+    AttackOutcome, CombatRoundResult, CompiledFighter, EffectSet,
+    CarriedEquipment, MutationOption,
+    phases.HitContext, phases.WoundContext, phases.ArmourContext,
+    phases.InjuryContext, phases.ParryContext, phases.SpecialSaveContext,
+    phases.PriorityContext, phases.AttackPoolContext,
+    phases.HitResult, phases.WoundResult, phases.ArmourResult,
+    phases.InjuryResult, phases.ParryResult, phases.SpecialSaveResult,
+    phases.CriticalResult,
+):
+    register(_record)
+
+
+def fold_spent_resources(state: FighterState, owned_state: FighterState) -> FighterState:
+    """Fold the resources an owned-dice wrapper spent into ``state``.
+
+    The union with an already-contained set is the identity, so the state is
+    returned unchanged (same object) instead of being rebuilt; otherwise the
+    result is exactly ``replace(state, resources_spent=state | spent)``.
+    """
+    spent = owned_state.resources_spent
+    if spent <= state.resources_spent:
+        return state
+    return replace(state, resources_spent=state.resources_spent | spent)
 
 
 def _parry_capacity(fighter: CompiledFighter) -> int:

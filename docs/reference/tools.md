@@ -277,11 +277,22 @@ runner self-checks do not certify rule behavior or statistical equivalence.
 checks use sequential inner execution; tests specifically verifying concurrent
 queues or process scheduling retain pools capped at two workers.
 
-For time-to-solution measurements, the benchmark command can compare strategies:
+For time-to-solution measurements, the benchmark command compares execution
+strategies per engine, modular oracle included:
 
 ```powershell
 python tools/mordheim-utils.py performance benchmark --tts --pair-set mini --backend numpy --strategies "sequential,processes=8,parallel=8"
+python tools/mordheim-utils.py performance benchmark --tts --pair-set full --backend modular -n 5000 --strategies "sequential,processes=12,parallel=12,parallel=12:48"
 ```
+
+`sequential` and `processes=N` (one scenario per worker) apply to every
+engine; `parallel=N` splits each scenario inside a pool (NumPy by batch plan,
+modular by duel range through `mordheim_combat.modular.parallel`, with
+`parallel=N:C` choosing the modular chunk count); native runs whole samples
+only. The summary lists the best strategy per engine and cell with its
+speedup over that engine's sequential pass; the modular oracle ignores the
+batch axis and runs once per simulation size. Pool workers receive the
+precompiled fighters, so catalogue loading never enters a pooled wall time.
 
 Keep benchmark measurements isolated from other workloads. Do not wrap real
 parity campaigns or benchmarks in xdist; their CLI worker controls remain
@@ -348,14 +359,26 @@ seed, because each batch draws its own random stream. The profile records the
 machine, engine digests, native build and source revision; one applied on
 another machine or engine prints a provenance warning and is still used.
 
+The benchmark's default `-n 100` is a smoke size: pass real simulation counts
+(and several `--scenario` ids when useful) for measurements. The sequential
+wall-time summary separates timed engine samples, warm-up executions and
+genuine setup overhead (interpreter start and catalogue load).
+
 A benchmark baseline gate compares only like measurements: simulations, batch
 size, seed, warmups, repeats, `--processes` and the backend list must match,
-or the gate exits 2. A (scenario, backend) pair the baseline measured but the
-current run did not, such as a native unit that failed, fails the gate.
-Differences in machine, engine digests, build or revision are reported as
-provenance warnings and never fail it. With `--processes N` the report gives
-the pool's wall time and sample concurrency, which is not a speedup over a
-sequential run.
+or the gate exits 2. All three engines participate — a modular baseline gates
+modular optimization work the same way as the optimized backends. A
+(scenario, backend) pair the baseline measured but the current run did not,
+such as a native unit that failed, fails the gate. Differences in machine,
+engine digests, build or revision are reported as provenance warnings and
+never fail it. With `--processes N` the report gives the pool's wall time and
+sample concurrency, which is not a speedup over a sequential run.
+
+`benchmark --profile` runs the timed repeats under cProfile on
+single-configuration sequential runs, prints each backend's top functions and
+writes per-backend `.pstats` files (default `outputs/benchmarks/`,
+`--profile-output` to change). Profiled timings include instrumentation
+overhead, so they locate hotspots and are rejected by the baseline options.
 
 ## Checks and reports
 

@@ -3,7 +3,8 @@ from __future__ import annotations
 from mordheim_combat import phases
 from mordheim_combat.modular.alchemy import alchemist_addicted, resolve_alchemist
 
-from dataclasses import dataclass, replace
+from dataclasses import dataclass
+from mordheim_combat.modular._fast_replace import replace
 from mordheim_combat.modular.aftermath import _black_hunger
 from mordheim_combat.modular.aftermath import _revenant_recovery
 from mordheim_combat.modular.aftermath import _characteristic_test
@@ -19,7 +20,9 @@ from mordheim_combat.modular.attacks import resolve_reference_attack
 from mordheim_combat.modular.state import AttackOutcome
 from mordheim_combat.modular.state import CombatRoundResult
 from mordheim_combat.modular.state import DuelState
+from mordheim_combat.modular.state import fold_spent_resources
 from mordheim_combat.modular.equipment import equipment_for_state, is_pistol, whipcrack_weapon
+from mordheim_combat.modular.mutations import fighter_for_mutations
 from mordheim_combat.phases import AttackPoolContext
 from mordheim_combat.phases import Condition
 from mordheim_combat.phases import Phase
@@ -30,6 +33,9 @@ from mordheim_combat.phases import has_tag
 from mordheim_combat.phases import resolve_priority
 from mordheim_core.dice import AlwaysAccept
 from mordheim_core.dice import DecisionPolicy
+
+#: Stateless default decision policy, shared instead of allocated per round.
+_ALWAYS_ACCEPT = AlwaysAccept()
 from mordheim_core.dice import DiceSource
 from mordheim_core.dice import RollRequest
 from mordheim_core.models import CompiledFighter
@@ -148,13 +154,36 @@ CONTROL_RESOURCES = {
 }
 LAHMIA_SEDUCTION_RESOURCE = "seduction.controlled.lahmia"
 
+#: Owner-tag sets of the round's rare-rule blocks.  Each block below only
+#: acts when one participant carries one of its tags, so a single set test on
+#: the current fighters' tags skips the block exactly when every probe inside
+#: it would fail.  The sets are derived from the tables they guard, so a new
+#: table entry is guarded automatically; a block whose body also resets state
+#: unconditionally keeps that reset outside the guard.
+_DANCE_TAGS = frozenset(f"dance.{dance}" for dance in SHADOW_DANCES)
+_LAHMIA_TAGS = frozenset(power for power, *_ in LAHMIA_POWERS)
+_CONTROL_TAGS = frozenset(power.tag for power in CONTROL_POWERS)
+_PETRU_TABLE = (("condition.petru-debilitating", "toughness", -1, 6),
+                ("condition.petru-strength", "strength", 1, 1),
+                ("condition.petru-resilience", "toughness", 1, 1))
+_PETRU_TAGS = frozenset(tag for tag, *_ in _PETRU_TABLE)
+_SHANTY_TAGS = frozenset({"mechanic.sea-shanty", "mechanic.sea-shanty-psychology",
+                          "mechanic.crude-belch-ogre"})
+_CHARM_OWNER_TAGS = frozenset({"mechanic.mesmerising-dance", "mechanic.beauty-of-the-sea",
+                               "defence.eye-pendant", "mechanic.mark-of-shornaal"})
+_HYPNOTIST_TAGS = frozenset({"mechanic.hypnotist"})
+_FAUNA_TAGS = frozenset({"mechanic.taal-tranquil-fauna"})
+
 
 def select_shadow_dance(fighter, current, decisions, *, key):
     """Apply one learned dance for this combat phase, remembering only the last."""
-    available = [dance for dance in SHADOW_DANCES
+    available = [] if _DANCE_TAGS.isdisjoint(fighter.global_effects.tags) else [
+        dance for dance in SHADOW_DANCES
         if has_tag(fighter.global_effects, f"dance.{dance}")
         and dance != current.last_shadow_dance]
     if current.condition != Condition.STANDING or current.grappled or current.grappling or not available:
+        if current.last_shadow_dance is None:
+            return fighter, current
         return fighter, replace(current, last_shadow_dance=None)
     selected = next((dance for dance in available
         if decisions.choose(f"{key}.dance.{dance}", tuple(available))), None)
@@ -173,7 +202,6 @@ def select_shadow_dance(fighter, current, decisions, *, key):
 
 
 def _mutated_phase_fighter(base, current, before, after, *, first_round):
-    from .mutations import fighter_for_mutations
     previous = equipment_for_state(fighter_for_mutations(base, before), before, first_round=first_round)
     updated = equipment_for_state(fighter_for_mutations(base, after), after, first_round=first_round)
     # Preserve only already-declared local phase effects around the permanent
@@ -262,7 +290,20 @@ def resolve_round(
     dice: DiceSource, decisions: DecisionPolicy | None = None,
 ) -> CombatRoundResult:
     """Resolve one complete scalar round through the fixed phase pipeline."""
-    decisions = decisions or AlwaysAccept()
+    decisions = decisions or _ALWAYS_ACCEPT
+    # Same-object duels (a fighter against itself) rely on the projections
+    # below producing two distinct fighter objects; ordinary duels may keep an
+    # unchanged fighter instead of copying it.
+    shared_fighters = first is second
+
+    def either_has(tags: frozenset) -> bool:
+        """Whether a participant *currently* carries one of ``tags``.
+
+        Reads the ``first``/``second`` bindings at call time, after every
+        projection that may have added or removed tags this round.
+        """
+        return (not tags.isdisjoint(first.global_effects.tags)
+                or not tags.isdisjoint(second.global_effects.tags))
     # Massively Built's supplied failed check costs the target its whole next
     # turn, so no optional action of that turn is available either: the printed
     # outcome is not limited to the attack pool.  Read that pending fact once,
@@ -286,7 +327,6 @@ def resolve_round(
             return _without_combat(first, second, state, dice, decisions, advance=True)
     compiled_first,compiled_second=first,second
     if state.first.mutations or state.second.mutations:
-        from .mutations import fighter_for_mutations
         first=fighter_for_mutations(first,state.first)
         second=fighter_for_mutations(second,state.second)
     for label, fighter in (('first', first), ('second', second)):
@@ -342,7 +382,8 @@ def resolve_round(
             effect=replace(effect,attacks_bonus=effect.attacks_bonus+1)
         if (state.round_index == 0 and has_tag(effect, 'condition.command.raise-our-insignia')):
             effect = replace(effect, tags=(*effect.tags, 'condition.command.raise-our-insignia-active'))
-        fighter = replace(fighter, global_effects=effect)
+        if effect is not fighter.global_effects or shared_fighters:
+            fighter = replace(fighter, global_effects=effect)
         if owner_first:
             first = fighter
         else:
@@ -353,7 +394,7 @@ def resolve_round(
     owned = OwnedRollDice(dice, fighter, getattr(state, label), decisions)
     current = _revenant_recovery(fighter, getattr(state, label), owned,
                                 f"round.{state.round_index}.{label}.revenant")
-    current = replace(current, resources_spent=current.resources_spent | owned.state.resources_spent)
+    current = fold_spent_resources(current, owned.state)
     current = resolve_alchemist(fighter, current, dice, decisions,
                                 f"round.{state.round_index}.{label}")
     state = replace(state, **{label: current})
@@ -363,9 +404,8 @@ def resolve_round(
             opponent=second if state.first_player_turn else first, return_state=True)
         current = replace(current, feral_instinct_failed=not passed)
         state = replace(state, **{label: current})
-    for tag, stat, bonus, expiry in (("condition.petru-debilitating", "toughness", -1, 6),
-        ("condition.petru-strength", "strength", 1, 1),
-        ("condition.petru-resilience", "toughness", 1, 1)):
+    for tag, stat, bonus, expiry in (
+            _PETRU_TABLE if not _PETRU_TAGS.isdisjoint(fighter.global_effects.tags) else ()):
         if current.active and has_tag(fighter.global_effects, tag) and tag not in current.resources_spent:
             roll, current = _owned_roll(fighter, current, dice, decisions,
                 RollRequest(f"round.{state.round_index}.{label}.{tag.removeprefix('condition.')}"))
@@ -487,8 +527,8 @@ def resolve_round(
             frenzy=current.frenzy or roll <= 3,
             lunatic_stupidity=current.lunatic_stupidity or roll >= 4)
         state = replace(state, **{label: current})
-    first_state = replace(state.first, fear_hit_sixes=False)
-    second_state = replace(state.second, fear_hit_sixes=False)
+    first_state = replace(state.first, fear_hit_sixes=False) if state.first.fear_hit_sixes else state.first
+    second_state = replace(state.second, fear_hit_sixes=False) if state.second.fear_hit_sixes else state.second
     if has_tag(first.global_effects_without_equipment if first_state.equipment_cast_off else first.global_effects, 'mechanic.persistent-frenzy'):
         first_state = replace(first_state, frenzy=True)
     if has_tag(second.global_effects_without_equipment if second_state.equipment_cast_off else second.global_effects, 'mechanic.persistent-frenzy'):
@@ -508,8 +548,10 @@ def resolve_round(
     second = equipment_for_state(second, second_state, first_round=first_round)
     # Equipment that is gone takes its numeric bonuses with it, so a Wound an
     # item folded into the profile cannot exceed the surviving maximum.
-    first_state = replace(first_state, wounds=min(first_state.wounds, maximum_wounds(first)))
-    second_state = replace(second_state, wounds=min(second_state.wounds, maximum_wounds(second)))
+    if first_state.wounds > (first_maximum := maximum_wounds(first)):
+        first_state = replace(first_state, wounds=first_maximum)
+    if second_state.wounds > (second_maximum := maximum_wounds(second)):
+        second_state = replace(second_state, wounds=second_maximum)
     for owner_first, fighter in ((True, first), (False, second)):
         current = first_state if owner_first else second_state
         if current.equipment_cast_off:
@@ -666,7 +708,8 @@ def resolve_round(
             roll, current = _owned_roll(fighter, current, dice, decisions,
                 RollRequest(f"round.{state.round_index}.{label}.animosity"))
             failed = roll <= threshold
-        current = replace(current, animosity_failed=failed)
+        if current.animosity_failed != failed:
+            current = replace(current, animosity_failed=failed)
         if is_first:
             first_state = current
         else:
@@ -748,7 +791,8 @@ def resolve_round(
         second, second_state = select_shadow_dance(second, second_state, decisions,
             key=f"round.{state.round_index}.second")
     first_loss = second_loss = 0
-    for owner, target, owner_first in ((first, second, True), (second, first, False)):
+    for owner, target, owner_first in (
+            ((first, second, True), (second, first, False)) if either_has(_SHANTY_TAGS) else ()):
         own = first_state if owner_first else second_state
         enemy = second_state if owner_first else first_state
         label = 'first' if owner_first else 'second'
@@ -794,10 +838,21 @@ def resolve_round(
         else:
             second_state, first_state, first = own, enemy, target
     # Both dances act from the same combat-start snapshot; defence remains available.
+    charm_owners = either_has(_CHARM_OWNER_TAGS)
     for owner, target, target_first in ((first, second, False), (second, first, True)):
         current = first_state if target_first else second_state
         owner_state = second_state if target_first else first_state
         blocked = False
+        if not charm_owners:
+            # No participant carries a charm source: every test below is
+            # skipped and only the per-phase reset of the charm flags remains.
+            if current.charm_attack_blocked or current.charm_auto_hit:
+                current = replace(current, charm_attack_blocked=False, charm_auto_hit=False)
+            if target_first:
+                first_state = current
+            else:
+                second_state = current
+            continue
         if (owner_state.condition == Condition.STANDING and not owner_state.stupidity_failed
                 and not (owner_state.grappled or owner_state.grappling)
                 and current.condition == Condition.STANDING
@@ -854,12 +909,14 @@ def resolve_round(
                 current = current.spend(resource)
             else:
                 blocked = auto_hit = True
-        current = replace(current, charm_attack_blocked=blocked, charm_auto_hit=auto_hit)
+        if current.charm_attack_blocked != blocked or current.charm_auto_hit != auto_hit:
+            current = replace(current, charm_attack_blocked=blocked, charm_auto_hit=auto_hit)
         if target_first:
             first_state = current
         else:
             second_state = current
-    for owner, target, target_first in ((first, second, False), (second, first, True)):
+    for owner, target, target_first in (
+            ((first, second, False), (second, first, True)) if either_has(_HYPNOTIST_TAGS) else ()):
         current = first_state if target_first else second_state
         owner_state = second_state if target_first else first_state
         owner_label = "second" if target_first else "first"
@@ -884,7 +941,8 @@ def resolve_round(
             else:
                 second_state = current
     # Tranquil Fauna prevents attacks, never the charge or established contact.
-    for owner, target, target_first in ((first, second, False), (second, first, True)):
+    for owner, target, target_first in (
+            ((first, second, False), (second, first, True)) if either_has(_FAUNA_TAGS) else ()):
         current = first_state if target_first else second_state
         own = second_state if target_first else first_state
         if (own.active and current.condition == Condition.STANDING
@@ -914,7 +972,7 @@ def resolve_round(
     # base contact" remainder has no second target to name and is recorded
     # rather than simulated.
     hypnotized = [False, False]
-    for power, exclusions, name, own_only in LAHMIA_POWERS:
+    for power, exclusions, name, own_only in (LAHMIA_POWERS if either_has(_LAHMIA_TAGS) else ()):
         for target_first in (False, True):
             owner = second if target_first else first
             target = first if target_first else second
@@ -967,7 +1025,7 @@ def resolve_round(
     # Seduction establishes a lasting control that the victim's own Recovery
     # phase may end and that the printed attack releases (see the release below
     # the attack resolution).
-    for power in CONTROL_POWERS:
+    for power in (CONTROL_POWERS if either_has(_CONTROL_TAGS) else ()):
         for target_first in (False, True):
             owner = second if target_first else first
             target = first if target_first else second
@@ -1179,8 +1237,7 @@ def resolve_round(
         second, first, before_second, first_state, dice,
         f"round.{state.round_index}.second.spines", decisions=decisions,
     )
-    second_state = replace(second_state, resources_spent=(
-        second_state.resources_spent | second_spines_owner.resources_spent))
+    second_state = fold_spent_resources(second_state, second_spines_owner)
     outcomes.extend((*first_spines, *second_spines))
     entangle = EffectSet(
         tags=("effect.chained-squig-entangle",), fixed_strength=3,
@@ -1315,7 +1372,7 @@ def resolve_round(
         owned = OwnedRollDice(dice, fighter, current, decisions, close_combat=True)
         count = resolve_spawn_attack_count(fighter, count, owned,
             f"round.{state.round_index}.{'first' if owner_first else 'second'}.spawn-attacks")
-        current = replace(current, resources_spent=current.resources_spent | owned.state.resources_spent)
+        current = fold_spent_resources(current, owned.state)
         if owner_first: first_state, first_count = current, count
         else: second_state, second_count = current, count
     first_shifty = (first_round and second_charging and has_tag(first.global_effects, "skill.shifty")

@@ -1,5 +1,5 @@
 """Equipment that remains usable after ammunition or weapon loss."""
-from dataclasses import replace
+from mordheim_combat.modular._fast_replace import replace
 
 from mordheim_combat.phases import WHIPCRACK_WEAPON_TAGS, has_tag
 from mordheim_core.effects import merge_effects
@@ -27,7 +27,7 @@ def pistol_as_club(weapon: EffectSet) -> EffectSet:
 
 def whipcrack_weapon(fighter: CompiledFighter) -> EffectSet | None:
     for weapon in (fighter.main_weapon, fighter.off_hand):
-        if weapon is not None and any(has_tag(weapon, tag) for tag in WHIPCRACK_WEAPON_TAGS):
+        if weapon is not None and not WHIPCRACK_WEAPON_TAGS.isdisjoint(weapon.tags):
             return weapon
     return None
 
@@ -57,7 +57,28 @@ def _without_discarded_bonuses(characteristics, items, kept_slots):
     return replace(characteristics, **values)
 
 
+def _projection_is_identity(fighter: CompiledFighter, state: FighterState, first_round: bool) -> bool:
+    """True when every field the projection below would set equals the current one.
+
+    Nothing is lost, dropped, transformed or broken, no pistol leaves after the
+    opening round and the main hand is armed, so the rebuilt fighter would be
+    value-identical to ``fighter``; returning the fighter itself is the same
+    result without a 35-field copy per round.
+    """
+    if (state.broken_hands or state.transformed or state.equipment_cast_off
+            or state.hillman_wolf or fighter.main_weapon is None
+            or (fighter.off_hand is None and fighter.off_hand_attacks)):
+        return False
+    if first_round:
+        return True
+    return not any(is_pistol(weapon) for weapon in (
+        fighter.main_weapon, fighter.off_hand, fighter.main_weapon_without_poison,
+        fighter.off_hand_without_poison, *fighter.extra_attacks) if weapon is not None)
+
+
 def equipment_for_state(fighter: CompiledFighter, state: FighterState, *, first_round: bool) -> CompiledFighter:
+    if _projection_is_identity(fighter, state, first_round):
+        return fighter
     lost = tuple(item for item in fighter.mutation_equipment
                  if item.slot in state.broken_hands and item.kind in {'armour', 'defence'})
     if lost:
