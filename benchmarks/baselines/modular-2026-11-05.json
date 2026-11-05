@@ -1,0 +1,170 @@
+{
+  "schema": "mordheim-combat-benchmark/v1",
+  "generated_at": "2026-11-05T16:18:01.924882+00:00",
+  "environment": {
+    "python": "3.14.4",
+    "numpy": "2.5.4",
+    "platform": "Linux-7.0.0-42-generic-x86_64-with-glibc2.43",
+    "processor": ""
+  },
+  "configuration": {
+    "simulations": 2000,
+    "batch_size": 100000,
+    "seed": 2026,
+    "warmups": 1,
+    "repeats": 3,
+    "processes": 1,
+    "start_method": null,
+    "backends": [
+      "modular"
+    ]
+  },
+  "provenance": {
+    "revision": {
+      "commit": "2f8a35e6d9dc83a929adca3ec891570f13f53c64",
+      "branch": "hfi/02fdbed0-ebbe-4410-910a-ed00bdd15352/oak",
+      "dirty": false,
+      "dirty_paths": []
+    },
+    "imported_from": {
+      "mordheim_combat": "/home/pholtergate/.cache/claude-hfi/-home-pholtergate-DEV-Mordheim-Utils/oak/packages/python/combat-engine/mordheim_combat",
+      "mordheim_core": "/home/pholtergate/.cache/claude-hfi/-home-pholtergate-DEV-Mordheim-Utils/oak/packages/python/core/mordheim_core"
+    },
+    "engine_digests": {
+      "modular": "ea4fafeb4eeac5bc236bacf2d2e65ebce2de92e94f441e80a7fd4e533c58a537"
+    },
+    "native_build_sha256": null,
+    "warnings": [],
+    "cpu_count": 12,
+    "platform": "Linux-7.0.0-42-generic-x86_64-with-glibc2.43",
+    "machine": "x86_64",
+    "python": "3.14.4",
+    "numpy": "2.5.4"
+  },
+  "results": [
+    {
+      "scenario": "basic",
+      "backend": "modular",
+      "simulations": 2000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        6.61320796399923,
+        6.501766810000845,
+        6.488334108000345
+      ],
+      "median_seconds": 6.501766810000845,
+      "simulations_per_second": 307.6086944434324,
+      "warmup_seconds": 6.5798294649994205
+    },
+    {
+      "scenario": "defences",
+      "backend": "modular",
+      "simulations": 2000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        9.586901923999903,
+        9.43917715399948,
+        9.404791222001222
+      ],
+      "median_seconds": 9.43917715399948,
+      "simulations_per_second": 211.88287573907633,
+      "warmup_seconds": 9.857326913999714
+    },
+    {
+      "scenario": "stateful",
+      "backend": "modular",
+      "simulations": 2000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        6.107303755999965,
+        6.048026295000454,
+        6.1101731170001585
+      ],
+      "median_seconds": 6.107303755999965,
+      "simulations_per_second": 327.4767524106118,
+      "warmup_seconds": 6.119424833001176
+    },
+    {
+      "scenario": "sigmarite-vs-undead",
+      "backend": "modular",
+      "simulations": 2000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        4.304728471000999,
+        4.304517130998647,
+        4.327930945999469
+      ],
+      "median_seconds": 4.304728471000999,
+      "simulations_per_second": 464.6053783584939,
+      "warmup_seconds": 4.265687403998527
+    },
+    {
+      "scenario": "regen-vs-fire",
+      "backend": "modular",
+      "simulations": 2000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        3.1921208160001697,
+        3.1845388019992242,
+        3.184692870001527
+      ],
+      "median_seconds": 3.184692870001527,
+      "simulations_per_second": 628.004043604695,
+      "warmup_seconds": 3.2090882800002873
+    },
+    {
+      "scenario": "pistol-vs-parry",
+      "backend": "modular",
+      "simulations": 2000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        8.025412441000299,
+        8.018224526000267,
+        8.074564885000655
+      ],
+      "median_seconds": 8.025412441000299,
+      "simulations_per_second": 249.2083758564709,
+      "warmup_seconds": 8.026366475998657
+    },
+    {
+      "scenario": "entangle-vs-fencer",
+      "backend": "modular",
+      "simulations": 2000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        4.944306585000959,
+        4.987321343000076,
+        5.004309900999942
+      ],
+      "median_seconds": 4.987321343000076,
+      "simulations_per_second": 401.01687107190065,
+      "warmup_seconds": 4.984953900000619
+    },
+    {
+      "scenario": "ward-vs-magic",
+      "backend": "modular",
+      "simulations": 2000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        4.845621917000244,
+        4.733278439998685,
+        4.792489534000197
+      ],
+      "median_seconds": 4.792489534000197,
+      "simulations_per_second": 417.31963853255183,
+      "warmup_seconds": 4.831870250000065
+    }
+  ],
+  "unavailable": [],
+  "elapsed_seconds": 193.50269886599926,
+  "engine_seconds": 142.22374095800296,
+  "warmup_seconds": 47.874547521998466
+}

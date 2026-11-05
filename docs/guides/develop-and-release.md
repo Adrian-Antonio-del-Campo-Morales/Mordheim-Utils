@@ -166,7 +166,9 @@ machine, engine or revision prints a provenance warning and is still compared,
 so read its result in that light. The gate's thresholds belong to the command,
 not to this document. Store raw results under ignored `outputs/benchmarks/`; do
 not copy measured throughput or machine-specific optima into maintained
-documentation.
+documentation. Reference baselines kept for comparison across optimization
+work live in [`benchmarks/baselines/`](../../benchmarks/baselines/README.md),
+each with its measurement design and provenance.
 
 To find where the time goes before optimizing, profile a single-configuration
 sequential run:
