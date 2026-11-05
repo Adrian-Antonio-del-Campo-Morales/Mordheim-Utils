@@ -60,6 +60,18 @@ def _pool(workers: int) -> ProcessPoolExecutor:
                                initargs=(_engine_files(),))
 
 
+def oracle_pool(workers: int) -> ProcessPoolExecutor:
+    """A process pool whose workers are checked to run this engine copy.
+
+    Callers that run several oracle samples (campaigns, time-to-solution
+    studies) create one pool here and pass it to ``run_oracle_sample`` as
+    ``executor`` so the spawn cost is paid once per run.
+    """
+    if workers < 1:
+        raise ValueError("workers must be positive")
+    return _pool(workers)
+
+
 def chunk_ranges(total: int, chunks: int) -> tuple[tuple[int, int], ...]:
     """Split ``[0, total)`` into ``chunks`` contiguous, balanced ranges.
 
@@ -91,11 +103,13 @@ def _run_chunk(first: CompiledFighter, second: CompiledFighter,
     )
 
 
-# Calibration of the scalar oracle used by the auto gate: roughly 1000
-# duels/s on the five standard scenarios and 76 duels/s on the 75-round
-# ``long`` scenario (measured 2026-09-04 on Windows, CPython 3.10).
-_ORACLE_RATE_STANDARD = 1000.0
-_ORACLE_RATE_LONG = 76.0
+# Calibration of the scalar oracle used by the auto gate: roughly 400
+# duels/s on the standard 50-round scenarios and 18 duels/s on the 75-round
+# ``long`` grind (measured 2026-11-05 on Linux, CPython 3.14). These are
+# coarse order-of-magnitude figures for the pooling threshold only; refresh
+# them when the modular engine's throughput changes materially.
+_ORACLE_RATE_STANDARD = 400.0
+_ORACLE_RATE_LONG = 18.0
 
 # A bulk sample is pooled only when the sequential oracle would take at least
 # this long; below it the spawn/import overhead makes the pool slower.
@@ -197,6 +211,7 @@ def run_oracle_sample(
     workers: int | None = None, executor=None,
     cancel_event: object | None = None,
     context: DuelContext | None = None,
+    chunks: int | None = None,
 ) -> DuelResult:
     """Run one bulk oracle sample under a resolved worker policy.
 
@@ -204,7 +219,10 @@ def run_oracle_sample(
     (``None`` means sequential; ``>= 2`` pools).  Passing an existing
     ``executor`` reuses one pool across several samples so the workers are
     spawned once per run instead of once per sample; otherwise a pool is
-    created and torn down around this sample.  Always returns the same
+    created and torn down around this sample.  ``chunks`` sets how many work
+    units the sample is split into (default: one per worker); more chunks
+    than workers smooths the tail when duel lengths are uneven, at the cost
+    of pickling the fighters once per chunk.  Always returns the same
     ``DuelResult`` the sequential oracle would produce.
     """
     if workers is None or workers < 2:
@@ -213,15 +231,18 @@ def run_oracle_sample(
             maximum_rounds=maximum_rounds, decisions=decisions, context=context,
             cancel_event=cancel_event,
         )
+    units = chunks if chunks is not None else workers
+    if units < 1:
+        raise ValueError("chunks must be positive")
     if executor is not None:
         return _run_chunks(
             first, second, simulations, seed=seed,
             maximum_rounds=maximum_rounds, decisions=decisions, context=context,
-            units=workers, executor=executor, cancel_event=cancel_event,
+            units=units, executor=executor, cancel_event=cancel_event,
         )
     with _pool(workers) as pool:
         return _run_chunks(
             first, second, simulations, seed=seed,
             maximum_rounds=maximum_rounds, decisions=decisions, context=context,
-            units=workers, executor=pool, cancel_event=cancel_event,
+            units=units, executor=pool, cancel_event=cancel_event,
         )

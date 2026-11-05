@@ -881,17 +881,20 @@ def performance_command(args: list[str]) -> int:
                 "python tools/mordheim-utils.py performance benchmark [options]",
                 "Measure engine speed. Select a workload, engine and sample size;\nresults describe performance, not rule correctness or engine equivalence.",
                 "python -m mordheim_combat_lab benchmark",
-                "--scenario ID      scenario to measure (default: all basic scenarios)\n"
+                "--scenario ID...   scenarios to measure (default: all basic scenarios)\n"
                 "--backend ENGINE   modular, numpy or native; accepts several engines\n"
-                "--simulations N    duels per scenario\n--processes 8      multicore measurement\n"
+                "--simulations N    duels per scenario (default 100: a smoke size)\n"
+                "--processes 8      multicore measurement\n"
                 "--warmups N        untimed warm-ups\n--repeats N        timed repetitions\n"
+                "--profile          cProfile the timed repeats; prints hotspots, saves .pstats\n"
                 "--deep            size/batch sweep\n--pair-set SET    mini, fast or full for deep/tts\n"
                 "--json            structured output\n--output PATH     save results\n"
                 "--help-full       all options, scenario names, defaults and units",
                 examples=(
-                    "performance benchmark --scenario basic --backend numpy --simulations 1000 --processes 8 --repeats 3",
+                    "performance benchmark --scenario basic --backend numpy --simulations 100k --processes 8 --repeats 3",
+                    "performance benchmark --backend modular --scenario basic stateful -n 2000 --profile",
                     "performance benchmark --deep --pair-set mini --backend numpy --processes 8",
-                ), notes=("The small example is a smoke measurement, not a stable benchmark.",),
+                ), notes=("The default -n 100 is a smoke measurement; pass real sizes for stable numbers.",),
             )
         return _delegated_help(
             "python tools/mordheim-utils.py performance calibrate [options]",

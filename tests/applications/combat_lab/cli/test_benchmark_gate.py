@@ -126,12 +126,29 @@ def test_baseline_result_without_current_result_fails_the_gate():
     gate = gate_against_baseline(
         payload(current_results, unavailable), baseline, current_results)
     assert not gate.passed and gate.improved
+    # Modular baselines participate like the optimized ones.
     assert [(item.scenario, item.backend, item.reason) for item in gate.missing] == [
+        ("a", "modular", "not measured in the current run"),
         ("a", "native", "RuntimeError: boom"),
         ("b", "native", "native backend is not compiled"),
         ("c", "numpy", "not measured in the current run"),
     ]
-    assert gate.detail.startswith("3 baseline result(s) have no current measurement")
+    assert gate.detail.startswith("4 baseline result(s) have no current measurement")
+
+
+def test_modular_results_gate_like_the_optimized_ones():
+    baseline = roundtrip(payload([result("a", "modular", 100)],
+                                 backends=("modular",)))
+    improved = [result("a", "modular", 120)]
+    gate = gate_against_baseline(
+        payload(improved, backends=("modular",)), baseline, improved)
+    assert gate.passed and gate.improved
+    (comparison,) = gate.comparisons
+    assert comparison.backend == "modular" and comparison.status == "IMPROVED"
+    regressed = [result("a", "modular", 80)]
+    gate = gate_against_baseline(
+        payload(regressed, backends=("modular",)), baseline, regressed)
+    assert not gate.passed and gate.regressed
 
 
 def test_markdown_report_lists_missing_results(tmp_path):
