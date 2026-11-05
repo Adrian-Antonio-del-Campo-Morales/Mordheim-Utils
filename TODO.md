@@ -11,7 +11,7 @@ not certify the current tree, and unverified reports are not confirmed defects.
 | --- | --- | --- |
 | Modular integration | Implementation received; strict E2E completeness remains unconfirmed | Check the live coverage inventory before claiming global closure. |
 | Optimized engines | Last recorded 43-scenario campaign at 100k duels: NumPy 43/43 on 2026-11-02 and Native 43/43 on 2026-11-03; later rule changes have focused checks only | Qualify the current revision against Modular, checking reference provenance and affected inputs first. |
-| E2E statistical parity | Refreshed candidates from clean `38f4c12f`: 2,678 compared per engine; NumPy 1 divergent, Native 111 divergent | Investigate the recorded divergences and qualify both engines against valid Modular references. |
+| E2E statistical parity | Native: 0 of 2,678 divergent in an uncommitted re-sample against the stored Modular oracle; NumPy: 1 divergent in its stored store | Verify and commit the Native changes, refresh the Native store, fix NumPy's divergence and settle oracle provenance. |
 
 ## Modular integration and E2E coverage
 
@@ -84,26 +84,46 @@ accepted decisions belong in [Design rulings](docs/decisions/design-rulings.md).
 
 ## E2E statistical parity, Modular vs optimized backends
 
-The decision pair lives in `tests/engines/parity/reference_samples/`
-(`modular-e2e-100k` is the oracle reference, `numpy-e2e-100k` the candidate;
-seed 2026, 100,000 duels per scenario, 50 rounds, six-sigma winner gate).
-Decide it without running either engine via
-`python -m tools.verification.parity_samples compare --level e2e --backend
-numpy --store <numpy store> --reference-store <modular store>`; re-sample
-individual scenarios with `sample --engine numpy --id <case_key>`. The
-Modular oracle is authoritative; the last recorded comparison of the stored
-pair, refreshed on 2026-11-04 from clean commit `38f4c12f`, reports 2,678
-compared, 2,677 approved and 1 divergent. The corresponding Native store
-(`native-e2e-100k`) reports 2,678 compared, 2,567 approved and 111 divergent.
-Each candidate record contains 100,000 duels in ten 10,000-duel chunks.
-Another 2,485 deliveries are rejected before sampling in each report.
-The refresh preserves candidate results; it does not establish parity acceptance.
+The decision data lives in `tests/engines/parity/reference_samples/`:
+`modular-e2e-100k` is the oracle, `numpy-e2e-100k` and `native-e2e-100k` are
+the candidates (seed 2026, 100,000 duels per scenario in 10,000-duel chunks,
+50 rounds, six-sigma winner gate). Compare stored stores without running
+either engine with `python -m tools.verification.parity_samples compare
+--level e2e --backend <numpy|native> --store <candidate store>
+--reference-store <modular store>`; re-sample candidates with `sample --engine
+<numpy|native>`. Running the Modular engine requires explicit authorization.
 
-Remaining verification work:
+Remaining certification work:
 
-- Investigate NumPy's divergent `profile.fist` case for the Battle Monks of
-  Cathay Raging Peasants (`the-fist-does-not-grant-the-enemy-the-dagger-save-bonus`).
-- Investigate the 111 Native divergences separately against the Modular oracle.
-- Check reference provenance and which inputs are affected by the Modular
-  changes before claiming current-engine certification. The saved oracle was
-  retained unchanged; matching frozen inputs alone does not certify later rules.
+- **Verify the Native E2E changes.** Run the native runtime and deterministic
+  replay selections (`tests/engines/native/`) on the changed engine; the
+  attack-event gating, pool allocation and Rapier Barrage changes touch the
+  replay paths. Push preparation on 2026-11-05 rebuilt these local changes over
+  `4d186f54` with `.venv/bin/python setup.py build_ext --inplace` and ran
+  `.venv/bin/python -u -m pytest tests/engines/native/test_attack_mechanics.py
+  tests/engines/native/test_stateful_rules.py
+  tests/engines/native/runtime/test_duel_replay_native.py -n 2 --dist=load -q
+  --durations=10 --tb=short`: 29 passed. The build emitted GCC warnings;
+  this focused selection does not certify the full runtime or parity suite.
+- **Refresh the Native store.** Re-sample `native-e2e-100k` from a clean commit
+  containing those changes and compare it with the oracle; the committed store
+  still holds the earlier candidate.
+- **Requalify the 43 precompiled scenarios.** Native changed after its last
+  43/43 campaign; re-sample `--level long` and compare with `modular-100k`.
+- **Fix NumPy's divergence.** `profile.fist` for the Battle Monks of Cathay
+  Raging Peasants (`the-fist-does-not-grant-the-enemy-the-dagger-save-bonus`):
+  NumPy returns identical counts for this case and its sibling with different
+  inputs, so it ignores the input that distinguishes them. Fix it in NumPy, then
+  re-sample that case.
+- **Settle oracle provenance.** The stored Modular samples carry a source
+  digest that matches no commit, and two Modular commits followed them. Confirm
+  which inputs those commits can affect, or regenerate the affected oracle
+  samples with authorization, before claiming current-engine certification.
+- **Make native digests portable.** `.pyx` and `.pxd` files have no explicit
+  line-ending rule in `.gitattributes`, so Windows and Linux checkouts of the
+  same commit produce different native engine digests and spurious provenance
+  warnings.
+- **Cover the rejected deliveries.** 2,485 deliveries never run: 1,491 need
+  `initial_state` overrides or auxiliary participants the shared runner cannot
+  express, 530 prescribe scripted decisions, and 464 are expected construction
+  refusals. The first two groups are uncertified until the runner supports them.

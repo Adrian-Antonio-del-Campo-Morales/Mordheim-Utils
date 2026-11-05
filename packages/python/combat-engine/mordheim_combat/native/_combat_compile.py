@@ -19,8 +19,9 @@ from mordheim_combat.kernel import EFFECT_VALUE_FIELDS
 from mordheim_combat.vectorized import _compiled_attack_effect
 from mordheim_combat.vectorized import _critical_wound_threshold
 from mordheim_combat.vectorized import _optional_phase_plan
-from mordheim_combat.vectorized import _parry_capacity
+from mordheim_combat.vectorized._operators import parry_capacity as _parry_capacity
 from mordheim_combat.phases import black_lotus_wounds
+from mordheim_combat.phases import unarmed_attack_cap_applies
 from mordheim_combat.vectorized import has
 from mordheim_combat.vectorized import special_save_targets
 from mordheim_combat.modular.contexts import _darting_steel_parry
@@ -50,11 +51,6 @@ class NotSupported(RuntimeError):
 
 def _values(effect: EffectSet) -> tuple[int, ...]:
     return tuple(int(getattr(effect, name)) for name in EFFECT_VALUE_FIELDS)
-
-
-def _ignore_unarmed(effect: EffectSet) -> bool:
-    from mordheim_combat.phases import ignores_unarmed_penalties
-    return ignores_unarmed_penalties(effect)
 
 
 def _fire_source(opponent: CompiledFighter) -> CompiledFighter:
@@ -247,6 +243,10 @@ def compile_source(attacker: CompiledFighter, defender: CompiledFighter,
         "hardy": has(dg, "skill.hardy-constitution"),
         "magical": has(effect, "attack.magical"),
         "no_critical": has(effect, "effect.no-critical"),
+        #: A rerolled wound die still scores the critical, except Devil's Toxin.
+        "critical_on_reroll": bool(poison_blocked or not has(effect, "poison.devil-s-toxin")),
+        #: Ruling D13: the wound allows no ward or regeneration save either.
+        "no_saves": has(effect, "effect.no-saves"),
         "kusara": has(weapon_c, "weapon.kusara-kama"),
         "chained": has(weapon_c, "weapon.chained-squig"),
         "anvil": has(effect, "mechanic.anvil-head"),
@@ -287,6 +287,20 @@ def compile_source(attacker: CompiledFighter, defender: CompiledFighter,
         #: Strength the oracle adds outside the generic EffectSet fields.
         "strength_fr_bonus": int(
             has(weapon_c, "weapon.spear") and has(effect, "mechanic.seaguard-spear-master")),
+        #: The Seaguard rerolls one failed opening-round hit with the spear.
+        "seaguard_reroll": bool(
+            has(weapon_c, "weapon.spear") and has(effect, "mechanic.seaguard-spear-master")),
+        #: Sword-breaker: a parried blow of a real weapon is trapped on 4+ and
+        #: breaks the striking hand; ``trap_main`` names the main hand.
+        "trap_blade": bool(
+            not has(effect, "weapon.indestructible")
+            and any(tag.startswith("weapon.") and tag not in (
+                "weapon.fist", "weapon.natural-attacks") for tag in weapon_c.tags)
+            and any(has(candidate, "weapon.sword-breaker") for candidate in (
+                defender.main_weapon, defender.off_hand or EffectSet()))),
+        "trap_main": any(
+            tag in attacker.main_weapon.tags
+            for tag in weapon_c.tags if tag.startswith("weapon.")),
         "strength_charge_fr_bonus": int(
             has(g, "rule.slay-large-creature") and has(dg, "size.large")),
         #: The Wolf Rat's printed S4 bite contributes no armour modifier.
@@ -372,6 +386,7 @@ def compile_source(attacker: CompiledFighter, defender: CompiledFighter,
             has(g, tag) for tag in ("nature.undead", "nature.possessed", "nature.daemon")))
         - int(has(g, "condition.snorri-stench") or has(dg, "condition.snorri-stench"))
         - int(_symbol_of_unity(attacker, defender))
+        - int(has(defender.main_weapon, "weapon.ball-and-chain"))
     )
     #: Only in the first round and only on a charge.
     flags["hit_mod_charge_fr"] = int(
@@ -406,10 +421,17 @@ def compile_source(attacker: CompiledFighter, defender: CompiledFighter,
     #: index = 8*first_round + 4*charging + 2*charged + frenzy.  ``charged``
     #: carries ``condition.being-charged``, which the oracle reads for the
     #: Pikewall re-roll; it is a per-row fact, so it is folded here too.
-    charged_effect = merge_effects(effect, _constructed(("condition.being-charged",)))
+    reroll_effect = effect
+    if (has(g, "mechanic.devoted-to-the-vampire")
+            and has(g, "condition.devoted-vampire-killed")):
+        # ``modular/rounds.py`` grants ``condition.devoted-killer-hatred``
+        # while the killer (always the duel opponent) is not out of action.
+        reroll_effect = merge_effects(
+            effect, _constructed(("condition.devoted-killer-hatred",)))
+    charged_effect = merge_effects(reroll_effect, _constructed(("condition.being-charged",)))
     reroll_table = [
         1 if _hit_reroll(attacker, defender, weapon_c,
-                         charged_effect if charged else effect,
+                         charged_effect if charged else reroll_effect,
                          bool(first_round), bool(charging), frenzy=bool(frenzy)) else 0
         for first_round in (0, 1) for charging in (0, 1)
         for charged in (0, 1) for frenzy in (0, 1)
@@ -444,9 +466,15 @@ def _parry_flags(me: CompiledFighter) -> dict:
         has(g, "skill.axe-master")
         and (has(main, "weapon.axe") or bool(off and has(off, "weapon.axe")))
     )
-    parry = parry or bool(
-        has(g, "skill.shield-mastery") and bool(off and has(off, "defence.shield"))
-    )
+    # The shield is compiled into the global and shield-and-skill effects, not
+    # into ``off_hand``; Shield Mastery lets it parry as a buckler.
+    parry = parry or bool(has(g, "skill.shield-mastery") and has(g, "defence.shield"))
+    # Chosen of the White Tower parries without a parrying weapon; Instinctive
+    # Warrior parries with a double-handed weapon (``parry_capacity``).
+    parry = parry or has(g, "skill.chosen-of-the-white-tower")
+    parry = parry or bool(has(g, "skill.instinctive-warrior") and (
+        has(main, "weapon.double-handed-weapon")
+        or bool(off and has(off, "weapon.double-handed-weapon"))))
     sword = has(main, "weapon.sword") or bool(off and has(off, "weapon.sword"))
     dwarf_axes = bool(
         has(main, "weapon.dwarf-axe") and bool(off and has(off, "weapon.dwarf-axe"))
@@ -463,12 +491,16 @@ def _parry_flags(me: CompiledFighter) -> dict:
     )
     return {
         "parry": parry,
-        "match_allowed": any(
+        # Defensive Stance lets an equal roll parry only with a weapon that
+        # has the parry rule (``modular/contexts.py::_parry_context``).
+        "match_allowed": bool(any(
             has(g, tag) for tag in (
-                "skill.sword-master", "skill.swordmaster",
-                "skill.defensive-stance", "skill.unbeatable-warrior",
+                "skill.sword-master", "skill.swordmaster", "skill.unbeatable-warrior",
             )
-        ),
+        ) or (has(g, "skill.defensive-stance") and (
+            main.parry or bool(off is not None and off.parry)
+            or any(weapon.parry for weapon in me.extra_attacks
+                   if has(weapon, "mutation.carried-weapon"))))),
         "starblade": bool(
             has(main, "weapon.starblade") or bool(off and has(off, "weapon.starblade"))
         ),
@@ -518,6 +550,14 @@ def _compile_fighter(me: CompiledFighter, foe: CompiledFighter) -> dict:
         "natural_armour_negated_by_magic": bool(g.natural_armour_negated_by_magic),
         "armour_cannot_be_ignored": bool(g.armour_cannot_be_ignored),
         "armour_save_floor": int(g.armour_save_floor),
+        #: The Ladle leaves only the shield and skill selections' own save.
+        "shield_skill_armour_save": int(max(1, 7 - me.shield_and_skill_effects.armour_save_bonus)),
+        #: Norse Bulwark: an axe and a shield improve the armour save by one.
+        "norse_bulwark": bool(
+            has(g, "mechanic.norse-bulwark") and has(main, "weapon.axe")
+            and has(me.shield_and_skill_effects, "defence.shield")),
+        #: Eshin Assassin robes reroll every failed armour save once.
+        "eshin_robes": has(g, "armour.eshin-assassin-robes"),
         "armour_specialist": bool(
             has(g, "skill.armour-specialist") and not me.mounted
             and has(g, "armour.heavy-armour")
@@ -671,7 +711,8 @@ def _compile_fighter(me: CompiledFighter, foe: CompiledFighter) -> dict:
         ),
         "extra_weapon_attack": int(me.off_hand_attacks or main.paired),
         "fist_penalized": bool(
-            has(main, "weapon.fist") and not _ignore_unarmed(g)
+            has(main, "weapon.fist")
+            and unarmed_attack_cap_applies(merge_effects(g, main))
         ),
         "unarmed_bonus": bool(
             has(g, "skill.unarmed-fighting") and has(main, "weapon.fist")
@@ -714,7 +755,8 @@ def _compile_fighter(me: CompiledFighter, foe: CompiledFighter) -> dict:
                 "weapon.serpent-whip", "weapon.barbed-whip", "weapon.thinglash")
         ) else int(main.priority),
         "priority_global": int(g.priority),
-        "spear": has(main, "weapon.spear"),
+        #: The spear's and the pike's Strike First lapse after the first round.
+        "spear": bool(has(main, "weapon.spear") or has(main, "weapon.pike")),
         "opponent_always_first": has(foe.global_effects, "skill.always-strikes-first"),
         "initiative_bonus_total": int(
             g.initiative_bonus + main.initiative_bonus
@@ -1036,9 +1078,12 @@ _REACTIONS = {
     "giggle": _constructed(("mechanic.giggle-juice-spray-attack",),
                            automatic_hit=True, fixed_strength=2, injury_modifier=1),
     "body": _constructed(("mechanic.body-slam",), strength_bonus=1, hit_modifier=1),
+    #: The infection wound is automatic and allows no saving throw at all
+    #: (ruling D13, ``modular/attacks.py``).
     "infection": _constructed(
-        ("effect.automatic-wound", "effect.no-critical"),
+        ("effect.automatic-wound", "effect.no-critical", "effect.no-saves"),
         fixed_strength=3, automatic_hit=True, cannot_be_parried=True,
+        ignore_armour=True,
     ),
 }
 
@@ -1095,6 +1140,12 @@ def compile_reactions(me: CompiledFighter, foe: CompiledFighter) -> dict:
             automatic_hit=True, cannot_be_parried=True,
             armour_penetration=int(has(g_of(me), "wheelo.fitting.axe")),
             concussion=has(g_of(me), "wheelo.fitting.club")))
+    #: Every impact after the first of a charge resolves at Strength 4.
+    result["impact_more"] = compile_source(
+        replace(me, global_effects=EffectSet()), foe, _constructed(
+            (), fixed_strength=4, automatic_hit=True, cannot_be_parried=True,
+            armour_penetration=int(has(g_of(me), "wheelo.fitting.axe")),
+            concussion=has(g_of(me), "wheelo.fitting.club")))
     result["jolt"] = compile_source(me, foe, _constructed(
         ("mechanic.electrical-touch-attack",), automatic_hit=True,
         fixed_strength=5 if has(foe.global_effects, "condition.metal-armour") else 3,
@@ -1103,6 +1154,14 @@ def compile_reactions(me: CompiledFighter, foe: CompiledFighter) -> dict:
         replace(me, global_effects=EffectSet(), main_weapon=EffectSet(),
                 off_hand=None, extra_attacks=()),
         foe, _REACTIONS["crows"])
+    # These reactions are not hand-to-hand attacks (``melee_attack=False`` in
+    # both reference engines): a knocked-down victim is not taken out
+    # outright, and Contagious and the Torturer do not answer them.
+    for name in ("acid", "infection", "spines", "backlash", "fire",
+                 "impact", "impact_more"):
+        if name in result:
+            result[name] = {**result[name],
+                            "flags": {**result[name]["flags"], "non_melee": True}}
     return result
 
 
@@ -1326,6 +1385,29 @@ class ProjectionTable:
         #: ``FighterState`` that no C column can hold.  A row appears here
         #: only once it actually carries a brand.
         self.mutation_rows = {"first": {}, "second": {}}
+        #: Equipment projections of rows that broke a hand or transformed
+        #: (``vectorized._equipment.phase_equipment``, the port of
+        #: ``modular.equipment.equipment_for_state``), keyed by their state.
+        self._equipment = {"first": {}, "second": {}}
+        #: Table indices produced by :meth:`equipment_row`, so the core
+        #: re-projects only rows it projected itself.
+        self.equipment_indices = {"first": set(), "second": set()}
+
+    def equipment_row(self, side: str, broken: int, transformed: bool,
+                      cast_off: bool, first_round: bool) -> int:
+        """Intern the equipment one row uses after a broken hand or transform."""
+        key = (int(broken), bool(transformed), bool(cast_off), bool(first_round))
+        index = self._equipment[side].get(key)
+        if index is None:
+            from mordheim_combat.vectorized._equipment import phase_equipment
+            index = int(self.intern(side, phase_equipment(
+                self.fighters[side], first_round=bool(first_round),
+                broken_hands=int(broken), transformed=bool(transformed),
+                equipment_cast_off=bool(cast_off))))
+            self._equipment[side][key] = index
+            if index:
+                self.equipment_indices[side].add(index)
+        return index
 
     # -- per-row mutation transitions, driven by the compiled round --------
 
