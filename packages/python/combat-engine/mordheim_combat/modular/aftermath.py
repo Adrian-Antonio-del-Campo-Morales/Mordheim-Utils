@@ -2,7 +2,7 @@
 from __future__ import annotations
 from mordheim_combat import phases
 
-from dataclasses import replace
+from mordheim_combat.modular._fast_replace import replace
 from mordheim_combat.phases import _characteristic_test
 from mordheim_combat.modular.attacks import resolve_reference_attack
 from mordheim_combat.modular.contexts import OwnedRollDice

@@ -3,7 +3,8 @@ from __future__ import annotations
 from mordheim_combat import phases
 from mordheim_combat.modular.alchemy import alchemist_addicted, resolve_alchemist
 
-from dataclasses import dataclass, replace
+from dataclasses import dataclass
+from mordheim_combat.modular._fast_replace import replace
 from mordheim_combat.modular.aftermath import _black_hunger
 from mordheim_combat.modular.aftermath import _revenant_recovery
 from mordheim_combat.modular.aftermath import _characteristic_test

@@ -1,5 +1,7 @@
 """combat: Prepared per-attack contexts shared by orchestration and verification."""
 from __future__ import annotations
+import os
+
 from mordheim_combat import phases
 
 from mordheim_combat.modular.state import FighterState, _parry_capacity
@@ -100,10 +102,34 @@ class OwnedRollDice:
             self.modifiable = previous
 
 
+#: Memoized (weapon, global_effects) merges. ``EffectSet`` is frozen and
+#: hashable, so the cache is keyed by *value*: a test or debug session that
+#: injects a modified effect set misses the cache and gets a fresh, correct
+#: merge (never key this by ``id()`` — address reuse would alias unrelated
+#: sets). Both inputs are immutable, so sharing one result object is
+#: observationally identical to merging anew. Disable with
+#: ``MORDHEIM_DISABLE_EFFECT_CACHE=1`` or :func:`clear_combined_effect_cache`
+#: when stepping through ``merge_effects`` itself.
+_COMBINED_EFFECTS: dict[tuple[EffectSet, EffectSet], EffectSet] = {}
+_EFFECT_CACHE_DISABLED = os.environ.get("MORDHEIM_DISABLE_EFFECT_CACHE") == "1"
+
+
+def clear_combined_effect_cache() -> None:
+    _COMBINED_EFFECTS.clear()
+
+
 def _combined_effect(fighter: CompiledFighter, weapon: EffectSet) -> EffectSet:
-    return weapon if any(has_tag(weapon, tag) for tag in (
-        "mechanic.body-slam", "mechanic.giggle-juice-spray-attack",
-        "mechanic.electrical-touch-attack")) else merge_effects(weapon, fighter.global_effects)
+    if any(has_tag(weapon, tag) for tag in (
+            "mechanic.body-slam", "mechanic.giggle-juice-spray-attack",
+            "mechanic.electrical-touch-attack")):
+        return weapon
+    if _EFFECT_CACHE_DISABLED:
+        return merge_effects(weapon, fighter.global_effects)
+    key = (weapon, fighter.global_effects)
+    merged = _COMBINED_EFFECTS.get(key)
+    if merged is None:
+        merged = _COMBINED_EFFECTS[key] = merge_effects(weapon, fighter.global_effects)
+    return merged
 
 
 def weapon_against_opponent(attacker: CompiledFighter, defender: CompiledFighter,

@@ -1,5 +1,5 @@
 """Equipment that remains usable after ammunition or weapon loss."""
-from dataclasses import replace
+from mordheim_combat.modular._fast_replace import replace
 
 from mordheim_combat.phases import WHIPCRACK_WEAPON_TAGS, has_tag
 from mordheim_core.effects import merge_effects

@@ -3,7 +3,8 @@ from __future__ import annotations
 from mordheim_combat import phases
 
 from dataclasses import dataclass
-from dataclasses import replace
+from mordheim_combat.modular._fast_replace import register
+from mordheim_combat.modular._fast_replace import replace
 from mordheim_combat.phases import Condition
 from mordheim_combat.phases import Phase
 from mordheim_combat.phases import has_tag
@@ -119,6 +120,12 @@ class DuelState:
         initial = (self.first_charged if self.initial_first_player_turn is None
                    else self.initial_first_player_turn)
         return initial == (self.round_index % 2 == 0)
+
+
+# The two state classes rebuilt on nearly every engine step take the compiled
+# fast-replace path (registration refuses any class with __post_init__).
+register(FighterState)
+register(DuelState)
 
 
 @dataclass(frozen=True, slots=True)

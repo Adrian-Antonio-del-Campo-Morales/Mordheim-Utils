@@ -504,6 +504,11 @@ def benchmark_command(args) -> int:
         scenarios = deep_test_scenarios(pair_set)
     requested_scenarios = tuple(dict.fromkeys(args.scenario))
     if "all" not in requested_scenarios:
+        if not (args.deep or (args.tts and pair_set is not None)):
+            # Explicit ids select from the whole frozen catalogue: naming a
+            # scenario outside the small default suite is the point.
+            from mordheim_combat_lab.cli.benchmarking import deep_test_scenarios
+            scenarios = deep_test_scenarios("full")
         available = {item.id for item in scenarios}
         unknown = [name for name in requested_scenarios if name not in available]
         scenarios = tuple(

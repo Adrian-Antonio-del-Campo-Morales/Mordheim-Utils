@@ -2,7 +2,7 @@
 from __future__ import annotations
 from mordheim_combat import phases
 
-from dataclasses import replace
+from mordheim_combat.modular._fast_replace import replace
 from types import SimpleNamespace
 from mordheim_combat.phases import _characteristic_test
 from mordheim_combat.modular.aftermath import _react_to_wound

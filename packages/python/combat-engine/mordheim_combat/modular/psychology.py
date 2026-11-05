@@ -1,5 +1,5 @@
 """Initial duel charges and source-specific Fear consequences."""
-from dataclasses import replace
+from mordheim_combat.modular._fast_replace import replace
 
 from mordheim_combat import phases
 from mordheim_combat.modular.leadership import resolve_local_leadership

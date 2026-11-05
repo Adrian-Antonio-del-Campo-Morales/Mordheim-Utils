@@ -1,5 +1,5 @@
 """Alchemist recovery under the project's once-per-own-turn timing ruling."""
-from dataclasses import replace
+from mordheim_combat.modular._fast_replace import replace
 
 from mordheim_combat.modular.contexts import OwnedRollDice
 from mordheim_combat.modular.state import require_characteristics
