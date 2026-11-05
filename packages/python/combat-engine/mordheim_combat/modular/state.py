@@ -156,6 +156,11 @@ class CombatRoundResult:
     attacks: tuple[AttackOutcome, ...]
 
 
+# Per-attack and per-round result records rebuilt by every attack step.
+register(AttackOutcome)
+register(CombatRoundResult)
+
+
 def _parry_capacity(fighter: CompiledFighter) -> int:
     effects = fighter.global_effects
     available = sum((

@@ -37,6 +37,8 @@ PHASE_ORDER = tuple(Phase)
 
 
 def has_tag(effect: EffectSet, tag: str) -> bool:
+    # A plain tuple scan: measured faster than a cached frozenset view for
+    # the engine's short tag tuples (2026-11-05, -5 % with the view).
     return tag in effect.tags
 
 

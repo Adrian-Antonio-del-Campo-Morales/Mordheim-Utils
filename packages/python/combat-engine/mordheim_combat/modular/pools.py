@@ -112,8 +112,7 @@ def pool_attack_weapons(
     hand slot the pool allocated for that position, and the remainder keeps the
     allocation it was printed with instead of a shorter pool re-deriving one.
     """
-    vomit = any(has_tag(attacker.main_weapon, tag) for tag in
-                ("weapon.vomit-attack", "effect.wraith-touch"))
+    vomit = _vomit_attacker(attacker)
     if single_bonus:
         return (attacker.main_weapon,)
     if body_slam:
@@ -124,11 +123,21 @@ def pool_attack_weapons(
     if whip is not None:
         weapons += (whip,)
     if not vomit:
-        weapons += tuple(weapon for weapon in attacker.extra_attacks
-                         if not any(has_tag(weapon, tag) for tag in
-                                    ("rule.strikes-last-bite", "rule.eagle-friend"))
-                         and (charging or not has_tag(weapon, "rule.horned-one")))
+        weapons += _pool_extra_attacks(attacker, charging)
     return weapons
+
+
+def _vomit_attacker(attacker: CompiledFighter) -> bool:
+    return any(has_tag(attacker.main_weapon, tag) for tag in
+               ("weapon.vomit-attack", "effect.wraith-touch"))
+
+
+def _pool_extra_attacks(attacker: CompiledFighter, charging: bool) -> tuple[EffectSet, ...]:
+    """The bearer's independent extra attacks the ordinary pool resolves."""
+    return tuple(weapon for weapon in attacker.extra_attacks
+                 if not any(has_tag(weapon, tag) for tag in
+                            ("rule.strikes-last-bite", "rule.eagle-friend"))
+                 and (charging or not has_tag(weapon, "rule.horned-one")))
 
 
 def _prepared_hit(prepared: AttackOutcome):

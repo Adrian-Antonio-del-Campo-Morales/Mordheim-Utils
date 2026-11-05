@@ -21,6 +21,7 @@ from mordheim_combat.modular.state import AttackOutcome
 from mordheim_combat.modular.state import CombatRoundResult
 from mordheim_combat.modular.state import DuelState
 from mordheim_combat.modular.equipment import equipment_for_state, is_pistol, whipcrack_weapon
+from mordheim_combat.modular.mutations import fighter_for_mutations
 from mordheim_combat.phases import AttackPoolContext
 from mordheim_combat.phases import Condition
 from mordheim_combat.phases import Phase
@@ -31,6 +32,9 @@ from mordheim_combat.phases import has_tag
 from mordheim_combat.phases import resolve_priority
 from mordheim_core.dice import AlwaysAccept
 from mordheim_core.dice import DecisionPolicy
+
+#: Stateless default decision policy, shared instead of allocated per round.
+_ALWAYS_ACCEPT = AlwaysAccept()
 from mordheim_core.dice import DiceSource
 from mordheim_core.dice import RollRequest
 from mordheim_core.models import CompiledFighter
@@ -174,7 +178,6 @@ def select_shadow_dance(fighter, current, decisions, *, key):
 
 
 def _mutated_phase_fighter(base, current, before, after, *, first_round):
-    from .mutations import fighter_for_mutations
     previous = equipment_for_state(fighter_for_mutations(base, before), before, first_round=first_round)
     updated = equipment_for_state(fighter_for_mutations(base, after), after, first_round=first_round)
     # Preserve only already-declared local phase effects around the permanent
@@ -263,7 +266,7 @@ def resolve_round(
     dice: DiceSource, decisions: DecisionPolicy | None = None,
 ) -> CombatRoundResult:
     """Resolve one complete scalar round through the fixed phase pipeline."""
-    decisions = decisions or AlwaysAccept()
+    decisions = decisions or _ALWAYS_ACCEPT
     # Massively Built's supplied failed check costs the target its whole next
     # turn, so no optional action of that turn is available either: the printed
     # outcome is not limited to the attack pool.  Read that pending fact once,
@@ -287,7 +290,6 @@ def resolve_round(
             return _without_combat(first, second, state, dice, decisions, advance=True)
     compiled_first,compiled_second=first,second
     if state.first.mutations or state.second.mutations:
-        from .mutations import fighter_for_mutations
         first=fighter_for_mutations(first,state.first)
         second=fighter_for_mutations(second,state.second)
     for label, fighter in (('first', first), ('second', second)):

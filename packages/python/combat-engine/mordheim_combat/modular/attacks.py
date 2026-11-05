@@ -134,9 +134,19 @@ def _resolve_reference_attack_once(attacker, defender, attacker_state, defender_
         close_combat=options.get("melee_attack", True))
     result = _resolve_reference_attack_body(attacker, defender, attacker_state, defender_state,
         weapon, dice, attacker_dice=own, defender_dice=enemy, self_attack=self_hit, **options)
-    return replace(result,
-        attacker=replace(result.attacker, resources_spent=result.attacker.resources_spent | own.state.resources_spent),
-        defender=replace(result.defender, resources_spent=result.defender.resources_spent | enemy.state.resources_spent))
+    # Fold the resources the owned dice spent into the resulting states. When
+    # the owned set is already contained in the result's set the union is the
+    # identity, so the (full-state) rebuild is skipped: identical outcome.
+    changes = {}
+    if not own.state.resources_spent <= result.attacker.resources_spent:
+        changes["attacker"] = replace(
+            result.attacker,
+            resources_spent=result.attacker.resources_spent | own.state.resources_spent)
+    if not enemy.state.resources_spent <= result.defender.resources_spent:
+        changes["defender"] = replace(
+            result.defender,
+            resources_spent=result.defender.resources_spent | enemy.state.resources_spent)
+    return replace(result, **changes) if changes else result
 
 
 def _resolve_reference_attack_body(
