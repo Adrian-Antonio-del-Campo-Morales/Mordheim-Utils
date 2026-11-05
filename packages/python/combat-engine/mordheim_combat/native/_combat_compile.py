@@ -124,6 +124,10 @@ def compile_source(attacker: CompiledFighter, defender: CompiledFighter,
     weapon_c, effect, unarmed_adjustment = _compiled_attack_effect(
         attacker, defender, weapon,
     )
+    # Native consumes the folded effect directly, without armour_context.
+    if unarmed_adjustment:
+        effect = replace(effect, target_armour_bonus=(
+            effect.target_armour_bonus - weapon_c.target_armour_bonus))
     g = attacker.global_effects
     dg = defender.global_effects
     poison_blocked = dg.poison_immunity or has(dg, "poison_immune")

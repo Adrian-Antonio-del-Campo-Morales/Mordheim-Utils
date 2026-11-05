@@ -58,6 +58,28 @@ def test_unarmed_fighting_and_eshin_mastery_have_their_exact_attack_bonuses(vect
         assert attack_count(claws, charging)[0] == claws.characteristics.attacks + 2
 
 
+@pytest.mark.parametrize("waived", [False, True])
+@pytest.mark.parametrize("fist_bonus", [0, 1])
+def test_fist_armour_penalty_is_waived_only_once(vector_case, waived, fist_bonus):
+    from dataclasses import replace
+    from mordheim_combat.vectorized._attacks import _compiled_attack_effect
+    from mordheim_combat.vectorized._operators import armour_context
+
+    case = vector_case("test_shared_families/test_unarmed_fighting_and_eshin_mastery_have_their_exact_attack_bonuses-0-0")
+    fist = EffectSet(tags=("weapon.fist",), target_armour_bonus=fist_bonus)
+    attacker = replace(case.first, main_weapon=fist, global_effects=EffectSet(
+        tags=("rule.unarmed-without-penalties",) if waived else (),
+        target_armour_bonus=1))
+    defender = case.second
+    weapon, effect, _ = _compiled_attack_effect(attacker, defender, fist)
+    context = armour_context(
+        attacker, defender, _new_state(attacker, 1, FixedRng()),
+        _new_state(defender, 1, FixedRng()), weapon, effect, np.array([0]),
+        first_round=True, charging=np.array([False]))
+    # Preserve independent global bonuses; remove only the fist's own bonus.
+    assert context.target_armour_bonus == 1 + (0 if waived else fist_bonus)
+
+
 def test_art_of_silent_death_criticals_are_always_resolved_on_to_wound():
     natural = EffectSet(tags=("weapon.natural-attacks",))
     fist = EffectSet(tags=("weapon.fist",))

@@ -208,8 +208,8 @@ def _compiled_attack_effect(
             injury_modifier=effect.injury_modifier - 1,
         )
     unarmed_adjustment = ignores_unarmed_penalties(effect) and has(weapon,"weapon.fist")
-    if unarmed_adjustment:
-        effect = merge_effects(effect, EffectSet(target_armour_bonus=-1))
+    # armour_context removes the fist's armour bonus when penalties are waived.
+    # Keep the combined effect intact so that adjustment happens only once.
     return weapon, effect, unarmed_adjustment
 
 def _prepare_weapon_attack(attacker: CompiledFighter, defender: CompiledFighter, weapon: EffectSet,

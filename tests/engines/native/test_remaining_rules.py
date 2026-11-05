@@ -201,7 +201,10 @@ def test_the_wheelo_collision_lands_before_any_weapon_blow():
     plain_dice = _Dice()
     native.simulate_batch_observed(first, second, 1, plain_dice, 1, _Policy(),
                                    context=charging)
-    assert len(dice.log) == len(plain_dice.log) + 1
+    # A charge rolls D3 for the impact count, then wounds with that impact
+    # before the weapon blows. The default dice give one impact that fails
+    # to wound: one count roll and one wound roll beyond the plain duel.
+    assert len(dice.log) == len(plain_dice.log) + 2
 
 
 def test_the_slayer_deathblow_is_offered_once_he_is_taken_out():

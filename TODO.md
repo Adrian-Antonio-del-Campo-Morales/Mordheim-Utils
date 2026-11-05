@@ -98,23 +98,17 @@ Remaining certification work:
 - **Verify the Native E2E changes.** Run the native runtime and deterministic
   replay selections (`tests/engines/native/`) on the changed engine; the
   attack-event gating, pool allocation and Rapier Barrage changes touch the
-  replay paths. Push preparation on 2026-11-05 rebuilt these local changes over
-  `4d186f54` with `.venv/bin/python setup.py build_ext --inplace` and ran
-  `.venv/bin/python -u -m pytest tests/engines/native/test_attack_mechanics.py
-  tests/engines/native/test_stateful_rules.py
-  tests/engines/native/runtime/test_duel_replay_native.py -n 2 --dist=load -q
-  --durations=10 --tb=short`: 29 passed. The build emitted GCC warnings;
-  this focused selection does not certify the full runtime or parity suite.
+  replay paths.
 - **Refresh the Native store.** Re-sample `native-e2e-100k` from a clean commit
   containing those changes and compare it with the oracle; the committed store
   still holds the earlier candidate.
 - **Requalify the 43 precompiled scenarios.** Native changed after its last
   43/43 campaign; re-sample `--level long` and compare with `modular-100k`.
-- **Fix NumPy's divergence.** `profile.fist` for the Battle Monks of Cathay
-  Raging Peasants (`the-fist-does-not-grant-the-enemy-the-dagger-save-bonus`):
-  NumPy returns identical counts for this case and its sibling with different
-  inputs, so it ignores the input that distinguishes them. Fix it in NumPy, then
-  re-sample that case.
+- **Refresh NumPy's stored fist sample.** After committing the fix, re-sample
+  `profile.fist` for the Battle Monks of Cathay Raging Peasants
+  (`the-fist-does-not-grant-the-enemy-the-dagger-save-bonus`) from a clean
+  checkout, compare it with the stored Modular oracle and update
+  `numpy-e2e-100k`.
 - **Settle oracle provenance.** The stored Modular samples carry a source
   digest that matches no commit, and two Modular commits followed them. Confirm
   which inputs those commits can affect, or regenerate the affected oracle
