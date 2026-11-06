@@ -71,3 +71,26 @@ def test_scenario_catalogue_loads_without_the_checkout_root_on_sys_path(tmp_path
     assert completed.returncode == 0, completed.stderr
     count, key = completed.stdout.split()
     assert int(count) >= 43 and key == "scenario/basic"
+
+
+def test_each_scenario_set_selects_the_same_scenarios_in_every_mode():
+    from mordheim_combat_lab.cli.commands import select_benchmark_scenarios
+    from mordheim_combat_lab.cli.scenarios import scenarios_for_level
+
+    for level in ("small", "normal", "long"):
+        expected = [item.id for item in scenarios_for_level(level)]
+        for deep in (False, True):
+            selected = select_benchmark_scenarios(level, None, deep=deep)
+            assert [item.id for item in selected] == expected
+    # ``long`` is also a scenario id: on its own it is that one scenario.
+    assert [item.id for item in select_benchmark_scenarios(None, ["long"])] == ["long"]
+
+
+def test_scenario_rejects_set_names_and_points_to_the_set_option(capsys):
+    import pytest
+    from mordheim_combat_lab.cli.commands import build_parser
+
+    for name in ("all", "small", "normal"):
+        with pytest.raises(SystemExit):
+            build_parser().parse_args(["benchmark", "--scenario", name])
+        assert "--pair-set small|normal|long" in capsys.readouterr().err

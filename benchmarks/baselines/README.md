@@ -9,6 +9,7 @@ Compare a current run against a stored baseline with the same design:
 
 ```powershell
 python tools/mordheim-utils.py performance benchmark --backend modular -n 2000 --repeats 3 --warmups 1 --seed 2026 --baseline benchmarks/baselines/modular-2026-11-05.json --require-improvement --output outputs/benchmarks/modular-after.md
+python tools/mordheim-utils.py performance benchmark --backend numpy --pair-set long -n 200000 --batch-size 100000 --repeats 3 --warmups 1 --seed 2026 --baseline benchmarks/baselines/numpy-long-2026-11-06.json --require-improvement --output outputs/benchmarks/numpy-after.md
 ```
 
 A baseline measured on another machine or engine revision still compares,

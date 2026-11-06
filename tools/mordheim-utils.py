@@ -881,17 +881,19 @@ def performance_command(args: list[str]) -> int:
                 "python tools/mordheim-utils.py performance benchmark [options]",
                 "Measure engine speed. Select a workload, engine and sample size;\nresults describe performance, not rule correctness or engine equivalence.",
                 "python -m mordheim_combat_lab benchmark",
-                "--scenario ID...   scenarios to measure (default: all basic scenarios)\n"
+                "--pair-set SET    scenario set: small (default), normal or long (all 43)\n"
+                "--scenario ID...   scenario ids, narrowing --pair-set when given\n"
                 "--backend ENGINE   modular, numpy or native; accepts several engines\n"
                 "--simulations N    duels per scenario (default 100: a smoke size)\n"
                 "--processes 8      multicore measurement\n"
                 "--warmups N        untimed warm-ups\n--repeats N        timed repetitions\n"
                 "--profile          cProfile the timed repeats; prints hotspots, saves .pstats\n"
-                "--deep            size/batch sweep\n--pair-set SET    small, normal or long for deep/tts\n"
+                "--deep            size/batch sweep (defaults to --pair-set long)\n"
                 "--json            structured output\n--output PATH     save results\n"
                 "--help-full       all options, scenario names, defaults and units",
                 examples=(
                     "performance benchmark --scenario basic --backend numpy --simulations 100k --processes 8 --repeats 3",
+                    "performance benchmark --pair-set long --backend numpy --simulations 100k --repeats 3",
                     "performance benchmark --backend modular --scenario basic stateful -n 2000 --profile",
                     "performance benchmark --deep --pair-set small --backend numpy --processes 8",
                 ), notes=("The default -n 100 is a smoke measurement; pass real sizes for stable numbers.",),

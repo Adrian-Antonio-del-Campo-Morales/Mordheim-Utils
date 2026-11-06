@@ -1,5 +1,5 @@
 """Development and application commands; heavy imports stay local."""
-from argparse import ArgumentParser
+from argparse import ArgumentParser, ArgumentTypeError
 from dataclasses import asdict
 from pathlib import Path
 import json
@@ -30,6 +30,19 @@ def _warmups(value: str) -> int:
     if not 0 <= parsed <= 100:
         raise ValueError("warm-ups must be between 0 and 100")
     return parsed
+
+
+def _scenario_id(value: str) -> str:
+    """One ``--scenario`` id; a scenario set is chosen with ``--pair-set``.
+
+    ``long`` is not rejected: it is also the id of the 75-round stalemate
+    scenario, which this option has always selected on its own.
+    """
+    if value in ("all", "small", "normal"):
+        raise ArgumentTypeError(
+            f"{value!r} is not a scenario id; select a scenario set with "
+            "--pair-set small|normal|long")
+    return value
 
 
 #: Default grids for ``benchmark --deep``: the generic ``--simulation-sizes``
@@ -423,10 +436,31 @@ def _tts_benchmark_command(args, scenarios, pair_set) -> int:
     return 1 if failed else 0
 
 
+def select_benchmark_scenarios(pair_set, scenario_ids, *, deep: bool = False):
+    """Return the benchmark's scenarios, or an error message.
+
+    A set name (``small``, ``normal``, ``long``) selects the same scenarios in
+    every benchmark mode.  Without one, the run measures ``small``, or ``long``
+    under ``--deep``.  Explicit ``scenario_ids`` narrow the named set, or the
+    whole catalogue when no set is named; they keep the catalogue's order.
+    """
+    from mordheim_combat_lab.cli.scenarios import deep_test_scenarios
+
+    requested = tuple(dict.fromkeys(scenario_ids or ()))
+    if not requested:
+        return deep_test_scenarios(pair_set or ("long" if deep else "small"))
+    scope = deep_test_scenarios(pair_set or "long")
+    available = {item.id for item in scope}
+    unknown = [name for name in requested if name not in available]
+    if unknown:
+        names = ", ".join(repr(name) for name in unknown)
+        return f"scenario(s) {names} not in the {pair_set or 'long'} set"
+    return tuple(item for item in scope if item.id in requested)
+
+
 def benchmark_command(args) -> int:
     from mordheim_combat_lab.cli.benchmarking import BenchmarkProgress
     from mordheim_combat_lab.cli.benchmarking import benchmark_payload
-    from mordheim_combat_lab.cli.benchmarking import benchmark_scenarios
     from mordheim_combat_lab.cli.benchmarking import compile_benchmark_fighters
     from mordheim_combat_lab.cli.benchmarking import gate_against_baseline
     from mordheim_combat_lab.cli.benchmarking import load_benchmark_payload
@@ -446,13 +480,6 @@ def benchmark_command(args) -> int:
               "--baseline/--save-baseline/--require-improvement", file=sys.stderr)
         return 2
     pair_set = getattr(args, "pair_set", None)
-    if (pair_set is not None and pair_set != "long"
-            and not (args.deep or args.tts)):
-        print(
-            "Benchmark configuration error: --pair-set applies to --deep and "
-            "--tts workloads",
-            file=sys.stderr)
-        return 2
     sweep = args.simulation_sizes is not None or args.batch_sizes is not None
     if sweep and not args.deep and (args.baseline or args.save_baseline or args.require_improvement):
         print("Benchmark configuration error: --baseline/--save-baseline and "
@@ -495,36 +522,11 @@ def benchmark_command(args) -> int:
                   file=sys.stderr)
             return 2
 
-    scenarios = benchmark_scenarios()
-    if args.deep:
-        from mordheim_combat_lab.cli.benchmarking import deep_test_scenarios
-        scenarios = deep_test_scenarios(pair_set or "long")
-    if args.tts and pair_set is not None:
-        from mordheim_combat_lab.cli.benchmarking import deep_test_scenarios
-        scenarios = deep_test_scenarios(pair_set)
-    requested_scenarios = tuple(dict.fromkeys(args.scenario))
-    if "all" not in requested_scenarios:
-        if not (args.deep or (args.tts and pair_set is not None)):
-            # Explicit ids select from the whole frozen catalogue: naming a
-            # scenario outside the small default suite is the point.
-            from mordheim_combat_lab.cli.benchmarking import deep_test_scenarios
-            scenarios = deep_test_scenarios("long")
-        available = {item.id for item in scenarios}
-        unknown = [name for name in requested_scenarios if name not in available]
-        scenarios = tuple(
-            item for item in scenarios if item.id in requested_scenarios)
-        if unknown or not scenarios:
-            scope = (
-                f"the {pair_set} deep catalogue level"
-                if args.deep or (args.tts and pair_set is not None)
-                else "the standard benchmark suite")
-            names = ", ".join(repr(name) for name in (unknown or requested_scenarios))
-            print(
-                f"Benchmark configuration error: scenario(s) {names} not "
-                f"available in {scope}",
-                file=sys.stderr,
-            )
-            return 2
+    scenarios = select_benchmark_scenarios(
+        pair_set, args.scenario, deep=args.deep)
+    if isinstance(scenarios, str):
+        print(f"Benchmark configuration error: {scenarios}", file=sys.stderr)
+        return 2
     if args.tts:
         return _tts_benchmark_command(args, scenarios, pair_set)
     from time import perf_counter
@@ -1900,11 +1902,18 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
         help="engines to measure (one or more); defaults to modular, vectorized and native",
     )
     run_options.add_argument(
-        "--scenario", nargs="+",
-        choices=("all", *deep_scenario_ids),
-        default=("all",), metavar="ID",
-        help="scenario/pair ids to measure (one or more); defaults to the small "
-             "standard scenarios, or all selected pairs in --deep",
+        "--pair-set", choices=("small", "normal", "long"), default=None, metavar="SET",
+        help="scenario set to measure, the same scenarios in every mode: small "
+             "is the 8-scenario performance survey; normal is the 30-scenario "
+             "coverage-oriented set; long is all 43 scenarios (default: small, "
+             "or long with --deep)",
+    )
+    run_options.add_argument(
+        "--scenario", nargs="+", type=_scenario_id,
+        choices=deep_scenario_ids, default=None, metavar="ID",
+        help="scenario ids to measure (one or more), narrowing --pair-set when "
+             "one is given; 'long' here is the single 75-round scenario, while "
+             "--pair-set long selects all 43",
     )
     run_options.add_argument(
         "--warmups", type=_warmups, default=1, metavar="N",
@@ -1925,13 +1934,6 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
         "--deep", action="store_true",
         help="deep profile: sweep the optimized engines over large sizes and batch "
              "sizes while measuring the modular oracle only at a small reference size",
-    )
-    deep_options.add_argument(
-        "--pair-set", choices=("small", "normal", "long"), default=None, metavar="SET",
-        help="catalogue level for --deep and --tts workloads: small is the "
-             "8-scenario performance survey; normal is the 30-scenario "
-             "coverage-oriented set for a roughly 10-15 minute pooled profile; "
-             "long is the 43-scenario matrix (deep sweeps default to long)",
     )
     deep_options.add_argument(
         "--deep-modular-simulations", type=_positive, default=10_000, metavar="DUELS",

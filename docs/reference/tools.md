@@ -360,7 +360,12 @@ machine, engine digests, native build and source revision; one applied on
 another machine or engine prints a provenance warning and is still used.
 
 The benchmark's default `-n 100` is a smoke size: pass real simulation counts
-(and several `--scenario` ids when useful) for measurements. The sequential
+for measurements. `--pair-set small|normal|long` selects a scenario set and
+means the same scenarios in every mode (8, 30 and 43); without it a run
+measures `small`, or `long` under `--deep`. `--scenario` takes scenario ids
+and narrows the set when one is named. `long` is also the id of the 75-round
+stalemate scenario, so `--scenario long` is that one scenario while
+`--pair-set long` is all 43. The sequential
 wall-time summary separates timed engine samples, warm-up executions and
 genuine setup overhead (interpreter start and catalogue load).
 
