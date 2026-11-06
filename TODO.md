@@ -65,6 +65,21 @@ exonerates a deviation they share — only the modular oracle does.
 
 Use the [verification reference](docs/reference/verification.md) for campaign procedures.
 
+## Condition of the survivor of a decided duel (NumPy)
+
+The statistical campaign compares the `winner` magnitude only, so the
+condition each duel ends on is uncertified. Measured on `scenario/stateful`,
+20,000 duels, the winner of a decided duel is not Standing in 1.56 % of them
+for Modular and 1.98 % for NumPy. The NumPy engine used to report 0.01 %
+because it kept recovering a duelist whose opponent was already out of
+action; gating that recovery on `unresolved` removed the bulk of the
+difference and left this remainder.
+
+Decide whether the remaining gap is a real ordering difference inside the
+round that decides the duel, and whether the comparison should cover the
+terminal condition as its own magnitude. A `winner` campaign passing 43/43
+does not close this.
+
 ## Knowledge gaps
 
 | Follow-up | Completion condition |

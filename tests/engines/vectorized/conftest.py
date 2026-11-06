@@ -35,6 +35,17 @@ def vector_case():
 
 
 @pytest.fixture(scope="session")
+def cases():
+    """The precompiled cases, keyed by ``case_key``.
+
+    The same accessor the modular, shared and parity suites expose, for the
+    checks that address a maintained ``scenario/<name>`` pair rather than
+    their own frozen ``unit/vectorized/...`` case.
+    """
+    return load_cases(CORPUS)
+
+
+@pytest.fixture(scope="session")
 def compiled_builds() -> BuildSnapshots:
     """The frozen ``compile_fighter`` results, loaded once for the session."""
     return load_builds(BUILDS)

@@ -11,6 +11,7 @@ from mordheim_combat.vectorized._types import CombatState, KNOCKED_DOWN, OUT, PA
 from mordheim_combat.vectorized._operators import _characteristic_test, allocate_attack_weapons, attack_count, effective_initiative, opposed_attack_count, priority, round_weapon_attack_count
 from mordheim_combat.vectorized._attacks import _optional_phase_plan, _prepare_weapon_attack, _resolve_weapon, _resolve_weapon_once, resolve_attacks
 from mordheim_combat.vectorized._alchemy import alchemy_resources, resolve_alchemist
+from mordheim_combat.vectorized._compaction import RowCompactor
 from mordheim_combat.vectorized._equipment import equipment_for_rows, phase_equipment, staff_power
 from mordheim_combat.vectorized._leadership import apply_command_conditions, apply_death_fighting, expire_raise_our_insignia, leadership_resources, patch_death_fighting, resolve_local_leadership, sea_shanty_losses
 from mordheim_combat.vectorized._psychology import psychology_resources, resolve_fear, resolve_feral_instinct, resolve_lunatics, resolve_mark_of_shornaal, resolve_mesmerising_dance, resolve_stupidity
@@ -1601,6 +1602,37 @@ def _resource_observation(state: CombatState) -> tuple[tuple[str, np.ndarray], .
         ("giggle-juice", state.giggle_juice_used.copy()),
     )
 
+
+def _tie_break(ties: np.ndarray, rng: np.random.Generator) -> np.ndarray:
+    """One coin flip per tied row; a row that is not tied draws nothing.
+
+    Sizing the draw by the tied rows is what makes the round loop independent
+    of the rows a batch still carries: a decided duel is never tied (it is
+    masked out of every tie above), so dropping it cannot move the stream.
+    """
+    won = np.zeros(ties.shape, dtype=bool)
+    count = int(np.count_nonzero(ties))
+    if count:
+        won[ties] = rng.random(count) < .5
+    return won
+
+
+def _record_outcomes(compactor: RowCompactor, state1: CombatState,
+                     state2: CombatState, rounds: np.ndarray | None,
+                     observe: bool) -> None:
+    """Save the outcome of the rows the batch is about to drop."""
+    compactor.record("condition1", state1.condition)
+    compactor.record("condition2", state2.condition)
+    if not observe:
+        return
+    compactor.record("wounds1", state1.wounds)
+    compactor.record("wounds2", state2.wounds)
+    if rounds is not None:
+        compactor.record("rounds", rounds)
+    for side, state in (("1", state1), ("2", state2)):
+        for key, values in _resource_observation(state):
+            compactor.record(f"resource{side}.{key}", values)
+
 def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count: int,
                          rng: np.random.Generator, maximum_rounds: int,
                          decisions: DecisionPolicy | None = None,
@@ -1668,10 +1700,24 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
     # ``first_round_index`` lets single-round semantic replay start at a later
     # round, exactly as the modular ``resolve_round`` accepts a ``DuelState``
     # with a nonzero ``round_index``; production batches keep the default 0.
+    # Decided duels are dropped at a round boundary once they are the
+    # majority of the batch.  Single-round semantic replay keeps every row,
+    # because its observation records address rows by index.
+    compactor = RowCompactor(
+        count, enabled=observations is None and first_round_index == 0)
     for round_index in range(first_round_index, maximum_rounds):
         unresolved = (state1.condition != OUT) & (state2.condition != OUT) & engaged
         if not unresolved.any():
             break
+        if compactor.should_compact(unresolved):
+            _record_outcomes(compactor, state1, state2, rounds, observe)
+            (unresolved, engaged, first_charges, second_charges,
+             initial_first_turn, charm_auto_hit, rounds) = compactor.compact(
+                unresolved,
+                [unresolved, engaged, first_charges, second_charges,
+                 initial_first_turn, charm_auto_hit, rounds,
+                 state1, state2, leadership, psychology, alchemy, ledger])[:7]
+            count = compactor.width
         state1.hit_this_phase[:] = False
         state2.hit_this_phase[:] = False
         if round_index:
@@ -1740,22 +1786,25 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
         # round, never behind a whole-pool vomit/wraith replacement.
         # Cutting free drops the fighter to Knocked Down before own-turn
         # recovery stands it; ``freed`` still gates the Djinn declaration.
-        netted1 = (state1.netted & first_player_turn
+        # Every recovery below is gated on ``unresolved``: once a duel is
+        # decided the oracle stops resolving it, so its survivor must keep the
+        # condition it ended on instead of standing up in later rounds.
+        netted1 = (unresolved & state1.netted & first_player_turn
                    & np.isin(state1.condition, (STANDING, KNOCKED_DOWN)))
-        netted2 = (state2.netted & ~first_player_turn
+        netted2 = (unresolved & state2.netted & ~first_player_turn
                    & np.isin(state2.condition, (STANDING, KNOCKED_DOWN)))
         state1.netted[netted1] = False
         state2.netted[netted2] = False
         state1.condition[netted1] = KNOCKED_DOWN
         state2.condition[netted2] = KNOCKED_DOWN
-        stunned1 = (state1.condition == STUNNED) & first_player_turn
-        stunned2 = (state2.condition == STUNNED) & ~first_player_turn
-        stood1 = (state1.condition == KNOCKED_DOWN) & first_player_turn
-        stood2 = (state2.condition == KNOCKED_DOWN) & ~first_player_turn
+        stunned1 = unresolved & (state1.condition == STUNNED) & first_player_turn
+        stunned2 = unresolved & (state2.condition == STUNNED) & ~first_player_turn
+        stood1 = unresolved & (state1.condition == KNOCKED_DOWN) & first_player_turn
+        stood2 = unresolved & (state2.condition == KNOCKED_DOWN) & ~first_player_turn
         state1.condition[stunned1] = KNOCKED_DOWN; state2.condition[stunned2] = KNOCKED_DOWN
         state1.condition[stood1 & ~stunned1] = STANDING; state2.condition[stood2 & ~stunned2] = STANDING
-        paralyzed1 = (state1.condition == PARALYZED) & first_player_turn
-        paralyzed2 = (state2.condition == PARALYZED) & ~first_player_turn
+        paralyzed1 = unresolved & (state1.condition == PARALYZED) & first_player_turn
+        paralyzed2 = unresolved & (state2.condition == PARALYZED) & ~first_player_turn
         paralyzed_rows1=np.flatnonzero(paralyzed1)
         paralyzed_rows2=np.flatnonzero(paralyzed2)
         if paralyzed_rows1.size:
@@ -1787,7 +1836,10 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
                 (state2, state1, second, first)):
             # The printed escape test repeats at the start of every close-combat
             # phase, not only on one player's turn.
-            held = engaged & holder_state.grappling & victim_state.grappled
+            # ``unresolved`` rather than ``engaged``: a hold whose victim is
+            # already out of action belongs to a finished duel, which no
+            # longer tests its escape.
+            held = unresolved & holder_state.grappling & victim_state.grappled
             if not held.any():
                 continue
             held_rows = np.flatnonzero(held)
@@ -2588,7 +2640,9 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
                                  charged2[group], stood2[group])
             i1[group] = effective_initiative(a_f, state1)[group]
             i2[group] = effective_initiative(d_f, state2)[group]
-        first_acts=(p1>p2)|((p1==p2)&(i1>i2));ties=(p1==p2)&(i1==i2)
+        # A decided duel has priority and Initiative 0 on both sides, so it
+        # would read as a tie; ``unresolved`` keeps it out of the draw.
+        first_acts=(p1>p2)|((p1==p2)&(i1>i2));ties=unresolved&(p1==p2)&(i1==i2)
         first_acts[ties]=rng.random(int(ties.sum()))<.5
         # Acting order per row: the fighter that won priority acts first, then
         # the opponent replies; whipcrack events keep their own Strike First
@@ -2643,9 +2697,9 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
         whip1_ties = whip1_rows & (whip1_scores == raw2)
         whip2_ties = whip2_rows & (whip2_scores == raw1)
         if whip1_ties.any():
-            whip1_scores = whip1_scores + (whip1_ties & (rng.random(count) < .5))
+            whip1_scores = whip1_scores + _tie_break(whip1_ties, rng)
         if whip2_ties.any():
-            whip2_scores = whip2_scores + (whip2_ties & (rng.random(count) < .5))
+            whip2_scores = whip2_scores + _tie_break(whip2_ties, rng)
         event_scores = np.stack((
             p1.astype(np.int32) * 100 + i1 + (priority_tie & first_acts),
             p2.astype(np.int32) * 100 + i2 + (priority_tie & ~first_acts),
@@ -2937,21 +2991,31 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             _black_hunger_backlash(second,state2,np.flatnonzero(hunger2),rng,observations)
         state1.weapon_skill[combat_charge_rows[0]] -= 1
         state2.weapon_skill[combat_charge_rows[1]] -= 1
-    a=int(np.count_nonzero((state2.condition==OUT)&(state1.condition!=OUT)))
-    b=int(np.count_nonzero((state1.condition==OUT)&(state2.condition!=OUT)))
+    # The rows still present hold their own outcome; the dropped ones hold
+    # theirs in the compactor's buffers.  Both are reported at sample width.
+    condition1 = compactor.full("condition1", state1.condition)
+    condition2 = compactor.full("condition2", state2.condition)
+    count = compactor.full_count
+    a=int(np.count_nonzero((condition2==OUT)&(condition1!=OUT)))
+    b=int(np.count_nonzero((condition1==OUT)&(condition2!=OUT)))
     if observe:
         winner = np.zeros(count, dtype=np.int8)
-        winner[(state2.condition == OUT) & (state1.condition != OUT)] = 1
-        winner[(state1.condition == OUT) & (state2.condition != OUT)] = -1
+        winner[(condition2 == OUT) & (condition1 != OUT)] = 1
+        winner[(condition1 == OUT) & (condition2 != OUT)] = -1
         return VectorBatchObservation(
             winner=winner,
-            rounds=rounds if rounds is not None else np.zeros(count, dtype=np.int64),
-            first_wounds=state1.wounds.copy(),
-            second_wounds=state2.wounds.copy(),
-            first_condition=state1.condition.copy(),
-            second_condition=state2.condition.copy(),
-            first_resources=_resource_observation(state1),
-            second_resources=_resource_observation(state2),
+            rounds=(compactor.full("rounds", rounds).copy() if rounds is not None
+                    else np.zeros(count, dtype=np.int64)),
+            first_wounds=compactor.full("wounds1", state1.wounds).copy(),
+            second_wounds=compactor.full("wounds2", state2.wounds).copy(),
+            first_condition=condition1.copy(),
+            second_condition=condition2.copy(),
+            first_resources=tuple(
+                (key, compactor.full(f"resource1.{key}", values).copy())
+                for key, values in _resource_observation(state1)),
+            second_resources=tuple(
+                (key, compactor.full(f"resource2.{key}", values).copy())
+                for key, values in _resource_observation(state2)),
         )
     return a,b,count-a-b
 
