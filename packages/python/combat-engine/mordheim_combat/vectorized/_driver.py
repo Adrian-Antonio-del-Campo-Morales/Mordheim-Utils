@@ -7,10 +7,6 @@ from dataclasses import dataclass, replace
 from mordheim_core.context import prepare_duel_context
 from mordheim_core.dice import DecisionPolicy
 from mordheim_core.models import CompiledFighter, DuelContext, DuelRequest, DuelResult, EffectSet, SimulationCancelled
-# The Wound ceiling is the validated modular contract, never a second formula:
-# ``vectorized/_state.py`` seeds ``CombatState.wounds`` from this very function,
-# so the per-round clamp below has to spend the same one.
-from mordheim_combat.modular.state import maximum_wounds
 from mordheim_combat.vectorized._types import CombatState, KNOCKED_DOWN, OUT, PARALYZED, STANDING, STUNNED, VectorAttackObservation, VectorBatchObservation, _parry_capacity, has
 from mordheim_combat.vectorized._operators import _characteristic_test, allocate_attack_weapons, attack_count, effective_initiative, opposed_attack_count, priority, round_weapon_attack_count
 from mordheim_combat.vectorized._attacks import _optional_phase_plan, _prepare_weapon_attack, _resolve_weapon, _resolve_weapon_once, resolve_attacks
@@ -19,7 +15,8 @@ from mordheim_combat.vectorized._equipment import equipment_for_rows, phase_equi
 from mordheim_combat.vectorized._leadership import apply_command_conditions, apply_death_fighting, expire_raise_our_insignia, leadership_resources, patch_death_fighting, resolve_local_leadership, sea_shanty_losses
 from mordheim_combat.vectorized._psychology import psychology_resources, resolve_fear, resolve_feral_instinct, resolve_lunatics, resolve_mark_of_shornaal, resolve_mesmerising_dance, resolve_stupidity
 from mordheim_combat.vectorized._recovery import revenant_recovery
-from mordheim_combat.vectorized._state import charge_allowed, initialize_fighter, refresh_random_characteristics, require_characteristics, validate_duel_start
+from mordheim_combat.vectorized._row_equipment import RowEquipment, clamp_maximum_wounds, equipment_groups
+from mordheim_combat.vectorized._state import any_true_objects, charge_allowed, initialize_fighter, refresh_random_characteristics, require_characteristics, validate_duel_start
 from mordheim_combat import phases
 from mordheim_combat.phases import unarmed_attack_cap_applies
 
@@ -121,8 +118,8 @@ def _diverging_rows(state: CombatState) -> np.ndarray:
             | state.transformed
             | state.equipment_cast_off
             | state.hillman_wolf
-            | state.mutations.astype(bool)
-            | state.effective_fighter.astype(bool))
+            | any_true_objects(state.mutations)
+            | any_true_objects(state.effective_fighter))
 
 
 def _carry_declarations(projected: CompiledFighter, phase: CompiledFighter,
@@ -179,10 +176,10 @@ def _carry_declarations(projected: CompiledFighter, phase: CompiledFighter,
     return replace(projected, global_effects=effect)
 
 
-def _row_equipment(fighter, replacement, state: CombatState, count: int, *,
+def _row_equipment(fighter, replacement, state: CombatState, *,
                    first_round: bool,
                    phase_fighter: CompiledFighter | None = None,
-                   ) -> dict[int, CompiledFighter]:
+                   ) -> RowEquipment:
     """Project one fighter's equipment per simulation row.
 
     ``fighter`` is the pristine compiled fighter ``equipment_for_rows``
@@ -210,10 +207,10 @@ def _row_equipment(fighter, replacement, state: CombatState, count: int, *,
     fresh-Inquisitor-brand re-projection below already does.
     """
     if replacement is not (fighter if phase_fighter is None else phase_fighter):
-        return {row: replacement for row in range(count)}
+        return RowEquipment(replacement)
     diverging = np.flatnonzero(_diverging_rows(state))
     if diverging.size == 0:
-        return {row: replacement for row in range(count)}
+        return RowEquipment(replacement)
     projected = equipment_for_rows(
         fighter, state, diverging, first_round=first_round,
     )
@@ -221,10 +218,10 @@ def _row_equipment(fighter, replacement, state: CombatState, count: int, *,
         base = phase_equipment(fighter, first_round=first_round)
         projected = {row: _carry_declarations(value, phase_fighter, base)
                      for row, value in projected.items()}
-    return {row: projected.get(row, replacement) for row in range(count)}
+    return RowEquipment(replacement, projected)
 
 
-def _clamp_maximum_wounds(state: CombatState, equipment: dict[int, CompiledFighter],
+def _clamp_maximum_wounds(state: CombatState, equipment: RowEquipment,
                           rows: np.ndarray) -> None:
     """Port of ``modular/rounds.py:511``'s post-projection Wound clamp.
 
@@ -234,32 +231,13 @@ def _clamp_maximum_wounds(state: CombatState, equipment: dict[int, CompiledFight
     ``vectorized._state`` seeds the column with -- read off each row's own
     projection, because that is the only place the loss shows up.
     """
-    limits: dict[int, int] = {}
-    for value in rows:
-        row = int(value)
-        projected = equipment[row]
-        limit = limits.get(id(projected))
-        if limit is None:
-            limit = limits[id(projected)] = maximum_wounds(projected)
-        if state.wounds[row] > limit:
-            state.wounds[row] = limit
+    clamp_maximum_wounds(state.wounds, equipment, rows)
 
 
-def _equipment_groups(rows: np.ndarray, attacker_equipment: dict[int, CompiledFighter],
-                      defender_equipment: dict[int, CompiledFighter]):
+def _equipment_groups(rows: np.ndarray, attacker_equipment: RowEquipment,
+                      defender_equipment: RowEquipment):
     """Split rows by the equipment pair their simulation projects."""
-    if rows.size == 0:
-        return []
-    grouped: dict[tuple[int, int], list[int]] = {}
-    for value in rows:
-        row = int(value)
-        key = (id(attacker_equipment[row]), id(defender_equipment[row]))
-        grouped.setdefault(key, []).append(row)
-    return [
-        (attacker_equipment[values[0]], defender_equipment[values[0]],
-         np.asarray(values, dtype=np.int64))
-        for values in grouped.values()
-    ]
+    return equipment_groups(rows, attacker_equipment, defender_equipment)
 
 
 def _resolve_attacks_by_equipment(
@@ -970,7 +948,7 @@ def _apply_djinn_power(fighter: CompiledFighter, power: np.ndarray,
     return fighter, selected & (power != 0)
 
 
-def _patch_djinn_power(equipment: dict[int, CompiledFighter], power: np.ndarray,
+def _patch_djinn_power(equipment: RowEquipment, power: np.ndarray,
                        rows: np.ndarray | None) -> None:
     """Apply a split Djinn declaration row by row.  ``None`` is a no-op."""
     if rows is None:
@@ -1292,7 +1270,7 @@ def _righteous_charge_pairs(
     return tuple(groups)
 
 
-def _patch_righteous_charge(equipment: dict[int, CompiledFighter],
+def _patch_righteous_charge(equipment: RowEquipment,
                             rows: np.ndarray | None) -> None:
     """Apply a split Righteous Charge grant row by row.  ``None`` is a no-op."""
     if rows is None:
@@ -2249,10 +2227,10 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
         if has(attack_second.main_weapon, 'effect.serpent-staff-power'):
             state2.parry_remaining[:] = 0
         equipment1 = _row_equipment(
-            original_first, attack_first, state1, count, first_round=first_round,
+            original_first, attack_first, state1, first_round=first_round,
             phase_fighter=first)
         equipment2 = _row_equipment(
-            original_second, attack_second, state2, count, first_round=first_round,
+            original_second, attack_second, state2, first_round=first_round,
             phase_fighter=second)
         # Equipment that is gone takes its numeric bonuses with it, so a Wound
         # an item folded into the profile cannot exceed the surviving maximum
@@ -2719,7 +2697,7 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
                 eagle = replace(attacker, main_weapon=weapon, off_hand=None,
                                 off_hand_attacks=False, extra_attacks=())
                 _resolve_attacks_by_equipment(
-                    {row: eagle for row in range(count)}, other, rows,
+                    RowEquipment(eagle), other, rows,
                     np.ones(count, dtype=np.int16), charge, a_state, d_state,
                     rng, first_round, decisions,
                     f'round.{round_index}.{label}.eagle.{bird_index}',
@@ -2789,7 +2767,7 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             if rows_whip1.size:
                 attacked_this_round1[rows_whip1] = True
                 _resolve_attacks_by_equipment(
-                    {row: whip1_fighter for row in range(count)}, equipment2,
+                    RowEquipment(whip1_fighter), equipment2,
                     rows_whip1, np.ones(count,dtype=np.int16), charge1, state1,
                     state2, rng, first_round, decisions,
                     f'round.{round_index}.first.whipcrack',
@@ -2800,7 +2778,7 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             if rows_whip2.size:
                 attacked_this_round2[rows_whip2] = True
                 _resolve_attacks_by_equipment(
-                    {row: whip2_fighter for row in range(count)}, equipment1,
+                    RowEquipment(whip2_fighter), equipment1,
                     rows_whip2, np.ones(count,dtype=np.int16), charge2, state2,
                     state1, rng, first_round, decisions,
                     f'round.{round_index}.second.whipcrack',
@@ -2811,7 +2789,7 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             if rows_shifty1.size:
                 attacked_this_round1[rows_shifty1] = True
                 _resolve_attacks_by_equipment(
-                    {row: shifty1_fighter for row in range(count)}, equipment2,
+                    RowEquipment(shifty1_fighter), equipment2,
                     rows_shifty1, np.ones(count, dtype=np.int16), charge1,
                     state1, state2, rng, first_round, decisions,
                     f'round.{round_index}.first.shifty',
@@ -2822,7 +2800,7 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             if rows_shifty2.size:
                 attacked_this_round2[rows_shifty2] = True
                 _resolve_attacks_by_equipment(
-                    {row: shifty2_fighter for row in range(count)}, equipment1,
+                    RowEquipment(shifty2_fighter), equipment1,
                     rows_shifty2, np.ones(count, dtype=np.int16), charge2,
                     state2, state1, rng, first_round, decisions,
                     f'round.{round_index}.second.shifty',
@@ -2833,21 +2811,21 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             if rows_strike1.size:
                 attacked_this_round1[rows_strike1] = True
                 _resolve_attacks_by_equipment(
-                    {row: strike1[1] for row in range(count)}, equipment2,
+                    RowEquipment(strike1[1]), equipment2,
                     rows_strike1, np.ones(count, dtype=np.int16), charge1,
                     state1, state2, rng, first_round, decisions,
                     f'round.{round_index}.first.strike-first', observations=observations)
             if rows_strike2.size:
                 attacked_this_round2[rows_strike2] = True
                 _resolve_attacks_by_equipment(
-                    {row: strike2[1] for row in range(count)}, equipment1,
+                    RowEquipment(strike2[1]), equipment1,
                     rows_strike2, np.ones(count, dtype=np.int16), charge2,
                     state2, state1, rng, first_round, decisions,
                     f'round.{round_index}.second.strike-first', observations=observations)
             if rows_stomp1.size:
                 attacked_this_round1[rows_stomp1] = True
                 _resolve_attacks_by_equipment(
-                    {row: stomp1_fighter for row in range(count)}, equipment2,
+                    RowEquipment(stomp1_fighter), equipment2,
                     rows_stomp1, np.ones(count, dtype=np.int16), charge1,
                     state1, state2, rng, first_round, decisions,
                     f'round.{round_index}.first.stomp',
@@ -2855,7 +2833,7 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             if rows_stomp2.size:
                 attacked_this_round2[rows_stomp2] = True
                 _resolve_attacks_by_equipment(
-                    {row: stomp2_fighter for row in range(count)}, equipment1,
+                    RowEquipment(stomp2_fighter), equipment1,
                     rows_stomp2, np.ones(count, dtype=np.int16), charge2,
                     state2, state1, rng, first_round, decisions,
                     f'round.{round_index}.second.stomp',
@@ -2888,7 +2866,7 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
                                main_weapon_without_poison=None,
                                off_hand_without_poison=None)
                 _resolve_attacks_by_equipment(
-                    {row: bite for row in range(count)}, other, rows,
+                    RowEquipment(bite), other, rows,
                     np.ones(count, dtype=np.int16), charge, a_state, d_state,
                     rng, first_round, decisions,
                     f'round.{round_index}.{label}.last-bite.{bite_index}',
