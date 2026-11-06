@@ -1452,10 +1452,19 @@ def _select_shadow_dance(fighter: CompiledFighter, ledger: _RoundLedger, side: s
     return replace(fighter, global_effects=effect)
 
 
-def _tagged_rows(fighter: CompiledFighter, mask: np.ndarray,
+def _tagged_rows(fighter: CompiledFighter, rows: np.ndarray,
                  tags: tuple[str, ...]) -> CompiledFighter:
-    """A copy carrying ``tags``; callers use it only for the masked rows."""
-    if not mask.any():
+    """A copy carrying ``tags``; callers use it only for ``rows``.
+
+    Every caller selects row *indices*, so the empty selection is the one with
+    no elements.  The predicate used to be ``not rows.any()``, which also
+    returned the untagged fighter when the only selected row was row 0: that
+    duel then kept a fighter without ``mechanic.stupidity``, the Psychology
+    gate found nothing to test, and the Stupidity the Centigor's drunken 1 and
+    the Bitten madness print was skipped for it.  A single-duel sample always
+    sits at row 0, so it never took either test.
+    """
+    if np.asarray(rows).size == 0:
         return fighter
     return replace(fighter, global_effects=replace(
         fighter.global_effects, tags=(*fighter.global_effects.tags, *tags)))
