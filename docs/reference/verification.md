@@ -276,10 +276,10 @@ measurable-rate frenzy pair, the durable mirror and a 75-round heavy grind —
 plus skill consumers, helmet/injury-profile-2, Cathayan Longsword, and the
 benchmark-only blessed-regeneration boundary) plus the numpy↔native
 cross-certification at 1 000 000 duels/pair where the optimized engines make
-scale cheap and the oracle is never touched. `--pair-set fast` is designed to
-retain the full matrix's distinct effect-axis coverage in a smaller run;
-`--pair-set full` adds the omitted baselines, mirrors and alternate matchup
-contexts. The pair set applies only to the deep matrix and truncation sweep;
+scale cheap and the oracle is never touched. `--pair-set normal` is designed to
+retain the whole matrix's distinct effect-axis coverage in a smaller run;
+`--pair-set long` adds the omitted baselines, mirrors and alternate matchup
+contexts. The level applies only to the deep matrix and truncation sweep;
 the five-scenario statistical preset is unchanged.
 
 Two properties keep this honest:

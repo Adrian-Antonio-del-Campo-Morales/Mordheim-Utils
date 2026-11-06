@@ -135,7 +135,7 @@ python tools/mordheim-utils.py check coverage
 ```
 
 `parity --level statistical` adds the standard six-sigma sample;
-`parity --level deep --pair-set fast|full` runs the curated archetype matrix,
+`parity --level deep --pair-set normal|long` runs the curated archetype matrix,
 with `--truncations` for round-horizon checks. These take minutes to hours and
 belong to engine changes and releases, never to the per-change loop.
 
@@ -190,7 +190,7 @@ To plan a large campaign (many scenarios, thousands of duels each), measure
 how each engine should split the work before running it:
 
 ```powershell
-python tools/mordheim-utils.py performance benchmark --tts --pair-set full --backend modular numpy native -n 5000 --strategies "sequential,processes=12,parallel=12,parallel=12:48" --output outputs/benchmarks/tts-plan.json
+python tools/mordheim-utils.py performance benchmark --tts --pair-set long --backend modular numpy native -n 5000 --strategies "sequential,processes=12,parallel=12,parallel=12:48" --output outputs/benchmarks/tts-plan.json
 ```
 
 The study runs the whole workload under every applicable strategy per engine
@@ -207,7 +207,7 @@ Calibrate after hardware, engine or combat-rule changes:
 
 ```powershell
 python tools/mordheim-utils.py performance calibrate
-python tools/mordheim-utils.py performance calibrate --pairs mini
+python tools/mordheim-utils.py performance calibrate --pairs small
 python tools/mordheim-utils.py performance calibrate --reset         # drop the profile
 ```
 

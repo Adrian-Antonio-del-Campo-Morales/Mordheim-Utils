@@ -88,7 +88,7 @@ def test_parity_cli_separates_the_battery_from_the_historical_certificate():
     mixed = parser.parse_args(["parity", "--profile", "quick", "--level", "deep"])
     assert parity_command(mixed) == 2
     mixed = parser.parse_args(["parity", "--profile", "complete",
-                               "--pair-set", "mini"])
+                               "--pair-set", "small"])
     assert parity_command(mixed) == 2
     mixed = parser.parse_args(["parity", "--profile", "deep", "--truncations"])
     assert parity_command(mixed) == 2

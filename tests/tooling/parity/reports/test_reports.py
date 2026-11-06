@@ -54,9 +54,9 @@ def test_deep_payload_exposes_samples_rates_times_and_the_pass_state():
         _deep_result("matrix:defences", candidate=(0.4, 0.5, 0.1), passed=False),
     )
     payload = parity_report_payload(_empty_report(), deep=samples,
-                                    deep_pair_set="fast")
+                                    deep_pair_set="normal")
     deep = payload["deep"]
-    assert deep["pair_set"] == "fast"
+    assert deep["pair_set"] == "normal"
     assert len(deep["samples"]) == len(samples)
     assert deep["complete"] == all(row.passed for row in samples)
     assert deep["complete"] is False
@@ -130,10 +130,10 @@ def test_truncation_rows_flow_into_the_payload_with_their_horizon():
     report = ParityReport(complete=True, obligations=(), verified=(),
                           pending=(), divergences=(), exact_checks=())
     payload = parity_report_payload(
-        report, truncations=rows, truncation_pair_set="fast",
+        report, truncations=rows, truncation_pair_set="normal",
     )
     truncations = payload["truncations"]
-    assert truncations["pair_set"] == "fast"
+    assert truncations["pair_set"] == "normal"
     assert truncations["complete"] is True
     assert [sample["scenario"] for sample in truncations["samples"]] == [
         "basic@rounds=2", "basic@rounds=4",

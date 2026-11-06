@@ -121,7 +121,7 @@ def parity_report_payload(
             "candidate_seconds": item.candidate_seconds,
         } for item in samples),
         "deep": None if not deep_samples else {
-            "pair_set": deep_pair_set or "full",
+            "pair_set": deep_pair_set or "long",
             "complete": deep_passed,
             "samples": tuple({
                 "scenario": item.scenario,
@@ -137,7 +137,7 @@ def parity_report_payload(
             } for item in deep_samples),
         },
         "truncations": None if not truncation_samples else {
-            "pair_set": truncation_pair_set or "full",
+            "pair_set": truncation_pair_set or "long",
             "complete": truncations_passed,
             "samples": tuple({
                 "scenario": item.scenario,
@@ -240,7 +240,7 @@ def parity_report_markdown(payload: dict[str, object]) -> str:
         deep_rows = deep["samples"]
         lines.extend((
             "", "## Deep certification samples", "",
-            f"- Pair set: `{deep.get('pair_set', 'full')}`",
+            f"- Catalogue level: `{deep.get('pair_set', 'long')}`",
             "| Scenario | Candidate | Duels/engine | Reference W/L/U | Candidate W/L/U | Pass | Time (ref/cand, s) |",
             "|---|---:|---|---|---|---|---|",
         ))
@@ -257,7 +257,7 @@ def parity_report_markdown(payload: dict[str, object]) -> str:
     if isinstance(truncations, dict):
         lines.extend((
             "", "## Round-truncation parity samples", "",
-            f"- Pair set: `{truncations.get('pair_set', 'full')}`",
+            f"- Catalogue level: `{truncations.get('pair_set', 'long')}`",
             "| Horizon | Candidate | Duels/engine | Modular W/L/U | Candidate W/L/U | Pass | Time (oracle/cand, s) |",
             "|---|---:|---|---|---|---|---|",
         ))

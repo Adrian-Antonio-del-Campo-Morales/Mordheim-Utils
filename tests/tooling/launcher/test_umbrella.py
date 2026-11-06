@@ -117,9 +117,9 @@ def test_app_warband_manager_forwards_vite_arguments(cli, monkeypatch):
 @pytest.mark.parametrize("name", ["benchmark", "calibrate"])
 def test_performance_commands_forward_to_the_lab(cli, monkeypatch, name):
     calls = _record(cli, monkeypatch)
-    assert cli.main(["performance", name, "--pairs", "mini"]) == 0
+    assert cli.main(["performance", name, "--pairs", "small"]) == 0
     assert calls == [[sys.executable, "-m", "mordheim_combat_lab", name,
-                      "--pairs", "mini"]]
+                      "--pairs", "small"]]
 
 
 @pytest.mark.parametrize("arguments, expected", [

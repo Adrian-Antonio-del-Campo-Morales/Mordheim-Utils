@@ -43,7 +43,7 @@ parallel efficiency instead of the shared conservative fit.
 Coverage and budget (defaults on the reference machine, ~8-10 minutes):
 native sweeps run the full 43-scenario catalogue at 1M samples/fighter; NumPy sweeps
 run the normal catalogue level at a quarter/half of the sizes, because its
-duels cost ~3-5x more. ``--pairs mini`` trades coverage for a ~2 minute run.
+duels cost ~3-5x more. ``--pairs small`` trades coverage for a ~2 minute run.
 Every candidate is scored by the geometric mean of its per-pair ratio to the
 best candidate, so all duel types weigh the same regardless of absolute cost;
 a candidate within 2% of the best never displaces the reference value, so run
@@ -125,12 +125,12 @@ def _geomean(values) -> float:
     return statistics.geometric_mean(values)
 
 
-def _pairs(pair_set: str):
-    """Compiled (first, second, maximum_rounds, id) rows for one pair set."""
+def _pairs(level: str):
+    """Compiled (first, second, maximum_rounds, id) rows for one catalogue level."""
     return [
         (*compile_benchmark_fighters(scenario),
          scenario.maximum_rounds or 50, scenario.id)
-        for scenario in deep_test_scenarios(pair_set)
+        for scenario in deep_test_scenarios(level)
     ]
 
 
@@ -269,7 +269,7 @@ def _sweep(label, pairs, candidates, measure, log) -> dict:
     return table
 
 
-def run_calibration(pair_set: str = "full", *, seed: int = 7,
+def run_calibration(pair_set: str = "long", *, seed: int = 7,
                     sequential_samples: int = SEQUENTIAL_SAMPLES,
                     pooled_samples: int = POOLED_SAMPLES,
                     sequential_batches=None,
@@ -279,7 +279,7 @@ def run_calibration(pair_set: str = "full", *, seed: int = 7,
 
     The keyword overrides exist for tests (small sizes) and future re-tuning;
     the CLI maps its arguments to the defaults above.  ``pair_source`` supplies
-    the prepared ``(first, second, maximum_rounds, id)`` rows of a pair set;
+    the prepared ``(first, second, maximum_rounds, id)`` rows of a level;
     the default compiles the scenario definitions, while the tests pass the
     frozen precompiled corpus so a sweep never reads the knowledge base.
 
@@ -291,7 +291,7 @@ def run_calibration(pair_set: str = "full", *, seed: int = 7,
     provenance = measurement_provenance(CALIBRATION_ENGINES)
     backends = set(available_backends())
     native_available = "native" in backends
-    numpy_set = "mini" if pair_set == "mini" else "fast"
+    numpy_set = "small" if pair_set == "small" else "normal"
     sets = {"native": pair_set, "numpy": numpy_set if native_available else pair_set}
     pairs = {}
     excluded_pairs = {}

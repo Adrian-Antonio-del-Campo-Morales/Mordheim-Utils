@@ -80,7 +80,7 @@ def test_profile_records_provenance_and_sweeps_workers_at_the_sequential_batch(m
     monkeypatch.setattr(calibration, "_pooled_walls", pooled)
     monkeypatch.setattr(calibration, "measure_spawn", lambda workers, repetitions=3: 0.1)
     payload = calibration.run_calibration(
-        "mini", pair_source=lambda name: [(object(), object(), 5, "p1")],
+        "small", pair_source=lambda name: [(object(), object(), 5, "p1")],
         log=lambda message: None)
     assert payload["provenance"] == stamp
     assert payload["spawn_seconds"] == {"numpy": 0.1}

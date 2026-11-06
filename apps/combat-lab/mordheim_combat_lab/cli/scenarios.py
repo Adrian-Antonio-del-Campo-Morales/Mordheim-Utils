@@ -1,7 +1,9 @@
 """Compatibility names for the shared, frozen scenario catalogue.
 
-Benchmarking, calibration and parity select the same scenario definitions.
-Historical pair-set names remain aliases for the cumulative catalogue levels.
+Benchmarking, calibration and parity select the same scenario definitions
+through the one set of cumulative catalogue level names: ``small``, ``normal``
+and ``long``.  The ``mini``/``fast``/``full`` pair-set names they used to carry
+were aliases of exactly those levels and have been retired.
 
 The catalogue lives in the test fixtures (``tests/engines/fixtures/``), which
 are not an installed package: importing ``tests`` only works with the checkout
@@ -55,13 +57,14 @@ scenarios_for_level = _catalog.scenarios_for_level
 scenario_key = _catalog.scenario_key
 
 DEEP_SCENARIOS = SCENARIOS
-MINI_DEEP_SCENARIO_IDS = tuple(item.name for item in scenarios_for_level("small"))
-FAST_DEEP_SCENARIO_IDS = tuple(item.name for item in scenarios_for_level("normal"))
-FULL_DEEP_SCENARIO_IDS = tuple(item.name for item in scenarios_for_level("long"))
+LEVELS = _catalog.LEVELS
+SMALL_SCENARIO_IDS = tuple(item.name for item in scenarios_for_level("small"))
+NORMAL_SCENARIO_IDS = tuple(item.name for item in scenarios_for_level("normal"))
+LONG_SCENARIO_IDS = tuple(item.name for item in scenarios_for_level("long"))
 DEEP_SCENARIO_SET_IDS = {
-    "mini": MINI_DEEP_SCENARIO_IDS,
-    "fast": FAST_DEEP_SCENARIO_IDS,
-    "full": FULL_DEEP_SCENARIO_IDS,
+    "small": SMALL_SCENARIO_IDS,
+    "normal": NORMAL_SCENARIO_IDS,
+    "long": LONG_SCENARIO_IDS,
 }
 
 
@@ -70,12 +73,16 @@ def benchmark_scenarios() -> tuple[BenchmarkScenario, ...]:
     return scenarios_for_level("small")
 
 
-def deep_test_scenarios(pair_set: str = "full") -> tuple[BenchmarkScenario, ...]:
-    """Select the shared levels using historical command-line aliases."""
-    try:
-        level = {"mini": "small", "fast": "normal", "full": "long"}[pair_set]
-    except KeyError as error:
+def deep_test_scenarios(level: str = "long") -> tuple[BenchmarkScenario, ...]:
+    """Select one cumulative level of the shared scenario catalogue.
+
+    The retired ``mini``/``fast``/``full`` aliases selected exactly these
+    levels, so they are rejected with the name that replaced them.
+    """
+    retired = {"mini": "small", "fast": "normal", "full": "long"}
+    if level in retired:
         raise ValueError(
-            f"unknown deep pair set {pair_set!r}; choose 'mini', 'fast' or 'full'"
-        ) from error
+            f"pair set {level!r} was renamed to {retired[level]!r}; "
+            f"choose one of {', '.join(LEVELS)}"
+        )
     return scenarios_for_level(level)

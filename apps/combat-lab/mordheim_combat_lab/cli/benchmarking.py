@@ -109,9 +109,9 @@ ENGINE_LABELS = {"modular": "Modular", "numpy": "Vectorized", "native": "Native"
 from mordheim_combat_lab.cli.scenarios import (  # noqa: E402
     DEEP_SCENARIOS,
     DEEP_SCENARIO_SET_IDS,
-    FAST_DEEP_SCENARIO_IDS,
-    FULL_DEEP_SCENARIO_IDS,
-    MINI_DEEP_SCENARIO_IDS,
+    LONG_SCENARIO_IDS,
+    NORMAL_SCENARIO_IDS,
+    SMALL_SCENARIO_IDS,
     BenchmarkScenario,
     deep_test_scenarios,
     benchmark_scenarios,
@@ -193,7 +193,7 @@ def deep_benchmark_plan(
 def print_deep_benchmark_header(
     plan: DeepBenchmarkPlan, *, pair_set: str | None = None,
 ) -> None:
-    label = f"{pair_set} pair set; " if pair_set else ""
+    label = f"{pair_set} catalogue level; " if pair_set else ""
     print(
         "Deep benchmark: " + label
         + (f"modular reference at {plan.modular_simulations:,} duels/scenario; "
@@ -823,7 +823,7 @@ def print_tts_study_summary(
     that engine's sequential pass (when measured) and the runner-up. The
     overall fastest engine/strategy of the cell is marked with ``*``.
     """
-    scope = f" ({pair_set} pair set)" if pair_set else ""
+    scope = f" ({pair_set} catalogue level)" if pair_set else ""
     print(f"Time-to-solution study{scope}: "
           f"{len(cells)} cell(s), best strategy per engine:")
     headers = ["Simulations", "Batch", "Engine", "Best strategy", "Wall (s)",
@@ -1145,7 +1145,7 @@ def _markdown_report(payload: dict[str, object]) -> str:
     lines.append(f"- configuration: {json.dumps(configuration)}")
     lines.append("")
     if payload.get("pair_set") is not None:
-        lines.append(f"- pair set: {payload['pair_set']}")
+        lines.append(f"- catalogue level: {payload['pair_set']}")
     if payload.get("comparison") is not None:
         comparison = payload["comparison"]
         lines.append(f"## Gate: {'PASS' if comparison['passed'] else 'FAIL'}")

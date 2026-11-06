@@ -68,7 +68,7 @@ APP_COMMANDS = {
 }
 
 PERFORMANCE_COMMANDS = {
-    "benchmark": "measure engine execution for one scenario or pair set",
+    "benchmark": "measure engine execution for one scenario or catalogue level",
     "calibrate": "measure and save this machine's engine optima",
 }
 
@@ -887,29 +887,29 @@ def performance_command(args: list[str]) -> int:
                 "--processes 8      multicore measurement\n"
                 "--warmups N        untimed warm-ups\n--repeats N        timed repetitions\n"
                 "--profile          cProfile the timed repeats; prints hotspots, saves .pstats\n"
-                "--deep            size/batch sweep\n--pair-set SET    mini, fast or full for deep/tts\n"
+                "--deep            size/batch sweep\n--pair-set SET    small, normal or long for deep/tts\n"
                 "--json            structured output\n--output PATH     save results\n"
                 "--help-full       all options, scenario names, defaults and units",
                 examples=(
                     "performance benchmark --scenario basic --backend numpy --simulations 100k --processes 8 --repeats 3",
                     "performance benchmark --backend modular --scenario basic stateful -n 2000 --profile",
-                    "performance benchmark --deep --pair-set mini --backend numpy --processes 8",
+                    "performance benchmark --deep --pair-set small --backend numpy --processes 8",
                 ), notes=("The default -n 100 is a smoke measurement; pass real sizes for stable numbers.",),
             )
         return _delegated_help(
             "python tools/mordheim-utils.py performance calibrate [options]",
             "Measure batch sizes and worker configurations for this machine.\nBy default the resulting calibration is installed for future application runs.",
             "python -m mordheim_combat_lab calibrate",
-            "--pairs SET        mini, fast or full (default: full)\n"
+            "--pairs SET        small, normal or long (default: long)\n"
             "--no-install       measure without installing settings\n"
             "--output PATH      save an additional result file\n--json             structured output\n"
             "--reset            remove installed calibration\n"
             "--help-full        sample-size options and exact defaults",
-            examples=("performance calibrate --pairs mini --no-install",
-                      "performance calibrate --pairs full",
+            examples=("performance calibrate --pairs small --no-install",
+                      "performance calibrate --pairs long",
                       "performance calibrate --reset"),
             notes=("Already surveys worker counts; there is no additional --workers flag.",
-                   "Even mini can take minutes; run separately from tests and benchmarks."),
+                   "Even small can take minutes; run separately from tests and benchmarks."),
         )
     return _run_module("mordheim_combat_lab", name, *forwarded)
 
@@ -984,7 +984,7 @@ def _check_command_help(name: str) -> int:
              "Precompiled cases load frozen fighters; battery cases compile their builds.",
              "COMPLETED means executable, not parity approved; blocked cases were not run.",
              "One simulation checks one execution path; eight workers cannot split one duel.",
-             "Use --level small|normal|long with precompiled scenarios; historical --pair-set presets remain separate."),
+             "Use --level small|normal|long with precompiled scenarios; --pair-set selects the same levels for --deep/--truncations."),
         ),
         "coverage": (
             "Run the configured Python suites under coverage measurement, then check\n"

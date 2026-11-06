@@ -40,7 +40,7 @@ python tools/mordheim-utils.py tests modular mechanics -n 8 --dist=load -q
 python tools/mordheim-utils.py tests modular runtime -q
 python tools/mordheim-utils.py tests kb -n 8 --dist=load -q
 python tools/mordheim-utils.py performance benchmark --scenario basic --simulations 1000 --repeats 3
-python tools/mordheim-utils.py performance calibrate --pairs mini --no-install
+python tools/mordheim-utils.py performance calibrate --pairs small --no-install
 python tools/mordheim-utils.py check verify --json
 python tools/mordheim-utils.py check report rules --output outputs/audit
 python tools/mordheim-utils.py check parity --profile quick --rows 7200 --require-complete
@@ -281,8 +281,8 @@ For time-to-solution measurements, the benchmark command compares execution
 strategies per engine, modular oracle included:
 
 ```powershell
-python tools/mordheim-utils.py performance benchmark --tts --pair-set mini --backend numpy --strategies "sequential,processes=8,parallel=8"
-python tools/mordheim-utils.py performance benchmark --tts --pair-set full --backend modular -n 5000 --strategies "sequential,processes=12,parallel=12,parallel=12:48"
+python tools/mordheim-utils.py performance benchmark --tts --pair-set small --backend numpy --strategies "sequential,processes=8,parallel=8"
+python tools/mordheim-utils.py performance benchmark --tts --pair-set long --backend modular -n 5000 --strategies "sequential,processes=12,parallel=12,parallel=12:48"
 ```
 
 `sequential` and `processes=N` (one scenario per worker) apply to every
@@ -613,7 +613,8 @@ These catalogues require a source checkout with `tests/engines/fixtures` and
 its frozen JSON files. The battery also requires the KB/compiler. Catalogue
 selection accepts `--level small|normal|long` for precompiled scenarios.
 Historical parity levels and `--pair-set` remain available outside catalogue
-selection; historical pair-set names map to the shared cumulative levels.
+selection; `--pair-set` takes the same `small|normal|long` level names (the
+retired `mini`/`fast`/`full` aliases selected exactly these levels).
 
 ## Knowledge base
 

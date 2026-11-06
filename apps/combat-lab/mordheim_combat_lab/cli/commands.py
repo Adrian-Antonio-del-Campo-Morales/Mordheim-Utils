@@ -162,12 +162,12 @@ def verify_command(args) -> int:
 def _deep_benchmark_command(args, scenarios, installed) -> int:
     """Deep benchmark: modular as a small reference, optimized engines swept
     over large sizes and batch sizes (see deep_benchmark_plan for the policy)."""
-    pair_set = getattr(args, "pair_set", "full")
+    pair_set = getattr(args, "pair_set", "long")
     if not args.output:
         from mordheim_combat_lab.report_naming import timestamped_report_path
         args.output = {
-            "mini": timestamped_report_path("outputs/benchmarks", "deep-mini", ".json"),
-            "fast": timestamped_report_path("outputs/benchmarks", "deep-fast", ".json"),
+            "small": timestamped_report_path("outputs/benchmarks", "deep-small", ".json"),
+            "normal": timestamped_report_path("outputs/benchmarks", "deep-normal", ".json"),
         }.get(pair_set, timestamped_report_path("outputs/benchmarks", "deep", ".json"))
     from time import perf_counter
 
@@ -446,7 +446,7 @@ def benchmark_command(args) -> int:
               "--baseline/--save-baseline/--require-improvement", file=sys.stderr)
         return 2
     pair_set = getattr(args, "pair_set", None)
-    if (pair_set is not None and pair_set != "full"
+    if (pair_set is not None and pair_set != "long"
             and not (args.deep or args.tts)):
         print(
             "Benchmark configuration error: --pair-set applies to --deep and "
@@ -498,7 +498,7 @@ def benchmark_command(args) -> int:
     scenarios = benchmark_scenarios()
     if args.deep:
         from mordheim_combat_lab.cli.benchmarking import deep_test_scenarios
-        scenarios = deep_test_scenarios(pair_set or "full")
+        scenarios = deep_test_scenarios(pair_set or "long")
     if args.tts and pair_set is not None:
         from mordheim_combat_lab.cli.benchmarking import deep_test_scenarios
         scenarios = deep_test_scenarios(pair_set)
@@ -508,14 +508,14 @@ def benchmark_command(args) -> int:
             # Explicit ids select from the whole frozen catalogue: naming a
             # scenario outside the small default suite is the point.
             from mordheim_combat_lab.cli.benchmarking import deep_test_scenarios
-            scenarios = deep_test_scenarios("full")
+            scenarios = deep_test_scenarios("long")
         available = {item.id for item in scenarios}
         unknown = [name for name in requested_scenarios if name not in available]
         scenarios = tuple(
             item for item in scenarios if item.id in requested_scenarios)
         if unknown or not scenarios:
             scope = (
-                f"the {pair_set} deep pair set"
+                f"the {pair_set} deep catalogue level"
                 if args.deep or (args.tts and pair_set is not None)
                 else "the standard benchmark suite")
             names = ", ".join(repr(name) for name in (unknown or requested_scenarios))
@@ -1259,8 +1259,8 @@ def _parity_command(args) -> int:
     level = getattr(args, "level", None) or "deterministic"
     args.statistical = level == "statistical"
     args.deep = level == "deep"
-    pair_set = getattr(args, "pair_set", None) or "full"
-    if pair_set != "full" and not (args.deep or args.truncations):
+    pair_set = getattr(args, "pair_set", None) or "long"
+    if pair_set != "long" and not (args.deep or args.truncations):
         print(
             "Parity configuration error: --pair-set applies to --deep or "
             "--truncations; no pair set is run by the deterministic/statistical "
@@ -1271,8 +1271,8 @@ def _parity_command(args) -> int:
     if args.deep and not args.output:
         from mordheim_combat_lab.report_naming import timestamped_report_path
         args.output = {
-            "mini": timestamped_report_path("outputs/parity", "deep-mini", ".json"),
-            "fast": timestamped_report_path("outputs/parity", "deep-fast", ".json"),
+            "small": timestamped_report_path("outputs/parity", "deep-small", ".json"),
+            "normal": timestamped_report_path("outputs/parity", "deep-normal", ".json"),
         }.get(pair_set, timestamped_report_path("outputs/parity", "deep", ".json"))
     statistical_backends = ()
     if args.statistical:
@@ -1409,7 +1409,7 @@ def _parity_command(args) -> int:
         requested_duels = sum(segment[4] for segment in segments)
         if args.deep_simulations is not None:
             breakdown = (
-                f"{pair_set} set: {len(segments)} pairs x "
+                f"{pair_set} level: {len(segments)} pairs x "
                 f"{args.deep_simulations:,}"
             )
         else:
@@ -1420,7 +1420,7 @@ def _parity_command(args) -> int:
                 parts.append(f"{regular} pairs at 100k")
             if long_pairs:
                 parts.append(f"{long_pairs} long pair(s) at 25k")
-            breakdown = f"{pair_set} set: " + ", ".join(parts)
+            breakdown = f"{pair_set} level: " + ", ".join(parts)
         if requested_duels > args.max_modular_duels:
             print(
                 "Parity configuration error: --deep would need "
@@ -1589,14 +1589,14 @@ def _parity_command(args) -> int:
             if deep_native_installed:
                 print(
                     f"DEEP: modular oracle {modular_duels:,} duels across the "
-                    f"{pair_set} archetype set ({len(deep_scenarios)} pairs); "
+                    f"{pair_set} archetype level ({len(deep_scenarios)} pairs); "
                     f"cross-backend samples at "
                     f"{args.deep_cross_simulations:,} duels/engine"
                 )
             else:
                 print(
                     f"DEEP: modular oracle {modular_duels:,} duels across the "
-                    f"{pair_set} archetype set ({len(deep_scenarios)} pairs); "
+                    f"{pair_set} archetype level ({len(deep_scenarios)} pairs); "
                     "cross-backend certification skipped ("
                     + ("native backend is not compiled in this environment"
                        if "native" not in installed_backends
@@ -1927,11 +1927,11 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
              "sizes while measuring the modular oracle only at a small reference size",
     )
     deep_options.add_argument(
-        "--pair-set", choices=("mini", "fast", "full"), default=None, metavar="SET",
-        help="pair set for --deep and --tts workloads: mini is the small "
-             "performance-survey set; fast is the normal coverage-oriented set "
-             "for a roughly 10-15 minute pooled profile; full is the 43-pair "
-             "matrix (deep sweeps default to full)",
+        "--pair-set", choices=("small", "normal", "long"), default=None, metavar="SET",
+        help="catalogue level for --deep and --tts workloads: small is the "
+             "8-scenario performance survey; normal is the 30-scenario "
+             "coverage-oriented set for a roughly 10-15 minute pooled profile; "
+             "long is the 43-scenario matrix (deep sweeps default to long)",
     )
     deep_options.add_argument(
         "--deep-modular-simulations", type=_positive, default=10_000, metavar="DUELS",
@@ -1982,7 +1982,7 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
                                 help="print the machine-readable report as JSON")
     report_options.add_argument("--output", metavar="PATH",
                                 help="save this run as a report (.json, or .csv/.md in sweep mode; "
-                                     "--deep defaults to deep.json or deep-fast.json by pair set)")
+                                     "--deep defaults to deep.json or deep-<level>.json by catalogue level)")
     report_options.add_argument("--save-baseline", metavar="PATH",
                                 help="save this single-configuration run as a JSON baseline")
     report_options.add_argument("--baseline", metavar="PATH",
@@ -2042,15 +2042,15 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
         help="e2e selects all E2E deliveries; with --catalog: small (default), normal or long; otherwise historical certificate preset: "
              "deterministic runs the exact checks only; "
              "statistical adds the aggregate six-sigma samples on the small "
-             "standard scenarios; deep runs the selected archetype pair set "
-             "(fast or full) plus the numpy<->native cross at scale",
+             "standard scenarios; deep runs the selected archetype level "
+             "(normal or long) plus the numpy<->native cross at scale",
     )
     parity_samples.add_argument(
-        "--pair-set", choices=("mini", "fast", "full"), default=None, metavar="SET",
-        help="pair set for --deep/--truncations: mini is the small "
-             "performance-survey set; fast is the normal "
+        "--pair-set", choices=("small", "normal", "long"), default=None, metavar="SET",
+        help="catalogue level for --deep/--truncations: small is the "
+             "8-scenario performance survey; normal is the 30-scenario "
              "coverage-oriented set for a roughly 10-15 minute pooled run; "
-             "full is the 43-pair deep matrix (default)",
+             "long is the 43-scenario deep matrix (default)",
     )
     parity_samples.add_argument("--statistical-simulations", type=_positive, default=100_000,
                                 metavar="DUELS",
@@ -2072,7 +2072,7 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
     parity_samples.add_argument("--max-modular-duels", type=_positive, default=5_000_000,
                                 metavar="DUELS",
                            help="ceiling for the total modular-oracle duels a "
-                                "--level deep run may ask for (the default full "
+                                "--level deep run may ask for (the default long "
                                 "split needs 4 050 000, plus any adaptive "
                                 "escalation within the same ceiling)")
     parity_samples.add_argument(
@@ -2108,8 +2108,8 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
                                help="with the E2E catalogue, save a Markdown summary independently of --output")
     parity_output.add_argument("--output", metavar="PATH",
                                help="save the report as .json or .md (deep defaults to "
-                                    "deep.json for full, deep-fast.json for fast "
-                                    "or deep-mini.json for mini)")
+                                    "deep.json for long, deep-normal.json for normal "
+                                    "or deep-small.json for small)")
     battery = parity.add_argument_group("renewed behaviour battery")
     battery.add_argument(
         "--profile", choices=("quick", "complete", "deep"), default=None,
@@ -2173,14 +2173,15 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
                     "spawn cost, and install a per-machine calibration profile the "
                     "Combat Lab loads at startup (batches, workers, spawn cost and "
                     "the pool speedup curve re-derived from the sweep evidence). "
-                    "Default ~8-10 minutes; --pairs mini runs a ~2 minute survey.",
+                    "Default ~8-10 minutes; --pairs small runs a ~2 minute survey.",
         epilog="Re-run after a hardware change, an engine update or new combat rules. "
                "The profile lives next to the preferences; --reset removes it.",
         formatter_class=_HelpFormatter)
     calibration_scope = calibration.add_argument_group("coverage")
-    calibration_scope.add_argument("--pairs", choices=("full", "fast", "mini"), default="full",
+    calibration_scope.add_argument("--pairs", choices=("small", "normal", "long"),
+                                   default="long",
                                    help="duel-type coverage of the native sweeps "
-                                        "(default: full, all 43 scenarios)")
+                                        "(default: long, all 43 scenarios)")
     calibration_scope.add_argument("--seed", type=int, default=7,
                                    help="random seed for every sweep")
     calibration_measure = calibration.add_argument_group("measurement")
