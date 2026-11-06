@@ -455,6 +455,13 @@ python -m tools.verification.parity_samples sample --engine numpy --level long -
 python -m tools.verification.parity_samples compare --backend numpy --level long --simulations 100000 --store outputs/parity-numpy --reference-store tests/engines/parity/reference_samples/modular-100k
 ```
 
+`tests/engines/parity/reference_samples/numpy-long-200k` stores the NumPy
+engine's own outcomes over the same 43 scenarios at 200,000 duels each (batch
+100,000, seed 2026), recorded before the rule-algorithm optimization work. It
+carries no oracle, so it detects whether a later revision moved the engine's
+results; it never establishes that those results are correct. Its own README
+records the design a re-sample must repeat.
+
 The stored E2E campaigns at 100,000 duels per delivery are also versioned:
 `tests/engines/parity/reference_samples/modular-e2e-100k` (oracle) and
 `tests/engines/parity/reference_samples/numpy-e2e-100k` (candidate). Each store
