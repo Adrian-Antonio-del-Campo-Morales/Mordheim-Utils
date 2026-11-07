@@ -318,7 +318,7 @@ def audit(tree: str) -> dict:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--json', action='store_true')
-    parser.add_argument('--show', type=int, default=8, help='examples per class')
+    parser.add_argument('--limit', type=int, default=8, help='maximum examples listed per class')
     args = parser.parse_args()
 
     report = audit('knowledge')
@@ -333,16 +333,16 @@ def main() -> int:
           f' (+{sum(len(v) for v in info.values())} informational)')
     for kind, items in sorted(counted.items()):
         print(f'\n## {kind} ({len(items)})')
-        for item in items[:args.show]:
+        for item in items[:args.limit]:
             print('  ' + item)
-        if len(items) > args.show:
-            print(f'  … {len(items) - args.show} more')
+        if len(items) > args.limit:
+            print(f'  … {len(items) - args.limit} more')
     for kind, items in sorted(info.items()):
         print(f'\n## {kind} ({len(items)}) [informational]')
-        for item in items[:args.show]:
+        for item in items[:args.limit]:
             print('  ' + item)
-        if len(items) > args.show:
-            print(f'  … {len(items) - args.show} more')
+        if len(items) > args.limit:
+            print(f'  … {len(items) - args.limit} more')
     return 1 if total else 0
 
 

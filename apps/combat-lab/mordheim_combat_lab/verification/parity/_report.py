@@ -54,8 +54,8 @@ def parity_report_payload(
     deep: Iterable[StatisticalParityResult] = (),
     truncations: Iterable[StatisticalParityResult] = (),
     elapsed_seconds: float | None = None,
-    deep_pair_set: str | None = None,
-    truncation_pair_set: str | None = None,
+    deep_scenarios: str | None = None,
+    truncation_scenarios: str | None = None,
     backends: dict[str, object] | None = None,
     provenance: dict[str, object] | None = None,
     oracle_workers: dict[str, object] | None = None,
@@ -64,8 +64,8 @@ def parity_report_payload(
 
     ``elapsed_seconds`` is the total wall time of the run that produced the
     certificate (measured by the caller around the whole command); ``None``
-    when a payload is assembled from already-computed samples. ``deep_pair_set``
-    and ``truncation_pair_set`` identify which maintained scenario collection
+    when a payload is assembled from already-computed samples. ``deep_scenarios``
+    and ``truncation_scenarios`` record the ``--scenarios`` values that
     produced each optional section.
 
     ``backends`` records the ``requested``, ``available`` and ``missing``
@@ -121,7 +121,7 @@ def parity_report_payload(
             "candidate_seconds": item.candidate_seconds,
         } for item in samples),
         "deep": None if not deep_samples else {
-            "pair_set": deep_pair_set or "long",
+            "scenarios": deep_scenarios or "big",
             "complete": deep_passed,
             "samples": tuple({
                 "scenario": item.scenario,
@@ -137,7 +137,7 @@ def parity_report_payload(
             } for item in deep_samples),
         },
         "truncations": None if not truncation_samples else {
-            "pair_set": truncation_pair_set or "long",
+            "scenarios": truncation_scenarios or "big",
             "complete": truncations_passed,
             "samples": tuple({
                 "scenario": item.scenario,
@@ -240,7 +240,7 @@ def parity_report_markdown(payload: dict[str, object]) -> str:
         deep_rows = deep["samples"]
         lines.extend((
             "", "## Deep certification samples", "",
-            f"- Catalogue level: `{deep.get('pair_set', 'long')}`",
+            f"- Scenarios: `{deep.get('scenarios', 'big')}`",
             "| Scenario | Candidate | Duels/engine | Reference W/L/U | Candidate W/L/U | Pass | Time (ref/cand, s) |",
             "|---|---:|---|---|---|---|---|",
         ))
@@ -257,7 +257,7 @@ def parity_report_markdown(payload: dict[str, object]) -> str:
     if isinstance(truncations, dict):
         lines.extend((
             "", "## Round-truncation parity samples", "",
-            f"- Catalogue level: `{truncations.get('pair_set', 'long')}`",
+            f"- Scenarios: `{truncations.get('scenarios', 'big')}`",
             "| Horizon | Candidate | Duels/engine | Modular W/L/U | Candidate W/L/U | Pass | Time (oracle/cand, s) |",
             "|---|---:|---|---|---|---|---|",
         ))

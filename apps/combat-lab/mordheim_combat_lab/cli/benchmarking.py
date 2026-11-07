@@ -108,13 +108,9 @@ ENGINE_LABELS = {"modular": "Modular", "numpy": "Vectorized", "native": "Native"
 # (`benchmarking.DEEP_SCENARIOS`, ...).
 from mordheim_combat_lab.cli.scenarios import (  # noqa: E402
     DEEP_SCENARIOS,
-    DEEP_SCENARIO_SET_IDS,
-    LONG_SCENARIO_IDS,
-    NORMAL_SCENARIO_IDS,
-    SMALL_SCENARIO_IDS,
     BenchmarkScenario,
-    deep_test_scenarios,
     benchmark_scenarios,
+    select_scenarios,
 )
 def compile_benchmark_fighters(
     scenario: BenchmarkScenario,
@@ -191,9 +187,9 @@ def deep_benchmark_plan(
 
 
 def print_deep_benchmark_header(
-    plan: DeepBenchmarkPlan, *, pair_set: str | None = None,
+    plan: DeepBenchmarkPlan, *, scenarios: str | None = None,
 ) -> None:
-    label = f"{pair_set} catalogue level; " if pair_set else ""
+    label = f"scenarios {scenarios}; " if scenarios else ""
     print(
         "Deep benchmark: " + label
         + (f"modular reference at {plan.modular_simulations:,} duels/scenario; "
@@ -739,7 +735,7 @@ def tts_study_payload(
     cells: Sequence[dict[str, object]], *, simulations: Sequence[int],
     batch_sizes: Sequence[int], seed: int, strategies: Sequence[str],
     backends: Sequence[str], repeats: int, scenario_count: int,
-    pair_set: str | None = None, elapsed_seconds: float | None = None,
+    scenarios: str | None = None, elapsed_seconds: float | None = None,
     parity: dict[str, object] | None = None,
 ) -> dict[str, object]:
     """Build the durable time-to-solution *study* artifact.
@@ -759,8 +755,8 @@ def tts_study_payload(
         },
         "cells": list(cells),
     }
-    if pair_set is not None:
-        payload["pair_set"] = pair_set
+    if scenarios is not None:
+        payload["scenarios"] = scenarios
     if parity is not None:
         payload["parity"] = parity
     if elapsed_seconds is not None:
@@ -814,7 +810,7 @@ def tts_cell_winners(
 
 
 def print_tts_study_summary(
-    cells: Sequence[dict[str, object]], *, pair_set: str | None = None,
+    cells: Sequence[dict[str, object]], *, scenarios: str | None = None,
 ) -> None:
     """Final console table: per cell and engine, the best strategy.
 
@@ -823,7 +819,7 @@ def print_tts_study_summary(
     that engine's sequential pass (when measured) and the runner-up. The
     overall fastest engine/strategy of the cell is marked with ``*``.
     """
-    scope = f" ({pair_set} catalogue level)" if pair_set else ""
+    scope = f" (scenarios {scenarios})" if scenarios else ""
     print(f"Time-to-solution study{scope}: "
           f"{len(cells)} cell(s), best strategy per engine:")
     headers = ["Simulations", "Batch", "Engine", "Best strategy", "Wall (s)",
@@ -1057,11 +1053,11 @@ def sweep_payload(
     unavailable: tuple[dict[str, str], ...] | list[dict[str, str]], *,
     simulation_sizes: tuple[int, ...], batch_sizes: tuple[int, ...],
     seed: int, warmups: int, repeats: int,
-    pair_set: str | None = None,
+    scenarios: str | None = None,
 ) -> dict[str, object]:
     """Build a durable multi-configuration sweep artifact.
 
-    ``pair_set`` is recorded only for the deep pair-matrix profile; ordinary
+    ``scenarios`` is recorded only for the deep pair-matrix profile; ordinary
     five-scenario benchmark sweeps keep the historical payload shape.
     """
     payload = {
@@ -1076,8 +1072,8 @@ def sweep_payload(
         "results": [asdict(item) for item in results],
         "unavailable": list(unavailable),
     }
-    if pair_set is not None:
-        payload["pair_set"] = pair_set
+    if scenarios is not None:
+        payload["scenarios"] = scenarios
     return payload
 
 
@@ -1144,8 +1140,8 @@ def _markdown_report(payload: dict[str, object]) -> str:
     )
     lines.append(f"- configuration: {json.dumps(configuration)}")
     lines.append("")
-    if payload.get("pair_set") is not None:
-        lines.append(f"- catalogue level: {payload['pair_set']}")
+    if payload.get("scenarios") is not None:
+        lines.append(f"- scenarios: {payload['scenarios']}")
     if payload.get("comparison") is not None:
         comparison = payload["comparison"]
         lines.append(f"## Gate: {'PASS' if comparison['passed'] else 'FAIL'}")

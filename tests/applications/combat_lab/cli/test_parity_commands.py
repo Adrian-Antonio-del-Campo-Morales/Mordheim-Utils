@@ -70,37 +70,57 @@ def test_battery_command_fails_on_own_error_without_require_complete(monkeypatch
 
 @pytest.mark.evidence
 def test_parity_cli_separates_the_battery_from_the_historical_certificate():
-    from mordheim_combat_lab.cli.commands import build_parser, parity_command
+    from mordheim_combat_lab.cli.commands import (
+        _normalise_parity_args, build_parser, parity_command,
+    )
 
     parser = build_parser()
-    # The historical presets keep their defaults when --profile is absent.
-    historical = parser.parse_args(["parity", "--level", "statistical"])
+    # The historical certificate: no battery profile, default candidates.
+    historical = parser.parse_args(["parity", "--certificate", "statistical"])
+    assert _normalise_parity_args(historical) is None
     assert historical.profile is None and historical.backend is None
-    assert historical.level == "statistical" and historical.pair_set is None
+    assert historical.level == "statistical"
+    assert [item.id for item in historical.statistical_scenarios] == [
+        item.id for item in _scenarios("small")]
 
+    # The battery certificate takes its profile from --scenarios and its
+    # width from --simulations.
     battery = parser.parse_args([
-        "parity", "--profile", "quick", "--backend", "all", "--rows", "8",
+        "parity", "--certificate", "battery", "--scenarios", "battery-quick",
+        "--backend", "numpy", "native", "--simulations", "8",
     ])
+    assert _normalise_parity_args(battery) is None
     assert battery.profile == "quick" and battery.backend == "all"
-    assert battery.rows == 8 and battery.level is None and battery.pair_set is None
+    assert battery.rows == 8 and battery.level is None
 
-    # An explicit legacy selector plus --profile would mix two measurements.
-    mixed = parser.parse_args(["parity", "--profile", "quick", "--level", "deep"])
-    assert parity_command(mixed) == 2
-    mixed = parser.parse_args(["parity", "--profile", "complete",
-                               "--pair-set", "small"])
-    assert parity_command(mixed) == 2
-    mixed = parser.parse_args(["parity", "--profile", "deep", "--truncations"])
-    assert parity_command(mixed) == 2
-    # --backend needs a profile or statistical; --rows still needs a profile.
+    # A battery profile and a historical certificate are two measurements.
+    for argv in (
+        ["--certificate", "battery", "--scenarios", "battery-quick", "small"],
+        ["--certificate", "deep", "--scenarios", "battery-complete"],
+        ["--certificate", "battery", "--truncations"],
+        ["--scenarios", "e2e", "small"],
+        ["--certificate", "deterministic", "--scenarios", "small"],
+        ["--backend", "modular", "numpy"],
+    ):
+        assert parity_command(parser.parse_args(["parity", *argv])) == 2, argv
+    # --backend needs something to compare; --simulations something to size.
     assert parity_command(parser.parse_args(["parity", "--backend", "native"])) == 2
-    assert parity_command(parser.parse_args(["parity", "--rows", "8"])) == 2
-    # --rows is accepted together with --require-complete (acceptance at a
-    # chosen width); see test_rows_override_reaches_preparation_and_the_report.
+    assert parity_command(parser.parse_args(["parity", "--simulations", "8"])) == 2
+    # The battery width is accepted together with --require-complete
+    # (acceptance at a chosen width); see
+    # test_rows_override_reaches_preparation_and_the_report.
     accepted = parser.parse_args([
-        "parity", "--profile", "quick", "--rows", "8000", "--require-complete",
+        "parity", "--certificate", "battery", "--scenarios", "battery-quick",
+        "--simulations", "8000", "--require-complete",
     ])
+    assert _normalise_parity_args(accepted) is None
     assert accepted.rows == 8000 and accepted.require_complete
+
+
+def _scenarios(level):
+    from tests.engines.fixtures.precompiled_catalog import scenarios_for_level
+
+    return scenarios_for_level(level)
 
 
 @pytest.mark.parametrize("rows", [None, 8000])
@@ -126,13 +146,13 @@ def test_rows_override_reaches_preparation_and_the_report(monkeypatch, capsys, r
 
 
 @pytest.mark.parametrize("backend,installed,expected", [
-    ("numpy", ("numpy", "native"), ("numpy",)),
-    ("native", ("numpy", "native"), ("native",)),
-    ("all", ("numpy", "native"), ("numpy", "native")),
+    (["numpy"], ("numpy", "native"), ("numpy",)),
+    (["native"], ("numpy", "native"), ("native",)),
+    (["numpy", "native"], ("numpy", "native"), ("numpy", "native")),
     (None, ("numpy", "native"), ("numpy", "native")),
     (None, ("numpy",), ("numpy",)),
-    ("native", ("numpy",), ()),
-    ("all", ("numpy",), ()),
+    (["native"], ("numpy",), ()),
+    (["numpy", "native"], ("numpy",), ()),
 ])
 @pytest.mark.evidence
 def test_statistical_cli_selects_backends_and_shares_oracle(
@@ -141,7 +161,7 @@ def test_statistical_cli_selects_backends_and_shares_oracle(
     from types import SimpleNamespace
     from mordheim_combat import vectorized
     from mordheim_combat.modular import parallel
-    from mordheim_combat_lab.cli import benchmarking, commands
+    from mordheim_combat_lab.cli import benchmarking, commands, scenarios
     from mordheim_combat_lab.verification import parity
 
     oracle_calls = []
@@ -151,7 +171,7 @@ def test_statistical_cli_selects_backends_and_shares_oracle(
     monkeypatch.setattr(parity, "verify_vectorized_parity",
                         lambda: SimpleNamespace(complete=True))
     monkeypatch.setattr(parity, "parity_report_payload", lambda *a, **kw: {})
-    monkeypatch.setattr(benchmarking, "benchmark_scenarios", lambda: (
+    monkeypatch.setattr(scenarios, "select_scenarios", lambda tokens: (
         SimpleNamespace(id="selection", maximum_rounds=1),
     ))
     monkeypatch.setattr(benchmarking, "compile_benchmark_fighters",
@@ -168,10 +188,10 @@ def test_statistical_cli_selects_backends_and_shares_oracle(
 
     monkeypatch.setattr(parallel, "run_oracle_sample", sample)
     monkeypatch.setattr(parity, "compare_statistical_parity", compare)
-    argv = ["parity", "--level", "statistical", "--json",
-            "--statistical-simulations", "1", "--workers", "1"]
+    argv = ["parity", "--certificate", "statistical", "--json",
+            "--simulations", "1", "--workers", "1"]
     if backend is not None:
-        argv += ["--backend", backend]
+        argv += ["--backend", *backend]
     args = commands.build_parser().parse_args(argv)
     assert commands.parity_command(args) == (0 if expected else 2)
     assert tuple(candidates) == expected
@@ -183,32 +203,46 @@ def test_statistical_backend_does_not_silently_select_truncation_backends():
     from mordheim_combat_lab.cli.commands import build_parser, parity_command
 
     args = build_parser().parse_args([
-        "parity", "--level", "statistical", "--backend", "numpy", "--truncations",
+        "parity", "--certificate", "statistical", "--backend", "numpy", "--truncations",
     ])
     assert parity_command(args) == 2
 
 
-@pytest.mark.parametrize("catalog", ["precompiled", "battery", "all"])
-def test_fixture_catalogue_modular_options_reach_the_catalogue_command(monkeypatch, catalog):
+@pytest.mark.parametrize("selection,catalog,profile", [
+    (["small"], "precompiled", None),
+    (["battery-deep"], "battery", "deep"),
+    (["small", "battery-quick"], "all", "quick"),
+    ([], "all", None),  # --backend modular alone: both catalogues
+])
+def test_fixture_catalogue_modular_options_reach_the_catalogue_command(
+    monkeypatch, selection, catalog, profile,
+):
     from mordheim_combat_lab.cli import commands
     calls = []
     monkeypatch.setattr(commands, "_catalog_parity_command", lambda args: calls.append(args) or 0)
-    args = commands.build_parser().parse_args([
-        "parity", "--catalog", catalog, "--backend", "modular", "--workers", "8",
-    ])
+    argv = ["parity", "--backend", "modular", "--workers", "8"]
+    if selection:
+        argv += ["--scenarios", *selection]
+    args = commands.build_parser().parse_args(argv)
     assert commands.parity_command(args) == 0
     assert calls == [args]
     assert args.catalog == catalog and args.backend == "modular"
-    assert args.workers == 8 and args.profile is None
+    assert args.workers == 8 and args.profile == profile
 
 
-@pytest.mark.parametrize("level,count", [(None, 8), ("small", 8), ("normal", 30), ("long", 43)])
-def test_precompiled_catalogue_uses_unified_levels_and_execution_settings(monkeypatch, level, count):
+@pytest.mark.parametrize("selection,count", [
+    (["small"], 8), (["normal"], 30), (["big"], 43),
+    (["long"], 1),             # a scenario name: that one scenario
+    (["small", "long"], 9),    # several values: their union
+])
+def test_precompiled_catalogue_uses_unified_levels_and_execution_settings(
+    monkeypatch, selection, count,
+):
     from types import SimpleNamespace
     from mordheim_combat_lab.cli import benchmarking, commands
     from mordheim_combat_lab.verification import parity
     from mordheim_construction import compiler
-    from tests.engines.fixtures.precompiled_catalog import scenarios_for_level
+    from tests.engines.fixtures.precompiled_catalog import select_scenarios
 
     def no_compile(*args, **kwargs):
         raise AssertionError("frozen scenarios must not compile fighters")
@@ -221,14 +255,14 @@ def test_precompiled_catalogue_uses_unified_levels_and_execution_settings(monkey
         return SimpleNamespace(rows=(), modular_duels=0)
 
     monkeypatch.setattr(parity, "run_parity", run)
-    argv = ["parity", "--catalog", "precompiled", "--backend", "modular",
+    argv = ["parity", "--scenarios", *selection, "--backend", "modular",
             "--simulations", "7", "--seed", "19", "--json"]
-    if level is not None:
-        argv += ["--level", level]
     # The stub emits no rows, so the command correctly reports an incomplete run.
     assert commands.parity_command(commands.build_parser().parse_args(argv)) == 1
     assert len(selected) == count
     assert all(case.label.startswith("scenario/") for case in selected)
     assert all(case.simulations == 7 and case.seed == 19 for case in selected)
-    for scenario in scenarios_for_level(level or "small"):
+    assert [case.label for case in selected] == [
+        f"scenario/{item.name}" for item in select_scenarios(selection)]
+    for scenario in select_scenarios(selection):
         assert benchmarking.compile_benchmark_fighters(scenario)

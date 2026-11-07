@@ -39,11 +39,11 @@ python tools/mordheim-utils.py app warband-manager --port 5199 --strictPort
 python tools/mordheim-utils.py tests modular mechanics -n 8 --dist=load -q
 python tools/mordheim-utils.py tests modular runtime -q
 python tools/mordheim-utils.py tests kb -n 8 --dist=load -q
-python tools/mordheim-utils.py performance benchmark --scenario basic --simulations 1000 --repeats 3
-python tools/mordheim-utils.py performance calibrate --pairs small --no-install
+python tools/mordheim-utils.py performance benchmark --scenarios basic --simulations 1000 --repeats 3
+python tools/mordheim-utils.py performance calibrate --scenarios small --no-install
 python tools/mordheim-utils.py check verify --json
 python tools/mordheim-utils.py check report rules --output outputs/audit
-python tools/mordheim-utils.py check parity --profile quick --rows 7200 --require-complete
+python tools/mordheim-utils.py check parity --certificate battery --scenarios battery-quick --simulations 7200 --require-complete
 python tools/mordheim-utils.py check coverage --json
 python tools/mordheim-utils.py check presentation
 python tools/mordheim-utils.py check ci
@@ -52,6 +52,52 @@ python tools/mordheim-utils.py check ci
 Use `<group> <command> --help` for what a command executes and which parser owns
 its options. Measurement, audit and report commands may run tests, simulations
 or write outputs; displaying help executes none of them.
+
+## Shared options
+
+Every engine tool — `performance benchmark`, `performance calibrate`,
+`check parity`, `check report tests`, `tools.verification.parity_samples` and
+`tools.verification.parity_campaign` — spells one concept one way, with one
+meaning. A tool that does not need an option simply does not offer it.
+
+| Option | Meaning |
+|---|---|
+| `--scenarios NAME...` | What runs. A level — `small` (8 scenarios), `normal` (30) or `big` (all 43) — or one or more scenario names (`basic`, `long`, …) or corpus keys (`scenario/basic`). Several values run their union, in the order given. |
+| `--scenarios-file PATH` | `--scenarios` values read from a file, one per line; `#` comment lines allowed (`check parity`). |
+| `--simulations N` | Duels per scenario (per case, per pair). |
+| `--workers N` | Worker processes. |
+| `--backend ENGINE...` | Engine(s): `modular`, `numpy`, `native`. |
+| `--batch-size N` | Duels per engine batch. The batch selects the random streams, so a re-run must repeat it. |
+| `--seed N` | Random seed. |
+| `--output PATH` | Where the report is written. |
+
+The levels are cumulative: `small` is contained in `normal`, `normal` in `big`.
+A name always selects the same scenarios, whatever the tool or mode; `long` is
+the 75-round stalemate *scenario*, never a level. Values never narrow each
+other, so `--scenarios small heavy-grind` runs nine scenarios.
+
+Tools whose runs reach other catalogues accept further `--scenarios` values:
+`check parity` takes battery profiles (`battery-quick`, `battery-complete`,
+`battery-deep`, cumulative), and `check parity` and `parity_samples` take `e2e`
+(every E2E delivery) or a delivery `case_key` / `audit_id::id`. E2E deliveries
+run on their own; they cannot be mixed with other values.
+
+Former spellings stop with the name that replaced them:
+
+| Former option | Now |
+|---|---|
+| `--scenario`, `--pair-set`, `--pairs`, `--level small\|normal\|long\|e2e`, `--id`, `--catalog`, `--e2e`, parity's `--profile quick\|complete\|deep` | `--scenarios` |
+| `--e2e-selection-file` | `--scenarios-file` |
+| `-n` (benchmark), `--sample-size`, `--rows`, `--statistical-simulations`, `--deep-simulations` | `--simulations` |
+| `--pool-sample-size` | `--pool-simulations` |
+| `--processes` | `--workers` |
+| `--engine` | `--backend` |
+| `--chunk` | `--batch-size` |
+| parity's `--level deterministic\|statistical\|deep` | `--certificate` |
+| `clause_registry.py prepare --out`, `audit_kb_conformance.py --show` | `--output`, `--limit` |
+
+Under `tests`, `-n` stays pytest-xdist's worker count: that option belongs to
+pytest, not to these tools.
 
 ## App launchers
 
@@ -269,7 +315,7 @@ runner self-checks do not certify rule behavior or statistical equivalence.
 | Vitest via npm | `--maxWorkers=8`; file parallelism is already built in |
 | `check parity` | `--workers 8` for modular-reference sampling; `--workers auto` uses the runner's automatic policy |
 | `check report tests --statistical` | `--workers 8` for its statistical reference samples |
-| `performance benchmark` | `--processes 8` for explicit multicore measurements |
+| `performance benchmark` | `--workers 8` for explicit multicore measurements |
 | `performance calibrate` | Already measures worker configurations; no extra worker option |
 | `tests env`, `check verify`, `check report rules`, `check coverage`, `check presentation`, `check ci`, `app` | No worker-count option exposed by these entries; do not append unsupported flags |
 
@@ -281,8 +327,8 @@ For time-to-solution measurements, the benchmark command compares execution
 strategies per engine, modular oracle included:
 
 ```powershell
-python tools/mordheim-utils.py performance benchmark --tts --pair-set small --backend numpy --strategies "sequential,processes=8,parallel=8"
-python tools/mordheim-utils.py performance benchmark --tts --pair-set long --backend modular -n 5000 --strategies "sequential,processes=12,parallel=12,parallel=12:48"
+python tools/mordheim-utils.py performance benchmark --tts --scenarios small --backend numpy --strategies "sequential,processes=8,parallel=8"
+python tools/mordheim-utils.py performance benchmark --tts --scenarios big --backend modular --simulations 5000 --strategies "sequential,processes=12,parallel=12,parallel=12:48"
 ```
 
 `sequential` and `processes=N` (one scenario per worker) apply to every
@@ -308,9 +354,10 @@ a frozen input is missing. Knowledge, construction and E2E tests retain their
 source-backed preparation.
 
 - `precompiled_catalog.py` defines 43 unified scenarios with stable
-  `scenario/<name>` keys. The cumulative levels `small`, `normal` and `long`
-  select the same inputs for parity, benchmarks and calibration; `long` includes
-  all 43. Seeds, sample widths and batch sizes are execution settings.
+  `scenario/<name>` keys. The cumulative levels `small`, `normal` and `big`
+  select the same inputs for parity, benchmarks and calibration; `big` includes
+  all 43. Its `select_scenarios` resolves every tool's `--scenarios` values.
+  Seeds, sample widths and batch sizes are execution settings.
 - `battery_catalogue.py` and `battery_keys.py` describe build-based battery
   cases, variants and intended clause coverage. Their preparation still requires
   compilation; these are not additional precompiled inputs.
@@ -352,31 +399,27 @@ select a CLI backend.
 `performance benchmark` runs `python -m mordheim_combat_lab benchmark` and
 `performance calibrate` runs `python -m mordheim_combat_lab calibrate`; their
 arguments belong to those commands. A small sample illustrates the command, not
-performance certification. Calibration can still be costly with the `mini` pair
-selection, and the saved profile changes later measurements on this machine.
+performance certification. Calibration can still be costly with
+`--scenarios small`, and the saved profile changes later measurements on this machine.
 Its batch sizes also change the NumPy and native sampled results for a given
 seed, because each batch draws its own random stream. The profile records the
 machine, engine digests, native build and source revision; one applied on
 another machine or engine prints a provenance warning and is still used.
 
-The benchmark's default `-n 100` is a smoke size: pass real simulation counts
-for measurements. `--pair-set small|normal|long` selects a scenario set and
-means the same scenarios in every mode (8, 30 and 43); without it a run
-measures `small`, or `long` under `--deep`. `--scenario` takes scenario ids
-and narrows the set when one is named. `long` is also the id of the 75-round
-stalemate scenario, so `--scenario long` is that one scenario while
-`--pair-set long` is all 43. The sequential
+The benchmark's default `--simulations 100` is a smoke size: pass real
+simulation counts for measurements. Without `--scenarios` a run measures
+`small`, or `big` under `--deep`. The sequential
 wall-time summary separates timed engine samples, warm-up executions and
 genuine setup overhead (interpreter start and catalogue load).
 
 A benchmark baseline gate compares only like measurements: simulations, batch
-size, seed, warmups, repeats, `--processes` and the backend list must match,
+size, seed, warmups, repeats, `--workers` and the backend list must match,
 or the gate exits 2. All three engines participate — a modular baseline gates
 modular optimization work the same way as the optimized backends. A
 (scenario, backend) pair the baseline measured but the current run did not,
 such as a native unit that failed, fails the gate. Differences in machine,
 engine digests, build or revision are reported as provenance warnings and
-never fail it. With `--processes N` the report gives the pool's wall time and
+never fail it. With `--workers N` the report gives the pool's wall time and
 sample concurrency, which is not a speedup over a sequential run.
 
 `benchmark --profile` runs the timed repeats under cProfile on
@@ -403,52 +446,71 @@ Each entry explains what it executes in `<entry> --help`.
 python tools/mordheim-utils.py check verify --json
 python tools/mordheim-utils.py check report rules --output outputs/audit
 python tools/mordheim-utils.py check report tests --statistical --workers 8 --output outputs/test-report
-python tools/mordheim-utils.py check parity --profile quick --backend numpy --rows 7200 --workers 8 --require-complete
+python tools/mordheim-utils.py check parity --certificate battery --scenarios battery-quick --backend numpy --simulations 7200 --workers 8 --require-complete
 python tools/mordheim-utils.py check coverage --json
 python tools/mordheim-utils.py check presentation
 python tools/mordheim-utils.py check ci
 ```
 
-Battery profiles run each case at its declared width (64 rows) unless `--rows`
-replaces it. The declared width only smoke-checks a profile: its cases are
-reported `UNDERPOWERED`, so a strict `--require-complete` gate needs
-`--rows 7200` or more; see the [verification reference](verification.md) for
-the power rule.
+Battery profiles run each case at its declared width (64 rows) unless
+`--simulations` replaces it. The declared width only smoke-checks a profile: its
+cases are reported `UNDERPOWERED`, so a strict `--require-complete` gate needs
+`--simulations 7200` or more; see the [verification reference](verification.md)
+for the power rule.
 
 `check ci` runs its configured checks and builds; it is not a complete
 engine-certification campaign. Use `tests` for suites and `check parity` for the
 comparison campaign; neither substitutes for the other.
 
-## Selecting parity catalogues and modular-only execution
+## Selecting what `check parity` runs
 
-The catalogue interface selects data independently of the engine:
+`--scenarios` names what runs and `--certificate` the kind of check. The
+values choose the catalogue, so there is no separate catalogue option:
 
-- `--catalog precompiled`: unified frozen scenarios loaded from
-  `compiled-cases.json` with no compilation fallback. `--level small` is the
-  default; `--level normal` expands the selection and `--level long` selects
-  all 43 scenarios.
-- `--catalog battery`: all build-based battery cases. `--profile quick`,
-  `complete` or `deep` filters this catalogue; no profile selects the full deep set.
-- `--catalog all`: both catalogues. A profile filters only the battery portion.
-- `--catalog e2e` or `--level e2e`: frozen E2E statistical deliveries.
-  With no identifiers, selects every delivery, including blocked and
-  non-applicable entries; their reasons remain visible without running them.
-  See [E2E campaigns](#e2e-statistical-campaigns) below.
+- Levels and scenario names (`small`, `normal`, `big`, `basic`, `long`, …):
+  unified frozen scenarios loaded from `compiled-cases.json` with no
+  compilation fallback.
+- `battery-quick`, `battery-complete`, `battery-deep`: build-based battery
+  cases of that cumulative profile (`battery-deep` is every battery case).
+- `e2e`, or delivery keys: frozen E2E statistical deliveries. `e2e` selects
+  every delivery, including blocked and non-applicable entries; their reasons
+  remain visible without running them. See
+  [E2E campaigns](#e2e-statistical-campaigns) below.
+
+Scenarios and battery profiles can run together (`--scenarios small
+battery-deep`); E2E deliveries run on their own.
+
+| Run | Selected by | Default `--scenarios` |
+|---|---|---|
+| Catalogue run: the selected cases through the unified runner | `--scenarios` without `--certificate`, or `--backend modular` | `small battery-deep` with `--backend modular` |
+| Statistical certificate: exact checks plus six-sigma samples | `--certificate statistical` | `small` |
+| Deep certificate: the selection at scale plus the numpy↔native cross | `--certificate deep` | `big` |
+| Round-truncation samples | `--truncations` (with a certificate, or alone) | `big` |
+| Battery certificate | `--certificate battery` | `battery-deep` |
+| Deterministic certificate: exact checks only | nothing selected, or `--certificate deterministic` | — |
+
 - `--backend modular`: execute the reference only. Rows report `COMPLETED`,
   errors or input limits, with no comparison or parity approval.
-- `--backend numpy`, `native` or `all`: compare those candidates against the
-  modular reference using the same runner. Here `all` names both candidates.
+- `--backend numpy`, `native` or both (`--backend numpy native`): compare those
+  candidates against the modular reference using the same runner.
+- `--simulations` sizes whichever layer runs: catalogue cases (default
+  100,000), the statistical certificate (100,000), the deep certificate
+  (100,000 per pair, 25,000 for the 75-round `long` pair), battery cases (their
+  declared width) or E2E deliveries (no default: required).
 
 ```powershell
-python tools/mordheim-utils.py check parity --catalog precompiled --level long --backend modular --workers 8
-python tools/mordheim-utils.py check parity --catalog battery --backend modular --workers 8
-python tools/mordheim-utils.py check parity --catalog all --backend modular --workers 8
+python tools/mordheim-utils.py check parity --scenarios big --backend modular --workers 8
+python tools/mordheim-utils.py check parity --scenarios battery-deep --backend modular --workers 8
+python tools/mordheim-utils.py check parity --scenarios big battery-deep --backend modular --workers 8
 
 # One duel per scenario: checks executability, not statistical equivalence
-python tools/mordheim-utils.py check parity --catalog all --backend modular --workers 8 --simulations 1
+python tools/mordheim-utils.py check parity --scenarios small battery-deep --backend modular --workers 8 --simulations 1
 
 # Compare a selected battery profile against NumPy
-python tools/mordheim-utils.py check parity --catalog battery --profile quick --backend numpy --workers 8
+python tools/mordheim-utils.py check parity --scenarios battery-quick --backend numpy --workers 8
+
+# One scenario, statistical certificate, both candidates
+python tools/mordheim-utils.py check parity --certificate statistical --scenarios heavy-grind --backend numpy native --workers 4
 ```
 
 To reuse saved modular counts, sample only the candidate with
@@ -456,11 +518,11 @@ To reuse saved modular counts, sample only the candidate with
 stored reference scenarios at 100,000 duels each:
 
 ```bash
-python -m tools.verification.parity_samples sample --engine numpy --level long --simulations 100000 --seed 2026 --chunk 2500 --workers 2 --store outputs/parity-numpy
-python -m tools.verification.parity_samples compare --backend numpy --level long --simulations 100000 --store outputs/parity-numpy --reference-store tests/engines/parity/reference_samples/modular-100k
+python -m tools.verification.parity_samples sample --backend numpy --scenarios big --simulations 100000 --seed 2026 --batch-size 2500 --workers 2 --store outputs/parity-numpy
+python -m tools.verification.parity_samples compare --backend numpy --scenarios big --simulations 100000 --store outputs/parity-numpy --reference-store tests/engines/parity/reference_samples/modular-100k
 ```
 
-`tests/engines/parity/reference_samples/numpy-long-200k` stores the NumPy
+`tests/engines/parity/reference_samples/numpy-big-200k` stores the NumPy
 engine's own outcomes over the same 43 scenarios at 200,000 duels each (batch
 100,000, seed 2026), recorded before the rule-algorithm optimization work. It
 carries no oracle, so it detects whether a later revision moved the engine's
@@ -496,13 +558,13 @@ contiguous chunks, outcome totals and current engine digests. All stored
 Modular references remained byte-identical; no simulations were rerun.
 
 ```bash
-python -m tools.verification.parity_samples compare --backend numpy --level e2e --simulations 100000 --store tests/engines/parity/reference_samples/numpy-e2e-100k --reference-store tests/engines/parity/reference_samples/modular-e2e-100k --output outputs/parity-e2e-stored/compare
+python -m tools.verification.parity_samples compare --backend numpy --scenarios e2e --simulations 100000 --store tests/engines/parity/reference_samples/numpy-e2e-100k --reference-store tests/engines/parity/reference_samples/modular-e2e-100k --output outputs/parity-e2e-stored/compare
 ```
 
 For example, generate a compressed E2E oracle store:
 
 ```bash
-python -m tools.verification.parity_samples sample --engine modular --level e2e --simulations 100000 --seed 2026 --chunk 500 --workers 2 --compress --store outputs/parity-modular-e2e
+python -m tools.verification.parity_samples sample --backend modular --scenarios e2e --simulations 100000 --seed 2026 --batch-size 500 --workers 2 --compress --store outputs/parity-modular-e2e
 ```
 
 Sampling resumes finished chunks. Comparison executes neither engine. It
@@ -523,7 +585,7 @@ A comparison against a historical reference does not certify the current
 engine. `sample` extends a record from another engine version with a warning,
 and each new chunk then records its own provenance; `--replace` discards such
 a record instead. Only a different experiment identity (fighters, seed, round
-limit or chunk size) is refused. A row whose sample cannot detect a 5-point
+limit or batch size) is refused. A row whose sample cannot detect a 5-point
 shift (fewer than 7,200 duels) is `underpowered`, compared but never approved.
 
 The sampled engine is digested where it was imported from, with a warning when
@@ -535,11 +597,11 @@ mix engines. Native sampling and comparison remain available;
 `sample --workers N` runs up to N chunks in separate processes for all three
 engines (`modular`, `numpy`, `native`); the default is 1, in-process. The parent
 process saves completed chunks, so seeds and counts match sequential sampling
-with the same chunk size, and interrupted runs can resume. A first Ctrl+C stops
+with the same `--batch-size`, and interrupted runs can resume. A first Ctrl+C stops
 new submissions and saves in-flight chunks; a second aborts immediately.
 `compare` and `status` read saved counts and do not use workers. Check coverage
-with `python -m tools.verification.parity_samples status --level long --store outputs/parity-numpy`;
-use `--id scenario/basic` to restrict any subcommand to one scenario.
+with `python -m tools.verification.parity_samples status --scenarios big --store outputs/parity-numpy`;
+use `--scenarios basic` to restrict any subcommand to one scenario.
 
 Without `--simulations`, precompiled scenarios use the command sample default;
 battery cases keep their declared row count. `--workers 8` cannot split a single duel across workers.
@@ -562,15 +624,15 @@ define which inputs can execute.
 To persist one engine's W/L/U counts for later comparison:
 
 ```powershell
-python -m tools.verification.parity_samples sample --engine modular --level e2e --simulations 100000 --seed 2026 --chunk 250 --workers 14 --store outputs/parity-modular-e2e
-python -m tools.verification.parity_samples status --level e2e --store outputs/parity-modular-e2e
-python -m tools.verification.parity_samples sample --engine numpy --level e2e --simulations 100000 --seed 2026 --chunk 250 --workers 14 --store outputs/parity-numpy-e2e
-python -m tools.verification.parity_samples compare --backend numpy --level e2e --simulations 100000 --store outputs/parity-numpy-e2e --reference-store outputs/parity-modular-e2e
+python -m tools.verification.parity_samples sample --backend modular --scenarios e2e --simulations 100000 --seed 2026 --batch-size 250 --workers 14 --store outputs/parity-modular-e2e
+python -m tools.verification.parity_samples status --scenarios e2e --store outputs/parity-modular-e2e
+python -m tools.verification.parity_samples sample --backend numpy --scenarios e2e --simulations 100000 --seed 2026 --batch-size 250 --workers 14 --store outputs/parity-numpy-e2e
+python -m tools.verification.parity_samples compare --backend numpy --scenarios e2e --simulations 100000 --store outputs/parity-numpy-e2e --reference-store outputs/parity-modular-e2e
 ```
 
-`sample`, `status` and `compare` accept repeatable `--id` values containing an
-E2E key or `audit_id::id`. `sample --rounds N` explicitly overrides the campaign
-horizon. Existing records with different horizons or chunk sizes cannot be
+`sample`, `status` and `compare` accept E2E keys or `audit_id::id` values in
+`--scenarios` in place of `e2e`. `sample --rounds N` explicitly overrides the campaign
+horizon. Existing records with different horizons or batch sizes cannot be
 extended into the same experiment; use another store or explicitly replace them.
 Sample files use `e2e__<sha256(case_key UTF-8)>.json` names to avoid long Windows
 paths. This store retains winner counts only, not wounds or condition distributions.
@@ -598,12 +660,12 @@ not rerun duels or change the sample counts.
 To execute both engines and compare distributions directly:
 
 ```powershell
-python tools/mordheim-utils.py check parity --level e2e --simulations 1000 --workers 2 --backend numpy --output outputs/e2e-parity/all.json --output-md outputs/e2e-parity/all.md
+python tools/mordheim-utils.py check parity --scenarios e2e --simulations 1000 --workers 2 --backend numpy --output outputs/e2e-parity/all.json --output-md outputs/e2e-parity/all.md
 ```
 
-Use repeatable `--e2e <case_key|audit_id::id>` or `--e2e-selection-file FILE` to
-narrow that selection; the file accepts one identifier per line and `#` comments.
-E2E direct comparisons accept candidate backends `numpy`, `native` or `all`;
+Name deliveries in `--scenarios <case_key|audit_id::id>...` or list them in
+`--scenarios-file FILE` (one value per line, `#` comment lines) instead of `e2e`.
+E2E direct comparisons accept candidate backends `numpy`, `native` or both;
 `modular` alone is not accepted on this path. `winner` is mandatory;
 `--magnitudes` can additionally select `rounds` without
 changing the frozen deliveries. `--output` writes JSON only and `--output-md`
@@ -622,11 +684,9 @@ provenance differences only warn. A small successful sample does not certify
 full engine parity.
 
 These catalogues require a source checkout with `tests/engines/fixtures` and
-its frozen JSON files. The battery also requires the KB/compiler. Catalogue
-selection accepts `--level small|normal|long` for precompiled scenarios.
-Historical parity levels and `--pair-set` remain available outside catalogue
-selection; `--pair-set` takes the same `small|normal|long` level names (the
-retired `mini`/`fast`/`full` aliases selected exactly these levels).
+its frozen JSON files. The battery also requires the KB/compiler. The levels
+were once also called `mini`/`fast`/`full` and `long` for what is now `big`;
+`big` took over because `long` is a scenario name.
 
 ## Knowledge base
 

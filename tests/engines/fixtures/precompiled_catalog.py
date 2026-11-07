@@ -12,9 +12,12 @@ variants because their first fighter differs: ``multiattack-a3-t3`` is the
 3-attack, T3 build and ``multiattack-a2-t4`` the 2-attack, T4 one.
 
 Selection is expressed as three cumulative levels — ``small`` contained in
-``normal``, contained in ``long`` — over these definitions, and ``small`` is
+``normal``, contained in ``big`` — over these definitions, and ``small`` is
 the default. A level selects scenarios only; each scenario keeps its own round
-limit.
+limit.  ``select_scenarios`` is the one resolver every tool's ``--scenarios``
+option uses: it takes level names and scenario names alike.  The levels are
+not named ``long`` because that is the name of a scenario (the 75-round
+stalemate), and a name must select the same scenarios wherever it is used.
 """
 from __future__ import annotations
 
@@ -483,9 +486,9 @@ SCENARIOS: tuple[Scenario, ...] = (
 )
 
 
-#: Level order: each level contains the previous one and ``long`` contains
+#: Level order: each level contains the previous one and ``big`` contains
 #: every scenario of the catalogue.
-LEVELS = ("small", "normal", "long")
+LEVELS = ("small", "normal", "big")
 
 #: Cheap smoke set: one representative per cost axis, no 75-round grind and no
 #: heavy attack pool.  This is the default for a quick parity or performance
@@ -528,18 +531,18 @@ NORMAL_SCENARIO_NAMES: tuple[str, ...] = SMALL_SCENARIO_NAMES + (
     "blessed-vs-regen",
 )
 
-#: Full set: every maintained scenario, so ``long`` adds the expensive combats
+#: Full set: every maintained scenario, so ``big`` adds the expensive combats
 #: — the two 75-round grinds, the heaviest attack pools and the long skill
 #: stacks — plus the remaining profile duels.  Levels never change a
 #: scenario's round limit.
-LONG_SCENARIO_NAMES: tuple[str, ...] = tuple(
+BIG_SCENARIO_NAMES: tuple[str, ...] = tuple(
     scenario.name for scenario in SCENARIOS
 )
 
 LEVEL_SCENARIOS: dict[str, tuple[str, ...]] = {
     "small": SMALL_SCENARIO_NAMES,
     "normal": NORMAL_SCENARIO_NAMES,
-    "long": LONG_SCENARIO_NAMES,
+    "big": BIG_SCENARIO_NAMES,
 }
 
 #: The uniform frozen-corpus key of every scenario.
@@ -564,5 +567,39 @@ def scenarios_for_level(level: str = "small") -> tuple[Scenario, ...]:
         raise ValueError(
             f"unknown level {level!r}; choose one of {', '.join(LEVELS)}"
         ) from error
+    by_name = {scenario.name: scenario for scenario in SCENARIOS}
+    return tuple(by_name[name] for name in names)
+
+
+def is_scenario_token(token: str) -> bool:
+    """Whether ``token`` names a level, a scenario or a ``scenario/<name>`` key."""
+    name = token.removeprefix("scenario/")
+    return token in LEVEL_SCENARIOS or name in SCENARIO_KEYS
+
+
+def select_scenarios(tokens) -> tuple[Scenario, ...]:
+    """Resolve ``--scenarios`` values to scenarios, in the order asked.
+
+    Each token is a level (``small``, ``normal``, ``big``), a scenario name
+    (``basic``) or its corpus key (``scenario/basic``).  Several tokens select
+    their union, so a name always adds the same scenarios whatever else is
+    given; nothing narrows another token.  Order follows the tokens, a level
+    contributing its own order, and a repeated scenario keeps its first place,
+    so a single level runs exactly as ``scenarios_for_level`` lists it.  An
+    unknown token is an error.
+    """
+    tokens = tuple(dict.fromkeys(tokens))
+    unknown = [token for token in tokens if not is_scenario_token(token)]
+    if unknown:
+        raise ValueError(
+            "unknown scenario(s) " + ", ".join(repr(token) for token in unknown)
+            + f"; use a level ({', '.join(LEVELS)}) or a scenario name"
+        )
+    names: dict[str, None] = {}
+    for token in tokens:
+        if token in LEVEL_SCENARIOS:
+            names.update(dict.fromkeys(LEVEL_SCENARIOS[token]))
+        else:
+            names[token.removeprefix("scenario/")] = None
     by_name = {scenario.name: scenario for scenario in SCENARIOS}
     return tuple(by_name[name] for name in names)

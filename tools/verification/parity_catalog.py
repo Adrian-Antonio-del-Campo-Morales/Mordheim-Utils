@@ -2,9 +2,10 @@
 
 Every scenario addresses ``tests/engines/fixtures/compiled-cases.json`` through
 one uniform key, ``scenario/<name>``.  The definitions, the names and the three
-cumulative levels live in ``tests.engines.fixtures.precompiled_catalog``; this
-module derives the corpus keys and resolves a selection, and never samples an
-engine, compiles a fighter or runs a duel.
+cumulative levels (``small``, ``normal``, ``big``) live in
+``tests.engines.fixtures.precompiled_catalog``, whose ``select_scenarios``
+resolves every tool's ``--scenarios`` values; this module derives the corpus
+keys, and never samples an engine, compiles a fighter or runs a duel.
 """
 from __future__ import annotations
 
@@ -14,7 +15,9 @@ from typing import Mapping, Sequence
 
 from tests.engines.fixtures.precompiled_catalog import LEVELS
 from tests.engines.fixtures.precompiled_catalog import SCENARIO_KEYS
+from tests.engines.fixtures.precompiled_catalog import is_scenario_token
 from tests.engines.fixtures.precompiled_catalog import scenarios_for_level
+from tests.engines.fixtures.precompiled_catalog import select_scenarios
 from tools.verification.compiled_cases import CompiledCase
 from tools.verification.e2e_parity import expressiveness
 
@@ -38,33 +41,20 @@ def _entries(level: str) -> tuple[tuple[str, str], ...]:
 
 
 #: Every maintained scenario as ``(corpus key, name)``, in catalogue order.
-CATALOGUE: tuple[tuple[str, str], ...] = _entries("long")
+CATALOGUE: tuple[tuple[str, str], ...] = _entries("big")
 
 
-def select(
-    *, level: str = "small", keys: Sequence[str] = (),
-) -> tuple[tuple[str, str], ...]:
-    """Return the catalogue entries a campaign should run.
+def select(scenarios: Sequence[str] = ("small",)) -> tuple[tuple[str, str], ...]:
+    """Return the ``(corpus key, name)`` entries for ``--scenarios`` values.
 
-    ``level`` is one of the cumulative scenario levels (``small`` by default).
-    ``keys`` narrows the selection to uniform corpus keys
-    (``scenario/<name>``); naming a key outside the level is an error rather
-    than a silent omission.
+    A value is a level (``small``, ``normal``, ``big``), a scenario name or its
+    corpus key (``scenario/<name>``); several values select their union, in
+    catalogue order.  An unknown value raises ``ValueError``.
     """
-    chosen = _entries(level)
-    if not keys:
-        return chosen
-    wanted = set(keys)
-    available = {entry[0] for entry in chosen}
-    missing = sorted(wanted - available)
-    if missing:
-        raise ValueError(
-            "scenario key(s) not selected: "
-            + ", ".join(missing)
-            + f" (level {level!r} covers {len(chosen)} entries; "
-            "widen --level or fix the key)"
-        )
-    return tuple(entry for entry in chosen if entry[0] in wanted)
+    return tuple(
+        (SCENARIO_KEYS[scenario.name], scenario.name)
+        for scenario in select_scenarios(scenarios)
+    )
 
 
 def load(
@@ -97,6 +87,7 @@ __all__ = (
     "CATALOGUE",
     "CORPUS",
     "LEVELS",
+    "is_scenario_token",
     "CampaignScenario",
     "load",
     "select",

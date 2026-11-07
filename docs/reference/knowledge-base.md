@@ -458,7 +458,7 @@ Access the clause register only through `python -X utf8 tools/knowledge/clause_r
 python -X utf8 tools/knowledge/clause_registry.py query --id "ID_EXACTO" --clause-id "CLAUSULA"
 python -X utf8 tools/knowledge/clause_registry.py query --pending --consumer contexts.py --limit 5
 python -X utf8 tools/knowledge/clause_registry.py query --backend numpy --status pending --fields id,clause_id,status
-python -X utf8 tools/knowledge/clause_registry.py prepare "$env:TEMP/clause-changes.json" --out "$env:TEMP/clause-prepared.json"
+python -X utf8 tools/knowledge/clause_registry.py prepare "$env:TEMP/clause-changes.json" --output "$env:TEMP/clause-prepared.json"
 python -X utf8 tools/knowledge/clause_registry.py apply "$env:TEMP/clause-prepared.json"
 # Authorized writer only, after reviewing the preview:
 python -X utf8 tools/knowledge/clause_registry.py apply "$env:TEMP/clause-prepared.json" --write

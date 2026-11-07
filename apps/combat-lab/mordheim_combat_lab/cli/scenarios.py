@@ -1,9 +1,8 @@
-"""Compatibility names for the shared, frozen scenario catalogue.
+"""The shared, frozen scenario catalogue as the CLI sees it.
 
-Benchmarking, calibration and parity select the same scenario definitions
-through the one set of cumulative catalogue level names: ``small``, ``normal``
-and ``long``.  The ``mini``/``fast``/``full`` pair-set names they used to carry
-were aliases of exactly those levels and have been retired.
+Benchmarking, calibration and parity resolve their ``--scenarios`` values
+through one function, ``select_scenarios``: a level (``small``, ``normal``,
+``big``) or a scenario name selects the same scenarios in every tool.
 
 The catalogue lives in the test fixtures (``tests/engines/fixtures/``), which
 are not an installed package: importing ``tests`` only works with the checkout
@@ -58,31 +57,10 @@ scenario_key = _catalog.scenario_key
 
 DEEP_SCENARIOS = SCENARIOS
 LEVELS = _catalog.LEVELS
-SMALL_SCENARIO_IDS = tuple(item.name for item in scenarios_for_level("small"))
-NORMAL_SCENARIO_IDS = tuple(item.name for item in scenarios_for_level("normal"))
-LONG_SCENARIO_IDS = tuple(item.name for item in scenarios_for_level("long"))
-DEEP_SCENARIO_SET_IDS = {
-    "small": SMALL_SCENARIO_IDS,
-    "normal": NORMAL_SCENARIO_IDS,
-    "long": LONG_SCENARIO_IDS,
-}
+select_scenarios = _catalog.select_scenarios
+is_scenario_token = _catalog.is_scenario_token
 
 
 def benchmark_scenarios() -> tuple[BenchmarkScenario, ...]:
     """The default, small selection of the shared scenario catalogue."""
     return scenarios_for_level("small")
-
-
-def deep_test_scenarios(level: str = "long") -> tuple[BenchmarkScenario, ...]:
-    """Select one cumulative level of the shared scenario catalogue.
-
-    The retired ``mini``/``fast``/``full`` aliases selected exactly these
-    levels, so they are rejected with the name that replaced them.
-    """
-    retired = {"mini": "small", "fast": "normal", "full": "long"}
-    if level in retired:
-        raise ValueError(
-            f"pair set {level!r} was renamed to {retired[level]!r}; "
-            f"choose one of {', '.join(LEVELS)}"
-        )
-    return scenarios_for_level(level)

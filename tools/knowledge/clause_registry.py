@@ -238,11 +238,11 @@ def main():
     query.add_argument("--pending", action="store_true")
     query.add_argument("--backend", choices=validator.BACKENDS)
     query.add_argument("--status", choices=sorted(validator.BACKEND_STATES))
-    query.add_argument("--limit", type=int, default=10)
+    query.add_argument("--limit", type=int, default=10, help="maximum entries listed")
     query.add_argument("--fields", default="id,clause_id,clause_text,semantic_contract,consumer,pending,notes")
     prep = commands.add_parser("prepare")
     prep.add_argument("changes", type=Path)
-    prep.add_argument("--out", type=Path, required=True)
+    prep.add_argument("--output", type=Path, required=True, help="path of the prepared package")
     app = commands.add_parser("apply")
     app.add_argument("package", type=Path)
     app.add_argument("--write", action="store_true", help="Without this flag, only validate and preview")
@@ -285,10 +285,10 @@ def main():
             apply(args.csv, migration(args.csv), args.write)
         elif args.command == "prepare":
             package = prepare(args.csv, json.loads(args.changes.read_text(encoding="utf-8")))
-            with args.out.open("x", encoding="utf-8") as out:
+            with args.output.open("x", encoding="utf-8") as out:
                 json.dump(package, out, ensure_ascii=False, indent=2)
             show(package)
-            print(f"Prepared: {args.out}")
+            print(f"Prepared: {args.output}")
         else:
             apply(args.csv, json.loads(args.package.read_text(encoding="utf-8")), args.write)
     except (ValueError, KeyError, OSError) as exc:

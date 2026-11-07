@@ -83,8 +83,8 @@ separate deterministic parity suite. The launcher selects these tests with
 This selection is not the complete large-sample certification campaign.
 
 For campaigns using saved modular references, use
-`python -m tools.verification.parity_samples`: `sample --engine numpy` or
-`sample --engine native` stores candidate batches, then `compare` reads the
+`python -m tools.verification.parity_samples`: `sample --backend numpy` or
+`sample --backend native` stores candidate batches, then `compare` reads the
 candidate store and the modular `--reference-store` without rerunning the
 oracle. Samples record inputs, seeds, round limits, the source digest of
 everything each engine executes, the source commit, the dirty state and the
@@ -268,7 +268,7 @@ source-derived mechanics expectations.
 
 Statistics compare optimized-engine behaviour with the modular reference over
 curated archetype duels, covering rule variants and their interactions. The 6σ marginal gate
-(`--level statistical`, `--level deep`) compares first/second/unresolved rates on the
+(`--certificate statistical`, `--certificate deep`) compares first/second/unresolved rates on the
 42-pair archetype matrix (glass cannons, brutes, elites, tanks, parry,
 mechanics like regeneration-vs-fire, ward saves, entangle, the
 timing/parry amplifiers — 4 hits vs one parry, a W1 stun stressor, a
@@ -276,11 +276,12 @@ measurable-rate frenzy pair, the durable mirror and a 75-round heavy grind —
 plus skill consumers, helmet/injury-profile-2, Cathayan Longsword, and the
 benchmark-only blessed-regeneration boundary) plus the numpy↔native
 cross-certification at 1 000 000 duels/pair where the optimized engines make
-scale cheap and the oracle is never touched. `--pair-set normal` is designed to
+scale cheap and the oracle is never touched. `--scenarios normal` is designed to
 retain the whole matrix's distinct effect-axis coverage in a smaller run;
-`--pair-set long` adds the omitted baselines, mirrors and alternate matchup
-contexts. The level applies only to the deep matrix and truncation sweep;
-the five-scenario statistical preset is unchanged.
+`--scenarios big` (the deep default) adds the omitted baselines, mirrors and
+alternate matchup contexts. Without `--scenarios` the statistical certificate
+samples `small` and the deep certificate and truncation sweep sample `big`; an
+explicit `--scenarios` applies to every layer that runs.
 
 Two properties keep this honest:
 
@@ -293,19 +294,19 @@ Two properties keep this honest:
 Choose pairs for meaningful rule variants, boundaries and interactions, not
 for the Cartesian product of all profiles (see *When to add a pair*).
 
-### Pair sets and current rule-coverage estimate
+### Levels and current rule-coverage estimate
 
-- **`fast` (30 pairs)** keeps one representative for each distinct mechanic
+- **`normal` (30 pairs)** keeps one representative for each distinct mechanic
   family currently present in the full matrix, plus the timing/native-drift
   amplifiers and the eight coverage-completion probes. It intentionally
   removes baselines, mirrors and alternate matchup contexts, so it is the
   recommended 10–15 minute certification loop.
-- **`full` (42 pairs)** is the complete matrix. It adds the omitted baselines,
+- **`big` (42 pairs)** is the complete matrix. It adds the omitted baselines,
   mirrors and alternate contexts; these do not usually add a new rule family,
   but they are valuable for finding direction-dependent or composition bugs
   after substantial engine changes.
 
-Both sets are curated to exercise every reachable compiled effect axis in the
+Both levels are curated to exercise every reachable compiled effect axis in the
 executable rule-axis inventory; the live coverage figure is whatever the
 reachability/fingerprint scan reports, not a number kept here. The eight
 coverage-completion probes cover: injury profiles 3/4; hit and wound rerolls,
@@ -379,7 +380,8 @@ report merely to hide lost evidence.
 
 ## Renewed statistical scenario battery
 
-`parity --profile quick|complete|deep` runs the scenario catalogue of
+`parity --certificate battery --scenarios battery-quick|battery-complete|battery-deep`
+(default `battery-deep`) runs the scenario catalogue of
 `mordheim_combat_lab.verification.parity._battery_cases` and compares the
 terminal outcome distributions of the modular oracle and the selected candidate.
 Profiles are cumulative by case id (`quick` ⊆ `complete` ⊆ `deep`). Each case
@@ -389,19 +391,19 @@ other.
 
 ```bash
 # minimal battery (11 prepared cases; execution evidence is separate)
-python -X utf8 tools/mordheim-utils.py check parity --profile quick --output outputs/parity/battery-quick.json
+python -X utf8 tools/mordheim-utils.py check parity --certificate battery --scenarios battery-quick --output outputs/parity/battery-quick.json
 
 # both candidates, per-backend coverage
-python -X utf8 tools/mordheim-utils.py check parity --profile complete --backend all --output outputs/parity/battery-complete.json
+python -X utf8 tools/mordheim-utils.py check parity --certificate battery --scenarios battery-complete --backend numpy native --output outputs/parity/battery-complete.json
 
 # markdown certificate and strict gate at an acceptance width
-python -X utf8 tools/mordheim-utils.py check parity --profile deep --rows 7200 --output outputs/parity/battery-deep.md --require-complete
+python -X utf8 tools/mordheim-utils.py check parity --certificate battery --scenarios battery-deep --simulations 7200 --output outputs/parity/battery-deep.md --require-complete
 
 # smaller sample width for calibration; its cases are UNDERPOWERED, never approved
-python -X utf8 tools/mordheim-utils.py check parity --profile quick --rows 256 --output outputs/parity/battery-quick-256.json
+python -X utf8 tools/mordheim-utils.py check parity --certificate battery --scenarios battery-quick --simulations 256 --output outputs/parity/battery-quick-256.json
 
 # 1000 duels per case, up to 10 modular-oracle worker processes
-python -X utf8 tools/mordheim-utils.py check parity --profile quick --backend numpy --rows 1000 --workers 10 --output outputs/parity/battery-quick-1000.json
+python -X utf8 tools/mordheim-utils.py check parity --certificate battery --scenarios battery-quick --backend numpy --simulations 1000 --workers 10 --output outputs/parity/battery-quick-1000.json
 ```
 
 `--workers N|auto` also applies to all three profiles. It partitions each
@@ -442,23 +444,23 @@ campaign-only potion table the KB marks out of scope, and `v01-restriction`
 needs a charge the construction rejects before any sample exists. Both remain in
 the profile denominator as `INCOMPATIBLE` with their cause.
 
-`--backend` defaults to `numpy` for a profile. `native` never falls back to
+`--backend` defaults to `numpy` for the battery certificate. `native` never falls back to
 NumPy: a missing or stale extension is `NOT_RUN:native-unavailable` or
 `NOT_RUN:native-stale`, an error that makes the run exit 1, and a plan the
 extension cannot express is `NOT_RUN:native-plan`, a dependency. Neither is a
 comparison. The battery's native rows replay the native core with the NumPy
 random generator, so they do not exercise production native seeding; reports
-say so. A battery `--backend` is valid only with `--profile`; on the
-historical route it is accepted only with `--level statistical` or
-`--level deep` and no `--truncations`. A deep certificate records requested and
-available backends and is incomplete when a requested native backend is
-missing. `--rows` requires `--profile`; these configuration errors exit with
-code 2. Without `--rows` every case keeps its declared width (64 rows). That
-width is a smoke check: its cases are `UNDERPOWERED`, so a strict
-`--require-complete` run needs `--rows` of at least 7,200, the smallest width
-that can detect a 5-point shift. `--rows` replaces every case's width and the
-certificate records it as `preparation.rows_override` (Markdown: "Rows"), so
-an overridden certificate is never read as one at the declared widths.
+say so. On the certificate routes `--backend` is accepted only with
+`--certificate battery`, or with `--certificate statistical|deep` and no
+`--truncations`. A deep certificate records requested and available backends
+and is incomplete when a requested native backend is missing. Configuration
+errors exit with code 2. Without `--simulations` every battery case keeps its
+declared width (64 rows). That width is a smoke check: its cases are
+`UNDERPOWERED`, so a strict `--require-complete` run needs `--simulations` of
+at least 7,200, the smallest width that can detect a 5-point shift.
+`--simulations` replaces every case's width and the certificate records it as
+`preparation.rows_override` (Markdown: "Rows"), so an overridden certificate is
+never read as one at the declared widths.
 
 The certificate is schema `mordheim-combat-parity-battery/v3`. Per case it
 records the stages actually reached — `executed` (both samples obtained),

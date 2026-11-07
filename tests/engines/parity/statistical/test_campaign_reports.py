@@ -18,7 +18,7 @@ from mordheim_combat_lab.verification.parity import ParityRow
 
 def _config(keys, **overrides):
     config = {
-        "level": "small",
+        "scenarios": ["small"],
         "scenario_keys": list(keys),
         "simulations": 1_000,
         "seed": 2_026,
@@ -168,11 +168,11 @@ def test_empty_run_is_incomplete():
 def test_markdown_carries_the_configuration_and_per_outcome_evidence():
     payload = campaign_payload(
         (_row("scenario/basic"),),
-        config=_config(["scenario/basic"], level="normal", workers=8),
+        config=_config(["scenario/basic"], scenarios=["normal"], workers=8),
         elapsed_seconds=4.0,
     )
     markdown = campaign_markdown(payload)
-    assert "Level: `normal`" in markdown
+    assert "Scenarios: `normal`" in markdown
     assert "Workers: `8`" in markdown
     assert "Corpus SHA256: `" in markdown
     assert "| Corpus key |" in markdown

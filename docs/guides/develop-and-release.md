@@ -134,8 +134,8 @@ python tools/mordheim-utils.py check parity --require-complete
 python tools/mordheim-utils.py check coverage
 ```
 
-`parity --level statistical` adds the standard six-sigma sample;
-`parity --level deep --pair-set normal|long` runs the curated archetype matrix,
+`parity --certificate statistical` adds the standard six-sigma sample;
+`parity --certificate deep --scenarios normal|big` runs the curated archetype matrix,
 with `--truncations` for round-horizon checks. These take minutes to hours and
 belong to engine changes and releases, never to the per-change loop.
 
@@ -148,18 +148,18 @@ Generated reports live under ignored `outputs/` — never hand-edit them:
 
 ## Performance work
 
-Benchmark changes against a saved baseline. The default `-n 100` is a smoke
-size; choose a real sample per engine (the modular oracle runs a few hundred
+Benchmark changes against a saved baseline. The default `--simulations 100` is a
+smoke size; choose a real sample per engine (the modular oracle runs a few hundred
 duels per second, the optimized engines tens to hundreds of thousands):
 
 ```powershell
-python tools/mordheim-utils.py performance benchmark -n 100000 --backend numpy --save-baseline outputs/benchmarks/numpy-before.json
-python tools/mordheim-utils.py performance benchmark -n 100000 --backend numpy --baseline outputs/benchmarks/numpy-before.json --require-improvement --output outputs/benchmarks/numpy-after.json
-python tools/mordheim-utils.py performance benchmark -n 2000 --backend modular --save-baseline outputs/benchmarks/modular-before.json
+python tools/mordheim-utils.py performance benchmark --simulations 100000 --backend numpy --save-baseline outputs/benchmarks/numpy-before.json
+python tools/mordheim-utils.py performance benchmark --simulations 100000 --backend numpy --baseline outputs/benchmarks/numpy-before.json --require-improvement --output outputs/benchmarks/numpy-after.json
+python tools/mordheim-utils.py performance benchmark --simulations 2000 --backend modular --save-baseline outputs/benchmarks/modular-before.json
 ```
 
-Both runs must use the same measurement design (simulations, batch size, seed,
-warmups, repeats, `--processes` and backends); a baseline unit missing from the
+Both runs must use the same measurement design (`--scenarios`, `--simulations`,
+`--batch-size`, `--seed`, `--warmups`, `--repeats`, `--workers` and `--backend`); a baseline unit missing from the
 current run fails the gate. The gate covers all three engines, so modular
 optimization work uses the same save/compare workflow. A baseline from another
 machine, engine or revision prints a provenance warning and is still compared,
@@ -174,7 +174,7 @@ To find where the time goes before optimizing, profile a single-configuration
 sequential run:
 
 ```powershell
-python tools/mordheim-utils.py performance benchmark --backend modular --scenario basic stateful -n 2000 --profile
+python tools/mordheim-utils.py performance benchmark --backend modular --scenarios basic stateful --simulations 2000 --profile
 ```
 
 It prints each backend's top functions by cumulative time and writes
@@ -190,7 +190,7 @@ To plan a large campaign (many scenarios, thousands of duels each), measure
 how each engine should split the work before running it:
 
 ```powershell
-python tools/mordheim-utils.py performance benchmark --tts --pair-set long --backend modular numpy native -n 5000 --strategies "sequential,processes=12,parallel=12,parallel=12:48" --output outputs/benchmarks/tts-plan.json
+python tools/mordheim-utils.py performance benchmark --tts --scenarios big --backend modular numpy native --simulations 5000 --strategies "sequential,processes=12,parallel=12,parallel=12:48" --output outputs/benchmarks/tts-plan.json
 ```
 
 The study runs the whole workload under every applicable strategy per engine
@@ -207,7 +207,7 @@ Calibrate after hardware, engine or combat-rule changes:
 
 ```powershell
 python tools/mordheim-utils.py performance calibrate
-python tools/mordheim-utils.py performance calibrate --pairs small
+python tools/mordheim-utils.py performance calibrate --scenarios small
 python tools/mordheim-utils.py performance calibrate --reset         # drop the profile
 ```
 

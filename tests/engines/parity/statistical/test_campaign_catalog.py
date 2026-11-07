@@ -36,51 +36,63 @@ def test_former_duplicate_names_appear_once_and_multiattack_twice():
     assert "multiattack" not in names
 
 
-def test_levels_are_cumulative_and_long_is_the_catalogue():
-    assert LEVELS == ("small", "normal", "long")
+def test_levels_are_cumulative_and_big_is_the_catalogue():
+    assert LEVELS == ("small", "normal", "big")
     assert {level: len(LEVEL_SCENARIOS[level]) for level in LEVELS} == {
-        "small": 8, "normal": 30, "long": 43,
+        "small": 8, "normal": 30, "big": 43,
     }
     assert set(LEVEL_SCENARIOS["small"]) <= set(LEVEL_SCENARIOS["normal"])
-    assert set(LEVEL_SCENARIOS["normal"]) < set(LEVEL_SCENARIOS["long"])
-    assert set(LEVEL_SCENARIOS["long"]) == {scenario.name for scenario in SCENARIOS}
+    assert set(LEVEL_SCENARIOS["normal"]) < set(LEVEL_SCENARIOS["big"])
+    assert set(LEVEL_SCENARIOS["big"]) == {scenario.name for scenario in SCENARIOS}
+
+
+def test_level_names_never_collide_with_scenario_names():
+    # A --scenarios value must select the same scenarios in every tool, so no
+    # scenario may be named like a level or another reserved selection value.
+    reserved = {*LEVELS, "e2e"}
+    names = {scenario.name for scenario in SCENARIOS}
+    assert reserved.isdisjoint(names)
+    assert not any(name.startswith("battery-") for name in names)
 
 
 def test_level_selection_returns_its_scenarios_in_catalogue_order():
     for level in LEVELS:
-        chosen = select(level=level)
+        chosen = select((level,))
         assert [name for _key, name in chosen] == list(LEVEL_SCENARIOS[level])
         assert {name for _key, name in chosen} == {
             scenario.name for scenario in scenarios_for_level(level)
         }
-    # Without a level the campaign selects the eight cheap scenarios.
-    assert select() == select(level="small")
+    # Without --scenarios the campaign selects the eight cheap scenarios.
+    assert select() == select(("small",))
     assert len(select()) == 8
 
 
-def test_long_level_keeps_the_expensive_round_limits():
-    by_name = {scenario.name: scenario for scenario in scenarios_for_level("long")}
+def test_big_level_keeps_the_expensive_round_limits():
+    by_name = {scenario.name: scenario for scenario in scenarios_for_level("big")}
     assert {"long", "heavy-grind"} <= set(by_name)
     assert by_name["long"].maximum_rounds == 75
     assert by_name["heavy-grind"].maximum_rounds == 75
-    # ``normal`` stops before the 75-round grinds; only ``long`` carries them.
+    # ``normal`` stops before the 75-round grinds; only ``big`` carries them.
     normal = {scenario.name for scenario in scenarios_for_level("normal")}
     assert {"long", "heavy-grind"}.isdisjoint(normal)
 
 
-def test_explicit_keys_keep_order_and_reject_unknown_or_out_of_level_keys():
-    chosen = select(level="long", keys=("scenario/long", "scenario/basic"))
-    assert [key for key, _name in chosen] == ["scenario/basic", "scenario/long"]
-    with pytest.raises(ValueError, match="not selected"):
-        select(keys=("scenario/missing",))
-    with pytest.raises(ValueError, match="not selected"):
-        select(level="normal", keys=("scenario/heavy-grind",))
-    with pytest.raises(ValueError, match="unknown level"):
-        select(level="full")
+def test_scenario_values_select_names_keys_and_unions_and_reject_unknowns():
+    # Names and corpus keys are the same scenario; the order asked is kept.
+    chosen = select(("scenario/long", "basic"))
+    assert [key for key, _name in chosen] == ["scenario/long", "scenario/basic"]
+    # A level plus a name outside it is their union, never a narrowing.
+    union = select(("normal", "heavy-grind"))
+    assert len(union) == 31 and union[-1] == ("scenario/heavy-grind", "heavy-grind")
+    with pytest.raises(ValueError, match="unknown scenario"):
+        select(("scenario/missing",))
+    # The retired level names are not levels any more.
+    with pytest.raises(ValueError, match="unknown scenario"):
+        select(("full",))
 
 
 def test_every_catalogue_key_resolves_to_its_frozen_case(cases):
-    scenarios, rejected = load(select(level="long"), cases)
+    scenarios, rejected = load(select(("big",)), cases)
     assert rejected == ()
     by_key = {scenario.key: scenario for scenario in scenarios}
     assert set(by_key) == {key for key, _name in CATALOGUE}
@@ -101,7 +113,7 @@ def test_every_catalogue_key_resolves_to_its_frozen_case(cases):
 
 def test_a_missing_frozen_case_is_reported_and_never_replaced(cases):
     scenarios, rejected = load(
-        select(level="long", keys=("scenario/basic", "scenario/long")),
+        select(("basic", "long")),
         {"scenario/basic": cases["scenario/basic"]},
     )
     assert [scenario.key for scenario in scenarios] == ["scenario/basic"]
@@ -114,7 +126,7 @@ def test_inputs_the_samplers_cannot_pass_on_reject_the_case(cases):
 
     basic = cases["scenario/basic"]
     scenarios, rejected = load(
-        select(level="long", keys=("scenario/basic",)),
+        select(("basic",)),
         {"scenario/basic": replace(basic, initial_state={"first": {"attacks": 0}})},
     )
     assert scenarios == ()

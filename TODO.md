@@ -104,8 +104,8 @@ The decision data lives in `tests/engines/parity/reference_samples/`:
 the candidates (seed 2026, 100,000 duels per scenario in 10,000-duel chunks,
 50 rounds, six-sigma winner gate). Compare stored stores without running
 either engine with `python -m tools.verification.parity_samples compare
---level e2e --backend <numpy|native> --store <candidate store>
---reference-store <modular store>`; re-sample candidates with `sample --engine
+--scenarios e2e --backend <numpy|native> --store <candidate store>
+--reference-store <modular store>`; re-sample candidates with `sample --backend
 <numpy|native>`. Running the Modular engine requires explicit authorization.
 
 Remaining certification work:
@@ -118,7 +118,7 @@ Remaining certification work:
   containing those changes and compare it with the oracle; the committed store
   still holds the earlier candidate.
 - **Requalify the 43 precompiled scenarios.** Native changed after its last
-  43/43 campaign; re-sample `--level long` and compare with `modular-100k`.
+  43/43 campaign; re-sample `--scenarios big` and compare with `modular-100k`.
 - **Refresh NumPy's stored fist sample.** After committing the fix, re-sample
   `profile.fist` for the Battle Monks of Cathay Raging Peasants
   (`the-fist-does-not-grant-the-enemy-the-dagger-save-bonus`) from a clean

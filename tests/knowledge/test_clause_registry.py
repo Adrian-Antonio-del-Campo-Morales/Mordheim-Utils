@@ -49,7 +49,7 @@ class RegisterToolsTest(unittest.TestCase):
         requests = self.root / "changes.json"
         requests.write_text(json.dumps(self.requests), encoding="utf-8")
         package = self.root / "prepared.json"
-        cli("prepare", str(requests), "--out", str(package))
+        cli("prepare", str(requests), "--output", str(package))
         cli("apply", str(package))
         self.assertEqual(self.path.read_bytes(), self.raw)
         output = cli("apply", str(package), "--write").stdout

@@ -17,9 +17,9 @@ by the six-sigma gate (0.25% floor) of
 Usage (from the repository root)::
 
     python -m tools.verification.parity_campaign --workers 8
-    python -m tools.verification.parity_campaign --level long
-    python -m tools.verification.parity_campaign --id scenario/basic \
-        --id scenario/long --simulations 5000
+    python -m tools.verification.parity_campaign --scenarios big
+    python -m tools.verification.parity_campaign --scenarios basic long \
+        --simulations 5000
 
 The report is written to ``<output>/parity-campaign.json`` and
 ``<output>/parity-campaign.md``; the exit code is 0 only when every selected
@@ -43,11 +43,11 @@ from tools.verification.e2e_parity import repository_root
 # import the engine from this checkout.
 bootstrap_paths(repository_root())
 
+from mordheim_combat_lab.cli.options import add_scenarios, retire
 from mordheim_combat_lab.provenance import run_provenance
 from tools.verification.compiled_cases import CompiledCaseError
 from tools.verification.compiled_cases import load_cases
 from tools.verification.parity_catalog import CORPUS
-from tools.verification.parity_catalog import LEVELS
 from tools.verification.parity_catalog import load
 from tools.verification.parity_catalog import select
 from mordheim_combat_lab.verification.parity import MagnitudeComparison
@@ -241,7 +241,7 @@ def campaign_markdown(payload: dict[str, object]) -> str:
         f"- Candidate: `{payload['candidate']}`",
         f"- Corpus: `{config.get('corpus')}`",
         f"- Corpus SHA256: `{config.get('corpus_sha256')}`",
-        f"- Level: `{config.get('level')}`",
+        f"- Scenarios: `{' '.join(config.get('scenarios') or ())}`",
         f"- Scenarios selected: `{coverage.get('selected')}`",
         f"- Simulations per engine: `{config.get('simulations')}`",
         f"- Seed: `{config.get('seed')}`",
@@ -358,17 +358,10 @@ def _parser() -> argparse.ArgumentParser:
             "and write a JSON and Markdown report."
         ),
     )
-    selection = parser.add_argument_group("scenario selection")
-    selection.add_argument(
-        "--level", choices=LEVELS, default="small",
-        help="cumulative scenario level: small 8, normal 30, long 43 "
-             "(default: small)",
-    )
-    selection.add_argument(
-        "--id", dest="ids", action="append", default=[], metavar="KEY",
-        help="uniform corpus key to keep, repeatable (e.g. scenario/basic); "
-             "must belong to the selected level",
-    )
+    selection = parser.add_argument_group("what runs")
+    add_scenarios(selection, default="small")
+    retire(parser, "--level", replacement="--scenarios small|normal|big")
+    retire(parser, "--id", replacement="--scenarios <name|scenario/<name>>")
     samples = parser.add_argument_group("sample configuration")
     samples.add_argument(
         "--simulations", type=_positive, default=1_000, metavar="DUELS",
@@ -385,7 +378,7 @@ def _parser() -> argparse.ArgumentParser:
     )
     samples.add_argument(
         "--workers", type=_workers, default="auto", metavar="N|auto",
-        help="modular-oracle processes: 1 runs sequentially, auto pools only "
+        help="worker processes for modular-oracle samples: 1 runs sequentially, auto pools only "
              "samples estimated over ~20s sequentially (default: auto)",
     )
     output = parser.add_argument_group("report")
@@ -404,7 +397,7 @@ def _corpus_digest(path: Path) -> str:
 def main(argv: Sequence[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     try:
-        chosen = select(level=args.level, keys=args.ids)
+        chosen = select(args.scenarios or ("small",))
     except ValueError as error:
         print(f"parity campaign: {error}", file=sys.stderr)
         return 2
@@ -425,7 +418,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"NOT_RUN: {key}: {reason}", file=sys.stderr)
 
     config = {
-        "level": args.level,
+        "scenarios": list(args.scenarios or ("small",)),
         "scenario_keys": [key for key, _name in chosen],
         "simulations": args.simulations,
         "seed": args.seed,

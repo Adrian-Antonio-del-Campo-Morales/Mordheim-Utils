@@ -1,5 +1,5 @@
 """Development and application commands; heavy imports stay local."""
-from argparse import ArgumentParser, ArgumentTypeError
+from argparse import ArgumentParser
 from dataclasses import asdict
 from pathlib import Path
 import json
@@ -7,6 +7,7 @@ import os
 import sys
 import time
 
+from mordheim_combat_lab.cli.options import add_scenarios, retire
 from mordheim_combat_lab.console import HelpFormatter as _StyledHelpFormatter
 
 
@@ -32,17 +33,10 @@ def _warmups(value: str) -> int:
     return parsed
 
 
-def _scenario_id(value: str) -> str:
-    """One ``--scenario`` id; a scenario set is chosen with ``--pair-set``.
-
-    ``long`` is not rejected: it is also the id of the 75-round stalemate
-    scenario, which this option has always selected on its own.
-    """
-    if value in ("all", "small", "normal"):
-        raise ArgumentTypeError(
-            f"{value!r} is not a scenario id; select a scenario set with "
-            "--pair-set small|normal|long")
-    return value
+def _scenario_label(args, default: str | None = None) -> str | None:
+    """The ``--scenarios`` values as given, for report labels and filenames."""
+    values = getattr(args, "scenarios", None)
+    return " ".join(values) if values else default
 
 
 #: Default grids for ``benchmark --deep``: the generic ``--simulation-sizes``
@@ -175,13 +169,13 @@ def verify_command(args) -> int:
 def _deep_benchmark_command(args, scenarios, installed) -> int:
     """Deep benchmark: modular as a small reference, optimized engines swept
     over large sizes and batch sizes (see deep_benchmark_plan for the policy)."""
-    pair_set = getattr(args, "pair_set", "long")
+    label = _scenario_label(args, "big")
     if not args.output:
         from mordheim_combat_lab.report_naming import timestamped_report_path
         args.output = {
             "small": timestamped_report_path("outputs/benchmarks", "deep-small", ".json"),
             "normal": timestamped_report_path("outputs/benchmarks", "deep-normal", ".json"),
-        }.get(pair_set, timestamped_report_path("outputs/benchmarks", "deep", ".json"))
+        }.get(label, timestamped_report_path("outputs/benchmarks", "deep", ".json"))
     from time import perf_counter
 
     from mordheim_combat_lab.cli.benchmarking import BenchmarkProgress
@@ -275,7 +269,7 @@ def _deep_benchmark_command(args, scenarios, installed) -> int:
     payload = sweep_payload(
         results, unavailable, simulation_sizes=vector_sizes,
         batch_sizes=batch_sizes, seed=args.seed, warmups=args.warmups,
-        repeats=args.repeats, pair_set=pair_set,
+        repeats=args.repeats, scenarios=label,
     )
     payload["mode"] = "deep"
     payload["modular_reference_simulations"] = plan.modular_simulations
@@ -298,7 +292,7 @@ def _deep_benchmark_command(args, scenarios, installed) -> int:
     if args.json:
         print(json.dumps(payload, ensure_ascii=True, indent=2))
     else:
-        print_deep_benchmark_header(plan, pair_set=pair_set)
+        print_deep_benchmark_header(plan, scenarios=label)
         print_sweep_table(
             results, unavailable, simulation_sizes=vector_sizes,
             batch_sizes=batch_sizes, seed=args.seed, repeats=args.repeats,
@@ -316,7 +310,7 @@ def _deep_benchmark_command(args, scenarios, installed) -> int:
     return 0
 
 
-def _tts_benchmark_command(args, scenarios, pair_set) -> int:
+def _tts_benchmark_command(args, scenarios, label) -> int:
     """Time-to-solution study: run every (simulations x batch size) cell of
     the workload through every applicable (strategy x backend) combination
     and rank the combinations by the wall time of solving the cell
@@ -415,7 +409,7 @@ def _tts_benchmark_command(args, scenarios, pair_set) -> int:
         [tts_cell_payload(cell) for cell in cells],
         simulations=simulation_sizes, batch_sizes=batch_sizes, seed=args.seed,
         strategies=strategies, backends=backends, repeats=repeats,
-        scenario_count=scenario_count, pair_set=pair_set,
+        scenario_count=scenario_count, scenarios=label,
         elapsed_seconds=perf_counter() - command_started,
         parity=parity_report,
     )
@@ -424,7 +418,7 @@ def _tts_benchmark_command(args, scenarios, pair_set) -> int:
     if args.json:
         print(json.dumps(payload, ensure_ascii=True, indent=2))
     else:
-        print_tts_study_summary(cells, pair_set=pair_set)
+        print_tts_study_summary(cells, scenarios=label)
         if parity_report is not None:
             verdict = "PASS" if parity_report["passed"] else "FAIL"
             print(f"Parity gate: {verdict} - per-backend totals across "
@@ -436,26 +430,18 @@ def _tts_benchmark_command(args, scenarios, pair_set) -> int:
     return 1 if failed else 0
 
 
-def select_benchmark_scenarios(pair_set, scenario_ids, *, deep: bool = False):
-    """Return the benchmark's scenarios, or an error message.
+def select_benchmark_scenarios(scenarios, *, deep: bool = False):
+    """Return the benchmark's scenarios for ``--scenarios``, or an error message.
 
-    A set name (``small``, ``normal``, ``long``) selects the same scenarios in
-    every benchmark mode.  Without one, the run measures ``small``, or ``long``
-    under ``--deep``.  Explicit ``scenario_ids`` narrow the named set, or the
-    whole catalogue when no set is named; they keep the catalogue's order.
+    Every value selects the same scenarios in every benchmark mode.  Without
+    the option, a run measures ``small``, or ``big`` under ``--deep``.
     """
-    from mordheim_combat_lab.cli.scenarios import deep_test_scenarios
+    from mordheim_combat_lab.cli.scenarios import select_scenarios
 
-    requested = tuple(dict.fromkeys(scenario_ids or ()))
-    if not requested:
-        return deep_test_scenarios(pair_set or ("long" if deep else "small"))
-    scope = deep_test_scenarios(pair_set or "long")
-    available = {item.id for item in scope}
-    unknown = [name for name in requested if name not in available]
-    if unknown:
-        names = ", ".join(repr(name) for name in unknown)
-        return f"scenario(s) {names} not in the {pair_set or 'long'} set"
-    return tuple(item for item in scope if item.id in requested)
+    try:
+        return select_scenarios(scenarios or (("big",) if deep else ("small",)))
+    except ValueError as error:
+        return str(error)
 
 
 def benchmark_command(args) -> int:
@@ -479,7 +465,6 @@ def benchmark_command(args) -> int:
         print("Benchmark configuration error: --deep cannot be combined with "
               "--baseline/--save-baseline/--require-improvement", file=sys.stderr)
         return 2
-    pair_set = getattr(args, "pair_set", None)
     sweep = args.simulation_sizes is not None or args.batch_sizes is not None
     if sweep and not args.deep and (args.baseline or args.save_baseline or args.require_improvement):
         print("Benchmark configuration error: --baseline/--save-baseline and "
@@ -493,7 +478,7 @@ def benchmark_command(args) -> int:
     if args.tts:
         if args.deep:
             print("Benchmark configuration error: --tts is itself a full "
-                  "workload study (--pair-set already selects every combat "
+                  "workload study (--scenarios already selects every combat "
                   "type); --deep sweeps belong to the classic throughput mode",
                   file=sys.stderr)
             return 2
@@ -503,7 +488,7 @@ def benchmark_command(args) -> int:
             return 2
         if max(1, int(getattr(args, "processes", 1) or 1)) > 1:
             print("Benchmark configuration error: --tts selects its own "
-                  "strategies with --strategies; --processes belongs to the "
+                  "strategies with --strategies; --workers belongs to the "
                   "standard throughput modes", file=sys.stderr)
             return 2
     if getattr(args, "profile", False):
@@ -514,7 +499,7 @@ def benchmark_command(args) -> int:
             return 2
         if max(1, int(getattr(args, "processes", 1) or 1)) > 1:
             print("Benchmark configuration error: --profile needs the "
-                  "sequential path; drop --processes", file=sys.stderr)
+                  "sequential path; drop --workers", file=sys.stderr)
             return 2
         if args.baseline or args.save_baseline or args.require_improvement:
             print("Benchmark configuration error: profiled timings include "
@@ -522,13 +507,12 @@ def benchmark_command(args) -> int:
                   file=sys.stderr)
             return 2
 
-    scenarios = select_benchmark_scenarios(
-        pair_set, args.scenario, deep=args.deep)
+    scenarios = select_benchmark_scenarios(args.scenarios, deep=args.deep)
     if isinstance(scenarios, str):
         print(f"Benchmark configuration error: {scenarios}", file=sys.stderr)
         return 2
     if args.tts:
-        return _tts_benchmark_command(args, scenarios, pair_set)
+        return _tts_benchmark_command(args, scenarios, _scenario_label(args))
     from time import perf_counter
 
     installed = available_backends()
@@ -914,20 +898,6 @@ def _catalog_parity_command(args) -> int:
     catalog = args.catalog or "all"
     backend = args.backend or "numpy"
     profile = args.profile
-    if args.level is not None and catalog == "battery":
-        print("Parity configuration error: --level selects precompiled scenarios only.", file=sys.stderr)
-        return 2
-    if profile is not None and catalog == "precompiled":
-        print("Parity configuration error: --profile filters battery cases only.", file=sys.stderr)
-        return 2
-    if ((args.level is not None and args.level not in ("small", "normal", "long"))
-            or args.pair_set is not None or args.truncations
-            or args.deep_simulations is not None):
-        print("Parity configuration error: --catalog uses catalogue selection, --level small|normal|long, not --pair-set/--truncations/--deep-simulations.", file=sys.stderr)
-        return 2
-    if args.rows is not None:
-        print("Parity configuration error: use --simulations with --catalog, not --rows.", file=sys.stderr)
-        return 2
     try:
         from mordheim_combat_lab.cli.scenarios import load_checkout_module
         precompiled_catalog = load_checkout_module(
@@ -960,7 +930,8 @@ def _catalog_parity_command(args) -> int:
             print(f"Cannot load frozen corpus (no compilation fallback): {error}", file=sys.stderr)
             return 2
         keys = tuple(precompiled_catalog.scenario_key(item.name)
-                     for item in precompiled_catalog.scenarios_for_level(args.level or "small"))
+                     for item in precompiled_catalog.select_scenarios(
+                         args.precompiled_scenarios or ("small",)))
         for key in keys:
             order.append(key)
             size, horizon = args.simulations or 1, 50
@@ -1049,7 +1020,8 @@ def _catalog_parity_command(args) -> int:
     }
     payload = {
         "catalog": catalog, "profile": profile or ("deep" if catalog != "precompiled" else None),
-        "level": (args.level or "small") if catalog != "battery" else None,
+        "scenarios": (list(args.precompiled_scenarios or ("small",))
+                      if catalog != "battery" else None),
         "backend": backend, "reference_only": reference_only,
         "complete": bool(rows) and all(row.status == success for row in rows),
         "parity_approved": not reference_only and bool(rows) and all(row.approved for row in rows),
@@ -1098,42 +1070,25 @@ def _e2e_parity_command(args) -> int:
     """
     from tools.verification import e2e_parity
 
-    selections = list(getattr(args, "e2e", None) or ())
-    selection_file = getattr(args, "e2e_selection_file", None)
-    if selection_file:
-        try:
-            selections.extend(e2e_parity.read_selection_file(Path(selection_file)))
-        except OSError as error:
-            print(f"Parity configuration error: cannot read --e2e-selection-file: {error}",
-                  file=sys.stderr)
-            return 2
-    if not selections and not selection_file:
+    # ``--scenarios`` (and ``--scenarios-file``) already resolved by
+    # ``_normalise_parity_args``: no delivery keys means ``--scenarios e2e``.
+    selections = list(args.e2e)
+    if not selections:
         index, _ = e2e_parity.discover(
             Path(args.e2e_deliveries) if getattr(args, "e2e_deliveries", None) else None)
         selections = sorted(index)
         if not selections:
             print("Parity configuration error: no E2E deliveries found.", file=sys.stderr)
             return 2
-    if getattr(args, "level", None) is not None or getattr(args, "profile", None) is not None:
-        print("Parity configuration error: --catalog e2e is configured with "
-              "--simulations/--seed/--workers/--magnitudes; --level and "
-              "--profile select other catalogues.", file=sys.stderr)
-        return 2
-    if (getattr(args, "pair_set", None) is not None
-            or getattr(args, "truncations", False)
-            or getattr(args, "deep_simulations", None) is not None):
-        print("Parity configuration error: --catalog e2e does not use "
-              "--pair-set/--truncations/--deep-simulations.", file=sys.stderr)
-        return 2
     simulations = getattr(args, "simulations", None)
     if simulations is None:
-        print("Parity configuration error: --catalog e2e requires an explicit "
+        print("Parity configuration error: E2E deliveries require an explicit "
               "--simulations <DUELS> sample width.", file=sys.stderr)
         return 2
     backend = getattr(args, "backend", None) or "numpy"
     if backend == "modular":
-        print("Parity configuration error: --catalog e2e compares a candidate; "
-              "choose numpy, native or all.", file=sys.stderr)
+        print("Parity configuration error: E2E deliveries compare a candidate; "
+              "choose --backend numpy, native or both.", file=sys.stderr)
         return 2
     try:
         magnitudes = e2e_parity.parse_magnitudes(getattr(args, "magnitudes", None))
@@ -1195,81 +1150,142 @@ def parity_command(args) -> int:
         return 2
 
 
-def _parity_command(args) -> int:
-    if getattr(args, "level", None) == "e2e":
-        if getattr(args, "catalog", None) not in (None, "precompiled", "e2e"):
-            print("Parity configuration error: --level e2e cannot select a battery catalogue.",
-                  file=sys.stderr)
-            return 2
+#: ``--scenarios`` values naming a battery profile; profiles are cumulative.
+BATTERY_SCENARIOS = {"battery-quick": "quick", "battery-complete": "complete",
+                     "battery-deep": "deep"}
+
+
+def _read_scenarios_file(path: str) -> list[str]:
+    """``--scenarios-file``: one ``--scenarios`` value per line.
+
+    Blank lines and lines starting with ``#`` are skipped; a ``#`` elsewhere is
+    part of the value (the E2E selection-file format).
+    """
+    values = []
+    for line in Path(path).read_text(encoding="utf-8").splitlines():
+        value = line.strip()
+        if value and not value.startswith("#"):
+            values.append(value)
+    return values
+
+
+def _normalise_parity_args(args) -> str | None:
+    """Translate the shared options into what the parity runners read.
+
+    ``--scenarios`` names what runs and ``--certificate`` the kind of check;
+    together they choose one of four runners -- the E2E campaign, the battery
+    certificate, the historical certificate or the catalogue run.  The
+    runners keep their own attributes (``catalog``, ``level``, ``profile``,
+    ...), set here and nowhere else.  Returns an error message or ``None``.
+    """
+    from mordheim_combat_lab.cli.scenarios import is_scenario_token, select_scenarios
+    from mordheim_combat_lab.verification.parity._battery_cases import PROFILE_LEVELS
+
+    tokens = list(dict.fromkeys(args.scenarios or ()))
+    if args.scenarios_file:
+        try:
+            listed = _read_scenarios_file(args.scenarios_file)
+        except OSError as error:
+            return f"cannot read --scenarios-file: {error}"
+        if not listed:
+            return f"--scenarios-file {args.scenarios_file} names no scenarios"
+        tokens += [value for value in listed if value not in tokens]
+    scenarios = [token for token in tokens if is_scenario_token(token)]
+    battery = [token for token in tokens if token in BATTERY_SCENARIOS]
+    e2e = [token for token in tokens if token not in scenarios and token not in battery]
+    certificate = args.certificate
+    backends = tuple(dict.fromkeys(args.backend or ()))
+    if "modular" in backends and len(backends) > 1:
+        return ("--backend modular runs the reference alone; name the candidates "
+                "(numpy, native) without it")
+    args.backend = ("all" if set(backends) == {"numpy", "native"}
+                    else backends[0] if backends else None)
+    profile = (max((BATTERY_SCENARIOS[token] for token in battery),
+                   key=PROFILE_LEVELS.index) if battery else None)
+    args.catalog = args.level = args.profile = args.pair_set = args.rows = None
+    args.e2e, args.e2e_selection_file = [], None
+    args.precompiled_scenarios = tuple(scenarios)
+    args.statistical_simulations, args.deep_simulations = 100_000, None
+    if e2e:
+        if scenarios or battery or certificate or args.truncations:
+            return ("E2E deliveries run on their own: give --scenarios e2e or "
+                    "delivery keys without other scenarios, --certificate or "
+                    "--truncations")
         args.catalog = "e2e"
-        args.level = None
-    if getattr(args, "catalog", None) == "e2e":
+        args.e2e = [] if "e2e" in e2e else e2e
+        return None
+    if args.output_md:
+        return "--output-md applies to E2E deliveries (--scenarios e2e or delivery keys)"
+    if certificate == "battery":
+        if scenarios or args.truncations:
+            return ("--certificate battery runs battery profiles only: "
+                    "--scenarios battery-quick|battery-complete|battery-deep")
+        if args.backend == "modular":
+            return ("--certificate battery compares candidates; for a modular-only "
+                    "run omit --certificate")
+        args.profile = profile or "deep"
+        args.rows, args.simulations = args.simulations, None
+        return None
+    if certificate is not None or args.truncations:
+        if battery:
+            return ("battery profiles run through --certificate battery, or "
+                    "without --certificate")
+        args.level = certificate or "deterministic"
+        if args.level == "deterministic" and not args.truncations:
+            if tokens:
+                return ("--certificate deterministic runs the exact checks only; "
+                        "--scenarios applies to statistical, deep or --truncations")
+            if args.simulations is not None:
+                return ("--certificate deterministic runs the exact checks only; "
+                        "--simulations applies to statistical or deep")
+        args.pair_set = " ".join(scenarios) if scenarios else "big"
+        args.deep_scenarios = select_scenarios(scenarios or ("big",))
+        args.statistical_scenarios = select_scenarios(scenarios or ("small",))
+        if args.level == "statistical" and args.simulations is not None:
+            args.statistical_simulations = args.simulations
+        if args.level == "deep":
+            args.deep_simulations = args.simulations
+        args.simulations = None
+        return None
+    if tokens or args.backend == "modular":
+        args.catalog = ("precompiled" if scenarios and not battery
+                        else "battery" if battery and not scenarios else "all")
+        args.profile = profile
+        return None
+    if args.simulations is not None:
+        return ("--simulations needs something to run: --scenarios or "
+                "--certificate statistical|deep|battery")
+    args.level = "deterministic"
+    return None
+
+
+def _parity_command(args) -> int:
+    error = _normalise_parity_args(args)
+    if error is not None:
+        print(f"Parity configuration error: {error}.", file=sys.stderr)
+        return 2
+    if args.catalog == "e2e":
         return _e2e_parity_command(args)
-    if getattr(args, "output_md", None):
-        print("Parity configuration error: --output-md currently requires --catalog e2e or --level e2e.",
-              file=sys.stderr)
-        return 2
-    if getattr(args, "catalog", None) is not None or getattr(args, "backend", None) == "modular":
+    if args.catalog is not None:
         return _catalog_parity_command(args)
-    if getattr(args, "simulations", None) is not None:
-        print("Parity configuration error: --simulations requires --catalog.", file=sys.stderr)
-        return 2
-    # P03: ``--profile`` selects the renewed battery; every historical selector
-    # (``--level``, ``--pair-set``, ``--truncations``) keeps its old meaning when
-    # ``--profile`` is absent.  An explicit legacy selector plus ``--profile`` is
-    # two different measurements of the same command, so it is refused instead
-    # of silently mixing them; the argparse defaults are not a conflict.
-    profile = getattr(args, "profile", None)
-    if profile is not None:
-        explicit = [
-            name for name, value in (
-                ("--level", getattr(args, "level", None)),
-                ("--pair-set", getattr(args, "pair_set", None)),
-                ("--truncations", True if getattr(args, "truncations", False) else None),
-            ) if value is not None
-        ]
-        if explicit:
-            print(
-                "Parity configuration error: --profile selects the renewed "
-                "battery and cannot be combined with " + ", ".join(explicit)
-                + "; run the historical certificate without --profile.",
-                file=sys.stderr,
-            )
-            return 2
-        return _battery_command(args, profile)
-    selected_backend = getattr(args, "backend", None)
+    if args.profile is not None:
+        return _battery_command(args, args.profile)
+    selected_backend = args.backend
     if selected_backend is not None and (
-        getattr(args, "level", None) not in ("statistical", "deep")
-        or getattr(args, "truncations", False)
+        args.level not in ("statistical", "deep") or args.truncations
     ):
         print(
-            "Parity configuration error: --backend requires --profile or "
-            "--level statistical|deep without --truncations.",
+            "Parity configuration error: --backend requires --scenarios, "
+            "--certificate battery, or --certificate statistical|deep without "
+            "--truncations.",
             file=sys.stderr,
         )
         return 2
-    if getattr(args, "rows", None) is not None:
-        print(
-            "Parity configuration error: --rows applies to the renewed battery; "
-            "pass it with --profile quick|complete|deep.",
-            file=sys.stderr,
-        )
-        return 2
-    if getattr(args, "level", None) in ("small", "normal", "long"):
-        print("Parity configuration error: --level small|normal|long requires --catalog.", file=sys.stderr)
-        return 2
-    level = getattr(args, "level", None) or "deterministic"
+    level = args.level
     args.statistical = level == "statistical"
     args.deep = level == "deep"
-    pair_set = getattr(args, "pair_set", None) or "long"
-    if pair_set != "long" and not (args.deep or args.truncations):
-        print(
-            "Parity configuration error: --pair-set applies to --deep or "
-            "--truncations; no pair set is run by the deterministic/statistical "
-            "presets.",
-            file=sys.stderr,
-        )
-        return 2
+    # The label of the deep / truncation selection, as given (default big).
+    pair_set = args.pair_set
     if args.deep and not args.output:
         from mordheim_combat_lab.report_naming import timestamped_report_path
         args.output = {
@@ -1294,9 +1310,7 @@ def _parity_command(args) -> int:
         )
     started = time.perf_counter()
     from mordheim_combat_lab.cli.benchmarking import BenchmarkProgress
-    from mordheim_combat_lab.cli.benchmarking import benchmark_scenarios
     from mordheim_combat_lab.cli.benchmarking import compile_benchmark_fighters
-    from mordheim_combat_lab.cli.benchmarking import deep_test_scenarios
     from mordheim_combat_lab.verification.parity import ParityCase
     from mordheim_combat_lab.verification.parity import compare_statistical_parity
     from mordheim_combat_lab.verification.parity import run_parity
@@ -1305,19 +1319,17 @@ def _parity_command(args) -> int:
     from mordheim_combat_lab.verification.parity import parity_report_payload
     from mordheim_combat_lab.verification.parity import verify_vectorized_parity
 
-    deep_scenarios = (
-        deep_test_scenarios(pair_set)
-        if args.deep or args.truncations else ()
-    )
+    deep_scenarios = args.deep_scenarios if args.deep or args.truncations else ()
+    statistical_scenarios = args.statistical_scenarios
 
     report = verify_vectorized_parity()
     statistical = ()
     if args.statistical:
         from mordheim_combat.modular.parallel import resolve_oracle_workers
         from mordheim_combat.modular.parallel import run_oracle_sample
-        progress = None if args.json else BenchmarkProgress(len(benchmark_scenarios()))
+        progress = None if args.json else BenchmarkProgress(len(statistical_scenarios))
         samples: list = []
-        for scenario in benchmark_scenarios():
+        for scenario in statistical_scenarios:
             first, second = compile_benchmark_fighters(scenario)
             # One modular oracle sample certifies every optimized candidate;
             # `backend` records which engine produced each comparison.
@@ -1372,7 +1384,7 @@ def _parity_command(args) -> int:
         resolved_workers.update({
             scenario.id: _resolve_workers(
                 args.workers, args.statistical_simulations, scenario.maximum_rounds)
-            for scenario in benchmark_scenarios()
+            for scenario in statistical_scenarios
         })
     if args.deep:
         deep_native_installed = "native" in certified_backends
@@ -1388,7 +1400,7 @@ def _parity_command(args) -> int:
                 and args.deep_cross_simulations == 1_000_000
                 and deep_native_installed):
             print(
-                "Note: --deep-simulations sizes the matrix samples (modular "
+                "Note: --simulations sizes the deep matrix samples (modular "
                 "oracle + backends); the numpy<->native cross layer still runs "
                 f"at the default {args.deep_cross_simulations:,} duels/pair, "
                 "which dominates smoke runs once the matrix is small. Pass "
@@ -1411,7 +1423,7 @@ def _parity_command(args) -> int:
         requested_duels = sum(segment[4] for segment in segments)
         if args.deep_simulations is not None:
             breakdown = (
-                f"{pair_set} level: {len(segments)} pairs x "
+                f"scenarios {pair_set}: {len(segments)} pairs x "
                 f"{args.deep_simulations:,}"
             )
         else:
@@ -1422,13 +1434,13 @@ def _parity_command(args) -> int:
                 parts.append(f"{regular} pairs at 100k")
             if long_pairs:
                 parts.append(f"{long_pairs} long pair(s) at 25k")
-            breakdown = f"{pair_set} level: " + ", ".join(parts)
+            breakdown = f"scenarios {pair_set}: " + ", ".join(parts)
         if requested_duels > args.max_modular_duels:
             print(
                 "Parity configuration error: --deep would need "
                 f"{requested_duels:,} modular duels ({breakdown}), above the "
                 f"--max-modular-duels ceiling of {args.max_modular_duels:,}. "
-                "Lower --deep-simulations or raise --max-modular-duels.",
+                "Lower --simulations or raise --max-modular-duels.",
                 file=sys.stderr,
             )
             return 2
@@ -1544,8 +1556,8 @@ def _parity_command(args) -> int:
     payload = parity_report_payload(
         report, statistical, deep=deep_samples,
         truncations=truncation_samples, elapsed_seconds=elapsed,
-        deep_pair_set=pair_set if args.deep else None,
-        truncation_pair_set=pair_set if args.truncations else None,
+        deep_scenarios=pair_set if args.deep else None,
+        truncation_scenarios=pair_set if args.truncations else None,
         backends={
             "requested": (list(requested_backends) if requested_backends is not None
                           else "installed"),
@@ -1591,14 +1603,14 @@ def _parity_command(args) -> int:
             if deep_native_installed:
                 print(
                     f"DEEP: modular oracle {modular_duels:,} duels across the "
-                    f"{pair_set} archetype level ({len(deep_scenarios)} pairs); "
+                    f"scenarios {pair_set} ({len(deep_scenarios)} pairs); "
                     f"cross-backend samples at "
                     f"{args.deep_cross_simulations:,} duels/engine"
                 )
             else:
                 print(
                     f"DEEP: modular oracle {modular_duels:,} duels across the "
-                    f"{pair_set} archetype level ({len(deep_scenarios)} pairs); "
+                    f"scenarios {pair_set} ({len(deep_scenarios)} pairs); "
                     "cross-backend certification skipped ("
                     + ("native backend is not compiled in this environment"
                        if "native" not in installed_backends
@@ -1656,7 +1668,7 @@ def test_report_command(args) -> int:
               timestamped_report_path("outputs", "test-report", "")).resolve()
     progress = BenchmarkProgress(len(benchmark_scenarios())) if args.statistical else None
     statistical_path, technical_path, rows, technical_exit = generate_test_report(
-        output, statistical=args.statistical, simulations=args.statistical_simulations,
+        output, statistical=args.statistical, simulations=args.simulations,
         seed=args.seed, workers=args.workers,
         on_progress=progress.advance if progress is not None else None,
     )
@@ -1784,13 +1796,10 @@ class _HelpFormatter(_StyledHelpFormatter):
 
 
 def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
-    # Light import on purpose: scenario definitions carry no combat-engine
-    # imports, so parsing argument choices never pre-loads mordheim_combat
-    # into sys.modules (which would break the coverage-gate measurement).
-    from mordheim_combat_lab.cli.scenarios import DEEP_SCENARIOS
-
+    # Parsing never pre-loads mordheim_combat into sys.modules (which would
+    # break the coverage-gate measurement): ``--scenarios`` values are
+    # resolved by each command, after parsing.
     parser = ArgumentParser(prog=prog, formatter_class=_HelpFormatter)
-    deep_scenario_ids = tuple(item.id for item in DEEP_SCENARIOS)
     commands = parser.add_subparsers(dest="command")
     commands.add_parser("ui", help="open the graphical interface",
                         formatter_class=_HelpFormatter).set_defaults(handler=ui_command)
@@ -1886,10 +1895,11 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
                "machine-local (performance calibrate).",
         formatter_class=_HelpFormatter)
     run_options = benchmark.add_argument_group("run configuration")
-    run_options.add_argument("-n", "--simulations", type=_positive, default=100,
+    add_scenarios(run_options, default="small, or big with --deep")
+    run_options.add_argument("--simulations", type=_positive, default=100,
                              metavar="DUELS",
-                             help="simulations per scenario and engine (the small "
-                                  "default is a smoke run; pass real sizes for "
+                             help="duels per scenario and engine (the default 100 "
+                                  "is a smoke run; pass real sizes for "
                                   "measurements)")
     run_options.add_argument("--seed", type=int, default=2026,
                              help="random seed for the engines")
@@ -1902,25 +1912,22 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
         help="engines to measure (one or more); defaults to modular, vectorized and native",
     )
     run_options.add_argument(
-        "--pair-set", choices=("small", "normal", "long"), default=None, metavar="SET",
-        help="scenario set to measure, the same scenarios in every mode: small "
-             "is the 8-scenario performance survey; normal is the 30-scenario "
-             "coverage-oriented set; long is all 43 scenarios (default: small, "
-             "or long with --deep)",
-    )
-    run_options.add_argument(
-        "--scenario", nargs="+", type=_scenario_id,
-        choices=deep_scenario_ids, default=None, metavar="ID",
-        help="scenario ids to measure (one or more), narrowing --pair-set when "
-             "one is given; 'long' here is the single 75-round scenario, while "
-             "--pair-set long selects all 43",
-    )
-    run_options.add_argument(
         "--warmups", type=_warmups, default=1, metavar="N",
         help="warm-up runs per configuration (0-100)",
     )
     run_options.add_argument("--repeats", type=_positive, default=5, metavar="TIMES",
                              help="timed repetitions per configuration (median is reported)")
+    run_options.add_argument(
+        "--workers", dest="processes", type=_positive, default=1, metavar="N",
+        help="worker processes, one scenario per worker; the report gives the "
+             "pool's wall time and sample concurrency (not a speedup over a "
+             "sequential run); N is part of the measurement design, so a "
+             "baseline gate requires the same N (default: 1, sequential)",
+    )
+    retire(benchmark, "-n", replacement="--simulations")
+    retire(benchmark, "--processes", replacement="--workers")
+    retire(benchmark, "--pair-set", replacement="--scenarios small|normal|big")
+    retire(benchmark, "--scenario", replacement="--scenarios")
     deep_options = benchmark.add_argument_group("sweeps and deep profiles")
     deep_options.add_argument(
         "--simulation-sizes", metavar="SIZES",
@@ -1939,21 +1946,13 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
         "--deep-modular-simulations", type=_positive, default=10_000, metavar="DUELS",
         help="duels per scenario for the modular reference point in --deep mode",
     )
-    deep_options.add_argument(
-        "--processes", type=_positive, default=1, metavar="N",
-        help="run the scenario measurements through a process pool of N workers "
-             "and report the pool's wall time and sample concurrency (not a "
-             "speedup over a sequential run); N is part of the measurement "
-             "design, so a baseline gate requires the same N; 1 keeps the "
-             "historical sequential execution",
-    )
     tts_options = benchmark.add_argument_group("time to solution")
     tts_options.add_argument(
         "--tts", action="store_true",
         help="time-to-solution study: run every (simulation size x batch size) "
              "cell of the workload through every applicable (strategy x "
              "backend) combination, including the modular oracle, and rank "
-             "them by total wall time (spawns included); --pair-set selects "
+             "them by total wall time (spawns included); --scenarios selects "
              "the combat-type workload, --simulation-sizes and --batch-sizes "
              "the grid (modular ignores the batch axis and runs once per "
              "size), --repeats the per-cell median; within a backend the "
@@ -1984,7 +1983,8 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
                                 help="print the machine-readable report as JSON")
     report_options.add_argument("--output", metavar="PATH",
                                 help="save this run as a report (.json, or .csv/.md in sweep mode; "
-                                     "--deep defaults to deep.json or deep-<level>.json by catalogue level)")
+                                     "--deep defaults to deep.json, or deep-small.json / "
+                                     "deep-normal.json for those levels)")
     report_options.add_argument("--save-baseline", metavar="PATH",
                                 help="save this single-configuration run as a JSON baseline")
     report_options.add_argument("--baseline", metavar="PATH",
@@ -2001,143 +2001,123 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
 
     parity = commands.add_parser(
         "parity", help="certify the vectorized and native engines against the modular oracle",
-        description="Certify the vectorized engine (and, when compiled, the native "
-                    "backend) against the modular oracle with deterministic checks, "
-                    "optional six-sigma statistical samples and --deep certification.",
-        epilog="--level selects the certification preset; the size of each layer "
-               "is tuned with the --*-simulations options.",
+        description="Compare the vectorized engine (and, when compiled, the native "
+                    "backend) with the modular oracle.  --scenarios names what "
+                    "runs and --certificate the kind of check; without "
+                    "--certificate the selected scenarios run through the "
+                    "catalogue runner, and with nothing selected the "
+                    "deterministic certificate runs.",
+        epilog="--simulations sizes whichever layer runs: the catalogue cases, the "
+               "statistical or deep certificate, the battery cases or the E2E "
+               "deliveries.",
         formatter_class=_HelpFormatter)
-    catalog_options = parity.add_argument_group("fixture catalogues")
-    catalog_options.add_argument(
-        "--catalog", choices=("precompiled", "battery", "all", "e2e"), default=None,
-        help="select frozen cases, build-based battery cases, both, or explicitly selected precompiled E2E deliveries (--e2e); without --profile all cases are selected",
+    selection = parity.add_argument_group("what runs")
+    add_scenarios(
+        selection,
+        default="small for the statistical certificate and the catalogue run, "
+                "big for the deep certificate and --truncations, battery-deep "
+                "for --certificate battery",
+        extra="battery-quick, battery-complete or battery-deep select a battery "
+              "profile (cumulative); e2e selects every E2E delivery and a "
+              "delivery case_key or audit_id::id selects one -- E2E deliveries "
+              "run on their own")
+    selection.add_argument(
+        "--scenarios-file", metavar="PATH",
+        help="read --scenarios values from PATH, one per line ('#' comment lines "
+             "allowed); added to any --scenarios given")
+    selection.add_argument(
+        "--certificate", choices=("deterministic", "statistical", "deep", "battery"),
+        default=None, metavar="KIND",
+        help="deterministic runs the exact checks only; statistical adds six-sigma "
+             "samples of the selected scenarios; deep certifies the selected "
+             "scenarios at scale plus the numpy<->native cross; battery emits the "
+             "battery certificate for the selected battery profile",
     )
-    catalog_options.add_argument(
+    selection.add_argument(
+        "--backend", choices=("modular", "numpy", "native"), nargs="+",
+        default=None, metavar="ENGINE",
+        help="candidate engine(s) to compare with the oracle: numpy, native or "
+             "both; modular alone runs only the reference and reports executability "
+             "(default: numpy; the statistical and deep certificates default to "
+             "the installed candidates)",
+    )
+    samples = parity.add_argument_group("sample sizes")
+    samples.add_argument(
         "--simulations", type=_positive, default=None, metavar="DUELS",
-        help="with --catalog, override samples per case; otherwise use --statistical-simulations for frozen scenarios or the battery row count",
+        help="duels per scenario and engine: catalogue cases default to 100000; "
+             "the statistical certificate to 100000; the deep certificate to "
+             "100000 per pair, or 25000 for the 75-round long pair, re-certifying "
+             "suspicious (3-6 sigma) or timing-prone (1%%+ unresolved) pairs at "
+             "twice the sample within --max-modular-duels; battery cases to their "
+             "declared width (a 5-point shift needs at least 7200 for "
+             "--require-complete); E2E deliveries require an explicit value",
     )
-    e2e_options = parity.add_argument_group("precompiled E2E connection")
-    e2e_options.add_argument(
-        "--e2e", action="append", default=[], metavar="CASE_KEY",
-        help="with --catalog e2e, a delivery case_key or audit_id::id "
-             "(repeatable; the selection is always explicit)",
-    )
-    e2e_options.add_argument(
-        "--e2e-selection-file", metavar="PATH",
-        help="with --catalog e2e, read one case_key or audit_id::id per "
-             "line ('#' comments allowed)",
-    )
-    e2e_options.add_argument(
-        "--e2e-deliveries", metavar="DIR",
-        help="with --catalog e2e, override the delivery directory",
-    )
-    e2e_options.add_argument(
-        "--magnitudes", metavar="LIST", default=None,
-        help="with --catalog e2e, comma-separated observed magnitudes: "
-             "winner (mandatory), rounds; default winner. Deliveries declare winner only; "
-             "this flag widens the campaign without rewriting them",
-    )
-    parity_samples = parity.add_argument_group("certification samples")
-    parity_samples.add_argument(
-        "--level", choices=("deterministic", "statistical", "deep", "small", "normal", "long", "e2e"),
-        default=None, metavar="LEVEL",
-        help="e2e selects all E2E deliveries; with --catalog: small (default), normal or long; otherwise historical certificate preset: "
-             "deterministic runs the exact checks only; "
-             "statistical adds the aggregate six-sigma samples on the small "
-             "standard scenarios; deep runs the selected archetype level "
-             "(normal or long) plus the numpy<->native cross at scale",
-    )
-    parity_samples.add_argument(
-        "--pair-set", choices=("small", "normal", "long"), default=None, metavar="SET",
-        help="catalogue level for --deep/--truncations: small is the "
-             "8-scenario performance survey; normal is the 30-scenario "
-             "coverage-oriented set for a roughly 10-15 minute pooled run; "
-             "long is the 43-scenario deep matrix (default)",
-    )
-    parity_samples.add_argument("--statistical-simulations", type=_positive, default=100_000,
-                                metavar="DUELS",
-                                help="duels per engine and scenario for "
-                                     "--level statistical")
-    parity_samples.add_argument(
-        "--deep-simulations", type=_positive, default=None, metavar="DUELS",
-        help="duels per archetype pair and engine at --level deep; defaults to "
-             "100 000 per pair, or 25 000 for the long 75-round pair; an "
-             "explicit value applies to every pair.  Pairs that come back "
-             "suspicious (3-6 sigma) or timing-prone (1%%+ unresolved) are "
-             "re-certified at twice the sample while the "
-             "--max-modular-duels budget allows",
-    )
-    parity_samples.add_argument("--deep-cross-simulations", type=_positive, default=1_000_000,
-                                metavar="DUELS",
-                                help="duels per pair for the numpy<->native "
-                                     "cross-certification (never touches the modular engine)")
-    parity_samples.add_argument("--max-modular-duels", type=_positive, default=5_000_000,
-                                metavar="DUELS",
-                           help="ceiling for the total modular-oracle duels a "
-                                "--level deep run may ask for (the default long "
-                                "split needs 4 050 000, plus any adaptive "
-                                "escalation within the same ceiling)")
-    parity_samples.add_argument(
+    samples.add_argument("--deep-cross-simulations", type=_positive, default=1_000_000,
+                         metavar="DUELS",
+                         help="duels per pair for the deep certificate's numpy<->native "
+                              "cross-certification (never touches the modular engine)")
+    samples.add_argument("--max-modular-duels", type=_positive, default=5_000_000,
+                         metavar="DUELS",
+                         help="ceiling for the total modular-oracle duels the deep "
+                              "certificate may ask for (the default big selection "
+                              "needs 4 050 000, plus any adaptive escalation within "
+                              "the same ceiling)")
+    samples.add_argument(
         "--truncations", action="store_true",
         help="add round-truncation outcome samples: the six-sigma gate is "
              "reapplied at every horizon (2, 4, 6, 8, 10, 12, 15, 20 rounds) on "
-             "every deep-matrix pair, so orchestration defects that only "
+             "every selected scenario, so orchestration defects that only "
              "shift *when* duels resolve become visible",
     )
-    parity_samples.add_argument(
+    samples.add_argument(
         "--truncation-simulations", type=_positive, default=10_000,
         metavar="DUELS",
         help="duels per engine, scenario and horizon for --truncations",
     )
-    parity_samples.add_argument("--seed", type=int, default=2026,
-                                help="seed for the statistical and deep samples")
-    parity_samples.add_argument(
+    samples.add_argument("--seed", type=int, default=2026,
+                         help="random seed for every sample")
+    samples.add_argument(
         "--workers", type=_oracle_workers, metavar="N|auto",
         default=os.environ.get("MORDHEIM_PARALLEL_ORACLE_WORKERS", "auto"),
-        help="processes for modular-oracle samples, including --profile "
-             "quick|complete|deep; auto pools only samples estimated to take over ~20 s "
-             "sequentially, 1 disables the pool (also from "
-             "MORDHEIM_PARALLEL_ORACLE_WORKERS)",
+        help="worker processes for modular-oracle samples; auto pools only "
+             "samples estimated to take over ~20 s sequentially, 1 disables the "
+             "pool (also from MORDHEIM_PARALLEL_ORACLE_WORKERS)",
+    )
+    e2e_options = parity.add_argument_group("E2E deliveries")
+    e2e_options.add_argument(
+        "--e2e-deliveries", metavar="DIR",
+        help="override the E2E delivery directory",
+    )
+    e2e_options.add_argument(
+        "--magnitudes", metavar="LIST", default=None,
+        help="comma-separated observed magnitudes for E2E deliveries: "
+             "winner (mandatory), rounds; default winner. Deliveries declare winner only; "
+             "this flag widens the campaign without rewriting them",
     )
     parity_output = parity.add_argument_group("report and strictness")
     parity_output.add_argument("--json", action="store_true",
                                help="print the certificate as JSON")
     parity_output.add_argument("--require-complete", action="store_true",
-                               help="fail unless the certificate is complete; with "
-                                    "--profile a missing, incompatible or "
+                               help="fail unless the certificate is complete; for "
+                                    "battery profiles a missing, incompatible or "
                                     "unexecuted scenario also fails")
     parity_output.add_argument("--output-md", metavar="PATH",
-                               help="with the E2E catalogue, save a Markdown summary independently of --output")
+                               help="for E2E deliveries, also save a Markdown summary")
     parity_output.add_argument("--output", metavar="PATH",
-                               help="save the report as .json or .md (deep defaults to "
-                                    "deep.json for long, deep-normal.json for normal "
-                                    "or deep-small.json for small)")
-    battery = parity.add_argument_group("renewed behaviour battery")
-    battery.add_argument(
-        "--profile", choices=("quick", "complete", "deep"), default=None,
-        metavar="PROFILE",
-        help="filter battery cases; with --catalog the default is the full deep profile; profiles are cumulative "
-             "(quick is contained in complete, complete in deep) and default "
-             "to the NumPy candidate",
-    )
-    battery.add_argument(
-        "--backend", choices=("modular", "numpy", "native", "all"), default=None,
-        metavar="ENGINE",
-        help="modular runs only the reference (defaults to --catalog all); numpy, native "
-             "(never falls back to NumPy) or all. Statistical defaults to "
-             "installed backends; explicit native/all requires native. "
-             "Deep defaults to installed backends; explicit native/all "
-             "without native marks the certificate incomplete (exit 1). "
-             "Profiles default to numpy and report availability per backend",
-    )
-    battery.add_argument(
-        "--rows", type=_positive, default=None, metavar="DUELS",
-        help="override the sample width of every battery case for --profile; "
-             "the declared width stays the default. Combine it with "
-             "--require-complete for an acceptance run: a case is approved only "
-             "when its width can detect a 5-point shift (at least 7200 rows); "
-             "the certificate records the override",
-    )
+                               help="save the report as .json or .md (the deep "
+                                    "certificate defaults to deep.json, or "
+                                    "deep-small.json / deep-normal.json for those levels)")
+    retire(parity, "--level", replacement="--certificate deterministic|statistical|deep, "
+           "or --scenarios small|normal|big|e2e")
+    retire(parity, "--catalog", replacement="--scenarios (the values choose the "
+           "catalogue: levels and scenario names, battery-<profile>, e2e)")
+    retire(parity, "--pair-set", replacement="--scenarios small|normal|big")
+    retire(parity, "--profile", replacement="--scenarios battery-quick|battery-complete|"
+           "battery-deep, with --certificate battery for the battery certificate")
+    retire(parity, "--rows", "--statistical-simulations", "--deep-simulations",
+           replacement="--simulations")
+    retire(parity, "--e2e", replacement="--scenarios <case_key|audit_id::id> (or --scenarios e2e)")
+    retire(parity, "--e2e-selection-file", replacement="--scenarios-file")
     parity.set_defaults(handler=parity_command)
 
     test_report = commands.add_parser(
@@ -2148,7 +2128,7 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
     test_report_content = test_report.add_argument_group("content")
     test_report_content.add_argument("--statistical", action="store_true",
                                      help="also generate the statistical parity CSV")
-    test_report_content.add_argument("--statistical-simulations", type=_positive, default=100_000,
+    test_report_content.add_argument("--simulations", type=_positive, default=100_000,
                                      metavar="DUELS",
                                      help="duels per engine and scenario for --statistical")
     test_report_content.add_argument("--seed", type=int, default=2026,
@@ -2166,6 +2146,7 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
     test_report_output.add_argument("--require-complete", action="store_true",
                                     help="fail when pending items or missing backends "
                                          "would keep the report from being complete")
+    retire(test_report, "--statistical-simulations", replacement="--simulations")
     test_report.set_defaults(handler=test_report_command)
 
     calibration = commands.add_parser(
@@ -2175,27 +2156,26 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
                     "spawn cost, and install a per-machine calibration profile the "
                     "Combat Lab loads at startup (batches, workers, spawn cost and "
                     "the pool speedup curve re-derived from the sweep evidence). "
-                    "Default ~8-10 minutes; --pairs small runs a ~2 minute survey.",
+                    "Default ~8-10 minutes; --scenarios small runs a ~2 minute survey.",
         epilog="Re-run after a hardware change, an engine update or new combat rules. "
                "The profile lives next to the preferences; --reset removes it.",
         formatter_class=_HelpFormatter)
     calibration_scope = calibration.add_argument_group("coverage")
-    calibration_scope.add_argument("--pairs", choices=("small", "normal", "long"),
-                                   default="long",
-                                   help="duel-type coverage of the native sweeps "
-                                        "(default: long, all 43 scenarios)")
+    add_scenarios(calibration_scope,
+                  default="big; the NumPy sweeps narrow big to normal, "
+                          "because a NumPy duel costs 3-5x a native one")
     calibration_scope.add_argument("--seed", type=int, default=7,
                                    help="random seed for every sweep")
     calibration_measure = calibration.add_argument_group("measurement")
-    calibration_measure.add_argument("--sample-size", type=_positive, default=500_000,
+    calibration_measure.add_argument("--simulations", type=_positive, default=500_000,
                                      metavar="DUELS",
-                                     help="simulations per fighter in the native "
+                                     help="duels per scenario in the native "
                                           "sequential sweep (default: 500000); the numpy "
                                           "sweep is sized separately from its batch "
                                           "candidates so each spans several batches")
-    calibration_measure.add_argument("--pool-sample-size", type=_positive, default=1_000_000,
+    calibration_measure.add_argument("--pool-simulations", type=_positive, default=1_000_000,
                                      metavar="DUELS",
-                                     help="simulations per fighter in the pool-worker sweep; "
+                                     help="duels per scenario in the pool-worker sweep; "
                                           "numpy uses half, and the sample is raised so the "
                                           "largest worker candidate gets one batch per worker "
                                           "(default: 1000000)")
@@ -2208,6 +2188,9 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
                                     help="print the report as JSON")
     calibration_output.add_argument("--reset", action="store_true",
                                     help="remove the installed profile and exit")
+    retire(calibration, "--pairs", replacement="--scenarios small|normal|big")
+    retire(calibration, "--sample-size", replacement="--simulations")
+    retire(calibration, "--pool-sample-size", replacement="--pool-simulations")
     calibration.set_defaults(handler=calibrate_command)
     return parser
 
