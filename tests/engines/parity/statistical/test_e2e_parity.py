@@ -162,37 +162,10 @@ def test_winner_comparison_ignores_terminal_wounds_and_conditions():
     assert failure is None
 
 
-def test_cli_defaults_to_winner_only(tmp_path, monkeypatch):
+def test_cli_refuses_an_unknown_identifier():
     from mordheim_combat_lab.cli.commands import main
 
-    def execute(identifiers, **options):
-        assert identifiers == [CASES["simple"]]
-        assert options["magnitudes"] == ("winner",)
-        return {"schema": e2e_parity.SCHEMA, "options": {
-            "magnitudes": list(options["magnitudes"])},
-            "results": [], "summary": {}}, 0
-
-    monkeypatch.setattr(e2e_parity, "execute", execute)
-    output = tmp_path / "e2e.json"
-    assert main([
-        "parity", "--scenarios", CASES["simple"],
-        "--simulations", "8", "--seed", "7", "--workers", "1",
-        "--output", str(output),
-    ]) == 0
-    payload = json.loads(output.read_text(encoding="utf-8"))
-    assert payload["options"]["magnitudes"] == ["winner"]
-
-
-def test_cli_refuses_unknown_identifier_and_missing_sample_width(tmp_path):
-    from mordheim_combat_lab.cli.commands import main
-
-    assert main([
-        "parity", "--scenarios", "e2e/nope/nope/nope",
-        "--simulations", "2",
-    ]) == 2
-    assert main([
-        "parity", "--scenarios", CASES["simple"],
-    ]) == 2
+    assert main(["parity", "--scenarios", "e2e/nope/nope/nope", "--simulations", "2"]) == 2
 
 
 def test_outcomes_separate_causes_and_aggregate_conservatively():
@@ -239,39 +212,21 @@ def test_outcomes_separate_causes_and_aggregate_conservatively():
     assert e2e_parity.aggregate(["divergence", "candidate-failure"]) == "candidate-failure"
 
 
-def test_cli_reads_a_selection_file(tmp_path):
-    from mordheim_combat_lab.cli.commands import main
-
-    selection = tmp_path / "selection.txt"
-    selection.write_text(
-        "# campaign selection\n" + CASES["simple"] + "\n", encoding="utf-8",
-    )
-    assert main([
-        "parity", "--scenarios-file", str(selection),
-        "--simulations", "4", "--seed", "7", "--workers", "1",
-    ]) == 0
-
-
-@pytest.mark.parametrize("removed", ["wounds", "condition"])
-def test_removed_magnitudes_are_rejected_before_sampling(removed):
-    from mordheim_combat_lab.cli.commands import main
-
+def test_removed_magnitudes_are_rejected_before_sampling():
     assert e2e_parity.parse_magnitudes(None) == ("winner",)
     assert e2e_parity.parse_magnitudes("winner,rounds") == ("winner", "rounds")
-    with pytest.raises(e2e_parity.MagnitudeError):
-        e2e_parity.parse_magnitudes("winner," + removed)
-    with pytest.raises(e2e_parity.MagnitudeError):
-        e2e_parity.execute([], simulations=1, magnitudes=("winner", removed))
-    assert main(["parity", "--scenarios", CASES["simple"],
-                 "--simulations", "1", "--magnitudes", "winner," + removed]) == 2
+    for removed in ("wounds", "condition"):
+        with pytest.raises(e2e_parity.MagnitudeError):
+            e2e_parity.parse_magnitudes("winner," + removed)
+        with pytest.raises(e2e_parity.MagnitudeError):
+            e2e_parity.execute([], simulations=1, magnitudes=("winner", removed))
 
 
-@pytest.mark.parametrize("selector", [
-    ["--scenarios", "e2e"],
-    ["--scenarios", "e2e", "e2e/a/case-1"],  # e2e already names every delivery
-])
-def test_cli_selects_all_e2e_statuses_without_sampling(selector, tmp_path, monkeypatch):
+def test_cli_lists_every_e2e_delivery_it_cannot_run(tmp_path, monkeypatch, capsys):
+    from types import SimpleNamespace
+
     from mordheim_combat_lab.cli.commands import main
+    from mordheim_combat_lab.verification import parity
 
     expected = []
     for number, status in enumerate(("translated", "blocked", "not-applicable")):
@@ -281,79 +236,19 @@ def test_cli_selects_all_e2e_statuses_without_sampling(selector, tmp_path, monke
             "case_key": key, "source": {"test_id": f"a::case-{number}"},
             "status": status,
         }), encoding="utf-8")
-    calls = []
-
-    def capture(identifiers, **options):
-        calls.append((identifiers, options))
-        return {}, 0
-
-    monkeypatch.setattr(e2e_parity, "execute", capture)
-    assert main(["parity", *selector, "--e2e-deliveries", str(tmp_path),
-                 "--simulations", "8", "--json"]) == 0
-    assert calls[0][0] == expected
-    assert calls[0][1]["deliveries"] == tmp_path
-
-
-def test_cli_e2e_level_rejects_battery_and_empty_catalogue(tmp_path):
-    from mordheim_combat_lab.cli.commands import main
-
-    assert main(["parity", "--scenarios", "battery-deep", "e2e",
-                 "--simulations", "8"]) == 2
-    assert main(["parity", "--scenarios", "e2e", "--e2e-deliveries", str(tmp_path),
-                 "--simulations", "8"]) == 2
-
-
-@pytest.mark.parametrize("formats", [("json",), ("md",), ("json", "md")])
-def test_cli_markdown_and_json_share_results_without_sampling(tmp_path, monkeypatch, formats):
-    from mordheim_combat_lab.cli.commands import main
-
-    payload = {
-        "repository": {"branch": "test", "revision": "abc"},
-        "options": {"backend": "numpy", "simulations": 1, "seed": 7,
-                    "magnitudes": ["winner"]},
-        "summary": {"selected": 3, "approved": 1, "divergent": 1, "incompatible": 1},
-        "results": [
-            {"case_key": "e2e/pass", "outcome": "approved", "detail": ""},
-            {"case_key": "e2e/diff", "outcome": "divergence", "detail": "winner | <different>\nvalue"},
-            {"case_key": "e2e/state", "outcome": "incompatible", "detail": "initial_state"},
-        ],
-        "checks": {"delivery_warnings": ["source warning"]},
-    }
-    calls = []
-
-    def fake_execute(*args, **kwargs):
-        calls.append(args)
-        return payload, 1
-
-    monkeypatch.setattr(e2e_parity, "execute", fake_execute)
-    arguments = ["parity", "--scenarios", "e2e/diff",
-                 "--simulations", "1"]
-    for fmt in formats:
-        arguments += ["--output" if fmt == "json" else "--output-md",
-                      str(tmp_path / ("report." + fmt))]
-    assert main(arguments) == 1
-    assert len(calls) == 1
-    assert {path.suffix for path in tmp_path.iterdir()} == {"." + fmt for fmt in formats}
-    if "json" in formats:
-        assert json.loads((tmp_path / "report.json").read_text(encoding="utf-8")) == payload
-    if "md" in formats:
-        text = (tmp_path / "report.md").read_text(encoding="utf-8")
-        assert "| selected | 3 |" in text
-        assert "winner &#124; &lt;different&gt;<br>value" in text
-        assert "initial_state" in text and "source warning" in text
-
-
-def test_cli_markdown_rejects_colliding_paths_before_sampling(tmp_path, monkeypatch):
-    from mordheim_combat_lab.cli.commands import main
-
-    def forbidden(*args, **kwargs):
-        pytest.fail("output configuration must be checked before sampling")
-
-    monkeypatch.setattr(e2e_parity, "execute", forbidden)
-    target = str(tmp_path / "same")
-    assert main(["parity", "--scenarios", "e2e/diff",
-                 "--simulations", "1", "--output", target, "--output-md", target]) == 2
-    assert main(["parity", "--scenarios", "small", "--output-md", target]) == 2
+    monkeypatch.setattr(e2e_parity, "deliveries_directory", lambda root=None: tmp_path)
+    sampled = []
+    monkeypatch.setattr(parity, "run_parity", lambda cases, **kwargs: (
+        sampled.extend(cases) or SimpleNamespace(rows=(), modular_duels=0)))
+    # Nothing here can run (blocked, not applicable, an incomplete delivery):
+    # every delivery is listed with its reason and the run fails.
+    assert main(["parity", "--scenarios", "e2e", "--backend", "modular",
+                 "--simulations", "1", "--json"]) == 1
+    payload = json.loads(capsys.readouterr().out)
+    assert sampled == []
+    assert [row["case"] for row in payload["results"]] == expected
+    assert {row["status"] for row in payload["results"]} == {"INCOMPATIBLE"}
+    assert all(row["detail"] for row in payload["results"])
 
 
 # --- Run-level failures and provenance (engine execution is always stubbed) ---

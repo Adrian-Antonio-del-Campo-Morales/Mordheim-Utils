@@ -129,21 +129,23 @@ candidates. What each layer can and cannot prove is
 [Verification](../reference/verification.md).
 
 ```powershell
-python tools/mordheim-utils.py check verify --require-complete
+python tools/mordheim-utils.py check verify
 python tools/mordheim-utils.py check parity --require-complete
 python tools/mordheim-utils.py check coverage
 ```
 
-`parity --certificate statistical` adds the standard six-sigma sample;
-`parity --certificate deep --scenarios normal|big` runs the curated archetype matrix,
-with `--truncations` for round-horizon checks. These take minutes to hours and
-belong to engine changes and releases, never to the per-change loop.
+`check parity` alone runs the exact obligation checks. `check parity --scenarios
+small` adds the standard six-sigma sample, `--scenarios normal|big` the curated
+archetype matrix and `--rounds 2,4,8,15` the round-horizon checks; `check samples`
+reuses stored oracle samples instead of re-running the oracle. These take minutes
+to hours and belong to engine changes and releases, never to the per-change loop.
 
 Generated reports live under ignored `outputs/` — never hand-edit them:
 
 - `audit/` — per-rule inventory (`check report rules`).
-- `test-report/` — technical and optional statistical CSVs (`check report tests`).
-- `parity/` — JSON/Markdown parity certificates.
+- `test-report/` — technical test CSVs (`check report tests`).
+- `parity/` — JSON/Markdown parity reports (`check parity --output`).
+- `parity-store/` — stored engine samples and their comparisons (`check samples`).
 - `benchmarks/` — benchmark results.
 
 ## Performance work
@@ -153,12 +155,12 @@ smoke size; choose a real sample per engine (the modular oracle runs a few hundr
 duels per second, the optimized engines tens to hundreds of thousands):
 
 ```powershell
-python tools/mordheim-utils.py performance benchmark --simulations 100000 --backend numpy --save-baseline outputs/benchmarks/numpy-before.json
-python tools/mordheim-utils.py performance benchmark --simulations 100000 --backend numpy --baseline outputs/benchmarks/numpy-before.json --require-improvement --output outputs/benchmarks/numpy-after.json
-python tools/mordheim-utils.py performance benchmark --simulations 2000 --backend modular --save-baseline outputs/benchmarks/modular-before.json
+python tools/mordheim-utils.py performance benchmark --simulations 100k --backend numpy --output outputs/benchmarks/numpy-before.json
+python tools/mordheim-utils.py performance benchmark --simulations 100k --backend numpy --baseline outputs/benchmarks/numpy-before.json --require-improvement --output outputs/benchmarks/numpy-after.json
+python tools/mordheim-utils.py performance benchmark --simulations 2000 --backend modular --output outputs/benchmarks/modular-before.json
 ```
 
-Both runs must use the same measurement design (`--scenarios`, `--simulations`,
+A baseline is a saved `--output <file>.json`. Both runs must use the same measurement design (`--scenarios`, `--simulations`,
 `--batch-size`, `--seed`, `--warmups`, `--repeats`, `--workers` and `--backend`); a baseline unit missing from the
 current run fails the gate. The gate covers all three engines, so modular
 optimization work uses the same save/compare workflow. A baseline from another
@@ -178,7 +180,7 @@ python tools/mordheim-utils.py performance benchmark --backend modular --scenari
 ```
 
 It prints each backend's top functions by cumulative time and writes
-per-backend `.pstats` files under `outputs/benchmarks/` for `pstats`/
+per-backend `.pstats` files beside `--output` (default `outputs/benchmarks/`) for `pstats`/
 `snakeviz`. Profiled timings include cProfile overhead and cannot feed a
 baseline gate. For multicore modular samples, the parity tools pool the
 unchanged scalar oracle through `mordheim_combat.modular.parallel` (bit-for-bit
@@ -190,7 +192,7 @@ To plan a large campaign (many scenarios, thousands of duels each), measure
 how each engine should split the work before running it:
 
 ```powershell
-python tools/mordheim-utils.py performance benchmark --tts --scenarios big --backend modular numpy native --simulations 5000 --strategies "sequential,processes=12,parallel=12,parallel=12:48" --output outputs/benchmarks/tts-plan.json
+python tools/mordheim-utils.py performance benchmark --scenarios big --backend modular numpy native --simulations 5000 --strategies "sequential,processes=12,parallel=12,parallel=12:48" --output outputs/benchmarks/tts-plan.json
 ```
 
 The study runs the whole workload under every applicable strategy per engine
@@ -211,9 +213,10 @@ python tools/mordheim-utils.py performance calibrate --scenarios small
 python tools/mordheim-utils.py performance calibrate --reset         # drop the profile
 ```
 
-Benchmark, parity and calibration share the unified precompiled scenario
-catalogue. Missing frozen scenarios fail instead of compiling replacements.
-The separate build-based parity battery still compiles its declared inputs.
+Benchmark, parity, calibration and the stored samples share one `--scenarios`
+vocabulary: the precompiled levels and scenarios, `e2e` and `battery`.
+Missing frozen scenarios fail instead of compiling replacements; battery cases
+compile their declared builds.
 
 The command installs `calibration.json` beside the local preferences. Use
 `--no-install` for a read-only study, `--output PATH` for the full evidence and

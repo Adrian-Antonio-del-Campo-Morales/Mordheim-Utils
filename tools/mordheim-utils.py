@@ -68,14 +68,15 @@ APP_COMMANDS = {
 }
 
 PERFORMANCE_COMMANDS = {
-    "benchmark": "measure engine execution for one scenario or catalogue level",
+    "benchmark": "measure engine speed on the selected scenarios",
     "calibrate": "measure and save this machine's engine optima",
 }
 
 CHECK_COMMANDS = {
     "verify": "knowledge-base structural verification (Combat Lab `verify`)",
     "report": "generate the rule inventory or the test reports",
-    "parity": "statistical parity campaign (Combat Lab `parity`)",
+    "parity": "compare the optimized engines with the modular oracle (Combat Lab `parity`)",
+    "samples": "sample engines into a store and compare stored samples later",
     "coverage": "code-coverage budget gate (Combat Lab `coverage-gate`)",
     "presentation": "web text, translation and presentation audits",
     "ci": "run the local CI validation gates",
@@ -882,31 +883,33 @@ def performance_command(args: list[str]) -> int:
                 "python tools/mordheim-utils.py performance benchmark [options]",
                 "Measure engine speed. Select a workload, engine and sample size;\nresults describe performance, not rule correctness or engine equivalence.",
                 "python -m mordheim_combat_lab benchmark",
-                "--scenarios NAME... small (default), normal, big (all 43) or scenario names\n"
-                "--backend ENGINE   modular, numpy or native; accepts several engines\n"
-                "--simulations N    duels per scenario (default 100: a smoke size)\n"
-                "--batch-size N     duels per NumPy/native batch (default 100000)\n"
-                "--workers 8        worker processes, one scenario per worker\n"
-                "--warmups N        untimed warm-ups\n--repeats N        timed repetitions\n"
-                "--profile          cProfile the timed repeats; prints hotspots, saves .pstats\n"
-                "--deep            size/batch sweep (defaults to --scenarios big)\n"
-                "--json            structured output\n--output PATH     save results\n"
-                "--help-full       all options, scenario names, defaults and units",
+                "--scenarios NAME...    what runs (default small); see the shared options\n"
+                "--backend ENGINE...    modular, numpy, native\n"
+                "--simulations N[,N]    duels per scenario; a list sweeps (default 100: smoke)\n"
+                "--batch-size N[,N]     NumPy/native batch; a list sweeps (default 100000)\n"
+                "--workers N            worker processes, one scenario per worker\n"
+                "--warmups N / --repeats N   untimed and timed runs (median reported)\n"
+                "--strategies LIST      compare sequential, processes=N, parallel=N[:C]\n"
+                "--profile              cProfile one configuration; prints hotspots, saves .pstats\n"
+                "--baseline PATH        compare with a saved report (--output .json)\n"
+                "--require-improvement [PCT]  fail unless something improves (default 10)\n"
+                "--max-regression PCT   largest regression the gate allows (default 5)\n"
+                "--output PATH          save .json, .csv or .md\n--json                 print JSON",
                 examples=(
-                    "performance benchmark --scenarios basic --backend numpy --simulations 100k --workers 8 --repeats 3",
-                    "performance benchmark --scenarios big --backend numpy --simulations 100k --repeats 3",
-                    "performance benchmark --backend modular --scenarios basic stateful --simulations 2000 --profile",
-                    "performance benchmark --deep --scenarios small --backend numpy --workers 8",
+                    "performance benchmark --scenarios big --backend numpy --simulations 100k --output outputs/benchmarks/before.json",
+                    "performance benchmark --scenarios big --backend numpy --simulations 100k --baseline outputs/benchmarks/before.json --require-improvement",
+                    "performance benchmark --scenarios basic --backend numpy --simulations 100k,1m --batch-size 25k,100k",
+                    "performance benchmark --scenarios small --backend numpy --simulations 400k --strategies sequential,processes=4,parallel=4",
+                    "performance benchmark --scenarios basic stateful --backend modular --simulations 2000 --profile",
                 ), notes=("The default --simulations 100 is a smoke measurement; pass real sizes for stable numbers.",
-                          "--scenarios long is the single 75-round scenario; big is all 43.",),
+                          "A gate needs the baseline's design: same --scenarios, sizes, seed, warmups, repeats, workers, backends.",),
             )
         return _delegated_help(
             "python tools/mordheim-utils.py performance calibrate [options]",
             "Measure batch sizes and worker configurations for this machine.\nBy default the resulting calibration is installed for future application runs.",
             "python -m mordheim_combat_lab calibrate",
-            "--scenarios NAME... small, normal, big (default) or scenario names\n"
-            "--simulations N    duels per scenario in the sequential sweep\n"
-            "--pool-simulations N duels per scenario in the worker sweep\n"
+            "--scenarios NAME... what runs (default big; NumPy sweeps narrow big to normal)\n"
+            "--simulations N    duels per scenario in the sequential sweep (worker sweep: 2x)\n"
             "--no-install       measure without installing settings\n"
             "--output PATH      save an additional result file\n--json             structured output\n"
             "--reset            remove installed calibration\n"
@@ -934,19 +937,21 @@ Data:
   verify        validate KB documents/bindings and try compiling profiles
   report rules  export the rule inventory; no combat correctness certification
 
-Engine scenarios:
-  parity        execute catalogued scenarios on modular, or compare candidates
+Engine comparison:
+  parity        compare NumPy/native with the modular oracle (live run)
+  samples       sample one engine at a time into a store; compare stored samples
 
 Test quality and outputs:
   coverage      measure code coverage and compare it with the recorded budget
-  report tests  generate technical test reports, optionally statistical results
+  report tests  run the tests and write the technical test CSV
 
 Web and integration workflow:
   presentation  audit web text, translations and visible presentation
   ci            run the configured local checks, typechecks and builds
 
 Examples:
-  python tools/mordheim-utils.py check parity --scenarios small battery-deep --backend modular --workers 8 --simulations 1
+  python tools/mordheim-utils.py check parity --scenarios small --workers 4
+  python tools/mordheim-utils.py check samples sample --backend numpy --scenarios big
   python tools/mordheim-utils.py check coverage --json
   python tools/mordheim-utils.py check report rules -h
 
@@ -964,40 +969,34 @@ def _check_command_help(name: str) -> int:
             "audit bindings/phases, and try default constructions for band profiles.\n"
             "This is not tests kb and does not execute combat-rule scenarios.",
             "python -m mordheim_combat_lab verify",
-            "--knowledge PATH   alternative knowledge root\n--json             structured error/count output\n"
-            "--inventory        print inventory instead of running the checks\n"
-            "--help-full        complete delegated options",
-            ("check verify --json", "check verify --inventory"),
-            ("Uses real compilation, not frozen fighters.",),
+            "--json             structured error/count output",
+            ("check verify", "check verify --json"),
+            ("Uses real compilation, not frozen fighters.",
+             "Set MORDHEIM_COMBAT_LAB_KNOWLEDGE_PATH to check another knowledge base.",
+             "The rule inventory itself is `check report rules`."),
         ),
         "parity": (
-            "Run the selected scenarios. Modular-only execution checks executability;\n"
-            "NumPy/native compare distributions with modular. --certificate picks a\n"
-            "certificate instead of a plain run; with nothing selected the\n"
-            "deterministic certificate runs.",
+            "Compare the optimized engines with the modular oracle on the selected\n"
+            "scenarios (six-sigma gate). Without --scenarios only the exact\n"
+            "obligation checks run, which takes a second.",
             "python -m mordheim_combat_lab parity",
-            "--scenarios NAME... small, normal, big, scenario names; battery-quick,\n"
-            "                   battery-complete, battery-deep; e2e or delivery keys\n"
-            "--scenarios-file PATH  read --scenarios values, one per line\n"
-            "--certificate KIND deterministic, statistical, deep or battery\n"
-            "--backend ENGINE   modular (no comparison), or numpy and/or native\n"
-            "--simulations N    duels per scenario; default: each layer's own size\n"
-            "--workers 8        workers for modular samples (also accepts auto or 1)\n"
-            "--seed N           sample seed\n--require-complete fail if any selected case is blocked\n"
-            "--json             structured results\n--output PATH      save the report\n"
-            "--help-full        complete options",
-            ("check parity --scenarios big --backend modular --workers 8 --simulations 1",
-             "check parity --scenarios small battery-deep --backend modular --workers 8 --simulations 1",
-             "check parity --scenarios battery-quick --backend numpy --workers 8 --require-complete",
-             "check parity --certificate statistical --scenarios normal --workers 8",
-             "check parity --certificate battery --scenarios battery-quick --require-complete",
-             "check parity --scenarios e2e --backend numpy --simulations 100000"),
-            ("Levels are cumulative: small is in normal, normal in big; long is a scenario.",
-             "Battery profiles are cumulative too: quick in complete, complete in deep.",
-             "E2E deliveries run on their own; they cannot be mixed with other scenarios.",
-             "Precompiled cases load frozen fighters; battery cases compile their builds.",
-             "COMPLETED means executable, not parity approved; blocked cases were not run.",
-             "One simulation checks one execution path; eight workers cannot split one duel."),
+            "--scenarios NAME...  what runs; see the shared options (no default)\n"
+            "--backend ENGINE...  numpy, native or both; modular alone only executes it\n"
+            "--simulations N      duels per scenario (default 10000; under 7200 = UNDERPOWERED)\n"
+            "--rounds N[,N...]    round limit; a list compares every horizon\n"
+            "--seed N             random seed\n"
+            "--workers N|auto     worker processes for the modular oracle\n"
+            "--require-complete   fail unless every case passed\n"
+            "--output PATH        save .json or .md\n--json               print JSON",
+            ("check parity",
+             "check parity --scenarios small --workers 4",
+             "check parity --scenarios big --backend numpy native --simulations 100k --workers 4",
+             "check parity --scenarios basic heavy-grind --rounds 2,4,8,15",
+             "check parity --scenarios battery --simulations 7200 --require-complete",
+             "check parity --scenarios e2e --backend modular --simulations 1"),
+            ("A case an engine cannot run is listed NOT_RUN or INCOMPATIBLE with its reason.",
+             "--backend modular alone checks executability: COMPLETED is not parity.",
+             "To reuse expensive oracle samples, use `check samples` instead."),
         ),
         "coverage": (
             "Run the configured Python suites under coverage measurement, then check\n"
@@ -1042,7 +1041,7 @@ def report_command(args: list[str]) -> int:
         print("usage: python tools/mordheim-utils.py check report <rules|tests> [options]")
         print()
         print("  rules   auditable per-rule inventory (CSV/JSON in outputs/audit/)")
-        print("  tests   human-readable parity and technical test CSVs")
+        print("  tests   run the tests and write the technical test CSV")
         print()
         print("Runs: python -m mordheim_combat_lab audit (rules)")
         print("      python -m mordheim_combat_lab test-report (tests)")
@@ -1066,20 +1065,16 @@ def report_command(args: list[str]) -> int:
                 "python tools/mordheim-utils.py check report rules [options]",
                 "Export the maintained rule inventory with classifications and scope.\nThis is a data report, not evidence that game rules execute correctly.",
                 "python -m mordheim_combat_lab audit",
-                "--output PATH   destination directory\n--scope VALUE   YES, NO, LATER or UNCLASSIFIED\n"
-                "--family NAME   mechanism-family filter\n--help-full     all inventory filters",
+                "--output DIR    destination directory (default outputs/audit)",
                 examples=("check report rules --output outputs/audit",),
                 notes=("Writes report files; does not certify E2E or parity coverage.",),
             )
         return _delegated_help(
             "python tools/mordheim-utils.py check report tests [options]",
-            "Execute the technical test-report workflow and export its results.\nOptionally add statistical engine comparisons; this can be expensive.",
+            "Run the repository's tests and write an Excel-friendly technical CSV.\nEngine comparisons belong to `check parity` and `check samples`.",
             "python -m mordheim_combat_lab test-report",
-            "--output PATH              report directory\n--statistical              also run statistical comparisons\n"
-            "--simulations N            duels per scenario for --statistical\n--workers 8                modular workers for statistical samples only\n"
-            "--seed N                   statistical seed\n--help-full                complete options",
-            examples=("check report tests --output outputs/test-report",
-                      "check report tests --statistical --workers 8 --output outputs/test-report"),
+            "--output DIR    report directory (default: timestamped under outputs/)",
+            examples=("check report tests --output outputs/test-report",),
             notes=("Unlike report rules, this command executes checks, not just inventory export.",),
         )
     return _run_module("mordheim_combat_lab", REPORT_KINDS[kind], *forwarded)
@@ -1092,6 +1087,9 @@ def check_command(args: list[str]) -> int:
     name, forwarded = args[0], args[1:]
     if name == "report":
         return report_command(forwarded)
+    if name == "samples":
+        # The stored-sample tool owns its sub-commands and their help.
+        return _run_module("tools.verification.parity_samples", *(forwarded or ["--help"]))
     if name in ("verify", "parity", "coverage", "presentation", "ci"):
         if "--help-full" in forwarded and name in ("verify", "parity", "coverage"):
             lab_name = {"verify": "verify", "parity": "parity", "coverage": "coverage-gate"}[name]
@@ -1265,7 +1263,8 @@ Performance:
   performance calibrate       measure and optionally save machine settings
 
 Checks and reports:
-  check parity                run catalogued scenarios or compare engine samples
+  check parity                compare NumPy/native with the modular oracle
+  check samples               sample engines into a store; compare stored samples
   check verify                validate KB structure/bindings and compile profiles
   check coverage              measure tests' code coverage against a budget
   check report rules          export the rule inventory
@@ -1273,23 +1272,30 @@ Checks and reports:
   check presentation          audit web text, translations and presentation
   check ci                    local regression checks, typechecks and web build
 
-Shared options (performance, check parity, report tests, verification tools):
-  --scenarios NAME...         what runs: small (8 scenarios), normal (30), big (43)
-                              or scenario names (basic, long, ...); several = union
-  --simulations N             duels per scenario
-  --workers N                 worker processes
-  --backend ENGINE...         modular, numpy, native
-  --batch-size N              duels per engine batch
-  --seed N                    random seed
-  --output PATH               report destination
-  Every tool spells these the same way. Under `tests`, -n is pytest's worker count.
+Shared options (performance benchmark/calibrate, check parity/samples):
+  --scenarios NAME...   what runs, the same values everywhere:
+                          small (8) | normal (30) | big (all 43)  scenario levels
+                          e2e                   every E2E delivery
+                          battery               every battery case
+                          basic, long, ...      one scenario; e2e/... or audit_id::id
+                                                one delivery; battery/<id> one case
+                        several values run their union; a case a tool cannot
+                        run is listed with the reason
+  --simulations N       duels per scenario (k/m suffixes: 100k, 1m)
+  --backend ENGINE...   modular, numpy, native
+  --workers N           worker processes
+  --batch-size N        duels per engine batch
+  --rounds N            round limit, replacing each scenario's own
+  --seed N              random seed
+  --output PATH         report file      --json   print the report as JSON
+  Under `tests`, -n is pytest's worker count: it belongs to pytest.
 
 Start here:
   python3 tools/setup_worktree.py   (once per checkout or worktree: its own .venv)
   python tools/mordheim-utils.py tests env
   python tools/mordheim-utils.py tests modular mechanics -h
   python tools/mordheim-utils.py tests modular mechanics -n 8 --dist=load -q
-  python tools/mordheim-utils.py check parity --scenarios small battery-deep --backend modular --workers 8 --simulations 1
+  python tools/mordheim-utils.py check parity --scenarios small --workers 4
 
 Help and discovery:
   <group> -h                  commands within a group

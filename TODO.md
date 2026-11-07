@@ -103,7 +103,7 @@ The decision data lives in `tests/engines/parity/reference_samples/`:
 `modular-e2e-100k` is the oracle, `numpy-e2e-100k` and `native-e2e-100k` are
 the candidates (seed 2026, 100,000 duels per scenario in 10,000-duel chunks,
 50 rounds, six-sigma winner gate). Compare stored stores without running
-either engine with `python -m tools.verification.parity_samples compare
+either engine with `python tools/mordheim-utils.py check samples compare
 --scenarios e2e --backend <numpy|native> --store <candidate store>
 --reference-store <modular store>`; re-sample candidates with `sample --backend
 <numpy|native>`. Running the Modular engine requires explicit authorization.

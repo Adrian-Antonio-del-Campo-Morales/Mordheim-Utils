@@ -58,8 +58,9 @@ def test_level_names_never_collide_with_scenario_names():
 def test_level_selection_returns_its_scenarios_in_catalogue_order():
     for level in LEVELS:
         chosen = select((level,))
-        assert [name for _key, name in chosen] == list(LEVEL_SCENARIOS[level])
-        assert {name for _key, name in chosen} == {
+        assert [entry.name for entry in chosen] == list(LEVEL_SCENARIOS[level])
+        assert {entry.kind for entry in chosen} == {"scenario"}
+        assert {entry.name for entry in chosen} == {
             scenario.name for scenario in scenarios_for_level(level)
         }
     # Without --scenarios the campaign selects the eight cheap scenarios.
@@ -80,10 +81,10 @@ def test_big_level_keeps_the_expensive_round_limits():
 def test_scenario_values_select_names_keys_and_unions_and_reject_unknowns():
     # Names and corpus keys are the same scenario; the order asked is kept.
     chosen = select(("scenario/long", "basic"))
-    assert [key for key, _name in chosen] == ["scenario/long", "scenario/basic"]
+    assert [entry.key for entry in chosen] == ["scenario/long", "scenario/basic"]
     # A level plus a name outside it is their union, never a narrowing.
     union = select(("normal", "heavy-grind"))
-    assert len(union) == 31 and union[-1] == ("scenario/heavy-grind", "heavy-grind")
+    assert len(union) == 31 and union[-1] == ("scenario/heavy-grind", "heavy-grind", "scenario")
     with pytest.raises(ValueError, match="unknown scenario"):
         select(("scenario/missing",))
     # The retired level names are not levels any more.
@@ -132,3 +133,27 @@ def test_inputs_the_samplers_cannot_pass_on_reject_the_case(cases):
     assert scenarios == ()
     assert rejected[0][0] == "scenario/basic"
     assert rejected[0][1].startswith("incompatible: initial_state overrides")
+
+
+def test_e2e_and_battery_are_named_sets_like_the_levels():
+    # Every tool takes the same values: the E2E corpus and the battery are
+    # selected whole by name, or one case at a time by key.
+    deliveries = select(("e2e",))
+    assert len(deliveries) > 2_000 and {entry.kind for entry in deliveries} == {"e2e"}
+    battery = select(("battery",))
+    assert {entry.kind for entry in battery} == {"battery"}
+    assert all(entry.key == f"battery/{entry.name}" for entry in battery)
+    one = select((battery[0].key, deliveries[0].key, "basic"))
+    assert [entry.kind for entry in one] == ["battery", "e2e", "scenario"]
+    with pytest.raises(ValueError, match="unknown scenario"):
+        select(("battery/no-such-case",))
+
+
+def test_loading_reports_every_case_a_tool_cannot_run(cases):
+    # Battery cases compile from the knowledge base into frozen-case form; a
+    # scripted-decision case is reported instead of run without its script.
+    runnable, rejected = load(select(("battery",)), cases)
+    assert runnable and all(item.case.fingerprints["inputs_sha256"] for item in runnable)
+    reasons = dict(rejected)
+    assert any("scripted decisions" in reason for reason in reasons.values())
+    assert len(runnable) + len(rejected) == len(select(("battery",)))

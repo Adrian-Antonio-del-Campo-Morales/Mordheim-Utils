@@ -82,8 +82,8 @@ separate deterministic parity suite. The launcher selects these tests with
 `python tools/mordheim-utils.py tests parity statistical -n 6 --dist=load -q`.
 This selection is not the complete large-sample certification campaign.
 
-For campaigns using saved modular references, use
-`python -m tools.verification.parity_samples`: `sample --backend numpy` or
+For campaigns using saved modular references, use `check samples`
+(`tools.verification.parity_samples`): `sample --backend numpy` or
 `sample --backend native` stores candidate batches, then `compare` reads the
 candidate store and the modular `--reference-store` without rerunning the
 oracle. Samples record inputs, seeds, round limits, the source digest of
@@ -259,7 +259,7 @@ parallel execution and observation. The modular total-only and observed paths
 must agree on the same inputs; their purpose is simulator consistency, not a
 second rule implementation.
 
-`parity --truncations` compares outcome distributions at several round horizons.
+`check parity --rounds 2,4,8,15` compares outcome distributions at several round horizons.
 It is a statistical comparison, even when fixed seeds make its runs reproducible.
 It can reveal timing drift hidden by final aggregate totals; it does not replace
 source-derived mechanics expectations.
@@ -268,26 +268,25 @@ source-derived mechanics expectations.
 
 Statistics compare optimized-engine behaviour with the modular reference over
 curated archetype duels, covering rule variants and their interactions. The 6σ marginal gate
-(`--certificate statistical`, `--certificate deep`) compares first/second/unresolved rates on the
+(`check parity --scenarios ...`, or `check samples compare` on stored samples)
+compares first/second/unresolved rates on the
 42-pair archetype matrix (glass cannons, brutes, elites, tanks, parry,
 mechanics like regeneration-vs-fire, ward saves, entangle, the
 timing/parry amplifiers — 4 hits vs one parry, a W1 stun stressor, a
 measurable-rate frenzy pair, the durable mirror and a 75-round heavy grind —
 plus skill consumers, helmet/injury-profile-2, Cathayan Longsword, and the
-benchmark-only blessed-regeneration boundary) plus the numpy↔native
-cross-certification at 1 000 000 duels/pair where the optimized engines make
-scale cheap and the oracle is never touched. `--scenarios normal` is designed to
-retain the whole matrix's distinct effect-axis coverage in a smaller run;
-`--scenarios big` (the deep default) adds the omitted baselines, mirrors and
-alternate matchup contexts. Without `--scenarios` the statistical certificate
-samples `small` and the deep certificate and truncation sweep sample `big`; an
-explicit `--scenarios` applies to every layer that runs.
+benchmark-only blessed-regeneration boundary). A numpy↔native cross-check at
+scale never touches the oracle: sample both candidates with `check samples
+sample` and compare them with `check samples compare --backend native
+--reference numpy`. `--scenarios normal` is designed to retain the whole
+matrix's distinct effect-axis coverage in a smaller run; `--scenarios big`
+adds the omitted baselines, mirrors and alternate matchup contexts.
 
 Two properties keep this honest:
 
-- the oracle sample is capped (`--max-modular-duels`), computed once and
-  shared by every backend, and poolable across processes with bit-for-bit
-  identical certificates (`--workers`, `MORDHEIM_PARALLEL_ORACLE_WORKERS`);
+- the oracle sample is computed once per case and shared by every candidate,
+  and poolable across processes with bit-for-bit identical totals
+  (`--workers`, `MORDHEIM_PARALLEL_ORACLE_WORKERS`);
 - the gate is deterministic in the seed: `--seed` fixes the streams, so a
   failure is reproducible.
 
@@ -380,47 +379,39 @@ report merely to hide lost evidence.
 
 ## Renewed statistical scenario battery
 
-`parity --certificate battery --scenarios battery-quick|battery-complete|battery-deep`
-(default `battery-deep`) runs the scenario catalogue of
-`mordheim_combat_lab.verification.parity._battery_cases` and compares the
-terminal outcome distributions of the modular oracle and the selected candidate.
-Profiles are cumulative by case id (`quick` ⊆ `complete` ⊆ `deep`). Each case
+`check parity --scenarios battery` (or single cases, `battery/<id>`) runs the
+scenario catalogue of `mordheim_combat_lab.verification.parity._battery_cases`
+and compares the terminal outcome distributions of the modular oracle and the
+selected candidate. The report then carries the battery certificate described
+below under `battery`. The catalogue keeps cumulative profiles by case id
+(`quick` ⊆ `complete` ⊆ `deep`); the CLI selects the whole battery or named
+cases. Each case
 declares origin, variant, fighters, context, decisions, sample width, seed and
 horizon; it is executed by both real engines, never by delegating one to the
 other.
 
 ```bash
-# minimal battery (11 prepared cases; execution evidence is separate)
-python -X utf8 tools/mordheim-utils.py check parity --certificate battery --scenarios battery-quick --output outputs/parity/battery-quick.json
+# the whole battery, both candidates, Markdown report and strict gate
+python -X utf8 tools/mordheim-utils.py check parity --scenarios battery --backend numpy native --simulations 7200 --output outputs/parity/battery.md --require-complete
 
-# both candidates, per-backend coverage
-python -X utf8 tools/mordheim-utils.py check parity --certificate battery --scenarios battery-complete --backend numpy native --output outputs/parity/battery-complete.json
-
-# markdown certificate and strict gate at an acceptance width
-python -X utf8 tools/mordheim-utils.py check parity --certificate battery --scenarios battery-deep --simulations 7200 --output outputs/parity/battery-deep.md --require-complete
-
-# smaller sample width for calibration; its cases are UNDERPOWERED, never approved
-python -X utf8 tools/mordheim-utils.py check parity --certificate battery --scenarios battery-quick --simulations 256 --output outputs/parity/battery-quick-256.json
-
-# 1000 duels per case, up to 10 modular-oracle worker processes
-python -X utf8 tools/mordheim-utils.py check parity --certificate battery --scenarios battery-quick --backend numpy --simulations 1000 --workers 10 --output outputs/parity/battery-quick-1000.json
+# two named cases at a small width; their rows are UNDERPOWERED, never approved
+python -X utf8 tools/mordheim-utils.py check parity --scenarios battery/q04-parry-attempt battery/q04-injury-chart --simulations 256
 ```
 
-`--workers N|auto` also applies to all three profiles. It partitions each
+`--workers N|auto` applies to the oracle samples. It partitions each
 modular sample into contiguous `seed + i` ranges, preserves terminal row order
 and reuses one process pool across cases. `1` stays sequential; explicit counts
 are capped to available CPUs, and `auto` uses the historical cost threshold.
-Candidate batches are unchanged, and `--backend all` still shares the modular
-sample between candidates. The report records `oracle_workers_requested` as
+Candidate batches are unchanged, and `--backend numpy native` shares the
+modular sample between candidates. The report records `oracle_workers_requested` as
 the requested policy, not a claim that every case used that many processes.
-Every oracle and candidate pool (battery, statistical certificate, stored
-samples) checks at start-up that each worker imported the parent's engine
+Every oracle and candidate pool (`check parity`, stored samples) checks at start-up that each worker imported the parent's engine
 files; a worker that resolved another engine copy stops the run instead of
 merging another engine's duels into the sample.
 
 The comparison is statistical. `winner` (first win, second win, unresolved) is
 always compared with the six-sigma tolerance shared with the historical
-certificate (`_statistical.six_sigma_tolerance`, floor 0.25%). `rounds`
+comparisons (`_statistical.six_sigma_tolerance`, floor 0.25%). `rounds`
 is added when the case declares it. Internal counters, typed
 witnesses, activation flags, equipment hashes and checkpoints are **not**
 required: `expect`, `positive_control` and `witness_value` remain declaration
@@ -444,23 +435,18 @@ campaign-only potion table the KB marks out of scope, and `v01-restriction`
 needs a charge the construction rejects before any sample exists. Both remain in
 the profile denominator as `INCOMPATIBLE` with their cause.
 
-`--backend` defaults to `numpy` for the battery certificate. `native` never falls back to
+`--backend` defaults to `numpy`. `native` never falls back to
 NumPy: a missing or stale extension is `NOT_RUN:native-unavailable` or
 `NOT_RUN:native-stale`, an error that makes the run exit 1, and a plan the
 extension cannot express is `NOT_RUN:native-plan`, a dependency. Neither is a
 comparison. The battery's native rows replay the native core with the NumPy
 random generator, so they do not exercise production native seeding; reports
-say so. On the certificate routes `--backend` is accepted only with
-`--certificate battery`, or with `--certificate statistical|deep` and no
-`--truncations`. A deep certificate records requested and available backends
-and is incomplete when a requested native backend is missing. Configuration
-errors exit with code 2. Without `--simulations` every battery case keeps its
-declared width (64 rows). That width is a smoke check: its cases are
-`UNDERPOWERED`, so a strict `--require-complete` run needs `--simulations` of
-at least 7,200, the smallest width that can detect a 5-point shift.
-`--simulations` replaces every case's width and the certificate records it as
-`preparation.rows_override` (Markdown: "Rows"), so an overridden certificate is
-never read as one at the declared widths.
+say so. Configuration errors exit with code 2. `--simulations` (default
+10,000) replaces every case's declared width, and the certificate records it as
+`preparation.rows_override` (Markdown: "Rows"), so it is never read as one at
+the declared widths. Below 7,200 rows, the smallest width that can detect a
+5-point shift, a passing case is `UNDERPOWERED`. The certificate reads every
+case at its own round limit, so a run with `--rounds` carries no certificate.
 
 The certificate is schema `mordheim-combat-parity-battery/v3`. Per case it
 records the stages actually reached — `executed` (both samples obtained),
@@ -486,8 +472,7 @@ extension cannot express are dependencies: they leave the run partial and only
 `--require-complete` turns that into a failure. Pool workers that import a
 different engine copy than the parent stop the run with exit code 2. The
 certificate records the source revision, dirty state, engine digests and
-native build; provenance differences only warn. The CLI and the report share one classification
-(`battery_failure_kind`), so a bucket cannot contradict the exit code.
+native build; provenance differences only warn.
 
 Each engine's winner convention is validated before normalisation (oracle
 `0/1/2`, candidate `1/-1/0`). A code outside its own convention is malformed
@@ -544,14 +529,14 @@ Keep the matrix curated by justified behaviour, without a fixed scenario quota.
 
 ## Reports
 
-`check report tests` writes technical test results and, when requested, statistical
-comparison rows under `outputs/test-report/`. It does not run or approve a
+`check report tests` writes technical test results under
+`outputs/test-report/`. It does not run or approve a
 semantic YAML corpus. Skipped and expected-failure tests are reported as `SKIP`
 and `XFAIL`, never as passes. The CSV left by an earlier run is removed before
 pytest starts, so a run that crashes before writing its own reports the CSV as
 missing instead of reusing stale results; from a source checkout the child
-pytest imports that checkout's packages. `check parity` writes versioned statistical certificates under
-`outputs/parity/`; `check report rules` exports structural/planning inventory without
+pytest imports that checkout's packages. `check parity --output` writes comparison reports
+(JSON or Markdown, with the battery certificate when battery cases ran); `check report rules` exports structural/planning inventory without
 claiming new semantic verification. Legacy semantic columns in existing CSVs
 are historical fields, not current certificates.
 

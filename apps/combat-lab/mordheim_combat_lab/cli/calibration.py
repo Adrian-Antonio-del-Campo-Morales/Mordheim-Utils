@@ -78,8 +78,6 @@ from mordheim_combat_lab.application.settings import (
     simulate_battery,
     split_battery,
 )
-from mordheim_combat_lab.cli.scenarios import select_scenarios
-from mordheim_combat_lab.cli.benchmarking import compile_benchmark_fighters
 
 #: Batch candidates for the sequential sweep (the engines disagree: native
 #: collapses with large batches, numpy with small ones). The numpy sample size
@@ -126,12 +124,15 @@ def _geomean(values) -> float:
 
 
 def _pairs(scenarios):
-    """Compiled (first, second, maximum_rounds, id) rows for ``--scenarios`` values."""
-    return [
-        (*compile_benchmark_fighters(scenario),
-         scenario.maximum_rounds or 50, scenario.id)
-        for scenario in select_scenarios(scenarios)
-    ]
+    """``(first, second, maximum_rounds, id, context)`` rows for ``--scenarios``
+    values; a selected case the engines cannot run is printed and skipped."""
+    from mordheim_combat_lab.cli.benchmarking import benchmark_cases
+
+    cases, rejected = benchmark_cases(scenarios, default="big")
+    for key, reason in rejected:
+        print(f"NOT RUN: {key}: {reason}", file=sys.stderr)
+    return [(case.first, case.second, case.maximum_rounds or 50, case.id, case.context)
+            for case in cases]
 
 
 def numpy_sweep_scenarios(scenarios: tuple[str, ...]) -> tuple[str, ...]:
@@ -173,10 +174,11 @@ def _winner(scores: dict, reference):
 
 def _sequential_walls(pairs, backend, samples, batch, seed):
     walls = []
-    for first, second, rounds, _identifier in pairs:
+    for first, second, rounds, _identifier, *context in pairs:
         settings = DuelExecutionSettings(samples, seed, batch, rounds)
         started = time.perf_counter()
-        simulate_duel(settings.request(first, second), backend=backend)
+        simulate_duel(settings.request(first, second, context=(context or [None])[0]),
+                      backend=backend)
         walls.append(time.perf_counter() - started)
     return walls
 
@@ -188,11 +190,12 @@ def _pooled_walls(pairs, backend, samples, batch, workers, seed):
     walls = []
     try:
         warm_executor(executor, segments)
-        for first, second, rounds, _identifier in pairs:
+        for first, second, rounds, _identifier, *context in pairs:
             settings = DuelExecutionSettings(samples, seed, batch, rounds)
             started = time.perf_counter()
             simulate_battery(first, second, settings, workers=workers,
-                             pool=executor, backend=backend)
+                             pool=executor, backend=backend,
+                             context=(context or [None])[0])
             walls.append(time.perf_counter() - started)
     finally:
         executor.shutdown()
@@ -472,14 +475,16 @@ def calibration_command(args) -> int:
         return 0
     scenarios = tuple(args.scenarios or ("big",))
     try:
-        select_scenarios(scenarios)
+        from mordheim_combat_lab.cli.scenarios import load_checkout_module
+
+        load_checkout_module("tools.verification.parity_catalog").select(scenarios)
     except ValueError as error:
         print(f"Calibration configuration error: {error}", file=sys.stderr)
         return 2
     payload = run_calibration(
         scenarios, seed=args.seed,
         sequential_samples=args.simulations,
-        pooled_samples=args.pool_simulations)
+        pooled_samples=2 * args.simulations)
     print_summary(payload)
     path = None
     if getattr(args, "no_install", False):

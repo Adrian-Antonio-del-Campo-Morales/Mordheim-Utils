@@ -31,8 +31,8 @@ a re-sample at another batch size produces different counts for the same seed.
 Recorded with (shown with the current option names):
 
 ```bash
-python -m tools.verification.parity_samples sample --backend numpy --scenarios big \
-    --simulations 200000 --batch-size 100000 --seed 2026 --workers 4 --compress \
+python tools/mordheim-utils.py check samples sample --backend numpy --scenarios big \
+    --simulations 200000 --batch-size 100000 --seed 2026 --workers 4 \
     --store tests/engines/parity/reference_samples/numpy-big-200k
 ```
 
@@ -53,12 +53,15 @@ counts. A change meant to preserve results must reproduce them **exactly** —
 these are the same duels, so equality is the expectation, not a tolerance:
 
 ```bash
-python -m tools.verification.parity_samples sample --backend numpy --scenarios big \
-    --simulations 200000 --batch-size 100000 --seed 2026 --workers 4 --compress \
+python tools/mordheim-utils.py check samples sample --backend numpy --scenarios big \
+    --simulations 200000 --batch-size 100000 --seed 2026 --workers 4 \
     --store outputs/parity/numpy-big-200k-after
+python tools/mordheim-utils.py check samples compare --backend numpy --reference numpy \
+    --scenarios big --store outputs/parity/numpy-big-200k-after \
+    --reference-store tests/engines/parity/reference_samples/numpy-big-200k
 ```
 
-Then diff the per-scenario chunk counts of the two stores. A revision that
+Every row should read `identical counts`. A revision that
 deliberately changes the dice streams cannot be read with this store at all: it
 needs a fresh oracle-backed campaign, not a self-comparison.
 

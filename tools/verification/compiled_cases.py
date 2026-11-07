@@ -43,7 +43,7 @@ SCHEMA = "mordheim-compiled-cases"
 SCHEMA_VERSION = 1
 EFFECT_SCHEMA = "EffectSet/v1"
 
-_ORIGIN_KINDS = frozenset({"unit", "e2e", "semantic", "benchmark"})
+_ORIGIN_KINDS = frozenset({"unit", "e2e", "semantic", "benchmark", "battery"})
 _PARTICIPANT_CONDITIONS = frozenset({
     "standing", "knocked-down", "stunned", "paralyzed", "out", "fleeing",
 })

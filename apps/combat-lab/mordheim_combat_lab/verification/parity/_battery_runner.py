@@ -302,7 +302,7 @@ def battery_report(
     """Build the battery certificate from every backend row of one run.
 
     Every per-backend row survives in ``results``; the case-level tuples carry
-    the worst status of each case, so ``--backend all`` certifies a case only
+    the worst status of each case, so ``--backend numpy native`` certifies a case only
     when every requested backend passed it.  An ``UNDERPOWERED`` case keeps the
     report incomplete.  ``complete``/``accepted`` keep
     their execution meaning and are never ``all([])``.

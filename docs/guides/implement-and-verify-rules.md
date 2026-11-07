@@ -39,13 +39,14 @@ not replace the mechanics assertions.
 ## Use the development queue
 
 ```powershell
-python tools/mordheim-utils.py check report rules --inventory-only --historical-origins --output outputs/audit/development
+python tools/mordheim-utils.py check report rules --output outputs/audit/development
 ```
 
-Use `combat-audit.csv` as the operational list. `--work-status implementation_required`
-selects admitted effects needing implementation; `--family <mechanism>` groups
-related effects. `development_family` uses the existing origin register's names.
-The legacy `--t13` spelling of `--historical-origins` remains compatible.
+Use `combat-audit.csv` as the operational list and filter it in a spreadsheet:
+`combat_work_status` = `implementation_required` selects admitted effects
+needing implementation, `development_family` groups related effects (it uses
+the existing origin register's names) and a non-empty `t13_origin` keeps the
+historical plan origins.
 
 An inventory export is a structural/planning snapshot, not executed behavioural
 proof. Legacy `semantic_status`, `semantic_reason` and related CSV fields must
@@ -93,9 +94,8 @@ A ruling by itself does not prove implementation or correct execution.
 1. Inspect existing mechanics, construction and E2E checks before adding another.
 2. Run the smallest relevant checks only when execution is authorized. Test
    execution and broader integration/certification are separate scopes.
-3. Check structural KB/contracts with `check verify`. `--structural` is accepted only
-   as a compatibility flag: verification is structural only and does not run a
-   semantic scenario corpus.
+3. Check structural KB/contracts with `check verify`. Verification is structural
+   only and does not run a semantic scenario corpus.
 4. For optimized-engine changes, use the existing statistical scenario catalogue
    against the modular oracle when that verification is authorized. Do not add
    NumPy per-operation YAML adapters as another rule-authoring system.

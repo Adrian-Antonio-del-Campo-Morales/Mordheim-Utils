@@ -76,7 +76,7 @@ def test_e2e_selection_keeps_non_runnable_deliveries_and_rejects_unknown_ids():
 
     args = store._parser().parse_args(["status", "--scenarios", *CASES.values()])
     scenarios, rejected, chosen = store._selection(args)
-    assert {key for key, _ in chosen} == set(CASES.values())
+    assert {entry.key for entry in chosen} == set(CASES.values())
     assert {scenario.key for scenario in scenarios} == {CASES["simple"]}
     assert scenarios[0].case.limits.maximum_rounds == 50
     reasons = dict(rejected)
@@ -85,34 +85,28 @@ def test_e2e_selection_keeps_non_runnable_deliveries_and_rejects_unknown_ids():
     assert "initial_state" in reasons[CASES["initial_state"]]
     args.scenarios = ["e2e"]
     _, _, chosen = store._selection(args)
-    assert {key for key, _ in chosen} == set(e2e_parity.discover()[0])
+    assert {entry.key for entry in chosen} == set(e2e_parity.discover()[0])
     args.scenarios = ["e2e/unknown"]
     with pytest.raises(store.SampleStoreError):
         store._selection(args)
 
 
-@pytest.mark.parametrize("compress", [False, True])
-def test_e2e_cli_samples_resumes_and_compares(tmp_path, compress):
+def test_e2e_cli_samples_resumes_and_compares(tmp_path):
     from tests.engines.parity.statistical.test_e2e_parity import CASES
 
     key = CASES["simple"]
     selection = ["--scenarios", key, "--store", str(tmp_path)]
     command = ["sample", "--backend", "modular", *selection,
                "--simulations", "2", "--batch-size", "1", "--workers", "1"]
-    if compress:
-        command.append("--compress")
     assert store.main(command) == 0
     path = store.sample_path(tmp_path, "modular", key)
-    assert path.name.endswith(".json.gz" if compress else ".json")
+    assert path.name.endswith(".json.gz")  # new records are always compressed
     record = store.load_sample(path)
     assert record is not None and record.coverage() == 2
     assert record.maximum_rounds == 50
     original = path.read_bytes()
     # A completed sample must resume without rewriting or running more duels.
     assert store.main(command) == 0
-    assert path.read_bytes() == original
-    # Resuming without the flag preserves compressed records too.
-    assert store.main([arg for arg in command if arg != "--compress"]) == 0
     assert path.read_bytes() == original
     # A new explicit horizon must never append to the old experiment.
     assert store.main([*command, "--rounds", "3"]) == 2
@@ -133,8 +127,7 @@ def _scenario(cases, name="basic") -> CampaignScenario:
     return CampaignScenario(key, name, cases[key])
 
 
-@pytest.mark.parametrize("verbose", [False, True])
-def test_sample_cli_logs_case_elapsed_time_and_optional_chunks(cases, tmp_path, monkeypatch, capsys, verbose):
+def test_sample_cli_logs_case_elapsed_time(cases, tmp_path, monkeypatch, capsys):
     scenario = _scenario(cases)
     ticks = iter((10.0, 12.0, 20.0, 21.0))
     monkeypatch.setattr(store.time, "perf_counter", lambda: next(ticks))
@@ -142,14 +135,12 @@ def test_sample_cli_logs_case_elapsed_time_and_optional_chunks(cases, tmp_path, 
                         store.SampleChunk(start, count, count, 0, 0, 0.0, "t"))
     command = ["sample", "--backend", "modular", "--scenarios", scenario.key,
                "--simulations", "2", "--batch-size", "1", "--store", str(tmp_path)]
-    if verbose:
-        command.append("--verbose")
     assert store.main(command) == 0
     lines = [line for line in capsys.readouterr().out.splitlines() if scenario.key in line]
-    assert len(lines) == (4 if verbose else 2)
+    assert len(lines) == 2
     assert ": started " in lines[0]
     assert ": complete in 2.00s; coverage 2" in lines[-1]
-    assert sum("saved" in line for line in lines) == (2 if verbose else 0)
+    assert sum("saved" in line for line in lines) == 0
     # Already-complete cases keep the same two-line summary without rerunning.
     assert store.main(command) == 0
     lines = [line for line in capsys.readouterr().out.splitlines() if scenario.key in line]
@@ -525,10 +516,12 @@ def test_candidate_cli_workers_preserve_sequential_chunks(cases, tmp_path, engin
     assert parallel is not None
     assert parallel.counts(12) == sequential.counts(12)
     # Resume with only the missing batch; the completed batches stay intact.
-    raw = json.loads(path.read_text())
+    import gzip
+
+    raw = json.loads(gzip.decompress(path.read_bytes()))
     kept = [chunk for chunk in raw["chunks"] if chunk["start"] != 5]
     raw["chunks"] = kept
-    path.write_text(json.dumps(raw))
+    path.write_bytes(gzip.compress(json.dumps(raw).encode("utf-8")))
     assert store.main(command) == 0
     resumed = store.load_sample(path)
     assert resumed is not None

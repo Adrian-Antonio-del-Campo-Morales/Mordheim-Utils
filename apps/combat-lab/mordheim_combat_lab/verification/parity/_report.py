@@ -816,7 +816,7 @@ def battery_report_markdown(payload: dict[str, object]) -> str:
         "execution semantics over the required statistical cases of the profile, "
         "not semantic coverage of every internal rule.",
         "",
-        "With `--backend all` every case is declared once per backend "
+        "With `--backend numpy native` every case is declared once per backend "
         "(`case_ids` is the catalog size).",
     ))
     return "\n".join(lines) + "\n"

@@ -103,19 +103,52 @@ ENGINE_LABELS = {"modular": "Modular", "numpy": "Vectorized", "native": "Native"
 
 
 
-# Scenario definitions (pure data) live in `scenarios.py`; this module
-# re-exports them so every historical import path keeps working
-# (`benchmarking.DEEP_SCENARIOS`, ...).
 from mordheim_combat_lab.cli.scenarios import (  # noqa: E402
-    DEEP_SCENARIOS,
     BenchmarkScenario,
     benchmark_scenarios,
     select_scenarios,
 )
-def compile_benchmark_fighters(
-    scenario: BenchmarkScenario,
-) -> tuple[CompiledFighter, CompiledFighter]:
-    """Load a maintained scenario's frozen fighters, without recompiling."""
+
+
+@dataclass(frozen=True, slots=True)
+class BenchmarkCase:
+    """One runnable duel of a benchmark: what ``--scenarios`` selected.
+
+    ``id`` is the precompiled scenario name (so stored baselines keep matching)
+    or the E2E / battery key; the fighters and context are the frozen inputs.
+    """
+
+    id: str
+    first: CompiledFighter
+    second: CompiledFighter
+    maximum_rounds: int
+    context: object = None
+
+
+def benchmark_cases(
+    scenarios, default: str = "small",
+) -> tuple[tuple[BenchmarkCase, ...], tuple[tuple[str, str], ...]]:
+    """Resolve ``--scenarios`` values; return the runnable cases and the
+    ``(key, reason)`` of every selected case the engines cannot run.
+    Raises ``ValueError`` for a value that selects nothing."""
+    from mordheim_combat_lab.cli.scenarios import load_checkout_module
+
+    catalog = load_checkout_module("tools.verification.parity_catalog")
+    runnable, rejected, _ = catalog.resolve(tuple(scenarios or (default,)))
+    return tuple(
+        BenchmarkCase(
+            item.name if item.kind == "scenario" else item.key,
+            item.case.first, item.case.second,
+            item.case.limits.maximum_rounds, item.case.context,
+        )
+        for item in runnable
+    ), rejected
+
+
+def compile_benchmark_fighters(scenario) -> tuple[CompiledFighter, CompiledFighter]:
+    """The frozen fighters of a benchmark case or a precompiled scenario."""
+    if isinstance(scenario, BenchmarkCase):
+        return scenario.first, scenario.second
     from mordheim_combat_lab.cli.scenarios import scenario_key
 
     case = _frozen_scenarios()[scenario_key(scenario.id)]
@@ -129,104 +162,6 @@ def _frozen_scenarios():
 
     load_cases = load_checkout_module("tools.verification.compiled_cases").load_cases
     return load_cases(project_root() / "tests/engines/fixtures/compiled-cases.json")
-
-
-@dataclass(frozen=True, slots=True)
-class DeepBenchmarkPlan:
-    """Runs for a ``--deep`` benchmark: a small modular reference plus the
-    vectorized grid. The modular oracle is deliberately only measured at the
-    reference size so deep sweeps stay feasible."""
-    vector_sizes: tuple[int, ...]
-    batch_sizes: tuple[int, ...]
-    modular_simulations: int
-    modular_backend: str | None
-    vector_backends: tuple[str, ...]
-    runs: tuple[tuple[str, str, int, int], ...]  # (scenario id, backend, simulations, batch_size)
-    excluded: tuple[dict[str, str], ...]
-
-
-def deep_benchmark_plan(
-    scenarios: tuple[BenchmarkScenario, ...], *,
-    vector_sizes: tuple[int, ...], batch_sizes: tuple[int, ...],
-    modular_simulations: int, backends: tuple[str, ...], installed: tuple[str, ...],
-) -> DeepBenchmarkPlan:
-    """Plan a deep benchmark run without executing anything.
-
-    Policy: the modular engine is measured only at ``modular_simulations``
-    (a reference point; it is the slow oracle). The optimized backends
-    (NumPy and, when compiled, native) are swept over the full size and
-    batch-size grid. Only requested backends are included; modular is never
-    part of the large grid.
-    """
-    requested = backends
-    excluded = []
-    vector_backends = []
-    for backend in ("numpy", "native"):
-        if backend not in requested:
-            continue
-        if backend not in installed:
-            excluded.append({"backend": backend,
-                             "reason": "backend is not compiled in this environment"})
-            continue
-        vector_backends.append(backend)
-    vector_backends = tuple(vector_backends)
-    runs = []
-    if "modular" in requested:
-        for scenario in scenarios:
-            runs.append((scenario.id, "modular", modular_simulations, batch_sizes[0]))
-    for scenario in scenarios:
-        for simulations in vector_sizes:
-            for batch_size in batch_sizes:
-                for backend in vector_backends:
-                    runs.append((scenario.id, backend, simulations, batch_size))
-    return DeepBenchmarkPlan(
-        vector_sizes, batch_sizes, modular_simulations,
-        "modular" if "modular" in requested else None,
-        vector_backends, tuple(runs), tuple(excluded),
-    )
-
-
-def print_deep_benchmark_header(
-    plan: DeepBenchmarkPlan, *, scenarios: str | None = None,
-) -> None:
-    label = f"scenarios {scenarios}; " if scenarios else ""
-    print(
-        "Deep benchmark: " + label
-        + (f"modular reference at {plan.modular_simulations:,} duels/scenario; "
-           if plan.modular_backend else "")
-        + f"{', '.join(plan.vector_backends)} swept over sizes "
-        f"{', '.join(f'{size:,}' for size in plan.vector_sizes)} x batches "
-        f"{', '.join(f'{size:,}' for size in plan.batch_sizes)} "
-        f"across {sum(run[1] == 'modular' for run in plan.runs):,} scenarios."
-    )
-
-
-def parse_sizes(value: str | None, default: int) -> tuple[int, ...]:
-    """Parse a size list such as "1k,10k 100k" into positive integers."""
-    if not value or not value.strip():
-        return (default,)
-    sizes = []
-    for token in value.replace(";", ",").replace(" ", ",").split(","):
-        token = token.strip().lower()
-        if not token:
-            continue
-        multiplier = 1
-        if token.endswith("k"):
-            multiplier, token = 1_000, token[:-1]
-        elif token.endswith("m"):
-            multiplier, token = 1_000_000, token[:-1]
-        try:
-            parsed = int(token) * multiplier
-        except ValueError as error:
-            raise ValueError(
-                f"invalid size token {token!r}; use plain integers or k/m suffixes"
-            ) from error
-        if parsed < 1:
-            raise ValueError("benchmark sizes must be positive")
-        sizes.append(parsed)
-    if not sizes:
-        raise ValueError("no benchmark sizes provided")
-    return tuple(dict.fromkeys(sizes))
 
 
 def run_benchmark(
@@ -251,6 +186,7 @@ def run_benchmark(
     request = DuelRequest(
         first, second, simulations, seed=seed, batch_size=batch_size,
         maximum_rounds=scenario.maximum_rounds,
+        context=getattr(scenario, "context", None),
     )
 
     def execute() -> None:
@@ -302,7 +238,7 @@ def render_profile(profiler, *, limit: int = 15) -> str:
     return stream.getvalue().rstrip()
 
 
-# Time-to-solution (--tts): the workload is fixed and whole execution
+# Time-to-solution (--strategies): the workload is fixed and whole execution
 # strategies are compared by the wall time of solving it completely —
 # throughput rows diagnose *why* one strategy wins, this mode decides *which*
 # one to use. Every strategy runs the same per-batch streams, so the
@@ -339,7 +275,7 @@ class TtsStrategyResult:
 
 
 def parse_tts_strategies(value: str | None) -> tuple[str, ...]:
-    """Parse the ``--tts`` strategy list into canonical strategy tokens.
+    """Parse the ``--strategies`` list into canonical strategy tokens.
 
     Accepts ``sequential``, ``processes=N`` (one scenario per worker),
     ``parallel=N`` (each scenario split inside a pool of N) and
@@ -427,6 +363,7 @@ def _tts_sequential_worker(
     request = DuelRequest(
         first, second, simulations, seed=seed, batch_size=batch_size,
         maximum_rounds=scenario.maximum_rounds,
+        context=getattr(scenario, "context", None),
     )
     started = perf_counter()
     if backend == "modular":
@@ -462,6 +399,7 @@ def _tts_modular_chunk_pass(
                 first, second, simulations, seed=seed,
                 maximum_rounds=scenario.maximum_rounds, workers=processes,
                 executor=pool, chunks=chunks,
+                context=getattr(scenario, "context", None),
             )
             per_scenario.append((scenario.id, perf_counter() - scenario_started))
             totals[0] += result.first_wins
@@ -501,6 +439,7 @@ def _tts_parallel_scenario_worker(
             pool.submit(
                 batch_segment, first, second, first_batch, stop,
                 simulations, batch_size, seed, scenario.maximum_rounds, None,
+                getattr(scenario, "context", None),
             )
             for first_batch, stop in segments if stop > first_batch
         ]
@@ -1053,13 +992,8 @@ def sweep_payload(
     unavailable: tuple[dict[str, str], ...] | list[dict[str, str]], *,
     simulation_sizes: tuple[int, ...], batch_sizes: tuple[int, ...],
     seed: int, warmups: int, repeats: int,
-    scenarios: str | None = None,
 ) -> dict[str, object]:
-    """Build a durable multi-configuration sweep artifact.
-
-    ``scenarios`` is recorded only for the deep pair-matrix profile; ordinary
-    five-scenario benchmark sweeps keep the historical payload shape.
-    """
+    """Build a durable multi-configuration sweep artifact."""
     payload = {
         "schema": SWEEP_SCHEMA,
         "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -1072,8 +1006,6 @@ def sweep_payload(
         "results": [asdict(item) for item in results],
         "unavailable": list(unavailable),
     }
-    if scenarios is not None:
-        payload["scenarios"] = scenarios
     return payload
 
 
@@ -1084,12 +1016,6 @@ def _environment() -> dict[str, str]:
         "platform": platform.platform(),
         "processor": platform.processor(),
     }
-
-
-def write_benchmark_payload(path: Path, payload: dict[str, object]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
-                    encoding="utf-8")
 
 
 def load_benchmark_payload(path: Path) -> dict[str, object]:
@@ -1282,7 +1208,7 @@ def baseline_provenance_warnings(
 
     advice = (
         "Throughput changes may reflect that rather than the code under test; the "
-        "gate still runs. Re-save the baseline (--save-baseline) here for a "
+        "gate still runs. Save a new baseline here (--output .json) for a "
         "like-for-like comparison."
     )
     warnings = []

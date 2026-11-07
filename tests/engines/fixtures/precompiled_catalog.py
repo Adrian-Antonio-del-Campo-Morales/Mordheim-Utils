@@ -48,7 +48,7 @@ ORDINARY = Characteristics(3, 3, 3, 1, 3, 1)
 VETERAN = Characteristics(4, 4, 4, 2, 4, 2)
 DURABLE = Characteristics(2, 2, 5, 4, 2, 1)
 
-# Synthetic-profile convention from ``battery_catalogue``: Leadership 7 is a
+# Synthetic-profile convention from the battery catalogue (``_battery_cases``): Leadership 7 is a
 # scenario input, not a rule-derived profile value.
 SYNTHETIC_LEADERSHIP = 7
 VETERAN_WITH_LEADERSHIP = Characteristics(

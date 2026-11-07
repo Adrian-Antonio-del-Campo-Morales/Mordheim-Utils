@@ -242,45 +242,33 @@ def test_a_small_passing_sample_is_underpowered_not_approved(monkeypatch):
         (large,), (battery_case(),), profile="quick").complete is True
 
 
-def run_battery_command(monkeypatch, row, *, require_complete):
+def run_parity_command(monkeypatch, row, *, require_complete):
+    """``check parity --scenarios basic`` with the sampler answering ``row``."""
+    from dataclasses import replace
+
     from mordheim_combat_lab.cli import commands
-    from mordheim_combat_lab import provenance
-    from mordheim_combat_lab.verification.parity import _battery_cases as catalog
+    from mordheim_combat_lab.verification import parity
 
-    monkeypatch.setattr(catalog, "battery_cases", lambda profile: (battery_case(),))
-    monkeypatch.setattr(battery, "required_variants", lambda profile: ("B06.1",))
-    monkeypatch.setattr(
-        battery, "prepare_cases",
-        lambda cases, **options: ((observed("a"),), {}),
-    )
-    monkeypatch.setattr(
-        _runner, "run_parity",
-        lambda prepared, **options: _runner.ParityRun(rows=(row,)),
-    )
-    monkeypatch.setattr(provenance, "run_provenance", lambda root, engines, **k: {
-        "revision": {"commit": "abc", "dirty": False}, "imported_from": {},
-        "engine_digests": {name: "0" * 64 for name in engines},
-        "native_build_sha256": None, "warnings": [],
-    })
-    args = SimpleNamespace(
-        backend="numpy", rows=None, workers=1, output=None, json=False,
-        require_complete=require_complete,
-    )
-    return commands._battery_command(args, "quick")
+    row = replace(row, case="scenario/basic")
+    monkeypatch.setattr(parity, "run_parity",
+                        lambda prepared, **options: _runner.ParityRun(rows=(row,)))
+    argv = ["parity", "--scenarios", "basic", *(["--require-complete"] if require_complete else [])]
+    return commands.parity_command(commands.build_parser().parse_args(argv))
 
 
-def test_battery_exit_codes_for_underpowered_and_missing_backends(monkeypatch, capsys):
-    assert run_battery_command(monkeypatch, passing_row(64), require_complete=False) == 0
-    out = capsys.readouterr().out
-    assert "1 case(s) UNDERPOWERED" in out
-    assert run_battery_command(monkeypatch, passing_row(64), require_complete=True) == 1
-    assert run_battery_command(monkeypatch, passing_row(8_000), require_complete=True) == 0
+def test_exit_codes_for_underpowered_rows_and_missing_backends(monkeypatch, capsys):
+    # A pass too small to detect a 5-point shift is UNDERPOWERED: not a
+    # failure, but not complete either.
+    assert run_parity_command(monkeypatch, passing_row(64), require_complete=False) == 0
+    assert "1 row(s) UNDERPOWERED" in capsys.readouterr().out
+    assert run_parity_command(monkeypatch, passing_row(64), require_complete=True) == 1
+    assert run_parity_command(monkeypatch, passing_row(8_000), require_complete=True) == 0
 
     missing = _runner.ParityRow(
         case="a", backend="numpy", maximum_rounds=4, simulations=8_000,
         status="NOT_RUN", detail="NOT_RUN:native-unavailable: not installed",
     )
-    assert run_battery_command(monkeypatch, missing, require_complete=False) == 1
+    assert run_parity_command(monkeypatch, missing, require_complete=False) == 1
 
 
 # -- task 7: deep certificate records backends and fails on missing ones ------

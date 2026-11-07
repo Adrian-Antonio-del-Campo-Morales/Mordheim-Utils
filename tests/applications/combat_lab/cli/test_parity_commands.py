@@ -1,233 +1,127 @@
-"""Combat Lab parity CLI: battery exit codes and parity command routing."""
+"""Combat Lab parity CLI: what runs, how it is compared and how it exits."""
+
+import json
 
 import pytest
 
+E2E_KEY = "e2e/core/combat-critical-hits/a-critical-table-modifier-shifts-the-applied-band"
 
-def _battery_result(case, variant, status, *, backend="numpy", detail="",
-                    comparisons=(), executed=False, compared=False,
-                    approved=False, blocked_by=None, keys=("k::v",),
-                    **overrides):
+
+def _stub_runner(monkeypatch, status="PASS"):
+    """Replace the sampler: record the cases and answer one row per backend."""
     from types import SimpleNamespace
-    values = dict(
-        case=case, level="complete", variant=variant,
-        obligation=variant.split(".")[0], backend=backend, status=status,
-        keys=tuple(keys), observables=("winner",), rows=64, seed=2026,
-        horizon=50, executed=executed, compared=compared, approved=approved,
-        magnitudes=tuple(item.magnitude for item in comparisons),
-        comparisons=tuple(comparisons), modular_seconds=0.0,
-        candidate_seconds=0.0, detail=detail, blocked_by=blocked_by,
-    )
-    values.update(overrides)
-    return SimpleNamespace(**values)
+
+    from mordheim_combat_lab.verification import parity
+    from mordheim_combat_lab.verification.parity import ParityRow
+
+    calls = []
+
+    def run(cases, **kwargs):
+        cases = tuple(cases)
+        calls.append((cases, kwargs))
+        rows = tuple(
+            ParityRow(case=case.label, backend=backend, maximum_rounds=case.maximum_rounds,
+                      simulations=case.simulations or 0, status=status,
+                      executed=True, compared=status == "PASS", approved=status == "PASS")
+            for case in cases for backend in kwargs["backends"]
+        )
+        return SimpleNamespace(rows=rows, modular_duels=0)
+
+    monkeypatch.setattr(parity, "run_parity", run)
+    return calls
 
 
-def _battery_report(results, *, complete=False, accepted=False, profile="quick"):
-    from types import SimpleNamespace
-    results = tuple(results)
-    return SimpleNamespace(
-        complete=complete, accepted=accepted, scope="profile", profile=profile,
-        results=results,
-        passed=tuple(row.case for row in results if row.status == "PASS"),
-        divergences=tuple(row.case for row in results if row.status == "DIVERGENCE"),
-        incompatible=tuple(row.case for row in results if row.status == "INCOMPATIBLE"),
-        not_run=tuple(row.case for row in results if row.status == "NOT_RUN"),
-        missing_variants=(),
-    )
+def _parity(argv):
+    from mordheim_combat_lab.cli import commands
+
+    return commands.parity_command(commands.build_parser().parse_args(["parity", *argv]))
 
 
 @pytest.mark.evidence
-def test_battery_command_fails_on_own_error_without_require_complete(monkeypatch):
+def test_without_scenarios_only_the_exact_obligation_checks_run(monkeypatch, capsys):
     from types import SimpleNamespace
 
-    from mordheim_combat_lab.cli import commands as cli
-    from mordheim_combat_lab.verification.parity import _battery_cases as catalog
-    from mordheim_combat_lab.verification.parity import _battery_runner as runner
-
-    error_report = _battery_report((
-        _battery_result("a", "B06.2", "NOT_RUN",
-                        detail="NOT_RUN:compile: missing weapon owner=P01"),
-    ))
-    args = SimpleNamespace(
-        profile="quick", backend="numpy", rows=None, json=True,
-        output=None, require_complete=False,
-    )
-    monkeypatch.setattr(catalog, "battery_cases", lambda profile: ())
-    monkeypatch.setattr(runner, "prepare_cases", lambda *a, **k: ((), {}))
-    monkeypatch.setattr(runner, "battery_report", lambda *a, **k: error_report)
-    # An own error fails even without --require-complete.
-    assert cli._battery_command(args, "quick") == 1
-
-    dependency_report = _battery_report((
-        _battery_result("a", "B06.2", "INCOMPATIBLE", blocked_by="state:G00/G02",
-                        detail="INCOMPATIBLE:state:G00/G02 owner=G00/G02"),
-    ))
-    monkeypatch.setattr(runner, "battery_report", lambda *a, **k: dependency_report)
-    # A real input limit leaves the run partial: incomplete, not failed.
-    assert cli._battery_command(args, "quick") == 0
-    args.require_complete = True
-    assert cli._battery_command(args, "quick") == 1
-
-
-@pytest.mark.evidence
-def test_parity_cli_separates_the_battery_from_the_historical_certificate():
-    from mordheim_combat_lab.cli.commands import (
-        _normalise_parity_args, build_parser, parity_command,
-    )
-
-    parser = build_parser()
-    # The historical certificate: no battery profile, default candidates.
-    historical = parser.parse_args(["parity", "--certificate", "statistical"])
-    assert _normalise_parity_args(historical) is None
-    assert historical.profile is None and historical.backend is None
-    assert historical.level == "statistical"
-    assert [item.id for item in historical.statistical_scenarios] == [
-        item.id for item in _scenarios("small")]
-
-    # The battery certificate takes its profile from --scenarios and its
-    # width from --simulations.
-    battery = parser.parse_args([
-        "parity", "--certificate", "battery", "--scenarios", "battery-quick",
-        "--backend", "numpy", "native", "--simulations", "8",
-    ])
-    assert _normalise_parity_args(battery) is None
-    assert battery.profile == "quick" and battery.backend == "all"
-    assert battery.rows == 8 and battery.level is None
-
-    # A battery profile and a historical certificate are two measurements.
-    for argv in (
-        ["--certificate", "battery", "--scenarios", "battery-quick", "small"],
-        ["--certificate", "deep", "--scenarios", "battery-complete"],
-        ["--certificate", "battery", "--truncations"],
-        ["--scenarios", "e2e", "small"],
-        ["--certificate", "deterministic", "--scenarios", "small"],
-        ["--backend", "modular", "numpy"],
-    ):
-        assert parity_command(parser.parse_args(["parity", *argv])) == 2, argv
-    # --backend needs something to compare; --simulations something to size.
-    assert parity_command(parser.parse_args(["parity", "--backend", "native"])) == 2
-    assert parity_command(parser.parse_args(["parity", "--simulations", "8"])) == 2
-    # The battery width is accepted together with --require-complete
-    # (acceptance at a chosen width); see
-    # test_rows_override_reaches_preparation_and_the_report.
-    accepted = parser.parse_args([
-        "parity", "--certificate", "battery", "--scenarios", "battery-quick",
-        "--simulations", "8000", "--require-complete",
-    ])
-    assert _normalise_parity_args(accepted) is None
-    assert accepted.rows == 8000 and accepted.require_complete
-
-
-def _scenarios(level):
-    from tests.engines.fixtures.precompiled_catalog import scenarios_for_level
-
-    return scenarios_for_level(level)
-
-
-@pytest.mark.parametrize("rows", [None, 8000])
-def test_rows_override_reaches_preparation_and_the_report(monkeypatch, capsys, rows):
-    import json
-    from types import SimpleNamespace
-
-    from mordheim_combat_lab.cli import commands as cli
-    from mordheim_combat_lab.verification.parity import _battery_cases as catalog
-    from mordheim_combat_lab.verification.parity import _battery_runner as runner
-
-    widths = []
-    monkeypatch.setattr(catalog, "battery_cases", lambda profile: ())
-    monkeypatch.setattr(runner, "prepare_cases",
-                        lambda cases, **kwargs: widths.append(kwargs["rows"]) or ((), {}))
-    monkeypatch.setattr(runner, "battery_report", lambda *a, **k: _battery_report(()))
-    args = SimpleNamespace(profile="quick", backend="numpy", rows=rows, json=True,
-                           output=None, require_complete=True)
-    cli._battery_command(args, "quick")
-    assert widths == [rows]  # None keeps every case's declared width
-    payload = json.loads(capsys.readouterr().out)
-    assert payload["preparation"]["rows_override"] == rows
-
-
-@pytest.mark.parametrize("backend,installed,expected", [
-    (["numpy"], ("numpy", "native"), ("numpy",)),
-    (["native"], ("numpy", "native"), ("native",)),
-    (["numpy", "native"], ("numpy", "native"), ("numpy", "native")),
-    (None, ("numpy", "native"), ("numpy", "native")),
-    (None, ("numpy",), ("numpy",)),
-    (["native"], ("numpy",), ()),
-    (["numpy", "native"], ("numpy",), ()),
-])
-@pytest.mark.evidence
-def test_statistical_cli_selects_backends_and_shares_oracle(
-    monkeypatch, backend, installed, expected,
-):
-    from types import SimpleNamespace
-    from mordheim_combat import vectorized
-    from mordheim_combat.modular import parallel
-    from mordheim_combat_lab.cli import benchmarking, commands, scenarios
     from mordheim_combat_lab.verification import parity
 
-    oracle_calls = []
-    candidates = []
-    oracle = object()
-    monkeypatch.setattr(vectorized, "available_backends", lambda: installed)
-    monkeypatch.setattr(parity, "verify_vectorized_parity",
-                        lambda: SimpleNamespace(complete=True))
-    monkeypatch.setattr(parity, "parity_report_payload", lambda *a, **kw: {})
-    monkeypatch.setattr(scenarios, "select_scenarios", lambda tokens: (
-        SimpleNamespace(id="selection", maximum_rounds=1),
-    ))
-    monkeypatch.setattr(benchmarking, "compile_benchmark_fighters",
-                        lambda scenario: (object(), object()))
-
-    def sample(*args, **kwargs):
-        oracle_calls.append(kwargs)
-        return oracle
-
-    def compare(*args, **kwargs):
-        assert kwargs["modular"] is oracle
-        candidates.append(kwargs["backend"])
-        return SimpleNamespace(passed=True)
-
-    monkeypatch.setattr(parallel, "run_oracle_sample", sample)
-    monkeypatch.setattr(parity, "compare_statistical_parity", compare)
-    argv = ["parity", "--certificate", "statistical", "--json",
-            "--simulations", "1", "--workers", "1"]
-    if backend is not None:
-        argv += ["--backend", *backend]
-    args = commands.build_parser().parse_args(argv)
-    assert commands.parity_command(args) == (0 if expected else 2)
-    assert tuple(candidates) == expected
-    assert len(oracle_calls) == (1 if expected else 0)
+    calls = _stub_runner(monkeypatch)
+    report = SimpleNamespace(complete=False, obligations=("a", "b"), verified=("a",),
+                             pending=("b",), divergences=(), exact_checks=("hit",))
+    monkeypatch.setattr(parity, "verify_vectorized_parity", lambda: report)
+    monkeypatch.setattr(parity, "parity_report_payload", lambda *a, **k: {"complete": False})
+    assert _parity([]) == 0
+    assert _parity(["--require-complete"]) == 1
+    assert calls == []  # nothing sampled
+    assert "1/2 obligations verified" in capsys.readouterr().out
 
 
 @pytest.mark.evidence
-def test_statistical_backend_does_not_silently_select_truncation_backends():
-    from mordheim_combat_lab.cli.commands import build_parser, parity_command
+def test_every_kind_of_scenario_runs_together_in_selection_order(monkeypatch, capsys):
+    calls = _stub_runner(monkeypatch)
+    # A precompiled scenario, a battery case with scripted decisions and an
+    # E2E delivery: one runner, one report, the order asked.
+    assert _parity(["--scenarios", "long", "battery/q08-death-blow-optional", E2E_KEY,
+                    "--simulations", "7200", "--json"]) == 0
+    (cases, options), = calls
+    assert [case.label for case in cases] == [
+        "scenario/long", "battery/q08-death-blow-optional", E2E_KEY]
+    assert options["backends"] == ("numpy",) and options["candidate"] == "observed"
+    assert cases[1].decisions is not None and cases[2].context is not None
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["complete"] is True and payload["provenance"]["engine_digests"]
 
-    args = build_parser().parse_args([
-        "parity", "--certificate", "statistical", "--backend", "numpy", "--truncations",
-    ])
-    assert parity_command(args) == 2
+
+@pytest.mark.evidence
+def test_rounds_replace_every_case_limit_once_per_value(monkeypatch):
+    calls = _stub_runner(monkeypatch)
+    assert _parity(["--scenarios", "basic", "--rounds", "2,60", "--json"]) == 0
+    (cases, _), = calls
+    # 60 exceeds basic's own 50-round limit: the value replaces it, it does
+    # not merely truncate.
+    assert [(case.label, case.maximum_rounds) for case in cases] == [
+        ("scenario/basic@rounds=2", 2), ("scenario/basic@rounds=60", 60)]
+    calls.clear()
+    assert _parity(["--scenarios", "basic", "--rounds", "9", "--json"]) == 0
+    assert [(case.label, case.maximum_rounds) for case in calls[0][0]] == [("scenario/basic", 9)]
 
 
-@pytest.mark.parametrize("selection,catalog,profile", [
-    (["small"], "precompiled", None),
-    (["battery-deep"], "battery", "deep"),
-    (["small", "battery-quick"], "all", "quick"),
-    ([], "all", None),  # --backend modular alone: both catalogues
+@pytest.mark.parametrize("argv", [
+    ["--scenarios", "basic", "--backend", "modular", "numpy"],
+    ["--scenarios", "no-such-scenario"],
+    ["--scenarios", "battery/no-such-case"],
 ])
-def test_fixture_catalogue_modular_options_reach_the_catalogue_command(
-    monkeypatch, selection, catalog, profile,
-):
-    from mordheim_combat_lab.cli import commands
-    calls = []
-    monkeypatch.setattr(commands, "_catalog_parity_command", lambda args: calls.append(args) or 0)
-    argv = ["parity", "--backend", "modular", "--workers", "8"]
-    if selection:
-        argv += ["--scenarios", *selection]
-    args = commands.build_parser().parse_args(argv)
-    assert commands.parity_command(args) == 0
-    assert calls == [args]
-    assert args.catalog == catalog and args.backend == "modular"
-    assert args.workers == 8 and args.profile == profile
+def test_configuration_errors_exit_2_before_sampling(monkeypatch, argv):
+    calls = _stub_runner(monkeypatch)
+    assert _parity(argv) == 2
+    assert calls == []
+
+
+@pytest.mark.evidence
+def test_declared_limitations_are_listed_not_failed(monkeypatch, capsys):
+    # A battery case with an input limit is INCOMPATIBLE: listed with its
+    # reason, never a failure, but the run is not complete.
+    from mordheim_combat_lab.verification import parity
+    from mordheim_combat_lab.verification.parity import _battery_cases as catalog
+
+    def run(cases, **kwargs):
+        from types import SimpleNamespace
+        from mordheim_combat_lab.verification.parity import ParityRow
+
+        rows = tuple(
+            ParityRow(case=case.label, backend="numpy", maximum_rounds=case.maximum_rounds,
+                      simulations=7200, status="INCOMPATIBLE" if case.blocked_by else "PASS",
+                      approved=not case.blocked_by, blocked_by=case.blocked_by)
+            for case in cases)
+        return SimpleNamespace(rows=rows, modular_duels=0)
+
+    monkeypatch.setattr(parity, "run_parity", run)
+    blocked = next(f"battery/{case.id}" for case in catalog.battery_cases("deep")
+                   if catalog.input_limit(case))
+    argv = ["--scenarios", "basic", blocked, "--simulations", "7200", "--json"]
+    assert _parity(argv) == 0
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["summary"]["blocked"] == 1 and payload["summary"]["failed"] == 0
+    assert payload["complete"] is False
+    assert _parity([*argv, "--require-complete"]) == 1
 
 
 @pytest.mark.parametrize("selection,count", [
@@ -257,7 +151,7 @@ def test_precompiled_catalogue_uses_unified_levels_and_execution_settings(
     monkeypatch.setattr(parity, "run_parity", run)
     argv = ["parity", "--scenarios", *selection, "--backend", "modular",
             "--simulations", "7", "--seed", "19", "--json"]
-    # The stub emits no rows, so the command correctly reports an incomplete run.
+    # The stub emits no rows, so the command correctly reports a failed run.
     assert commands.parity_command(commands.build_parser().parse_args(argv)) == 1
     assert len(selected) == count
     assert all(case.label.startswith("scenario/") for case in selected)
@@ -266,3 +160,21 @@ def test_precompiled_catalogue_uses_unified_levels_and_execution_settings(
         f"scenario/{item.name}" for item in select_scenarios(selection)]
     for scenario in select_scenarios(selection):
         assert benchmarking.compile_benchmark_fighters(scenario)
+
+
+@pytest.mark.evidence
+def test_battery_cases_carry_their_certificate_in_the_report(monkeypatch, capsys):
+    _stub_runner(monkeypatch)
+    from mordheim_combat_lab.verification.parity import _battery_cases as catalog
+
+    blocked = next(case.id for case in catalog.battery_cases("deep") if catalog.input_limit(case))
+    assert _parity(["--scenarios", "battery/q04-parry-attempt", f"battery/{blocked}",
+                    "--simulations", "7200", "--json"]) == 0
+    payload = json.loads(capsys.readouterr().out)
+    certificate = payload["battery"]
+    # Per-case stages, declared limits and per-variant coverage survive.
+    assert certificate["coverage"]["declared"] == 2
+    assert certificate["coverage"]["approved"] == 1
+    assert certificate["coverage"]["incompatible"] == 1
+    assert blocked in certificate["limits"]
+    assert certificate["variants"]

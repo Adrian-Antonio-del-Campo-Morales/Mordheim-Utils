@@ -1,59 +1,18 @@
-"""Independent command: modular-to-NumPy statistical parity over the catalogue.
+"""The report of a parity comparison over stored samples.
 
-The five parity tests compare a couple of frozen scenarios; this command walks
-the catalogue instead — 43 scenarios with uniform ``scenario/<name>``
-keys, selected through the cumulative ``small``, ``normal`` and ``long``
-levels (``small`` by default) — and writes a complete JSON and Markdown report.  It owns the
-campaign configuration, the report and the CLI; execution belongs to
-:func:`mordheim_combat_lab.verification.parity.run_parity`, which is called once for
-the whole selection.
-
-A row that was rejected, could not sample the oracle, was incompatible with the
-candidate or was never compared is recorded as such and is never counted as
-approved.  Parities are decided only
-by the six-sigma gate (0.25% floor) of
-:func:`mordheim_combat_lab.verification.parity.compare_statistical_parity`.
-
-Usage (from the repository root)::
-
-    python -m tools.verification.parity_campaign --workers 8
-    python -m tools.verification.parity_campaign --scenarios big
-    python -m tools.verification.parity_campaign --scenarios basic long \
-        --simulations 5000
-
-The report is written to ``<output>/parity-campaign.json`` and
-``<output>/parity-campaign.md``; the exit code is 0 only when every selected
-scenario was compared and approved.
+``check samples compare`` decides stored pairs with the six-sigma gate and
+writes ``parity-campaign.json`` and ``parity-campaign.md`` through
+:func:`campaign_payload` and :func:`campaign_markdown`.  A row that was
+rejected, could not be compared or was underpowered is recorded as such and
+is never counted as approved.
 """
 from __future__ import annotations
 
-import argparse
-import hashlib
-import json
-import sys
-import time
 from datetime import datetime, timezone
-from pathlib import Path
 from typing import Iterable, Sequence
 
-from tools.verification.e2e_parity import bootstrap_paths
-from tools.verification.e2e_parity import repository_root
-
-# Before any engine import, so the parent and the oracle pool's workers
-# import the engine from this checkout.
-bootstrap_paths(repository_root())
-
-from mordheim_combat_lab.cli.options import add_scenarios, retire
-from mordheim_combat_lab.provenance import run_provenance
-from tools.verification.compiled_cases import CompiledCaseError
-from tools.verification.compiled_cases import load_cases
-from tools.verification.parity_catalog import CORPUS
-from tools.verification.parity_catalog import load
-from tools.verification.parity_catalog import select
 from mordheim_combat_lab.verification.parity import MagnitudeComparison
-from mordheim_combat_lab.verification.parity import ParityCase
 from mordheim_combat_lab.verification.parity import ParityRow
-from mordheim_combat_lab.verification.parity import run_parity
 from mordheim_combat_lab.verification.parity._statistical import OUTCOME_LABELS
 from mordheim_combat_lab.verification.parity._statistical import MAX_DETECTABLE_DIFFERENCE
 from mordheim_combat_lab.verification.parity._statistical import minimum_detectable_difference
@@ -335,149 +294,3 @@ def campaign_markdown(payload: dict[str, object]) -> str:
         "selects scenarios; every scenario keeps its own frozen round limit.",
     ))
     return "\n".join(lines) + "\n"
-
-
-def _positive(value: str) -> int:
-    number = int(value)
-    if number < 1:
-        raise argparse.ArgumentTypeError("expected a positive integer")
-    return number
-
-
-def _workers(value: str) -> int | str:
-    if value.casefold() == "auto":
-        return "auto"
-    return _positive(value)
-
-
-def _parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(
-        prog="python -m tools.verification.parity_campaign",
-        description=(
-            "Run modular-to-NumPy statistical parity over the frozen catalogue "
-            "and write a JSON and Markdown report."
-        ),
-    )
-    selection = parser.add_argument_group("what runs")
-    add_scenarios(selection, default="small")
-    retire(parser, "--level", replacement="--scenarios small|normal|big")
-    retire(parser, "--id", replacement="--scenarios <name|scenario/<name>>")
-    samples = parser.add_argument_group("sample configuration")
-    samples.add_argument(
-        "--simulations", type=_positive, default=1_000, metavar="DUELS",
-        help="duels per engine and scenario (default: 1000; sample widths are "
-             "execution configuration, not scenario data)",
-    )
-    samples.add_argument(
-        "--seed", type=int, default=2_026,
-        help="oracle seed; the NumPy sample uses seed + 1000003 (default: 2026)",
-    )
-    samples.add_argument(
-        "--rounds", type=_positive, default=None, metavar="N",
-        help="override every scenario's round budget (default: frozen limits)",
-    )
-    samples.add_argument(
-        "--workers", type=_workers, default="auto", metavar="N|auto",
-        help="worker processes for modular-oracle samples: 1 runs sequentially, auto pools only "
-             "samples estimated over ~20s sequentially (default: auto)",
-    )
-    output = parser.add_argument_group("report")
-    output.add_argument(
-        "--output", default="reports/parity", metavar="DIR",
-        help="directory for parity-campaign.json and parity-campaign.md "
-             "(default: reports/parity)",
-    )
-    return parser
-
-
-def _corpus_digest(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
-
-
-def main(argv: Sequence[str] | None = None) -> int:
-    args = _parser().parse_args(argv)
-    try:
-        chosen = select(args.scenarios or ("small",))
-    except ValueError as error:
-        print(f"parity campaign: {error}", file=sys.stderr)
-        return 2
-    try:
-        cases = load_cases(CORPUS)
-    except (CompiledCaseError, OSError) as error:
-        print(f"parity campaign: cannot load the frozen corpus: {error}", file=sys.stderr)
-        return 2
-    scenarios, rejected = load(chosen, cases)
-    # The counts surface samples both engines without a duel context; a case
-    # that needs one is not run rather than compared on a different duel.
-    rejected = (*rejected, *(
-        (scenario.key, "incompatible: the counts surface cannot pass a duel context")
-        for scenario in scenarios if scenario.case.context is not None
-    ))
-    scenarios = tuple(scenario for scenario in scenarios if scenario.case.context is None)
-    for key, reason in rejected:
-        print(f"NOT_RUN: {key}: {reason}", file=sys.stderr)
-
-    config = {
-        "scenarios": list(args.scenarios or ("small",)),
-        "scenario_keys": [key for key, _name in chosen],
-        "simulations": args.simulations,
-        "seed": args.seed,
-        "maximum_rounds": args.rounds,
-        "workers": args.workers,
-        "corpus": CORPUS.relative_to(CORPUS.parents[3]).as_posix(),
-        "corpus_sha256": _corpus_digest(CORPUS),
-        "provenance": run_provenance(repository_root(), ("modular", "numpy")),
-    }
-    cases_to_run = tuple(
-        ParityCase(
-            label=scenario.key,
-            first=scenario.case.first,
-            second=scenario.case.second,
-            maximum_rounds=(
-                scenario.case.limits.maximum_rounds
-                if args.rounds is None else args.rounds
-            ),
-            simulations=args.simulations,
-            seed=args.seed,
-        )
-        for scenario in scenarios
-    )
-    started = time.perf_counter()
-    run = run_parity(
-        cases_to_run, backends=("numpy",), candidate="counts",
-        workers=args.workers,
-    )
-    elapsed = time.perf_counter() - started
-    payload = campaign_payload(
-        run.rows, config=config, rejected=rejected, elapsed_seconds=elapsed,
-    )
-
-    output = Path(args.output)
-    output.mkdir(parents=True, exist_ok=True)
-    json_path = output / "parity-campaign.json"
-    markdown_path = output / "parity-campaign.md"
-    json_path.write_text(
-        json.dumps(payload, ensure_ascii=True, indent=2) + "\n", encoding="utf-8",
-    )
-    markdown_path.write_text(campaign_markdown(payload), encoding="utf-8")
-
-    coverage = payload["coverage"]
-    assert isinstance(coverage, dict)
-    print(
-        f"parity campaign: {coverage['selected']} selected, "
-        f"{coverage['compared']} compared, {coverage['approved']} approved, "
-        f"{coverage['underpowered']} underpowered, {coverage['divergent']} divergent, "
-        f"{coverage['incompatible']} incompatible, "
-        f"{coverage['not_run']} not run, {coverage['rejected']} rejected"
-    )
-    for row in payload["scenarios"]:
-        if row["verdict"] != "pass":
-            print(f"{row['status']}: {row['corpus_key']}: {row['detail']}")
-    print(f"complete={payload['complete']}")
-    print(f"report={json_path.as_posix()}")
-    print(f"report={markdown_path.as_posix()}")
-    return 0 if payload["complete"] else 1
-
-
-if __name__ == "__main__":  # pragma: no cover - command entry point
-    raise SystemExit(main())

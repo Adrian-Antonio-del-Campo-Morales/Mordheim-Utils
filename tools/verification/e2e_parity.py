@@ -28,7 +28,7 @@ Outcome vocabulary (per case, after aggregation across candidate backends):
                        at all (native extension missing, stale context version
                        or without the batch observation entry).  This is a
                        fault of the run, not of the case, so it fails the run
-                       and, with ``--backend all``, it is not masked by the
+                       and, with both candidates, it is not masked by the
                        other backend's approval (each engine record keeps its
                        own outcome).
 ``incompatible``       a frozen input or the engine could not express the case
@@ -365,8 +365,8 @@ def validate(
         defects.append("a translated delivery must carry reason = null")
     if document.get("magnitudes") != ["winner"]:
         defects.append(
-            "the delivery contract declares magnitudes ['winner']; widen the "
-            "campaign with --magnitudes instead of rewriting deliveries"
+            "the delivery contract declares magnitudes ['winner']; widen a "
+            "campaign through execute(magnitudes=...) instead of rewriting deliveries"
         )
     encoded = document.get("case")
     if not isinstance(encoded, dict):

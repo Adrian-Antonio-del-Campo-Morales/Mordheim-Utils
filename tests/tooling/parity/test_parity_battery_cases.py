@@ -13,7 +13,7 @@ from pathlib import Path
 
 import pytest
 
-from tests.engines.fixtures.battery_catalogue import (
+from mordheim_combat_lab.verification.parity._battery_cases import (
     OUTCOMES,
     PROFILE_LEVELS,
     STATISTICAL_MAGNITUDES,

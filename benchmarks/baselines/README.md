@@ -1,7 +1,7 @@
 # Recorded benchmark baselines
 
 Reference measurements kept for comparison across optimization work. Each
-file is the unmodified `--save-baseline` output of `performance benchmark`,
+file is the unmodified `--output <file>.json` report of `performance benchmark`,
 so it carries its measurement design (`configuration`) and where it was
 measured (`provenance`: commit, engine digests, machine, Python, NumPy).
 

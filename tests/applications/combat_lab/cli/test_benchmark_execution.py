@@ -73,40 +73,40 @@ def test_scenario_catalogue_loads_without_the_checkout_root_on_sys_path(tmp_path
     assert int(count) >= 43 and key == "scenario/basic"
 
 
-def test_each_scenario_level_selects_the_same_scenarios_in_every_mode():
-    from mordheim_combat_lab.cli.commands import select_benchmark_scenarios
+def test_scenarios_select_every_catalogue_with_the_same_values():
+    from mordheim_combat_lab.cli.benchmarking import benchmark_cases
     from mordheim_combat_lab.cli.scenarios import scenarios_for_level
 
     for level in ("small", "normal", "big"):
-        expected = [item.id for item in scenarios_for_level(level)]
-        for deep in (False, True):
-            selected = select_benchmark_scenarios([level], deep=deep)
-            assert [item.id for item in selected] == expected
-    # Without --scenarios: small, or big under --deep.
-    assert len(select_benchmark_scenarios(None)) == 8
-    assert len(select_benchmark_scenarios(None, deep=True)) == 43
-    # ``long`` is a scenario name, not a level: that one scenario.
-    assert [item.id for item in select_benchmark_scenarios(["long"])] == ["long"]
-    # Several values run their union; nothing narrows another value.
-    assert len(select_benchmark_scenarios(["small", "heavy-grind"])) == 9
-    assert "unknown scenario" in select_benchmark_scenarios(["all"])
+        cases, rejected = benchmark_cases([level])
+        assert [case.id for case in cases] == [item.id for item in scenarios_for_level(level)]
+        assert rejected == ()
+    # Without --scenarios: small.  ``long`` is a scenario name, not a level.
+    assert len(benchmark_cases(None)[0]) == 8
+    assert [case.id for case in benchmark_cases(["long"])[0]] == ["long"]
+    # Several values run their union; E2E deliveries and battery cases run
+    # with their own duel context, keyed by their full name.
+    key = "e2e/core/combat-critical-hits/a-critical-table-modifier-shifts-the-applied-band"
+    cases, _ = benchmark_cases(["basic", key, "battery/q04-parry-attempt"])
+    assert [case.id for case in cases] == ["basic", key, "battery/q04-parry-attempt"]
+    assert cases[1].context is not None and cases[2].context is not None
+    # A case the production engines cannot express is reported, not run.
+    cases, rejected = benchmark_cases(["battery/q08-death-blow-optional"])
+    assert cases == () and "scripted decisions" in rejected[0][1]
 
 
-def test_retired_options_name_their_replacement(capsys):
+def test_unknown_values_and_options_are_errors(capsys):
     import pytest
+    from mordheim_combat_lab.cli.benchmarking import benchmark_cases
     from mordheim_combat_lab.cli.commands import build_parser
 
-    for argv, replacement in (
-        (["benchmark", "--pair-set", "small"], "--scenarios"),
-        (["benchmark", "-n", "100"], "--simulations"),
-        (["benchmark", "--processes", "2"], "--workers"),
-        (["calibrate", "--pairs", "small"], "--scenarios"),
-        (["parity", "--level", "statistical"], "--certificate"),
-        (["parity", "--profile", "quick"], "--scenarios battery-quick"),
-    ):
+    with pytest.raises(ValueError, match="unknown scenario"):
+        benchmark_cases(["all"])
+    for argv in (["benchmark", "--pair-set", "small"], ["benchmark", "--deep"],
+                 ["parity", "--certificate", "deep"], ["calibrate", "--pool-simulations", "1"]):
         with pytest.raises(SystemExit):
             build_parser().parse_args(argv)
-        assert replacement in capsys.readouterr().err, argv
+        assert "unrecognized arguments" in capsys.readouterr().err
 
 
 def test_shared_option_levels_match_the_catalogue():
