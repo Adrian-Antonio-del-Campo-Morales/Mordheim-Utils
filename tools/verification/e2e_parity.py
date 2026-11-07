@@ -1,70 +1,47 @@
-"""The single E2E precompiled statistical-parity connection.
+"""The E2E statistical deliveries: their index, validation and admission.
 
-Selects individual ``mordheim-e2e-statistical-delivery/v1`` deliveries by
-explicit identifier, validates their identity and freshness against the current
-E2E YAML, and executes the frozen inputs through the existing parity runner.
+A delivery (``mordheim-e2e-statistical-delivery/v1``) freezes one E2E test's
+combat configuration so the engines can be compared on it statistically, with
+random dice instead of the test's scripted ones.  This module indexes the
+delivery directory, validates each delivery's identity and freshness against
+the current E2E YAML, and decides whether the parity runner can execute it.
 
-This module is a connection, not a second engine: it reuses
-``mordheim_combat_lab.verification.parity`` for sampling and the six-sigma gate,
-``tools.verification.compiled_cases`` for the frozen codec, and the runner's
-observed surface so the duel context is preserved.  It never compiles fighters,
-never replays the E2E dice script, never reads expectations, and never treats a
-translated delivery as proof of engine compatibility.
+It is a catalogue, not an engine: ``tools.verification.parity_catalog``
+resolves ``--scenarios`` through it, and the comparison itself belongs to
+``mordheim_combat_lab.verification.parity``.  It never compiles fighters,
+never replays the E2E dice script and never reads the test's expectations, so
+a translated delivery is never proof of engine compatibility.
 
-Deliveries declare ``["winner"]``. Campaigns compare winner rates by default
-and may additionally compare the number of rounds.
+``admit`` returns one of:
 
-Outcome vocabulary (per case, after aggregation across candidate backends):
+``admitted``           the frozen inputs can be executed as they stand.
+``blocked`` /
+``not-applicable``     the delivery itself declares it is not a scenario;
+                       the reason is preserved.
+``incompatible``       a frozen input the runner cannot express (an initial
+                       state, auxiliary participants, a scripted script), or
+                       decision-policy defaults that do not correspond.
+``stale`` / ``invalid`` the delivery no longer matches its source, or is
+                       malformed.
+``policy-unverified``  the decision-policy probe raised, so correspondence is
+                       unknown.
 
-``approved``           the sample passed the six-sigma gate on every compared
-                       magnitude and backend; a sample, not a certificate.
-``divergence``         a measured statistical difference.
-``reference-failure``  the modular oracle could not produce a sample.
-``candidate-failure``  the candidate engine raised; the cause is preserved and
-                       it is never reported as a measured divergence.
-``execution-failure``  the runner could not execute/compare (malformed batch,
-                       non-deterministic batch, unmapped outcome code…).
-``backend-unavailable`` the explicitly requested candidate backend cannot run
-                       at all (native extension missing, stale context version
-                       or without the batch observation entry).  This is a
-                       fault of the run, not of the case, so it fails the run
-                       and, with both candidates, it is not masked by the
-                       other backend's approval (each engine record keeps its
-                       own outcome).
-``incompatible``       a frozen input or the engine could not express the case
-                       (including a native plan the extension rejects).
-``blocked`` / ``not-applicable``  the delivery itself declares no scenario.
-``invalid-delivery`` / ``stale-delivery``  the file breaks the contract or its
-                       source YAML changed since it was produced.
-
-Exit code: 1 when any case has a failing outcome (``FAILING_OUTCOMES``) or the
-run itself failed (``checks.run_failures``): an unreadable, duplicate or keyless
-file in the delivery directory (``checks.discovery_defects``), a decision-policy
-probe that raised or found the engine defaults disagreeing, or a run where no
-case was compared although some selected case was not a declared non-scenario.
-Honest incompatibilities are counted and do not fail a run that compared at
-least one case; a selection made only of blocked / not-applicable deliveries
-exits 0.
-
-Provenance (``payload["provenance"]``, built by the shared
-``mordheim_combat_lab.provenance.run_provenance``): the commit, branch and dirty state
-of the checkout, the directories the engine packages were imported from, a
-source digest per engine involved (modular plus the requested candidates) and
-the native build hash when ``native`` is requested.  Results computed by an
-older engine are reused on purpose, so uncommitted sources or engine packages
-imported from outside this checkout only raise a prominent
-``PROVENANCE WARNING`` recorded in the payload; they never change the exit code.
+Combats run to ``CAMPAIGN_MAXIMUM_ROUNDS`` rounds, independently of the
+original test's horizon.
 """
 from __future__ import annotations
 
 import hashlib
 import json
+import subprocess
 import sys
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import Iterable, Mapping, Sequence
 
-SCHEMA = "mordheim-e2e-parity-connection/v1"
+#: Statuses a delivery can declare about itself.
+ENTRY_OUTCOMES = {"blocked": "blocked", "not-applicable": "not-applicable"}
+
 DELIVERY_SCHEMA = "mordheim-e2e-statistical-delivery/v1"
 CAMPAIGN_MAXIMUM_ROUNDS = 50
 DELIVERY_FIELDS = frozenset({
@@ -75,44 +52,17 @@ SOURCE_FIELDS = frozenset({"revision", "path", "sha256", "test_id"})
 DELIVERY_STATUSES = ("translated", "blocked", "not-applicable")
 
 #: Magnitudes the shared observed runner can compare, in its own vocabulary.
-MAGNITUDES = ("winner", "rounds")
-DEFAULT_MAGNITUDES = ("winner",)
 
 #: Outcomes that make a run fail (a declared non-scenario does not).
-FAILING_OUTCOMES = frozenset({
-    "invalid-delivery", "stale-delivery", "reference-failure",
-    "candidate-failure", "execution-failure", "backend-unavailable",
-    "divergence",
-})
 #: Declared non-scenarios: a selection made only of these compares nothing and
 #: still succeeds.
-DECLARED_OUTCOMES = frozenset({"blocked", "not-applicable"})
 #: Runner messages (``_runner._native_engine``) meaning the requested native
 #: backend cannot run at all, as opposed to rejecting one duel plan.
-BACKEND_UNAVAILABLE_MESSAGES = (
-    "native extension is not installed",
-    "native extension context version is stale",
-    "native extension has no batch observation entry",
-    "native extension effect layout is stale",
-)
-ENTRY_OUTCOMES = {"blocked": "blocked", "not-applicable": "not-applicable"}
 #: Admission states whose outcome name is more explicit in the report.
-ADMISSION_OUTCOMES = {
-    "invalid": "invalid-delivery",
-    "stale": "stale-delivery",
-    "blocked": "blocked",
-    "not-applicable": "not-applicable",
-    "incompatible": "incompatible",
-    "policy-unverified": "execution-failure",
-}
 
 
 class SelectionError(ValueError):
     """No cases were named, or a named case does not exist."""
-
-
-class MagnitudeError(ValueError):
-    """A requested magnitude is not one the shared runner compares."""
 
 
 def repository_root() -> Path:
@@ -131,10 +81,6 @@ def head_revision(root: Path | None = None) -> str | None:
     return _source_revision(root or repository_root())["commit"]
 
 
-def branch_name(root: Path | None = None) -> str | None:
-    return _source_revision(root or repository_root())["branch"]
-
-
 def _source_revision(root: Path) -> dict:
     """Commit/branch/dirty state of ``root`` via the shared provenance helper."""
     bootstrap_paths(repository_root())
@@ -145,28 +91,6 @@ def _source_revision(root: Path) -> dict:
 
 def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
-
-
-def parse_magnitudes(value: str | None) -> tuple[str, ...]:
-    """Parse a comma-separated magnitude list; ``winner`` is mandatory."""
-    if value is None:
-        return DEFAULT_MAGNITUDES
-    items = tuple(dict.fromkeys(
-        part.strip() for part in value.split(",") if part.strip()
-    ))
-    if not items:
-        raise MagnitudeError("no magnitude selected")
-    unknown = [item for item in items if item not in MAGNITUDES]
-    if unknown:
-        raise MagnitudeError(
-            "unknown magnitude(s) " + ", ".join(unknown)
-            + f"; the shared runner compares {', '.join(MAGNITUDES)}"
-        )
-    if "winner" not in items:
-        raise MagnitudeError(
-            "winner is mandatory: the shared observed gate always compares it"
-        )
-    return items
 
 
 @dataclass(frozen=True)
@@ -205,19 +129,6 @@ class Admission:
     state: str  # admitted | invalid | stale | blocked | not-applicable | incompatible
     detail: str = ""
     case: object | None = None
-
-
-@dataclass
-class CaseResult:
-    case_key: str
-    test_id: str
-    outcome: str
-    detail: str = ""
-    delivery_status: str | None = None
-    delivery_file: str | None = None
-    stages: dict = field(default_factory=dict)
-    engines: tuple[dict, ...] = ()
-    limitations: tuple[str, ...] = ()
 
 
 def discover(directory: Path | None = None) -> tuple[dict[str, Delivery], list[str]]:
@@ -536,376 +447,6 @@ def build_parity_case(admission: Admission, *, simulations: int, seed: int,
     )
 
 
-def _engine_name(row) -> str:
-    return str(row.backend)
-
-
-def classify_row(row) -> tuple[str, str]:
-    """Map one runner row onto the outcome vocabulary without conflating causes.
-
-    The runner reports a candidate exception as ``DIVERGENCE`` so the row is not
-    lost; here it becomes ``candidate-failure`` with the cause preserved.  A
-    measured statistical difference stays ``divergence``.
-    """
-    detail = str(getattr(row, "detail", "") or "")
-    status = str(getattr(row, "status", ""))
-    if status == "PASS":
-        return "approved", ""
-    if status == "ERROR":
-        return "reference-failure", detail
-    if status == "INCOMPATIBLE":
-        return "incompatible", detail
-    if status == "DIVERGENCE":
-        if detail.startswith("DIVERGENCE:exception:"):
-            return "candidate-failure", detail
-        if (detail.startswith("DIVERGENCE:batch-shape")
-                or detail.startswith("DIVERGENCE:batch-nondeterministic")):
-            return "execution-failure", detail
-        return "divergence", detail
-    # NOT_RUN: separate "the engine cannot express this" from "we failed".
-    # A missing or stale native extension means the requested backend cannot
-    # run at all, which is a fault of the run rather than of the case.
-    # The runner reports a missing or stale extension under its own prefixes;
-    # older runners used ``native-plan`` with one of the messages above.
-    if detail.startswith(("NOT_RUN:native-unavailable", "NOT_RUN:native-stale")):
-        return "backend-unavailable", detail
-    if detail.startswith("NOT_RUN:native-plan") and any(
-        message in detail for message in BACKEND_UNAVAILABLE_MESSAGES
-    ):
-        return "backend-unavailable", detail
-    if detail.startswith(("NOT_RUN:native-plan", "NOT_RUN:decision-script")):
-        return "incompatible", detail
-    return "execution-failure", detail
-
-
-def aggregate(outcomes: Sequence[str]) -> str:
-    """Aggregate per-backend outcomes for one case."""
-    for name in ("reference-failure", "candidate-failure", "execution-failure",
-                 "backend-unavailable", "divergence"):
-        if name in outcomes:
-            return name
-    if outcomes and all(item == "approved" for item in outcomes):
-        return "approved"
-    return "incompatible"
-
-
-def _comparisons(row) -> list[dict]:
-    return [{
-        "magnitude": item.magnitude,
-        "modular_rates": list(item.modular_rates),
-        "candidate_rates": list(item.candidate_rates),
-        "tolerances": list(item.tolerances),
-        "passed": item.passed,
-        "detail": item.detail,
-    } for item in row.comparisons]
-
-
-def execute(
-    identifiers: Sequence[str], *,
-    simulations: int,
-    seed: int = 2026,
-    backend: str = "numpy",
-    workers: int | str | None = 1,
-    magnitudes: Sequence[str] = DEFAULT_MAGNITUDES,
-    require_head: bool = False,
-    deliveries: Path | None = None,
-) -> tuple[dict, int]:
-    """Validate, admit and sample the explicitly selected deliveries.
-
-    Returns ``(payload, exit_code)``.  Failing outcomes and run failures
-    (discovery defects, a failed or disagreeing decision-policy probe, nothing
-    compared) make the exit code 1; declared non-scenarios (blocked /
-    not-applicable) and honest incompatibilities are counted but do not fail a
-    run that compared at least one case.  Provenance differences only warn.
-    """
-    root = repository_root()
-    bootstrap_paths(root)
-    if simulations < 1:
-        raise ValueError("simulations must be at least one")
-    if backend not in {"numpy", "native", "all"}:
-        raise ValueError(f"unsupported candidate backend {backend!r}")
-    requested = ("numpy", "native") if backend == "all" else (backend,)
-    magnitudes = parse_magnitudes(",".join(magnitudes))
-
-    directory = deliveries or deliveries_directory(root)
-    index, discovery_defects = discover(directory)
-    selected = select(index, identifiers)
-    # Imports the engine packages, so it must follow bootstrap_paths.
-    from mordheim_combat_lab.provenance import run_provenance
-
-    provenance = run_provenance(root, ("modular", *requested))
-    head = provenance["revision"]["commit"]
-    policy = decision_policy_evidence()
-    run_failures: list[str] = []
-    if discovery_defects:
-        run_failures.append(
-            f"{len(discovery_defects)} delivery file(s) in {directory} could not "
-            "be indexed (see checks.discovery_defects); the catalogue is corrupt"
-        )
-    if policy.get("probe_failed"):
-        run_failures.append(
-            f"{policy['detail']}; no translated case can be admitted"
-        )
-    elif not policy["corresponds"]:
-        run_failures.append(
-            f"{policy['detail']}; no translated case can be compared"
-        )
-
-    results: list[CaseResult] = []
-    prepared = []
-    warnings: list[str] = []
-    for delivery in selected:
-        validation = validate(delivery, root, head=head, require_head=require_head)
-        warnings.extend(f"{delivery.path.name}: {note}" for note in validation.warnings)
-        delivery = delivery.with_validation(validation)
-        admission = admit(
-            delivery, policy_corresponds=policy["corresponds"],
-            policy_probe_failed=bool(policy.get("probe_failed")),
-        )
-        if admission.state == "admitted":
-            parity_case = build_parity_case(
-                admission, simulations=simulations, seed=seed, magnitudes=magnitudes,
-            )
-            prepared.append((delivery, parity_case))
-            continue
-        results.append(CaseResult(
-            case_key=delivery.case_key,
-            test_id=delivery.test_id,
-            outcome=ADMISSION_OUTCOMES.get(admission.state, admission.state),
-            detail=admission.detail,
-            delivery_status=delivery.status,
-            delivery_file=delivery.path.name,
-            stages={"loaded": True, "admitted": False},
-            limitations=tuple(expressiveness(delivery.case)) if delivery.case else (),
-        ))
-
-    rows_by_case: dict[str, list] = {}
-    if prepared:
-        from mordheim_combat_lab.verification.parity import run_parity
-
-        run = run_parity(
-            [case for _, case in prepared],
-            backends=requested,
-            candidate="observed",
-            workers=workers,
-            seed=seed,
-        )
-        for row in run.rows:
-            rows_by_case.setdefault(row.case, []).append(row)
-
-    for delivery, parity_case in prepared:
-        rows = rows_by_case.get(parity_case.label, [])
-        if not rows:
-            results.append(CaseResult(
-                case_key=delivery.case_key, test_id=delivery.test_id,
-                outcome="execution-failure", detail="the runner produced no row",
-                delivery_status=delivery.status, delivery_file=delivery.path.name,
-                stages={"loaded": True, "admitted": True},
-            ))
-            continue
-        engine_records = []
-        classified = []
-        for row in rows:
-            outcome, detail = classify_row(row)
-            classified.append(outcome)
-            engine_records.append({
-                "engine": _engine_name(row),
-                "status": row.status,
-                "outcome": outcome,
-                "executed": bool(row.executed),
-                "compared": bool(row.compared),
-                "approved": bool(row.approved),
-                "detail": detail,
-                "comparisons": _comparisons(row),
-                "modular_seconds": round(row.modular_seconds, 6),
-                "candidate_seconds": round(row.candidate_seconds, 6),
-            })
-        outcome = aggregate(classified)
-        detail = "; ".join(
-            f"{record['engine']}: {record['detail']}"
-            for record in engine_records if record["detail"]
-        )
-        reference_sampled = any(record["modular_seconds"] > 0.0 for record in engine_records)
-        results.append(CaseResult(
-            case_key=delivery.case_key,
-            test_id=delivery.test_id,
-            outcome=outcome,
-            detail=detail,
-            delivery_status=delivery.status,
-            delivery_file=delivery.path.name,
-            stages={
-                "loaded": True,
-                "admitted": True,
-                "reference_sampled": reference_sampled,
-                "candidate_sampled": any(record["executed"] for record in engine_records),
-                "compared": any(record["compared"] for record in engine_records),
-                "approved": outcome == "approved",
-            },
-            engines=tuple(engine_records),
-        ))
-
-    compared = sum(1 for item in results if item.stages.get("compared"))
-    undeclared = [item for item in results if item.outcome not in DECLARED_OUTCOMES]
-    if compared == 0 and undeclared:
-        run_failures.append(
-            f"no case was compared: {len(undeclared)} selected case(s) are not "
-            "declared non-scenarios (blocked / not-applicable), yet none reached "
-            "the six-sigma gate"
-        )
-    for message in run_failures:
-        print(f"E2E PARITY RUN FAILURE: {message}", file=sys.stderr, flush=True)
-
-    summary = _summary(results, len(selected))
-    summary["discovery_defects"] = len(discovery_defects)
-    summary["run_failures"] = len(run_failures)
-    source = provenance["revision"]
-    payload = {
-        "schema": SCHEMA,
-        "connection": "e2e-precompiled",
-        "repository": {
-            "root": str(root), "revision": head, "branch": source["branch"],
-            "dirty": source["dirty"], "dirty_paths": source["dirty_paths"],
-        },
-        "provenance": provenance,
-        "deliveries": str(directory),
-        "selection": [delivery.case_key for delivery in selected],
-        "options": {
-            "simulations": simulations,
-            "seed": seed,
-            "backend": backend,
-            "workers": workers if isinstance(workers, str) else workers,
-            "magnitudes": list(magnitudes),
-            "require_head": require_head,
-        },
-        "checks": {
-            "decision_policy": policy,
-            "discovery_defects": discovery_defects,
-            "delivery_warnings": warnings,
-            "run_failures": run_failures,
-        },
-        "summary": summary,
-        "certifies_parity": False,
-        "sample_only": True,
-        "results": [_result_payload(item) for item in results],
-    }
-    exit_code = 1 if run_failures or any(
-        item.outcome in FAILING_OUTCOMES for item in results
-    ) else 0
-    return payload, exit_code
-
-
-def report_markdown(payload: dict) -> str:
-    """Render the saved E2E result without sampling either engine."""
-    from collections import Counter
-
-    def cell(value):
-        return str(value).replace("&", "&amp;").replace("<", "&lt;").replace(
-            ">", "&gt;").replace("|", "&#124;").replace("\n", "<br>")
-
-    options = payload.get("options", {})
-    repository = payload.get("repository", {})
-    lines = ["# Paridad estadística E2E", "",
-             f"Rama: {cell(repository.get('branch', ''))}. "
-             f"Revisión: {cell(repository.get('revision', ''))}.", "",
-             f"Candidato: {cell(options.get('backend', ''))}. "
-             f"Simulaciones por motor y caso: {cell(options.get('simulations', ''))}. "
-             f"Semilla: {cell(options.get('seed', ''))}.", "",
-             "Magnitudes: " + cell(", ".join(options.get("magnitudes", []))) + ".", "",
-             "Este informe recoge la ejecución; no certifica por sí solo la paridad "
-             "del conjunto. Las muestras pequeñas sirven para comprobar la conexión.",
-             "", "## Resumen", "", "| Indicador | Cantidad |", "|---|---:|"]
-    lines.extend(f"| {cell(key)} | {cell(value)} |"
-                 for key, value in payload.get("summary", {}).items())
-    results = payload.get("results", [])
-    attention = [item for item in results if item["outcome"] not in
-                 {"approved", "incompatible", "blocked", "not-applicable"}]
-    lines += ["", "## Divergencias y errores", ""]
-    if attention:
-        lines += ["| Caso | Estado | Motivo |", "|---|---|---|"]
-        lines.extend(f"| {cell(item['case_key'])} | {cell(item['outcome'])} | "
-                     f"{cell(item.get('detail', ''))} |" for item in attention)
-    else:
-        lines.append("Sin divergencias ni errores registrados.")
-    for outcome in ("incompatible", "blocked", "not-applicable"):
-        reasons = Counter(item.get("detail") or "Sin motivo informado"
-                          for item in results if item["outcome"] == outcome)
-        if reasons:
-            lines += ["", f"## {outcome}: motivos", "",
-                      "| Cantidad | Motivo |", "|---:|---|"]
-            lines.extend(f"| {count} | {cell(reason)} |"
-                         for reason, count in reasons.most_common())
-    sections = [(key, payload.get("checks", {}).get(key, [])) for key in
-                ("run_failures", "discovery_defects", "delivery_warnings")]
-    sections.append(("provenance_warnings",
-                     payload.get("provenance", {}).get("warnings", [])))
-    for key, notes in sections:
-        if notes:
-            lines += ["", f"## {key}", ""]
-            lines.extend(f"- {cell(note)}" for note in notes)
-    return "\n".join(lines) + "\n"
-
-
-def write_reports(payload: dict, *, output: Path | None = None,
-                  output_md: Path | None = None) -> None:
-    """Write only explicitly requested report formats, without sampling."""
-    if output is not None and output_md is not None and output.resolve() == output_md.resolve():
-        raise ValueError("JSON and Markdown outputs must use different paths")
-    for path, content in (
-        (output, lambda: json.dumps(payload, ensure_ascii=True, indent=2) + "\n"),
-        (output_md, lambda: report_markdown(payload)),
-    ):
-        if path is not None:
-            path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text(content(), encoding="utf-8")
-
-
-def _summary(results: Sequence[CaseResult], selected: int) -> dict:
-    def count(*outcomes: str) -> int:
-        return sum(1 for item in results if item.outcome in outcomes)
-
-    return {
-        "selected": selected,
-        "translated": sum(
-            1 for item in results if item.delivery_status == "translated"
-        ),
-        "blocked": count("blocked"),
-        "not_applicable": count("not-applicable"),
-        "invalid_delivery": count("invalid-delivery"),
-        "stale_delivery": count("stale-delivery"),
-        "incompatible": count("incompatible"),
-        "sampled": sum(1 for item in results if item.stages.get("admitted")),
-        "executed": sum(
-            1 for item in results if item.stages.get("candidate_sampled")
-        ),
-        "compared": sum(1 for item in results if item.stages.get("compared")),
-        "approved": count("approved"),
-        "divergent": count("divergence"),
-        "reference_failures": count("reference-failure"),
-        "candidate_failures": count("candidate-failure"),
-        "execution_failures": count("execution-failure"),
-        "backend_unavailable": count("backend-unavailable"),
-        "failed": count("invalid-delivery", "stale-delivery", "reference-failure",
-                        "candidate-failure", "execution-failure",
-                        "backend-unavailable"),
-    }
-
-
-def _result_payload(result: CaseResult) -> dict:
-    return {
-        "case_key": result.case_key,
-        "test_id": result.test_id,
-        "outcome": result.outcome,
-        "detail": result.detail,
-        "delivery": {
-            "file": result.delivery_file,
-            "status": result.delivery_status,
-        },
-        "stages": result.stages,
-        "engines": list(result.engines),
-        "limitations": list(result.limitations),
-    }
-
-
 def bootstrap_paths(root: Path) -> None:
     """Put this checkout's packages first on ``sys.path``.
 
@@ -924,11 +465,3 @@ def bootstrap_paths(root: Path) -> None:
             sys.path.insert(0, entry)
 
 
-def read_selection_file(path: Path) -> list[str]:
-    """One ``case_key`` or ``audit_id::id`` per line; ``#`` comments allowed."""
-    identifiers: list[str] = []
-    for line in path.read_text(encoding="utf-8").splitlines():
-        stripped = line.strip()
-        if stripped and not stripped.startswith("#"):
-            identifiers.append(stripped)
-    return identifiers

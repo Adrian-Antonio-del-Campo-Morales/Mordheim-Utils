@@ -114,7 +114,7 @@ def test_declared_limitations_are_listed_not_failed(monkeypatch, capsys):
         return SimpleNamespace(rows=rows, modular_duels=0)
 
     monkeypatch.setattr(parity, "run_parity", run)
-    blocked = next(f"battery/{case.id}" for case in catalog.battery_cases("deep")
+    blocked = next(f"battery/{case.id}" for case in catalog.battery_cases()
                    if catalog.input_limit(case))
     argv = ["--scenarios", "basic", blocked, "--simulations", "7200", "--json"]
     assert _parity(argv) == 0
@@ -162,19 +162,23 @@ def test_precompiled_catalogue_uses_unified_levels_and_execution_settings(
         assert benchmarking.compile_benchmark_fighters(scenario)
 
 
+
+
 @pytest.mark.evidence
-def test_battery_cases_carry_their_certificate_in_the_report(monkeypatch, capsys):
-    _stub_runner(monkeypatch)
+def test_battery_cases_run_with_their_decisions_and_declared_limits(monkeypatch, capsys):
+    calls = _stub_runner(monkeypatch)
     from mordheim_combat_lab.verification.parity import _battery_cases as catalog
 
-    blocked = next(case.id for case in catalog.battery_cases("deep") if catalog.input_limit(case))
-    assert _parity(["--scenarios", "battery/q04-parry-attempt", f"battery/{blocked}",
+    cases = catalog.battery_cases()
+    scripted = next(case.id for case in cases if case.decisions)
+    blocked = next(case.id for case in cases if catalog.input_limit(case))
+    assert _parity(["--scenarios", f"battery/{scripted}", f"battery/{blocked}",
                     "--simulations", "7200", "--json"]) == 0
+    # The scripted case runs with its script; the blocked one is reported.
+    (prepared, _), = calls
+    assert [case.label for case in prepared] == [f"battery/{scripted}"]
+    assert prepared[0].decisions._choices  # the script travels with the case
     payload = json.loads(capsys.readouterr().out)
-    certificate = payload["battery"]
-    # Per-case stages, declared limits and per-variant coverage survive.
-    assert certificate["coverage"]["declared"] == 2
-    assert certificate["coverage"]["approved"] == 1
-    assert certificate["coverage"]["incompatible"] == 1
-    assert blocked in certificate["limits"]
-    assert certificate["variants"]
+    statuses = {row["case"]: row["status"] for row in payload["results"]}
+    assert statuses[f"battery/{blocked}"] == "INCOMPATIBLE"
+    assert payload["summary"]["blocked"] == 1 and payload["complete"] is False

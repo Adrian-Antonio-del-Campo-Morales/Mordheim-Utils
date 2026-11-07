@@ -1,26 +1,22 @@
 """mordheim_combat_lab.verification.parity: executable oracle contract.
 
-The parity tooling lives in layered submodules: report payloads, the
-vectorized obligation inventory, the single-sample comparator and the shared
-statistical runner.  The runner serves the deep matrix, the battery and the
-round-truncation sweep directly; there are no per-layer execution adapters.
+Layered submodules: the report payloads, the vectorized obligation inventory,
+the single-sample comparator and the one statistical runner, which serves
+every selection (precompiled scenarios, E2E deliveries, battery cases).
 """
 from mordheim_combat_lab.verification.parity._report import (
-    BATTERY_SCHEMA,
+    UNDERPOWERED,
     ParityObligation,
     ParityReport,
     StatisticalParityResult,
-    battery_failure_kind,
-    battery_report_markdown,
-    battery_report_payload,
     parity_report_markdown,
     parity_report_payload,
+    power_verdict,
 )
 from mordheim_combat_lab.verification.parity._vectorized import verify_vectorized_parity
 from mordheim_combat_lab.verification.parity._statistical import compare_samples
 from mordheim_combat_lab.verification.parity._statistical import compare_statistical_parity
 from mordheim_combat_lab.verification.parity._runner import (
-    TRUNCATION_HORIZONS,
     MagnitudeComparison,
     ParityCase,
     ParityRow,

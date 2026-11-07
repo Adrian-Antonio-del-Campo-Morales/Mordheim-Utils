@@ -377,18 +377,15 @@ concrete defects in `TODO.md`. Run broad statistical/deep certification only whe
 explicitly requested. Never refresh a coverage budget, fingerprint or generated
 report merely to hide lost evidence.
 
-## Renewed statistical scenario battery
+## The statistical battery
 
-`check parity --scenarios battery` (or single cases, `battery/<id>`) runs the
-scenario catalogue of `mordheim_combat_lab.verification.parity._battery_cases`
-and compares the terminal outcome distributions of the modular oracle and the
-selected candidate. The report then carries the battery certificate described
-below under `battery`. The catalogue keeps cumulative profiles by case id
-(`quick` ⊆ `complete` ⊆ `deep`); the CLI selects the whole battery or named
-cases. Each case
-declares origin, variant, fighters, context, decisions, sample width, seed and
-horizon; it is executed by both real engines, never by delegating one to the
-other.
+`--scenarios battery` (or a single `battery/<id>`) selects 122 short duels of
+one to three rounds, each built from the knowledge base so that one mechanic
+decides the outcome. They are a third catalogue beside the 43 precompiled
+scenarios and the E2E deliveries, not a subset of either: a long duel averages
+a defect away, and these do not. They are compared by the one parity
+comparison, with the same six-sigma gate, and they are the only cases that
+carry scripted decisions, which `check parity` passes on to both engines.
 
 ```bash
 # the whole battery, both candidates, Markdown report and strict gate
@@ -398,99 +395,56 @@ python -X utf8 tools/mordheim-utils.py check parity --scenarios battery --backen
 python -X utf8 tools/mordheim-utils.py check parity --scenarios battery/q04-parry-attempt battery/q04-injury-chart --simulations 256
 ```
 
-`--workers N|auto` applies to the oracle samples. It partitions each
-modular sample into contiguous `seed + i` ranges, preserves terminal row order
-and reuses one process pool across cases. `1` stays sequential; explicit counts
-are capped to available CPUs, and `auto` uses the historical cost threshold.
-Candidate batches are unchanged, and `--backend numpy native` shares the
-modular sample between candidates. The report records `oracle_workers_requested` as
-the requested policy, not a claim that every case used that many processes.
-Every oracle and candidate pool (`check parity`, stored samples) checks at start-up that each worker imported the parent's engine
-files; a worker that resolved another engine copy stops the run instead of
-merging another engine's duels into the sample.
+Two cases declare an input the engines cannot express and are reported
+`INCOMPATIBLE` with their cause rather than run as a different duel:
+`c03-petru-potion` needs a campaign-only potion table the KB marks out of
+scope, and `v01-restriction` needs a charge construction refuses.
 
-The comparison is statistical. `winner` (first win, second win, unresolved) is
-always compared with the six-sigma tolerance shared with the historical
-comparisons (`_statistical.six_sigma_tolerance`, floor 0.25%). `rounds`
-is added when the case declares it. Internal counters, typed
-witnesses, activation flags, equipment hashes and checkpoints are **not**
-required: `expect`, `positive_control` and `witness_value` remain declaration
-data and never gate execution or approval.
+A battery case is not special once selected: it is sampled, compared and
+reported exactly like a precompiled scenario or an E2E delivery. Its declared
+width (64 rows) is a smoke size, so `--simulations` decides the real one and
+anything below 7,200 is `UNDERPOWERED`.
 
-A real input limit is still a limit: a supplied state or preparation the current
-API cannot express (`blocked_by="state:…"`) or a per-row decision script
-(`decision:per-row`) makes the case `INCOMPATIBLE` with its cause and keeps it in
-the profile denominator. It is never executed as a different scenario. The
-certificate lists those limits (`limits`), so a partial run cannot be read as
-complete coverage.
+## Oracle sampling and worker pools
 
-The catalogue in `_battery_cases.py` is the authority on case counts; the
-certificate's `coverage` block reports the declared, prepared, executed and
-approved totals of the run. Profiles are cumulative: `quick` is the small
-regression set, `complete` adds the bulk of the catalogue, and `deep` adds its
-own long-horizon and interaction cases (fear → charge → parry, leadership →
-retest, extra attacks → defensive capacity, armour → parry, order → attacks and
-spines → injury). Two cases keep a real input limit. `c03-petru-potion` needs a
-campaign-only potion table the KB marks out of scope, and `v01-restriction`
-needs a charge the construction rejects before any sample exists. Both remain in
-the profile denominator as `INCOMPATIBLE` with their cause.
+`--workers N|auto` applies to the modular samples of `check parity` and
+`check samples`. It partitions each sample into contiguous `seed + i` ranges,
+preserves terminal row order and reuses one process pool across cases. `1`
+stays sequential; explicit counts are capped to available CPUs, and `auto`
+uses the measured cost threshold. Candidate batches are unchanged, and
+`--backend numpy native` shares the modular sample between candidates.
 
-`--backend` defaults to `numpy`. `native` never falls back to
-NumPy: a missing or stale extension is `NOT_RUN:native-unavailable` or
-`NOT_RUN:native-stale`, an error that makes the run exit 1, and a plan the
-extension cannot express is `NOT_RUN:native-plan`, a dependency. Neither is a
-comparison. The battery's native rows replay the native core with the NumPy
-random generator, so they do not exercise production native seeding; reports
-say so. Configuration errors exit with code 2. `--simulations` (default
-10,000) replaces every case's declared width, and the certificate records it as
-`preparation.rows_override` (Markdown: "Rows"), so it is never read as one at
-the declared widths. Below 7,200 rows, the smallest width that can detect a
-5-point shift, a passing case is `UNDERPOWERED`. The certificate reads every
-case at its own round limit, so a run with `--rounds` carries no certificate.
+Every oracle and candidate pool checks at start-up that each worker imported
+the parent's engine files; a worker that resolved another engine copy stops
+the run (exit 2) instead of merging another engine's duels into the sample.
 
-The certificate is schema `mordheim-combat-parity-battery/v3`. Per case it
-records the stages actually reached — `executed` (both samples obtained),
-`compared` (at least one magnitude compared) and `approved` (all magnitudes
-within tolerance, with a sample able to detect a 5-point shift) — plus every
-`comparisons[]` entry with the modular and candidate rates and tolerances. A
-case whose rows cannot detect that shift (`MAX_DETECTABLE_DIFFERENCE`; at
-least 7,200 rows are needed) is `UNDERPOWERED`: compared, never approved, and
-it keeps the run incomplete; each case reports its
-`minimum_detectable_difference`. `coverage` aggregates `declared`, `case_ids`,
-`prepared` (no real input limit), `executed`, `compared`, `approved`,
-`divergent`, `incompatible`, `not_run`, `errors`, `dependency`,
-`underpowered` and `sensitivity_pending`. `magnitudes` reports how many comparisons of each
-magnitude stayed within tolerance, and `variants`/`clauses` keep the same stages
-per variant and canonical clause.
+The comparison is statistical: `winner` (first win, second win, unresolved) is
+compared with the six-sigma tolerance (`_statistical.six_sigma_tolerance`,
+floor 0.25%), and `rounds` when the case declares it. Internal counters,
+activation flags and equipment hashes are never compared.
 
-Own errors (`NOT_RUN:compile`, `NOT_RUN:decision-script`,
-`NOT_RUN:case-definition`, `NOT_RUN:outcome-codes`, an unexpected exception, a
-batch-shape or determinism failure, a candidate exception, a missing or stale
-requested native backend and any divergence) make the command exit 1
-**even without `--require-complete`**. Real input limits and plans the native
-extension cannot express are dependencies: they leave the run partial and only
-`--require-complete` turns that into a failure. Pool workers that import a
-different engine copy than the parent stop the run with exit code 2. The
-certificate records the source revision, dirty state, engine digests and
-native build; provenance differences only warn.
+`--backend` defaults to `numpy`. `native` never falls back to NumPy: a missing
+or stale extension is `NOT_RUN:native-unavailable` or `NOT_RUN:native-stale`,
+an error that fails the run, and a plan the extension cannot express is
+`NOT_RUN:native-plan`, a declared limitation. Neither is a comparison. Native
+rows replay the native core with the NumPy random generator, so they do not
+exercise production native seeding; reports say so.
 
 Each engine's winner convention is validated before normalisation (oracle
 `0/1/2`, candidate `1/-1/0`). A code outside its own convention is malformed
 data: the case is `NOT_RUN:outcome-codes`, an own error, and the code never
 enters the unresolved category or disappears from the sample.
 
-A case names a printed rule in `special_rule_ids` (a band rule id for a
-band/profile build, any rule id of the collection for a free build); an effect
-id such as `trait.flammable` is not a rule and is refused. Supplied traits
-(`concussion_immune`, `poison_immune`, `injury_profile`, `frenzy`, …) travel in
-`trait_overrides`, and hand-held defences (`defence.shield`,
-`defence.buckler`) occupy `off_hand_id`, not `defence_ids`.
+An own error (a compile failure, a crashed candidate, a malformed or
+non-deterministic batch, a missing requested native backend, any divergence)
+fails the command on its own. A declared limitation leaves the run incomplete,
+which only `--require-complete` turns into a failure. The report records the
+source revision, dirty state, engine digests and native build; provenance
+differences only warn.
 
-`sensitivity` is reported as pending for every case: a statistical PASS compares
-outcome distributions, it does not prove that a rule changes them. The
-with/without-rule contrast over the oracle belongs to the later campaign, and
-`complete`/`accepted` are execution semantics over the required scenarios of the
-profile, not semantic coverage of every internal rule.
+A statistical PASS compares outcome distributions; it does not prove that a
+rule changes them. The with/without-rule contrast over the oracle belongs to
+the modular mechanics and E2E layers.
 
 ## Limits of the evidence
 
@@ -536,7 +490,7 @@ and `XFAIL`, never as passes. The CSV left by an earlier run is removed before
 pytest starts, so a run that crashes before writing its own reports the CSV as
 missing instead of reusing stale results; from a source checkout the child
 pytest imports that checkout's packages. `check parity --output` writes comparison reports
-(JSON or Markdown, with the battery certificate when battery cases ran); `check report rules` exports structural/planning inventory without
+(JSON or Markdown); `check report rules` exports structural/planning inventory without
 claiming new semantic verification. Legacy semantic columns in existing CSVs
 are historical fields, not current certificates.
 

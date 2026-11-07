@@ -19,7 +19,6 @@ from mordheim_combat_lab.verification.parity import _runner
 from mordheim_combat_lab.verification.parity._runner import (
     MagnitudeComparison,
     ParityRow,
-    escalation_plan,
 )
 from mordheim_combat_lab.verification.parity._statistical import (
     compare_outcome_rates,
@@ -28,7 +27,6 @@ from mordheim_combat_lab.verification.parity._statistical import (
     six_sigma_tolerance,
 )
 from tests.engines.fixtures.precompiled_catalog import scenario_key
-
 
 
 def observation(*, winner, rounds=None, wounds=None, conditions=None):
@@ -315,31 +313,6 @@ def test_cross_rows_require_the_native_backend(cases):
         assert cross.rows[0].backend == "native"
 
 
-def test_escalation_plan_marks_suspicious_and_unresolved_pairs(cases):
-    prepared, rows = _prepared_matrix(cases)
-    plan = escalation_plan(
-        prepared, rows, factor=2, sigma=3.0, unresolved=0.01,
-        remaining=None,
-    )
-    # The 4-sigma case (doubling decides defect vs noise) and the
-    # unresolved-prone case escalate; the conclusive 7-sigma failure and the
-    # clean 1-sigma case stay at the base sample.
-    assert [(case.label, size) for case, size in plan] == [
-        ("matrix:border", 20_000), ("matrix:grind", 20_000),
-    ]
-
-
-def test_escalation_plan_respects_the_modular_ceiling(cases):
-    prepared, rows = _prepared_matrix(cases)
-    plan = escalation_plan(
-        prepared, rows, factor=2, sigma=3.0, unresolved=0.01,
-        remaining=20_000,
-    )
-    # Each escalation costs its whole new sample (20 000 duels, drawn
-    # afresh): only the highest-priority case fits in the remaining budget.
-    assert [case.label for case, _ in plan] == ["matrix:border"]
-
-
 def _stub_counts_path(monkeypatch):
     """Synthetic oracle and candidate for the counts surface; no engine runs."""
     from mordheim_combat_lab.verification.parity._statistical import compare_samples
@@ -360,45 +333,6 @@ def _stub_counts_path(monkeypatch):
     monkeypatch.setattr(_runner, "_observed_reference", reference)
     monkeypatch.setattr(_runner, "compare_statistical_parity", compare)
     return executed
-
-
-def test_runner_escalates_and_clamps_to_the_ceiling(monkeypatch):
-    executed = _stub_counts_path(monkeypatch)
-    cases_ = tuple(
-        ParityCase(f"matrix:{label}", None, None, simulations=60)
-        for label in ("a", "b", "c")
-    )
-    run = run_parity(
-        cases_, backends=("numpy",), candidate="counts",
-        escalate=True, escalate_sigma=0.0, max_modular_duels=300,
-    )
-    # Base 180 duels; an escalation re-draws the whole 120-duel sample, so
-    # exactly one fits the 300-duel ceiling (tie-breaks keep insertion order).
-    assert {row.case: row.simulations for row in run.rows} == {
-        "matrix:a": 120, "matrix:b": 60, "matrix:c": 60,
-    }
-    assert sum(row.escalated for row in run.rows) == 1
-    assert run.modular_duels == sum(size for _, size in executed) == 300
-
-    executed.clear()
-    tight = run_parity(
-        cases_, backends=("numpy",), candidate="counts",
-        escalate=True, escalate_sigma=0.0, max_modular_duels=299,
-    )
-    assert not any(row.escalated for row in tight.rows)
-    assert tight.modular_duels == sum(size for _, size in executed) == 180
-
-
-def test_no_fitting_horizon_is_rejected(cases):
-    case = cases[scenario_key("basic")]
-    with pytest.raises(ValueError, match="no truncation horizon"):
-        run_parity(
-            (ParityCase(
-                label="basic", first=case.first, second=case.second,
-                maximum_rounds=5,
-            ),),
-            simulations=50, horizons=(8, 10),
-        )
 
 
 def test_modular_only_execution_does_not_sample_candidates_or_approve_parity(monkeypatch):

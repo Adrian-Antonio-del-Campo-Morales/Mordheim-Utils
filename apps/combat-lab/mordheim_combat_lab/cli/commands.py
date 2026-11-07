@@ -536,46 +536,51 @@ def _deterministic_parity(args) -> int:
 
 
 def _parity_cases(entries, simulations: int, seed: int):
-    """``ParityCase`` objects for the selected entries, the
-    ``(key, rounds, status, reason)`` of every entry that cannot be prepared,
-    and ``(battery cases, compile cache)`` when battery cases were selected.
+    """``ParityCase`` objects for the selected entries, plus the
+    ``(key, rounds, status, reason)`` of every entry that cannot be prepared.
 
     A declared limitation -- a blocked or not-applicable E2E delivery, inputs
     no runner can express -- is ``INCOMPATIBLE`` (listed, not a failure); a
-    missing frozen case or a preparation crash is ``NOT_RUN`` (a failure)."""
-    from dataclasses import replace as _replace
-
+    missing frozen case or a preparation crash is ``NOT_RUN`` (a failure).
+    """
     from mordheim_combat_lab.cli.scenarios import load_checkout_module
     from mordheim_combat_lab.verification.parity import ParityCase
-    from mordheim_combat_lab.verification.parity import _battery_cases as battery_catalog
-    from mordheim_combat_lab.verification.parity._battery_runner import prepare_cases
+    from mordheim_combat_lab.verification.parity import _battery_cases as battery
+    from mordheim_core.dice import ScriptedDecisions
 
     catalog = load_checkout_module("tools.verification.parity_catalog")
     frozen, rejected = catalog.load([entry for entry in entries if entry.kind != "battery"])
     frozen = {item.key: item for item in frozen}
     rejected = dict(rejected)
-    battery = None
-    ready, unprepared = {}, {}
-    names = [entry.name for entry in entries if entry.kind == "battery"]
-    if names:
-        # Battery cases may script decisions: the per-duel (observed) surface
-        # passes them on, so this is the one tool that runs all of them.
-        definitions = {str(case.id): case for case in battery_catalog.battery_cases("deep")}
-        cases = tuple(definitions[name] for name in names)
-        reuse: dict = {}
-        prepared_cases, unprepared = prepare_cases(
-            cases, backend="numpy", rows=simulations, reuse=reuse)
-        ready = {case.label: case for case in prepared_cases}
-        battery = (cases, reuse)
+    definitions = root = None
     prepared, failures = [], []
     for entry in entries:
         if entry.kind == "battery":
-            if entry.name in ready:
-                prepared.append(_replace(ready[entry.name], label=entry.key))
-            else:
-                result = unprepared[entry.name]
-                failures.append((entry.key, int(result.horizon or 50), str(result.status),
-                                 str(result.detail)))
+            # Battery cases may script decisions: the per-duel (observed)
+            # surface passes them on, so this is the one tool that runs them.
+            if definitions is None:
+                from mordheim_construction.compiler import compile_fighter
+                from mordheim_knowledge.loader import knowledge_root
+
+                definitions = {str(case.id): case for case in battery.battery_cases()}
+                root = knowledge_root()
+            case = definitions[entry.name]
+            limit = battery.input_limit(case)
+            if limit is not None:
+                failures.append((entry.key, case.maximum_rounds, "INCOMPATIBLE", limit))
+                continue
+            try:
+                prepared.append(ParityCase(
+                    label=entry.key,
+                    first=compile_fighter(case.first, root),
+                    second=compile_fighter(case.second, root),
+                    maximum_rounds=case.maximum_rounds, simulations=simulations,
+                    seed=seed, context=battery.resolve_context(case.context, root),
+                    decisions=ScriptedDecisions(dict(case.decisions)),
+                ))
+            except Exception as error:  # an invalid case is not a divergence
+                failures.append((entry.key, case.maximum_rounds, "NOT_RUN",
+                                 f"Preparation failed: {type(error).__name__}: {error}"))
             continue
         if entry.key in rejected:
             reason = rejected[entry.key]
@@ -588,37 +593,7 @@ def _parity_cases(entries, simulations: int, seed: int):
             maximum_rounds=case.limits.maximum_rounds, simulations=simulations,
             seed=seed, context=case.context,
         ))
-    return prepared, failures, battery
-
-
-def _battery_certificate(battery, rows, backends, entries, args, provenance, elapsed):
-    """The battery certificate of the battery rows of one comparison:
-    per-case stages, per-variant and per-clause coverage, declared limits."""
-    import hashlib
-    from dataclasses import replace as _replace
-
-    from mordheim_combat_lab.verification.parity import _battery_cases as catalog
-    from mordheim_combat_lab.verification.parity._battery_runner import (
-        battery_report, battery_results, prepare_cases,
-    )
-    from mordheim_combat_lab.verification.parity._report import battery_report_payload
-
-    cases, reuse = battery
-    results = []
-    for backend in backends:
-        _, failures = prepare_cases(cases, backend=backend, rows=args.simulations, reuse=reuse)
-        backend_rows = [_replace(row, case=row.case[len("battery/"):]) for row in rows
-                        if row.backend == backend and row.case.startswith("battery/")]
-        results.extend(battery_results(cases, backend_rows, failures))
-    whole = "battery" in args.scenarios
-    report = battery_report(tuple(results), cases, profile="deep" if whole else None)
-    return battery_report_payload(
-        report, profile="deep" if whole else "selection",
-        backend="all" if len(backends) > 1 else backends[0],
-        catalog_sha256=hashlib.sha256(Path(catalog.__file__).read_bytes()).hexdigest(),
-        inventory_sha256=catalog.INVENTORY_SHA256, elapsed_seconds=elapsed,
-        backends=backends, provenance=provenance, rows_override=args.simulations,
-    )
+    return prepared, failures
 
 
 def _parity_markdown(payload: dict) -> str:
@@ -634,12 +609,7 @@ def _parity_markdown(payload: dict) -> str:
         detail = str(row["detail"]).replace("|", "&#124;").replace("\n", "<br>")
         lines.append(f"| {row['status']} | {row['case']} | {row['backend']} | "
                      f"{row['simulations']:,} | {row['maximum_rounds']} | {detail} |")
-    text = "\n".join(lines) + "\n"
-    if "battery" in payload:
-        from mordheim_combat_lab.verification.parity._report import battery_report_markdown
-
-        text += "\n" + battery_report_markdown(payload["battery"])
-    return text
+    return "\n".join(lines) + "\n"
 
 
 def _compare_parity(args, entries, backends: tuple[str, ...]) -> int:
@@ -647,8 +617,7 @@ def _compare_parity(args, entries, backends: tuple[str, ...]) -> int:
     from dataclasses import replace as _replace
 
     from mordheim_combat_lab.verification.parity import ParityRow, run_parity
-    from mordheim_combat_lab.verification.parity._battery_runner import _power_verdict
-    from mordheim_combat_lab.verification.parity._report import UNDERPOWERED
+    from mordheim_combat_lab.verification.parity._report import UNDERPOWERED, power_verdict
     from mordheim_combat_lab.verification.parity._runner import NATIVE_OBSERVED_NOTE
     from mordheim_combat_lab.verification.parity._statistical import MAX_DETECTABLE_DIFFERENCE
 
@@ -657,7 +626,7 @@ def _compare_parity(args, entries, backends: tuple[str, ...]) -> int:
 
     started = time.perf_counter()
     provenance = run_provenance(project_root(), ("modular", *backends))
-    prepared, failures, battery = _parity_cases(entries, args.simulations, args.seed)
+    prepared, failures = _parity_cases(entries, args.simulations, args.seed)
     if args.rounds:
         # Each value replaces the case's own limit, exactly as the samplers'
         # --rounds does; a list runs the case once per limit.
@@ -684,7 +653,7 @@ def _compare_parity(args, entries, backends: tuple[str, ...]) -> int:
     def powered(row):
         # A passing row too small to detect the maximum detectable difference
         # is UNDERPOWERED: not approved, not complete, not a failure.
-        status, approved, detail = _power_verdict(row)
+        status, approved, detail = power_verdict(row)
         return row if status == row.status else _replace(
             row, status=status, approved=approved, detail=detail)
 
@@ -724,11 +693,6 @@ def _compare_parity(args, entries, backends: tuple[str, ...]) -> int:
             for row in rows
         ],
     }
-    # The battery certificate reads the cases at their own round limit.
-    if battery is not None and not reference_only and not args.rounds:
-        payload["battery"] = _battery_certificate(
-            battery, rows, backends, entries, args, provenance,
-            time.perf_counter() - started)
     if args.output:
         output = Path(args.output)
         output.parent.mkdir(parents=True, exist_ok=True)
@@ -739,12 +703,6 @@ def _compare_parity(args, entries, backends: tuple[str, ...]) -> int:
     if args.json:
         print(json.dumps(payload, ensure_ascii=True, indent=2))
     else:
-        if "battery" in payload:
-            coverage = payload["battery"]["coverage"]
-            print("battery: " + ", ".join(
-                f"{name}={coverage.get(name, 0)}" for name in (
-                    "declared", "prepared", "executed", "compared", "approved",
-                    "divergent", "incompatible", "not_run", "underpowered")))
         for row in rows:
             print(f"{row.status}: {row.case} [{row.backend}] n={row.simulations} "
                   f"rounds={row.maximum_rounds} {row.detail}".rstrip())
@@ -957,8 +915,7 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
     coverage_content = coverage.add_argument_group("measurement")
     coverage_content.add_argument(
         "--suites", nargs="+", metavar="PATH",
-        help="pytest paths to measure (default: modular + vectorized + phases "
-             "+ the parity deterministic corpus)")
+        help="pytest paths to measure (default: the deterministic engine suites)")
     coverage_content.add_argument(
         "--area-floor", action="append", metavar="AREA:PCT",
         help="minimum coverage percent per area, e.g. --area-floor modular:95 "
@@ -966,8 +923,7 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
     coverage_output = coverage.add_argument_group("budget and output")
     coverage_output.add_argument(
         "--budget", default="tests/tooling/coverage/fixtures/budget.json", metavar="PATH",
-        help="coverage budget file to check against (default: "
-             "tests/tooling/coverage/fixtures/budget.json)")
+        help="budget file to check against (default: the committed one)")
     coverage_output.add_argument(
         "--update-budget", action="store_true",
         help="write the measured covered lines as the new budget instead of "

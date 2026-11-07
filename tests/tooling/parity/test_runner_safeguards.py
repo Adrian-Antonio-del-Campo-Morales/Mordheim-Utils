@@ -12,15 +12,12 @@ import pytest
 
 import mordheim_combat
 from mordheim_combat_lab.verification.parity import ParityCase, run_parity
-from mordheim_combat_lab.verification.parity import _battery_runner as battery
 from mordheim_combat_lab.verification.parity import _runner
 from mordheim_combat_lab.verification.parity._report import (
     ParityReport,
-    battery_failure_kind,
-    battery_report_markdown,
-    battery_report_payload,
     parity_report_markdown,
     parity_report_payload,
+    power_verdict,
 )
 from mordheim_combat_lab.verification.parity._statistical import (
     MAX_DETECTABLE_DIFFERENCE,
@@ -71,7 +68,6 @@ def test_a_candidate_crash_is_an_own_error(monkeypatch, oracle, error):
     row, = run_parity((observed(),), backends=("numpy",)).rows
     assert row.status == "DIVERGENCE"
     assert row.detail.startswith(f"DIVERGENCE:exception:{type(error).__name__}")
-    assert battery_failure_kind(row.status, row.detail) == "error"
 
 
 def test_a_missing_native_backend_fails_but_a_declined_plan_is_a_dependency(
@@ -80,13 +76,11 @@ def test_a_missing_native_backend_fails_but_a_declined_plan_is_a_dependency(
         "native extension is not installed"))
     missing, = run_parity((observed(),), backends=("native",)).rows
     assert missing.detail.startswith("NOT_RUN:native-unavailable")
-    assert battery_failure_kind(missing.status, missing.detail) == "error"
 
     candidate_raising(monkeypatch, _runner._NativeUnavailable(
         "native extension does not support this duel plan"))
     declined, = run_parity((observed(),), backends=("native",)).rows
     assert declined.detail.startswith("NOT_RUN:native-plan")
-    assert battery_failure_kind(declined.status, declined.detail) == "dependency"
 
 
 # -- task 5: a stale effect layout is a missing backend -----------------------
@@ -200,13 +194,6 @@ def test_minimum_detectable_difference_is_the_worst_case_tolerance():
     assert underpowered(64) and underpowered(7_199) and not underpowered(7_200)
 
 
-def battery_case(identifier="a"):
-    return SimpleNamespace(
-        id=identifier, level="quick", variant="B06.1", seed=1,
-        maximum_rounds=4, observables=("winner",),
-    )
-
-
 def passing_row(size, label="a"):
     return _runner.ParityRow(
         case=label, backend="numpy", maximum_rounds=4, simulations=size,
@@ -214,32 +201,14 @@ def passing_row(size, label="a"):
     )
 
 
-def test_a_small_passing_sample_is_underpowered_not_approved(monkeypatch):
-    monkeypatch.setattr(battery, "required_variants", lambda profile: ("B06.1",))
-    small, = battery.battery_results((battery_case(),), (passing_row(64),))
-    assert small.status == "UNDERPOWERED" and small.approved is False
-    assert small.compared is True and "0.5303" in small.detail
-    assert battery_failure_kind(small.status, small.detail) is None
+def test_a_small_passing_sample_is_underpowered_not_approved():
+    # Power is a property of the row, applied wherever rows are reported.
+    status, approved, detail = power_verdict(passing_row(64))
+    assert status == "UNDERPOWERED" and approved is False
+    assert "0.5303" in detail and str(MAX_DETECTABLE_DIFFERENCE) in detail
 
-    report = battery.battery_report((small,), (battery_case(),), profile="quick")
-    assert report.complete is False and report.accepted is False
-    assert report.underpowered == ("a",)
-    payload = battery_report_payload(
-        report, profile="quick", backend="numpy", catalog_sha256="c",
-        inventory_sha256="i", backends=("numpy",),
-    )
-    assert payload["coverage"]["underpowered"] == 1
-    assert payload["coverage"]["approved"] == 0
-    assert payload["cases"][0]["minimum_detectable_difference"] == pytest.approx(
-        minimum_detectable_difference(64))
-    assert payload["power"]["max_detectable_difference"] == MAX_DETECTABLE_DIFFERENCE
-    markdown = battery_report_markdown(payload)
-    assert "## Statistical power" in markdown and "| 64 | 0.5303 |" in markdown
-
-    large, = battery.battery_results((battery_case(),), (passing_row(8_000),))
-    assert large.status == "PASS" and large.approved is True
-    assert battery.battery_report(
-        (large,), (battery_case(),), profile="quick").complete is True
+    status, approved, _ = power_verdict(passing_row(8_000))
+    assert status == "PASS" and approved is True
 
 
 def run_parity_command(monkeypatch, row, *, require_complete):
@@ -272,26 +241,3 @@ def test_exit_codes_for_underpowered_rows_and_missing_backends(monkeypatch, caps
 
 
 # -- task 7: deep certificate records backends and fails on missing ones ------
-
-def test_certificate_with_a_missing_requested_backend_is_incomplete():
-    report = ParityReport(
-        complete=True, obligations=(), verified=(), pending=(), divergences=(),
-        exact_checks=("x",),
-    )
-    backends = {"requested": ["numpy", "native"], "available": ["numpy"],
-                "certified": ["numpy"], "missing": ["native"]}
-    workers = {"requested": "auto", "environment": None, "resolved": {"matrix:a": 4}}
-    payload = parity_report_payload(
-        report, backends=backends, oracle_workers=workers,
-        provenance={"revision": {"commit": "abc", "dirty": True},
-                    "engine_digests": {"modular": "0" * 64},
-                    "native_build_sha256": None, "warnings": ["dirty tree"]},
-    )
-    assert payload["complete"] is False
-    assert payload["backends"] == backends and payload["oracle_workers"] == workers
-    markdown = parity_report_markdown(payload)
-    assert "INCOMPLETE: requested backend(s) unavailable: native" in markdown
-    assert "PROVENANCE WARNING:** dirty tree" in markdown
-
-    present = parity_report_payload(report, backends={**backends, "missing": []})
-    assert present["complete"] is True

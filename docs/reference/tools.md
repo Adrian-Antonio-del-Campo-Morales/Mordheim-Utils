@@ -355,12 +355,11 @@ source-backed preparation.
   select the same inputs for parity, benchmarks and calibration; `big` includes
   all 43. Its `select_scenarios` resolves every tool's `--scenarios` values.
   Seeds, sample widths and batch sizes are execution settings.
-- `mordheim_combat_lab/verification/parity/_battery_cases.py` and
-  `_battery_keys.py` describe the build-based battery cases (`--scenarios
-  battery`), variants and intended clause coverage. Their preparation requires
-  compilation; these are not additional precompiled inputs.
-- `run_parity` is the unified statistical runner; round horizons, sample budgets
-  and escalation are configuration, not separate execution systems.
+- `mordheim_combat_lab/verification/parity/_battery_cases.py` declares the
+  122 battery cases (`--scenarios battery`): short duels built from the
+  knowledge base, so they are compiled rather than frozen.
+- `run_parity` is the one statistical runner: every selection, every engine
+  and every round limit goes through it.
 
 Do not regenerate frozen inputs merely to move tests or change imports. To
 maintain build snapshots explicitly, use the existing capture/publish workflow:

@@ -82,7 +82,7 @@ CATALOGUE: tuple[tuple[str, str], ...] = _entries("big")
 def _battery_cases() -> dict:
     from mordheim_combat_lab.verification.parity import _battery_cases as battery
 
-    return {str(case.id): case for case in battery.battery_cases("deep")}
+    return {str(case.id): case for case in battery.battery_cases()}
 
 
 def _e2e_index() -> Mapping:
