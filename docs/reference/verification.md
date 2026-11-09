@@ -405,6 +405,19 @@ reported exactly like a precompiled scenario or an E2E delivery. Its declared
 width (64 rows) is a smoke size, so `--simulations` decides the real one and
 anything below 7,200 is `UNDERPOWERED`.
 
+## The realistic sets
+
+`--scenarios realistic-50` and `realistic-100` select curated duels that
+reproduce how the game is actually played; they exist to measure performance
+(see "Realistic performance sets" in `docs/reference/tools.md`). They are
+frozen corpus cases, so parity, samples, benchmark and calibration run them
+like precompiled scenarios. They are not a rules catalogue: a mechanic they
+miss is still covered by the 43 scenarios, the E2E deliveries and the battery.
+
+```bash
+python -X utf8 tools/mordheim-utils.py check parity --scenarios realistic-100 --backend numpy native --simulations 20k --workers 4
+```
+
 ## Oracle sampling and worker pools
 
 `--workers N|auto` applies to the modular samples of `check parity` and

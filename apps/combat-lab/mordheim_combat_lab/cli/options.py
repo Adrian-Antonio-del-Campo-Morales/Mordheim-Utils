@@ -24,10 +24,11 @@ LEVELS = ("small", "normal", "big")
 
 SCENARIOS_HELP = (
     "what to run, the same values in every tool: small (8 scenarios), normal "
-    "(30) or big (all 43); e2e (every E2E delivery); battery (every battery "
-    "case); or single cases -- a scenario name such as basic or long, an E2E "
-    "case_key or audit_id::id, battery/<id>.  Several values run their union; "
-    "a case a tool cannot run is listed with the reason"
+    "(30) or big (all 43); realistic-50 or realistic-100 (the curated duels a "
+    "performance run measures); e2e (every E2E delivery); battery (every "
+    "battery case); or single cases -- a scenario name such as basic or long, "
+    "realistic/<nnn>, an E2E case_key or audit_id::id, battery/<id>.  Several "
+    "values run their union; a case a tool cannot run is listed with the reason"
 )
 
 

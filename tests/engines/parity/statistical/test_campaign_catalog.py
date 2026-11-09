@@ -157,3 +157,31 @@ def test_loading_reports_every_case_a_tool_cannot_run(cases):
     reasons = dict(rejected)
     assert any("scripted decisions" in reason for reason in reasons.values())
     assert len(runnable) + len(rejected) == len(select(("battery",)))
+
+
+def test_realistic_sets_are_cumulative_and_disjoint_from_scenarios():
+    from tests.engines.fixtures.realistic_sets import REALISTIC_SETS
+
+    small, large = REALISTIC_SETS["realistic-50"], REALISTIC_SETS["realistic-100"]
+    assert (len(small), len(large)) == (50, 100)
+    assert len(set(large)) == 100 and set(small) <= set(large)
+    assert all(key.startswith("realistic/") for key in large)
+    assert set(REALISTIC_SETS).isdisjoint({*LEVELS, "e2e", "battery"})
+    assert set(REALISTIC_SETS).isdisjoint(scenario.name for scenario in SCENARIOS)
+
+
+def test_realistic_sets_resolve_to_frozen_charging_duels(cases):
+    from tests.engines.fixtures.realistic_sets import REALISTIC_SETS
+
+    scenarios, rejected = load(select(("realistic-100",)), cases)
+    assert rejected == ()
+    assert [scenario.key for scenario in scenarios] == list(REALISTIC_SETS["realistic-100"])
+    for scenario in scenarios:
+        assert scenario.kind == "scenario"
+        assert scenario.case is cases[scenario.key]
+        assert scenario.case.origin.kind == "benchmark"
+        assert scenario.case.limits.maximum_rounds == 50
+        assert scenario.case.limits.simulations is None
+        # Every realistic duel opens with a charge by exactly one fighter.
+        assert len(scenario.case.context.charging) == 1
+    assert [entry.key for entry in select(("realistic/007",))] == ["realistic/007"]

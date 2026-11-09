@@ -7,6 +7,10 @@ parity, samples).  Several values select their union, in the order given:
     the cumulative levels of the 43 precompiled scenarios
 ``<name>`` | ``scenario/<name>``
     one precompiled scenario
+``realistic-50`` | ``realistic-100``
+    the cumulative curated sets of realistic duels
+``realistic/<nnn>``
+    one curated realistic duel
 ``e2e``
     every E2E statistical delivery
 ``<case_key>`` | ``<audit_id::id>``
@@ -15,6 +19,9 @@ parity, samples).  Several values select their union, in the order given:
     every case of the statistical battery
 ``battery/<id>``
     one battery case
+
+A curated realistic duel is a frozen corpus case like a precompiled scenario,
+so it resolves the same way and no tool learns a second loading path.
 
 ``select`` turns the values into ordered entries without loading anything;
 ``load`` turns entries into runnable :class:`CampaignScenario` objects and
@@ -36,6 +43,9 @@ from tests.engines.fixtures.precompiled_catalog import SCENARIO_KEYS
 from tests.engines.fixtures.precompiled_catalog import is_scenario_token
 from tests.engines.fixtures.precompiled_catalog import scenarios_for_level
 from tests.engines.fixtures.precompiled_catalog import select_scenarios
+from tests.engines.fixtures.realistic_sets import REALISTIC_LEVELS
+from tests.engines.fixtures.realistic_sets import is_realistic_token
+from tests.engines.fixtures.realistic_sets import realistic_keys
 from tools.verification.compiled_cases import CaseLimits
 from tools.verification.compiled_cases import CaseOrigin
 from tools.verification.compiled_cases import CompiledCase
@@ -45,7 +55,7 @@ from tools.verification.e2e_parity import expressiveness
 CORPUS = Path(__file__).resolve().parents[2] / "tests" / "engines" / "fixtures" / "compiled-cases.json"
 
 #: The named sets ``--scenarios`` accepts besides individual names.
-SETS = (*LEVELS, "e2e", "battery")
+SETS = (*LEVELS, *REALISTIC_LEVELS, "e2e", "battery")
 
 BATTERY_PREFIX = "battery/"
 
@@ -110,6 +120,10 @@ def select(scenarios: Sequence[str] = ("small",)) -> tuple[Entry, ...]:
             for scenario in select_scenarios((token,)):
                 key = SCENARIO_KEYS[scenario.name]
                 entries.setdefault(key, Entry(key, scenario.name, "scenario"))
+        elif is_realistic_token(token):
+            # A curated duel is a frozen case: the same "scenario" kind loads it.
+            for key in realistic_keys(token):
+                entries.setdefault(key, Entry(key, key, "scenario"))
         elif token == "battery" or token.startswith(BATTERY_PREFIX):
             battery = battery if battery is not None else _battery_cases()
             names = list(battery) if token == "battery" else [token[len(BATTERY_PREFIX):]]

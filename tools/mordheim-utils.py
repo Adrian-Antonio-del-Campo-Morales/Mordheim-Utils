@@ -863,7 +863,8 @@ Start here:
 
 Measurements run real combats. Keep them isolated from other heavy workloads.
 Use --workers 8 for an explicit multicore benchmark; do not wrap it in xdist.
---scenarios small|normal|big or scenario names selects what runs in both commands.
+--scenarios small|normal|big, realistic-50|realistic-100 (the realistic sets to
+measure performance on) or scenario names selects what runs in both commands.
 """
 
 

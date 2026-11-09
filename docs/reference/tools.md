@@ -40,6 +40,7 @@ python tools/mordheim-utils.py tests modular mechanics -n 8 --dist=load -q
 python tools/mordheim-utils.py tests modular runtime -q
 python tools/mordheim-utils.py tests kb -n 8 --dist=load -q
 python tools/mordheim-utils.py performance benchmark --scenarios basic --simulations 1000 --repeats 3
+python tools/mordheim-utils.py performance benchmark --scenarios realistic-50 --simulations 300k --backend numpy
 python tools/mordheim-utils.py performance calibrate --scenarios small --no-install
 python tools/mordheim-utils.py check verify --json
 python tools/mordheim-utils.py check report rules --output outputs/audit
@@ -79,13 +80,15 @@ a tool does not know is an error (`unrecognized arguments`).
 |---|---|
 | `small`, `normal`, `big` | The cumulative levels of the 43 precompiled scenarios: 8, 30 and all 43. |
 | `basic`, `long`, … or `scenario/<name>` | One precompiled scenario. `long` is the 75-round stalemate scenario, never a level. |
+| `realistic-50`, `realistic-100` | The cumulative curated sets of realistic duels; `realistic-50` is contained in `realistic-100`. Use them to measure performance. |
+| `realistic/<nnn>` | One curated realistic duel (`realistic/000` … `realistic/099`). |
 | `e2e` | Every E2E statistical delivery. |
 | `<case_key>` or `<audit_id::id>` | One E2E delivery. |
 | `battery` | Every case of the statistical battery. |
 | `battery/<id>` | One battery case. |
 
 Nothing narrows anything else: `--scenarios small heavy-grind` runs nine
-scenarios. Precompiled scenarios load frozen fighters (no compilation), E2E
+scenarios. Precompiled scenarios and realistic duels load frozen fighters (no compilation), E2E
 deliveries pass their admission rules and run to 50 rounds, and battery cases
 are compiled from the knowledge base. A selected case a tool cannot run is
 listed with its reason, never dropped silently: a blocked or not-applicable
@@ -355,11 +358,52 @@ source-backed preparation.
   select the same inputs for parity, benchmarks and calibration; `big` includes
   all 43. Its `select_scenarios` resolves every tool's `--scenarios` values.
   Seeds, sample widths and batch sizes are execution settings.
+- `realistic_sets.py` lists the curated realistic duels by their stable
+  `realistic/<nnn>` keys in `compiled-cases.json`: `realistic-50` and
+  `realistic-100` (cumulative). See [Realistic performance sets](#realistic-performance-sets).
 - `mordheim_combat_lab/verification/parity/_battery_cases.py` declares the
   122 battery cases (`--scenarios battery`): short duels built from the
   knowledge base, so they are compiled rather than frozen.
 - `run_parity` is the one statistical runner: every selection, every engine
   and every round limit goes through it.
+
+### Realistic performance sets
+
+The 43 precompiled scenarios were chosen to cover rules: they over-represent
+rare fighters and edge cases, so a speedup measured on them need not transfer
+to the duels the application actually runs. Measure performance on
+`realistic-50` (day-to-day) or `realistic-100` (confirmation); keep the 43
+scenarios for correctness and parity.
+
+No usage data exists yet, so the sets come from a synthetic population that
+`tools/verification/realistic_population.py` draws from the rosters, the
+equipment lists and a game expert's answers (all warbands, Mordheim and
+Trollheim, equally likely; members weighted by how many a warband can field;
+campaigns of 4-8 games with heroes averaging under three advances and
+henchmen half as many; the expert's frequent skills; two weapons and the
+dagger dominant, armour uncommon; every duel opens with a charge; no Hired
+Swords). The curator then selects the duels whose feature shares (heroes,
+wounds, attacks, loadout, armour, skills, advances, parry, saves, large
+creatures, Trollheim …) track that population within about 1.5 points, so a
+plain mean over a set is representative without weights. 300,000 simulations
+per duel is the expected application width; on the NumPy engine
+`realistic-50` takes about five minutes and `realistic-100` about ten.
+
+The sets are frozen: the duels are ordinary cases in `compiled-cases.json`
+(campaign advances are applied to the compiled characteristics, bounded by the
+racial maximum, because the compiler has no advance input), and
+`benchmarks/reference/realistic-population.json` keeps the whole population,
+each duel's build, features and set membership for review. Regenerate only to
+change the population model; the same seed reproduces the same sets:
+
+```powershell
+python -m tools.verification.realistic_population --draws 1200 --seed 1          # fidelity table only
+python -m tools.verification.realistic_population --draws 1200 --seed 1 --write  # rewrite corpus, registry, reference
+```
+
+`--write` re-exports every existing case through the corpus exporter, so their
+fingerprints are reproduced, and replaces only the `realistic/*` cases.
+Benchmark baselines measured on the earlier sets are not comparable afterwards.
 
 Do not regenerate frozen inputs merely to move tests or change imports. To
 maintain build snapshots explicitly, use the existing capture/publish workflow:
