@@ -102,7 +102,8 @@ def _parry_hits(defender: CompiledFighter, effect: EffectSet, hit_rows: np.ndarr
     killing_blow = (natural == 6) & has(effect, "mechanic.killing-blow")
     # A natural six in the eligible pool prevents substituting a lower hit.
     if not can_parry_six and parry_capacity(defender) < 2:
-        defender_state.parry_remaining[np.unique(hit_rows[natural == 6])] = 0
+        # A repeated row only repeats the same assignment, so no ``np.unique``.
+        defender_state.parry_remaining[hit_rows[natural == 6]] = 0
     eligible = (context.eligible
                 # The natural-six clear above may have emptied the row after
                 # the context snapshot was taken.
@@ -114,7 +115,10 @@ def _parry_hits(defender: CompiledFighter, effect: EffectSet, hit_rows: np.ndarr
         # ``resolve_attacks`` has already selected the highest one or two hits
         # for each duel row across the complete attack pool. Repeating that
         # grouping here would introduce a Python loop per simulated duel.
-        eligible &= np.isin(hit_rows, selected_rows)
+        # Membership through a row mask: ``np.isin`` sorts both operands.
+        chosen = np.zeros(defender_state.parry_remaining.size, dtype=bool)
+        chosen[selected_rows] = True
+        eligible &= chosen[hit_rows]
     else:
         eligible_values = hit_rows[eligible]
         eligible_rows = eligible_values[_run_starts(eligible_values)]
@@ -278,7 +282,8 @@ def _prepare_weapon_attack(attacker: CompiledFighter, defender: CompiledFighter,
         failed_tests = ~_characteristic_test(defender, defender_state.initiative[active], rng)
         rolls=np.where(failed_tests,6,1).astype(np.int8);successful=failed_tests
     else:
-        helpless = np.isin(defender_state.condition[active], (KNOCKED_DOWN, PARALYZED))
+        condition = defender_state.condition[active]
+        helpless = (condition == KNOCKED_DOWN) | (condition == PARALYZED)
         automatic = context.automatic | helpless
         rolls = np.zeros(active.size, dtype=np.int8)
         if (~automatic).any():
@@ -441,7 +446,8 @@ def _prepare_weapon_attack(attacker: CompiledFighter, defender: CompiledFighter,
             successful[chosen]=True
             rolls[chosen]=hit_target[chosen]
             attacker_state.mark_of_old_ones_used[active[chosen]]=True
-    hit_rows = active[successful]
+    hit_positions = np.flatnonzero(successful)
+    hit_rows = active[hit_positions]
     defender_state.hit_this_phase[hit_rows] = True
     if has(defender.global_effects,"mechanic.spider-infested"):
         missed=active[~successful]
@@ -449,8 +455,14 @@ def _prepare_weapon_attack(attacker: CompiledFighter, defender: CompiledFighter,
         attacker_state.initiative_floor[missed]=0
     return PreparedAttack(
         weapon, effect, active, strength, armour_strength, hit_target,
-        rolls, hit_rows, rerolled, natural,
+        rolls, hit_rows, rerolled, natural, hit_positions,
     )
+
+def _hit_positions(prepared: PreparedAttack) -> np.ndarray:
+    """Index of each of ``prepared.hit_rows`` inside ``prepared.active``."""
+    if prepared.hit_positions is not None:
+        return prepared.hit_positions
+    return np.searchsorted(prepared.active, prepared.hit_rows)
 
 def _apply_hit_defences(
     attacker: CompiledFighter, defender: CompiledFighter, prepared: PreparedAttack,
@@ -1608,7 +1620,7 @@ def resolve_attacks(attacker: CompiledFighter, defender: CompiledFighter, rows: 
         index = 0
         while index < len(prepared_attacks):
             prepared = prepared_attacks[index]
-            positions = np.searchsorted(prepared.active, prepared.hit_rows)
+            positions = _hit_positions(prepared)
             sixes = positions[(prepared.natural[positions] if prepared.natural is not None
                            else prepared.rolls[positions]) == 6]
             if sixes.size:
@@ -1629,7 +1641,7 @@ def resolve_attacks(attacker: CompiledFighter, defender: CompiledFighter, rows: 
     positions_by_attack: list[np.ndarray] = []
     can_parry_six = has(defender.global_effects, "rule.blood-dragon-sword-master")
     for attack_index,prepared in enumerate(prepared_attacks):
-        positions=np.searchsorted(prepared.active,prepared.hit_rows)
+        positions=_hit_positions(prepared)
         positions_by_attack.append(positions)
         values=prepared.rolls[positions]
         natural=(prepared.natural[positions]
@@ -1685,7 +1697,7 @@ def resolve_attacks(attacker: CompiledFighter, defender: CompiledFighter, rows: 
             surviving,_=_apply_hit_defences(
                 attacker,defender,prepared,attacker_state,defender_state,rng,charging,parry_rows
             )
-            defended.append(replace(prepared,hit_rows=surviving))
+            defended.append(replace(prepared,hit_rows=surviving,hit_positions=None))
         prepared_attacks=defended
         # The oracle replaces exactly attacks 0 and 1 (``weapons[:2]``): a row
         # qualifies only when both of those first two attacks still have a
@@ -1709,7 +1721,7 @@ def resolve_attacks(attacker: CompiledFighter, defender: CompiledFighter, rows: 
                 replaced_attack_indices.add(attack_index)
             hug_rows.append(row)
         prepared_attacks=[
-            replace(prepared,hit_rows=prepared.hit_rows[~removed])
+            replace(prepared,hit_rows=prepared.hit_rows[~removed],hit_positions=None)
             for prepared,removed in zip(prepared_attacks,remove)
         ]
         if hug_rows:

@@ -11,7 +11,7 @@ from mordheim_core.effects import merge_effects
 from mordheim_core.models import CompiledFighter, EffectSet
 from mordheim_combat.vectorized._state import STAT_ATTRIBUTES, require_characteristics
 from mordheim_combat.vectorized._types import (
-    CombatState, KNOCKED_DOWN, OUT, PARALYZED, STANDING, STUNNED, _parry_capacity, has,
+    CombatState, KNOCKED_DOWN, OUT, PARALYZED, STANDING, STUNNED, _parry_capacity, fighter_memo, has,
 )
 
 #: Ordering placeholder for a profile that prints no Initiative (the
@@ -741,44 +741,47 @@ def hit_reroll(
         or has(effect, "mechanic.hatred-slavers") and "identity.slaver" in enemy_tags
         or has(effect, "mechanic.amazon-isolationists") and amazon_enemy
     )
-    kindred_rows = first_round and ~frenzy & kindred
-    imposed_rows = first_round & imposed_hatred
-    charge_rows = first_round & charge
-    mask = (
-        np.full(size, bool(effect.reroll_hits), dtype=bool)
-        | np.full(size, bool(first_round and has(effect, "mechanic.first-round-hit-reroll")), dtype=bool)
-        | np.full(size, bool(pride), dtype=bool)
-        | (charge_rows & bool(effect.charge_reroll_hits))
-        | (charge & has(effect, "rule.berserk-charge") & any(
-            has(weapon, tag) for tag in (
-                "weapon.axe", "weapon.dwarf-axe", "weapon.double-handed-weapon",
-            )))
-        | np.asarray(hatred, dtype=bool)
-        | np.full(size, bool(first_round and has(effect, "mechanic.devoted-killer-hatred")
-                             and has(effect, "condition.devoted-killer-hatred")), dtype=bool)
-        | kindred_rows
-        | imposed_rows
-        # Infallible rerolls on any charge, not only the first round's
-        # (modular ``_hit_reroll``: ``charging and skill.infallible``).
-        | (charge & has(effect, "skill.infallible"))
-        | (charge_rows & has(effect, "skill.axe-expert") & any(
-            has(weapon, tag) for tag in ("weapon.axe", "weapon.dwarf-axe")))
-        | (charge_rows & has(effect, "skill.expert-swordsman") & any(
-            has(weapon, tag) for tag in ("weapon.sword", "weapon.weeping-blades")))
-        # Crack Shot is first-round-only but does not require the charge
-        # (modular: ``first_round and skill.crack-shot`` with a pistol).
-        | np.full(size, bool(first_round and has(effect, "skill.crack-shot") and any(
-            has(weapon, tag) for tag in ("weapon.pistol", "weapon.duelling-pistol"))), dtype=bool)
-        | (charge & has(attacker.global_effects, "dagger_master") & any(
-            has(weapon, tag) for tag in ("weapon.dagger", "weapon.yambiya")))
-        | np.full(size, bool(has(effect, "skill.weapons-of-the-north") and any(
-            has(weapon, tag) for tag in (
-                "weapon.axe", "weapon.dwarf-axe", "weapon.double-handed-weapon"))), dtype=bool)
-        | np.full(size, bool(first_round and has(effect, "skill.duellist")), dtype=bool)
-        | np.full(size, bool(has(effect, "skill.virtue-of-valour")
-                            and defender.characteristics.strength > attacker.characteristics.strength),
-                 dtype=bool)
-    )
+    # The reroll mask is an OR of whole-batch grants and per-row grants.  Any
+    # whole-batch grant rerolls every row; otherwise only the per-row terms
+    # whose fighter-level gate holds are OR-ed in, instead of materialising
+    # every term at full width.
+    if (bool(effect.reroll_hits)
+            or (first_round and has(effect, "mechanic.first-round-hit-reroll"))
+            or bool(pride)
+            or (np.ndim(hatred) == 0 and bool(hatred))
+            or (first_round and has(effect, "mechanic.devoted-killer-hatred")
+                and has(effect, "condition.devoted-killer-hatred"))
+            or bool(first_round & imposed_hatred)
+            # Crack Shot is first-round-only but does not require the charge
+            # (modular: ``first_round and skill.crack-shot`` with a pistol).
+            or (first_round and has(effect, "skill.crack-shot") and any(
+                has(weapon, tag) for tag in ("weapon.pistol", "weapon.duelling-pistol")))
+            or (has(effect, "skill.weapons-of-the-north") and any(
+                has(weapon, tag) for tag in (
+                    "weapon.axe", "weapon.dwarf-axe", "weapon.double-handed-weapon")))
+            or (first_round and has(effect, "skill.duellist"))
+            or (has(effect, "skill.virtue-of-valour")
+                and defender.characteristics.strength > attacker.characteristics.strength)):
+        return np.ones(size, dtype=bool)
+    mask = np.zeros(size, dtype=bool)
+    if np.ndim(hatred):
+        mask |= hatred
+    if first_round and kindred:
+        mask |= ~frenzy
+    if ((first_round and effect.charge_reroll_hits)
+            or (has(effect, "rule.berserk-charge") and any(
+                has(weapon, tag) for tag in (
+                    "weapon.axe", "weapon.dwarf-axe", "weapon.double-handed-weapon")))
+            # Infallible rerolls on any charge, not only the first round's
+            # (modular ``_hit_reroll``: ``charging and skill.infallible``).
+            or has(effect, "skill.infallible")
+            or (first_round and has(effect, "skill.axe-expert") and any(
+                has(weapon, tag) for tag in ("weapon.axe", "weapon.dwarf-axe")))
+            or (first_round and has(effect, "skill.expert-swordsman") and any(
+                has(weapon, tag) for tag in ("weapon.sword", "weapon.weeping-blades")))
+            or (has(attacker.global_effects, "dagger_master") and any(
+                has(weapon, tag) for tag in ("weapon.dagger", "weapon.yambiya")))):
+        mask |= charge
     return mask
 
 
@@ -835,16 +838,24 @@ def hit_context(
     ws = attacker_state.weapon_skill[rows].astype(np.int16) + weapon.weapon_skill_bonus
     if first_round:
         ws = ws + charge.astype(np.int16) * effect.charge_ws_bonus
+    # int64 from the start: the adjustments below always promoted the int16
+    # seed to int64 (``np.where`` of Python ints), and several of them run
+    # unconditionally, so the returned dtype and values are unchanged.
     modifier = np.full(
         size, effect.hit_modifier + defender.global_effects.incoming_hit_modifier,
-        dtype=np.int16,
+        dtype=np.int64,
     )
 
     def adjust(condition, points: int = 1) -> None:
-        nonlocal modifier
-        modifier = modifier + np.where(
-            np.broadcast_to(np.asarray(condition, dtype=bool), (size,)), points, 0,
-        )
+        # A scalar condition adds to every row or to none; a per-row one only
+        # where it holds.  Adding zero is skipped, which cannot change a value.
+        if np.ndim(condition) == 0:
+            if condition:
+                modifier[...] += points
+            return
+        condition = np.asarray(condition, dtype=bool)
+        if condition.any():
+            modifier[np.broadcast_to(condition, (size,))] += points
 
     if melee_attack and has(defender.global_effects, "condition.hypnotized"):
         adjust(True)
@@ -1289,6 +1300,7 @@ def special_save_context(
     )
 
 
+@fighter_memo
 def parry_capacity(fighter: CompiledFighter) -> int:
     """Port of ``modular.state._parry_capacity`` (both skill grants included)."""
     effects = fighter.global_effects

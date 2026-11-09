@@ -59,7 +59,9 @@ def resolve_alchemist(
 
     Called once at the start of this fighter's own turn, never the opponent's.
     """
-    if rows.size == 0:
+    # Both branches below select rows only for a fighter carrying their tag.
+    if rows.size == 0 or not (has(fighter.global_effects, BACKLEY)
+                              or has(fighter.global_effects, ADDICTED)):
         return
     alive = rows[state.condition[rows] != OUT]
     if alive.size == 0:

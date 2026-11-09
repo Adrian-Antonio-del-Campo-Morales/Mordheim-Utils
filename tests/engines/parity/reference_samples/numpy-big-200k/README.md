@@ -61,7 +61,9 @@ python tools/mordheim-utils.py check samples compare --backend numpy --reference
     --reference-store tests/engines/parity/reference_samples/numpy-big-200k
 ```
 
-Every row should read `identical counts`. A revision that
+Every row must be approved, and every chunk's `first`/`second`/`unresolved`
+counts must equal the stored ones (the gate alone tolerates sampling noise, so
+check the counts directly). A revision that
 deliberately changes the dice streams cannot be read with this store at all: it
 needs a fresh oracle-backed campaign, not a self-comparison.
 

@@ -1,84 +1,76 @@
 # Project backlog
 
-Track unresolved defects, verification work and deferred capabilities here.
-Procedures belong in the linked guides; current counts and execution details
-belong in maintained inventories and generated reports. Historical passes do
-not certify the current tree, and unverified reports are not confirmed defects.
-
-## Work overview
-
-| Work | Current disposition | Next step |
-| --- | --- | --- |
-| Modular integration | Implementation received; strict E2E completeness remains unconfirmed | Check the live coverage inventory before claiming global closure. |
-| Optimized engines | Last recorded 43-scenario campaign at 100k duels: NumPy 43/43 on 2026-11-02 and Native 43/43 on 2026-11-03; later rule changes have focused checks only | Qualify the current revision against Modular, checking reference provenance and affected inputs first. |
-| E2E statistical parity | Native: 0 of 2,678 divergent in an uncommitted re-sample against the stored Modular oracle; NumPy: 1 divergent in its stored store | Verify and commit the Native changes, refresh the Native store, fix NumPy's divergence and settle oracle provenance. |
+Unresolved defects, verification work and deferred capabilities. Procedures
+belong in the linked guides; counts and execution details belong in generated
+reports. A historical pass does not certify the current tree.
 
 ## Modular integration and E2E coverage
 
-The user reports the modular checks green after removal of obsolete assertions
-that optimized backends must reject supported rules. Construction expectations
-were also updated for the native port. Neither result establishes full E2E
-coverage or optimized-engine equivalence.
-
-The last recorded strict E2E inventory (2026-10-21) had 27 identities with no
-scenario and 44 with uncovered clauses. These are historical counts, not a
-current measurement. Check `tests/integration/e2e/` and
-`MORDHEIM_E2E_REQUIRE_COMPLETE=1` before closing that verification work.
-Preserve the accepted-evidence non-regression baseline and clause identities;
-read current pending clauses through `python -X utf8 tools/knowledge/clause_registry.py query --pending`.
-
-Completion requires the applicable integrated checks and strict E2E coverage
-on the delivered revision. Follow the
-[verification reference](docs/reference/verification.md#modular-integration-closure).
-Do not rerun unaffected suites solely to refresh this backlog.
+Strict E2E coverage of the modular oracle is unconfirmed. Close it with
+`MORDHEIM_E2E_REQUIRE_COMPLETE=1` over `tests/integration/e2e/` on the delivered
+revision, preserving the accepted-evidence baseline and clause identities.
+Pending clauses: `python -X utf8 tools/knowledge/clause_registry.py query --pending`.
+See the [verification reference](docs/reference/verification.md#modular-integration-closure).
 
 ## Web projection verification
 
-Verify Dwarf inheritance in the generated web projection. Close with
-artefact-level evidence for `outputs/web-public/knowledge/knowledge-web.json`.
-Generate the artefact with `python tools/knowledge/generate_knowledge_web.py`
-if absent; do not hand-edit generated JSON.
+Verify Dwarf inheritance in the generated web projection, with evidence from
+`outputs/web-public/knowledge/knowledge-web.json` (generate it with
+`python tools/knowledge/generate_knowledge_web.py`; never hand-edit it).
 
 ## Combat Lab checklist popover closes during layout
 
-Reproduce the unverified report of `TclError: bad window path name` after
-`root.update()` in `tests/applications/combat_lab/ui/test_checklist_popover.py`:
-
-- `test_popover_body_matches_the_dark_theme`;
-- `test_popover_shows_a_visible_scrollbar`.
-
-Determine whether widget lifecycle or test focus setup destroys the popover.
-Close when both cases pass with theme, width and scrollbar assertions preserved.
+Unverified report of `TclError: bad window path name` after `root.update()` in
+`tests/applications/combat_lab/ui/test_checklist_popover.py`
+(`test_popover_body_matches_the_dark_theme`,
+`test_popover_shows_a_visible_scrollbar`). Determine whether widget lifecycle
+or test focus setup destroys the popover; close when both pass with their
+theme, width and scrollbar assertions intact.
 
 ## Optimized-backend verification
 
-The NumPy and Native implementations are integrated in the current tree.
-Do not reopen their completed ports from obsolete October admission counts.
-Implementation, focused rule tests and large-sample parity are distinct claims.
+Qualify NumPy and Native separately against the modular oracle. Native was
+ported from NumPy, so agreement between the two never exonerates a deviation
+they share. Keep tolerances and reference provenance intact; procedures are in
+the [verification reference](docs/reference/verification.md).
 
-The last recorded 43-scenario campaigns passed at 100,000 duels per scenario
-against stored Modular references. Those results predate subsequent rule
-changes and do not certify the current tree. Keep tolerances and reference
-provenance intact. Qualify NumPy and Native separately; Native was ported
-from the NumPy engine, so agreement between the two candidates never
-exonerates a deviation they share — only the modular oracle does.
+- **Native.** Run the native runtime and deterministic replay selections
+  (`tests/engines/native/`): attack-event gating, pool allocation and Rapier
+  Barrage touch the replay paths. Then requalify `--scenarios big` against
+  `modular-100k` and re-sample `native-e2e-100k` from a clean commit.
+- **NumPy stored E2E sample.** `numpy-e2e-100k` predates the current engine.
+  Re-sample it from a clean commit (the current engine passes every E2E
+  delivery against `modular-e2e-100k` at 20,000 duels, including the Raging
+  Peasants fist case that diverged in the stored sample).
+- **Systematic E2E offset.** Every NumPy E2E delivery passes the six-sigma
+  gate, yet the rates lean one way: over the 1,815 distinct inputs the
+  first-win z-scores average about +0.2 and the unresolved ones about +0.9
+  against `modular-e2e-100k`. The per-case z-scores share one seed, so their
+  mean is less significant than it looks. Determine whether this is an engine
+  difference or the oracle-provenance problem below.
+- **Oracle provenance.** The stored modular samples carry a source digest that
+  matches no commit, and modular commits followed them. Confirm which inputs
+  those commits can affect, or regenerate the affected samples with
+  authorization, before claiming current-engine certification.
+- **Survivor condition (NumPy).** Campaigns compare the winner only. On
+  `scenario/stateful` (20,000 duels) the winner of a decided duel is not
+  Standing in 1.56 % of duels for Modular and 1.98 % for NumPy. Decide whether
+  this is an ordering difference in the deciding round, and whether the
+  terminal condition should become a compared magnitude.
+- **Portable native digests.** `.pyx` and `.pxd` files have no line-ending rule
+  in `.gitattributes`, so Windows and Linux checkouts of one commit produce
+  different native digests and spurious provenance warnings.
+- **Rejected E2E deliveries.** 2,485 deliveries never run: 1,491 need
+  `initial_state` overrides or auxiliary participants the shared runner cannot
+  express, 530 prescribe scripted decisions and 464 are expected construction
+  refusals. The first two groups stay uncertified until the runner supports
+  them.
 
-Use the [verification reference](docs/reference/verification.md) for campaign procedures.
-
-## Condition of the survivor of a decided duel (NumPy)
-
-The statistical campaign compares the `winner` magnitude only, so the
-condition each duel ends on is uncertified. Measured on `scenario/stateful`,
-20,000 duels, the winner of a decided duel is not Standing in 1.56 % of them
-for Modular and 1.98 % for NumPy. The NumPy engine used to report 0.01 %
-because it kept recovering a duelist whose opponent was already out of
-action; gating that recovery on `unresolved` removed the bulk of the
-difference and left this remainder.
-
-Decide whether the remaining gap is a real ordering difference inside the
-round that decides the duel, and whether the comparison should cover the
-terminal condition as its own magnitude. A `winner` campaign passing 43/43
-does not close this.
+Stored samples live in `tests/engines/parity/reference_samples/` (seed 2026,
+50 rounds for E2E). Compare without running either engine:
+`python tools/mordheim-utils.py check samples compare --scenarios e2e
+--backend <numpy|native> --store <candidate> --reference-store <modular store>`.
+Running the modular engine requires explicit authorization.
 
 ## Knowledge gaps
 
@@ -91,48 +83,7 @@ does not close this.
 
 See the [knowledge-base reference](docs/reference/knowledge-base.md),
 [campaign knowledge guide](docs/guides/campaign-knowledge.md) and
-[web presentation conventions](docs/reference/web-presentation.md).
-
-Scope changes are governed by
+[web presentation conventions](docs/reference/web-presentation.md). Scope
+changes are governed by
 [`runtime-scope.yaml`](sources/knowledge/registry/runtime-scope.yaml);
 accepted decisions belong in [Design rulings](docs/decisions/design-rulings.md).
-
-## E2E statistical parity, Modular vs optimized backends
-
-The decision data lives in `tests/engines/parity/reference_samples/`:
-`modular-e2e-100k` is the oracle, `numpy-e2e-100k` and `native-e2e-100k` are
-the candidates (seed 2026, 100,000 duels per scenario in 10,000-duel chunks,
-50 rounds, six-sigma winner gate). Compare stored stores without running
-either engine with `python tools/mordheim-utils.py check samples compare
---scenarios e2e --backend <numpy|native> --store <candidate store>
---reference-store <modular store>`; re-sample candidates with `sample --backend
-<numpy|native>`. Running the Modular engine requires explicit authorization.
-
-Remaining certification work:
-
-- **Verify the Native E2E changes.** Run the native runtime and deterministic
-  replay selections (`tests/engines/native/`) on the changed engine; the
-  attack-event gating, pool allocation and Rapier Barrage changes touch the
-  replay paths.
-- **Refresh the Native store.** Re-sample `native-e2e-100k` from a clean commit
-  containing those changes and compare it with the oracle; the committed store
-  still holds the earlier candidate.
-- **Requalify the 43 precompiled scenarios.** Native changed after its last
-  43/43 campaign; re-sample `--scenarios big` and compare with `modular-100k`.
-- **Refresh NumPy's stored fist sample.** After committing the fix, re-sample
-  `profile.fist` for the Battle Monks of Cathay Raging Peasants
-  (`the-fist-does-not-grant-the-enemy-the-dagger-save-bonus`) from a clean
-  checkout, compare it with the stored Modular oracle and update
-  `numpy-e2e-100k`.
-- **Settle oracle provenance.** The stored Modular samples carry a source
-  digest that matches no commit, and two Modular commits followed them. Confirm
-  which inputs those commits can affect, or regenerate the affected oracle
-  samples with authorization, before claiming current-engine certification.
-- **Make native digests portable.** `.pyx` and `.pxd` files have no explicit
-  line-ending rule in `.gitattributes`, so Windows and Linux checkouts of the
-  same commit produce different native engine digests and spurious provenance
-  warnings.
-- **Cover the rejected deliveries.** 2,485 deliveries never run: 1,491 need
-  `initial_state` overrides or auxiliary participants the shared runner cannot
-  express, 530 prescribe scripted decisions, and 464 are expected construction
-  refusals. The first two groups are uncertified until the runner supports them.

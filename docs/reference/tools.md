@@ -542,7 +542,8 @@ python tools/mordheim-utils.py check samples status --scenarios big --store outp
 `--reference` chooses what the candidate is judged against. `modular` is the
 oracle. `numpy` with `--backend numpy` compares the engine with its own earlier
 sample in `--reference-store`: the same seed and batch draw the same duels, so a
-change meant to preserve results must report `identical counts` on every row.
+change meant to preserve results must leave every stored chunk count equal.
+The six-sigma gate only approves; compare the records' chunk counts for equality.
 `--backend native --reference numpy` cross-checks the native port; native was
 ported from NumPy, so their agreement never exonerates a shared deviation —
 only the oracle does.

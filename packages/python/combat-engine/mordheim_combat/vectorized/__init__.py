@@ -96,4 +96,8 @@ from mordheim_combat.vectorized._driver import (
     simulate_batch_observed,
     simulate_duel,
     simulate_duel_parallel,
+    PARALLEL_MIN_PART,
+    ParallelUnit,
+    parallel_plan,
+    run_parallel_units,
 )

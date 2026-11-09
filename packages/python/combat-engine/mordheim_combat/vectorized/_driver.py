@@ -695,7 +695,10 @@ def _tentacle_forfeit(attacker: CompiledFighter, defended: EffectSet,
     hand_forfeits = np.full(attacks.size, -1, dtype=np.int16)
     whip_forfeits = np.zeros(attacks.size, dtype=bool)
     extra_forfeits = np.full(attacks.size, -1, dtype=np.int16)
-    if rows.size == 0:
+    # Without a grappling defender no row is ever eligible (see ``eligible``
+    # below), and nothing before that test draws dice or changes state.
+    if (rows.size == 0 or not has(defended, "rule.tentacle-grapple")
+            or defended.incoming_attacks_modifier >= 0):
         return hand_forfeits, whip_forfeits, extra_forfeits
     extras = _pool_extra_weapons(attacker, charging, rows)
     whip = np.asarray(whip_rows, dtype=bool)
@@ -940,11 +943,14 @@ def _apply_djinn_power(fighter: CompiledFighter, power: np.ndarray,
     or ``None`` when there is nothing left to do.
     """
     selected = np.asarray(active, dtype=bool)
-    if not selected.any():
+    # No declared power anywhere (every fighter without the Djinn) is the
+    # uniform "0" case below; min == max decides uniformity without a sort.
+    if not selected.any() or not power.any():
         return fighter, None
-    values = np.unique(power[selected])
-    if values.size == 1:
-        value = int(values[0])
+    declared = power[selected]
+    low, high = declared.min(), declared.max()
+    if low == high:
+        value = int(low)
         return (fighter, None) if value == 0 else (_with_djinn_power(fighter, value), None)
     return fighter, selected & (power != 0)
 
@@ -1790,9 +1796,9 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
         # decided the oracle stops resolving it, so its survivor must keep the
         # condition it ended on instead of standing up in later rounds.
         netted1 = (unresolved & state1.netted & first_player_turn
-                   & np.isin(state1.condition, (STANDING, KNOCKED_DOWN)))
+                   & ((state1.condition == STANDING) | (state1.condition == KNOCKED_DOWN)))
         netted2 = (unresolved & state2.netted & ~first_player_turn
-                   & np.isin(state2.condition, (STANDING, KNOCKED_DOWN)))
+                   & ((state2.condition == STANDING) | (state2.condition == KNOCKED_DOWN)))
         state1.netted[netted1] = False
         state2.netted[netted2] = False
         state1.condition[netted1] = KNOCKED_DOWN
@@ -2700,9 +2706,22 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             whip1_scores = whip1_scores + _tie_break(whip1_ties, rng)
         if whip2_ties.any():
             whip2_scores = whip2_scores + _tie_break(whip2_ties, rng)
-        event_scores = np.stack((
-            p1.astype(np.int32) * 100 + i1 + (priority_tie & first_acts),
-            p2.astype(np.int32) * 100 + i2 + (priority_tie & ~first_acts),
+        pool1_score = (p1.astype(np.int32) * 100 + i1 + (priority_tie & first_acts)).astype(np.int32)
+        pool2_score = (p2.astype(np.int32) * 100 + i2 + (priority_tie & ~first_acts)).astype(np.int32)
+        bonus_events = (whip1_rows, whip2_rows, shifty1, shifty2,
+                        strike1_rows, strike2_rows, stomp1_rows, stomp2_rows)
+        if not any(np.any(mask) for mask in bonus_events):
+            # Only the two pools are scheduled (the common duel): the stable
+            # descending order of two scores puts pool 0 first on a tie, so one
+            # comparison reproduces the sorted order without the 10-row stack.
+            first_pool_first = pool1_score >= pool2_score
+            event_order = np.stack((np.where(first_pool_first, 0, 1),
+                                    np.where(first_pool_first, 1, 0)))
+        else:
+            event_order = None
+        event_scores = None if event_order is not None else np.stack((
+            pool1_score,
+            pool2_score,
             whip1_scores,
             whip2_scores,
             np.where(shifty1, np.maximum(1, sp1.astype(np.int32)) * 100 + i1
@@ -2714,7 +2733,14 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             np.where(stomp1_rows, p1.astype(np.int32) * 100 + i1, -10000),
             np.where(stomp2_rows, p2.astype(np.int32) * 100 + i2, -10000),
         )).astype(np.int32)
-        event_order = np.argsort(-event_scores, axis=0, kind="stable")
+        # Only events some row actually schedules take part in the order.  An
+        # absent event holds the -10000 placeholder on every row, so it sorts
+        # after every scheduled entry (all of which score above it) and its
+        # rows are never selected: dropping it keeps each scheduled entry's
+        # position and the processing order, and skips the empty iterations.
+        if event_order is None:
+            present = np.flatnonzero((event_scores != -10000).any(axis=1))
+            event_order = present[np.argsort(-event_scores[present], axis=0, kind="stable")]
         whip1_fighter = (
             replace(attack_first, main_weapon=whip1, off_hand=None,
                     off_hand_attacks=False, extra_attacks=())
@@ -2767,8 +2793,7 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
                     observations=observations, single_bonus=True)
         attacked_this_round1 = np.zeros(count, dtype=bool)
         attacked_this_round2 = np.zeros(count, dtype=bool)
-        for event_index in range(10):
-            event = event_order[event_index]
+        for event in event_order:
             rows_first = np.flatnonzero(
                 unresolved & allocated1 & (state1.condition == STANDING)
                 & (event == 0) & ((ordinary_attacks1 > 0)
@@ -3131,16 +3156,108 @@ def batch_segment(first: CompiledFighter, second: CompiledFighter,
 _run_batch_segment = batch_segment
 
 
-def simulate_duel_parallel(request: DuelRequest, *,
-                           workers: int | None = None) -> DuelResult:
-    """Bit-for-bit parallel equivalent of the NumPy driver.
+# Parallel work units decoupled from the batch size.
+# ``batch_segment`` can only hand whole batches to workers, so a sample of one
+# or two batches (the default NumPy batch is 100,000 duels) could use at most
+# one or two processes.  ``parallel_plan`` keeps whole batches whenever there
+# are at least as many batches as workers -- then the pooled totals are the
+# sequential ones bit for bit -- and otherwise splits every batch into equal
+# parts, each simulated on its own independent stream.  A split sample is a
+# different but statistically equivalent sample of the same duel: it depends
+# only on (seed, simulations, batch size, workers), never on scheduling, so a
+# rerun with the same arguments reproduces it exactly.
 
-    The sample is partitioned along whole batches (each batch has its own
-    stream derived from the seed), so any worker split reproduces the
-    sequential ``simulate_duel(backend="numpy")`` totals exactly.  Processes
-    are required because the NumPy hot loops hold the GIL.  ``workers``
-    defaults to the machine's core count and is capped at the number of
-    batches; ``cancel_event`` is honoured between completed segments.
+#: Narrowest part ``parallel_plan`` cuts a batch into.  Per-core throughput
+#: falls steeply with batch width (at 12,500 duels a core runs 0.37-0.71 of
+#: its 100,000-duel rate on the 43 precompiled scenarios), so narrower parts
+#: would spend more than an extra worker returns.
+PARALLEL_MIN_PART = 12_500
+
+#: Domain separator of the split streams: no split part can reproduce a
+#: canonical batch stream (``default_rng(seed)`` / ``_batch_seed``).
+_SPLIT_STREAM_TAG = 0x53504C4954  # "SPLIT"
+
+
+@dataclass(frozen=True, slots=True)
+class ParallelUnit:
+    """One process-pool work unit: a whole batch or one part of a batch.
+
+    ``parts == 1`` is the canonical batch ``batch_index`` (its usual stream);
+    otherwise this is part ``part`` of that batch cut into ``parts`` pieces.
+    """
+
+    batch_index: int
+    parts: int
+    part: int
+    count: int
+
+
+def parallel_plan(simulations: int, batch_size: int,
+                  workers: int) -> tuple[ParallelUnit, ...]:
+    """Work units for ``workers`` processes, at most ``workers`` of them when split.
+
+    With at least as many batches as workers every unit is a whole batch.
+    Otherwise each batch is cut into ``workers // batches`` equal parts, never
+    narrower than ``PARALLEL_MIN_PART``; a batch too small to cut stays whole.
+    """
+    if workers < 1:
+        raise ValueError("workers must be positive")
+    sizes = batch_plan(simulations, batch_size)
+    split = workers // len(sizes) if 0 < len(sizes) < workers else 1
+    units = []
+    for index, size in enumerate(sizes):
+        parts = max(1, min(split, size // PARALLEL_MIN_PART))
+        base, extra = divmod(size, parts)
+        units.extend(ParallelUnit(index, parts, part, base + (part < extra))
+                     for part in range(parts))
+    return tuple(units)
+
+
+def _unit_rng(seed: int, unit: ParallelUnit) -> np.random.Generator:
+    """The unit's stream: the canonical batch stream, or an independent split one."""
+    if unit.parts == 1:
+        return np.random.default_rng(
+            seed if unit.batch_index == 0 else _batch_seed(seed, unit.batch_index))
+    return np.random.default_rng(np.random.SeedSequence((
+        int(seed) & 0xFFFFFFFFFFFFFFFF, unit.batch_index, unit.parts, unit.part,
+        _SPLIT_STREAM_TAG,
+    )))
+
+
+def run_parallel_units(first: CompiledFighter, second: CompiledFighter,
+                       units: tuple[ParallelUnit, ...], seed: int, maximum_rounds: int,
+                       decisions: DecisionPolicy | None,
+                       context: DuelContext | None = None) -> tuple[int, int, int]:
+    """Process-pool entry point: simulate ``units`` and return their summed totals."""
+    first_wins = second_wins = unresolved = 0
+    for unit in units:
+        x, y, z = simulate_batch(first, second, unit.count, _unit_rng(seed, unit),
+                                 maximum_rounds, decisions, context=context)
+        first_wins += x
+        second_wins += y
+        unresolved += z
+    return first_wins, second_wins, unresolved
+
+
+def simulate_duel_parallel(request: DuelRequest, *,
+                           workers: int | None = None,
+                           executor=None) -> DuelResult:
+    """Run one NumPy sample over a process pool, splitting batches when needed.
+
+    The work follows ``parallel_plan``: with at least as many batches as
+    workers it is the sequential batch plan, split along whole batches, so
+    the totals equal ``simulate_duel(backend="numpy")`` bit for bit.  With
+    fewer batches than workers each batch is cut into independent parts so
+    every worker has work; the totals are then a statistically equivalent
+    sample, reproducible for the same seed, simulations, batch size and
+    ``workers``.  Processes are required because the NumPy hot loops hold the
+    GIL.  ``workers`` defaults to the machine's core count (or to the
+    ``executor``'s size); ``cancel_event`` is honoured between completed units.
+
+    ``executor`` is an optional caller-owned ``ProcessPoolExecutor`` reused
+    across calls: starting a pool costs about as much as a cheap 100k-duel
+    sample, so callers running many samples should share one.  It is never
+    shut down here.
     """
     from concurrent.futures import ProcessPoolExecutor
     from concurrent.futures import as_completed
@@ -3148,27 +3265,34 @@ def simulate_duel_parallel(request: DuelRequest, *,
 
     from mordheim_combat.kernel import require_optimized_support
     require_optimized_support(request.first, request.second, backend="numpy")
-    sizes = _batch_sizes(request.simulations, request.batch_size)
-    total = len(sizes)
-    available = workers if workers is not None else os.cpu_count() or 1
-    workers_used = max(1, min(available, total))
-    base, extra = divmod(total, workers_used)
-    segments = []
+    if workers is not None:
+        available = workers
+    elif executor is not None:
+        available = getattr(executor, "_max_workers", None) or os.cpu_count() or 1
+    else:
+        available = os.cpu_count() or 1
+    units = parallel_plan(request.simulations, request.batch_size, max(1, available))
+    workers_used = max(1, min(available, len(units)))
+    # Contiguous groups of units, as even as possible: whole batches keep the
+    # historical segmentation; split parts are one unit per worker.
+    base, extra = divmod(len(units), workers_used)
+    groups = []
     start = 0
     for index in range(workers_used):
         count = base + (1 if index < extra else 0)
-        segments.append((start, start + count))
+        groups.append(units[start:start + count])
         start += count
     first_wins = second_wins = unresolved = 0
-    with ProcessPoolExecutor(max_workers=workers_used) as pool:
+    owned = executor is None
+    pool = ProcessPoolExecutor(max_workers=workers_used) if owned else executor
+    try:
         futures = [
             pool.submit(
-                _run_batch_segment, request.first, request.second,
-                start, stop, request.simulations, request.batch_size,
+                run_parallel_units, request.first, request.second, group,
                 request.seed, request.maximum_rounds,
                 request.decision_policy, request.context,
             )
-            for start, stop in segments
+            for group in groups
         ]
         try:
             for future in as_completed(futures):
@@ -3181,6 +3305,9 @@ def simulate_duel_parallel(request: DuelRequest, *,
         finally:
             for future in futures:
                 future.cancel()
+    finally:
+        if owned:
+            pool.shutdown(wait=True, cancel_futures=True)
     return DuelResult(first_wins, second_wins, unresolved, request.simulations)
 
 def simulate_duel(request: DuelRequest, *, backend: str = "auto") -> DuelResult:
