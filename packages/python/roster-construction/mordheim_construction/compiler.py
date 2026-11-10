@@ -1388,7 +1388,12 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
             extra_attacks.append(extra)
         elif build.extra_hand_id in {"defence.shield", "defence.buckler", "defence.kite-shield"}:
             global_effects=merge_effects(global_effects, extra)
-            if "band--mutations-extra-arm" in build.special_rule_ids: extra_attacks.append(effects["weapon.natural-attacks"].effect)
+    # User ruling (2026-11-10): a Possessed gains the mutation's natural
+    # attack even when its extra arm holds nothing; a shield does not add twice.
+    if ("band--mutations-extra-arm" in build.special_rule_ids
+            and traits.get("creature_kind") == "possessed"
+            and not (build.extra_hand_id or "").startswith("weapon.")):
+        extra_attacks.append(effects["weapon.natural-attacks"].effect)
     if "band--sacred-mark-venom-glands" in build.special_rule_ids:
         main_effect=EffectSet(tags=("weapon.natural-attacks", "rule.venom-glands"), target_armour_bonus=1, injury_modifier=1)
         main_without_poison = None

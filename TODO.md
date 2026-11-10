@@ -76,6 +76,7 @@ Running the modular engine requires explicit authorization.
 
 | Follow-up | Completion condition |
 | --- | --- |
+| Implement the Sunstaff Lustria melee profile | Add the bearer-Strength profile without invented two-handed, +1 Strength or ignition properties, then reconnect its item/simulation mapping and pending register clause. Catalogue text is corrected; motor support remains pending by user decision (2026-11-10). Sunbolt shooting remains outside the duel. |
 | Resolve hireling `unresolved_references` | Replace references as canonical catalogues become available; keep genuinely unresolved links explicit. |
 | Define composite-entity schemas | Establish schemas before admitting multi-warrior, mounted or multi-persona Dramatis Personae. |
 | Make unsupported item-to-engine mappings explicit | Ensure catalogue presence cannot be mistaken for executable support. |

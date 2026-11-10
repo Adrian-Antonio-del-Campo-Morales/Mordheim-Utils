@@ -14,6 +14,23 @@ any adopted decision. New rule evidence belongs in modular mechanics and E2E tes
 
 ## Duel engine (modular oracle)
 
+- **Bone Helmets use the ordinary Helmet defence.** Both `bone_helmet` and
+  `bone_helmet_skink_priest_only` retain `mechanic_id: defence.helmet`; the latter
+  keeps its recipient restriction. This is an adopted equivalence, not an
+  independently printed bone-specific effect: the cited Lizardmen equipment
+  lists provide names and prices only. (User decision adopted 2026-11-10.)
+- **A Possessed with Extra Arm always gains one additional natural attack.**
+  It applies with an empty extra hand, shield or buckler, without double counting;
+  the Possessed cannot carry a weapon. A Mutant may instead use a one-handed
+  weapon for its additional attack, or hold a shield/buckler without an additional
+  attack. This resolves the antecedent of the Possessed sentence in
+  `cult-of-the-possessed/special-rules.yaml::band--mutations-extra-arm`.
+  (User clarification adopted 2026-11-10.)
+- **Sunstaff Lustria has no executable weapon profile until its own melee
+  profile is implemented.** Preserve its printed bearer-Strength melee profile
+  and Sunbolt text, remove the invented Brazier Iron mapping, and leave motor
+  support pending. Sunbolt shooting remains outside the duel.
+  (User decision adopted 2026-11-10.)
 - **Lancer is outside the duel scope.** Exclude the entire Knights Feats
   entry, including its mounted charge continuation, in Bretonnian Knights
   Errant, Bretonnian Brigands and Disciples of Maldred. Keep the printed

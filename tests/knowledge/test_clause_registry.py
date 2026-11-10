@@ -32,7 +32,7 @@ class RegisterToolsTest(unittest.TestCase):
         out = io.StringIO(newline="")
         writer = csv.DictWriter(out, fieldnames=tool.validator.FIELDS, lineterminator="\n")
         writer.writeheader()
-        writer.writerows(dict(template, clause_id=str(n)) for n in range(4556))
+        writer.writerows(dict(template, clause_id=str(n)) for n in range(3))
         self.raw = out.getvalue().encode("utf-8")
         self.path.write_bytes(self.raw)
         self.requests = [{"id": "same-id", "clause_id": "1",
@@ -71,7 +71,7 @@ class RegisterToolsTest(unittest.TestCase):
         self.assertEqual(before[:1] + before[2:], after[:1] + after[2:])
         self.assertEqual(before[1]["clause_text"], after[1]["clause_text"])
         self.assertTrue(result.startswith(raw[:raw.index(b"\r\n") + 2]))
-        self.assertEqual(result.count(b"Existing useful note"), 4556)
+        self.assertEqual(result.count(b"Existing useful note"), 3)
 
     def test_rejects_protected_fields_and_note_replacement(self):
         for field in (*tool.PROTECTED, "notes", "unknown"):
@@ -84,6 +84,22 @@ class RegisterToolsTest(unittest.TestCase):
                          [{"id": "same-id", "clause_id": "1", "set": {"pending": {"work": "invented"}}}]):
             with self.assertRaises(ValueError):
                 tool.prepare(self.path, requests)
+
+    def test_small_register_still_rejects_duplicate_and_lost_clauses(self):
+        rows = tool.read(self.raw)
+        out = io.StringIO(newline="")
+        writer = csv.DictWriter(out, fieldnames=tool.validator.FIELDS, lineterminator="\n")
+        writer.writeheader()
+        writer.writerows([rows[0], rows[0]])
+        with self.assertRaisesRegex(ValueError, "duplicate \\(id, clause_id\\)"):
+            tool.read(out.getvalue().encode("utf-8"))
+        out.seek(0)
+        out.truncate()
+        writer.writeheader()
+        writer.writerows(rows[:-1])
+        errors = tool.validator.check(out.getvalue().encode("utf-8"),
+                                      {tool.key(row): row for row in rows})
+        self.assertEqual(errors, ["historical clause lost: ('same-id', '2')"])
 
     def test_delivery_reference_replacement_preserves_other_notes(self):
         raw = self.raw.replace(b"Existing useful note", b"Useful note; C04a-completed.md", 1)

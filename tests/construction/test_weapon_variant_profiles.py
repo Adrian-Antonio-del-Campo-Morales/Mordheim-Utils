@@ -152,9 +152,9 @@ def test_the_sunstaff_is_the_missile_weapon_its_source_lists():
     """The Heroines list prints it under *Missile Weapons*, at Range 24.
 
     Nothing in the printed entry is a two-handed, Strength +1 or ignition
-    clause, so the `weapon.brazier-iron` equivalence is withdrawn.  The other
-    source's Lustria copy keeps its own record: this decision is not extended
-    to it.
+    clause, so the `weapon.brazier-iron` equivalence is withdrawn. The Lustria
+    variant has its own As User melee profile and Sunbolt, pending a matching
+    melee operator; it must not execute through Brazier Iron either.
     """
     staff = items()["sunstaff"]
     assert staff["kind"] == "ranged-weapon"
@@ -164,9 +164,12 @@ def test_the_sunstaff_is_the_missile_weapon_its_source_lists():
     assert mappings()["sunstaff"] == {"item_id": "sunstaff",
                                       "status": "out_of_scope"}
     lustria = items()["sunstaff_lustria"]
-    assert lustria["combat_status"] == "implemented"
-    assert lustria["mechanic_id"] == "weapon.brazier-iron"
-    assert mappings()["sunstaff_lustria"]["engine_option"] == "Brazier iron"
+    assert lustria["combat_status"] == "out_of_scope"
+    assert "mechanic_id" not in lustria
+    assert 'Range: 12"/Close Combat Strength: as user' in lustria["effect"]
+    assert "Sunbolt" in lustria["effect"] and "hits at Strength 4" in lustria["effect"]
+    assert mappings()["sunstaff_lustria"] == {"item_id": "sunstaff_lustria",
+                                             "status": "out_of_scope"}
 
 
 def test_the_sun_gauntlet_melee_half_is_the_off_hand_strength_four_attack():

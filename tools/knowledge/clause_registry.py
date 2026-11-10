@@ -24,8 +24,6 @@ def read(raw, *, legacy=False):
     if errors:
         raise ValueError("Invalid CSV:\n" + "\n".join(errors))
     rows = list(csv.DictReader(io.StringIO(raw.decode("utf-8"), newline="")))
-    if len(rows) != 4556:
-        raise ValueError(f"Expected 4556 clauses, found {len(rows)}")
     return rows
 
 

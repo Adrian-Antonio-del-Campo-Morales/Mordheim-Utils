@@ -206,14 +206,17 @@ def test_extra_arm_and_great_claw_enforce_their_printed_arm_rules():
         "cult-of-the-possessed", "mutants", extra_hand_id="defence.shield",
         special_rule_ids=("band--mutations-extra-arm",),
     ))
-    possessed = compile_fighter(build(
-        "cult-of-the-possessed", "the-possessed", extra_hand_id="defence.shield",
-        special_rule_ids=("band--mutations-extra-arm",),
-    ))
-    # Both alternative loadouts of the extra arm pay the extra attack, and the
-    # Possessed keeps his own 'never use weapons' restriction.
-    for fighter in (shield_arm, possessed):
-        assert any("weapon.natural-attacks" in attack.tags for attack in fighter.extra_attacks)
+    # A shield replaces the Mutant's weapon attack; only the Possessed gains
+    # the extra natural attack while retaining his weapon prohibition.
+    assert not any("weapon.natural-attacks" in attack.tags for attack in shield_arm.extra_attacks)
+    # User ruling (2026-11-10): that Possessed attack is unconditional on
+    # carrying a shield/buckler, and must never be counted twice.
+    for extra_hand_id in (None, "defence.shield", "defence.buckler"):
+        possessed = compile_fighter(build(
+            "cult-of-the-possessed", "the-possessed", extra_hand_id=extra_hand_id,
+            special_rule_ids=("band--mutations-extra-arm",),
+        ))
+        assert sum("weapon.natural-attacks" in attack.tags for attack in possessed.extra_attacks) == 1
     with pytest.raises(ValueError, match="one-handed weapon"):
         compile_fighter(build(
             "cult-of-the-possessed", "mutants", extra_hand_id="weapon.halberd",

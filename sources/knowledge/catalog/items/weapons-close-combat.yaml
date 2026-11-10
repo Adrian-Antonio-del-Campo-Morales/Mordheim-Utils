@@ -1922,12 +1922,22 @@ items:
   name: Sunstaff Lustria
   name_i18n:
     es: Báculo Solar de Lustria
+  effect: >-
+    Range: 12"/Close Combat Strength: as user Special: Sunbolt.
+    Sunbolt: The wielder of the sunstaff can discharge a beam of energy in the shooting
+    phase that is akin to rays of the sun. The Sunbolt has a range of 12" and hits at Strength
+    4. Aside from ward and dodge saves a Sunbolt ignores armour saves and penalties for long
+    range.
   source_refs:
   - *id015
   - *id016
   - *id017
-  combat_status: implemented
-  mechanic_id: weapon.brazier-iron
+  - manual: broheim.net
+    printed_page: 19
+    section: Town Cryer 15 / Amazons / Sunstaff
+    url: https://broheim.net/downloads/towncryer/TownCryer15.pdf
+  # Pending a melee profile using the bearer's Strength without extra weapon rules.
+  combat_status: out_of_scope
 - id: sword
   kind: close-combat-weapon
   name: Sword
