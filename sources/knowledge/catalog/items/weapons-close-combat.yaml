@@ -420,6 +420,7 @@ items:
   name: Battle Axe
   name_i18n:
     es: Hacha de Batalla
+  effect_ref: axe
   source_refs:
   - &id024
     manual: mordheimer.net
@@ -568,13 +569,25 @@ items:
   name: Cat O Nine Tails
   name_i18n:
     es: Gato de Nueve Colas
+  # Printed entry: Pirate Warbands, p. 41 (broheim.net, unofficial/Pirates.pdf).
   effect: >-
-    Range: Close Combat Strength: As user Cannot be parried : Like the Steel Whips of the
-    Sisterhood, Cats cannot be parried by swords or bucklers.
+    Range: Close Combat Strength: As user. Order is often maintained aboard the ship with the threat
+    of the lash. In battle the long barbed whip of the Cat is also seen, but this time dealing out
+    punishment to the enemy! Like the Steel Whips of the Sisterhood, Cats cannot be parried by
+    swords or bucklers, have a 4" range, and hit with the user's Strength. However, since they are
+    made of rope and not steel, they give the enemy model a +1 to his armour save (6+ for no
+    armour), like a hit from a fist or dagger. Other than this exception Cats follow all the rules
+    for Steel Whips.
   effect_i18n:
     es: >-
-      Alcance: combate cuerpo a cuerpo Fuerza: como usuario No se puede detener: al igual que los
-      látigos de acero de la Hermandad, los gatos no se pueden detener con espadas o escudos.
+      Alcance: Combate cuerpo a cuerpo Fuerza: Como usuario. A bordo del barco el orden suele
+      mantenerse con la amenaza del látigo. En la batalla también se ve el largo látigo con púas del
+      Gato, ¡pero esta vez castigando al enemigo! Como los Látigos de Acero de la Hermandad, los
+      Gatos no pueden pararse con espadas ni rodelas, tienen un alcance de 4" e impactan con la
+      Fuerza del usuario. Sin embargo, como son de cuerda y no de acero, conceden a la miniatura
+      enemiga +1 a su tirada de salvación por armadura (6+ si no lleva armadura), como el impacto de
+      un puño o una daga. Salvo esta excepción, los Gatos siguen todas las reglas de los Látigos de
+      Acero.
   source_refs:
   - *id003
   combat_status: implemented
@@ -659,13 +672,7 @@ items:
   name: Choppa Counts as a Morning Star
   name_i18n:
     es: El Choppa Cuenta Como un Mangual
-  effect: >-
-    +1 Strength in the first round and an additional -1 armour-save modifier; may be used with a
-    shield.
-  effect_i18n:
-    es: >-
-      +1 a la Fuerza en el primer turno y un modificador adicional de -1 a la salvación de
-      armadura; puede usarse con un escudo.
+  effect_ref: choppa
   source_refs:
   - *id006
   - *id007
@@ -710,12 +717,15 @@ items:
     section: Mootlander Equipment List / Master Chef List
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/mootlanders
   combat_status: implemented
-  mechanic_id: weapon.cleaver
+  # The Cleaver fights exactly as an Axe (Strength as user, -1 to the armour save), so it binds
+  # the Axe mechanic.
+  mechanic_id: weapon.axe
 - id: cleaver_counts_as_axe
   kind: close-combat-weapon
   name: Cleaver Counts as Axe
   name_i18n:
     es: La Cuchilla Cuenta Como un Hacha
+  effect_ref: axe
   source_refs:
   - *id008
   - &id091
@@ -724,22 +734,16 @@ items:
     section: Mountain Guide Equipment List
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/maneaters
   combat_status: implemented
-  mechanic_id: weapon.cleaver
+  # The Cleaver fights exactly as an Axe (Strength as user, -1 to the armour save), so it binds
+  # the Axe mechanic.
+  mechanic_id: weapon.axe
 - id: club
   kind: close-combat-weapon
   name: Club
   name_i18n:
     es: Garrote
-  effect: >-
-    Range: Close Combat Strength: As user Concussion : Hammers and other bludgeoning weapons are
-    excellent to use for striking your enemy senseless. When using a hammer, club or mace, a roll of
-    2-4 is treated as stunned when rolling to see the extent of a model's injuries.
-  effect_i18n:
-    es: >-
-      Alcance: combate cuerpo a cuerpo Fuerza: como usuario Conmoción cerebral: los martillos y
-      otras armas contundentes son excelentes para golpear a tu enemigo hasta dejarlo sin sentido.
-      Cuando se usa un martillo, garrote o maza, una tirada de 2-4 se considera aturdida al rodar
-      para ver el alcance de las heridas del modelo.
+  # The rulebook prints one entry for the Hammer, Staff, Mace or Club.
+  effect_ref: mace
   source_refs:
   - &id015
     manual: mordheimer.net
@@ -982,6 +986,7 @@ items:
   name: Dagger Jambiya
   name_i18n:
     es: Daga Yambiya
+  effect_ref: dagger
   source_refs:
   - &id087
     manual: mordheimer.net
@@ -996,16 +1001,33 @@ items:
   name: Disease Dagger
   name_i18n:
     es: Daga de Enfermedad
+  # Printed entry: Clan Pestilens Special Weapons, Town Cryer #29 p. 10 (broheim.net).
   effect: >-
-    Range: Close Combat Strength: As user +1 Enemy Armour Save : Daggers are not the best weapons to
-    use for penetrating an enemy model's armour. An enemy wounded by a dagger gains a +1 bonus to
-    his armour save, and a 6+ armour save if he has none normally.
+    Availability: Rare 8 (Skaven only). This dagger is permanently covered with a disgusting and
+    moulderish layer of green ooze that may infect those that are hit with terrible diseases. Range:
+    Close combat Strength: - Special Rules: +1 Armour Save, Infecting. +1 Armour Save: A model
+    wounded by a dagger has a +1 Armour Save bonus, or an Armour Save of 6+ if he has no armour.
+    Infecting: A natural 6 on an hit roll means that the model hit has been infected with the
+    disease and that he must take a Toughness test. Roll a D6. If the result is higher than the
+    Toughness of the model taking the test, he will suffer an automatic wound in addition to the
+    dagger hit. Models of undead and possessed are immune to this disease and do not take the test.
+    A model wielding two Disease Daggers gains a +1 Attack bonus for wielding two weapons and there
+    is no further effect, except that the chances of rolling an infecting 6 on the hit rolls are
+    higher.
   effect_i18n:
     es: >-
-      Alcance: Cuerpo a cuerpo Fuerza: Como usuario +1 Armadura enemiga Salvación: Las dagas no son
-      las mejores armas para penetrar la armadura de un modelo enemigo. Un enemigo herido por una
-      daga obtiene una bonificación de +1 a su salvación por armadura, y una salvación por armadura
-      de 6+ si normalmente no la tiene.
+      Disponibilidad: Raro 8 (solo Skaven). Esta daga está permanentemente cubierta de una
+      repugnante capa mohosa de limo verde que puede contagiar terribles enfermedades a quienes
+      hiere. Alcance: Combate cuerpo a cuerpo Fuerza: - Reglas especiales: +1 a la salvación por
+      armadura, Contagio. +1 a la salvación por armadura: una miniatura herida por una daga obtiene
+      +1 a su tirada de salvación por armadura, o una salvación de 6+ si no lleva armadura.
+      Contagio: un 6 natural en la tirada para impactar significa que la miniatura impactada ha
+      contraído la enfermedad y debe realizar un chequeo de Resistencia. Tira 1D6. Si el resultado
+      es mayor que la Resistencia de la miniatura que hace el chequeo, sufre una herida automática
+      además del impacto de la daga. Los No Muertos y los Poseídos son inmunes a esta enfermedad y
+      no realizan el chequeo. Una miniatura que empuñe dos Dagas de Enfermedad obtiene +1 Ataque por
+      luchar con dos armas y no hay ningún otro efecto, salvo que aumentan las probabilidades de
+      obtener un 6 de contagio en las tiradas para impactar.
   source_refs:
   - *id013
   combat_status: implemented
@@ -1169,6 +1191,19 @@ items:
   name: Great Weapon
   name_i18n:
     es: Arma a Dos Manos
+  effect: >-
+    Range: Close Combat Strength: As user +2 Two-handed: A model armed with a double-handed weapon
+    may not use a shield, buckler or additional weapon in close combat. If the model is equipped
+    with a shield he will still get a +1 bonus to his armour save against shooting. Strike last:
+    Double-handed weapons are so heavy that the model using them always strikes last, even when
+    charging.
+  effect_i18n:
+    es: >-
+      Alcance: Combate cuerpo a cuerpo Fuerza: Como usuario +2 A dos manos: una miniatura armada con
+      un arma a dos manos no puede usar escudo, rodela ni un arma adicional en combate cuerpo a
+      cuerpo. Si la miniatura lleva escudo, sigue obteniendo una bonificación de +1 a su tirada de
+      salvación por armadura contra disparos. Golpea último: las armas a dos manos son tan pesadas
+      que la miniatura que las usa siempre golpea en último lugar, incluso cuando carga.
   source_refs:
   - *id015
   - *id087
@@ -1278,16 +1313,8 @@ items:
   name: Hammer
   name_i18n:
     es: Martillo
-  effect: >-
-    Range: Close Combat Strength: As user Concussion : Hammers and other bludgeoning weapons are
-    excellent to use for striking your enemy senseless. When using a hammer, club or mace, a roll of
-    2-4 is treated as stunned when rolling to see the extent of a model's injuries.
-  effect_i18n:
-    es: >-
-      Alcance: combate cuerpo a cuerpo Fuerza: como usuario Conmoción cerebral: los martillos y
-      otras armas contundentes son excelentes para golpear a tu enemigo hasta dejarlo sin sentido.
-      Cuando se usa un martillo, garrote o maza, una tirada de 2-4 se considera aturdida al rodar
-      para ver el alcance de las heridas del modelo.
+  # The rulebook prints one entry for the Hammer, Staff, Mace or Club.
+  effect_ref: mace
   source_refs:
   - *id020
   - *id021
@@ -1436,6 +1463,7 @@ items:
   name: Lance Not Questing Knight
   name_i18n:
     es: Lanza (No Caballero Errante)
+  effect_ref: lance
   source_refs:
   - *id028
   combat_status: implemented
@@ -1509,6 +1537,8 @@ items:
   name: Mace Hammer
   name_i18n:
     es: Maza Martillo
+  # The rulebook prints one entry for the Hammer, Staff, Mace or Club.
+  effect_ref: mace
   source_refs:
   - *id046
   - *id047
@@ -1521,11 +1551,20 @@ items:
   name: Main Gauche
   name_i18n:
     es: Daga Izquierda
+  # Printed entry: Hochland Bandits, The Nemesis Crown (broheim.net).
   effect: >-
-    Range: Close Combat Strength: As user Parry : Can parry enemy blows
+    Range: Close Combat Strength: As user Special Rules: Parry, +1 Enemy Armour Save. Availability:
+    Rare 7, Hochland Bandits only. A main gauche is a dagger with a large hand guard, often used in
+    conjunction with a rapier or other sword. Popular among duellists and petty nobles, the main
+    gauche is sometimes seen as a "foppish" weapon, but in reality it provides the wielder the
+    ability to be strong both in attack and defense.
   effect_i18n:
     es: >-
-      Alcance: Cuerpo a cuerpo Fuerza: Como usuario Parry: Puede detener los golpes enemigos
+      Alcance: Combate cuerpo a cuerpo Fuerza: Como usuario Reglas especiales: Parar, +1 a la
+      salvación por armadura del enemigo. Disponibilidad: Raro 7, solo Bandidos de Hochland. La daga
+      izquierda es una daga con una gran guarda, que suele usarse junto con un estoque u otra
+      espada. Popular entre duelistas y nobles menores, a veces se la considera un arma "afectada",
+      pero en realidad permite a su portador ser fuerte tanto en ataque como en defensa.
   source_refs:
   - *id100
   combat_status: implemented
@@ -1669,14 +1708,26 @@ items:
   name: Quarter Staff
   name_i18n:
     es: Bastón
+  # Printed entry: Pirates of the Cathayan Sea (broheim.net), which prints the Border Town Burning
+  # Cathayan equipment; the Battle Monks list that this record also cites names the row only.
   effect: >-
-    Range: Close Combat Strength: As user Balanced : A quarter staff is especially light and easy to
-    wield. A model armed with a fighting staff gets +1 Initiative in close combat.
+    Range: Close Combat Strength: As user Special Rules: Balanced, Parry, Freestyle. Fighting staffs
+    are traditional weapons among the warrior monk brotherhoods. Balanced: A quarter staff is
+    especially light and easy to wield. A model armed with a fighting staff gets +1 Initiative in
+    close combat. Parry: the staff parries blows as a sword does. Freestyle: Although a staff does
+    not always require two hands to use it cannot be combined with another weapon, shield, buckler,
+    etc. However it can be combined with the Monks bare hand attacks. This means that the Monk is
+    still getting +1 Attack.
   effect_i18n:
     es: >-
-      Alcance: combate cuerpo a cuerpo Fuerza: como usuario Equilibrado: un cuarto de bastón es
-      especialmente ligero y fácil de manejar. Una miniatura armada con un bastón de combate obtiene
-      +1 a la iniciativa en combate cuerpo a cuerpo.
+      Alcance: Combate cuerpo a cuerpo Fuerza: Como usuario Reglas especiales: Equilibrado, Parar,
+      Estilo libre. Los bastones de combate son armas tradicionales entre las hermandades de monjes
+      guerreros. Equilibrado: un bastón es especialmente ligero y fácil de manejar. Una miniatura
+      armada con un bastón de combate obtiene +1 a la Iniciativa en combate cuerpo a cuerpo. Parar:
+      el bastón para los golpes como lo hace una espada. Estilo libre: aunque un bastón no siempre
+      requiere dos manos para usarse, no puede combinarse con otra arma, escudo, rodela, etc. Sin
+      embargo, sí puede combinarse con los ataques a mano desnuda de los Monjes, de modo que el
+      Monje sigue obteniendo +1 Ataque.
   source_refs:
   - *id005
   combat_status: implemented
@@ -1857,10 +1908,25 @@ items:
   name_i18n:
     es: Guantelete con Púas
   effect: >-
-    Range: Close Combat Strength: As user Parry : Can parry enemy blows
+    Range: Close Combat Strength: As user Availability: Common (Pit Fighters only). The spiked
+    gauntlet counts as an additional hand weapon and a buckler. Parry: A model equipped with a
+    Spiked Gauntlet may parry the first blow in each round of hand-to-hand combat. When his opponent
+    scores a hit, a model with a Spiked Gauntlet may roll 1D6. If the score is greater than the
+    highest to hit score of his opponent, the model has parried the blow, and that attack is
+    discarded. A model may not parry attacks made with double or more its own Strength – they are
+    simply too powerful to be stopped. If your model is armed with a Spiked Gauntlet and a sword,
+    you may re-roll any failed parries once.
   effect_i18n:
     es: >-
-      Alcance: Cuerpo a cuerpo Fuerza: Como usuario Parry: Puede detener los golpes enemigos
+      Alcance: Combate cuerpo a cuerpo Fuerza: Como usuario Disponibilidad: Común (solo Luchadores
+      de Foso). El guantelete con púas cuenta como un arma de mano adicional y una rodela. Parar:
+      una miniatura equipada con un Guantelete con Púas puede parar el primer golpe de cada ronda
+      de combate cuerpo a cuerpo. Cuando su oponente consigue un impacto, una miniatura con un
+      Guantelete con Púas puede tirar 1D6. Si el resultado es mayor que el resultado para
+      impactar más alto de su oponente, la miniatura ha parado el golpe y ese ataque se descarta.
+      Una miniatura no puede parar ataques realizados con el doble o más de su propia Fuerza: son
+      demasiado poderosos para detenerlos. Si tu miniatura está armada con un Guantelete con Púas
+      y una espada, puedes repetir una vez cualquier parada fallida.
   source_refs:
   - *id071
   combat_status: implemented
@@ -1891,6 +1957,7 @@ items:
   name: Staff
   name_i18n:
     es: Bastón
+  effect_ref: quarter_staff
   source_refs:
   - *id081
   combat_status: implemented
@@ -1923,6 +1990,8 @@ items:
   name: Staff Club Mace
   name_i18n:
     es: Bastón, Garrote y Maza
+  # The rulebook prints one entry for the Hammer, Staff, Mace or Club.
+  effect_ref: mace
   source_refs:
   - *id070
   combat_status: implemented
@@ -1987,11 +2056,7 @@ items:
   name: Stone Axe Counts as a Club
   name_i18n:
     es: El Hacha de Piedra Cuenta Como un Garrote
-  effect: >-
-    Uses club rules: normal Strength and Concussion on Injury rolls of 2-4.
-  effect_i18n:
-    es: >-
-      Usa las reglas de la maza: Fuerza normal y Conmoción con tiradas de Heridas de 2-4.
+  effect_ref: stone_axe
   source_refs:
   - *id054
   - *id055
@@ -2048,6 +2113,13 @@ items:
     phase that is akin to rays of the sun. The Sunbolt has a range of 12" and hits at Strength
     4. Aside from ward and dodge saves a Sunbolt ignores armour saves and penalties for long
     range.
+  effect_i18n:
+    es: >-
+      Alcance: 12"/Combate cuerpo a cuerpo Fuerza: como el usuario Especial: Rayo Solar. Rayo
+      Solar: el portador del báculo solar puede descargar en la fase de disparo un haz de energía
+      semejante a los rayos del sol. El Rayo Solar tiene un alcance de 12" e impacta con Fuerza 4.
+      Salvo las tiradas de salvación especiales y de esquiva, el Rayo Solar ignora las tiradas de
+      salvación por armadura y los penalizadores por larga distancia.
   source_refs:
   - *id015
   - *id016
@@ -2192,6 +2264,7 @@ items:
   name: Sword Heroes Only
   name_i18n:
     es: Espada (Solo Héroes)
+  effect_ref: sword
   source_refs:
   - *id055
   combat_status: implemented
@@ -2206,6 +2279,7 @@ items:
   name: Sword Scimitar
   name_i18n:
     es: Espada Cimitarra
+  effect_ref: sword
   source_refs:
   - *id087
   - *id085
@@ -2230,6 +2304,7 @@ items:
   name: Two Handed Weapon
   name_i18n:
     es: Arma a Dos Manos
+  effect_ref: great_weapon
   source_refs:
   - *id045
   - *id062

@@ -294,8 +294,6 @@ rules:
         scope: 'NO'
 - id: augur--no-armour
   name: No Armour
-  effect: >-
-    The Augur never wears armour.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -303,9 +301,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/sisters-of-sigmar
   name_i18n:
     es: Sin Armadura
-  effect_i18n:
-    es: >-
-      La Vidente nunca lleva armadura.
   applies_to:
     profile_ids:
     - augur
@@ -321,6 +316,7 @@ rules:
         id: profile.equipment-restrictions
         parameters:
           forbids: armour
+  rule_ref: shared-rule.no-armour
 - id: band--sigmarite-hammer-pair
   runtime:
     scope: 'YES'

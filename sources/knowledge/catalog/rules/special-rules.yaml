@@ -1177,6 +1177,10 @@ rules:
       Nunca puede usar armas de pólvora negra. Nunca puede usar drogas ni venenos. Nunca puede usar
       equipo de fabricación enana, incluido el equipo de Gromril y Obsidiana. No puede elegir el
       Bastón de Mago ni las Runas Élficas; esas entradas son solo para el Maestro de Saberes.
+# The two armour prohibitions differ in what they forbid, and each text says exactly that. Members
+# of `no-armour` bind `forbids: armour` (every armour item, shields and helmets included); members
+# of `no-body-armour` bind `forbids: armour-suit` (body armour only). Most members state the
+# prohibition in their profile entry rather than as a printed rule.
 - id: shared-rule.no-armour
   name: No Armour
   name_i18n:
@@ -1186,6 +1190,17 @@ rules:
   effect_i18n:
     es: >-
       Este guerrero nunca puede llevar ningún tipo de armadura.
+- id: shared-rule.no-body-armour
+  name: No Body Armour
+  name_i18n:
+    es: Sin Armadura Corporal
+  effect: >-
+    This warrior may not wear body armour. Shields, bucklers and helmets are not affected by this
+    restriction.
+  effect_i18n:
+    es: >-
+      Este guerrero no puede llevar armadura corporal. Los escudos, las rodelas y los yelmos no se
+      ven afectados por esta restricción.
 - id: shared-rule.no-missile-weapons
   name: No Missile Weapons
   name_i18n:

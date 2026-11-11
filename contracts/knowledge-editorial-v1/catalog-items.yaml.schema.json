@@ -45,6 +45,10 @@
           "$ref": "defs.schema.json#/$defs/display_text"
         },
         "effect_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "effect_ref": {
+          "description": "Id of the item whose printed entry this item displays. Used by a list row that names another item (`sword_scimitar` for the Sword): the text lives once on the referenced item, which must carry its own `effect`. Prose only; `mechanic_id` and `combat_status` stay on this record.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
         "combat_status": {
           "description": "`implemented` items drive the duel runtime through their mechanic; `out_of_scope` items are carried for the campaign runtime and the UI only.",
           "enum": ["implemented", "out_of_scope"]

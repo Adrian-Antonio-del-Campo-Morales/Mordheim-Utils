@@ -62,16 +62,7 @@ items:
   name: Blunderbuss One per Warband
   name_i18n:
     es: Trabuco (Uno por Banda)
-  effect: >-
-    Range: Special Strength: 3 Shot : When your model fires the blunderbuss, draw a line 16" long
-    and 1" wide in any direction from the firer (the line must be absolutely straight). Any and all
-    models in its path are automatically hit by a Strength 3 hit. ❓
-  effect_i18n:
-    es: >-
-      Alcance: Especial Fuerza: 3 Disparo: Cuando tu modelo dispare el trabuco, dibuja una línea de
-      16" de largo y 1" de ancho en cualquier dirección desde el que dispara (la línea debe ser
-      absolutamente recta). Todos y cada uno de los modelos en su camino son golpeados
-      automáticamente por un golpe de Fuerza 3. ❓
+  effect_ref: blunderbuss
   source_refs:
   - &id018
     manual: mordheimer.net
@@ -370,13 +361,7 @@ items:
   name: Crossbow Max 3 per Warband
   name_i18n:
     es: Ballesta (Máx. 3 por Banda)
-  effect: >-
-    Range: 30" Strength: 4 Move or Fire : You may not move and fire a crossbow on the same turn,
-    other than to pivot on the spot to face your target or to stand up.
-  effect_i18n:
-    es: >-
-      Alcance: 30" Fuerza: 4 Mover o disparar: No puedes moverte y disparar una ballesta en el mismo
-      turno, excepto para girar en el lugar para mirar a tu objetivo o pararte.
+  effect_ref: crossbow
   source_refs:
   - *id014
   combat_status: out_of_scope
@@ -439,14 +424,40 @@ items:
   - blackpowder
   name: Double Barrelled Handgun
   name_i18n:
-    es: Ardilagana de Dos Cañones
+    es: Arcabuz de Dos Cañones
+  # Printed entry: Gunnery School of Nuln, The Nemesis Crown (broheim.net); the Double-barrelled rule is printed
+  # once for the school's double-barrelled weapons.
   effect: >-
-    Range: 24" Strength: 4 Prepare shot : A handgun takes a complete turn to reload ❓ , so you may
-    only fire it every other turn.
+    Range: 24" Strength: 4 Availability: Rare 10 Special Rules: Prepared Shot, Save Modifier, Move
+    or Fire, Double-barrelled. Created from a request by a Nuln nobleman who had been impressed by a
+    demonstration model, the gunsmiths slaved long and hard to replicate it until a final model was
+    forged. By then the noble had forgotten about it and the Colleges was left with a job lot. These
+    were given to the Gunnery School as a gift and sort of disappeared on route. Prepared Shot, Save
+    Modifier and Move or Fire: As per the Mordheim rulebook. Double-barrelled: When firing such a
+    weapon, the bearer must declare whether he is firing one or both barrels. If firing a single
+    barrel, treat the shot as you would a normal weapon. When firing both barrels, roll a single
+    dice to hit as you would normally; roll for each shot individually to wound, as each shot can
+    wound on its own, and treat each shot that inflicts Critical Hits separately. Reloading: After
+    firing both barrels, place 2 tokens on the model. In your next shooting phase remove 1 token to
+    represent one barrel having been reloaded. Token removal should be the last thing done in your
+    shooting phase and you cannot shoot in the same phase as your reload.
   effect_i18n:
     es: >-
-      Alcance: 24" Fuerza: 4 Preparar el tiro: una pistola necesita un turno completo para
-      recargarse ❓, por lo que solo puedes dispararla cada dos turnos.
+      Alcance: 24" Fuerza: 4 Disponibilidad: Raro 10 Reglas especiales: Disparo preparado,
+      Modificador a la salvación, Mover o disparar, Dos cañones. Creado a petición de un noble de
+      Nuln al que había impresionado un modelo de demostración, los armeros trabajaron largo y
+      tendido para reproducirlo hasta forjar un modelo definitivo. Para entonces el noble lo había
+      olvidado y los Colegios se quedaron con un lote entero, que regalaron a la Escuela de
+      Artillería y que, de algún modo, desapareció por el camino. Disparo preparado, Modificador a
+      la salvación y Mover o disparar: como en el reglamento de Mordheim. Dos cañones: al disparar
+      esta arma, el portador debe declarar si dispara uno o los dos cañones. Si dispara un solo
+      cañón, el disparo se resuelve como el de un arma normal. Si dispara los dos, tira un solo dado
+      para impactar como de costumbre; tira para herir por cada disparo por separado, ya que cada
+      uno puede herir por sí mismo, y resuelve por separado cada disparo que cause Impactos
+      Críticos. Recarga: tras disparar los dos cañones, coloca 2 marcadores sobre la miniatura. En
+      tu siguiente fase de disparo retira 1 marcador para representar la recarga de un cañón.
+      Retirar el marcador debe ser lo último que hagas en tu fase de disparo, y no puedes disparar
+      en la misma fase en que recargas.
   source_refs:
   - *id016
   - *id017
@@ -637,6 +648,24 @@ items:
   name: Hochland Long Rifle
   name_i18n:
     es: Rifle de Caza Hochland
+  effect: >-
+    Range: 48" Strength: 4 Move or fire: You may not move and fire a Hochland long rifle in the same
+    turn, other than to pivot on the spot to face your target or stand up from knocked down. Prepare
+    shot: A Hochland long rifle takes a complete turn to reload, so you may only fire it every other
+    turn. Pick target: A model armed with a Hochland long rifle can target any enemy model in sight,
+    not just the closest one. Save modifier: Hochland long rifles are even better at penetrating
+    armour than their Strength 4 suggests. A warrior wounded by a long rifle must make his armour
+    save with a -2 modifier.
+  effect_i18n:
+    es: >-
+      Alcance: 48" Fuerza: 4 Mover o disparar: no puedes mover y disparar un rifle largo de Hochland
+      en el mismo turno, salvo para girar sobre el sitio y encarar al objetivo o levantarte tras
+      quedar derribado. Preparar disparo: un rifle largo de Hochland tarda un turno completo en
+      recargarse, así que solo puedes dispararlo cada dos turnos. Elegir objetivo: una miniatura
+      armada con un rifle largo de Hochland puede disparar a cualquier miniatura enemiga a la vista,
+      no solo a la más cercana. Modificador a la salvación: los rifles largos de Hochland penetran
+      la armadura aún mejor de lo que sugiere su Fuerza 4. Un guerrero herido por un rifle largo
+      debe realizar su tirada de salvación por armadura con un modificador de -2.
   source_refs:
   - *id017
   - *id026
@@ -703,27 +732,7 @@ items:
   name: Javelins
   name_i18n:
     es: Jabalinas
-  effect: >-
-    Range: 8" Strength: As user Thrown weapon : Javelins are thrown weapons and the warrior suffers
-    no penalty for range or moving. There are entries for Javelin in TC #11, #14, #21, #23 and
-    Border Town Burning. In all those issues there are no less than four different versions for the
-    javelins' thrown weapon special rule and range. It was decided to use the thrown weapon rule
-    from the original rulebook (used by throwing knives, blessed water, net, etc), which ignores
-    both moving and range. This is the same as the most recent version of Javelins. 4 out of 5
-    sources used 8" range, so this was decided as the norm (only new Pit Fighters had 10", whereas
-    the Norse, Lizardmen, old Pit Fighters, and Amazons all are 8").
-  effect_i18n:
-    es: >-
-      Alcance: 8" Fuerza: Como usuario Arma arrojadiza: Las jabalinas son armas arrojadizas y el
-      guerrero no sufre ninguna penalización por alcance o movimiento. Hay entradas para Javelin en
-      TC #11, #14, #21, #23 y Border Town Burning. En todos esos números hay no menos de cuatro
-      versiones diferentes para la regla y el alcance especial del arma arrojadiza de las jabalinas.
-      Se decidió usar la regla de arma arrojadiza del libro de reglas original (utilizada para
-      arrojar cuchillos, agua bendita, red, etc.), que ignora tanto el movimiento como el alcance.
-      Esto es lo mismo que la versión más reciente de Javelins. 4 de cada 5 fuentes usaban un
-      alcance de 8", por lo que se decidió como la norma (solo los nuevos Pit Fighter tenían 10",
-      mientras que los nórdicos, los hombres lagarto, los antiguos Pit Fighter y las Amazonas son
-      todos de 8").
+  effect_ref: javelin
   source_refs:
   - *id027
   - *id028
@@ -1007,15 +1016,30 @@ items:
   name: Throwing Axe
   name_i18n:
     es: Hacha Arrojadiza
+  # Printed entry: Dwarf Slayer Cult (mordheimer.net), the only list that prints the item; the
+  # other lists name the row only.
   effect: >-
-    Range: 6" Strength: As user Thrown Weapon : Models using throwing stars or knives do not suffer
-    penalties for range or moving as these weapons are perfectly balanced for throwing. They cannot
-    be used in close combat.
+    Cost: 15 gold crowns. Availability: Slayers Common (non-Slayers Rare 5). A smaller axe specially
+    weighted for hurling from dangerous distances. Range: 6" Strength: As user Special Rules: Thrown
+    Weapon, Axe Thrower. Thrown Weapon: Throwing axes suffer no penalty for throwing over half
+    range, or for moving and shooting. Axe Thrower: All heroes armed with Throwing Axes who have
+    access to Shooting Skills may learn the skill Axe Thrower: the warrior can throw a maximum of
+    two axes in his shooting phase, both of which gain +1 Strength, and may divide his shots between
+    any targets within range as he wishes. This skill cannot be combined with the Quick Shot skill
+    or the Knife Fighter skill. The skill Knife Thrower does not allow the user to throw multiple
+    Throwing Axes.
   effect_i18n:
     es: >-
-      Alcance: 6" Fuerza: Como usuario Arma arrojadiza: Los modelos que usan estrellas arrojadizas o
-      cuchillos no sufren penalizaciones por alcance o movimiento ya que estas armas están
-      perfectamente equilibradas para arrojar. No se pueden usar en combate cuerpo a cuerpo.
+      Coste: 15 coronas de oro. Disponibilidad: Matadores Común (otros Raro 5). Un hacha más
+      pequeña, equilibrada especialmente para lanzarla desde distancias peligrosas. Alcance: 6"
+      Fuerza: Como usuario Reglas especiales: Arma arrojadiza, Lanzador de hachas. Arma arrojadiza:
+      las hachas arrojadizas no sufren penalización por lanzarse a más de la mitad del alcance ni
+      por mover y disparar. Lanzador de hachas: todos los héroes armados con Hachas Arrojadizas que
+      tengan acceso a las habilidades de Disparo pueden aprender la habilidad Lanzador de hachas: el
+      guerrero puede lanzar como máximo dos hachas en su fase de disparo, ambas con +1 a la Fuerza,
+      y puede repartir sus disparos entre cualquier objetivo a su alcance. Esta habilidad no puede
+      combinarse con las habilidades Disparo rápido ni Luchador con cuchillos. La habilidad Lanzador
+      de cuchillos no permite lanzar varias Hachas Arrojadizas.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1037,6 +1061,8 @@ items:
   name: Throwing Axes Same as Throwing Knives
   name_i18n:
     es: Hachas Arrojadizas Igual que Cuchillos Arrojadizos
+  # The rulebook prints one entry for Throwing Knives/Stars.
+  effect_ref: throwing_knives
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1088,15 +1114,8 @@ items:
   name: Throwing Stars
   name_i18n:
     es: Estrellas Arrojadizas
-  effect: >-
-    Range: 6" Strength: As user Thrown Weapon : Models using throwing stars or knives do not suffer
-    penalties for range or moving as these weapons are perfectly balanced for throwing. They cannot
-    be used in close combat.
-  effect_i18n:
-    es: >-
-      Alcance: 6" Fuerza: Como usuario Arma arrojadiza: Los modelos que usan estrellas arrojadizas o
-      cuchillos no sufren penalizaciones por alcance o movimiento ya que estas armas están
-      perfectamente equilibradas para arrojar. No se pueden usar en combate cuerpo a cuerpo.
+  # The rulebook prints one entry for Throwing Knives/Stars.
+  effect_ref: throwing_knives
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1111,15 +1130,8 @@ items:
   name: Throwing Weapons
   name_i18n:
     es: Armas Arrojadizas
-  effect: >-
-    Range: 6" Strength: As user Thrown Weapon : Models using throwing stars or knives do not suffer
-    penalties for range or moving as these weapons are perfectly balanced for throwing. They cannot
-    be used in close combat.
-  effect_i18n:
-    es: >-
-      Alcance: 6" Fuerza: Como usuario Arma arrojadiza: Los modelos que usan estrellas arrojadizas o
-      cuchillos no sufren penalizaciones por alcance o movimiento ya que estas armas están
-      perfectamente equilibradas para arrojar. No se pueden usar en combate cuerpo a cuerpo.
+  # The rulebook prints one entry for Throwing Knives/Stars.
+  effect_ref: throwing_knives
   source_refs:
   - *id056
   combat_status: out_of_scope

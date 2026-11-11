@@ -494,7 +494,7 @@ rules:
     es: Restricciones de Equipo
   effect_i18n:
     es: >-
-      es
+      Arco (no para los Chicos Gobbo): los Gobbos Salvajes no pueden elegir el Arco.
   applies_to:
     profile_ids:
     - gobbo-boyz
@@ -545,7 +545,6 @@ rules:
           forbids:
           - armour
   name: Equipment Restrictions
-  effect: A Savage Orc Wierdo cannot wear armour.
   source:
     manual: broheim.net
     printed_page: 57
@@ -553,9 +552,7 @@ rules:
     section: 0-4 Wierdo
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      Un Wierdo Orco Salvaje no puede llevar armadura.
   applies_to:
     profile_ids:
     - weirdo
+  rule_ref: shared-rule.no-armour

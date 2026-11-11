@@ -83,7 +83,12 @@ always retained in the header.
 Comments list the clauses of a split identity with their scope and point at
 the knowledge-base record that holds the printed text; the scaffold copies
 nothing, so the knowledge base stays the single place to read and edit the
-rule. What a scenario observes is written in the scenario's own comments. Excluded clauses of an admitted ID remain visible
+rule. What a scenario observes is written in the scenario's own comments: the
+retired clause register's contract phrasing, which used to carry that sentence,
+is a historical record in
+[`docs/archive/clause-register/clause-contracts.csv`](../../../docs/archive/clause-register/clause-contracts.csv)
+and may be read for wording, never copied into the knowledge base.
+Excluded clauses of an admitted ID remain visible
 without becoming test TODOs. The generator does not decide interpretations,
 scenarios or outcomes.
 

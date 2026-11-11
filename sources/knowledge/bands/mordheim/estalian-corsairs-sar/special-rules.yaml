@@ -263,4 +263,14 @@ rules:
     - crew
     - gunners
     - boatswains
-  rule_ref: shared-rule.no-armour
+  # Not shared: the Estalian variant forbids only light armour and toughened leathers, so heavy armour
+  # stays selectable (F074-pirate-variants).
+  effect: >-
+    This warrior may not wear light armour or toughened leathers. The heavy armour the Estalian
+    Special Rules add to the Pirate Equipment List remains available, and shields, bucklers and
+    helmets are not affected by this restriction.
+  effect_i18n:
+    es: >-
+      Este guerrero no puede llevar armadura ligera ni cuero endurecido. La armadura pesada que las
+      Reglas especiales estalianas añaden a la Lista de equipo pirata sigue disponible, y los
+      escudos, las rodelas y los yelmos no se ven afectados por esta restricción.

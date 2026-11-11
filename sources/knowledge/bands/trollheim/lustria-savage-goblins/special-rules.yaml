@@ -795,7 +795,15 @@ rules:
       scope: 'NO'
       binding: null
       reason: out-of-scope.magic
-  rule_ref: shared-rule.infiltration
+  # Not shared: the printed entry names the profiles that may not take the skill and stops at the
+  # deployment restriction, without the shared text's tie-break roll.
+  effect: >-
+    Red Teeth and the Witch Doctor may not take this skill. The Hero deploys after the opposing
+    warband, outside enemy line of sight and more than 12" from every enemy model.
+  effect_i18n:
+    es: >-
+      Los Dientes rojos y el Brujo no pueden llevar esta habilidad. El Héroe se despliega después de
+      la banda rival, fuera de la línea de visión enemiga y a más de 12" de cada modelo enemigo.
 - id: band--savage-goblin-special-skills-unpredictable
   kind: warband_skill
   name: Unpredictable

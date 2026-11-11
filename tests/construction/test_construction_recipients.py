@@ -186,8 +186,8 @@ def test_the_undead_and_mootlander_lists_reach_their_own_profiles():
 
 def test_the_estalian_variant_keeps_the_heavy_armour_its_rules_add():
     """F074-pirate-variants: the Estalian line adds heavy armour to the printed
-    Pirate Equipment List, while the profile entry keeps 'may not wear armour'
-    for the other body armour of that same list."""
+    Pirate Equipment List, while the profile entry still forbids the other body
+    armour of that same list (light armour and toughened leathers)."""
     estalian = dict(band_id="estalian-corsairs-sar", profile_id="captain")
     assert compile_fighter(FighterBuild("mordheim", **estalian,
                                         main_weapon_id="weapon.rapier",

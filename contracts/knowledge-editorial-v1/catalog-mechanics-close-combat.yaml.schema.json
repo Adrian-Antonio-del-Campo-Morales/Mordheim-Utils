@@ -39,6 +39,7 @@
         "name": { "$ref": "defs.schema.json#/$defs/display_text" },
         "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
         "note": { "description": "Engine description of a mechanic that no rule, skill or item prints; every other mechanic resolves its display text through the records bound to it.", "$ref": "defs.schema.json#/$defs/display_text" },
+        "note_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
         "engine_option": { "$ref": "#/$defs/engine_option" },
         "hands": { "type": "integer", "enum": [1, 2] },
         "main_hand": { "type": "boolean" },
@@ -64,6 +65,7 @@
         "name": { "$ref": "defs.schema.json#/$defs/display_text" },
         "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
         "note": { "description": "Engine description of a mechanic that no rule, skill or item prints; every other mechanic resolves its display text through the records bound to it.", "$ref": "defs.schema.json#/$defs/display_text" },
+        "note_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
         "engine_option": { "$ref": "#/$defs/engine_option" },
         "engine_code": { "type": "integer" },
         "base_save": {
@@ -107,6 +109,7 @@
         "name": { "$ref": "defs.schema.json#/$defs/display_text" },
         "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
         "note": { "description": "Engine description of a mechanic that no rule, skill or item prints; every other mechanic resolves its display text through the records bound to it.", "$ref": "defs.schema.json#/$defs/display_text" },
+        "note_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
         "engine_option": { "$ref": "#/$defs/engine_option" },
         "engine_code": { "type": "integer" },
         "modular_only": { "description": "Explicitly lacks an optimized numeric encoding; use the modular engine.", "const": true },
@@ -128,6 +131,7 @@
         "name": { "$ref": "defs.schema.json#/$defs/display_text" },
         "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
         "note": { "description": "Engine description of a mechanic that no rule, skill or item prints; every other mechanic resolves its display text through the records bound to it.", "$ref": "defs.schema.json#/$defs/display_text" },
+        "note_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
         "engine_option": { "$ref": "#/$defs/engine_option" },
         "kind": {
           "description": "`general` and `warband` mirror the skill tables; `profile` marks a skill only a specific profile has.",

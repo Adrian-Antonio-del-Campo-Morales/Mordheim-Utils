@@ -163,7 +163,6 @@ rules:
         parameters:
           forbids: armour
   name: Strictures
-  effect: Taal's Initiates may never wear armour.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -171,11 +170,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/horned-hunters
   name_i18n:
     es: Preceptos
-  effect_i18n:
-    es: Los Iniciados de Taal jamás pueden llevar armadura.
   applies_to:
     profile_ids:
     - initiates
+  rule_ref: shared-rule.no-armour
 - id: drunken-gang--drunk
   runtime:
     grant: profile
@@ -217,7 +215,6 @@ rules:
         parameters:
           forbids: armour
   name: Strictures
-  effect: Zealots may never wear armour.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -225,11 +222,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/horned-hunters
   name_i18n:
     es: Preceptos
-  effect_i18n:
-    es: Los Zealots jamás pueden llevar armadura.
   applies_to:
     profile_ids:
     - zealots
+  rule_ref: shared-rule.no-armour
 - id: warhounds--animals
   runtime:
     scope: 'NO'

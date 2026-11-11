@@ -801,7 +801,13 @@ rules:
   applies_to:
     profile_ids:
     - bats
-  rule_ref: shared-rule.no-weapons-or-armour
+  # Not shared: the profile prints only its equipment line, 'Equipment: None', not the shared
+  # sentence about never using or needing weapons or armour.
+  effect: >-
+    Equipment: None.
+  effect_i18n:
+    es: >-
+      Equipo: ninguno.
 - id: charnel-guard--equipment-restrictions
   runtime:
     scope: 'YES'
@@ -859,7 +865,13 @@ rules:
   applies_to:
     profile_ids:
     - fell-bats
-  rule_ref: shared-rule.no-weapons-or-armour
+  # Not shared: the profile prints only its equipment line, 'Equipment: None', not the shared
+  # sentence about never using or needing weapons or armour.
+  effect: >-
+    Equipment: None.
+  effect_i18n:
+    es: >-
+      Equipo: ninguno.
 - id: ghouls--equipment-restrictions
   runtime:
     scope: 'YES'
@@ -917,7 +929,7 @@ rules:
     es: Restricciones de Equipo
   effect_i18n:
     es: >-
-      es
+      Los Esqueletos no pueden usar armas de proyectil.
   applies_to:
     profile_ids:
     - skeletons
@@ -947,7 +959,7 @@ rules:
     es: Restricciones de Equipo
   effect_i18n:
     es: >-
-      es
+      Un Vampiro Strigoi no usa armas ni equipo de ningún tipo.
   applies_to:
     profile_ids:
     - vampire

@@ -2,8 +2,8 @@
 
 The Ladle denies the armour the defender wears while the saving throws from a
 shield or a skill still resolve; the pool modifiers keep the Barbed Whip's
-single whipcrack bonus; the Cleaver keeps the bearer's Strength and its printed
-armour modifier.
+single whipcrack bonus; the Cleaver, bound to the Axe mechanic, keeps the
+bearer's Strength and its printed armour modifier.
 """
 from __future__ import annotations
 
@@ -101,9 +101,10 @@ def test_an_ordinary_mace_still_lets_the_worn_armour_save():
 def test_the_cleaver_attack_costs_the_defender_one_point_of_armour_save():
     armoured = build("weapon.mace", armour_id="armour.heavy-armour")
     # The printed -1 to the save is the axe modifier and the bearer keeps its
-    # own Strength, so the attack carries no Strength term either.
+    # own Strength, so the attack carries no Strength term either. The Cleaver
+    # items bind the Axe mechanic, whose profile this is.
     assert armour_target(armour_stage(build("weapon.mace"), armoured)) == 5
-    assert armour_target(armour_stage(build("weapon.cleaver"), armoured)) == 6
+    assert armour_target(armour_stage(build("weapon.axe"), armoured)) == 6
 
 
 def test_the_cleaver_wounds_at_the_bearer_strength(precompiled):

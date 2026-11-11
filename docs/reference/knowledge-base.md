@@ -252,7 +252,21 @@ Canonical item records, split by category: `weapons-close-combat.yaml`,
 
 Items use **snake_case ids** (`broadsword`, `crimson_shade`) and carry
 `kind`, i18n names, `source_refs`, a `combat_status`
-(`implemented`/…), and the executable link:
+(`implemented`/…), and the executable link.
+
+Every item publishes a description in both locales: its own `effect`, or an
+`effect_ref`. The `effect` is the printed entry of the item. An equipment-list
+row that only names another item ("Sword (Scimitar)", "Bronze Axe",
+"Staff/Club/Mace") declares `effect_ref: <item id>` instead of restating the
+text, the way band rules use `rule_ref`: the printed entry lives once, on the
+referenced item, which must carry its own `effect` (one level, no chains). The
+reference is prose only; the record keeps its own `mechanic_id`,
+`combat_status` and source. The loader refuses a record with both, and the web
+artefact projects the referenced text. Where the printed entry is not available,
+the `effect` states only what the equipment list records (list, cost, rarity,
+bearers) and carries a `# Derived description` comment until the entry is
+transcribed.
+An example record with its executable link:
 
 ```yaml
 - id: broadsword
@@ -276,7 +290,7 @@ Shared skills are the reference target of many band rules, e.g.
 | `core-combat.yaml` | Canonical combat rules as editorial text (combat order, two weapons, parry, critical hits, injury states). |
 | `resolution.yaml` | The numeric local contracts consumed by the engines: to-hit, to-wound, strength→armour modifier, injury table, critical-hit and parry rules. |
 | `conditions.yaml` | Conditions shared by rules. |
-| `special-rules.yaml` | Cross-band shared rules: every printed text that two or more band rules share (identical, or differing only in the recipient's name, which the shared text neutralises as "this warrior"); band rules reference them with `rule_ref` and keep their own runtime. A shared text is written once, in both locales. |
+| `special-rules.yaml` | Cross-band shared rules: printed texts promoted here after an equivalence review, which admits identical wording, wording differing only in the recipient's name (neutralised as "this warrior") and wording whose differences do not change how the rule applies. A printed text that carries a restriction, magnitude or scope the shared text would drop stays on its band rule, even when its neighbours in the same group are shared. Band rules reference the shared text with `rule_ref` and keep their own runtime. A shared text is written once, in both locales. |
 | `racial-maximums.yaml` | The only source of racial characteristic maximums (`campaign.limit.racial-maximum.*`); warband rules reference them by id instead of embedding statlines. |
 
 ### mechanics/
@@ -505,6 +519,12 @@ free-text reasons became codes and every duplicated rule text became one
 shared rule. The CSVs, the deleted texts and the consolidation records are
 archived under [`docs/archive/`](../archive/README.md). Nothing reads the
 archive; the knowledge base is the only source.
+
+The archived consolidation record describes that day's merges as they were
+made. Where a later review found that a merge had dropped a restriction, a
+magnitude or a narrower eligibility, the knowledge base was corrected and the
+archive was left as the historical record: it is not a description of the
+current shared catalogue.
 
 ## Where is the evidence?
 

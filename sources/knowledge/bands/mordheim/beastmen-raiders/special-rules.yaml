@@ -552,8 +552,6 @@ rules:
     band: true
 - id: beastmen-shaman--no-armour
   name: No Armour
-  effect: >-
-    A Beastmen Shaman never wears armour.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -561,9 +559,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
   name_i18n:
     es: Sin Armadura
-  effect_i18n:
-    es: >-
-      Un Chamán Hombre Bestia nunca lleva armadura.
   applies_to:
     profile_ids:
     - beastmen-shaman
@@ -579,3 +574,4 @@ rules:
         id: profile.equipment-restrictions
         parameters:
           forbids: armour
+  rule_ref: shared-rule.no-armour

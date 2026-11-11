@@ -759,7 +759,7 @@ rules:
     - deck-hands
     - gunners
     - martial-artists
-  rule_ref: shared-rule.no-armour
+  rule_ref: shared-rule.no-body-armour
 - id: dragon-monk--equipment-restrictions
   runtime:
     scope: 'YES'
@@ -775,9 +775,6 @@ rules:
           forbids:
           - armour-suit
   name: Equipment Restrictions
-  effect: >-
-    May never wear armour. Suffers no penalties for fighting unarmed and receives +1 Attack when
-    doing so.
   source:
     manual: broheim.net
     printed_page: 3
@@ -785,10 +782,14 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Pirates%20of%20the%20Cathayan%20Sea.pdf
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      Nunca puede llevar armadura. No sufre penalización por luchar sin armas y recibe +1 Ataque al
-      hacerlo.
   applies_to:
     profile_ids:
     - dragon-monk
+  effect: >-
+    May never wear body armour; shields, bucklers and helmets are not affected by this restriction.
+    Suffers no penalties for fighting unarmed and receives +1 Attack when doing so.
+  effect_i18n:
+    es: >-
+      Nunca puede llevar armadura corporal; los escudos, las rodelas y los yelmos no se ven
+      afectados por esta restricción. No sufre penalización por luchar sin armas y recibe +1 Ataque
+      al hacerlo.

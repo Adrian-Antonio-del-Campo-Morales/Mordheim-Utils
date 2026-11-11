@@ -22,7 +22,8 @@ describe("warband reference sheets", () => {
       ? "M 10, HA 6, HP 6, F 4, R 4, H 3, I 6, A 4, L 9"
       : "M 4, WS 6, BS 6, S 4, T 4, W 3, I 6, A 4, Ld 9");
     const restrictions = sheet.warriors.find((warrior) => warrior.id === "augur")?.restrictions;
-    if (locale === "es") expect(restrictions).toBe("La Vidente nunca lleva armadura.");
+    // The Augur's restriction rule delegates its prose to the shared No Armour text.
+    if (locale === "es") expect(restrictions).toBe("Este guerrero nunca puede llevar ningún tipo de armadura.");
     else expect(restrictions).toContain("armour");
   });
 

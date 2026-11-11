@@ -848,21 +848,20 @@ rules:
           forbids:
           - armour-suit
   name: Equipment Restrictions
-  effect: >-
-    May not wear armour; the Mortuary Priest Equipment List contains no armour options.
   source:
     manual: khemri
     printed_page: 45
     section: "0-3 Mortuary Acolytes"
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      No puede llevar armadura; la Lista de Equipo del Sacerdote Mortuorio no contiene opciones de
-      armadura.
   applies_to:
     profile_ids:
     - mortuary-acolytes
+  effect: >-
+    May not wear body armour; the Mortuary Priest Equipment List contains no armour options.
+  effect_i18n:
+    es: >-
+      No puede llevar armadura corporal; la Lista de Equipo del Sacerdote Mortuorio no contiene opciones de armadura.
 - id: tomb-scorpions--equipment-restrictions
   runtime:
     scope: 'YES'

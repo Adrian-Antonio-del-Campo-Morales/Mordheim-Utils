@@ -738,44 +738,24 @@ def _build_items(ruleset: str) -> list[dict]:
                                     for item_id in _loadout_items(loadout.get("items")) if item_id)
             referenced_items.update(str(item if isinstance(item, str) else item.get("item_id") or "")
                                     for profile in package.profiles for item in profile.get("fixed_equipment") or ())
-    # An item variant without printed text of its own (``battle_axe``,
-    # ``sword_heroes_only``) renders the text of the base item bound to the
-    # same mechanic; mechanics themselves carry no prose.
-    base_by_mechanic: dict[str, dict] = {}
-    for row in load_items(ruleset):
-        mechanic_id = str(row.get("mechanic_id") or "")
-        if mechanic_id and row.get("effect") and mechanic_id not in base_by_mechanic:
-            base_by_mechanic[mechanic_id] = row
+    # An item that is a list row naming another item (``battle_axe``,
+    # ``sword_scimitar``) declares ``effect_ref``: its display text is the
+    # referenced item's printed entry, while its own mechanic and status stay.
+    by_source = {str(row.get("id") or ""): row for row in load_items(ruleset)}
     items = []
     for row in load_items(ruleset):
         kind = str(row.get("kind") or "")
         if kind not in INCLUDED_ITEM_KINDS and str(row.get("id") or "") not in (CAMPAIGN_ONLY_ITEM_IDS | referenced_items):
             continue  # Publish campaign tooltip items and every band-referenced item.
-        entry = _row(row, drop=("schema_version", "ruleset", "original_locale", "name_i18n", "effect_i18n", "effect_ids"))
+        entry = _row(row, drop=("schema_version", "ruleset", "original_locale", "name_i18n", "effect_i18n", "effect_ids", "effect_ref"))
         entry["item_id"] = entry.pop("id", "")
-        base = base_by_mechanic.get(str(row.get("mechanic_id") or ""))
-        if base is not None and not entry.get("effect"):
+        if row.get("effect_ref"):
+            base = by_source[str(row["effect_ref"])]
             entry["effect"] = base["effect"]
             effects = _effects(base)
             if effects:
                 entry["effects"] = effects
         items.append(entry)
-    by_id = {str(item["item_id"]): item for item in items}
-    aliases = {
-        "carronade": "swivel_gun",
-        "carronade_cannonball": "ball_shot",
-        "carronade_chain": "chain_shot",
-        "carronade_grapeshot": "grape_shot",
-        "horse_damsel_squire_only": "horse",
-        "magic_tattoos": "magic_tattoo",
-        "poisoned_darts": "poison_darts",
-        "throwing_axes_same_as_throwing_knives": "throwing_knives",
-    }
-    for item_id, base_id in aliases.items():
-        item, base = by_id.get(item_id), by_id.get(base_id)
-        if item and base and not item.get("effect") and not item.get("effects"):
-            if base.get("effect"): item["effect"] = base["effect"]
-            if base.get("effects"): item["effects"] = base["effects"]
     for item in items:
         if item.get("effect") or item.get("effects"):
             continue

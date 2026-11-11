@@ -543,19 +543,7 @@ items:
   name: Holy Relic Pilgrim Only
   name_i18n:
     es: Reliquia Santa (Solo Peregrino)
-  effect: >-
-    A model with a holy relic will automatically pass the first Leadership test he is required to
-    make in the game. If worn by the leader, it will allow him to automatically pass the first Rout
-    test if he has not taken any Leadership tests before. You can only ignore the first Leadership
-    test in any single game – owning two or more holy relics will not allow you to ignore second and
-    subsequent tests.
-  effect_i18n:
-    es: >-
-      Una miniatura con una reliquia sagrada pasará automáticamente la primera prueba de Liderazgo
-      que debe realizar en el juego. Si el líder lo usa, le permitirá pasar automáticamente la
-      primera prueba de Huida si no ha realizado ninguna prueba de Liderazgo antes. Solo puedes
-      ignorar la primera prueba de Liderazgo en un solo juego; poseer dos o más reliquias sagradas
-      no te permitirá ignorar la segunda prueba y las siguientes.
+  effect_ref: holy_relic
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -590,6 +578,17 @@ items:
   name: Horse
   name_i18n:
     es: Caballo
+  effect: >-
+    Only available to Humans. Riding horses are not trained for battle and will not normally attack
+    an enemy. However, they are useful for moving rapidly around the site of a battle. Horses can
+    only be used with the optional rules for mounted models. Profile: M 8, WS 1, BS 0, S 3, T 3, W
+    1, I 3, A 0, Ld 5.
+  effect_i18n:
+    es: >-
+      Solo disponible para humanos. Los caballos de monta no están entrenados para la batalla y
+      normalmente no atacan al enemigo. Sin embargo, son útiles para desplazarse rápidamente por el
+      campo de batalla. Los caballos solo pueden usarse con las reglas opcionales de miniaturas
+      montadas. Perfil: M 8, HA 1, HP 0, F 3, R 3, H 1, I 3, A 0, L 5.
   source_refs:
   - *id009
   - manual: mordheimer.net
@@ -602,6 +601,7 @@ items:
   name: Horse Damsel Squire Only
   name_i18n:
     es: Caballo (Solo Escudero de Dama)
+  effect_ref: horse
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -668,13 +668,21 @@ items:
   name: Mechanical Suit
   name_i18n:
     es: Traje Mecánico
+  # Printed entry: Black Dwarfs, Border Town Burning (broheim.net).
   effect: >-
-    Rarity : When searching for Chaos armour a warrior gains +1 on his Rarity roll for each model he
-    took out of action in the previous battle.
+    Availability: Rare 14, Chaos Dwarfs only. The Curse of Stone comes to all Chaos Dwarf Sorcerers,
+    gradually transforming them to rock from the feet up. Engineers have crafted machines which can
+    transport their Priests as they begin to pay the price for working dark rituals. Chaos Armour: A
+    Mechanical suit counts as Chaos armour and rules that would affect Chaos armour affect the suit
+    as well. Suited and Booted: A Sorcerer equipped with a Mechanical suit receives +3 to Movement.
   effect_i18n:
     es: >-
-      Rareza: Cuando busca una armadura del Caos, un guerrero obtiene +1 en su tirada de Rareza por
-      cada miniatura que dejó fuera de combate en la batalla anterior.
+      Disponibilidad: Raro 14, solo Enanos del Caos. La Maldición de la Piedra alcanza a todos los
+      Hechiceros Enanos del Caos, que se van convirtiendo en roca desde los pies hacia arriba. Los
+      Ingenieros han construido máquinas que pueden transportar a sus Sacerdotes cuando empiezan a
+      pagar el precio de practicar rituales oscuros. Armadura del Caos: un Traje Mecánico cuenta
+      como Armadura del Caos, y las reglas que afectan a la Armadura del Caos afectan también al
+      traje. Bien equipado: un Hechicero equipado con un Traje Mecánico recibe +3 al Movimiento.
   source_refs:
   - *id012
   combat_status: out_of_scope
@@ -871,28 +879,35 @@ items:
   kind: out-of-scope
   name: Swivel Gun
   name_i18n:
-    es: Radastré
+    es: Cañón Giratorio
+  # Printed entry: Pirate Warbands, p. 41 (broheim.net, unofficial/Pirates.pdf). The ammunition carries
+  # the Range and Strength.
   effect: >-
-    It's Everywhere! If a hit is scored, D6 other enemy models within 4" of the target and also in
-    Line of Sight will automatically take a single hit. If the original target was in the open, no
-    hits can be applied to models in cover though (only if the original target was in cover can hits
-    go to models in cover as well). The closest enemy model to the target must take the first hit,
-    then the next closest, and so on. Models in Hiding will also count towards being close to the
-    target, and can be hit as well. There is no Armour Save modifier from Grape Shot hits. Pirates
-    know to duck out of the way when they hear a Swivel Gun going off, and thus are never hit by
-    friendly Grape Shot.
+    Rare 8; one per warband. Pirate Gunners sometimes construct and carry into battle a smaller and
+    lighter version of the real swivel cannons normally attached to pivoting mounts on the ship's
+    railing or sides. Swivel Guns follow most of the rules for Blackpowder weapons, Move or Fire,
+    Prepare Shot, but have some exceptions. A Pirate Warband may have only one Swivel Gun at a time.
+    Cumbersome: The user is at -1 Initiative and -1 Movement throughout the battle. Also, Swivel
+    Guns may never be fired twice per turn, or fired if the user moved, no matter what Skills the
+    user may have. Blackpowder Rules: The normally optional rules for Blackpowder weapons are always
+    in effect for Swivel Guns. Special Ammunition: Swivel Guns use non-standard ammunition types
+    (Ball Shot, Chain Shot, Grape Shot), which must be bought for each game. Each type only lasts
+    one game. Before firing, the Gunner must declare which type is being used, if he has more than
+    one type available in the game.
   effect_i18n:
     es: >-
-      ¡Está en todas partes! Si se logra un impacto, D6 otros modelos enemigos dentro de 4" del
-      objetivo y también en línea de visión recibirán automáticamente un solo impacto. Si el
-      objetivo original estaba al aire libre, no se pueden aplicar impactos a los modelos en
-      cobertura (solo si el objetivo original estaba en cobertura los impactos también pueden ir a
-      los modelos en cobertura). El modelo enemigo más cercano al objetivo debe recibir el primer
-      impacto, luego el siguiente más cercano, y así sucesivamente. Los modelos escondidos también
-      contarán para estar cerca del objetivo y también pueden ser impactados. no hay modificador de
-      salvación de armadura por los golpes de Grape Shot. Los piratas saben que deben apartarse del
-      camino cuando escuchan el disparo de un arma giratoria y, por lo tanto, nunca son golpeados
-      por un Grape Shot amigo.
+      Raro 8; uno por banda. Los Artilleros piratas a veces construyen y llevan a la batalla una
+      versión más pequeña y ligera de los auténticos cañones giratorios que suelen montarse sobre
+      soportes pivotantes en la borda o los costados del barco. Los Cañones Giratorios siguen la
+      mayoría de las reglas de las armas de pólvora, Mover o disparar y Disparo preparado, con
+      algunas excepciones. Una banda pirata solo puede tener un Cañón Giratorio a la vez. Engorroso:
+      el usuario sufre -1 a la Iniciativa y -1 al Movimiento durante toda la batalla. Además, los
+      Cañones Giratorios nunca pueden dispararse dos veces por turno, ni dispararse si el usuario se
+      ha movido, tenga las Habilidades que tenga. Reglas de pólvora: las reglas normalmente
+      opcionales de las armas de pólvora se aplican siempre a los Cañones Giratorios. Munición
+      especial: los Cañones Giratorios usan tipos de munición no estándar (Bala, Cadena, Metralla),
+      que deben comprarse para cada partida. Cada tipo dura solo una partida. Antes de disparar, el
+      Artillero debe declarar qué tipo usa si dispone de más de uno en la partida.
   source_refs:
   - *id003
   combat_status: out_of_scope
@@ -1002,10 +1017,15 @@ items:
   name_i18n:
     es: Corcel de Guerra
   effect: >-
-    Wahapedia
+    Only available to Humans. Warhorses are large, well-trained horses, quite at home in battle.
+    They are primarily used by human warbands. Warhorses can only be used with the optional rules
+    for mounted models. Profile: M 8, WS 3, BS 0, S 3, T 3, W 1, I 3, A 1, Ld 5.
   effect_i18n:
     es: >-
-      Wahapedia
+      Solo disponible para humanos. Los caballos de guerra son caballos grandes y bien entrenados,
+      muy a gusto en la batalla. Los usan sobre todo las bandas humanas. Los caballos de guerra solo
+      pueden usarse con las reglas opcionales de miniaturas montadas. Perfil: M 8, HA 3, HP 0, F 3,
+      R 3, H 1, I 3, A 1, L 5.
   source_refs:
   - *id018
   - *id019

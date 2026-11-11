@@ -6,6 +6,9 @@ items:
   name: Ancestral Claw
   name_i18n:
     es: Garra Ancestral
+  # The Spanish Lustria "Garra Ancestral" (Amazons, 30) is the Claw of the Old Ones.
+  effect_ref: claw_of_the_old_ones
+  # states only what its equipment list records.
   source_refs:
   - &id025
     manual: lustria
@@ -53,6 +56,9 @@ items:
   name: Anointed Bolts
   name_i18n:
     es: Virotes Consagrados
+  # The Chaos in the Streets "Virotes Consagrados" (Devout list, 25) are the Protectorate's Blessed Bolts.
+  effect_ref: blessed_bolts
+  # states only what its equipment list records.
   source_refs:
   - &id024
     manual: chaos-in-the-streets
@@ -145,16 +151,8 @@ items:
   name: Beastmaster Whip
   name_i18n:
     es: Látigo de Señor de las Bestias
-  effect: >-
-    Range: Close Combat Strength: As user -1 Beastbane : The Beastmaster wielding a Beastlash causes
-    Fear in animals, any animal charged or wishing to charge a Beastmaster with one of these weapons
-    must first take a Fear test as mentioned in the psychology section of the Mordheim rules.
-  effect_i18n:
-    es: >-
-      Alcance: Combate cuerpo a cuerpo Fuerza: Como usuario -1 Beastbane: El Beastmaster que empuña
-      un Beastlash causa miedo en los animales, cualquier animal cargado o que desee cargar contra
-      un Beastmaster con una de estas armas primero debe realizar una prueba de miedo como se
-      menciona en la sección de psicología de las reglas de Mordheim.
+  # The Spanish Lustria "Látigo Señor Bestias" (Beastmaster only, 10) is the English Lustria Beastlash.
+  effect_ref: beastlash
   source_refs:
   - &id007
     manual: lustria
@@ -220,16 +218,7 @@ items:
   name: Bronze Axe
   name_i18n:
     es: Hacha de Bronce
-  effect: >-
-    Range: Close Combat Strength: As user Cutting Edge : An axe has an extra save modifier of -1, so
-    a model with Strength 4 using an axe has a -2 save modifier when he hits an opponent in
-    hand-to-hand combat.
-  effect_i18n:
-    es: >-
-      Alcance: Combate cuerpo a cuerpo Fuerza: Como usuario Filo de corte: Un hacha tiene un
-      modificador de salvación adicional de -1, por lo que un modelo con Fuerza 4 que usa un hacha
-      tiene un modificador de salvación de -2 cuando golpea a un oponente en combate cuerpo a
-      cuerpo.
+  effect_ref: axe
   source_refs:
   - &id003
     manual: khemri
@@ -241,6 +230,7 @@ items:
   name: Bronze Breastplate
   name_i18n:
     es: Peto de Bronce
+  effect_ref: light_armour
   source_refs:
   - *id003
   combat_status: implemented
@@ -250,16 +240,7 @@ items:
   name: Bronze Dagger
   name_i18n:
     es: Daga de Bronce
-  effect: >-
-    Range: Close Combat Strength: As user +1 Enemy armour save : Daggers are not the best weapons to
-    use for penetrating an enemy model's armour. An enemy wounded by a dagger gains a +1 bonus to
-    his armour save, and a 6+ armour save if he has none normally.
-  effect_i18n:
-    es: >-
-      Alcance: Cuerpo a cuerpo Fuerza: Como usuario +1 Salvación por armadura enemiga: Las dagas no
-      son las mejores armas para penetrar la armadura de un modelo enemigo. Un enemigo herido por
-      una daga obtiene una bonificación de +1 a su salvación por armadura, y una salvación por
-      armadura de 6+ si normalmente no la tiene.
+  effect_ref: dagger
   source_refs:
   - *id003
   - &id004
@@ -298,13 +279,7 @@ items:
   name: Bronze Spear
   name_i18n:
     es: Lanza de Bronce
-  effect: >-
-    Range: Close Combat Strength: As user Strike first : A warrior with a spear 'strikes first' in
-    the first turn of hand-to-hand combat. ✏️
-  effect_i18n:
-    es: >-
-      Alcance: Cuerpo a cuerpo Fuerza: Como usuario Golpea primero: un guerrero con una lanza "ataca
-      primero" en el primer turno del combate cuerpo a cuerpo. ✏️
+  effect_ref: spear
   source_refs:
   - *id003
   combat_status: out_of_scope
@@ -313,20 +288,7 @@ items:
   name: Bronze Sword
   name_i18n:
     es: Espada de Bronce
-  effect: >-
-    Range: Close Combat Strength: As user Parry : Swords offer an excellent balance of defence and
-    offence. A model armed with a sword may parry blows. When his opponent rolls to hit, the model
-    armed with a sword may roll a D6. If the score is greater than the highest to hit score of his
-    opponent, the model has parried the blow, and that attack is discarded. A model may not parry
-    attacks made with double or more its own Strength – they are simply too powerful to be stopped.
-  effect_i18n:
-    es: >-
-      Alcance: Cuerpo a cuerpo Fuerza: Como usuario Parar: Las espadas ofrecen un excelente
-      equilibrio entre defensa y ataque. Una miniatura armada con una espada puede parar golpes.
-      Cuando su oponente tira para impactar, la miniatura armada con una espada puede tirar 1D6. Si
-      la puntuación es mayor que la puntuación más alta para impactar de su oponente, el modelo ha
-      parado el golpe y ese ataque se descarta. Un modelo no puede parar ataques realizados con el
-      doble o más de su propia Fuerza; simplemente son demasiado poderosos para detenerlos.
+  effect_ref: sword
   source_refs:
   - *id003
   - *id004
@@ -336,6 +298,9 @@ items:
   name: Carronade
   name_i18n:
     es: Carronada
+  # The Spanish Lustria Carronade (65, Rare 8, one per warband, Gunners only) is the Swivel Gun.
+  effect_ref: swivel_gun
+  # states only what its equipment list records.
   source_refs:
   - &id005
     manual: lustria
@@ -347,6 +312,8 @@ items:
   name: Carronade Cannonball
   name_i18n:
     es: Bala de Carronada
+  effect_ref: ball_shot
+  # states only what its equipment list records.
   source_refs:
   - *id005
   combat_status: out_of_scope
@@ -355,6 +322,8 @@ items:
   name: Carronade Chain
   name_i18n:
     es: Cadena de Carronada
+  effect_ref: chain_shot
+  # states only what its equipment list records.
   source_refs:
   - *id005
   combat_status: out_of_scope
@@ -363,6 +332,8 @@ items:
   name: Carronade Grapeshot
   name_i18n:
     es: Metralla de Carronada
+  effect_ref: grape_shot
+  # states only what its equipment list records.
   source_refs:
   - *id005
   combat_status: out_of_scope
@@ -446,6 +417,13 @@ items:
   name: Dispelling Scroll
   name_i18n:
     es: Pergamino de Disipación
+  # Derived description: the printed entry of this item is not available to the catalogue; the text
+  # states only what its equipment list records.
+  effect: >-
+    Special equipment of the Mage Equipment List (Khemri, p. 59), 25 gc.
+  effect_i18n:
+    es: >-
+      Equipo especial de la Lista de equipo del Mago (Khemri, pág. 59), 25 co.
   source_refs:
   - &id009
     manual: khemri
@@ -578,6 +556,17 @@ items:
   name: Feather Headdress
   name_i18n:
     es: Tocado de Plumas
+  # Derived description: the printed entry of this item is not available to the catalogue; the text
+  # states only what its equipment list records.
+  effect: >-
+    Savage Goblin Hero equipment (Lustria, p. 97), 20 gc, Rare 6: worn by the warband leader only.
+    At creation the mandatory Witch Doctor is the leader; the headdress is inherited by each new
+    leader and must be worn.
+  effect_i18n:
+    es: >-
+      Equipo de los Héroes goblins salvajes (Lustria, pág. 97), 20 co, Raro 6: solo lo lleva el
+      líder de la banda. Al crear la banda, el Brujo obligatorio es el líder; cada nuevo líder
+      hereda el tocado y debe llevarlo.
   source_refs:
   - *id010
   combat_status: out_of_scope
@@ -651,6 +640,8 @@ items:
   name: Hammer or Mace
   name_i18n:
     es: Martillo o Maza
+  # The rulebook prints one entry for the Hammer, Staff, Mace or Club.
+  effect_ref: mace
   source_refs:
   - &id014
     manual: lustria
@@ -692,6 +683,9 @@ items:
   name: Horned Rat Amulet
   name_i18n:
     es: Amuleto del Rata Cuernudo
+  # The Spanish Lustria Pestilens list is the Town Cryer #29 list; its amulet (10) is the Warpstone Amulet.
+  effect_ref: warpstone_amulet
+  # states only what its equipment list records.
   source_refs:
   - *id015
   combat_status: out_of_scope
@@ -700,6 +694,15 @@ items:
   name: Icon of Manann
   name_i18n:
     es: Icono de Manann
+  # Derived description: the printed entry of this item is not available to the catalogue; the text
+  # states only what its equipment list records.
+  effect: >-
+    Special equipment of the Mage Equipment List (Khemri, p. 59): 30 gc when the warband is created;
+    later it is Rare 8 and costs 20+3D6 gc.
+  effect_i18n:
+    es: >-
+      Equipo especial de la Lista de equipo del Mago (Khemri, pág. 59): 30 co al crear la banda;
+      después es Raro 8 y cuesta 20+3D6 co.
   source_refs:
   - *id009
   combat_status: out_of_scope
@@ -708,6 +711,13 @@ items:
   name: Jungle Roast
   name_i18n:
     es: Asado de la Selva
+  # Derived description: the printed entry of this item is not available to the catalogue; the text
+  # states only what its equipment list records.
+  effect: >-
+    Pygmy equipment (Lustria, p. 121), 35 gc at warband creation; afterwards it follows the Trading rules.
+  effect_i18n:
+    es: >-
+      Equipo de los pigmeos (Lustria, pág. 121), 35 co al crear la banda; después sigue las reglas de Comercio.
   source_refs:
   - *id002
   combat_status: out_of_scope
@@ -735,12 +745,12 @@ items:
   name_i18n:
     es: Liturgicus Infecticus
   effect: >-
-    Town Cryer #29 ( 1b ) At the beginning of a turn, or just before taking a Rout Test, the warband
+    At the beginning of a turn, or just before taking a Rout Test, the warband
     may chant the Liturgicus Infecticus, and benefit of a +1 Leadership bonus until the end of the
     turn. (Clan Pestilens members use this item instead of the War horn ).
   effect_i18n:
     es: >-
-      Pregonero #29 (1b) Al comienzo de un turno, o justo antes de realizar una Prueba de Huida, la
+      Al comienzo de un turno, o justo antes de realizar una Prueba de Huida, la
       banda puede cantar el Liturgicus Infecticus y beneficiarse de una bonificación de Liderazgo +1
       hasta el final del turno. (Los miembros del clan Pestilens usan este objeto en lugar del
       cuerno de guerra).
@@ -752,6 +762,7 @@ items:
   name: Long Boathook
   name_i18n:
     es: Bichero Largo
+  effect_ref: boat_hook
   source_refs:
   - *id014
   - *id016
@@ -784,14 +795,8 @@ items:
   name: Mage Staff
   name_i18n:
     es: Bastón de Mago
-  effect: >-
-    Range: Close Combat Strength: As user Balanced : A quarter staff is especially light and easy to
-    wield. A model armed with a fighting staff gets +1 Initiative in close combat.
-  effect_i18n:
-    es: >-
-      Alcance: combate cuerpo a cuerpo Fuerza: como usuario Equilibrado: un cuarto de bastón es
-      especialmente ligero y fácil de manejar. Una miniatura armada con un bastón de combate obtiene
-      +1 a la iniciativa en combate cuerpo a cuerpo.
+  # The Spanish Lustria Mage Staff (Loremaster only, 20) is the English Lustria Mage Staff of Hoeth.
+  effect_ref: mage_staff_of_hoeth
   source_refs:
   - *id017
   combat_status: out_of_scope
@@ -800,6 +805,13 @@ items:
   name: Magic Tattoo
   name_i18n:
     es: Tatuaje Mágico
+  # Derived description: the printed entry of this item is not available to the catalogue; the text
+  # states only what its equipment list records.
+  effect: >-
+    Pygmy equipment (Lustria, p. 121), 30 gc at warband creation; afterwards it follows the Trading rules.
+  effect_i18n:
+    es: >-
+      Equipo de los pigmeos (Lustria, pág. 121), 30 co al crear la banda; después sigue las reglas de Comercio.
   source_refs:
   - *id002
   combat_status: out_of_scope
@@ -808,6 +820,13 @@ items:
   name: Magic Tattoos
   name_i18n:
     es: Tatuajes Mágicos
+  # Derived description: the printed entry of this item is not available to the catalogue; the text
+  # states only what its equipment list records.
+  effect: >-
+    Savage Goblin Hero equipment (Lustria, p. 97), 30 gc, Rare 9.
+  effect_i18n:
+    es: >-
+      Equipo de los Héroes goblins salvajes (Lustria, pág. 97), 30 co, Raro 9.
   source_refs:
   - *id010
   combat_status: out_of_scope
@@ -912,7 +931,7 @@ items:
   name_i18n:
     es: Túnicas Nómadas
   effect: >-
-    Khemri setting, Town Cryer #18 ( 1b ) Woven by native desert dwellers these robes enable the
+    Woven by native desert dwellers these robes enable the
     wearer to suffer only half penalties from Weather Conditions. The robes affect the following
     results on the Weather table: It's Raining: The robe protects the warrior's equipment. When
     rolling a D6 each time that you fire a black powder weapon, the shot is only wasted on a 1. Hot
@@ -923,7 +942,7 @@ items:
     warrior from the ferocity of the storm. Apply rules for a Dust Storm as normal
   effect_i18n:
     es: >-
-      Escenario de Khemri, Town Cryer #18 (1b) Tejidas por habitantes nativos del desierto, estas
+      Tejidas por habitantes nativos del desierto, estas
       túnicas permiten al usuario sufrir solo la mitad de las penalizaciones por las condiciones
       climáticas. Las túnicas afectan los siguientes resultados en la tabla de Clima: Está
       lloviendo: La túnica protege el equipo del guerrero. Al tirar un D6 cada vez que disparas un
@@ -987,13 +1006,13 @@ items:
   name_i18n:
     es: Estandarte de Pestilens
   effect: >-
-    Town Cryer #29 ( 1b ) A model within 12" of the standard bearer of the band, usually a Plague
+    A model within 12" of the standard bearer of the band, usually a Plague
     Monk or a Monk Initiate, may reroll once every failed all alone test. The staff of the Clan
     Pestilens banner counts as a two-handed weapon. A warband may have a single Clan Pestilens
     banner at any one time. (Clan Pestilens members use this item instead of the normal Banner).
   effect_i18n:
     es: >-
-      Town Cryer #29 ( 1b ) Una miniatura a 12" o menos del abanderado de la banda, normalmente un
+      Una miniatura a 12" o menos del abanderado de la banda, normalmente un
       Monje de la Plaga o un Monje Iniciado, puede volver a tirar una vez por cada prueba fallida en
       solitario. El bastón del estandarte del Clan Pestilens cuenta como un arma de dos manos. Una
       banda puede tener un solo estandarte del Clan Pestilens en cualquier momento. (Los miembros
@@ -1006,6 +1025,17 @@ items:
   name: Pirate Flag
   name_i18n:
     es: Bandera Pirata
+  effect: >-
+    One per warband. Any Hero may carry the Jolly Roger. Any Pirates within 12" of the Jolly Roger
+    never count as being All Alone in combat. Carrying the banner takes up one hand, so that model
+    may not carry or use any two-handed weapons during the game. Swabbies, lacking the true Pirate
+    spirit, do not gain any benefit from the Jolly Roger.
+  effect_i18n:
+    es: >-
+      Una por banda. Cualquier Héroe puede llevar la Bandera Pirata. Los Piratas a 12" o menos de la
+      Bandera Pirata nunca cuentan como Todo Solo en combate. Llevar el estandarte ocupa una mano, así
+      que esa miniatura no puede llevar ni usar armas a dos manos durante la partida. Los Fregones,
+      que carecen del verdadero espíritu pirata, no obtienen ningún beneficio de la Bandera Pirata.
   source_refs:
   - *id014
   combat_status: out_of_scope
@@ -1016,6 +1046,7 @@ items:
   name: Pistol Brace
   name_i18n:
     es: Arnés de Pistola
+  effect_ref: pistol
   source_refs:
   - *id019
   combat_status: implemented
@@ -1027,6 +1058,15 @@ items:
   name: Poison Darts
   name_i18n:
     es: Dardos Envenenados
+  # Derived description: the printed entry of this item is not available to the catalogue; the text
+  # states only what its equipment list records.
+  effect: >-
+    Deathbringer Assassin and Sniper equipment (Chaos in the Streets, p. 161): poisoned missile
+    weapon, 20 gc, Deathbringers only.
+  effect_i18n:
+    es: >-
+      Equipo de los Asesinos y Francotiradores Portadores de Muerte (Chaos in the Streets, pág.
+      161): arma de proyectil envenenada, 20 co, solo Portadores de Muerte.
   source_refs:
   - *id008
   - *id020
@@ -1038,6 +1078,13 @@ items:
   name: Poisoned Darts
   name_i18n:
     es: Dardos Envenenados
+  # Derived description: the printed entry of this item is not available to the catalogue; the text
+  # states only what its equipment list records.
+  effect: >-
+    Pygmy equipment (Lustria, pp. 121-122): poisoned missile weapon, 30 gc, Rare 8, Pygmies only.
+  effect_i18n:
+    es: >-
+      Equipo de los pigmeos (Lustria, págs. 121-122): arma de proyectil envenenada, 30 co, Raro 8, solo pigmeos.
   source_refs:
   - *id002
   combat_status: out_of_scope
@@ -1078,13 +1125,13 @@ items:
   name_i18n:
     es: Veneno de Reptil
   effect: >-
-    Lustria setting, Town Cryer #11 ( 1b ) Skink henchmen may buy low-strength Reptile Venom for
+    Skink henchmen may buy low-strength Reptile Venom for
     their missile weapons at a cost of 5 pts per weapon. This poison is a common item. This adds +1
     to the Strength of the weapon but does not grant the -1 save modifier. The poison only lasts for
     one battle and remember that all the henchmen in a group must be armed in the same manner.
   effect_i18n:
     es: >-
-      Escenario de Lustria, Town Cryer #11 (1b) Los secuaces Skink pueden comprar veneno de reptil
+      Los secuaces Skink pueden comprar veneno de reptil
       de baja potencia para sus armas de misiles a un costo de 5 puntos por arma. Este veneno es un
       elemento común. Esto añade +1 a la Fuerza del arma pero no otorga el modificador de salvación
       -1. El veneno solo dura una batalla y recuerda que todos los secuaces de un grupo deben estar
@@ -1102,6 +1149,15 @@ items:
   name: Sacrifice Dagger
   name_i18n:
     es: Daga de Sacrificio
+  # Derived description: the printed entry of this item is not available to the catalogue; the text
+  # states only what its equipment list records.
+  effect: >-
+    Savage Goblin Hero equipment (Lustria, p. 97): a close-combat weapon used for sacrifices, 10 gc,
+    Common, Witch Doctor only.
+  effect_i18n:
+    es: >-
+      Equipo de los Héroes goblins salvajes (Lustria, pág. 97): un arma de combate cuerpo a cuerpo
+      usada en los sacrificios, 10 co, Común, solo el Brujo.
   source_refs:
   - *id010
   combat_status: out_of_scope
@@ -1110,6 +1166,9 @@ items:
   name: Scourge
   name_i18n:
     es: Flagelo
+  # The Spanish Lustria Scourge (Heroes only, 8) is the Pirates' Cat O' Nine Tails.
+  effect_ref: cat_o_nine_tails
+  # states only what its equipment list records.
   source_refs:
   - manual: lustria
     printed_page: 107
@@ -1139,6 +1198,15 @@ items:
   name: Shrunken Head
   name_i18n:
     es: Cabeza Encogida
+  # Derived description: the printed entry of this item is not available to the catalogue; the text
+  # states only what its equipment list records.
+  effect: >-
+    Pygmy and Savage Goblin equipment (Lustria, pp. 97 and 121-122): used as a missile weapon, 25 gc
+    at warband creation, Rare 6; Pygmies or Savage Goblins only.
+  effect_i18n:
+    es: >-
+      Equipo de los pigmeos y de los goblins salvajes (Lustria, págs. 97 y 121-122): se usa como
+      arma de proyectil, 25 co al crear la banda, Raro 6; solo pigmeos o goblins salvajes.
   source_refs:
   - *id002
   - *id010
@@ -1166,22 +1234,19 @@ items:
   name: Snake Whip
   name_i18n:
     es: Látigo de Serpiente
+  # Printed entry: the Serpent Whip of the Lahmian warband, Khemri (broheim.net); same item, cost and bearers.
   effect: >-
-    Range: Close Combat Strength: As user Whipcrack : When the wielder charges they gain +1A for
-    that turn. This bonus attack is added after any other modifications. When the wielder is charged
-    they gain +1A that they may only use against the charger. This additional attack will 'strike
-    first'. If the wielder is simultaneously charged by two or more opponents they will still only
-    receive a total of +1A. If the wielder is using two whips at the same time then they get +1A for
-    the additional hand weapon, but only the first whip gets the whipcrack +1A. ✏️
+    Availability: Rare 8, Vampires and Blood Sisters only. Range: 4" Strength: As user. Special:
+    cannot be parried - the flexibility of the whip renders it impossible to be parried by swords or
+    bucklers; reach - user can attack enemies up to 4" away and such enemies cannot strike back,
+    provided no other enemy is in base contact; poisoned - treat as coated with black lotus.
   effect_i18n:
     es: >-
-      Alcance: Cuerpo a cuerpo Fuerza: Como usuario Whipcrack: Cuando el portador carga, obtiene +1A
-      para ese turno. Este ataque adicional se agrega después de cualquier otra modificación. Cuando
-      se carga al portador, obtiene +1A que solo puede usar contra el cargador. Este ataque
-      adicional "atacará primero". Si el portador es cargado simultáneamente por dos o más
-      oponentes, solo recibirá un total de +1A. Si el portador usa dos látigos al mismo tiempo,
-      obtiene +1A por el arma de mano adicional, pero solo el primer látigo recibe el chasquido +1A.
-      ✏️
+      Disponibilidad: Raro 8, solo Vampiros y Hermanas de Sangre. Alcance: 4" Fuerza: Como usuario.
+      Especial: no puede pararse (la flexibilidad del látigo hace imposible pararlo con espadas o
+      rodelas); alcance (el usuario puede atacar a enemigos a 4" o menos y esos enemigos no pueden
+      devolver el golpe, siempre que no haya otro enemigo en contacto peana con peana); envenenado
+      (se considera recubierto de Loto Negro).
   source_refs:
   - manual: khemri
     printed_page: 84
@@ -1195,6 +1260,13 @@ items:
   name: Spider Amulet
   name_i18n:
     es: Amuleto de Araña
+  # Derived description: the printed entry of this item is not available to the catalogue; the text
+  # states only what its equipment list records.
+  effect: >-
+    Pygmy equipment (Lustria, p. 121), 35 gc at warband creation; afterwards it follows the Trading rules.
+  effect_i18n:
+    es: >-
+      Equipo de los pigmeos (Lustria, pág. 121), 35 co al crear la banda; después sigue las reglas de Comercio.
   source_refs:
   - *id002
   combat_status: out_of_scope
@@ -1263,14 +1335,14 @@ items:
   name: Travel Staff
   name_i18n:
     es: Bastón de Viaje
+  # Derived description: the printed entry is in Chaos in the Streets, which is not available; the
+  # text states the profile its equipment list records.
   effect: >-
-    Range: Close Combat Strength: As user Balanced : A quarter staff is especially light and easy to
-    wield. A model armed with a fighting staff gets +1 Initiative in close combat.
+    Range: Close Combat Strength: As user Balanced: +1 Initiative in close combat. Arcane Society spellcasters only.
   effect_i18n:
     es: >-
-      Alcance: combate cuerpo a cuerpo Fuerza: como usuario Equilibrado: un cuarto de bastón es
-      especialmente ligero y fácil de manejar. Una miniatura armada con un bastón de combate obtiene
-      +1 a la iniciativa en combate cuerpo a cuerpo.
+      Alcance: Combate cuerpo a cuerpo Fuerza: Como usuario Equilibrado: +1 a la Iniciativa en
+      combate cuerpo a cuerpo. Solo lanzadores de conjuros de la Sociedad Arcana.
   source_refs:
   - *id019
   combat_status: implemented
@@ -1364,6 +1436,7 @@ items:
   name: Two Handed Club
   name_i18n:
     es: Garrote a Dos Manos
+  effect_ref: great_weapon
   source_refs:
   - manual: lustria
     printed_page: 97
@@ -1375,6 +1448,13 @@ items:
   name: Whip
   name_i18n:
     es: Látigo
+  # Derived description: the printed entry of this item is not available to the catalogue; the text
+  # states only what its equipment list records.
+  effect: >-
+    Necromancer and Undead Warrior equipment (Khemri, p. 53): a close-combat weapon, 10 gc.
+  effect_i18n:
+    es: >-
+      Equipo del Nigromante y de los Guerreros no muertos (Khemri, pág. 53): un arma de combate cuerpo a cuerpo, 10 co.
   source_refs:
   - *id022
   - *id012

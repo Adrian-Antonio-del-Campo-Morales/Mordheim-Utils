@@ -27,7 +27,7 @@ import { classifyVisibleText, buildIdInventory, GENERIC_FALLBACKS } from "../../
 import { readArtefactDocument } from "../../../../knowledge/support/kb-artefact";
 
 const PUBLISHED = resolve(process.cwd(), "..", "..", "outputs", "web-public", "knowledge", "knowledge-web.json");
-const SHARED_EXPECTED = 143;
+const SHARED_EXPECTED = 144;
 
 const artefact = readArtefactDocument(PUBLISHED);
 const knowledge = ArtefactKnowledgeReader.from(artefact);
@@ -41,7 +41,7 @@ const profiles = ((artefact as Record<string, unknown>).profiles as readonly Rec
 const displayNames = ((artefact as Record<string, unknown>).display_names as Record<string, Record<string, string>> | undefined) ?? {};
 
 describe('regression: "Reglas compartidas" publishes exactly the real shared rules', () => {
-  it("publishes exactly 143 shared-rules rows in the special-rules stem", () => {
+  it("publishes exactly 144 shared-rules rows in the special-rules stem", () => {
     expect(sharedRows.length).toBe(SHARED_EXPECTED);
   });
 

@@ -167,7 +167,7 @@ def test_profile_equipment_restrictions_have_a_legal_and_an_illegal_case():
 
 
 def test_profile_armour_prohibition_covers_the_pirate_equipment_lists():
-    # Every profile printed with "May not wear armour." offers armour suits on
+    # Every profile whose entry forbids body armour offers armour suits on
     # its own equipment list, so the restriction must refuse them at construction
     # instead of relying on the legacy prose match.
     for band, profile in (
@@ -189,7 +189,7 @@ def test_profile_armour_prohibition_covers_the_pirate_equipment_lists():
 
 
 def test_pirate_armour_prohibition_leaves_hand_held_defences_selectable():
-    # "May not wear armour" forbids armour suits, not the shield and helmet the
+    # The body-armour prohibition forbids armour suits, not the shield and helmet the
     # same printed list offers, so the restriction must use the armour-suit token.
     compile_fighter(FighterBuild(
         "mordheim", band_id="bretonnian-buccaneers-sar", profile_id="captain",

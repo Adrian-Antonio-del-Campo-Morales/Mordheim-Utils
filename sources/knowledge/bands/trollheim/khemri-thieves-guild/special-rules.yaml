@@ -544,7 +544,18 @@ rules:
       scope: 'NO'
       binding: null
       reason: out-of-scope.magic
-  rule_ref: shared-rule.infiltration
+  # Not shared: the printed entry also names the profile that may not take the skill, which the
+  # shared Infiltration text does not carry.
+  effect: >-
+    Ruffians may not take this skill. The Hero deploys after the opposing warband and may be placed
+    anywhere outside enemy line of sight and more than 12" from every enemy model. If both players
+    have infiltrating models, roll D6 for each; the lowest result deploys first.
+  effect_i18n:
+    es: >-
+      Los Matones no pueden tomar esta habilidad. El Héroe se despliega después de la banda rival y
+      puede colocarse en cualquier punto fuera de la línea de visión enemiga y a más de 12" de cada
+      modelo enemigo. Si ambos jugadores tienen modelos que se infiltran, tira D6 por cada uno; el
+      de menor resultado se despliega primero.
 
 - id: guild-chief--equipment-restrictions
   runtime:

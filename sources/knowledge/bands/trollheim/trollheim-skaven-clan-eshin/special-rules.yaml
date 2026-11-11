@@ -252,7 +252,17 @@ rules:
         scope: 'YES'
       - id: movement
         scope: 'NO'
-  rule_ref: shared-rule.black-hunger
+  # Not shared: this source prints the metric Movement bonus (1D6 x 0.4" + 1"), not the +D3" of the
+  # shared text, and the two are different magnitudes.
+  effect: >-
+    At the start of his turn, the Skaven Hero may invoke Black Hunger. For that turn he gains +1
+    Attack and adds the result of 1D6 x 0.4" + 1" to his Movement. At the end of the turn he suffers
+    1D3 Strength 3 hits with no armour save.
+  effect_i18n:
+    es: >-
+      Al comienzo de su turno, el Héroe skaven puede invocar el Hambre negra. Durante ese turno gana
+      +1 Ataque y añade a su Movimiento el resultado de 1D6 x 0,4" + 1". Al final del turno sufre
+      1D3 impactos de Fuerza 3 sin tirada de salvación por armadura.
 - id: band--skaven-special-skills-tail-fighting
   kind: warband_skill
   runtime:

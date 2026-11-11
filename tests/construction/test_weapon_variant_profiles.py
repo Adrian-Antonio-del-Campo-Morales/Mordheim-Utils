@@ -4,16 +4,16 @@ Source (``sources/knowledge``):
 
 * ``catalog/items/weapons-close-combat.yaml`` / ``cleaver``: *"Strength: As user
   -1 Save : Target gets -1 to armour save"* — the printed Strength column is "As
-  user" and the ``-1`` belongs to the Save column — and
-  ``cleaver_counts_as_axe``: the Cleaver counts as an Axe.
+  user" and the ``-1`` belongs to the Save column, which is the Axe profile — and
+  ``cleaver_counts_as_axe``: the Cleaver counts as an Axe. Both bind ``weapon.axe``.
 * ``catalog/items/weapons-close-combat.yaml`` / ``barbed_whip``: *"Strength: As
   user Whipcrack"* — no Strength penalty and no *cannot be parried* property.
 * ``catalog/items/weapons-close-combat.yaml`` / ``ladle``: *"No save except
   shields … The only saving throws allowed are from shields or skills."*
 
-Each printed variant now resolves to its own ``weapon.*`` operator through the
-item record, so the shared ``weapon.axe`` / ``weapon.beastlash`` / ``weapon.mace``
-profiles keep their own printed text.
+Each printed variant resolves through its item record to the operator it fights
+as: the Cleaver to ``weapon.axe``, whose profile it shares, and the Barbed Whip and
+Ladle to their own operators, distinct from ``weapon.beastlash`` / ``weapon.mace``.
 """
 from __future__ import annotations
 
@@ -27,8 +27,8 @@ from mordheim_core.models import Characteristics, FighterBuild
 from mordheim_knowledge.loader import load_items, load_simulation_mappings
 
 VARIANTS = {
-    "cleaver": "weapon.cleaver",
-    "cleaver_counts_as_axe": "weapon.cleaver",
+    "cleaver": "weapon.axe",
+    "cleaver_counts_as_axe": "weapon.axe",
     "barbed_whip": "weapon.barbed-whip",
     "ladle": "weapon.ladle",
 }
@@ -49,14 +49,12 @@ def test_each_printed_variant_resolves_to_its_own_operator():
 
 
 def test_the_cleaver_keeps_the_bearer_strength_and_counts_as_an_axe():
-    cleaver = build("weapon.cleaver").main_weapon
-    # "Strength: As user": the printed -1 belongs to the Save column, so the
-    # weapon carries the armour modifier and no Strength penalty.
+    # "Strength: As user": the printed -1 belongs to the Save column, which is
+    # exactly the Axe profile, so both Cleaver items bind the Axe mechanic.
+    cleaver = build("weapon.axe").main_weapon
     assert cleaver.strength_bonus == 0
     assert cleaver.armour_penetration == 1
-    # The identity the printed clause names, while the Cleaver profile governs.
     assert "weapon.axe" in cleaver.tags
-    assert build("weapon.axe").main_weapon.strength_bonus == 0
 
 
 def test_the_barbed_whip_prints_no_strength_penalty_and_no_cannot_be_parried():

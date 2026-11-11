@@ -655,17 +655,12 @@ rules:
     band: true
 - id: troll-slayer--no-armour
   name: No Armour
-  effect: >-
-    A Troll Slayer may never wear any form of armour.
   source:
     manual: khemri
     printed_page: 68
     section: Heroes / 0-1 Troll Slayer / No Armour
   name_i18n:
     es: Sin Armadura
-  effect_i18n:
-    es: >-
-      Un Matatrolles jamás puede llevar ningún tipo de armadura.
   applies_to:
     profile_ids:
     - troll-slayer
@@ -681,6 +676,7 @@ rules:
         id: profile.equipment-restrictions
         parameters:
           forbids: armour
+  rule_ref: shared-rule.no-armour
 - id: troll-slayer--no-missile-weapons
   name: No Missile Weapons
   effect: >-

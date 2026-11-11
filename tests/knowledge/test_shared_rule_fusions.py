@@ -13,6 +13,19 @@ from mordheim_knowledge.loader import load_bands, load_shared_rules
 #: in the recipient's name) references it instead of restating the prose.
 FUSED_REFERENCE_COUNTS = {
     "shared-rule.animal": 20,
+    # 2026-11-11 armour correction: each text says what its binding forbids. `no-armour` members bind
+    # `forbids: armour` (every armour item, shields and helmets included); `no-body-armour` members
+    # bind `forbids: armour-suit` (body armour only). The Estalian list keeps its own text.
+    "shared-rule.no-armour": 17,
+    "shared-rule.no-body-armour": 7,
+    # 2026-11-11 correction: the two members whose printed entry also names who may not take the
+    # skill, and the two that print the metric Movement bonus, keep their own prose.
+    "shared-rule.infiltration": 16,
+    "shared-rule.black-hunger": 3,
+    # 2026-11-11 correction: the two Strigoi bats print only 'Equipment: None', and the two Lustria
+    # elf bands print the Spanish centimetre distance, so they keep their own prose.
+    "shared-rule.no-weapons-or-armour": 4,
+    "shared-rule.excellent-sight": 2,
     "shared-rule.burn-the-witch": 2,
     "shared-rule.fear": 44,
     "shared-rule.immune-to-poison": 27,
@@ -66,7 +79,7 @@ RETIRED_RULE_IDS = {
 
 def test_fused_shared_rules_are_the_only_reference_targets() -> None:
     shared = load_shared_rules("mordheim")
-    assert len(shared) == 143
+    assert len(shared) == 144
     assert set(FUSED_REFERENCE_COUNTS) <= set(shared)
     assert RETIRED_RULE_IDS.isdisjoint(shared)
 

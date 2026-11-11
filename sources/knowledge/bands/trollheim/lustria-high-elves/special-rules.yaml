@@ -134,7 +134,17 @@ rules:
       scope: 'NO'
       binding: null
       reason: out-of-scope.magic
-  rule_ref: shared-rule.excellent-sight
+  # Not shared: the Spanish Lustria source gives the distance in centimetres (twice the Initiative
+  # in cm), not the inches of the shared text. The High Elf page itself was not retrievable; the
+  # rule sentence is the one the same book prints for its Dark Elves, which the earlier record
+  # described identically.
+  effect: >-
+    Elves can spot Hidden enemies at twice the distance of a normal warrior (twice their
+    Initiative characteristic in cm).
+  effect_i18n:
+    es: >-
+      Los Elfos pueden distinguir enemigos ocultos al doble de distancia que un guerrero normal (el
+      doble de su atributo de Iniciativa en cm).
 - id: band--haughty
   name: Haughty
   effect: >-

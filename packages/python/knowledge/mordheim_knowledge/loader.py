@@ -292,6 +292,20 @@ def load_items(ruleset: str, root: Path | None = None):
     ids = [str(row.get("id") or "") for row in rows]
     if any(not item_id for item_id in ids) or len(ids) != len(set(ids)):
         raise ValueError("item catalogue has missing or duplicate IDs")
+    # ``effect_ref`` makes an item a list row naming another item: it shows that
+    # item's printed entry instead of restating it. The text lives once, so the
+    # referencing record carries no prose of its own and the target must carry
+    # its own (one level, no chains).
+    by_id = {str(row["id"]): row for row in rows}
+    for row in rows:
+        target_id = row.get("effect_ref")
+        if target_id is None:
+            continue
+        target = by_id.get(str(target_id))
+        if "effect" in row or "effect_i18n" in row:
+            raise ValueError(f"item {row['id']} declares both effect_ref and its own effect")
+        if target is None or not target.get("effect") or target.get("effect_ref"):
+            raise ValueError(f"item {row['id']} effect_ref {target_id!r} is not an item with its own effect")
     return tuple(rows)
 
 
