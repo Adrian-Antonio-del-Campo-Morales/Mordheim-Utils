@@ -730,23 +730,12 @@ export interface OpenClauseTable {
   readonly reason: string;
 }
 
-export interface TransferTable {
-  readonly effect_id: string;
-  readonly owner: string;
-  readonly mechanism: string;
-  readonly to_task: "T10" | "T13";
-  readonly reason: string;
-}
-
 /**
  * Clauses whose KB record declares no executable structure: the
  * construction contract reports them instead of inventing a decision.
  */
 export const OPEN_CLAUSES: readonly OpenClauseTable[] =
   CLAUSES.open_clauses as readonly OpenClauseTable[];
-
-/** Obligations whose subsystem belongs to a later layer; declared, never re-routed. */
-export const TRANSFERS: readonly TransferTable[] = CLAUSES.transfers as readonly TransferTable[];
 
 /**
  * Open construction clauses of a band (`profile === null`) or the clauses that
