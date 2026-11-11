@@ -8,7 +8,8 @@ demonstrate:
   close-combat.yaml``) that the runtime scope does not exclude;
 * ``item/<item-id>`` — an item whose ``combat_status`` is ``implemented``;
 * ``rule/<collection>/<owner>/<rule-id>/<effect-id>`` — a classified effect of a
-  band rule or catalogue skill whose scope is ``YES``.
+  band rule, catalogue skill, or hireling rule (``catalog/hirelings/<owner>/``,
+  top-level and inline profile rules alike) whose scope is ``YES``.
 
 A record may break its printed text into *clauses* (``clauses: [{id, scope}]``)
 when it has several observable parts, or when part of the printed text is
@@ -121,6 +122,14 @@ def iter_identities(root: Path | None = None) -> Iterator[Identity]:
     for path in sorted((base / "catalog/skills").glob("*.yaml")):
         for skill in read_yaml(path).get("skills") or ():
             yield from rule_effects(skill, "catalog", path.stem, relative(path))
+    for path in sorted((base / "catalog/hirelings").glob("*/*.yaml")):
+        document = read_yaml(path)
+        for rule in document.get("rules") or ():
+            yield from rule_effects(rule, "catalog", path.parent.name, relative(path))
+        for profile in document.get("profiles") or ():
+            for rule in profile.get("rules") or ():
+                if isinstance(rule, dict):
+                    yield from rule_effects(rule, "catalog", path.parent.name, relative(path))
 
 
 @lru_cache(maxsize=None)
