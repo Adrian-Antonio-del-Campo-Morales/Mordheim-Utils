@@ -3,14 +3,18 @@ band_id: night-goblins-kaz
 rules:
 - id: band--animosity
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
-    grant: band
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
     effects:
-    - id: unimplemented.night-goblins-kaz.band.animosity
-      scope: 'NO'
-      binding: null
-      reason: out-of-scope.group
+    - id: mechanic.goblin-squabble
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.goblin-squabble
+      clauses:
+      - id: animosity
+        scope: 'NO'
   name: Animosity
   effect: >-
     Goblins spend much of their lives squabbling and fighting amongst themselves. Sometimes this
@@ -27,13 +31,18 @@ rules:
     es: Rencor
   effect_i18n:
     es: >-
-      Los Goblins pasan gran parte de sus vidas reñían y peleando entre ellos. A veces esto ocurre
+      Los Goblins pasan gran parte de sus vidas riñendo y peleando entre ellos. A veces esto ocurre
       en el peor de los momentos. Al inicio de cada turno de Goblins Nocturnos tira 1D6. Con un
       resultado de 1, empiezan a reñir y no harán nada más durante el resto del turno. Solo se ven
       afectados los Goblins Nocturnos. Trolls, squigs, snotlings y otros no goblins no se ven
       afectados y actuarán con normalidad.
   applies_to:
-    band: true
+    profile_ids:
+    - big-boss
+    - shaman
+    - bosses
+    - night-goblins
+    - fanatics
 - id: band--hate-stunties
   runtime:
     scope: 'YES'
