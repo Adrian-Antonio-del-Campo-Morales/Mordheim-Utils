@@ -592,6 +592,42 @@ items:
   - *id003
   combat_status: implemented
   mechanic_id: weapon.pirate-scourge
+- id: slaver_scourge
+  kind: close-combat-weapon
+  name: Scourge
+  name_i18n:
+    es: Flagelo
+  # Printed entry: Relics of the Crusades part 1, "new equipment", p. 17 ("It's very touch" sic).
+  # The entry prints no stat line, cost or rarity; the lists charge 15 dinars (Common on the locale
+  # trading charts). The Lustria Scourge (the Pirates' Cat O' Nine Tails) is the separate scourge
+  # record; the Slave Driver reach this weapon grants is supplied to the duel as the scourge_armed
+  # trait.
+  effect: >-
+    A scourge is a wicked weapon, often made of spiked chains that tear at flesh. It is a mark of
+    pride for an overseer or torturer to be able to flay skin from bone when he uses one. A scourge
+    is counted as a blunt close combat weapon that cannot be parried. It's very touch is pain, so
+    if the target is not wearing armour it adds +1 strength. However, armour will stop most of a
+    scourge's biting teeth, so if the target is wearing any form of armour (excluding a shield or
+    helmet) the user is at -1 to strength.
+  effect_i18n:
+    es: >-
+      Un flagelo es un arma perversa, a menudo hecha de cadenas con púas que desgarran la carne.
+      Para un capataz o un torturador es un motivo de orgullo poder arrancar la piel hasta el hueso
+      cuando lo usa. Un flagelo se considera un arma contundente de combate cuerpo a cuerpo que no
+      puede ser parada. Su mero contacto es dolor, de modo que si el objetivo no lleva armadura
+      añade +1 a la Fuerza. Sin embargo, la armadura detiene la mayoría de los dientes del flagelo,
+      así que si el objetivo lleva cualquier tipo de armadura (excluyendo escudo o yelmo) el
+      usuario sufre -1 a la Fuerza.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 17
+    section: new equipment / Scourge
+    url: https://broheim.net/downloads/fo/96RelicsoftheCrusadesPt1.pdf
+  - manual: broheim.net
+    printed_page: 37
+    section: Slaver Equipment List / Hand-to-hand Combat Weapons
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  combat_status: out_of_scope
 - id: cathayan_longsword
   kind: close-combat-weapon
   name: Cathayan Longsword

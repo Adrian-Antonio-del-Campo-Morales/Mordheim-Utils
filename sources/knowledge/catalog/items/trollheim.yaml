@@ -1168,15 +1168,16 @@ items:
   name: Scourge
   name_i18n:
     es: Flagelo
-  # The Spanish Lustria Scourge (Heroes only, 8) is the Pirates' Cat O' Nine Tails.
+  # The Spanish Lustria Scourge (Heroes only, 8) is the Pirates' Cat O' Nine Tails. The Relics of
+  # the Crusades Scourge is the separate slaver_scourge record.
   effect_ref: cat_o_nine_tails
-  # states only what its equipment list records.
   source_refs:
   - manual: lustria
     printed_page: 107
     section: Norse Equipment List
   - *id014
-  combat_status: out_of_scope
+  combat_status: implemented
+  mechanic_id: weapon.pirate-scourge
 - id: scythe
   kind: trollheim-equipment
   name: Scythe
