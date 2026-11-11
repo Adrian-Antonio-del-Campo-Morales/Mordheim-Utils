@@ -372,7 +372,7 @@ rules:
     Warriors with the Undead special rule are unaffected by poison.
   effect_i18n:
     es: >-
-      Los guerreros con la regla especial Muerto viviente no se ven afectados por el veneno.
+      Los guerreros con la regla especial No muerto no se ven afectados por el veneno.
 - id: shared-rule.immune-to-psychology
   name: Immune to Psychology
   name_i18n:
@@ -554,7 +554,7 @@ rules:
     All warriors with the Undead special rule treat a Stunned result as Knocked Down.
   effect_i18n:
     es: >-
-      Todos los guerreros con la regla especial Muerto viviente tratan un resultado de Aturdido como
+      Todos los guerreros con la regla especial No muerto tratan un resultado de Aturdido como
       Derribado.
 - id: shared-rule.pack-leader
   name: Pack Leader
@@ -871,7 +871,7 @@ rules:
     Dark Elves Hate all High Elf warriors, including High Elf Hired Swords.
   effect_i18n:
     es: >-
-      Los Elfos Oscuros Odian a todos los guerreros Altos Elfos, incluidas las Espadas de Alquiler
+      Los Elfos Oscuros Odian a todos los guerreros Altos Elfos, incluidas las Espadas a Sueldo
       Altos Elfos.
 - id: shared-rule.knights-feats
   name: Knights Feats
@@ -1034,7 +1034,7 @@ rules:
     Purity.
   effect_i18n:
     es: >-
-      A este guerrero le aplican las siguientes reglas anteriores: Caballerosidad, Don del Señor y
+      A este guerrero se le aplican las siguientes reglas anteriores: Caballerosidad, Don del Señor y
       Virtud de Pureza.
 - id: shared-rule.knights-virtue
   name: Knight's Virtue
@@ -1103,7 +1103,7 @@ rules:
     es: >-
       Los Snotlings son criaturas naturalmente gregarias. Se compran inicialmente en una horda de 5.
       Puedes reponer miembros de la horda hasta un máximo de 5. Siempre se moverán y lucharán como
-      una horda. Todos los miembros deben permanecer a 1" y todos se unirán al mismo combate si es
+      una horda. Todos los miembros deben permanecer a 1" o menos entre sí y todos se unirán al mismo combate si es
       posible.
 - id: shared-rule.they-got-away
   name: They Got Away!
@@ -1176,7 +1176,7 @@ rules:
     es: >-
       Nunca puede usar armas de pólvora negra. Nunca puede usar drogas ni venenos. Nunca puede usar
       equipo de fabricación enana, incluido el equipo de Gromril y Obsidiana. No puede elegir el
-      Bastón de Mago ni las Runas Élficas; esas entradas son solo para el Maestro de Saberes.
+      Bastón de Mago ni las Piedras Rúnicas Élficas; esas entradas son solo para el Maestro de Saberes.
 # The two armour prohibitions differ in what they forbid, and each text says exactly that. Members
 # of `no-armour` bind `forbids: armour` (every armour item, shields and helmets included); members
 # of `no-body-armour` bind `forbids: armour-suit` (body armour only). Most members state the
@@ -1283,7 +1283,7 @@ rules:
     armour and saving throws are allowed.
   effect_i18n:
     es: >-
-      Un 6 natural en la tirada para golpear hiere automáticamente; el golpe no puede ser detenido,
+      Un 6 natural en la tirada para impactar hiere automáticamente; el golpe no puede ser parado,
       pero se permiten las tiradas de armadura y salvación.
 - id: shared-rule.pirate-rules
   name: General Pirate Rules
@@ -1305,7 +1305,7 @@ rules:
       en las reglas de campaña de Sartosa). Espadas a Sueldo: salvo indicación contraria, las bandas
       de Piratas tienen el mismo acceso a Espadas a Sueldo y objetos que una banda mercenaria humana
       normal; sin embargo, deben pagar +20 coronas adicionales de mantenimiento si tienen enanos y
-      elfos juntos en la misma banda (¡el barco es solo tan grande!). Los cañones giratorios son
+      elfos juntos en la misma banda (¡el espacio en el barco es limitado!). Los cañones giratorios son
       raros, ¡amigo!: salvo los Piratas Sartosanos, ninguna banda pirata puede empezar con un cañón
       giratorio en su lista en partidas de campaña; en partidas sueltas, los no Sartosanos pueden
       comprar uno por 2D6 coronas adicionales. Sucesión: si el Capitán muere, uno de los
@@ -1413,15 +1413,15 @@ rules:
     so each carries its own out-of-scope disposition.
   effect_i18n:
     es: >-
-      Los heroes enanos pueden usar cualquiera de las Habilidades Especiales Enanas listadas en Town
-      Crier 6 (o Best of Town Crier): Maestro de Hojas, Duro de Pelar, Cazador de Recursos, Temple
-      de Acero y Craneo Grueso. Maestro de Hojas es una unica entrada impresa y publica una unica
-      habilidad equivalente, Guerrero Imbatible (parar igualando la tirada mas alta y dos paradas
-      con dos armas con Parada); Maestro de la Espada del Vampiro es un contrato distinto y nunca se
-      concede por esta entrada. La frase impresa de Maestro de Hojas sobre dos Hachas Enanas llega a
-      rule.dwarf-axe-parry-reroll, no a esta columna. Duro de Pelar y Cazador de Recursos son
-      miembros impresos cuyo efecto completo es contabilidad de campana posterior a la partida, asi
-      que cada uno lleva su propia disposicion fuera de alcance.
+      Los Héroes enanos pueden usar cualquiera de las Habilidades Especiales Enanas listadas en Town
+      Crier 6 (o Best of Town Crier): Maestro de las Hojas, Extra Resistente, Cazador de Recursos,
+      Entereza y Cráneo Grueso. Maestro de las Hojas es una única entrada impresa y publica una
+      única habilidad equivalente, Guerrero Imbatible (parar igualando la tirada más alta y dos
+      paradas con dos armas con Parada); Maestro de la Espada del Vampiro es un contrato distinto y
+      nunca se concede por esta entrada. La frase impresa de Maestro de las Hojas sobre dos Hachas
+      Enanas llega a rule.dwarf-axe-parry-reroll, no a esta columna. Extra Resistente y Cazador de
+      Recursos son miembros impresos cuyo efecto completo es contabilidad de campaña posterior a la
+      partida, así que cada uno lleva su propia disposición fuera de alcance.
 - id: shared-rule.animosity-forest-goblins
   name: Animosity
   name_i18n:
@@ -1455,7 +1455,7 @@ rules:
       Poesía: el Erudito escribe grandes poemas que aumentan la reputación de la banda por toda la
       tierra y los inspiran a grandes hazañas; tu líder suma +1 a su Liderazgo en su primer chequeo
       de liderazgo de un escenario si tu banda ganó la última batalla; además, durante un turno de
-      un escenario, el poeta otorga a cualquier modelo amigable a 6" +1 HA y +1 A. Teología: este
+      un escenario, el poeta otorga a cualquier modelo aliado a 6" +1 HA y +1 A. Teología: este
       Erudito es un devoto servidor de El Uno y tiene acceso a Habilidades Sagradas. Lo Oculto: el
       erudito está versado en las artes de la magia y es un mago que puede usar Magia Menor (ver la
       sección de Magia de las reglas básicas).
@@ -1667,7 +1667,7 @@ rules:
     If more than one scout henchman shoots at the same target, they get +1 on the injury roll.
   effect_i18n:
     es: >-
-      Si más de un explorador (hombre de tropa) dispara al mismo objetivo, obtienen +1 en la tirada
+      Si más de un secuaz explorador dispara al mismo objetivo, obtienen +1 en la tirada
       de herida.
 - id: shared-rule.lahmian-brotherhood-equipment-restrictions
   name: Equipment Restrictions
