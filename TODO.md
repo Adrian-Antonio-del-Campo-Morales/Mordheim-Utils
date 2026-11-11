@@ -39,7 +39,56 @@ The resulting model is documented in `docs/reference/knowledge-base.md`. The arc
 
 ### Verification at handoff
 
-The handoffs report passing format, name, structural, schema-strictness, clause and skeleton/sc
+The handoffs report passing format, name, structural, schema-strictness, clause and skeleton/scaffold checks, subject to the pre-existing failures and name-normalisation exceptions listed below.
+
+The knowledge, construction, full E2E battery, Combat Lab non-UI, tooling, Modular engine, web Vitest and TypeScript package suites passed apart from the recorded exceptions. The Combat Lab UI tests require Tkinter.
+
+The comments in `.github/workflows/ci.yml` were updated. CI had yet to run on the branch.
+
+### Open decisions for the user
+
+- **Night Goblins (KAZ) Animosity.** `band--animosity` prints the same text as Crooked Moon's rule, which binds `mechanic.goblin-squabble`. Aligning the KAZ binding changed every KAZ Night Goblin fighter and broke 13 unrelated E2E scenarios. The alignment was reverted, and the rule retains `out-of-scope.group`. Decide whether the two bands should share the simulated behaviour or whether the KAZ rule requires a different interpretation. If the shared binding is adopted, the affected scenarios need to reflect that intended behaviour.
+
+- **Identical armour-restriction texts with different parameters.** Sixteen rules share the wording “may not wear armour” but encode the restriction through different `profile.equipment-restrictions` parameters, including `armour`, `armour-suit` and explicit item IDs. The prose was consolidated while the existing eligibility parameters were preserved. Review whether those parameters represent intended differences or should converge.
+
+- **Clause scope versus effect scope.** `python tools/knowledge/clauses.py check` lists 30 clauses admitted as `YES` under effects classified `NO` or `LATER`. These came from the register and were retained to preserve the existing E2E identities. Reconcile each clause with its effect by deciding whether the effect should be reclassified or the clause should be withdrawn from admitted coverage.
+
+- **Undead recipient variants.** The shared descriptions `no-pain-undead`, `immune-to-psychology-undead`, `immune-to-poison-undead`, `may-not-run-undead` and `cause-fear-undead` refer to “all warriors with the Undead special rule”. They remain separate from the corresponding per-warrior descriptions. Decide whether that recipient distinction warrants separate shared texts or can be represented while consolidating the wording.
+
+### Remaining consolidation work
+
+- **Item text duplicates.** The step-two analysis reported 18 exact and 10 near-duplicate item texts, including `club`/`mace`, the three staffs, `pistol`/`warp_pistol` and boats. Review each group to decide whether a single record or shared description is appropriate, taking account of differences in item properties and rule application. The review list belongs in `outputs/kb-consolidation-review/` and can be regenerated from the KB.
+
+- **Missing item descriptions.** Twenty canonical items still publish no description. The corresponding web test expects 22 and already failed on the committed tree. Resolve the description gaps and the test's expectation as part of the item review.
+
+- **Item coverage.** Of 163 implemented items, 158 have no deterministic test naming them. Use `python tools/knowledge/clauses.py coverage --kind item --pending` to inspect the outstanding declarations.
+
+- **Campaign spells duplicated across lores.** Compare `woodland-incantations` with `wood-elven-spells`, and `forest-goblin-magic.eadbanger` with `goblin-magic.eadbanger`, against the printed sources. Establish whether both lores exist independently or whether one is a reprint, then consolidate confirmed duplication while preserving distinct rules.
+
+- **Equipment-restriction prose.** Many band rules named `*--equipment-restrictions` restate per-profile information already encoded in `profiles.yaml` and the `profile.equipment-restrictions` binding. Decide whether their wording should remain as printed evidence or become references to a small set of neutral shared texts. This is related to the parameter review above, which determines the actual eligibility behaviour.
+
+- **Observables for E2E authors.** The register's contract phrasing now lives in the archive. When a scaffold is next authored, describe the expected observation in the scenario's comments or the test's docstring. Consider a one-off copy of the archived contracts into unauthored scaffold headers where that wording would help the author.
+
+- **Hireling identities and coverage.** Rules in `catalog/hirelings/*/rules.yaml` and inline hireling profile rules are outside the current coverage identity inventory. Add them to `mordheim_knowledge.clauses` when their E2E or marker coverage starts.
+
+- **TypeScript construction ledger.** `packages/typescript/domain/campaign/construction-clauses.json` remains a separate clause-like store owned by the eligibility domain. It was deliberately left outside this migration. Review whether the same consolidation approach can be applied while preserving its eligibility responsibilities.
+
+- **Spanish translation review.** Review the neutralised Spanish descriptions introduced during consolidation against the printed Spanish sources. The shared rules created on 2026-11-11 are identified in `docs/archive/prose-consolidation-2026-11-11.json`.
+
+- **Commit when accepted.** Commit the staged changes once the user accepts them.
+
+### Pre-existing failures and environment blockers
+
+- **Sunstaff Lustria translation.** The item has English-only prose. This causes two Python test failures and three web test failures involving translation and web completeness.
+
+- **Extra Arm with a shield.** The E2E scenario `band--mutations-extra-arm::a-shield-in-the-extra-arm-still-adds-one-attack` also fails on the committed tree.
+
+- **Name normalisation.** `catalog/campaign/mutations.yaml` and `registry/sources.yaml` have pre-existing title-case drift and fail `normalize_names.py --check` on the committed tree. This was left outside the consolidation diff. Run `normalize_names.py --write` in its own change.
+
+- **Generated web artefact.** One web test requires a `build/generated` artefact that was unavailable in the worktree.
+
+- **Combat Lab UI environment.** The UI tests require Tkinter, which was unavailable in the Python environment used for verification.
+
 
 
 ## Modular integration and E2E coverage
