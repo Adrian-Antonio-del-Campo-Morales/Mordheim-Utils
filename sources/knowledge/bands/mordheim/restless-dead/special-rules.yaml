@@ -45,8 +45,6 @@ rules:
           - weapons
           - armour
   name: Equipment Restrictions
-  effect: >-
-    May not carry weapons or wear armour and suffers no penalty for fighting unarmed.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -54,12 +52,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      No puede llevar armas ni armadura y no sufre penalización por luchar sin armas.
   applies_to:
     profile_ids:
     - zombies
+  rule_ref: shared-rule.no-weapons-or-armour-unarmed
 - id: scarecrows--equipment-restrictions
   runtime:
     scope: 'YES'
@@ -75,8 +71,6 @@ rules:
           forbids:
           - equipment
   name: Equipment Restrictions
-  effect: >-
-    Carries no equipment and suffers no penalty for fighting unarmed.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -84,12 +78,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      No lleva equipo y no sufre penalización por luchar sin armas.
   applies_to:
     profile_ids:
     - scarecrows
+  rule_ref: shared-rule.no-equipment-unarmed
 - id: liche--cause-fear
   name: Cause Fear
   effect: A Liche is a horrible abomination and causes fear.

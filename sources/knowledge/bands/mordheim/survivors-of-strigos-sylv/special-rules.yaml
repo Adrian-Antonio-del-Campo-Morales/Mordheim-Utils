@@ -634,8 +634,6 @@ rules:
           forbids:
           - equipment
   name: Equipment Restrictions
-  effect: >-
-    Ghouls never carry any equipment, apart from a few bones which they use as primitive weapons.
   source:
     manual: sylvania-supplement
     printed_page: 0
@@ -643,13 +641,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      Los Carroñeros nunca llevan equipo alguno, aparte de unos pocos huesos que usan como armas
-      primitivas.
   applies_to:
     profile_ids:
     - ghouls
+  rule_ref: shared-rule.no-equipment-but-bones
 - id: strigoi-vampire--equipment-restrictions
   runtime:
     scope: 'YES'

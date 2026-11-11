@@ -594,9 +594,6 @@ rules:
           - weapons
           - armour
   name: Equipment Restrictions
-  effect: >-
-    Zombies may not carry weapons or wear armour and suffer no penalty for fighting without
-    equipment.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -604,9 +601,7 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/undead
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      Los Zombis no pueden llevar armas ni armadura y no sufren penalización por luchar sin equipo.
   applies_to:
     profile_ids:
     - zombies
+  rule_ref: shared-rule.no-weapons-or-armour-unarmed

@@ -438,8 +438,6 @@ rules:
           - weapons
           - armour
   name: Equipment Restrictions
-  effect: >-
-    None. Giant Rats never use any armour or weapons.
   source:
     manual: broheim.net
     printed_page: 8
@@ -447,12 +445,10 @@ rules:
     url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      Ninguno. Las Ratas Gigantes nunca usan armadura ni armas.
   applies_to:
     profile_ids:
     - giant-rats
+  rule_ref: shared-rule.no-weapons-or-armour
 - id: skaven-slaves--equipment-restrictions
   runtime:
     scope: 'YES'

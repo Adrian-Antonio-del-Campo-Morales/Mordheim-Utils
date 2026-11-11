@@ -11,6 +11,7 @@ knowledge base under `sources/knowledge/` is the only source of rules, classific
 | [`reason-texts.csv`](reason-texts.csv) | 2026-11-11 | The free-text `reason` of every unbound effect (2,139 rows) with the reason code that replaced it. |
 | [`mechanic-texts-2026-11-11.json`](mechanic-texts-2026-11-11.json) | 2026-11-11 | The `effect`/`effect_i18n` prose deleted from every close-combat mechanic, the 27 items that received a mechanic's text and the notes kept on the 27 mechanics nothing prints. |
 | [`prose-consolidation-2026-11-11.json`](prose-consolidation-2026-11-11.json) | 2026-11-11 | The shared rules created, renamed, rewritten or retired when duplicated band prose was consolidated, every band rule re-pointed with `rule_ref`, and the three bindings aligned with their identical siblings. |
+| [`prose-consolidation-2026-11-11-equipment.json`](prose-consolidation-2026-11-11-equipment.json) | 2026-11-11 | The equipment-restriction consolidation: four shared prohibitions added, `wulfen-no-equipment` renamed, 23 band rules re-pointed with their original texts, and the equivalence notes. |
 | [`clause-register/clause-split-2026-11-11.json`](clause-register/clause-split-2026-11-11.json) | 2026-11-11 | Which identities kept clauses (split or excluded parts) and which lost their single `whole` clause when clause contracts were dropped. |
 
 Deleted outright, recoverable from Git history (commit `84a634db` and earlier):

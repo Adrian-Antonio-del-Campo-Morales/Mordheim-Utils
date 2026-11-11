@@ -762,8 +762,6 @@ rules:
           - weapons
           - armour
   name: Equipment Restrictions
-  effect: >-
-    Cave Squigs never use or need weapons or armour.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -771,12 +769,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      Los Squigs de Cueva nunca usan ni necesitan armas ni armadura.
   applies_to:
     profile_ids:
     - cave-squigs
+  rule_ref: shared-rule.no-weapons-or-armour
 - id: snotling-mob-consists-of-5-snotlings--equipment-restrictions
   runtime:
     scope: 'YES'
@@ -823,8 +819,6 @@ rules:
           - weapons
           - armour
   name: Equipment Restrictions
-  effect: >-
-    Trolls can never be given weapons or armour.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -832,9 +826,7 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      A los Trolls nunca se les pueden dar armas ni armadura.
   applies_to:
     profile_ids:
     - troll
+  rule_ref: shared-rule.no-weapons-or-armour

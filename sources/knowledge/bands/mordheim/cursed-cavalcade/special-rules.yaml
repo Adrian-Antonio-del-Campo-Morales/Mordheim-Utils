@@ -726,8 +726,6 @@ rules:
           - weapons
           - armour
   name: Equipment Restrictions
-  effect: >-
-    A Fighting Ape never uses weapons or armour and does not need them to fight effectively.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -735,12 +733,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      Un Simio Combatiente nunca usa armas ni armaduras y no las necesita para luchar con eficacia.
   applies_to:
     profile_ids:
     - fighting-ape
+  rule_ref: shared-rule.no-weapons-or-armour
 - id: cursed-piper--instrument-hand
   runtime:
     scope: 'YES'

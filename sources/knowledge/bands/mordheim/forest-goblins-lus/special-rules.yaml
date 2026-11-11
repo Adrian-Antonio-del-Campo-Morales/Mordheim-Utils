@@ -548,8 +548,6 @@ rules:
           - weapons
           - armour
   name: Equipment Restrictions
-  effect: >-
-    A Gigantic Spider never uses weapons or armour.
   source:
     manual: broheim.net
     printed_page: 5
@@ -557,9 +555,7 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/lustria/Forest Goblins.pdf
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      Una Araña Gigantesca nunca usa armas ni armadura.
   applies_to:
     profile_ids:
     - gigantic-spider
+  rule_ref: shared-rule.no-weapons-or-armour

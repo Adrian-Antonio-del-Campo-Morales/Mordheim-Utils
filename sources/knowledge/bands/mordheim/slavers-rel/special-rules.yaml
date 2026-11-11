@@ -401,8 +401,6 @@ rules:
           - weapons
           - armour
   name: Equipment Restrictions
-  effect: >-
-    Hounds never use any armour or weapons.
   source:
     manual: broheim.net
     printed_page: 11
@@ -410,9 +408,7 @@ rules:
     url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      Los Sabuesos nunca usan armadura ni armas.
   applies_to:
     profile_ids:
     - hounds
+  rule_ref: shared-rule.no-weapons-or-armour

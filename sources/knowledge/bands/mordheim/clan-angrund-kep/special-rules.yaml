@@ -535,8 +535,6 @@ rules:
           - constant-save-cloak
           - non-thrown-ranged
   name: Equipment Restrictions
-  effect: >-
-    Slayers may never carry or use missile weapons or any form of armour.
   source:
     manual: broheim.net
     printed_page: 19
@@ -544,9 +542,7 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      Los Matatrolles nunca pueden llevar ni usar armas a distancia ni ninguna forma de armadura.
   applies_to:
     profile_ids:
     - dwarf-troll-slayers
+  rule_ref: shared-rule.no-missiles-or-armour

@@ -24,7 +24,16 @@ FUSED_REFERENCE_COUNTS = {
     "shared-rule.black-hunger": 3,
     # 2026-11-11 correction: the two Strigoi bats print only 'Equipment: None', and the two Lustria
     # elf bands print the Spanish centimetre distance, so they keep their own prose.
-    "shared-rule.no-weapons-or-armour": 4,
+    # 2026-11-11 equipment-restriction consolidation: members whose whole text is the prohibition
+    # (recipient name aside) reference the shared texts; texts carrying a reason, a list or extra
+    # mechanics keep their own prose. Record: docs/archive/prose-consolidation-2026-11-11-equipment.json.
+    "shared-rule.no-weapons-or-armour": 11,
+    "shared-rule.no-weapons-or-armour-unarmed": 6,
+    "shared-rule.no-missile-weapons": 6,
+    "shared-rule.no-missiles-or-armour": 4,
+    "shared-rule.no-equipment-but-bones": 3,
+    "shared-rule.no-equipment-unarmed": 2,
+    "shared-rule.no-weapons-unarmed": 2,
     "shared-rule.excellent-sight": 2,
     "shared-rule.burn-the-witch": 2,
     "shared-rule.fear": 44,
@@ -74,12 +83,15 @@ RETIRED_RULE_IDS = {
     "shared-rule.may-not-run-3",
     "shared-rule.no-pain-2",
     "shared-rule.no-pain-3",
+    # 2026-11-11 equipment-restriction consolidation: renamed to the neutral
+    # shared-rule.no-weapons-or-armour-unarmed when non-Wulfen members joined it.
+    "shared-rule.wulfen-no-equipment",
 }
 
 
 def test_fused_shared_rules_are_the_only_reference_targets() -> None:
     shared = load_shared_rules("mordheim")
-    assert len(shared) == 144
+    assert len(shared) == 148
     assert set(FUSED_REFERENCE_COUNTS) <= set(shared)
     assert RETIRED_RULE_IDS.isdisjoint(shared)
 

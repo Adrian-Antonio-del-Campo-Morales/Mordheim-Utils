@@ -823,9 +823,6 @@ rules:
           forbids:
           - equipment
   name: Equipment Restrictions
-  effect: >-
-    Charnel Guard never carry any equipment, apart from a few bones which they use as primitive
-    weapons.
   source:
     manual: broheim.net
     printed_page: 52
@@ -833,13 +830,10 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      La Guardia Osario nunca lleva equipo alguno, aparte de unos pocos huesos que usa como armas
-      primitivas.
   applies_to:
     profile_ids:
     - charnel-guard
+  rule_ref: shared-rule.no-equipment-but-bones
 - id: fell-bats--equipment-restrictions
   runtime:
     scope: 'YES'
@@ -887,8 +881,6 @@ rules:
           forbids:
           - equipment
   name: Equipment Restrictions
-  effect: >-
-    Ghouls never carry any equipment, apart from a few bones, which they use as primitive weapons.
   source:
     manual: broheim.net
     printed_page: 52
@@ -896,13 +888,10 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      Los Necrófagos nunca llevan equipo alguno, aparte de unos pocos huesos que usan como armas
-      primitivas.
   applies_to:
     profile_ids:
     - ghouls
+  rule_ref: shared-rule.no-equipment-but-bones
 - id: skeletons--equipment-restrictions
   runtime:
     scope: 'YES'
@@ -918,8 +907,6 @@ rules:
           forbids:
           - ranged-weapons
   name: Equipment Restrictions
-  effect: >-
-    Skeletons may not use missile weapons.
   source:
     manual: broheim.net
     printed_page: 53
@@ -927,12 +914,10 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      Los Esqueletos no pueden usar armas de proyectil.
   applies_to:
     profile_ids:
     - skeletons
+  rule_ref: shared-rule.no-missile-weapons
 - id: vampire--equipment-restrictions
   runtime:
     scope: 'YES'

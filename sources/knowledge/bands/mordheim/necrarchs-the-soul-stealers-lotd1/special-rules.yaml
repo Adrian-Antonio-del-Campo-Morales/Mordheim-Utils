@@ -948,8 +948,6 @@ rules:
           forbids:
           - weapons
   name: Equipment Restrictions
-  effect: >-
-    Abominations do not employ weapons, and suffer no penalties for doing so.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -957,12 +955,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      Las Abominaciones no emplean armas y no sufren penalización por ello.
   applies_to:
     profile_ids:
     - abomination
+  rule_ref: shared-rule.no-weapons-unarmed
 - id: zombie--equipment-restrictions
   runtime:
     scope: 'YES'
@@ -978,8 +974,6 @@ rules:
           forbids:
           - equipment
   name: Equipment Restrictions
-  effect: >-
-    Zombies never carry any equipment, and do not suffer any penalties for this.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -987,9 +981,7 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      Los Zombis nunca llevan equipo alguno y no sufren penalización por ello.
   applies_to:
     profile_ids:
     - zombie
+  rule_ref: shared-rule.no-equipment-unarmed

@@ -750,18 +750,13 @@ rules:
           - weapons
           - armour
   name: Equipment Restrictions
-  effect: >-
-    Shadowed may not use weapons or armour and suffer no penalty for fighting without equipment.
   source:
     manual: khemri
     printed_page: 69
     section: "1-5 Shadowed"
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      Los Sombreados no pueden usar armas ni armaduras y no sufren penalización por luchar sin
-      equipo.
   applies_to:
     profile_ids:
     - shadowed
+  rule_ref: shared-rule.no-weapons-or-armour-unarmed

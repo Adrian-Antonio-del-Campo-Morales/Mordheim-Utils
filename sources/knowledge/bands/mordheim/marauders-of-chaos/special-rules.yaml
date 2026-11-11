@@ -1129,8 +1129,6 @@ rules:
           - weapons
           - armour
   name: Equipment Restrictions
-  effect: >-
-    Warhounds do not use weapons or armour and fight without the normal unarmed penalties.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -1138,13 +1136,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      Los Sabuesos de Guerra no usan armas ni armaduras y luchan sin las penalizaciones normales por
-      luchar desarmados.
   applies_to:
     profile_ids:
     - warhounds-of-chaos
+  rule_ref: shared-rule.no-weapons-or-armour-unarmed
 - id: seer--equipment-restrictions
   runtime:
     scope: 'YES'
