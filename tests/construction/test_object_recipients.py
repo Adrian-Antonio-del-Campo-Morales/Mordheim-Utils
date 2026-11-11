@@ -70,6 +70,7 @@ def fighter(collection: str, band: str, profile_id: str, **options) -> FighterBu
     return FighterBuild("mordheim", band_id=band, profile_id=profile_id, collection=collection, **options)
 
 
+@pytest.mark.covers("item/skull_busta", "bearer-prohibitions--scope--goblin-prohibition", "bearer-prohibitions--scope--no-other-weapons-but-shields")
 def test_skull_busta_recipients_and_combinations_are_read_from_the_declared_line():
     entry = line_of("mordheim", "savage-orcs-kaz", "savage-orc-equipment-list", "skull_busta")
     assert entry["applies_to"] == {"profile_ids": ["boss", "weirdo", "spottaz", "brutes", "nuttaz", "boyz"]}
@@ -105,6 +106,7 @@ def test_skull_busta_recipients_and_combinations_are_read_from_the_declared_line
         assert (message in result) if message else result is None
 
 
+@pytest.mark.covers("rule/mordheim/druchii-mic/witch-elves--maibd-poison/unimplemented.druchii-mic.witch-elves.maibd-poison", "whole--scope--witch-elves-only")
 def test_maibd_poison_recipient_keeps_the_route_open_for_the_market():
     entry = line_of("mordheim", "druchii-mic", "witch-elves-equipment-list", "black_lotus")
     assert entry["applies_to"] == {"profile_ids": ["witch-elves"]}
@@ -120,6 +122,7 @@ def test_maibd_poison_recipient_keeps_the_route_open_for_the_market():
                                    main_weapon_id="weapon.sword", main_poison_id="poison.black-venom"))
 
 
+@pytest.mark.covers("rule/trollheim/lustria-lizardmen/band--sacred-mark-huge-jaws/trait.huge-jaws", "whole--scope--recipients")
 def test_huge_jaws_reaches_saurus_heroes_including_a_supplied_promotion():
     def selectable(profile_id: str, variants=()) -> list:
         profile = profile_row("trollheim", "lustria-lizardmen", profile_id)

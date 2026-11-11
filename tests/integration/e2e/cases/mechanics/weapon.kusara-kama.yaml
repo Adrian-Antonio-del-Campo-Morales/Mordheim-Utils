@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/weapon.kusara-kama
-# scaffold_fingerprint: 07628ed7cc352742eb6e796f5690d6aeab257a1bae564ee879c3ae3e6dfedb4c
 # authoring_status: PARTIAL
 # authoring_progress: the admitted clause carries 7 authored scenarios and stays
 #   PARTIAL: the hamper trigger, the reduced pool and the between-phase recovery
@@ -14,12 +13,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# PARTIAL[whole]: 5 scenarios evidence the printed extra -1 armour modifier, the
+# PARTIAL: 5 scenarios evidence the printed extra -1 armour modifier, the
 #   printed two-handed occupancy and the printed weapon hamper; the earlier reason
 #   for leaving the hamper unauthored is corrected here, and two hamper tapes are
 #   authored below. The executor contract does define the state and the keys - modular/attacks.py:275-281 sets
@@ -39,32 +36,6 @@
 #   snapshot's own field, the assertion would be the exact token it records, and the
 #   missing capability is a documented token naming (or an admitted observation of
 #   one) so the expectation can be written without inventing it.
-# origin_id:
-#   mechanic/weapon.kusara-kama
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   5a3e04e255636f20e8eb2c677e7b8adeca280a0249f7772c2eb3fb1f8dc3267b
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   Two-handed with an extra -1 armour modifier. A hit of 5+ hampers the chosen enemy weapon and removes one attack, to a minimum of one, until the start of the wielder's next close-combat phase.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Two-handed weapon with an extra -1 armour save; a hit of 5+ hampers the chosen enemy weapon and removes one attack (minimum one) until the start of the wielder next close-combat phase. Closure: hit 5+ sets a hampered hand and the target pool is reduced by one, never below one.
-# effect_id:
-#   weapon.kusara-kama
-# relation:
-#   equivalent
-# parameters:
-#   {"armour_penetration": 1, "two_handed": true}
-# conditions:
-#   {"application": "attack", "stacking": "stack", "trigger": "attack"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Printed profile equals the contract parameters; the compiled attack EffectSet is consumed by build_attacks and the hit/wound/armour/injury contexts. The suppression is implemented in the kusara-kama branch of _resolve_reference_attack_once plus the minimum_attacks handling in resolve_round; the printed "until the start of the wielder next phase" maps to the attack_penalty reset in _start_round_state. Surface reuse candidate: {"family":"W-weapon.kusara-kama","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the printed local weapon mode and parameters with the active contract. Confirm hand use, effective Strength, save/critical/parry modifiers, natural-die trigger, temporary states and end conditions. Reuse the base only; retain extra properties and construction recipients.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
 # --- Authored scenarios ---
 # weapon.kusara-kama - two-handed with an extra -1 armour modifier.
@@ -75,7 +46,6 @@
 
 - audit_id: mechanic/weapon.kusara-kama
   id: kusara-kama-save-fails-one-below-the-penalised-target
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.kusara-kama
@@ -98,7 +68,6 @@
 
 - audit_id: mechanic/weapon.kusara-kama
   id: kusara-kama-save-holds-on-the-penalised-target
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.kusara-kama
@@ -121,7 +90,6 @@
 
 - audit_id: mechanic/weapon.kusara-kama
   id: kusara-kama-occupies-both-hands-so-an-off-hand-weapon-is-refused
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.kusara-kama
@@ -138,7 +106,6 @@
 # defender's pool keeps exactly one attack, which is also the printed minimum.
 - audit_id: mechanic/weapon.kusara-kama
   id: a-five-hampers-the-chosen-off-hand-and-removes-its-attack
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.kusara-kama
@@ -169,7 +136,6 @@
 # choice is offered at all.
 - audit_id: mechanic/weapon.kusara-kama
   id: a-four-below-the-threshold-leaves-the-whole-pool
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.kusara-kama
@@ -201,7 +167,6 @@
 # round-1 defender attacks and the penalty field reads 0.
 - audit_id: mechanic/weapon.kusara-kama
   id: the-hamper-lasts-until-the-start-of-the-wielder-s-next-phase
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.kusara-kama

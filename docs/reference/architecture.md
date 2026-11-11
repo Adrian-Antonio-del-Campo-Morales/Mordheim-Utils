@@ -123,7 +123,7 @@ The web adapter is `packages/typescript/adapters/campaign-file/`; PDF export bel
 
 Generated reports are written below ignored `outputs/`:
 
-- `audit/` — rule inventory and review status (`check report rules`).
+- `audit/` — rule inventory and clause coverage (`check report rules`).
 - `test-report/` — technical and optional statistical CSVs (`check report tests`).
 - `parity/` — machine-readable parity certificates.
 - `benchmarks/` — benchmark results.

@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/skill.inspiring-sermon
-# scaffold_fingerprint: 29b9e2f67bde3b6eaa664461e38dc6897464128d4388ea922ec48f432ce004a4
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clause carries authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -8,38 +7,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: inspiring-sermon (scope: YES)
-# AUTHORED[inspiring-sermon]: 2 scenarios cover the +1 Attack on the warrior's own turn, observed through the attack index the engine then requests, and the same warrior keeping his printed single attack on the turn he is not the active player. Documented gap: the printed clause says only '+1 Attack for the turn' and never states whose turn; the executor restricts it to the warrior's own turn (the attack builder at phases.py:220 reads the round's player-turn flag), so the second scenario records that reading as the tested one and the clause text alone does not settle it.
-# origin_id:
-#   mechanic/skill.inspiring-sermon
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   dc6784fe60eea98d80625ccef074f346fee81a27c418ae3a26eefa3913e9812f
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   +1 Attack for the turn.
-# Semantic contract (check analysis_status before treating as accepted):
-#   This warrior gains +1 Attack for its own turn. Observable: its attack count is one higher during its own turn.
-# effect_id:
-#   skill.inspiring-sermon
-# relation:
-#   equivalent
-# parameters:
-#   {"attacks_bonus":1}
-# conditions:
-#   {"trigger":"this warrior's own turn","recipient":"this warrior","duration":"that turn"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   phases.build_attacks adds +1 attack to a warrior with skill.inspiring-sermon on its own turn. Surface reuse candidate: {"family":"mechanic.rousing-sermon","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare trigger, current bearer, activation, timing, state duration and reset rules. Keep damage backlash and interrupted continuation; exclude producer movement/group counting or campaign progression.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+# AUTHORED: 2 scenarios cover the +1 Attack on the warrior's own turn, observed through the attack index the engine then requests, and the same warrior keeping his printed single attack on the turn he is not the active player. Documented gap: the printed clause says only '+1 Attack for the turn' and never states whose turn; the executor restricts it to the warrior's own turn (the attack builder at phases.py:220 reads the round's player-turn flag), so the second scenario records that reading as the tested one and the clause text alone does not settle it.
 
 # --- Authored scenarios ---
 # On his own turn the warrior's attack count is one higher than the printed A1: two
@@ -47,7 +18,6 @@
 # names both and the enemy's blow is only the third outcome.
 - audit_id: mechanic/skill.inspiring-sermon
   id: the-sermon-adds-one-attack-on-its-own-turn
-  covers: [inspiring-sermon]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -72,7 +42,6 @@
 # the second outcome of the round.
 - audit_id: mechanic/skill.inspiring-sermon
   id: no-extra-attack-on-the-turn-that-is-not-his-own
-  covers: [inspiring-sermon]
   fighters:
     first:
       main_weapon_id: weapon.mace

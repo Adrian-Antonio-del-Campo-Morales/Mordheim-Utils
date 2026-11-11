@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/skill.luck
-# scaffold_fingerprint: 3165e454bb61416c5ee759f4e177c138c64b689876eab21fb5cfa3716e98f9ea
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clause carries 3 authored scenarios derived from the printed rule and the recorded contract; the printed exclusion of another warrior's roll is structural in a duel (no teammate exists) and is recorded, not asserted. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -8,38 +7,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: once-per-battle-reroll (scope: YES)
-# AUTHORED[once-per-battle-reroll]: 3 scenarios cover a missed hit rolled again, a failed wound rolled again, and the resource already spent so a later failed wound stands.
-# origin_id:
-#   mechanic/skill.luck
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   28a5489284758352c2f8b3d8e343d82a565cd10c0404eaf5a2a0316d093522ca
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   Once per battle, the warrior may re-roll any roll made by himself, but may not re-roll a roll made by another warband member.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Once per battle the warrior may re-roll any roll he himself makes, but not a roll made by another warrior; observable: one spent resource that rerolls one own roll.
-# effect_id:
-#   skill.luck
-# relation:
-#   equivalent
-# parameters:
-#   {}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Two printings of the same skill. Per the Luck ruling (docs/decisions/design-rulings.md) the resource re-rolls one failed roll of the bearer's own, a to-hit or to-wound roll, and is spent for the duel; the vectorized port additionally lets the defender re-roll one failed armour save per battle. Consumed at the hit and wound re-roll sites in modular/attacks.py and at the defender-side armour re-roll; no teammate exists in a duel, so the exclusion of other warriors' rolls is structural. Surface reuse candidate: {"family":"SK-LUCK","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare current admitted facet, weapon/size/recipient conditions and usage limit. A supplied Rememberer benefit does not introduce a third combatant; target Toughness and Large identity need their own source condition. Keep specific attack and critical guards.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+# AUTHORED: 3 scenarios cover a missed hit rolled again, a failed wound rolled again, and the resource already spent so a later failed wound stands.
 
 # --- Authored scenarios ---
 # mechanic/skill.luck - authored from the printed "once per battle, may re-roll
@@ -55,7 +26,6 @@
 # duel models one opponent and no teammate, so it is structural, not asserted.
 - audit_id: mechanic/skill.luck
   id: a-missed-hit-is-rolled-again-and-the-resource-is-spent
-  covers: [once-per-battle-reroll]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -79,7 +49,6 @@
 
 - audit_id: mechanic/skill.luck
   id: a-failed-wound-is-rolled-again
-  covers: [once-per-battle-reroll]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -104,7 +73,6 @@
 
 - audit_id: mechanic/skill.luck
   id: the-resource-is-spent-once-so-a-later-failed-wound-stands
-  covers: [once-per-battle-reroll]
   fighters:
     first:
       main_weapon_id: weapon.mace

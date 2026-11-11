@@ -33,12 +33,15 @@ from mordheim_knowledge.campaign import (  # noqa: E402
 )
 from mordheim_knowledge.i18n import SUPPORTED_LOCALES, CANONICAL_LOCALE  # noqa: E402
 from mordheim_knowledge.loader import (  # noqa: E402
+    knowledge_root,
     load_bands,
     load_collections,
     load_items,
     load_mechanics,
     load_racial_maximums,
+    load_shared_rules,
     load_skills,
+    read_yaml,
 )
 from mordheim_knowledge.rules_catalog import load_rules_catalog  # noqa: E402
 
@@ -103,6 +106,20 @@ def _effects(record: dict) -> dict[str, str]:
         if value:
             effects[locale] = value
     return {locale: value for locale, value in effects.items() if value}
+
+
+def _without_clauses(value):
+    """Drop the verification ``clauses`` wherever a record carries them.
+
+    Clauses are the obligations the deterministic tests demonstrate
+    (``mordheim_knowledge.clauses``); the browser renders none of them, so the
+    artefact never ships them.
+    """
+    if isinstance(value, dict):
+        return {key: _without_clauses(item) for key, item in value.items() if key != "clauses"}
+    if isinstance(value, list):
+        return [_without_clauses(item) for item in value]
+    return value
 
 
 def _row(record: dict, *, drop: tuple[str, ...] = ("schema_version", "ruleset", "original_locale", "name_i18n", "effect_i18n")) -> dict:
@@ -528,8 +545,8 @@ def _build_bands(ruleset: str) -> tuple[list[dict], dict[str, list[str]]]:
 
 
 _EXPERIENCE_FORBIDDEN_RULE_REFS = frozenset({
-    "shared-rule.brainless", "shared-rule.dead", "shared-rule.never-gain-experience",
-    "shared-rule.experience", "shared-rule.animal",
+    "shared-rule.never-gain-experience", "shared-rule.crew-never-gain-experience", "shared-rule.animal",
+    "shared-rule.dumb-monster",
 })
 
 
@@ -721,12 +738,14 @@ def _build_items(ruleset: str) -> list[dict]:
                                     for item_id in _loadout_items(loadout.get("items")) if item_id)
             referenced_items.update(str(item if isinstance(item, str) else item.get("item_id") or "")
                                     for profile in package.profiles for item in profile.get("fixed_equipment") or ())
-    mechanics = {
-        str(row.get("id") or ""): row
-        for family in ("weapons", "armours", "defences", "materials", "preparations", "poisons")
-        for row in load_mechanics(ruleset).get(family) or ()
-    }
-    mechanics_by_name = {str(row.get("name") or "").casefold(): row for row in mechanics.values() if row.get("name")}
+    # An item variant without printed text of its own (``battle_axe``,
+    # ``sword_heroes_only``) renders the text of the base item bound to the
+    # same mechanic; mechanics themselves carry no prose.
+    base_by_mechanic: dict[str, dict] = {}
+    for row in load_items(ruleset):
+        mechanic_id = str(row.get("mechanic_id") or "")
+        if mechanic_id and row.get("effect") and mechanic_id not in base_by_mechanic:
+            base_by_mechanic[mechanic_id] = row
     items = []
     for row in load_items(ruleset):
         kind = str(row.get("kind") or "")
@@ -734,16 +753,12 @@ def _build_items(ruleset: str) -> list[dict]:
             continue  # Publish campaign tooltip items and every band-referenced item.
         entry = _row(row, drop=("schema_version", "ruleset", "original_locale", "name_i18n", "effect_i18n", "effect_ids"))
         entry["item_id"] = entry.pop("id", "")
-        mechanic = mechanics.get(str(row.get("mechanic_id") or "")) or mechanics_by_name.get(str(row.get("name") or "").casefold())
-        if mechanic and not entry.get("effect"):
-            if mechanic.get("effect"):
-                entry["effect"] = mechanic["effect"]
-            translations = mechanic.get("effect_i18n") or {}
-            if translations:
-                entry["effects"] = {
-                    CANONICAL_LOCALE: str(mechanic.get("effect") or ""),
-                    **{str(key): str(value) for key, value in translations.items() if value},
-                }
+        base = base_by_mechanic.get(str(row.get("mechanic_id") or ""))
+        if base is not None and not entry.get("effect"):
+            entry["effect"] = base["effect"]
+            effects = _effects(base)
+            if effects:
+                entry["effects"] = effects
         items.append(entry)
     by_id = {str(item["item_id"]): item for item in items}
     aliases = {
@@ -820,7 +835,51 @@ def _build_display_values(ruleset: str, skills: list[dict], rules_prose: dict, f
             for row in rows:
                 if isinstance(row, dict):
                     add(row)
+    if field == "effects":
+        # A mechanic carries no prose: its display text is the printed text of
+        # the rules bound to it. Rules that disagree leave the mechanic without
+        # a text rather than picking one silently.
+        for mechanic_id, texts in _mechanic_texts(ruleset).items():
+            if mechanic_id in values or mechanic_id in conflicting:
+                continue
+            if len(texts) == 1:
+                values[mechanic_id] = texts[0]
+            else:
+                conflicting.add(mechanic_id)
     return dict(sorted(values.items()))
+
+
+def _mechanic_texts(ruleset: str) -> dict[str, list[dict[str, str]]]:
+    """Distinct localized texts of the rules bound to each mechanic (bands, skills, hirelings)."""
+    shared = load_shared_rules(ruleset)
+    texts: dict[str, list[dict[str, str]]] = {}
+
+    def collect(rule: dict) -> None:
+        record = shared.get(str(rule.get("rule_ref") or ""), rule) if rule.get("rule_ref") else rule
+        localized = _effects(record)
+        if not localized:
+            return
+        for effect in (rule.get("runtime") or {}).get("effects") or ():
+            binding = effect.get("binding") or {}
+            if binding.get("kind") == "mechanic" and binding.get("id"):
+                bucket = texts.setdefault(str(binding["id"]), [])
+                if localized not in bucket:
+                    bucket.append(localized)
+
+    for collection in (row["id"] for row in load_collections() if ruleset in set(row.get("rulesets") or ())):
+        for package in load_bands(str(collection)):
+            for rule in package.special_rules:
+                collect(rule)
+    for skill in load_skills(ruleset):
+        collect(skill)
+    for path in sorted((knowledge_root() / "catalog/hirelings").rglob("*.yaml")):
+        document = read_yaml(path)
+        for rule in document.get("rules") or ():
+            collect(rule)
+        for profile in document.get("profiles") or ():
+            for rule in profile.get("rules") or ():
+                collect(rule)
+    return texts
 
 
 def _build_display_names(ruleset: str, skills: list[dict], rules_prose: dict,
@@ -831,6 +890,32 @@ def _build_display_names(ruleset: str, skills: list[dict], rules_prose: dict,
 def _build_display_effects(ruleset: str, skills: list[dict], rules_prose: dict,
                            rule_ref_labels: tuple[dict, ...] | list[dict] = ()) -> dict[str, dict[str, str]]:
     return _build_display_values(ruleset, skills, rules_prose, "effects", rule_ref_labels)
+
+
+def _build_mechanics(ruleset: str) -> dict[str, list[dict]]:
+    """Mechanic rows with the printed text of the rules bound to them.
+
+    A mechanic carries no prose in the knowledge base; the artefact projects
+    the text of its printing rules onto the row (when they agree) so the
+    browser resolves a mechanic id to one description like any other record.
+    """
+    texts = _mechanic_texts(ruleset)
+    families: dict[str, list[dict]] = {}
+    for family, rows in load_mechanics(ruleset).items():
+        if not isinstance(rows, list):
+            continue
+        projected = []
+        for row in rows:
+            if not isinstance(row, dict):
+                continue
+            entry = _row(row)
+            candidates = texts.get(str(row.get("id") or ""), [])
+            if len(candidates) == 1 and not entry.get("effects"):
+                entry["effect"] = candidates[0].get(CANONICAL_LOCALE, "")
+                entry["effects"] = candidates[0]
+            projected.append(entry)
+        families[family] = projected
+    return families
 
 
 def _build_weapon_hands(ruleset: str) -> dict[str, int]:
@@ -848,8 +933,9 @@ def _build_rules_prose(ruleset: str) -> tuple[dict, list[dict]]:
 
     Returns the per-stem documents plus, separately, the scoped display labels of
     the band rules that delegate their prose to a shared ``rule_ref`` rule. Those
-    rows stay out of the published prose (the shared rule owns it) but a warrior
-    card still shows their name, taken from the referenced rule.
+    rows stay out of the band-local prose document (the shared rule owns the
+    text) and are published in ``delegating-rules`` with the text they resolve
+    to, so a warrior card shows their name and tooltip by their own id.
 
     The ``special-rules`` stem is the shared catalogue and only the shared
     catalogue: the ``shared-rule.*`` rows read from
@@ -871,6 +957,7 @@ def _build_rules_prose(ruleset: str) -> tuple[dict, list[dict]]:
     # ``rule_ref`` delegation below, which always targets the shared catalogue.
     special_rules = {str(row["id"]): row for row in documents.get("special-rules", ())}
     band_rules: list[dict] = []
+    delegating_rules: list[dict] = []
     label_rules: list[dict] = []
     rule_ref_labels: list[dict] = []
     for collection in (row["id"] for row in load_collections() if ruleset in set(row.get("rulesets") or ())):
@@ -878,7 +965,6 @@ def _build_rules_prose(ruleset: str) -> tuple[dict, list[dict]]:
             if package.ruleset != ruleset:
                 continue
             for rule in package.special_rules:
-                label_rules.append(_row(rule))
                 identifier = str(rule.get("id") or "")
                 if not identifier:
                     raise GenerationError(f"band special rule without id: {package.band['id']!r}")
@@ -898,13 +984,23 @@ def _build_rules_prose(ruleset: str) -> tuple[dict, list[dict]]:
                         raise GenerationError(
                             f"band rule {identifier!r} references {rule_ref!r}, which has no name"
                         )
+                    own_names = _names(rule) or names
                     rule_ref_labels.append({
                         "id": identifier,
                         "band_id": str(package.band["id"]),
                         "applies_to": dict(rule.get("applies_to") or {}),
-                        "names": names,
+                        "names": own_names,
+                    })
+                    label_rules.append({**_row(rule), "names": own_names})
+                    # The delegating row is published with the shared prose it
+                    # resolves to, so a warrior card scoped by band and profile
+                    # reads one text and every profile rule id stays published.
+                    delegating_rules.append({
+                        **_row(rule), "band_id": str(package.band["id"]), "names": own_names,
+                        "effects": dict(shared.get("effects") or {}),
                     })
                     continue
+                label_rules.append(_row(rule))
                 band_rules.append({**_row(rule), "band_id": str(package.band["id"])})
     documents["special-rules"] = sorted(special_rules.values(), key=_sort_key)
     # Every direct rule is published here, including the ids that happen to be
@@ -913,6 +1009,11 @@ def _build_rules_prose(ruleset: str) -> tuple[dict, list[dict]]:
     # Tooltips rendered from a warrior card know the profile id, so they can
     # safely disambiguate direct rules whose ids are reused by several bands.
     documents["profile-special-rules"] = sorted(band_rules, key=_sort_key)
+    # Band rules that delegate their prose to a shared rule: scoped by band and
+    # profile like the direct rules, carrying the shared text they resolve to.
+    # They are not browsed as band-local prose (the shared rule is), but a
+    # warrior card and the campaign file still address them by their own id.
+    documents["delegating-rules"] = sorted(delegating_rules, key=_sort_key)
     # Duplicate direct-rule ids cannot safely expose one rule's prose globally,
     # but their display names can still be localized when every occurrence
     # agrees. Publish those labels separately for campaign files that store
@@ -1049,8 +1150,7 @@ def generate(ruleset: str = DEFAULT_RULESET) -> dict:
         artefact["profiles"] = _build_profiles(ruleset)
         artefact["items"] = _build_items(ruleset)
         artefact["skills"] = _build_skills(ruleset)
-        artefact["mechanics"] = {family: [_row(row) for row in rows if isinstance(row, dict)]
-                                  for family, rows in load_mechanics(ruleset).items() if isinstance(rows, list)}
+        artefact["mechanics"] = _build_mechanics(ruleset)
         artefact["weapon_hands"] = _build_weapon_hands(ruleset)
         artefact["rules_prose"], rule_ref_labels = _build_rules_prose(ruleset)
         artefact["display_names"] = _build_display_names(ruleset, artefact["skills"], artefact["rules_prose"], rule_ref_labels)
@@ -1065,6 +1165,7 @@ def generate(ruleset: str = DEFAULT_RULESET) -> dict:
         raise GenerationError(
             f"cannot generate the KB artefact for ruleset {ruleset!r}: {exc}"
         ) from exc
+    artefact = _without_clauses(artefact)
     _require_unique(artefact["collections"], "id", "collections")
     _require_unique(artefact["bands"], "id", "bands")
     _require_unique(artefact["profiles"], "id", "profiles", scope=("collection", "band_id"))

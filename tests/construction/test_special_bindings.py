@@ -196,6 +196,7 @@ def test_aquatic_mutants_pool_is_closed_and_hero_only():
         ))
 
 
+@pytest.mark.covers("rule/mordheim/cult-of-the-possessed/band--mutations-extra-arm/special-rule.band--mutations-extra-arm")
 def test_extra_arm_and_great_claw_enforce_their_printed_arm_rules():
     """Extra Arm: 'The mutant may use any single-handed weapon in the extra
     arm...  Alternatively, he may carry a shield or a buckler in the extra arm.

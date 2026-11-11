@@ -10,8 +10,10 @@ rules:
     - id: unimplemented.merchant-caravans.merchant.merchant
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: deferred.psychology
+      clauses:
+      - id: merchant
+        scope: 'NO'
   name: Merchant
   effect: >-
     The Merchant is always the warband's leader. Leadership succession and Merchant-specific effects
@@ -71,8 +73,10 @@ rules:
     - id: unimplemented.merchant-caravans.knights-vanguard.ride-warhorse
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: mounts.
+      reason: deferred.mounts
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Ride Warhorse
   effect: The Knights Vanguard is trained in riding Warhorses.
   source:
@@ -96,8 +100,7 @@ rules:
     - id: unimplemented.merchant-caravans.knights-vanguard.hirelings
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Hirelings
   effect: >-
     The Knights Vanguard is a hireling, paid by the Merchant and therefore can never become the
@@ -125,8 +128,7 @@ rules:
     - id: unimplemented.merchant-caravans.magician.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic.
+      reason: out-of-scope.magic
   name: Wizard
   effect: >-
     A Magician is a wizard and uses Lesser Magic. See the Magic section in the Mordheim rulebook for
@@ -154,8 +156,7 @@ rules:
     - id: unimplemented.merchant-caravans.magician.hireling
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Hireling
   effect: >-
     The Magician is a hireling, paid by the Merchant. He can never become the warband's leader.
@@ -213,8 +214,7 @@ rules:
     - id: unimplemented.merchant-caravans.blackguards.unreliable-hirelings
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Unreliable Hirelings
   effect: >-
     Blackguards are only hired by the Merchant to serve him by protecting his cargo. They are not
@@ -246,6 +246,13 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+      clauses:
+      - id: merchant-succession
+        scope: 'NO'
+      - id: merchant-leadership--scope--leader-leadership-supply
+        scope: 'YES'
+      - id: merchant-leadership--scope--leader-succession
+        scope: 'NO'
   name: Merchant
   effect: >-
     The Merchant is the warband leader and warriors within 6" may use his Leadership for Leadership
@@ -279,8 +286,7 @@ rules:
     - id: unimplemented.merchant-caravans.band.trade
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Trade
   effect: >-
     Instead of searching for a rare item, the Merchant may try to sell one rare item that was stored
@@ -314,8 +320,7 @@ rules:
     - id: unimplemented.merchant-caravans.band.open-for-business
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Open for Business
   effect: >-
     Other players may send a Hero to the Merchant instead of searching for rare items. That Hero may
@@ -345,8 +350,7 @@ rules:
     - id: unimplemented.merchant-caravans.band.rarity
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Rarity
   effect: >-
     Any rare item whose Rarity is reduced to 2 or less by the Trade Wagon's Reputation rule,
@@ -373,9 +377,7 @@ rules:
     - id: unimplemented.merchant-caravans.band.hired-swords
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Hired Swords
   effect: Merchant Caravans may hire every Hired Sword available to Mercenary warbands.
   source:
@@ -400,8 +402,7 @@ rules:
     - id: unimplemented.merchant-caravans.band.trade-wagon-required
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Trade Wagon Required
   effect: >-
     A starting Merchant Caravan must include one Trade Wagon. The Trade Wagon remains equipment
@@ -428,9 +429,7 @@ rules:
     - id: unimplemented.merchant-caravans.band.human-characteristic-maximum
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Human Characteristic Maximum
   effect: >-
     Merchants and their retinue are humans and use the Human maximum characteristic profile
@@ -458,8 +457,10 @@ rules:
     - id: unimplemented.merchant-caravans.band.merchant-special-skills-bribery
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: deferred.psychology
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Bribery
   effect: >-
     Whenever the warband has to take a Rout test, the Merchant may talk his hirelings into staying a
@@ -495,8 +496,7 @@ rules:
     - id: unimplemented.merchant-caravans.band.merchant-special-skills-dubious-income
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Dubious Income
   effect: >-
     The Merchant has set up an underground business that proves to be quite profitable. After every
@@ -531,8 +531,7 @@ rules:
     - id: unimplemented.merchant-caravans.band.merchant-special-skills-wholesale
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Wholesale
   effect: >-
     The Merchant is known for buying items in greater numbers and so is especially welcome at the
@@ -562,8 +561,7 @@ rules:
     - id: unimplemented.merchant-caravans.band.merchant-special-skills-deal-breaker
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Deal Breaker
   effect: >-
     When trying to sell items through the Trade special rule, the Merchant gets a +1 bonus on the
@@ -591,8 +589,7 @@ rules:
     - id: unimplemented.merchant-caravans.band.merchant-special-skills-connected
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Connected
   effect: >-
     Instead of searching for rare items normally, the Merchant may search the special black-market

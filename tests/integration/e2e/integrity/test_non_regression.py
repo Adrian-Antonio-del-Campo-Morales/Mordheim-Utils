@@ -11,9 +11,9 @@ scenario with a different one that happens to keep the count hides a real loss.
 Here a missing identity, a missing scenario, a scenario that dropped a clause
 reference, and a clause that is no longer admitted are each a regression.
 
-The reference is never rewritten by this module, and a moved register revision
+The reference is never rewritten by this module, and a moved clause inventory
 does not by itself pass or fail the check: the accepted clauses are re-verified
-against the register's current scope instead of trusting the recorded digest.
+against the knowledge base's current scope instead of trusting the recorded digest.
 
 This is E2E coverage evidence.  It is separate from the opt-in global
 completeness gate in ``test_inventory.py``, which still lists every pending
@@ -21,20 +21,17 @@ identity and clause and still fails when completeness is requested.
 """
 from __future__ import annotations
 
-import csv
-import hashlib
 from dataclasses import replace
 from pathlib import Path
 
 import yaml
 
+from mordheim_knowledge.clauses import admitted_clauses, inventory_digest, load_identities
 from mordheim_modular_e2e.corpus import Scenario, group_by_audit, load_corpus
 import pytest
 
-REPOSITORY_ROOT = Path(__file__).resolve().parents[4]
 BASELINE_PATH = Path(__file__).parent / "evidence" / "coverage-baseline.yaml"
-ADMITTED_PREFIXES = ("core/", "mechanic/", "rule/")
-IN_SCOPE = "YES"
+ADMITTED_KINDS = ("core", "mechanic", "rule")
 
 CORPUS = load_corpus()
 
@@ -50,16 +47,11 @@ def load_baseline(path: Path | None = None) -> dict:
     return document
 
 
-def register_view(baseline: dict) -> tuple[dict[str, set[str]], str]:
-    """Return the currently admitted clauses and the register digest."""
-    path = REPOSITORY_ROOT / baseline["register"]["path"]
-    with path.open(newline="", encoding="utf-8") as handle:
-        rows = list(csv.DictReader(handle))
-    admitted: dict[str, set[str]] = {}
-    for row in rows:
-        if row["clause_scope"] == IN_SCOPE and row["id"].startswith(ADMITTED_PREFIXES):
-            admitted.setdefault(row["id"], set()).add(row["clause_id"])
-    return admitted, hashlib.sha256(path.read_bytes()).hexdigest()
+def inventory_view(baseline: dict) -> tuple[dict[str, set[str]], str]:
+    """Return the currently admitted clauses and the clause-inventory digest."""
+    assert baseline["inventory"]["source"] == "sources/knowledge"
+    identities = load_identities()
+    return admitted_clauses(identities, ADMITTED_KINDS), inventory_digest(identities)
 
 
 def regressions(baseline: dict, scenarios: list[Scenario],
@@ -94,21 +86,21 @@ def regressions(baseline: dict, scenarios: list[Scenario],
 @pytest.mark.evidence
 def test_accepted_coverage_does_not_regress():
     baseline = load_baseline()
-    admitted, _ = register_view(baseline)
+    admitted, _ = inventory_view(baseline)
     problems = regressions(baseline, CORPUS, admitted)
     assert not problems, "accepted E2E coverage regressed:\n  " + "\n  ".join(problems)
 
 
 @pytest.mark.evidence
-def test_register_revision_stays_traceable(capsys):
-    """Report the register revision and re-verify the accepted clauses against it."""
+def test_inventory_revision_stays_traceable(capsys):
+    """Report the clause-inventory digest and re-verify the accepted clauses against it."""
     baseline = load_baseline()
-    admitted, digest = register_view(baseline)
-    recorded = baseline["register"]["sha256"]
+    admitted, digest = inventory_view(baseline)
+    recorded = baseline["inventory"]["sha256"]
     with capsys.disabled():
-        print(f"coverage baseline register digest: recorded {recorded}, current {digest}")
+        print(f"coverage baseline inventory digest: recorded {recorded}, current {digest}")
         if digest != recorded:
-            print("the register moved: every accepted clause is re-checked against its current scope")
+            print("the inventory moved: every accepted clause is re-checked against its current scope")
     assert regressions(baseline, CORPUS, admitted) == []
 
 
@@ -125,7 +117,7 @@ def test_the_control_detects_a_lost_scenario_identity_or_reference():
     substitution, which is exactly what a count-based check would miss.
     """
     baseline = load_baseline()
-    admitted, _ = register_view(baseline)
+    admitted, _ = inventory_view(baseline)
     assert regressions(baseline, CORPUS, admitted) == []
 
     holder = next(audit_id for audit_id, entry in sorted(baseline["identities"].items())
@@ -160,9 +152,9 @@ def test_the_control_detects_a_lost_scenario_identity_or_reference():
 
 @pytest.mark.evidence
 def test_the_control_detects_a_clause_that_left_the_admitted_scope():
-    """A register change that withdraws an accepted clause invalidates the evidence."""
+    """A knowledge-base change that withdraws an accepted clause invalidates the evidence."""
     baseline = load_baseline()
-    admitted, _ = register_view(baseline)
+    admitted, _ = inventory_view(baseline)
     holder = sorted(baseline["identities"])[0]
     withdrawn = {**admitted, holder: set()}
     problems = regressions(baseline, CORPUS, withdrawn)
@@ -173,7 +165,7 @@ def test_the_control_detects_a_clause_that_left_the_admitted_scope():
 def test_the_completeness_gate_stays_separate_from_this_reference():
     """The reference protects accepted evidence; it never claims completeness."""
     baseline = load_baseline()
-    admitted, _ = register_view(baseline)
+    admitted, _ = inventory_view(baseline)
     assert set(baseline["identities"]) < set(admitted), (
         "the reference is expected to be a strict subset of the admitted identities; "
         "the global completeness gate is what reports the rest")

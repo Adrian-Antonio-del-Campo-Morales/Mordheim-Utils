@@ -7,12 +7,10 @@ Run from any directory:
 
 The tool imports nothing from the combat packages: it reuses ``corpus.py``
 (the battery's own loading and static scenario contract) and
-``test_inventory.py`` (the canonical-register reading and the declared
+``test_inventory.py`` (the knowledge-base clause inventory and the declared
 coverage report) through the package name ``mordheim_modular_e2e``, exactly as
 pytest's ``conftest.py`` registers the hyphenated directory.  It never
-rewrites the register, never re-derives a second normative policy, and never
-measures scaffold staleness — generative source snapshots are a separate
-concern retained by ``generate_skeletons.py``.
+rewrites the knowledge base and never re-derives a second normative policy.
 
 Exit codes: ``0`` when nothing failed (reported gaps stay reported and do not
 pretend completeness), ``1`` on integrity problems (a file or scenario that
@@ -115,8 +113,8 @@ def load_strictly(corpus, directory: Path):
 
 
 def declared_references(inventory, scenarios):
-    """Look up every declared identity and clause reference in the register."""
-    declared, admitted, admitted_ids = inventory.read_register()
+    """Look up every declared identity and clause reference in the clause inventory."""
+    declared, admitted, admitted_ids = inventory.read_inventory()
     unknown_identities = []
     unknown_clauses = []
     for scenario in scenarios:
@@ -132,7 +130,7 @@ def declared_references(inventory, scenarios):
 AUTHORING_LINE = re.compile(r"^# authoring_status:\s*(\S+).*$", re.MULTILINE)
 EXECUTION_LINE = re.compile(r"^# execution_status:\s*(\S+).*$", re.MULTILINE)
 CLAUSE_LINE = re.compile(r"^# Clause:\s*([^\s(]+)\s*\(scope:\s*([A-Za-z]+)\)\s*$", re.MULTILINE)
-MARKER_LINE = re.compile(r"^# (PARTIAL|AUTHORED)\[([^\]]+)\]", re.MULTILINE)
+MARKER_LINE = re.compile(r"^# (PARTIAL|AUTHORED)(?:\[([^\]]+)\])?:", re.MULTILINE)
 
 
 def authoring_metadata(text: str, scenarios) -> tuple[dict, list[Finding]]:
@@ -144,7 +142,7 @@ def authoring_metadata(text: str, scenarios) -> tuple[dict, list[Finding]]:
     clauses = dict(CLAUSE_LINE.findall(text))
     markers: dict[str, list[str]] = {"PARTIAL": [], "AUTHORED": []}
     for kind, tag in MARKER_LINE.findall(text):
-        markers[kind].append(tag.strip())
+        markers[kind].append(tag.strip())  # a bare marker (no clause) records '' for an undivided identity
     metadata = {
         "status": status,
         "execution_status": executions[0] if executions else None,
@@ -160,7 +158,7 @@ def authoring_metadata(text: str, scenarios) -> tuple[dict, list[Finding]]:
         findings.append(Finding("authoring", "no `# execution_status:` line"))
     for kind, tags in sorted(markers.items()):
         for tag in tags:
-            if tag not in clauses:
+            if tag and tag not in clauses:
                 findings.append(Finding(
                     "authoring", f"marker {kind}[{tag}] does not name a declared clause"))
     if status in ("AUTHORED", "PARTIAL") and not markers[status]:
@@ -183,7 +181,7 @@ def authoring_metadata(text: str, scenarios) -> tuple[dict, list[Finding]]:
                 f"authoring_status {status} with PARTIAL (held-clause) markers {held}"))
     if status == "AUTHORED" and not scenarios:
         findings.append(Finding("authoring", "AUTHORED with an empty scenario body"))
-    if status == "AUTHORED":
+    if status == "AUTHORED" and clauses:
         covered = {clause for scenario in scenarios for clause in scenario.covers}
         pending = [tag for tag, scope in clauses.items() if scope == "YES" and tag not in covered]
         if pending:
@@ -256,13 +254,13 @@ def report(corpus, inventory, directory: Path, require_complete: bool) -> int:
         lines.append(finding.render())
 
     lines.append("")
-    lines.append("Declared coverage (register as it stands; staleness is not measured here)")
+    lines.append("Declared coverage (knowledge-base clause inventory as it stands)")
     coverage = inventory.coverage(scenarios)
     lines.extend("  " + line for line in coverage.render().splitlines())
 
     lines.append("")
-    lines.append("Retired from the register (reported separately, never as pending authoring)")
-    lines.append(f"  audit identities with scenarios but no register row: {len(retired)}")
+    lines.append("Retired from the inventory (reported separately, never as pending authoring)")
+    lines.append(f"  audit identities with scenarios but no knowledge-base clause: {len(retired)}")
     for identity in retired[:20]:
         lines.append(f"    {identity}")
     if len(retired) > 20:

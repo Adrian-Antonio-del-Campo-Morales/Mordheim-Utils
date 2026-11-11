@@ -849,15 +849,6 @@ def coverage_gate_command(args) -> int:
     return int(not result.passed)
 
 
-def audit_command(args) -> int:
-    from mordheim_combat_lab.verification.audit_export import generate_audit
-
-    paths = generate_audit(output=Path(args.output).resolve() if args.output else None)
-    for path in paths:
-        print(path.resolve())
-    return 0
-
-
 def calibrate_command(args) -> int:
     """Lazy entry point: the sweeps import the combat engines themselves."""
     from mordheim_combat_lab.cli.calibration import calibration_command
@@ -894,16 +885,6 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
     verification.add_argument("--json", action="store_true",
                               help="print the verification payload as JSON")
     verification.set_defaults(handler=verify_command)
-
-    audit = commands.add_parser(
-        "audit", help="generate the auditable rule inventory",
-        description="Generate separate combat-mechanic and editorial-rule CSVs "
-                    "under outputs/audit, with timestamped names by default; "
-                    "filter them in a spreadsheet.",
-        formatter_class=_HelpFormatter)
-    audit.add_argument("--output", metavar="DIR",
-                       help="output directory for both CSVs (default: outputs/audit)")
-    audit.set_defaults(handler=audit_command)
 
     coverage = commands.add_parser(
         "coverage-gate",

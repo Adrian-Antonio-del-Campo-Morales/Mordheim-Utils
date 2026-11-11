@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/lustrian-reavers/conqueror--survivor/trait.survivor
-# scaffold_fingerprint: 97664de5b9a229da50d69405c4679e1b3b182978116407f6c3b5438f7838a8e5
 # authoring_status: AUTHORED
 # authoring_progress: the admitted survivor clause carries three authored scenarios for the printed
 #   "Treat Out of Action as Stunned if the Conqueror is standing when receiving the Wound": a
@@ -14,9 +13,8 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: cannot-be-out-while-standing (scope: YES)
 # AUTHORED[cannot-be-out-while-standing]: 3 scenarios cover the recorded contract "an Out of Action
@@ -26,61 +24,9 @@
 #   the bearer in KNOCKED_DOWN, where the printed exception leaves the out-of-action result standing.
 #   The second sentence of the same printed rule (the post-battle Dead result) is the excluded
 #   scope-NO clause.
-# origin_id:
-#   rule/mordheim/lustrian-reavers/conqueror--survivor/trait.survivor
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/lustrian-reavers/special-rules.yaml
-# source_fingerprint:
-#   557f00d7abb57bc70dbd2d6acd45b8e03eef5e80ca41077652c6ac7bb1a84227
-# source_sha256_at_generation:
-#   bfc14e3b78e040942b46067af600bd06b9a98f1eca32f0e8b0e7c154cfaeae1e
-# Printed rule text:
-#   Cannot be taken out of Action unless the model is already Knocked Down or Stunned. Treat Out of Action as Stunned if the Conqueror is standing when receiving the Wound. In addition, the first time a Conqueror suffers a Dead result on the Serious Injury Chart, treat it as Multiple Injuries instead. This ability can save the Conqueror only one time.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Cannot be taken out of action unless already Knocked Down or Stunned: an Out of Action result while standing becomes Stunned; observable: a standing bearer is Stunned instead of removed.
-# effect_id:
-#   trait.survivor
-# relation:
-#   equivalent
-# parameters:
-#   {}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Consumed as the survivor flag, which rewrites an out-of-action result into Stunned when the fighter was standing at the start of the injury roll.
 #
 # Clause: first-dead-to-multiple-injuries (scope: NO)
 # Outside the admitted clause scope; retained for context, not a test TODO.
-# origin_id:
-#   rule/mordheim/lustrian-reavers/conqueror--survivor/trait.survivor
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/lustrian-reavers/special-rules.yaml
-# source_fingerprint:
-#   557f00d7abb57bc70dbd2d6acd45b8e03eef5e80ca41077652c6ac7bb1a84227
-# source_sha256_at_generation:
-#   bfc14e3b78e040942b46067af600bd06b9a98f1eca32f0e8b0e7c154cfaeae1e
-# Printed rule text:
-#   Cannot be taken out of Action unless the model is already Knocked Down or Stunned. Treat Out of Action as Stunned if the Conqueror is standing when receiving the Wound. In addition, the first time a Conqueror suffers a Dead result on the Serious Injury Chart, treat it as Multiple Injuries instead. This ability can save the Conqueror only one time.
-# Semantic contract (check analysis_status before treating as accepted):
-#   The first Dead result on the Serious Injury Chart treated as Multiple Injuries is a post-battle campaign result. Printed clause: Cannot be taken out of Action unless the model is already Knocked Down or Stunned. Treat Out of Action as Stunned if the Conqueror is standing when receiving the Wound. In addition, the first time a Conqueror suffers a Dead result on the Serious Injury Chart, treat it as Multiple Injuries instead. This ability can save the Conqueror only one time.
-# effect_id:
-#   (not recorded)
-# relation:
-#   independent
-# parameters:
-#   {}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Second sentence of the same printed rule; kept as its own clause so the duel-time standing-to-Stunned half is not credited with it. Scope review integration: {"clause_id":"first-dead-to-multiple-injuries","review_clause_id":"first-dead-to-multiple-injuries","source_state":"matched","review_status":"reviewed","scope_reason":"The first Dead result on the Serious Injury Chart treated as Multiple Injuries is a post-battle campaign result.","notes":"The standing-to-Stunned half of the same printed rule is admitted under row 335.","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The first time the Conqueror suffers a Dead result on the Serious Injury chart it is treated as Multiple Injuries instead, once only; observable: the post-battle serious injury roll.","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"product","dependencies":"[]","implementation_batch":"B13-post-duel-serious-injuries","analysis_status":"reviewed","evidence":"none","evidence_refs":"[]"},"inherited_clause_text":"Cannot be taken out of Action unless the model is already Knocked Down or Stunned. Treat Out of Action as Stunned if the Conqueror is standing when receiving the Wound. In addition, the first time a Conqueror suffers a Dead result on the Serious Injury Chart, treat it as Multiple Injuries instead. This ability can save the Conqueror only one time.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
 
 # --- Authored scenarios ---
 # Derived from the printed rule and the recorded contract; no engine output was consulted.  The

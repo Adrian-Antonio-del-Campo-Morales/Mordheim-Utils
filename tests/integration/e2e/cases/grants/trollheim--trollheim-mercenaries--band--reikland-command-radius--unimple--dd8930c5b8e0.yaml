@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/trollheim-mercenaries/band--reikland-command-radius/unimplemented.trollheim-mercenaries.band.reikland-command-radius
-# scaffold_fingerprint: 9bad651e6cdc76211cd33202ba78ec02786811b0b282a20d5bea85e138c1e68e
 # authoring_status: AUTHORED
 # authoring_progress: the admitted leader-twelve clause keeps 2 authored controls derived from the
 # delivered mechanic.leader-six connection recorded in this file's own register notes: a supplied captain
@@ -14,12 +13,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: leader-twelve (scope: YES)
-# AUTHORED[leader-twelve]: 2 controls remain evidence of the delivered six-inch Leader connection.  The
+# AUTHORED: 2 controls remain evidence of the delivered six-inch Leader connection.  The
 #   printed twelve-inch radius is excluded from the active corpus: the governing source declares
 #   band--reikland-command-radius scope LATER, implemented NO and binding null, so no compiled effect
 #   widens the radius and the engine never offers the borrow at twelve inches.  The excluded scenario is
@@ -29,36 +26,6 @@
 #   values are supplied fixture facts (8 for the captain, 3 for the borrower), so the same dice separate a
 #   borrowed pass from an own-value failure.  The borrower's required test is the Fear test of the charge it
 #   receives, whose printed consequence is state.second.fear_hit_sixes.
-# origin_id:
-#   rule/trollheim/trollheim-mercenaries/band--reikland-command-radius/unimplemented.trollheim-mercenaries.band.reikland-command-radius
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/trollheim/trollheim-mercenaries/special-rules.yaml
-# source_fingerprint:
-#   63afbbee9fb3f377bdc9a14dc6a395a41dfdecf790e98eb1fa39ca18494a9726
-# source_sha256_at_generation:
-#   ad73a5aa85866495431f16754eb920da52f4b9c639c1f090295824d35c21cabe
-# Printed rule text:
-#   Reikland warriors may use their Captain's Leadership while within 12" instead of the normal 6".
-# Semantic contract (check analysis_status before treating as accepted):
-#   Models within 12 inches may use this leader's Leadership instead of the normal 6 inches. Observable: the supplied leader lends its value out to 12 inches.
-# effect_id:
-#   mechanic.leader-six
-# relation:
-#   parameterized_variant
-# parameters:
-#   {"range_inches":12}
-# conditions:
-#   {"trigger":"supplied leader within 12 inches"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   12-inch radius variant; the consumer's fixed 6-inch check must be parameterised. Surface reuse candidate: {"family":"M-LEADER-SIX","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare supplied provider, same side/band, standing status, recipient, distance, range upgrades and borrowing/reroll effects. Do not simulate another fighter or erase handler/leader restrictions; a range upgrade is not another aura.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
-#   
-#   [M4-psychology 2026-10-08] delivered. The Trollheim Mercenary copy of Military Discipline binds the same `mechanic.leader-twelve` contract with the same Captain-only recipient restriction. No residual.
-#   [source-check 2026-10-20] The current special-rules.yaml:61-84 no longer carries that binding:
-#   scope LATER, implemented NO, binding null.  The claim above is historical, not the current state.
 
 # --- Authored scenarios ---
 # The supplied leader is a nearby participant of the borrower's own side and band: the Trollheim
@@ -67,7 +34,6 @@
 # proves.
 - audit_id: rule/trollheim/trollheim-mercenaries/band--reikland-command-radius/unimplemented.trollheim-mercenaries.band.reikland-command-radius
   id: a-captain-beyond-twelve-inches-supplies-nothing
-  covers: [leader-twelve]
   fighters:
     first:
       trait_overrides: {causes_fear: true}
@@ -106,7 +72,6 @@
 # participant that does not print the Leader rule is no provider, so no use is offered.
 - audit_id: rule/trollheim/trollheim-mercenaries/band--reikland-command-radius/unimplemented.trollheim-mercenaries.band.reikland-command-radius
   id: a-fighter-without-the-leader-rule-supplies-nothing
-  covers: [leader-twelve]
   fighters:
     first:
       trait_overrides: {causes_fear: true}

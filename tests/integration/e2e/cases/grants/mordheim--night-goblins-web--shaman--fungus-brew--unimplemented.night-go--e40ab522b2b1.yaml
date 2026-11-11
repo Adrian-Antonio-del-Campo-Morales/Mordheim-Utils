@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/night-goblins-web/shaman--fungus-brew/unimplemented.night-goblins-web.shaman.fungus-brew
-# scaffold_fingerprint: cd421be1d168ab659dc7415e3e02901a734422ea88bcffd6839d88b56132b4d1
 # authoring_status: AUTHORED
 # authoring_progress: the brew results are supplied facts with canonical identities, and the last two
 #   withheld clauses are authored as well.  catalog/rules/conditions.yaml carries one condition per printed
@@ -28,9 +27,8 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: fungus-belligerent (scope: YES)
 # AUTHORED[fungus-belligerent]: 2 scenarios.  The supplied route the previous note called missing is the
@@ -43,32 +41,6 @@
 #   control leaves the identical miss standing when the supplied condition is not declared.  The registered
 #   implementation batch C06-hatred is the connection this pair exercises.  REVIEWED still requires manual
 #   semantic review.
-# origin_id:
-#   rule/mordheim/night-goblins-web/shaman--fungus-brew/unimplemented.night-goblins-web.shaman.fungus-brew
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/night-goblins-web/special-rules.yaml
-# source_fingerprint:
-#   f6c06db0ce9d9a014fc9144f5b274af6bbabb64faf97c8da0dfeb5a50e6d176b
-# source_sha256_at_generation:
-#   0500d0ab2286f4ceb5f0d8954b7b3d4c70326fd53a46a3b3a3e4db85821a24d6
-# Printed rule text:
-#   5 Belligerent = Hatred against the opposing warband(s)
-# Semantic contract (check analysis_status before treating as accepted):
-#   Hatred against the opposing warband is an admitted individual psychology clause resolved on the opposing duellist's identity. Printed clause: 5 Belligerent = Hatred against the opposing warband(s)
-# effect_id:
-#   skill.hatred
-# relation:
-#   equivalent
-# parameters:
-#   {}
-# conditions:
-#   {"trigger":"first combat round against the opposing side","recipient":"affected Night Goblin","duration":"supplied outcome lasts until duel end; reroll benefit is first round only"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   The 1v1 opponent is the opposing warband representative. Reuse ordinary Hatred; no chart operator is needed. Scope review integration: {"clause_id":"fungus-belligerent","review_clause_id":"fungus-belligerent","source_state":"matched","review_status":"reviewed","scope_reason":"Hatred against the opposing warband is an admitted individual psychology clause resolved on the opposing duellist's identity.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The supplied Belligerent recipient hates the opposing duelist and receives ordinary first-round missed-hit rerolls, with ordinary Psychology exemptions.","effect_id":"skill.hatred","relation":"equivalent","parameters":"{}","conditions":"{\"trigger\":\"first combat round against the opposing side\",\"recipient\":\"affected Night Goblin\",\"duration\":\"supplied outcome lasts until duel end; reroll benefit is first round only\"}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/contexts.py::_hit_reroll\"]","implementation_work":"connection","dependencies":"[]","implementation_batch":"C06-hatred","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/contexts.py::_hit_reroll\"]"},"inherited_clause_text":"Before a battle, the Shaman may brew Fungus Brew using 1 to 3 Mad Cap Mushrooms. The brew affects one Night Goblin Warrior henchman group until the end of the battle. Roll once per mushroom; if any dice duplicate a result, the batch is ruined and has no effect. Results: 1 Rowdy = affected by Animosity on 1 or 2; 2 Dizzy = -1 Initiative; 3 Fearless = immune to Fear and All Alone tests; 4 Numbed = +1 armour save, which may not be reduced below 6+; 5 Belligerent = Hatred against the opposing warband(s); 6 Loony = Frenzy, followed by Stupidity if Frenzy is lost because the Goblin is Knocked Down or Stunned.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."} Surface reuse candidate: {"family":"skill.hatred","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Possible shared first-round hit-reroll consumer only. Resolve each printed hated target and the ordinary Psychology/Frenzy gates; do not inherit the audit Orc/Goblin effect ID for every target or the Strigoi immunity exception.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: fungus-brew-production (scope: YES)
 # AUTHORED[fungus-brew-production]: the previous note called the supply route missing and was wrong - this
@@ -81,32 +53,6 @@
 #   What stays outside remains exactly what the register excludes - the mushroom count, the nomination of a
 #   henchman group, the per-mushroom chart rolls and the ruined batch, all pre-battle producers the duel does
 #   not simulate - and it is recorded here rather than asserted.
-# origin_id:
-#   rule/mordheim/night-goblins-web/shaman--fungus-brew/unimplemented.night-goblins-web.shaman.fungus-brew
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/night-goblins-web/special-rules.yaml
-# source_fingerprint:
-#   f6c06db0ce9d9a014fc9144f5b274af6bbabb64faf97c8da0dfeb5a50e6d176b
-# source_sha256_at_generation:
-#   0500d0ab2286f4ceb5f0d8954b7b3d4c70326fd53a46a3b3a3e4db85821a24d6
-# Printed rule text:
-#   Before a battle, the Shaman may brew Fungus Brew using 1 to 3 Mad Cap Mushrooms. The brew affects one Night Goblin Warrior henchman group until the end of the battle. Roll once per mushroom; if any dice duplicate a result, the batch is ruined and has no effect.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Brewing the Fungus Brew before the battle supplies the affected duelist a lasting individual state for the battle, with the group recipient supplied as one model in the duel. Printed clause: Before a battle, the Shaman may brew Fungus Brew using 1 to 3 Mad Cap Mushrooms. The brew affects one Night Goblin Warrior henchman group until the end of the battle. Roll once per mushroom; if any dice duplicate a result, the batch is ruined and has no effect.
-# effect_id:
-#   (not recorded)
-# relation:
-#   unresolved
-# parameters:
-#   {}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   A missing chart resolver is not a missing duel operator. Scope review integration: {"clause_id":"fungus-brew-production","review_clause_id":"fungus-brew-production","source_state":"matched","review_status":"reviewed","scope_reason":"Brewing the Fungus Brew before the battle supplies the affected duelist a lasting individual state for the battle, with the group recipient supplied as one model in the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Pre-battle mushroom spending, group nomination, chart rolls and a ruined batch are excluded producers. Supply the affected duelist and the resulting drink effects without simulating the group or campaign.","effect_id":"","relation":"independent","parameters":"{}","conditions":"{\"producer\":\"pre-battle group brewing\"}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"Before a battle, the Shaman may brew Fungus Brew using 1 to 3 Mad Cap Mushrooms. The brew affects one Night Goblin Warrior henchman group until the end of the battle. Roll once per mushroom; if any dice duplicate a result, the batch is ruined and has no effect. Results: 1 Rowdy = affected by Animosity on 1 or 2; 2 Dizzy = -1 Initiative; 3 Fearless = immune to Fear and All Alone tests; 4 Numbed = +1 armour save, which may not be reduced below 6+; 5 Belligerent = Hatred against the opposing warband(s); 6 Loony = Frenzy, followed by Stupidity if Frenzy is lost because the Goblin is Knocked Down or Stunned.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
 #
 # Clause: fungus-dizzy (scope: YES)
 # AUTHORED[fungus-dizzy]: 1 scenario.  The supplied input the previous note called missing is the compiler's
@@ -117,32 +63,6 @@
 #   Initiative 4 and observes 3, with the opponent already out so no die of any kind is consumed.  The attack order that follows from the adjusted
 #   value is a consequence of the same datum and is not separately asserted.  REVIEWED still requires manual
 #   semantic review.
-# origin_id:
-#   rule/mordheim/night-goblins-web/shaman--fungus-brew/unimplemented.night-goblins-web.shaman.fungus-brew
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/night-goblins-web/special-rules.yaml
-# source_fingerprint:
-#   f6c06db0ce9d9a014fc9144f5b274af6bbabb64faf97c8da0dfeb5a50e6d176b
-# source_sha256_at_generation:
-#   0500d0ab2286f4ceb5f0d8954b7b3d4c70326fd53a46a3b3a3e4db85821a24d6
-# Printed rule text:
-#   2 Dizzy = -1 Initiative
-# Semantic contract (check analysis_status before treating as accepted):
-#   A -1 Initiative for the battle is an admitted lasting individual characteristic consequence of the affected duelist. Printed clause: 2 Dizzy = -1 Initiative
-# effect_id:
-#   profile.characteristics
-# relation:
-#   equivalent
-# parameters:
-#   {"stat_bonuses":{"initiative":-1}}
-# conditions:
-#   {"trigger":"construct the affected Night Goblin","duration":"until duel end"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Reuse the existing characteristic-bonus contract; supply the brew outcome, not its chart. Scope review integration: {"clause_id":"fungus-dizzy","review_clause_id":"fungus-dizzy","source_state":"matched","review_status":"reviewed","scope_reason":"A -1 Initiative for the battle is an admitted lasting individual characteristic consequence of the affected duelist.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The supplied Dizzy recipient starts the duel with Initiative reduced by one. Observable: attack-order and Initiative calculations use that adjusted value once.","effect_id":"profile.characteristics","relation":"equivalent","parameters":"{\"stat_bonuses\":{\"initiative\":-1}}","conditions":"{\"trigger\":\"construct the affected Night Goblin\",\"duration\":\"until duel end\"}","consumer":"[\"packages/python/roster-construction/mordheim_construction/compiler.py::_apply_characteristic_bonuses\",\"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\"]","implementation_work":"data","dependencies":"[]","implementation_batch":"C16-construction","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/roster-construction/mordheim_construction/compiler.py::_apply_characteristic_bonuses\",\"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\"]"},"inherited_clause_text":"Before a battle, the Shaman may brew Fungus Brew using 1 to 3 Mad Cap Mushrooms. The brew affects one Night Goblin Warrior henchman group until the end of the battle. Roll once per mushroom; if any dice duplicate a result, the batch is ruined and has no effect. Results: 1 Rowdy = affected by Animosity on 1 or 2; 2 Dizzy = -1 Initiative; 3 Fearless = immune to Fear and All Alone tests; 4 Numbed = +1 armour save, which may not be reduced below 6+; 5 Belligerent = Hatred against the opposing warband(s); 6 Loony = Frenzy, followed by Stupidity if Frenzy is lost because the Goblin is Knocked Down or Stunned.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."} Surface reuse candidate: {"family":"P-CHARACTERISTICS","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Share only the relevant construction/projection operation. Preserve each item/list identity, recipient, quantity, ownership-versus-use distinction and prerequisite. No free dagger does not itself forbid all owned daggers; acquisition, prices and casting stay separate.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: fungus-fearless-fear (scope: YES)
 # AUTHORED[fungus-fearless-fear]: 2 scenarios.  The supplied affected state the previous note called missing
@@ -152,32 +72,6 @@
 #   consumer that asks for one fails the strict tape - while the control without the supplied condition takes
 #   the test, and its two sixes fail it in state.second.fear_hit_sixes.  The All Alone half of the same result
 #   stays excluded by scope.  REVIEWED still requires manual semantic review.
-# origin_id:
-#   rule/mordheim/night-goblins-web/shaman--fungus-brew/unimplemented.night-goblins-web.shaman.fungus-brew
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/night-goblins-web/special-rules.yaml
-# source_fingerprint:
-#   f6c06db0ce9d9a014fc9144f5b274af6bbabb64faf97c8da0dfeb5a50e6d176b
-# source_sha256_at_generation:
-#   0500d0ab2286f4ceb5f0d8954b7b3d4c70326fd53a46a3b3a3e4db85821a24d6
-# Printed rule text:
-#   3 Fearless = immune to Fear
-# Semantic contract (check analysis_status before treating as accepted):
-#   Immunity to Fear is an admitted lasting individual psychology state of the affected duelist. Printed clause: 3 Fearless = immune to Fear
-# effect_id:
-#   mechanic.fear-immunity
-# relation:
-#   equivalent
-# parameters:
-#   {}
-# conditions:
-#   {"trigger":"ordinary Fear interaction","recipient":"affected Night Goblin","duration":"until duel end"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Reuse the existing immunity. Its All Alone consequence is separately excluded. Scope review integration: {"clause_id":"fungus-fearless-fear","review_clause_id":"fungus-fearless-fear","source_state":"matched","review_status":"reviewed","scope_reason":"Immunity to Fear is an admitted lasting individual psychology state of the affected duelist.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The supplied Fearless recipient is immune to ordinary Fear during the duel, preserving express source exceptions.","effect_id":"mechanic.fear-immunity","relation":"equivalent","parameters":"{}","conditions":"{\"trigger\":\"ordinary Fear interaction\",\"recipient\":\"affected Night Goblin\",\"duration\":\"until duel end\"}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/psychology.py::resolve_fear\",\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\"]","implementation_work":"connection","dependencies":"[]","implementation_batch":"C02-fear","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/psychology.py::resolve_fear\",\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\"]"},"inherited_clause_text":"Before a battle, the Shaman may brew Fungus Brew using 1 to 3 Mad Cap Mushrooms. The brew affects one Night Goblin Warrior henchman group until the end of the battle. Roll once per mushroom; if any dice duplicate a result, the batch is ruined and has no effect. Results: 1 Rowdy = affected by Animosity on 1 or 2; 2 Dizzy = -1 Initiative; 3 Fearless = immune to Fear and All Alone tests; 4 Numbed = +1 armour save, which may not be reduced below 6+; 5 Belligerent = Hatred against the opposing warband(s); 6 Loony = Frenzy, followed by Stupidity if Frenzy is lost because the Goblin is Knocked Down or Stunned.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."} Surface reuse candidate: {"family":"mechanic.fear-immunity","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare enemy/bearer identity, charge direction, individual test, failed-charge versus hit penalty, and immunity/reroll exceptions. Ordinary Fear has both charging and charged consequences; narrow immunity or charging-only Fear must not become unconditional.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: fungus-loony (scope: YES)
 # AUTHORED[fungus-loony]: 2 scenarios carry both halves of the printed composition.  The supplied start state
@@ -190,32 +84,6 @@
 #   sixes fail it and bar the bearer's attacks.  The register's own warning stands as the reason the transition
 #   is asserted rather than assumed: trait.frenzy alone is not proof of it.  REVIEWED still requires manual
 #   semantic review.
-# origin_id:
-#   rule/mordheim/night-goblins-web/shaman--fungus-brew/unimplemented.night-goblins-web.shaman.fungus-brew
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/night-goblins-web/special-rules.yaml
-# source_fingerprint:
-#   f6c06db0ce9d9a014fc9144f5b274af6bbabb64faf97c8da0dfeb5a50e6d176b
-# source_sha256_at_generation:
-#   0500d0ab2286f4ceb5f0d8954b7b3d4c70326fd53a46a3b3a3e4db85821a24d6
-# Printed rule text:
-#   6 Loony = Frenzy, followed by Stupidity if Frenzy is lost because the Goblin is Knocked Down or Stunned.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Frenzy followed by Stupidity when the frenzy is lost is an admitted lasting individual psychology state of the affected duelist. Printed clause: 6 Loony = Frenzy, followed by Stupidity if Frenzy is lost because the Goblin is Knocked Down or Stunned.
-# effect_id:
-#   trait.frenzy
-# relation:
-#   related
-# parameters:
-#   {"frenzy":true,"additional_effect":"mechanic.stupidity"}
-# conditions:
-#   {"trigger":"supplied Loony outcome, then loss of Frenzy through knock-down/stun","recipient":"affected Night Goblin","duration":"until duel end"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Existing composition can carry both the Frenzy trait and Stupidity mechanic: resolve_stupidity exempts current Frenzy, while _resolve_wound_damage clears Frenzy. This is a combined canonical connection, not proof that trait.frenzy alone implements the transition. Scope review integration: {"clause_id":"fungus-loony","review_clause_id":"fungus-loony","source_state":"matched","review_status":"reviewed","scope_reason":"Frenzy followed by Stupidity when the frenzy is lost is an admitted lasting individual psychology state of the affected duelist.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The supplied Loony recipient starts frenzied. After knock-down/stun removes Frenzy, it becomes subject to Stupidity for the remaining duel. Observable: no ordinary Stupidity roll during Frenzy, then a Stupidity check on its applicable own turn after Frenzy is lost.","effect_id":"trait.frenzy","relation":"related","parameters":"{\"frenzy\":true,\"additional_effect\":\"mechanic.stupidity\"}","conditions":"{\"trigger\":\"supplied Loony outcome, then loss of Frenzy through knock-down/stun\",\"recipient\":\"affected Night Goblin\",\"duration\":\"until duel end\"}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/state.py::initialize_fighter\",\"packages/python/combat-engine/mordheim_combat/modular/attacks.py::_resolve_wound_damage\",\"packages/python/combat-engine/mordheim_combat/modular/psychology.py::resolve_stupidity\"]","implementation_work":"connection","dependencies":"[]","implementation_batch":"shared-frenzy-to-stupidity","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/state.py::initialize_fighter\",\"packages/python/combat-engine/mordheim_combat/modular/attacks.py::_resolve_wound_damage\",\"packages/python/combat-engine/mordheim_combat/modular/psychology.py::resolve_stupidity\"]"},"inherited_clause_text":"Before a battle, the Shaman may brew Fungus Brew using 1 to 3 Mad Cap Mushrooms. The brew affects one Night Goblin Warrior henchman group until the end of the battle. Roll once per mushroom; if any dice duplicate a result, the batch is ruined and has no effect. Results: 1 Rowdy = affected by Animosity on 1 or 2; 2 Dizzy = -1 Initiative; 3 Fearless = immune to Fear and All Alone tests; 4 Numbed = +1 armour save, which may not be reduced below 6+; 5 Belligerent = Hatred against the opposing warband(s); 6 Loony = Frenzy, followed by Stupidity if Frenzy is lost because the Goblin is Knocked Down or Stunned.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."} Surface reuse candidate: {"family":"trait.frenzy","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact supplied/rolled state, trigger, frequency, duration, termination and attack-count contribution. Permanent and conditional Frenzy, +1 Attack and doubling are different. Do not implement group creation, movement or campaign tables merely to supply an individual state.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: fungus-numbed (scope: YES)
 # AUTHORED[fungus-numbed]: the supplied route the previous note called missing exists and is the
@@ -228,63 +96,9 @@
 #   this printed floor also survives an attack that ignores armour, which the printed sentence does not state
 #   and the existing armour_save_floor contract answers differently.  No tape below declares an
 #   armour-ignoring attack, so that interaction is neither asserted nor silently assumed.
-# origin_id:
-#   rule/mordheim/night-goblins-web/shaman--fungus-brew/unimplemented.night-goblins-web.shaman.fungus-brew
-# analysis_status:
-#   needs_clarification
-# source_file:
-#   bands/mordheim/night-goblins-web/special-rules.yaml
-# source_fingerprint:
-#   f6c06db0ce9d9a014fc9144f5b274af6bbabb64faf97c8da0dfeb5a50e6d176b
-# source_sha256_at_generation:
-#   0500d0ab2286f4ceb5f0d8954b7b3d4c70326fd53a46a3b3a3e4db85821a24d6
-# Printed rule text:
-#   4 Numbed = +1 armour save, which may not be reduced below 6+
-# Semantic contract (check analysis_status before treating as accepted):
-#   A +1 armour save that may not be reduced below 6+ is an admitted lasting individual defence of the affected duelist. Printed clause: 4 Numbed = +1 armour save, which may not be reduced below 6+
-# effect_id:
-#   mechanic.armour-save-bonus
-# relation:
-#   related
-# parameters:
-#   {"armour_save_bonus":1,"worst_permitted_save":6}
-# conditions:
-#   {"recipient":"affected Night Goblin","duration":"until duel end","unresolved":"whether the printed floor also survives attacks that ignore armour"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   The bonus and 6+ limit are printed; their interaction with armour-ignoring attacks is not explicit here. The existing armour_save_floor also preserves a save against nonmagical armour-ignoring attacks, so it cannot be declared an exact connection without resolving that distinction. A bonus-only binding is incomplete. This local uncertainty does not block the other supplied brew consequences. Scope review integration: {"clause_id":"fungus-numbed","review_clause_id":"fungus-numbed","source_state":"matched","review_status":"reviewed","scope_reason":"A +1 armour save that may not be reduced below 6+ is an admitted lasting individual defence of the affected duelist.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The supplied Numbed recipient improves its armour save by one and may not have that save worsened beyond 6+. Observable: normal armour improves once and Strength penalties cannot worsen the permitted save beyond the source floor.","effect_id":"mechanic.armour-save-bonus","relation":"related","parameters":"{\"armour_save_bonus\":1,\"worst_permitted_save\":6}","conditions":"{\"recipient\":\"affected Night Goblin\",\"duration\":\"until duel end\",\"unresolved\":\"whether the printed floor also survives attacks that ignore armour\"}","consumer":"[\"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\",\"packages/python/combat-engine/mordheim_combat/phases.py::armour_target\"]","implementation_work":"assessment","dependencies":"[]","implementation_batch":"shared-armour-bonus-floor","analysis_status":"needs_clarification","evidence":"inspection","evidence_refs":"[\"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\",\"packages/python/combat-engine/mordheim_combat/phases.py::armour_target\"]"},"inherited_clause_text":"Before a battle, the Shaman may brew Fungus Brew using 1 to 3 Mad Cap Mushrooms. The brew affects one Night Goblin Warrior henchman group until the end of the battle. Roll once per mushroom; if any dice duplicate a result, the batch is ruined and has no effect. Results: 1 Rowdy = affected by Animosity on 1 or 2; 2 Dizzy = -1 Initiative; 3 Fearless = immune to Fear and All Alone tests; 4 Numbed = +1 armour save, which may not be reduced below 6+; 5 Belligerent = Hatred against the opposing warband(s); 6 Loony = Frenzy, followed by Stupidity if Frenzy is lost because the Goblin is Knocked Down or Stunned.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."}
-#   
-#   [M3-defences 2026-10-08] printed values bound, interaction open. '+1 armour save, not reduced below 6+' is expressible (`armour_save_bonus` plus `armour_save_floor`), but the existing `armour_save_floor` also preserves a save against non-magical armour-ignoring attacks, which this clause does not state. Resolution: decide whether Fungus Brew's 6+ floor survives an armour-ignoring hit before binding it.
 #
 # Clause: fungus-fearless-all-alone (scope: NO)
 # Outside the admitted clause scope; retained for context, not a test TODO.
-# origin_id:
-#   rule/mordheim/night-goblins-web/shaman--fungus-brew/unimplemented.night-goblins-web.shaman.fungus-brew
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/night-goblins-web/special-rules.yaml
-# source_fingerprint:
-#   f6c06db0ce9d9a014fc9144f5b274af6bbabb64faf97c8da0dfeb5a50e6d176b
-# source_sha256_at_generation:
-#   0500d0ab2286f4ceb5f0d8954b7b3d4c70326fd53a46a3b3a3e4db85821a24d6
-# Printed rule text:
-#   and All Alone tests
-# Semantic contract (check analysis_status before treating as accepted):
-#   The All Alone half of the same result is the excluded group enemy-counting rule. Printed clause: and All Alone tests
-# effect_id:
-#   (not recorded)
-# relation:
-#   independent
-# parameters:
-#   {}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   This exclusion does not block the admitted Fear immunity. Scope review integration: {"clause_id":"fungus-fearless-all-alone","review_clause_id":"fungus-fearless-all-alone","source_state":"matched","review_status":"reviewed","scope_reason":"The All Alone half of the same result is the excluded group enemy-counting rule.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"All Alone is a group/outnumbering test outside the 1v1 duel.","effect_id":"","relation":"independent","parameters":"{}","conditions":"{\"recipient\":\"affected Night Goblin\"}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"Before a battle, the Shaman may brew Fungus Brew using 1 to 3 Mad Cap Mushrooms. The brew affects one Night Goblin Warrior henchman group until the end of the battle. Roll once per mushroom; if any dice duplicate a result, the batch is ruined and has no effect. Results: 1 Rowdy = affected by Animosity on 1 or 2; 2 Dizzy = -1 Initiative; 3 Fearless = immune to Fear and All Alone tests; 4 Numbed = +1 armour save, which may not be reduced below 6+; 5 Belligerent = Hatred against the opposing warband(s); 6 Loony = Frenzy, followed by Stupidity if Frenzy is lost because the Goblin is Knocked Down or Stunned.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
 #
 # Clause: fungus-rowdy (scope: YES)
 # AUTHORED[fungus-rowdy]: 3 scenarios.  This block and its tapes are reconciled to the reviewed register row,
@@ -295,35 +109,6 @@
 #   control that supplies nothing asks for no animosity die at all.  The group animosity between models, every
 #   movement consequence and the compound table's other results stay outside this clause.  REVIEWED still
 #   requires manual semantic review and execution_status stays UNEXECUTED.
-# origin_id:
-#   rule/mordheim/night-goblins-web/shaman--fungus-brew/unimplemented.night-goblins-web.shaman.fungus-brew
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/night-goblins-web/special-rules.yaml
-# source_fingerprint:
-#   f6c06db0ce9d9a014fc9144f5b274af6bbabb64faf97c8da0dfeb5a50e6d176b
-# source_sha256_at_generation:
-#   0500d0ab2286f4ceb5f0d8954b7b3d4c70326fd53a46a3b3a3e4db85821a24d6
-# Printed rule text:
-#   1 Rowdy = affected by Animosity on 1 or 2
-# Semantic contract (check analysis_status before treating as accepted):
-#   The supplied Rowdy recipient suffers its individual Animosity combat restriction on 1 or 2, rather than the ordinary threshold of 1. Observable: result 2 suppresses its attacks just as result 1 does.
-# effect_id:
-#   mechanic.fungus-rowdy
-# relation:
-#   parameterized_variant
-# parameters:
-#   {"animosity_threshold": 2}
-# conditions:
-#   {"trigger": "the start of the bearer's own turn", "recipient": "affected Night Goblin", "duration": "that turn", "outcome": "attacks suppressed on a 1 or 2"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   The existing goblin-squabble branch tests == 1; it has no consumed 1-or-2 parameter. The individual attack denial is admitted; movement/group consequences remain excluded. Scope review integration: {"clause_id":"fungus-rowdy","review_clause_id":"fungus-rowdy","source_state":"matched","review_status":"reviewed","scope_reason":"The Rowdy result subjects the model to Animosity, part of the excluded group animosity subsystem.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The supplied Rowdy recipient suffers its individual Animosity combat restriction on 1 or 2, rather than the ordinary threshold of 1. Observable: result 2 suppresses its attacks just as result 1 does.","effect_id":"mechanic.goblin-squabble","relation":"related","parameters":"{\"failure_results\":[1,2]}","conditions":"{\"trigger\":\"active warrior turn\",\"recipient\":\"supplied affected Night Goblin\",\"duration\":\"until duel end\"}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/rounds.py::resolve_round\"]","implementation_work":"behavior","dependencies":"[]","implementation_batch":"qualified-animosity","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/rounds.py::resolve_round\"]"},"inherited_clause_text":"Before a battle, the Shaman may brew Fungus Brew using 1 to 3 Mad Cap Mushrooms. The brew affects one Night Goblin Warrior henchman group until the end of the battle. Roll once per mushroom; if any dice duplicate a result, the batch is ruined and has no effect. Results: 1 Rowdy = affected by Animosity on 1 or 2; 2 Dizzy = -1 Initiative; 3 Fearless = immune to Fear and All Alone tests; 4 Numbed = +1 armour save, which may not be reduced below 6+; 5 Belligerent = Hatred against the opposing warband(s); 6 Loony = Frenzy, followed by Stupidity if Frenzy is lost because the Goblin is Knocked Down or Stunned.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
-#   The existing goblin-squabble branch tests == 1; it has no consumed 1-or-2 parameter. The individual attack denial is admitted; movement/group consequences remain excluded.
-#   [M4g-frenzy-stupidity-and-consumables 2026-10-09] delivered. The supplied Rowdy result binds `mechanic.fungus-rowdy`, read by `rounds.resolve_round`: the own-turn animosity die the printed squabble contract already rolls now fails on 1-2 for this bearer instead of 1, so on a 1 or 2 it does nothing else that turn and its attacks are suppressed for that phase. Only that individual attack denial is admitted; the group animosity between models and every movement consequence stay recorded exclusions. Witness: with the same supplied 2 the ordinary squabbler strikes (two attacks in the phase) while the Rowdy bearer's own attack dice are never asked for and the opponent's pool is untouched; a 1 suppresses under both contracts and a 3 under neither.
-#   [Coordinator recovery 2026-10-09] The M4g admitted individual attack-suppression consequence supersedes the earlier group-only exclusion; the group producer remains excluded. Restore the original Rowdy clause text instead of the compound table copied during reconstruction. This existing key lies outside the closed 793-key reporting snapshot and is preserved separately, not added silently to its denominator.
 
 # --- Authored scenarios ---
 

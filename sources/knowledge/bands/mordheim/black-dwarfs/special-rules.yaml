@@ -35,8 +35,7 @@ rules:
     - id: unimplemented.black-dwarfs.sorcerer.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic.
+      reason: out-of-scope.magic
   name: Wizard
   effect: >-
     The Sorcerer is a wizard and follows the rules for wizards in the magic section. Sorcerers may
@@ -64,8 +63,7 @@ rules:
     - id: unimplemented.black-dwarfs.sorcerer.priest
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic.
+      reason: out-of-scope.magic
   name: Priest
   effect: >-
     The Sorcerer starts with two rituals. One of them is the Sacrificial Ritual . The other spell is
@@ -93,8 +91,7 @@ rules:
     - id: unimplemented.black-dwarfs.bull-centaur.large-target
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: shooting.
+      reason: out-of-scope.shooting
   name: Large Target
   effect: >-
     Bull centaurs are large creatures and therefore make tempting targets for archers. Anyone
@@ -154,8 +151,7 @@ rules:
     - id: unimplemented.black-dwarfs.informers.drudgery
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Drudgery
   effect: >-
     Informers have had their will broken by their masters. Informers may never become Heroes.
@@ -185,6 +181,11 @@ rules:
       binding:
         kind: mechanic
         id: skill.hard-to-kill
+      clauses:
+      - id: bearer-scope
+        scope: 'YES'
+      - id: out-only-on-six
+        scope: 'YES'
   name: Hard to Kill
   effect: >-
     Applies to all warriors except Informers. When rolling on the Injury chart, the warrior is taken
@@ -220,6 +221,11 @@ rules:
         id: trait.concussion-immune
         parameters:
           value: true
+      clauses:
+      - id: bearer-scope
+        scope: 'YES'
+      - id: concussion-immunity
+        scope: 'YES'
   name: Hard Head
   effect: >-
     Applies to all warriors except Informers. Chaos Dwarfs ignore the special rules for clubs,
@@ -247,9 +253,7 @@ rules:
     - id: unimplemented.black-dwarfs.band.armour
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Armour
   effect: >-
     Applies to all warriors except Informers. Chaos Dwarfs never suffer movement penalties for
@@ -276,9 +280,7 @@ rules:
     - id: unimplemented.black-dwarfs.band.hired-swords
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Hired Swords
   effect: >-
     The warband may hire Ogre Bodyguards, Pit Fighters, Warlocks, Imperial Assassins and Hobgoblin
@@ -307,9 +309,7 @@ rules:
     - id: unimplemented.black-dwarfs.band.characteristic-maximum
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Characteristic Maximum
   effect: >-
     Chaos Dwarf warriors use the Dwarf maximum characteristic profile
@@ -373,9 +373,7 @@ rules:
     - id: unimplemented.black-dwarfs.band.chaos-dwarf-special-skills-extra-tough
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Extra Tough
   effect: >-
     A Chaos Dwarf with this skill is notorious for walking away from wounds that would kill a lesser
@@ -409,6 +407,13 @@ rules:
       binding:
         kind: compiler
         id: compiler.chaos-engineer
+      clauses:
+      - id: whole--scope--rarity-and-gift
+        scope: 'NO'
+      - id: whole--scope--armour-restriction
+        scope: 'YES'
+      - id: search-and-rarity
+        scope: 'NO'
   name: Chaos Engineer
   effect: >-
     The Hero has great technical skill and can use this to craft wicked armours and weapons.
@@ -444,6 +449,11 @@ rules:
       binding:
         kind: mechanic
         id: skill.thick-skull
+      clauses:
+      - id: thick-skull-save
+        scope: 'YES'
+      - id: helmet-improves-to-two
+        scope: 'YES'
   name: Thick Skull
   effect: >-
     The Hero has a thick skull, even for a Chaos Dwarf. He has a 3+ save on a D6 to avoid being
@@ -475,12 +485,8 @@ rules:
     - id: unimplemented.black-dwarfs.band.chaos-dwarf-special-skills-resource-hunter
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Resource Hunter
-  effect: >-
-    This Chaos Dwarf is especially good at locating valuable resources. When rolling on the
-    Exploration chart at the end of a game, the hero may modify one dice roll by +1/-1.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -488,12 +494,9 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/black-dwarfs
   name_i18n:
     es: Cazador de Recursos
-  effect_i18n:
-    es: >-
-      Este Enano del Caos es especialmente bueno localizando recursos valiosos. Al tirar en la tabla
-      de Exploración al final de una partida, el héroe puede modificar una tirada de dado en +1/-1.
   applies_to:
     band: true
+  rule_ref: shared-rule.resource-hunter
 - id: band--chaos-dwarf-special-skills-tyrant
   kind: warband_skill
   runtime:
@@ -504,8 +507,10 @@ rules:
     - id: unimplemented.black-dwarfs.band.chaos-dwarf-special-skills-tyrant
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: deferred.psychology
+      clauses:
+      - id: tyrant
+        scope: 'NO'
   name: Tyrant
   effect: >-
     This skill is for the Chaos Dwarf leader only. This Priest of Hashut is renowned for his
@@ -546,10 +551,6 @@ rules:
         kind: mechanic
         id: skill.tough-as-steel
   name: True Grit
-  effect: >-
-    Chaos Dwarfs are hardy individuals and this Hero is resolute, even for a Chaos Dwarf! When
-    rolling on the Injury table for this Hero, a roll of 1-3 is treated as knocked down , 4-5 as
-    stunned , and 6 as out of action .
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -557,13 +558,9 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/black-dwarfs
   name_i18n:
     es: Entereza
-  effect_i18n:
-    es: >-
-      ¡Los Enanos del Caos son individuos duros y este Héroe es resuelto, incluso para un Enano del
-      Caos! Al tirar en la tabla de Heridas para este Héroe, un resultado de 1-3 se trata como
-      Derribado, 4-5 como Aturdido y 6 como Fuera de combate.
   applies_to:
     band: true
+  rule_ref: shared-rule.hard-as-steel
 - id: bull-centaur--no-missile-weapons
   name: No Missile Weapons
   effect: >-

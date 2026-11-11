@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/weapon.shock-rod
-# scaffold_fingerprint: 850ea798ac8ca374a629bac397e821e924b9a95d318fcd37219a70ee9d87d08c
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clause carries three authored behaviour scenarios and one
 #   authored refusal. REVIEWED still requires manual semantic review and
@@ -10,40 +9,12 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 4 scenarios evidence the printed shock band (injury 1 and 4 both
+# AUTHORED: 4 scenarios evidence the printed shock band (injury 1 and 4 both
 #   Stunned), the printed strike-first order through the events tape, and the
 #   printed two-handed occupancy as a refused loadout. Pending semantic review.
-# origin_id:
-#   mechanic/weapon.shock-rod
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   d83224696095029cb7718d93172aee779b8c17562011c61e2877903467647a41
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   Uses normal Strength, strikes first and uses two hands; Injury results 1-4 are stunned.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Shock rod uses normal Strength, strikes first, needs two hands, and treats Injury 1-4 as Stunned. Closure: priority 1, a clamped 1-4 stun band and no off hand.
-# effect_id:
-#   weapon.shock-rod
-# relation:
-#   equivalent
-# parameters:
-#   {"priority": 1, "two_handed": true}
-# conditions:
-#   {"application": "attack", "stacking": "stack", "trigger": "attack"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   The Shock 1-4 stun band is the injury shock branch consumed through _injury_context for weapon.shock-rod; this is the L06 Shock Rod milestone referenced by the plan (First Strike, two hands, 1-4 stun). Surface reuse candidate: {"family":"W-weapon.shock-rod","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the printed local weapon mode and parameters with the active contract. Confirm hand use, effective Strength, save/critical/parry modifiers, natural-die trigger, temporary states and end conditions. Reuse the base only; retain extra properties and construction recipients.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
 # --- Authored scenarios ---
 # weapon.shock-rod - strikes first, two hands, Injury results 1-4 Stunned.
@@ -51,7 +22,6 @@
 
 - audit_id: mechanic/weapon.shock-rod
   id: shock-rod-injury-one-is-stunned
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.shock-rod
@@ -72,7 +42,6 @@
 
 - audit_id: mechanic/weapon.shock-rod
   id: shock-rod-injury-four-is-stunned
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.shock-rod
@@ -93,7 +62,6 @@
 
 - audit_id: mechanic/weapon.shock-rod
   id: shock-rod-strikes-first-despite-lower-initiative
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.shock-rod
@@ -115,7 +83,6 @@
 
 - audit_id: mechanic/weapon.shock-rod
   id: shock-rod-occupies-both-hands-so-an-off-hand-weapon-is-refused
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.shock-rod

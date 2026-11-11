@@ -39,8 +39,10 @@ rules:
     - id: unimplemented.cursed-cavalcade.aristocrat.expert-horseman
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: mounts.
+      reason: deferred.mounts
+      clauses:
+      - id: mounts
+        scope: 'NO'
   name: Expert Horseman
   effect: the Aristocrat has the Ride (Nightmare) skill.
   source:
@@ -93,8 +95,7 @@ rules:
     - id: unimplemented.cursed-cavalcade.twisted-scholar.magical-adept
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic.
+      reason: out-of-scope.magic
   name: Magical Adept
   effect: >-
     When hiring a Twisted Scholar, you may pay 10 additional GC to upgrade it to a Wizard. If you do
@@ -123,8 +124,7 @@ rules:
     - id: unimplemented.cursed-cavalcade.twisted-scholar.story-teller
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Story Teller
   effect: >-
     When hiring a Twisted Scholar, if you did not upgrade it to a Wizard, you may pay 10 additional
@@ -155,8 +155,12 @@ rules:
     - id: unimplemented.cursed-cavalcade.cursed-piper.danse-macabre
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: deferred.psychology
+      clauses:
+      - id: control-enemy--scope--danse-state
+        scope: 'YES'
+      - id: control-enemy--scope--model-movement
+        scope: 'NO'
   name: Danse Macabre
   effect: >-
     The Piper plays the Danse Macabre in combat. During the shooting phase the Cursed Piper can
@@ -202,8 +206,7 @@ rules:
     - id: unimplemented.cursed-cavalcade.captured-thrall.extra-servitors-worthless-but-still-precious
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Extra Servitors, Worthless, but Still Precious
   effect: >-
     Captured Thralls do not count toward the maximum number of models allowed in your warband,
@@ -234,8 +237,7 @@ rules:
     - id: unimplemented.cursed-cavalcade.captured-thrall.not-really-clever
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Not Really Clever
   effect: Captured Thralls cannot earn experience points, and therefore cannot gain any advancement.
   source:
@@ -288,8 +290,7 @@ rules:
     - id: unimplemented.cursed-cavalcade.great-bear.large-target
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: shooting.
+      reason: out-of-scope.shooting
   name: Large Target
   effect: Great Bears are Large Targets as defined in the shooting rules.
   source:
@@ -313,8 +314,7 @@ rules:
     - id: unimplemented.cursed-cavalcade.great-bear.animal
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Animal
   effect: Great Bears are animals and thus do not gain experience.
   source:
@@ -368,8 +368,7 @@ rules:
     - id: unimplemented.cursed-cavalcade.wild-beasts.animal
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Animal
   effect: Wild Beasts are animals and thus do not gain experience.
   source:
@@ -393,8 +392,7 @@ rules:
     - id: unimplemented.cursed-cavalcade.fighting-ape.cymbals
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: shooting.
+      reason: out-of-scope.shooting
   name: Cymbals
   effect: >-
     when hiring a Fighting Ape, you may give her a pair of cymbals at 15 gc, which it frenziedly
@@ -424,8 +422,7 @@ rules:
     - id: unimplemented.cursed-cavalcade.fighting-ape.agile
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Agile
   effect: >-
     The Fighting Apes are fantastically agile and nimble, putting even the greatest acrobat or
@@ -456,8 +453,7 @@ rules:
     - id: unimplemented.cursed-cavalcade.fighting-ape.animal
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Animal
   effect: >-
     Fighting Apes are animals and thus do not gain experience, but can still climb and enter
@@ -485,8 +481,7 @@ rules:
     - id: unimplemented.cursed-cavalcade.band.foolish-nobleness
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Foolish Nobleness
   effect: >-
     The Cursed Cavalcade is treated as an Evil warband for all game-effect purposes, similarly to
@@ -515,9 +510,7 @@ rules:
     - id: unimplemented.cursed-cavalcade.band.capture
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Capture!
   effect: >-
     If a Hero takes an enemy human Henchman Out of Action with a Misericordia and the warband has
@@ -551,8 +544,7 @@ rules:
     - id: unimplemented.cursed-cavalcade.band.throne-of-worms
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: The Throne of Worms
   effect: >-
     For each enemy captured, instead of rolling normally on the Serious Injury Table after the
@@ -690,9 +682,7 @@ rules:
     - id: unimplemented.cursed-cavalcade.band.cursed-cavalcade-special-skills-duelist
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Duelist
   effect: >-
     The warrior is an expert in hand-to-hand combat method of the Imperial duelist, aristocrats
@@ -789,7 +779,7 @@ rules:
     section: "0 \u2013 1 Cursed Piper"
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
   name_i18n:
-    es: Mano ocupada por el instrumento
+    es: Mano Ocupada por el Instrumento
   applies_to:
     profile_ids:
     - cursed-piper

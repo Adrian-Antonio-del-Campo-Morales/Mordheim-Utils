@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/khemri-lahmian-brotherhood/band--lahmian-special-skills-lost-innocence/skill.always-strikes-first
-# scaffold_fingerprint: b2d5e11c19e480c3400d2e84333fd51b1d0538c63bde93c7855dde0b168aecb6
 # authoring_status: REVIEWED
 # authoring_progress: every admitted clause of this ID is represented by an authored
 #   scenario and contrasted with the printed rule, the recorded semantic contract and
@@ -15,40 +14,12 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 4 scenarios cover the strike-first tier over a higher Initiative,
+# AUTHORED: 4 scenarios cover the strike-first tier over a higher Initiative,
 #   the printed tie procedure between two bearers of the same ability (Initiative,
 #   then a die), the unselected contrast and the refusal of another profile.
-# origin_id:
-#   rule/trollheim/khemri-lahmian-brotherhood/band--lahmian-special-skills-lost-innocence/skill.always-strikes-first
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/trollheim/khemri-lahmian-brotherhood/special-rules.yaml
-# source_fingerprint:
-#   71b3f483e158ab0627732b3ce43f2887e005482c1bb337485a85bed48d02224b
-# source_sha256_at_generation:
-#   b9e8242b98650031e4e04af03db3c3abb298694fa927617e69316c6d8d7ec787
-# Printed rule text:
-#   The Vampire always strikes first in close combat. If another model has a similar ability, resolve the order by Initiative; if Initiative is tied, roll D6 to decide.
-# Semantic contract (check analysis_status before treating as accepted):
-#   The Vampire always strikes first in close combat; if another model has a similar ability the order is resolved by Initiative and, if Initiative is tied, by a D6. Closure: the bearer stands in the strike-first tier and simultaneous strike-first cases are ordered by Initiative with an unbiased roll on an exact tie.
-# effect_id:
-#   skill.always-strikes-first
-# relation:
-#   equivalent
-# parameters:
-#   {"priority": 1, "tie_break": ["Initiative", "D6"]}
-# conditions:
-#   {"recipient": "Lahmian Vampire"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Band origin for the shared always-strikes-first identity, and unlike the Chaos Streets Lahmia text this printed clause states the tie procedure explicitly. The priority comparison orders by Initiative and rolls only on an exact tie, which is exactly the printed sequence, so this origin is delivered as written. The printed text repeats the canonical clause of the shared operator without adding a term, so the band origin creates no second runtime contribution. Surface reuse candidate: {"family":"SK-FIRST-TIE","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare full special-attack/rescue contract: replacement scope, prerequisite count, per-hit versus per-wound triggers, save/parry eligibility, ordering, interruption and state/resources. Do not substitute an ordinary attack or reset a per-battle effect each round.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # --- Migrated authored scenarios ---
 # Source: cases/grants/warband-grants.yaml
@@ -59,7 +30,7 @@
 # rule/... grants — a closed batch of warband grants exercised end to end.
 #
 # Each identity here is a printed warband grant (a `rule/<collection>/<band>/
-# <rule>/<binding>` record of docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv).
+# <rule>/<binding>` record of the knowledge-base clause contracts (sources/knowledge)).
 # The scenarios take the real route: band and profile from the built warrior,
 # the grant selected through `special_rule_ids`, the shared construction and
 # compilation that bind it, the modular resolution that consumes it, and an
@@ -82,7 +53,6 @@
 
 - audit_id: rule/trollheim/khemri-lahmian-brotherhood/band--lahmian-special-skills-lost-innocence/skill.always-strikes-first
   id: the-recipient-strikes-before-higher-initiative
-  covers: [whole]
   fighters:
     first:
       collection: trollheim
@@ -107,7 +77,6 @@
 
 - audit_id: rule/trollheim/khemri-lahmian-brotherhood/band--lahmian-special-skills-lost-innocence/skill.always-strikes-first
   id: the-unselected-recipient-loses-the-initiative-order
-  covers: [whole]
   fighters:
     first:
       collection: trollheim
@@ -131,7 +100,6 @@
 
 - audit_id: rule/trollheim/khemri-lahmian-brotherhood/band--lahmian-special-skills-lost-innocence/skill.always-strikes-first
   id: another-profile-of-the-band-is-refused
-  covers: [whole]
   fighters:
     first:
       collection: trollheim
@@ -153,7 +121,6 @@
 
 - audit_id: rule/trollheim/khemri-lahmian-brotherhood/band--lahmian-special-skills-lost-innocence/skill.always-strikes-first
   id: an-exact-tie-between-two-bearers-is-decided-by-a-die
-  covers: [whole]
   fighters:
     first:
       collection: trollheim

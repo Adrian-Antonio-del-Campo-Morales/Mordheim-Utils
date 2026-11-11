@@ -46,7 +46,7 @@ rules:
     es: Cabeza Dura
   applies_to:
     band: true
-  rule_ref: shared-rule.hard-head-2
+  rule_ref: shared-rule.dwarf-hard-head
 - id: band--armour
   runtime:
     scope: 'NO'
@@ -56,9 +56,7 @@ rules:
     - id: unimplemented.clan-angrund-kep.band.armour
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction (same classification as the active KB dwarf bands).
+      reason: out-of-scope.construction
   name: Armour
   source:
     manual: broheim.net
@@ -69,7 +67,7 @@ rules:
     es: Armadura
   applies_to:
     band: true
-  rule_ref: shared-rule.armour-2
+  rule_ref: shared-rule.dwarf-armour
 - id: band--hate-skavens-orcs-and-goblins
   runtime:
     scope: 'YES'
@@ -107,9 +105,10 @@ rules:
     - id: unimplemented.clan-angrund-kep.band.grudgebearers
       scope: LATER
       binding: null
-      reason: >-
-        Recruitment restriction over hired swords; resolves against shared-rule.grudgebearers at the
-        equivalence review.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Grudgebearers
   source:
     manual: broheim.net
@@ -130,8 +129,7 @@ rules:
     - id: unimplemented.clan-angrund-kep.band.incomparable-miners
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Incomparable Miners
   source:
     manual: broheim.net
@@ -155,9 +153,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any models in the warband within 6" of the Dwarf Noble may use his Leadership instead of their
-    own.
   source:
     manual: broheim.net
     printed_page: 18
@@ -165,13 +160,10 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Todas las miniaturas de la banda a 6" del Noble enano pueden usar su Liderazgo en lugar del
-      suyo propio.
   applies_to:
     profile_ids:
     - dwarf-noble
+  rule_ref: shared-rule.leader
 - id: dwarf-engineer--expert-weaponsmith
   runtime:
     scope: 'NO'
@@ -181,8 +173,7 @@ rules:
     - id: unimplemented.clan-angrund-kep.dwarf-engineer.expert-weaponsmith
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: shooting (same classification as the active KB dwarf bands).
+      reason: out-of-scope.shooting
   name: Expert Weaponsmith
   effect: >-
     A Dwarf Engineer is a master of mechanical devices. By using stronger construction materials and
@@ -219,6 +210,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+      clauses:
+      - id: psychology-immunity
+        scope: 'YES'
+      - id: all-alone
+        scope: 'NO'
   name: Deathwish
   source:
     manual: broheim.net
@@ -275,9 +271,10 @@ rules:
     - id: unimplemented.clan-angrund-kep.ironbreaker.watch-out
       scope: LATER
       binding: null
-      reason: >-
-        Exploration/encounter-table mechanic of the Karak Eight Peaks campaign; outside the current
-        engine scope.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Watch Out!
   effect: >-
     An Ironbreaker knows all about the Underdeep and its perils and so he or any Dwarf 6" away may
@@ -313,15 +310,14 @@ rules:
       binding:
         kind: mechanic
         id: skill.sword-master
+      clauses:
+      - id: parry-matches
+        scope: 'YES'
+      - id: two-parries
+        scope: 'YES'
+      - id: dwarf-axe-reroll
+        scope: 'YES'
   name: Master of Blades
-  effect: >-
-    This Dwarf's martial skills surpass those of a normal warrior; he has fought unscathed against
-    hordes of Orcs and Goblins. When using a weapon that has a Parry special rule, this hero parries
-    successfully if he beats or matches his opponent's highest 'to hit' roll, not just if he beats
-    the roll. In addition, if this warrior is using two weapons that have the Parry special rule, he
-    is allowed to parry two attacks (if his two dice match or beat the two highest Attack dice
-    against him) instead of the normal maximum of one. Note that if this Dwarf has two Dwarf axes
-    (as detailed above) he can reroll any failed parries.
   source:
     manual: broheim.net
     printed_page: 22
@@ -329,17 +325,9 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Maestro de las Hojas
-  effect_i18n:
-    es: >-
-      Las habilidades marciales de este Enano superan a las de un guerrero normal; ha luchado sin un
-      rasguño contra hordas de Orcos y Goblins. Al usar un arma que tenga la regla especial Parada,
-      este héroe para con éxito si iguala o supera la tirada más alta «por impactar» de su oponente,
-      no solo si la supera. Además, si este guerrero usa dos armas que tienen la regla especial
-      Parada, puede parar dos ataques (si sus dos dados igualan o superan los dos dados de Ataque
-      más altos contra él) en lugar del máximo normal de uno. Ten en cuenta que si este Enano lleva
-      dos hachas Enanas (como se detalla arriba) puede repetir cualquier parada fallida.
   applies_to:
     band: true
+  rule_ref: shared-rule.master-of-blades
 - id: band--dwarf-special-skills-extra-tough
   kind: warband_skill
   runtime:
@@ -350,9 +338,7 @@ rules:
     - id: unimplemented.clan-angrund-kep.band.dwarf-special-skills-extra-tough
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction (same classification as the active KB dwarf bands).
+      reason: out-of-scope.construction
   name: Extra Tough
   source:
     manual: broheim.net
@@ -374,8 +360,7 @@ rules:
     - id: unimplemented.clan-angrund-kep.band.dwarf-special-skills-resource-hunter
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign (exploration).
+      reason: out-of-scope.campaign
   name: Resource Hunter
   source:
     manual: broheim.net
@@ -476,6 +461,11 @@ rules:
       binding:
         kind: mechanic
         id: skill.monster-slayer
+      clauses:
+      - id: wounds-on-four-plus
+        scope: 'YES'
+      - id: effective-strength-for-armour
+        scope: 'YES'
   name: Monster Slayer
   effect: >-
     The Slayer always wounds any opponent on a roll of 4+, regardless of Toughness, unless his own

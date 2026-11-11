@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/weapon.fist
-# scaffold_fingerprint: 0bc34d5dc52501ed69d79e211d02ef306a7e2f6e172ce7f1b1f5ce227660893b
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clause carries six authored scenarios for the reduced Strength, the one-attack clamp and the improved target save on both faces. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -8,38 +7,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 6 scenarios cover the reduced Strength on both faces, the one-attack clamp, and the target's improved save both without armour and on a worn suit.
-# origin_id:
-#   mechanic/weapon.fist
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   f8372811fde98f26e637e1c826b7848b813f9af53e2088c2568cfcef698bfc77
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   Unarmed: Strength as user -1; at most 1 Attack; the target gains +1 armour save or a 6+ save if it had none.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Unarmed attack at Strength -1 with at most one Attack, granting the target +1 armour save (6+ when unarmoured). Closure: the unarmed pool is clamped to one attack, Strength is reduced by one and the target save improves.
-# effect_id:
-#   weapon.fist
-# relation:
-#   equivalent
-# parameters:
-#   {"strength_bonus": -1, "target_armour_bonus": 1}
-# conditions:
-#   {"application": "attack", "stacking": "stack", "trigger": "attack"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Printed profile equals the contract parameters; the compiled attack EffectSet is consumed by build_attacks and the hit/wound/armour/injury contexts. build_attacks clamps a non-penalty-ignoring fist to one attack and _attack_strength adds +1 back only for a fighter that ignores unarmed penalties, which reproduces the printed penalty and its skill exceptions. Surface reuse candidate: {"family":"W-weapon.fist","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the printed local weapon mode and parameters with the active contract. Confirm hand use, effective Strength, save/critical/parry modifiers, natural-die trigger, temporary states and end conditions. Reuse the base only; retain extra properties and construction recipients.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+# AUTHORED: 6 scenarios cover the reduced Strength on both faces, the one-attack clamp, and the target's improved save both without armour and on a worn suit.
 
 # --- Authored scenarios ---
 # mechanic/weapon.fist - unarmed: Strength -1, at most one Attack, and the
@@ -52,7 +23,6 @@
 
 - audit_id: mechanic/weapon.fist
   id: fist-attacks-at-one-less-strength
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.fist
@@ -73,7 +43,6 @@
 
 - audit_id: mechanic/weapon.fist
   id: fist-wounds-on-the-reduced-target
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.fist
@@ -95,7 +64,6 @@
 
 - audit_id: mechanic/weapon.fist
   id: fist-clamps-the-attack-pool-to-one
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.fist
@@ -118,7 +86,6 @@
 
 - audit_id: mechanic/weapon.fist
   id: fist-grants-an-unarmoured-target-a-six-plus-save
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.fist
@@ -140,7 +107,6 @@
 
 - audit_id: mechanic/weapon.fist
   id: fist-granted-save-fails-on-five
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.fist
@@ -162,7 +128,6 @@
 
 - audit_id: mechanic/weapon.fist
   id: fist-improves-a-worn-save-by-one
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.fist

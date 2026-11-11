@@ -39,8 +39,10 @@ rules:
     - id: unimplemented.forest-goblins.chieftain.ride-spiders
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: mounts.
+      reason: deferred.mounts
+      clauses:
+      - id: mounts
+        scope: 'NO'
   name: Ride Spiders
   effect: >-
     The Chieftain can ride Giant Spiders and the Gigantic Spider as detailed in the ‘Blazing
@@ -68,9 +70,7 @@ rules:
     - id: unimplemented.forest-goblins.braves.animosity
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee: this source tests only models not engaged, then moves or
-        attacks other models. Already-engaged duelists never test.
+      reason: out-of-scope.movement
   name: Animosity
   effect: Braves are subject to the rules for Animosity .
   source:
@@ -94,8 +94,10 @@ rules:
     - id: unimplemented.forest-goblins.braves.remove-animosity
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.psychology
+      clauses:
+      - id: remove-animosity
+        scope: 'NO'
   name: Remove Animosity
   effect: >-
     When a Brave earns a skill advance, he may choose to remove his Animosity rule instead of
@@ -123,11 +125,8 @@ rules:
     - id: unimplemented.forest-goblins.shaman.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Wizard
-  effect: A Shaman begins with one spell randomly chosen from the Forest Goblin Spell list .
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -135,13 +134,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
   name_i18n:
     es: Mago
-  effect_i18n:
-    es: >-
-      Un Chamán comienza con un hechizo elegido aleatoriamente de la lista de hechizos de los
-      Goblins del Bosque.
   applies_to:
     profile_ids:
     - shaman
+  rule_ref: shared-rule.forest-goblin-wizard
 - id: forest-goblins--animosity
   runtime:
     scope: 'NO'
@@ -151,11 +147,8 @@ rules:
     - id: unimplemented.forest-goblins.forest-goblins.animosity
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee: this source tests only models not engaged, then moves or
-        attacks other models. Already-engaged duelists never test.
+      reason: out-of-scope.movement
   name: Animosity
-  effect: Forest Goblins are subject to the rules for Animosity .
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -163,11 +156,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
   name_i18n:
     es: Rencor
-  effect_i18n:
-    es: Los Goblins del Bosque están sujetos a las reglas de Rencor.
   applies_to:
     profile_ids:
     - forest-goblins
+  rule_ref: shared-rule.animosity-forest-goblins
 - id: red-toof-goblins--animosity
   runtime:
     scope: 'NO'
@@ -177,9 +169,7 @@ rules:
     - id: unimplemented.forest-goblins.red-toof-goblins.animosity
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee: this source tests only models not engaged, then moves or
-        attacks other models. Already-engaged duelists never test.
+      reason: out-of-scope.movement
   name: Animosity
   effect: Red Toof Boyz are subject to the rules for Animosity .
   source:
@@ -207,12 +197,15 @@ rules:
         id: trait.frenzy
         parameters:
           value: true
+      clauses:
+      - id: frenzy
+        scope: 'YES'
+      - id: frenzy-animosity-exemption
+        scope: 'NO'
     - id: excluded.pre-contact-animosity-exemption
       scope: 'NO'
       binding: null
-      reason: >-
-        The source Animosity test only applies before engagement. Its charge-range exemption is
-        outside the already engaged 1v1 duel.
+      reason: out-of-scope.movement
   name: Berserkers
   effect: >-
     Forest Goblins of the Red Toof tribe allow themselves to be bitten by all sorts of poisonous
@@ -246,9 +239,7 @@ rules:
     - id: unimplemented.forest-goblins.sluggas.animosity
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee: this source tests only models not engaged, then moves or
-        attacks other models. Already-engaged duelists never test.
+      reason: out-of-scope.movement
   name: Animosity
   effect: Sluggas are subject to the rules for Animosity .
   source:
@@ -272,8 +263,7 @@ rules:
     - id: unimplemented.forest-goblins.sluggas.sluggas
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: shooting.
+      reason: out-of-scope.shooting
   name: Sluggas
   effect: >-
     In the shooting phase, the Sluggas may throw thrown weapons up to three times. This may not be
@@ -304,7 +294,6 @@ rules:
         kind: mechanic
         id: mechanic.causes-fear
   name: Fear
-  effect: Gigantic Spiders cause fear as described in the Mordheim Rulebook.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -312,11 +301,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
   name_i18n:
     es: Miedo
-  effect_i18n:
-    es: Las Arañas Gigantes causan miedo tal como se describe en el reglamento de Mordheim.
   applies_to:
     profile_ids:
     - gigantic-spider
+  rule_ref: shared-rule.fear
 - id: gigantic-spider--large-monster
   runtime:
     scope: 'NO'
@@ -326,8 +314,7 @@ rules:
     - id: unimplemented.forest-goblins.gigantic-spider.large-monster
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: shooting.
+      reason: out-of-scope.shooting
   name: Large Monster
   effect: Gigantic Spiders are large targets, and may always be shot at.
   source:
@@ -382,8 +369,7 @@ rules:
     - id: unimplemented.forest-goblins.gigantic-spider.native
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Native
   effect: >-
     Negotiating woodlands is no trouble for spiders. They move through any wooded terrain without
@@ -413,13 +399,15 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.stupidity
+      clauses:
+      - id: stupidity
+        scope: 'YES'
+      - id: experience-and-climbing
+        scope: 'NO'
     - id: unimplemented.forest-goblins.gigantic-spider.non-sentient.outside-duel
       scope: 'NO'
       binding: null
-      reason: >-
-        Board movement, campaign progression/participation and independently
-        simulated helper/rider/group producers are outside the 1v1 duel.
-        Admissible individual exemptions and bonuses are supplied active facts.
+      reason: out-of-scope.movement
   name: Non-Sentient
   effect: >-
     Spiders are affected by the stupidity rules in the Mordheim rulebook. In addition, they never
@@ -448,8 +436,10 @@ rules:
     - id: unimplemented.forest-goblins.gigantic-spider.may-ride
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: mounts.
+      reason: deferred.mounts
+      clauses:
+      - id: mount
+        scope: 'NO'
   name: May Ride
   effect: >-
     The Forest Goblin Chieftain, may ride the Gigantic Spider. He gains +1 armour save, and shall
@@ -514,8 +504,7 @@ rules:
     - id: unimplemented.forest-goblins.band.natives
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Natives
   effect: Forest Goblins suffer no movement penalties for moving through wooded terrain.
   source:
@@ -540,9 +529,7 @@ rules:
     - id: unimplemented.forest-goblins.band.animosity
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee: this source tests only models not engaged, then moves or
-        attacks other models. Already-engaged duelists never test.
+      reason: out-of-scope.movement
   name: Animosity
   effect: >-
     At the start of the Orc player's turn, roll a D6 for each Orc or Goblin Henchman not engaged in

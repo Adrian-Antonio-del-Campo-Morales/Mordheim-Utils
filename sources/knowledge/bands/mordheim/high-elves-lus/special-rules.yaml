@@ -10,9 +10,7 @@ rules:
     - id: unimplemented.high-elves-lus.band.excellent-sight
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Excellent Sight
   effect: >-
     Elves spot hidden enemies from two times as far away as other warriors (twice their Initiative
@@ -39,9 +37,7 @@ rules:
     - id: unimplemented.high-elves-lus.band.haughty
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Haughty
   effect: >-
     A High Elf warband may never include hired swords that are not of High Elven blood, nor use
@@ -68,9 +64,7 @@ rules:
     - id: unimplemented.high-elves-lus.band.honorable
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Honorable
   effect: High Elves can never use poison or drugs of any kind, no matter the circumstance.
   source:
@@ -95,9 +89,7 @@ rules:
     - id: unimplemented.high-elves-lus.band.the-old-ways
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: The Old Ways
   effect: >-
     High Elves may never use black powder weapons of any sort; this goes against their ancestors and
@@ -124,10 +116,7 @@ rules:
     - id: unimplemented.high-elves-lus.band.resolve
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: group Rout, All Alone or combat against multiple
-        opponents. Source prose is retained; this is an exclusion, not deferred modular
-        implementation.
+      reason: deferred.other
   name: Resolve
   effect: >-
     When fighting the Dark Elves, High Elves have Leadership 10 for Rout Tests and can never choose
@@ -183,8 +172,7 @@ rules:
     - id: unimplemented.high-elves-lus.loremaster.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
   name: Wizard
   source:
     manual: broheim.net
@@ -206,8 +194,7 @@ rules:
     - id: unimplemented.high-elves-lus.sword-wardens.sword-master-protege
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Sword Master Protégé
   effect: >-
     Anyone shooting at a Sword Warden armed with a sword or a Greatsword (not a double-handed sword)
@@ -236,9 +223,7 @@ rules:
     - id: unimplemented.high-elves-lus.rangers.seeker
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Seeker
   effect: >-
     If not taken out of action, when rolling on the Exploration Chart the Ranger allows you to
@@ -266,8 +251,10 @@ rules:
     - id: unimplemented.high-elves-lus.band.maximum-characteristics
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: characteristic-increase caps on advancement.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Elf Maximum Characteristics
   effect: >-
     Characteristics for Elf warriors may not be increased beyond the maximum limits: M 5, WS 7, BS
@@ -301,8 +288,7 @@ rules:
     - id: unimplemented.high-elves-lus.band.high-sorcery
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: dispelling an enemy spell is a magic-subsystem interaction. Loremaster only.
+      reason: out-of-scope.magic
   name: High Sorcery
   effect: >-
     A Loremaster's knowledge of magic goes far beyond that of any other race. When an enemy
@@ -335,8 +321,7 @@ rules:
     - id: unimplemented.high-elves-lus.band.stand-and-fire
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: standing and firing against a charge is a charge-phase mechanic.
+      reason: out-of-scope.shooting
   name: Stand and Fire
   effect: >-
     If the Elf passes a leadership test he may choose to stand and fire at a charging opponent. The
@@ -371,6 +356,11 @@ rules:
       binding:
         kind: mechanic
         id: skill.miniath
+      clauses:
+      - id: parry-with-any-weapon
+        scope: 'YES'
+      - id: additional-attempt
+        scope: 'YES'
   name: Miniath
   effect: >-
     The Elf has been trained in the martial art of the White Tower known as Miniath, allowing him to
@@ -432,11 +422,6 @@ rules:
         kind: mechanic
         id: skill.elven-agility
   name: Fey Quickness
-  effect: >-
-    Few can ever hope to match an Elf's inhuman quickness and agility. An Elf with Fey Quickness can
-    avoid melee or missile attacks on a roll of 6. If the Elf also has Step Aside or Dodge this will
-    increase to a 4+ in the relevant area. For example, an Elf with Fey Quickness and Step Aside
-    avoids melee attacks on a 4+ and missile attacks on a 6.
   source:
     manual: broheim.net
     printed_page: 3
@@ -444,15 +429,9 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/lustria/High Elves.pdf
   name_i18n:
     es: Celeridad Feérica
-  effect_i18n:
-    es: >-
-      Pocos pueden igualar la rapidez y agilidad inhumanas de un Elfo. Un Elfo con Rapidez Feérica
-      puede evitar ataques cuerpo a cuerpo o a distancia con un resultado de 6. Si el Elfo también
-      tiene Echarse a un lado o Esquivar, esto aumenta a 4+ en el área correspondiente. Por ejemplo, un Elfo
-      con Rapidez Feérica y Echarse a un lado evita ataques cuerpo a cuerpo con 4+ y ataques a distancia con
-      6.
   applies_to:
     band: true
+  rule_ref: shared-rule.fey-quickness
 
 - id: sword-wardens--equipment-restrictions
   runtime:

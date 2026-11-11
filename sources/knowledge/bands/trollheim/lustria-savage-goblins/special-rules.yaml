@@ -4,7 +4,7 @@ rules:
 - id: witch-doctor--compulsory-feather-headdress
   name: Compulsory Feather Headdress
   name_i18n:
-    es: Tocado de Plumas obligatorio
+    es: Tocado de Plumas Obligatorio
   effect: >-
     The warband leader must wear the Feather Headdress; the Witch Doctor is the mandatory starting
     leader.
@@ -88,8 +88,7 @@ rules:
     - id: unimplemented.lustria-savage-goblins.witch-doctor.spellcaster
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: witch-doctor--return-from-the-darkness
   name: Return from the Darkness
   effect: >-
@@ -121,8 +120,7 @@ rules:
     - id: unimplemented.lustria-savage-goblins.witch-doctor.return-from-the-darkness
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: big-boss--second-in-command
   name: Second in Command
   effect: >-
@@ -163,6 +161,9 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-fallback
+      clauses:
+      - id: leader-four--scope--leader-succession
+        scope: 'NO'
 - id: red-teeth--frenzy
   runtime:
     scope: 'YES'
@@ -240,8 +241,7 @@ rules:
     - id: unimplemented.lustria-savage-goblins.zomblins.may-not-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: zomblins--fear
   name: Fear
   effect: Zomblins cause Fear.
@@ -268,17 +268,12 @@ rules:
         id: mechanic.causes-fear
 - id: zomblins--immune-to-psychology
   name: Immune to Psychology
-  effect: Zomblins are immune to Psychology and never leave close combat because of Psychology.
   source:
     manual: lustria
     printed_page: 103
     section: Henchmen / 0-5 Zomblins / Immune to Psychology
   name_i18n:
     es: Inmune a la Psicología
-  effect_i18n:
-    es: >-
-      Los Zomblins son inmunes a la Psicología y nunca abandonan el combate cuerpo a cuerpo a causa
-      de la Psicología.
   applies_to:
     profile_ids:
     - zomblins
@@ -292,6 +287,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+  rule_ref: shared-rule.immune-to-psychology
 - id: zomblins--immune-to-poison
   runtime:
     scope: 'YES'
@@ -330,29 +326,24 @@ rules:
         kind: mechanic
         id: skill.ignore-pain
   name: No Pain
-  effect: Zomblins treat a Stunned result on the Injury chart as Knocked Down.
   source:
     manual: lustria
     printed_page: 103
     section: Henchmen / 0-5 Zomblins / No Pain
   name_i18n:
     es: Sin Dolor
-  effect_i18n:
-    es: Los Zomblins tratan un resultado Aturdido de la tabla de Heridas como Derribado.
   applies_to:
     profile_ids:
     - zomblins
+  rule_ref: shared-rule.no-pain
 - id: zomblins--brainless
   name: Brainless
-  effect: Zomblins never gain Experience.
   source:
     manual: lustria
     printed_page: 103
     section: Henchmen / 0-5 Zomblins / Brainless
   name_i18n:
     es: Descerebrados
-  effect_i18n:
-    es: Los Zomblins nunca ganan Experiencia.
   applies_to:
     profile_ids:
     - zomblins
@@ -364,8 +355,8 @@ rules:
     - id: unimplemented.lustria-savage-goblins.zomblins.brainless
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
+  rule_ref: shared-rule.never-gain-experience
 - id: zomblintua--construction
   name: Construction
   effect: >-
@@ -392,8 +383,7 @@ rules:
     - id: unimplemented.lustria-savage-goblins.zomblintua.construction
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: zomblintua--may-not-run
   name: May Not Run
   effect: Zomblintua may not run, but may charge normally.
@@ -416,8 +406,7 @@ rules:
     - id: unimplemented.lustria-savage-goblins.zomblintua.may-not-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: zomblintua--fear
   name: Fear
   effect: Zomblintua causes Fear.
@@ -520,15 +509,12 @@ rules:
     - zomblintua
 - id: zomblintua--brainless
   name: Brainless
-  effect: Zomblintua never gains Experience.
   source:
     manual: lustria
     printed_page: 104
     section: Henchmen / 0-1 Zomblintua / Brainless
   name_i18n:
     es: Descerebrados
-  effect_i18n:
-    es: El Zomblintua nunca gana Experiencia.
   applies_to:
     profile_ids:
     - zomblintua
@@ -540,8 +526,8 @@ rules:
     - id: unimplemented.lustria-savage-goblins.zomblintua.brainless
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
+  rule_ref: shared-rule.never-gain-experience
 - id: zomblintua--large-target
   name: Large Target
   effect: >-
@@ -568,8 +554,7 @@ rules:
     - id: unimplemented.lustria-savage-goblins.zomblintua.large-target
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: zomblintua--regeneration
   runtime:
     scope: 'YES'
@@ -581,6 +566,11 @@ rules:
       binding:
         kind: mechanic
         id: skill.regeneration-5-plus
+      clauses:
+      - id: five-plus-regeneration
+        scope: 'YES'
+      - id: post-battle-no-serious-injuries-except-fire
+        scope: 'NO'
   name: Regeneration
   effect: >-
     Whenever Zomblintua suffers a Wound, roll D6; on 5+ that Wound is ignored. Wounds caused by fire
@@ -654,8 +644,7 @@ rules:
     - id: unimplemented.lustria-savage-goblins.band.jungle-natives
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--unpleasant-company
   name: Unpleasant Company
   effect: >-
@@ -682,9 +671,7 @@ rules:
     - id: unimplemented.lustria-savage-goblins.band.unpleasant-company
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: band--camouflage
   name: Camouflage
   effect: >-
@@ -711,8 +698,7 @@ rules:
     - id: unimplemented.lustria-savage-goblins.band.camouflage
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--fear-of-pointy-ears
   name: Fear of Pointy Ears
   effect: Savage Goblins are subject to Fear of Elves.
@@ -782,24 +768,19 @@ rules:
     - id: unimplemented.lustria-savage-goblins.band.animosity
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.psychology
+      clauses:
+      - id: whole
+        scope: 'NO'
 - id: band--savage-goblin-special-skills-infiltration
   kind: warband_skill
   name: Infiltration
-  effect: >-
-    Red Teeth and the Witch Doctor may not take this skill. The Hero deploys after the opposing
-    warband, outside enemy line of sight and more than 12" from every enemy model.
   source:
     manual: lustria
     printed_page: 105
     section: Savage Goblin Special Skills / Infiltration
   name_i18n:
     es: Infiltración
-  effect_i18n:
-    es: >-
-      Los Dientes rojos y el Brujo no pueden llevar esta habilidad. El Héroe se despliega después de
-      la banda rival, fuera de la línea de visión enemiga y a más de 12" de cada modelo enemigo.
   eligibility:
   - big-boss
   - trackers
@@ -813,8 +794,8 @@ rules:
     - id: unimplemented.lustria-savage-goblins.band.savage-goblin-special-skills-infiltration
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
+  rule_ref: shared-rule.infiltration
 - id: band--savage-goblin-special-skills-unpredictable
   kind: warband_skill
   name: Unpredictable
@@ -875,8 +856,7 @@ rules:
     - id: unimplemented.lustria-savage-goblins.band.savage-goblin-special-skills-zomblin-medicine
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--savage-goblin-special-skills-spider-infested
   kind: warband_skill
   name: Spider Infested

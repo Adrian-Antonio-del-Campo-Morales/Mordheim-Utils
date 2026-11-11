@@ -3,9 +3,6 @@ band_id: pirates
 rules:
 - id: pirate-captain--leader
   name: Leader
-  effect: >-
-    Any pirate within 6" of the Captain may use his Leadership characteristic when taking any
-    Leadership tests.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -13,10 +10,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier pirata a 6" del Capitán puede usar su característica de Liderazgo cuando realice
-      cualquier chequeo de Liderazgo.
   applies_to:
     profile_ids:
     - pirate-captain
@@ -30,6 +23,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: gunners--swivel-gun-is-dangerous-matey
   name: Swivel Guns Is Dangerous, Matey!
   effect: >-
@@ -59,15 +53,9 @@ rules:
     - id: unimplemented.pirates.gunners.swivel-gun-is-dangerous-matey
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: boatswains--expert-riggers
   name: Expert Riggers
-  effect: >-
-    Boatswains are highly trained in using their ropes, as they are the ones who maintain the
-    complex network of rigging throughout the ship. They may re-roll failed Initiative tests Leaping
-    over Gaps, Jumping Down, and performing a Diving Charge, as well as the normal test for Climbing
-    Up or Down that a Rope allows.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -75,12 +63,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
   name_i18n:
     es: Jarcia Experta
-  effect_i18n:
-    es: >-
-      Los Contramaestres están altamente entrenados en usar sus cuerdas, pues son quienes mantienen
-      la compleja red de jarcia a lo largo del barco. Pueden repetir los chequeos de Iniciativa
-      fallados para Saltar Huecos, Saltar desde Altura y realizar una Carga en picado, así como el
-      chequeo normal de Trepar Arriba o Abajo que permite una Cuerda.
   applies_to:
     profile_ids:
     - boatswains
@@ -92,8 +74,8 @@ rules:
     - id: unimplemented.pirates.boatswains.expert-riggers
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
+  rule_ref: shared-rule.expert-riggers
 - id: swabbies--not-hired
   name: Not Hired
   effect: >-
@@ -121,8 +103,7 @@ rules:
     - id: unimplemented.pirates.swabbies.not-hired
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: swabbies--never-gain-experience
   name: Never Gain Experience
   source:
@@ -143,8 +124,7 @@ rules:
     - id: unimplemented.pirates.swabbies.never-gain-experience
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
   rule_ref: shared-rule.never-gain-experience
 - id: swabbies--rabble
   name: Rabble
@@ -177,6 +157,11 @@ rules:
       binding:
         kind: compiler
         id: compiler.swabbie-rabble-loadout
+      clauses:
+      - id: whole--scope--equipment-list-access
+        scope: 'YES'
+      - id: whole--scope--casting-bar
+        scope: 'NO'
 - id: swabbies--escaped-swabbies
   name: Blimey, They Got Away!
   effect: >-
@@ -204,8 +189,7 @@ rules:
     - id: unimplemented.pirates.swabbies.escaped-swabbies
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: swabbies--not-true-pirates
   name: They Ain't True Pirates!
   effect: >-
@@ -233,8 +217,10 @@ rules:
     - id: unimplemented.pirates.swabbies.not-true-pirates
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.psychology
+      clauses:
+      - id: whole
+        scope: 'NO'
 - id: band--kidnapped
   name: Kidnapped!
   effect: >-
@@ -277,9 +263,7 @@ rules:
     - id: unimplemented.pirates.band.kidnapped
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: band--stragglers-and-prisoners
   name: Stragglers and Prisoners
   effect: >-
@@ -317,8 +301,7 @@ rules:
     - id: unimplemented.pirates.band.stragglers-and-prisoners
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--hired-swords
   name: Hired Swords
   effect: >-
@@ -347,9 +330,7 @@ rules:
     - id: unimplemented.pirates.band.hired-swords
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: band--one-off-games
   name: One-Off Games
   effect: In one-off games, a Pirate warband starts with two Swabbies for free.
@@ -372,8 +353,7 @@ rules:
     - id: unimplemented.pirates.band.one-off-games
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--succession
   name: Succession
   effect: >-
@@ -400,8 +380,7 @@ rules:
     - id: unimplemented.pirates.band.succession
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--swabbie-limit
   name: Swabbie Limit
   effect: The warband may never include more Swabbies than Crew.
@@ -424,8 +403,7 @@ rules:
     - id: unimplemented.pirates.band.swabbie-limit
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--pirate-special-skills-sea-shanty-singer
   kind: warband_skill
   name: Sea Shanty Singer
@@ -497,8 +475,7 @@ rules:
     - id: unimplemented.pirates.band.pirate-special-skills-sea-legs
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--pirate-special-skills-cutlass-master
   kind: warband_skill
   name: Cutlass Master
@@ -535,8 +512,7 @@ rules:
     - id: unimplemented.pirates.band.pirate-special-skills-cutlass-master
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--pirate-special-skills-booming-voice
   kind: warband_skill
   name: Booming Voice
@@ -574,8 +550,10 @@ rules:
     - id: unimplemented.pirates.band.pirate-special-skills-booming-voice
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.psychology
+      clauses:
+      - id: booming-voice
+        scope: 'NO'
 - id: band--pirate-special-skills-hardy-constitution
   kind: warband_skill
   name: Hardy Constitution
@@ -648,7 +626,4 @@ rules:
     - id: unimplemented.pirates.band.pirate-special-skills-swashbuckler
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: voluntary escape/withdrawal ends the duel without resolving it.
-        Associated movement, interception, re-engagement and campaign injury clauses
-        are also outside the 1v1 combat scope (user ruling 2026-10-04).
+      reason: out-of-scope.movement

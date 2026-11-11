@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/kislevites/trained-bear--bear-hug/special-rule.trained-bear--bear-hug
-# scaffold_fingerprint: d967feae877c4d0f08fb1492aa4fb5d5b296fa3148198b0b2d338736423bf11f
 # authoring_status: AUTHORED
 # authoring_progress: the admitted whole clause carries three authored scenarios: the won opposed
 #   D6+Strength roll replaces the two qualifying hits with one automatic wound that forbids armour,
@@ -22,12 +21,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 3 scenarios read the printed replacement clause by clause - "If the Bear hits the
+# AUTHORED: 3 scenarios read the printed replacement clause by clause - "If the Bear hits the
 #   same enemy warrior with both of his attacks in the same round of combat, the player may choose to
 #   make a single Bear Hug attack instead": two declared hits offer the replacement, the chosen roll
 #   is the printed opposed D6+Strength (ties to the bear) and its win is one automatic wound with no
@@ -37,32 +34,6 @@
 #   bearer's own printed profile, whose automatic route is the one the shared stage compiles, and the
 #   profile's other implemented automatic rules (Trained's stupidity and handler leadership, Fearsome's
 #   causes-fear) are declared in the tapes so no test is left unanswered.
-# origin_id:
-#   rule/mordheim/kislevites/trained-bear--bear-hug/special-rule.trained-bear--bear-hug
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/kislevites/special-rules.yaml
-# source_fingerprint:
-#   4ccbd2a046ab8ceb252f77e81cccbf95f53b611a5e691c3a35f2641ae21f852f
-# source_sha256_at_generation:
-#   f930964ae523de5de060b89e728a71e4a77a954b76220abb7882aeed8becaf97
-# Printed rule text:
-#   If the Bear hits the same enemy warrior with both of his attacks in the same round of combat, the player may choose to make a single Bear Hug attack instead.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Optional replacement attack: with two hits on the same enemy in a round, the Bear may replace them with one opposed D6+Strength roll; a won/tied roll inflicts one automatic wound that forbids armour, a lost roll deals nothing.
-# effect_id:
-#   special-rule.trained-bear--bear-hug
-# relation:
-#   equivalent
-# parameters:
-#   {}
-# conditions:
-#   {"trigger":"two-hits-same-target","opposed":"D6+Strength","ties":"bear","armour_ignored":true,"max_wounds":1}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Registered in SPECIAL_RULE_EFFECTS and PROFILE_RULE_EFFECTS as bear_hug; the automatic wound still passes the special-save pipeline.
 
 # --- Authored scenarios ---
 # Derived from the printed rule and the recorded contract; no engine output was consulted.  The
@@ -74,7 +45,6 @@
 # requests no test.
 - audit_id: rule/mordheim/kislevites/trained-bear--bear-hug/special-rule.trained-bear--bear-hug
   id: a-won-bear-hug-deals-one-unsaveable-wound
-  covers: [whole]
   fighters:
     first:
       collection: mordheim
@@ -104,7 +74,6 @@
 # ordinary hits, each of which wounds the hand-built opponent.
 - audit_id: rule/mordheim/kislevites/trained-bear--bear-hug/special-rule.trained-bear--bear-hug
   id: a-declined-bear-hug-resolves-the-ordinary-attacks
-  covers: [whole]
   fighters:
     first:
       collection: mordheim
@@ -134,7 +103,6 @@
 # damage": the two hits are consumed and nothing is resolved from them.
 - audit_id: rule/mordheim/kislevites/trained-bear--bear-hug/special-rule.trained-bear--bear-hug
   id: a-lost-opposed-roll-deals-no-damage
-  covers: [whole]
   fighters:
     first:
       collection: mordheim

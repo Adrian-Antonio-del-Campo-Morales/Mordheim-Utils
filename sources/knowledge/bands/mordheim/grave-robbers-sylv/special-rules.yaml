@@ -10,8 +10,7 @@ rules:
     - id: unimplemented.grave-robbers-sylv.band.grave-goods
       scope: 'NO'
       binding: null
-      reason: >-
-        Exploration-phase income modification: campaign content, out of engine scope.
+      reason: out-of-scope.campaign
   name: Grave Goods
   effect: >-
     Grave Robbers gain +1 Gold Crown for each enemy model taken Out of Action in the Exploration
@@ -38,8 +37,7 @@ rules:
     - id: unimplemented.grave-robbers-sylv.band.shady-reputation
       scope: 'NO'
       binding: null
-      reason: >-
-        Hired-sword eligibility restriction: campaign content, out of engine scope.
+      reason: out-of-scope.campaign
   name: Shady Reputation
   effect: >-
     Grave Robber warbands may not hire the following Hired Swords: Bounty Hunter, Roadwarden,
@@ -90,8 +88,7 @@ rules:
     - id: unimplemented.grave-robbers-sylv.junior-medic.sawbones
       scope: 'NO'
       binding: null
-      reason: >-
-        Serious-injury re-roll: post-battle subsystem, out of engine scope.
+      reason: out-of-scope.campaign
   name: Sawbones
   effect: >-
     You can re-roll the Serious Injury result for one friendly Hero. The second result stands. You
@@ -120,9 +117,7 @@ rules:
     - id: unimplemented.grave-robbers-sylv.special-skill.darkstalker
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Darkstalker
   effect: >-
     The warrior is accustomed to darkness and has almost cat-like sight. Ignores All Alone tests and
@@ -186,8 +181,7 @@ rules:
     - id: unimplemented.grave-robbers-sylv.special-skill.de-animator
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: interaction with the No Pain rule pending scope refinement.
+      reason: pending-classification
   name: De-Animator
   effect: >-
     The warrior is adept at fighting animated corpses. He ignores the No Pain rule for Undead and
@@ -219,8 +213,7 @@ rules:
         id: trait.poison-immune
         parameters:
           value: true
-      reason: >-
-        Immunity to diseases and poisons maps directly onto the engine poison-immune trait.
+      reason: out-of-scope.movement
   name: Hardy Constitution
   effect: >-
     Veteran of many grave-robbing escapades, the warrior is completely immune to all diseases and
@@ -248,8 +241,7 @@ rules:
     - id: unimplemented.grave-robbers-sylv.special-skill.body-dealer
       scope: 'NO'
       binding: null
-      reason: >-
-        Serious-injury-phase recovery mechanic: post-battle subsystem, out of engine scope.
+      reason: out-of-scope.campaign
   name: Body Dealer
   effect: >-
     This warrior is skilled at salvaging the bodies of the dead for profit. On a 4+, you may recover
@@ -283,8 +275,7 @@ rules:
     - id: unimplemented.grave-robbers-sylv.item.hooded-lantern-rig
       scope: 'NO'
       binding: null
-      reason: >-
-        Visibility/lighting mechanics: scenario-level content, out of engine scope.
+      reason: out-of-scope.movement
   name: Hooded Lantern and Rig
   effect: >-
     Cost: 15 + D6 gold crowns. Availability: Rare 9. Allowing a Grave Robber to do his work in
@@ -316,8 +307,7 @@ rules:
     - id: unimplemented.grave-robbers-sylv.item.pry-bar
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: parry binding pending engine weapon binding.
+      reason: pending-classification
   name: Pry Bar
   effect: >-
     Cost: 10 gold crowns. Availability: Grave Robbers only. Whilst acting as a club in every sense,
@@ -346,8 +336,7 @@ rules:
     - id: unimplemented.grave-robbers-sylv.item.surgeons-journal
       scope: 'NO'
       binding: null
-      reason: >-
-        Serious-injury modification: post-battle subsystem, out of engine scope.
+      reason: out-of-scope.campaign
   name: Surgeon's Journal
   effect: >-
     Cost: 80 + 4D6 gold crowns. Availability: Rare 11. Written by those who have cut into far too
@@ -378,8 +367,7 @@ rules:
     - id: unimplemented.grave-robbers-sylv.item.finger-pendant
       scope: 'NO'
       binding: null
-      reason: >-
-        Magic-phase content: ward save vs magic is out of engine scope.
+      reason: out-of-scope.magic
   name: Finger Pendant
   effect: >-
     Cost: 15 gold crowns. Availability: Grave Robbers only. Death-Ward: Gives a one-time 5+ save vs.

@@ -53,9 +53,7 @@ rules:
     - id: unimplemented.khemri-hobgoblin-raiders.hobgoblin-shaman.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: sneaky--unpredictable
   name: Unpredictable
   effect: >-
@@ -110,8 +108,10 @@ rules:
     - id: unimplemented.khemri-hobgoblin-raiders.archers.moving-shot
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.psychology
+      clauses:
+      - id: whole
+        scope: 'NO'
 - id: giant-wolves--animal
   name: Animal
   effect: Giant Wolves are animals and never gain Experience.
@@ -134,8 +134,7 @@ rules:
     - id: unimplemented.khemri-hobgoblin-raiders.giant-wolves.animal
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: giant-wolves--mount
   name: Mount
   effect: >-
@@ -168,8 +167,10 @@ rules:
     - id: unimplemented.khemri-hobgoblin-raiders.giant-wolves.mount
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.psychology
+      clauses:
+      - id: mount
+        scope: 'NO'
 - id: band--traitors
   name: Traitors
   effect: >-
@@ -209,8 +210,10 @@ rules:
     - id: unimplemented.khemri-hobgoblin-raiders.band.traitors
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.psychology
+      clauses:
+      - id: whole
+        scope: 'NO'
 - id: band--wolf-riders
   name: Wolf Riders
   effect: Every Hobgoblin member of the warband has the ability to ride a Giant Wolf.
@@ -232,8 +235,10 @@ rules:
     - id: unimplemented.khemri-hobgoblin-raiders.band.wolf-riders
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.psychology
+      clauses:
+      - id: whole
+        scope: 'NO'
 - id: band--hobgoblin-special-skills-moving-shot
   kind: warband_skill
   name: Moving Shot
@@ -265,8 +270,10 @@ rules:
     - id: unimplemented.khemri-hobgoblin-raiders.band.hobgoblin-special-skills-moving-shot
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.psychology
+      clauses:
+      - id: whole
+        scope: 'NO'
 - id: band--hobgoblin-special-skills-disguised
   kind: warband_skill
   name: Disguised
@@ -298,8 +305,7 @@ rules:
     - id: unimplemented.khemri-hobgoblin-raiders.band.hobgoblin-special-skills-disguised
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--hobgoblin-special-skills-unpredictable
   kind: warband_skill
   name: Unpredictable
@@ -370,8 +376,10 @@ rules:
     - id: unimplemented.khemri-hobgoblin-raiders.band.hobgoblin-special-skills-wolf-tamer
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.psychology
+      clauses:
+      - id: wolf-tamer
+        scope: 'NO'
 - id: band--hobgoblin-special-skills-ambush
   kind: warband_skill
   name: Ambush
@@ -400,8 +408,7 @@ rules:
     - id: unimplemented.khemri-hobgoblin-raiders.band.hobgoblin-special-skills-ambush
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: hobgoblin-shaman--no-armoured-casting
   name: No Armour Casting
   effect: >-
@@ -426,5 +433,4 @@ rules:
     - id: unimplemented.khemri-hobgoblin-raiders.hobgoblin-shaman.no-armoured-casting
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic.
+      reason: out-of-scope.magic

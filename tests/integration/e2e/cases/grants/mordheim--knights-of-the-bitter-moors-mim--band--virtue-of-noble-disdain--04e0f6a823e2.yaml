@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/knights-of-the-bitter-moors-mim/band--virtue-of-noble-disdain/mechanic.noble-disdain
-# scaffold_fingerprint: 6a7a1309bdbdb50b691e50ea44b718179ddd47705d3fc59480f67b9de4dd828a
 # authoring_status: AUTHORED
 # authoring_progress: the admitted hatred clause carries 3 authored scenarios for the family model
 #   derived from the printed rule and the recorded semantic contract: the declared Virtue delivers the
@@ -16,40 +15,12 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: hatred (scope: YES)
-# AUTHORED[hatred]: 3 scenario(s) cover the clause: the declared Virtue grants the first-round reroll
+# AUTHORED: 3 scenario(s) cover the clause: the declared Virtue grants the first-round reroll
 #   against a shooting-armed opponent, the same miss stands against an opponent that carries no shooting
 #   weapon, and a band-mate that did not take the Virtue receives no reroll.
-# origin_id:
-#   rule/mordheim/knights-of-the-bitter-moors-mim/band--virtue-of-noble-disdain/mechanic.noble-disdain
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/knights-of-the-bitter-moors-mim/special-rules.yaml
-# source_fingerprint:
-#   2a069d9cfec2f3d1d80d269328c7cdb1b2040796da6d6b702c536f2dc25cbaa3
-# source_sha256_at_generation:
-#   b2262194983563f4a2aa0c85a7906cf546ecebff868afb1c74bc6d806c059839
-# Printed rule text:
-#   The Knight has nothing but contempt for enemies who hide behind the weapons of dishonour. The Knight is subject to Hatred of all enemies armed with shooting weapons.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Subject to Hatred: while fighting a qualifying enemy, this warrior may reroll missed To-Hit rolls in the first round of that close combat only. Observable: a first-round melee reroll is offered only when the opponent matches the hated identity and this warrior is not Psychology-immune. Hated identity: enemies armed with shooting weapons.
-# effect_id:
-#   mechanic.noble-disdain
-# relation:
-#   equivalent
-# parameters:
-#   {"enemy_identity":"condition.ranged-armed"}
-# conditions:
-#   {"trigger":"first round of a close combat against a qualifying enemy","resolution":"contexts._hit_reroll adds a reroll when the enemy identity tag matches","consequence":"missed To-Hit rolls may be rerolled once that round","recipient":"this warrior, against the matching enemy","duration":"first combat round only","stacking":"one reroll per attack; never rerolled twice","exceptions":"suppressed for a Psychology-immune warrior and for a frenzied kindred-hatred source; requires the opponent's explicit identity tag"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Filtered Hatred bound to mechanic.noble-disdain; contexts._hit_reroll matches the enemy identity tag, enforces first-round timing and the Psychology-immunity suppression. Enemy identity must be supplied explicitly. Surface reuse candidate: {"family":"M-HATRED-TARGET","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Possible shared first-round hit-reroll consumer only. Resolve each printed hated target and the ordinary Psychology/Frenzy gates; do not inherit the audit Orc/Goblin effect ID for every target or the Strigoi immunity exception.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
 # --- Authored scenarios ---
 # Family model (filtered Hatred of enemies armed with shooting weapons, mechanic.noble-disdain), taken
@@ -67,7 +38,6 @@
 # The carried bow supplies the printed shooting-weapon identity.
 - audit_id: rule/mordheim/knights-of-the-bitter-moors-mim/band--virtue-of-noble-disdain/mechanic.noble-disdain
   id: a-shooting-armed-opponent-is-hated
-  covers: [hatred]
   fighters:
     first:
       collection: mordheim
@@ -94,7 +64,6 @@
 # Without a shooting weapon the opponent carries no hated identity, so no reroll is offered.
 - audit_id: rule/mordheim/knights-of-the-bitter-moors-mim/band--virtue-of-noble-disdain/mechanic.noble-disdain
   id: an-opponent-without-a-shooting-weapon-is-not-hated
-  covers: [hatred]
   fighters:
     first:
       collection: mordheim
@@ -118,7 +87,6 @@
 # A band-mate that did not take the Virtue carries no Hatred, however its opponent is armed.
 - audit_id: rule/mordheim/knights-of-the-bitter-moors-mim/band--virtue-of-noble-disdain/mechanic.noble-disdain
   id: a-knight-without-the-virtue-receives-no-reroll
-  covers: [hatred]
   fighters:
     first:
       collection: mordheim

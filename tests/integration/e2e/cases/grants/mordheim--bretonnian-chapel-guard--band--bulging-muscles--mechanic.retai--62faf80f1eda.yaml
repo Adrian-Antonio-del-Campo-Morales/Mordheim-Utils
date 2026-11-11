@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/bretonnian-chapel-guard/band--bulging-muscles/mechanic.retain-flail-morning-star-strength-bonus
-# scaffold_fingerprint: 410f2ee691ad1f62f63305a14f877908e11e7442b799a0f4d1333d45fe0667e0
 # authoring_status: AUTHORED
 # authoring_progress: the admitted whole clause carries two authored scenarios derived from the
 # printed rule and the recorded contract: the flail's printed first-round Strength bonus still
@@ -13,39 +12,11 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 2 scenarios cover the retained flail bonus in the second round and the same
+# AUTHORED: 2 scenarios cover the retained flail bonus in the second round and the same
 #   second-round declaration failing without the retention term.
-# origin_id:
-#   rule/mordheim/bretonnian-chapel-guard/band--bulging-muscles/mechanic.retain-flail-morning-star-strength-bonus
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/bretonnian-chapel-guard/special-rules.yaml
-# source_fingerprint:
-#   147d6340cbe537e89cf365010225909770477b7be771e15c852947f0c555c49a
-# source_sha256_at_generation:
-#   9139664c4fa318c014e7f07bca71391533c1eaecdc6d1a19f66e2126ed5826f5
-# Printed rule text:
-#   The Knight retains the +1/+2 Strength bonus from Flails and Morning Stars after the first round of combat.
-# Semantic contract (check analysis_status before treating as accepted):
-#   The Knight retains the +1/+2 Strength bonus of Flails and Morning Stars after the first round of combat. Closure: a flail or morning star adds its printed first-round bonus in every round for that bearer.
-# effect_id:
-#   mechanic.retain-flail-morning-star-strength-bonus
-# relation:
-#   equivalent
-# parameters:
-#   {"applies_to": ["weapon.flail", "weapon.morning-star"], "retains": "first-round Strength bonus"}
-# conditions:
-#   {"recipient": "Knight", "weapon_scope": ["weapon.flail", "weapon.morning-star"]}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Band origin of the shared retain-flail operator; the printed +1/+2 wording is the flail and morning-star first-round bonus the operator re-applies beyond the first round. The printed text repeats the canonical clause of the shared operator without adding a term, so the band origin creates no second runtime contribution. Surface reuse candidate: {"family":"mechanic.retain-flail-morning-star-strength-bonus","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare modifier stage, applicable weapon, replacement versus added attacks, nominated hand/poison transport and resource lifetime. Preserve Shifty S1-S4 and pistol composition; A=2 on charge is not an unrestricted +1 Attack.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
 # --- Authored scenarios ---
 # Derived from the printed rule and the recorded contract; no engine output was consulted.  The
@@ -53,7 +24,6 @@
 # the term the rule keeps.
 - audit_id: rule/mordheim/bretonnian-chapel-guard/band--bulging-muscles/mechanic.retain-flail-morning-star-strength-bonus
   id: the-flail-strength-bonus-is-retained-after-the-first-round
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.flail
@@ -76,7 +46,6 @@
   expect_final: {rounds_executed: 2, termination_reason: horizon}
 - audit_id: rule/mordheim/bretonnian-chapel-guard/band--bulging-muscles/mechanic.retain-flail-morning-star-strength-bonus
   id: without-the-retention-the-second-round-bonus-is-gone
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.flail

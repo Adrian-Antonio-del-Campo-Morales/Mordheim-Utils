@@ -30,7 +30,7 @@
     "weapon": {
       "type": "object",
       "required": [
-        "id", "name", "name_i18n", "effect", "effect_i18n", "engine_option", "hands",
+        "id", "name", "name_i18n", "engine_option", "hands",
         "main_hand", "off_hand", "paired", "rules_source_url", "source_refs"
       ],
       "additionalProperties": false,
@@ -38,21 +38,24 @@
         "id": { "$ref": "defs.schema.json#/$defs/id" },
         "name": { "$ref": "defs.schema.json#/$defs/display_text" },
         "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
-        "effect": { "$ref": "defs.schema.json#/$defs/display_text" },
-        "effect_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "note": { "description": "Engine description of a mechanic that no rule, skill or item prints; every other mechanic resolves its display text through the records bound to it.", "$ref": "defs.schema.json#/$defs/display_text" },
         "engine_option": { "$ref": "#/$defs/engine_option" },
         "hands": { "type": "integer", "enum": [1, 2] },
         "main_hand": { "type": "boolean" },
         "off_hand": { "type": "boolean" },
         "paired": { "type": "boolean" },
         "rules_source_url": { "$ref": "#/$defs/rules_source_url" },
-        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" },
+        "clauses": {
+          "description": "The clauses of this mechanic; identity `mechanic/<mechanic-id>`.",
+          "$ref": "defs.schema.json#/$defs/clauses"
+        }
       }
     },
     "armour": {
       "type": "object",
       "required": [
-        "id", "name", "name_i18n", "effect", "effect_i18n", "engine_option", "base_save",
+        "id", "name", "name_i18n", "engine_option", "base_save",
         "rules_source_url", "source_refs"
       ],
       "additionalProperties": false,
@@ -60,8 +63,7 @@
         "id": { "$ref": "defs.schema.json#/$defs/id" },
         "name": { "$ref": "defs.schema.json#/$defs/display_text" },
         "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
-        "effect": { "$ref": "defs.schema.json#/$defs/display_text" },
-        "effect_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "note": { "description": "Engine description of a mechanic that no rule, skill or item prints; every other mechanic resolves its display text through the records bound to it.", "$ref": "defs.schema.json#/$defs/display_text" },
         "engine_option": { "$ref": "#/$defs/engine_option" },
         "engine_code": { "type": "integer" },
         "base_save": {
@@ -70,54 +72,62 @@
         },
         "overlay": { "type": "boolean" },
         "rules_source_url": { "$ref": "#/$defs/rules_source_url" },
-        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" },
+        "clauses": {
+          "description": "The clauses of this mechanic; identity `mechanic/<mechanic-id>`.",
+          "$ref": "defs.schema.json#/$defs/clauses"
+        }
       }
     },
     "defence": {
       "type": "object",
-      "required": ["id", "name", "name_i18n", "effect", "effect_i18n", "engine_option", "source_refs"],
+      "required": ["id", "name", "name_i18n", "engine_option", "source_refs"],
       "additionalProperties": false,
       "properties": {
         "id": { "$ref": "defs.schema.json#/$defs/id" },
         "name": { "$ref": "defs.schema.json#/$defs/display_text" },
         "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
-        "effect": { "$ref": "defs.schema.json#/$defs/display_text" },
-        "effect_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
         "engine_option": { "$ref": "#/$defs/engine_option" },
         "rules_source_url": { "$ref": "#/$defs/rules_source_url" },
-        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" },
+        "clauses": {
+          "description": "The clauses of this mechanic; identity `mechanic/<mechanic-id>`.",
+          "$ref": "defs.schema.json#/$defs/clauses"
+        }
       }
     },
     "code_mechanic": {
       "description": "Material, preparation or poison mechanic: the engines identify it by its numeric code as well as by its option.",
       "type": "object",
-      "required": ["id", "name", "name_i18n", "effect", "effect_i18n", "engine_option", "source_refs"],
+      "required": ["id", "name", "name_i18n", "engine_option", "source_refs"],
       "additionalProperties": false,
       "anyOf": [{ "required": ["engine_code"] }, { "required": ["modular_only"] }],
       "properties": {
         "id": { "$ref": "defs.schema.json#/$defs/id" },
         "name": { "$ref": "defs.schema.json#/$defs/display_text" },
         "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
-        "effect": { "$ref": "defs.schema.json#/$defs/display_text" },
-        "effect_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "note": { "description": "Engine description of a mechanic that no rule, skill or item prints; every other mechanic resolves its display text through the records bound to it.", "$ref": "defs.schema.json#/$defs/display_text" },
         "engine_option": { "$ref": "#/$defs/engine_option" },
         "engine_code": { "type": "integer" },
         "modular_only": { "description": "Explicitly lacks an optimized numeric encoding; use the modular engine.", "const": true },
         "rules_source_url": { "$ref": "#/$defs/rules_source_url" },
-        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" },
+        "clauses": {
+          "description": "The clauses of this mechanic; identity `mechanic/<mechanic-id>`.",
+          "$ref": "defs.schema.json#/$defs/clauses"
+        }
       }
     },
     "skill": {
       "description": "Skill mechanic: the executable projection of a skill (its engine option), classified by the skill family it belongs to.",
       "type": "object",
-      "required": ["id", "name", "name_i18n", "effect", "effect_i18n", "engine_option", "kind", "category", "source_refs"],
+      "required": ["id", "name", "name_i18n", "engine_option", "kind", "category", "source_refs"],
       "additionalProperties": false,
       "properties": {
         "id": { "$ref": "defs.schema.json#/$defs/id" },
         "name": { "$ref": "defs.schema.json#/$defs/display_text" },
         "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
-        "effect": { "$ref": "defs.schema.json#/$defs/display_text" },
-        "effect_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "note": { "description": "Engine description of a mechanic that no rule, skill or item prints; every other mechanic resolves its display text through the records bound to it.", "$ref": "defs.schema.json#/$defs/display_text" },
         "engine_option": { "$ref": "#/$defs/engine_option" },
         "kind": {
           "description": "`general` and `warband` mirror the skill tables; `profile` marks a skill only a specific profile has.",
@@ -130,7 +140,11 @@
           "pattern": "^[a-z][a-z-]*$"
         },
         "rules_source_url": { "$ref": "#/$defs/rules_source_url" },
-        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" },
+        "clauses": {
+          "description": "The clauses of this mechanic; identity `mechanic/<mechanic-id>`.",
+          "$ref": "defs.schema.json#/$defs/clauses"
+        }
       }
     },
     "engine_option": {

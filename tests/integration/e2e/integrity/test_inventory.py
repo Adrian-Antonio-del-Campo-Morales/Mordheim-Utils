@@ -1,21 +1,24 @@
 """Canonical audit-ID coverage: reconciliation, report and completeness gate.
 
-The register (``sources/knowledge/verification/clause-contracts.csv``) is read
-as the canonical source of audit identities and clauses and is never rewritten
-here.  A scenario may only reference an admitted ``core/``, ``mechanic/`` or
-``rule/`` identity and an in-scope clause of that identity; sharing a binding
-does not admit an excluded clause.
+The identity inventory of the knowledge base (``mordheim_knowledge.clauses``:
+every core rule, mechanic, item and classified rule effect, with the clauses a
+record declares when its printed text splits) is the canonical source of audit
+identities and is never rewritten here.  A scenario must reference a declared
+``core/``, ``mechanic/`` or ``rule/`` identity and, when that identity declares
+clauses, one of its clauses; an identity without clauses is one undivided
+obligation that any scenario naming it covers.  Scenarios of a declared identity
+the runtime does not admit (a ``NO`` or ``LATER`` effect) are reported apart and
+never count towards coverage.
 
-Ordinary runs reconcile the declared corpus against the register and print the
+Ordinary runs reconcile the declared corpus against the inventory and print the
 coverage report.  The stricter gate that fails on any admitted identity without
 scenarios or any uncovered admitted clause runs only when
 ``MORDHEIM_E2E_REQUIRE_COMPLETE=1`` is set, mirroring the existing
-``verify --require-complete`` convention.  This is E2E coverage evidence and
-never replaces the maintained ``semantic_status`` of the reference suite.
+``verify --require-complete`` convention.  This is E2E coverage evidence, not
+behavioural proof: the scenarios must also run and pass.
 """
 from __future__ import annotations
 
-import csv
 import os
 from collections.abc import Iterable
 from dataclasses import dataclass
@@ -23,35 +26,30 @@ from pathlib import Path
 
 import pytest
 
+from mordheim_knowledge.clauses import admitted_clauses, declared_clauses, load_identities
 from mordheim_modular_e2e.corpus import Scenario, group_by_audit, load_corpus
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[4]
-REGISTER = REPOSITORY_ROOT / "sources" / "knowledge" / "verification" / "clause-contracts.csv"
-ADMITTED_PREFIXES = ("core/", "mechanic/", "rule/")
-IN_SCOPE = "YES"
+#: Identity kinds the E2E corpus may declare; items are covered by deterministic tests.
+ADMITTED_KINDS = ("core", "mechanic", "rule")
 REQUIRE_COMPLETE_ENV = "MORDHEIM_E2E_REQUIRE_COMPLETE"
 
 CORPUS = load_corpus()
 BY_AUDIT = group_by_audit(CORPUS)
 
 
-def read_register():
-    """Return the register grouped by current identity and scope.
+def read_inventory():
+    """Return the clause inventory grouped by identity and scope.
 
-    ``declared`` holds every printed clause of every identity (referential
-    integrity for a scenario's ``covers``); ``admitted`` holds only the
-    in-scope clauses of the admitted ``core/``, ``mechanic/`` and ``rule/``
-    identities (the coverage denominator).
+    ``declared`` holds every identity with the clause ids it declares
+    (referential integrity for a scenario's ``covers``); ``admitted`` holds the
+    admitted ``core/``, ``mechanic/`` and ``rule/`` identities with their
+    in-scope clause ids, an empty set for an undivided identity (the coverage
+    denominator).
     """
-    with REGISTER.open(newline="", encoding="utf-8") as handle:
-        rows = list(csv.DictReader(handle))
-    declared: dict[str, set[str]] = {}
-    admitted: dict[str, set[str]] = {}
-    for row in rows:
-        current = row["id"]
-        declared.setdefault(current, set()).add(row["clause_id"])
-        if row["clause_scope"] == IN_SCOPE and current.startswith(ADMITTED_PREFIXES):
-            admitted.setdefault(current, set()).add(row["clause_id"])
+    identities = load_identities()
+    declared = declared_clauses(identities)
+    admitted = admitted_clauses(identities, ADMITTED_KINDS)
     return declared, admitted, set(admitted)
 
 
@@ -61,6 +59,8 @@ class Coverage:
     covered_clauses: dict[str, set[str]]
     admitted_clauses: dict[str, set[str]]
     admitted_ids: frozenset[str]
+    #: Declared identities with scenarios that the runtime does not admit (NO/LATER effects).
+    outside_scope: tuple[str, ...] = ()
 
     @property
     def covered_ids(self) -> set[str]:
@@ -79,9 +79,10 @@ class Coverage:
         return gaps
 
     def complete_ids(self) -> tuple[str, ...]:
+        """Identities whose every in-scope clause is named, or undivided identities with a scenario."""
         return tuple(sorted(
             current for current, clauses in self.admitted_clauses.items()
-            if clauses and not (clauses - self.covered_clauses.get(current, set()))
+            if current in self.covered_clauses and not (clauses - self.covered_clauses.get(current, set()))
         ))
 
     def render(self, *, missing_limit: int = 20) -> str:
@@ -100,38 +101,45 @@ class Coverage:
             f"  admitted clauses covered: {covered_clause_count} / {admitted_clause_count}",
             f"  identities with complete admitted-clause coverage: {len(self.complete_ids())}",
             f"  admitted identities without scenarios: {len(missing)}",
-            "  complete admitted-clause coverage means every in-scope clause has a scenario that",
-            "  declares it; it is a reference count, not semantic certification of the identity",
+            "  complete coverage means every in-scope clause of a split identity has a scenario that",
+            "  declares it, or an undivided identity has a scenario; it is a reference count, not",
+            "  semantic certification of the identity",
         ]
         lines.extend(f"    {current}" for current in missing[:missing_limit])
         if len(missing) > missing_limit:
             lines.append(f"    ... {len(missing) - missing_limit} more")
+        if self.outside_scope:
+            lines.append(f"  scenarios on identities outside the admitted scope (NO/LATER effects): {len(self.outside_scope)}")
+            lines.extend(f"    {current}" for current in self.outside_scope)
         for current in sorted(gaps):
             lines.append(f"  pending clauses in a covered identity: {current} {list(gaps[current])}")
         return "\n".join(lines)
 
 
 def coverage(scenarios: Iterable[Scenario] | None = None) -> Coverage:
+    """Coverage over the admitted identities; scenarios of declared but not admitted identities are kept apart."""
     scenarios = list(CORPUS if scenarios is None else scenarios)
     grouped = group_by_audit(scenarios)
+    _, admitted, admitted_ids = read_inventory()
     covered = {current: {clause for scenario in group for clause in scenario.covers}
-               for current, group in grouped.items()}
-    _, admitted, admitted_ids = read_register()
-    return Coverage(len(scenarios), covered, admitted, frozenset(admitted_ids))
+               for current, group in grouped.items() if current in admitted_ids}
+    outside = tuple(sorted(current for current in grouped if current not in admitted_ids))
+    return Coverage(len(scenarios), covered, admitted, frozenset(admitted_ids), outside)
 
 
 @pytest.mark.evidence
 def test_corpus_references_admitted_identities_and_clauses():
-    declared, admitted, admitted_ids = read_register()
+    declared, admitted, admitted_ids = read_inventory()
     for scenario in CORPUS:
         assert scenario.audit_id in declared, (
-            f"{scenario.test_id}: audit id is not in the register")
-        assert scenario.audit_id in admitted_ids, (
-            f"{scenario.test_id}: audit id is not admitted ({scenario.source})")
+            f"{scenario.test_id}: audit id is not a knowledge-base identity")
         for clause in scenario.covers:
-            assert clause in admitted[scenario.audit_id], (
-                f"{scenario.test_id}: clause {clause!r} is not an admitted clause of "
-                f"{scenario.audit_id}")
+            assert clause in declared[scenario.audit_id], (
+                f"{scenario.test_id}: clause {clause!r} is not a clause of {scenario.audit_id}")
+            if scenario.audit_id in admitted_ids:
+                assert clause in admitted[scenario.audit_id], (
+                    f"{scenario.test_id}: clause {clause!r} is not an admitted clause of "
+                    f"{scenario.audit_id}")
 
 
 @pytest.mark.evidence

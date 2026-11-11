@@ -73,14 +73,9 @@ HIRELING_DOCUMENTS: tuple[tuple[str, str], ...] = tuple(
 #: Documents that live in a covered tree but belong to another workflow, with
 #: the reason they are outside this contract. Kept explicit so the coverage test
 #: stays strict for everything else; an entry is deleted when its document joins
-#: the contract, and the test fails when an entry goes stale.
-UNCOVERED_DOCUMENTS: dict[str, str] = {
-    "registry/bindings.yaml": (
-        "the binding registry of the supplement ingestion workflow, gated by its own "
-        "tests/python/knowledge/test_knowledge_pipeline_guards.py: it is edited by hand, never "
-        "written by a promotion, so the editorial contract does not claim it"
-    ),
-}
+#: the contract, and the test fails when an entry goes stale. Every maintained
+#: document is claimed today.
+UNCOVERED_DOCUMENTS: dict[str, str] = {}
 
 #: ``(document, schema)`` of the campaign catalogue: each document has its own
 #: shape, so each one is listed by path.
@@ -116,10 +111,6 @@ CATALOGUE_DOCUMENTS: tuple[tuple[str, str], ...] = (
     ("catalog/rules/special-rules.yaml", "catalog-rules-prose.yaml.schema.json"),
     ("catalog/rules/racial-maximums.yaml", "catalog-rules-racial-maximums.yaml.schema.json"),
     ("catalog/rules/resolution.yaml", "catalog-rules-resolution.yaml.schema.json"),
-    (
-        "catalog/rules/implemented-canonical-families.yaml",
-        "catalog-rules-implemented-canonical-families.yaml.schema.json",
-    ),
     ("catalog/mechanics/close-combat.yaml", "catalog-mechanics-close-combat.yaml.schema.json"),
     ("catalog/mechanics/execution.yaml", "catalog-mechanics-execution.yaml.schema.json"),
     (

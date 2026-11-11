@@ -50,8 +50,7 @@ rules:
     - id: unimplemented.ostlanders.priest-of-taal.prayers
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
   rule_ref: shared-rule.prayers
 - id: priest-of-taal--strictures
   name: Strictures
@@ -128,8 +127,7 @@ rules:
     - id: unimplemented.ostlanders.ruffians.no-respect
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: ogre--fear
   name: Fear
   effect: The Ogre causes Fear.
@@ -182,8 +180,7 @@ rules:
     - id: unimplemented.ostlanders.ogre.large
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: ogre--skills
   name: Skills
   effect: >-
@@ -244,8 +241,7 @@ rules:
     - id: unimplemented.ostlanders.ogre.slow-witted
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--self-sufficient
   name: Self-Sufficient
   effect: Ostlanders may never hire Mercenaries/Hired Swords except Ogres.
@@ -268,9 +264,7 @@ rules:
     - id: unimplemented.ostlanders.band.self-sufficient
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: band--ostlander-special-skills-bull-rush
   kind: warband_skill
   name: Bull Rush
@@ -312,13 +306,6 @@ rules:
 - id: band--ostlander-special-skills-foul-odour
   kind: warband_skill
   name: Foul Odour
-  effect: >-
-    Ostlanders are prodigious drinkers and none too hygienic! This warrior rises head and shoulders
-    above the rest. After a lifetime of drinking, liquor has little effect on him any more... not
-    that this stops him from consuming massive quantities! His unwashed clothes and sweat reek of
-    alcohol and all living enemies (not Undead or Possessed) are at -1 to hit him in hand-to-hand
-    combat. In addition, the warrior cannot carry any open flames (torch, lantern, etc) and fire
-    attacks made against him are resolved at +1 Strength as his booze soaked clothing burns readily.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -326,15 +313,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
   name_i18n:
     es: Hedor
-  effect_i18n:
-    es: >-
-      ¡Los ostlandeses son bebedores prodigiosos y poco higiénicos! Este guerrero sobresale por
-      encima del resto. Tras toda una vida de bebida, el licor apenas le afecta ya... lo que no le
-      impide consumir cantidades masivas. Sus ropas sin lavar y su sudor huelen a alcohol, y todos
-      los enemigos vivos (no Muertos Vivientes ni Poseídos) sufren -1 para impactarlo en combate
-      cuerpo a cuerpo. Además, el guerrero no puede portar llamas abiertas (antorcha, farol, etc.) y
-      los ataques de fuego contra él se resuelven con +1 de Fuerza, ya que sus ropas empapadas de
-      bebida arden con facilidad.
   applies_to:
     band: true
   runtime:
@@ -347,6 +325,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.foul-odour
+  rule_ref: shared-rule.foul-odour
 - id: band--ostlander-special-skills-taunt
   kind: warband_skill
   name: Taunt
@@ -387,8 +366,12 @@ rules:
     - id: unimplemented.ostlanders.band.ostlander-special-skills-taunt
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.psychology
+      clauses:
+      - id: taunt--scope--shooting-phase-producer
+        scope: 'NO'
+      - id: taunt--scope--leadership-test
+        scope: 'NO'
 - id: band--ostlander-special-skills-animal-friendship
   kind: warband_skill
   name: Animal Friendship
@@ -422,6 +405,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.animal-friendship
+      clauses:
+      - id: whole--scope--animal-attack-protection
+        scope: 'YES'
+      - id: whole--scope--wardog-count
+        scope: 'NO'
 - id: band--ostlander-special-skills-blood-oath
   kind: warband_skill
   name: Blood Oath
@@ -454,9 +442,7 @@ rules:
     - id: unimplemented.ostlanders.band.ostlander-special-skills-blood-oath
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: ruffians--no-missile-weapons
   name: No Missile Weapons
   effect: >-

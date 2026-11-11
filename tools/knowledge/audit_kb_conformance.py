@@ -17,8 +17,7 @@ Checks
 * ``special-rules.yaml``: rule keys, ``applies_to`` shapes, the runtime
   contract (required fields, values, selectable ``kind``), rule-level
   ``effects``, effect ``id``/``scope``, ``binding.kind`` vocabulary,
-  ``binding.id`` reuse vs the KB, ``rule_ref`` resolution, and staged bindings
-  declared in ``registry/bindings.yaml`` (reported as ``binding-pending-promotion``).
+  ``binding.id`` reuse vs the KB and ``rule_ref`` resolution.
 
 Usage::
 
@@ -65,7 +64,7 @@ PROFILE_SKILL_TOKENS = {'combat', 'shooting', 'academic', 'strength', 'speed', '
 # Classes that are reported but are not defects: they are adjudicated, documented
 # findings (a mechanic with no KB equivalent, a rule that restates a shared rule it
 # also references). They do not make the audit red.
-INFO_CLASSES = {'binding-unseen', 'binding-pending-promotion'}
+INFO_CLASSES = {'binding-unseen'}
 
 
 def docs(path: str) -> list[dict]:
@@ -82,18 +81,6 @@ def kb_bindings() -> set[str]:
                     binding = effect.get('binding') if isinstance(effect, dict) else None
                     if isinstance(binding, dict) and binding.get('id'):
                         out.add(str(binding['id']))
-    return out
-
-
-def registered_bindings() -> set[str]:
-    """Binding ids declared in registry/bindings.yaml (staged, pre-promotion)."""
-    path = 'sources/knowledge/registry/bindings.yaml'
-    out: set[str] = set()
-    if os.path.exists(path):
-        for doc in docs(path):
-            for entry in doc.get('bindings') or []:
-                if isinstance(entry, dict) and entry.get('id'):
-                    out.add(str(entry['id']))
     return out
 
 
@@ -156,7 +143,6 @@ def kb_key_sets() -> dict[str, set[str]]:
 def audit(tree: str) -> dict:
     report: dict[str, list] = defaultdict(list)
     bindings = kb_bindings()
-    pending_bindings = registered_bindings()
     refs = kb_rule_refs()
     known = kb_key_sets()
     band_keys = KB_BAND_KEYS | known['band']
@@ -293,14 +279,7 @@ def audit(tree: str) -> dict:
                         report['binding-kind'].append(
                             f'{band}/{rule_id}: binding.kind {binding.get("kind")!r}')
                     if binding.get('id') and binding['id'] not in bindings:
-                        # Registry-declared ids are staged, not unknown: they are reported
-                        # apart so the CI gate (tests/python/knowledge/test_knowledge_pipeline_guards.py)
-                        # stays the authority on registration.
-                        if binding['id'] in pending_bindings:
-                            report['binding-pending-promotion'].append(
-                                f'{band}/{rule_id}: {binding["id"]} (declared in registry/bindings.yaml)')
-                        else:
-                            report['binding-unseen'].append(f'{band}/{rule_id}: {binding["id"]}')
+                        report['binding-unseen'].append(f'{band}/{rule_id}: {binding["id"]}')
                 elif effect.get('scope') in {'NO', 'LATER'} and not effect.get('reason'):
                     report['effect-no-reason'].append(f'{band}/{rule_id}: {effect.get("id")}')
             ref = rule.get('rule_ref')

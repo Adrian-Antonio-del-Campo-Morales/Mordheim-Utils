@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: core/combat-parry
-# scaffold_fingerprint: 5625422dc6e72c7464b124e0b514543ace4168c8769c4017a9b9f64fee0bb353
 # authoring_status: REVIEWED
 # authoring_progress: every admitted clause below has requirement-complete
 #   scenarios contrasted against the printed rule text, the recorded semantic
@@ -11,71 +10,18 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: parry-attempt (scope: YES)
 # AUTHORED[parry-attempt]: 7 scenarios cover the strict beat (higher roll) and
 #   the equal and lower rolls, the Strength edge on both sides of the double
 #   boundary, the unparryable natural six, and a buckler alone.
-# origin_id:
-#   core/combat-parry
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/rules/core-combat.yaml
-# source_fingerprint:
-#   71e7f7117dd484b375d99d2f0e5c0292485a64b2a8b741acf370fb609dad6f5d
-# source_sha256_at_generation:
-#   34be1fcd30769636050a73ffb1e035b7fe5937a7460493ea46d86edce20836c1
-# Printed rule text:
-#   A sword or buckler can parry one hit by beating the attacker's hit roll, provided the attacker's Strength is less than double the defender's. A natural 6 cannot be parried. Sword plus buckler rerolls a failed parry, but two swords do not grant two attempts (one attempt per phase regardless of the number of parrying weapons).
-# Semantic contract (check analysis_status before treating as accepted):
-#   A sword or buckler parries one hit by rolling higher than the attacker's hit roll, only when the attacker's Strength is less than double the defender's; a natural 6 cannot be parried; observable: such a hit is discarded before the wound roll.
-# effect_id:
-#   (not recorded)
-# relation:
-#   related
-# parameters:
-#   {}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   resolve_parry applies available, cannot_be_parried, hit_roll != 6 unless can_parry_six, and strength < 2x defender strength. Surface reuse candidate: {"family":"CORE-PARRY","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare core timing, injury mapping, per-warrior/per-phase resources, modifier order and weapon allocation against the active contract. Keep variant charts, natural-die conditions and later transformations separate.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: reroll-and-capacity (scope: YES)
 # AUTHORED[reroll-and-capacity]: 4 scenarios cover sword-plus-buckler rerolling a
 #   failed parry, a failed reroll consuming the single attempt, two swords giving
 #   one attempt per phase, and the attempt being renewed in the next round.
-# origin_id:
-#   core/combat-parry
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/rules/core-combat.yaml
-# source_fingerprint:
-#   71e7f7117dd484b375d99d2f0e5c0292485a64b2a8b741acf370fb609dad6f5d
-# source_sha256_at_generation:
-#   34be1fcd30769636050a73ffb1e035b7fe5937a7460493ea46d86edce20836c1
-# Printed rule text:
-#   A sword or buckler can parry one hit by beating the attacker's hit roll, provided the attacker's Strength is less than double the defender's. A natural 6 cannot be parried. Sword plus buckler rerolls a failed parry, but two swords do not grant two attempts (one attempt per phase regardless of the number of parrying weapons).
-# Semantic contract (check analysis_status before treating as accepted):
-#   Sword plus buckler rerolls a failed parry, two swords give no second attempt; one attempt per phase regardless of parrying weapons; observable: the same phase never parries two hits without a two-parry skill.
-# effect_id:
-#   (not recorded)
-# relation:
-#   related
-# parameters:
-#   {}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Reroll flags in modular/contexts._parry_context; attempt count in modular/state._parry_capacity. Surface reuse candidate: {"family":"CORE-PARRY-REROLL-CAP","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare core timing, injury mapping, per-warrior/per-phase resources, modifier order and weapon allocation against the active contract. Keep variant charts, natural-die conditions and later transformations separate.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # --- Migrated authored scenarios ---
 # Source: cases/core/parry.yaml
@@ -86,7 +32,7 @@
 # core/combat-parry — the parry attempt and its reroll/capacity limits.
 #
 # Expectations come from the accepted clauses of
-# docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv (identity
+# the knowledge-base clause contracts (sources/knowledge) (identity
 # core/combat-parry, clauses parry-attempt / reroll-and-capacity), never from
 # engine output.  The clause requires a strict comparison (the parry roll must
 # beat the hit roll), an attacker Strength strictly below double the defender's,

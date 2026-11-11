@@ -53,8 +53,7 @@ rules:
     - id: unimplemented.orc-mob.orc-shaman.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: orc-boyz--animosity
   name: Animosity
   source:
@@ -75,9 +74,7 @@ rules:
     - id: unimplemented.orc-mob.orc-boyz.animosity
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee: this source tests only models not engaged, then moves or
-        attacks other models. Already-engaged duelists never test.
+      reason: out-of-scope.movement
   rule_ref: shared-rule.animosity
 - id: goblin-warriors--animosity
   name: Animosity
@@ -108,9 +105,7 @@ rules:
     - id: unimplemented.orc-mob.goblin-warriors.animosity
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee: this source tests only models not engaged, then moves or
-        attacks other models. Already-engaged duelists never test.
+      reason: out-of-scope.movement
 - id: goblin-warriors--not-orcs
   name: Not Orcs
   effect: >-
@@ -146,8 +141,10 @@ rules:
     - id: unimplemented.orc-mob.goblin-warriors.not-orcs
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.psychology
+      clauses:
+      - id: whole
+        scope: 'NO'
 - id: goblin-warriors--runts
   name: Runts
   effect: >-
@@ -177,8 +174,7 @@ rules:
     - id: unimplemented.orc-mob.goblin-warriors.runts
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: cave-squigs--movement
   name: Movement
   source:
@@ -199,8 +195,7 @@ rules:
     - id: unimplemented.orc-mob.cave-squigs.movement
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
   rule_ref: shared-rule.movement
 - id: cave-squigs--minderz
   name: Minderz
@@ -222,8 +217,7 @@ rules:
     - id: unimplemented.orc-mob.cave-squigs.minderz
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
   rule_ref: shared-rule.minderz
 - id: cave-squigs--not-orcs
   name: Not Orcs
@@ -248,8 +242,7 @@ rules:
     - id: unimplemented.orc-mob.cave-squigs.not-orcs
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: cave-squigs--animals
   name: Animals
   source:
@@ -270,8 +263,7 @@ rules:
     - id: unimplemented.orc-mob.cave-squigs.animals
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
   rule_ref: shared-rule.animal
 - id: troll--fear
   name: Fear
@@ -321,9 +313,8 @@ rules:
     - id: unimplemented.orc-mob.troll.stupidity.movement
       scope: 'NO'
       binding: null
-      reason: >-
-        Random board movement after failure is outside the 1v1 duel scope.
-  rule_ref: shared-rule.stupidity-2
+      reason: out-of-scope.movement
+  rule_ref: shared-rule.troll-stupidity
 - id: troll--regeneration
   name: Regeneration
   source:
@@ -346,6 +337,13 @@ rules:
       binding:
         kind: mechanic
         id: skill.regeneration
+      clauses:
+      - id: regenerate-wound
+        scope: 'YES'
+      - id: fire-exception
+        scope: 'YES'
+      - id: post-battle-injury
+        scope: 'NO'
   rule_ref: shared-rule.regeneration
 - id: troll--dumb-monster
   name: Dumb Monster
@@ -367,8 +365,10 @@ rules:
     - id: unimplemented.orc-mob.troll.dumb-monster
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.psychology
+      clauses:
+      - id: dumb-monster
+        scope: 'NO'
   rule_ref: shared-rule.dumb-monster
 - id: troll--always-hungry
   name: Always Hungry
@@ -390,8 +390,7 @@ rules:
     - id: unimplemented.orc-mob.troll.always-hungry
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
   rule_ref: shared-rule.always-hungry
 - id: troll--vomit-attack
   kind: profile_ability
@@ -437,8 +436,7 @@ rules:
     - id: unimplemented.orc-mob.troll.large-target
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
   rule_ref: shared-rule.large-target
 - id: band--distasteful-company
   name: Distasteful Company
@@ -464,9 +462,7 @@ rules:
     - id: unimplemented.orc-mob.band.distasteful-company
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: band--animosity
   name: Animosity
   effect: >-
@@ -516,9 +512,7 @@ rules:
     - id: unimplemented.orc-mob.band.animosity
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee: this source tests only models not engaged, then moves or
-        attacks other models. Already-engaged duelists never test.
+      reason: out-of-scope.movement
 - id: band--goblin-ratio
   name: Goblin Limit
   source:
@@ -538,8 +532,7 @@ rules:
     - id: unimplemented.orc-mob.band.goblin-ratio
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
   rule_ref: shared-rule.goblin-limit
 - id: band--cave-squig-ratio
   name: Cave Squig Limit
@@ -563,8 +556,7 @@ rules:
     - id: unimplemented.orc-mob.band.cave-squig-ratio
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--orc-special-skills-ard-ead
   kind: warband_skill
   name: '''Ard Ead'
@@ -608,8 +600,7 @@ rules:
     - id: unimplemented.orc-mob.band.orc-special-skills-waaagh
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
   rule_ref: shared-rule.waaagh
 - id: band--orc-special-skills-ere-we-go
   kind: warband_skill
@@ -654,9 +645,7 @@ rules:
     - id: unimplemented.orc-mob.band.orc-special-skills-da-cunnin-plan
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   rule_ref: shared-rule.da-cunnin-plan
 - id: band--orc-special-skills-well-ard
   kind: warband_skill
@@ -714,8 +703,6 @@ rules:
   rule_ref: shared-rule.eadbasher
 - id: orc-shaman--no-armour
   name: No Armour
-  effect: >-
-    An Orc Shaman may never wear armour.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -723,9 +710,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/orc-mob
   name_i18n:
     es: Sin Armadura
-  effect_i18n:
-    es: >-
-      Un Chamán Orco jamás puede llevar armadura.
   applies_to:
     profile_ids:
     - orc-shaman
@@ -741,3 +725,4 @@ rules:
         id: profile.equipment-restrictions
         parameters:
           forbids: armour
+  rule_ref: shared-rule.no-armour

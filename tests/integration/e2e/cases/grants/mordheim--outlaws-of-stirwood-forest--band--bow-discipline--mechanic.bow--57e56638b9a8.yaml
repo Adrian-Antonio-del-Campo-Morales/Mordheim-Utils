@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/outlaws-of-stirwood-forest/band--bow-discipline/mechanic.bow-discipline
-# scaffold_fingerprint: 68a0342cdf244b505879a4a6da5de77293b33bd98566caf0ce4e5658469bcb37
 # authoring_status: AUTHORED
 # authoring_progress: 2 authored scenario(s) in this file; the two halves of this origin's printed sentence
 # (the one-missile-weapon bound and the bow obligation) are authored at the end of this file over the kit the
@@ -14,12 +13,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: [B] both printed halves of this contract are enforced over the supplied kit, which the fixture CAN declare through FighterBuild.owned_item_ids (the E2E runner passes the whole fighter mapping into the build), so the two kit refusals are now authored at the end of this file and the remaining gap is the kit-route projection that feeds equipmentSetIssues for a duel build (PENDING[B]).  Original note: both printed halves of this contract are enforced over the *supplied kit*, not over the
+# AUTHORED: [B] both printed halves of this contract are enforced over the supplied kit, which the fixture CAN declare through FighterBuild.owned_item_ids (the E2E runner passes the whole fighter mapping into the build), so the two kit refusals are now authored at the end of this file and the remaining gap is the kit-route projection that feeds equipmentSetIssues for a duel build (PENDING[B]).  Original note: both printed halves of this contract are enforced over the *supplied kit*, not over the
 # duel loadout, so neither is reachable from the fixture this corpus declares.  The bound half
 # (max_missile_weapons: 1) is emitted by _eligibility.js::equipmentSetIssues as
 # "<band>/<profile> carries <n> missile weapons; the band allows <max>." over the profile's
@@ -47,36 +44,9 @@
 #   pass corrects: PARTIAL is reserved for a genuinely missing scenario, input identity, executor
 #   observation or normative decision.  The pending note above is retained unchanged as the record of
 #   the defect.  REVIEWED (manual semantic review) remains separate and is not claimed here.
-# origin_id:
-#   rule/mordheim/outlaws-of-stirwood-forest/band--bow-discipline/mechanic.bow-discipline
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/outlaws-of-stirwood-forest/special-rules.yaml
-# source_fingerprint:
-#   b1cdd4e786eb3875e28505193396d0491c558c763901c8004f74a1ea51172fdf
-# source_sha256_at_generation:
-#   e73ee97b2f48e4f6b18180f05f81db906ab813807d4ee0a86f2a11f7a932f11e
-# Printed rule text:
-#   Every warrior may carry only one missile weapon at a time. Every warrior except the Cleric must carry a bow-type missile weapon.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Bound plus obligation: each warrior carries at most one missile weapon and must carry a bow (Cleric exempt); crossbows are refused.
-# effect_id:
-#   compiler.bow-discipline
-# relation:
-#   equivalent
-# parameters:
-#   {}
-# conditions:
-#   {"max_missile_weapons":1,"required_tag":"bow","exempt":["cleric"]}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Separate origin from the redux band; contract shared, recipient list differs.
 
 - audit_id: rule/mordheim/outlaws-of-stirwood-forest/band--bow-discipline/mechanic.bow-discipline
   id: a-kit-carrying-two-missile-weapons-is-refused
-  covers: [whole]
   fighters:
     first:
       collection: mordheim
@@ -88,7 +58,6 @@
 
 - audit_id: rule/mordheim/outlaws-of-stirwood-forest/band--bow-discipline/mechanic.bow-discipline
   id: a-kit-without-a-bow-type-weapon-is-refused
-  covers: [whole]
   fighters:
     first:
       collection: mordheim

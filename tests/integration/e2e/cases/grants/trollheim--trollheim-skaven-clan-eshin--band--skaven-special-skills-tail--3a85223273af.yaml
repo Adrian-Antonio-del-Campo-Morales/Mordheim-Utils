@@ -1,18 +1,15 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/trollheim-skaven-clan-eshin/band--skaven-special-skills-tail-fighting/special-rule.band--skaven-special-skills-tail-fighting
-# scaffold_fingerprint: ea8175b38b0354245b57fe6ec273f07f8a64e8111eb9681bfe5c562a62529245
 # authoring_status: AUTHORED
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 5 scenarios take the printed sentence onto the real attack route of the shared
+# AUTHORED: 5 scenarios take the printed sentence onto the real attack route of the shared
 #   operator, whose construct is the extra hand the construction layer reserves for this rule and for
 #   the Extra Arm mutation: a tail dagger adds one attack to the pool, a tail shield takes the bearer's
 #   worn light armour one step better (the five that would wound the bare armour saves on the tail
@@ -24,32 +21,6 @@
 #   repeats the canonical clause and adds no second runtime contribution.  The attackers are
 #   hand-built fixtures whose Weapon Skill, Strength, Toughness and Initiative are fixture facts.
 #   REVIEWED still requires manual semantic review.
-# origin_id:
-#   rule/trollheim/trollheim-skaven-clan-eshin/band--skaven-special-skills-tail-fighting/special-rule.band--skaven-special-skills-tail-fighting
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/trollheim/trollheim-skaven-clan-eshin/special-rules.yaml
-# source_fingerprint:
-#   be190369e7befa9d7b94237c551aece466985c83ea2027922ab61fe61a27064d
-# source_sha256_at_generation:
-#   0b8f3e36212aa657d6c772d1c42016e03495c8d67e019f5c4053657d4e43057c
-# Printed rule text:
-#   The Skaven may wield a Dagger, Shield or Sword with his tail. A weapon grants one additional attack; a Shield grants +1 armour save.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Granted attack or defence: Tail Fighting allows a Dagger/Sword on the tail for one extra attack or a Shield for +1 save.
-# effect_id:
-#   special-rule.band--skaven-special-skills-tail-fighting
-# relation:
-#   equivalent
-# parameters:
-#   {}
-# conditions:
-#   {"recipients":"skaven heroes","allowed":["dagger","shield","sword"],"weapon_attacks":1,"shield_save":1}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   No other objects are allowed; the contract is empty and the contributions are delivered by the loadout.
 # authoring_progress: 5 authored scenario(s) in this file; authored clauses ['whole']; clauses
 #   still pending: [].  The refusal diagnostic is the construction layer's own message
 #   ("an extra hand requires Extra Arm or Tail Fighting"), which the authored Mordheim copy of this
@@ -65,7 +36,6 @@
 
 - audit_id: rule/trollheim/trollheim-skaven-clan-eshin/band--skaven-special-skills-tail-fighting/special-rule.band--skaven-special-skills-tail-fighting
   id: a-tail-weapon-adds-the-printed-attack
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.sword
@@ -87,7 +57,6 @@
 
 - audit_id: rule/trollheim/trollheim-skaven-clan-eshin/band--skaven-special-skills-tail-fighting/special-rule.band--skaven-special-skills-tail-fighting
   id: the-same-weapon-pair-without-the-rule-carries-one-attack
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.sword
@@ -106,7 +75,6 @@
 
 - audit_id: rule/trollheim/trollheim-skaven-clan-eshin/band--skaven-special-skills-tail-fighting/special-rule.band--skaven-special-skills-tail-fighting
   id: an-extra-hand-without-the-rule-is-refused
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.sword
@@ -121,7 +89,6 @@
 
 - audit_id: rule/trollheim/trollheim-skaven-clan-eshin/band--skaven-special-skills-tail-fighting/special-rule.band--skaven-special-skills-tail-fighting
   id: a-tail-shield-improves-the-worn-save-by-one-step
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -146,7 +113,6 @@
 
 - audit_id: rule/trollheim/trollheim-skaven-clan-eshin/band--skaven-special-skills-tail-fighting/special-rule.band--skaven-special-skills-tail-fighting
   id: the-same-worn-armour-without-the-tail-shield-keeps-its-own-save
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace

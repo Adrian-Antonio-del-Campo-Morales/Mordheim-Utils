@@ -134,9 +134,7 @@ profiles:
       - id: set-traps-deployment
         scope: 'NO'
         binding: null
-        reason: >-
-          Setting traps is a pre-battle deployment action over the scenario's terrain; a resolved
-          duel fields no trap marker and no model moving into it.
+        reason: out-of-scope.movement
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -210,15 +208,11 @@ profiles:
       - id: black-orc-overseer-animosity-suppression
         scope: 'NO'
         binding: null
-        reason: >-
-          The printed clause suppresses Animosity for Orcs and Goblins within six inches; the
-          recipients are a surrounding group the duel does not simulate.
+        reason: out-of-scope.group
       - id: black-orc-overseer-leader-succession
         scope: 'NO'
         binding: null
-        reason: >-
-          The trigger is another model being taken out of action, and the effect is the group Leader
-          ability and a permanent roster change.
+        reason: out-of-scope.group
   source_notes:
   - The original publication does not provide advancement skill lists; Mordheimer gives an editorial recommendation.
     It has not been normalized as canonical skill_access.
@@ -302,9 +296,7 @@ profiles:
       - id: capture-post-battle
         scope: 'NO'
         binding: null
-        reason: >-
-          Capturing a defeated enemy and its ransom are resolved after the battle, outside the
-          duel's phases.
+        reason: out-of-scope.campaign
   unresolved_references:
   - kind: equipment_mapping
     source_name: Lantern
@@ -371,9 +363,7 @@ profiles:
       - id: chameleon-skin-concealment
         scope: 'NO'
         binding: null
-        reason: >-
-          Chameleon-skin concealment is a Hidden and spotting rule; visibility and Hidden markers
-          are outside the duel.
+        reason: out-of-scope.movement
   - id: hireling.hired-sword.chameleon-skink.rule.infiltrator
     name: Infiltrator
     effect: May infiltrate according to the source rule.
@@ -390,8 +380,7 @@ profiles:
       - id: infiltrator-deployment
         scope: 'NO'
         binding: null
-        reason: >-
-          Infiltration places the model during pre-battle deployment, before the duel's first round.
+        reason: out-of-scope.movement
   - id: hireling.hired-sword.chameleon-skink.rule.aquatic
     name: Aquatic
     effect: Uses the source aquatic rule.
@@ -408,9 +397,7 @@ profiles:
       - id: aquatic-water-terrain
         scope: 'NO'
         binding: null
-        reason: >-
-          The aquatic rule concerns rivers, marshes and other water terrain; the duel resolves no
-          terrain movement.
+        reason: out-of-scope.movement
   - id: hireling.hired-sword.chameleon-skink.rule.cold-blooded
     name: Cold Blooded
     effect: Uses the source cold-blooded rule.
@@ -542,9 +529,7 @@ profiles:
       - id: wyrdstone-powered-upkeep
         scope: 'NO'
         binding: null
-        reason: >-
-          Wyrdstone upkeep and the model's power source are paid and tracked between battles, not
-          during the duel.
+        reason: out-of-scope.campaign
   - id: hireling.hired-sword.clan-skryre-rat-ogre.rule.may-not-run
     name: May Not Run
     effect: May not run according to the source rule.
@@ -561,9 +546,7 @@ profiles:
       - id: may-not-run-movement
         scope: 'NO'
         binding: null
-        reason: >-
-          The printed prohibition concerns the run move of the movement phase; a resolved duel runs
-          no movement.
+        reason: out-of-scope.movement
   - id: hireling.hired-sword.clan-skryre-rat-ogre.rule.immune-to-poison
     name: Immune to Poison
     effect: Immune to poison.
@@ -600,9 +583,7 @@ profiles:
       - id: warpfire-thrower-shooting
         scope: 'NO'
         binding: null
-        reason: >-
-          The integrated warpfire thrower is a shooting weapon with its own malfunction procedure;
-          shooting resolution is excluded.
+        reason: out-of-scope.shooting
   - id: hireling.hired-sword.clan-skryre-rat-ogre.rule.no-experience
     name: No Experience
     effect: Does not gain Experience.
@@ -619,8 +600,7 @@ profiles:
       - id: no-experience-campaign
         scope: 'NO'
         binding: null
-        reason: >-
-          Gaining Experience is a post-battle advancement step with no duel-time consequence.
+        reason: out-of-scope.campaign
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -863,8 +843,7 @@ profiles:
       - id: pathfinder-explorer
         scope: 'NO'
         binding: null
-        reason: >-
-          Foraging and an extra Exploration die/discard are campaign actions.
+        reason: out-of-scope.campaign
   - id: hireling.hired-sword.dwarf-pathfinder.rule.hard-to-kill
     name: Hard to Kill
     effect: Uses the source Dwarf injury rule.
@@ -937,9 +916,7 @@ profiles:
       - id: pathfinder-elf-grudge
         scope: 'NO'
         binding: null
-        reason: >-
-          Additional upkeep when an Elf belongs to the hiring warband is a campaign roster
-          consequence.
+        reason: out-of-scope.campaign
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1077,9 +1054,7 @@ profiles:
       - id: treasure-hunter-treasure-hunter
         scope: 'NO'
         binding: null
-        reason: >-
-          The table is rolled after the battle, including its separate brigand encounter, treasure,
-          exploration and Bugman barrel acquisition. No campaign encounter or group is produced.
+        reason: out-of-scope.campaign
   - id: hireling.hired-sword.dwarf-treasure-hunter.rule.campaign-eligibility
     name: Dynamic Hiring Eligibility — Elven Employers
     effect: >-
@@ -1099,8 +1074,7 @@ profiles:
       - id: treasure-hunter-campaign-eligibility
         scope: 'NO'
         binding: null
-        reason: >-
-          Hiring and upkeep based on roster composition are campaign consequences.
+        reason: out-of-scope.campaign
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1156,9 +1130,7 @@ profiles:
       - id: fey-hostile-spells
         scope: 'NO'
         binding: null
-        reason: >-
-          The source Fey rule protects the model from hostile spells; casting and spell resolution
-          are excluded.
+        reason: out-of-scope.magic
   - id: hireling.hired-sword.elf-mage.rule.sorcery
     name: Sorcery
     effect: Uses the source sorcery rule.
@@ -1175,8 +1147,7 @@ profiles:
       - id: sorcery-casting
         scope: 'NO'
         binding: null
-        reason: >-
-          Sorcery is the model's spellcasting ability; casting and spell resolution are excluded.
+        reason: out-of-scope.magic
   - id: hireling.hired-sword.elf-mage.rule.wanderer
     name: Wanderer
     effect: Does not advance and uses the source one-battle/wanderer condition.
@@ -1193,9 +1164,7 @@ profiles:
       - id: wanderer-retention
         scope: 'NO'
         binding: null
-        reason: >-
-          The one-battle wanderer condition governs advancement, upkeep and retention between
-          battles.
+        reason: out-of-scope.campaign
   - id: hireling.hired-sword.elf-mage.rule.wizard
     name: Wizard
     effect: Begins with three randomly generated Djed'hi spells.
@@ -1212,9 +1181,7 @@ profiles:
       - id: wizard-spell-generation
         scope: 'NO'
         binding: null
-        reason: >-
-          Spell generation and casting are excluded; the separate canonical spellcaster identity
-          remains available to actual duel consumers.
+        reason: out-of-scope.magic
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1298,8 +1265,7 @@ profiles:
       - id: hireling.hired-sword.gaoler.rule.devout.campaign
         scope: 'NO'
         binding: null
-        reason: >-
-          Upkeep, campaign retention and next-battle participation are excluded.
+        reason: out-of-scope.campaign
   - id: hireling.hired-sword.gaoler.rule.inured-to-pain
     name: Inured to Pain
     effect: >-
@@ -1435,8 +1401,7 @@ profiles:
       - id: wily-thief-treasure
         scope: 'NO'
         binding: null
-        reason: >-
-          The extra Treasure is added during the post-battle exploration step.
+        reason: out-of-scope.campaign
   - id: hireling.hired-sword.halfling-thief.rule.stealthy
     name: Stealthy
     effect: May hide/run according to the source rule.
@@ -1453,9 +1418,7 @@ profiles:
       - id: stealthy-hiding-and-run
         scope: 'NO'
         binding: null
-        reason: >-
-          Hiding and the run move belong to the movement and shooting phases, which the duel does
-          not resolve.
+        reason: out-of-scope.shooting
   - id: hireling.hired-sword.halfling-thief.rule.infiltrator
     name: Infiltrator
     effect: Uses the source infiltration rule.
@@ -1472,8 +1435,7 @@ profiles:
       - id: infiltrator-deployment
         scope: 'NO'
         binding: null
-        reason: >-
-          Infiltration places the model during pre-battle deployment, before the duel's first round.
+        reason: out-of-scope.movement
   - id: hireling.hired-sword.halfling-thief.rule.pick-locks
     name: Pick Locks
     effect: Uses Initiative to open locked doors.
@@ -1490,8 +1452,7 @@ profiles:
       - id: pick-locks-doors
         scope: 'NO'
         binding: null
-        reason: >-
-          Opening locked doors is a scenario terrain action with no duel-time consequence.
+        reason: out-of-scope.movement
   - id: hireling.hired-sword.halfling-thief.rule.cutpurse
     name: Cutpurse
     effect: Adds one Treasure when eligible.
@@ -1508,8 +1469,7 @@ profiles:
       - id: cutpurse-treasure
         scope: 'NO'
         binding: null
-        reason: >-
-          The extra Treasure is a post-battle exploration consequence.
+        reason: out-of-scope.campaign
   - id: hireling.hired-sword.halfling-thief.rule.uneasy-ally
     name: Uneasy Ally
     effect: Has a source-defined post-battle upkeep/retention table.
@@ -1526,8 +1486,7 @@ profiles:
       - id: uneasy-ally-retention
         scope: 'NO'
         binding: null
-        reason: >-
-          The upkeep and retention table is rolled between battles.
+        reason: out-of-scope.campaign
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1593,9 +1552,7 @@ profiles:
       - id: not-a-fighter-retention
         scope: 'NO'
         binding: null
-        reason: >-
-          The rule is a post-game retention roll, leaving the warband on a 1-3, with no duel-time
-          consequence.
+        reason: out-of-scope.campaign
   - id: hireling.hired-sword.human-scout.rule.expert-hunter
     name: Expert Hunter
     effect: Uses the source hunting rule.
@@ -1612,8 +1569,7 @@ profiles:
       - id: expert-hunter-foraging
         scope: 'NO'
         binding: null
-        reason: >-
-          Hunting is a post-battle foraging action in the campaign sequence.
+        reason: out-of-scope.campaign
   - id: hireling.hired-sword.human-scout.rule.sit-in-wait
     name: Sit in Wait
     effect: Uses the source ambush rule.
@@ -1630,9 +1586,7 @@ profiles:
       - id: sit-in-wait-deployment
         scope: 'NO'
         binding: null
-        reason: >-
-          Waiting in ambush is a pre-battle deployment decision; the duel opens with the
-          participants already engaged.
+        reason: out-of-scope.movement
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1702,9 +1656,7 @@ profiles:
       - id: ranger-heart-strike-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          The primary Heart Strike applies only to bow shooting at a large monster; no melee
-          critical port.
+        reason: out-of-scope.shooting
   - id: hireling.hired-sword.kislev-ranger.rule.hunter-s-cloak
     name: Hunter's Cloak
     effect: Uses a unique cloak rule.
@@ -1721,9 +1673,7 @@ profiles:
       - id: ranger-hunter-s-cloak-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          The cloak only preserves Hidden after shooting and offers a spotting Initiative test; no
-          printed armour save.
+        reason: out-of-scope.shooting
   - id: hireling.hired-sword.kislev-ranger.rule.loner
     name: Loner
     effect: Uses the source loner rule.
@@ -1740,8 +1690,7 @@ profiles:
       - id: ranger-loner-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          All Alone tests require groups and are excluded.
+        reason: out-of-scope.group
   - id: hireling.hired-sword.kislev-ranger.rule.seeker
     name: Seeker
     effect: Modifies exploration according to the source.
@@ -1758,8 +1707,7 @@ profiles:
       - id: ranger-seeker-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          Changing an Exploration die is a campaign action.
+        reason: out-of-scope.campaign
   - id: hireling.hired-sword.kislev-ranger.rule.animal-call
     name: Animal Call
     effect: Special skill option.
@@ -1776,9 +1724,7 @@ profiles:
       - id: ranger-animal-call-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          Animal Call produces enemy movement while Hidden; it has no surviving close combat
-          consequence.
+        reason: out-of-scope.movement
   - id: hireling.hired-sword.kislev-ranger.rule.herb-lore
     name: Herb Lore
     effect: >-
@@ -1912,10 +1858,7 @@ profiles:
       - id: unimplemented.hirelings.hired-sword.mule-skinner.animal-handling-falconer
         scope: 'NO'
         binding: null
-        reason: >-
-          The printed content is the Watchmen Falconer's 24" hunting bird, resolved as a missile
-          weapon in the shooting phase plus a third model that fights on its own; shooting and
-          additional combatants are outside the 1v1 duel. The chosen skill is a construction fact.
+        reason: out-of-scope.shooting
   - id: hireling.hired-sword.mule-skinner.skill.animal-handling-horse
     name: Animal Handling — Horse Handling
     name_i18n:
@@ -1938,9 +1881,7 @@ profiles:
       - id: unimplemented.hirelings.hired-sword.mule-skinner.animal-handling-horse
         scope: 'NO'
         binding: null
-        reason: >-
-          The printed content is the Blazing Saddles mount-handling subsystem; mounts and mounted
-          play are excluded from the duel. The chosen skill is a construction fact.
+        reason: out-of-scope.movement
   - id: hireling.hired-sword.mule-skinner.rule.whip-master
     name: Whip Master
     effect: May reroll each hit roll using the whip once, accepting the second result even if worse.
@@ -2019,9 +1960,7 @@ profiles:
       - id: son-of-the-desert-terrain
         scope: 'NO'
         binding: null
-        reason: >-
-          Desert specialisation concerns the scenario's desert terrain and its movement, which a
-          resolved duel does not simulate.
+        reason: out-of-scope.movement
   source_notes:
   - The source weapon is a Scimitar; this entry records it by the existing canonical Sword item only because
     the rule states its sword-equivalent use.
@@ -2079,10 +2018,7 @@ profiles:
       - id: runecaster-rune-knowledge
         scope: 'NO'
         binding: null
-        reason: >-
-          Rune knowledge and learning are pre-battle inscription data; the six supplied
-          source-qualified item Rune conditions carry any individual battle consequence, so no Rune
-          is granted automatically.
+        reason: out-of-scope.campaign
   unresolved_references:
   - kind: equipment_choice
     source_name: Sword or Axe
@@ -2166,8 +2102,7 @@ profiles:
       - id: finders-keepers-treasure
         scope: 'NO'
         binding: null
-        reason: >-
-          Keeping found Treasure or Wyrdstone is a post-battle exploration outcome.
+        reason: out-of-scope.campaign
   - id: hireling.hired-sword.old-prospector.rule.old-coot
     name: Old Coot
     effect: May leave after a battle on the source D6 result.
@@ -2184,8 +2119,7 @@ profiles:
       - id: old-coot-retention
         scope: 'NO'
         binding: null
-        reason: >-
-          Leaving after a battle on a D6 is campaign retention.
+        reason: out-of-scope.campaign
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2258,9 +2192,7 @@ profiles:
       - id: lay-of-the-land-terrain
         scope: 'NO'
         binding: null
-        reason: >-
-          Ignoring terrain modifiers applies to movement across the scenario's terrain, which the
-          duel does not resolve.
+        reason: out-of-scope.movement
   - id: hireling.hired-sword.pathfinder.rule.knowledge-of-myths-and-legends
     name: Knowledge of Myths and Legends
     effect: May reroll one exploration die when eligible.
@@ -2277,8 +2209,7 @@ profiles:
       - id: myths-and-legends-exploration
         scope: 'NO'
         binding: null
-        reason: >-
-          Changing an Exploration die is a campaign action.
+        reason: out-of-scope.campaign
   - id: hireling.hired-sword.pathfinder.rule.lookout
     name: Lookout
     effect: Special skill option to cancel a trap/hazard.
@@ -2295,9 +2226,7 @@ profiles:
       - id: lookout-hazard
         scope: 'NO'
         binding: null
-        reason: >-
-          Cancelling a scenario trap or hazard concerns scenario terrain and deployment, not a duel
-          phase.
+        reason: out-of-scope.movement
   - id: hireling.hired-sword.pathfinder.rule.this-way
     name: This Way
     effect: Special skill option allowing nearby models to traverse impassable terrain.
@@ -2315,9 +2244,7 @@ profiles:
       - id: this-way-impassable-terrain
         scope: 'NO'
         binding: null
-        reason: >-
-          Leading nearby models across impassable terrain is a group movement action outside the
-          duel.
+        reason: out-of-scope.movement
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2372,8 +2299,7 @@ profiles:
       - id: loner-all-alone
         scope: 'NO'
         binding: null
-        reason: >-
-          The All Alone test is the excluded group procedure, and a one-on-one duel never runs it.
+        reason: out-of-scope.group
   - id: hireling.hired-sword.priest-of-morr.rule.funerary-rites
     name: Funerary Rites
     effect: May learn and perform Funerary Rites according to Magic rules.
@@ -2390,9 +2316,7 @@ profiles:
       - id: funerary-rites-casting
         scope: 'NO'
         binding: null
-        reason: >-
-          Learning and performing Funerary Rites follows the Magic rules; casting and spell
-          resolution are excluded.
+        reason: out-of-scope.magic
   unresolved_references:
   - kind: entity_semantics
     source_name: Mercenary Hero replacement rather than normal Hired Sword
@@ -2476,10 +2400,7 @@ profiles:
       - id: rune-inscription-producer
         scope: 'NO'
         binding: null
-        reason: >-
-          Prebattle inscription/learning and postbattle durability are excluded. Six supplied
-          source-qualified item Rune conditions carry the individual battle consequences; no
-          automatic Rune is granted to the Runesmith.
+        reason: out-of-scope.campaign
   - id: hireling.hired-sword.runesmith-journeyman.rule.armourer
     name: Armourer
     effect: May buy one eligible item at a 2D6 gc discount if eligible.
@@ -2496,8 +2417,7 @@ profiles:
       - id: runesmith-armourer-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          The discount and purchase are post-battle Trading.
+        reason: out-of-scope.campaign
   - id: hireling.hired-sword.runesmith-journeyman.rule.armour
     name: Armour
     effect: Does not suffer Dwarf movement penalty from armour.
@@ -2514,8 +2434,7 @@ profiles:
       - id: runesmith-armour-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          Dwarfs ignore movement penalties for armour; movement is outside the duel.
+        reason: out-of-scope.movement
   - id: hireling.hired-sword.runesmith-journeyman.rule.campaign-eligibility
     name: Dynamic Hiring Eligibility — Elven Employers
     effect: >-
@@ -2537,12 +2456,11 @@ profiles:
       - id: runesmith-campaign-eligibility-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          Campaign hiring and upkeep concern a roster and no combat consequence.
+        reason: out-of-scope.campaign
   - id: hireling.hired-sword.runesmith-journeyman.item.gromril-hammer.rule.combat
     name: Gromril Hammer
     name_i18n:
-      es: "Martillo de Gromril"
+      es: Martillo de Gromril
     effect: A hammer with Gromril armour penetration, with the normal Concussion rule.
     effect_i18n:
       es: A hammer with Gromril armour penetration, with the normal Concussion rule.
@@ -2564,7 +2482,7 @@ profiles:
   - id: hireling.hired-sword.runesmith-journeyman.rule.hard-to-kill
     name: Hard to Kill
     name_i18n:
-      es: "Difíciles de Matar"
+      es: Difíciles de Matar
     effect: Only an injury roll of 6 takes the Dwarf Out of Action; 5 counts as Stunned.
     effect_i18n:
       es: Only an injury roll of 6 takes the Dwarf Out of Action; 5 counts as Stunned.
@@ -2586,7 +2504,7 @@ profiles:
   - id: hireling.hired-sword.runesmith-journeyman.rule.hard-head
     name: Hard Head
     name_i18n:
-      es: "Cabeza Dura"
+      es: Cabeza Dura
     effect: Dwarfs ignore Concussion.
     effect_i18n:
       es: Dwarfs ignore Concussion.
@@ -2610,7 +2528,7 @@ profiles:
   - id: hireling.hired-sword.runesmith-journeyman.rule.hatred
     name: Hate Orcs and Goblins
     name_i18n:
-      es: "Odio a Orcos y Goblins"
+      es: Odio a Orcos y Goblins
     effect: Dwarfs hate Orcs and Goblins.
     effect_i18n:
       es: Dwarfs hate Orcs and Goblins.
@@ -2721,8 +2639,7 @@ profiles:
       - id: excellent-sight-spotting
         scope: 'NO'
         binding: null
-        reason: >-
-          Spotting Hidden models requires visibility and is outside the duel.
+        reason: out-of-scope.movement
   - id: hireling.hired-sword.shadow-warrior.rule.bitter-enemies
     name: Bitter Enemies
     effect: Uses the source rivalry/restriction rule.
@@ -2739,8 +2656,7 @@ profiles:
       - id: bitter-enemies-rivalry
         scope: 'NO'
         binding: null
-        reason: >-
-          The rivalry affects which models may be hired into and kept in the warband roster.
+        reason: out-of-scope.construction
   - id: hireling.hired-sword.shadow-warrior.rule.infiltration
     name: Infiltration
     effect: Uses source infiltration.
@@ -2757,8 +2673,7 @@ profiles:
       - id: infiltration-deployment
         scope: 'NO'
         binding: null
-        reason: >-
-          Infiltration deploys the model before the first round, outside the duel's phases.
+        reason: out-of-scope.campaign
   - id: hireling.hired-sword.shadow-warrior.rule.campaign-eligibility
     name: Dynamic Hiring Eligibility — Evil Hired Sword Incompatibility
     effect: >-
@@ -2778,9 +2693,7 @@ profiles:
       - id: campaign-eligibility-roster
         scope: 'NO'
         binding: null
-        reason: >-
-          The roster-composition restriction is evaluated when the warband is hired and has no
-          duel-time consequence.
+        reason: out-of-scope.construction
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2839,9 +2752,7 @@ profiles:
       - id: snake-charmer-companions
         scope: 'NO'
         binding: null
-        reason: >-
-          The rule controls companion snakes, separate combatants a one-against-one duel does not
-          field.
+        reason: out-of-scope.group
   - id: hireling.hired-sword.snake-charmer.rule.immune-to-poison
     name: Immune to Poison
     effect: Immune to poison.
@@ -2878,8 +2789,7 @@ profiles:
       - id: venomous-snake-attacks
         scope: 'NO'
         binding: null
-        reason: >-
-          The venom applies to the snake companions' attacks, and the duel fields no snake.
+        reason: out-of-scope.group
   - id: hireling.hired-sword.snake-charmer.rule.animals
     name: Animals
     effect: Snakes use animal/no-XP rules.
@@ -2896,9 +2806,7 @@ profiles:
       - id: animals-companion-rules
         scope: 'NO'
         binding: null
-        reason: >-
-          The animal and no-Experience rules govern the snake companions, which the duel does not
-          field.
+        reason: out-of-scope.campaign
   - id: hireling.hired-sword.snake-charmer.rule.snake-hunter
     name: Snake Hunter
     effect: Uses the source snake-hunting rule.
@@ -2915,8 +2823,7 @@ profiles:
       - id: snake-hunter-scenario
         scope: 'NO'
         binding: null
-        reason: >-
-          Hunting snakes concerns scenario creatures and campaign encounters, not the duel.
+        reason: out-of-scope.campaign
   unresolved_references:
   - kind: companion_profiles
     source_name: three snakes with separate profile
@@ -2985,8 +2892,7 @@ profiles:
       - id: thief-stealing-exploration
         scope: 'NO'
         binding: null
-        reason: >-
-          Stealing and the exploration step are resolved between battles.
+        reason: out-of-scope.campaign
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -3049,8 +2955,7 @@ profiles:
       effects:
       - id: excluded.scope
         scope: 'NO'
-        reason: >-
-          Modifying one Exploration die is a campaign action.
+        reason: out-of-scope.campaign
         binding: null
   - id: hireling.hired-sword.tomb-robber.rule.trap-expert
     name: Trap Expert
@@ -3067,8 +2972,7 @@ profiles:
       effects:
       - id: excluded.scope
         scope: 'NO'
-        reason: >-
-          Spotting and disarming scenario traps require terrain and are outside the duel.
+        reason: out-of-scope.movement
         binding: null
   - id: hireling.hired-sword.tomb-robber.rule.excellent-reflexes
     name: Excellent Reflexes
@@ -3158,9 +3062,7 @@ profiles:
       - id: prayers-casting
         scope: 'NO'
         binding: null
-        reason: >-
-          Learning and using Prayers of Sigmar is casting, which is excluded; the separate canonical
-          spellcaster identity remains available to duel consumers.
+        reason: out-of-scope.magic
   - id: hireling.hired-sword.warrior-priest-of-sigmar.rule.campaign-eligibility
     name: Dynamic Hiring Eligibility — Middenheim Variant
     effect: >-
@@ -3180,9 +3082,7 @@ profiles:
       - id: campaign-eligibility-variant
         scope: 'NO'
         binding: null
-        reason: >-
-          The roster-composition restriction is evaluated when the warband is hired and has no
-          duel-time consequence.
+        reason: out-of-scope.construction
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -3236,9 +3136,7 @@ profiles:
       - id: wizard-spell-generation
         scope: 'NO'
         binding: null
-        reason: >-
-          Spell generation and casting are excluded; the separate canonical spellcaster identity
-          remains available to actual duel consumers.
+        reason: out-of-scope.magic
   - id: hireling.hired-sword.witch.rule.recluse
     name: Recluse
     effect: Requires a source D6 hiring check.
@@ -3255,8 +3153,7 @@ profiles:
       - id: recluse-hiring-check
         scope: 'NO'
         binding: null
-        reason: >-
-          The D6 check is rolled when the Witch is hired, before the warband enters a battle.
+        reason: out-of-scope.campaign
   - id: hireling.hired-sword.witch.rule.potions
     name: Potions
     effect: May give one Hero a source-defined random potion before battle.
@@ -3273,11 +3170,7 @@ profiles:
       - id: witch-potions-pre-battle-grant
         scope: 'NO'
         binding: null
-        reason: >-
-          Giving a potion to another Hero is an excluded pre-battle producer, not an automatic bonus
-          to the Witch. Supply the recipient's draught with condition.witch-debilitating,
-          condition.witch-strength, condition.witch-resilience or condition.witch-fortitude; the
-          existing potion operators implement its modifiers and expiry.
+        reason: out-of-scope.campaign
   - id: hireling.hired-sword.witch.rule.reluctant
     name: Reluctant
     effect: Uses source movement/charge restrictions.
@@ -3365,7 +3258,7 @@ profiles:
         Odia a los lanzadores de hechizos enemigos y tiene restricciones de contratación de la
         fuente respecto a los lanzadores de hechizos aliados.
     name_i18n:
-      es: "¡Quemad a la Bruja!"
+      es: ¡Quemad a la Bruja!
     runtime:
       grant: profile
       scope: 'YES'
@@ -3410,8 +3303,7 @@ profiles:
       - id: sigmar-s-reward-upkeep
         scope: 'NO'
         binding: null
-        reason: >-
-          Reducing upkeep on the source victory conditions is settled after the battle.
+        reason: out-of-scope.campaign
   - id: hireling.hired-sword.witch-hunter.rule.campaign-eligibility
     name: Dynamic Hiring Eligibility — Spellcaster Restriction
     effect: >-
@@ -3431,9 +3323,7 @@ profiles:
       - id: campaign-eligibility-spellcaster
         scope: 'NO'
         binding: null
-        reason: >-
-          The roster-composition restriction is evaluated when the warband is hired and has no
-          duel-time consequence.
+        reason: out-of-scope.construction
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -3490,9 +3380,7 @@ profiles:
       - id: prayers-casting
         scope: 'NO'
         binding: null
-        reason: >-
-          Learning and using Prayers of Ulric is casting, which is excluded; the separate canonical
-          spellcaster identity remains available to duel consumers.
+        reason: out-of-scope.magic
   - id: hireling.hired-sword.wolf-priest-of-ulric.rule.hatred
     name: Hatred
     effect: Hates the source-listed Sigmarite models.
@@ -3527,8 +3415,7 @@ profiles:
       - id: wolf-companion
         scope: 'NO'
         binding: null
-        reason: >-
-          The Wolf Companion is a second combatant that the one-against-one duel does not field.
+        reason: out-of-scope.group
   - id: hireling.hired-sword.wolf-priest-of-ulric.rule.campaign-eligibility
     name: Dynamic Hiring Eligibility — Middenheim Variant
     effect: >-
@@ -3548,9 +3435,7 @@ profiles:
       - id: campaign-eligibility-hero-replacement
         scope: 'NO'
         binding: null
-        reason: >-
-          The Hero replacement and its variant restriction are evaluated when the warband is hired
-          and have no duel-time consequence.
+        reason: out-of-scope.campaign
   - id: hireling.hired-sword.wolf-priest-of-ulric.rule.strictures
     name: Strictures
     effect: >-

@@ -1,0 +1,81 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/witch-hunters/witch-hunter-captain--burn-the-witch/mechanic.burn-the-witch
+# authoring_status: AUTHORED
+# authoring_progress: the admitted burn-the-witch clause carries 2 authored scenarios derived from the
+#   printed rule, the recorded contract and the register's own M4b2 delivery note (caster capability is
+#   the profile's canonical fact, projected as identity.spellcaster): the first-round miss is rerolled
+#   against a compiled spellcaster and the same miss stands against a hand-built non-caster, where no
+#   reroll die is requested at all.  REVIEWED still requires manual semantic review and execution_status
+#   stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios read the printed Hatred against models capable of casting spells.
+#   The bearer is the printed Witch Hunter Captain profile of this band, whose own rule binding supplies
+#   the first-round hit reroll; the qualifying enemy is built from a printed caster profile of another
+#   admitted band (the Undead Necromancer, whose own combat trait declares it a spellcaster), and the
+#   non-caster control is a hand-built fixture.  The reroll die key and the miss/reroll/To Wound order are
+#   the ones the authored mechanic.hatred-skaven precedent fixes.  REVIEWED still requires manual semantic
+#   review.
+
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded contract and the register's delivery note; no engine output
+# was consulted.  The bearer is the printed band profile with fixture characteristics, so the tape holds
+# only the dice under test, and the second fighter contributes one declared miss.
+
+- audit_id: rule/mordheim/witch-hunters/witch-hunter-captain--burn-the-witch/mechanic.burn-the-witch
+  id: a-first-round-miss-is-rerolled-against-a-caster
+  fighters:
+    first:
+      collection: mordheim
+      band_id: witch-hunters
+      profile_id: witch-hunter-captain
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: undead
+      profile_id: necromancer
+      trait_overrides: {spellcaster: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Without the printed qualifying identity no reroll is offered: the miss stands, which the strict tape
+# proves by the absence of the reroll die.
+
+- audit_id: rule/mordheim/witch-hunters/witch-hunter-captain--burn-the-witch/mechanic.burn-the-witch
+  id: the-same-miss-stands-against-a-non-caster
+  fighters:
+    first:
+      collection: mordheim
+      band_id: witch-hunters
+      profile_id: witch-hunter-captain
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

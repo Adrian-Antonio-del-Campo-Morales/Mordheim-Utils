@@ -38,13 +38,8 @@ rules:
     - id: unimplemented.sea-ghosts-mim.band.excellent-sight
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Excellent Sight
-  effect: >-
-    Elves have eyesight unmatched by mere humans. All the Elves can spot Hidden enemies from twice
-    as far away as other warriors (i.e. twice their Initiative in inches).
   source:
     manual: broheim.net
     printed_page: 2
@@ -52,13 +47,9 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Sea%20Ghosts.pdf
   name_i18n:
     es: Vista Excepcional
-  effect_i18n:
-    es: >-
-      Los elfos tienen una vista sin igual entre los humanos. Todos los elfos pueden detectar
-      enemigos Ocultos al doble de distancia que otros guerreros (es decir, el doble de su
-      Iniciativa en pulgadas).
   applies_to:
     band: true
+  rule_ref: shared-rule.excellent-sight
 - id: band--distaste-for-poison
   runtime:
     scope: 'NO'
@@ -68,9 +59,7 @@ rules:
     - id: unimplemented.sea-ghosts-mim.band.distaste-for-poison
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Distaste for Poison
   effect: >-
     The use of poisons and various drugs is a Dark Elf specialty. As such, it is frowned upon by
@@ -98,9 +87,7 @@ rules:
     - id: unimplemented.sea-ghosts-mim.band.tolerant
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Tolerant
   effect: >-
     Due to their outsider status with the Asur, Sea Elves have learned to stifle their distaste for
@@ -132,9 +119,7 @@ rules:
     - id: unimplemented.sea-ghosts-mim.band.magicians
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Magicians
   effect: >-
     If a Sea Elf Rangers warband hires the Elf Mage Hired Sword then the magician can be retained
@@ -161,9 +146,7 @@ rules:
     - id: unimplemented.sea-ghosts-mim.band.unforgiving
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Unforgiving
   effect: >-
     In addition to their hatred of their corrupt kin, elf folk have a long history of struggle
@@ -192,9 +175,7 @@ rules:
     - id: unimplemented.sea-ghosts-mim.band.sea-elf-special-skills
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Sea Elf Special Skills
   effect: >-
     Sea Elf Rangers may choose to use the following skill list instead of the standard skill lists:
@@ -236,9 +217,7 @@ rules:
     - id: unimplemented.sea-ghosts-mim.item.lyre
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Lyre
   effect: >-
     15 gold crowns, Rare 8, Minstrels only. Handcrafted enchanted instruments from Ulthuan; the
@@ -321,9 +300,10 @@ rules:
     - id: unimplemented.sea-ghosts-mim.wayfinder.navigator
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: deferred.other
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Navigator
   effect: >-
     Once the Wayfinder earns a captaincy aboard his own vessel he becomes Shipmaster. The Shipmaster
@@ -355,6 +335,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+      clauses:
+      - id: psychology-immunity
+        scope: 'YES'
+      - id: leader-restriction
+        scope: 'NO'
   name: Bestial
   effect: >-
     Feast-Masters are immune to psychology. Instinctual fury overcomes them in a fight as they dance
@@ -417,9 +402,7 @@ rules:
     - id: unimplemented.sea-ghosts-mim.feast-master.shadow-dances-of-loec
       scope: 'NO'
       binding: null
-      reason: >-
-        Acquisition reference: implemented through the four selectable Shadow Dance records
-        and their per-round choice; this record grants no independent passive effect.
+      reason: out-of-scope.campaign
   name: Shadow Dances of Loec
   effect: >-
     Enactors of the Shadow Dances of Loec, Feast-Masters may choose a new Dance to learn from the
@@ -452,9 +435,10 @@ rules:
     - id: unimplemented.sea-ghosts-mim.lookouts.seeker
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: deferred.other
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Seeker
   effect: >-
     When rolling on the Exploration chart, the Lookout allows you modify one dice roll by -1/+1.
@@ -481,6 +465,13 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.songster
+      clauses:
+      - id: songster
+        scope: 'YES'
+      - id: songster-group-emission
+        scope: 'NO'
+      - id: songster-rout
+        scope: 'NO'
   name: Songster
   effect: >-
     Invigorating deep-sea shanties and reflective Elven lays boost the morale of all those around.
@@ -492,7 +483,7 @@ rules:
     section: Henchmen / 0-3 Minstrels / Special Rules / Songster
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Sea%20Ghosts.pdf
   name_i18n:
-    es: "Cantador"
+    es: Cantador
   effect_i18n:
     es: >-
       Las salomas del alta mar y los laúdes élficos melancólicos aumentan la moral de todos los que
@@ -510,9 +501,7 @@ rules:
     - id: unimplemented.sea-ghosts-mim.minstrels.deathdancer
       scope: 'NO'
       binding: null
-      reason: >-
-        Acquisition reference: implemented through the four selectable Shadow Dance records
-        and their per-round choice; this record grants no independent passive effect.
+      reason: out-of-scope.campaign
   name: Deathdancer
   effect: >-
     Occasionally a Minstrel aspires to become a Deathdancer. A Minstrel promoted to Hero may choose
@@ -547,10 +536,7 @@ rules:
     - id: unimplemented.sea-ghosts-mim.wildkin.loner
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: group Rout, All Alone or combat against multiple
-        opponents. Source prose is retained; this is an exclusion, not deferred modular
-        implementation.
+      reason: deferred.other
   name: Loner
   effect: >-
     Wildkin never truly escape from the primal call of isolation. They are immune to All Alone tests
@@ -578,9 +564,7 @@ rules:
     - id: unimplemented.sea-ghosts-mim.wildkin.animal-charmer
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Animal Charmer (Eg. Falcon Charmer)
   effect: >-
     Wildkin can control up to five animals provided that they remain within 6" of him. If an animal

@@ -10,9 +10,10 @@ rules:
     - id: unimplemented.fallen-the-rel.band.eaters-of-flesh
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: deferred.other
+      clauses:
+      - id: serious-injury-and-retention-modifier
+        scope: 'NO'
   name: Eaters of Flesh
   effect: >-
     Make a note of any enemy model that is taken out of action by a warrior with the Eaters of Flesh
@@ -69,7 +70,6 @@ rules:
         kind: mechanic
         id: mechanic.causes-fear
   name: Cause Fear
-  effect: Revenants are terrifying Undead creatures and therefore cause fear.
   source:
     manual: broheim.net
     printed_page: 13
@@ -77,11 +77,10 @@ rules:
     url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
   name_i18n:
     es: Causan Miedo
-  effect_i18n:
-    es: Los Espectros son aterradoras criaturas no muertas y por tanto causan miedo.
   applies_to:
     profile_ids:
     - revenant
+  rule_ref: shared-rule.fear
 - id: revenant--immune-to-poison
   runtime:
     scope: 'YES'
@@ -141,9 +140,7 @@ rules:
     - id: unimplemented.fallen-the-rel.revenant.eaters-of-flesh
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: actions outside an already engaged two-participant
-        duel. Source prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Eaters of Flesh
   effect: >-
     If the Revenant takes a living enemy out of action and is not in base contact with an enemy
@@ -203,9 +200,7 @@ rules:
     - id: unimplemented.fallen-the-rel.butcher.eaters-of-flesh
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: actions outside an already engaged two-participant
-        duel. Source prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Eaters of Flesh
   effect: >-
     If the Butcher takes a living enemy out of action and is not in base contact with an enemy
@@ -287,9 +282,7 @@ rules:
     - id: unimplemented.fallen-the-rel.sgulls.flyers
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Flyers
   effect: >-
     Sgulls are granted a mockery of flight in their undeath. They ignore all terrain and can move at
@@ -317,9 +310,7 @@ rules:
     - id: unimplemented.fallen-the-rel.sgulls.experience
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Experience
   effect: Sgulls do not gain experience.
   source:
@@ -343,9 +334,7 @@ rules:
     - id: unimplemented.fallen-the-rel.wild-dogs.experience
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Experience
   effect: Wild dogs are animals and do not gain experience.
   source:

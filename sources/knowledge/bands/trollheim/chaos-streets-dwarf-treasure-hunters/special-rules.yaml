@@ -56,8 +56,7 @@ rules:
     - id: unimplemented.chaos-streets-dwarf-treasure-hunters.dwarf-engineer.expert-armourer
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: dwarf-troll-slayers--death-oath
   name: Death Oath
   effect: >-
@@ -86,6 +85,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+      clauses:
+      - id: psychology-immunity
+        scope: 'YES'
+      - id: death-oath-all-alone
+        scope: 'NO'
 - id: dwarf-troll-slayers--slayer-skills
   name: Slayer Skills
   effect: >-
@@ -161,7 +165,7 @@ rules:
         id: trait.concussion-immune
         parameters:
           value: true
-  rule_ref: shared-rule.hard-head-2
+  rule_ref: shared-rule.dwarf-hard-head
 - id: band--armour
   name: Armour
   source:
@@ -180,10 +184,8 @@ rules:
     - id: unimplemented.chaos-streets-dwarf-treasure-hunters.band.armour
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
-  rule_ref: shared-rule.armour-2
+      reason: out-of-scope.construction
+  rule_ref: shared-rule.dwarf-armour
 - id: band--hate-orcs-and-goblins
   name: Hate Orcs and Goblins
   source:
@@ -223,9 +225,7 @@ rules:
     - id: unimplemented.chaos-streets-dwarf-treasure-hunters.band.grudgebearers
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   rule_ref: shared-rule.grudgebearers
 - id: band--incomparable-miners
   name: Incomparable Miners
@@ -245,8 +245,7 @@ rules:
     - id: unimplemented.chaos-streets-dwarf-treasure-hunters.band.incomparable-miners
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
   rule_ref: shared-rule.incomparable-miners
 - id: band--dwarf-special-skills-master-of-blades
   kind: warband_skill
@@ -260,11 +259,25 @@ rules:
       binding:
         kind: mechanic
         id: skill.unbeatable-warrior
+      clauses:
+      - id: match-the-to-hit-roll
+        scope: 'YES'
+      - id: two-parries-with-two-parry-weapons
+        scope: 'YES'
+      - id: reroll-with-two-dwarf-axes
+        scope: 'YES'
     - id: skill.sword-master
       scope: 'YES'
       binding:
         kind: mechanic
         id: skill.sword-master
+      clauses:
+      - id: match-the-to-hit-roll
+        scope: 'YES'
+      - id: two-parries-with-two-parry-weapons
+        scope: 'YES'
+      - id: reroll-with-two-dwarf-axes
+        scope: 'YES'
   name: Master of Blades
   effect: >-
     When using a weapon with the Parry special rule, this Hero parries successfully if his roll
@@ -312,8 +325,7 @@ rules:
     - id: unimplemented.chaos-streets-dwarf-treasure-hunters.band.dwarf-special-skills-extra-tough
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
   rule_ref: shared-rule.extra-tough
 - id: band--dwarf-special-skills-resource-hunter
   kind: warband_skill
@@ -338,8 +350,7 @@ rules:
     - id: unimplemented.chaos-streets-dwarf-treasure-hunters.band.dwarf-special-skills-resource-hunter
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
   rule_ref: shared-rule.resource-hunter
 - id: band--dwarf-special-skills-true-grit
   kind: warband_skill
@@ -481,17 +492,12 @@ rules:
     band: true
 - id: dwarf-troll-slayers--no-armour
   name: No Armour
-  effect: >-
-    Dwarf Troll Slayers may never wear any form of armour.
   source:
     manual: chaos-in-the-streets
     printed_page: 114
     section: Heroes / 0-2 Dwarf Troll Slayers / Special Rules / No Armour
   name_i18n:
     es: Sin Armadura
-  effect_i18n:
-    es: >-
-      Los Matatrolles Enanos jamás pueden llevar ningún tipo de armadura.
   applies_to:
     profile_ids:
     - dwarf-troll-slayers
@@ -507,19 +513,15 @@ rules:
         id: profile.equipment-restrictions
         parameters:
           forbids: armour
+  rule_ref: shared-rule.no-armour
 - id: dwarf-troll-slayers--no-missile-weapons
   name: No Missile Weapons
-  effect: >-
-    Troll Slayers may never use missile weapons.
   source:
     manual: chaos-in-the-streets
     printed_page: 114
     section: Heroes / 0-2 Dwarf Troll Slayers / Special Rules / No Missile Weapons
   name_i18n:
     es: Sin Armas de Proyectil
-  effect_i18n:
-    es: >-
-      Los Matatrolles Enanos jamás pueden usar armas de proyectil.
   applies_to:
     profile_ids:
     - dwarf-troll-slayers
@@ -533,3 +535,4 @@ rules:
       binding:
         kind: compiler
         id: compiler.no-missile-weapons
+  rule_ref: shared-rule.no-missile-weapons

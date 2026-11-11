@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/tomb-guardians/tomb-scorpions--living/unimplemented.tomb-guardians.tomb-scorpions.living
-# scaffold_fingerprint: 5eac16f3733fcf105b632170480abae18df2d256c9d8abf55fc8f4a51071fa1d
 # authoring_status: AUTHORED
 # authoring_progress: the admitted living clause carries 3 authored scenarios and is no longer pending.  The
 # published `tomb-scorpions` profile of this band prints this very clause in its own rule list
@@ -23,12 +22,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: living (scope: YES)
-# AUTHORED[living]: 3 scenarios carry the printed classification onto observables of the duel, derived from
+# AUTHORED: 3 scenarios carry the printed classification onto observables of the duel, derived from
 # the printed sentence and the published profile stanza alone.  The Psychology face is the round-0 Fear test
 # of the charging Tomb Scorpion: the declared 6+6 fails its printed Leadership 4, so the Fear test is taken
 # and the charge is cancelled - the printed "affected by Psychology normally".  The creature-kind face is the
@@ -38,32 +35,6 @@
 # Recorded defect, not a blocker: the register row still carries a null binding and the profile stanza
 # compiles `creature_kind: undead`, which contradicts the printed "living creatures" of the very rule list
 # that stanza cites; these tapes detect that.
-# origin_id:
-#   rule/mordheim/tomb-guardians/tomb-scorpions--living/unimplemented.tomb-guardians.tomb-scorpions.living
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/tomb-guardians/special-rules.yaml
-# source_fingerprint:
-#   17e1e06e6f94fc9bfc45166daa4a9c6db352cc67643fea3a05d6e4ef7dafb9e6
-# source_sha256_at_generation:
-#   10f2db0476c746dca95df927870c2df119b09ea8a035a89f9c1cdb9e0f620779
-# Printed rule text:
-#   Tomb Scorpions are living creatures and are affected by Psychology normally.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Being a living creature and therefore affected by Psychology normally is an admitted lasting individual state of this duelist. Printed clause: Tomb Scorpions are living creatures and are affected by Psychology normally.
-# effect_id:
-#   (not recorded)
-# relation:
-#   unresolved
-# parameters:
-#   {}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Map/movement, deployment, water/weather or mount mechanics are permanent 1v1 exclusions; the clause is recorded explicitly and no implementation consumer is assigned. Scope review integration: {"clause_id":"living","review_clause_id":"whole","source_state":"unverified","review_status":"reviewed","scope_reason":"Being a living creature and therefore affected by Psychology normally is an admitted lasting individual state of this duelist.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"Tomb Scorpions are living creatures and are affected by Psychology normally.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
 
 # --- Authored scenarios ---
 # Derived from the printed rule, the published profile stanza and the recorded contracts of the mechanics
@@ -75,7 +46,6 @@
 # Leadership test, and the declared 6+6 fails its printed Leadership 4, so the charge is cancelled.
 - audit_id: rule/mordheim/tomb-guardians/tomb-scorpions--living/unimplemented.tomb-guardians.tomb-scorpions.living
   id: the-printed-living-scorpion-takes-the-fear-test-for-its-charge
-  covers: [living]
   fighters:
     first:
       trait_overrides: {causes_fear: true}
@@ -95,7 +65,6 @@
 # hatred-(Undead) reroll is not offered against this profile and the declared miss stands.
 - audit_id: rule/mordheim/tomb-guardians/tomb-scorpions--living/unimplemented.tomb-guardians.tomb-scorpions.living
   id: the-printed-living-scorpion-is-not-a-hatred-undead-target
-  covers: [living]
   fighters:
     first:
       skill_ids: [mechanic.hatred-undead]
@@ -115,7 +84,6 @@
 # nature.undead, so the absence recorded above is a statement about the printed living profile.
 - audit_id: rule/mordheim/tomb-guardians/tomb-scorpions--living/unimplemented.tomb-guardians.tomb-scorpions.living
   id: the-same-miss-is-rerolled-against-a-supplied-undead-enemy
-  covers: [living]
   fighters:
     first:
       skill_ids: [mechanic.hatred-undead]

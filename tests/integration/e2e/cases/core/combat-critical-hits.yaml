@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: core/combat-critical-hits
-# scaffold_fingerprint: ed09168347e03c5c83bd9cb58fcde13c40dda8a4ace0658a9d4287ef75a09676
 # authoring_status: REVIEWED
 # authoring_progress: every admitted clause below has requirement-complete
 #   scenarios contrasted against the printed rule text, the recorded semantic
@@ -21,133 +20,28 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: basic-table (scope: YES)
 # AUTHORED[basic-table]: 8 scenarios cover the D6 bands 1-5, the save-before-
 #   doubling ordering, armour denial, the natural-six entry, and a critical-table
 #   modifier (material.dark-elf-blade, +1) shifting a raw 4 into the 5+ band.
-# origin_id:
-#   core/combat-critical-hits
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/rules/core-combat.yaml
-# source_fingerprint:
-#   4787dceb3e099a5e8cb3ad8b3cc0eafe9b7b30fd08985813cdb73d3a8a969473
-# source_sha256_at_generation:
-#   34be1fcd30769636050a73ffb1e035b7fe5937a7460493ea46d86edce20836c1
-# Printed rule text:
-#   Resolve the basic critical table on D6 with critical-table modifiers; all results cause two wounds, 3+ ignores armour, and 5+ adds two to Injury. For 1-2 save before doubling.
-# Semantic contract (check analysis_status before treating as accepted):
-#   The basic critical chart is a D6 plus critical-table modifiers: every result sets damage 2, a result of 3 or more ignores armour, a result of 5 or more adds +2 to the Injury roll, and results 1-2 leave armour and Injury untouched. Closure: resolve_critical rolls D6+modifier and returns damage 2 with ignore_armour for >=3 and injury_modifier 2 for >=5.
-# effect_id:
-#   proposed.core.combat-critical-hits
-# relation:
-#   equivalent
-# parameters:
-#   {"damage": 2, "ignore_armour_threshold": 3, "injury_bonus": 2, "injury_threshold": 5, "modifier_source": "critical_injury_bonus", "roll": "1D6"}
-# conditions:
-#   {"phase": "critical", "stacking": "modifiers additive"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   resolve_critical implements exactly damage=2 / ignore_armour>=3 / injury+2>=5 with a caller-supplied modifier (Dark Elf Blade and Draich add critical_injury_bonus). The printed "save before doubling" ordering is the armour-before-damage order in _resolve_wound_damage. No gap; weapon-family charts are a separate ruleset and explicitly out of this operator. Surface reuse candidate: {"family":"CORE-CRITICAL","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare core timing, injury mapping, per-warrior/per-phase resources, modifier order and weapon allocation against the active contract. Keep variant charts, natural-die conditions and later transformations separate.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: critical-trigger (scope: YES)
 # AUTHORED[critical-trigger]: 4 scenarios cover a natural six with target <=5, a
 #   six that was required, a non-six wound, and a successful rerolled wound that
 #   is not critical (poison.devil-s-toxin).
-# origin_id:
-#   core/combat-critical-hits
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/rules/core-combat.yaml
-# source_fingerprint:
-#   4787dceb3e099a5e8cb3ad8b3cc0eafe9b7b30fd08985813cdb73d3a8a969473
-# source_sha256_at_generation:
-#   34be1fcd30769636050a73ffb1e035b7fe5937a7460493ea46d86edce20836c1
-# Printed rule text:
-#   A natural 6 to wound is critical unless a 6 was required.
-# Semantic contract (check analysis_status before treating as accepted):
-#   A close-combat wound roll of a natural 6 is a critical wound, unless the required To-Wound target is already 6. Closure: with target <=5 a rolled 6 sets critical, with target 6 it never does, and a successful rerolled wound is not critical (Devil's Toxin / Sure Strike).
-# effect_id:
-#   proposed.core.combat-critical-hits
-# relation:
-#   equivalent
-# parameters:
-#   {"critical_threshold": 6, "requires_natural_roll": true}
-# conditions:
-#   {"phase": "wound", "weapon_scope": "close-combat"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Contracted by resolve_wound (critical = rolled_success and target < 6 and roll >= threshold, and not rerolled). The "unless a 6 was required" exception is the target < 6 test; critical_on_reroll=False covers the Devil's Toxin rereoll clause. No gap found. Surface reuse candidate: {"family":"CORE-CRITICAL","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare core timing, injury mapping, per-warrior/per-phase resources, modifier order and weapon allocation against the active contract. Keep variant charts, natural-die conditions and later transformations separate.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: damage-stacking (scope: YES)
 # AUTHORED[damage-stacking]: 2 scenarios cover a critical that ties another two-
 #   wound source (poison.bloodroot) and a multiple-wound source larger than the
 #   critical's two (weapon.ball-and-chain, D3), both using the higher value.
-# origin_id:
-#   core/combat-critical-hits
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/rules/core-combat.yaml
-# source_fingerprint:
-#   4787dceb3e099a5e8cb3ad8b3cc0eafe9b7b30fd08985813cdb73d3a8a969473
-# source_sha256_at_generation:
-#   34be1fcd30769636050a73ffb1e035b7fe5937a7460493ea46d86edce20836c1
-# Printed rule text:
-#   Use the higher damage instead of multiplying another multiple-wound effect.
-# Semantic contract (check analysis_status before treating as accepted):
-#   A critical doubling is never multiplied by another multiple-wound source; the larger of the two values is used. Closure: a Bloodroot (damage 2) critical hit inflicts 2 wounds, not 4.
-# effect_id:
-#   proposed.core.combat-critical-hits
-# relation:
-#   equivalent
-# parameters:
-#   {"combination": "max", "not_multiply": true}
-# conditions:
-#   {"phase": "damage"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   _resolve_wound_damage uses max(1, weapon_damage, critical.damage) — a maximum, not a product. Documented as the project composition of the printed "use the higher damage" instruction. Surface reuse candidate: {"family":"CORE-CRITICAL","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare core timing, injury mapping, per-warrior/per-phase resources, modifier order and weapon allocation against the active contract. Keep variant charts, natural-die conditions and later transformations separate.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: one-per-phase (scope: YES)
 # AUTHORED[one-per-phase]: 3 scenarios cover one critical per warrior per close-
 #   combat phase, the allowance restored in the next round, and two fighters each
 #   scoring one critical in the same phase.
-# origin_id:
-#   core/combat-critical-hits
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/rules/core-combat.yaml
-# source_fingerprint:
-#   4787dceb3e099a5e8cb3ad8b3cc0eafe9b7b30fd08985813cdb73d3a8a969473
-# source_sha256_at_generation:
-#   34be1fcd30769636050a73ffb1e035b7fe5937a7460493ea46d86edce20836c1
-# Printed rule text:
-#   A warrior causes at most one critical hit per close-combat phase.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Within one close-combat phase a fighter may score at most one critical wound; later natural sixes in the same pool stay ordinary wounds. Closure: after the first critical the second natural 6 in the same pool resolves as a normal wound, and the allowance is restored in the next round.
-# effect_id:
-#   proposed.core.combat-critical-hits
-# relation:
-#   equivalent
-# parameters:
-#   {"critical_allowance": 1, "reset": "per-phase"}
-# conditions:
-#   {"phase": "close-combat", "reset": "start-of-round"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   FighterState.critical_available is consumed on the first critical and restored by _start_round_state at the start of each round. Companion effects that consume separately (Spectral Touch extra wound, Black Lotus) do not spend a second allowance. Surface reuse candidate: {"family":"CORE-CRITICAL","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare core timing, injury mapping, per-warrior/per-phase resources, modifier order and weapon allocation against the active contract. Keep variant charts, natural-die conditions and later transformations separate.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # --- Migrated authored scenarios ---
 # Source: cases/core/critical-hits.yaml
@@ -158,7 +52,7 @@
 # core/combat-critical-hits — trigger, allowance, table bands and damage stacking.
 #
 # Expectations come from the accepted clauses of
-# docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv (identity
+# the knowledge-base clause contracts (sources/knowledge) (identity
 # core/combat-critical-hits, clauses critical-trigger / one-per-phase /
 # basic-table / damage-stacking), never from engine output.
 #

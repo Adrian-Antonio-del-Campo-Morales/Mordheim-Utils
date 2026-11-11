@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/underworld-alliance-mim/warpstone-troll--stupidity/mechanic.stupidity
-# scaffold_fingerprint: 742484d602d9c80db28c1efb201bd4d86d8873d9979a1a6ffb93cbb7383adc95
 # authoring_status: AUTHORED
 # authoring_progress: the admitted stupidity clause carries 3 authored scenarios for the family
 #   model derived from the printed rule and the recorded semantic contract: a failed start-of-turn
@@ -13,40 +12,12 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: stupidity (scope: YES)
-# AUTHORED[stupidity]: 3 scenario(s) cover the clause: a certain six-plus-six fails the test and
+# AUTHORED: 3 scenario(s) cover the clause: a certain six-plus-six fails the test and
 #   costs the charge and every attack of the turn, one-plus-one passes it and keeps both, and the
 #   recorded frenzy exemption asks for no stupidity die at all.
-# origin_id:
-#   rule/mordheim/underworld-alliance-mim/warpstone-troll--stupidity/mechanic.stupidity
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/underworld-alliance-mim/special-rules.yaml
-# source_fingerprint:
-#   61c1e0f5b132e5debed74e02c1b3d462bbe986798218d7065ce212c232c1d38c
-# source_sha256_at_generation:
-#   ae550b7cd84887e1611d22d231b130231ea334d6414dd53e96eee6549daaf23d
-# Printed rule text:
-#   A Troll is subject to the rules for stupidity.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Stupidity: at the start of this warrior's own turn it tests individual Leadership; on failure it cannot make close-combat attacks until its next own turn. Observable: a failed stupidity test yields zero close-combat attacks for this warrior that turn, without changing enemy To-Hit rolls.
-# effect_id:
-#   mechanic.stupidity
-# relation:
-#   equivalent
-# parameters:
-#   {}
-# conditions:
-#   {"trigger":"start of this warrior's own turn","resolution":"individual Leadership test via leadership.resolve_local_leadership (stupidity key); resolves before fear in the round pipeline","consequence":"on failure no close-combat attacks until its next own turn","recipient":"this warrior","duration":"until its next own turn","stacking":"not cumulative","exceptions":"skipped while frenzied or holding a supplied condition.stupidity-exempt; random board movement is outside the duel"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Plain Stupidity clause (mechanic.stupidity): psychology.resolve_stupidity refreshes the result on the warrior's own turn; no additional clause. Scope review integration: {"clause_id":"stupidity","review_clause_id":"stupidity","source_state":"unverified","review_status":"reviewed","scope_reason":"Being subject to stupidity is an admitted lasting individual state that forces Leadership tests on this duelist in the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"} Surface reuse candidate: {"family":"mechanic.stupidity","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact supplied/rolled state, trigger, frequency, duration, termination and attack-count contribution. Permanent and conditional Frenzy, +1 Attack and doubling are different. Do not implement group creation, movement or campaign tables merely to supply an individual state.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
 # --- Authored scenarios ---
 # Family model (Stupidity granted by this record): the bearer is the printed recipient, built from
@@ -61,7 +32,6 @@
 
 - audit_id: rule/mordheim/underworld-alliance-mim/warpstone-troll--stupidity/mechanic.stupidity
   id: a-failed-stupidity-test-cancels-its-charge-and-bars-its-attacks
-  covers: [stupidity]
   fighters:
     first:
       collection: mordheim
@@ -82,7 +52,6 @@
 
 - audit_id: rule/mordheim/underworld-alliance-mim/warpstone-troll--stupidity/mechanic.stupidity
   id: a-passed-stupidity-test-keeps-the-charge-and-lets-the-bearer-strike
-  covers: [stupidity]
   fighters:
     first:
       collection: mordheim
@@ -108,7 +77,6 @@
 
 - audit_id: rule/mordheim/underworld-alliance-mim/warpstone-troll--stupidity/mechanic.stupidity
   id: an-already-frenzied-bearer-rolls-no-stupidity-die
-  covers: [stupidity]
   fighters:
     first:
       collection: mordheim

@@ -3,18 +3,12 @@ band_id: chaos-streets-undead-bloodlines
 rules:
 - id: von-carstein-vampire--leader
   name: Leader
-  effect: >-
-    Any warband model within 6" of the Vampire may use the Vampire's Leadership instead of its own.
   source:
     manual: chaos-in-the-streets
     printed_page: 174
     section: 1 Von Carstein Vampire / Special Rules / Leader
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier modelo de la banda a 6" del Vampiro puede usar el Liderazgo del Vampiro en lugar del
-      suyo propio.
   applies_to:
     profile_ids:
     - von-carstein-vampire
@@ -28,6 +22,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: von-carstein-vampire--fear
   name: Fear
   source:
@@ -120,18 +115,12 @@ rules:
   rule_ref: shared-rule.no-pain
 - id: lahmia-vampire--leader
   name: Leader
-  effect: >-
-    Any warband model within 6" of the Vampire may use the Vampire's Leadership instead of its own.
   source:
     manual: chaos-in-the-streets
     printed_page: 175
     section: 1 Lahmia Vampire / Special Rules / Leader
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier modelo de la banda a 6" del Vampiro puede usar el Liderazgo del Vampiro en lugar del
-      suyo propio.
   applies_to:
     profile_ids:
     - lahmia-vampire
@@ -145,6 +134,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: lahmia-vampire--fear
   name: Fear
   source:
@@ -265,18 +255,12 @@ rules:
         id: mechanic.enchanting-beauty
 - id: blood-dragon-vampire--leader
   name: Leader
-  effect: >-
-    Any warband model within 6" of the Vampire may use the Vampire's Leadership instead of its own.
   source:
     manual: chaos-in-the-streets
     printed_page: 176
     section: 1 Blood Dragon Vampire / Special Rules / Leader
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier modelo de la banda a 6" del Vampiro puede usar el Liderazgo del Vampiro en lugar del
-      suyo propio.
   applies_to:
     profile_ids:
     - blood-dragon-vampire
@@ -290,6 +274,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: blood-dragon-vampire--fear
   name: Fear
   source:
@@ -405,8 +390,10 @@ rules:
     - id: unimplemented.chaos-streets-undead-bloodlines.blood-dragon-vampire.brave
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.psychology
+      clauses:
+      - id: whole
+        scope: 'NO'
 - id: blood-dragon-vampire--honour
   name: Honour
   effect: >-
@@ -433,9 +420,7 @@ rules:
     - id: unimplemented.chaos-streets-undead-bloodlines.blood-dragon-vampire.honour
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: blood-dragon-vampire--warriors-code
   name: Warrior's Code
   effect: >-
@@ -466,18 +451,12 @@ rules:
         id: compiler.warrior-s-code
 - id: necrarch-vampire--leader
   name: Leader
-  effect: >-
-    Any warband model within 6" of the Vampire may use the Vampire's Leadership instead of its own.
   source:
     manual: chaos-in-the-streets
     printed_page: 177
     section: 1 Necrarch Vampire / Special Rules / Leader
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier modelo de la banda a 6" del Vampiro puede usar el Liderazgo del Vampiro en lugar del
-      suyo propio.
   applies_to:
     profile_ids:
     - necrarch-vampire
@@ -491,6 +470,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: necrarch-vampire--fear
   name: Fear
   source:
@@ -607,8 +587,7 @@ rules:
     - id: unimplemented.chaos-streets-undead-bloodlines.necrarch-vampire.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: necrarch-vampire--hates-the-living
   name: Hates the Living
   effect: The Necrarch Vampire may hire only Undead Hired Swords or Dramatis Personae.
@@ -632,23 +611,15 @@ rules:
     - id: unimplemented.chaos-streets-undead-bloodlines.necrarch-vampire.hates-the-living
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: strigoi-vampire--leader
   name: Leader
-  effect: >-
-    Any warband model within 6" of the Vampire may use the Vampire's Leadership instead of its own.
   source:
     manual: chaos-in-the-streets
     printed_page: 178
     section: 1 Strigoi Vampire / Special Rules / Leader
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier modelo de la banda a 6" del Vampiro puede usar el Liderazgo del Vampiro en lugar del
-      suyo propio.
   applies_to:
     profile_ids:
     - strigoi-vampire
@@ -662,6 +633,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: strigoi-vampire--fear
   name: Fear
   source:
@@ -799,9 +771,7 @@ rules:
     - id: unimplemented.chaos-streets-undead-bloodlines.strigoi-vampire.hates-the-living
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: necromancer--wizard
   name: Wizard
   source:
@@ -821,8 +791,7 @@ rules:
     - id: unimplemented.chaos-streets-undead-bloodlines.necromancer.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
   rule_ref: shared-rule.wizard
 - id: carrion-ghoul--fear
   name: Fear
@@ -867,8 +836,7 @@ rules:
     - id: unimplemented.chaos-streets-undead-bloodlines.zombie.may-not-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
   rule_ref: shared-rule.may-not-run
 - id: zombie--fear
   name: Fear
@@ -979,9 +947,8 @@ rules:
     - id: unimplemented.chaos-streets-undead-bloodlines.zombie.brainless
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
-  rule_ref: shared-rule.brainless
+      reason: out-of-scope.shooting
+  rule_ref: shared-rule.never-gain-experience
 - id: ghoul--fear
   name: Fear
   source:
@@ -1006,15 +973,12 @@ rules:
   rule_ref: shared-rule.fear
 - id: dire-wolf--charge
   name: Charge
-  effect: A Dire Wolf has 2 Attacks instead of 1 during the turn in which it charges.
   source:
     manual: chaos-in-the-streets
     printed_page: 180
     section: 0-5 Dire Wolves / Charge
   name_i18n:
     es: Carga
-  effect_i18n:
-    es: Un Lobo Dire tiene 2 Ataques en lugar de 1 durante el asalto en el que carga.
   applies_to:
     profile_ids:
     - dire-wolf
@@ -1030,6 +994,7 @@ rules:
         id: trait.charge-attack-bonus
         parameters:
           value: true
+  rule_ref: shared-rule.charge
 - id: dire-wolf--may-not-run
   name: May Not Run
   source:
@@ -1049,8 +1014,7 @@ rules:
     - id: unimplemented.chaos-streets-undead-bloodlines.dire-wolf.may-not-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
   rule_ref: shared-rule.may-not-run
 - id: dire-wolf--fear
   name: Fear
@@ -1139,9 +1103,11 @@ rules:
     - id: unimplemented.chaos-streets-undead-bloodlines.dire-wolf.undead-animal
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
-  rule_ref: shared-rule.dead
+      reason: deferred.psychology
+      clauses:
+      - id: whole
+        scope: 'NO'
+  rule_ref: shared-rule.never-gain-experience
 - id: dire-wolf--no-pain
   runtime:
     scope: 'YES'
@@ -1186,8 +1152,7 @@ rules:
     - id: unimplemented.chaos-streets-undead-bloodlines.vampire-bat.may-not-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: vampire-bat--fear
   name: Fear
   effect: Vampire Bats cause Fear.
@@ -1214,17 +1179,12 @@ rules:
         id: mechanic.causes-fear
 - id: vampire-bat--immune-to-psychology
   name: Immune to Psychology
-  effect: Vampire Bats are immune to Psychology and never leave combat because of Psychology.
   source:
     manual: chaos-in-the-streets
     printed_page: 181
     section: Call the Bats / Immune to Psychology
   name_i18n:
     es: Inmune a la Psicología
-  effect_i18n:
-    es: >-
-      Los Murciélagos Vampiro son inmunes a la Psicología y nunca abandonan el combate por causa de
-      la Psicología.
   applies_to:
     profile_ids:
     - vampire-bat
@@ -1238,6 +1198,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+  rule_ref: shared-rule.immune-to-psychology
 - id: vampire-bat--immune-to-poison
   runtime:
     scope: 'YES'
@@ -1276,19 +1237,16 @@ rules:
         kind: mechanic
         id: skill.ignore-pain
   name: No Pain
-  effect: Vampire Bats treat a Stunned result on the Injury chart as Knocked Down.
   source:
     manual: chaos-in-the-streets
     printed_page: 181
     section: Call the Bats / No Pain
   name_i18n:
     es: Sin Dolor
-  effect_i18n:
-    es: >-
-      Los Murciélagos Vampiro tratan un resultado de Aturdido en la tabla de Heridas como Derribado.
   applies_to:
     profile_ids:
     - vampire-bat
+  rule_ref: shared-rule.no-pain
 - id: vampire-bat--fly
   name: Fly
   effect: >-
@@ -1316,8 +1274,7 @@ rules:
     - id: unimplemented.chaos-streets-undead-bloodlines.vampire-bat.fly
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: vampire-bat--summoned-creature
   name: Summoned Creature
   effect: >-
@@ -1376,9 +1333,7 @@ rules:
     - id: compiler.choose-a-bloodline
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: choosing one immutable Vampire leader and excluding other Vampires is a
-        warband-roster and campaign constraint.
+      reason: out-of-scope.campaign
 - id: band--vampiric-powers
   name: Vampiric Powers
   effect: >-
@@ -1462,10 +1417,7 @@ rules:
     - id: band--von-carstein-power-dark-majesty.rout-reroll
       scope: 'NO'
       binding: null
-      reason: >-
-        Re-rolling the warband's failed Rout tests is the excluded group Rout mechanic and is not
-        simulated.  Only the printed radius increase of this Vampire's supplied Leader range is
-        admitted.
+      reason: out-of-scope.group
   name: Dark Majesty
   effect: >-
     Increase the Vampire's Leader range by 6" (from 6" to 12"). While the Vampire remains on the
@@ -1494,8 +1446,7 @@ rules:
     - id: unimplemented.band-von-carstein-power-call-the-bats
       scope: 'NO'
       binding: null
-      reason: >-
-        summons additional models
+      reason: out-of-scope.group
   name: Call the Bats
   effect: >-
     Once per battle, automatically summon 1D3 Vampire Bats within 6" of the Vampire. The summoned
@@ -1532,8 +1483,7 @@ rules:
     - id: unimplemented.band-von-carstein-power-summon-storm
       scope: 'NO'
       binding: null
-      reason: >-
-        affects the shooting phase
+      reason: out-of-scope.shooting
   name: Summon the Storm
   effect: >-
     Once per battle at the start of the Shooting phase, roll D6. On 1 the attempt fails; on 2-6 the
@@ -1594,6 +1544,11 @@ rules:
       binding:
         kind: mechanic
         id: skill.sword-master
+      clauses:
+      - id: match-parry-and-parry-a-six
+        scope: 'YES'
+      - id: one-reroll-only
+        scope: 'YES'
   name: Sword Master
   effect: >-
     When parrying, the Vampire only needs to equal the opponent's roll and may therefore parry a
@@ -1680,8 +1635,7 @@ rules:
     - id: unimplemented.band-necrarch-power-unholy-focus
       scope: 'NO'
       binding: null
-      reason: >-
-        affects spell casting
+      reason: out-of-scope.magic
   name: Unholy Focus
   effect: Once per battle, the Vampire may re-roll one failed spell-casting attempt.
   source:
@@ -1706,8 +1660,7 @@ rules:
     - id: unimplemented.band-necrarch-power-master-of-the-black-arts
       scope: 'NO'
       binding: null
-      reason: >-
-        affects spell range
+      reason: out-of-scope.magic
   name: Master of the Black Arts
   effect: >-
     Increase the range of the Vampire's ranged spells by 6". This has no effect on spells without a
@@ -1736,8 +1689,7 @@ rules:
     - id: unimplemented.band-necrarch-power-awakening
       scope: 'NO'
       binding: null
-      reason: >-
-        affects spell casting and summons
+      reason: out-of-scope.magic
   name: The Awakening
   effect: >-
     The Vampire may cast Reanimation once per turn in addition to any other spell. Once per battle,
@@ -1771,8 +1723,7 @@ rules:
     - id: unimplemented.band-necrarch-power-noble-blood-of-nehekhara
       scope: 'NO'
       binding: null
-      reason: >-
-        affects spell casting
+      reason: out-of-scope.magic
   name: Noble Blood of Nehekhara
   effect: >-
     The Vampire learns one additional spell and gains +1 to all spell-casting rolls. This bonus is
@@ -1909,11 +1860,21 @@ rules:
       binding:
         kind: mechanic
         id: skill.regeneration
+      clauses:
+      - id: four-plus-regeneration
+        scope: 'YES'
+      - id: blocked-by-fire-and-blessed
+        scope: 'YES'
     - id: skill.regeneration-blocked-by-blessed
       scope: 'YES'
       binding:
         kind: mechanic
         id: skill.regeneration-blocked-by-blessed
+      clauses:
+      - id: four-plus-regeneration
+        scope: 'YES'
+      - id: blocked-by-fire-and-blessed
+        scope: 'YES'
   name: Curse of the Reborn
   effect: >-
     For each unsaved Wound, roll D6; on 4+ the Wound is regenerated and ignored. This regeneration

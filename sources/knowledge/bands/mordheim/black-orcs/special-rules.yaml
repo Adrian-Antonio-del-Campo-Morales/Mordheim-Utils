@@ -43,6 +43,11 @@ rules:
         id: trait.natural-armour-save
         parameters:
           value: 6
+      clauses:
+      - id: six-plus-save
+        scope: 'YES'
+      - id: combines-with-equipment
+        scope: 'YES'
     - id: trait.natural-armour-stacks
       scope: 'YES'
       binding:
@@ -51,9 +56,6 @@ rules:
         parameters:
           value: true
   name: Black Orc
-  effect: >-
-    Model starts with a natural 6+ Armour Black Orc Save. This save may be combined with other
-    equipment to improve it.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -61,13 +63,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
   name_i18n:
     es: Orco Negro
-  effect_i18n:
-    es: >-
-      El modelo empieza con una tirada de salvación de Orco Negro natural de 6+. Esta salvación
-      puede combinarse con otro equipo para mejorarla.
   applies_to:
     profile_ids:
     - black-orc-boss
+  rule_ref: shared-rule.black-orc-save
 - id: black-orc-boss--oi-behave
   runtime:
     scope: LATER
@@ -77,8 +76,10 @@ rules:
     - id: unimplemented.black-orcs.black-orc-boss.oi-behave
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: deferred.psychology
+      clauses:
+      - id: oi-behave
+        scope: 'NO'
   name: Oi Behave!
   effect: >-
     If any Henchman fails his Animosity test within 6” of the Boss, the player may opt to have the
@@ -120,6 +121,11 @@ rules:
         id: trait.natural-armour-save
         parameters:
           value: 6
+      clauses:
+      - id: six-plus-save
+        scope: 'YES'
+      - id: combines-with-equipment
+        scope: 'YES'
     - id: trait.natural-armour-stacks
       scope: 'YES'
       binding:
@@ -128,9 +134,6 @@ rules:
         parameters:
           value: true
   name: Black Orc
-  effect: >-
-    Model starts with a natural 6+ Armour Black Orc Save. This save may be combined with other
-    equipment to improve it.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -138,13 +141,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
   name_i18n:
     es: Orco Negro
-  effect_i18n:
-    es: >-
-      El modelo empieza con una tirada de salvación de Orco Negro natural de 6+. Esta salvación
-      puede combinarse con otro equipo para mejorarla.
   applies_to:
     profile_ids:
     - black-orcs
+  rule_ref: shared-rule.black-orc-save
 - id: younguns--black-orc-blood
   runtime:
     scope: 'NO'
@@ -154,8 +154,7 @@ rules:
     - id: unimplemented.black-orcs.younguns.black-orc-blood
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Black Orc Blood
   effect: >-
     One Young’un may be upgraded to a Black Orc Young’un for 10gc. This upgrade allows him to take
@@ -184,9 +183,7 @@ rules:
     - id: unimplemented.black-orcs.orc-boyz.animosity
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee: this source tests only models not engaged, then moves or
-        attacks other models. Already-engaged duelists never test.
+      reason: out-of-scope.movement
   name: Animosity
   source:
     manual: mordheimer.net
@@ -208,14 +205,8 @@ rules:
     - id: unimplemented.black-orcs.orc-shootaz.animosity
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee: this source tests only models not engaged, then moves or
-        attacks other models. Already-engaged duelists never test.
+      reason: out-of-scope.movement
   name: Animosity
-  effect: >-
-    Subject to the warband's Animosity rule. At the start of the Orc player's turn, roll a D6 for
-    this Orc Henchman if it is not in hand-to-hand combat; on a 1, roll on the Animosity result
-    table.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -223,14 +214,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
   name_i18n:
     es: Rencor
-  effect_i18n:
-    es: >-
-      Sujeto a la regla especial Rencor de la banda. Al inicio del turno del jugador orco, tira 1D6
-      por este secuaz orco si no está en combate cuerpo a cuerpo; con un 1, tira en la tabla de
-      resultados de Rencor.
   applies_to:
     profile_ids:
     - orc-shootaz
+  rule_ref: shared-rule.animosity
 - id: orc-shootaz--uncommon
   runtime:
     scope: 'NO'
@@ -240,9 +227,7 @@ rules:
     - id: unimplemented.black-orcs.orc-shootaz.uncommon
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Uncommon
   effect: >-
     A warband may not hire more Shootaz than they have Boyz. If a boy dies and the Shootaz outnumber
@@ -271,8 +256,10 @@ rules:
     - id: unimplemented.black-orcs.orc-nuttaz.unstable
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: deferred.psychology
+      clauses:
+      - id: animosity-exemption
+        scope: 'NO'
   name: Unstable
   effect: >-
     These Orcs are not quite all there. They do not suffer from Animosity, but instead have a host
@@ -302,6 +289,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.automatic-leadership
+      clauses:
+      - id: automatic-leadership
+        scope: 'YES'
+      - id: no-academic-skills
+        scope: 'NO'
   name: Crazy
   effect: >-
     Nuttaz always pass any Leadership-based Tests they have to take. A side effect of this is that
@@ -342,16 +334,32 @@ rules:
           forbids:
           - armour
           - ranged-weapons
+      clauses:
+      - id: whole
+        scope: 'YES'
+      - id: extra-attack
+        scope: 'YES'
+      - id: mandatory-charge
+        scope: 'YES'
+      - id: no-leader
+        scope: 'NO'
+      - id: no-rout-leadership
+        scope: 'NO'
     - id: movement.compulsory-charge
       scope: 'NO'
       binding: null
-      reason: >-
-        Movement is outside the duel runtime.
+      reason: out-of-scope.movement
     - id: psychology.leadership-restrictions
       scope: LATER
       binding: null
-      reason: >-
-        Psychology is deferred.
+      reason: deferred.psychology
+      clauses:
+      - id: whole--scope--compulsory-movement
+        scope: 'NO'
+      - id: whole--scope--loadout-prohibitions
+        scope: 'YES'
+      - id: whole--scope--leadership-restrictions
+        scope: 'NO'
   name: Savage
   effect: >-
     Nuttaz must always run or charge their maximum distance towards the nearest opponent they can
@@ -417,8 +425,7 @@ rules:
     - id: unimplemented.black-orcs.troll.stupidity.movement
       scope: 'NO'
       binding: null
-      reason: >-
-        Random board movement after failure is outside the 1v1 duel scope.
+      reason: out-of-scope.movement
   name: Stupidity
   source:
     manual: mordheimer.net
@@ -430,7 +437,7 @@ rules:
   applies_to:
     profile_ids:
     - troll
-  rule_ref: shared-rule.stupidity-2
+  rule_ref: shared-rule.troll-stupidity
 - id: troll--regeneration
   runtime:
     scope: 'YES'
@@ -442,11 +449,17 @@ rules:
       binding:
         kind: mechanic
         id: skill.regeneration
+      clauses:
+      - id: regenerate-wound
+        scope: 'YES'
+      - id: fire-exception
+        scope: 'YES'
+      - id: post-battle-injury
+        scope: 'NO'
     - id: campaign.post-battle-injury
       scope: 'NO'
       binding: null
-      reason: >-
-        Post-battle injury is a campaign state.
+      reason: out-of-scope.campaign
   name: Regeneration
   source:
     manual: mordheimer.net
@@ -468,8 +481,7 @@ rules:
     - id: unimplemented.black-orcs.troll.dumb-monster
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: psychology.
+      reason: out-of-scope.non-duel
   name: Dumb Monster
   source:
     manual: mordheimer.net
@@ -491,8 +503,7 @@ rules:
     - id: unimplemented.black-orcs.troll.always-hungry
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Always Hungry
   source:
     manual: mordheimer.net
@@ -538,8 +549,7 @@ rules:
     - id: unimplemented.black-orcs.troll.large-target
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: shooting.
+      reason: out-of-scope.shooting
   name: Large Target
   source:
     manual: mordheimer.net
@@ -598,11 +608,7 @@ rules:
     - id: unimplemented.black-orcs.band.da-boss-is-dead
       scope: 'NO'
       binding: null
-      reason: >-
-        The leader handover is published as campaign succession data
-        (`campaign.succession.black-orcs`), which names the Boss and the Black Orc successors the
-        campaign kernel reads. The automatic "Oi Behave!" grant has no executable consequence here:
-        that rule tests Animosity, a behaviour of unengaged models outside the one-against-one duel.
+      reason: out-of-scope.campaign
   name: Da Boss Is Dead!
   effect: >-
     If the Boss is killed, a Black Orc takes over leadership before any other warrior regardless of
@@ -630,9 +636,7 @@ rules:
     - id: unimplemented.black-orcs.band.animosity
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee: this source tests only models not engaged, then moves or
-        attacks other models. Already-engaged duelists never test.
+      reason: out-of-scope.movement
   name: Animosity
   effect: >-
     At the start of the Orc player's turn, roll a D6 for each Orc or Goblin Henchman not engaged in
@@ -762,8 +766,7 @@ rules:
     - id: unimplemented.black-orcs.band.black-orc-special-skills-waaagh
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: attacks.
+      reason: out-of-scope.non-duel
   name: Waaagh!
   source:
     manual: mordheimer.net
@@ -808,9 +811,7 @@ rules:
     - id: unimplemented.black-orcs.band.black-orc-special-skills-da-cunnin-plan
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Da Cunnin’ Plan
   source:
     manual: mordheimer.net

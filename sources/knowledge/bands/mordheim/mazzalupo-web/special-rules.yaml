@@ -10,9 +10,10 @@ rules:
     - id: unimplemented.mazzalupo-web.band.hired-swords
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: hiring Hired Swords and Dramatis Personae is a
-        roster-construction/campaign mechanic outside the duel scope.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Hired Swords
   effect: >-
     The Mazzalupo can hire the same types of Hired Swords and dramatis personae as the Mercenary
@@ -62,9 +63,10 @@ rules:
     - id: unimplemented.mazzalupo-web.wandering-knight.riding
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: mounted movement and Riding skill grants are outside the current engine
-        scope.
+      reason: deferred.mounts
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Riding (Horse)
   effect: The Wandering knight has the Riding (horses) skill.
   source:
@@ -88,9 +90,7 @@ rules:
     - id: unimplemented.mazzalupo-web.wandering-knight.commands
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: Commands are a spell-like order subsystem cast following the magic rules; the
-        six printed Commands are preserved verbatim as separate rules with their difficulties.
+      reason: out-of-scope.magic
   name: Commands
   effect: >-
     The Wandering knight can issue Commands to his comrades; he knows one at creation and can
@@ -134,9 +134,7 @@ rules:
     - id: unimplemented.mazzalupo-web.command.raise-our-insignia
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: Command (spell-like order); magic/rally subsystems are outside the current
-        engine scope. Difficulty 6.
+      reason: out-of-scope.magic
   name: Raise Our Insignia!
   effect: >-
     Difficulty: 6. Encouraging the Squire to raise a handkerchief in the army's colours, the
@@ -172,9 +170,7 @@ rules:
     - id: unimplemented.mazzalupo-web.command.move-ye-miscreant
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: Command (spell-like order) granting extra movement; movement orders are
-        outside the current engine scope. Difficulty 6.
+      reason: out-of-scope.magic
   name: Move, Ye Miscreant!
   effect: >-
     Difficulty: 6. The booming voice of the Knight Errant urges even the most slothful of the
@@ -206,9 +202,7 @@ rules:
     - id: unimplemented.mazzalupo-web.command.follow-me
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: Command (spell-like order) granting an area to-hit bonus; aura bonuses are
-        outside the current engine scope. Difficulty 8.
+      reason: out-of-scope.magic
   name: Follow Me, Mine Pugnacious Ones!
   effect: >-
     Difficulty: 8. With heroic demeanour, the Wandering knight rallies his men and bolsters their
@@ -238,9 +232,7 @@ rules:
     - id: unimplemented.mazzalupo-web.command.be-on-guard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: Command (spell-like order) enabling a disengagement move; combat-disengagement
-        mechanics are outside the current engine scope. Difficulty 7.
+      reason: out-of-scope.magic
   name: Be on Guard, My Brave Ones!
   effect: >-
     Difficulty: 7. A true commander knows the importance of caution and teaches his comrades that
@@ -274,9 +266,7 @@ rules:
     - id: unimplemented.mazzalupo-web.command.pay-them-no-heed
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: Command (spell-like order) modifying shooting target selection; the shooting
-        phase is outside the current engine scope. Difficulty 6.
+      reason: out-of-scope.magic
   name: Pay Them No Heed!
   effect: >-
     Difficulty: 6. Ever watchful of battlefield developments, the Knight Errant issues orders on
@@ -307,9 +297,7 @@ rules:
     - id: unimplemented.mazzalupo-web.command.art-thou-ready
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: Command (spell-like order) modifying out-of-action rolls; injury-table
-        modification is outside the current engine scope. Difficulty 8.
+      reason: out-of-scope.magic
   name: Art Thou Ready to Die Fighting?
   effect: >-
     Difficulty: 8. The Wandering knight appeals to the tenacity of his men to withstand the enemy's
@@ -341,6 +329,13 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.corruption
+      clauses:
+      - id: corruption--scope--corruption-cost
+        scope: 'NO'
+      - id: corruption--scope--attack-reroll
+        scope: 'YES'
+      - id: corruption--scope--psychology-immunity-limit
+        scope: 'YES'
   name: Corruption
   effect: >-
     Masters of finances are not good fighters but they are certainly skilled at convincing the enemy
@@ -377,9 +372,7 @@ rules:
     - id: unimplemented.mazzalupo-web.master-of-finances.haggle
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: Haggle is a trading/campaign skill; the trading phase is outside the current
-        engine scope.
+      reason: out-of-scope.campaign
   name: Haggle
   effect: >-
     The Master of finances has made handling money his life's work and knows every trick to get the
@@ -408,9 +401,7 @@ rules:
     - id: unimplemented.mazzalupo-web.fallen-noble.indolent
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: rule interaction with the Commands subsystem, which is itself outside the
-        current engine scope.
+      reason: out-of-scope.non-duel
   name: Indolent
   effect: >-
     Fallen nobles are resistant to orders and consider themselves of higher rank than any Wandering
@@ -440,9 +431,10 @@ rules:
     - id: unimplemented.mazzalupo-web.fallen-noble.riding
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: mounted movement and Riding skill grants are outside the current engine
-        scope.
+      reason: deferred.mounts
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Riding (Horse)
   effect: The Fallen nobles have the Riding (horses) skill.
   source:
@@ -472,10 +464,7 @@ rules:
     - id: ye-give-way-challenge-producer
       scope: 'NO'
       binding: null
-      reason: >-
-        Only supplied prior results apply in a resolved duel. Challenge declaration/refusal cancels
-        this duel; other warriors, area effects and later opponents are excluded. Select one result
-        through condition_ids; these are not automatic grants.
+      reason: out-of-scope.group
   name: Ye Give Way
   effect: >-
     When the Fallen noble declares a charge against a Hero, they may challenge the target to yield
@@ -516,9 +505,7 @@ rules:
     - id: unimplemented.mazzalupo-web.squire.petty-thief
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: post-game wyrdstone theft is a campaign resolution mechanic outside the
-        current engine scope.
+      reason: out-of-scope.campaign
   name: Petty Thief
   effect: >-
     Squires have a background that taught them to get by with thefts and scams. If, at the end of
@@ -554,10 +541,7 @@ rules:
     - id: unimplemented.mazzalupo-web.black-sheep.stupidity.outside-duel
       scope: 'NO'
       binding: null
-      reason: >-
-        Board movement, campaign progression/participation and independently
-        simulated helper/rider/group producers are outside the 1v1 duel.
-        Admissible individual exemptions and bonuses are supplied active facts.
+      reason: out-of-scope.movement
   name: Stupidity
   source:
     manual: mordheimer.net
@@ -581,9 +565,7 @@ rules:
     - id: unimplemented.mazzalupo-web.black-sheep.animals
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: the Animals classification (no experience, no equipment) is a roster/campaign
-        mechanic outside the duel scope.
+      reason: out-of-scope.campaign
   name: Animals
   source:
     manual: mordheimer.net
@@ -605,9 +587,7 @@ rules:
     - id: unimplemented.mazzalupo-web.black-sheep.butchers-meat
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: closest-target determination and random hits in the shooting phase are outside
-        the current engine scope.
+      reason: out-of-scope.shooting
   name: Butcher's Meat
   effect: >-
     Black sheep can be ignored by the opponent when determining the closest target in the Shooting
@@ -639,8 +619,7 @@ rules:
     - id: unimplemented.mazzalupo-web.black-sheep.mountain-animals
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: climbing/movement rules are outside the current engine scope.
+      reason: out-of-scope.movement
   name: Mountain Animals
   effect: Black sheep can climb up and down following normal rules despite being animals.
   source:

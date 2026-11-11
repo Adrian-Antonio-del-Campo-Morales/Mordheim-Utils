@@ -10,8 +10,10 @@ rules:
     - id: unimplemented.masters-of-horror-sylv.band.hired-swords
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: hiring rules are campaign mechanics outside the duel scope.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: hired-swords
+        scope: 'NO'
   name: Hired Swords
   effect: Masters of Horror warbands may hire the same Hired Swords as an Undead warband.
   source:
@@ -36,8 +38,10 @@ rules:
     - id: unimplemented.masters-of-horror-sylv.band.no-promotion
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: Lads Got Talent promotion is a post-duel/campaign progression mechanic.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: No Promotion
   effect: Neither Zombies nor Flesh Constructs may become Heroes through Lads Got Talent.
   source:
@@ -62,8 +66,10 @@ rules:
     - id: unimplemented.masters-of-horror-sylv.band.wolfman-max-stats
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: characteristic-increase caps on advancement are outside the duel scope.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Wolfman Max Stats
   effect: >-
     The Wolfman's characteristics may never be increased beyond the following maximums: M 6, WS 4,
@@ -145,7 +151,6 @@ rules:
         kind: mechanic
         id: mechanic.causes-fear
   name: Cause Fear
-  effect: Vampires are terrifying Undead creatures and therefore cause Fear.
   source:
     manual: sylvania-supplement
     printed_page: 0
@@ -153,11 +158,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
   name_i18n:
     es: Causan Miedo
-  effect_i18n:
-    es: Los vampiros son criaturas no muertas aterradoras y por tanto causan Miedo.
   applies_to:
     profile_ids:
     - thrall
+  rule_ref: shared-rule.fear
 - id: thrall--immune-to-psychology
   runtime:
     scope: 'YES'
@@ -169,8 +173,12 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+      clauses:
+      - id: psychology-immunity
+        scope: 'YES'
+      - id: never-leaves-combat
+        scope: 'NO'
   name: Immune to Psychology
-  effect: Vampires are not affected by psychology (such as fear) and never leave combat.
   source:
     manual: sylvania-supplement
     printed_page: 0
@@ -178,13 +186,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
   name_i18n:
     es: Inmune a la Psicología
-  effect_i18n:
-    es: >-
-      Los vampiros no se ven afectados por la psicología (como el miedo) y nunca abandonan el
-      combate.
   applies_to:
     profile_ids:
     - thrall
+  rule_ref: shared-rule.immune-to-psychology
 - id: thrall--immune-to-poison
   runtime:
     scope: 'YES'
@@ -199,7 +204,6 @@ rules:
         parameters:
           value: true
   name: Immune to Poison
-  effect: Vampires are not affected by any poison.
   source:
     manual: sylvania-supplement
     printed_page: 0
@@ -207,11 +211,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
   name_i18n:
     es: Inmune al Veneno
-  effect_i18n:
-    es: Los vampiros no se ven afectados por ningún veneno.
   applies_to:
     profile_ids:
     - thrall
+  rule_ref: shared-rule.immune-to-poison
 - id: thrall--no-pain
   runtime:
     scope: 'YES'
@@ -224,7 +227,6 @@ rules:
         kind: mechanic
         id: skill.ignore-pain
   name: No Pain
-  effect: Vampires treat a Stunned result on the Injury chart as Knocked Down.
   source:
     manual: sylvania-supplement
     printed_page: 0
@@ -232,11 +234,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
   name_i18n:
     es: Sin Dolor
-  effect_i18n:
-    es: Los vampiros tratan un resultado Aturdido de la tabla de heridas como Derribado.
   applies_to:
     profile_ids:
     - thrall
+  rule_ref: shared-rule.no-pain
 - id: zombies--cause-fear
   runtime:
     scope: 'YES'
@@ -249,7 +250,6 @@ rules:
         kind: mechanic
         id: mechanic.causes-fear
   name: Cause Fear
-  effect: Zombies are terrifying Undead creatures and therefore cause Fear.
   source:
     manual: sylvania-supplement
     printed_page: 0
@@ -257,11 +257,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
   name_i18n:
     es: Causan Miedo
-  effect_i18n:
-    es: Los zombis son criaturas no muertas aterradoras y por tanto causan Miedo.
   applies_to:
     profile_ids:
     - zombies
+  rule_ref: shared-rule.fear
 - id: zombies--may-not-run
   runtime:
     scope: 'NO'
@@ -271,9 +270,7 @@ rules:
     - id: unimplemented.masters-of-horror-sylv.zombies.may-not-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: May Not Run
   effect: Zombies are slow Undead creatures and may not run (but may charge normally).
   source:
@@ -376,8 +373,10 @@ rules:
     - id: unimplemented.masters-of-horror-sylv.zombies.no-brain
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: experience gain is a post-duel/campaign progression mechanic.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: No Brain
   effect: Zombies do not gain experience.
   source:
@@ -503,9 +502,10 @@ rules:
     - id: unimplemented.masters-of-horror-sylv.flesh-construct.a-bit-unhinged
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: experience gain with a Leadership gate is a post-duel/ campaign
-        progression mechanic.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: a-bit-unhinged
+        scope: 'NO'
   name: A Bit Unhinged
   effect: >-
     Flesh Constructs do not gain experience normally. They must make a successful Leadership test in
@@ -535,9 +535,10 @@ rules:
     - id: unimplemented.masters-of-horror-sylv.flesh-construct.its-only-a-flesh-wound
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: post-battle injury rolls and repair costs are post-duel/campaign
-        resolution mechanics.
+      reason: deferred.other
+      clauses:
+      - id: repair-or-miss-a-game
+        scope: 'NO'
   name: Its Only a Flesh Wound
   effect: >-
     When a Flesh Construct is taken OOA, roll on the Henchmen Injury table as normal. On a roll of
@@ -572,9 +573,7 @@ rules:
     - id: unimplemented.masters-of-horror-sylv.flesh-construct.cannot-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Cannot Run
   effect: >-
     After being pieced together from various stiffs, ones legs are often, well, stiff. Constructs
@@ -604,6 +603,17 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.bitten-transform
+      clauses:
+      - id: transformation-state--scope--transformation-state
+        scope: 'YES'
+      - id: transformation-state--scope--transformation-duration
+        scope: 'YES'
+      - id: transformation-equipment-loss
+        scope: 'YES'
+      - id: transformed-unarmed-penalties
+        scope: 'YES'
+      - id: transformation-sprint
+        scope: 'NO'
   name: Transform
   effect: >-
     Roll a D6 each turn and consult the following. Once transformed, the Bitten cast off all
@@ -637,8 +647,10 @@ rules:
     - id: unimplemented.masters-of-horror-sylv.special.surgeon
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: post-injury rerolls are post-duel/campaign resolution mechanics.
+      reason: deferred.other
+      clauses:
+      - id: reroll-an-injury-roll
+        scope: 'NO'
   name: Surgeon
   effect: >-
     The Mad Scientist can attempt to operate upon an injured minion. Reroll one dice of a single
@@ -666,12 +678,12 @@ rules:
     - id: unimplemented.masters-of-horror-sylv.special.alchemist
       scope: LATER
       binding: null
-      reason: >-
-        The initial potion roll and post-battle addiction producer remain outside the duel.
-        Supply the admitted result through condition.alchemist-resilience, alchemist-strength,
-        alchemist-backleys-brew, alchemist-aberrantius-vigortia or alchemist-addicted. Recovery and
-        brewing resolve at each own-turn start under the project's 2026-10-15 timing ruling.
-        Quicksilver Movement has no duel consumer.
+      reason: out-of-scope.movement
+      clauses:
+      - id: start-of-game-potion--scope--potion-characteristic-bonuses
+        scope: 'YES'
+      - id: start-of-game-potion--scope--addiction-state
+        scope: 'YES'
   name: Alchemist
   effect: >-
     The Mad Scientist fancies himself an alchemist and brews all sorts of concoctions and potions to
@@ -713,8 +725,10 @@ rules:
     - id: unimplemented.masters-of-horror-sylv.special.apt-revitalist
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: experience gain rules are post-duel/campaign progression mechanics.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Apt Revitalist
   effect: >-
     The Mad Scientist has gone above and beyond the understanding of most men, and has gained the
@@ -753,6 +767,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leadership-reroll
+      clauses:
+      - id: cause-fear
+        scope: 'YES'
+      - id: leadership-reroll
+        scope: 'YES'
   name: Lunatic
   effect: >-
     Giving in to ones insanity is quite rewarding. The model causes Fear and may reroll any

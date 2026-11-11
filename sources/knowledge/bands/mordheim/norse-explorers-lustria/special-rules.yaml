@@ -117,6 +117,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+      clauses:
+      - id: psychology-immunity
+        scope: 'YES'
+      - id: leader-restriction
+        scope: 'NO'
   rule_ref: shared-rule.bestial
 - id: wolves--animals
   name: Animals
@@ -138,8 +143,7 @@ rules:
     - id: unimplemented.norse-explorers-lustria.wolves.animals
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
   rule_ref: shared-rule.animal
 - id: wolves--pack-leader
   name: Pack Leader
@@ -161,9 +165,7 @@ rules:
     - id: unimplemented.norse-explorers-lustria.wolves.pack-leader
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   rule_ref: shared-rule.pack-leader
 - id: band--seafaring
   name: Seafaring
@@ -184,8 +186,7 @@ rules:
     - id: unimplemented.norse-explorers-lustria.band.seafaring
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
   rule_ref: shared-rule.seafaring
 - id: band--norse-special-skills-barbarian-courage
   kind: warband_skill
@@ -209,12 +210,15 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.fear-reroll
+      clauses:
+      - id: fear-reroll
+        scope: 'YES'
+      - id: all-alone
+        scope: 'NO'
     - id: excluded.norse-explorers-lustria.all-alone
       scope: 'NO'
       binding: null
-      reason: >-
-        All Alone tests require multiple fighters and are outside Combat Lab 1v1 duels. The printed
-        individual Fear clause is implemented separately.
+      reason: out-of-scope.group
   rule_ref: shared-rule.barbarian-courage
 - id: band--norse-special-skills-battle-tongue
   kind: warband_skill
@@ -236,9 +240,7 @@ rules:
     - id: unimplemented.norse-explorers-lustria.band.norse-special-skills-battle-tongue
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: Battle Tongue range extensions are excluded from the resolved duel (user
-        decision 2026-10-21). Innate Leader radii remain separate.
+      reason: out-of-scope.group
   rule_ref: shared-rule.battle-tongue
 - id: band--norse-special-skills-berserk-charge
   kind: warband_skill
@@ -298,6 +300,11 @@ rules:
       binding:
         kind: mechanic
         id: skill.shield-mastery
+      clauses:
+      - id: parry-with-a-shield
+        scope: 'YES'
+      - id: six-plus-save
+        scope: 'YES'
   name: Shield Master
   source:
     manual: mordheimer.net
@@ -312,8 +319,6 @@ rules:
   rule_ref: shared-rule.shield-master
 - id: beserkers--no-armour
   name: No Armour
-  effect: >-
-    A Berserker may never wear armour.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -321,9 +326,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
   name_i18n:
     es: Sin Armadura
-  effect_i18n:
-    es: >-
-      Un Berserker jamás puede llevar armadura.
   applies_to:
     profile_ids:
     - beserkers
@@ -339,6 +341,7 @@ rules:
         id: profile.equipment-restrictions
         parameters:
           forbids: armour
+  rule_ref: shared-rule.no-armour
 - id: wulfen--equipment-restrictions
   runtime:
     scope: 'YES'
@@ -355,8 +358,6 @@ rules:
           - weapons
           - armour
   name: Equipment Restrictions
-  effect: >-
-    May never use weapons or armour and suffers no penalty for fighting unarmed.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -364,9 +365,7 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      Nunca puede usar armas ni armaduras y no sufre penalización por luchar sin armas.
   applies_to:
     profile_ids:
     - wulfen
+  rule_ref: shared-rule.wulfen-no-equipment

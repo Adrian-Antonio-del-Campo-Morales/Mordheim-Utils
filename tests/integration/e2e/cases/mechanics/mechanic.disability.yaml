@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.disability
-# scaffold_fingerprint: f4625ad65f7355477798bb852b0541f866be914ebcbe6161c226bbdc7c0e59a6
 # authoring_status: AUTHORED
 # authoring_progress: the head-injury and characteristic-penalty clauses carry authored scenarios; the loadout prohibition clause is PARTIAL for the concrete reason recorded in its note, so the file is not offered as clause-complete. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -8,38 +7,11 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: head-injury-stupidity (scope: YES)
 # AUTHORED[head-injury-stupidity]: 2 scenarios cover the result-6 roll that makes the bearer take the start-of-turn Stupidity test (failed, losing the turn's attack by cancelling the declared charge) and the same roll with the test passed, where the charge and both attack pools stand. The printed 6-inch Hero exemption has no counterpart in a one-against-one duel.
-# origin_id:
-#   mechanic/mechanic.disability
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   8863c9c9f1e4020592099e23677e32bb7a1d355701c3a5b1d930f0412033780f
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   When a Cripple Henchman group is created, roll D6 once and apply that result permanently to the entire group: 1 Lame and Arthritic — reduce Movement and Initiative by 1; 2 Parkinson's — reduce Weapon Skill by 1 and the models may not use two weapons or a weapon and shield; 3 Poor Eyesight — reduce Ballistic Skill by 1; 4 Sickly — reduce Toughness by 1; 5 Weakness — reduce Strength by 1; 6 Head Injury — the group is subject to Stupidity unless within 6" of a Hero.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Result 6 (Head Injury) subjects the group to Stupidity unless within 6 inches of a Hero; observable: a Leadership test at the start of the bearer's turn.
-# effect_id:
-#   mechanic.disability
-# relation:
-#   equivalent
-# parameters:
-#   {"stupidity_on":6}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Consumed through the disability resource recorded at initialisation, which makes the fighter take Stupidity tests; the 6-inch Hero exemption has no counterpart in a 1v1 duel and is the reason the flag is rolled per duel rather than per group. Surface reuse candidate: {"family":"mechanic.disability","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact supplied/rolled state, trigger, frequency, duration, termination and attack-count contribution. Permanent and conditional Frenzy, +1 Attack and doubling are different. Do not implement group creation, movement or campaign tables merely to supply an individual state.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: no-two-weapons-or-weapon-and-shield (scope: YES)
 # AUTHORED[no-two-weapons-or-weapon-and-shield]: the printed result-2 prohibition is
@@ -50,61 +22,9 @@
 #   The executor still lacks the construction consumer, so the refusal fires only once
 #   that connection exists; until then execution shows "but the case ran", which is
 #   the recorded pending-connection state and not a fixture defect.
-# origin_id:
-#   mechanic/mechanic.disability
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   8863c9c9f1e4020592099e23677e32bb7a1d355701c3a5b1d930f0412033780f
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   When a Cripple Henchman group is created, roll D6 once and apply that result permanently to the entire group: 1 Lame and Arthritic — reduce Movement and Initiative by 1; 2 Parkinson's — reduce Weapon Skill by 1 and the models may not use two weapons or a weapon and shield; 3 Poor Eyesight — reduce Ballistic Skill by 1; 4 Sickly — reduce Toughness by 1; 5 Weakness — reduce Strength by 1; 6 Head Injury — the group is subject to Stupidity unless within 6" of a Hero.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Result 2 (Parkinson's) also forbids two weapons or a weapon and a shield; observable: the loadout is rejected at construction.
-# effect_id:
-#   mechanic.disability
-# relation:
-#   equivalent
-# parameters:
-#   {"forbids":["two-weapons","weapon-and-shield"],"on":2}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Only the Weapon Skill penalty is consumed for result 2; the loadout prohibition has no consumer in construction, eligibility or the armour/attack composition, so it is a missing connection rather than a modelled rule. Surface reuse candidate: {"family":"mechanic.disability","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact supplied/rolled state, trigger, frequency, duration, termination and attack-count contribution. Permanent and conditional Frenzy, +1 Attack and doubling are different. Do not implement group creation, movement or campaign tables merely to supply an individual state.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: permanent-characteristic-penalty (scope: YES)
 # AUTHORED[permanent-characteristic-penalty]: 5 scenarios cover the rolled characteristic penalty: Initiative by one (read as the bearer's lower Initiative and as the resulting order), Weapon Skill by one (a four now misses, with the same four hitting without the roll), Strength by one (a four now fails to wound) and Toughness by one on a bearer who is the defender (a three now wounds). The printed result 3 (Ballistic Skill) is outside the recorded contract and has no duel observable because shooting is excluded; it is recorded, not asserted.
-# origin_id:
-#   mechanic/mechanic.disability
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   8863c9c9f1e4020592099e23677e32bb7a1d355701c3a5b1d930f0412033780f
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   When a Cripple Henchman group is created, roll D6 once and apply that result permanently to the entire group: 1 Lame and Arthritic — reduce Movement and Initiative by 1; 2 Parkinson's — reduce Weapon Skill by 1 and the models may not use two weapons or a weapon and shield; 3 Poor Eyesight — reduce Ballistic Skill by 1; 4 Sickly — reduce Toughness by 1; 5 Weakness — reduce Strength by 1; 6 Head Injury — the group is subject to Stupidity unless within 6" of a Hero.
-# Semantic contract (check analysis_status before treating as accepted):
-#   A D6 rolled once for the group permanently reduces Initiative or Weapon Skill by 1 (1, 2), Toughness by 1 (4) or Strength by 1 (5); observable: the affected characteristic is one point lower in the duel.
-# effect_id:
-#   mechanic.disability
-# relation:
-#   equivalent
-# parameters:
-#   {"die":{"1":"I-1","2":"WS-1","4":"T-1","5":"S-1"}}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   The duel runtime rolls the disability at fighter initialisation and applies the characteristic penalty, which is the duel-time projection of a between-battles roll. Characteristic penalties are clamped so a characteristic never falls below one. Surface reuse candidate: {"family":"mechanic.disability","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact supplied/rolled state, trigger, frequency, duration, termination and attack-count contribution. Permanent and conditional Frenzy, +1 Attack and doubling are different. Do not implement group creation, movement or campaign tables merely to supply an individual state.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
 # --- Authored scenarios ---
 # mechanic/mechanic.disability — every expectation below comes from the printed

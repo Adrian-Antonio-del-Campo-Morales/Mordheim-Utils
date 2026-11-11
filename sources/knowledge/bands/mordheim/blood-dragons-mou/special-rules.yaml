@@ -10,9 +10,7 @@ rules:
     - id: unimplemented.blood-dragons-mou.band.balance-warning
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Balance Warning (Blood Dragons)
   effect: >-
     As they are, the Blood Dragons are far too powerful and end up dominating any campaign. The
@@ -41,9 +39,7 @@ rules:
     - id: unimplemented.blood-dragons-mou.band.bloodline-abilities
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Bloodline Abilities
   effect: >-
     A vampire may choose one or more of the following bloodline abilities at the beginning of the
@@ -91,9 +87,7 @@ rules:
     - id: unimplemented.blood-dragons-mou.vampire.leader
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Leader (Vampire)
   effect: >-
     Any warrior within 6" of the Vampire may use his Leadership value when taking Leadership tests.
@@ -147,6 +141,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+      clauses:
+      - id: psychology-immunity
+        scope: 'YES'
+      - id: all-alone
+        scope: 'NO'
   name: Immune to Psychology (Vampire)
   effect: A vampire is immune to all forms of psychology and needs not to roll all-alone tests.
   source:
@@ -202,7 +201,6 @@ rules:
         kind: mechanic
         id: skill.ignore-pain
   name: No Pain (Vampire)
-  effect: In combat treat 'Stunned' results as 'Knocked Down'.
   source:
     manual: broheim.net
     printed_page: 4
@@ -210,11 +208,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
   name_i18n:
     es: Sin Dolor (Vampiro)
-  effect_i18n:
-    es: En combate, trata los resultados 'Aturdido' como 'Derribado'.
   applies_to:
     profile_ids:
     - vampire
+  rule_ref: shared-rule.no-pain
 - id: vampire--summoner
   runtime:
     scope: 'NO'
@@ -224,9 +221,7 @@ rules:
     - id: unimplemented.blood-dragons-mou.vampire.summoner
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Summoner
   effect: >-
     All the undead in the Warband were summoned by the arcane powers of the vampire. When the
@@ -256,9 +251,7 @@ rules:
     - id: unimplemented.blood-dragons-mou.vampire.bloodline-abilities
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Bloodline Abilities (Vampire)
   effect: >-
     The Vampire may start the game with one or more Bloodline abilities (see Bloodline Abilities).
@@ -312,6 +305,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+      clauses:
+      - id: psychology-immunity
+        scope: 'YES'
+      - id: all-alone
+        scope: 'NO'
   name: Immune to Psychology (Wights)
   effect: A Wight is immune to all forms of psychology and needs not to roll all-alone tests.
   source:
@@ -367,7 +365,6 @@ rules:
         kind: mechanic
         id: skill.ignore-pain
   name: No Pain (Wights)
-  effect: In combat treat 'Stunned' results as 'Knocked Down'.
   source:
     manual: broheim.net
     printed_page: 4
@@ -375,11 +372,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
   name_i18n:
     es: Sin Dolor (Espectros)
-  effect_i18n:
-    es: En combate, trata los resultados 'Aturdido' como 'Derribado'.
   applies_to:
     profile_ids:
     - wights
+  rule_ref: shared-rule.no-pain
 - id: wights--killing-blow
   runtime:
     scope: 'YES'
@@ -392,9 +388,6 @@ rules:
         kind: mechanic
         id: mechanic.killing-blow
   name: Killing Blow (Wights)
-  effect: >-
-    A natural rolled 6 on the to-hit roll wounds automatically; the strike might not be parried, but
-    armour and saving throws are allowed.
   source:
     manual: broheim.net
     printed_page: 4
@@ -402,13 +395,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
   name_i18n:
     es: Golpe Asesino (Espectros)
-  effect_i18n:
-    es: >-
-      Un 6 natural en la tirada para golpear hiere automáticamente; el golpe no puede ser detenido,
-      pero se permiten las tiradas de armadura y salvación.
   applies_to:
     profile_ids:
     - wights
+  rule_ref: shared-rule.killing-blow
 - id: skeleton-warriors--fear
   runtime:
     scope: 'YES'
@@ -445,6 +435,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+      clauses:
+      - id: psychology-immunity
+        scope: 'YES'
+      - id: all-alone
+        scope: 'NO'
   name: Immune to Psychology (Skeleton Warriors)
   effect: A skeleton is immune to all forms of psychology and needs not to roll all-alone tests.
   source:
@@ -500,7 +495,6 @@ rules:
         kind: mechanic
         id: skill.ignore-pain
   name: No Pain (Skeleton Warriors)
-  effect: In combat treat 'Stunned' results as 'Knocked Down'.
   source:
     manual: broheim.net
     printed_page: 5
@@ -508,11 +502,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
   name_i18n:
     es: Sin Dolor (Guerreros Esqueleto)
-  effect_i18n:
-    es: En combate, trata los resultados 'Aturdido' como 'Derribado'.
   applies_to:
     profile_ids:
     - skeleton-warriors
+  rule_ref: shared-rule.no-pain
 - id: skeleton-warriors--slow
   runtime:
     scope: 'NO'
@@ -522,9 +515,7 @@ rules:
     - id: unimplemented.blood-dragons-mou.skeletons.slow
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Slow (Skeleton Warriors)
   effect: >-
     Consisting just of old bones, skeletons are moving very slow. Therefore they might not run,
@@ -552,11 +543,8 @@ rules:
     - id: unimplemented.blood-dragons-mou.skeletons.no-brain
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: No Brain (Skeleton Warriors)
-  effect: Skeletons never gain experience.
   source:
     manual: broheim.net
     printed_page: 5
@@ -564,11 +552,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
   name_i18n:
     es: Sin Cerebro (Guerreros Esqueleto)
-  effect_i18n:
-    es: Los Esqueletos nunca ganan experiencia.
   applies_to:
     profile_ids:
     - skeleton-warriors
+  rule_ref: shared-rule.never-gain-experience
 - id: grave-guards--immune-to-psychology
   runtime:
     scope: 'YES'
@@ -580,6 +567,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+      clauses:
+      - id: psychology-immunity
+        scope: 'YES'
+      - id: all-alone
+        scope: 'NO'
   name: Immune to Psychology (Grave Guards)
   effect: A grave guard is immune to all forms of psychology and needs not to roll all-alone tests.
   source:
@@ -635,7 +627,6 @@ rules:
         kind: mechanic
         id: skill.ignore-pain
   name: No Pain (Grave Guards)
-  effect: In combat treat 'Stunned' results as 'Knocked Down'.
   source:
     manual: broheim.net
     printed_page: 6
@@ -643,11 +634,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
   name_i18n:
     es: Sin Dolor (Guardianes de Tumba)
-  effect_i18n:
-    es: En combate, trata los resultados 'Aturdido' como 'Derribado'.
   applies_to:
     profile_ids:
     - grave-guards
+  rule_ref: shared-rule.no-pain
 - id: grave-guards--slow
   runtime:
     scope: 'NO'
@@ -657,9 +647,7 @@ rules:
     - id: unimplemented.blood-dragons-mou.grave-guards.slow
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Slow (Grave Guards)
   effect: >-
     Grave Guards are very slow when walking in their rusty armours. They may not run, although they
@@ -690,9 +678,6 @@ rules:
         kind: mechanic
         id: mechanic.killing-blow
   name: Killing Blow (Grave Guards)
-  effect: >-
-    A natural rolled 6 on the to-hit roll wounds automatically; the strike might not be parried, but
-    armour and saving throws are allowed.
   source:
     manual: broheim.net
     printed_page: 6
@@ -700,13 +685,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
   name_i18n:
     es: Golpe Asesino (Guardianes de Tumba)
-  effect_i18n:
-    es: >-
-      Un 6 natural en la tirada para golpear hiere automáticamente; el golpe no puede ser detenido,
-      pero se permiten las tiradas de armadura y salvación.
   applies_to:
     profile_ids:
     - grave-guards
+  rule_ref: shared-rule.killing-blow
 - id: hell-hounds--fear
   runtime:
     scope: 'YES'
@@ -743,6 +725,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+      clauses:
+      - id: psychology-immunity
+        scope: 'YES'
+      - id: all-alone
+        scope: 'NO'
   name: Immune to Psychology (Hell Hounds)
   effect: A Hell Hound is immune to all forms of psychology and needs not to roll all-alone tests.
   source:
@@ -798,7 +785,6 @@ rules:
         kind: mechanic
         id: skill.ignore-pain
   name: No Pain (Hell Hounds)
-  effect: In combat treat 'Stunned' results as 'Knocked Down'.
   source:
     manual: broheim.net
     printed_page: 6
@@ -806,11 +792,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
   name_i18n:
     es: Sin Dolor (Sabuesos Infernales)
-  effect_i18n:
-    es: En combate, trata los resultados 'Aturdido' como 'Derribado'.
   applies_to:
     profile_ids:
     - hell-hounds
+  rule_ref: shared-rule.no-pain
 - id: hell-hounds--animal
   runtime:
     scope: 'NO'
@@ -820,9 +805,7 @@ rules:
     - id: unimplemented.blood-dragons-mou.hell-hounds.animal
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Animal (Hell Hounds)
   effect: Hell Hounds never gain experience. They are animals and cannot use weapons or armour.
   source:

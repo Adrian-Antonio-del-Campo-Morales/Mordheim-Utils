@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/skill.sword-master
-# scaffold_fingerprint: bfbe8edc5ec80686edaee1584ca2f7561e425cbc648c2ae534c1812203256747
 # authoring_status: PARTIAL
 # authoring_progress: the reroll clause carries three authored scenarios and the equality half of the match clause carries two, including its boundary against a plain parry; the printed parry of a natural six cannot be assigned to this clause without deciding the recorded source-versus-contract conflict (see that clause note). REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -8,9 +7,8 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: match-parry-and-parry-a-six (scope: YES)
 # PARTIAL[match-parry-and-parry-a-six]: 2 scenarios evidence the equality half
@@ -35,61 +33,9 @@
 #   executor's tag-only read is remitted to the engine as dec-d1-sword-master-parry-gate.
 #   The six-parry tape is authored once the consumer honours the skill; the equality
 #   scenarios already authored above stand unchanged.
-# origin_id:
-#   mechanic/skill.sword-master
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   259fd4c361891b7cc09cbe2e30bb26ec9c235e7c1a8b9604f3259237518e8101
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   When parrying, the Vampire only needs to equal the opponent's roll and may therefore parry a roll of 6. The Vampire may also re-roll one failed parry, but may not re-roll the re-roll and may not parry more than one attack.
-# Semantic contract (check analysis_status before treating as accepted):
-#   The vampire only needs to equal the opponent's roll and may therefore parry a natural 6; observable: a parry roll equal to the hit roll blocks, including against a 6.
-# effect_id:
-#   skill.sword-master
-# relation:
-#   equivalent
-# parameters:
-#   {"can_parry_six":true,"match_allowed":true}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   The equality half is consumed by the match allowance and the parry-a-six half by the dedicated blood-dragon flag, which is read in the parry eligibility test. Surface reuse candidate: {"family":"skill.sword-master","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the individual clause and current active contract. Distinguish dance choices; parry enablement, equality, rerolls and extra attempts; and fists/claws count or critical facets. Sharing preparation/state machinery is not sharing the entire combined rule.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: one-reroll-only (scope: YES)
 # AUTHORED[one-reroll-only]: 3 scenarios cover a failed parry recovered by the single reroll, the same failure with a reroll that also fails and no second reroll die in the tape, and the plain parry without the skill, which is offered no reroll at all.
-# origin_id:
-#   mechanic/skill.sword-master
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   259fd4c361891b7cc09cbe2e30bb26ec9c235e7c1a8b9604f3259237518e8101
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   When parrying, the Vampire only needs to equal the opponent's roll and may therefore parry a roll of 6. The Vampire may also re-roll one failed parry, but may not re-roll the re-roll and may not parry more than one attack.
-# Semantic contract (check analysis_status before treating as accepted):
-#   The vampire may re-roll one failed parry but not the re-roll, and may not parry more than one attack; observable: a single reroll and a single attempt per phase.
-# effect_id:
-#   skill.sword-master
-# relation:
-#   equivalent
-# parameters:
-#   {"attempts":1,"rerolls":1}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   The parry resolution rolls at most one reroll, and the capacity stays at one attempt because this fighter has no two-parry skill. Surface reuse candidate: {"family":"skill.sword-master","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the individual clause and current active contract. Distinguish dance choices; parry enablement, equality, rerolls and extra attempts; and fists/claws count or critical facets. Sharing preparation/state machinery is not sharing the entire combined rule.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
 # --- Authored scenarios ---
 # mechanic/skill.sword-master — every expectation below comes from the printed

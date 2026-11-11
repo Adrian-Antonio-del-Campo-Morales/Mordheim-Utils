@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/channel-rats-mim/petru--potions/unimplemented.channel-rats-mim.petru.potions
-# scaffold_fingerprint: 96f77ff67240469d5c00ac502ab4bb743a7150f4688b2b922dfdd30b507969b0
 # authoring_status: AUTHORED
 # authoring_progress: the admitted draught table now carries six scenarios: each of the four printed
 # results is supplied one at a time as the catalogue's own canonical condition (condition.petru-strength,
@@ -17,12 +16,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: random-pre-battle-potion (scope: YES)
-# AUTHORED[random-pre-battle-potion]: the previous note called the operator missing and was wrong.
+# AUTHORED: the previous note called the operator missing and was wrong.
 # The catalogue carries one canonical condition per printed draught - condition.petru-debilitating,
 # -strength, -resilience and -fortitude in catalog/rules/conditions.yaml, every one of them runtime
 # scope YES / implemented YES with its own mechanic binding - and compiler.resolve_supplied_conditions
@@ -38,32 +35,6 @@
 # recovery-phase escape roll each printed entry prints (the recovery phase is outside the duel), and the
 # pre-battle choice among the warband's Heroes with its prices (campaign inputs).  REVIEWED still
 # requires manual semantic review.
-# origin_id:
-#   rule/mordheim/channel-rats-mim/petru--potions/unimplemented.channel-rats-mim.petru.potions
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/channel-rats-mim/special-rules.yaml
-# source_fingerprint:
-#   30206bdb48401b8a0ec91d06b8d5a5696fc1f0dc86dbc4446600302d51b2faaf
-# source_sha256_at_generation:
-#   172af5d984aa411ff17433343c1bf1c59ed4d08c382f7bdbd128bbce66bbe4ba
-# Printed rule text:
-#   Offering curatives through supplying suspicious potions, the Petru carries assorted philtres for the purpose of remedial thaumaturgy. A single Hero in the warband may chance upon the Petru before battle to risk one of these vitalogist wares. Roll a D6 to discover the draught's effect: 1 Debilitating (-1 Toughness for the whole of the next battle until they roll a 6 on a D6 in the recovery phase to shrug off the ill effects); 2-3 Strength (+1 Strength bonus until he rolls a 1 on a D6 in the recovery phase); 4-5 Resilience (+1 Toughness until he rolls a 1 on a D6 in the recovery phase); 6 Fortitude (gains an extra wound for the whole battle; once lost the wound cannot be restored).
-# Semantic contract (check analysis_status before treating as accepted):
-#   The draught grants a current bonus of one duelist for the whole battle (-1/+1 S, +1 T, extra wound) with recovery-phase rolls to shrug it off; that is an admitted supplied condition of a fighter. Printed clause: Offering curatives through supplying suspicious potions, the Petru carries assorted philtres for the purpose of remedial thaumaturgy. A single Hero in the warband may chance upon the Petru before battle to risk one of these vitalogist wares. Roll a D6 to discover the draught's effect: 1 Debilitating (-1 Toughness for the whole of the next battle until they roll a 6 on a D6 in the recovery phase to shrug off the ill effects); 2-3 Strength (+1 Strength bonus until he rolls a 1 on a D6 in the recovery phase); 4-5 Resilience (+1 Toughness until he rolls a 1 on a D6 in the recovery phase); 6 Fortitude (gains an extra wound for the whole battle; once lost the wound cannot be restored).
-# effect_id:
-#   (not recorded)
-# relation:
-#   unresolved
-# parameters:
-#   {}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Pre-battle random preparation with a recovery-phase escape roll; the KB record is an unimplemented placeholder and the potion table has no operator. Not admitted silently: recorded as deferred product work for a preparations batch. Scope review integration: {"clause_id":"random-pre-battle-potion","review_clause_id":"random-pre-battle-potion","source_state":"matched","review_status":"reviewed","scope_reason":"The draught grants a current bonus of one duelist for the whole battle (-1/+1 S, +1 T, extra wound) with recovery-phase rolls to shrug it off; that is an admitted supplied condition of a fighter.","notes":"The pre-battle draw and the choice among the warband's Heroes are supplied inputs, not a simulated warband subsystem; no price or purchase is involved. This differs from the frozen LATER label.","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Before battle a single Hero may take one draught: 1 -1 Toughness for the next battle, 2-3 +1 Strength, 4-5 +1 Toughness, 6 an extra wound; each lasts until its own recovery-phase escape roll; observable: the granted statistic in the duel.","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"product","dependencies":"[]","implementation_batch":"B16-preparations","analysis_status":"reviewed","evidence":"none","evidence_refs":"[]"},"inherited_clause_text":"Offering curatives through supplying suspicious potions, the Petru carries assorted philtres for the purpose of remedial thaumaturgy. A single Hero in the warband may chance upon the Petru before battle to risk one of these vitalogist wares. Roll a D6 to discover the draught's effect: 1 Debilitating (-1 Toughness for the whole of the next battle until they roll a 6 on a D6 in the recovery phase to shrug off the ill effects); 2-3 Strength (+1 Strength bonus until he rolls a 1 on a D6 in the recovery phase); 4-5 Resilience (+1 Toughness until he rolls a 1 on a D6 in the recovery phase); 6 Fortitude (gains an extra wound for the whole battle; once lost the wound cannot be restored).","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
 
 # --- Authored scenarios ---
 # Derived from the printed draught table and the catalogue's own canonical conditions; no engine output
@@ -75,7 +46,6 @@
 
 - audit_id: rule/mordheim/channel-rats-mim/petru--potions/unimplemented.channel-rats-mim.petru.potions
   id: the-strength-draught-raises-the-affected-heroes-strength-by-one
-  covers: [random-pre-battle-potion]
   # "2-3 Strength (+1 Strength bonus ...)": the supplied result is the catalogue's canonical
   # condition.petru-strength and the printed grant is read on the affected Hero.
   fighters:
@@ -99,7 +69,6 @@
 
 - audit_id: rule/mordheim/channel-rats-mim/petru--potions/unimplemented.channel-rats-mim.petru.potions
   id: the-resilience-draught-raises-the-affected-heroes-toughness-by-one
-  covers: [random-pre-battle-potion]
   # "4-5 Resilience (+1 Toughness ...)".
   fighters:
     first:
@@ -122,7 +91,6 @@
 
 - audit_id: rule/mordheim/channel-rats-mim/petru--potions/unimplemented.channel-rats-mim.petru.potions
   id: the-debilitating-draught-lowers-the-affected-heroes-toughness-by-one
-  covers: [random-pre-battle-potion]
   # "1 Debilitating (-1 Toughness ...)": the printed penalty, read on the same Hero.
   fighters:
     first:
@@ -145,7 +113,6 @@
 
 - audit_id: rule/mordheim/channel-rats-mim/petru--potions/unimplemented.channel-rats-mim.petru.potions
   id: the-fortitude-draught-grants-the-affected-hero-one-extra-wound
-  covers: [random-pre-battle-potion]
   # "6 Fortitude (gains an extra wound for the whole battle ...)": the Hero declares its printed two
   # Wounds and the supplied draught starts it with three.  The printed rider - once lost the wound
   # cannot be restored - needs a recovery or healing step the duel does not carry, and is recorded in
@@ -171,7 +138,6 @@
 
 - audit_id: rule/mordheim/channel-rats-mim/petru--potions/unimplemented.channel-rats-mim.petru.potions
   id: without-a-supplied-draught-the-same-hero-keeps-its-base-characteristics
-  covers: [random-pre-battle-potion]
   # The control for all four grants: the identical fixture with no supplied result reads the base
   # characteristics unchanged, so the four grants above are attributable to the draught and not to the
   # build shape.
@@ -190,7 +156,6 @@
 
 - audit_id: rule/mordheim/channel-rats-mim/petru--potions/unimplemented.channel-rats-mim.petru.potions
   id: two-draughts-of-the-same-table-in-one-build-are-refused
-  covers: [random-pre-battle-potion]
   # The printed table is "a single Hero ... may chance upon the Petru before battle to risk one of these
   # vitalogist wares": one draught.  The supplied-result resolver raises its own sentence when two
   # results of this table are declared on one build, which is that printed restriction as a construction

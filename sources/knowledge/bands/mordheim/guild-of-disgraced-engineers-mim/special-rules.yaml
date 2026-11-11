@@ -13,10 +13,6 @@ rules:
         kind: mechanic
         id: skill.hard-to-kill
   name: Hard to Kill
-  effect: >-
-    Dwarfs are tough, resilient individuals who can only be taken out of action on a roll of 6
-    instead of 5-6 when rolling on the Injury chart. Treat a roll of 1-2 as knocked down, 3-5 as
-    stunned, and 6 as out of action.
   source:
     manual: broheim.net
     printed_page: 1
@@ -24,13 +20,9 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Guild Of Disgraced Engineers.pdf
   name_i18n:
     es: Difíciles de Matar
-  effect_i18n:
-    es: >-
-      Los enanos son individuos duros y resistentes que solo pueden ser dejados fuera de combate con
-      un resultado de 6 en lugar de 5-6 al tirar en la tabla de Heridas. Trata un resultado de 1-2
-      como derribado, 3-5 como aturdido y 6 como fuera de combate.
   applies_to:
     band: true
+  rule_ref: shared-rule.hard-to-kill
 - id: band--hard-head
   runtime:
     scope: 'YES'
@@ -68,9 +60,7 @@ rules:
     - id: unimplemented.guild-of-disgraced-engineers-mim.band.armour
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Armour
   source:
     manual: broheim.net
@@ -81,7 +71,7 @@ rules:
     es: Armadura
   applies_to:
     band: true
-  rule_ref: shared-rule.armour-2
+  rule_ref: shared-rule.dwarf-armour
 - id: band--field-test
   runtime:
     scope: 'NO'
@@ -91,9 +81,7 @@ rules:
     - id: unimplemented.guild-of-disgraced-engineers-mim.band.field-test
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Field Test
   effect: >-
     The Engineer and Apprentices can use any weapon or armour created through the Inventions table.
@@ -122,9 +110,10 @@ rules:
     - id: unimplemented.guild-of-disgraced-engineers-mim.band.death-of-a-leader
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: deferred.other
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Death of a Leader
   effect: >-
     In the event the Expelled Engineer dies, he will pass the Book of Bad Ideas onto an Apprentice
@@ -153,9 +142,7 @@ rules:
     - id: unimplemented.guild-of-disgraced-engineers-mim.band.characteristic-maximums
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Characteristic Increase (Dwarf Maximums)
   effect: >-
     Dwarf characteristics may not be increased beyond the Dwarf maximum characteristic profile
@@ -188,9 +175,7 @@ rules:
     - id: unimplemented.guild-of-disgraced-engineers-mim.band.dwarf-engineer-skills
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Dwarf Engineer Skill List
   effect: >-
     Dwarfs may choose to use the following skill list instead of the standard skill lists: True Grit
@@ -244,9 +229,7 @@ rules:
     - id: unimplemented.guild-of-disgraced-engineers-mim.band.customisation-chart
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Customisation Chart (Gyrocopter)
   effect: >-
     2D6 result: 2 - That didn't go well! Over-enthusiastic tinkering coupled with a wobbly ladder
@@ -318,9 +301,7 @@ rules:
     - id: unimplemented.guild-of-disgraced-engineers-mim.band.inventions
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Inventions
   effect: >-
     Inventions are created by the Engineer; all the blueprints necessary are in the Book of Bad
@@ -463,9 +444,7 @@ rules:
     - id: unimplemented.guild-of-disgraced-engineers-mim.band.experimental-weapons-chart
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Experimental Weapons Chart
   effect: >-
     D6 result: 1 - Scrap: the weapon is mangled beyond repair; it must be removed from the warband's
@@ -502,9 +481,7 @@ rules:
     - id: unimplemented.guild-of-disgraced-engineers-mim.item.cinderblast-bomb
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Cinderblast Bomb
   effect: >-
     45+3D6 gold crowns, Rare 10, Sapper only. Range: 2-8", Strength: 6 (under hole), 3 in area.
@@ -567,9 +544,10 @@ rules:
     - id: unimplemented.guild-of-disgraced-engineers-mim.expelled-engineer.inventor
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: deferred.other
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Inventor
   effect: >-
     In the Trading phase, instead of searching for rare items or visiting a location, the Engineer
@@ -601,9 +579,10 @@ rules:
     - id: unimplemented.guild-of-disgraced-engineers-mim.apprentice-engineers.assistant
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: deferred.other
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Assistant
   effect: >-
     An Apprentice will assist the Expelled Engineer with his inventions; for each apprentice
@@ -635,9 +614,10 @@ rules:
     - id: unimplemented.guild-of-disgraced-engineers-mim.sapper.make-explosives
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: deferred.other
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Make Explosives
   effect: >-
     A Sapper may spend the post-game phase making explosives instead of searching for Rare items.
@@ -670,9 +650,7 @@ rules:
     - id: unimplemented.guild-of-disgraced-engineers-mim.sapper.tunnel-rat
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Tunnel Rat
   effect: Re-roll characteristics tests when underground.
   source:
@@ -696,9 +674,7 @@ rules:
     - id: unimplemented.guild-of-disgraced-engineers-mim.thunderers.properly-used
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: shooting, casting or escape without resolving the
-        duel. Source prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Properly Used
   effect: >-
     Any Thunderer worth their beard knows their weapon inside and out. When using the optional
@@ -728,9 +704,7 @@ rules:
     - id: unimplemented.guild-of-disgraced-engineers-mim.gyrocopter.space
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Space
   effect: The gyrocopter starts with 1 seat available. This may be improved via Tinker.
   source:
@@ -754,9 +728,7 @@ rules:
     - id: unimplemented.guild-of-disgraced-engineers-mim.gyrocopter.full-steam-ahead
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Full Steam Ahead!
   effect: >-
     The Gyrocopter can achieve a burst of speed, moving only in a straight line, but at a risk. Roll
@@ -793,9 +765,7 @@ rules:
     - id: unimplemented.guild-of-disgraced-engineers-mim.gyrocopter.engine-malfunction
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Engine Malfunction
   effect: >-
     1 - Kaboom! The engine explodes spectacularly, dealing D6 wounds to the Copter hull; any model

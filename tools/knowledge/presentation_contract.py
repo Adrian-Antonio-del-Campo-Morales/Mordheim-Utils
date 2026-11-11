@@ -235,9 +235,15 @@ def build_presentation_entries(artefact: dict) -> list[dict]:
                 if previous and previous["fields"] != fields:
                     # One identity must address one text: two rows claiming it
                     # with different prose would make the resolution silently
-                    # pick one of them. The same text published under two paths
-                    # (`skills/` and `mechanics/skills/` alias one skill row) is
-                    # the same entry, and one of the two paths is kept.
+                    # pick one of them. The same identity published under two
+                    # paths (`skills/` and `mechanics/skills/` alias one skill;
+                    # the mechanic row carries no prose of its own) is the same
+                    # entry, and the path with the richer fields is kept.
+                    if all(previous["fields"].get(field) == value for field, value in fields.items()):
+                        continue
+                    if all(fields.get(field) == value for field, value in previous["fields"].items()):
+                        entries[key] = entry
+                        continue
                     raise ValueError(f"Duplicate presentation identity {ref}: {previous['source']} / {entry['source']}")
                 entries.setdefault(key, entry)
                 if str(value.get("id", "")).startswith("campaign.magical-artefact."):

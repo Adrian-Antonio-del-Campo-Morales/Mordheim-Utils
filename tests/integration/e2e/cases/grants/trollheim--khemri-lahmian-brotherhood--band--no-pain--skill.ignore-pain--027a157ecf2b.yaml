@@ -1,6 +1,5 @@
 ﻿# E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/khemri-lahmian-brotherhood/band--no-pain/skill.ignore-pain
-# scaffold_fingerprint: 775a016cc10b3f4c5355285168b6c3d89653c8a9b529d54cb35de80d00545cd5
 # authoring_status: AUTHORED
 # authoring_progress: the admitted undead-class-no-pain clause carries one authored
 #   scenario whose bearer is the printed recipient of the band's rule (read statically from the
@@ -11,38 +10,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: undead-class-no-pain (scope: YES)
-# AUTHORED[undead-class-no-pain]: 1 scenario evidences the conversion (see the closing note above).
-# origin_id:
-#   rule/trollheim/khemri-lahmian-brotherhood/band--no-pain/skill.ignore-pain
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/trollheim/khemri-lahmian-brotherhood/special-rules.yaml
-# source_fingerprint:
-#   de1e95ce5309fbe8fd60774196b85bd74c830cb8adcae2859a3b4750e6ee7339
-# source_sha256_at_generation:
-#   b916cfbc1207fa7a28fd5b0c3cbced9ab169559d0f51326fcf084c55213dd7b8
-# Printed rule text:
-#   All warriors with the Undead special rule treat a Stunned result as Knocked Down.
-# Semantic contract (check analysis_status before treating as accepted):
-#   All warriors with the Undead special rule treat a Stunned result as Knocked Down; observable: every undead bearer of the class rule is never left Stunned.
-# effect_id:
-#   skill.ignore-pain
-# relation:
-#   equivalent
-# parameters:
-#   {"stunned_becomes":"knocked-down"}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Class-scoped form of the same predicate, printed for the Tomb Guardians and the Khemri Tomb Guardians warbands. The class membership is a compilation concern; the consumed flag is the same one. Scope review integration: {"clause_id":"undead-class-no-pain","review_clause_id":"undead-class-no-pain","source_state":"unverified","review_status":"reviewed","scope_reason":"Lahmian Brotherhood's Undead-class conversion applies as an individual injury consequence.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"} Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"undead-class-no-pain","audit_group":"EQ-skill.ignore-pain","verified_facet":"skill.ignore-pain","relationship":"shared_facet","boundary":"Share the post-chart Stunned-to-Knocked-Down transformation. Preserve recipients and printed Resilient prerequisites; do not add that prerequisite to innate No Pain. Squishy expressly disables No Pain. A conversion is not a helmet roll or ordinary Knocked Down for Jump Up.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+# AUTHORED: 1 scenario evidences the conversion (see the closing note above).
 
 
 # --- Authored scenarios ---
@@ -53,8 +24,6 @@
 # converted to Knocked Down by the bearer's rule.
 - audit_id: rule/trollheim/khemri-lahmian-brotherhood/band--no-pain/skill.ignore-pain
   id: a-stunned-result-becomes-knocked-down
-  covers:
-  - undead-class-no-pain
   fighters:
     first:
       main_weapon_id: weapon.mace

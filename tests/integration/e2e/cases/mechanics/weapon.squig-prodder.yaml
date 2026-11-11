@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/weapon.squig-prodder
-# scaffold_fingerprint: 2c17177ed9f125e915aa90e2340d0a6d80d9be45b76f8d1ccb9de89d2eeaec59
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clause carries two authored scenarios for the strike-first priority and the permitted off hand plus one refusal for an unlisted one. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -8,38 +7,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 2 scenarios and 1 refusal cover the strike-first priority and the printed off-hand limit with its permitted control.
-# origin_id:
-#   mechanic/weapon.squig-prodder
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   137c8985859f36761c55810074b8d3c8c234fbad26d7c93616bb91cc160080bc
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   Strikes first and may be combined with a shield or spiked gauntlet.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Squig Prodder strikes first and may be combined with a shield or spiked gauntlet. Closure: priority 1 and a limited off hand.
-# effect_id:
-#   weapon.squig-prodder
-# relation:
-#   equivalent
-# parameters:
-#   {"priority": 1}
-# conditions:
-#   {"application": "attack", "stacking": "stack", "trigger": "attack"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Printed profile equals the contract parameters; the compiled attack EffectSet is consumed by build_attacks and the hit/wound/armour/injury contexts. The printed extra clause (Cave Squigs stay under control within 12 inches) is a group/movement clause outside the 1v1 duel; the admitted individual consequence is the spear-equivalent strike-first attack, which the operator delivers.
+# AUTHORED: 2 scenarios and 1 refusal cover the strike-first priority and the printed off-hand limit with its permitted control.
 
 # --- Authored scenarios ---
 # mechanic/weapon.squig-prodder - strikes first and only combines with a shield
@@ -51,7 +22,6 @@
 
 - audit_id: mechanic/weapon.squig-prodder
   id: squig-prodder-strikes-first-despite-lower-initiative
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.squig-prodder
@@ -74,7 +44,6 @@
 
 - audit_id: mechanic/weapon.squig-prodder
   id: squig-prodder-is-refused-with-an-unlisted-off-hand
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.squig-prodder
@@ -88,7 +57,6 @@
 
 - audit_id: mechanic/weapon.squig-prodder
   id: squig-prodder-is-accepted-with-a-spiked-gauntlet
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.squig-prodder

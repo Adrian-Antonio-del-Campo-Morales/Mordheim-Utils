@@ -10,9 +10,7 @@ rules:
     - id: unimplemented.disciples-of-maldred-mou.prophet.leader
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Leader (Prophet)
   effect: >-
     Any warrior within 6" of the Prophet may use his Leadership value when taking Leadership tests.
@@ -39,9 +37,7 @@ rules:
     - id: unimplemented.disciples-of-maldred-mou.prophet.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Wizard (Prophet)
   effect: The Prophet of the False Grail is a wizard and uses Chaos Rituals.
   source:
@@ -65,9 +61,7 @@ rules:
     - id: unimplemented.disciples-of-maldred-mou.prophet.corrupting-influence
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Corrupting Influence
   effect: >-
     A Prophet of the False Grail uses guile and cunning to deceive his followers into acts of
@@ -106,9 +100,7 @@ rules:
     - id: unimplemented.disciples-of-maldred-mou.prophet.his-masters-gift
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: His Master's Gift (Prophet)
   effect: >-
     When a Prophet has accumulated enough experience, instead of picking a skill he may roll on the
@@ -136,9 +128,7 @@ rules:
     - id: unimplemented.disciples-of-maldred-mou.band.gifts-of-tzeentch
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Gifts of Tzeentch
   effect: >-
     Roll 2D6. 2-3 The Master's Foresight: from now on the character is allowed to reroll one die
@@ -195,9 +185,7 @@ rules:
     - id: unimplemented.disciples-of-maldred-mou.questing-knights.knights-virtue
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Knight's Virtue
   effect: >-
     An untainted Questing Knight is a chivalrous warrior who is superior to ordinary warriors. He
@@ -229,9 +217,7 @@ rules:
     - id: unimplemented.disciples-of-maldred-mou.questing-knights.knights-feats
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Knight's Feats (Questing Knight)
   effect: >-
     A Questing Knight is a mighty hero capable of dashing feats of strength and bravery. He may
@@ -264,9 +250,7 @@ rules:
     - id: unimplemented.disciples-of-maldred-mou.questing-knights.corruption
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Corruption
   effect: >-
     After each battle any untainted Knights (ie. basic Questing Knights) must take a Ld test in
@@ -309,9 +293,7 @@ rules:
     - id: unimplemented.disciples-of-maldred-mou.questing-knights.his-masters-gift
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: His Master's Gift (Corrupt Knight)
   effect: >-
     Once corrupted, when a Knight has accumulated enough experience, instead of picking a skill he
@@ -339,9 +321,7 @@ rules:
     - id: unimplemented.disciples-of-maldred-mou.squires.oath-of-servitude
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Oath of Servitude
   effect: >-
     When hiring new Squires, elect which Knight they are to follow. Note that a Knight may only have
@@ -374,9 +354,7 @@ rules:
     - id: unimplemented.disciples-of-maldred-mou.squires.in-his-lords-footsteps
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: In His Lord's Footsteps
   effect: >-
     On a Knight's death, the Squire is released from his bond and elevated into the sacred order of
@@ -433,26 +411,12 @@ rules:
     - id: unimplemented.disciples-of-maldred-mou.band.knights-feats-maldred
       scope: 'NO'
       binding: null
-      reason: >-
-        Sword master is not published by this binding; its separate contract
-        remains pending. Lancer is excluded by the separate scope decision below.
+      reason: pending-implementation
     - id: excluded.knights-feats.lancer
       scope: 'NO'
       binding: null
-      reason: >-
-        Lancer is outside the duel scope by user decision adopted 2026-11-03.
-        Its mounted charge continuation is excluded, not pending implementation.
+      reason: out-of-scope.movement
   name: Knights Feats
-  effect: >-
-    1 - Combat charge: the character gains +1 attack and +1 WS when he charges. 2 - Lancer: the
-    character can use this skill only on horseback; may not be combined with combat charge; if the
-    character's first opponent(s) suffer an unsaved wound, the character may continue his charge;
-    opponents are not allowed to strike back; the charge may then be continued another 4", and any
-    enemy within 2" of that charge line can be charged; if the character does charge another enemy
-    he counts as charging in the next combat round. 3 - Sword master: when using a sword the
-    character may parry, with reroll at equal or higher. 4 - Armour specialist: when using Heavy
-    armour and shield the subject ignores the standard movement penalty and his armour save cannot
-    be modified beyond 5+ due to strength; this does not work on horseback.
   source:
     manual: broheim.net
     printed_page: 7
@@ -460,20 +424,9 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Disciples%20of%20Maldred.pdf
   name_i18n:
     es: Hazañas de Caballería
-  effect_i18n:
-    es: >-
-      1 - Carga de combate: el personaje gana +1 ataque y +1 HA cuando carga. 2 - Lancero: el
-      personaje solo puede usar esta habilidad a caballo; no puede combinarse con carga de combate;
-      si el primer oponente u oponentes del personaje sufren una herida no salvada, el personaje
-      puede continuar su carga; los oponentes no pueden devolver los golpes; la carga puede
-      continuarse otros 4", y cualquier enemigo a 2" o menos de esa línea de carga puede ser
-      cargado; si el personaje carga contra otro enemigo, cuenta como cargando en la siguiente ronda
-      de combate. 3 - Maestro de la espada: al usar una espada el personaje puede detener golpes,
-      repitiendo la tirada con igual o mayor. 4 - Especialista en armaduras: al usar armadura pesada
-      y escudo, el sujeto ignora la penalización estándar de movimiento y su salvación por armadura
-      no puede modificarse por debajo de 5+ por fuerza; esto no funciona a caballo.
   applies_to:
     band: true
+  rule_ref: shared-rule.knights-feats
 
 - id: mercenaries--equipment-restrictions
   runtime:
@@ -489,10 +442,6 @@ rules:
         parameters:
           forbids:
           - ranged-weapons
-    # The printed first half of the same clause: the Mercenary Equipment list is
-    # open before the first game of a new campaign, and the `equipment.post-creation`
-    # variant is what removes it afterwards, leaving the Squire and Men-at-Arms
-    # Equipment Lists the profile declares.
     - id: compiler.mercenary-equipment-at-creation
       scope: 'YES'
       binding:

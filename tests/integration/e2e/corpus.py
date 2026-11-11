@@ -2,11 +2,11 @@
 
 Each YAML document under ``cases/`` is a list of scenario mappings written in
 the vocabulary documented in README.md.  A scenario declares the audit ID it
-belongs to (``audit_id``) and the clause references it demonstrates
-(``covers``); execution stays in ``runner.check_case``.  This module only
+belongs to (``audit_id``) and, when that identity declares clauses, the clause
+ids it demonstrates (``covers``); execution stays in ``runner.check_case``.  This module only
 loads and validates declarations, so a malformed fixture fails with the file,
 index and scenario ID that produced it.  Cross-checking ``audit_id`` and
-``covers`` against the canonical audit register belongs to ``test_inventory``.
+``covers`` against the knowledge-base clause inventory belongs to ``test_inventory``.
 
 The static contract lives in :func:`scenario_contract_errors`, a pure function
 that decides nothing normative (no keyword bans, no fixture-key precedents) and
@@ -228,9 +228,9 @@ def validate_scenario(raw, source: str, index: int) -> Scenario:
         _fail(source, index, f"unknown scenario fields: {unknown}")
     scenario_id = _text(raw.get("id"), "id", source, index)
     audit_id = _text(raw.get("audit_id"), "audit_id", source, index, scenario_id)
-    covers = raw.get("covers")
-    if not isinstance(covers, list) or not covers:
-        _fail(source, index, "covers must be a nonempty list of clause ids", scenario_id)
+    covers = raw.get("covers", [])
+    if not isinstance(covers, list):
+        _fail(source, index, "covers must be a list of clause ids", scenario_id)
     for clause in covers:
         _text(clause, "covers entry", source, index, scenario_id)
     for error in scenario_contract_errors(raw):

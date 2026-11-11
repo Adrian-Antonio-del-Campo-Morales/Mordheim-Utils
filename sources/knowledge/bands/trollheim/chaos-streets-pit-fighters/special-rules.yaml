@@ -30,15 +30,12 @@ rules:
         id: mechanic.leader-six
 - id: pit-king--pit-fighter
   name: Pit Fighter
-  effect: This warrior has the warband's Pit Fighter rule.
   source:
     manual: chaos-in-the-streets
     printed_page: 122
     section: Heroes / 1 Pit King / Special Rules / Pit Fighter
   name_i18n:
     es: Luchador de Foso
-  effect_i18n:
-    es: Este guerrero tiene la regla Luchador de foso de la banda.
   applies_to:
     profile_ids:
     - pit-king
@@ -50,19 +47,16 @@ rules:
     - id: unimplemented.chaos-streets-pit-fighters.pit-king.pit-fighter
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
+  rule_ref: shared-rule.pit-fighter
 - id: dwarf-troll-slayer--pit-fighter
   name: Pit Fighter
-  effect: This warrior has the warband's Pit Fighter rule.
   source:
     manual: chaos-in-the-streets
     printed_page: 123
     section: Heroes / 0-1 Dwarf Troll Slayer / Special Rules / Pit Fighter
   name_i18n:
     es: Luchador de Foso
-  effect_i18n:
-    es: Este guerrero tiene la regla Luchador de foso de la banda.
   applies_to:
     profile_ids:
     - dwarf-troll-slayer
@@ -74,8 +68,8 @@ rules:
     - id: unimplemented.chaos-streets-pit-fighters.dwarf-troll-slayer.pit-fighter
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
+  rule_ref: shared-rule.pit-fighter
 - id: dwarf-troll-slayer--hard-to-kill
   kind: profile_ability
   runtime:
@@ -89,22 +83,16 @@ rules:
         kind: mechanic
         id: skill.hard-to-kill
   name: Hard to Kill
-  effect: >-
-    The Dwarf Troll Slayer is taken Out of Action only on a 6 on the Injury chart; 1-2 is Knocked
-    Down and 3-5 is Stunned.
   source:
     manual: chaos-in-the-streets
     printed_page: 123
     section: Heroes / 0-1 Dwarf Troll Slayer / Special Rules / Hard to Kill
   name_i18n:
     es: Difíciles de Matar
-  effect_i18n:
-    es: >-
-      El Matatrolles Enano solo es puesto Fuera de combate con un 6 en la tabla de Heridas; 1-2 es
-      Derribado y 3-5 es Aturdido.
   applies_to:
     profile_ids:
     - dwarf-troll-slayer
+  rule_ref: shared-rule.hard-to-kill
 - id: dwarf-troll-slayer--hate-orcs-and-goblins
   name: Hate Orcs and Goblins
   effect: The Dwarf Troll Slayer is subject to Hatred against Orcs and Goblins.
@@ -154,24 +142,15 @@ rules:
     - id: unimplemented.chaos-streets-pit-fighters.dwarf-troll-slayer.ancestral-grudge
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: dwarf-troll-slayer--death-oath
   name: Death Oath
-  effect: >-
-    The Dwarf Troll Slayer is completely immune to Psychology and does not need to take tests for
-    fighting alone.
   source:
     manual: chaos-in-the-streets
     printed_page: 123
     section: Heroes / 0-1 Dwarf Troll Slayer / Special Rules / Death Oath
   name_i18n:
     es: Juramento de Muerte
-  effect_i18n:
-    es: >-
-      El Matatrolles Enano es completamente inmune a la Psicología y no necesita hacer chequeos por
-      luchar solo.
   applies_to:
     profile_ids:
     - dwarf-troll-slayer
@@ -185,6 +164,12 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+      clauses:
+      - id: psychology-immunity
+        scope: 'YES'
+      - id: death-oath-all-alone
+        scope: 'NO'
+  rule_ref: shared-rule.death-oath
 - id: dwarf-troll-slayer--hard-head
   name: Hard Head
   effect: >-
@@ -246,15 +231,12 @@ rules:
         id: compiler.slayer-skill-options
 - id: pit-veterans--pit-fighter
   name: Pit Fighter
-  effect: This warrior has the warband's Pit Fighter rule.
   source:
     manual: chaos-in-the-streets
     printed_page: 122
     section: Heroes / 0-2 Pit Veterans / Special Rules / Pit Fighter
   name_i18n:
     es: Luchador de Foso
-  effect_i18n:
-    es: Este guerrero tiene la regla Luchador de foso de la banda.
   applies_to:
     profile_ids:
     - pit-veterans
@@ -266,19 +248,16 @@ rules:
     - id: unimplemented.chaos-streets-pit-fighters.pit-veterans.pit-fighter
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
+  rule_ref: shared-rule.pit-fighter
 - id: pit-fighters--pit-fighter
   name: Pit Fighter
-  effect: This warrior has the warband's Pit Fighter rule.
   source:
     manual: chaos-in-the-streets
     printed_page: 124
     section: Henchmen / Pit Fighters / Special Rules / Pit Fighter
   name_i18n:
     es: Luchador de Foso
-  effect_i18n:
-    es: Este guerrero tiene la regla Luchador de foso de la banda.
   applies_to:
     profile_ids:
     - pit-fighters
@@ -290,19 +269,16 @@ rules:
     - id: unimplemented.chaos-streets-pit-fighters.pit-fighters.pit-fighter
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
+  rule_ref: shared-rule.pit-fighter
 - id: pursuers--pit-fighter
   name: Pit Fighter
-  effect: This warrior has the warband's Pit Fighter rule.
   source:
     manual: chaos-in-the-streets
     printed_page: 124
     section: Henchmen / 0-7 Pursuers / Special Rules / Pit Fighter
   name_i18n:
     es: Luchador de Foso
-  effect_i18n:
-    es: Este guerrero tiene la regla Luchador de foso de la banda.
   applies_to:
     profile_ids:
     - pursuers
@@ -314,8 +290,8 @@ rules:
     - id: unimplemented.chaos-streets-pit-fighters.pursuers.pit-fighter
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
+  rule_ref: shared-rule.pit-fighter
 - id: pursuers--evade
   name: Evade
   source:
@@ -335,21 +311,16 @@ rules:
     - id: unimplemented.chaos-streets-pit-fighters.pursuers.evade
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   rule_ref: shared-rule.evade
 - id: ogre-pit-fighter--pit-fighter
   name: Pit Fighter
-  effect: This warrior has the warband's Pit Fighter rule.
   source:
     manual: chaos-in-the-streets
     printed_page: 125
     section: Henchmen / 0-1 Ogre Pit Fighter / Special Rules / Pit Fighter
   name_i18n:
     es: Luchador de Foso
-  effect_i18n:
-    es: Este guerrero tiene la regla Luchador de foso de la banda.
   applies_to:
     profile_ids:
     - ogre-pit-fighter
@@ -361,8 +332,8 @@ rules:
     - id: unimplemented.chaos-streets-pit-fighters.ogre-pit-fighter.pit-fighter
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
+  rule_ref: shared-rule.pit-fighter
 - id: ogre-pit-fighter--fear
   name: Fear
   effect: The Ogre Pit Fighter causes Fear.
@@ -413,8 +384,7 @@ rules:
     - id: unimplemented.chaos-streets-pit-fighters.ogre-pit-fighter.large-target
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: ogre-pit-fighter--skills
   name: Skills
   source:
@@ -468,8 +438,7 @@ rules:
     - id: unimplemented.chaos-streets-pit-fighters.ogre-pit-fighter.slow-witted
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--pit-fighter-skill
   name: Pit Fighter
   effect: >-
@@ -495,8 +464,7 @@ rules:
     - id: unimplemented.chaos-streets-pit-fighters.band.pit-fighter-skill
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--fighting-styles
   name: Weapons & Armour — Fighting Styles
   effect: >-
@@ -531,9 +499,7 @@ rules:
     - id: compiler.pit-fighter-fighting-styles
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: initial recruitment packages, gold costs, later purchases and swapping
-        equipment between warband members require roster and campaign state.
+      reason: out-of-scope.campaign
 - id: band--hired-swords
   name: Hired Swords
   effect: Pit Fighters may hire any Hired Sword except Elves.
@@ -555,9 +521,7 @@ rules:
     - id: unimplemented.chaos-streets-pit-fighters.band.hired-swords
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: band--free-the-slaves
   name: Free the Slaves!
   source:
@@ -578,6 +542,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.hatred-slavers
+      clauses:
+      - id: never-sell-captives
+        scope: 'NO'
+      - id: hate-slavers
+        scope: 'YES'
   rule_ref: shared-rule.free-the-slaves
 - id: band--in-the-pit
   name: In the Pit!
@@ -615,9 +584,7 @@ rules:
     - id: unimplemented.chaos-streets-pit-fighters.band.in-the-pit
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: band--pit-fighter-skill-bulging-biceps
   kind: warband_skill
   runtime:
@@ -868,17 +835,12 @@ rules:
     band: true
 - id: dwarf-troll-slayer--no-armour
   name: No Armour
-  effect: >-
-    A Dwarf Troll Slayer may never wear any form of armour.
   source:
     manual: chaos-in-the-streets
     printed_page: 123
     section: Heroes / 0-1 Dwarf Troll Slayer / Special Rules / No Armour
   name_i18n:
     es: Sin Armadura
-  effect_i18n:
-    es: >-
-      Un Matatrolles Enano jamás puede llevar ningún tipo de armadura.
   applies_to:
     profile_ids:
     - dwarf-troll-slayer
@@ -894,19 +856,15 @@ rules:
         id: profile.equipment-restrictions
         parameters:
           forbids: armour
+  rule_ref: shared-rule.no-armour
 - id: dwarf-troll-slayer--no-missile-weapons
   name: No Missile Weapons
-  effect: >-
-    A Dwarf Troll Slayer may never use missile weapons.
   source:
     manual: chaos-in-the-streets
     printed_page: 123
     section: Heroes / 0-1 Dwarf Troll Slayer / Special Rules / No Missile Weapons
   name_i18n:
     es: Sin Armas de Proyectil
-  effect_i18n:
-    es: >-
-      Un Matatrolles Enano jamás puede usar armas de proyectil.
   applies_to:
     profile_ids:
     - dwarf-troll-slayer
@@ -920,3 +878,4 @@ rules:
       binding:
         kind: compiler
         id: compiler.no-missile-weapons
+  rule_ref: shared-rule.no-missile-weapons

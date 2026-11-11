@@ -31,6 +31,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+      clauses:
+      - id: leader-six
+        scope: 'YES'
+      - id: leader-replacement
+        scope: 'NO'
 - id: skink-priest--spellcaster
   name: Spellcaster
   effect: >-
@@ -57,8 +62,7 @@ rules:
     - id: unimplemented.lustria-lizardmen.skink-priest.spellcaster
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: skink-priest--scaly-skin-6plus
   name: Scaly Skin 6+
   effect: The Skink Priest has a natural 6+ Scaly Skin save.
@@ -125,8 +129,7 @@ rules:
     - id: unimplemented.lustria-lizardmen.skink-priest.amphibious
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: skink-priest--jungle-native
   name: Jungle Native
   effect: The Skink Priest moves through jungle terrain without movement penalties.
@@ -149,8 +152,7 @@ rules:
     - id: unimplemented.lustria-lizardmen.skink-priest.jungle-native
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: saurus-totem-warrior--scaly-skin-5plus
   name: Scaly Skin 5+
   effect: The Saurus Totem Warrior has a natural 5+ Scaly Skin save.
@@ -264,19 +266,12 @@ rules:
           value: 6
 - id: skink-great-crests--amphibious
   name: Amphibious
-  effect: >-
-    Great Crested Skinks move through aquatic terrain without movement penalties and count as being
-    in cover while in water.
   source:
     manual: lustria
     printed_page: 55
     section: Heroes / 0-2 Great Crested Skinks / Amphibious
   name_i18n:
     es: Anfibio
-  effect_i18n:
-    es: >-
-      Los Skinks de gran cresta se mueven por terreno acuático sin penalizaciones de movimiento y
-      cuentan como estando en cobertura mientras estén en el agua.
   applies_to:
     profile_ids:
     - skink-great-crests
@@ -288,8 +283,8 @@ rules:
     - id: unimplemented.lustria-lizardmen.skink-great-crests.amphibious
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
+  rule_ref: shared-rule.amphibious
 - id: skink-great-crests--jungle-native
   name: Jungle Native
   effect: Great Crested Skinks move through jungle terrain without movement penalties.
@@ -312,8 +307,7 @@ rules:
     - id: unimplemented.lustria-lizardmen.skink-great-crests.jungle-native
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: skink-braves--scaly-skin-6plus
   name: Scaly Skin 6+
   effect: Skink Braves have a natural 6+ Scaly Skin save.
@@ -356,19 +350,12 @@ rules:
           value: 6
 - id: skink-braves--amphibious
   name: Amphibious
-  effect: >-
-    Skink Braves move through aquatic terrain without movement penalties and count as being in cover
-    while in water.
   source:
     manual: lustria
     printed_page: 55
     section: Henchmen / Skink Braves / Amphibious
   name_i18n:
     es: Anfibio
-  effect_i18n:
-    es: >-
-      Los Skinks valientes se mueven por terreno acuático sin penalizaciones de movimiento y cuentan
-      como estando en cobertura mientras estén en el agua.
   applies_to:
     profile_ids:
     - skink-braves
@@ -380,8 +367,8 @@ rules:
     - id: unimplemented.lustria-lizardmen.skink-braves.amphibious
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
+  rule_ref: shared-rule.amphibious
 - id: skink-braves--jungle-native
   name: Jungle Native
   effect: Skink Braves move through jungle terrain without movement penalties.
@@ -404,8 +391,7 @@ rules:
     - id: unimplemented.lustria-lizardmen.skink-braves.jungle-native
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: saurus-braves--scaly-skin-5plus
   name: Scaly Skin 5+
   effect: Saurus Braves have a natural 5+ Scaly Skin save.
@@ -503,6 +489,13 @@ rules:
         id: trait.natural-armour-save
         parameters:
           value: 4
+      clauses:
+      - id: four-plus-scaly-skin
+        scope: 'YES'
+      - id: stacks-with-armour-but-not-hardened-leather
+        scope: 'YES'
+      - id: strength-cannot-go-beyond-six
+        scope: 'YES'
     - id: trait.natural-armour-stacks
       scope: 'YES'
       binding:
@@ -510,6 +503,13 @@ rules:
         id: trait.natural-armour-stacks
         parameters:
           value: true
+      clauses:
+      - id: four-plus-scaly-skin
+        scope: 'YES'
+      - id: stacks-with-armour-but-not-hardened-leather
+        scope: 'YES'
+      - id: strength-cannot-go-beyond-six
+        scope: 'YES'
     - id: trait.natural-armour-worst-save
       scope: 'YES'
       binding:
@@ -517,6 +517,13 @@ rules:
         id: trait.natural-armour-worst-save
         parameters:
           value: 6
+      clauses:
+      - id: four-plus-scaly-skin
+        scope: 'YES'
+      - id: stacks-with-armour-but-not-hardened-leather
+        scope: 'YES'
+      - id: strength-cannot-go-beyond-six
+        scope: 'YES'
 - id: kroxigor--aquatic
   name: Aquatic
   effect: >-
@@ -543,8 +550,7 @@ rules:
     - id: unimplemented.lustria-lizardmen.kroxigor.aquatic
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: kroxigor--fear
   name: Fear
   effect: The Kroxigor causes Fear.
@@ -595,19 +601,15 @@ rules:
     - id: unimplemented.lustria-lizardmen.kroxigor.large-target
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: kroxigor--animal
   name: Animal
-  effect: The Kroxigor never gains Experience.
   source:
     manual: lustria
     printed_page: 56
     section: Henchmen / 0-1 Kroxigor / Animal
   name_i18n:
     es: Animal
-  effect_i18n:
-    es: El Kroxigor nunca gana Experiencia.
   applies_to:
     profile_ids:
     - kroxigor
@@ -619,8 +621,8 @@ rules:
     - id: unimplemented.lustria-lizardmen.kroxigor.animal
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
+  rule_ref: shared-rule.never-gain-experience
 - id: band--scaly-skin
   runtime:
     scope: 'YES'
@@ -681,6 +683,13 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.cold-blooded-psychology
+      clauses:
+      - id: cold-blooded--scope--psychology-test
+        scope: 'YES'
+      - id: cold-blooded--scope--rout-test
+        scope: 'NO'
+      - id: cold-blooded-rout
+        scope: 'NO'
 - id: band--saurus-rarity
   name: Saurus Rarity
   effect: >-
@@ -705,8 +714,7 @@ rules:
     - id: unimplemented.lustria-lizardmen.band.saurus-rarity
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--lizardmen-special-skills-infiltration
   kind: warband_skill
   name: Infiltration
@@ -736,8 +744,7 @@ rules:
     - id: unimplemented.lustria-lizardmen.band.lizardmen-special-skills-infiltration
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--lizardmen-special-skills-great-hunter
   kind: warband_skill
   name: Great Hunter
@@ -767,8 +774,7 @@ rules:
     - id: unimplemented.lustria-lizardmen.band.lizardmen-special-skills-great-hunter
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--lizardmen-special-skills-battle-roar
   kind: warband_skill
   runtime:
@@ -862,9 +868,7 @@ rules:
     - id: campaign.sacred-mark-acquisition-history
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: proving that a mark was bought only at recruitment and never later requires
-        campaign history.
+      reason: out-of-scope.campaign
 - id: band--sacred-mark-huge-jaws
   kind: mark
   name: Huge Jaws
@@ -896,6 +900,13 @@ rules:
         id: trait.huge-jaws
         parameters:
           value: true
+      clauses:
+      - id: whole--scope--recipients
+        scope: 'YES'
+      - id: whole--scope--bite-strength
+        scope: 'YES'
+      - id: whole--scope--cost
+        scope: 'NO'
 - id: band--sacred-mark-venom-glands
   kind: mark
   runtime:

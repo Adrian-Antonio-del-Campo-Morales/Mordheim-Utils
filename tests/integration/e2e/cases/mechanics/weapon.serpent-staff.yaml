@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/weapon.serpent-staff
-# scaffold_fingerprint: 594303270be59b03a4cec4fe426fed552fa51b73c7e3eafacba3d3748511ce04
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clause carries two authored scenarios for the ordinary staff and the declared power replacement. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -8,38 +7,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 2 scenarios cover the ordinary two-handed parry and the per-round power that replaces the whole pool with one Weapon Skill 4 Strength 4 strike-first attack.
-# origin_id:
-#   mechanic/weapon.serpent-staff
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   1821528de6a08ea3786b4d15df7f56cec605fc12a21841fa9a0b55fb4b7eb394
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   Range: Close Combat Strength: As user Special Rules Parry: The staff is used with two hands and may be used to Parry. However, the Liche Priest may forgo all his normal attacks and parries in a round to use the power contained within the staff. The animated staff makes one WS4 S4 attack that strikes first, replacing all normal attacks and parries for that round.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Two-handed staff that may parry and, instead of all normal attacks and parries in a round, makes one Weapon Skill 4 Strength 4 strike-first attack. Closure: the parry/attack replacement is chosen per round and yields exactly one first-striking attack.
-# effect_id:
-#   weapon.serpent-staff
-# relation:
-#   equivalent
-# parameters:
-#   {"parry": true, "two_handed": true}
-# conditions:
-#   {"application": "attack", "stacking": "stack", "trigger": "attack"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   The replacement clause is implemented in select_attack_replacement (effect.serpent-staff-power with fixed strength 4 and priority 1, attacks clamped to one); the printed Weapon Skill 4 is realised through prepare_hit_context raising the WS to 4 for that effect.
+# AUTHORED: 2 scenarios cover the ordinary two-handed parry and the per-round power that replaces the whole pool with one Weapon Skill 4 Strength 4 strike-first attack.
 
 # --- Authored scenarios ---
 # mechanic/weapon.serpent-staff - a two-handed staff that may parry and, per
@@ -52,7 +23,6 @@
 
 - audit_id: mechanic/weapon.serpent-staff
   id: serpent-staff-parries-a-hit-that-beats-the-to-hit-roll
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -75,7 +45,6 @@
 
 - audit_id: mechanic/weapon.serpent-staff
   id: the-staffs-power-replaces-all-attacks-and-parries
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.serpent-staff

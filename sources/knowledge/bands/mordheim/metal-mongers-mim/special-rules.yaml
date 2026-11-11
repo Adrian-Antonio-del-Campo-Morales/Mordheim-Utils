@@ -10,9 +10,7 @@ rules:
     - id: unimplemented.metal-mongers-mim.band.skurvey-alliance
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Skurvey Alliance
   effect: >-
     The hospitality of Riskin Tatter-Ear is extended only so far as to allies in his armada from
@@ -39,9 +37,7 @@ rules:
     - id: unimplemented.metal-mongers-mim.band.skaven-special-skills
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Skaven Special Skills
   effect: >-
     Skaven Heroes may choose to use the following skill list instead of the standard skill lists:
@@ -88,11 +84,7 @@ rules:
     - id: band.customisation-chart
       scope: 'NO'
       binding: null
-      reason: >-
-        Post-battle advancement: a Skaven Hero holding Tinker-Rat rolls 2D6 on this chart
-        during the post-game sequence, so the characteristic changes and the Warpfire
-        Projector are not produced by a duel. The Machine-Ogre's own jaws and claws are
-        compiled as its intrinsic natural attack.
+      reason: out-of-scope.campaign
   name: Customisation Chart
   effect: >-
     2D6 result: 2 - That didn't go well! Over-enthusiastic tinkering coupled with a wobbly ladder
@@ -138,9 +130,7 @@ rules:
     - id: unimplemented.metal-mongers-mim.band.experimental-weapon-chart
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Experimental Weapon Chart
   effect: >-
     D6 result: 1 - Scrap: the weapon is mangled beyond repair; it must be removed from the warband's
@@ -178,9 +168,7 @@ rules:
     - id: unimplemented.metal-mongers-mim.item.warpfire-projector
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Warpfire Projector
   effect: >-
     Availability: Machine-Ogre only. Range: 6", Strength: 4, Save Modifier -1, Jet of Flame, Refuel.
@@ -214,9 +202,7 @@ rules:
     - id: unimplemented.metal-mongers-mim.item.ratling-gun
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Ratling Gun
   effect: >-
     275 gc (Forge-Rats and Technicians only), Rare 14. Range: 6"-16", Strength: 3, Save Modifier -1,
@@ -271,9 +257,7 @@ rules:
     - id: unimplemented.metal-mongers-mim.item.poison-wind-globe
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Poison Wind Globe
   effect: >-
     20 gold crowns (Skaven only), Rare 6. Range: 6", Strength: Special, Thrown weapon, Poison wind,
@@ -313,9 +297,7 @@ rules:
     - id: unimplemented.metal-mongers-mim.item.spike-jawed-snatcher
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Spike-Jawed Snatcher
   effect: >-
     25 gold crowns (Skaven only), Rare 10. Range: Close Combat, Strength: As user, Capture,
@@ -348,9 +330,7 @@ rules:
     - id: unimplemented.metal-mongers-mim.item.gas-mask
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Gas Mask
   effect: >-
     15 gold crowns, Rare 6. Protectively-coated visors crafted from leathery human skin. A skaven
@@ -382,9 +362,7 @@ rules:
     - id: unimplemented.metal-mongers-mim.item.pneumatic-arm
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Pneumatic Arm
   effect: >-
     140 gold crowns (Engineer Adept only), Rare 13. Pneumatic arms fastened to harnesses allow the
@@ -453,9 +431,7 @@ rules:
     - id: unimplemented.metal-mongers-mim.pirate-rats.water-rat
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Water-Rat
   effect: >-
     Water-rats from Clan Skurvy are among the few skaven with an affinity for water and the lunatic
@@ -483,9 +459,7 @@ rules:
     - id: unimplemented.metal-mongers-mim.technicians.globadier
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Globadier
   effect: >-
     Technicians are specially selected from broods with high intelligences to be the assistants for
@@ -515,9 +489,7 @@ rules:
     - id: unimplemented.metal-mongers-mim.machine-ogre.large
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Large
   effect: >-
     Machine-Ogres are huge creatures and therefore a tempting target. Any model may shoot at the
@@ -575,11 +547,10 @@ rules:
     - id: machine-ogre--bio-machinery.never-leaves-combat.pending
       scope: 'YES'
       binding: null
-      reason: >-
-        Retained individual clause: Immunity to psychology and never leaving close combat because of
-        psychology are admitted lasting individual states that decide whether the single duel
-        continues. Printed clause: immune to psychology and never leaves combat because of
-        Psychology
+      reason: out-of-scope.non-duel
+      clauses:
+      - id: never-leaves-combat
+        scope: 'NO'
   name: Bio Machinery
   effect: >-
     The Machine-Ogre is simply a mindless fusion of materials animated by warpstone. The
@@ -607,9 +578,7 @@ rules:
     - id: unimplemented.metal-mongers-mim.machine-ogre.immune-to-poison
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Immune to Poison
   effect: >-
     Machine-Ogres are not alive as such; being a monstrous combination of dead flesh, arcane Skaven
@@ -637,9 +606,7 @@ rules:
     - id: unimplemented.metal-mongers-mim.machine-ogre.may-not-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: May Not Run
   effect: >-
     The Machine-Ogre is a lumbering mechanical brute! It lacks the sheer animal speed of a living
@@ -667,9 +634,7 @@ rules:
     - id: unimplemented.metal-mongers-mim.machine-ogre.warpstone-heart
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Warpstone Heart
   effect: >-
     The Machine-Ogre is a mindless machine requiring Wyrdstone shards to power it. It requires a
@@ -697,9 +662,7 @@ rules:
     - id: unimplemented.metal-mongers-mim.machine-ogre.warptooth
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Warptooth
   effect: >-
     The Machine-Ogre is designed to obey all commands given to it by its master and creator, the
@@ -761,9 +724,7 @@ rules:
     - id: unimplemented.metal-mongers-mim.machine-ogre.no-brain
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: No Brain
   source:
     manual: broheim.net
@@ -775,7 +736,7 @@ rules:
   applies_to:
     profile_ids:
     - machine-ogre
-  rule_ref: shared-rule.brainless
+  rule_ref: shared-rule.never-gain-experience
 - id: machine-ogre--unreliable
   runtime:
     scope: 'NO'
@@ -785,9 +746,7 @@ rules:
     - id: unimplemented.metal-mongers-mim.machine-ogre.unreliable
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Unreliable
   effect: >-
     The technology of biomechanics is still in its infancy and as with most Clan Skyre experiments

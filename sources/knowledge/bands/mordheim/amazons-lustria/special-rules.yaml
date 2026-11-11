@@ -33,8 +33,7 @@ rules:
     - id: unimplemented.amazons-lustria.serpent-priestess.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic.
+      reason: out-of-scope.magic
   name: Wizard
   effect: >-
     The Priestess is a Wizard and may use Amazon Rituals . She starts with one ritual chosen at
@@ -62,8 +61,7 @@ rules:
     - id: unimplemented.amazons-lustria.jaguar-warriors.one-with-the-jungle
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: One with the Jungle
   effect: >-
     A Jaguar has lived her life in the deepest parts and can move through jungle terrain without
@@ -93,6 +91,15 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.amazon-isolationists
+      clauses:
+      - id: isolationists
+        scope: 'YES'
+      - id: sacrifice
+        scope: 'NO'
+      - id: norse-enmity
+        scope: 'NO'
+      - id: not-one-of-us
+        scope: 'NO'
   name: Special Rules
   effect: >-
     Isolationists: The Amazons are constantly battling against the predations of the Lizardmen and
@@ -205,8 +212,7 @@ rules:
     - id: unimplemented.amazons-lustria.band.amazon-special-skills-elixir-of-life
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Elixir of Life
   effect: >-
     After years of service among her tribe an Amazon is granted access to the waters that make the
@@ -303,8 +309,7 @@ rules:
     - id: unimplemented.amazons-lustria.band.amazon-special-skills-concealment
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Concealment
   effect: >-
     The Amazon is adept at blending in with her surroundings. When hiding in jungle terrain all

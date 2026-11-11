@@ -55,8 +55,7 @@ rules:
     - id: unimplemented.chaos-streets-sigmar-protectorate.warrior-priest.prayers-of-sigmar
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: ranger--animal-tamer
   name: Animal Tamer
   effect: >-
@@ -137,8 +136,7 @@ rules:
     - id: unimplemented.chaos-streets-sigmar-protectorate.protectorate-mastiff.animal
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--warrior-priest-death
   name: Death of the Warrior Priest
   effect: >-
@@ -172,8 +170,7 @@ rules:
     - id: unimplemented.chaos-streets-sigmar-protectorate.band.warrior-priest-death
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--ranger-templar-limit
   name: Ranger and Templar Limit
   effect: If the warband includes a Ranger, it may include no more than one Templar.
@@ -195,8 +192,7 @@ rules:
     - id: unimplemented.chaos-streets-sigmar-protectorate.band.ranger-templar-limit
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--protectorate-special-skills-protection-of-sigmar
   kind: warband_skill
   name: Protection of Sigmar
@@ -227,8 +223,7 @@ rules:
     - id: unimplemented.chaos-streets-sigmar-protectorate.band.protectorate-special-skills-protection-of-sigmar
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--protectorate-special-skills-absolute-faith
   kind: warband_skill
   name: Absolute Faith
@@ -263,6 +258,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.fear-reroll
+      clauses:
+      - id: fear-immunity
+        scope: 'YES'
+      - id: all-alone-and-reroll
+        scope: 'NO'
 - id: band--protectorate-special-skills-absolute-determination
   kind: warband_skill
   name: Absolute Determination
@@ -287,8 +287,10 @@ rules:
     - id: unimplemented.chaos-streets-sigmar-protectorate.band.protectorate-special-skills-absolute-determination
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.psychology
+      clauses:
+      - id: whole
+        scope: 'NO'
 - id: band--protectorate-special-skills-rousing-sermon
   kind: warband_skill
   runtime:
@@ -301,6 +303,11 @@ rules:
       binding:
         kind: mechanic
         id: skill.inspiring-sermon
+      clauses:
+      - id: self-attack-bonus
+        scope: 'YES'
+      - id: friendly-group-emission
+        scope: 'NO'
   name: Rousing Sermon
   effect: >-
     Warrior Priest only. At the start of the Protectorate player's turn, the Warrior Priest may
@@ -352,8 +359,7 @@ rules:
     - id: unimplemented.chaos-streets-sigmar-protectorate.band.protectorate-special-skills-guidance-of-sigmar
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 
 - id: protectorate-mastiff--natural-weapons
   runtime:

@@ -42,6 +42,11 @@ items:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   combat_status: implemented
   mechanic_id: material.gromril
+  clauses:
+  - id: whole--scope--extra-armour-modifier
+    scope: 'YES'
+  - id: whole--scope--price
+    scope: 'NO'
 - id: ithilmar_weapon
   kind: material-or-upgrade
   name: Ithilmar Weapon
@@ -93,6 +98,13 @@ items:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
   combat_status: implemented
   mechanic_id: material.obsidian
+  clauses:
+  - id: whole--scope--combat-profile
+    scope: 'YES'
+  - id: whole--scope--blemished-flavour
+    scope: 'NO'
+  - id: bearer-prohibition
+    scope: 'YES'
 - id: darksteel_blade
   kind: material-or-upgrade
   name: Darksteel Blade

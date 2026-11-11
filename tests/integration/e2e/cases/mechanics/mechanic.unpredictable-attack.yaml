@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.unpredictable-attack
-# scaffold_fingerprint: fa0d7a594f1748fbfbc0c24ae3b0831d4738a7e99e65890aaa95d5201a881ff6
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clause carries authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -8,38 +7,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 3 scenarios cover the declared attack losing its parry window, the same attack parryable when the declaration is declined, and a two-attack bearer whose declaration names only its second attack.
-# origin_id:
-#   mechanic/mechanic.unpredictable-attack
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   d72b1ae6fa384c8c9ab31664ab6b0afaaa1404afb151911438f50568c7400d9d
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   The Hero may declare one of its attacks Unpredictable; that attack cannot be parried by the opponent.
-# Semantic contract (check analysis_status before treating as accepted):
-#   The Hero may declare one of its attacks Unpredictable and that attack cannot be parried. Closure: the declared attack is refused a parry attempt while the remaining attacks stay parryable.
-# effect_id:
-#   mechanic.unpredictable-attack
-# relation:
-#   related
-# parameters:
-#   {"cannot_be_parried": true, "selection": "one declared attack", "declaration_input": "decisions.choose(key.unpredictable-attack.<index>)"}
-# conditions:
-#   {"scope": "a single attack", "trigger": "declaration"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   The printed declaration is modelled: modular/pools._declared_unpredictable_attack offers each allocated attack in order (`{key}.unpredictable-attack.{index}`) and the first accepted one carries cannot_be_parried, so the bearer's choice decides which attack the defender cannot parry; declining every offer leaves all attacks parryable, and with no decision policy the first allocated attack keeps the established default. Supersedes the earlier note that the route always applied it to the first allocated attack with no choice. Evidence is inspection (source/engine read, not an executed duel); coordinator acceptance pending. Surface reuse candidate: {"family":"mechanic.unpredictable-attack","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare full special-attack/rescue contract: replacement scope, prerequisite count, per-hit versus per-wound triggers, save/parry eligibility, ordering, interruption and state/resources. Do not substitute an ordinary attack or reset a per-battle effect each round.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+# AUTHORED: 3 scenarios cover the declared attack losing its parry window, the same attack parryable when the declaration is declined, and a two-attack bearer whose declaration names only its second attack.
 
 # --- Authored scenarios ---
 # mechanic/mechanic.unpredictable-attack — every expectation below comes from
@@ -50,7 +21,6 @@
 # parry die, an unspent parry attempt and an unparried attack.
 - audit_id: mechanic/mechanic.unpredictable-attack
   id: a-declared-attack-cannot-be-parried
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -76,7 +46,6 @@
 # parry window exists, is attempted, fails against the hit and is spent.
 - audit_id: mechanic/mechanic.unpredictable-attack
   id: the-same-attack-is-parryable-when-nothing-is-declared
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -104,7 +73,6 @@
 # per-attack offer order of the declaration input.
 - audit_id: mechanic/mechanic.unpredictable-attack
   id: the-declaration-names-which-attack-the-parry-cannot-stop
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace

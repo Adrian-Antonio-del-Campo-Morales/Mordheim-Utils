@@ -56,10 +56,11 @@ KNOWLEDGE_GENERATOR = REPO_ROOT / "tools" / "knowledge" / "generate_knowledge_we
 TYPESCRIPT_PACKAGE = REPO_ROOT / "packages" / "typescript"
 WEB_APP = REPO_ROOT / "apps" / "warband-manager-web"
 
-#: ``check report <kind>`` forwards to the matching Combat Lab report command.
+#: ``check report <kind>`` forwards to the matching report generator:
+#: ``rules`` runs the knowledge-base clause tool, ``tests`` a Combat Lab command.
 REPORT_KINDS = {
-    "rules": "audit",
-    "tests": "test-report",
+    "rules": ("tools.knowledge.clauses", "report"),
+    "tests": ("mordheim_combat_lab", "test-report"),
 }
 
 APP_COMMANDS = {
@@ -936,7 +937,7 @@ Choose a concrete operation; these commands do not form a required sequence.
 
 Data:
   verify        validate KB documents/bindings and try compiling profiles
-  report rules  export the rule inventory; no combat correctness certification
+  report rules  export the rule inventory and clause coverage; no correctness certification
 
 Engine comparison:
   parity        compare NumPy/native with the modular oracle (live run)
@@ -1041,10 +1042,10 @@ def report_command(args: list[str]) -> int:
     if not args or args[0] in ("-h", "--help"):
         print("usage: python tools/mordheim-utils.py check report <rules|tests> [options]")
         print()
-        print("  rules   auditable per-rule inventory (CSV/JSON in outputs/audit/)")
+        print("  rules   rule inventory and clause coverage (CSV/JSON in outputs/audit/)")
         print("  tests   run the tests and write the technical test CSV")
         print()
-        print("Runs: python -m mordheim_combat_lab audit (rules)")
+        print("Runs: python -m tools.knowledge.clauses report (rules)")
         print("      python -m mordheim_combat_lab test-report (tests)")
         print()
         print("Options after the kind are forwarded to the report command;")
@@ -1058,17 +1059,21 @@ def report_command(args: list[str]) -> int:
             file=sys.stderr,
         )
         return 2
+    module, command = REPORT_KINDS[kind]
     if "--help-full" in forwarded:
-        return _run_module("mordheim_combat_lab", REPORT_KINDS[kind], "--help")
+        return _run_module(module, command, "--help")
     if any(arg in ("-h", "--help") for arg in forwarded):
         if kind == "rules":
             return _delegated_help(
                 "python tools/mordheim-utils.py check report rules [options]",
-                "Export the maintained rule inventory with classifications and scope.\nThis is a data report, not evidence that game rules execute correctly.",
-                "python -m mordheim_combat_lab audit",
+                "Export every classified rule, mechanic and item with its scope, binding and\n"
+                "clause coverage (declared E2E scenarios and `covers` markers).\n"
+                "This is a data report, not evidence that game rules execute correctly.",
+                "python -m tools.knowledge.clauses report",
                 "--output DIR    destination directory (default outputs/audit)",
                 examples=("check report rules --output outputs/audit",),
-                notes=("Writes report files; does not certify E2E or parity coverage.",),
+                notes=("Writes rules-inventory.csv, clause-coverage.csv and summary.json; "
+                       "it does not run or certify E2E or parity coverage.",),
             )
         return _delegated_help(
             "python tools/mordheim-utils.py check report tests [options]",
@@ -1078,7 +1083,7 @@ def report_command(args: list[str]) -> int:
             examples=("check report tests --output outputs/test-report",),
             notes=("Unlike report rules, this command executes checks, not just inventory export.",),
         )
-    return _run_module("mordheim_combat_lab", REPORT_KINDS[kind], *forwarded)
+    return _run_module(module, command, *forwarded)
 
 
 def check_command(args: list[str]) -> int:

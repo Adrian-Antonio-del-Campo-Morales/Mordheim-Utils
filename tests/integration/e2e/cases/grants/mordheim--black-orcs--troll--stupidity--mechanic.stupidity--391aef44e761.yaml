@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/black-orcs/troll--stupidity/mechanic.stupidity
-# scaffold_fingerprint: bda340332628b1b057fc0884ca3a2fcfca04728dab0f8ab1bff81a632f86407d
 # authoring_status: AUTHORED
 # authoring_progress: the admitted stupidity clause carries three authored scenarios: the
 #   failed test, the passed test and the frenzied exemption.  REVIEWED still requires manual
@@ -10,42 +9,14 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: stupidity (scope: YES)
-# AUTHORED[stupidity]: 3 scenarios cover the start-of-own-turn individual Leadership test of
+# AUTHORED: 3 scenarios cover the start-of-own-turn individual Leadership test of
 #   the bearer built from its printed profile: a total of twelve fails and bars the bearer's own
 #   charge and attacks, a total of two passes and it strikes normally, and an already-frenzied
 #   bearer is exempt from the test with no die requested.  The random board movement the clause
 #   also prints is outside the duel and is not asserted.
-# origin_id:
-#   rule/mordheim/black-orcs/troll--stupidity/mechanic.stupidity
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/black-orcs/special-rules.yaml
-# source_fingerprint:
-#   a574c8c23504e17a60dea69dd2f8a63349313dd0b21418bccf120a4bf3fce61b
-# source_sha256_at_generation:
-#   033545b947532c3193948d1c1e85930a8f543a3f8a55e89401e4000e4ace47c8
-# Printed rule text:
-#   A Troll is subject to the rules for stupidity.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Stupidity: at the start of this warrior's own turn it tests individual Leadership; on failure it cannot make close-combat attacks until its next own turn. Observable: a failed stupidity test yields zero close-combat attacks for this warrior that turn, without changing enemy To-Hit rolls.
-# effect_id:
-#   mechanic.stupidity
-# relation:
-#   equivalent
-# parameters:
-#   {}
-# conditions:
-#   {"trigger":"start of this warrior's own turn","resolution":"individual Leadership test via leadership.resolve_local_leadership (stupidity key); resolves before fear in the round pipeline","consequence":"on failure no close-combat attacks until its next own turn","recipient":"this warrior","duration":"until its next own turn","stacking":"not cumulative","exceptions":"skipped while frenzied or holding a supplied condition.stupidity-exempt; random board movement is outside the duel"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Plain Stupidity clause (mechanic.stupidity): psychology.resolve_stupidity refreshes the result on the warrior's own turn; no additional clause. Scope review integration: {"clause_id":"stupidity","review_clause_id":"stupidity","source_state":"unverified","review_status":"reviewed","scope_reason":"Being subject to stupidity is an admitted lasting individual state that forces Leadership tests on this duelist in the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"} Surface reuse candidate: {"family":"mechanic.stupidity","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact supplied/rolled state, trigger, frequency, duration, termination and attack-count contribution. Permanent and conditional Frenzy, +1 Attack and doubling are different. Do not implement group creation, movement or campaign tables merely to supply an individual state.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
 # --- Authored scenarios ---
 # Derived from the printed rule and the recorded semantic contract; no engine output was
@@ -59,7 +30,6 @@
 
 - audit_id: rule/mordheim/black-orcs/troll--stupidity/mechanic.stupidity
   id: a-failed-stupidity-test-cancels-its-charge-and-bars-its-attacks
-  covers: [stupidity]
   fighters:
     first:
       collection: mordheim
@@ -82,7 +52,6 @@
 # its own charge-test dice are declared before the bearer's strike.
 - audit_id: rule/mordheim/black-orcs/troll--stupidity/mechanic.stupidity
   id: a-passed-stupidity-test-keeps-contact-and-lets-it-strike
-  covers: [stupidity]
   fighters:
     first:
       collection: mordheim
@@ -111,7 +80,6 @@
 # fear-causing bearer is the only test the round still asks for.
 - audit_id: rule/mordheim/black-orcs/troll--stupidity/mechanic.stupidity
   id: an-already-frenzied-bearer-rolls-no-stupidity-die
-  covers: [stupidity]
   fighters:
     first:
       collection: mordheim

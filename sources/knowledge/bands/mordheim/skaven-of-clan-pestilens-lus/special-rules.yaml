@@ -33,9 +33,7 @@ rules:
     - id: unimplemented.skaven-of-clan-pestilens-lus.skaven-slaves.doomed
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Doomed
   effect: >-
     If a Skaven Slave becomes a hero (rolls "the lad's got talent"), he is quickly executed by the
@@ -65,8 +63,10 @@ rules:
     - id: unimplemented.skaven-of-clan-pestilens-lus.band.maximum-characteristics
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: characteristic-increase caps on advancement.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Skaven Maximum Characteristics
   effect: >-
     Characteristics for Skaven warriors may not be increased beyond the maximum limits: M 6, WS 6,
@@ -100,8 +100,7 @@ rules:
     - id: unimplemented.skaven-of-clan-pestilens-lus.band.cloud-of-flies
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: a to-hit penalty on models in base contact is a combat-resolution mechanic.
+      reason: out-of-scope.non-duel
   name: Cloud of Flies
   effect: >-
     The Skaven is surrounded by a cloud of buzzing flies. The flies will get in the eyes of enemy

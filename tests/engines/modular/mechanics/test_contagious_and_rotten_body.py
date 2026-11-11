@@ -121,6 +121,8 @@ def test_undead_and_possessed_attackers_are_exempt(precompiled):
     assert exempt.state.first.wounds == 1
 
 
+@pytest.mark.covers("rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-contagious/trait.contagious", "contagious-reaction")
+@pytest.mark.covers("rule/trollheim/lustria-clan-pestilens/band--clan-pestilens-special-skills-contagious/trait.contagious", "contagious-reaction")
 def test_contagious_requires_new_melee_damage_not_an_already_out_bearer(precompiled):
     from mordheim_combat.modular.aftermath import _react_to_wound
     from mordheim_combat.modular.state import AttackOutcome

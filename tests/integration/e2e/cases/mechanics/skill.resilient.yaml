@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/skill.resilient
-# scaffold_fingerprint: e1d13d76f65598dba17ea82ad708c27ea27e225c138bc5df1e648f18b9d109c9
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -8,40 +7,12 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: minus-one-strength-in-close-combat (scope: YES)
-# AUTHORED[minus-one-strength-in-close-combat]: 3 scenarios cover the reduced
+# AUTHORED: 3 scenarios cover the reduced
 #   To Wound target on an equal Strength attack, the same dice without the
 #   skill, and the unchanged armour save modifier.
-# origin_id:
-#   mechanic/skill.resilient
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   df605b90363a422cb45693f509df009ea572f8b569abcabecaee62f78ba79e8a
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   Close-combat hits against the warrior suffer -1 Strength without changing save modifiers.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Close-combat hits against the warrior suffer -1 Strength without changing save modifiers; observable: the wound roll uses one less Strength while the armour target number keeps the original Strength modifier.
-# effect_id:
-#   skill.resilient
-# relation:
-#   equivalent
-# parameters:
-#   {"incoming_strength_modifier":-1,"changes_armour_penetration":false}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Consumed as an incoming Strength reduction applied after the armour strength is derived, which is exactly the printed 'without changing save modifiers'. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"minus-one-strength-in-close-combat","audit_group":"EQ-skill.resilient","verified_facet":"skill.resilient","relationship":"shared_facet","boundary":"Reduce incoming close-combat Strength for the wound roll, without reducing its armour-save modifier; not a permanent opponent characteristic penalty.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
 
 # --- Authored scenarios ---
 # The Strength 3 attack is reduced to 2 against the resilient Toughness 3, so its To
@@ -49,7 +20,6 @@
 # without the skill.  No armour die follows a failed wound.
 - audit_id: mechanic/skill.resilient
   id: an-equal-strength-hit-now-fails-on-a-four
-  covers: [minus-one-strength-in-close-combat]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -71,7 +41,6 @@
 # which fixes the comparison of the previous scenario to the reduction alone.
 - audit_id: mechanic/skill.resilient
   id: without-the-skill-the-same-roll-wounds
-  covers: [minus-one-strength-in-close-combat]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -94,7 +63,6 @@
 # leaves the save modifiers untouched, as printed.
 - audit_id: mechanic/skill.resilient
   id: the-armour-save-keeps-the-full-strength
-  covers: [minus-one-strength-in-close-combat]
   fighters:
     first:
       main_weapon_id: weapon.mace

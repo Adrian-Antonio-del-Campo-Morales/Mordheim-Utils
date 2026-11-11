@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/weapon.ladle
-# scaffold_fingerprint: aceff1cef0a559f56bbab891ab5c62954d3c438f57bece6977576c4c3cedcf77
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clause carries four authored scenarios for the Concussion band, the denied worn save and the shield exception on both faces. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -8,38 +7,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 4 scenarios cover the mace profile's Concussion band, the denied worn save and the shield exception on both faces of its boundary.
-# origin_id:
-#   mechanic/weapon.ladle
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   2d3ee07c5b31df839194eb73022923668346826b3146200858e023ce2c01825e
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   Range: Close Combat Strength: As user No save except shields : A Master Chef knows exactly where to aim his ladle, helmets and breast plates are of little use against a ladle whacked across the hands. The only saving throws allowed are from shields or skills.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Mace-profile weapon (Concussion) that denies the defender's worn armour, natural armour and every other armour provenance while the shield and skill saving throws remain available. Observable: a defender wearing armour attempts no ordinary armour save against the Ladle, but a shield or skill save still applies.
-# effect_id:
-#   weapon.ladle
-# relation:
-#   parameterized_variant
-# parameters:
-#   {"concussion": true, "ignore_armour_except": ["shield", "skill"]}
-# conditions:
-#   {"trigger": "attack", "application": "attack", "stacking": "stack"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   New in-scope origin added by the M0-2026-10-08 reconciliation: the audit inventory declares `mechanic/weapon.ladle` (scope YES, implemented YES) with no semantic-CSV correspondence. It carries the printed shield/skill exception that item/ladle previously recorded as a gap. Evidence is inspection; coordinator acceptance pending.
+# AUTHORED: 4 scenarios cover the mace profile's Concussion band, the denied worn save and the shield exception on both faces of its boundary.
 
 # --- Authored scenarios ---
 # mechanic/weapon.ladle - mace profile that denies the target's worn armour while
@@ -52,7 +23,6 @@
 
 - audit_id: mechanic/weapon.ladle
   id: ladle-injury-2-is-stunned
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.ladle
@@ -73,7 +43,6 @@
 
 - audit_id: mechanic/weapon.ladle
   id: ladle-denies-a-worn-suit-its-save
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.ladle
@@ -95,7 +64,6 @@
 
 - audit_id: mechanic/weapon.ladle
   id: ladle-leaves-the-shields-own-save-available
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.ladle
@@ -119,7 +87,6 @@
 
 - audit_id: mechanic/weapon.ladle
   id: ladle-shield-save-fails-on-five
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.ladle

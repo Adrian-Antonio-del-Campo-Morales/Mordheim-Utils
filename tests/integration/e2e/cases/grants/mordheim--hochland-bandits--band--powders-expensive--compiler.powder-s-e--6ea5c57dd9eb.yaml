@@ -1,18 +1,15 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/hochland-bandits/band--powders-expensive/compiler.powder-s-expensive
-# scaffold_fingerprint: 6206ac15c75e2f84d4e184f502daa5a97b760591c1c0e79fd35a5e2e258dcdcf
 # authoring_status: PARTIAL
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# PARTIAL[whole]: the recorded contract is a prohibition on Bandit HENCHMEN plus the absence of any bar
+# PARTIAL: the recorded contract is a prohibition on Bandit HENCHMEN plus the absence of any bar
 #   on the band's heroes ("Bandit Heroes keep their own access").  The reachable half is authored: the
 #   hero duelist, whose own equipment list is the only row of this band that carries a blackpowder weapon,
 #   is admitted with weapon.pistol in the main hand (the shared branch is gated on p.type !== "hero").
@@ -27,32 +24,6 @@
 #   row on a Bandit Henchman's own equipment list (KB side), or an accepted disposition that this clause
 #   is unobservable for this band.  1 authored scenario covers the hero-scope face.  Consumer: the shared
 #   eligibility stage (packages/python/roster-construction/mordheim_construction/_eligibility.js).
-# origin_id:
-#   rule/mordheim/hochland-bandits/band--powders-expensive/compiler.powder-s-expensive
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/hochland-bandits/special-rules.yaml
-# source_fingerprint:
-#   ec20a025a8abb2649305d2fb9fb0b66c9960e15550413704dae23b9cf5cf82b9
-# source_sha256_at_generation:
-#   e80580351ee7aed6e7dbcce8c779a6f55a4c6aa44dd0c6e37798cbdf3d703072
-# Printed rule text:
-#   Bandit Henchmen may not purchase black powder weapons.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Prohibition: Bandit Henchmen may not take blackpowder weapons while Bandit Heroes keep their own access; the higher campaign cost is excluded.
-# effect_id:
-#   compiler.powder-s-expensive
-# relation:
-#   equivalent
-# parameters:
-#   {}
-# conditions:
-#   {"recipients":"bandit henchmen","heroes":"unrestricted"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Price difference is a campaign clause, recorded in the same text and excluded.
 # authoring_progress: 1 authored scenario in this file; the admitted clause's refusal half is NOT
 #   representable from this band's own data and is named as the pending datum in the clause note below.
 #   The scope face that IS reachable - a hero of the band keeping his blackpowder access - is authored.
@@ -62,8 +33,6 @@
 
 - audit_id: rule/mordheim/hochland-bandits/band--powders-expensive/compiler.powder-s-expensive
   id: a-bandit-hero-keeps-his-blackpowder-access
-  covers:
-  - whole
   # The clause binds Bandit Henchmen only, so the band's own hero whose list carries the pistol must be
   # admitted with it; the fight resolves with zero attacks declared, so the observation is the
   # construction acceptance and not a shooting consequence.

@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/skill.regeneration-5-plus
-# scaffold_fingerprint: fe63bb0bc11645546b31f0c2a14e1bbd7d1a7ae4c493a9aeb9f9cba9144b7d63
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -8,45 +7,16 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: five-plus-regeneration-except-fire (scope: YES)
-# AUTHORED[five-plus-regeneration-except-fire]: 2 scenarios show the 5+ special save holding on its own face
+# AUTHORED: 2 scenarios show the 5+ special save holding on its own face
 #   and failing one below it.
-# origin_id:
-#   mechanic/skill.regeneration-5-plus
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   adef29b147e01305a203f6eb0ab4559afafb3a0ba5e4d430602fa6d28a268599
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   Ignores wounds on 5+, except wounds caused by fire.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Ignores wounds on 5+ except wounds caused by fire; observable: a 5+ special save after armour for non-fire wounds.
-# effect_id:
-#   skill.regeneration-5-plus
-# relation:
-#   equivalent
-# parameters:
-#   {"blocked_by_fire":true,"regeneration_save":5,"recover_on":5,"blocked_by":["fire"]}
-# conditions:
-#   {"trigger":"attack-time unsaved wound; not own-turn recovery"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#    Selectively verified equivalence: {"review_file":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"five-plus-regeneration-except-fire","verified_family":"skill.regeneration-5-plus","verified_peer_keys":[{"origin_id":"rule/mordheim/underworld-alliance-mim/boglars--regeneration/skill.regeneration-5-plus","clause_id":"five-plus-regeneration"},{"origin_id":"rule/trollheim/lustria-savage-goblins/zomblintua--regeneration/skill.regeneration-5-plus","clause_id":"five-plus-regeneration"},{"origin_id":"mechanic/skill.regeneration-5-plus","clause_id":"five-plus-regeneration-except-fire"}],"sharing_boundary":"Same 5+ ignore-wound save and fire exception. Threshold differs from skill.regeneration (4+); not turn-start wound restoration. No post-battle Injury exemption is admitted.","evidence":"inspection","limit":"Only this closed selection was checked. No acceptance of the entire review, KB activation, implementation closure or execution evidence."}
 
 # --- Authored scenarios ---
 
 - audit_id: mechanic/skill.regeneration-5-plus
   id: the-special-save-holds-on-5
-  covers: [five-plus-regeneration-except-fire]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -68,7 +38,6 @@
 
 - audit_id: mechanic/skill.regeneration-5-plus
   id: one-face-below-the-save-is-not-enough
-  covers: [five-plus-regeneration-except-fire]
   fighters:
     first:
       main_weapon_id: weapon.mace

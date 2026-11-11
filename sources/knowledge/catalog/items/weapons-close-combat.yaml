@@ -339,6 +339,18 @@ items:
   name: Ball Chain
   name_i18n:
     es: Bola y Cadena
+  effect: >-
+    Range: Close Combat Strength: As user +2 Special Rules Incredible Force: Because the Ball and
+    Chain is so heavy, normal armour does very little to protect against it. No armour saves are
+    allowed against wounds caused by a Ball and Chain. Successful wounds inflict D3 damage. Enemies
+    suffer -1 to hit the wielder in close combat.
+  effect_i18n:
+    es: >-
+      Alcance: Combate cuerpo a cuerpo Fuerza: como el usuario +2 Reglas especiales Fuerza
+      increíble: como la Bola y Cadena es tan pesada, la armadura normal protege muy poco
+      contra ella. No se permiten salvaciones de armadura contra las heridas causadas por
+      una Bola y Cadena. Las heridas exitosas infligen D3 de daño. Los enemigos sufren -1
+      para impactar al portador en combate cuerpo a cuerpo.
   source_refs:
   - &id092
     manual: mordheimer.net
@@ -382,11 +394,20 @@ items:
   - *id001
   combat_status: implemented
   mechanic_id: weapon.barbed-whip
+  clauses:
+  - id: whole
+    scope: 'YES'
+  - id: unprinted-modifiers
+    scope: 'YES'
 - id: bo
   kind: close-combat-weapon
   name: Bo
   name_i18n:
     es: Bo
+  effect: Two-handed weapon granting +1 Attack and one parry.
+  effect_i18n:
+    es: >-
+      Arma a dos manos que otorga +1 Ataque y una parada.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -436,6 +457,11 @@ items:
   - *id002
   combat_status: implemented
   mechanic_id: weapon.beastlash
+  clauses:
+  - id: whole
+    scope: 'YES'
+  - id: beastbane
+    scope: 'YES'
 - id: belaying_pin
   kind: ranged-weapon
   name: Belaying Pin
@@ -458,11 +484,25 @@ items:
     section: Strigany Special Equipment / Belaying Pin
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Channel Rats.pdf
   combat_status: out_of_scope
+  clauses:
+  - id: melee-profile--scope--melee-profile
+    scope: 'NO'
+  - id: melee-profile--scope--thrown-profile
+    scope: 'NO'
+  - id: thrown-profile
+    scope: 'NO'
 - id: boar_spear_aristocrat_only
   kind: close-combat-weapon
   name: Boar Spear Aristocrat Only
   name_i18n:
     es: Lanza de Jabalí (Solo Aristócrata)
+  effect: >-
+    Strikes first and only combines with a shield or buckler; a mounted charge grants +1 Strength,
+    while a charging enemy loses one base Attack (minimum 1).
+  effect_i18n:
+    es: >-
+      Golpea primero y solo se combina con un escudo o una rodela; una carga montada otorga
+      +1 a la Fuerza, mientras que un enemigo que carga pierde un Ataque base (mínimo 1).
   source_refs:
   - &id038
     manual: mordheimer.net
@@ -471,6 +511,15 @@ items:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
   combat_status: implemented
   mechanic_id: weapon.boar-spear
+  clauses:
+  - id: whole--scope--strikes-first
+    scope: 'YES'
+  - id: whole--scope--charging-enemy-loses-one-attack
+    scope: 'YES'
+  - id: whole--scope--mounted-charge-strength
+    scope: 'NO'
+  - id: aristocrat-only
+    scope: 'YES'
 - id: boat_hook
   kind: close-combat-weapon
   name: Boat Hook
@@ -560,6 +609,11 @@ items:
     url: https://broheim.net/downloads/campaigns/bordertownburning/Border%20Town%20Burning.pdf
   combat_status: implemented
   mechanic_id: weapon.cathayan-longsword
+  clauses:
+  - id: whole
+    scope: 'YES'
+  - id: armour-penetration-discrepancy
+    scope: 'YES'
 - id: censer
   kind: close-combat-weapon
   name: Censer
@@ -605,6 +659,13 @@ items:
   name: Choppa Counts as a Morning Star
   name_i18n:
     es: El Choppa Cuenta Como un Mangual
+  effect: >-
+    +1 Strength in the first round and an additional -1 armour-save modifier; may be used with a
+    shield.
+  effect_i18n:
+    es: >-
+      +1 a la Fuerza en el primer turno y un modificador adicional de -1 a la salvación de
+      armadura; puede usarse con un escudo.
   source_refs:
   - *id006
   - *id007
@@ -752,6 +813,10 @@ items:
   name: Cutlass Sword
   name_i18n:
     es: Sable
+  effect: May parry; a successful parry can trigger its counterattack mechanic.
+  effect_i18n:
+    es: >-
+      Puede parar; una parada exitosa puede desencadenar su mecánica de contraataque.
   source_refs:
   - *id003
   - *id004
@@ -968,6 +1033,13 @@ items:
   - *id060
   combat_status: implemented
   mechanic_id: weapon.dragon-sword
+  clauses:
+  - id: whole--scope--two-handed-loadout
+    scope: 'YES'
+  - id: whole--scope--ranged-armour-bonus
+    scope: 'NO'
+  - id: whole--scope--katana-alias
+    scope: 'NO'
 - id: dwarf_axe
   kind: close-combat-weapon
   name: Dwarf Axe
@@ -1009,6 +1081,11 @@ items:
   - *id017
   combat_status: implemented
   mechanic_id: defence.enchanted-skins
+  clauses:
+  - id: six-plus-special-save
+    scope: 'YES'
+  - id: unaffected-by-enemy-magic-on-five
+    scope: 'NO'
 - id: fighting_claws
   kind: close-combat-weapon
   name: Fighting Claws
@@ -1082,6 +1159,11 @@ items:
   - *id001
   combat_status: implemented
   mechanic_id: weapon.double-handed-weapon
+  clauses:
+  - id: whole--scope--two-handed-loadout
+    scope: 'YES'
+  - id: whole--scope--ranged-armour-bonus
+    scope: 'NO'
 - id: great_weapon
   kind: close-combat-weapon
   name: Great Weapon
@@ -1186,6 +1268,11 @@ items:
   - *id082
   combat_status: implemented
   mechanic_id: weapon.halberd
+  clauses:
+  - id: whole--scope--two-handed-loadout
+    scope: 'YES'
+  - id: whole--scope--ranged-armour-bonus
+    scope: 'NO'
 - id: hammer
   kind: close-combat-weapon
   name: Hammer
@@ -1339,6 +1426,11 @@ items:
   - *id090
   combat_status: implemented
   mechanic_id: weapon.lance
+  clauses:
+  - id: whole
+    scope: 'NO'
+  - id: cavalry-prerequisite
+    scope: 'NO'
 - id: lance_not_questing_knight
   kind: close-combat-weapon
   name: Lance Not Questing Knight
@@ -1348,6 +1440,11 @@ items:
   - *id028
   combat_status: implemented
   mechanic_id: weapon.lance
+  clauses:
+  - id: whole
+    scope: 'NO'
+  - id: recipient-variant
+    scope: 'YES'
 - id: mace
   kind: close-combat-weapon
   name: Mace
@@ -1423,7 +1520,7 @@ items:
   kind: close-combat-weapon
   name: Main Gauche
   name_i18n:
-    es: "Daga Izquierda"
+    es: Daga Izquierda
   effect: >-
     Range: Close Combat Strength: As user Parry : Can parry enemy blows
   effect_i18n:
@@ -1455,6 +1552,11 @@ items:
   - *id026
   combat_status: implemented
   mechanic_id: weapon.man-catcher
+  clauses:
+  - id: whole
+    scope: 'YES'
+  - id: capture-clause
+    scope: 'NO'
 - id: misericordia
   kind: close-combat-weapon
   name: Misericordia
@@ -1480,6 +1582,11 @@ items:
   - *id090
   combat_status: implemented
   mechanic_id: weapon.misericordia
+  clauses:
+  - id: whole
+    scope: 'YES'
+  - id: coup-de-grace
+    scope: 'YES'
 - id: morning_star
   kind: close-combat-weapon
   name: Morning Star
@@ -1552,6 +1659,11 @@ items:
   - *id078
   combat_status: implemented
   mechanic_id: weapon.pike
+  clauses:
+  - id: whole
+    scope: 'YES'
+  - id: first-turn-scope
+    scope: 'YES'
 - id: quarter_staff
   kind: close-combat-weapon
   name: Quarter Staff
@@ -1875,6 +1987,11 @@ items:
   name: Stone Axe Counts as a Club
   name_i18n:
     es: El Hacha de Piedra Cuenta Como un Garrote
+  effect: >-
+    Uses club rules: normal Strength and Concussion on Injury rolls of 2-4.
+  effect_i18n:
+    es: >-
+      Usa las reglas de la maza: Fuerza normal y Conmoción con tiradas de Heridas de 2-4.
   source_refs:
   - *id054
   - *id055
@@ -1917,6 +2034,9 @@ items:
   source_refs:
   - *id009
   combat_status: out_of_scope
+  clauses:
+  - id: whole
+    scope: 'NO'
 - id: sunstaff_lustria
   kind: close-combat-weapon
   name: Sunstaff Lustria
@@ -2076,6 +2196,11 @@ items:
   - *id055
   combat_status: implemented
   mechanic_id: weapon.sword
+  clauses:
+  - id: whole
+    scope: 'YES'
+  - id: heroes-only
+    scope: 'YES'
 - id: sword_scimitar
   kind: close-combat-weapon
   name: Sword Scimitar
@@ -2388,6 +2513,11 @@ items:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Metal%20Mongers.pdf
   combat_status: implemented
   mechanic_id: weapon.mace
+  clauses:
+  - id: whole--scope--counts-as-club
+    scope: 'YES'
+  - id: whole--scope--price
+    scope: 'NO'
 - id: greenwood_scythe
   kind: close-combat-weapon
   name: Greenwood Scythe
@@ -2444,6 +2574,15 @@ items:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Low%20Kings.pdf
   mechanic_id: weapon.knuckledusters
   combat_status: implemented
+  clauses:
+  - id: whole--scope--pair
+    scope: 'YES'
+  - id: whole--scope--concealable-loadout
+    scope: 'YES'
+  - id: whole--scope--scenario-weapon-ban
+    scope: 'NO'
+  - id: whole--scope--price-and-rarity
+    scope: 'NO'
 - id: spirit_knife
   kind: close-combat-weapon
   name: Spirit Knife
@@ -2473,6 +2612,13 @@ items:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call%20Of%20The%20Night%20Haint.pdf
   combat_status: implemented
   mechanic_id: weapon.spirit-knife
+  clauses:
+  - id: whole--scope--profile
+    scope: 'YES'
+  - id: whole--scope--spectral-touch
+    scope: 'YES'
+  - id: whole--scope--price-and-rarity
+    scope: 'NO'
 - id: spear_stave
   kind: close-combat-weapon
   name: Spear-Stave
@@ -2490,6 +2636,11 @@ items:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Sea%20Ghosts.pdf
   combat_status: implemented
   mechanic_id: weapon.halberd
+  clauses:
+  - id: whole--scope--counts-as-halberd
+    scope: 'YES'
+  - id: whole--scope--price
+    scope: 'NO'
 - id: katana
   kind: close-combat-weapon
   name: Katana
@@ -2522,6 +2673,19 @@ items:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Pirates%20of%20the%20Cathayan%20Sea.pdf
   combat_status: implemented
   mechanic_id: weapon.katana
+  clauses:
+  - id: whole--scope--combat-profile
+    scope: 'YES'
+  - id: whole--scope--two-handed-loadout
+    scope: 'YES'
+  - id: whole--scope--ranged-armour-bonus
+    scope: 'NO'
+  - id: whole--scope--parry
+    scope: 'YES'
+  - id: whole--scope--heroes-only
+    scope: 'YES'
+  - id: whole--scope--price-and-rarity
+    scope: 'NO'
 - id: hellblade
   kind: close-combat-weapon
   name: Hellblade
@@ -2560,6 +2724,23 @@ items:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Khorne%20Raiders.pdf
   combat_status: implemented
   mechanic_id: weapon.hellblade
+  clauses:
+  - id: whole--scope--combat-profile
+    scope: 'YES'
+  - id: whole--scope--soulseeking
+    scope: 'YES'
+  - id: whole--scope--two-handed-loadout
+    scope: 'YES'
+  - id: whole--scope--ranged-shield-bonus
+    scope: 'NO'
+  - id: whole--scope--deadly
+    scope: 'YES'
+  - id: bearer-and-material-restrictions--scope--recipients
+    scope: 'YES'
+  - id: bearer-and-material-restrictions--scope--material-prohibition
+    scope: 'YES'
+  - id: bearer-and-material-restrictions--scope--price-and-rarity
+    scope: 'NO'
 - id: stone_dagger
   kind: close-combat-weapon
   name: Stone Dagger
@@ -2621,6 +2802,21 @@ items:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   mechanic_id: weapon.skull-busta
   combat_status: implemented
+  clauses:
+  - id: whole--scope--combat-profile
+    scope: 'YES'
+  - id: whole--scope--feelin-wobbly
+    scope: 'YES'
+  - id: whole--scope--basha
+    scope: 'YES'
+  - id: whole--scope--price-and-rarity
+    scope: 'NO'
+  - id: bearer-prohibitions--scope--no-other-weapons-but-shields
+    scope: 'YES'
+  - id: bearer-prohibitions--scope--goblin-prohibition
+    scope: 'YES'
+  - id: bearer-prohibitions--scope--mounted-prohibition
+    scope: 'NO'
 - id: long_daggers
   kind: close-combat-weapon
   name: Long Daggers
@@ -2649,6 +2845,13 @@ items:
     url: https://broheim.net/downloads/warbands/supplement/sealedcity/Silent%20Brotherhood.pdf
   mechanic_id: weapon.long-daggers
   combat_status: implemented
+  clauses:
+  - id: whole--scope--pair-and-parry
+    scope: 'YES'
+  - id: whole--scope--recipients
+    scope: 'YES'
+  - id: whole--scope--price-and-rarity
+    scope: 'NO'
 - id: shock_rod
   kind: close-combat-weapon
   name: Shock Rod
@@ -2683,6 +2886,13 @@ items:
     url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clan%20Pristekk.pdf
   mechanic_id: weapon.shock-rod
   combat_status: implemented
+  clauses:
+  - id: whole--scope--combat-profile
+    scope: 'YES'
+  - id: whole--scope--recipients
+    scope: 'YES'
+  - id: cost-discrepancy
+    scope: 'NO'
 - id: thing_catcher
   kind: close-combat-weapon
   name: Thing Catcher

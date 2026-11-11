@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/protectorate-of-sigmar-lotd3/band--special-skill-rousing-sermon/mechanic.rousing-sermon
-# scaffold_fingerprint: 4bce79491bc09094bb36b086990c35e6ae4c991388dc2ce57bb8404a89801ae6
 # authoring_status: AUTHORED
 # authoring_progress: the admitted self-attack-bonus clause carries two authored scenarios derived
 # from the printed rule and the recorded contract (the declared sermon and the declined one).  The
@@ -11,9 +10,8 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: self-attack-bonus (scope: YES)
 # AUTHORED[self-attack-bonus]: 2 scenarios cover the printed self consequence: the declaration
@@ -27,61 +25,9 @@
 # mechanic origin's own case does.  The "must not also use prayers that turn" exception has no
 # counterpart in this vocabulary and is recorded, not asserted.  REVIEWED still requires manual
 # semantic review.
-# origin_id:
-#   rule/mordheim/protectorate-of-sigmar-lotd3/band--special-skill-rousing-sermon/mechanic.rousing-sermon
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/protectorate-of-sigmar-lotd3/special-rules.yaml
-# source_fingerprint:
-#   5b42dc7f80156c193aac822117d069f04bdb0c1beaaed8ccf3f076ed19dea7b1
-# source_sha256_at_generation:
-#   06d57ecdbee0d0cfffc39a30d09ff61277a030d7fb09fae549f7fe1c0ef73898
-# Printed rule text:
-#   Only the Warrior Priest may have this skill. The Warrior Priest bellows his prayers to Sigmar, beseeching his protector to lend he and his men the strength to forge onwards. A Rousing Sermon must be declared at the beginning of a player's turn. The Warrior Priest and all friendly models within 6 inches gain +1 attack during that Hand to Hand combat phase. There may only be one Rousing Sermon per game.
-# Semantic contract (check analysis_status before treating as accepted):
-#   At the start of its own turn this warrior may declare the sermon: it gains +1 Attack for that combat phase, once per duel. Observable: exactly one self-only attack bonus is available and the declaration is optional.
-# effect_id:
-#   mechanic.rousing-sermon
-# relation:
-#   equivalent
-# parameters:
-#   {"attacks_bonus":1}
-# conditions:
-#   {"trigger":"start of this warrior's own turn","resolution":"optional declaration before its combat phase","consequence":"+1 Attack for that combat phase","recipient":"this warrior","duration":"that combat phase","stacking":"once per duel","exceptions":"must not also use prayers that turn"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Self-only sermon: rounds.resolve_round spends the once-per-duel 'rousing-sermon' resource and adds +1 attack for the active player's phase. Surface reuse candidate: {"family":"mechanic.rousing-sermon","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare trigger, current bearer, activation, timing, state duration and reset rules. Keep damage backlash and interrupted continuation; exclude producer movement/group counting or campaign progression.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: friendly-group-emission (scope: NO)
 # Outside the admitted clause scope; retained for context, not a test TODO.
-# origin_id:
-#   rule/mordheim/protectorate-of-sigmar-lotd3/band--special-skill-rousing-sermon/mechanic.rousing-sermon
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/protectorate-of-sigmar-lotd3/special-rules.yaml
-# source_fingerprint:
-#   5b42dc7f80156c193aac822117d069f04bdb0c1beaaed8ccf3f076ed19dea7b1
-# source_sha256_at_generation:
-#   06d57ecdbee0d0cfffc39a30d09ff61277a030d7fb09fae549f7fe1c0ef73898
-# Printed rule text:
-#   all friendly models within 6 inches gain +1 attack during that Hand to Hand combat phase
-# Semantic contract (check analysis_status before treating as accepted):
-#   (not recorded)
-# effect_id:
-#   (not recorded)
-# relation:
-#   independent
-# parameters:
-#   {}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Emission to other friendly models is group/range mechanics, permanently outside the isolated 1v1 duel; separated from the admitted self consequence, no consumer assigned.
 
 # --- Authored scenarios ---
 # The Warrior Priest declares the sermon at the start of his own turn: his attack count

@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/skill.cutthroat
-# scaffold_fingerprint: 26290ebf89a9cf40dc2f185a78da6500bb5b269fc613519448c3a6bb1160c0be
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clause carries two authored scenarios derived from the printed rule and the recorded contract: the same paired-dagger wound against the same 5+ save, resolved one step worse with the skill. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -8,38 +7,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: minus-one-enemy-armour-with-paired-daggers (scope: YES)
-# AUTHORED[minus-one-enemy-armour-with-paired-daggers]: 2 scenarios cover the -1 on the enemy armour save for a wound inflicted by a pair of daggers: the same armour face of four fails with the skill and holds without it.
-# origin_id:
-#   mechanic/skill.cutthroat
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   6ff99f06b509fc48967160b0b159f7a1494ca1e0138e50e4cdce46a513f8b8af
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   Adds -1 to enemy armour saves for wounds inflicted with daggers wielded as a pair.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Adds -1 to enemy armour saves for wounds inflicted with daggers wielded as a pair; observable: one point better armour target when a pair of daggers is used.
-# effect_id:
-#   skill.cutthroat
-# relation:
-#   equivalent
-# parameters:
-#   {"armour_penetration":1,"requires":"dagger-pair"}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Consumed as an armour penetration added to the Strength modifier, gated on a paired-dagger detection that also accepts a paired main weapon. Surface reuse candidate: {"family":"SK-CUTTHROAT","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare actual weapon identity, charge/first-round condition, natural versus modified Strength, failed versus all-roll reroll and critical eligibility. Keep weapon-independent restrictions and special attacks outside an unsupported shared benefit.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+# AUTHORED: 2 scenarios cover the -1 on the enemy armour save for a wound inflicted by a pair of daggers: the same armour face of four fails with the skill and holds without it.
 
 # --- Authored scenarios ---
 # The admitted clause worsens the enemy armour save by one for wounds inflicted
@@ -51,7 +22,6 @@
 # defender's own attack are scripted as misses in both.
 - audit_id: mechanic/skill.cutthroat
   id: cutthroat-dagger-pair-worsens-the-save
-  covers: [minus-one-enemy-armour-with-paired-daggers]
   fighters:
     first:
       main_weapon_id: weapon.dagger
@@ -77,7 +47,6 @@
 # dagger penalty as the only modifier to the armour save.
 - audit_id: mechanic/skill.cutthroat
   id: cutthroat-without-the-skill-the-same-four-holds
-  covers: [minus-one-enemy-armour-with-paired-daggers]
   fighters:
     first:
       main_weapon_id: weapon.dagger

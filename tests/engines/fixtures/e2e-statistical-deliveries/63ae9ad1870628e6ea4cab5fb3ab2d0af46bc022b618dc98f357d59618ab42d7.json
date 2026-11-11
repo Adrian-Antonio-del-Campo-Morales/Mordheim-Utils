@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "blocked",
+  "source": {
+    "revision": "84a634dbdfc45973ebb93a9dd90c852e21c7c12b",
+    "path": "tests/integration/e2e/cases/grants/mordheim--sea-ghosts-mim--minstrels--songster--mechanic.songster--4371cbb51a5a.yaml",
+    "sha256": "45b17673ded4ef3f3fddf21b8c90a95b9042438b73fdca5665f279104515e1f9",
+    "test_id": "rule/mordheim/sea-ghosts-mim/minstrels--songster/mechanic.songster::the-reroll-is-accepted-even-when-it-fails-again"
+  },
+  "case_key": "e2e/rule/mordheim/sea-ghosts-mim/minstrels--songster/mechanic.songster/the-reroll-is-accepted-even-when-it-fails-again",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E prescribes explicit decisions (round.0.second.fear.charged.reroll); the contract admits only the engine-default decision policy, and no general policy for randomly branched trajectories exists for these keys."
+}

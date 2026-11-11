@@ -82,8 +82,7 @@ rules:
     - id: unimplemented.trollheim-mercenaries.band.reikland-command-radius
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.psychology
 - id: band--reikland-marksman-training
   name: Reikland — Marksman Training
   effect: >-
@@ -109,24 +108,16 @@ rules:
     - id: unimplemented.trollheim-mercenaries.band.reikland-marksman-training
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--middenheim-physical-prowess
   kind: warband_variant
   name: Middenheim — Physical Prowess
-  effect: >-
-    The Mercenary Captain and all Champions in a Middenheim warband start with Strength 4 instead of
-    Strength 3.
   source:
     manual: trollheim
     printed_page: 69
     section: Middenheim / Special Rules
   name_i18n:
     es: Middenheim — Proeza Física
-  effect_i18n:
-    es: >-
-      El Capitán mercenario y todos los Campeones de una banda de Middenheim comienzan con Fuerza 4
-      en lugar de Fuerza 3.
   applies_to:
     band: true
   runtime:
@@ -148,17 +139,15 @@ rules:
   eligibility:
   - mercenary-captain
   - champions
+  rule_ref: shared-rule.middenheim-physical-prowess
 - id: band--marienburg-traders
   name: Marienburg — Natural Traders
-  effect: A Marienburg warband receives +1 when attempting to find Rare items.
   source:
     manual: trollheim
     printed_page: 69
     section: Marienburg / Special Rules / Natural Traders
   name_i18n:
     es: Marienburgo — Comerciantes Natos
-  effect_i18n:
-    es: Una banda de Mariemburgo recibe +1 al intentar encontrar objetos Raros.
   applies_to:
     band: true
   runtime:
@@ -169,23 +158,16 @@ rules:
     - id: unimplemented.trollheim-mercenaries.band.marienburg-traders
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
+  rule_ref: shared-rule.marienburg-natural-traders
 - id: band--marienburg-wealth
   name: Marienburg — Enormous Wealth
-  effect: >-
-    A Marienburg warband starts a campaign with 600 gc instead of 500 gc. In a one-off game it
-    receives 20% more gold crowns for recruitment.
   source:
     manual: trollheim
     printed_page: 69
     section: Marienburg / Special Rules / Enormous Wealth
   name_i18n:
     es: Marienburgo — Enorme Riqueza
-  effect_i18n:
-    es: >-
-      Una banda de Mariemburgo comienza la campaña con 600 coronas en lugar de 500. En una partida
-      suelta recibe un 20% más de coronas de oro para el reclutamiento.
   applies_to:
     band: true
   runtime:
@@ -196,5 +178,5 @@ rules:
     - id: unimplemented.trollheim-mercenaries.band.marienburg-wealth
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
+  rule_ref: shared-rule.marienburg-enormous-wealth

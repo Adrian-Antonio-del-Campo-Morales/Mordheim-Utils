@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/marauders-of-chaos/band--mark-of-onogal/trait.mark-of-onogal-the-crow
-# scaffold_fingerprint: 89f26d0c0a745b86683120410eaed96f30b628efbb9e94826d2297b62d23c22a
 # authoring_status: AUTHORED
 # authoring_progress: the single admitted mark-admitted-effects clause carries 4 authored scenarios derived
 #   from the printed rule, the recorded contract and the accepted specification
@@ -17,9 +16,8 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: mark-admitted-effects (scope: YES)
 # AUTHORED[mark-admitted-effects]: 4 scenarios cover the printed per-recipient consequences.  The
@@ -30,61 +28,9 @@
 #   black-lotus mace blow that hits on a six is consumed as an ordinary weapon (declared wound face
 #   of one fails), which is the accepted specification's own poison case.  The Serious Injuries
 #   re-roll printed in the same sentence has no duel route at all and stays recorded, not asserted.
-# origin_id:
-#   rule/mordheim/marauders-of-chaos/band--mark-of-onogal/trait.mark-of-onogal-the-crow
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/marauders-of-chaos/special-rules.yaml
-# source_fingerprint:
-#   51223ef294f6bd53892b541dd473f3620e7ec5127d87af5c491a8265ae302607
-# source_sha256_at_generation:
-#   501a50b0b257497d4817e6d76326eb3504f13f454c12a57d3e72077681bbe574
-# Printed rule text:
-#   A marked leader gains +1 Toughness and is immune to poison. A Seer with this mark is immune to poison.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Mark effect: the marked Chieftain gains +1 Toughness and poison immunity; with the same mark the Seer gains poison immunity only.
-# effect_id:
-#   trait.mark-of-onogal-the-crow
-# relation:
-#   equivalent
-# parameters:
-#   {"value": true}
-# conditions:
-#   {"recipients": {"marauder-chieftain": {"toughness": 1, "poison_immune": true}, "seer": {"poison_immune": true}}}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   The +1 Toughness is added by compile_fighter only for build.profile_id marauder-chieftain; poison immunity is set for any marked bearer through poison_immunity = poison_immune or mark_of_onogal_the_crow, so the Seer keeps immunity without the Toughness. The individual effects are not duplicated in the campaign clause. Rejected equivalence recommendation: Rejected unconditional EQ-trait.mark-of-onogal-the-crow: the marked leader receives +1 Toughness and poison immunity, but the Seer receives poison immunity only. Preserve the existing per-recipient consequences.
 #
 # Clause: serious-injuries-reroll (scope: NO)
 # Outside the admitted clause scope; retained for context, not a test TODO.
-# origin_id:
-#   rule/mordheim/marauders-of-chaos/band--mark-of-onogal/trait.mark-of-onogal-the-crow
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/marauders-of-chaos/special-rules.yaml
-# source_fingerprint:
-#   51223ef294f6bd53892b541dd473f3620e7ec5127d87af5c491a8265ae302607
-# source_sha256_at_generation:
-#   501a50b0b257497d4817e6d76326eb3504f13f454c12a57d3e72077681bbe574
-# Printed rule text:
-#   A marked leader may re-roll once on the Serious Injuries table.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Excluded clause: the reroll on the Serious Injuries table is post-battle campaign recovery and never applies inside a 1v1 duel.
-# effect_id:
-#   (not recorded)
-# relation:
-#   independent
-# parameters:
-#   {}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Explicit disposition for the previously omitted campaign clause: a permanent duel exclusion (NO) with no admitted individual consequence, so it carries no effect identity or consumer. It is recorded as its own row instead of only being mentioned in the mark notes. Coordinator disposition: this printed clause has a resolved 1v1 exclusion; it is not queued for implementation or a future scope decision. Source metadata reconciliation is separate from duel behaviour. Scope review integration: {"clause_id":"serious-injuries-reroll","review_clause_id":"serious-injuries-reroll","source_state":"unverified","review_status":"reviewed","scope_reason":"Re-rolling on the Serious Injuries table is a post-battle campaign procedure, excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"}
 
 # --- Authored scenarios ---
 # Derived from the printed sentence, the recorded contract and the accepted specification; no engine

@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/underworld-alliance-mim/warpstone-troll--vomit-attack/weapon.vomit-attack
-# scaffold_fingerprint: a645c74c80ad41bfeed5581e4b004c597954467713a71ab20e2a06c5fc3c42ab
 # authoring_status: AUTHORED
 # authoring_progress: the admitted whole clause carries two authored scenarios derived from the printed
 # sentence, the recorded contract and the printed warpstone-troll profile, mirroring the authored band
@@ -13,12 +12,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 2 scenarios cover the printed "instead of his normal attacks ... a single attack that
+# AUTHORED: 2 scenarios cover the printed "instead of his normal attacks ... a single attack that
 # automatically hits with a Strength of 5 and ignores armour saves".  The bearer is this band's printed
 # warpstone-troll profile (Weapon Skill 3, Strength 4, Toughness 4, Wounds 3, Initiative 2, Attacks 4,
 # Leadership 7), whose own rule_ids already carry warpstone-troll--vomit-attack, so no extra grant is
@@ -28,32 +25,6 @@
 # and warpstone-troll--regeneration stay idle because the bearer is neither charged nor wounded and it
 # causes no Fear test of its own without a charge.  The declaration is the decision
 # round.0.first.vomit-attack.  REVIEWED still requires manual semantic review.
-# origin_id:
-#   rule/mordheim/underworld-alliance-mim/warpstone-troll--vomit-attack/weapon.vomit-attack
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/underworld-alliance-mim/special-rules.yaml
-# source_fingerprint:
-#   17fabf1c94af971e400158c8b02a586b88ff5b953c0f806029fc3606aee4bb7d
-# source_sha256_at_generation:
-#   ae550b7cd84887e1611d22d231b130231ea334d6414dd53e96eee6549daaf23d
-# Printed rule text:
-#   Instead of his normal attacks, a Troll can regurgitate its highly corrosive digestive juices on an unfortunate hand-to-hand combat opponent. This is a single attack that automatically hits with a Strength of 5 and ignores armour saves.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Instead of his normal attacks a Troll may vomit: one attack that hits automatically at Strength 5 and ignores armour saves. Closure: one automatic Strength 5 hit with no armour step.
-# effect_id:
-#   weapon.vomit-attack
-# relation:
-#   equivalent
-# parameters:
-#   {"automatic_hit": true, "fixed_strength": 5, "ignore_armour": true}
-# conditions:
-#   {"recipient": "Warpstone Troll"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Band origin for the shared vomit-attack operator. The printed text repeats the canonical clause of the shared operator without adding a term, so the band origin creates no second runtime contribution. Scope review integration: {"clause_id":"whole","review_clause_id":"whole","source_state":"unverified","review_status":"reviewed","scope_reason":"The warpstone troll's single automatic Strength 5 attack that ignores armour saves is an admitted attack consequence.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"} Surface reuse candidate: {"family":"W-weapon.vomit-attack","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare only the current admitted facet, preserving weapon-specific overrides, optional attack replacement, parry and save eligibility, and per-phase reroll resources. Do not inherit the combined parent parameters or introduce capture, shooting, exploration or excluded recipient consequences.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
 # --- Authored scenarios ---
 # Derived from the printed rule and the printed profile; no engine output was consulted.  The bearer acts
@@ -62,7 +33,6 @@
 
 - audit_id: rule/mordheim/underworld-alliance-mim/warpstone-troll--vomit-attack/weapon.vomit-attack
   id: the-declared-replacement-is-one-automatic-strength-five-hit-ignoring-armour-and-parry
-  covers: [whole]
   fighters:
     first:
       collection: mordheim
@@ -91,7 +61,6 @@
 
 - audit_id: rule/mordheim/underworld-alliance-mim/warpstone-troll--vomit-attack/weapon.vomit-attack
   id: declining-the-replacement-leaves-the-ordinary-attack-pool
-  covers: [whole]
   fighters:
     first:
       collection: mordheim

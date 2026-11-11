@@ -66,7 +66,6 @@ rules:
         parameters:
           value: true
   name: Flammable
-  effect: A fire-based attack that hits the Tomb Lord causes double the normal number of Wounds.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -74,13 +73,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
   name_i18n:
     es: Inflamable
-  effect_i18n:
-    es: >-
-      Un ataque de base fuego que impacte al Señor de la Tumba causa el doble del número normal de
-      Heridas.
   applies_to:
     profile_ids:
     - tomb-lord
+  rule_ref: shared-rule.flammable
 - id: liche-priest--wizard
   name: Wizard
   effect: >-
@@ -108,8 +104,7 @@ rules:
     - id: unimplemented.tomb-guardians.liche-priest.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: liche-priest--undead
   name: Undead
   effect: The Liche Priest is undead and follows all rules for the Undead.
@@ -137,7 +132,6 @@ rules:
         id: mechanic.undead
 - id: acolytes--undead
   name: Undead
-  effect: Acolytes are undead and follow all rules for the Undead.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -145,8 +139,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
   name_i18n:
     es: No Muerto
-  effect_i18n:
-    es: Los Acólitos son muertos vivientes y siguen todas las reglas de los Muertos Vivientes.
   applies_to:
     profile_ids:
     - acolytes
@@ -160,6 +152,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.undead
+  rule_ref: shared-rule.undead
 - id: skeleton-warriors--undead
   name: Undead
   source:
@@ -185,7 +178,6 @@ rules:
   rule_ref: shared-rule.undead
 - id: tomb-guardians--undead
   name: Undead
-  effect: The Tomb Guards are undead and follow all rules for the Undead.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -193,10 +185,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
   name_i18n:
     es: No Muerto
-  effect_i18n:
-    es: >-
-      Los Guardianes de la Tumba son muertos vivientes y siguen todas las reglas de los Muertos
-      Vivientes.
   applies_to:
     profile_ids:
     - tomb-guardians
@@ -210,6 +198,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.undead
+  rule_ref: shared-rule.undead
 - id: tomb-guardians--experience
   name: Experience
   effect: >-
@@ -237,9 +226,7 @@ rules:
     - id: unimplemented.tomb-guardians.tomb-guardians.experience
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: tomb-scorpions--living
   name: Living
   source:
@@ -260,8 +247,7 @@ rules:
     - id: unimplemented.tomb-guardians.tomb-scorpions.living
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.psychology
   rule_ref: shared-rule.living
 - id: tomb-scorpions--animal
   name: Animal
@@ -283,8 +269,7 @@ rules:
     - id: unimplemented.tomb-guardians.tomb-scorpions.animal
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
   rule_ref: shared-rule.animal
 - id: tomb-scorpions--scorpion-sting
   runtime:
@@ -346,7 +331,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.causes-fear
-  rule_ref: shared-rule.cause-fear-2
+  rule_ref: shared-rule.cause-fear-undead
 - id: band--immune-to-psychology
   name: Immune to Psychology
   source:
@@ -369,7 +354,12 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
-  rule_ref: shared-rule.immune-to-psychology-4
+      clauses:
+      - id: psychology-immunity
+        scope: 'YES'
+      - id: never-leaves-combat
+        scope: 'NO'
+  rule_ref: shared-rule.immune-to-psychology-undead
 - id: band--no-pain
   eligibility:
   - acolytes
@@ -397,7 +387,7 @@ rules:
     es: Sin Dolor
   applies_to:
     band: true
-  rule_ref: shared-rule.no-pain-4
+  rule_ref: shared-rule.no-pain-undead
 - id: band--may-not-run
   name: May Not Run
   source:
@@ -417,9 +407,11 @@ rules:
     - id: unimplemented.tomb-guardians.band.may-not-run
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
-  rule_ref: shared-rule.may-not-run-2
+      reason: deferred.psychology
+      clauses:
+      - id: may-not-run
+        scope: 'NO'
+  rule_ref: shared-rule.may-not-run-undead
 - id: band--immune-to-poison
   eligibility:
   - acolytes
@@ -449,7 +441,7 @@ rules:
     es: Inmune al Veneno
   applies_to:
     band: true
-  rule_ref: shared-rule.immune-to-poison-3
+  rule_ref: shared-rule.immune-to-poison-undead
 - id: band--no-brain
   name: No Brain
   effect: >-
@@ -476,8 +468,7 @@ rules:
     - id: unimplemented.tomb-guardians.band.no-brain
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--tomb-lord-skill-memory
   name: Tomb Lord Skill Memory
   effect: >-
@@ -505,8 +496,7 @@ rules:
     - id: unimplemented.tomb-guardians.band.tomb-lord-skill-memory
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--do-not-drink
   name: Do Not Drink
   effect: >-
@@ -533,8 +523,10 @@ rules:
     - id: unimplemented.tomb-guardians.band.do-not-drink
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.psychology
+      clauses:
+      - id: do-not-drink
+        scope: 'NO'
 - id: band--home-ground
   name: Home Ground
   effect: A Tomb Guardian warband always rolls one extra die in the Exploration phase.
@@ -557,8 +549,7 @@ rules:
     - id: unimplemented.tomb-guardians.band.home-ground
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--drive-chariot
   name: Drive Chariot
   effect: >-
@@ -588,8 +579,10 @@ rules:
     - id: unimplemented.tomb-guardians.band.drive-chariot
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.psychology
+      clauses:
+      - id: whole
+        scope: 'NO'
 - id: band--tomb-guardian-experience-clarification
   name: Tomb Guardian Experience Clarification
   effect: >-
@@ -619,9 +612,7 @@ rules:
     - id: unimplemented.tomb-guardians.band.tomb-guardian-experience-clarification
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: band--tomb-guardian-maximum-characteristics
   name: Tomb Guardian Maximum Characteristics
   effect: >-
@@ -653,9 +644,7 @@ rules:
     - id: unimplemented.tomb-guardians.band.tomb-guardian-maximum-characteristics
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: liche-priest--no-armour
   name: No Armour
   effect: >-
@@ -702,8 +691,6 @@ rules:
           - weapons
           - armour
   name: Equipment Restrictions
-  effect: >-
-    Tomb Scorpions do not use weapons or armour.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -711,9 +698,7 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      es
   applies_to:
     profile_ids:
     - tomb-scorpions
+  rule_ref: shared-rule.no-weapons-or-armour

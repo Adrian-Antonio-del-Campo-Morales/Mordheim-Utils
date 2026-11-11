@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/chaos-streets-pit-fighters/band--pit-fighter-skill-arms-master/compiler.ignore-difficult-to-use-restrictions
-# scaffold_fingerprint: 01edaeb7a18a230758577d9785a439e162d7a6a5fc639007f71d5e1e937946e3
 # authoring_status: AUTHORED
 # authoring_progress: the admitted whole clause carries two authored scenarios derived from the printed
 # sentence and the recorded contract, mirroring the authored Mordheim origin of the same shared contract:
@@ -15,43 +14,15 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 2 scenarios evidence the printed waiver from both sides: without the contract the
+# AUTHORED: 2 scenarios evidence the printed waiver from both sides: without the contract the
 # module refuses the loadout whose main weapon occupies both hands (the message is quoted verbatim from
 # _eligibility.js), and the same printed loadout carried by the pit fighter that selected the Arms Master
 # row is accepted.  The accepted build is the band's own printed pit-king profile, which the accepted
 # editorial specification tests/specs/semantic/grants/editorial-advanced-loadouts.yaml uses for this same
 # contract with this same flail-and-dagger kit.  REVIEWED still requires manual semantic review.
-# origin_id:
-#   rule/trollheim/chaos-streets-pit-fighters/band--pit-fighter-skill-arms-master/compiler.ignore-difficult-to-use-restrictions
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/trollheim/chaos-streets-pit-fighters/special-rules.yaml
-# source_fingerprint:
-#   e828fe4ab9690c5786affa0201532cd1af9fb620cc134ac92e6f40ee0bad2df6
-# source_sha256_at_generation:
-#   f4e29e8d48c3d995458d7577adad6618e309358e5df77d4d6760fcbf720a73a7
-# Printed rule text:
-#   The Hero ignores all Difficult to Use weapon restrictions and may combine weapons that would normally be prohibited.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Loadout relaxation: the fighter may combine weapons the Difficult-to-Use restriction would prohibit.
-# effect_id:
-#   compiler.ignore-difficult-to-use-restrictions
-# relation:
-#   equivalent
-# parameters:
-#   {}
-# conditions:
-#   {"recipient":"pit-fighter"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   New origin, shared contract. Surface reuse candidate: {"family":"C-DIFFICULT","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Keep one Difficult-to-Use weapon plus an ordinary hand weapon distinct from ignoring every Difficult-to-Use restriction. Weapons Training expands allowed identities; it does not imply the same waiver.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
 # --- Authored scenarios ---
 # Derived from the printed sentence and the recorded contract; no engine output was consulted.  The
@@ -59,7 +30,6 @@
 # off-hand choice.
 - audit_id: rule/trollheim/chaos-streets-pit-fighters/band--pit-fighter-skill-arms-master/compiler.ignore-difficult-to-use-restrictions
   id: without-the-waiver-a-two-handed-main-weapon-and-an-off-hand-are-refused
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.flail
@@ -74,7 +44,6 @@
 # the only difference, and no die is requested because both pools are suppressed.
 - audit_id: rule/trollheim/chaos-streets-pit-fighters/band--pit-fighter-skill-arms-master/compiler.ignore-difficult-to-use-restrictions
   id: with-the-waiver-the-same-loadout-is-accepted
-  covers: [whole]
   fighters:
     first:
       collection: trollheim

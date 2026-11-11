@@ -38,13 +38,8 @@ rules:
     - id: unimplemented.wood-elves-of-athel-loren-web.band.excellent-sight
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: spotting Hidden enemies is a hiding/deployment mechanic outside the current
-        engine scope.
+      reason: out-of-scope.movement
   name: Excellent Sight
-  effect: >-
-    Elves have eyesight unmatched by mere humans. All the Elves in a Wood Elf Warband can spot
-    Hidden enemies from twice as far away as other warriors (i.e. twice their Initiative in inches).
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -52,13 +47,9 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/wood-elves-of-athel-loren
   name_i18n:
     es: Vista Excepcional
-  effect_i18n:
-    es: >-
-      Los Elfos tienen una vista sin comparación con la de los meros humanos. Todos los Elfos de una
-      banda de Elfos del Bosque pueden detectar enemigos Ocultos al doble de distancia que otros
-      guerreros (es decir, al doble de su Iniciativa en pulgadas).
   applies_to:
     band: true
+  rule_ref: shared-rule.excellent-sight
 - id: band--unforgiving
   runtime:
     scope: 'NO'
@@ -68,9 +59,7 @@ rules:
     - id: unimplemented.wood-elves-of-athel-loren-web.band.unforgiving
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: multiplayer alliance restrictions are campaign mechanics outside the duel
-        scope.
+      reason: out-of-scope.campaign
   name: Unforgiving
   effect: >-
     In addition to their hatred of their corrupt kin, the folk of Athel Loren will not fight
@@ -100,9 +89,7 @@ rules:
     - id: unimplemented.wood-elves-of-athel-loren-web.band.tolerant
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: hiring Hired Swords is a roster-construction/campaign mechanic outside the
-        duel scope.
+      reason: out-of-scope.campaign
   name: Tolerant
   effect: >-
     Due to their outsider status in the world, the Elves of Athel Loren have learned to stifle their
@@ -134,9 +121,7 @@ rules:
     - id: unimplemented.wood-elves-of-athel-loren-web.skill.fey
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic saves require the magic subsystem, which is outside the current engine
-        scope.
+      reason: out-of-scope.magic
   name: Fey
   effect: >-
     The Wood Elf has a certain understanding of magic and therefore gets a saving throw of 4+
@@ -164,9 +149,7 @@ rules:
     - id: unimplemented.wood-elves-of-athel-loren-web.skill.elven-luck
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: generic rerolls are a meta-mechanic applying to subsystems outside the current
-        engine scope.
+      reason: out-of-scope.non-duel
   name: Elven Luck
   effect: The Elven Gods favour the Wood Elf. Once per game, he may reroll any failed roll.
   source:
@@ -192,9 +175,7 @@ rules:
     - id: unimplemented.wood-elves-of-athel-loren-web.skill.excellent-sight
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: spotting Hidden enemies is a hiding/deployment mechanic outside the current
-        engine scope.
+      reason: out-of-scope.movement
   name: Excellent Sight
   effect: >-
     By training his eyesight for years the Wood Elf can spot hidden enemy models up to 2 x I inch
@@ -224,9 +205,7 @@ rules:
     - id: unimplemented.wood-elves-of-athel-loren-web.skill.seeker
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: exploration dice modification is a post-duel/campaign resolution mechanic
-        outside the current engine scope.
+      reason: out-of-scope.campaign
   name: Seeker
   effect: >-
     Being an expert Tracker, the Wood Elf is able to spot even hidden treasures. He may modify the
@@ -255,8 +234,7 @@ rules:
     - id: unimplemented.wood-elves-of-athel-loren-web.skill.infiltration
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: pre-battle deployment (Infiltration) is outside the current engine scope.
+      reason: out-of-scope.movement
   name: Infiltration
   effect: >-
     The Wood Elf is an expert in infiltrating behind enemy lines. Therefore he is always deployed
@@ -309,14 +287,8 @@ rules:
     - id: unimplemented.wood-elves-of-athel-loren-web.waywatcher.sniper
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: shooting while hidden is a shooting/hiding mechanic outside the current engine
-        scope.
+      reason: out-of-scope.shooting
   name: Sniper
-  effect: >-
-    Due to their years of training Waywatchers can shoot while keeping almost invisible. This allows
-    the character to shoot while hiding. After the shot roll a D6, on a 5+ no one noticed where the
-    arrow came from.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -324,14 +296,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/wood-elves-of-athel-loren
   name_i18n:
     es: Francotirador
-  effect_i18n:
-    es: >-
-      Debido a sus años de entrenamiento, los Vigilantes de los Senderos pueden disparar
-      manteniéndose casi invisibles. Esto permite al personaje disparar mientras está oculto. Tras
-      el disparo, tira un D6: con un 5+, nadie notó de dónde vino la flecha.
   applies_to:
     profile_ids:
     - waywatcher
+  rule_ref: shared-rule.sniper
 - id: waywatcher--camouflage
   runtime:
     scope: 'NO'
@@ -341,9 +309,7 @@ rules:
     - id: unimplemented.wood-elves-of-athel-loren-web.waywatcher.camouflage
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: hiding and spot tests are hiding/deployment mechanics outside the current
-        engine scope.
+      reason: out-of-scope.movement
   name: Camouflage
   effect: >-
     Waywatchers are experts at camouflage. They wear cloaks of green, brown or grey which are made
@@ -375,9 +341,7 @@ rules:
     - id: unimplemented.wood-elves-of-athel-loren-web.forest-mage.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic subsystem (Woodland Incantations; the spell list is preserved in
-        catalog/campaign/magic.yaml as lore.woodland-incantations).
+      reason: out-of-scope.magic
   name: Wizard
   effect: The Forest Mage is a Wizard and may use the Woodland Incantations spell list.
   source:
@@ -403,10 +367,8 @@ rules:
     - id: unimplemented.wood-elves-of-athel-loren-web.deepwood-scout.crossfire
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: shooting-phase injury-roll bonuses are outside the current engine scope.
+      reason: out-of-scope.shooting
   name: Crossfire
-  effect: If more than one scout henchman shoots at the same target, they get +1 on the injury roll.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -414,10 +376,7 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/wood-elves-of-athel-loren
   name_i18n:
     es: Fuego Cruzado
-  effect_i18n:
-    es: >-
-      Si más de un explorador (hombre de tropa) dispara al mismo objetivo, obtienen +1 en la tirada
-      de herida.
   applies_to:
     profile_ids:
     - deepwood-scout
+  rule_ref: shared-rule.crossfire

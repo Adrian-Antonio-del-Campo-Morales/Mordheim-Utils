@@ -136,11 +136,6 @@ JUSTIFIED_FINDINGS: dict[tuple[str, str, str], str | dict[str, str]] = {
         "unused_enum_value",
         "#/$defs/catalog_status",
     ): "`draft` is the editorial state docs/guides/campaign-knowledge.md prescribes for unconfirmed rules",
-    (
-        "catalog-rules-implemented-canonical-families.yaml.schema.json",
-        "unused_enum_value",
-        "#/$defs/family.implemented",
-    ): "the classification vocabulary of the audit it documents; every family is YES today",
     # -- vocabularies the campaign engine dispatches on ------------------
     # `post_battle_engine` reads `recipient`, `subject` and `note`; `scenario_rewards`
     # documents `hero_and_henchman_group | leader | hero | manual`.

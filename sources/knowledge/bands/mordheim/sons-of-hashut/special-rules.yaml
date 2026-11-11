@@ -58,9 +58,7 @@ rules:
     - id: unimplemented.sons-of-hashut.apprentice-sorcerer.rituals-of-chaos
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: bull-centaur--large-target
   name: Large Target
   effect: >-
@@ -90,8 +88,7 @@ rules:
     - id: unimplemented.sons-of-hashut.bull-centaur.large-target
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: hobgoblins--skinny
   name: Skinny
   effect: >-
@@ -119,9 +116,7 @@ rules:
     - id: unimplemented.sons-of-hashut.hobgoblins.skinny
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: hobgoblins--nobody-cares-about-them
   name: Nobody Cares About Them
   effect: >-
@@ -149,8 +144,10 @@ rules:
     - id: unimplemented.sons-of-hashut.hobgoblins.nobody-cares-about-them
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.psychology
+      clauses:
+      - id: whole
+        scope: 'NO'
 - id: band--hard-head
   name: Hard Head
   effect: >-
@@ -210,14 +207,9 @@ rules:
     - id: unimplemented.sons-of-hashut.band.armour
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: band--hard-to-kill
   name: Hard to Kill
-  effect: >-
-    Chaos Dwarfs and Bull Centaurs are taken Out of Action only on a 6 on the Injury chart; 1-2 is
-    Knocked Down and 3-5 is Stunned.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -225,10 +217,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
   name_i18n:
     es: Difíciles de Matar
-  effect_i18n:
-    es: >-
-      Los Enanos del Caos y los Centauros toro se retiran del combate solo con un 6 en la tabla de
-      Heridas; 1-2 es Derribado y 3-5 es Aturdido.
   applies_to:
     profile_ids: *id001
   runtime:
@@ -241,6 +229,7 @@ rules:
       binding:
         kind: mechanic
         id: skill.hard-to-kill
+  rule_ref: shared-rule.hard-to-kill
 - id: band--slavers
   name: Slavers
   effect: >-
@@ -273,8 +262,7 @@ rules:
     - id: unimplemented.sons-of-hashut.band.slavers
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--uncommon
   name: Uncommon
   effect: >-
@@ -302,8 +290,7 @@ rules:
     - id: unimplemented.sons-of-hashut.band.uncommon
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--indentured-servants
   name: Indentured Servants
   effect: >-
@@ -332,9 +319,7 @@ rules:
     - id: unimplemented.sons-of-hashut.band.indentured-servants
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: band--hired-swords
   name: Hired Swords
   effect: >-
@@ -364,9 +349,7 @@ rules:
     - id: unimplemented.sons-of-hashut.band.hired-swords
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: band--sons-of-hashut-maximum-characteristics
   name: Sons of Hashut Maximum Characteristics
   effect: >-
@@ -400,9 +383,7 @@ rules:
     - id: unimplemented.sons-of-hashut.band.sons-of-hashut-maximum-characteristics
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: band--chaos-dwarfs-special-skills-true-grit
   kind: warband_skill
   name: True Grit
@@ -467,9 +448,7 @@ rules:
     - id: unimplemented.sons-of-hashut.band.chaos-dwarfs-special-skills-extra-tough
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: band--chaos-dwarfs-special-skills-unlimited-hatred
   kind: warband_skill
   name: Unlimited Hatred
@@ -532,6 +511,11 @@ rules:
       binding:
         kind: mechanic
         id: skill.thick-skull
+      clauses:
+      - id: stun-to-knocked-down-on-three
+        scope: 'YES'
+      - id: helmet-improves-to-two-and-replaces
+        scope: 'YES'
 - id: apprentice-sorcerer--no-armoured-casting
   name: No Armour Casting
   effect: >-
@@ -557,8 +541,7 @@ rules:
     - id: unimplemented.sons-of-hashut.apprentice-sorcerer.no-armoured-casting
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic.
+      reason: out-of-scope.magic
 - id: blunderbuss-chaos-dwarfs--equipment-restrictions
   name: Equipment Restrictions
   effect: >-

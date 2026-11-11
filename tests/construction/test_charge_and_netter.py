@@ -84,6 +84,7 @@ def attacks_while(*, charging: bool) -> int:
         fighter=fighter, first_round=charging, charging=charging)).attacks
 
 
+@pytest.mark.covers("rule/trollheim/lustria-amazons/band--amazon-special-skills-animal-fury/trait.charge-attack-bonus")
 def test_animal_fury_composes_fear_immunity_with_the_charge_attack():
     fury = compiled("lustria-amazons", "amazon-priestess", ANIMAL_FURY, collection="trollheim")
     # One selection, both printed consequences: the psychology state and the
@@ -135,6 +136,9 @@ def test_the_netter_clauses_reach_the_supplied_caught_victim_and_not_the_helper(
     assert rule["source"]["url"]
 
 
+@pytest.mark.covers("rule/mordheim/crooked-moon-kep/band--night-goblin-special-skills/unimplemented.crooked-moon-kep.band.night-goblin-special-skills", "night-goblin-skills--scope--netter")
+@pytest.mark.covers("rule/mordheim/night-goblins-kaz/band--night-goblin-special-skills/unimplemented.night-goblins-kaz.band.night-goblin-special-skills", "whole--scope--netter")
+@pytest.mark.covers("rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills/profile.skill-access", "netter")
 @pytest.mark.parametrize(("band", "profile"), (
     ("night-goblins-mic", "big-boss"),
     ("night-goblins-kaz", "big-boss"),
@@ -186,6 +190,8 @@ def test_the_netter_clauses_declare_the_supplied_caught_victim_and_grant_no_tech
                          band_id=band, profile_id=profile), KNOWLEDGE)
 
 
+@pytest.mark.covers("rule/mordheim/crooked-moon-kep/band--night-goblin-special-skills/unimplemented.crooked-moon-kep.band.night-goblin-special-skills", "night-goblin-skills--scope--netter")
+@pytest.mark.covers("rule/mordheim/night-goblins-kaz/band--night-goblin-special-skills/unimplemented.night-goblins-kaz.band.night-goblin-special-skills", "whole--scope--netter")
 def test_the_supplied_caught_victim_consequence_is_configurable_and_consumed_by_the_duel():
     caught_fighter = compile_fighter(FighterBuild(
         "mordheim", Characteristics(3, 3, 3, 1, 3, 1, leadership=7),
@@ -222,6 +228,8 @@ BERSERK_RECIPIENTS = (
 )
 
 
+@pytest.mark.covers("rule/mordheim/norse-explorers-btb/band--norse-special-skills-berserk-charge/special-rule.band--norse-special-skills-berserk-charge")
+@pytest.mark.covers("rule/mordheim/norse-explorers-lustria/band--norse-special-skills-berserk-charge/special-rule.band--norse-special-skills-berserk-charge")
 @pytest.mark.parametrize(("band", "profile"), BERSERK_RECIPIENTS)
 def test_berserk_charge_reaches_its_recipients_and_only_rerolls_a_charging_saxon_blow(band, profile):
     opponent = compile_fighter(FighterBuild(
@@ -245,6 +253,7 @@ DIRE_WOLF_ORIGINS = (
 )
 
 
+@pytest.mark.covers("rule/trollheim/chaos-streets-undead-bloodlines/dire-wolf--charge/trait.charge-attack-bonus")
 @pytest.mark.parametrize(("band", "profile", "collection"), DIRE_WOLF_ORIGINS)
 def test_dire_wolf_charge_adds_its_printed_second_attack_only_when_charging(band, profile, collection):
     wolf = compiled(band, profile, collection=collection)
@@ -255,6 +264,7 @@ def test_dire_wolf_charge_adds_its_printed_second_attack_only_when_charging(band
         fighter=wolf, first_round=False, charging=False)).attacks == 1
 
 
+@pytest.mark.covers("rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills/profile.skill-access", "bull-charge")
 def test_ogre_bull_charge_reuses_the_pool_substitution_for_its_selection():
     attacker = compiled("ogre-hunting-party-web", "ogre-hunter", OGRE_BULL_CHARGE)
     target = compile_fighter(FighterBuild(
@@ -272,6 +282,7 @@ def test_ogre_bull_charge_reuses_the_pool_substitution_for_its_selection():
     assert outcomes[0].hit and final_defender.condition == Condition.KNOCKED_DOWN
 
 
+@pytest.mark.covers("rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills/profile.skill-access", "bull-charge")
 def test_bull_charge_carries_its_printed_to_hit_modifier_and_only_knocks_down_on_success():
     attacker = compiled("ogre-hunting-party-web", "ogre-hunter", OGRE_BULL_CHARGE)
     ordinary = compiled("ogre-hunting-party-web", "ogre-hunter")

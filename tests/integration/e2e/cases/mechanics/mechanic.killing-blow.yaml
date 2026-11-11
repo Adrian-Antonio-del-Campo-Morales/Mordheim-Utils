@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.killing-blow
-# scaffold_fingerprint: 832fe70d909d3f4f934d3b4d40b0dae60412be864c5a5036a4c4eff129827dfb
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clause is AUTHORED after this intervention. Seven
 #   scenarios evidence the automatic wound on the natural hit six, the To Wound roll
@@ -18,17 +17,15 @@
 
 # REVIEWED requires semantic review; covers labels alone are insufficient.
 
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 
 # Governing rulings: docs/decisions/design-rulings.md
 
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 
 #
 
-# Clause: whole (scope: YES)
 
-# AUTHORED[whole]: 7 scenarios cover the automatic wound on a natural hit six, the To Wound
+# AUTHORED: 7 scenarios cover the automatic wound on a natural hit six, the To Wound
 #   roll the same six still needs without the skill, the armour save that a killing-blow wound
 #   still allows, and both halves of the printed parry refusal against a defender that may
 #   parry a roll of six.  The special-save half of "armour and special saves remain allowed"
@@ -40,55 +37,42 @@
 #   `band--blood-dragon-power-sword-master` (grant: selectable, implemented: YES, eligibility
 #   blood-dragon-vampire) carries into the defender's global effects; the killing-blow attack
 #   requests no parry die while the same attack without the skill does.
-# origin_id:
 
 #   mechanic/mechanic.killing-blow
 
-# analysis_status:
 
 #   reviewed
 
-# source_file:
 
 #   catalog/mechanics/close-combat.yaml
 
-# source_fingerprint:
 
 #   6d8bdd1ea29122c16ebffd96c37f94998fc9cfb9990c8b48462a6696dfcac136
 
-# source_sha256_at_generation:
 
 #   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
 
-# Printed rule text:
 
 #   A natural hit six wounds automatically and cannot be parried; armour and special saves remain allowed.
 
-# Semantic contract (check analysis_status before treating as accepted):
 
 #   A natural hit roll of six wounds automatically and cannot be parried, while armour and special saves remain available. Closure: a natural six on the To Hit roll skips the To Wound roll, the parry step is refused and the armour and special-save steps still resolve.
 
-# effect_id:
 
 #   mechanic.killing-blow
 
-# relation:
 
 #   equivalent
 
-# parameters:
 
 #   {"cannot_be_parried": true, "effect": "automatic wound", "hit_roll": 6, "saves": ["armour", "special"]}
 
-# conditions:
 
 #   {"trigger": "natural six to hit"}
 
-# dependencies:
 
 #   []
 
-# Register notes (context only, not behavioral authority):
 
 #   _resolve_reference_attack_once raises the killing-blow branch on a natural six: the attack is made unparryable and the wound is automatic, while the armour and special-save steps run unchanged. The rule is rejected by require_optimized_support for the optimized ports, which is a port-scope limit and not a semantic gap of the modular operator. Surface reuse candidate: {"family":"mechanic.killing-blow","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare full special-attack/rescue contract: replacement scope, prerequisite count, per-hit versus per-wound triggers, save/parry eligibility, ordering, interruption and state/resources. Do not substitute an ordinary attack or reset a per-battle effect each round.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
@@ -108,7 +92,6 @@
 
   id: a-natural-six-wounds-without-a-to-wound-roll
 
-  covers: [whole]
 
   fighters:
 
@@ -152,7 +135,6 @@
 
   id: the-same-six-still-rolls-to-wound-without-the-skill
 
-  covers: [whole]
 
   fighters:
 
@@ -194,7 +176,6 @@
 
   id: armour-still-saves-the-automatic-wound
 
-  covers: [whole]
 
   fighters:
 
@@ -239,7 +220,6 @@
 # wound lands.
 - audit_id: mechanic/mechanic.killing-blow
   id: a-natural-six-cannot-be-parried-even-by-a-defender-that-parries-sixes
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -268,7 +248,6 @@
 # and the defender keeps both wounds - the comparison isolates the printed refusal.
 - audit_id: mechanic/mechanic.killing-blow
   id: the-same-six-is-parried-by-that-defender-without-the-skill
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -298,7 +277,6 @@
 # offers the ward, and a six negates the automatic wound entirely.
 - audit_id: mechanic/mechanic.killing-blow
   id: the-special-ward-save-still-applies-to-the-automatic-wound
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -322,7 +300,6 @@
 # ward die having been skipped.
 - audit_id: mechanic/mechanic.killing-blow
   id: a-ward-below-six-does-not-negate-the-killing-blow
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace

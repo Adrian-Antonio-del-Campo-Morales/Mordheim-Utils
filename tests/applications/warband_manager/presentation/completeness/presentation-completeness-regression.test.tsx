@@ -4,15 +4,15 @@
  * generated artefacts (no data filtering, no fixtures).
  *
  * The requirement: the shared rules category must contain exactly
- * the 68 real shared rules (`shared-rule.*`) — no band-local copy — and every
+ * the 143 real shared rules (`shared-rule.*`) — no band-local copy — and every
  * entry's name and effect must resolve in ES and EN with zero generic fallbacks
  * and zero ids shown as text.
  *
  * Current product state: `rules-prose.json` used to publish 1,924 rows under the
- * `special-rules` stem (68 shared + 1,856 band-local copies), so `RulesCatalogue`
+ * `special-rules` stem (143 shared rules plus the band-local rows), so `RulesCatalogue`
  * rendered the copies as "Información no disponible". The generator now publishes
  * the promoted `shared-rule.*` catalogue there, and only that. The tests below
- * pin both halves of the contract: the shared tab carries the 68 real shared
+ * pin both halves of the contract: the shared tab carries the 143 real shared
  * rules, and excluding a band-local row from it is only legitimate while the row
  * stays correct and reachable in "Reglas de banda" (prose, search, profile links,
  * `rule_ref` names and every id a profile references).
@@ -27,7 +27,7 @@ import { classifyVisibleText, buildIdInventory, GENERIC_FALLBACKS } from "../../
 import { readArtefactDocument } from "../../../../knowledge/support/kb-artefact";
 
 const PUBLISHED = resolve(process.cwd(), "..", "..", "outputs", "web-public", "knowledge", "knowledge-web.json");
-const SHARED_EXPECTED = 68;
+const SHARED_EXPECTED = 143;
 
 const artefact = readArtefactDocument(PUBLISHED);
 const knowledge = ArtefactKnowledgeReader.from(artefact);
@@ -41,7 +41,7 @@ const profiles = ((artefact as Record<string, unknown>).profiles as readonly Rec
 const displayNames = ((artefact as Record<string, unknown>).display_names as Record<string, Record<string, string>> | undefined) ?? {};
 
 describe('regression: "Reglas compartidas" publishes exactly the real shared rules', () => {
-  it("publishes exactly 68 shared-rules rows in the special-rules stem", () => {
+  it("publishes exactly 143 shared-rules rows in the special-rules stem", () => {
     expect(sharedRows.length).toBe(SHARED_EXPECTED);
   });
 

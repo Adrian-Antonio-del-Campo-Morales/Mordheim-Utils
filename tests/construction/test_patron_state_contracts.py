@@ -44,6 +44,8 @@ def test_hate_stunties_reaches_the_night_goblins_only():
         "night-goblins-mic", "cave-squigs").global_effects.tags
 
 
+@pytest.mark.covers("rule/mordheim/night-goblins-kaz/band--hate-stunties/mechanic.hatred-dwarfs")
+@pytest.mark.covers("rule/mordheim/night-goblins-web/band--hate-stunties/mechanic.hatred-dwarfs")
 def test_hate_stunties_is_gone_from_the_sibling_bands_other_records():
     for band, profile in (("night-goblins-web", "boss"), ("night-goblins-kaz", "big-boss")):
         assert "mechanic.hatred-dwarfs" in canonical(band, profile).global_effects.tags

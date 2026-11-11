@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/chaos-streets-sigmar-protectorate/band--protectorate-special-skills-rousing-sermon/skill.inspiring-sermon
-# scaffold_fingerprint: 1b33bc106a36a35f3cfb1c2df5de30d930b182df7db681ebd6ba0cf7190088cf
 # authoring_status: AUTHORED
 # authoring_progress: the admitted self-attack-bonus clause carries 2 authored scenarios derived from the
 #   printed stanza, the recorded contract and the canonical operator's own case: the declared sermon gives
@@ -15,9 +14,8 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: self-attack-bonus (scope: YES)
 # AUTHORED[self-attack-bonus]: 2 scenarios cover the printed self consequence: the declaration taken at
@@ -30,61 +28,9 @@
 #   bearer is a fixture carrying the canonical operator through its grant list, exactly as the sibling
 #   origin of this same band rule does.  The printed "may not use Prayers that turn" exception has no
 #   counterpart in this vocabulary and is recorded, not asserted.
-# origin_id:
-#   rule/trollheim/chaos-streets-sigmar-protectorate/band--protectorate-special-skills-rousing-sermon/skill.inspiring-sermon
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/trollheim/chaos-streets-sigmar-protectorate/special-rules.yaml
-# source_fingerprint:
-#   713692b659761942b27dfd8501a0049400d15641e64bf3416f4f2ca06fb97413
-# source_sha256_at_generation:
-#   eae243a24e97fc69a1d9a9142cd4476f7ab937993cc2060ec782e79150397a1a
-# Printed rule text:
-#   At the start of the Protectorate player's turn, the Warrior Priest may declare a Rousing Sermon. He may not use Prayers that turn. The effect is automatic:
-# Semantic contract (check analysis_status before treating as accepted):
-#   The Warrior Priest's own +1 Attack for the turn is an admitted individual attack consequence, and the bar on using Prayers that turn is a casting restriction inside the same clause. Printed clause: At the start of the Protectorate player's turn, the Warrior Priest may declare a Rousing Sermon. He may not use Prayers that turn. The effect is automatic:
-# effect_id:
-#   mechanic.rousing-sermon
-# relation:
-#   equivalent
-# parameters:
-#   {"attacks_bonus":1}
-# conditions:
-#   {"trigger":"start of this warrior's own turn","resolution":"optional declaration before its combat phase","consequence":"+1 Attack for that combat phase","recipient":"this warrior","duration":"that combat phase","stacking":"once per duel","exceptions":"must not also use prayers that turn"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Self-only sermon: rounds.resolve_round spends the once-per-duel 'rousing-sermon' resource and adds +1 attack for the active player's phase. Scope review integration: {"clause_id":"self-attack-bonus","review_clause_id":"self-attack-bonus","source_state":"matched","review_status":"reviewed","scope_reason":"The Warrior Priest's own +1 Attack for the turn is an admitted individual attack consequence, and the bar on using Prayers that turn is a casting restriction inside the same clause.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"At the start of its own turn this warrior may declare the sermon: it gains +1 Attack for that combat phase, once per duel. Observable: exactly one self-only attack bonus is available and the declaration is optional.","effect_id":"mechanic.rousing-sermon","relation":"equivalent","parameters":"{\"attacks_bonus\":1}","conditions":"{\"trigger\":\"start of this warrior's own turn\",\"resolution\":\"optional declaration before its combat phase\",\"consequence\":\"+1 Attack for that combat phase\",\"recipient\":\"this warrior\",\"duration\":\"that combat phase\",\"stacking\":\"once per duel\",\"exceptions\":\"must not also use prayers that turn\"}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/rounds.py::resolve_round\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"C15-sermons","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/rounds.py::resolve_round\"]"},"inherited_clause_text":"Warrior Priest only. At the start of the Protectorate player's turn, the Warrior Priest may declare a Rousing Sermon. He may not use Prayers that turn. The effect is automatic: the Warrior Priest and all friendly models within 6\" gain +1 Attack for that turn.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."} Surface reuse candidate: {"family":"mechanic.rousing-sermon","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare trigger, current bearer, activation, timing, state duration and reset rules. Keep damage backlash and interrupted continuation; exclude producer movement/group counting or campaign progression.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: friendly-group-emission (scope: NO)
 # Outside the admitted clause scope; retained for context, not a test TODO.
-# origin_id:
-#   rule/trollheim/chaos-streets-sigmar-protectorate/band--protectorate-special-skills-rousing-sermon/skill.inspiring-sermon
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/trollheim/chaos-streets-sigmar-protectorate/special-rules.yaml
-# source_fingerprint:
-#   713692b659761942b27dfd8501a0049400d15641e64bf3416f4f2ca06fb97413
-# source_sha256_at_generation:
-#   eae243a24e97fc69a1d9a9142cd4476f7ab937993cc2060ec782e79150397a1a
-# Printed rule text:
-#   all friendly models within 6 inches gain +1 attack during that Hand to Hand combat phase
-# Semantic contract (check analysis_status before treating as accepted):
-#   (not recorded)
-# effect_id:
-#   (not recorded)
-# relation:
-#   independent
-# parameters:
-#   {}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Emission to other friendly models is group/range mechanics, permanently outside the isolated 1v1 duel; separated from the admitted self consequence, no consumer assigned. Scope review integration: {"clause_id":"friendly-group-emission","review_clause_id":"friendly-group-emission","source_state":"unverified","review_status":"reviewed","scope_reason":"Granting +1 Attack to all friendly models within 6 inches is support to other fighters, outside a two-duelist simulator.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"}
 
 # --- Authored scenarios ---
 # Derived from the printed stanza, the recorded contract and the canonical operator; no engine output was

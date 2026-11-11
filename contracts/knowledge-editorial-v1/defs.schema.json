@@ -420,6 +420,28 @@
         }
       }
     },
+    "clause": {
+      "description": "One observable part of a classified record's printed text. `id` is stable and unique within the record; `scope` says whether the duel runtime must honour it (`YES`) or it is documented as outside the duel (`NO`). Clauses carry no text and no evidence: the printed prose is the rule, and the tests declare what they cover (E2E `audit_id`/`covers`, the pytest `covers` marker).",
+      "type": "object",
+      "required": ["id", "scope"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "description": "Clause id, unique within its record; E2E `covers` entries and the `covers` marker name it.",
+          "$ref": "#/$defs/id"
+        },
+        "scope": {
+          "description": "`YES` belongs to the duel runtime and counts towards coverage; `NO` keeps the exclusion of that part of the printed text explicit.",
+          "enum": ["YES", "NO"]
+        }
+      }
+    },
+    "clauses": {
+      "description": "The clauses of one record, declared only when the printed text has several observable parts or excludes one; a record without clauses is one undivided obligation.",
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/clause" }
+    },
     "runtime_effect": {
       "description": "One classified effect of a rule. Every effect declares its scope and either an executable binding or the reason it has none.",
       "type": "object",
@@ -442,9 +464,12 @@
           ]
         },
         "reason": {
-          "description": "Required whenever there is no binding: the audit taxonomy such as `Deferred subsystem: psychology.` or `Out of scope: shooting.`.",
-          "type": "string",
-          "minLength": 1
+          "description": "Required whenever there is no binding: one of the `reason_codes` of `registry/runtime-schema.yaml`. The applications render the code's label; the historical free text is archived in docs/archive/reason-texts.csv.",
+          "enum": ["pending-classification", "pending-implementation", "source-blocked", "out-of-scope.magic", "out-of-scope.shooting", "out-of-scope.movement", "out-of-scope.campaign", "out-of-scope.construction", "out-of-scope.group", "out-of-scope.non-duel", "deferred.psychology", "deferred.mounts", "deferred.other"]
+        },
+        "clauses": {
+          "description": "The clauses of this effect; their identity is `rule/<collection>/<owner>/<rule-id>/<effect-id>`.",
+          "$ref": "#/$defs/clauses"
         }
       },
       "allOf": [

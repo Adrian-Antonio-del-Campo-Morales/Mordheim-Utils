@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "not-applicable",
+  "source": {
+    "revision": "84a634dbdfc45973ebb93a9dd90c852e21c7c12b",
+    "path": "tests/integration/e2e/cases/grants/mordheim--dwarf-slayer-cult-web--band--slayer-special-skills--profile.sk--73e615888509.yaml",
+    "sha256": "bb70765ec1fa402f24d6b9114af2b9ed480a64772fed9c64348b99ef241bf183",
+    "test_id": "rule/mordheim/dwarf-slayer-cult-web/band--slayer-special-skills/profile.skill-access::a-special-skill-outside-the-printed-list-is-refused"
+  },
+  "case_key": "e2e/rule/mordheim/dwarf-slayer-cult-web/band--slayer-special-skills/profile.skill-access/a-special-skill-outside-the-printed-list-is-refused",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E declares an expected construction refusal (\"skills are not available to dwarf-slayer-cult-web/giant-slayer: ['skill.miniath']\"); the build is refused with \"skills are not available to dwarf-slayer-cult-web/giant-slayer: ['skill.miniath']\", so no statistical scenario can be frozen."
+}

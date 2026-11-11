@@ -1,0 +1,118 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/grave-robbers-sylv/band--special-skill-instinctual-violence/mechanic.fear-immunity-undead-chargers
+# authoring_status: AUTHORED
+# authoring_progress: the admitted fear-immunity clause carries 4 authored scenario(s) derived
+# from both printed sentences of the rule (the Undead-charge Fear immunity and the Strike First
+# nomination), the recorded semantic contract and the printed graver profile (Ld 8, W1, A1); the
+# resolved order of the declared attack rolls is the second boundary.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: four scenarios cover both printed sentences on their printed recipient,
+#   the band's graver profile carrying special_rule_ids: [band--special-skill-instinctual-violence].
+#   The immunity half: the delivered immunity is what removes the charged warrior's Fear test, and
+#   the band's other hero grave-robbers shows the same setup requesting the two Leadership dice.
+#   The Strike First half: the nominated attack resolves before an opponent that is otherwise
+#   faster (Initiative 5 against the Graver's printed 4), and the same fixture without the printed
+#   grant resolves in the opposite order, so the priority tier is the boundary and expect_events
+#   shows it.  The graver's printed Attacks value is 1, so the printed nomination has exactly one
+#   candidate and needs no declarable choice; the corpus's canonical skill.always-strikes-first tier
+#   (priority 1, close combat) is the priority the print feeds, which the semantic review confirms.
+#
+
+# --- Authored scenarios ---
+# The KB now records this row `implemented: YES` with two executable effects: a Fear immunity that
+# applies only to Undead chargers, and a nominated attack that strikes first.  The tapes below read the
+# printed scoping (the undead causer) and the voluntary nomination the mechanic asks for.
+
+- audit_id: rule/mordheim/grave-robbers-sylv/band--special-skill-instinctual-violence/mechanic.fear-immunity-undead-chargers
+  id: the-fear-immune-warrior-is-not-tested
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true, creature_kind: undead}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: grave-robbers-sylv, profile_id: graver, special_rule_ids: [band--special-skill-instinctual-violence]}
+  duel_context: {charging: [first], active_participant: first}
+  decisions:
+    - {key: round.0.second.strike-first.attack.0, value: false}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit.reroll, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/grave-robbers-sylv/band--special-skill-instinctual-violence/mechanic.fear-immunity-undead-chargers
+  id: a-band-mate-without-the-immunity-is-tested
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: grave-robbers-sylv, profile_id: grave-robbers}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed second sentence, first face: the warrior may nominate one of his attacks to Strike
+# First, so his strike resolves before an opponent that is otherwise faster (Initiative 5 against
+# the Graver's printed 4).  Both strikes are declared as natural 1s, so the round reports no wound
+# and the resolved order of the two attack rolls is what the tape asserts.
+- audit_id: rule/mordheim/grave-robbers-sylv/band--special-skill-instinctual-violence/mechanic.fear-immunity-undead-chargers
+  id: the-nominated-attack-resolves-before-a-faster-opponent
+  fighters:
+    first: {collection: mordheim, band_id: grave-robbers-sylv, profile_id: graver, main_weapon_id: weapon.club, special_rule_ids: [band--special-skill-instinctual-violence]}
+    second:
+      main_weapon_id: weapon.club
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  decisions:
+    - {key: round.0.first.strike-first.attack.0, value: true}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.strike-first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: decision, key: round.0.first.strike-first.attack.0, value: true}
+    - {kind: roll, key: round.0.first.strike-first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+
+# The contrast for the identical fixture without the printed grant: the ordinary Initiative
+# comparison puts the faster opponent first, so the same declared dice resolve reversed.
+- audit_id: rule/mordheim/grave-robbers-sylv/band--special-skill-instinctual-violence/mechanic.fear-immunity-undead-chargers
+  id: without-the-grant-the-faster-opponent-resolves-first
+  fighters:
+    first: {collection: mordheim, band_id: grave-robbers-sylv, profile_id: graver, main_weapon_id: weapon.club}
+    second:
+      main_weapon_id: weapon.club
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+

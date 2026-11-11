@@ -10,8 +10,7 @@ rules:
     - id: unimplemented.militiant-mootlanders-mim.band.woodland-striders
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Woodland Striders
   effect: Halflings can move through any woodland terrain without penalty.
   source:
@@ -34,9 +33,7 @@ rules:
     - id: unimplemented.militiant-mootlanders-mim.band.short-shanks
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Short Shanks
   effect: >-
     Halflings riding draft horses, warhorses or anything larger than a mule or mountain goat move 2
@@ -63,9 +60,7 @@ rules:
     - id: unimplemented.militiant-mootlanders-mim.band.smooth-customers
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Smooth Customers
   effect: >-
     Halfling Heroes gain +1 when rolling to find rare items that are not exclusively available to
@@ -92,9 +87,7 @@ rules:
     - id: unimplemented.militiant-mootlanders-mim.band.spry
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Spry
   effect: Any Halfling Rogue may run or charge while climbing.
   source:
@@ -117,9 +110,7 @@ rules:
     - id: unimplemented.militiant-mootlanders-mim.band.hired-swords
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Hired Swords
   effect: >-
     Halfling warbands may only hire Ogres as bouncers and other Halflings as Hired Swords, to abide
@@ -175,8 +166,7 @@ rules:
     - id: unimplemented.militiant-mootlanders-mim.quartermaster.long-shot
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Long Shot
   effect: >-
     Quartermasters may add 2 inches of range to any thrown weapons and 4 inches to the range of a
@@ -204,9 +194,7 @@ rules:
     - id: unimplemented.militiant-mootlanders-mim.chef.hot-pot
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Hot Pot
   effect: >-
     Before each battle the Chef cooks a spicy pot of stew. On a successful Leadership test the hot
@@ -237,9 +225,7 @@ rules:
     - id: unimplemented.militiant-mootlanders-mim.thieves.uneasy-allies
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Uneasy Allies
   effect: >-
     At the end of each battle, roll a D6: 1 = Stop Thief! (remove one Thief from the roster along
@@ -273,9 +259,7 @@ rules:
     - id: unimplemented.militiant-mootlanders-mim.thieves.infiltration
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Infiltration
   effect: A Halfling Thief can infiltrate. See the Skaven special skill of the same name.
   source:
@@ -300,9 +284,7 @@ rules:
     - id: unimplemented.militiant-mootlanders-mim.thieves.pick-locks
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Pick Locks
   effect: >-
     When testing to open a locked door, the Thief just needs to make an Initiative test in order to
@@ -330,9 +312,7 @@ rules:
     - id: unimplemented.militiant-mootlanders-mim.thieves.cutpurse
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Cutpurse
   effect: >-
     At the end of the game when the warband rolls to find Treasures, they receive one additional
@@ -360,9 +340,7 @@ rules:
     - id: unimplemented.militiant-mootlanders-mim.cooks.feast
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Feast
   effect: >-
     A warband with Cooks gains one batch of provisions before each battle. If the battle was lost,
@@ -393,8 +371,10 @@ rules:
     - id: unimplemented.militiant-mootlanders-mim.band.maximum-characteristics
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: characteristic-increase caps on advancement.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Halfling Maximum Characteristics
   effect: >-
     Characteristics for Halfling warriors may not be increased beyond the maximum limits: M 4, WS 5,

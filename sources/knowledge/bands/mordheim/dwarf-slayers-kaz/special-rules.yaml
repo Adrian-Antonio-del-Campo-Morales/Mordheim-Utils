@@ -12,6 +12,13 @@ rules:
       binding:
         kind: mechanic
         id: skill.hard-to-kill
+      clauses:
+      - id: inherited-combat-rules
+        scope: 'YES'
+      - id: inherited-dwarf-axe
+        scope: 'YES'
+      - id: inherited-special-skill-access
+        scope: 'YES'
     - id: inherited.dwarf-slayers-kaz.band.town-crier-6-inheritance.hard-head
       scope: 'YES'
       binding:
@@ -72,30 +79,12 @@ rules:
     - id: unimplemented.dwarf-slayers-kaz.special.extra-tough
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope by content: the printed Extra Tough re-rolls this Hero's roll on the Heroes'
-        Serious Injury chart after a game in which he was taken out of action. Both the chart and the
-        re-roll happen after the duel, so the member has no duel consequence. It is a real printed
-        member of this column and is disposed here instead of being dropped for lacking a catalogue
-        row.
+      reason: out-of-scope.campaign
     - id: unimplemented.dwarf-slayers-kaz.special.resource-hunter
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope by content: the printed Resource Hunter modifies one dice roll on the Exploration
-        chart at the end of a game, a post-game campaign step with no duel consequence. It is a real
-        printed member of this column and is disposed here instead of being dropped for lacking a
-        catalogue row.
+      reason: out-of-scope.campaign
   name: Dwarf Special Skills
-  effect: >-
-    Dwarf Heroes may use any of the Dwarf Special Skills listed in Town Crier 6 (or Best of Town
-    Crier): Master of Blades, Extra Tough, Resource Hunter, True Grit and Thick Skull. Master of
-    Blades is one printed entry and publishes one equivalent skill, Unbeatable Warrior (parry by
-    equalling the highest hit roll, and two parries with two Parry weapons); the Vampire's Sword
-    Master is a different contract and is never granted for this entry. The printed Master of Blades
-    sentence about two Dwarf Axes reaches rule.dwarf-axe-parry-reroll, not this column. Extra Tough
-    and Resource Hunter are printed members whose entire effect is post-game campaign bookkeeping, so
-    each carries its own out-of-scope disposition.
   source:
     manual: broheim.net
     printed_page: 32
@@ -103,23 +92,13 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Habilidades Especiales Enanas
-  effect_i18n:
-    es: >-
-      Los heroes      enanos pueden usar cualquiera de las Habilidades Especiales Enanas listadas en Town Crier 6 (o
-      Best of Town Crier): Maestro de Hojas, Duro de Pelar, Cazador de Recursos, Temple de Acero y
-      Craneo Grueso. Maestro de Hojas es una unica entrada impresa y publica una unica habilidad
-      equivalente, Guerrero Imbatible (parar igualando la tirada mas alta y dos paradas con dos armas
-      con Parada); Maestro de la Espada del Vampiro es un contrato distinto y nunca se concede por
-      esta entrada. La frase impresa de Maestro de Hojas sobre dos Hachas Enanas llega a
-      rule.dwarf-axe-parry-reroll, no a esta columna. Duro de Pelar y Cazador de Recursos son miembros
-      impresos cuyo efecto completo es contabilidad de campana posterior a la partida, asi que cada
-      uno lleva su propia disposicion fuera de alcance.
   applies_to:
     band: true
     profile_ids:
     - giant-slayer
     - troll-slayers
     - rememberer
+  rule_ref: shared-rule.town-crier-6-dwarf-special-skills
 - id: band--mighty-doom
   runtime:
     scope: 'NO'
@@ -129,10 +108,7 @@ rules:
     - id: unimplemented.dwarf-slayers-kaz.band.mighty-doom
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: group Rout, All Alone or combat against multiple
-        opponents. Source prose is retained; this is an exclusion, not deferred modular
-        implementation.
+      reason: deferred.other
   name: Mighty Doom
   effect: >-
     All every slayer seeks is an honourable death. A Slayer warband does not have to take Rout
@@ -161,8 +137,7 @@ rules:
     - id: unimplemented.dwarf-slayers-kaz.band.shame
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the resolved duel: post-Out-of-Action campaign conversion into a Slayer.
+      reason: out-of-scope.campaign
   name: Shame
   effect: >-
     If a Dwarf hero (who isn't already a slayer) is taken OOA in any of the following
@@ -274,8 +249,7 @@ rules:
     - id: unimplemented.dwarf-slayers-kaz.rememberer.hard-to-find
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: recruitment roll is a warband-creation mechanic.
+      reason: out-of-scope.campaign
   name: Hard to Find
   effect: >-
     It is not easy to find a suitable Rememberer. When you decide to recruit one roll a D6;
@@ -305,10 +279,7 @@ rules:
     - id: rememberer--rememberer.provider
       scope: 'NO'
       binding: null
-      reason: >-
-        The independent Rememberer provider and radius are excluded. Its qualified Slayer Hero
-        recipient supplies condition.rememberer-kaz-support; the Large-only and Large-or-T5+
-        variants remain distinct.
+      reason: out-of-scope.group
   name: Rememberer
   effect: >-
     The Rememberer's task is to record the doom of each of the slayers. When he is close by, the

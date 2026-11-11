@@ -9,22 +9,34 @@ from mordheim_knowledge.loader import load_bands, load_shared_rules
 
 
 #: How many band rules reference each fused id. The counts pin the consolidation:
-#: the promoted supplement packages add references to these ids (and only to these), so
-#: the numbers are the pre-promotion pins plus the references published with them.
+#: every band rule whose printed text is the shared rule (identical, or differing only
+#: in the recipient's name) references it instead of restating the prose.
 FUSED_REFERENCE_COUNTS = {
-    "shared-rule.animal": 16,
+    "shared-rule.animal": 20,
     "shared-rule.burn-the-witch": 2,
-    "shared-rule.fear": 26,
-    "shared-rule.immune-to-poison": 23,
-    "shared-rule.immune-to-psychology": 16,
-    "shared-rule.large-target": 11,
-    "shared-rule.leader": 37,
-    "shared-rule.may-not-run": 9,
-    "shared-rule.no-pain": 19,
+    "shared-rule.fear": 44,
+    "shared-rule.immune-to-poison": 27,
+    "shared-rule.immune-to-psychology": 28,
+    "shared-rule.large-target": 13,
+    "shared-rule.leader": 52,
+    "shared-rule.may-not-run": 13,
+    "shared-rule.no-pain": 39,
     "shared-rule.thick-skull": 7,
 }
 
 RETIRED_RULE_IDS = {
+    # 2026-11-11 prose consolidation: numbered variants renamed, "never gains Experience" texts fused.
+    "shared-rule.armour-2",
+    "shared-rule.brainless",
+    "shared-rule.cause-fear-2",
+    "shared-rule.dead",
+    "shared-rule.experience",
+    "shared-rule.hard-head-2",
+    "shared-rule.immune-to-poison-3",
+    "shared-rule.immune-to-psychology-4",
+    "shared-rule.may-not-run-2",
+    "shared-rule.no-pain-4",
+    "shared-rule.stupidity-2",
     "shared-rule.animal-2",
     "shared-rule.animals",
     "shared-rule.animals-2",
@@ -54,7 +66,7 @@ RETIRED_RULE_IDS = {
 
 def test_fused_shared_rules_are_the_only_reference_targets() -> None:
     shared = load_shared_rules("mordheim")
-    assert len(shared) == 68
+    assert len(shared) == 143
     assert set(FUSED_REFERENCE_COUNTS) <= set(shared)
     assert RETIRED_RULE_IDS.isdisjoint(shared)
 

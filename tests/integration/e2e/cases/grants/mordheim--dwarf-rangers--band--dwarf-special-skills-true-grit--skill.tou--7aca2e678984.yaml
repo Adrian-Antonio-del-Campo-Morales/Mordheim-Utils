@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/dwarf-rangers/band--dwarf-special-skills-true-grit/skill.tough-as-steel
-# scaffold_fingerprint: 7fbf715383176eeb6a493f32b17640126e132c086bf7f6b97bb4d2c9d241adb1
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clause carries 5 authored scenarios derived from the printed True Grit
 # injury sentence and the recorded contract.  The bearer is a fixture declaring the canonical skill this
@@ -12,42 +11,14 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 5 scenarios cover the printed chart: an injury total of 5 leaves the bearer Stunned where
+# AUTHORED: 5 scenarios cover the printed chart: an injury total of 5 leaves the bearer Stunned where
 # the ordinary table takes the same total Out of Action, a total of 3 leaves it Knocked Down where the
 # ordinary table merely Stuns, a total of 6 still takes the bearer out of action, and the control scenarios
 # show the same totals on a bearer without the skill.  A total of 4 is Stunned on both tables, so it does
 # not discriminate and is not used.
-# origin_id:
-#   rule/mordheim/dwarf-rangers/band--dwarf-special-skills-true-grit/skill.tough-as-steel
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/dwarf-rangers/special-rules.yaml
-# source_fingerprint:
-#   6bf86f6ebe3a206bdd3e4e59ef48013e70bb8927fee917456cd21b8a6a7ecb03
-# source_sha256_at_generation:
-#   d777a264de4362ae1b1ae198d5635b010629d1b82186950a5d4a360591eaf6d5
-# Printed rule text:
-#   Dwarfs are hardy individuals and this Hero is hardy even for a Dwarf! When rolling on the Injury table for this Hero, a roll of 1-3 is treated as knocked down, 4-5 as stunned, and 6 as out of action.
-# Semantic contract (check analysis_status before treating as accepted):
-#   On the Injury table 1-3 is knocked down, 4-5 stunned and 6 out of action; observable: against the normal table the bearer is only knocked down at total 3 (where an ordinary warrior is stunned) and stunned at total 5 (where an ordinary warrior is out of action).
-# effect_id:
-#   skill.tough-as-steel
-# relation:
-#   equivalent
-# parameters:
-#   {}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Printed as True Grit in most bands and Hard as Steel in Karak Zorn; one operator, one table. A total of 4 is Stunned for both tables, so it does not discriminate; the discriminating totals are 3 (ordinary Stunned, this skill Knocked Down) and 5 (ordinary Out of Action, this skill Stunned). Scope review integration: {"clause_id":"whole","review_clause_id":"whole","source_state":"unverified","review_status":"reviewed","scope_reason":"Dwarf Rangers' True Grit changes the bearer's injury chart results.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"}
 
 # --- Authored scenarios ---
 # Derived from the printed sentence and the recorded chart (1-3 knocked down, 4-5 stunned, 6 out of action);
@@ -57,7 +28,6 @@
 # because every scenario leaves it Stunned, Knocked Down or Out of Action in this round.
 - audit_id: rule/mordheim/dwarf-rangers/band--dwarf-special-skills-true-grit/skill.tough-as-steel
   id: an-injury-total-of-five-stuns-instead-of-removing-the-bearer
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.sword
@@ -78,7 +48,6 @@
 
 - audit_id: rule/mordheim/dwarf-rangers/band--dwarf-special-skills-true-grit/skill.tough-as-steel
   id: the-same-total-takes-an-ordinary-bearer-out-of-action
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.sword
@@ -95,7 +64,6 @@
 
 - audit_id: rule/mordheim/dwarf-rangers/band--dwarf-special-skills-true-grit/skill.tough-as-steel
   id: an-injury-total-of-three-leaves-the-bearer-knocked-down
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.sword
@@ -116,7 +84,6 @@
 
 - audit_id: rule/mordheim/dwarf-rangers/band--dwarf-special-skills-true-grit/skill.tough-as-steel
   id: the-same-total-merely-stuns-an-ordinary-bearer
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.sword
@@ -133,7 +100,6 @@
 
 - audit_id: rule/mordheim/dwarf-rangers/band--dwarf-special-skills-true-grit/skill.tough-as-steel
   id: a-total-of-six-still-removes-the-bearer
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.sword

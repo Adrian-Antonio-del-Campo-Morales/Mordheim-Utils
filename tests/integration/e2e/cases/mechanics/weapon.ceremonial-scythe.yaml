@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/weapon.ceremonial-scythe
-# scaffold_fingerprint: ec0ffa84cfd536c9b32987b043f4875d01fd17a994b6c52d3bd1b43b2c998d6b
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clause carries two authored scenarios for the +1 Strength boundary and two refusals for the printed prohibition on another weapon or a shield. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -8,38 +7,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 2 scenarios cover the +1 Strength boundary and 2 refusals declare the printed prohibition on another weapon or a shield.
-# origin_id:
-#   mechanic/weapon.ceremonial-scythe
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   58de10a2a3c9f00272478ea16486a632aeb4beaf607e3c6822649583f07e0291
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   Strength: As user +1. Difficult to use and Two-handed; cannot use another weapon, shield or buckler.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Two-handed scythe with +1 Strength that may not be combined with another weapon, shield or buckler. Closure: S+1, two-handed, and the off hand is unavailable.
-# effect_id:
-#   weapon.ceremonial-scythe
-# relation:
-#   equivalent
-# parameters:
-#   {"strength_bonus": 1, "two_handed": true}
-# conditions:
-#   {"application": "attack", "stacking": "stack", "trigger": "attack"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Printed profile equals the contract parameters; the compiled attack EffectSet is consumed by build_attacks and the hit/wound/armour/injury contexts. The printed "Difficult to use and Two-handed" is expressed through two_handed; the item/ceremonial_scythe origin is a second projection of the same operator. Surface reuse candidate: {"family":"W-weapon.ceremonial-scythe","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the printed local weapon mode and parameters with the active contract. Confirm hand use, effective Strength, save/critical/parry modifiers, natural-die trigger, temporary states and end conditions. Reuse the base only; retain extra properties and construction recipients.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+# AUTHORED: 2 scenarios cover the +1 Strength boundary and 2 refusals declare the printed prohibition on another weapon or a shield.
 
 # --- Authored scenarios ---
 # mechanic/weapon.ceremonial-scythe - two-handed, Strength +1, and no other
@@ -52,7 +23,6 @@
 
 - audit_id: mechanic/weapon.ceremonial-scythe
   id: ceremonial-scythe-wounds-at-the-boosted-strength
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.ceremonial-scythe
@@ -73,7 +43,6 @@
 
 - audit_id: mechanic/weapon.ceremonial-scythe
   id: ceremonial-scythe-does-not-wound-one-face-below
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.ceremonial-scythe
@@ -94,7 +63,6 @@
 
 - audit_id: mechanic/weapon.ceremonial-scythe
   id: ceremonial-scythe-is-refused-with-another-weapon
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.ceremonial-scythe
@@ -108,7 +76,6 @@
 
 - audit_id: mechanic/weapon.ceremonial-scythe
   id: ceremonial-scythe-is-refused-with-a-shield
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.ceremonial-scythe

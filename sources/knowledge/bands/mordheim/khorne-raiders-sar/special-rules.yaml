@@ -10,9 +10,7 @@ rules:
     - id: unimplemented.khorne-raiders-sar.band.khorne-raider-rules
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Khorne Raider Rules
   effect: >-
     Swabbies/Skinners: Khorne Raiders may attempt to enlist Crew members as normal. If the captain
@@ -53,9 +51,7 @@ rules:
     - id: reference.hellblade
       scope: 'NO'
       binding: null
-      reason: >-
-        Equipment reference: selected Hellblade item executes weapon.hellblade; no independent
-        band-wide weapon bonus.
+      reason: out-of-scope.construction
   name: Hellblade
   effect: >-
     Cost 35 gc, Availability Rare 8. A rare blade charged with the power of Khorne himself. Range:
@@ -96,9 +92,7 @@ rules:
     - id: unimplemented.khorne-raiders-sar.skills.special-skills
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Special Skills (Khorne Raiders)
   effect: >-
     Mutant: the Hero may buy one Mutation from the Possessed Mutation list; this skill may only be
@@ -165,9 +159,7 @@ rules:
     - id: unimplemented.khorne-raiders-sar.captain.leader
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Leader
   effect: >-
     Any warrior within 6" of the Dread Captain may use his Leadership characteristic when taking any
@@ -195,9 +187,7 @@ rules:
     - id: unimplemented.khorne-raiders-sar.quartermasters.massive-swing
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Massive Swing
   effect: >-
     A Quartermaster may carry ONE two-handed weapon (ex. Halberd, double-handed weapon) in one hand.
@@ -232,10 +222,7 @@ rules:
     - id: excluded.khorne-raiders-sar.cannibal-boys--frenzy.board-charge
       scope: 'NO'
       binding: null
-      reason: >-
-        Compulsory charge range, movement and target selection on a board are outside the 1v1 duel.
-        In-contact attack doubling, psychology exemption and loss after knockdown/stun use the
-        existing Frenzy operator.
+      reason: out-of-scope.movement
   name: Frenzy (Cannibal Boys)
   effect: Cannibal Boys suffer the rules for Frenzy as described in the Psychology section.
   source:
@@ -261,11 +248,15 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.automatic-leadership
+      clauses:
+      - id: automatic-leadership
+        scope: 'YES'
+      - id: leader-restriction
+        scope: 'NO'
     - id: campaign.madbrains.leader-promotion
       scope: 'NO'
       binding: null
-      reason: >-
-        Leader promotion belongs to campaign progression, outside the 1v1 duel.
+      reason: out-of-scope.campaign
   name: Immune to Psychology (Madbrains)
   effect: >-
     Madbrains pass any Leadership test they are required to take. They cannot be promoted to Leader.
@@ -292,9 +283,7 @@ rules:
     - id: unimplemented.khorne-raiders-sar.madbrains.reckless
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Reckless (Madbrains)
   effect: >-
     Madbrains add +1 to all Injury rolls they make in hand-to-hand combat. However, all opponents in
@@ -322,9 +311,7 @@ rules:
     - id: unimplemented.khorne-raiders-sar.flayerkin.hooks
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Hooks
   effect: >-
     The Flayerkins have extra sharp steel hooks at the end of each wrist. They gain an additional
@@ -354,9 +341,7 @@ rules:
     - id: unimplemented.khorne-raiders-sar.flayerkin.climbing
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Climbing (Flayerkin)
   effect: The Flayerkin always counts as having Rope and Hook.
   source:
@@ -380,9 +365,7 @@ rules:
     - id: unimplemented.khorne-raiders-sar.flayerkin.chain-spine
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Chain Spine
   effect: >-
     Long chains have been grafted to the spine of the Flayerkin, aiding allies in laying siege. If a
@@ -419,9 +402,7 @@ rules:
     - id: unimplemented.khorne-raiders-sar.flayerkin.mindless
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Mindless (Flayerkin)
   effect: >-
     After so much experimentation, the mental state of a Flayerkin is simple at best. Flayerkin
@@ -454,8 +435,6 @@ rules:
         parameters:
           forbids: armour-suit
   name: No Armour
-  effect: >-
-    These profiles may not wear armour.
   source:
     manual: broheim.net
     printed_page: 1
@@ -463,14 +442,12 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Khorne%20Raiders.pdf
   name_i18n:
     es: Sin Armadura
-  effect_i18n:
-    es: >-
-      Estos perfiles no pueden llevar armadura.
   applies_to:
     profile_ids:
     - dread-captain
     - cannibal-boys
     - plunderers
+  rule_ref: shared-rule.no-armour
 
 - id: flayerkin--equipment-restrictions
   runtime:

@@ -10,8 +10,7 @@ rules:
     - id: unimplemented.necrarchs-mou.band.necrolore-abilities
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Necrolore Abilities
   effect: >-
     Instead of searching for rare equipment, a Nosferatu may purchase one permanent Necrolore
@@ -62,8 +61,7 @@ rules:
     - id: unimplemented.necrarchs-mou.nosferatu.leader
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Leader
   effect: >-
     Any warrior within 6" of the Nosferatu may use his Leadership value when taking Leadership
@@ -91,8 +89,7 @@ rules:
     - id: unimplemented.necrarchs-mou.nosferatu.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Wizard
   effect: >-
     Decades, sometimes centuries of studying make Nosferatu powerful wizards in the Dark Arts. A
@@ -120,8 +117,7 @@ rules:
     - id: unimplemented.necrarchs-mou.nosferatu.necrolore
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Necrolore
   effect: >-
     The Nosferatu are dark scholars, and enhance their abilities with knowledge gleaned from ancient
@@ -151,8 +147,7 @@ rules:
     - id: unimplemented.necrarchs-mou.nosferatu.tattered-mind
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Tattered Mind
   effect: >-
     Years of studying unholy tomes and dark rituals have taken their toll on the Nosferatu. The
@@ -219,6 +214,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+      clauses:
+      - id: psychology-immunity
+        scope: 'YES'
+      - id: never-leaves-combat
+        scope: 'NO'
   name: Immune to Psychology
   effect: A Nosferatu is immune to all forms of psychology and never voluntarily leaves combat.
   source:
@@ -244,8 +244,7 @@ rules:
     - id: unimplemented.necrarchs-mou.nosferatu.immune-to-poisons
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Immune to Poisons
   effect: Nosferatu are not affected by any drug or poison.
   source:
@@ -319,8 +318,7 @@ rules:
     - id: unimplemented.necrarchs-mou.abomination.immune-to-poisons
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Immune to Poisons (Abomination)
   effect: An Abomination is no longer affected by any form of poison.
   source:
@@ -369,8 +367,7 @@ rules:
     - id: unimplemented.necrarchs-mou.abomination.unnatural-life
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Unnatural Life
   effect: Though magically crafted and created, an Abomination counts as being alive.
   source:
@@ -394,8 +391,7 @@ rules:
     - id: unimplemented.necrarchs-mou.defiled.absolute-faith
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Absolute Faith
   effect: >-
     A Defiled's trust in his master is absolute. As long as they are able to draw Line of Sight to
@@ -426,7 +422,6 @@ rules:
         kind: mechanic
         id: mechanic.causes-fear
   name: Fear (Defiled)
-  effect: Defilers are terrifying undead creatures, which cause Fear.
   source:
     manual: broheim.net
     printed_page: 5
@@ -434,11 +429,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
   name_i18n:
     es: Miedo
-  effect_i18n:
-    es: Los Profanados son criaturas no muertas aterradoras que causan Miedo.
   applies_to:
     profile_ids:
     - defiled
+  rule_ref: shared-rule.fear
 - id: defiled--may-not-run
   runtime:
     scope: 'NO'
@@ -448,8 +442,7 @@ rules:
     - id: unimplemented.necrarchs-mou.defiled.may-not-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: May Not Run (Defiled)
   effect: Defiled are slow undead creatures and may not run (but may charge normally).
   source:
@@ -475,8 +468,7 @@ rules:
     - id: unimplemented.necrarchs-mou.defiled.immune-to-poisons
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Immune to Poisons (Defiled)
   effect: Defiled are not affected by any drug or poison.
   source:
@@ -550,8 +542,7 @@ rules:
     - id: unimplemented.necrarchs-mou.banshee.ethereal
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Ethereal
   effect: >-
     A Banshee is a spirit, rather than a creature of bone and dead flesh. It is not affected in its
@@ -652,8 +643,7 @@ rules:
     - id: unimplemented.necrarchs-mou.banshee.wailing
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Wailing
   effect: >-
     Instead of a physical attack, the banshee emits a piercing wail. This attack has a 4" reach and
@@ -689,7 +679,6 @@ rules:
         kind: mechanic
         id: mechanic.causes-fear
   name: Fear (Skeletons)
-  effect: Skeletons are terrifying undead creatures, which cause Fear.
   source:
     manual: broheim.net
     printed_page: 6
@@ -697,11 +686,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
   name_i18n:
     es: Miedo
-  effect_i18n:
-    es: Los Esqueletos son criaturas no muertas aterradoras que causan Miedo.
   applies_to:
     profile_ids:
     - skeleton
+  rule_ref: shared-rule.fear
 - id: skeleton--may-not-run
   runtime:
     scope: 'NO'
@@ -711,10 +699,8 @@ rules:
     - id: unimplemented.necrarchs-mou.skeleton.may-not-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: May Not Run (Skeletons)
-  effect: Skeletons are slow undead creatures and may not run (but may charge normally).
   source:
     manual: broheim.net
     printed_page: 6
@@ -722,13 +708,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
   name_i18n:
     es: No Puede Correr
-  effect_i18n:
-    es: >-
-      Los Esqueletos son criaturas muertas vivientes lentas y no pueden correr (pero pueden cargar
-      normalmente).
   applies_to:
     profile_ids:
     - skeleton
+  rule_ref: shared-rule.may-not-run
 - id: skeleton--immune-to-psychology
   runtime:
     scope: 'YES'
@@ -740,8 +723,12 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+      clauses:
+      - id: psychology-immunity
+        scope: 'YES'
+      - id: never-leaves-combat
+        scope: 'NO'
   name: Immune to Psychology (Skeletons)
-  effect: Skeletons are not affected by psychology and never leave combat.
   source:
     manual: broheim.net
     printed_page: 6
@@ -749,24 +736,24 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
   name_i18n:
     es: Inmune a Psicología
-  effect_i18n:
-    es: Los Esqueletos no se ven afectados por la psicología y nunca abandonan el combate.
   applies_to:
     profile_ids:
     - skeleton
+  rule_ref: shared-rule.immune-to-psychology
 - id: skeleton--immune-to-poisons
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.necrarchs-mou.skeleton.immune-to-poisons
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
   name: Immune to Poisons (Skeletons)
-  effect: Skeletons are not affected by any drug or poison.
   source:
     manual: broheim.net
     printed_page: 7
@@ -774,11 +761,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
   name_i18n:
     es: Inmune a Venenos
-  effect_i18n:
-    es: Los Esqueletos no se ven afectados por ninguna droga o veneno.
   applies_to:
     profile_ids:
     - skeleton
+  rule_ref: shared-rule.immune-to-poison
 - id: skeleton--no-pain
   runtime:
     scope: 'YES'
@@ -813,10 +799,8 @@ rules:
     - id: unimplemented.necrarchs-mou.skeleton.no-brain
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: No Brain
-  effect: Skeletons never gain experience. They do not learn from their mistakes.
   source:
     manual: broheim.net
     printed_page: 7
@@ -824,11 +808,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
   name_i18n:
     es: Sin Cerebro
-  effect_i18n:
-    es: Los Esqueletos nunca ganan experiencia. No aprenden de sus errores.
   applies_to:
     profile_ids:
     - skeleton
+  rule_ref: shared-rule.never-gain-experience
 - id: wight--fear
   runtime:
     scope: 'YES'
@@ -841,7 +824,6 @@ rules:
         kind: mechanic
         id: mechanic.causes-fear
   name: Fear (Wights)
-  effect: Wights are terrifying undead creatures, which cause Fear.
   source:
     manual: broheim.net
     printed_page: 7
@@ -849,11 +831,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
   name_i18n:
     es: Miedo (Espectros)
-  effect_i18n:
-    es: Los Espectros son criaturas no muertas aterradoras que causan Miedo.
   applies_to:
     profile_ids:
     - wight
+  rule_ref: shared-rule.fear
 - id: wight--chill-touch
   runtime:
     scope: 'NO'
@@ -863,8 +844,7 @@ rules:
     - id: unimplemented.necrarchs-mou.wight.chill-touch
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Chill Touch
   effect: >-
     A Wight's chill touch can freeze its opponent as all heat drains from their body. Each time a
@@ -896,8 +876,7 @@ rules:
     - id: unimplemented.necrarchs-mou.wight.may-not-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: May Not Run (Wights)
   effect: Wights are undead creatures and may not run (but may charge normally).
   source:
@@ -924,6 +903,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+      clauses:
+      - id: psychology-immunity
+        scope: 'YES'
+      - id: never-leaves-combat
+        scope: 'NO'
   name: Immune to Psychology (Wights)
   effect: Wights are not affected by psychology and never leave combat.
   source:
@@ -947,8 +931,7 @@ rules:
     - id: unimplemented.necrarchs-mou.wight.immune-to-poisons
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Immune to Poisons (Wights)
   effect: Wights are not affected by any drug or poison.
   source:

@@ -39,9 +39,7 @@ rules:
     - id: unimplemented.mootlanders.master-chef.inspired-cooking
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Inspired Cooking
   effect: >-
     Any Halfling models within 6" of a Halfling Master Chef may re-roll any failed hits in combat
@@ -69,8 +67,7 @@ rules:
     - id: unimplemented.mootlanders.halfling-thieves.sneaky
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: to-hit rolls.
+      reason: out-of-scope.non-duel
   name: Sneaky
   effect: >-
     Halfling Thieves are always at -1 to hit when targeted by shooting. This modifier is cumulative
@@ -98,8 +95,7 @@ rules:
     - id: unimplemented.mootlanders.scouts.keen-eyesight
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Keen Eyesight
   effect: Halfling Scouts can spot hidden enemies at twice their Initiative value in inches.
   source:
@@ -166,6 +162,11 @@ rules:
         kind: mechanic
       id: weapon.pistol
       scope: 'YES'
+      clauses:
+      - id: whole--scope--halfling-list-access
+        scope: 'YES'
+      - id: whole--scope--pistol-price
+        scope: 'NO'
     grant: profile
     implemented: 'YES'
     scope: 'YES'

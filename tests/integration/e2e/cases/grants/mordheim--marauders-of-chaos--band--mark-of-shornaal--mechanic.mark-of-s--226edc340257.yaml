@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/marauders-of-chaos/band--mark-of-shornaal/mechanic.mark-of-shornaal
-# scaffold_fingerprint: 81755aab70f4c39397f8c4f7c8bc534d2f79ffcf0b323234535cba96374ef8f1
 # authoring_status: PARTIAL
 # authoring_progress: the printed mark carries 3 authored scenarios - the failed 3D6-discard-lowest test
 #   with its blocked/auto-hit pair, the passed face of the same test with the flag cleared, and the printed
@@ -13,12 +12,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# PARTIAL[whole]: [C] 3 of the printed mark's faces are authored and the residual is an observation the
+# PARTIAL: [C] 3 of the printed mark's faces are authored and the residual is an observation the
 #   contract cannot state.  Authored: (1) the failed 3D6-discard-lowest test, whose declared sixes fail
 #   whatever the discard does with them, asserting the engine's own consequence pair
 #   (state.second.charm_attack_blocked and state.second.charm_auto_hit); (2) the passed face of the same
@@ -34,32 +31,6 @@
 #   asserting the wound would invent the key.  That missing observation is not the wiring: tape (1) already
 #   asserts the flags this branch exposes, and the printed consequence - the blocked attacker is hit
 #   automatically - only reaches a wound once those request keys are established.
-# origin_id:
-#   rule/mordheim/marauders-of-chaos/band--mark-of-shornaal/mechanic.mark-of-shornaal
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/marauders-of-chaos/special-rules.yaml
-# source_fingerprint:
-#   8d446c1e8975c84d4956466626b499d13f732094d794cc151bfdbb2496eb7d8c
-# source_sha256_at_generation:
-#   501a50b0b257497d4817e6d76326eb3504f13f454c12a57d3e72077681bbe574
-# Printed rule text:
-#   Enemy models that are not Immune to Psychology cannot attack a marked leader in close combat unless they pass a Leadership test on 3D6, discarding the lowest die.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Mark effect: a non-immune enemy must pass a 3D6-discard-lowest Leadership test to attack the marked leader; on failure it is hit automatically, and once passed no further test is required that battle.
-# effect_id:
-#   mechanic.mark-of-shornaal
-# relation:
-#   equivalent
-# parameters:
-#   {}
-# conditions:
-#   {"test":"3D6 discard lowest","failure":"automatic incoming hits","once_per_battle":true,"cold-blooded":"not allowed"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   The Seer ritual and item-creation effects are separate and not modelled. Surface review warning: Reject the reversed dice draft for Mark of Shornaal. Roll 3D6 and discard the LOWEST die, preserving the psychology exception and per-battle passed-test state.
 
 # --- Authored scenarios ---
 # Derived from the printed rule and the recorded contract; no engine output was consulted.  The
@@ -70,7 +41,6 @@
 # not establish them; the case fails if the engine asks for one.
 - audit_id: rule/mordheim/marauders-of-chaos/band--mark-of-shornaal/mechanic.mark-of-shornaal
   id: a-failed-test-blocks-the-attacker-of-the-marked-leader
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -96,7 +66,6 @@
 # carries is the cleared blocked flag.
 - audit_id: rule/mordheim/marauders-of-chaos/band--mark-of-shornaal/mechanic.mark-of-shornaal
   id: a-passed-test-lets-the-enemy-attack-normally
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -124,7 +93,6 @@
 #   second time fails the case instead of passing quietly.
 - audit_id: rule/mordheim/marauders-of-chaos/band--mark-of-shornaal/mechanic.mark-of-shornaal
   id: after-a-passed-test-round-one-requests-no-second-test
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace

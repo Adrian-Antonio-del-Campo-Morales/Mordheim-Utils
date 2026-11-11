@@ -12,6 +12,11 @@ rules:
       binding:
         kind: mechanic
         id: skill.hard-to-kill
+      clauses:
+      - id: whole--scope--hard-to-kill
+        scope: 'YES'
+      - id: whole--scope--grudgebearers-hiring
+        scope: 'NO'
     - id: trait.concussion-immune
       scope: 'YES'
       binding:
@@ -22,8 +27,7 @@ rules:
     - id: campaign.slayer-pirates.grudgebearers
       scope: 'NO'
       binding: null
-      reason: >-
-        Elven hireling prohibition is a campaign hiring clause, outside duel resolution.
+      reason: out-of-scope.campaign
   name: Slayer Special Rules
   effect: >-
     All Slayers are subject to the following special rules. Hard to Kill: Dwarfs are tough,
@@ -62,9 +66,7 @@ rules:
     - id: unimplemented.slayer-pirates-sar.band.see-you-in-davie-jones
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: See You in Davie Jones!
   effect: >-
     Slayer Pirates seek their death. If you voluntarily Rout, the number of Exploration dice you
@@ -91,9 +93,7 @@ rules:
     - id: unimplemented.slayer-pirates-sar.band.deathwish
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Deathwish
   effect: >-
     Slayers seek an honorable death in combat. Unless stated otherwise, all members of this warband
@@ -122,9 +122,7 @@ rules:
     - id: unimplemented.slayer-pirates-sar.band.not-just-any-ol-toy
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Not Just Any Ol' Toy!
   effect: Slayers may never use armour of any kind, nor use any magic (except Magic Weapons).
   source:
@@ -149,9 +147,7 @@ rules:
     - id: unimplemented.slayer-pirates-sar.band.up-close
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Up Close
   effect: >-
     Normal Slayers may only use thrown missile weapons and different types of pistols. Only Gunners
@@ -180,9 +176,7 @@ rules:
     - id: unimplemented.slayer-pirates-sar.band.swabbies-slayer
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Swabbies (Slayer Pirates)
   effect: >-
     Slayer Pirates capture Swabbies, as described in Sartosa 01.pdf. Willing captives join the
@@ -209,9 +203,7 @@ rules:
     - id: unimplemented.slayer-pirates-sar.band.skittish-promotion
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Skittish (Promotion Rule)
   effect: >-
     As newly crowned Slayers, Gunners and Landlubbers do not have the skill 'Death Wish', and suffer
@@ -243,9 +235,7 @@ rules:
     - id: unimplemented.slayer-pirates-sar.captain.leader
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Leader
   effect: >-
     Any models in the warband within 6" of the Slayer Captain may use his Leadership instead of
@@ -273,9 +263,7 @@ rules:
     - id: unimplemented.slayer-pirates-sar.master-gunner.expert-weaponsmith
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Expert Weaponsmith
   effect: >-
     A Master Gunner is a master of mechanical devices. By using stronger construction materials and
@@ -311,9 +299,7 @@ rules:
     - id: unimplemented.slayer-pirates-sar.gunners.skittish
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Skittish (Gunners)
   effect: >-
     As newly crowned Slayers, Gunners do not have the skill 'Death Wish', and suffer psychology like
@@ -346,9 +332,7 @@ rules:
     - id: unimplemented.slayer-pirates-sar.landlubbers.skittish
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Skittish (Landlubbers)
   effect: >-
     As newly crowned Slayers, Landlubbers do not have the skill 'Death Wish', and suffer psychology
@@ -381,9 +365,7 @@ rules:
     - id: unimplemented.slayer-pirates-sar.thaggi.not-hired
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Not Hired (Thaggi)
   effect: Thaggi are not hired, they follow the special 'recruitment' rules.
   source:
@@ -407,13 +389,8 @@ rules:
     - id: unimplemented.slayer-pirates-sar.thaggi.never-gain-experience
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Never Gain Experience (Thaggi)
-  effect: >-
-    Thaggi generally aren't interested in proving their worth to the crew, they are interested in
-    survival and hopefully escape! Thaggi never gain experience in games.
   source:
     manual: broheim.net
     printed_page: 4
@@ -421,13 +398,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Slayer%20Pirates.pdf
   name_i18n:
     es: Nunca Ganarán Experiencia (Thaggi)
-  effect_i18n:
-    es: >-
-      Los Thaggi no están interesados en demostrar su valor a la tripulación, ¡les interesa
-      sobrevivir y escapar si pueden! Los Thaggi nunca ganan experiencia en las partidas.
   applies_to:
     profile_ids:
     - thaggi
+  rule_ref: shared-rule.crew-never-gain-experience
 - id: thaggi--rabble
   runtime:
     scope: 'NO'
@@ -437,9 +411,7 @@ rules:
     - id: unimplemented.slayer-pirates-sar.thaggi.rabble
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Rabble (Thaggi)
   effect: >-
     Thaggi do not need to be armed all the same. Each may be given different equipment, but only
@@ -469,9 +441,7 @@ rules:
     - id: unimplemented.slayer-pirates-sar.thaggi.kruk-they-got-away
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Kruk, They Got Away!
   effect: >-
     If the Slayer Pirate Warband itself Routs, any Thaggi who have already left the table in
@@ -501,15 +471,8 @@ rules:
     - id: unimplemented.slayer-pirates-sar.thaggi.dont-mind-them-mates
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Don't Mind Them Mates, They Ain't True Dwarves!
-  effect: >-
-    The rest of the crew barely notice if any Thaggi run away or go Out of Action - they know
-    they'll find them later on and give them 30 lashes if they're lucky! Any Thaggi who are running
-    away or have been taken out of action do not count towards the need to take a Rout test for the
-    warband.
   source:
     manual: broheim.net
     printed_page: 4
@@ -517,14 +480,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Slayer%20Pirates.pdf
   name_i18n:
     es: No Les Hagas Caso, ¡No Son Enanos de Verdad!
-  effect_i18n:
-    es: >-
-      Al resto de la tripulación apenas le importa si los Thaggi huyen o quedan fuera de combate:
-      ¡saben que los encontrarán más tarde y les darán 30 latigazos si tienen suerte! Los Thaggi que
-      estén huyendo o fuera de combate no cuentan a la hora de hacer la tirada de Huida de la banda.
   applies_to:
     profile_ids:
     - thaggi
+  rule_ref: shared-rule.dont-mind-them
 - id: band--slayer-special-skills
   runtime:
     scope: 'NO'
@@ -534,9 +493,7 @@ rules:
     - id: unimplemented.slayer-pirates-sar.skills.slayer-special-skills
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Slayer Special Skills
   effect: >-
     Death Wish: the hero is completely immune to all psychology and never need to test if fighting

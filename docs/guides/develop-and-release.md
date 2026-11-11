@@ -142,7 +142,7 @@ to hours and belong to engine changes and releases, never to the per-change loop
 
 Generated reports live under ignored `outputs/` — never hand-edit them:
 
-- `audit/` — per-rule inventory (`check report rules`).
+- `audit/` — per-rule inventory and clause coverage (`check report rules`).
 - `test-report/` — technical test CSVs (`check report tests`).
 - `parity/` — JSON/Markdown parity reports (`check parity --output`).
 - `parity-store/` — stored engine samples and their comparisons (`check samples`).

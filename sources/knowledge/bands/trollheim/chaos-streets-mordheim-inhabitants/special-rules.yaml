@@ -79,8 +79,7 @@ rules:
     - id: unimplemented.chaos-streets-mordheim-inhabitants.prophet.orator
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: desolate-soul--fanatic
   name: Fanatic
   effect: The Desolate Soul automatically passes every test based on Leadership.
@@ -131,8 +130,7 @@ rules:
     - id: unimplemented.chaos-streets-mordheim-inhabitants.desolate-soul.death-wish
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: desolate-soul--profound-hatred
   name: Profound Hatred
   effect: >-
@@ -222,6 +220,13 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.disability
+      clauses:
+      - id: permanent-characteristic-penalty
+        scope: 'YES'
+      - id: no-two-weapons-or-weapon-and-shield
+        scope: 'YES'
+      - id: head-injury-stupidity
+        scope: 'YES'
 - id: street-dogs--animal
   name: Animal
   effect: Street Dogs are animals and never gain Experience.
@@ -244,8 +249,7 @@ rules:
     - id: unimplemented.chaos-streets-mordheim-inhabitants.street-dogs.animal
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--mordheim-natives
   name: Mordheim Natives
   effect: >-
@@ -271,8 +275,7 @@ rules:
     - id: unimplemented.chaos-streets-mordheim-inhabitants.band.mordheim-natives
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--wanderers
   name: Wanderers
   effect: >-
@@ -298,8 +301,7 @@ rules:
     - id: unimplemented.chaos-streets-mordheim-inhabitants.band.wanderers
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--look-after-their-own
   name: Look After Their Own
   effect: >-
@@ -325,8 +327,7 @@ rules:
     - id: unimplemented.chaos-streets-mordheim-inhabitants.band.look-after-their-own
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--hired-swords
   name: Hired Swords
   effect: >-
@@ -352,9 +353,7 @@ rules:
     - id: unimplemented.chaos-streets-mordheim-inhabitants.band.hired-swords
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: band--revival-sermons
   name: Revival Sermons
   effect: >-
@@ -398,10 +397,10 @@ rules:
     - id: band.revival-sermons
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: sermon delivery and its group reception (casting procedure,
-        range, one active sermon and the sermon list). The individual armour permission is
-        carried by the Prophet's own equipment restriction and its list, not by this rule.
+      reason: deferred.other
+      clauses:
+      - id: revival-sermons
+        scope: 'NO'
 
 - id: street-dogs--natural-weapons
   runtime:

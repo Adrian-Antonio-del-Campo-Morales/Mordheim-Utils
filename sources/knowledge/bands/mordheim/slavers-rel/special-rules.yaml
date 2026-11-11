@@ -10,9 +10,10 @@ rules:
     - id: unimplemented.slavers-rel.band.extra-treasure
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: deferred.other
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Extra Treasure
   effect: >-
     There are a lot of dinars to be made in the slave trade. As such a slaver warband will always
@@ -41,9 +42,10 @@ rules:
     - id: unimplemented.slavers-rel.band.slaves-talent-advance
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: deferred.other
+      clauses:
+      - id: slaves-talent-advance
+        scope: 'NO'
   name: Lad's Got the Talent (Slaves)
   effect: >-
     Slaves will generally be ill-treated by a slave merchant. If any slave achieves the 'Lad's got
@@ -87,9 +89,7 @@ rules:
     - id: unimplemented.slavers-rel.band.hiring-restrictions
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Hiring Restrictions (Slaves)
   effect: >-
     It is not a mistake that a slaver warband may have up to 20 warriors, yet the restrictions on
@@ -120,9 +120,7 @@ rules:
     - id: unimplemented.slavers-rel.band.slaver-special-equipment
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Slaver Special Equipment
   effect: >-
     This equipment is only available to Slavers, and no other warbands may purchase it. Trapper's
@@ -226,6 +224,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.broken-spirit
+      clauses:
+      - id: broken-spirit--scope--automatic-leadership
+        scope: 'YES'
+      - id: broken-spirit--scope--leader-restriction
+        scope: 'NO'
   name: Broken Spirit
   effect: >-
     A Eunuch will automatically pass any Leadership test he is required to make, as long as the
@@ -279,9 +282,7 @@ rules:
     - id: unimplemented.slavers-rel.ogre-bodyguard.large
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Large
   effect: >-
     Ogres are huge, lumbering creatures and therefore make tempting targets for archers. Any model
@@ -309,9 +310,10 @@ rules:
     - id: unimplemented.slavers-rel.ogre-bodyguard.slow-witted
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: deferred.other
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Slow Witted
   effect: >-
     Although Ogres are capable of earning experience and bettering themselves they are not the
@@ -339,9 +341,7 @@ rules:
     - id: unimplemented.slavers-rel.hounds.experience
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Experience
   effect: Hounds are animals and do not gain experience.
   source:
@@ -365,10 +365,7 @@ rules:
     - id: unimplemented.slavers-rel.hounds.keen-scent
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: campaign, recruitment, progression or post-duel
-        aftermath. Source prose is retained; this is an exclusion, not deferred modular
-        implementation.
+      reason: out-of-scope.campaign
   name: Keen Scent
   effect: >-
     Hounds will be able to locate the scent of an escaped slave over vast distances. If the warband

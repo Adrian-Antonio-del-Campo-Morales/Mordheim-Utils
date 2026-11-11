@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/dark-elves/band--kindred-hatred/mechanic.hatred-high-elves
-# scaffold_fingerprint: d23c85419ee1b1baf2c138c5e77f90aa771f6b74ed91b2af12d102790580e795
 # authoring_status: AUTHORED
 # authoring_progress: the admitted hatred clause carries 3 authored scenario(s) for the family
 #   model derived from the printed rule and the recorded semantic contract: the grant delivers
@@ -13,40 +12,12 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: hatred (scope: YES)
-# AUTHORED[hatred]: 3 scenario(s) cover the clause: the grant delivers the first-round reroll
+# AUTHORED: 3 scenario(s) cover the clause: the grant delivers the first-round reroll
 #   against the qualifying high-elf; the same miss stands without the qualifying identity; a
 #   band-mate outside the printed recipients receives no reroll.
-# origin_id:
-#   rule/mordheim/dark-elves/band--kindred-hatred/mechanic.hatred-high-elves
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/dark-elves/special-rules.yaml
-# source_fingerprint:
-#   13cc790d3a65cc75b36d952d1d8428bc2e94abcf3b91f49e96d40ffcd5b4a6f7
-# source_sha256_at_generation:
-#   4be3ba1ddf10e16be4b15f25080eba60b5ab2595e25d1be84e27eef4f0e6de0e
-# Printed rule text:
-#   Dark Elves Hate all High Elf warriors, including High Elf Hired Swords.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Subject to Hatred: while fighting a qualifying enemy, this warrior may reroll missed To-Hit rolls in the first round of that close combat only. Observable: a first-round melee reroll is offered only when the opponent matches the hated identity and this warrior is not Psychology-immune. Hated identity: High Elves.
-# effect_id:
-#   mechanic.hatred-high-elves
-# relation:
-#   equivalent
-# parameters:
-#   {"enemy_identity":"species.high-elf","enemy_species":"high-elf","includes_hired_swords":true,"reroll":"missed_melee_hits"}
-# conditions:
-#   {"trigger":"first round of a close combat against a qualifying enemy","resolution":"contexts._hit_reroll adds a reroll when the enemy identity tag matches","consequence":"missed To-Hit rolls may be rerolled once that round","recipient":"this warrior, against the matching enemy","duration":"first combat round only","stacking":"never reroll a reroll","exceptions":"suppressed for a Psychology-immune warrior and for a frenzied kindred-hatred source; requires the opponent's explicit identity tag","psychology_immunity_suppresses":true}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Filtered Hatred bound to mechanic.hatred-high-elves; contexts._hit_reroll matches the enemy identity tag, enforces first-round timing and the Psychology-immunity suppression. Enemy identity must be supplied explicitly. Selectively verified equivalence: {"review_file":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"hatred","verified_family":"mechanic.hatred-high-elves","verified_peer_keys":[{"origin_id":"rule/mordheim/dark-elves/band--kindred-hatred/mechanic.hatred-high-elves","clause_id":"hatred"},{"origin_id":"rule/mordheim/druchii-mic/band--kindred-hatred/mechanic.hatred-high-elves","clause_id":"hatred"},{"origin_id":"source/catalog/hirelings/hired-swords/grade-1b.yaml/hireling.hired-sword.dark-elf-assassin.rule.kindred-hatred/unclassified","clause_id":"kindred-hatred"}],"sharing_boundary":"Same High Elf individual predicate, including hired swords; ordinary Psychology-immunity suppression. Not the Strigoi bloodline exception.","evidence":"inspection","limit":"Only this closed selection was checked. No acceptance of the entire review, KB activation, implementation closure or execution evidence."}
 
 # --- Authored scenarios ---
 # Family model (first-round Hatred): the bearer is the printed recipient of this record, built
@@ -62,7 +33,6 @@
 # The bearer charges and its first-round miss is offered the granted reroll, which lands and wounds.
 - audit_id: rule/mordheim/dark-elves/band--kindred-hatred/mechanic.hatred-high-elves
   id: a-first-round-miss-is-rerolled-against-a-qualifying-high-elf
-  covers: [hatred]
   fighters:
     first:
       collection: mordheim
@@ -88,7 +58,6 @@
 # Without the printed identity the strict tape holds no reroll key and the same miss stands.
 - audit_id: rule/mordheim/dark-elves/band--kindred-hatred/mechanic.hatred-high-elves
   id: the-same-miss-stands-without-the-qualifying-high-elf
-  covers: [hatred]
   fighters:
     first:
       collection: mordheim
@@ -111,7 +80,6 @@
 # The source's applies_to names the printed recipients; this band-mate is outside that list.
 - audit_id: rule/mordheim/dark-elves/band--kindred-hatred/mechanic.hatred-high-elves
   id: a-band-mate-outside-the-printed-recipients-receives-no-reroll
-  covers: [hatred]
   fighters:
     first:
       collection: mordheim

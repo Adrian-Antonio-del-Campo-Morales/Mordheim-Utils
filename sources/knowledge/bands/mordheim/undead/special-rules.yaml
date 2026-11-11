@@ -75,6 +75,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+      clauses:
+      - id: psychology-immunity
+        scope: 'YES'
+      - id: never-leaves-combat
+        scope: 'NO'
   rule_ref: shared-rule.immune-to-psychology
 - id: vampire--immune-to-poison
   runtime:
@@ -144,8 +149,7 @@ rules:
     - id: unimplemented.undead.necromancer.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
   rule_ref: shared-rule.wizard
 - id: ghouls--cause-fear
   name: Cause Fear
@@ -215,8 +219,7 @@ rules:
     - id: unimplemented.undead.dire-wolves.may-not-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
   rule_ref: shared-rule.may-not-run
 - id: dire-wolves--cause-fear
   name: Cause Fear
@@ -263,6 +266,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+      clauses:
+      - id: psychology-immunity
+        scope: 'YES'
+      - id: never-leaves-combat
+        scope: 'NO'
   rule_ref: shared-rule.immune-to-psychology
 - id: dire-wolves--immune-to-poison
   runtime:
@@ -309,9 +317,8 @@ rules:
     - id: unimplemented.undead.dire-wolves.unliving
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
-  rule_ref: shared-rule.dead
+      reason: out-of-scope.shooting
+  rule_ref: shared-rule.never-gain-experience
 - id: dire-wolves--no-pain
   runtime:
     scope: 'YES'
@@ -378,8 +385,7 @@ rules:
     - id: unimplemented.undead.zombies.may-not-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
   rule_ref: shared-rule.may-not-run
 - id: zombies--immune-to-psychology
   name: Immune to Psychology
@@ -403,6 +409,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+      clauses:
+      - id: psychology-immunity
+        scope: 'YES'
+      - id: never-leaves-combat
+        scope: 'NO'
   rule_ref: shared-rule.immune-to-psychology
 - id: zombies--immune-to-poison
   runtime:
@@ -472,9 +483,8 @@ rules:
     - id: unimplemented.undead.zombies.no-brain
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
-  rule_ref: shared-rule.brainless
+      reason: out-of-scope.shooting
+  rule_ref: shared-rule.never-gain-experience
 - id: band--undead-maximum-characteristics
   name: Undead Maximum Characteristics
   effect: >-
@@ -507,9 +517,7 @@ rules:
     - id: unimplemented.undead.band.undead-maximum-characteristics
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: necromancer--no-armoured-casting
   name: No Armour Casting
   effect: >-
@@ -537,8 +545,7 @@ rules:
     - id: unimplemented.undead.necromancer.no-armoured-casting
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic.
+      reason: out-of-scope.magic
 - id: ghouls--equipment-restrictions
   runtime:
     scope: 'YES'

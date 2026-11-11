@@ -1,52 +1,23 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/lords-of-the-marsh-mim/band--scaly-skin/compiler.lizardmen-scaly-skin
-# scaffold_fingerprint: 1d5bafab96d71a94bec444833de703538ef2a7915cdedec06c413109b4083b37
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
 # authoring_status: REVIEWED
 # authoring_progress: every admitted clause of this ID is represented by an
 #   authored scenario, or recorded as PARTIAL with its concrete blocker.
 #   REVIEWED is authoring and semantic contrast only; execution_status stays
 #   UNEXECUTED and no functional result exists.
-# AUTHORED[whole]: 8 scenarios read the printed band contract (parameters: Fimir Warriors
+# AUTHORED: 8 scenarios read the printed band contract (parameters: Fimir Warriors
 #   5 while the rest of the band keeps 6+): the Draich 6+ save and its 6+ Strength cap on
 #   the real attack route, the named Fimir Warriors 5+ against a Strength 3 attacker, the
 #   light-armour combination the Heroes list offers, a further profile keeping the band
 #   default, and the printed negation by an armour-denying critical.
-# origin_id:
-#   rule/mordheim/lords-of-the-marsh-mim/band--scaly-skin/compiler.lizardmen-scaly-skin
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/lords-of-the-marsh-mim/special-rules.yaml
-# source_fingerprint:
-#   04d6d14f91404523be253821bc37d4fca6b94a3a083b644cd3213ad1417d1889
-# source_sha256_at_generation:
-#   46c5061f0b731bfea714c69c1a6dcba506852954137c55ff42993811286f2f11
-# Printed rule text:
-#   Fimir have a 6+ armour save that cannot be modified beyond 6 by Strength... Fimir Warriors have a 5+ armour save.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Intrinsic armour: the band keeps the 6+ natural save with a 6+ Strength floor, light armour adding +1, and the named Fimir Warriors profile prints 5+.
-# effect_id:
-#   compiler.lizardmen-scaly-skin
-# relation:
-#   parameterized_variant
-# parameters:
-#   {"profile_ids":["fimir-warriors"],"value":5,"band_default":6,"strength_floor":6}
-# conditions:
-#   {"recipient":"fimir","stacks_with":"light armour"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Parameterised variant of the shared scaly-skin contract; Young Nobles keep 6+ and the printed no-save result is modelled by ignore-armour. Surface reuse candidate: {"family":"T-NAT-ARM","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact threshold, armour versus special save, Strength/magic/blessed modification, combination/replacement, per-profile recipients and save stage. Equal thresholds do not establish equivalence; 3+ Ethereal is not 4+, and daemonic armour need not be unmodifiable.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 # --- Authored scenarios ---
 # Derived from the printed rule text, the recorded parameters of this register
 # row and the band package; no engine output was consulted.  The duel is
@@ -59,7 +30,6 @@
 
 - audit_id: rule/mordheim/lords-of-the-marsh-mim/band--scaly-skin/compiler.lizardmen-scaly-skin
   id: the-draich-saves-on-six
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -78,7 +48,6 @@
 
 - audit_id: rule/mordheim/lords-of-the-marsh-mim/band--scaly-skin/compiler.lizardmen-scaly-skin
   id: the-draich-is-wounded-below-six
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -97,7 +66,6 @@
 
 - audit_id: rule/mordheim/lords-of-the-marsh-mim/band--scaly-skin/compiler.lizardmen-scaly-skin
   id: a-strength-six-attacker-cannot-push-the-draich-save-beyond-six
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -116,7 +84,6 @@
 
 - audit_id: rule/mordheim/lords-of-the-marsh-mim/band--scaly-skin/compiler.lizardmen-scaly-skin
   id: the-fimir-warriors-save-on-five
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -138,7 +105,6 @@
 
 - audit_id: rule/mordheim/lords-of-the-marsh-mim/band--scaly-skin/compiler.lizardmen-scaly-skin
   id: the-fimir-warriors-are-wounded-below-five
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -160,7 +126,6 @@
 
 - audit_id: rule/mordheim/lords-of-the-marsh-mim/band--scaly-skin/compiler.lizardmen-scaly-skin
   id: light-armour-improves-the-draich-save
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -179,7 +144,6 @@
 
 - audit_id: rule/mordheim/lords-of-the-marsh-mim/band--scaly-skin/compiler.lizardmen-scaly-skin
   id: the-young-nobles-keep-the-band-six
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -198,7 +162,6 @@
 
 - audit_id: rule/mordheim/lords-of-the-marsh-mim/band--scaly-skin/compiler.lizardmen-scaly-skin
   id: a-critical-that-denies-armour-denies-the-shearls-save
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace

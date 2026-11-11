@@ -10,8 +10,10 @@ rules:
     - id: unimplemented.bretonnian-knights-errant-mou.knights-errant.brettonian-leader
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology and leader election.
+      reason: deferred.psychology
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Brettonian Leader
   effect: >-
     The Knights Errant warband doesn't have a leader like a normal warband has; the Knights
@@ -52,15 +54,8 @@ rules:
     - id: unimplemented.bretonnian-knights-errant-mou.knights-errant.knights-virtue
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: group Rout, All Alone or combat against multiple
-        opponents. Source prose is retained; this is an exclusion, not deferred modular
-        implementation.
+      reason: deferred.other
   name: Knights Virtue
-  effect: >-
-    A Knight Errant is a chivalrous warrior who is superior to ordinary warriors. He will
-    never break and panic from combat and so does not have to pass a Leadership test for
-    being All Alone.
   source:
     manual: broheim.net
     printed_page: 4
@@ -68,14 +63,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Bretonnian Knights Errant.pdf
   name_i18n:
     es: Virtud del Caballero
-  effect_i18n:
-    es: >-
-      Un Caballero Errante es un guerrero caballeroso superior a los guerreros ordinarios.
-      Nunca huirá ni entrará en pánico por el combate, por lo que no tiene que superar un
-      chequeo de Liderazgo por estar Solo.
   applies_to:
     profile_ids:
     - knights-errant
+  rule_ref: shared-rule.knights-virtue
 - id: band--knights-feats
   runtime:
     scope: 'YES'
@@ -117,9 +108,7 @@ rules:
     - id: excluded.knights-feats.lancer
       scope: 'NO'
       binding: null
-      reason: >-
-        Lancer is outside the duel scope by user decision adopted 2026-11-03.
-        Its mounted charge continuation is excluded, not pending implementation.
+      reason: out-of-scope.movement
   name: Knights Feats
   effect: >-
     Knights Errant may choose to use the following skill list instead of the standard skill
@@ -161,9 +150,7 @@ rules:
     - id: unimplemented.bretonnian-knights-errant-mou.band.hired-swords
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Hired Swords
   effect: >-
     The Knights Errant warband may not recruit evil Hired Swords or those who practice magic or use

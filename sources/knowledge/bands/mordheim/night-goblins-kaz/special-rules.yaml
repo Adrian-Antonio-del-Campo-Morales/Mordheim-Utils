@@ -10,8 +10,7 @@ rules:
     - id: unimplemented.night-goblins-kaz.band.animosity
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: turn-structure squabble roll happens outside the duel resolution.
+      reason: out-of-scope.group
   name: Animosity
   effect: >-
     Goblins spend much of their lives squabbling and fighting amongst themselves. Sometimes this
@@ -78,10 +77,16 @@ rules:
     - id: unimplemented.night-goblins-kaz.band.night-goblin-special-skills
       scope: LATER
       binding: null
-      reason: >-
-        Deferred: Ded Shooty (shooting range) and Sneaky Git (deployment) are out of scope; the
-        Infiltrate cross-reference needs equivalence review. Netter alone has an executable binding
-        (mechanic.netter) but the special-skill selection system is not wired for this band yet.
+      reason: deferred.other
+      clauses:
+      - id: whole--scope--ded-shooty
+        scope: 'NO'
+      - id: whole--scope--sneaky-git
+        scope: 'NO'
+      - id: whole--scope--infiltrate
+        scope: 'NO'
+      - id: whole--scope--netter
+        scope: 'NO'
   name: Night Goblin Special Skills
   effect: >-
     Ded Shooty: the clever little git adds +6\" to the range of any missile weapons he uses (not
@@ -150,11 +155,7 @@ rules:
     - id: band--night-goblin-special-skills-netter.net-charge-producer
       scope: 'NO'
       binding: null
-      reason: >-
-        The net charge is a throw resolved by ballistic skill followed by the target's Strength escape
-        test, and a miss or escape is a failed charge stopped short of contact; those producers and the
-        board placement remain outside the duel and are not simulated.  Only the caught victim's
-        individually admitted state applies, and the caller supplies it expressly as condition.netted.
+      reason: out-of-scope.movement
 - id: band--cave-squig-limit
   runtime:
     scope: 'NO'
@@ -164,8 +165,7 @@ rules:
     - id: unimplemented.night-goblins-kaz.band.cave-squig-limit
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: recruitment restriction enforced at warband-creation.
+      reason: out-of-scope.campaign
   name: Cave Squig Limit
   effect: >-
     Your warband may include up to 5 Cave Squigs. You may never have more Cave Squigs in your
@@ -195,8 +195,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any model in the warband within 6\" of the Big Boss may use his Leadership instead of their own.
   source:
     manual: broheim.net
     printed_page: 46
@@ -204,11 +202,10 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: Cualquier modelo de la banda a 6" del Gran Jefe puede usar su Liderazgo en lugar del propio.
   applies_to:
     profile_ids:
     - big-boss
+  rule_ref: shared-rule.leader
 - id: shaman--wizard
   runtime:
     scope: 'NO'
@@ -218,8 +215,7 @@ rules:
     - id: unimplemented.night-goblins-kaz.shaman.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic subsystem (Waaagh! Magic as listed in Best of Town Cryer).
+      reason: out-of-scope.magic
   name: Wizard
   effect: A Night Goblin Shaman is a wizard and uses Waaagh! Magic as listed in Best of Town Cryer.
   source:
@@ -245,8 +241,7 @@ rules:
     - id: unimplemented.night-goblins-kaz.fanatics.addict
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: pre-battle supply and participation are campaign mechanics.
+      reason: out-of-scope.campaign
   name: Addict
   effect: >-
     The Fanatic is dependent on a regular supply of Madcap Mushrooms. If he can't get any before a
@@ -280,6 +275,11 @@ rules:
         id: trait.frenzy
         parameters:
           value: true
+      clauses:
+      - id: frenzy
+        scope: 'YES'
+      - id: after-battle-damage
+        scope: 'NO'
   name: Looney
   effect: >-
     Due to the effect of the Mushrooms he is subject to Frenzy. He must also test for permanent
@@ -341,9 +341,7 @@ rules:
     - id: unimplemented.night-goblins-kaz.cave-squigs.movement
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: 2D6 random movement and contact-charging are movement-phase mechanics outside
-        the duel scope.
+      reason: out-of-scope.movement
   name: Movement
   source:
     manual: broheim.net
@@ -365,9 +363,7 @@ rules:
     - id: unimplemented.night-goblins-kaz.cave-squigs.minderz
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: proximity checks and random wandering are movement-phase mechanics outside the
-        duel scope.
+      reason: out-of-scope.movement
   name: Minderz
   source:
     manual: broheim.net
@@ -389,8 +385,7 @@ rules:
     - id: unimplemented.night-goblins-kaz.cave-squigs.animals
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: experience progression is a campaign mechanic.
+      reason: out-of-scope.campaign
   name: Animals
   effect: Cave Squigs are animals of a sort and so do not gain experience.
   source:
@@ -444,8 +439,7 @@ rules:
     - id: unimplemented.night-goblins-kaz.troll.stupidity.movement
       scope: 'NO'
       binding: null
-      reason: >-
-        Random board movement after failure is outside the 1v1 duel scope.
+      reason: out-of-scope.movement
   name: Stupidity
   source:
     manual: broheim.net
@@ -457,7 +451,7 @@ rules:
   applies_to:
     profile_ids:
     - troll
-  rule_ref: shared-rule.stupidity-2
+  rule_ref: shared-rule.troll-stupidity
 - id: troll--regeneration
   runtime:
     scope: 'YES'
@@ -469,11 +463,17 @@ rules:
       binding:
         kind: mechanic
         id: skill.regeneration
+      clauses:
+      - id: regenerate-wound
+        scope: 'YES'
+      - id: fire-exception
+        scope: 'YES'
+      - id: post-battle-injury
+        scope: 'NO'
     - id: campaign.post-battle-injury
       scope: 'NO'
       binding: null
-      reason: >-
-        Post-battle injury is a campaign state.
+      reason: out-of-scope.campaign
   name: Regeneration
   source:
     manual: broheim.net
@@ -495,10 +495,8 @@ rules:
     - id: unimplemented.night-goblins-kaz.troll.dumb-monsters
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: experience progression is a campaign mechanic.
+      reason: out-of-scope.campaign
   name: Dumb Monsters
-  effect: A Troll is far too stupid to ever learn any new skills. Trolls do not gain experience.
   source:
     manual: broheim.net
     printed_page: 48
@@ -506,13 +504,10 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Monstruos Tontos
-  effect_i18n:
-    es: >-
-      Un troll es demasiado estúpido para aprender nuevas habilidades. Los trolls no ganan
-      experiencia.
   applies_to:
     profile_ids:
     - troll
+  rule_ref: shared-rule.dumb-monster
 - id: troll--always-hungry
   runtime:
     scope: 'NO'
@@ -522,8 +517,7 @@ rules:
     - id: unimplemented.night-goblins-kaz.troll.always-hungry
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: upkeep costs are a campaign mechanic.
+      reason: out-of-scope.campaign
   name: Always Hungry
   source:
     manual: broheim.net
@@ -568,14 +562,8 @@ rules:
     - id: unimplemented.night-goblins-kaz.snotling-mob.mob
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: mob cohesion and shared-combat placement are movement/deployment mechanics
-        outside the duel scope.
+      reason: out-of-scope.movement
   name: Mob
-  effect: >-
-    Snotlings are naturally gregarious creatures. They are initially bought in a mob of 5. You may
-    replace mob members up to the maximum of 5. They will always move and fight as a mob. All
-    members must stay within 1\" (or 1/2\"?) and all will join in the same combat if possible.
   source:
     manual: broheim.net
     printed_page: 48
@@ -583,15 +571,10 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Horda
-  effect_i18n:
-    es: >-
-      Los Snotlings son criaturas naturalmente gregarias. Se compran inicialmente en un mob de 5.
-      Puedes reemplazar a los miembros del mob hasta un máximo de 5. Siempre se moverán y lucharán
-      como un mob. Todos los miembros deben permanecer a 1" (¿o 1/2"?) y todos se unirán al mismo
-      combate si es posible.
   applies_to:
     profile_ids:
     - snotling-mob
+  rule_ref: shared-rule.snotling-mob
 - id: snotling-mob--weedy
   runtime:
     scope: 'YES'
@@ -626,12 +609,8 @@ rules:
     - id: unimplemented.night-goblins-kaz.snotling-mob.dodgy
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: dodge save against shooting is a shooting mechanic.
+      reason: out-of-scope.shooting
   name: Dodgy
-  effect: >-
-    The little creatures are constantly ducking and diving in the most infuriating way. They get a
-    6+ dodge save against shooting.
   source:
     manual: broheim.net
     printed_page: 48
@@ -639,13 +618,10 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Escurridizos
-  effect_i18n:
-    es: >-
-      Las pequeñas criaturas se agachan y esquivan constantemente de la forma más irritante. Tienen
-      una salvación de esquiva de 6+ contra disparos.
   applies_to:
     profile_ids:
     - snotling-mob
+  rule_ref: shared-rule.dodgy
 - id: band--hired-swords
   runtime:
     scope: 'NO'
@@ -655,9 +631,7 @@ rules:
     - id: unimplemented.night-goblins-kaz.band.hired-swords
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Hired Swords
   effect: >-
     The Night Goblin warband may hire the following Hired Swords and Dramatis Personae: Black Orc

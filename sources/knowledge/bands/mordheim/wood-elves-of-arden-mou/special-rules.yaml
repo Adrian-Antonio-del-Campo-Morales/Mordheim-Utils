@@ -10,8 +10,7 @@ rules:
     - id: unimplemented.wood-elves-of-arden-mou.band.wood-elf-special-skills
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Wood Elf Special Skills
   effect: >-
     Wood Elf Heroes with the Special skill available to them may choose to use the following Skill
@@ -55,8 +54,7 @@ rules:
     - id: unimplemented.wood-elves-of-arden-mou.band.woodland-incantations
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Woodland Incantations
   effect: >-
     A Forest Mage randomly chooses one spell from the Wood Elven spell list. 1. Song of Thorns (diff
@@ -119,8 +117,7 @@ rules:
     - id: unimplemented.wood-elves-of-arden-mou.protector-of-the-hunt.leader
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Leader
   effect: >-
     Any warrior within 6" of the Protector of the Hunt may use his Leadership value when taking
@@ -148,13 +145,8 @@ rules:
     - id: unimplemented.wood-elves-of-arden-mou.elder-scout.sniper
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Sniper
-  effect: >-
-    Due to their years of training Elder Scouts can shoot while keeping almost invisible. This
-    allows the character to shoot while hiding. After the shot roll a D6; on a 5+ no one noticed
-    where the arrow came from.
   source:
     manual: broheim.net
     printed_page: 4
@@ -162,14 +154,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Wood%20Elves%20of%20Arden.pdf
   name_i18n:
     es: Francotirador
-  effect_i18n:
-    es: >-
-      Debido a sus años de entrenamiento, los Exploradores Mayores pueden disparar manteniéndose
-      casi invisibles. Esto permite al personaje disparar mientras está oculto. Tras el disparo tira
-      un D6; con un 5+ nadie advirtió de dónde vino la flecha.
   applies_to:
     profile_ids:
     - elder-scout
+  rule_ref: shared-rule.sniper
 - id: elder-scout--camouflage
   runtime:
     scope: 'NO'
@@ -179,8 +167,7 @@ rules:
     - id: unimplemented.wood-elves-of-arden-mou.elder-scout.camouflage
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Camouflage
   effect: >-
     Elder scouts are experts of camouflage. They wear cloaks of green, brown or grey which are made
@@ -212,8 +199,7 @@ rules:
     - id: unimplemented.wood-elves-of-arden-mou.forest-mage.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Wizard
   effect: A Forest Mage can cast spells. Randomly choose one spell from the Wood Elven spell list.
   source:
@@ -239,10 +225,8 @@ rules:
     - id: unimplemented.wood-elves-of-arden-mou.scout.crossfire
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Crossfire
-  effect: If more than one scout henchman shoots at the same target, they get +1 on the injury roll.
   source:
     manual: broheim.net
     printed_page: 5
@@ -250,13 +234,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Wood%20Elves%20of%20Arden.pdf
   name_i18n:
     es: Fuego Cruzado
-  effect_i18n:
-    es: >-
-      Si más de un explorador (hombre de tropa) dispara al mismo objetivo, obtienen +1 en la tirada
-      de herida.
   applies_to:
     profile_ids:
     - scout
+  rule_ref: shared-rule.crossfire
 - id: ivy-ferret--running-about
   runtime:
     scope: 'NO'
@@ -266,8 +247,7 @@ rules:
     - id: unimplemented.wood-elves-of-arden-mou.ivy-ferret.running-about
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Running About
   effect: >-
     Due to his small size and very quick movement the Ivy ferret is almost impossible to hit. It
@@ -300,8 +280,7 @@ rules:
     - id: unimplemented.wood-elves-of-arden-mou.ivy-ferret.immunity-to-poison
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Immunity to Poison
   effect: Ivy Ferrets are immune to all forms of poison.
   source:
@@ -325,8 +304,7 @@ rules:
     - id: unimplemented.wood-elves-of-arden-mou.ivy-ferret.spirit
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Spirit
   effect: The Ivy Ferret is a woodland spirit and therefore gains no experience.
   source:
@@ -350,8 +328,7 @@ rules:
     - id: unimplemented.wood-elves-of-arden-mou.ivy-ferret.poison-teeth
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Poison Teeth
   effect: >-
     Because of their spiritual nature a bite from an Ivy ferret is almost poisonlike in its effect.

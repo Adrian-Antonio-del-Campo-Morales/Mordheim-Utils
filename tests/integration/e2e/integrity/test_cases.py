@@ -81,9 +81,9 @@ def test_loader_requires_audit_identity_covers_and_an_assertion(tmp_path):
     _write(tmp_path, [{"id": "s", "covers": ["c"], "expect_initial": {"a": 1}}])
     with pytest.raises(CorpusError, match="audit_id"):
         load_corpus(tmp_path)
-    _write(tmp_path, [{"id": "s", "audit_id": "core/combat-order", "covers": [],
+    _write(tmp_path, [{"id": "s", "audit_id": "core/combat-order", "covers": "whole",
                        "expect_initial": {"a": 1}}])
-    with pytest.raises(CorpusError, match="covers must be a nonempty list"):
+    with pytest.raises(CorpusError, match="covers must be a list"):
         load_corpus(tmp_path)
     _write(tmp_path, [{"id": "s", "audit_id": "core/combat-order", "covers": ["c"],
                        "fighters": {"first": {}}}])

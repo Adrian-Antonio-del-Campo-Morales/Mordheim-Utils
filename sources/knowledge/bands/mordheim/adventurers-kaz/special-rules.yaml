@@ -10,9 +10,10 @@ rules:
     - id: unimplemented.adventurers-kaz.band.no-fixed-leader
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: pre-battle random leader election and inter-hero rivalry
-        (Leadership-benefit restrictions between Dwarf/Elf/Wizard/Barbarian pairs).
+      reason: deferred.other
+      clauses:
+      - id: no-fixed-leader
+        scope: 'NO'
   name: No Fixed Leader
   effect: >-
     The Adventurers warband has no fixed leader. The adventurers argue and squabble all the time
@@ -67,8 +68,7 @@ rules:
     - id: unimplemented.adventurers-kaz.wizard.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic subsystem.
+      reason: out-of-scope.magic
   name: Wizard
   effect: >-
     Wizards are magicians and start with two random spells from the Lesser Magic spell list. See the
@@ -121,8 +121,7 @@ rules:
     - id: unimplemented.adventurers-kaz.elf.seeker
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: exploration sequence is a campaign mechanic.
+      reason: out-of-scope.campaign
   name: Seeker
   effect: >-
     A Ranger helps its warband when they are searching the dungeons for treasure. If the Ranger is
@@ -159,10 +158,7 @@ rules:
     - id: excluded.adventurers-kaz.barbarian--frenzy.board-charge
       scope: 'NO'
       binding: null
-      reason: >-
-        Compulsory charge range, movement and target selection on a board are outside the 1v1 duel.
-        In-contact attack doubling, psychology exemption and loss after knockdown/stun use the
-        existing Frenzy operator.
+      reason: out-of-scope.movement
   name: Frenzy
   effect: The Barbarian is subject to Frenzy.
   source:
@@ -198,10 +194,7 @@ rules:
     - id: barbarian--dim-witted.rout-tests
       scope: 'NO'
       binding: null
-      reason: >-
-        The printed extension of the effective Leadership to Rout tests belongs to the excluded
-        group Rout subsystem; only the individual six-inch borrow of this leader's value is
-        admitted.
+      reason: out-of-scope.group
   name: Dim-Witted
   effect: >-
     If the Barbarian is the warband's leader then he has an effective Leadership of 7 for warband
@@ -254,8 +247,7 @@ rules:
     - id: unimplemented.adventurers-kaz.imperial-noble.family-heirloom
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: warband-creation roll and campaign-level effects.
+      reason: out-of-scope.campaign
   name: Family Heirloom
   effect: >-
     The Family Heirloom is a special sword or pistol that has been in the family for a long time.
@@ -512,8 +504,7 @@ rules:
     - id: unimplemented.adventurers-kaz.cannon-fodder.mixed-bunch
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign promotion mechanics.
+      reason: out-of-scope.campaign
   name: Mixed Bunch
   effect: >-
     When one of the Cannon Fodder gets the \"Lad's got Talent\" result then he will become an
@@ -544,9 +535,7 @@ rules:
     - id: unimplemented.adventurers-kaz.band.hired-swords
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Hired Swords
   effect: >-
     The warband has access to the following Hired Swords: Dwarf Trollslayer, Freelancer (no horse),

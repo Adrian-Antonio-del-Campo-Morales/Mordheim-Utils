@@ -26,18 +26,8 @@ rules:
     - id: unimplemented.skaven-of-clan-skryre-kaz.band.rulebook-inheritance.art-of-silent-death
       scope: 'NO'
       binding: null
-      reason: >-
-        Printed exclusion, refused instead of granted: the rulebook Skaven table's fifth member, the
-        Art of Silent Death, is published as no member rule for this band, so a selection is refused
-        as unavailable for these Heroes. The denial is recorded here rather than being converted
-        into a silent ability.
+      reason: out-of-scope.construction
   name: Rulebook Inheritance
-  effect: >-
-    Skaven Clan Skryre may use the Skaven weapons as detailed in the rulebook. Skaven Heroes may use
-    any of the Skaven Special Skills in the rulebook except for the Art of Silent Death. The Skaven
-    weapons travel in the declared Skaven Hero and Henchmen equipment lists; the admitted special
-    skills are published as the four member rules Black Hunger, Tail Fighting, Wall Runner and
-    Infiltration, each naming the Heroes it reaches, while the Art of Silent Death stays refused.
   source:
     manual: broheim.net
     printed_page: 41
@@ -45,18 +35,10 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Herencia del Libro de Reglas
-  effect_i18n:
-    es: >-
-      Los Skaven del Clan Skryre pueden usar las armas Skaven tal y como se detallan en el libro de
-      reglas. Los Héroes Skaven pueden usar cualquiera de las Habilidades Especiales Skaven del
-      libro de reglas, excepto el Arte de la Muerte Silenciosa. Las armas Skaven viajan en las
-      listas de equipo declaradas de Héroes y Secuaces Skaven; las habilidades especiales admitidas
-      se publican como las cuatro reglas miembro Hambre Negra, Combate con la Cola, Corredor de
-      Muros e Infiltración, cada una nombrando a los Héroes a los que alcanza, mientras que el Arte
-      de la Muerte Silenciosa queda rechazado.
   applies_to:
     band: true
     profile_types: [hero]
+  rule_ref: shared-rule.skaven-rulebook-inheritance
 - id: band--skaven-special-skills-black-hunger
   kind: warband_skill
   runtime:
@@ -71,10 +53,6 @@ rules:
         id: mechanic.black-hunger
   runtime_selectable: true
   name: Black Hunger
-  effect: >-
-    At the start of his turn, the Skaven Hero may invoke Black Hunger. For that turn he gains +1
-    Attack and +D3 inches to his total Movement, then suffers D3 Strength 3 hits with no armour save
-    at the end of the turn.
   source:
     manual: broheim.net
     printed_page: 41
@@ -82,11 +60,6 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Hambre Negra
-  effect_i18n:
-    es: >-
-      Al comienzo de su turno, el Héroe skaven puede invocar el Hambre negra. Durante ese turno gana
-      +1 Ataque y +D3 pulgadas a su Movimiento total, y luego sufre D3 impactos de Fuerza 3 sin
-      salvación por armadura al final del turno.
   eligibility:
   - master-engineer
   - engineers
@@ -97,6 +70,7 @@ rules:
   applies_to:
     band: true
     profile_types: [hero]
+  rule_ref: shared-rule.black-hunger
 - id: band--skaven-special-skills-tail-fighting
   kind: warband_skill
   runtime:
@@ -111,9 +85,6 @@ rules:
         id: special-rule.band--skaven-special-skills-tail-fighting
   runtime_selectable: true
   name: Tail Fighting
-  effect: >-
-    The Skaven may wield a shield, knife or sword with his tail. A weapon grants one additional
-    attack with that weapon; a shield grants +1 to the model's armour save.
   source:
     manual: broheim.net
     printed_page: 41
@@ -121,10 +92,6 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Combate con la Cola
-  effect_i18n:
-    es: >-
-      El skaven puede empuñar un escudo, cuchillo o espada con su cola. Un arma concede un ataque
-      adicional con esa arma; un escudo concede +1 a la salvación por armadura de la miniatura.
   eligibility:
   - master-engineer
   - engineers
@@ -135,6 +102,7 @@ rules:
   applies_to:
     band: true
     profile_types: [hero]
+  rule_ref: shared-rule.tail-fighting
 - id: band--skaven-special-skills-wall-runner
   kind: warband_skill
   runtime:
@@ -145,14 +113,8 @@ rules:
     - id: unimplemented.skaven-of-clan-skryre-kaz.band.skaven-special-skills-wall-runner
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: climbing walls and other sheer surfaces is a movement and terrain consequence
-        the isolated duel never resolves. The printed member stays published for its Hero recipients
-        instead of being dropped for lacking a duel contract.
+      reason: out-of-scope.movement
   name: Wall Runner
-  effect: >-
-    The Skaven automatically passes Initiative tests required to climb walls and other sheer
-    surfaces.
   source:
     manual: broheim.net
     printed_page: 41
@@ -160,10 +122,6 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Corredor de Muros
-  effect_i18n:
-    es: >-
-      El skaven supera automáticamente los chequeos de Iniciativa necesarios para trepar por muros y
-      otras superficies verticales.
   eligibility:
   - master-engineer
   - engineers
@@ -174,6 +132,7 @@ rules:
   applies_to:
     band: true
     profile_types: [hero]
+  rule_ref: shared-rule.wall-runner
 - id: band--skaven-special-skills-infiltration
   kind: warband_skill
   runtime:
@@ -184,15 +143,8 @@ rules:
     - id: unimplemented.skaven-of-clan-skryre-kaz.band.skaven-special-skills-infiltration
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: deployment order and placement of a fighter before the duel are outside the
-        isolated 1v1 runtime. The printed member stays published for its Hero recipients instead of
-        being dropped for lacking a duel contract.
+      reason: out-of-scope.movement
   name: Infiltration
-  effect: >-
-    The Skaven deploys after the opposing warband and may be placed anywhere out of enemy sight and
-    more than 12" from every enemy model. If both players have infiltrators, roll a D6 for each; the
-    lowest roll deploys first.
   source:
     manual: broheim.net
     printed_page: 41
@@ -200,11 +152,6 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Infiltración
-  effect_i18n:
-    es: >-
-      El skaven se despliega después de la banda contraria y puede situarse en cualquier lugar fuera
-      de la vista enemiga y a más de 12" de cada miniatura enemiga. Si ambos jugadores tienen
-      infiltradores, tira un D6 por cada uno; la tirada más baja despliega primero.
   eligibility:
   - master-engineer
   - engineers
@@ -215,6 +162,7 @@ rules:
   applies_to:
     band: true
     profile_types: [hero]
+  rule_ref: shared-rule.infiltration
 - id: band--jezzail
   runtime:
     scope: 'NO'
@@ -224,10 +172,7 @@ rules:
     - id: unimplemented.skaven-of-clan-skryre-kaz.band.jezzail
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: the jezzail is a ranged weapon with crew, reload and targeting rules; all of
-        its text is preserved in the provisional item catalog/items/weapons-ranged.yaml (item id
-        jezzail).
+      reason: out-of-scope.shooting
   name: Jezzail (Skaven Clan Skryre Special Equipment)
   effect: >-
     The warplock jezzail is a fiendish invention of the Skaven Clan Skryre. It is a huge and long
@@ -284,9 +229,7 @@ rules:
     - id: unimplemented.skaven-of-clan-skryre-kaz.master-engineer.master-engineer
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: re-rolling fumbles of blackpowder or wyrdstone-powered weapons is a shooting
-        mechanic.
+      reason: out-of-scope.shooting
   name: Master Engineer
   effect: >-
     The Master Engineer may re-roll any fumbles with any blackpowder or wyrdstone-powered weapons he
@@ -314,8 +257,7 @@ rules:
     - id: unimplemented.skaven-of-clan-skryre-kaz.warlock-engineer.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic subsystem (Magic of the Horned Rat).
+      reason: out-of-scope.magic
   name: Wizard
   source:
     manual: broheim.net
@@ -337,8 +279,7 @@ rules:
     - id: unimplemented.skaven-of-clan-skryre-kaz.skavenslaves.experience
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: experience progression is a campaign mechanic.
+      reason: out-of-scope.campaign
   name: Experience
   source:
     manual: broheim.net
@@ -350,7 +291,7 @@ rules:
   applies_to:
     profile_ids:
     - skavenslaves
-  rule_ref: shared-rule.experience
+  rule_ref: shared-rule.never-gain-experience
 - id: skavenslaves--all-races
   runtime:
     scope: 'NO'
@@ -360,12 +301,8 @@ rules:
     - id: unimplemented.skaven-of-clan-skryre-kaz.skavenslaves.all-races
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: warband-flavour rule with no combat effect.
+      reason: out-of-scope.campaign
   name: All Races
-  effect: >-
-    Skaven slaves may be from any race including their fellow Skaven. The above profile represents
-    the weakened state of all of them.
   source:
     manual: broheim.net
     printed_page: 43
@@ -373,13 +310,10 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Todas las Razas
-  effect_i18n:
-    es: >-
-      Los esclavos Skaven pueden ser de cualquier raza, incluidos sus propios compañeros Skaven. El
-      perfil anterior representa el estado debilitado de todos ellos.
   applies_to:
     profile_ids:
     - skavenslaves
+  rule_ref: shared-rule.slaves-all-races
 - id: skavenslaves--slavers
   runtime:
     scope: 'NO'
@@ -389,13 +323,8 @@ rules:
     - id: unimplemented.skaven-of-clan-skryre-kaz.skavenslaves.slavers
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: capture is a campaign mechanic.
+      reason: out-of-scope.campaign
   name: Slavers
-  effect: >-
-    Any enemy warrior who is captured may be added to a Skavenslave group. He will have the above
-    profile and will have to be equipped the same as the rest of the group. Any equipment he carried
-    when he was captured may be kept or sold by the warband.
   source:
     manual: broheim.net
     printed_page: 43
@@ -403,11 +332,7 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Esclavistas
-  effect_i18n:
-    es: >-
-      Cualquier guerrero enemigo que sea capturado puede añadirse a un grupo de Esclavos Skaven.
-      Tendrá el perfil anterior y deberá equiparse igual que el resto del grupo. Cualquier equipo
-      que llevara cuando fue capturado puede quedarse la banda o venderse.
   applies_to:
     profile_ids:
     - skavenslaves
+  rule_ref: shared-rule.slavers

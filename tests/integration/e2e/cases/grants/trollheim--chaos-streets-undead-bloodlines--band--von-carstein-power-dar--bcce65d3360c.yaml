@@ -1,0 +1,107 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--von-carstein-power-dark-majesty/mechanic.leader-twelve
+# authoring_status: AUTHORED
+# authoring_progress: the admitted leader-range clause carries 2 authored scenarios derived from the
+#   printed rule and the recorded contract: with the band row band--von-carstein-power-dark-majesty selected
+#   by the supplied provider the Leadership borrow is offered to a same-band warrior eight inches away (past
+#   the printed six, inside the increased twelve) and the borrow decision is consumed, while the identical
+#   supplied provider without the row offers nothing at that distance and the borrower's own Leadership
+#   fails the test.  The recorded consumer still hard-codes the six-inch radius, so the first scenario
+#   states the printed target behaviour rather than a connected one.  REVIEWED still requires manual
+#   semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios cover the printed increase of the provider's Leader range from six
+#   to twelve inches.  The provider is the printed von Carstein vampire of this band selecting the row the
+#   audit id names and is supplied as a standing nearby participant of the borrower's side, exactly as the
+#   shared mechanic.leader-six case supplies its leader; the borrower is a same-band warrior taking an
+#   individual Stupidity test, which is the test whose Leadership may be borrowed.  The eight-inch distance
+#   is the discriminating fact: it is beyond the printed six and inside the increased twelve, and the
+#   declared borrow decision is consumed only when the offer exists.  Outcome-independent: the scenarios
+#   assert that the round resolved rather than which value passed the test, because the provider's printed
+#   Leadership is not supplied as a fixture here.  REVIEWED still requires manual semantic review.
+#
+
+# --- Authored scenarios ---
+# Derived from the printed sentence, the recorded contract and the shared six-inch borrow case; no engine
+# output was consulted.  The borrower is hand-built apart from its band tag so the same-band condition of
+# the borrow holds, and the provider's own build carries the power row under test.
+
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--von-carstein-power-dark-majesty/mechanic.leader-twelve
+  id: the-increased-range-offers-the-borrow-at-eight-inches
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: dreg
+      trait_overrides: {stupidity: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 3}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context:
+    first_id: first
+    second_id: second
+    charging: [first]
+    active_participant: first
+    distances: [[first, von-carstein-vampire, 8]]
+    nearby:
+      - participant_id: von-carstein-vampire
+        side_id: first
+        condition: standing
+        fighter:
+          collection: trollheim
+          band_id: chaos-streets-undead-bloodlines
+          profile_id: von-carstein-vampire
+          special_rule_ids: [band--von-carstein-power-dark-majesty]
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.stupidity.leader.von-carstein-vampire, value: true}
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 4}
+    - {key: round.0.first.stupidity.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_final: {rounds_executed: 1}
+
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--von-carstein-power-dark-majesty/mechanic.leader-twelve
+  id: without-the-power-the-same-eight-inches-offers-nothing
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: dreg
+      trait_overrides: {stupidity: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 3}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context:
+    first_id: first
+    second_id: second
+    charging: [first]
+    active_participant: first
+    distances: [[first, von-carstein-vampire, 8]]
+    nearby:
+      - participant_id: von-carstein-vampire
+        side_id: first
+        condition: standing
+        fighter:
+          collection: trollheim
+          band_id: chaos-streets-undead-bloodlines
+          profile_id: von-carstein-vampire
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 4}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_rounds:
+    0: {state.first.stupidity_failed: True, state.engaged: False}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}

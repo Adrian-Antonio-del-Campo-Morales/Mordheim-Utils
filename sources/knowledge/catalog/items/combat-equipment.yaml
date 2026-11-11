@@ -94,6 +94,11 @@ items:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/bretonnian-chapel-guard
   combat_status: implemented
   mechanic_id: defence.lucky-charm
+  clauses:
+  - id: first-hit-discarded-on-four
+    scope: 'YES'
+  - id: two-charms-do-not-stack
+    scope: 'YES'
 - id: mad_cap_mushrooms
   kind: combat-equipment
   name: Mad Cap Mushrooms
@@ -495,6 +500,13 @@ items:
       martillos y otras armas contundentes son excelentes para dejar sin sentido al enemigo. Al usar
       un martillo, garrote o maza, un resultado de 2-4 se considera aturdido al tirar para ver la
       extensión de las heridas de una miniatura.
+  clauses:
+  - id: whole--scope--combat-profile
+    scope: 'YES'
+  - id: whole--scope--ranged-shield-bonus
+    scope: 'NO'
+  - id: whole--scope--concussion
+    scope: 'YES'
 - id: sashimono
   kind: combat-equipment
   name: Sashimono
@@ -583,6 +595,13 @@ items:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/sorcerous-society
   combat_status: implemented
   mechanic_id: weapon.wizards-staff
+  clauses:
+  - id: whole--scope--combat-profile
+    scope: 'YES'
+  - id: whole--scope--ranged-armour-bonus
+    scope: 'NO'
+  - id: whole--scope--concussion
+    scope: 'YES'
 - id: chest_talon
   kind: combat-equipment
   name: Chest Talon
@@ -1347,6 +1366,15 @@ items:
   mechanic_id: defence.wolf-pelt-cloak
   tags:
   - constant-save-cloak
+  clauses:
+  - id: six-plus-saving-throw
+    scope: 'YES'
+  - id: may-not-wear-armour
+    scope: 'YES'
+  - id: may-not-carry-blackpowder-weapons
+    scope: 'YES'
+  - id: helmets-and-crossbows-unfavoured
+    scope: 'NO'
 - id: warpaint
   kind: combat-equipment
   name: Warpaint
@@ -1495,9 +1523,9 @@ items:
 
 - id: all_seeing_eye_of_numas
   kind: combat-equipment
-  name: All-seeing Eye of Numas
+  name: All-Seeing Eye of Numas
   name_i18n:
-    es: Ojo que Todo lo Ve de Numas
+    es: Ojo que Todo Lo Ve de Numas
   effect: >-
     The bearer has an additional 6+ save against strikes in close combat that is not modified by
     Strength or weapon modifiers; its shooting half is outside the duel runtime and the bearer's

@@ -14,6 +14,11 @@ rules:
         id: trait.survivor
         parameters:
           value: true
+      clauses:
+      - id: cannot-be-out-while-standing
+        scope: 'YES'
+      - id: first-dead-to-multiple-injuries
+        scope: 'NO'
   name: Survivor
   effect: >-
     Cannot be taken out of Action unless the model is already Knocked Down or Stunned. Treat Out of
@@ -75,8 +80,12 @@ rules:
     - id: unimplemented.lustrian-reavers.reaver-beastmaster.war-beasts
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: deferred.psychology
+      clauses:
+      - id: war-beasts-hiring
+        scope: 'NO'
+      - id: war-beasts-handler
+        scope: 'NO'
   name: War Beasts
   effect: >-
     If the warband includes a Reaver Beastmaster, it may include up to 2 War Beasts in total. They
@@ -136,8 +145,7 @@ rules:
     - id: unimplemented.lustrian-reavers.estalian-warhound.animal
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: injuries.
+      reason: out-of-scope.non-duel
   name: Animal
   effect: >-
     The Warhound is an Animal, may not gain Experience, and if taken Out of Action is dead on a D6
@@ -197,6 +205,11 @@ rules:
         id: trait.ward-save
         parameters:
           value: 5
+      clauses:
+      - id: five-plus-ward-save
+        scope: 'YES'
+      - id: climbing-and-terrain
+        scope: 'NO'
   name: Nimble
   effect: >-
     The Barbary Monkey automatically climbs sheer surfaces without Initiative tests, may re-roll
@@ -227,8 +240,7 @@ rules:
     - id: unimplemented.lustrian-reavers.barbary-monkey.animal
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: injuries.
+      reason: out-of-scope.non-duel
   name: Animal
   effect: >-
     The Barbary Monkey is an Animal, may not gain Experience, and if taken Out of Action is dead on
@@ -284,8 +296,7 @@ rules:
     - id: unimplemented.lustrian-reavers.jungle-shadow.silent-hunter
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: shooting.
+      reason: out-of-scope.shooting
   name: Silent Hunter
   effect: >-
     Jungle Shadow is always considered to be Hidden if the model is touching any piece of terrain of
@@ -314,8 +325,7 @@ rules:
     - id: unimplemented.lustrian-reavers.jungle-shadow.surprise-attack
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: shooting.
+      reason: out-of-scope.shooting
   name: Surprise Attack
   effect: >-
     If the Shadow attacks an enemy that has its back turned to the Jungle Shadow (i.e. the shot is
@@ -345,8 +355,7 @@ rules:
     - id: unimplemented.lustrian-reavers.jungle-shadow.canopy-walker
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Canopy Walker
   effect: Jungle Shadow automatically passes all climbing , jumping and falling off ledges tests.
   source:
@@ -372,8 +381,7 @@ rules:
     - id: unimplemented.lustrian-reavers.trapmaster.deadeye
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: shooting.
+      reason: out-of-scope.shooting
   name: Deadeye
   effect: Trapmaster suffers no penalties for shooting at long range.
   source:
@@ -397,9 +405,7 @@ rules:
     - id: unimplemented.lustrian-reavers.trapmaster.traps
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Traps
   effect: >-
     The Trapmaster starts each game with 1 Trap and can buy up to 5 further of the following Traps
@@ -440,8 +446,7 @@ rules:
     - id: unimplemented.lustrian-reavers.prospects.promotion-only
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Promotion Only
   effect: >-
     Re-roll any Lad's Got Talent results on Henchmen Advancement table. When promoted, you can then
@@ -470,8 +475,7 @@ rules:
     - id: unimplemented.lustrian-reavers.band.rare-heroes
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Rare Heroes
   effect: >-
     During the lifetime of the warband, each named Hero type may only ever be bought once. A lost
@@ -498,9 +502,7 @@ rules:
     - id: compiler.promotions
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: replacing a fallen Hero, transferring recovered equipment and advancing a
-        Prospect require roster and campaign history.
+      reason: out-of-scope.campaign
   name: Promotions
   effect: >-
     When a Hero is lost, a new copy cannot be bought. Instead, a Prospect may be promoted into that
@@ -536,9 +538,7 @@ rules:
     - id: unimplemented.lustrian-reavers.band.hired-swords
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Hired Swords
   effect: >-
     The warband may hire only an Ogre Bodyguard, Dwarf Trollslayer, Tilean Marksman, or Big Game
@@ -565,8 +565,7 @@ rules:
     - id: unimplemented.lustrian-reavers.band.hero-required
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Hero Required
   effect: >-
     The warband must include at least one Hero. Any Hero in the warband may be chosen as the Leader
@@ -601,8 +600,6 @@ rules:
           - weapons
           - armour
   name: Equipment Restrictions
-  effect: >-
-    This model is an Animal and does not select weapons or armour from the warband equipment lists.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -610,12 +607,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      Este modelo es un Animal y no elige armas ni armaduras de las listas de equipo de la banda.
   applies_to:
     profile_ids:
     - barbary-monkey
+  rule_ref: shared-rule.animal-no-equipment
 - id: estalian-warhound--equipment-restrictions
   runtime:
     scope: 'YES'
@@ -632,8 +627,6 @@ rules:
           - weapons
           - armour
   name: Equipment Restrictions
-  effect: >-
-    This model is an Animal and does not select weapons or armour from the warband equipment lists.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -641,9 +634,7 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      Este modelo es un Animal y no elige armas ni armaduras de las listas de equipo de la banda.
   applies_to:
     profile_ids:
     - estalian-warhound
+  rule_ref: shared-rule.animal-no-equipment

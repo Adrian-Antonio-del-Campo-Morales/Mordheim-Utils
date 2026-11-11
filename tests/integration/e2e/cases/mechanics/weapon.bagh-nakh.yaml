@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/weapon.bagh-nakh
-# scaffold_fingerprint: 42b75f04fec9650b8dfb39beeef236af55e020955c8059d683c9814616786476
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clause carries five authored scenarios for the paired attack pool, the +1 Strength boundary and the declared one-point armour penalty. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -8,38 +7,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 5 scenarios cover the paired extra attack, the +1 Strength wound boundary and both faces of the declared armour-penetration point.
-# origin_id:
-#   mechanic/weapon.bagh-nakh
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   e80008d82872fca3195638e5914cb8d54ee8799bb804746da53d0b79b8ca9062
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   Paired weapon: +1 Attack, +1 Strength and an additional -1 armour-save modifier.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Bagh Nakh are a paired weapon granting +1 Attack and +1 Strength plus an additional -1 armour-save modifier. Closure: the pair supplies one additional attack, one point of Strength and one point of armour penetration.
-# effect_id:
-#   weapon.bagh-nakh
-# relation:
-#   equivalent
-# parameters:
-#   {"armour_penetration": 1, "attacks_bonus": 1, "paired": true, "strength_bonus": 1}
-# conditions:
-#   {"trigger": "attack"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   The compiled profile carries paired (the single additional-hand attack), strength_bonus 1 consumed by _attack_strength and armour_penetration 1 consumed by prepare_armour_context, so all three printed terms are delivered by the same operator. Surface reuse candidate: {"family":"W-weapon.bagh-nakh","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the printed local weapon mode and parameters with the active contract. Confirm hand use, effective Strength, save/critical/parry modifiers, natural-die trigger, temporary states and end conditions. Reuse the base only; retain extra properties and construction recipients.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+# AUTHORED: 5 scenarios cover the paired extra attack, the +1 Strength wound boundary and both faces of the declared armour-penetration point.
 
 # --- Authored scenarios ---
 # mechanic/weapon.bagh-nakh - paired, +1 Attack, +1 Strength, one point of
@@ -53,7 +24,6 @@
 
 - audit_id: mechanic/weapon.bagh-nakh
   id: bagh-nakh-grants-one-additional-attack
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.bagh-nakh
@@ -78,7 +48,6 @@
 
 - audit_id: mechanic/weapon.bagh-nakh
   id: bagh-nakh-wounds-at-the-boosted-strength
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.bagh-nakh
@@ -100,7 +69,6 @@
 
 - audit_id: mechanic/weapon.bagh-nakh
   id: bagh-nakh-does-not-wound-one-face-below
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.bagh-nakh
@@ -125,7 +93,6 @@
 
 - audit_id: mechanic/weapon.bagh-nakh
   id: bagh-nakh-save-holds-on-the-penalised-target
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.bagh-nakh
@@ -149,7 +116,6 @@
 
 - audit_id: mechanic/weapon.bagh-nakh
   id: bagh-nakh-save-fails-one-below-the-penalised-target
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.bagh-nakh

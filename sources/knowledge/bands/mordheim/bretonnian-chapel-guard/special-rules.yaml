@@ -33,12 +33,8 @@ rules:
     - id: unimplemented.bretonnian-chapel-guard.questing-knight.knight
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: cross-reference.
+      reason: out-of-scope.campaign
   name: Knight
-  effect: >-
-    The Questing Knight has the following rules from above apply to him; Chivalry, Lord’s Boon and
-    Virtue of Purity.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -46,13 +42,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/bretonnian-chapel-guard
   name_i18n:
     es: Caballero
-  effect_i18n:
-    es: >-
-      Al Caballero Andante le aplican las siguientes reglas anteriores: Caballerosidad, Don del
-      Señor y Virtud de Pureza.
   applies_to:
     profile_ids:
     - questing-knight
+  rule_ref: shared-rule.chapel-guard-knight
 - id: questing-knight--ride
   runtime:
     scope: LATER
@@ -62,8 +55,10 @@ rules:
     - id: unimplemented.bretonnian-chapel-guard.questing-knight.ride
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: mounts.
+      reason: deferred.mounts
+      clauses:
+      - id: mounts
+        scope: 'NO'
   name: Ride
   effect: A Questing Knight starts with the skill 'Ride Warhorse'.
   source:
@@ -114,8 +109,7 @@ rules:
     - id: unimplemented.bretonnian-chapel-guard.damsel.prayercaster
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic.
+      reason: out-of-scope.magic
   name: Prayercaster
   effect: >-
     Prayercaster. The Damsel starts with one prayer from the “Lady's Prayers” list, and can learn
@@ -143,12 +137,8 @@ rules:
     - id: unimplemented.bretonnian-chapel-guard.knights-errant.knight
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: cross-reference.
+      reason: out-of-scope.campaign
   name: Knight
-  effect: >-
-    The Knight Errant has the following rules from above apply to him; Chivalry, Lord’s Boon and
-    Virtue of Purity.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -156,13 +146,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/bretonnian-chapel-guard
   name_i18n:
     es: Caballero
-  effect_i18n:
-    es: >-
-      Al Caballero Novel le aplican las siguientes reglas anteriores: Caballerosidad, Don del Señor
-      y Virtud de Pureza.
   applies_to:
     profile_ids:
     - knights-errant
+  rule_ref: shared-rule.chapel-guard-knight
 - id: knights-errant--vain
   runtime:
     scope: 'YES'
@@ -202,9 +189,14 @@ rules:
     - id: knights-errant--impetuous.producer
       scope: 'NO'
       binding: null
-      reason: >-
-        Movement, compelled target selection and range are excluded. Supply
-        condition.impetuous-charge for its individual charge psychology consequence.
+      reason: out-of-scope.movement
+      clauses:
+      - id: impetuous-movement
+        scope: 'YES'
+      - id: impetuous-avoid-compulsion
+        scope: 'YES'
+      - id: impetuous-charge-psychology
+        scope: 'YES'
   name: Impetuous
   effect: >-
     During each Movement Phase, after declaring charges, a Knight Errant that is not in combat and
@@ -248,6 +240,13 @@ rules:
       binding:
         kind: compiler
         id: compiler.knighthood
+      clauses:
+      - id: whole--scope--promotion-procedure
+        scope: 'NO'
+      - id: whole--scope--squire-construction
+        scope: 'YES'
+      - id: whole--scope--knight-errant-construction
+        scope: 'YES'
   name: Knighthood
   effect: >-
     When a Squire rolls “The Lad's Got Talent”, you may choose one of two options when promoting him
@@ -290,8 +289,10 @@ rules:
     - id: unimplemented.bretonnian-chapel-guard.battle-pilgrims.low-caste
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: deferred.psychology
+      clauses:
+      - id: low-caste
+        scope: 'NO'
   name: Low Caste
   effect: >-
     Battle Pilgrims are peasants, and while they are not stupid, there is a glass ceiling to what
@@ -380,6 +381,11 @@ rules:
       binding:
         kind: compiler
         id: compiler.holy-relic-frenzy
+      clauses:
+      - id: holy-relic-group-split
+        scope: 'NO'
+      - id: holy-relic-frenzy
+        scope: 'YES'
   name: Holy Relics
   effect: >-
     Battle Pilgrims may be given a Holy Relic, regardless of the fact that henchman are not normally
@@ -416,8 +422,10 @@ rules:
     - id: unimplemented.bretonnian-chapel-guard.bowmen.low-caste
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: deferred.psychology
+      clauses:
+      - id: low-caste
+        scope: 'NO'
   name: Low Caste
   effect: >-
     Bowmen are peasants, and while they are not stupid, there is a glass ceiling to what they can
@@ -476,8 +484,10 @@ rules:
     - id: unimplemented.bretonnian-chapel-guard.band.lords-boon
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: mounts.
+      reason: deferred.mounts
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Lord’s Boon
   effect: >-
     When a Knight is recruited, one Warhorse, Light Armour, or Heavy Armour may be bought for that
@@ -507,8 +517,12 @@ rules:
     - id: unimplemented.bretonnian-chapel-guard.band.virtue-of-purity
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: deferred.psychology
+      clauses:
+      - id: no-panic-and-all-alone--scope--no-panic
+        scope: 'NO'
+      - id: no-panic-and-all-alone--scope--all-alone
+        scope: 'NO'
   name: Virtue of Purity
   effect: >-
     A Knight may never voluntarily break from combat unless knocked down. The Knight is immune to
@@ -661,6 +675,13 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.untiring
+      clauses:
+      - id: save-floor
+        scope: 'YES'
+      - id: non-magical-immunity
+        scope: 'YES'
+      - id: movement-penalty
+        scope: 'NO'
   name: Untiring
   effect: >-
     The Knight ignores movement penalties for wearing armour while on foot. Strength, axes, critical
@@ -699,6 +720,13 @@ rules:
         parameters:
           forbids:
           - defence.holy-relic
+      clauses:
+      - id: list-access
+        scope: 'YES'
+      - id: holy-relic
+        scope: 'YES'
+      - id: mounts
+        scope: 'NO'
   name: Equipment Restrictions
   effect: >-
     May use weapons and armour from the Pilgrims and Bowmen Equipment Lists. May not take the Holy

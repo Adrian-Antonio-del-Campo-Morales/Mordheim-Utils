@@ -39,8 +39,7 @@ rules:
     - id: unimplemented.beastmen-raiders.beastmen-shaman.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic.
+      reason: out-of-scope.magic
   name: Wizard
   effect: A Beastmen Shaman is a Wizard and may use Chaos Rituals .
   source:
@@ -99,8 +98,7 @@ rules:
     - id: unimplemented.beastmen-raiders.centigors.woodland-dwelling
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Woodland Dwelling
   effect: >-
     Centigors are creatures of the deep, dark forests. They suffer no movement penalties for moving
@@ -158,8 +156,7 @@ rules:
     - id: unimplemented.beastmen-raiders.ungor.lowest-of-the-low
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Lowest of the Low
   effect: >-
     Ungor are on the lowest rung of Beastmen society and regardless of how much Experience they
@@ -214,8 +211,7 @@ rules:
     - id: unimplemented.beastmen-raiders.warhounds-of-chaos.animals
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Animals
   effect: Chaos Hounds are animals and never gain Experience.
   source:
@@ -264,8 +260,7 @@ rules:
     - id: unimplemented.beastmen-raiders.minotaur.bloodgreed
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the resolved duel: future Frenzy after every opponent is Out of Action.
+      reason: out-of-scope.group
   name: Bloodgreed
   effect: >-
     If a Minotaur puts all of its enemies out of action in hand-to-hand combat, it becomes frenzied
@@ -293,8 +288,7 @@ rules:
     - id: unimplemented.beastmen-raiders.minotaur.animal
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Animal
   effect: >-
     A Minotaur is far more bestial than its Beastmen brethren and, although it may gain Experience,
@@ -322,8 +316,7 @@ rules:
     - id: unimplemented.beastmen-raiders.minotaur.large-target
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: shooting.
+      reason: out-of-scope.shooting
   name: Large Target
   effect: Minotaurs are Large Targets as defined in the shooting rules .
   source:
@@ -347,8 +340,7 @@ rules:
     - id: unimplemented.beastmen-raiders.band.animals
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Animals
   effect: >-
     Animals: Beastmen are fearsome creatures of Chaos that do not interact with other races other
@@ -382,6 +374,13 @@ rules:
         id: trait.natural-armour-save
         parameters:
           value: 6
+      clauses:
+      - id: six-plus-save
+        scope: 'YES'
+      - id: combines-with-armour
+        scope: 'YES'
+      - id: stacks-per-hide
+        scope: 'YES'
     - id: trait.natural-armour-stacks
       scope: 'YES'
       binding:
@@ -419,6 +418,9 @@ rules:
       binding:
         kind: compiler
         id: special-rule.band--beastmen-special-skills-mutant
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Mutant
   effect: The Beastman may buy one mutation. See Mutants section on special rules.
   source:
@@ -446,12 +448,15 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.fear-immunity
+      clauses:
+      - id: fear-immunity
+        scope: 'YES'
+      - id: all-alone
+        scope: 'NO'
     - id: excluded.beastmen-raiders.all-alone
       scope: 'NO'
       binding: null
-      reason: >-
-        All Alone tests require multiple fighters and are outside Combat Lab 1v1 duels. The printed
-        individual Fear clause is implemented separately.
+      reason: out-of-scope.group
   name: Fearless
   effect: Immune to fear and All Alone tests.
   source:
@@ -504,9 +509,7 @@ rules:
     - id: unimplemented.beastmen-raiders.band.beastmen-special-skills-bellowing-roar
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Bellowing Roar
   effect: Only the Beastmen Chief may have this skill. He may re-roll any failed Rout tests.
   source:

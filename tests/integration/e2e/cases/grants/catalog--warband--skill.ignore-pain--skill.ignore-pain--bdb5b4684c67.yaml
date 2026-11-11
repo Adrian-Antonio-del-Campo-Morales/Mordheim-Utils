@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/warband/skill.ignore-pain/skill.ignore-pain
-# scaffold_fingerprint: 9a5df5261ea83840dddf680f34227390a4ba7e57db04ede8db4e09ad5e83b0c4
 # authoring_status: AUTHORED
 # authoring_progress: the admitted stunned-becomes-knocked-down clause carries 1 authored
 #   scenario: the printed Hero declares the warband skill through skill_ids and an injury die
@@ -11,38 +10,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: stunned-becomes-knocked-down (scope: YES)
-# AUTHORED[stunned-becomes-knocked-down]: 1 scenario evidences the conversion (see the closing note above).
-# origin_id:
-#   rule/catalog/warband/skill.ignore-pain/unclassified
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/skills/warband.yaml
-# source_fingerprint:
-#   4bbc1d67ee20b6a9c308d14336f6d6d29dfcae0b2f5511273db128d1e776eac9
-# source_sha256_at_generation:
-#   cbce88f8e195c72b1767c88af362131455b99435c0ffb53e58b55b7306161198
-# Printed rule text:
-#   Requires the Resilient Strength skill. The Hero treats a Stunned result on the Injury chart as Knocked Down.
-# Semantic contract (check analysis_status before treating as accepted):
-#   The Hero treats a Stunned result on the Injury chart as Knocked Down; observable: the bearer is never left Stunned by a wound.
-# effect_id:
-#   skill.ignore-pain
-# relation:
-#   equivalent
-# parameters:
-#   {"stunned_becomes":"knocked-down"}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   The printed prerequisite (Resilient Strength) is a skill-access gate, not a duel-time condition; the consumed flag is the shared ignore-pain. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"stunned-becomes-knocked-down","audit_group":"EQ-skill.ignore-pain","verified_facet":"skill.ignore-pain","relationship":"shared_facet","boundary":"Share the post-chart Stunned-to-Knocked-Down transformation. Preserve recipients and printed Resilient prerequisites; do not add that prerequisite to innate No Pain. Squishy expressly disables No Pain. A conversion is not a helmet roll or ordinary Knocked Down for Jump Up.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+# AUTHORED: 1 scenario evidences the conversion (see the closing note above).
 
 # --- Authored scenarios ---
 # The printed bearer is the Hero that holds the warband skill: it is declared with
@@ -52,8 +23,6 @@
 # injury die of 3 is Stunned, converted to Knocked Down by the skill. No engine output consulted.
 - audit_id: rule/catalog/warband/skill.ignore-pain/skill.ignore-pain
   id: a-stunned-result-becomes-knocked-down
-  covers:
-  - stunned-becomes-knocked-down
   fighters:
     first:
       main_weapon_id: weapon.mace

@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/sons-of-hashut/band--hard-head/trait.concussion-immune
-# scaffold_fingerprint: 566a657fcb82260c6c35d1f85469e149b621ea7bb891c02408a5b231d17e8ac0
 # authoring_status: AUTHORED
 # authoring_progress: the admitted ignore-concussion clause carries three authored scenarios derived from
 # the printed sentence and the printed band record.  The injury chart turns a total of two into Knocked
@@ -15,42 +14,14 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: ignore-concussion (scope: YES)
-# AUTHORED[ignore-concussion]: 3 scenarios evidence the discrimination the immunity makes: a mace injury
+# AUTHORED: 3 scenarios evidence the discrimination the immunity makes: a mace injury
 #   total of two leaves this bearer Knocked Down while the same total on an unmarked bearer is Stunned, and
 #   a total of three still Stuns the bearer, so the immunity suppresses club/mace rules that would make the
 #   bearer easier to Stun only.  The printed recipients are the Chaos Dwarfs and Bull Centaurs and the
 #   bearer is the printed Chaos Dwarf warrior.  REVIEWED still requires manual semantic review.
-# origin_id:
-#   rule/mordheim/sons-of-hashut/band--hard-head/trait.concussion-immune
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/sons-of-hashut/special-rules.yaml
-# source_fingerprint:
-#   3c125cb7ab0823174615def03ca7da56b3068bc7fcb17e008e18814b92d12091
-# source_sha256_at_generation:
-#   8a3ed07934e595765c52e8cdfb97bb5b56e12bbc0714eae6fca1db6dc2af84dc
-# Printed rule text:
-#   Chaos Dwarfs and Bull Centaurs ignore the special rules of clubs, maces and similar weapons that would make them easier to Stun.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Chaos Dwarfs and Bull Centaurs ignore the special rules of clubs, maces and similar weapons that make them easier to Stun; observable: a concussion attack does not convert a 2-4 total into Stunned.
-# effect_id:
-#   trait.concussion-immune
-# relation:
-#   equivalent
-# parameters:
-#   {"immune_to":"concussion"}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#    Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"ignore-concussion","audit_group":"EQ-trait.concussion-immune","verified_facet":"trait.concussion-immune","relationship":"shared_facet","boundary":"Ignore the club/mace Concussion conversion only. Do not turn this into immunity to all Stunned results, Thick Skull, or immunity to Shock Rod.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
 
 # --- Authored scenarios ---
 # Derived from the printed rule and the printed band record; no engine output was consulted.
@@ -59,7 +30,6 @@
 
 - audit_id: rule/mordheim/sons-of-hashut/band--hard-head/trait.concussion-immune
   id: the-mace-no-longer-converts-a-two-into-a-stun
-  covers: [ignore-concussion]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -78,7 +48,6 @@
 
 - audit_id: rule/mordheim/sons-of-hashut/band--hard-head/trait.concussion-immune
   id: a-genuine-stunned-total-still-stuns-the-chaos-dwarf
-  covers: [ignore-concussion]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -97,7 +66,6 @@
 
 - audit_id: rule/mordheim/sons-of-hashut/band--hard-head/trait.concussion-immune
   id: the-same-mace-still-converts-a-two-on-an-unmarked-bearer
-  covers: [ignore-concussion]
   fighters:
     first:
       main_weapon_id: weapon.mace

@@ -10,9 +10,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.band.no-skin-no-service
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: No Skin, No Service
   effect: Ethereal models may not enter settlements unless otherwise specified.
   source:
@@ -35,9 +33,10 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.band.requilary
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: deferred.other
+      clauses:
+      - id: requilary
+        scope: 'NO'
   name: Requilary
   effect: >-
     All Ethereal members start the battle inside the Requilary. At the beginning of each turn make a
@@ -75,9 +74,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.band.ethereal
       scope: 'NO'
       binding: null
-      reason: >-
-        Individual save is implemented through each explicit Ethereal profile grant; terrain,
-        missiles and campaign prices are outside 1v1 scope.
+      reason: out-of-scope.shooting
   name: Ethereal
   effect: >-
     Spirits have a 4+ unmodifiable save against all attacks, taken after the To Hit roll. It may not
@@ -120,8 +117,14 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.ethereal-hit-save
+      clauses:
+      - id: ethereal-save
+        scope: 'YES'
+      - id: missile-passthrough
+        scope: 'NO'
+      - id: terrain-and-items
+        scope: 'NO'
   name: Ethereal
-  effect: See the band Ethereal rule.
   source:
     manual: broheim.net
     printed_page: 4
@@ -129,11 +132,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
   name_i18n:
     es: Etéreo
-  effect_i18n:
-    es: Ver la regla de banda Etéreo.
   applies_to:
     profile_ids:
     - cairn-wraith
+  rule_ref: shared-rule.ethereal-reference
 - id: cairn-wraith--causes-fear
   runtime:
     scope: 'YES'
@@ -168,9 +170,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.cairn-wraith.may-not-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: May Not Run
   effect: The Cairn Wraith may not run.
   source:
@@ -271,8 +271,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.cairn-wraith.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Wizard
   effect: >-
     The Cairn Wraith was a necromancer in life and starts with one spell from the Necromancy list.
@@ -300,8 +299,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.cairn-wraith.warrior-wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Warrior Wizard
   effect: The Cairn Wraith is able to wear armour and cast spells without penalty.
   source:
@@ -325,9 +323,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.cairn-wraith.death-was-merely-the-beginning
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Death Was Merely the Beginning
   effect: >-
     Cairn Wraiths cannot die, as they are already dead. Any time the Cairn Wraith rolls 11-15 Dead
@@ -389,9 +385,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.corpse-master.gofer
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Gofer
   effect: >-
     As the only "Human" member of the warband, the Corpse Master may visit D3+1 places within
@@ -419,9 +413,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.corpse-master.guardian-of-the-requilary
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Guardian of the Requilary
   effect: >-
     The Corpse Master takes his roll very seriously and will never voluntarily move more than 6
@@ -452,9 +444,7 @@ rules:
     - id: wider-radius-and-other-units
       scope: 'NO'
       binding: null
-      reason: >-
-        The printed 6" radius reaches every enemy model on the table; the duel supplies only its two
-        participants, so the effect on any other unit stays outside.
+      reason: out-of-scope.group
   name: Ghostly Howl
   effect: >-
     Enemies within 6 inches of the Tomb Banshee suffer -D6 to their Leadership when taking fear
@@ -485,12 +475,7 @@ rules:
     - id: violent-entry-summoning-producer
       scope: 'NO'
       binding: null
-      reason: >-
-        Releasing a spirit from the Requilary - casting, deployment and the miniatures involved - is
-        the excluded summoning subsystem, which adds nothing a resolved duel consumes. Supply
-        condition.summoned-this-turn instead: the printed +1 to hit and +1 Strength then follow from
-        the bearer's own charge on that turn, for its Malignant Spirits recipient only, and are never
-        an automatic grant of this rule.
+      reason: out-of-scope.magic
   name: Violent Entry
   effect: >-
     Malignant Spirits contained within the Requilary thirst for the moment they are released into
@@ -519,9 +504,10 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.revenants.spectral-ascension
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: deferred.other
+      clauses:
+      - id: ethereal-on-promotion
+        scope: 'NO'
   name: Spectral Ascension
   effect: >-
     Once a Revenant rolls Lad's Got Talent, they gain the Ethereal rule once they become a hero.
@@ -611,9 +597,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.poltergeists.silent-move
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Silent Move
   effect: Poltergeists always remain hidden unless they charge an enemy warrior.
   source:
@@ -637,9 +621,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.poltergeists.ignored
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Ignored
   effect: Poltergeists that are taken out of action do not count towards rout tests.
   source:
@@ -663,9 +645,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.mourngul.nightmare-birth
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Nightmare Birth
   effect: >-
     A huge amount of death is required to pull a Mourngul into the physical realm: it may only be
@@ -751,8 +731,14 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.ethereal-hit-save
+      clauses:
+      - id: ethereal-save
+        scope: 'YES'
+      - id: missile-passthrough
+        scope: 'NO'
+      - id: terrain-and-items
+        scope: 'NO'
   name: Ethereal
-  effect: See the band Ethereal rule.
   source:
     manual: broheim.net
     printed_page: 4
@@ -760,11 +746,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
   name_i18n:
     es: Etéreo
-  effect_i18n:
-    es: Ver la regla de banda Etéreo.
   applies_to:
     profile_ids:
     - tomb-banshee
+  rule_ref: shared-rule.ethereal-reference
 - id: tomb-banshee--causes-fear
   runtime:
     scope: 'YES'
@@ -799,9 +784,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.tomb-banshee.may-not-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: May Not Run
   effect: The Tomb Banshee may not run.
   source:
@@ -902,8 +885,14 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.ethereal-hit-save
+      clauses:
+      - id: ethereal-save
+        scope: 'YES'
+      - id: missile-passthrough
+        scope: 'NO'
+      - id: terrain-and-items
+        scope: 'NO'
   name: Ethereal
-  effect: See the band Ethereal rule.
   source:
     manual: broheim.net
     printed_page: 4
@@ -911,11 +900,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
   name_i18n:
     es: Etéreo
-  effect_i18n:
-    es: Ver la regla de banda Etéreo.
   applies_to:
     profile_ids:
     - malignant-spirits
+  rule_ref: shared-rule.ethereal-reference
 - id: malignant-spirits--causes-fear
   runtime:
     scope: 'YES'
@@ -950,9 +938,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.malignant-spirits.may-not-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: May Not Run
   effect: Malignant Spirits may not run.
   source:
@@ -1076,9 +1062,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.revenants.may-not-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: May Not Run
   effect: Revenants may not run.
   source:
@@ -1155,7 +1139,6 @@ rules:
         kind: mechanic
         id: skill.ignore-pain
   name: No Pain
-  effect: Revenants treat stunned results as knocked down.
   source:
     manual: broheim.net
     printed_page: 5
@@ -1163,11 +1146,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
   name_i18n:
     es: Sin Dolor
-  effect_i18n:
-    es: Los Espectros tratan los resultados aturdido como derribado.
   applies_to:
     profile_ids:
     - revenants
+  rule_ref: shared-rule.no-pain
 - id: spirit-hosts--ethereal
   runtime:
     scope: 'YES'
@@ -1179,8 +1161,14 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.ethereal-hit-save
+      clauses:
+      - id: ethereal-save
+        scope: 'YES'
+      - id: missile-passthrough
+        scope: 'NO'
+      - id: terrain-and-items
+        scope: 'NO'
   name: Ethereal
-  effect: See the band Ethereal rule.
   source:
     manual: broheim.net
     printed_page: 5
@@ -1188,11 +1176,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
   name_i18n:
     es: Etéreo
-  effect_i18n:
-    es: Ver la regla de banda Etéreo.
   applies_to:
     profile_ids:
     - spirit-hosts
+  rule_ref: shared-rule.ethereal-reference
 - id: spirit-hosts--large
   runtime:
     scope: 'NO'
@@ -1202,8 +1189,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.spirit-hosts.large
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Large
   effect: Spirit Hosts are Large Targets as defined in the shooting rules.
   source:
@@ -1252,9 +1238,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.spirit-hosts.may-not-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: May Not Run
   effect: Spirit Hosts may not run.
   source:
@@ -1353,8 +1337,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.spirit-hosts.no-brain
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: No Brain
   effect: Spirit Hosts never gain experience.
   source:
@@ -1380,8 +1363,14 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.ethereal-hit-save
+      clauses:
+      - id: ethereal-save
+        scope: 'YES'
+      - id: missile-passthrough
+        scope: 'NO'
+      - id: terrain-and-items
+        scope: 'NO'
   name: Ethereal
-  effect: See the band Ethereal rule.
   source:
     manual: broheim.net
     printed_page: 5
@@ -1389,11 +1378,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
   name_i18n:
     es: Etéreo
-  effect_i18n:
-    es: Ver la regla de banda Etéreo.
   applies_to:
     profile_ids:
     - poltergeists
+  rule_ref: shared-rule.ethereal-reference
 - id: poltergeists--causes-fear
   runtime:
     scope: 'YES'
@@ -1428,9 +1416,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.poltergeists.may-not-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: May Not Run
   effect: Poltergeists may not run.
   source:
@@ -1507,7 +1493,6 @@ rules:
         kind: mechanic
         id: skill.ignore-pain
   name: No Pain
-  effect: Poltergeists treat stunned results as knocked down.
   source:
     manual: broheim.net
     printed_page: 5
@@ -1515,11 +1500,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
   name_i18n:
     es: Sin Dolor
-  effect_i18n:
-    es: Los Poltergeists tratan los resultados aturdido como derribado.
   applies_to:
     profile_ids:
     - poltergeists
+  rule_ref: shared-rule.no-pain
 - id: poltergeists--no-brain
   runtime:
     scope: 'NO'
@@ -1529,8 +1513,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.poltergeists.no-brain
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: No Brain
   effect: Poltergeists never gain experience.
   source:
@@ -1556,8 +1539,14 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.ethereal-hit-save
+      clauses:
+      - id: ethereal-save
+        scope: 'YES'
+      - id: missile-passthrough
+        scope: 'NO'
+      - id: terrain-and-items
+        scope: 'NO'
   name: Ethereal
-  effect: See the band Ethereal rule.
   source:
     manual: broheim.net
     printed_page: 5
@@ -1565,11 +1554,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
   name_i18n:
     es: Etéreo
-  effect_i18n:
-    es: Ver la regla de banda Etéreo.
   applies_to:
     profile_ids:
     - mourngul
+  rule_ref: shared-rule.ethereal-reference
 - id: mourngul--large
   runtime:
     scope: 'NO'
@@ -1579,10 +1567,8 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.mourngul.large
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Large
-  effect: The Mourngul is a Large Target as defined in the shooting rules.
   source:
     manual: broheim.net
     printed_page: 5
@@ -1590,11 +1576,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
   name_i18n:
     es: Grande
-  effect_i18n:
-    es: El Mourngul es un Objetivo Grande según se define en las reglas de disparo.
   applies_to:
     profile_ids:
     - mourngul
+  rule_ref: shared-rule.large-target
 - id: mourngul--causes-fear
   runtime:
     scope: 'YES'
@@ -1629,9 +1614,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.mourngul.may-not-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: May Not Run
   effect: The Mourngul may not run.
   source:
@@ -1730,8 +1713,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.mourngul.no-brain
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: No Brain
   effect: The Mourngul never gains experience.
   source:
@@ -1755,8 +1737,10 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.band.characteristic-increase
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: characteristic-increase caps on advancement.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Characteristic Increase (Wraith and Spirit Maximums)
   effect: >-
     Wraith maximums: M 5, WS 6, BS 4, S 4, T 3, W 5, I 5, A 3, Ld 10. Spirit maximums: M 5, WS 5, BS
@@ -1786,9 +1770,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.tomb-banshee.siren-song
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: charming an enemy in close combat is a combat-phase mechanic. Tomb Banshee
-        only.
+      reason: out-of-scope.non-duel
   name: Siren Song
   effect: >-
     The terrifying howl of the Banshee takes on a sweet harmonic value in the ears of some men, in
@@ -1824,9 +1806,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.corpse-master.conduit-of-death
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: spending sacrificed corpses to perform a Ritual of the Requilary is a
-        magic-subsystem interaction.
+      reason: pending-implementation
   name: Conduit of Death
   effect: >-
     Part of the Corpse Master's Duties is feeding the Requilary and releasing the stored energies of
@@ -1861,8 +1841,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.poltergeists.cause-ruckus
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: a shooting attack with a fixed profile is a shooting-phase mechanic.
+      reason: out-of-scope.shooting
   name: Cause Ruckus
   effect: >-
     Poltergeists may make a shooting attack with a Range of 6" with no penalties whatsoever, as they
@@ -1893,8 +1872,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.band.wight-walk
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: charging through walls is a movement-phase mechanic. Ethereal models only.
+      reason: out-of-scope.movement
   name: Wight Walk
   effect: >-
     The Ghost has mastered control of their spectral form. They are now able to use their ethereal

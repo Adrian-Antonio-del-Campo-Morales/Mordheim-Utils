@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/warband/skill.weapons-of-the-north/skill.weapons-of-the-north
-# scaffold_fingerprint: 5a4abe59b6bf4c28c31dd83347531cd3edef2a02ba1f46651f06da9373bbdd26
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clause carries authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -8,39 +7,11 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 4 scenarios cover the axe reroll in two consecutive rounds, the
+# AUTHORED: 4 scenarios cover the axe reroll in two consecutive rounds, the
 #   two-handed weapon, the dwarf axe and the refusal outside the scope.
-# origin_id:
-#   rule/catalog/warband/skill.weapons-of-the-north/unclassified
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/skills/warband.yaml
-# source_fingerprint:
-#   5860ea13cbeffd73d74499a99aa80202a72accbe47d4560f95b8d7b982921d91
-# source_sha256_at_generation:
-#   cbce88f8e195c72b1767c88af362131455b99435c0ffb53e58b55b7306161198
-# Printed rule text:
-#   Re-rolls failed hit rolls with an axe or double-handed weapon.
-# Semantic contract (check analysis_status before treating as accepted):
-#   The fighter re-rolls failed hit rolls with an axe or double-handed weapon. Closure: missed hits with an axe, dwarf axe or two-handed weapon are re-rolled in every round.
-# effect_id:
-#   skill.weapons-of-the-north
-# relation:
-#   equivalent
-# parameters:
-#   {"reroll_hits": "failed hits", "weapon_scope": ["weapon.axe", "weapon.dwarf-axe", "weapon.double-handed-weapon"]}
-# conditions:
-#   {"source": "canonical warband skill list"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Canonical definition of the shared weapons-of-the-north operator, whose reroll carries no round or charge condition. The printed text repeats the canonical clause of the shared operator without adding a term, so the catalog origin creates no second runtime contribution. Surface reuse candidate: {"family":"skill.weapons-of-the-north","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare actual weapon identity, charge/first-round condition, natural versus modified Strength, failed versus all-roll reroll and critical eligibility. Keep weapon-independent restrictions and special attacks outside an unsupported shared benefit.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
 # --- Authored scenarios ---
 # The catalog warband skill list prints the canonical weapons-of-the-north wording,
@@ -48,7 +19,6 @@
 # again in a second round as well; nothing here charges either fighter.
 - audit_id: rule/catalog/warband/skill.weapons-of-the-north/skill.weapons-of-the-north
   id: an-axe-miss-is-rerolled-in-every-round
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.axe
@@ -76,7 +46,6 @@
 # strike-last priority, so the mace opponent resolves first.
 - audit_id: rule/catalog/warband/skill.weapons-of-the-north/skill.weapons-of-the-north
   id: a-two-handed-weapon-miss-is-rerolled
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.double-handed-weapon
@@ -100,7 +69,6 @@
 # depend on the item's damage profile.
 - audit_id: rule/catalog/warband/skill.weapons-of-the-north/skill.weapons-of-the-north
   id: a-dwarf-axe-miss-is-rerolled
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.dwarf-axe
@@ -122,7 +90,6 @@
 # A weapon outside the printed axe / two-handed scope keeps its failed hit.
 - audit_id: rule/catalog/warband/skill.weapons-of-the-north/skill.weapons-of-the-north
   id: an-out-of-scope-weapon-miss-is-not-rerolled
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace

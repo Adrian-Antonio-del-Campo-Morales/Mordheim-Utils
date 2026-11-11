@@ -35,8 +35,10 @@ rules:
     - id: unimplemented.battle-monks-of-cathay.emissary.ride-horse
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: mounts.
+      reason: deferred.mounts
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Ride Horse
   effect: The Emissary is trained in riding Horses.
   source:
@@ -60,8 +62,10 @@ rules:
     - id: unimplemented.battle-monks-of-cathay.emissary.decree
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: deferred.psychology
+      clauses:
+      - id: decree
+        scope: 'NO'
   name: Decree
   effect: >-
     When the Emissary dies, a new one must be hired as soon as possible. Until you have done so, no
@@ -94,8 +98,6 @@ rules:
         kind: mechanic
         id: skill.unarmed-fighting
   name: Unarmed Fighting
-  effect: >-
-    Monks suffer no penalties whatsoever for fighting unarmed and receive +1 Attack when doing so.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -103,12 +105,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
   name_i18n:
     es: Combate sin Armas
-  effect_i18n:
-    es: >-
-      Los monjes no sufren penalización alguna por luchar sin armas y reciben +1 Ataque al hacerlo.
   applies_to:
     profile_ids:
     - dragon-monks
+  rule_ref: shared-rule.unarmed-fighting
 - id: dragon-monks--art-of-silent-death
   runtime:
     scope: 'YES'
@@ -121,11 +121,6 @@ rules:
         kind: mechanic
         id: skill.unarmed-critical-strikes
   name: Art of Silent Death
-  effect: >-
-    Dragon Monks have become masters of the Cathayan art of open-hand fighting. In hand-to-hand
-    combat, if fighting unarmed, they will cause a critical hit on a roll 'to wound' of 5-6 instead
-    of a 6. If the Dragon Monk wields a quarter staff, only the unarmed attacks will cause a
-    critical hit on 5+.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -133,15 +128,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
   name_i18n:
     es: Arte de la Muerte Silenciosa
-  effect_i18n:
-    es: >-
-      Los Monjes Dragón se han convertido en maestros del arte cathayano de la lucha a mano abierta.
-      En el combate cuerpo a cuerpo, si luchan sin armas, causarán un impacto crítico con una tirada
-      de herir de 5-6 en lugar de un 6. Si el Monje Dragón empuña un bastón, solo los ataques sin
-      armas causarán un impacto crítico con un 5+.
   applies_to:
     profile_ids:
     - dragon-monks
+  rule_ref: shared-rule.dragon-monk-art-of-silent-death
 - id: warrior-monks--unarmed-fighting
   runtime:
     scope: 'YES'
@@ -154,8 +144,6 @@ rules:
         kind: mechanic
         id: skill.unarmed-fighting
   name: Unarmed Fighting
-  effect: >-
-    Monks suffer no penalties whatsoever for fighting unarmed and receive +1 Attack when doing so.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -163,12 +151,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
   name_i18n:
     es: Combate sin Armas
-  effect_i18n:
-    es: >-
-      Los monjes no sufren penalización alguna por luchar sin armas y reciben +1 Ataque al hacerlo.
   applies_to:
     profile_ids:
     - warrior-monks
+  rule_ref: shared-rule.unarmed-fighting
 - id: raging-peasants--unarmed
   runtime:
     scope: 'YES'
@@ -205,8 +191,7 @@ rules:
     - id: unimplemented.battle-monks-of-cathay.raging-peasants.simple-folk
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Simple Folk
   effect: Peasants never gain Experience.
   source:
@@ -235,8 +220,6 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.mob-leadership
-    # The second printed sentence, no leader benefit, is the shared
-    # own-leadership condition the same consumer already honours.
     - id: mechanic.own-leadership
       scope: 'YES'
       binding:
@@ -245,10 +228,7 @@ rules:
     - id: raging-peasants--mob.ally-count-producer
       scope: 'NO'
       binding: null
-      reason: >-
-        The count of other allied Peasant models within three inches is the excluded producer: the
-        caller supplies it as the admitted mob_allies fact and the duel neither simulates the
-        surrounding group nor measures table positions.
+      reason: out-of-scope.group
   name: Mob
   effect: >-
     Peasants become threatening in large numbers. A Peasant gets +1 Ld for each other allied Peasant
@@ -276,8 +256,10 @@ rules:
     - id: unimplemented.battle-monks-of-cathay.raging-peasants.ignored
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: deferred.psychology
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Ignored
   effect: >-
     Peasants that are out of action do not count toward the number of out-of-action models for the
@@ -391,8 +373,7 @@ rules:
     - id: unimplemented.battle-monks-of-cathay.band.outsiders
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Outsiders
   effect: >-
     The Battle Monks warband may never hire any Hired Sword or Dramatis Personae unless that entry
@@ -419,9 +400,7 @@ rules:
     - id: unimplemented.battle-monks-of-cathay.band.human-characteristic-maximum
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Human Characteristic Maximum
   effect: >-
     Cathayans are humans and therefore use the maximum characteristic profile for humans
@@ -452,6 +431,11 @@ rules:
         id: profile.skill-access
         parameters:
           category: special
+      clauses:
+      - id: whole
+        scope: 'YES'
+      - id: emissary-limit
+        scope: 'YES'
   name: Battle Monks Special Skills
   effect: >-
     Battle Monks of Cathay may choose to use the following skill list instead of the standard skill
@@ -514,8 +498,7 @@ rules:
     - id: unimplemented.battle-monks-of-cathay.band.battle-monks-special-skills-lightning-speed
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Lightning Speed
   effect: >-
     The monk may triple his Movement whilst running or charging and may run even when there are
@@ -547,10 +530,7 @@ rules:
     - id: unimplemented.battle-monks-of-cathay.band.battle-monks-special-skills-leap-of-faith
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: voluntary escape/withdrawal ends the duel without resolving it.
-        Associated movement, interception, re-engagement and campaign injury clauses
-        are also outside the 1v1 combat scope (user ruling 2026-10-04).
+      reason: out-of-scope.movement
   name: Leap of Faith
   effect: >-
     The Hero cannot be intercepted whilst charging. He may escape from combat (as described on p.
@@ -584,8 +564,7 @@ rules:
     - id: unimplemented.battle-monks-of-cathay.band.battle-monks-special-skills-human-shield
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: multiple combat.
+      reason: out-of-scope.group
   name: Human Shield
   effect: >-
     If two or more models are engaged in close combat with the monk, he may choose to grab one to
@@ -626,8 +605,10 @@ rules:
     - id: unimplemented.battle-monks-of-cathay.band.battle-monks-special-skills-warmonger
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: deferred.psychology
+      clauses:
+      - id: warmonger
+        scope: 'NO'
   name: Warmonger
   effect: >-
     The Emissary may make an Ld test before the battle. If the test is successful, D3+1 Raging

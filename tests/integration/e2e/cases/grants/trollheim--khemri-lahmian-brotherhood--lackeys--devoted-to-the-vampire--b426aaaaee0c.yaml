@@ -1,0 +1,212 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/khemri-lahmian-brotherhood/lackeys--devoted-to-the-vampire/mechanic.devoted-to-the-vampire
+# authoring_status: AUTHORED
+# authoring_progress: 4 scenarios evidence the devoted-frenzy trigger, the doubled attacks, the
+#   never-frenzies control and the killer-hatred reroll, all through the corpus-supplied facts
+#   (trait_overrides devoted_vampire_down / devoted_vampire_killed on the second build).
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: devoted-frenzy--scope--devoted-frenzy (scope: YES)
+# AUTHORED[devoted-frenzy--scope--devoted-frenzy]: 2026-10-10 closing revision: 4 scenarios in this file evidence the face
+#   (trigger supplied via trait_overrides, doubled attacks, no-supplied-fact control and
+#   killer-hatred reroll).  REVIEWED still requires manual semantic review.
+#
+# Clause: devoted-frenzy--scope--hatred-against-killer (scope: YES)
+# AUTHORED[devoted-frenzy--scope--hatred-against-killer]: 2026-10-10 closing revision: 4 scenarios in this file evidence the face
+#   (trigger supplied via trait_overrides, doubled attacks, no-supplied-fact control and
+#   killer-hatred reroll).  REVIEWED still requires manual semantic review.
+#
+# Clause: devoted-frenzy--scope--movement-compulsion (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+
+- audit_id: rule/trollheim/khemri-lahmian-brotherhood/lackeys--devoted-to-the-vampire/mechanic.devoted-to-the-vampire
+  id: the-supplied-devoted-frenzy-state-doubles-the-lackey-attack-count
+  covers:
+  - devoted-frenzy--scope--devoted-frenzy
+  fighters:
+    first:
+      trait_overrides:
+        causes_fear: true
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 1
+        attacks: 1
+        leadership: 7
+    second:
+      collection: trollheim
+      band_id: khemri-lahmian-brotherhood
+      profile_id: lackeys
+      main_weapon_id: weapon.mace
+  initial_state:
+    second:
+      attacks: 1
+      frenzy: true
+  duel_context:
+    charging:
+    - first
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - key: round.0.first.attack.0.hit
+    value: 1
+  - key: round.0.second.attack.0.hit
+    value: 1
+  - key: round.0.second.attack.1.hit
+    value: 1
+  expect_rounds:
+    0:
+      state.second.frenzy: true
+      attacks.2.wounded: false
+  expect_final:
+    rounds_executed: 1
+    termination_reason: horizon
+
+- audit_id: rule/trollheim/khemri-lahmian-brotherhood/lackeys--devoted-to-the-vampire/mechanic.devoted-to-the-vampire
+  id: the-supplied-vampire-knocked-down-fact-activates-the-lackey-frenzy
+  covers:
+  - devoted-frenzy--scope--devoted-frenzy
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 1
+        attacks: 1
+        leadership: 7
+    second:
+      collection: trollheim
+      band_id: khemri-lahmian-brotherhood
+      profile_id: lackeys
+      trait_overrides:
+        vampire: true
+        devoted_vampire_down: true
+      main_weapon_id: weapon.mace
+  duel_context:
+    charging:
+    - first
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - key: round.0.first.attack.0.hit
+    value: 1
+  - key: round.0.second.attack.0.hit
+    value: 1
+  - key: round.0.second.attack.1.hit
+    value: 1
+  expect_rounds:
+    0:
+      state.second.frenzy: true
+      attacks.2.wounded: false
+  expect_final:
+    rounds_executed: 1
+    termination_reason: horizon
+
+- audit_id: rule/trollheim/khemri-lahmian-brotherhood/lackeys--devoted-to-the-vampire/mechanic.devoted-to-the-vampire
+  id: without-the-supplied-fact-the-lackey-never-frenzies
+  covers:
+  - devoted-frenzy--scope--devoted-frenzy
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 1
+        attacks: 1
+        leadership: 7
+    second:
+      collection: trollheim
+      band_id: khemri-lahmian-brotherhood
+      profile_id: lackeys
+      main_weapon_id: weapon.mace
+  duel_context:
+    charging:
+    - first
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - key: round.0.first.attack.0.hit
+    value: 1
+  - key: round.0.second.attack.0.hit
+    value: 1
+  expect_rounds:
+    0:
+      state.second.frenzy: false
+  expect_final:
+    rounds_executed: 1
+    termination_reason: horizon
+
+- audit_id: rule/trollheim/khemri-lahmian-brotherhood/lackeys--devoted-to-the-vampire/mechanic.devoted-to-the-vampire
+  id: the-supplied-killer-killed-fact-gives-the-lackey-the-killer-hatred-reroll
+  covers:
+  - devoted-frenzy--scope--hatred-against-killer
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 5
+        attacks: 1
+        leadership: 7
+    second:
+      collection: trollheim
+      band_id: khemri-lahmian-brotherhood
+      profile_id: lackeys
+      trait_overrides:
+        vampire: true
+        devoted_vampire_killed: true
+      main_weapon_id: weapon.mace
+  duel_context:
+    charging:
+    - first
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  # The bearer of the clause is the devoted warrior (``second``), so the Hatred reroll belongs to
+  # its own first-round miss against the killer, not to the killer's attack.  The first miss is
+  # rerolled above the printed To Hit target and the rerolled face lands; the second printed
+  # attack misses and its own reroll misses too.  The killer's single attack misses, so the
+  # bearer keeps both of its Wounds.
+  - key: round.0.first.attack.0.hit
+    value: 1
+  - key: round.0.second.attack.0.hit
+    value: 1
+  - key: round.0.second.attack.0.hit.reroll
+    value: 4
+  - key: round.0.second.attack.1.hit
+    value: 1
+  - key: round.0.second.attack.1.hit.reroll
+    value: 1
+  # The engine resolves every attack's To Hit count first, then the wounds of the attacks that
+  # connected, so the wound die of the rerolled hit comes last.  The face of one misses.
+  - key: round.0.second.attack.0.wound
+    value: 1
+  expect_rounds:
+    0:
+      state.second.wounds: 1
+      attacks.0.hit: false
+      attacks.1.hit: true
+      attacks.1.wounded: false
+  expect_final:
+    rounds_executed: 1
+    termination_reason: horizon
+

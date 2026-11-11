@@ -42,8 +42,10 @@ rules:
     - id: unimplemented.dreamwalkers-cult-of-morr-fbg.band.choosen-of-morr
       scope: LATER
       binding: null
-      reason: >-
-        Warband-creation ritual and leader-swap subsystem: not covered by the current engine scope.
+      reason: out-of-scope.non-duel
+      clauses:
+      - id: choosen-of-morr
+        scope: 'NO'
   name: Choosen of Morr
   effect: >-
     A Priest of Morr must ALWAYS certify that each dreamer is genuine, not a heretic...or worse!
@@ -91,9 +93,7 @@ rules:
     - id: unimplemented.dreamwalkers-cult-of-morr-fbg.band.hired-swords
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Hired Swords
   effect: >-
     Dreamwalkers may hire any Hired Swords allowed to a Human Mercenary warband, Witch Hunters and
@@ -121,9 +121,7 @@ rules:
     - id: unimplemented.dreamwalkers-cult-of-morr-fbg.band.alliances
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Alliances
   effect: >-
     In multiplayer games, a Dreamwalkers warband may never forge an alliance with any Warband of a
@@ -181,9 +179,7 @@ rules:
     - id: unimplemented.dreamwalkers-cult-of-morr-fbg.band.new-skills
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: New Skills
   effect: >-
     When a hero from a band of Dreamwalkers gains a new skill on an advance roll, they have the same
@@ -235,8 +231,7 @@ rules:
     - id: unimplemented.dreamwalkers-cult-of-morr-fbg.dreamer.choosen-of-morr
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: cross-reference to the band rule; pending equivalence review.
+      reason: pending-classification
   name: Choosen of Morr
   effect: See the special rules section for more information.
   source:
@@ -262,11 +257,15 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.guiding-dream
+      clauses:
+      - id: whole--scope--guiding-dream-table
+        scope: 'YES'
+      - id: whole--scope--campaign-narrative
+        scope: 'NO'
     - id: dreamer--guiding-dream.non-duel
       scope: 'NO'
       binding: null
-      reason: >-
-        Movement penalties and narrative assignments are outside the resolved melee duel.
+      reason: out-of-scope.movement
   name: Guiding Dream
   effect: >-
     At the beginning of each battle, the Dreamer must roll D6 and consult the Guiding Dream table to
@@ -331,9 +330,7 @@ rules:
     - id: unimplemented.dreamwalkers-cult-of-morr-fbg.priest-of-morr.funerary-rites
       scope: 'NO'
       binding: null
-      reason: >-
-        Magic-phase content: the Funerary Rites list lives in the KB (lore.funerary-rites); casting
-        is out of engine scope.
+      reason: out-of-scope.magic
   name: Funerary Rites
   effect: >-
     Priests of Morr are not wizards by any means, however, they do have numerous Funerary Rites,
@@ -366,15 +363,8 @@ rules:
     - id: unimplemented.dreamwalkers-cult-of-morr-fbg.priest-of-morr.loner
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: group Rout, All Alone or combat against multiple
-        opponents. Source prose is retained; this is an exclusion, not deferred modular
-        implementation.
+      reason: deferred.other
   name: Loner
-  effect: >-
-    Few people care to spend any length of time in the company of a priest of Morr - even when it is
-    their duty to do so. As such, a priest of Morr is used to being alone and probably prefers it
-    that way. Priests of Morr do not suffer from the all alone rules.
   source:
     manual: mordheim-facebook-group
     printed_page: 0
@@ -382,14 +372,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dreamwalkers-cult-of-morr
   name_i18n:
     es: Solitario
-  effect_i18n:
-    es: >-
-      Poca gente se detiene a pasar tiempo en compañía de un sacerdote de Morr, aunque sea su deber
-      hacerlo. Así, un sacerdote de Morr está acostumbrado a estar solo y probablemente lo prefiere
-      así. Los sacerdotes de Morr no sufren las reglas de Todo Solo.
   applies_to:
     profile_ids:
     - priest-of-morr
+  rule_ref: shared-rule.loner
 - id: black-guards--silent-guardian
   runtime:
     scope: 'NO'
@@ -399,9 +385,7 @@ rules:
     - id: unimplemented.dreamwalkers-cult-of-morr-fbg.black-guards.silent-guardian
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Silent Guardian
   effect: >-
     If a Black Guard has been declared Hidden, enemies must take an Initiative test to spot them.
@@ -429,8 +413,7 @@ rules:
     - id: unimplemented.dreamwalkers-cult-of-morr-fbg.black-guards.mount-option
       scope: 'NO'
       binding: null
-      reason: >-
-        Mounted-models optional rule: out of engine scope.
+      reason: out-of-scope.movement
   name: Mount Option
   effect: >-
     If using the optional rules for mounted models or the Blazing Saddles expanded mounted rules,
@@ -520,8 +503,7 @@ rules:
     - id: unimplemented.dreamwalkers-cult-of-morr-fbg.deaths-heads.expert-halberdier
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: weapon-combination exception pending scope refinement.
+      reason: pending-classification
   name: Expert Halberdier
   effect: >-
     Death's Heads are so skilled with their weapons that they may combat carrying his halberd in one
@@ -582,8 +564,7 @@ rules:
     - id: unimplemented.dreamwalkers-cult-of-morr-fbg.special-skill.fanatical
       scope: 'NO'
       binding: null
-      reason: >-
-        Rout-test re-roll: campaign/post-battle adjacent; pending scope refinement.
+      reason: out-of-scope.campaign
   name: Fanatical
   effect: >-
     The dreamwalkers are convinced that they are the chosen ones to carry out Morr's will and
@@ -616,6 +597,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.fear-immunity
+      clauses:
+      - id: fear-immunity
+        scope: 'YES'
+      - id: all-alone-and-reroll
+        scope: 'NO'
   name: Inured to Horror
   effect: >-
     Only the true faithful followers of Morr know and accept death and become inured to horror. The
@@ -643,8 +629,7 @@ rules:
     - id: unimplemented.dreamwalkers-cult-of-morr-fbg.special-skill.blessed-by-morr
       scope: 'NO'
       binding: null
-      reason: >-
-        Magic-phase content: spell nullification is out of engine scope.
+      reason: out-of-scope.magic
   name: Blessed by Morr
   effect: >-
     The hero has been blessed by Morr and has his protection against the magic that his enemies cast
@@ -676,8 +661,7 @@ rules:
     - id: unimplemented.dreamwalkers-cult-of-morr-fbg.item.scythe
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: two-handed weapon stats pending engine weapon binding.
+      reason: pending-classification
   name: Scythe
   effect: >-
     Range: Close Combat. Strength: As user +1. Special Rules: Two Handed. Scythes are normally

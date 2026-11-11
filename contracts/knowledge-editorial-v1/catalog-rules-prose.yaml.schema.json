@@ -37,7 +37,11 @@
         "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
         "effect": { "$ref": "defs.schema.json#/$defs/display_text" },
         "effect_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
-        "runtime": { "$ref": "defs.schema.json#/$defs/rule_runtime" }
+        "runtime": { "$ref": "defs.schema.json#/$defs/rule_runtime" },
+        "clauses": {
+          "description": "The clauses of a core combat rule; identity `core/<rule-id>`. Shared band text (`shared-rule.*`) declares none: its clauses live on the band rules that reference it.",
+          "$ref": "defs.schema.json#/$defs/clauses"
+        }
       }
     }
   }

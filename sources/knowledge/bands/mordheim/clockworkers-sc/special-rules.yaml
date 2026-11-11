@@ -10,9 +10,24 @@ rules:
     - id: unimplemented.clockworkers-sc.band.constructs
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: deferred.other
+      clauses:
+      - id: need-orders
+        scope: 'NO'
+      - id: may-not-run
+        scope: 'NO'
+      - id: brainless
+        scope: 'NO'
+      - id: in-built-equipment
+        scope: 'YES'
+      - id: constructs-psychology-immunity
+        scope: 'YES'
+      - id: constructs-never-leaves-combat
+        scope: 'NO'
+      - id: constructs-ignore-pain
+        scope: 'YES'
+      - id: constructs-poison-immunity
+        scope: 'YES'
   name: Constructs
   effect: >-
     Clockwork constructs differ massively from living beings and follow a number of special rules:
@@ -82,8 +97,7 @@ rules:
     - id: unimplemented.clockworkers-sc.master-of-clocks.laws-of-construction
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Laws of Construction
   effect: >-
     The Master of Clocks is able to overwrite the basic functions of his constructs and thus starts
@@ -116,9 +130,7 @@ rules:
     - id: unimplemented.clockworkers-sc.master-of-clocks.promotion
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Promotion
   effect: >-
     If the Master of Clocks dies or otherwise leaves the expedition, the new leader may learn Laws
@@ -146,9 +158,7 @@ rules:
     - id: unimplemented.clockworkers-sc.dwarf-engineer.armour
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Armour
   source:
     manual: broheim.net
@@ -160,7 +170,7 @@ rules:
   applies_to:
     profile_ids:
     - dwarf-engineer
-  rule_ref: shared-rule.armour-2
+  rule_ref: shared-rule.dwarf-armour
 - id: dwarf-engineer--hard-to-kill
   runtime:
     scope: 'YES'
@@ -208,7 +218,7 @@ rules:
   applies_to:
     profile_ids:
     - dwarf-engineer
-  rule_ref: shared-rule.hard-head-2
+  rule_ref: shared-rule.dwarf-hard-head
 - id: dwarf-engineer--smithery
   runtime:
     scope: 'NO'
@@ -218,9 +228,7 @@ rules:
     - id: unimplemented.clockworkers-sc.dwarf-engineer.smithery
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Smithery
   effect: >-
     Instead of searching for rare items, the engineer may equip a single construct with any weapon
@@ -250,9 +258,7 @@ rules:
     - id: unimplemented.clockworkers-sc.metallurgist.moonstone-refinery
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Moonstone Refinery
   effect: >-
     Instead of searching for rare items, the Metallurgist may split one moonstone into D6 orichalcum
@@ -280,8 +286,7 @@ rules:
     - id: unimplemented.clockworkers-sc.metallurgist.hellish-tincture
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Hellish Tincture
   effect: >-
     Once per game this tincture may be thrown in the same way as blessed water and sets its target
@@ -310,9 +315,7 @@ rules:
     - id: unimplemented.clockworkers-sc.handymen.crude
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Crude
   effect: >-
     When rolling 'That Lad's got talent', the new hero must choose combat and strength skills as his
@@ -362,9 +365,7 @@ rules:
     - id: construct.non-duel
       scope: 'NO'
       binding: null
-      reason: >-
-        Need Orders outside combat, running, experience and permanent equipment changes are excluded
-        map/campaign clauses; slots retain their independent construction requirement.
+      reason: out-of-scope.movement
     - id: profile.equipment-restrictions
       scope: 'YES'
       binding:
@@ -382,6 +383,11 @@ rules:
             clockwork_rifle: 2
             weapon.double-handed-weapon: 2
             weapon.halberd: 2
+      clauses:
+      - id: construct-excluded-producers--scope--in-built-equipment
+        scope: 'YES'
+      - id: construct-equipment-slot-capacity
+        scope: 'YES'
   name: Construct
   effect: Clockwork soldiers are constructs as described in the band special rules.
   source:
@@ -407,9 +413,7 @@ rules:
     - id: unimplemented.clockworkers-sc.clockwork-soldiers.solitary-maintenance
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Solitary Maintenance
   effect: Each clockwork soldier forms its own henchmen group.
   source:
@@ -455,9 +459,7 @@ rules:
     - id: construct.non-duel
       scope: 'NO'
       binding: null
-      reason: >-
-        Need Orders outside combat, running, experience and permanent equipment changes are excluded
-        map/campaign clauses; slots retain their independent construction requirement.
+      reason: out-of-scope.movement
     - id: profile.equipment-restrictions
       scope: 'YES'
       binding:
@@ -475,6 +477,11 @@ rules:
             clockwork_rifle: 2
             weapon.double-handed-weapon: 2
             weapon.halberd: 2
+      clauses:
+      - id: construct-excluded-producers--scope--in-built-equipment
+        scope: 'YES'
+      - id: construct-equipment-slot-capacity
+        scope: 'YES'
   name: Construct
   effect: Clockwork fiends are constructs as described in the band special rules.
   source:
@@ -527,8 +534,7 @@ rules:
     - id: unimplemented.clockworkers-sc.clockwork-fiend.large-target
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Large Target
   effect: Due to its huge size, the Clockwork fiend counts as a large target.
   source:
@@ -552,9 +558,7 @@ rules:
     - id: unimplemented.clockworkers-sc.clockwork-fiend.lumbering-behemoth
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Lumbering Behemoth
   effect: >-
     Moonstone infusions need the doubled amount of orichalcum tokens per characteristic increase.
@@ -582,9 +586,7 @@ rules:
     - id: unimplemented.clockworkers-sc.band.puppeteer
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: ignoring the Need Orders special rule is a construct-control interaction of
-        the engine's clockwork subsystem.
+      reason: out-of-scope.construction
   name: Puppeteer
   effect: >-
     The Hero has improved control on the dependent constructs far above the basic level of his
@@ -613,9 +615,7 @@ rules:
     - id: unimplemented.clockworkers-sc.band.rogue-control
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: disabling an enemy construct substitutes a shooting attack, a shooting-phase
-        mechanic.
+      reason: out-of-scope.shooting
   name: Rogue Control
   effect: >-
     Subtle and cunning counter-orders allow the Clockworker to dazzle enemy constructs and clockwork
@@ -650,9 +650,7 @@ rules:
     - id: unimplemented.clockworkers-sc.band.gift-of-sentience
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: spending moonstones and swapping a search for an experiment is a post-battle
-        sequence mechanic.
+      reason: pending-implementation
   name: Gift of Sentience
   effect: >-
     Instead of searching for rare items the Clockworker may attempt Bramstetter's most dangerous
@@ -687,9 +685,7 @@ rules:
     - id: unimplemented.clockworkers-sc.band.experimental-enhancements
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: spending gold for materials and rolling on the Stygian Mutation Chart is a
-        post-battle sequence mechanic. Apprentice only.
+      reason: pending-implementation
   name: Experimental Enhancements
   effect: >-
     Apprentice only. During their learning process, apprentices craft the oddest devices and

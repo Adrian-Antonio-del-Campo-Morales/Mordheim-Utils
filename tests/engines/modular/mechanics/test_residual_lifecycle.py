@@ -200,6 +200,7 @@ def test_danse_macabre_only_own_recovery_can_release_control(precompiled):
     assert not result.state.first.danse_macabre_controlled and len(result.attacks) == 2
 
 
+@pytest.mark.covers("rule/mordheim/masters-of-horror-sylv/mad-scientist--alchemist/unimplemented.masters-of-horror-sylv.special.alchemist", "start-of-game-potion--scope--addiction-state", "start-of-game-potion--scope--potion-characteristic-bonuses")
 def test_alchemist_supplied_bonuses_and_addiction_preserve_defence(precompiled):
     # ``builders`` provenance: the scientist was compiled before the plain foe.
     scientist, enemy = precompiled().first, precompiled().second
@@ -630,6 +631,8 @@ def test_supplied_netted_knockdown_loses_ordinary_frenzy_but_preserves_hood_exce
     assert state.second.frenzy is persistent
 
 
+@pytest.mark.covers("rule/mordheim/kislevites/bear-tamer--bear-handler/mechanic.bear-handler", "handler-leadership--scope--stupidity-waiver")
+@pytest.mark.covers("rule/mordheim/kislevites/trained-bear--trained/mechanic.handler-leadership", "handler-leadership--scope--stupidity")
 def test_canonical_bear_supplied_tamer_waiver_and_explicit_out_provider():
     bear=compile_fighter(FighterBuild('mordheim',band_id='kislevites',profile_id='trained-bear',
         condition_ids=('condition.bear-handler-nearby',)))
@@ -643,6 +646,7 @@ def test_canonical_bear_supplied_tamer_waiver_and_explicit_out_provider():
     assert result.state.first.stupidity_failed
 
 
+@pytest.mark.covers("rule/mordheim/kislevites/trained-bear--trained/mechanic.handler-leadership", "handler-leadership--scope--stupidity")
 def test_canonical_bear_uses_only_nearby_tamer_leadership_for_other_tests():
     from mordheim_combat.modular.leadership import resolve_local_leadership
     bear=compile_fighter(FighterBuild('mordheim',band_id='kislevites',profile_id='trained-bear'))
@@ -824,6 +828,7 @@ def test_castoff_retains_only_actual_extra_hand_dagger_in_its_physical_slot():
     assert 'mutation.hand.extra.0' in projected.extra_attacks[0].tags
 
 
+@pytest.mark.covers("item/crimson_shade")
 def test_crimson_shade_has_no_effect_on_undead_or_the_possessed():
     # Printed item text: "Crimson Shade has no effect on Undead such as Vampires
     # and Zombies, or the Possessed." The living bearer is the control and the

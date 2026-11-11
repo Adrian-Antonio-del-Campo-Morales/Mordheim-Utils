@@ -55,8 +55,7 @@ rules:
     - id: unimplemented.chaos-streets-arcane-society.grand-wizard.spellcaster
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: arcane-mage--spellcaster
   name: Spellcaster
   effect: >-
@@ -83,8 +82,7 @@ rules:
     - id: unimplemented.chaos-streets-arcane-society.arcane-mage.spellcaster
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: arcane-mage--respect-for-the-arcane-society
   name: Respect for the Arcane Society
   effect: An Arcane Mage may never know more spells than the warband leader.
@@ -107,8 +105,7 @@ rules:
     - id: unimplemented.chaos-streets-arcane-society.arcane-mage.respect-for-the-arcane-society
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: arcane-bodyguard--not-leader
   name: Not a Leader
   effect: >-
@@ -135,8 +132,10 @@ rules:
     - id: unimplemented.chaos-streets-arcane-society.arcane-bodyguard.not-leader
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.psychology
+      clauses:
+      - id: not-a-leader
+        scope: 'NO'
 - id: arcane-bodyguard--bodyguard
   name: Bodyguard
   effect: >-
@@ -164,8 +163,7 @@ rules:
     - id: unimplemented.chaos-streets-arcane-society.arcane-bodyguard.bodyguard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: arcane-aspirant--aspirant
   name: Aspirant
   effect: >-
@@ -193,8 +191,7 @@ rules:
     - id: unimplemented.chaos-streets-arcane-society.arcane-aspirant.aspirant
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: arcane-assistant--prove-your-talent
   name: Prove Your Talent!
   effect: >-
@@ -223,8 +220,7 @@ rules:
     - id: unimplemented.chaos-streets-arcane-society.arcane-assistant.prove-your-talent
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--secret-society
   name: Secret Society
   effect: >-
@@ -251,6 +247,4 @@ rules:
     - id: unimplemented.chaos-streets-arcane-society.band.secret-society
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction

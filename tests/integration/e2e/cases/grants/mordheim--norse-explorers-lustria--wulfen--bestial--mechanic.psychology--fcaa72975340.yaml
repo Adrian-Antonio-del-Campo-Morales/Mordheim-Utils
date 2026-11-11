@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/norse-explorers-lustria/wulfen--bestial/mechanic.psychology-immunity
-# scaffold_fingerprint: d6338e2f1090f39dc9c9bd821fae795ddf72572fa628873dfcfef6812fd6cf9d
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clause carries 2 authored scenario(s) reading
 #   the Fear test and its non-immune contrast; the clause's remaining variants are recorded
@@ -10,9 +9,8 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: psychology-immunity (scope: YES)
 # AUTHORED[psychology-immunity]: the printed immunity is read through the one Psychology request this
@@ -44,61 +42,9 @@
 #   or fear immunity - and no immunity rule of this band names it in applies_to.
 #   The Fear test itself is a 2D6 Leadership test, so the variant list above concerns the
 #   clause's other consequences, not an unavailable tape.
-# origin_id:
-#   rule/mordheim/norse-explorers-lustria/wulfen--bestial/mechanic.psychology-immunity
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/norse-explorers-lustria/special-rules.yaml
-# source_fingerprint:
-#   752fbdd64298b7a3840c9dd3feb7e825a2e597b15ffd778865d3c7d31a9a4b96
-# source_sha256_at_generation:
-#   f8fe6b25d322e54829df36a1d7428904749a78b436474e9c3ea8cfc46193d002
-# Printed rule text:
-#   Wulfen are ravenous beasts and therefore immune to psychology
-# Semantic contract (check analysis_status before treating as accepted):
-#   Being immune to psychology is an admitted lasting individual state of the Wulfen duelist; the leader bar belongs to its own separated clause. Printed clause: Wulfen are ravenous beasts and therefore immune to psychology
-# effect_id:
-#   mechanic.psychology-immunity
-# relation:
-#   equivalent
-# parameters:
-#   {}
-# conditions:
-#   {"trigger":"any individual Psychology test involving this warrior","resolution":"the test is skipped and no Hatred reroll or Frenzy bonus is granted","recipient":"this warrior","duration":"whole duel","stacking":"not cumulative","exceptions":"does not exempt non-Psychology Leadership tests and does not by itself grant Immunity to Fear against a source that expressly overrides it"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Canonical Immunity to Psychology (mechanic.psychology-immunity): leadership.resolve_local_leadership short-circuits psychology tests and state.initialize_fighter suppresses frenzy/stupidity for immune warriors. Printed text adds a separate break/All-Alone or leader-restriction clause, recorded as its own row. Scope review integration: {"clause_id":"psychology-immunity","review_clause_id":"psychology-immunity","source_state":"unverified","review_status":"reviewed","scope_reason":"Being immune to psychology is an admitted lasting individual state of the Wulfen duelist; the leader bar belongs to its own separated clause.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Immune to Psychology: never resolves a Fear or Stupidity test and receives no Hatred reroll or Frenzy benefit. Observable: for this warrior a fear or stupidity test is skipped while other Leadership requirements still roll normally.","effect_id":"mechanic.psychology-immunity","relation":"equivalent","parameters":"{}","conditions":"{\"trigger\":\"any individual Psychology test involving this warrior\",\"resolution\":\"the test is skipped and no Hatred reroll or Frenzy bonus is granted\",\"recipient\":\"this warrior\",\"duration\":\"whole duel\",\"stacking\":\"not cumulative\",\"exceptions\":\"does not exempt non-Psychology Leadership tests and does not by itself grant Immunity to Fear against a source that expressly overrides it\"}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\",\"packages/python/combat-engine/mordheim_combat/modular/psychology.py::resolve_fear\",\"packages/python/combat-engine/mordheim_combat/modular/psychology.py::resolve_stupidity\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"C03-psychology-immunity","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\",\"packages/python/combat-engine/mordheim_combat/modular/psychology.py::resolve_fear\",\"packages/python/combat-engine/mordheim_combat/modular/psychology.py::resolve_stupidity\"]"},"inherited_clause_text":"Wulfen are ravenous beasts and therefore immune to psychology. Also despite being greatly revered by their barbarian kinsmen, Wulfen are too feral and uncontrolled to become the leader of the warband.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."} Surface reuse candidate: {"family":"mechanic.psychology-immunity","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare each immunity or automatic-pass clause separately. Psychology immunity is not automatic success on every Leadership test. Preserve ordinary Hatred/Frenzy suppression and the explicit Strigoi exception; excluded running, experience and group tests remain excluded.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: leader-restriction (scope: NO)
 # Outside the admitted clause scope; retained for context, not a test TODO.
-# origin_id:
-#   rule/mordheim/norse-explorers-lustria/wulfen--bestial/mechanic.psychology-immunity
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/norse-explorers-lustria/special-rules.yaml
-# source_fingerprint:
-#   752fbdd64298b7a3840c9dd3feb7e825a2e597b15ffd778865d3c7d31a9a4b96
-# source_sha256_at_generation:
-#   f8fe6b25d322e54829df36a1d7428904749a78b436474e9c3ea8cfc46193d002
-# Printed rule text:
-#   too feral to become the leader of the warband
-# Semantic contract (check analysis_status before treating as accepted):
-#   (not recorded)
-# effect_id:
-#   (not recorded)
-# relation:
-#   independent
-# parameters:
-#   {}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Roster construction restriction (leader succession), not an in-duel behaviour; belongs with construction/eligibility and needs no runtime consumer here. Scope review integration: {"clause_id":"leader-restriction","review_clause_id":"leader-restriction","source_state":"unverified","review_status":"reviewed","scope_reason":"The bar on becoming warband leader is a warband composition rule, outside the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"}
 
 # --- Authored scenarios ---
 # Derived from the printed rule text, the band package and the recorded semantic contract; no engine

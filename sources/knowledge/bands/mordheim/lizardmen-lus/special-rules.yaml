@@ -41,9 +41,7 @@ rules:
     - id: unimplemented.lizardmen-lus.band.armour-cost
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Armour
   effect: >-
     Armour is rare amongst the Lizardmen and the cost of light armour is always 50 gold crowns.
@@ -71,12 +69,15 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.cold-blooded-psychology
+      clauses:
+      - id: cold-blooded-psychology
+        scope: 'YES'
+      - id: rout-test
+        scope: 'NO'
     - id: unimplemented.lizardmen-lus.band.cold-blooded.rout
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside Combat Lab's 1v1 scope: warband Rout tests and their
-        Saurus/Kroxigor Leadership-provider restriction.
+      reason: out-of-scope.group
   name: Cold Blooded
   effect: >-
     Lizardmen roll 3D6 and select the lowest two dice when taking a psychology or Rout test. A
@@ -104,9 +105,7 @@ rules:
     - id: unimplemented.lizardmen-lus.band.saurus-rarity
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Saurus Rarity
   effect: >-
     You can never have more Saurus Braves than Skink Braves in the warband; the Slann mage-priests
@@ -135,6 +134,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+      clauses:
+      - id: leader-six
+        scope: 'YES'
+      - id: leader-replacement
+        scope: 'NO'
   name: Leader
   effect: >-
     The Skink Priest is the leader of the warband; any Lizardmen within 6 inches may use his
@@ -164,10 +168,8 @@ rules:
     - id: unimplemented.lizardmen-lus.skink-priest.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Wizard
-  effect: The Skink Priest is a Wizard and may use Lizardmen magic.
   source:
     manual: broheim.net
     printed_page: 4
@@ -175,11 +177,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/lustria/Lizardmen.pdf
   name_i18n:
     es: Mago
-  effect_i18n:
-    es: El Sacerdote Skink es un hechicero y puede usar la magia de los Hombres Lagarto.
   applies_to:
     profile_ids:
     - skink-priest
+  rule_ref: shared-rule.skink-priest-wizard
 - id: kroxigor--scaly-skin
   runtime:
     scope: 'YES'
@@ -216,8 +217,7 @@ rules:
     - id: unimplemented.lizardmen-lus.kroxigor.aquatic
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Aquatic
   effect: >-
     Kroxigor may move through water with no penalty and count as being in cover while in the water.
@@ -247,7 +247,6 @@ rules:
         kind: mechanic
         id: mechanic.causes-fear
   name: Cause Fear
-  effect: Kroxigor are large and frightening monsters and cause Fear.
   source:
     manual: broheim.net
     printed_page: 5
@@ -255,11 +254,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/lustria/Lizardmen.pdf
   name_i18n:
     es: Causan Miedo
-  effect_i18n:
-    es: Los Kroxigor son monstruos grandes y atemorizantes que causan Miedo.
   applies_to:
     profile_ids:
     - kroxigor
+  rule_ref: shared-rule.fear
 - id: kroxigor--large
   runtime:
     scope: 'NO'
@@ -269,12 +267,8 @@ rules:
     - id: unimplemented.lizardmen-lus.kroxigor.large
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Large
-  effect: >-
-    Kroxigor stand out amongst the rest of the warband and may be picked out by an archer even if he
-    is not the closest model.
   source:
     manual: broheim.net
     printed_page: 5
@@ -282,13 +276,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/lustria/Lizardmen.pdf
   name_i18n:
     es: Grande
-  effect_i18n:
-    es: >-
-      Los Kroxigor destacan entre el resto de la banda y pueden ser elegidos como objetivo por un
-      arquero aunque no sean el modelo más cercano.
   applies_to:
     profile_ids:
     - kroxigor
+  rule_ref: shared-rule.kroxigor-large
 - id: kroxigor--animal
   runtime:
     scope: LATER
@@ -298,9 +289,10 @@ rules:
     - id: unimplemented.lizardmen-lus.kroxigor.animal
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: deferred.other
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Animal
   effect: >-
     Kroxigor are slow-witted creatures that never learn from their mistakes; they do not gain
@@ -328,8 +320,10 @@ rules:
     - id: unimplemented.lizardmen-lus.band.maximum-characteristics
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: characteristic-increase caps on advancement.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Lizardmen Maximum Characteristics
   effect: >-
     Characteristics for Lizardmen may not be increased beyond the maximum limits. Skink maximums: M
@@ -395,8 +389,7 @@ rules:
     - id: unimplemented.lizardmen-lus.band.aquatic
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Aquatic
   effect: >-
     Skinks may move through water terrain with no penalty, and count as being in cover whilst they
@@ -426,10 +419,8 @@ rules:
     - id: unimplemented.lizardmen-lus.band.jungle-born
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Jungle Born
-  effect: All Skinks can move through jungle terrain without penalty.
   source:
     manual: broheim.net
     printed_page: 1
@@ -437,13 +428,12 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/lustria/Lizardmen.pdf
   name_i18n:
     es: Nacidos de la Selva
-  effect_i18n:
-    es: Todos los Skinks pueden moverse por terreno de selva sin penalización.
   applies_to:
     profile_ids:
     - skink-priest
     - skink-great-crests
     - skink-braves
+  rule_ref: shared-rule.jungle-born
 - id: band--lizardmen-special-skills-skinks-only-infiltration
   kind: warband_skill
   runtime:
@@ -454,13 +444,8 @@ rules:
     - id: unimplemented.lizardmen-lus.band.lizardmen-special-skills-skinks-only-infiltration
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Infiltration
-  effect: >-
-    The Skink is a great hunter and is an expert at sneaking up on his prey unnoticed. The Hero may
-    set up anywhere on the table but no closer than 12" to an enemy and he must start the game in
-    hiding.
   source:
     manual: broheim.net
     printed_page: 3
@@ -468,16 +453,12 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/lustria/Lizardmen.pdf
   name_i18n:
     es: Infiltración
-  effect_i18n:
-    es: >-
-      El Skink es un gran cazador y un experto en acercarse a su presa sin ser notado. El héroe
-      puede desplegarse en cualquier punto de la mesa, pero no a menos de 12" de un enemigo, y debe
-      comenzar la partida oculto.
   eligibility:
   - skink-priest
   - skink-great-crests
   applies_to:
     band: true
+  rule_ref: shared-rule.skink-infiltration
 - id: band--lizardmen-special-skills-skinks-only-great-hunter
   kind: warband_skill
   runtime:
@@ -488,12 +469,8 @@ rules:
     - id: unimplemented.lizardmen-lus.band.lizardmen-special-skills-skinks-only-great-hunter
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: shooting.
+      reason: out-of-scope.shooting
   name: Great Hunter
-  effect: >-
-    The Skink Great Crest is adept at making the most of the cover available and imposes an
-    additional -1 to hit the Skink if he is in cover, i.e. a -2 to hit penalty.
   source:
     manual: broheim.net
     printed_page: 3
@@ -501,16 +478,12 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/lustria/Lizardmen.pdf
   name_i18n:
     es: Gran Cazador
-  effect_i18n:
-    es: >-
-      El Skink Gran Cresta es experto en sacar el máximo provecho de la cobertura disponible e
-      impone un -1 adicional para impactar al Skink si está en cobertura, es decir, una penalización
-      de -2 para impactar.
   eligibility:
   - skink-priest
   - skink-great-crests
   applies_to:
     band: true
+  rule_ref: shared-rule.great-hunter
 - id: band--saurus-skill-prohibitions
   kind: warband_skill
   runtime:
@@ -524,7 +497,6 @@ rules:
         kind: compiler
         id: compiler.saurus-skill-prohibitions
   name: Saurus Skill Prohibitions
-  effect: Saurus can never receive Academic skills and can never use missile weapons.
   source:
     manual: broheim.net
     printed_page: 3
@@ -532,13 +504,12 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/lustria/Lizardmen.pdf
   name_i18n:
     es: Prohibiciones de Habilidades Saurus
-  effect_i18n:
-    es: Los Saurus jamás pueden recibir habilidades Académicas y jamás pueden usar armas de misil.
   eligibility:
   - saurus-totem-warriors
   - saurus-braves
   applies_to:
     band: true
+  rule_ref: shared-rule.saurus-skill-prohibitions
 - id: band--lizardmen-special-skills-saurus-only-bellowing-battle-roar
   kind: warband_skill
   runtime:
@@ -552,9 +523,6 @@ rules:
         kind: mechanic
         id: skill.bellowing-battle-roar
   name: Bellowing Battle Roar
-  effect: >-
-    The Saurus' roar is so deafening that enemy models in base contact suffer -1 to hit in the first
-    round of combat against them.
   source:
     manual: broheim.net
     printed_page: 3
@@ -562,14 +530,11 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/lustria/Lizardmen.pdf
   name_i18n:
     es: Rugido de Batalla Atronador
-  effect_i18n:
-    es: >-
-      El rugido del Saurus es tan ensordecedor que los modelos enemigos en contacto de peana sufren
-      -1 para impactar en el primer asalto de combate contra ellos.
   eligibility:
   - saurus-totem-warriors
   applies_to:
     band: true
+  rule_ref: shared-rule.bellowing-battle-roar
 - id: band--lizardmen-special-skills-saurus-only-toughened-hide
   kind: warband_skill
   runtime:
@@ -580,12 +545,8 @@ rules:
     - id: unimplemented.lizardmen-lus.band.lizardmen-special-skills-saurus-only-toughened-hide
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: injuries.
+      reason: out-of-scope.non-duel
   name: Toughened Hide
-  effect: >-
-    Through years of battle the Saurus' hide has become hardened and the Saurus will only be taken
-    out of action on a 6+.
   source:
     manual: broheim.net
     printed_page: 3
@@ -593,14 +554,11 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/lustria/Lizardmen.pdf
   name_i18n:
     es: Piel Endurecida
-  effect_i18n:
-    es: >-
-      Tras años de batalla, la piel del Saurus se ha endurecido y el Saurus solo será puesto Fuera
-      de combate con un 6+.
   eligibility:
   - saurus-totem-warriors
   applies_to:
     band: true
+  rule_ref: shared-rule.toughened-hide
 - id: band--skink-poison-application
   runtime:
     scope: 'YES'
@@ -654,6 +612,9 @@ rules:
           - poison.reptile-venom
           weapon_kinds:
           - ranged-weapon
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Skink Henchman Poison Application
   effect: >-
     Skink henchmen may coat their missile weapons with Reptile Venom for one battle; it is never

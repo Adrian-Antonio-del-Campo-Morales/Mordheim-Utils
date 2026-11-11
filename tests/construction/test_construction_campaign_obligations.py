@@ -22,6 +22,7 @@ and `tests/typescript/application/campaign/obligations-flow.test.ts`.
 """
 from __future__ import annotations
 
+from mordheim_knowledge.loader import load_shared_rules, shared_rule_text
 import json
 import sys
 from pathlib import Path
@@ -118,7 +119,7 @@ def test_rout_exemption_names_its_recipients_and_the_generator_curates_them_once
     assert (rule.get("applies_to") or {}).get("profile_ids") == ["raw-recruits"], (
         "the clause must name the members it removes from the muster"
     )
-    printed = " ".join(str(rule.get("effect") or "").split())
+    printed = " ".join(shared_rule_text(rule, load_shared_rules("mordheim")).split())
     assert "do not count towards the need to take a Rout test" in printed
 
     # The recipient set is the published half; the meaning is curated once in the
@@ -303,7 +304,7 @@ def test_withdrawal_rules_name_the_members_that_leave_the_table():
     for band_id, rule_id, profile in cases:
         rule = _rule(_band(band_id), rule_id)
         assert (rule.get("applies_to") or {}).get("profile_ids") == [profile]
-        printed = " ".join(str(rule.get("effect") or "").split())
+        printed = " ".join(shared_rule_text(rule, load_shared_rules("mordheim")).split())
         assert "Remove them from your warband roster as if they had been killed" in printed
 
 

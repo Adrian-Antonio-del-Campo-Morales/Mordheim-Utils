@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/adventurers-kaz/dwarf--hard-head/trait.concussion-immune
-# scaffold_fingerprint: 31fd19b3abfc03c8022e3f37c088e4b1ed898819728a338ba6dfeda0438b7976
 # authoring_status: AUTHORED
 # authoring_progress: the admitted stub clause carries three authored scenarios.  The printed entry is
 # only a rulebook page pointer, so the asserted immunity is the one the semantic contract recovers from
@@ -15,43 +14,15 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: stub (scope: YES)
-# AUTHORED[stub]: 3 scenarios evidence the recovered immunity at the one total where it discriminates:
+# AUTHORED: 3 scenarios evidence the recovered immunity at the one total where it discriminates:
 #   a mace injury total of two leaves this bearer Knocked Down while the same total on an unmarked bearer
 #   is Stunned, and a total of three still Stuns the bearer.  The printed text is a page reference, so the
 #   effect is taken from the accepted parallel definition recorded in this file's contract and the
 #   pointer sentence itself is not asserted; the recipient is the printed Dwarf profile.  REVIEWED still
 #   requires manual semantic review.
-# origin_id:
-#   rule/mordheim/adventurers-kaz/dwarf--hard-head/trait.concussion-immune
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/adventurers-kaz/special-rules.yaml
-# source_fingerprint:
-#   221c1a8d3b4008bdb081aace8592a081fad48dcf1a906cd7596ea3baaa47b955
-# source_sha256_at_generation:
-#   e59d9527e127b6f401008b4fd0e1e466aaf141f6138db69329e8175a735dcd03
-# Printed rule text:
-#   See Mordheim rulebook page 151.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Printed text is only a rulebook page reference; the definition recovered from the parallel Hard Head record is 'ignore the special rules of clubs, maces and similar weapons that would make the bearer easier to stun'.
-# effect_id:
-#   trait.concussion-immune
-# relation:
-#   equivalent
-# parameters:
-#   {}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Entry text is a pointer, not the rule; definition recovered from the other Hard Head origins (G047/G125/G163) that share the same candidate binding, so the clause is analysable without a blocker.
 
 # --- Authored scenarios ---
 # Derived from the recovered immunity recorded in this file's contract and the printed band record;
@@ -62,7 +33,6 @@
 
 - audit_id: rule/mordheim/adventurers-kaz/dwarf--hard-head/trait.concussion-immune
   id: the-mace-no-longer-converts-a-two-into-a-stun
-  covers: [stub]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -81,7 +51,6 @@
 
 - audit_id: rule/mordheim/adventurers-kaz/dwarf--hard-head/trait.concussion-immune
   id: a-genuine-stunned-total-still-stuns-the-adventurer-dwarf
-  covers: [stub]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -100,7 +69,6 @@
 
 - audit_id: rule/mordheim/adventurers-kaz/dwarf--hard-head/trait.concussion-immune
   id: the-same-mace-still-converts-a-two-on-an-unmarked-bearer
-  covers: [stub]
   fighters:
     first:
       main_weapon_id: weapon.mace

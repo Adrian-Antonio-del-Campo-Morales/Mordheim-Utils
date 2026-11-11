@@ -40,13 +40,67 @@ selectable_rule:
   effect_required_fields:
   - id
   - scope
+reason_codes:
+- id: pending-classification
+  label: 'Pending classification: no engine effect assigned yet.'
+  label_i18n:
+    es: 'Clasificación pendiente: aún no tiene efecto asignado en el motor.'
+- id: pending-implementation
+  label: Pending implementation in the duel engine.
+  label_i18n:
+    es: Implementación pendiente en el motor de duelos.
+- id: source-blocked
+  label: 'Blocked: the printed source does not settle the rule.'
+  label_i18n:
+    es: 'Bloqueado: la fuente impresa no resuelve la regla.'
+- id: out-of-scope.magic
+  label: 'Out of scope: magic and spellcasting.'
+  label_i18n:
+    es: 'Fuera de alcance: magia y lanzamiento de hechizos.'
+- id: out-of-scope.shooting
+  label: 'Out of scope: shooting and missile weapons.'
+  label_i18n:
+    es: 'Fuera de alcance: disparo y armas de proyectiles.'
+- id: out-of-scope.movement
+  label: 'Out of scope: movement, terrain and deployment.'
+  label_i18n:
+    es: 'Fuera de alcance: movimiento, terreno y despliegue.'
+- id: out-of-scope.campaign
+  label: 'Out of scope: campaign, experience and post-battle rules.'
+  label_i18n:
+    es: 'Fuera de alcance: campaña, experiencia y reglas posteriores a la batalla.'
+- id: out-of-scope.construction
+  label: 'Outside the duel: warband construction and equipment access.'
+  label_i18n:
+    es: 'Fuera del duelo: construcción de la banda y acceso al equipo.'
+- id: out-of-scope.group
+  label: 'Out of scope: group, rout and multi-model rules.'
+  label_i18n:
+    es: 'Fuera de alcance: reglas de grupo, huida y varios modelos.'
+- id: out-of-scope.non-duel
+  label: 'Out of scope: no effect on the one-against-one duel.'
+  label_i18n:
+    es: 'Fuera de alcance: sin efecto en el duelo uno contra uno.'
+- id: deferred.psychology
+  label: 'Deferred: psychology subsystem.'
+  label_i18n:
+    es: 'Aplazado: subsistema de psicología.'
+- id: deferred.mounts
+  label: 'Deferred: mounts and riding.'
+  label_i18n:
+    es: 'Aplazado: monturas y equitación.'
+- id: deferred.other
+  label: 'Deferred: not covered by the current engine scope.'
+  label_i18n:
+    es: 'Aplazado: fuera del alcance actual del motor.'
 invariants:
 - A rule keeps its own KB id; equivalent rules share binding.kind, binding.id and binding.parameters.
 - Every rule with grant selectable declares what type of choice it is in kind.
 - Equivalence is always explicit and is never inferred from rule names or prose.
 - Every YES effect must have a binding when runtime.implemented is YES.
 - A rule is implemented YES only when every YES effect has an executable binding.
-- An unbound effect must explain why in reason, regardless of scope.
+- An unbound effect names why in reason with one of the reason_codes, regardless of scope; the free text that
+  once explained each case is archived in docs/archive/reason-texts.csv.
 - Rules without a runtime block are not classified yet and must not be treated as implemented.
 - compiler bindings are transitional and should be replaced by shared mechanic or trait bindings when possible.
 - >-

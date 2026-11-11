@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/lustrian-reavers/barbary-monkey--nimble/trait.ward-save
-# scaffold_fingerprint: f8c021af10f04158cdcf13660222886c7e1d0b816c1384e4c469fb337c168827
 # authoring_status: AUTHORED
 # authoring_progress: the admitted ward-save clause carries three authored scenarios for the printed
 #   5+ ward against wounds from melee: the declared five negates the wound, a four is not enough and
@@ -13,9 +12,8 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: five-plus-ward-save (scope: YES)
 # AUTHORED[five-plus-ward-save]: 3 scenarios cover the recorded contract "a 5+ special save is
@@ -24,61 +22,9 @@
 #   control shows that without the ward the strict tape requests no special-save die for the identical
 #   attack.  The printed climbing, Diving Charge and building sentences are the excluded scope-NO
 #   clause.
-# origin_id:
-#   rule/mordheim/lustrian-reavers/barbary-monkey--nimble/trait.ward-save
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/lustrian-reavers/special-rules.yaml
-# source_fingerprint:
-#   c0f8c2351c76d7966fbb9c3cc2dd1ccc415bf2a00cb30888ad4df566826eb4e6
-# source_sha256_at_generation:
-#   bfc14e3b78e040942b46067af600bd06b9a98f1eca32f0e8b0e7c154cfaeae1e
-# Printed rule text:
-#   The Barbary Monkey automatically climbs sheer surfaces without Initiative tests, may re-roll failed Diving Charge tests, may enter buildings despite being an Animal, and has a 5+ Ward save against wounds from melee, shooting, magic, or falling.
-# Semantic contract (check analysis_status before treating as accepted):
-#   A 5+ ward save against wounds from melee, shooting, magic or falling; observable: a 5+ special save is rolled after armour and may not be modified.
-# effect_id:
-#   trait.ward-save
-# relation:
-#   equivalent
-# parameters:
-#   {"save":5}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Unconditional ward, so magic does not bypass it. Surface reuse candidate: {"family":"T-WARD","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact threshold, armour versus special save, Strength/magic/blessed modification, combination/replacement, per-profile recipients and save stage. Equal thresholds do not establish equivalence; 3+ Ethereal is not 4+, and daemonic armour need not be unmodifiable.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: climbing-and-terrain (scope: NO)
 # Outside the admitted clause scope; retained for context, not a test TODO.
-# origin_id:
-#   rule/mordheim/lustrian-reavers/barbary-monkey--nimble/trait.ward-save
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/lustrian-reavers/special-rules.yaml
-# source_fingerprint:
-#   c0f8c2351c76d7966fbb9c3cc2dd1ccc415bf2a00cb30888ad4df566826eb4e6
-# source_sha256_at_generation:
-#   bfc14e3b78e040942b46067af600bd06b9a98f1eca32f0e8b0e7c154cfaeae1e
-# Printed rule text:
-#   The Barbary Monkey automatically climbs sheer surfaces without Initiative tests, may re-roll failed Diving Charge tests, may enter buildings despite being an Animal, and has a 5+ Ward save against wounds from melee, shooting, magic, or falling.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Climbing sheer surfaces, Diving Charge tests and entering buildings are movement, charge-test and terrain rules outside the duel. Printed clause: The Barbary Monkey automatically climbs sheer surfaces without Initiative tests, may re-roll failed Diving Charge tests, may enter buildings despite being an Animal, and has a 5+ Ward save against wounds from melee, shooting, magic, or falling.
-# effect_id:
-#   (not recorded)
-# relation:
-#   independent
-# parameters:
-#   {}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Movement, terrain and charge tests, outside the duel; recorded so the ward is not credited with these sentences. Scope review integration: {"clause_id":"climbing-and-terrain","review_clause_id":"climbing-and-terrain","source_state":"matched","review_status":"reviewed","scope_reason":"Climbing sheer surfaces, Diving Charge tests and entering buildings are movement, charge-test and terrain rules outside the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The monkey climbs sheer surfaces without tests, re-rolls failed Diving Charge tests, and may enter buildings despite being an Animal.","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"product","dependencies":"[]","implementation_batch":"B20-trading-post-and-tables","analysis_status":"reviewed","evidence":"none","evidence_refs":"[]"},"inherited_clause_text":"The Barbary Monkey automatically climbs sheer surfaces without Initiative tests, may re-roll failed Diving Charge tests, may enter buildings despite being an Animal, and has a 5+ Ward save against wounds from melee, shooting, magic, or falling.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
 
 # --- Authored scenarios ---
 # Derived from the printed rule and the recorded contract; no engine output was consulted.  The

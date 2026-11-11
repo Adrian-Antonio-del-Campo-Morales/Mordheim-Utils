@@ -84,8 +84,7 @@ rules:
     - id: unimplemented.khemri-lahmian-brotherhood.lahmian-vampire.local-knowledge
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: necromancer--wizard
   name: Wizard
   source:
@@ -105,8 +104,7 @@ rules:
     - id: unimplemented.khemri-lahmian-brotherhood.necromancer.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
   rule_ref: shared-rule.wizard
 - id: beloved--devoted-to-the-vampire
   name: Devoted to the Vampire
@@ -142,6 +140,13 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.devoted-to-the-vampire
+      clauses:
+      - id: devoted-frenzy--scope--devoted-frenzy
+        scope: 'YES'
+      - id: devoted-frenzy--scope--movement-compulsion
+        scope: 'NO'
+      - id: devoted-frenzy--scope--hatred-against-killer
+        scope: 'YES'
 - id: beloved--accustomed-to-fear
   name: Accustomed to Fear
   effect: The Beloved is immune to Fear caused by Vampires, Skeletons and Spirits.
@@ -220,8 +225,7 @@ rules:
     - id: unimplemented.khemri-lahmian-brotherhood.blood-sister.semi-vampire
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: lackeys--accustomed-to-fear
   name: Accustomed to Fear
   effect: Lackeys are immune to Fear caused by Vampires, Skeletons and Spirits.
@@ -280,6 +284,13 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.devoted-to-the-vampire
+      clauses:
+      - id: devoted-frenzy--scope--devoted-frenzy
+        scope: 'YES'
+      - id: devoted-frenzy--scope--movement-compulsion
+        scope: 'NO'
+      - id: devoted-frenzy--scope--hatred-against-killer
+        scope: 'YES'
 - id: lackeys--favoured
   name: Favoured
   effect: >-
@@ -308,8 +319,10 @@ rules:
     - id: unimplemented.khemri-lahmian-brotherhood.lackeys.favoured
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.psychology
+      clauses:
+      - id: favoured
+        scope: 'NO'
 - id: skeleton-warriors--undead
   name: Undead
   source:
@@ -402,8 +415,7 @@ rules:
     - id: unimplemented.khemri-lahmian-brotherhood.black-hounds.animal
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: spirits--undead
   name: Undead
   effect: Spirits are Undead and are subject to the warband's Undead special rules.
@@ -483,9 +495,7 @@ rules:
     - id: unimplemented.khemri-lahmian-brotherhood.jackals.pack
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: jackals--animal
   name: Animal
   effect: Jackals are animals and never gain Experience.
@@ -508,8 +518,7 @@ rules:
     - id: unimplemented.khemri-lahmian-brotherhood.jackals.animal
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--background-selection
   name: Foreign or Native Background
   effect: >-
@@ -566,7 +575,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.causes-fear
-  rule_ref: shared-rule.cause-fear-2
+  rule_ref: shared-rule.cause-fear-undead
 - id: band--immune-to-psychology
   name: Immune to Psychology
   source:
@@ -591,7 +600,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
-  rule_ref: shared-rule.immune-to-psychology-4
+  rule_ref: shared-rule.immune-to-psychology-undead
 - id: band--no-pain
   runtime:
     scope: 'YES'
@@ -616,7 +625,7 @@ rules:
   - spirits
   applies_to:
     band: true
-  rule_ref: shared-rule.no-pain-4
+  rule_ref: shared-rule.no-pain-undead
 - id: band--may-not-run
   name: May Not Run
   source:
@@ -638,9 +647,8 @@ rules:
     - id: unimplemented.khemri-lahmian-brotherhood.band.may-not-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
-  rule_ref: shared-rule.may-not-run-2
+      reason: out-of-scope.magic
+  rule_ref: shared-rule.may-not-run-undead
 - id: band--immune-to-poison
   runtime:
     scope: 'YES'
@@ -667,7 +675,7 @@ rules:
   - spirits
   applies_to:
     band: true
-  rule_ref: shared-rule.immune-to-poison-3
+  rule_ref: shared-rule.immune-to-poison-undead
 - id: band--brainless
   name: Brainless
   effect: >-
@@ -696,8 +704,7 @@ rules:
     - id: unimplemented.khemri-lahmian-brotherhood.band.brainless
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--no-food-or-water
   name: No Food or Water
   effect: >-
@@ -727,8 +734,7 @@ rules:
     - id: unimplemented.khemri-lahmian-brotherhood.band.no-food-or-water
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--death-of-the-vampire
   name: Death of the Vampire
   effect: >-
@@ -761,8 +767,7 @@ rules:
     - id: unimplemented.khemri-lahmian-brotherhood.band.death-of-the-vampire
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--lahmian-special-skills-celerity
   kind: warband_skill
   name: Celerity
@@ -793,8 +798,7 @@ rules:
     - id: unimplemented.khemri-lahmian-brotherhood.band.lahmian-special-skills-celerity
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--lahmian-special-skills-hypnotize
   kind: warband_skill
   name: Hypnotize
@@ -840,6 +844,11 @@ rules:
       binding:
         kind: mechanic
         id: skill.vampire-reflexes
+      clauses:
+      - id: six-plus-unmodifiable-save
+        scope: 'YES'
+      - id: combines-with-step-aside-to-four
+        scope: 'YES'
   name: Vampire Reflexes
   effect: >-
     The Vampire has an unmodifiable 6+ save against any Wound. If an attack causes multiple Wounds,
@@ -959,8 +968,7 @@ rules:
     - id: unimplemented.khemri-lahmian-brotherhood.band.lahmian-special-skills-creature-of-the-night
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 
 - id: blood-slaves--equipment-restrictions
   runtime:
@@ -1008,23 +1016,16 @@ rules:
           forbids:
           - snake_whip
   name: Equipment Restrictions
-  effect: >-
-    Use only the Undead Equipment List assigned by the selected Foreign or Native background. May
-    not select the Snake Whip; it is restricted to the Lahmian Vampire and Blood Sister.
   source:
     manual: khemri
     printed_page: 87
     section: "0-2 Lackeys"
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      Usa solo la Lista de Equipo No Muerto asignada por el trasfondo Extranjero o Nativo elegido.
-      No puede elegir el Látigo de Serpiente; está restringido al Vampiro Lahmiano y a la Hermana de
-      Sangre.
   applies_to:
     profile_ids:
     - lackeys
+  rule_ref: shared-rule.lahmian-brotherhood-equipment-restrictions
 - id: necromancer--equipment-restrictions
   runtime:
     scope: 'YES'
@@ -1040,23 +1041,16 @@ rules:
           forbids:
           - snake_whip
   name: Equipment Restrictions
-  effect: >-
-    Use only the Undead Equipment List assigned by the selected Foreign or Native background. May
-    not select the Snake Whip; it is restricted to the Lahmian Vampire and Blood Sister.
   source:
     manual: khemri
     printed_page: 86
     section: "0-1 Necromancer"
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      Usa solo la Lista de Equipo No Muerto asignada por el trasfondo Extranjero o Nativo elegido.
-      No puede elegir el Látigo de Serpiente; está restringido al Vampiro Lahmiano y a la Hermana de
-      Sangre.
   applies_to:
     profile_ids:
     - necromancer
+  rule_ref: shared-rule.lahmian-brotherhood-equipment-restrictions
 - id: skeleton-warriors--equipment-restrictions
   runtime:
     scope: 'YES'
@@ -1072,23 +1066,16 @@ rules:
           forbids:
           - snake_whip
   name: Equipment Restrictions
-  effect: >-
-    Use only the Undead Equipment List assigned by the selected Foreign or Native background. May
-    not select the Snake Whip; it is restricted to the Lahmian Vampire and Blood Sister.
   source:
     manual: khemri
     printed_page: 88
     section: "Skeleton Warriors"
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      Usa solo la Lista de Equipo No Muerto asignada por el trasfondo Extranjero o Nativo elegido.
-      No puede elegir el Látigo de Serpiente; está restringido al Vampiro Lahmiano y a la Hermana de
-      Sangre.
   applies_to:
     profile_ids:
     - skeleton-warriors
+  rule_ref: shared-rule.lahmian-brotherhood-equipment-restrictions
 - id: spirits--equipment-restrictions
   runtime:
     scope: 'YES'

@@ -23,7 +23,7 @@ conditions:
       scope: 'YES'
       binding: {kind: mechanic, id: condition.unseen-charge}
 - id: condition.summoned-this-turn
-  name: Summoned this turn
+  name: Summoned This Turn
   name_i18n: {es: Invocado este turno}
   effect: >-
     Supplied individual fact that this Malignant Spirit was released from the Requilary on the
@@ -203,10 +203,7 @@ conditions:
     - id: rule.fear
       scope: 'NO'
       binding: null
-      reason: >-
-        General Fear rule text, consumed by psychology.resolve_fear and
-        psychology.causes_fear. It is not a per-warrior condition: supply
-        campaign.condition.causes-fear to make a warrior cause Fear.
+      reason: out-of-scope.campaign
 - id: condition.terror
   name: Terror
   effect: >-
@@ -426,7 +423,7 @@ conditions:
 - id: condition.alchemist-resilience
   name: Potion of Resilience
   name_i18n:
-    es: "Potion Of Resilience"
+    es: Potion Of Resilience
   effect: +1 Toughness for the duration of the battle.
   effect_i18n:
     es: +1 Toughness for the duration of the battle.
@@ -449,7 +446,7 @@ conditions:
 - id: condition.alchemist-strength
   name: Brew of Strength
   name_i18n:
-    es: "Brew Of Strength"
+    es: Brew Of Strength
   effect: +1 Strength for the duration of the battle.
   effect_i18n:
     es: +1 Strength for the duration of the battle.
@@ -681,9 +678,9 @@ conditions:
         kind: mechanic
         id: condition.fungus-brew-loony
 - id: condition.impetuous-charge
-  name: Compelled Impetuous charge
+  name: Compelled Impetuous Charge
   name_i18n:
-    es: Compelled Impetuous charge
+    es: Compelled Impetuous Charge
   effect: >-
     Supplied compelled charge automatically passes psychology tests that would prevent that charge;
     choosing movement or retargeting is excluded.
@@ -707,9 +704,9 @@ conditions:
         kind: mechanic
         id: condition.impetuous-charge
 - id: condition.executioners-hood
-  name: Executioner’s Hood worn
+  name: Executioner’s Hood Worn
   name_i18n:
-    es: Executioner’s Hood worn
+    es: Executioner’s Hood Worn
   effect: >-
     Always frenzied even if knocked down or stunned; +1 Strength in close combat. Combat escape and
     multi-target movement are excluded.
@@ -732,9 +729,9 @@ conditions:
         kind: mechanic
         id: condition.executioners-hood
 - id: condition.rememberer-kaz-support
-  name: Rememberer support dwarf-slayers-kaz
+  name: Rememberer Support Dwarf-Slayers-Kaz
   name_i18n:
-    es: Rememberer support dwarf-slayers-kaz
+    es: Rememberer Support Dwarf-Slayers-Kaz
   effect: >-
     The Rememberer's task is to record the doom of each of the slayers. When he is close by, the
     slayers will fight even harder to make their death more honourable. Once per game, any Slayer
@@ -763,9 +760,9 @@ conditions:
         kind: mechanic
         id: condition.rememberer-kaz-support
 - id: condition.rememberer-web-support
-  name: Rememberer support dwarf-slayer-cult-web
+  name: Rememberer Support Dwarf-Slayer-Cult-Web
   name_i18n:
-    es: Rememberer support dwarf-slayer-cult-web
+    es: Rememberer Support Dwarf-Slayer-Cult-Web
   effect: >-
     The Rememberer's task is to record the doom of each of the slayers. When he is close by, the
     slayers will fight even harder to make their death more honourable. Once per game, any Slayer
@@ -857,9 +854,9 @@ conditions:
       scope: 'YES'
       binding: {kind: profile, id: profile.active-weapon-restrictions, parameters: {forbids: [two-handed-weapons]}}
 - id: condition.tomb-robber-dodge-known
-  name: Tomb Robber knows Dodge
+  name: Tomb Robber Knows Dodge
   name_i18n:
-    es: Tomb Robber knows Dodge
+    es: Tomb Robber Knows Dodge
   effect: >-
     This Tomb Robber has learned Dodge; Excellent Reflexes improves to 4+ against attacks. The
     shooting action of Dodge is excluded.
@@ -883,9 +880,9 @@ conditions:
         kind: mechanic
         id: condition.tomb-robber-dodge-known
 - id: condition.witch-finder-charge
-  name: Compulsory Witch-finder charge
+  name: Compulsory Witch-Finder Charge
   name_i18n:
-    es: Compulsory Witch-finder charge
+    es: Compulsory Witch-Finder Charge
   effect: >-
     The selected Solkan Witch-finder is making the actual compulsory charge against the supplied
     eligible reachable opponent.
@@ -909,9 +906,9 @@ conditions:
         kind: mechanic
         id: condition.witch-finder-charge
 - id: condition.rune-iron
-  name: Rune of Iron (already inscribed)
+  name: Rune of Iron (Already Inscribed)
   name_i18n:
-    es: Runa de Hierro (ya grabada)
+    es: Runa de Hierro (Ya Grabada)
   effect: >-
     A previously inscribed Rune of Iron grants a 6+ ward save from the specified eligible armour
     item, for this battle. One Rune per item. per item. No inscription roll, manufacturing failure,
@@ -942,9 +939,9 @@ conditions:
             tags: []
             ward_save: 6
 - id: condition.rune-stone
-  name: Rune of Stone (already inscribed)
+  name: Rune of Stone (Already Inscribed)
   name_i18n:
-    es: Runa de Piedra (ya grabada)
+    es: Runa de Piedra (Ya Grabada)
   effect: >-
     A previously inscribed Rune of Stone improves the specified eligible armour item's armour save
     by 1, for this battle. One Rune per item. is simulated.
@@ -973,9 +970,9 @@ conditions:
             tags: []
             armour_save_bonus: 1
 - id: condition.rune-fury
-  name: Rune of Fury (already inscribed)
+  name: Rune of Fury (Already Inscribed)
   name_i18n:
-    es: Runa de Furia (ya grabada)
+    es: Runa de Furia (Ya Grabada)
   effect: >-
     A previously inscribed Rune of Fury grants one additional Attack with the specified eligible
     weapon, for this battle. One Rune per item. is simulated.
@@ -1004,9 +1001,9 @@ conditions:
             tags: []
             attacks_bonus: 1
 - id: condition.rune-striking
-  name: Rune of Striking (already inscribed)
+  name: Rune of Striking (Already Inscribed)
   name_i18n:
-    es: Runa de Golpeo (ya grabada)
+    es: Runa de Golpeo (Ya Grabada)
   effect: >-
     A previously inscribed Rune of Striking grants +1 Weapon Skill for attacks with the specified
     eligible weapon, for this battle. One Rune per item. is simulated.
@@ -1035,9 +1032,9 @@ conditions:
             tags: []
             weapon_skill_bonus: 1
 - id: condition.rune-speed
-  name: Rune of Speed (already inscribed)
+  name: Rune of Speed (Already Inscribed)
   name_i18n:
-    es: Runa de Velocidad (ya grabada)
+    es: Runa de Velocidad (Ya Grabada)
   effect: >-
     A previously inscribed Rune of Speed grants +1 Initiative with the specified eligible weapon,
     for this battle. One Rune per item. is simulated.
@@ -1066,9 +1063,9 @@ conditions:
             tags: []
             initiative_bonus: 1
 - id: condition.rune-cleaving
-  name: Rune of Cleaving (already inscribed)
+  name: Rune of Cleaving (Already Inscribed)
   name_i18n:
-    es: Runa de Corte (ya grabada)
+    es: Runa de Corte (Ya Grabada)
   effect: >-
     A previously inscribed Rune of Cleaving grants +1 Strength with the specified eligible weapon,
     for this battle. One Rune per item. is simulated.
@@ -1124,9 +1121,9 @@ conditions:
         kind: mechanic
         id: condition.bear-handler-nearby
 - id: condition.stupidity-exempt
-  name: Nearby exempting hero
+  name: Nearby Exempting Hero
   name_i18n:
-    es: Nearby exempting hero
+    es: Nearby Exempting Hero
   effect: >-
     The Rat Ogre has its actual qualifying Skaven Hero within 6 inches, so the printed Stupidity
     exemption applies and no Stupidity test is taken. The caller supplies the exemption; the duel
@@ -1152,9 +1149,9 @@ conditions:
         kind: mechanic
         id: condition.stupidity-exempt
 - id: condition.current-warband-leader
-  name: Current warband leader
+  name: Current Warband Leader
   name_i18n:
-    es: Líder actual de la banda
+    es: Líder Actual de la Banda
   effect: >-
     The caller supplies that this warrior is its warband's actual current leader. The position itself
     carries the printed Leader rule, so any warband warrior within 6 inches may use this warrior's
@@ -1186,9 +1183,9 @@ conditions:
         kind: mechanic
         id: condition.current-warband-leader
 - id: condition.adventurer-barbarian-leader
-  name: Barbarian chosen as Leader
+  name: Barbarian Chosen as Leader
   name_i18n:
-    es: Barbarian chosen as Leader
+    es: Barbarian Chosen As Leader
   effect: >-
     This native Adventurer Barbarian is the actual chosen warband Leader. Dim-witted changes only
     his Leadership lent to friends within 6 inches, not his own Leadership.
@@ -1212,9 +1209,9 @@ conditions:
         kind: mechanic
         id: condition.adventurer-barbarian-leader
 - id: condition.poetry-victorious-leader
-  name: Victorious Leader praised in Poetry
+  name: Victorious Leader Praised in Poetry
   name_i18n:
-    es: Victorious Leader praised in Poetry
+    es: Victorious Leader Praised In Poetry
   effect: >-
     The actual Leader of this Ghutani, Muzil or Turjuk band won its previous battle and receives +1
     Leadership for its first actual Leadership test this scenario. Rerolls use that same threshold;
@@ -1242,7 +1239,7 @@ conditions:
 - id: condition.poetry-inspired
   name: Inspired by Poetry
   name_i18n:
-    es: Inspired by Poetry
+    es: Inspired By Poetry
   effect: >-
     The supplied friendly recipient within 6 inches of its Poet receives +1 Weapon Skill and +1
     Attack for this initial player turn only. Prior victory is not required for this separate
@@ -1268,9 +1265,9 @@ conditions:
         kind: mechanic
         id: condition.poetry-inspired
 - id: condition.command.raise-our-insignia
-  name: Raise Our Insignia active
+  name: Raise Our Insignia Active
   name_i18n:
-    es: Raise Our Insignia active
+    es: Raise Our Insignia Active
   effect: >-
     The supplied eligible friendly recipient may reroll Leadership during the current
     Recovery/Movement period. This command expires at the beginning of the next Shooting phase,
@@ -1296,9 +1293,9 @@ conditions:
         kind: mechanic
         id: condition.command.raise-our-insignia
 - id: condition.netted
-  name: Caught in a net
+  name: Caught in a Net
   name_i18n:
-    es: Caught in a net
+    es: Caught In a Net
   effect: >-
     The supplied victim caught in a net counts as Knocked Down and is hit automatically in combat;
     the attacker must still wound. In its next own Recovery, unless Stunned or Out of Action, it
@@ -1326,9 +1323,9 @@ conditions:
         kind: mechanic
         id: condition.netted
 - id: condition.nuttaz-charge
-  name: Required Nuttaz charge
+  name: Required Nuttaz Charge
   name_i18n:
-    es: Required Nuttaz charge
+    es: Required Nuttaz Charge
   effect: >-
     This native Orc Nuttaz is making its actual compulsory charge against the supplied nearest
     visible reachable enemy. The caller supplies target qualification; no movement, visibility
@@ -1354,9 +1351,9 @@ conditions:
         kind: mechanic
         id: condition.nuttaz-charge
 - id: condition.goading-charge
-  name: Charge caused by Goading
+  name: Charge Caused by Goading
   name_i18n:
-    es: Charge caused by Goading
+    es: Charge Caused By Goading
   effect: >-
     This supplied Moulder beast is actually charging as the result of successful Goading. Such a
     charge bypasses Hypnotic Musk. Goading rolls, movement and other results are not produced.
@@ -1534,7 +1531,7 @@ conditions:
         parameters: {maintenance_result: 6}
 
 - id: condition.witch-debilitating
-  name: Witch Potion (debilitating)
+  name: Witch Potion (Debilitating)
   name_i18n: {es: 'Poción de la Bruja (debilitating)'}
   effect: >-
     Minus one Toughness until a 6 in own recovery clears the draught. Supplied potion result for one
@@ -1556,7 +1553,7 @@ conditions:
       binding: {kind: mechanic, id: condition.petru-debilitating}
 
 - id: condition.witch-strength
-  name: Witch Potion (strength)
+  name: Witch Potion (Strength)
   name_i18n: {es: 'Poción de la Bruja (strength)'}
   effect: >-
     Plus one Strength until a 1 in own recovery ends the draught. Supplied potion result for one
@@ -1578,7 +1575,7 @@ conditions:
       binding: {kind: mechanic, id: condition.petru-strength}
 
 - id: condition.witch-resilience
-  name: Witch Potion (resilience)
+  name: Witch Potion (Resilience)
   name_i18n: {es: 'Poción de la Bruja (resilience)'}
   effect: >-
     Plus one Toughness until a 1 in own recovery ends the draught. Supplied potion result for one
@@ -1600,7 +1597,7 @@ conditions:
       binding: {kind: mechanic, id: condition.petru-resilience}
 
 - id: condition.witch-fortitude
-  name: Witch Potion (fortitude)
+  name: Witch Potion (Fortitude)
   name_i18n: {es: 'Poción de la Bruja (fortitude)'}
   effect: >-
     One extra Wound for this battle; once lost it cannot be restored. Supplied potion result for one
@@ -1622,7 +1619,7 @@ conditions:
       binding: {kind: mechanic, id: condition.petru-fortitude}
 
 - id: condition.ye-give-way-refused
-  name: Ye Give Way (refused)
+  name: Ye Give Way (Refused)
   name_i18n: {es: 'Ye Give Way (refused)'}
   effect: >-
     The Hero who refused a prior challenge has -1 to hit in melee until the end of the game,
@@ -1644,7 +1641,7 @@ conditions:
       scope: 'YES'
       binding: {kind: mechanic, id: condition.ye-give-way-refused}
 - id: condition.ye-give-way-victorious
-  name: Ye Give Way (victorious)
+  name: Ye Give Way (Victorious)
   name_i18n: {es: 'Ye Give Way (victorious)'}
   effect: >-
     A Fallen Noble who put the challenged opponent Out of Action has +1 to hit in melee and +1
@@ -1671,7 +1668,7 @@ conditions:
       binding: {kind: profile, id: profile.characteristics, parameters: {bonuses: {strength: 1}}}
 
 - id: condition.disability-1
-  name: Disability result 1
+  name: Disability Result 1
   name_i18n: {es: 'Discapacidad: resultado 1'}
   effect: >-
     Lame and arthritic: minus one Movement and Initiative. Permanent supplied result; no group
@@ -1693,7 +1690,7 @@ conditions:
       scope: 'YES'
       binding: {kind: profile, id: profile.characteristics, parameters: {bonuses: {"movement": -1, "initiative": -1}}}
 - id: condition.disability-2
-  name: Disability result 2
+  name: Disability Result 2
   name_i18n: {es: 'Discapacidad: resultado 2'}
   effect: >-
     Parkinson: minus one Weapon Skill; cannot use two weapons or a weapon and shield. Permanent
@@ -1720,7 +1717,7 @@ conditions:
       binding: {kind: profile, id: profile.equipment-restrictions, parameters: {max_active_one_handed_weapons: 1,
                    forbids: [defence.shield, defence.kite-shield]}}
 - id: condition.disability-3
-  name: Disability result 3
+  name: Disability Result 3
   name_i18n: {es: 'Discapacidad: resultado 3'}
   effect: >-
     Poor eyesight: minus one Ballistic Skill; no shooting action is simulated. Permanent supplied
@@ -1740,7 +1737,7 @@ conditions:
       scope: 'YES'
       binding: {kind: mechanic, id: condition.disability-3}
 - id: condition.disability-4
-  name: Disability result 4
+  name: Disability Result 4
   name_i18n: {es: 'Discapacidad: resultado 4'}
   effect: >-
     Sickly: minus one Toughness. Permanent supplied result; no group creation or reroll.
@@ -1761,7 +1758,7 @@ conditions:
       scope: 'YES'
       binding: {kind: profile, id: profile.characteristics, parameters: {bonuses: {"toughness": -1}}}
 - id: condition.disability-5
-  name: Disability result 5
+  name: Disability Result 5
   name_i18n: {es: 'Discapacidad: resultado 5'}
   effect: >-
     Weakness: minus one Strength. Permanent supplied result; no group creation or reroll.
@@ -1782,7 +1779,7 @@ conditions:
       scope: 'YES'
       binding: {kind: profile, id: profile.characteristics, parameters: {bonuses: {"strength": -1}}}
 - id: condition.disability-6
-  name: Disability result 6
+  name: Disability Result 6
   name_i18n: {es: 'Discapacidad: resultado 6'}
   effect: >-
     Head injury: Stupidity unless within six inches of a Hero. Permanent supplied result; no group
@@ -1801,7 +1798,7 @@ conditions:
       scope: 'YES'
       binding: {kind: mechanic, id: condition.disability-6}
 - id: condition.disability-hero-nearby
-  name: Cripple within six inches of a Hero
+  name: Cripple Within Six Inches of a Hero
   name_i18n: {es: Lisiado a seis pulgadas de un Heroe}
   effect: >-
     Qualified current nearby Hero fact exempts Head Injury Stupidity; not a permanent cure.

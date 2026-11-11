@@ -10,9 +10,7 @@ rules:
     - id: unimplemented.knights-of-the-bitter-moors-mim.band.peasant-labour
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Peasant Labour
   effect: >-
     Bretonnian Knights always use the starting warband prices for Horses and Armour; the peasantry
@@ -42,9 +40,7 @@ rules:
     - id: unimplemented.knights-of-the-bitter-moors-mim.band.hired-swords
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Hired Swords
   effect: >-
     Bretonnians are counted as Humans and can hire any Hired Sword applicable to Humans, except
@@ -71,9 +67,7 @@ rules:
     - id: unimplemented.knights-of-the-bitter-moors-mim.band.ladys-blessing
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: shooting, casting or escape without resolving the
-        duel. Source prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Lady's Blessing
   effect: >-
     Before the game, make a Leadership test against the warband leader's Leadership. If successful,
@@ -134,14 +128,8 @@ rules:
     - id: unimplemented.knights-of-the-bitter-moors-mim.questing-knight.knights-virtue
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: group Rout, All Alone or combat against multiple
-        opponents. Source prose is retained; this is an exclusion, not deferred modular
-        implementation.
+      reason: deferred.other
   name: Knights Virtue
-  effect: >-
-    A Questing Knight is a chivalrous warrior superior to ordinary warriors. He will never panic and
-    break from combat and does not have to pass a Leadership test for being all alone.
   source:
     manual: broheim.net
     printed_page: 4
@@ -149,13 +137,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Knights Of The Bitter%20Moors.pdf
   name_i18n:
     es: Virtud del Caballero
-  effect_i18n:
-    es: >-
-      Un Caballero Buscador es un guerrero caballeroso superior a los guerreros comunes. Nunca entra
-      en pánico ni rompe el combate, y no tiene que superar un chequeo de Liderazgo por estar solo.
   applies_to:
     profile_ids:
     - questing-knight
+  rule_ref: shared-rule.knights-virtue
 - id: questing-knight--ride
   runtime:
     scope: LATER
@@ -165,11 +150,11 @@ rules:
     - id: unimplemented.knights-of-the-bitter-moors-mim.questing-knight.ride
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: deferred.other
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Ride – Horse, Warhorse
-  effect: Knights have the Ride skill as detailed in the Blazing Saddles article.
   source:
     manual: broheim.net
     printed_page: 4
@@ -177,12 +162,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Knights Of The Bitter%20Moors.pdf
   name_i18n:
     es: Montar – Caballo, Caballo de Guerra
-  effect_i18n:
-    es: >-
-      Los Caballeros tienen la habilidad Montar tal como se detalla en el artículo Blazing Saddles.
   applies_to:
     profile_ids:
     - questing-knight
+  rule_ref: shared-rule.knights-ride
 - id: questing-knight--righteous-charge
   runtime:
     scope: 'YES'
@@ -194,6 +177,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.righteous-charge
+      clauses:
+      - id: whole
+        scope: 'NO'
+      - id: friendly-aura
+        scope: 'NO'
   name: Righteous Charge
   effect: >-
     When the mounted Knight charges, if he has at least 1 other model within 2 inches, all friendly
@@ -224,11 +212,11 @@ rules:
     - id: unimplemented.knights-of-the-bitter-moors-mim.knights-errant.ride
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: deferred.other
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Ride – Horse, Warhorse
-  effect: Knights have the Ride skill as detailed in the Blazing Saddles article.
   source:
     manual: broheim.net
     printed_page: 4
@@ -236,12 +224,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Knights Of The Bitter%20Moors.pdf
   name_i18n:
     es: Montar – Caballo, Caballo de Guerra
-  effect_i18n:
-    es: >-
-      Los Caballeros tienen la habilidad Montar tal como se detalla en el artículo Blazing Saddles.
   applies_to:
     profile_ids:
     - knights-errant
+  rule_ref: shared-rule.knights-ride
 - id: knights-errant--knights-virtue
   runtime:
     scope: 'NO'
@@ -251,14 +237,8 @@ rules:
     - id: unimplemented.knights-of-the-bitter-moors-mim.knights-errant.knights-virtue
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: group Rout, All Alone or combat against multiple
-        opponents. Source prose is retained; this is an exclusion, not deferred modular
-        implementation.
+      reason: deferred.other
   name: Knights Virtue
-  effect: >-
-    A Knight Errant is a chivalrous warrior superior to ordinary warriors. He will never panic and
-    break from combat and does not have to pass a Leadership test for being all alone.
   source:
     manual: broheim.net
     printed_page: 4
@@ -266,13 +246,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Knights Of The Bitter%20Moors.pdf
   name_i18n:
     es: Virtud del Caballero
-  effect_i18n:
-    es: >-
-      Un Caballero Novicio es un guerrero caballeroso superior a los guerreros comunes. Nunca entra
-      en pánico ni rompe el combate, y no tiene que superar un chequeo de Liderazgo por estar solo.
   applies_to:
     profile_ids:
     - knights-errant
+  rule_ref: shared-rule.knights-virtue
 - id: squires--knighted
   runtime:
     scope: 'NO'
@@ -282,10 +259,7 @@ rules:
     - id: unimplemented.knights-of-the-bitter-moors-mim.squires.knighted
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: campaign, recruitment, progression or post-duel
-        aftermath. Source prose is retained; this is an exclusion, not deferred modular
-        implementation.
+      reason: out-of-scope.campaign
   name: Knighted
   effect: >-
     Once a squire has reached 20 experience points he is considered to have finished his
@@ -315,9 +289,10 @@ rules:
     - id: unimplemented.knights-of-the-bitter-moors-mim.squires.ride
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: deferred.other
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Ride – Horse
   effect: Squires have the Ride skill as detailed in the Blazing Saddles article.
   source:
@@ -341,9 +316,10 @@ rules:
     - id: unimplemented.knights-of-the-bitter-moors-mim.squires.animal-handler
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: deferred.other
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Animal Handler – Horse/Warhorse
   effect: Squires have the Animal Handler skill as detailed in the Blazing Saddles article.
   source:
@@ -368,9 +344,10 @@ rules:
     - id: unimplemented.knights-of-the-bitter-moors-mim.mounted-yeomen.mounted-or-nothin
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: deferred.other
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Mounted or Nothin'
   effect: >-
     Yeomen come with riding Horses included in their buying price and as such come with the skill
@@ -400,8 +377,7 @@ rules:
     - id: unimplemented.knights-of-the-bitter-moors-mim.mounted-yeomen.smarts
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Smarts
   effect: >-
     Even with their supreme lack of caring for the peasantry, knights know having too much cavalry
@@ -431,8 +407,7 @@ rules:
     - id: unimplemented.knights-of-the-bitter-moors-mim.band.field-trebuchet
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Field Trebuchet (Special Equipment)
   effect: >-
     A siege weapon costing 175 gold crowns (special availability, takes D3+1 games to build if not
@@ -483,9 +458,7 @@ rules:
     - id: unimplemented.knights-of-the-bitter-moors-mim.band.bretonnian-special-skills
       scope: 'NO'
       binding: null
-      reason: >-
-        Tracked with the individual Virtues below: the table itself only points their heroes at the
-        skill list.
+      reason: out-of-scope.campaign
   name: Bretonnian Special Skills
   effect: >-
     Bretonnian Heroes may use the following skill table instead of the standard skill tables
@@ -513,8 +486,7 @@ rules:
     - id: unimplemented.knights-of-the-bitter-moors-mim.band.virtue-of-purity
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: dispelling hostile spells is a magic-subsystem interaction.
+      reason: out-of-scope.magic
   name: Virtue of Purity
   effect: >-
     The knight's purpose is to serve the lady of the lake. His purity of heart and discipline endow
@@ -575,8 +547,7 @@ rules:
     - id: unimplemented.knights-of-the-bitter-moors-mim.band.virtue-of-discipline
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the 1v1 duel: a warband Rout-test reroll.
+      reason: out-of-scope.group
   name: Virtue of Discipline
   effect: >-
     The Knight has total faith in his Chivalric code: he maintains self-control in the face of
@@ -636,8 +607,7 @@ rules:
     - id: unimplemented.knights-of-the-bitter-moors-mim.band.virtue-of-the-impetuous
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: charge-move bonuses are part of the movement subsystem.
+      reason: out-of-scope.movement
   name: Virtue of the Impetuous
   effect: >-
     The Knight is eager to get to grips with the enemy. He charges into combat with reckless
@@ -667,8 +637,7 @@ rules:
     - id: unimplemented.knights-of-the-bitter-moors-mim.band.virtue-of-the-squire
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: skill-list access and the Knighted promotion are advancement-time mechanics.
+      reason: out-of-scope.campaign
   name: Virtue of the Squire
   effect: >-
     Squires only. The squire has accepted his place in the world, his is a hunter's heart. The

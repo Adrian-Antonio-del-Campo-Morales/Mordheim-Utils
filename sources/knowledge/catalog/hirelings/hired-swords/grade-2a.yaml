@@ -46,9 +46,7 @@ profiles:
       - id: beggar-scrounge-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          The extra exploration die belongs to the post-battle exploration procedure and produces no
-          consequence in a resolved duel.
+        reason: out-of-scope.campaign
     effect_i18n:
       es: >-
         Añade un dado de exploración cuando es elegible.
@@ -65,9 +63,7 @@ profiles:
       - id: beggar-not-a-threat-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          The clause governs an enemy's target and charge choices inside the battle's movement and
-          shooting procedures; the resolved duel already fields and engages both warriors.
+        reason: out-of-scope.shooting
     effect_i18n:
       es: >-
         Puede ser ignorado para las restricciones de objetivo/carga de la fuente.
@@ -201,9 +197,7 @@ profiles:
       effects:
       - id: excluded.scope
         scope: 'NO'
-        reason: >-
-          Banishment after Out of Action or loss of an external summoner; no unresolved
-          campaign/group producer is simulated.
+        reason: out-of-scope.campaign
         binding: null
   - id: hireling.hired-sword.chaos-fury.rule.fly
     name: Fly
@@ -220,8 +214,7 @@ profiles:
       effects:
       - id: excluded.scope
         scope: 'NO'
-        reason: >-
-          Flying movement is outside the close combat duel.
+        reason: out-of-scope.movement
         binding: null
   - id: hireling.hired-sword.chaos-fury.rule.malicious
     name: Malicious
@@ -238,8 +231,7 @@ profiles:
       effects:
       - id: excluded.scope
         scope: 'NO'
-        reason: >-
-          Movement after taking an opponent Out of Action occurs after the duel is already resolved.
+        reason: out-of-scope.movement
         binding: null
   source_refs:
   - manual: mordheimer.net
@@ -317,8 +309,7 @@ profiles:
       - id: moving-bow-shot
         scope: 'NO'
         binding: null
-        reason: >-
-          Movement and shooting resolution are outside the duel.
+        reason: out-of-scope.shooting
   - id: hireling.hired-sword.cursed-hillman.rule.thin-flesh
     name: Thin Flesh
     effect: >-
@@ -388,9 +379,7 @@ profiles:
       - id: shooting-and-collection
         scope: 'NO'
         binding: null
-        reason: >-
-          Ranged cloak save, shooting-phase Control and post-battle equipment collection are outside
-          the duel; Rage is an unselected advancement skill.
+        reason: out-of-scope.shooting
   - id: hireling.hired-sword.cursed-hillman.rule.wolf-form
     name: Wolf Form
     name_i18n:
@@ -502,9 +491,7 @@ profiles:
       - id: dark-mage-wizard-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          Spell-list selection and spell casting are the excluded magic subsystem; the duel resolves
-          no casting.
+        reason: out-of-scope.magic
     effect_i18n:
       es: >-
         Usa la lista de hechizos de Magia Oscura.
@@ -543,9 +530,7 @@ profiles:
       effects:
       - id: excluded.scope
         scope: 'NO'
-        reason: >-
-          Immunity to All Alone and never fleeing as a result of that test require a group; this is
-          not immunity to Fear or general Psychology.
+        reason: out-of-scope.group
         binding: null
   source_refs:
   - manual: mordheimer.net
@@ -626,9 +611,7 @@ profiles:
       - id: dwarf-slayer-pirate-all-alone
         scope: 'NO'
         binding: null
-        reason: >-
-          The All Alone half of Deathwish is a multiple-combat clause; the duel fields two warriors,
-          so no All Alone test is produced.
+        reason: out-of-scope.group
       - id: mechanic.festooned-with-pistols
         scope: 'YES'
         binding:
@@ -706,9 +689,7 @@ profiles:
       - id: patron-source-table
         scope: 'NO'
         binding: null
-        reason: >-
-          Choose exactly one individual patron child; casting and campaign advancement producers are
-          excluded.
+        reason: out-of-scope.magic
   - id: hireling.hired-sword.emissary-of-chaos.patron.khorne
     name: Patron Khorne
     name_i18n:
@@ -924,7 +905,7 @@ profiles:
         Cada turno la Daga Izquierda concede un ataque adicional de daga o para como una espada,
         renunciando a su ataque adicional.
     name_i18n:
-      es: "Daga Izquierda"
+      es: Daga Izquierda
     runtime:
       scope: 'YES'
       implemented: 'YES'
@@ -997,9 +978,7 @@ profiles:
       - id: the-fallen-sister-wizard-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          Spell-list selection and spell casting are the excluded magic subsystem; the duel resolves
-          no casting.
+        reason: out-of-scope.magic
     effect_i18n:
       es: >-
         Puede usar Magia Menor según la fuente.
@@ -1016,9 +995,7 @@ profiles:
       - id: the-fallen-sister-warrior-wizard-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          The warrior-wizard rule belongs to spell casting and campaign advancement, which the duel
-          excludes; the clause establishes no individual melee consequence.
+        reason: out-of-scope.magic
     effect_i18n:
       es: >-
         Usa la regla de guerrero-hechicero de la fuente.
@@ -1098,9 +1075,7 @@ profiles:
       - id: goblin-lantern-bearer-smart-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          Animosity is the excluded group procedure; being exempt from it has no consequence in a
-          one-on-one duel.
+        reason: out-of-scope.group
   - id: hireling.hired-sword.goblin-lantern-bearer.rule.very-lucky
     name: Very Lucky
     effect: Uses special post-battle injury table 1 Lost, 2-6 Survives.
@@ -1112,9 +1087,7 @@ profiles:
       - id: goblin-lantern-bearer-very-lucky-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          The special injury table resolves after the battle and produces no consequence in a
-          resolved duel.
+        reason: out-of-scope.campaign
     effect_i18n:
       es: >-
         Usa la tabla especial de lesiones tras la batalla: 1 Desaparece, 2-6 Sobrevive.
@@ -1131,8 +1104,7 @@ profiles:
       - id: goblin-lantern-bearer-small-size-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          The bonus applies to the post-battle exploration total, outside the duel.
+        reason: out-of-scope.campaign
     effect_i18n:
       es: >-
         Suma +3 al total de exploración según la fuente.
@@ -1210,9 +1182,7 @@ profiles:
       - id: gravesman-retains-dead-hero-equipment
         scope: 'NO'
         binding: null
-        reason: >-
-          Retaining a dead Hero's equipment is a post-battle roster and upkeep consequence; no
-          participant in the duel is affected.
+        reason: out-of-scope.campaign
   source_notes:
   - Mordheimer's profile row is labelled 'Diestro'; retained data values but not the apparent label typo.
   source_refs:
@@ -1379,9 +1349,7 @@ profiles:
       - id: imperial-tactician-expert-tactician-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          The recommended changes to the warband's deployment are a pre-battle deployment procedure
-          the duel does not run.
+        reason: out-of-scope.movement
   - id: hireling.hired-sword.imperial-tactician.rule.read-the-battle
     name: Read the Battle
     effect: Uses source tactical rule.
@@ -1398,8 +1366,7 @@ profiles:
       - id: imperial-tactician-read-the-battle-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          Passing the warband's first Rout test belongs to the excluded group rout procedure.
+        reason: out-of-scope.group
   - id: hireling.hired-sword.imperial-tactician.rule.organized-search-party
     name: Organized Search Party
     effect: Uses post-battle search rule.
@@ -1411,8 +1378,7 @@ profiles:
       - id: imperial-tactician-organized-search-party-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          The post-battle search rule is a campaign procedure, outside the duel.
+        reason: out-of-scope.campaign
     effect_i18n:
       es: >-
         Usa la regla de búsqueda tras la batalla.
@@ -1429,9 +1395,7 @@ profiles:
       - id: imperial-tactician-send-false-signals-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          The scenario/tactical rule concerns battle deployment and scenario procedures, outside the
-          resolved duel.
+        reason: out-of-scope.movement
     effect_i18n:
       es: >-
         Usa la regla de escenario/táctica de la fuente.
@@ -1520,9 +1484,7 @@ profiles:
       - id: knight-of-the-white-wolf-cavalryman-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          The optional Warhorse and its mounted bonuses belong to the excluded mount subsystem, and
-          the rating increase is a roster cost.
+        reason: out-of-scope.movement
   - id: hireling.hired-sword.knight-of-the-white-wolf.rule.among-wolves
     name: Among Wolves
     effect: Uses source wolf-related rule.
@@ -1539,8 +1501,7 @@ profiles:
       - id: knight-of-the-white-wolf-among-wolves-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          The halved upkeep for a Middenheim warband is a hiring-cost clause settled between games.
+        reason: out-of-scope.campaign
   - id: hireling.hired-sword.knight-of-the-white-wolf.rule.campaign-eligibility
     name: Dynamic Hiring Eligibility — Warrior Priest Incompatibility
     effect: >-
@@ -1554,9 +1515,7 @@ profiles:
       - id: knight-of-the-white-wolf-campaign-eligibility-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          The roster-composition restriction is evaluated when the warband is hired and has no
-          duel-time consequence.
+        reason: out-of-scope.construction
     effect_i18n:
       es: >-
         El Caballero del Lobo Blanco no se unirá a una banda cuya plantilla actual incluya un
@@ -1631,9 +1590,7 @@ profiles:
       - id: ninja-gnoblar-stealthy-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          Hiding and concealment on the battle map are visibility and deployment procedures the duel
-          does not resolve.
+        reason: out-of-scope.movement
     effect_i18n:
       es: >-
         Usa la regla de sigilo de la fuente.
@@ -1650,8 +1607,7 @@ profiles:
       - id: ninja-gnoblar-rooftop-to-rooftop-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          Rooftop movement is a terrain movement procedure, outside the resolved duel.
+        reason: out-of-scope.movement
     effect_i18n:
       es: >-
         Usa la regla de movimiento por tejados de la fuente.
@@ -1673,9 +1629,7 @@ profiles:
       - id: ninja-gnoblar-expert-rooftop-jumper-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          Jumping distance and the Initiative test for jumps and diving charges are movement and
-          terrain clauses.
+        reason: out-of-scope.movement
   - id: hireling.hired-sword.ninja-gnoblar.rule.campaign-eligibility
     name: Dynamic Hiring Eligibility — Fear-Causing Roster
     effect: >-
@@ -1688,9 +1642,7 @@ profiles:
       - id: ninja-gnoblar-campaign-eligibility-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          The roster-composition restriction is evaluated when the warband is hired and has no
-          duel-time consequence.
+        reason: out-of-scope.construction
     effect_i18n:
       es: >-
         El Gnoblar Ninja solo puede ser contratado si la banda actual no contiene criaturas que
@@ -1754,8 +1706,7 @@ profiles:
       - id: ogre-slave-master-slave-master-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          The slave-master rule is a campaign hiring and upkeep procedure, outside the duel.
+        reason: out-of-scope.campaign
     effect_i18n:
       es: >-
         Usa la regla de campaña de tratante de esclavos de la fuente.
@@ -1862,8 +1813,7 @@ profiles:
       - id: slaver-slaver-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          Automatic capture and slave sale are post-battle campaign procedures, outside the duel.
+        reason: out-of-scope.campaign
     effect_i18n:
       es: >-
         Usa las reglas de captura automática y venta de esclavos de la fuente.
@@ -1936,9 +1886,7 @@ profiles:
       - id: swashbuckler-acrobatic-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          The waived Initiative test when wounded near a building edge is a terrain and falling
-          clause.
+        reason: out-of-scope.movement
   - id: hireling.hired-sword.swashbuckler.rule.nimble
     name: Nimble
     effect: Uses source nimble rule.
@@ -1950,8 +1898,7 @@ profiles:
       - id: swashbuckler-nimble-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          The nimble rule governs movement, which the resolved duel does not resolve.
+        reason: out-of-scope.movement
     effect_i18n:
       es: >-
         Usa la regla de agilidad de la fuente.
@@ -2037,8 +1984,7 @@ profiles:
       - id: ungor-trapper-set-traps-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          Setting traps is a pre-battle terrain procedure; no trap is resolved in the duel.
+        reason: out-of-scope.movement
     effect_i18n:
       es: >-
         Usa la regla de trampas de la fuente.
@@ -2055,8 +2001,7 @@ profiles:
       - id: ungor-trapper-hunter-s-eye-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          The hunting rule concerns locating prey on the battle map, outside the resolved duel.
+        reason: out-of-scope.movement
     effect_i18n:
       es: >-
         Usa la regla de cazador de la fuente.
@@ -2073,9 +2018,7 @@ profiles:
       - id: ungor-trapper-excellent-sight-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          Spotting and visibility are map procedures that produce no consequence in the resolved
-          duel.
+        reason: out-of-scope.movement
     effect_i18n:
       es: >-
         Usa la regla de visión de la fuente.
@@ -2097,9 +2040,7 @@ profiles:
       - id: ungor-trapper-just-a-twit-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          The departure roll and the upkeep taken along are post-battle roster and payment
-          consequences.
+        reason: out-of-scope.campaign
   unresolved_references:
   - kind: special_skill_options
     source_name: Mutant/Fearless/Manhater
@@ -2176,10 +2117,7 @@ profiles:
       - id: weaponsmith-maintenance-post-battle-table
         scope: 'NO'
         binding: null
-        reason: >-
-          Rolling the maintenance table before a game is an excluded producer, not an automatic
-          bonus to the Weaponsmith. Supply the first result with condition.maintenance-1 through
-          condition.maintenance-6 on an eligible recipient; missile ranges are not simulated.
+        reason: out-of-scope.shooting
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2237,9 +2175,7 @@ profiles:
       - id: wood-elf-hunter-stalk-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          Stalking and concealment are map deployment and visibility procedures, outside the
-          resolved duel.
+        reason: out-of-scope.movement
     effect_i18n:
       es: >-
         Usa la regla de acecho de la fuente.
@@ -2256,8 +2192,7 @@ profiles:
       - id: wood-elf-hunter-hunted-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          The hunted rule is a post-battle retention consequence, outside the duel.
+        reason: out-of-scope.campaign
     effect_i18n:
       es: >-
         Usa la regla de cacería/retención de la fuente.
@@ -2274,8 +2209,7 @@ profiles:
       - id: wood-elf-hunter-keen-eyed-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          Spotting is a map visibility procedure, outside the resolved duel.
+        reason: out-of-scope.movement
     effect_i18n:
       es: >-
         Usa la regla de avistamiento de la fuente.

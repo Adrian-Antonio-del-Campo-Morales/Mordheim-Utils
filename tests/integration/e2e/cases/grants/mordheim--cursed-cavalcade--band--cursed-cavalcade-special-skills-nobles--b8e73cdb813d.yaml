@@ -1,0 +1,124 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/cursed-cavalcade/band--cursed-cavalcade-special-skills-noblesse-obliges/mechanic.fear-immunity
+# authoring_status: AUTHORED
+# authoring_progress: both admitted clauses carry authored scenarios (noblesse-fear-immunity 2, noblesse-stomp 2), derived
+# from the printed rule, the recorded semantic contract and the printed profile; any remaining
+# No admitted clause of this origin is left pending.  REVIEWED still requires manual semantic
+# review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: the bearer aristocrat is the declared recipient, built from its printed profile (W1 A1); the opponent is a hand-built fixture that declares its own facts.
+#   2 scenario(s) cover the clause: the fear-causing charger reaches the bearer, which would be tested and is not, so the tape holds only the two attack pools; the same setup does request the two-dice Fear test for companions, which does not carry the rule.
+#   Every strike is declared as a natural 1, so each round reports the Fear or Stupidity request under test and nothing else.
+#   REVIEWED still requires manual semantic review.
+#
+# AUTHORED: 2 scenarios evidence the printed stomp at the wound boundary, from the printed
+#   benefit text and the printed aristocrat profile; no engine output was consulted.  The recipient is the same
+#   declared bearer the immunity clause uses - the printed aristocrat carrying the band rule - and the opposing
+#   fixture is hand-built, so the clause's own condition is a supplied fact rather than a profile inference.
+#   The knocked-down defender is declared through `initial_state.second.condition: KNOCKED_DOWN`, a state field of
+#   the runner's own fixture vocabulary (phases.Condition), and its own attack dice are suppressed with
+#   `attacks: 0`, which the corpus already does for a hand-built opponent.  The stomp is then the SECOND attack
+#   die of the same round: the identical hit and wound faces (4 and 4 against Weapon Skill 3 and Toughness 3)
+#   land twice on the knocked-down defender and once on the standing control, so the extra attack is observed as
+#   `attacks.1.hit`/`attacks.1.damage` plus the defender's wound count (three wounds minus two against the
+#   stomp, three minus one without it).  The printed "at their own Strength" term is read by giving the ordinary
+#   and the stomp attack the same declared wound face against the same Toughness.  The record's effect id is the
+#   register's proposal and the duel pool has no branch granting this attack yet, which is the defect these two
+#   tapes detect; the earlier reading that the defender state was undeclarable is withdrawn (superseded note: the
+#   attack-pool separation it asked for is simply the pool size, and the state is declarable).
+
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/cursed-cavalcade/band--cursed-cavalcade-special-skills-noblesse-obliges/mechanic.fear-immunity
+  id: the-fear-immune-warrior-is-not-tested
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: cursed-cavalcade, profile_id: aristocrat, special_rule_ids: [band--cursed-cavalcade-special-skills-noblesse-obliges]}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/cursed-cavalcade/band--cursed-cavalcade-special-skills-noblesse-obliges/mechanic.fear-immunity
+  id: a-band-mate-without-the-immunity-is-tested
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: cursed-cavalcade, profile_id: companions}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed stomp: against a defender already Knocked Down the warrior's allocation carries one extra attack at
+# its own Strength, so the same declared faces take a second wound from the three-wound fixture.
+- audit_id: rule/mordheim/cursed-cavalcade/band--cursed-cavalcade-special-skills-noblesse-obliges/mechanic.noblesse-stomp
+  id: the-stomp-adds-one-attack-against-a-knocked-down-opponent
+  fighters:
+    first: {collection: mordheim, band_id: cursed-cavalcade, profile_id: aristocrat, special_rule_ids: [band--cursed-cavalcade-special-skills-noblesse-obliges]}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state:
+    second: {condition: KNOCKED_DOWN, attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  # A Knocked Down defender is hit automatically, so neither attack asks for a hit die; the stomp is
+  # its own allocated attack (round.N.first.stomp.attack.M) at the warrior's own Strength.  The
+  # dagger attack fails its wound roll and the stomp lands: a Knocked Down warrior that suffers a
+  # wound is taken Out of Action, so the stomp is what ends the fight.  The Out of Action condition
+  # is recorded on the state; the Wounds characteristic itself is not rewritten.
+  rolls:
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.first.stomp.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: false, attacks.1.hit: true,
+        attacks.1.wounded: true, attacks.1.damage: 1,
+        state.second.wounds: 3, state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+# The control for the same fixture with a standing opponent: only the ordinary attack die is allocated, so the
+# identical hit and wound faces leave the fixture one wound higher.  The two tapes differ only in the stomp.
+- audit_id: rule/mordheim/cursed-cavalcade/band--cursed-cavalcade-special-skills-noblesse-obliges/mechanic.noblesse-stomp
+  id: without-a-knocked-down-opponent-there-is-no-stomp
+  fighters:
+    first: {collection: mordheim, band_id: cursed-cavalcade, profile_id: aristocrat, special_rule_ids: [band--cursed-cavalcade-special-skills-noblesse-obliges]}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  # The aristocrat's dagger lets the standing, unarmoured defender save at 6+, and the declared save
+  # fails.  No stomp attack follows, so the round ends after this one wound.
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/material.normal
-# scaffold_fingerprint: de47d10f488bcb8593256dbf05a5234b9858017363ac98ee2162e070f454ae68
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clause carries two authored scenarios
 #   pinning the absence of a Strength and of a save modifier. REVIEWED still
@@ -10,46 +9,18 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 2 scenarios show that a normal-material weapon keeps the
+# AUTHORED: 2 scenarios show that a normal-material weapon keeps the
 #   base Strength (a 3 does not wound Toughness 3) and adds no save modifier
 #   (a 5+ armour holds on a 5). Pending semantic review.
-# origin_id:
-#   mechanic/material.normal
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   30eb6e14bfaac0d9672726f1b2fac659bb904406bd7699afa3bf13aae8cb2da9
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   No material modifier.
-# Semantic contract (check analysis_status before treating as accepted):
-#   The normal material adds no modifier to the attack. Closure: a weapon declared with the normal material carries no additional Strength, armour, Initiative or save term.
-# effect_id:
-#   material.normal
-# relation:
-#   equivalent
-# parameters:
-#   {}
-# conditions:
-#   {"trigger": "attack"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   The contract is an empty parameter set carrying only the material tag, so no modifier term is produced; the clause is recorded expressly rather than left as a default because the absence of a term is the printed rule.
 
 # --- Authored scenarios ---
 # mechanic/material.normal — the empty material term.
 #
 # Expectations come from the printed rule and the accepted clause `whole` of
-# docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv, never from engine output:
+# the knowledge-base clause contracts (sources/knowledge), never from engine output:
 # the normal material adds no modifier, so a weapon declared with it carries no
 # additional Strength, save or Initiative term.  Both scenarios pin a boundary
 # that would move if a term were added: a 3 does not wound Toughness 3 at
@@ -61,7 +32,6 @@
 
 - audit_id: mechanic/material.normal
   id: normal-material-keeps-the-base-wound-target
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -82,7 +52,6 @@
 
 - audit_id: mechanic/material.normal
   id: normal-material-adds-no-save-modifier
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace

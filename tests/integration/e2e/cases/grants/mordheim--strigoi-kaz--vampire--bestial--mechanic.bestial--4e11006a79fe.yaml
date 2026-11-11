@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/strigoi-kaz/vampire--bestial/mechanic.bestial
-# scaffold_fingerprint: ccb1a8b71b5ac32a316d529bf642b9d7f7b9eeb0752fbfa0bb9bd069d5970d6b
 # authoring_status: AUTHORED
 # authoring_progress: the admitted bestial clause carries two authored scenarios derived from the
 # printed rule and the printed profile; the bearer is the printed Vampire profile that prints the
@@ -10,12 +9,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: bestial (scope: YES)
-# AUTHORED[bestial]: 2 scenarios evidence the printed 6+ ward save taken after the wound: the
+# AUTHORED: 2 scenarios evidence the printed 6+ ward save taken after the wound: the
 # declared six negates the wound and leaves the bearer untouched, and the same attack with a five
 # is not saved and costs one wound.  The bearer is the printed strigoi-kaz Vampire profile that
 # prints the rule; the attacker's Weapon Skill, Strength, Toughness and Initiative are hand-built
@@ -23,32 +20,6 @@
 # attacker's hit, wound and special-save dice.  Hit 4 hits against an equal Weapon Skill and wound
 # 4 wounds at equal Strength and Toughness, so the only difference between the two scenarios is the
 # declared special-save face.  REVIEWED still requires manual semantic review.
-# origin_id:
-#   rule/mordheim/strigoi-kaz/vampire--bestial/mechanic.bestial
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/strigoi-kaz/special-rules.yaml
-# source_fingerprint:
-#   b16063d3f06ad1b11ea73df11b5b804582bb448cb6cad7348142198fc7ae8ef6
-# source_sha256_at_generation:
-#   fff01094ff532d683f96e4307109eef60ea535fc1e707be07db567aa31988053
-# Printed rule text:
-#   The vampire has an innate way of avoiding being hurt. He has a 6+ ward save against all attacks.
-# Semantic contract (check analysis_status before treating as accepted):
-#   This warrior has a 6+ ward save against all attacks. Observable: an unsaved hit may still be negated on a 6.
-# effect_id:
-#   mechanic.bestial
-# relation:
-#   related
-# parameters:
-#   {"ward_save":6}
-# conditions:
-#   {"trigger":"an attack that has hit and wounded this warrior","recipient":"this warrior","duration":"whole duel"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Cross-family special save (block B granularity); execution.yaml models it as ward_save 6.
 
 # --- Authored scenarios ---
 # Derived from the printed rule and the printed profile; no engine output was consulted.  The
@@ -56,7 +27,6 @@
 # bearer at its starting wound total.
 - audit_id: rule/mordheim/strigoi-kaz/vampire--bestial/mechanic.bestial
   id: the-declared-six-negates-the-wound
-  covers: [bestial]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -76,7 +46,6 @@
 # One face below the printed 6+ is not enough: the same attack costs one wound.
 - audit_id: rule/mordheim/strigoi-kaz/vampire--bestial/mechanic.bestial
   id: one-face-below-the-printed-save-fails
-  covers: [bestial]
   fighters:
     first:
       main_weapon_id: weapon.mace

@@ -10,8 +10,7 @@ rules:
     - id: unimplemented.sorcerous-society-lotd4.band.keep-it-secret
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: hired-sword recruitment eligibility is a campaign/hiring mechanic.
+      reason: out-of-scope.campaign
   name: Keep It Secret, Keep It Safe!
   effect: >-
     A Sorcerous Society warband may never have a Hired Sword or Dramatis Personae with the Wizard
@@ -40,11 +39,7 @@ rules:
     - id: unimplemented.sorcerous-society-lotd4.band.vagaries-of-magic
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: miscast resolution is a magic-subsystem interaction. The Magical Failure Table
-        the rule invokes (Border Town Burning, used with permission) is printed with the rule: the
-        band contract has no table slot, so the rows travel as the rule's own text, the way the KB
-        keeps its other printed charts inside the rule that rolls on them.
+      reason: out-of-scope.magic
   name: The Vagaries of Magic
   effect: >-
     Members of the Sorcerous Society are using powerful and sometimes little known spells. As a
@@ -123,10 +118,7 @@ rules:
     - id: unimplemented.sorcerous-society-lotd4.magus.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic subsystem. The four Elemental lores this rule draws from are preserved
-        in catalog/campaign/magic.yaml; Lesser Magic is already modeled by the active KB as
-        lore.lesser-magic.
+      reason: out-of-scope.magic
   name: Wizard
   effect: >-
     The Magus is a powerful wizard and may randomly generate two spells from any one Elemental list,
@@ -154,8 +146,7 @@ rules:
     - id: unimplemented.sorcerous-society-lotd4.companion.dont-look-at-me
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: leadership eligibility and rout tests are campaign-resolution mechanics.
+      reason: out-of-scope.campaign
   name: Don't Look at Me!
   effect: >-
     A Companion does not command the respect that a wizard does. As a result the Companion may never
@@ -186,9 +177,7 @@ rules:
     - id: unimplemented.sorcerous-society-lotd4.companion.body-guard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: intercepting missile fire and charges requires movement and shooting
-        resolution outside the duel scope.
+      reason: out-of-scope.shooting
   name: Body Guard
   effect: >-
     If the Companion is within 2 inches of a Wizard and not involved in Hand to Hand combat, he will
@@ -225,8 +214,7 @@ rules:
     - id: unimplemented.sorcerous-society-lotd4.mage.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic subsystem; see catalog/campaign/magic.yaml for the Elemental lores.
+      reason: out-of-scope.magic
   name: Wizard
   effect: >-
     The Mage is a wizard, and may randomly generate a spell from any one Elemental list, or from the
@@ -254,8 +242,7 @@ rules:
     - id: unimplemented.sorcerous-society-lotd4.mage.respect-your-betters
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: the Wizard's Duel is a campaign-resolution mechanic outside the duel scope.
+      reason: out-of-scope.campaign
   name: Respect Your Betters
   effect: >-
     A Mage may never have more spells than the Leader. If a Mage has more spells than the leader he
@@ -285,8 +272,7 @@ rules:
     - id: unimplemented.sorcerous-society-lotd4.untrained.here-hold-this
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: equipment-carrying exemption with no direct combat effect.
+      reason: out-of-scope.construction
   name: Here, Hold This
   effect: Untrained may be equipped with special items (like holy relics or lucky charms).
   source:
@@ -312,8 +298,7 @@ rules:
     - id: unimplemented.sorcerous-society-lotd4.untrained.harnessed
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: the 'Lads Got Talent' advancement roll is a campaign-progression mechanic.
+      reason: out-of-scope.campaign
   name: Harnessed
   effect: >-
     Should an Untrained roll a 'Lads Got Talent' roll, they immediately gain the 'Wizard' skill.
@@ -343,8 +328,7 @@ rules:
     - id: unimplemented.sorcerous-society-lotd4.grunt.prove-that-talent
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: the 'Lads Got Talent' advancement roll is a campaign-progression mechanic.
+      reason: out-of-scope.campaign
   name: Prove That Talent!
   effect: >-
     If 'Lads Got Talent' is rolled the individual Grunt can either become a mundane Hero or may
@@ -375,8 +359,7 @@ rules:
     - id: unimplemented.sorcerous-society-lotd4.band.scribe
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: scroll-making and difficulty-roll bonuses are magic-subsystem interactions.
+      reason: out-of-scope.magic
   name: Scribe
   effect: >-
     The warrior is a natural adept at writing and making scrolls. Any warrior with the ability to
@@ -410,8 +393,7 @@ rules:
     - id: unimplemented.sorcerous-society-lotd4.band.mind-focus
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: difficulty-roll re-rolls are magic-subsystem interactions.
+      reason: out-of-scope.magic
   name: Mind Focus
   effect: >-
     The warrior possesses a great strength of mind which allows him to concentrate beyond the levels
@@ -442,8 +424,7 @@ rules:
     - id: unimplemented.sorcerous-society-lotd4.band.magical-aptitude
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: double casting and its Toughness-test cost are magic-subsystem interactions.
+      reason: out-of-scope.magic
   name: Magical Aptitude
   effect: >-
     This skill may only be taken by a warrior capable of casting spells. It may not be used by

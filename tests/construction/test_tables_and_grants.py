@@ -38,6 +38,7 @@ def offered(band_id, profile_id, **options):
                         package=pack, profile=profile_of(pack, profile_id))
 
 
+@pytest.mark.covers("rule/mordheim/halflings-mic/village-ogre--skills/compiler.promoted-hero-skill-access")
 def test_the_village_ogre_promotion_projects_combat_and_strength_only():
     pack = package("halflings-mic")
     ogre = profile_of(pack, "village-ogre")
@@ -50,6 +51,7 @@ def test_the_village_ogre_promotion_projects_combat_and_strength_only():
     assert "strength" not in ogre.get("skill_access", [])
 
 
+@pytest.mark.covers("rule/mordheim/battle-monks-of-cathay/band--battle-monks-special-skills/profile.skill-access", "emissary-limit")
 def test_the_emissary_reaches_warmonger_alone_and_the_monks_reach_their_table():
     assert "band--battle-monks-special-skills-warmonger" in offered(
         "battle-monks-of-cathay", "emissary")
@@ -66,6 +68,7 @@ def test_the_emissary_reaches_warmonger_alone_and_the_monks_reach_their_table():
             special_rule_ids=("band--battle-monks-special-skills-energy-focus",)), ROOT)
 
 
+@pytest.mark.covers("rule/mordheim/dark-elves/band--dark-elf-special-skills-powerful-build/profile.skill-access", "whole--scope--skill-access")
 def test_powerful_build_grants_strength_and_excludes_the_sorceress():
     rule = "band--dark-elf-special-skills-powerful-build"
     assert rule in offered("dark-elves", "high-born")
@@ -77,6 +80,7 @@ def test_powerful_build_grants_strength_and_excludes_the_sorceress():
         compile_fighter(build("dark-elves", "dark-elf-sorceress", special_rule_ids=(rule,)), ROOT)
 
 
+@pytest.mark.covers("rule/mordheim/strigoi-kaz/charnel-guard--cunning/compiler.weapons-training-exception")
 def test_cunning_opens_the_melee_catalogue_only_through_weapons_training():
     cunning = "charnel-guard--cunning"
     with pytest.raises(ValueError, match="forbidden|not available|not on any equipment list"):
@@ -96,6 +100,7 @@ def test_cunning_opens_the_melee_catalogue_only_through_weapons_training():
             skill_ids=("skill.weapons-expert",), main_weapon_id="weapon.sword"), ROOT)
 
 
+@pytest.mark.covers("rule/mordheim/channel-rats-mim/band--strigany-special-skills-list/profile.skill-access")
 def test_the_strigany_table_reaches_its_heroes_and_bull_rush_keeps_its_operator():
     for profile_id in ("domnu", "petru", "tinker", "truants"):
         table = offered("channel-rats-mim", profile_id)
@@ -111,6 +116,7 @@ def test_the_strigany_table_reaches_its_heroes_and_bull_rush_keeps_its_operator(
             special_rule_ids=("band--strigany-special-skills-bull-rush",)), ROOT)
 
 
+@pytest.mark.covers("rule/mordheim/nipponese-expedition-web/band--nippon-special-skills/profile.skill-access")
 def test_the_nippon_table_is_access_not_a_grant_of_its_members():
     hatamoto = offered("nipponese-expedition-web", "hatamoto")
     assert "band--nippon-special-skills-iaijutsu" in hatamoto
@@ -124,6 +130,7 @@ def test_the_nippon_table_is_access_not_a_grant_of_its_members():
             special_rule_ids=("band--nippon-special-skills-iaijutsu",)), ROOT)
 
 
+@pytest.mark.covers("rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills/profile.skill-access", "ogre-skill-list-rest")
 def test_the_ogre_table_reaches_ogres_and_gnoblars_with_its_named_members():
     for profile_id in ("ogre-hunter", "trappers", "sabre-baiter"):
         table = offered("ogre-hunting-party-web", profile_id)
@@ -136,6 +143,7 @@ def test_the_ogre_table_reaches_ogres_and_gnoblars_with_its_named_members():
         "ogre-hunting-party-web", "trappers")
 
 
+@pytest.mark.covers("rule/mordheim/ogre-hunting-party-web/trappers--veteran-tracker/compiler.veteran-tracker-skill-choice", "starting-skill-choice")
 def test_veteran_tracker_requires_exactly_one_named_starting_skill():
     pack = package("ogre-hunting-party-web")
     trapper = profile_of(pack, "trappers")
@@ -150,6 +158,7 @@ def test_veteran_tracker_requires_exactly_one_named_starting_skill():
     assert accepted
 
 
+@pytest.mark.covers("rule/mordheim/savage-orcs-kaz/band--orc-special-skills/compiler.inherited-orc-special-skills")
 def test_savage_orcs_inherit_the_orc_table_without_copying_its_origin():
     savage = offered("savage-orcs-kaz", "boss")
     assert "band--orc-special-skills-ard-ead" in savage
@@ -185,6 +194,7 @@ def test_bertha_takes_the_canonical_righteous_fury():
     assert "skill.righteous-fury" in bertha.global_effects.tags
 
 
+@pytest.mark.covers("rule/mordheim/black-orcs/band--da-boss-is-dead/unimplemented.black-orcs.band.da-boss-is-dead")
 def test_da_boss_is_dead_publishes_the_black_orc_successor():
     """The printed handover is campaign data, not a duel mechanic."""
     catalogue = read_yaml(ROOT / "catalog" / "campaign" / "recruitment-and-veterans.yaml")

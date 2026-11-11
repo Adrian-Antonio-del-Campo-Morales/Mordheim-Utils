@@ -139,14 +139,18 @@ def test_each_new_slayer_member_reaches_its_shared_operator_through_compilation(
 
 
 def test_printed_members_outside_the_duel_carry_their_own_disposition():
-    """A printed member with no duel consequence is disposed, never dropped."""
+    """A printed member with no duel consequence is disposed, never dropped.
+
+    Each disposed member is its own unbound effect carrying a reason code; the
+    effect id names the member."""
     for (band, rule_id), members in DISPOSED_MEMBERS.items():
         rule = next(row for row in _package(band).special_rules if row["id"] == rule_id)
-        reasons = " ".join(str(effect.get("reason") or "")
-                           for effect in (rule.get("runtime") or {}).get("effects") or ()
-                           if effect.get("binding") is None)
+        disposed = [effect for effect in (rule.get("runtime") or {}).get("effects") or ()
+                    if effect.get("binding") is None]
+        assert all(effect.get("reason") for effect in disposed), (band, rule_id)
+        ids = " ".join(str(effect["id"]) for effect in disposed)
         for member in members:
-            assert member in reasons, (band, rule_id, member)
+            assert member.lower().replace(" ", "-") in ids, (band, rule_id, member)
 
 
 def test_born_marksmen_opens_shooting_only_for_the_promoted_axe_hurler():

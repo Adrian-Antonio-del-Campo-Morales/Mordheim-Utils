@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.snorri-drunk
-# scaffold_fingerprint: 66fe34a25d63fd0f0025f83bf2ecf20f38f76ab161c1c92fa820f871299e8d38
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -8,48 +7,19 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: snorri-drunk (scope: YES)
-# AUTHORED[snorri-drunk]: 5 scenarios cover the supplied results 5 (+1 Strength),
+# AUTHORED: 5 scenarios cover the supplied results 5 (+1 Strength),
 #   2 (Weapon Skill and Strength -1), 4 (the contact penalty on both fighters), 6
 #   (Frenzy) and 1 (refused: absent from the battle).  Result 3's no-effect band is
 #   documented in the header and needs no separate tape.
-# origin_id:
-#   mechanic/mechanic.snorri-drunk
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   70558305168412e5a8d4ebdd5c0bbd18f7dc2e63f180058c2dd6b492fd6fd426
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   Supply the pre-battle drinking result: 2 reduces WS and S by 1; 3 has no effect; 4 gives all combatants within 2 inches -1 to hit; 5 adds 1 Strength; 6 grants Frenzy as an explicit Slayer exception. Result 1 means he is absent and is outside the duel.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Supplied pre-battle drinking result: 2 reduces WS and S by 1; 3 no effect; 4 gives all combatants within 2 inches -1 to hit; 5 adds 1 Strength; 6 grants Frenzy as a Slayer exception; 1 means absent (outside the duel). Observable: the supplied result modifies the profile/frenzy state accordingly.
-# effect_id:
-#   mechanic.snorri-drunk
-# relation:
-#   parameterized_variant
-# parameters:
-#   {"result":"1-6"}
-# conditions:
-#   {"trigger":"supplied pre-battle drinking roll","recipient":"this warrior","exceptions":"result 1 is outside the duel (warrior absent)"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   The result is a supplied fact (snorri_drunk_result); result 6 grants Frenzy as an express Slayer exception to the usual Psychology suppression. Result 1 removes the fighter from the duel. Surface reuse candidate: {"family":"mechanic.snorri-drunk","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact supplied/rolled state, trigger, frequency, duration, termination and attack-count contribution. Permanent and conditional Frenzy, +1 Attack and doubling are different. Do not implement group creation, movement or campaign tables merely to supply an individual state.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
 # --- Authored scenarios ---
 # # The supplied result of 5 is the printed +1 Strength: Strength 4 wounds Toughness 3 on a
 # # three, which the unmodified Strength 3 profile would fail.
 - audit_id: mechanic/mechanic.snorri-drunk
   id: a-supplied-five-adds-one-strength
-  covers: [snorri-drunk]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -72,7 +42,6 @@
 # # three into a miss where the unmodified Weapon Skill 3 would have hit on it.
 - audit_id: mechanic/mechanic.snorri-drunk
   id: a-supplied-two-lowers-weapon-skill-and-strength
-  covers: [snorri-drunk]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -94,7 +63,6 @@
 # # the -1 to hit and each of the equal-Weapon-Skill fours becomes a miss.
 - audit_id: mechanic/mechanic.snorri-drunk
   id: a-supplied-four-penalises-every-fighter-in-contact
-  covers: [snorri-drunk]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -115,7 +83,6 @@
 # # The result of 6 is the printed Frenzy for that turn, doubling the attack pool.
 - audit_id: mechanic/mechanic.snorri-drunk
   id: a-supplied-six-grants-the-printed-frenzy
-  covers: [snorri-drunk]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -143,7 +110,6 @@
 # # participant can hold: the supplied combination is refused by name.
 - audit_id: mechanic/mechanic.snorri-drunk
   id: a-supplied-one-is-outside-the-duel
-  covers: [snorri-drunk]
   fighters:
     first:
       main_weapon_id: weapon.mace

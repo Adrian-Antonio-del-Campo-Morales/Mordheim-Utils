@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/weapon.rapier
-# scaffold_fingerprint: 2298ea8f6a275a9cbf689b440a1140ee59825addb53cbb1553c64c651758c87f
 # authoring_status: AUTHORED
 # authoring_progress: both admitted clauses carry authored scenarios: the rapier's save bonus and parry, and the Barrage continuation after a failed wound. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -8,67 +7,14 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: barrage (scope: YES)
 # AUTHORED[barrage]: 1 scenario shows the continuation after a failed wound, with the one-point harder to-hit target of that continuation.
-# origin_id:
-#   mechanic/weapon.rapier
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   16afcb83c30a21e8183be2f3a1fcc1e3a09f404654c8ead57d22439db648d67c
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   Barrage allows further attacks after a hit fails to wound, each at -1 to hit, capped at needing 6.
-# Semantic contract (check analysis_status before treating as accepted):
-#   After a rapier hit that fails to wound, the attacker may continue making attacks at a cumulative -1 to hit, never improving beyond a 6 to hit. Closure: a failed wound opens a further attack with one extra penalty and the loop stops at the capped target.
-# effect_id:
-#   weapon.rapier
-# relation:
-#   related
-# parameters:
-#   {"barrage_per_miss": -1, "cap": 6}
-# conditions:
-#   {"trigger": "wound-failure"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   The Barrage loop lives in resolve_reference_attack (barrage_penalty, barrage_available), not in the effect parameters, so the behaviour is present even though the contract table does not carry a parameter. No gap identified; recorded as related to the rapier profile rather than an effect parameter. Surface reuse candidate: {"family":"W-weapon.rapier","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare source-specific weapon/alias identity and each mode or clause. Retain mounted/charge conditions, parry limits, dagger/armour effect, poison coating, active hand allocation and local overrides. The magical Misericordia injury chart is not the ordinary dagger variant; a counts-as alias does not inherit every local extension.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: whole (scope: YES)
 # AUTHORED[whole]: 3 scenarios cover the +1 target save on both faces and the parry.
-# origin_id:
-#   mechanic/weapon.rapier
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   16afcb83c30a21e8183be2f3a1fcc1e3a09f404654c8ead57d22439db648d67c
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   May parry; uses the wielder's Strength and grants +1 enemy armour save. Barrage allows further attacks after a hit fails to wound, each at -1 to hit, capped at needing 6.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Rapier uses the wielder Strength, grants the target +1 armour save and may parry. Closure: all three printed parts on the profile.
-# effect_id:
-#   weapon.rapier
-# relation:
-#   equivalent
-# parameters:
-#   {"parry": true, "target_armour_bonus": 1}
-# conditions:
-#   {"application": "attack", "stacking": "stack", "trigger": "attack"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Printed profile equals the contract parameters; the compiled attack EffectSet is consumed by build_attacks and the hit/wound/armour/injury contexts. The item text additionally prints Barrage; the contract carries no barrage parameter, and Barrage is implemented as the rapier branch of resolve_reference_attack (barrage_available), so the clause is recorded in the unresolved/related note of this row rather than as a gap. Surface reuse candidate: {"family":"W-weapon.rapier","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare source-specific weapon/alias identity and each mode or clause. Retain mounted/charge conditions, parry limits, dagger/armour effect, poison coating, active hand allocation and local overrides. The magical Misericordia injury chart is not the ordinary dagger variant; a counts-as alias does not inherit every local extension.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
 # --- Authored scenarios ---
 # mechanic/weapon.rapier - the wielder's Strength, +1 to the enemy save, a

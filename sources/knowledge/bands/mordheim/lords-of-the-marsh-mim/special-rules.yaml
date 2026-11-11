@@ -10,9 +10,7 @@ rules:
     - id: unimplemented.lords-of-the-marsh-mim.band.mutations
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Mutations
   effect: >-
     Any Fimir Hero may start the campaign with a single mutation from the Corrupted Characters
@@ -39,9 +37,7 @@ rules:
     - id: unimplemented.lords-of-the-marsh-mim.band.from-the-mist
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: From the Mist
   effect: >-
     Fimir can see and move normally through all fogs, including magically created mist. The warband
@@ -92,8 +88,7 @@ rules:
     - id: unimplemented.lords-of-the-marsh-mim.band.aquatic
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Aquatic
   effect: >-
     Fimir are amphibious and may move through water terrain with no penalty, counting as being in
@@ -120,10 +115,8 @@ rules:
     - id: unimplemented.lords-of-the-marsh-mim.band.swamp-striders
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Swamp Striders
-  effect: Fimir can move through any swamp and marshland terrain without penalty.
   source:
     manual: broheim.net
     printed_page: 1
@@ -131,10 +124,9 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Lords Of The Marsh.pdf
   name_i18n:
     es: Zancudos del Pantano
-  effect_i18n:
-    es: Los Fimir pueden moverse por cualquier terreno de ciénaga y pantano sin penalización.
   applies_to:
     band: true
+  rule_ref: shared-rule.swamp-striders
 - id: band--scaly-skin
   runtime:
     scope: 'YES'
@@ -177,9 +169,7 @@ rules:
     - id: unimplemented.lords-of-the-marsh-mim.band.cyclopean-fiends
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Cyclopean Fiends
   effect: >-
     Heroes re-roll on the Serious Injury Chart when the result is 'Blinded in One Eye'. If the same
@@ -206,9 +196,7 @@ rules:
     - id: unimplemented.lords-of-the-marsh-mim.band.hired-swords
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Hired Swords
   effect: >-
     Fimir warbands may hire the following Hired Swords: Slaver, Highwayman, Swashbuckler, Bog
@@ -264,8 +252,7 @@ rules:
     - id: unimplemented.lords-of-the-marsh-mim.draich.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Wizard
   effect: >-
     Draichs are sorcerers and have two spells. One is generated using the Chaos Rituals; the other
@@ -295,8 +282,7 @@ rules:
     - id: unimplemented.lords-of-the-marsh-mim.draich.mind-focus
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Mind Focus
   effect: >-
     When using a spell or prayer the Draich may re-roll one dice roll used in the difficulty roll.
@@ -348,8 +334,7 @@ rules:
     - id: unimplemented.lords-of-the-marsh-mim.draich.large
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Large
   effect: Any model may shoot at a Draich, even if it is not the closest model.
   source:
@@ -375,12 +360,15 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.craven
+      clauses:
+      - id: craven--scope--craven
+        scope: 'YES'
+      - id: craven--scope--mystic-mist-exemption
+        scope: 'NO'
     - id: unimplemented.lords-of-the-marsh-mim.draich.craven.mystic-mist
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside Combat Lab's supported normal-duel scope: Mystic Mist
-        protection is an excluded map/environmental rule.
+      reason: out-of-scope.movement
   name: Craven
   effect: A Draich is subject to the effects of fear unless they are protected by Mystic Mist.
   source:
@@ -429,8 +417,7 @@ rules:
     - id: unimplemented.lords-of-the-marsh-mim.daemon-fimm.daemon-soul
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Daemon Soul
   effect: >-
     A Daemon lives within the warrior's soul, giving demonomaniacs a 4+ save against the effects of
@@ -489,12 +476,15 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.craven
+      clauses:
+      - id: craven--scope--craven
+        scope: 'YES'
+      - id: craven--scope--mystic-mist-exemption
+        scope: 'NO'
     - id: unimplemented.lords-of-the-marsh-mim.young-nobles.craven.mystic-mist
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside Combat Lab's supported normal-duel scope: Mystic Mist
-        protection is an excluded map/environmental rule.
+      reason: out-of-scope.movement
   name: Craven
   effect: Young Nobles are subject to the effects of fear unless they are protected by Mystic Mist.
   source:
@@ -522,16 +512,19 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.stupidity
+      clauses:
+      - id: stupidity
+        scope: 'YES'
+      - id: mystic-mist-exemption
+        scope: 'NO'
     - id: unimplemented.lords-of-the-marsh-mim.young-nobles.stupidity.movement
       scope: 'NO'
       binding: null
-      reason: >-
-        Random board movement after failure is outside the 1v1 duel scope.
+      reason: out-of-scope.movement
     - id: unimplemented.lords-of-the-marsh-mim.young-nobles.stupidity.mystic-mist
       scope: 'NO'
       binding: null
-      reason: >-
-        Mystic Mist protection is an excluded map/environmental rule.
+      reason: out-of-scope.movement
   name: Stupidity
   effect: Young Nobles are subject to stupidity unless they are protected by Mystic Mist.
   source:
@@ -557,12 +550,15 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.craven
+      clauses:
+      - id: craven--scope--craven
+        scope: 'YES'
+      - id: craven--scope--mystic-mist-exemption
+        scope: 'NO'
     - id: unimplemented.lords-of-the-marsh-mim.shearls.craven.mystic-mist
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside Combat Lab's supported normal-duel scope: Mystic Mist
-        protection is an excluded map/environmental rule.
+      reason: out-of-scope.movement
   name: Craven
   effect: Shearls are subject to the effects of fear unless they are protected by Mystic Mist.
   source:
@@ -590,16 +586,19 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.stupidity
+      clauses:
+      - id: stupidity
+        scope: 'YES'
+      - id: mystic-mist-exemption
+        scope: 'NO'
     - id: unimplemented.lords-of-the-marsh-mim.shearls.stupidity.movement
       scope: 'NO'
       binding: null
-      reason: >-
-        Random board movement after failure is outside the 1v1 duel scope.
+      reason: out-of-scope.movement
     - id: unimplemented.lords-of-the-marsh-mim.shearls.stupidity.mystic-mist
       scope: 'NO'
       binding: null
-      reason: >-
-        Mystic Mist protection is an excluded map/environmental rule.
+      reason: out-of-scope.movement
   name: Stupidity
   effect: Shearls are subject to stupidity unless they are protected by Mystic Mist.
   source:
@@ -648,8 +647,7 @@ rules:
     - id: unimplemented.lords-of-the-marsh-mim.fimir-warriors.large
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Large
   effect: Any model may shoot at a Fimir Warrior, even if it is not the closest model.
   source:
@@ -707,8 +705,7 @@ rules:
     - id: unimplemented.lords-of-the-marsh-mim.fimir-warriors.stupidity.movement
       scope: 'NO'
       binding: null
-      reason: >-
-        Random board movement after failure is outside the 1v1 duel scope.
+      reason: out-of-scope.movement
   name: Stupidity
   effect: Fimir Warriors are subject to stupidity.
   source:
@@ -732,9 +729,10 @@ rules:
     - id: unimplemented.lords-of-the-marsh-mim.fimir-warriors.monstrous
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: deferred.other
+      clauses:
+      - id: henchman-injury-chart
+        scope: 'NO'
   name: Monstrous
   effect: >-
     When rolling for injury on the henchman chart only a roll of 1 kills; on a roll of 2-6 no
@@ -764,8 +762,10 @@ rules:
     - id: unimplemented.lords-of-the-marsh-mim.band.maximum-characteristics
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: characteristic-increase caps on advancement.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Fimir Maximum Characteristics
   effect: >-
     Characteristics for Fimir warriors may not be increased beyond the maximum limits: M 6, WS 6, BS

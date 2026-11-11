@@ -1,0 +1,120 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/lustria-amazons/band--amazon-special-skills-animal-fury/trait.charge-attack-bonus
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios read the printed charge term from
+#   the pool alone: the charging bearer requests two attack dice where its profile prints one, and
+#   the identical bearer that does not charge requests one.  The pair differs only in the charge,
+#   so the extra die is the printed "+1 Attack during a turn in which she charges"; each tape fails
+#   if the count is wrong.
+#
+# AUTHORED: 1 scenario evidences the printed immunity as an
+#   absent test: a fear-causing enemy charges the bearer, and the tape carries no Fear dice at all
+#   although the same configuration rolls them for a bearer without the rule (the cold-blooded
+#   sibling case shows that tape).  A build that still tests fails on the undeclared die.  The
+#   register records this origin's connection to mechanic.fear-immunity as pending implementation
+#   work, so the expectation is written from the printed rule and the recorded contract.
+#
+
+# authoring_progress: 3 authored scenario(s) in this file; authored clauses
+#   ['fear-immunity--scope--charge-attack', 'fear-immunity--scope--fear-immunity']; clauses still
+#   pending or unrepresentable in this file: [].  REVIEWED requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+# WHAT THESE TAPES FAIL ON (checked statically in the shared construction stage, not by running it): this
+# row is recorded `implemented: NO`, so `compile_fighter()` refuses the declared selection with
+# "special rule is outside the executable duel runtime: band--amazon-special-skills-animal-fury: Retained
+# individual clause: The +1 Attack in a turn in which she charges is an admitted individual charge and
+# attack consequence. Printed clause: gains +1 Attack during a turn in which she charges" before any duel
+# runs.  The scenarios keep the printed +1 Attack and the Fear immunity because that is the requirement;
+# they are expected to fail on them until the recorded consumers exist.
+# Derived from the printed sentence ("The Hero is immune to Fear and All Alone tests and gains +1
+# Attack during a turn in which she charges") and the recorded contract for the admitted half
+# (mechanic.fear-immunity: no Fear test is taken, other Leadership and Psychology tests roll
+# normally).  The bearer is a printed Amazon Hero of the band with the skill selected; the
+# opposing fixtures are hand-built so the bearer's pool count is the only thing moving.  The
+# charge scenarios keep the opponent's wounds above one and suppress its attacks, and the Fear
+# scenario uses the fear-causing attacker of the sibling psychology cases, whose charge would
+# otherwise force the charged warrior's Fear test.  The excluded All Alone test and the
+# source-specific reroll belong to the group enemy-counting subsystem and are not asserted.
+
+- audit_id: rule/trollheim/lustria-amazons/band--amazon-special-skills-animal-fury/trait.charge-attack-bonus
+  id: the-charging-bearer-gains-one-attack
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-amazons
+      profile_id: amazon-totem-warriors
+      special_rule_ids: [band--amazon-special-skills-animal-fury]
+      main_weapon_id: weapon.stone-axe
+    second:
+      main_weapon_id: weapon.stone-axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.2.hit, value: 1}
+    - {key: round.0.first.attack.3.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 3, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-amazons/band--amazon-special-skills-animal-fury/trait.charge-attack-bonus
+  id: the-same-bearer-not-charging-keeps-one-attack
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-amazons
+      profile_id: amazon-totem-warriors
+      special_rule_ids: [band--amazon-special-skills-animal-fury]
+      main_weapon_id: weapon.stone-axe
+    second:
+      main_weapon_id: weapon.stone-axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 3, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-amazons/band--amazon-special-skills-animal-fury/mechanic.fear-immunity
+  id: the-charged-bearer-takes-no-fear-test
+  covers: [fear-immunity--scope--fear-immunity]
+  fighters:
+    first:
+      main_weapon_id: weapon.stone-axe
+      skill_ids: [mechanic.causes-fear]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      collection: trollheim
+      band_id: lustria-amazons
+      profile_id: amazon-totem-warriors
+      special_rule_ids: [band--amazon-special-skills-animal-fury]
+      main_weapon_id: weapon.stone-axe
+  initial_state: {second: {wounds: 2}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    # The bearer's printed pool carries a second attack, so its second To Hit die is declared.
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: False, state.first.wounds: 2, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

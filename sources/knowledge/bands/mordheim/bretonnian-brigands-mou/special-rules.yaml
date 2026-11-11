@@ -10,9 +10,7 @@ rules:
     - id: unimplemented.bretonnian-brigands-mou.band.look-out-behind-you
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Look Out Behind You!
   effect: >-
     Brigand warband members (but not hired swords) are adept at ambushes and evasion. Subtract 1
@@ -40,9 +38,7 @@ rules:
     - id: unimplemented.bretonnian-brigands-mou.band.men-of-low-character
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Men of Low Character
   effect: >-
     Brigands are justly suspicious of outsiders, fearing they may be agents of the law. They may not
@@ -72,9 +68,7 @@ rules:
     - id: unimplemented.bretonnian-brigands-mou.band.the-boss
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: The Boss
   effect: >-
     The leader of the brigands is often the meanest and baddest from the lot. He rules by fear and
@@ -131,27 +125,12 @@ rules:
     - id: unimplemented.bretonnian-brigands-mou.band.knights-feats
       scope: 'NO'
       binding: null
-      reason: >-
-        Sword master is not published by this binding; its separate contract
-        remains pending. Lancer is excluded by the separate scope decision below.
+      reason: pending-implementation
     - id: excluded.knights-feats.lancer
       scope: 'NO'
       binding: null
-      reason: >-
-        Lancer is outside the duel scope by user decision adopted 2026-11-03.
-        Its mounted charge continuation is excluded, not pending implementation.
+      reason: out-of-scope.movement
   name: Knights Feats
-  effect: >-
-    A Fallen Noble may choose from the Knight's Feats skill list in addition to his ordinary skills.
-    1 - Combat charge: the character gains +1 attack and +1 WS when he charges. 2 - Lancer: the
-    character can use this skill only on horseback; may not be combined with combat charge; if the
-    character's first opponent(s) suffer an unsaved wound, the character may continue his charge;
-    opponents are not allowed to strike back; the charge may then be continued another 4", and any
-    enemy within 2" of that charge line can be charged; if the character does charge another enemy
-    he counts as charging in the next combat round. 3 - Sword master: when using a sword the
-    character may parry, with reroll at equal or higher. 4 - Armour specialist: when using Heavy
-    armour and shield the subject ignores the standard movement penalty and his armour save cannot
-    be modified beyond 5+ due to strength; this does not work on horseback.
   source:
     manual: broheim.net
     printed_page: 5
@@ -159,22 +138,9 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Bretonnian%20Brigands.pdf
   name_i18n:
     es: Hazañas de Caballería
-  effect_i18n:
-    es: >-
-      Un Noble Caído puede elegir de la lista de habilidades Hazañas de Caballería además de sus
-      habilidades ordinarias. 1 - Carga de combate: el personaje gana +1 ataque y +1 HA cuando
-      carga. 2 - Lancero: el personaje solo puede usar esta habilidad a caballo; no puede combinarse
-      con carga de combate; si el primer oponente o oponentes del personaje sufren una herida no
-      salvada, el personaje puede continuar su carga; los oponentes no pueden devolver los golpes;
-      la carga puede continuarse otros 4", y cualquier enemigo a 2" o menos de esa línea de carga
-      puede ser cargado; si el personaje carga contra otro enemigo, cuenta como cargando en la
-      siguiente ronda de combate. 3 - Maestro de la espada: al usar una espada el personaje puede
-      detener golpes, repitiendo la tirada con igual o mayor. 4 - Especialista en armaduras: al usar
-      armadura pesada y escudo, el sujeto ignora la penalización estándar de movimiento y su
-      salvación por armadura no puede modificarse por debajo de 5+ por fuerza; esto no funciona a
-      caballo.
   applies_to:
     band: true
+  rule_ref: shared-rule.knights-feats
 - id: scarface--leader
   runtime:
     scope: 'NO'
@@ -184,9 +150,7 @@ rules:
     - id: unimplemented.bretonnian-brigands-mou.scarface.leader
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Leader (Scarface)
   effect: >-
     Any warrior within 6" of the Scarface may use his Leadership value when taking Leadership tests.
@@ -242,9 +206,7 @@ rules:
     - id: unimplemented.bretonnian-brigands-mou.fallen-noble.old-connections
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Old Connections
   effect: >-
     Due to his former life, he still is well connected. This gives him an edge in acquiring all
@@ -272,9 +234,7 @@ rules:
     - id: unimplemented.bretonnian-brigands-mou.fallen-noble.knights-feats
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Knights Feats (Fallen Noble)
   effect: >-
     A Fallen Noble may choose from the Knight's Feats skill list in addition to his ordinary skills

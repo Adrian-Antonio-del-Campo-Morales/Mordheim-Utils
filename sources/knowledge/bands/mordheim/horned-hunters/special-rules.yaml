@@ -64,8 +64,7 @@ rules:
     - id: unimplemented.horned-hunters.priest-of-taal.prayers
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic.
+      reason: out-of-scope.magic
   name: Prayers
   source:
     manual: mordheimer.net
@@ -112,14 +111,8 @@ rules:
     - id: unimplemented.horned-hunters.initiates.infiltrator
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Infiltrator
-  effect: >-
-    A warrior with this skill is always placed on the battlefield after the opposing warband and can
-    be placed anywhere on the table as long as it is out of sight of the opposing warband and more
-    than 12" away from any enemy model. If both players have models which infiltrate, roll a D6 for
-    each, and the lowest roll sets up first.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -127,16 +120,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/horned-hunters
   name_i18n:
     es: Infiltrado
-  effect_i18n:
-    es: >-
-      Un guerrero con esta habilidad siempre se sitúa en el campo de batalla después de la banda
-      rival y puede colocarse en cualquier punto de la mesa mientras esté fuera de la línea de
-      visión de la banda rival y a más de 12" de cualquier modelo enemigo. Si ambos jugadores tienen
-      modelos que se infiltran, tira 1D6 por cada uno, y el que obtenga la tirada más baja se
-      despliega primero.
   applies_to:
     profile_ids:
     - initiates
+  rule_ref: shared-rule.infiltration
 - id: initiates--hang-the-bandit
   runtime:
     scope: 'YES'
@@ -252,8 +239,7 @@ rules:
     - id: unimplemented.horned-hunters.warhounds.animals
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Animals
   source:
     manual: mordheimer.net
@@ -275,8 +261,7 @@ rules:
     - id: unimplemented.horned-hunters.band.woodcraft
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Woodcraft
   effect: >-
     Horned Hunter warbands move through any difficult terrain without suffering movement penalties.
@@ -303,8 +288,7 @@ rules:
     - id: unimplemented.horned-hunters.band.horned-hunter-special-skills-master-trapper
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Master Trapper
   effect: >-
     This huntsman is a masterful trap setter. Trip wire range has been extended by this warrior to
@@ -333,14 +317,8 @@ rules:
     - id: unimplemented.horned-hunters.band.horned-hunter-special-skills-infiltration
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Infiltration
-  effect: >-
-    A warrior with this skill is always placed on the battlefield after the opposing warband and can
-    be placed anywhere on the table as long as it is out of sight of the opposing warband and more
-    than 12" away from any enemy model. If both players have models which infiltrate, roll a D6 for
-    each, and the lowest roll sets up first.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -348,15 +326,9 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/horned-hunters
   name_i18n:
     es: Infiltración
-  effect_i18n:
-    es: >-
-      Un guerrero con esta habilidad siempre se sitúa en el campo de batalla después de la banda
-      rival y puede colocarse en cualquier punto de la mesa mientras esté fuera de la línea de
-      visión de la banda rival y a más de 12" de cualquier modelo enemigo. Si ambos jugadores tienen
-      modelos que se infiltran, tira 1D6 por cada uno, y el que obtenga la tirada más baja se
-      despliega primero.
   applies_to:
     band: true
+  rule_ref: shared-rule.infiltration
 - id: band--horned-hunter-special-skills-foul-odour
   kind: warband_skill
   runtime:
@@ -370,14 +342,6 @@ rules:
         kind: mechanic
         id: mechanic.foul-odour
   name: Foul Odour
-  effect: >-
-    Worshippers of Taal are one and all prodigious drinkers and none too hygienic! This warrior
-    rises head and shoulders above the rest. After a lifetime of drinking, liquor has little effect
-    on him any more... not that this stops him from consuming massive quantities! His unwashed
-    clothes and sweat reek of alcohol and all living enemies (not Undead or Possessed) are at -1 to
-    hit him in close combat. In addition, the warrior cannot carry any open flames (torch, lantern,
-    etc.) and fire attacks made against him are resolved at +1 Strength as his beer soaked clothing
-    burns readily.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -385,16 +349,9 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/horned-hunters
   name_i18n:
     es: Hedor
-  effect_i18n:
-    es: >-
-      Los adoradores de Taal son todos unos bebedores prodigiosos y nada higiénicos. Este guerrero
-      sobresale por encima del resto. Tras toda una vida de bebida, el licor apenas le afecta ya...
-      lo que no le impide consumir cantidades masivas. Su ropa sin lavar y su sudor huelen a alcohol
-      y todos los enemigos vivientes (no No-muertos ni Poseídos) sufren -1 para impactarlo en el
-      combate cuerpo a cuerpo. Además, el guerrero no puede llevar ninguna llama abierta (antorcha,
-      farol, etc.) y los ataques de fuego que recibe se repiten contra él.
   applies_to:
     band: true
+  rule_ref: shared-rule.foul-odour
 - id: band--horned-hunter-special-skills-animal-friendship
   kind: warband_skill
   runtime:
@@ -409,6 +366,13 @@ rules:
         id: trait.animal-friendship
         parameters:
           value: true
+      clauses:
+      - id: whole--scope--animals-never-attack
+        scope: 'YES'
+      - id: whole--scope--wardog-count
+        scope: 'NO'
+      - id: wardog-count
+        scope: 'NO'
   name: Animal Friendship
   effect: >-
     Having grown up amidst the animals of the forest this warrior exudes a certain charm to all
@@ -439,8 +403,7 @@ rules:
     - id: unimplemented.horned-hunters.band.horned-hunter-special-skills-pathfinder
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Pathfinder
   effect: >-
     Taal has gifted this hunter with an uncanny ability to find paths through unexplored
@@ -470,8 +433,7 @@ rules:
     - id: unimplemented.horned-hunters.band.horned-hunter-special-skills-hide-in-shadows
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Hide in Shadows
   effect: >-
     The hunter has learned to crouch unseen in any cover they can find. Enemy models must halve
@@ -507,8 +469,6 @@ rules:
           - weapons
           - armour
   name: Equipment Restrictions
-  effect: >-
-    Warhounds never use or need weapons or armour.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -516,12 +476,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/horned-hunters
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      es
   applies_to:
     profile_ids:
     - warhounds
+  rule_ref: shared-rule.no-weapons-or-armour
 - id: drunken-gang--equipment-restrictions
   runtime:
     scope: 'YES'

@@ -265,9 +265,7 @@ rules:
     - id: aenur.wanderer.non-duel
       scope: 'NO'
       binding: null
-      reason: >-
-        Hiring, searching and campaign attendance are excluded; this rule grants no in-duel
-        withdrawal.
+      reason: out-of-scope.campaign
 - id: hireling.dramatis.aenur.item.ienh-khain.rule.parry
   name: 'Ienh-Khain: Parry'
   effect: Ienh-Khain can parry.
@@ -358,9 +356,7 @@ rules:
     - id: bertha-high-matriarch
       scope: 'NO'
       binding: null
-      reason: >-
-        Becoming the warband leader automatically is a roster position settled when she joins; the
-        duel's participants and any supplied nearby leader are given at construction.
+      reason: out-of-scope.construction
 - id: hireling.dramatis.bertha-bestraufrung.rule.sigmars-handmaiden
   name: Sigmar's Handmaiden
   effect: Bertha receives +2 on rolls to determine whether her Prayers of Sigmar are granted.
@@ -382,9 +378,7 @@ rules:
     - id: bertha-sigmars-handmaiden
       scope: 'NO'
       binding: null
-      reason: >-
-        Granting Prayers of Sigmar belongs to the excluded prayer subsystem and carries no
-        consequence in a resolved duel.
+      reason: out-of-scope.magic
 - id: hireling.dramatis.johann-the-knife.rule.poisoned-weapons
   name: Poisoned Weapons
   effect: Johann's weapons are always coated with Black Lotus.
@@ -452,8 +446,7 @@ rules:
     - id: hireling.dramatis.johann-the-knife.rule.knife-fighter-extraordinaire.shooting
       scope: 'NO'
       binding: null
-      reason: >-
-        Combines two shooting skills only; shooting is excluded.
+      reason: out-of-scope.shooting
 - id: hireling.dramatis.veskit.rule.integrated-warplock-pistols
   name: Integrated Warplock Pistols
   effect: >-
@@ -553,8 +546,7 @@ rules:
     - id: veskit-spotting
       scope: 'NO'
       binding: null
-      reason: >-
-        Finding Hidden enemies requires visibility and spotting, outside the duel.
+      reason: out-of-scope.movement
 - id: hireling.dramatis.veskit.rule.metallic-body
   name: Metallic Body
   effect: Veskit has a 3+ armour save from his mechanical body.

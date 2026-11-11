@@ -60,7 +60,11 @@
           "uniqueItems": true,
           "items": { "$ref": "defs.schema.json#/$defs/id" }
         },
-        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" },
+        "clauses": {
+          "description": "The clauses of the item's printed combat text; identity `item/<item-id>`.",
+          "$ref": "defs.schema.json#/$defs/clauses"
+        }
       },
       "allOf": [
         {

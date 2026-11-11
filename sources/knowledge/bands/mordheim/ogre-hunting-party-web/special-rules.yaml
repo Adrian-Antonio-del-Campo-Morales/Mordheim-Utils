@@ -10,9 +10,7 @@ rules:
     - id: unimplemented.ogre-hunting-party-web.band.greenskins
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: race-classification interactions (Animosity exemption, Bicker) are
-        psychology/campaign mechanics outside the duel scope.
+      reason: deferred.psychology
   name: Greenskins
   effect: >-
     Unlike Goblins, Gnoblars do not tend to work closely with Orcs. However, for all intents and
@@ -41,9 +39,7 @@ rules:
     - id: unimplemented.ogre-hunting-party-web.band.bicker
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: actions outside an already engaged two-participant
-        duel. Source prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Bicker
   effect: >-
     At the start of your turn, at the end of the Recovery phase, roll 1D6 for each Gnoblar henchmen
@@ -77,8 +73,10 @@ rules:
     - id: unimplemented.ogre-hunting-party-web.band.ideas-above-their-station
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: leader replacement is a roster/campaign mechanic outside the duel scope.
+      reason: deferred.other
+      clauses:
+      - id: ideas-above-their-station
+        scope: 'NO'
   name: Ideas Above Their Station
   effect: >-
     If the Ogre Hunter is killed, the Gnoblar with the highest leadership takes over as leader (or,
@@ -107,9 +105,10 @@ rules:
     - id: unimplemented.ogre-hunting-party-web.band.distasteful-company
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: hired-sword availability is a roster-construction/campaign mechanic
-        outside the duel scope.
+      reason: deferred.other
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Distasteful Company
   effect: >-
     Most hired swords will refuse to work for the Ogres or Gnoblars, as they know that they are just
@@ -143,8 +142,10 @@ rules:
     - id: unimplemented.ogre-hunting-party-web.band.characteristic-increase
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: characteristic-increase caps on advancement are outside the duel scope.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Characteristic Increase
   effect: >-
     Characteristics for warriors may not be increased beyond the maximum limits shown on the
@@ -175,6 +176,17 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.causes-fear
+      clauses:
+      - id: cause-fear--scope--cause-fear
+        scope: 'YES'
+      - id: cause-fear--scope--large-target
+        scope: 'NO'
+      - id: cause-fear--scope--all-alone
+        scope: 'NO'
+      - id: cause-fear--scope--equipment-restriction
+        scope: 'YES'
+      - id: cause-fear--scope--warband-rating
+        scope: 'NO'
     - id: profile.equipment-restrictions
       scope: 'YES'
       binding:
@@ -182,12 +194,19 @@ rules:
         id: profile.equipment-restrictions
         parameters:
           forbids: heavy-armour
+      clauses:
+      - id: armour-prohibition
+        scope: 'YES'
+      - id: cause-fear
+        scope: 'YES'
+      - id: large-target-fact
+        scope: 'NO'
+      - id: all-alone-and-rating
+        scope: 'NO'
     - id: unimplemented.ogre-hunting-party-web.band.huuuuge-excluded
       scope: 'NO'
       binding: null
-      reason: >-
-        Large-target shooting, group All Alone and campaign rating do not execute in the 1v1 melee
-        duel.
+      reason: out-of-scope.shooting
   name: Huuuuge
   effect: >-
     Ogres are big, massive and frightening creatures. All ogre models cause fear. All ogres are
@@ -219,9 +238,10 @@ rules:
     - id: unimplemented.ogre-hunting-party-web.band.slow-witted
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: experience gain rates are campaign-progression mechanics outside the
-        duel scope.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Slow Witted
   effect: >-
     Although Ogres are capable of earning experience and bettering themselves they are not the
@@ -320,9 +340,10 @@ rules:
     - id: unimplemented.ogre-hunting-party-web.ogre-hunter.lazy
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: exploration-dice restrictions are campaign mechanics outside the duel
-        scope.
+      reason: deferred.other
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Lazy
   effect: >-
     An Ogre Hunter is far too preoccupied with Hunting to worry about pretty stones — that's a
@@ -355,10 +376,7 @@ rules:
     - id: unimplemented.ogre-hunting-party-web.ogre-hunter.central-figure
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: group Rout, All Alone or combat against multiple
-        opponents. Source prose is retained; this is an exclusion, not deferred modular
-        implementation.
+      reason: deferred.other
   name: Central Figure
   effect: >-
     The gnoblars flock around the Ogre Hunter, and take strength from his presence. If he is taken
@@ -388,9 +406,7 @@ rules:
     - id: unimplemented.ogre-hunting-party-web.ogre-hunter.sabre-trainer
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: actions outside an already engaged two-participant
-        duel. Source prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Sabre Trainer
   effect: >-
     Whenever a Sabretusk cub rolls a 1 for Untamed, if it started the turn within 6" of this hero,
@@ -422,6 +438,11 @@ rules:
       binding:
         kind: compiler
         id: compiler.veteran-tracker-skill-choice
+      clauses:
+      - id: starting-skill-choice
+        scope: 'YES'
+      - id: infiltration-warband-limit
+        scope: 'NO'
   name: Veteran Tracker
   effect: >-
     A trapper starts with ONE of the following Special Skills: Infiltration (max 1), Set Traps,
@@ -451,9 +472,7 @@ rules:
     - id: unimplemented.ogre-hunting-party-web.sabre-baiter.bait
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: shooting, casting or escape without resolving the
-        duel. Source prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Bait
   effect: >-
     Whenever a model declares a charge against a Sabre-baiter, he may immediately move 1D6" in the
@@ -490,9 +509,7 @@ rules:
     - id: unimplemented.ogre-hunting-party-web.flingers.scrap-slinger
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: shooting, casting or escape without resolving the
-        duel. Source prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Scrap Slinger
   effect: >-
     A Flinger may throw 3 pieces of Sharp Stuff every turn, instead of the normal 1. (This does not
@@ -523,7 +540,6 @@ rules:
         kind: mechanic
         id: mechanic.causes-fear
   name: Fear
-  effect: Sabretusks are huge feline predators and thus cause fear.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -531,11 +547,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
   name_i18n:
     es: Miedo
-  effect_i18n:
-    es: Los Dientes de Sable son enormes depredadores felinos y por tanto causan miedo.
   applies_to:
     profile_ids:
     - sabretusks
+  rule_ref: shared-rule.fear
 - id: sabretusks--animals
   runtime:
     scope: LATER
@@ -545,9 +560,10 @@ rules:
     - id: unimplemented.ogre-hunting-party-web.sabretusks.animals
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: experience exemption is a campaign-progression mechanic outside the duel
-        scope.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Animals
   effect: Sabretusks are animals, and don't gain experience.
   source:
@@ -571,9 +587,7 @@ rules:
     - id: unimplemented.ogre-hunting-party-web.sabretusks.untamed
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: actions outside an already engaged two-participant
-        duel. Source prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Untamed
   effect: >-
     Sabretusks don't bicker. However, at the start of each turn, roll 1D6 for each Sabretusk not in
@@ -665,6 +679,15 @@ rules:
         id: profile.skill-access
         parameters:
           category: special
+      clauses:
+      - id: ogre-skill-list-rest
+        scope: 'YES'
+      - id: crude-belch
+        scope: 'YES'
+      - id: bull-charge
+        scope: 'YES'
+      - id: netter
+        scope: 'NO'
     # The table grants the printed choice; each named member keeps its own
     # record, so an excluded member is never granted by the access itself.
   name: Ogre Hunting Party Special Skills
@@ -868,14 +891,7 @@ rules:
     - id: band--ogre-hunting-skills-netter.net-supply
       scope: 'NO'
       binding: null
-      reason: >-
-        This clause supplies three Nets per game and regulates their restock and transfer; it grants
-        no attack, defence or characteristic modifier in melee, and does not grant the Night Goblin
-        net-charge technique. Using the nets requires the excluded throw producer; its already-caught
-        victim may independently be supplied as condition.netted. Quantity three and the named Gnoblar
-        recipients remain printed facts, not an unlimited technique. Restock between games and sale,
-        trade or transfer restrictions belong to the excluded campaign/inventory lifecycle. This
-        disposition follows the clause's content, not missing equipment lists or binding support.
+      reason: out-of-scope.campaign
 - id: band--ogre-hunting-skills-scent-hound
   kind: warband_skill
   runtime:
@@ -886,9 +902,7 @@ rules:
     - id: unimplemented.ogre-hunting-party-web.ogre-hunting-skills.scent-hound
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: spotting Hidden enemies is a detection rule, not an individual duel
-        consequence.
+      reason: out-of-scope.movement
   name: Scent Hound
   effect: >-
     The Ogre or Gnoblar has the keen nose of an expert tracker; the hero spots Hidden enemies from
@@ -921,9 +935,7 @@ rules:
     - id: unimplemented.ogre-hunting-party-web.ogre-hunting-skills.maneater
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: the Ogre immediately learns one Shooting or Academic skill, an
-        advancement-time choice outside the duel.
+      reason: out-of-scope.shooting
   name: Maneater
   effect: >-
     This Ogre may immediately learn one skill from the Shooting or Academic skill lists; this
@@ -954,8 +966,7 @@ rules:
     - id: unimplemented.ogre-hunting-party-web.ogre-hunting-skills.bellowing-roar
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: re-rolling the first failed Rout test is a warband Rout mechanic.
+      reason: out-of-scope.group
   name: Bellowing Roar
   effect: >-
     This skill may only be taken by the warband leader, allowing him to reroll the first failed
@@ -985,9 +996,7 @@ rules:
     - id: unimplemented.ogre-hunting-party-web.ogre-hunting-skills.set-traps
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: spending a turn to place a marker and the marker's 2-inch trigger are
-        terrain/deployment rules.
+      reason: pending-implementation
   name: Set Traps
   effect: >-
     A Trapper may set a trap if he spends a turn doing nothing else (he may not set traps if he's
@@ -1021,8 +1030,7 @@ rules:
     - id: unimplemented.ogre-hunting-party-web.ogre-hunting-skills.infiltration
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: deployment order and off-table placement happen before the duel.
+      reason: out-of-scope.movement
   name: Infiltration
   effect: As the standard Infiltration skill.
   effect_i18n:

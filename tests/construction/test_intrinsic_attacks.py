@@ -281,6 +281,7 @@ COLD_STEEL = [
 ]
 
 
+@pytest.mark.covers("rule/mordheim/necrarchs-mou/banshee--equipment-restrictions/profile.equipment-restrictions")
 @pytest.mark.parametrize("weapon_id,modifier,unharmed", COLD_STEEL)
 def test_cold_steel_reads_the_attack_identity_and_keeps_its_exceptions(weapon_id, modifier, unharmed):
     """The clause decides on the weapon carried, never on a visible name."""
@@ -293,6 +294,7 @@ def test_cold_steel_reads_the_attack_identity_and_keeps_its_exceptions(weapon_id
     assert wound.unharmed is unharmed
 
 
+@pytest.mark.covers("rule/mordheim/necrarchs-mou/banshee--equipment-restrictions/profile.equipment-restrictions")
 def test_a_club_offered_by_the_selection_layer_is_not_a_metal_weapon():
     """Selection → configuration → attack: the offered club carries weapon.club."""
     items = {str(row["id"]): row for row in load_items("mordheim", KNOWLEDGE)}
@@ -312,6 +314,7 @@ def test_a_club_offered_by_the_selection_layer_is_not_a_metal_weapon():
     assert hit.modifier == 0 and wound.unharmed is True
 
 
+@pytest.mark.covers("rule/mordheim/necrarchs-mou/banshee--equipment-restrictions/profile.equipment-restrictions")
 def test_cold_steel_exempts_only_the_canonical_blessed_weapon():
     """The supplied Sisters blessing names one weapon, not the whole bearer.
 
@@ -361,6 +364,7 @@ def test_a_steel_hit_wounds_the_banshee_through_the_ordinary_injury_procedure():
     choices.finish()
 
 
+@pytest.mark.covers("rule/mordheim/necrarchs-mou/banshee--equipment-restrictions/profile.equipment-restrictions")
 def test_the_printed_poison_and_drug_immunity_reaches_the_enemy_attack():
     """An enemy poison rider is suppressed for the Banshee only."""
     unit = compiled("necrarchs-mou", "banshee")
@@ -383,6 +387,7 @@ def test_the_printed_poison_and_drug_immunity_reaches_the_enemy_attack():
     assert control.failure_still_wounds is True
 
 
+@pytest.mark.covers("rule/mordheim/necrarchs-mou/banshee--equipment-restrictions/profile.equipment-restrictions")
 def test_sweep_against_the_absent_initiative_resolves_instead_of_aborting():
     """Sweep's printed condition cannot be met, so its one attack hits."""
     unit = compiled("necrarchs-mou", "banshee")
@@ -405,6 +410,7 @@ def test_sweep_against_the_absent_initiative_resolves_instead_of_aborting():
     choices.finish()
 
 
+@pytest.mark.covers("rule/mordheim/necrarchs-mou/banshee--equipment-restrictions/profile.equipment-restrictions")
 def test_a_second_strike_last_attacker_keeps_the_printed_initiative_order():
     """Both strike last: the printed Initiative orders the pair, no roll invented."""
     unit = compiled("necrarchs-mou", "banshee")

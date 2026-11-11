@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/battle-monks-of-cathay/band--battle-monks-special-skills/profile.skill-access
-# scaffold_fingerprint: 8b3daa5b937356afe8ccf1876a62b704edc6188e6db3dd91397a920e0fc5ff66
 # authoring_status: PARTIAL
 # authoring_progress: two clauses, each carrying its control set.  The table's access admits a published
 #   member for a Dragon Monk and refuses it for a Henchman the print excludes; the Emissary narrowing admits
@@ -15,9 +14,8 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: emissary-limit (scope: YES)
 # PARTIAL[emissary-limit]: [C] the printed narrowing is one requirement, split from the whole-table clause
@@ -58,32 +56,6 @@
 #   construction-only selection observation (or an access stage ordered before the executable gate) would
 #   make the admitted half observable as a selection; what exists today is the deferred-sentence class
 #   asserted below.
-# origin_id:
-#   rule/mordheim/battle-monks-of-cathay/band--battle-monks-special-skills/profile.skill-access
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/battle-monks-of-cathay/special-rules.yaml
-# source_fingerprint:
-#   3bcb1e4b1a0741127de4c0a355ced1c0f73735383ef19152e06b4d0ed9e556cd
-# source_sha256_at_generation:
-#   65e9f82a2212d3ba8786f77258b0aaf254d75b70d3261ea045fe2592c5608853
-# Printed rule text:
-#   Note that the Emissary may only pick the Warmonger skill.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Recipient narrowing: the Emissary's special access is the single Warmonger skill rather than the whole named table.
-# effect_id:
-#   profile.skill-access
-# relation:
-#   parameterized_variant
-# parameters:
-#   {"profile":"emissary","skills":["skill.warmonger"]}
-# conditions:
-#   {"recipient":"emissary"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   The narrowing is printed but not expressed by the shared binding; needs a per-profile list projection rather than a new effect identity. Surface reuse candidate: {"family":"P-SKILL-ACCESS","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Share only the relevant construction/projection operation. Preserve each item/list identity, recipient, quantity, ownership-versus-use distinction and prerequisite. No free dagger does not itself forbid all owned daggers; acquisition, prices and casting stay separate.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: whole (scope: YES)
 # PARTIAL[whole]: [C] three requirements, separated; the closure is now carried by a control pair, and the
@@ -144,32 +116,6 @@
 #   identities (the band's own published member ids), the recipient (its printed Hero) and the required
 #   outcome are all declared below; the absent projection and that resolution order are the
 #   implementation this corpus is written to require.
-# origin_id:
-#   rule/mordheim/battle-monks-of-cathay/band--battle-monks-special-skills/profile.skill-access
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/battle-monks-of-cathay/special-rules.yaml
-# source_fingerprint:
-#   3bcb1e4b1a0741127de4c0a355ced1c0f73735383ef19152e06b4d0ed9e556cd
-# source_sha256_at_generation:
-#   65e9f82a2212d3ba8786f77258b0aaf254d75b70d3261ea045fe2592c5608853
-# Printed rule text:
-#   Battle Monks of Cathay may choose to use the following skill list instead of the standard skill lists.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Permission: Battle Monk profiles may replace their standard skill lists with the band special table; members are individually selectable.
-# effect_id:
-#   profile.skill-access
-# relation:
-#   equivalent
-# parameters:
-#   {"category":"special"}
-# conditions:
-#   {"grant":"profile"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Members come from the published band table. Surface reuse candidate: {"family":"P-SKILL-ACCESS","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Share only the relevant construction/projection operation. Preserve each item/list identity, recipient, quantity, ownership-versus-use distinction and prerequisite. No free dagger does not itself forbid all owned daggers; acquisition, prices and casting stay separate.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
 # --- Authored scenarios ---
 # Derived from the printed rules and this band's own published member rows; no engine output was consulted.

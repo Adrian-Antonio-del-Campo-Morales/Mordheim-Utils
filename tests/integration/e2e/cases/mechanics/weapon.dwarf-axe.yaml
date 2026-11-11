@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/weapon.dwarf-axe
-# scaffold_fingerprint: cc1553274f701023e85cab86e97c5609321685bf9e9c68a761c08a56282eb6d3
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clause carries 4 authored scenarios.
 #   REVIEWED still requires manual semantic review and execution_status stays
@@ -10,39 +9,11 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 4 scenarios evidence the printed extra save modifier and the parry at the
+# AUTHORED: 4 scenarios evidence the printed extra save modifier and the parry at the
 #   strict-greater boundary. Pending semantic review.
-# origin_id:
-#   mechanic/weapon.dwarf-axe
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   90938a4694082fbfddfee0adc61097938a96eea07879adafd1d8b16c1acacc97
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   Range: Close Combat Strength: As user Special Rules Cutting Edge: Dwarf axes have an extra save modifier of -1, so a model with Strength 4 using a Dwarf axe has a -2 save modifier when he hits an opponent with the axe in close combat.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Dwarf axe adds an extra -1 save modifier (S4 -> -2) and may parry. Closure: armour_penetration 1 plus the Strength component and one parry attempt.
-# effect_id:
-#   weapon.dwarf-axe
-# relation:
-#   equivalent
-# parameters:
-#   {"armour_penetration": 1, "parry": true}
-# conditions:
-#   {"application": "attack", "stacking": "stack", "trigger": "attack"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Printed profile equals the contract parameters; the compiled attack EffectSet is consumed by build_attacks and the hit/wound/armour/injury contexts. parry is consumed; the printed "Cutting Edge" example is the armour_penetration point. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"whole","audit_group":"EQ-W-weapon.dwarf-axe","verified_facet":"weapon.dwarf-axe","relationship":"shared_facet","boundary":"Weapon combines Cutting Edge and normal Parry; do not add special-skill extra attempts or confuse equipment-access references with weapon behavior.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
 
 # --- Authored scenarios ---
 # weapon.dwarf-axe - has an extra save modifier of -1 and may parry.
@@ -50,7 +21,6 @@
 
 - audit_id: mechanic/weapon.dwarf-axe
   id: dwarf-axe-save-fails-one-below-the-penalised-target
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.dwarf-axe
@@ -73,7 +43,6 @@
 
 - audit_id: mechanic/weapon.dwarf-axe
   id: dwarf-axe-save-holds-on-the-penalised-target
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.dwarf-axe
@@ -96,7 +65,6 @@
 
 - audit_id: mechanic/weapon.dwarf-axe
   id: dwarf-axe-parry-blocks-a-higher-roll
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -117,7 +85,6 @@
 
 - audit_id: mechanic/weapon.dwarf-axe
   id: dwarf-axe-parry-does-not-block-an-equal-roll
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace

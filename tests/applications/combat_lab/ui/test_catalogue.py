@@ -48,7 +48,7 @@ def test_catalogue_exposes_kb_profiles_and_profile_equipment():
     assert "skill.combat-master" not in catalogue.in_scope_skill_ids(skills)
     combat_master = next(skill for skill in skills if skill.id == "skill.combat-master")
     assert combat_master.unavailable_reason and combat_master.unavailable_reason.startswith(
-        "Two or more enemies"
+        "Its effect requires two or more opponents"
     )
     sprint = next(skill for skill in catalogue.skills(None) if skill.id == "skill.sprint")
     assert sprint.unavailable_reason and sprint.unavailable_reason.startswith("Does not impact duel simulations: ")

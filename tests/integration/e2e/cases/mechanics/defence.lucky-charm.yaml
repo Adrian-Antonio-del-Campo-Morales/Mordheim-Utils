@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/defence.lucky-charm
-# scaffold_fingerprint: 4d2895dc75fc6f6d0f11f40b2d83e67fed7b1b23283d6871b7a434afd4135f92
 # authoring_status: AUTHORED
 # authoring_progress: both admitted clauses carry migrated scenarios (3 + 1); REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -8,67 +7,14 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: first-hit-discarded-on-four (scope: YES)
 # AUTHORED[first-hit-discarded-on-four]: 3 migrated scenarios show the first hit discarded on 4+, the failed 3 that still wounds, and the charm spent after its single attempt.
-# origin_id:
-#   mechanic/defence.lucky-charm
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   2fcbd494801e843d478ceed747e5f6d435cad148f14f85eb101f6f055d6c0b06
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   Ignores the first successful hit on a 4+; consumed after the attempt.
-# Semantic contract (check analysis_status before treating as accepted):
-#   The first time the bearer is hit in a battle he rolls a D6 and on a 4+ the hit is discarded with no damage; observable: one 4+ attempt on the first hit only.
-# effect_id:
-#   defence.lucky-charm
-# relation:
-#   equivalent
-# parameters:
-#   {}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Consumed per hit: the charm is spent when the attempt is made, whatever the result, so a failed roll cannot be repeated and the second hit never rolls it. Surface review warning: Reject the 6+ repeatable-ward draft. The maintained mechanic is the first successful hit on 4+, not a save against each wound.
 #
 # Clause: two-charms-do-not-stack (scope: YES)
 # AUTHORED[two-charms-do-not-stack]: 1 migrated scenario shows two charms affording exactly one attempt.
-# origin_id:
-#   mechanic/defence.lucky-charm
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   2fcbd494801e843d478ceed747e5f6d435cad148f14f85eb101f6f055d6c0b06
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   Ignores the first successful hit on a 4+; consumed after the attempt.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Owning two or more charms confers no extra benefit and only the first hit may be discarded; observable: the ability is used at most once per battle.
-# effect_id:
-#   defence.lucky-charm
-# relation:
-#   equivalent
-# parameters:
-#   {"stacking":"once"}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   The compiled fighter carries a single boolean for the charm, so stacking is impossible by construction rather than by an extra check. Surface review warning: Reject the repeatable-ward draft. Preserve one shared consumed first-hit resource, not one resource per charm.
 #
 # --- Migrated authored scenarios ---
 # Source: cases/mechanics/defences.yaml
@@ -80,7 +26,7 @@
 # shield's combined bonus and a once-per-battle resource.
 #
 # Expectations come from the accepted clauses of
-# docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv, never from engine output.
+# the knowledge-base clause contracts (sources/knowledge), never from engine output.
 # Each identity is exercised by more than one scenario, sharing the same
 # declarative contract with only the rolled faces and their outcomes changed.
 #

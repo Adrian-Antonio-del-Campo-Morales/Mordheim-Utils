@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.wraith-touch
-# scaffold_fingerprint: b007c55408a41e6c4afd0f39c65bd89a5d300ec8b807b5a899da3bc53990f479
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clause is AUTHORED after this intervention. Seven scenarios cover the declared replacement pool, the declined declaration keeping the ordinary pool, the Undead prohibition, the Liche regain of one lost wound through the published restless-dead route (method: the build the release grants file records), the regain cap at the printed starting total, and the printed unarmed consequences: the enemy armour save of the unarmed attack is one better (armour heavy-armour d5->d4) with the same build's wound otherwise. REVIEWED still requires manual review and execution_status stays UNEXECUTED.
 #   the declared replacement pool of one unarmed attack that wounds automatically, the
@@ -13,12 +12,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: note: seven scenarios cover the whole printed clause; the earlier PARTIAL reason about the Liche heal ("no admitted band route from this file") is corrected: the build route mordheim/restless-dead/liche with special_rule_ids loses the pool; the heal and its cap are authored above; the only datum still unknown is the Liche's own defense (armor heavy-armour waistcoat, d6) resting at the printed starting total.
+# AUTHORED: note: seven scenarios cover the whole printed clause; the earlier PARTIAL reason about the Liche heal ("no admitted band route from this file") is corrected: the build route mordheim/restless-dead/liche with special_rule_ids loses the pool; the heal and its cap are authored above; the only datum still unknown is the Liche's own defense (armor heavy-armour waistcoat, d6) resting at the printed starting total.
 #   Undead prohibition. Two printed parts have no scenario here. (a) The Liche heal:
 #   the heal is gated on the Liche identity (`restless-dead:liche` in the executor's
 #   wound branch), which this vocabulary can supply only as a band/profile pair; no
@@ -29,32 +26,6 @@
 #   automatic wound skips the To Wound step, so the unarmed Strength penalty has no
 #   observable consequence, and the missing datum is a defender against which that
 #   step is resolved at all.
-# origin_id:
-#   mechanic/mechanic.wraith-touch
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   058f9558217d78261a276576483e1b668ac1b44f7e9bca62bf3575747392ece6
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   The hero may make a Wraith Touch attack instead of their normal attacks in close combat. The hero making a Wraith Touch makes a single unarmed attack, if it hits, it wounds automatically, all rules that apply to unarmed attacks apply to the Wraith Touch. If a Liche uses this skill and wounds, then he may regain one lost wound. This may not take the hero beyond his starting total. Necromancers do not regain wounds with this skill. This skill has no effect on the Possessed or Undead.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Instead of their normal attacks the hero may make a single unarmed Wraith Touch attack that wounds automatically, with all unarmed rules applying; a Liche that wounds regains one lost wound without exceeding his starting total, Necromancers do not, and the skill has no effect on the Possessed or Undead. Closure: the replacement pool is one unarmed attack that wounds automatically against eligible defenders, the Liche heal is capped at the starting total and an Undead or Possessed defender takes the ordinary attack instead.
-# effect_id:
-#   mechanic.wraith-touch
-# relation:
-#   equivalent
-# parameters:
-#   {"attacks": 1, "family": "undead/necromantic", "hit_effect": "wounds automatically", "immune_targets": ["Possessed", "Undead"], "regain": "one wound (Liche only)", "scope": "instead of normal attacks", "weapon": "unarmed"}
-# conditions:
-#   {"replaces_pool": true, "target_scope": ["nature.undead", "nature.possessed"], "trigger": "declaration"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   select_attack_replacement offers the wraith-touch replacement, build_attacks clamps the pool to one, _resolve_attack_pool and prepare_wound_context grant the automatic wound only against non-undead, non-possessed defenders and the Liche heal is the wraith-touch branch of the wound damage resolution. The replacement is refused on the optimized ports (port limit, not a semantic gap). Surface reuse candidate: {"family":"mechanic.wraith-touch","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the printed target, recipient and exact individual restriction. Keep healing, attack replacement and prohibitions separate; Shallya healing is not self-healing or opponent healing. Do not synthesize independent friendly animals.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
 # --- Authored scenarios ---
 # The bearer has two Attacks and declares the Wraith Touch, so the pool is replaced by a
@@ -62,7 +33,6 @@
 # needs no To Wound die because the wound is automatic against this defender.
 - audit_id: mechanic/mechanic.wraith-touch
   id: the-declared-wraith-touch-replaces-the-attack-pool
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -88,7 +58,6 @@
 # and the tape carries the second attack die the replacement never requests.
 - audit_id: mechanic/mechanic.wraith-touch
   id: declining-the-declaration-keeps-the-normal-attacks
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -113,7 +82,6 @@
 # by it, and the defender keeps every wound.
 - audit_id: mechanic/mechanic.wraith-touch
   id: an-undead-defender-takes-no-wraith-touch-effect
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -140,7 +108,6 @@
 # wound returns.
 - audit_id: mechanic/mechanic.wraith-touch
   id: the-liche-that-wounds-regains-one-lost-wound-through-the-published-route
-  covers: [whole]
   fighters:
     first: {collection: mordheim, band_id: restless-dead, profile_id: liche, special_rule_ids: [band--restless-dead-special-skills-wraith-touch]}
     second:
@@ -164,7 +131,6 @@
 # count with the printed total), so the tape carries no wraith-heal decision at all.
 - audit_id: mechanic/mechanic.wraith-touch
   id: the-liche-regain-cannot-take-it-beyond-its-starting-total
-  covers: [whole]
   fighters:
     first: {collection: mordheim, band_id: restless-dead, profile_id: liche, special_rule_ids: [band--restless-dead-special-skills-wraith-touch]}
     second:
@@ -188,7 +154,6 @@
 # the contrast below.
 - audit_id: mechanic/mechanic.wraith-touch
   id: the-unarmed-attack-makes-the-wore-suit-one-harder-hair
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -215,7 +180,6 @@
 # the declared four fails, which isolates the unarmed half of the substitution.
 - audit_id: mechanic/mechanic.wraith-touch
   id: the-ordinary-charge-keeps-the-printed-save-against-the-silent-face
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace

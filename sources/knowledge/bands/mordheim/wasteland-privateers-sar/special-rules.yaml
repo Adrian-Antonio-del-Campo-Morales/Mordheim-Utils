@@ -10,20 +10,8 @@ rules:
     - id: unimplemented.wasteland-privateers-sar.band.pirate-rules
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: General Pirate Rules
-  effect: >-
-    Swabbies: Human Pirates take human Swabbies (see the rules for capturing Swabbies in the Sartosa
-    campaign rules). Hired Swords: unless noted otherwise, Pirate Warbands have the same access to
-    Hired Swords & any other items as for a regular human Mercenary Warband; they must however pay
-    an additional +20 gc in upkeep if they have both Dwarfs and Elves together in the same warband
-    (the ship is only so big!). Swivel Guns are Rare, Matey!: except for Sartosan Pirates, no Pirate
-    Warband may start with a Swivel Gun on their roster in campaign games; if playing a one-off
-    game, non-Sartosans may purchase a Swivel Gun for an additional price of 2D6 gc. Succession: if
-    the Captain is killed, one of the Mates will take over in the same manner as a Champion taking
-    over for a Mercenary warband.
   source:
     manual: broheim.net
     printed_page: 1
@@ -31,19 +19,9 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Human%20Pirates.pdf
   name_i18n:
     es: Reglas Generales de Piratas
-  effect_i18n:
-    es: >-
-      Fregones: los Piratas Humanos llevan Fregones humanos (ver las reglas para capturar Fregones
-      en las reglas de campaña de Sartosa). Espadas a Sueldo: salvo indicación contraria, las bandas
-      de Piratas tienen el mismo acceso a Espadas a Sueldo y objetos que una banda mercenaria humana
-      normal; sin embargo, deben pagar +20 coronas adicionales de mantenimiento si tienen enanos y
-      elfos juntos en la misma banda (¡el barco es solo tan grande!). Los cañones giratorios son
-      raros, ¡amigo!: salvo los Piratas Sartosanos, ninguna banda pirata puede empezar con un cañón
-      giratorio en su lista en partidas de campaña; en partidas sueltas, los no Sartosanos pueden
-      comprar uno por 2D6 coronas adicionales. Sucesión: si el Capitán muere, uno de los
-      Contramaestres tomará el mando de la misma forma que un Campeón en una banda mercenaria.
   applies_to:
     band: true
+  rule_ref: shared-rule.pirate-rules
 - id: band--wasteland-special-rules
   runtime:
     scope: 'NO'
@@ -53,9 +31,7 @@ rules:
     - id: unimplemented.wasteland-privateers-sar.band.wasteland-special-rules
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Wasteland Special Rules
   effect: >-
     In a Wasteland Privateer Warband, any Henchmen Gunners may fire and reload Handguns in the same
@@ -84,9 +60,7 @@ rules:
     - id: unimplemented.wasteland-privateers-sar.gunners.wasteland-gunners
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Wasteland Gunners
   effect: >-
     In a Wasteland Privateer Warband, any Henchmen Gunners may fire and reload Handguns in the same
@@ -137,15 +111,8 @@ rules:
     - id: unimplemented.wasteland-privateers-sar.gunners.swivel-guns-are-dangerous
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Swivel Guns Is Dangerous, Matey!
-  effect: >-
-    If a Pirate Warband includes a Swivel Gun, the Gunner wielding it will always be considered an
-    individual and can never have anyone else with him. Since a Pirate Warband may only have one
-    Swivel Gun, if a Gunner is equipped with one then he must either be a new Gunner, or split from
-    an existing unit. If the latter, he retains all Experience and Skills he had previously.
   source:
     manual: broheim.net
     printed_page: 4
@@ -153,16 +120,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Human%20Pirates.pdf
   name_i18n:
     es: ¡Los Cañones Giratorios Son Peligrosos, Grumete!
-  effect_i18n:
-    es: >-
-      Si una Banda Pirata incluye un Cañón Giratorio, el Artillero que lo porte siempre será
-      considerado un individuo y nunca podrá llevar a nadie más con él. Como una Banda Pirata solo
-      puede tener un Cañón Giratorio, si un Artillero lleva uno, debe ser un Artillero nuevo o
-      separarse de una unidad existente. En este último caso, conserva toda la Experiencia y
-      Habilidades que tuviera previamente.
   applies_to:
     profile_ids:
     - gunners
+  rule_ref: shared-rule.swivel-guns-are-dangerous
 - id: boatswains--expert-riggers
   runtime:
     scope: 'NO'
@@ -172,14 +133,8 @@ rules:
     - id: unimplemented.wasteland-privateers-sar.boatswains.expert-riggers
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Expert Riggers
-  effect: >-
-    Boatswains are highly trained in using their ropes. They may re-roll failed Initiative tests
-    Leaping over Gaps, Jumping Down, and performing a Diving Charge, as well as the normal test for
-    Climbing Up or Down that a Rope allows.
   source:
     manual: broheim.net
     printed_page: 5
@@ -187,14 +142,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Human%20Pirates.pdf
   name_i18n:
     es: Jarcia Experta
-  effect_i18n:
-    es: >-
-      Los Contramaestres de Jarcia están muy entrenados en el uso de sus cuerdas. Pueden repetir las
-      tiradas fallidas de Iniciativa para Saltar Huecos, Saltar hacia Abajo y Cargar en Picado, así
-      como la tirada normal para Trepar Arriba o Abajo que permite una Cuerda.
   applies_to:
     profile_ids:
     - boatswains
+  rule_ref: shared-rule.expert-riggers
 - id: swabbies--not-hired
   runtime:
     scope: 'NO'
@@ -204,13 +155,8 @@ rules:
     - id: unimplemented.wasteland-privateers-sar.swabbies.not-hired
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Not Hired
-  effect: >-
-    Swabbies are not hired, they follow the special 'recruitment' rules (see the Sartosa campaign
-    rules for capturing Swabbies).
   source:
     manual: broheim.net
     printed_page: 5
@@ -218,13 +164,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Human%20Pirates.pdf
   name_i18n:
     es: No Contratadas
-  effect_i18n:
-    es: >-
-      Los Fregones no son contratados, siguen las reglas especiales de 'reclutamiento' (ver las
-      reglas de campaña de Sartosa para capturar Fregones).
   applies_to:
     profile_ids:
     - swabbies
+  rule_ref: shared-rule.swabbies-not-hired
 - id: swabbies--never-gain-experience
   runtime:
     scope: 'NO'
@@ -234,9 +177,7 @@ rules:
     - id: unimplemented.wasteland-privateers-sar.swabbies.never-gain-experience
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Never Gain Experience
   source:
     manual: broheim.net
@@ -258,14 +199,8 @@ rules:
     - id: unimplemented.wasteland-privateers-sar.swabbies.rabble
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Rabble
-  effect: >-
-    Swabbies do not need to be armed all the same. Each may be given different equipment, but only
-    items listed in the Swabbie equipment list. Swabbies can never use magic, or cast spells of any
-    sort, no matter their original background or abilities.
   source:
     manual: broheim.net
     printed_page: 5
@@ -273,14 +208,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Human%20Pirates.pdf
   name_i18n:
     es: Chusma
-  effect_i18n:
-    es: >-
-      Los Fregones no necesitan ir armados todos igual. Cada uno puede recibir equipo distinto, pero
-      solo objetos de la lista de equipo de Fregones. Los Fregones nunca pueden usar magia ni lanzar
-      hechizos de ningún tipo, sin importar su origen o habilidades previas.
   applies_to:
     profile_ids:
     - swabbies
+  rule_ref: shared-rule.rabble
 - id: swabbies--blimey-they-got-away
   runtime:
     scope: 'NO'
@@ -290,14 +221,8 @@ rules:
     - id: unimplemented.wasteland-privateers-sar.swabbies.blimey-they-got-away
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Blimey, They Got Away!
-  effect: >-
-    If the Pirate Warband itself Routs, any Swabbies who have already left the table in previous
-    turns are presumed to have made a successful escape, and are never seen from again. Remove them
-    from your warband roster as if they had been killed.
   source:
     manual: broheim.net
     printed_page: 5
@@ -305,14 +230,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Human%20Pirates.pdf
   name_i18n:
     es: ¡Cielos, Se Han Escapado!
-  effect_i18n:
-    es: >-
-      Si la Banda Pirata Huye, cualquier Fregón que ya haya abandonado la mesa en turnos anteriores
-      se da por escapado con éxito, y nunca más se le verá. Retíralos de la lista de la banda como
-      si hubieran muerto.
   applies_to:
     profile_ids:
     - swabbies
+  rule_ref: shared-rule.they-got-away
 - id: swabbies--dont-mind-them-mates
   runtime:
     scope: 'NO'
@@ -322,15 +243,8 @@ rules:
     - id: unimplemented.wasteland-privateers-sar.swabbies.dont-mind-them-mates
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Don't Mind Them Mates, They Ain't True Pirates!
-  effect: >-
-    The rest of the crew barely notice if any Swabbies run away or go Out of Action - they know
-    they'll find them later on and give them 30 lashes if they're lucky! Any Swabbies who are
-    running away or have been taken out of action do not count towards the need to take a Rout test
-    for the warband.
   source:
     manual: broheim.net
     printed_page: 5
@@ -338,15 +252,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Human%20Pirates.pdf
   name_i18n:
     es: No Les Hagas Caso, ¡No Son Verdaderos Piratas!
-  effect_i18n:
-    es: >-
-      El resto de la tripulación apenas nota si algún Fregón huye o queda Fuera de Combate: ¡saben
-      que los encontrarán más tarde y les darán 30 latigazos si tienen suerte! Cualquier Fregón que
-      esté huyendo o haya sido dejado fuera de combate no cuenta para la necesidad de hacer un
-      chequeo de Huida de la banda.
   applies_to:
     profile_ids:
     - swabbies
+  rule_ref: shared-rule.dont-mind-them
 - id: pirates--no-armour
   runtime:
     scope: 'YES'
@@ -361,8 +270,6 @@ rules:
         parameters:
           forbids: armour-suit
   name: No Armour
-  effect: >-
-    These profiles may not wear armour.
   source:
     manual: broheim.net
     printed_page: 2
@@ -370,9 +277,6 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Human%20Pirates.pdf
   name_i18n:
     es: Sin Armadura
-  effect_i18n:
-    es: >-
-      Estos perfiles no pueden llevar armadura.
   applies_to:
     profile_ids:
     - captain
@@ -381,3 +285,4 @@ rules:
     - crew
     - gunners
     - boatswains
+  rule_ref: shared-rule.no-armour

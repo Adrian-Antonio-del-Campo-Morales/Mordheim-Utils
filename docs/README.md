@@ -75,10 +75,11 @@ points and documents owned by a specific artefact live beside them:
   the checkout root.
 - `contracts/*/README.md` — `tests/knowledge/test_editorial_schemas.py`
   requires each contract README next to its schemas.
-- `tests/integration/e2e/README.md` and
-  `tests/integration/e2e/cases/grants/INVENTORY.md` — the E2E battery's own
-  contract, procedure notes and grant inventory, owned with the corpus they
-  describe.
+- `tests/integration/e2e/README.md` — the E2E battery's own contract and
+  procedure notes, owned with the corpus it describes.
+- [`docs/archive/`](archive/README.md) — retired working documents kept for
+  reference (the former clause register CSVs and the completed review
+  worklists); nothing reads them.
 
 Only the contract READMEs are checked by a test; the installer consumes the root
 README, and the rest are placed by the subtree that owns them.

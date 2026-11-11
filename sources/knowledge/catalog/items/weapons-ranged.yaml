@@ -558,6 +558,11 @@ items:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Wasteland%20Privateers.pdf
   combat_status: implemented
   mechanic_id: weapon.duelling-pistol
+  clauses:
+  - id: whole--scope--ranged-profile
+    scope: 'NO'
+  - id: whole--scope--close-combat-hit-bonus
+    scope: 'YES'
 - id: elf_bow
   kind: ranged-weapon
   tags:
@@ -832,6 +837,9 @@ items:
   - *id015
   combat_status: implemented
   mechanic_id: weapon.pistol
+  clauses:
+  - id: whole
+    scope: 'NO'
 - id: repeater_crossbow
   kind: ranged-weapon
   tags:

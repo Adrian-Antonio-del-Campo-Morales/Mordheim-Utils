@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--strigoi-power-infinite-hatred/skill.infinite-hatred
-# scaffold_fingerprint: 53dcc9a4bf3d681e785ca718801c054c54fd9cddbd5ff7128af4d68c9f715b14
 # authoring_status: AUTHORED
 # authoring_progress: the admitted infinite-hatred clause carries 3 authored scenario(s) derived from
 #   the printed rule, the recorded semantic contract and the printed profile: the bearer is the
@@ -14,44 +13,16 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: infinite-hatred (scope: YES)
-# AUTHORED[infinite-hatred]: the band rule band--strigoi-power-infinite-hatred is a printed selectable
+# AUTHORED: the band rule band--strigoi-power-infinite-hatred is a printed selectable
 #   Strigoi power (runtime grant selectable, eligibility strigoi-vampire, binding mechanic
 #   skill.infinite-hatred), so the scenario declares it on its printed recipient exactly as the KB
 #   offers it.
 #   3 scenario(s) cover the clause: the round-zero taken-again miss, the same taken-again miss in a
 #   later round, and a band-mate outside the printed eligibility that receives no reroll.  REVIEWED
 #   still requires manual semantic review.
-# origin_id:
-#   rule/trollheim/chaos-streets-undead-bloodlines/band--strigoi-power-infinite-hatred/skill.infinite-hatred
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/trollheim/chaos-streets-undead-bloodlines/special-rules.yaml
-# source_fingerprint:
-#   56e245ca159512b1fc8313805d358ce35169957cca224e3560bbb023d70fa697
-# source_sha256_at_generation:
-#   aaa7750bfbf16797ddd93878e0cd88fd550a10fdd09818c2cdb767f9356d47d2
-# Printed rule text:
-#   The Vampire may re-roll failed To Hit rolls; a roll may never be re-rolled more than once.
-# Semantic contract (check analysis_status before treating as accepted):
-#   May reroll every failed To-Hit roll, in any round; a roll may never be rerolled more than once. Observable: misses are rerolled beyond the first round.
-# effect_id:
-#   skill.infinite-hatred
-# relation:
-#   equivalent
-# parameters:
-#   {"reroll_hits":true,"max_rerolls_per_roll":1}
-# conditions:
-#   {"trigger":"any failed To-Hit roll","recipient":"this warrior","duration":"every close-combat round","stacking":"one reroll per roll"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Compiled as reroll_hits (band--strigoi-power-infinite-hatred in contracts.py), consumed by contexts._hit_reroll as effect.reroll_hits — unlike Hatred it is not restricted to the first round. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"infinite-hatred","audit_group":"EQ-skill.infinite-hatred","verified_facet":"skill.infinite-hatred","relationship":"shared_facet","boundary":"Failed melee hits in every round; not ordinary first-round Hatred or an extra reroll after another reroll.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
 
 # --- Authored scenarios ---
 # Family model (Infinite Hatred on its printed Strigoi recipient): the bearer is built from its
@@ -67,7 +38,6 @@
 
 - audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--strigoi-power-infinite-hatred/skill.infinite-hatred
   id: a-failed-first-round-hit-is-taken-again
-  covers: [infinite-hatred]
   fighters:
     first:
       collection: trollheim
@@ -97,7 +67,6 @@
 # taken-again hit wounds, which is the clause's distinctive face.
 - audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--strigoi-power-infinite-hatred/skill.infinite-hatred
   id: the-reroll-also-applies-beyond-the-first-round
-  covers: [infinite-hatred]
   fighters:
     first:
       collection: trollheim
@@ -132,7 +101,6 @@
 # holds no taken-again die.
 - audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--strigoi-power-infinite-hatred/skill.infinite-hatred
   id: a-band-mate-without-the-printed-power-is-not-rerolled
-  covers: [infinite-hatred]
   fighters:
     first:
       collection: trollheim

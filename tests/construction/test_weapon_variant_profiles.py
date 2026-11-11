@@ -172,6 +172,7 @@ def test_the_sunstaff_is_the_missile_weapon_its_source_lists():
                                              "status": "out_of_scope"}
 
 
+@pytest.mark.covers("item/sun_gauntlet")
 def test_the_sun_gauntlet_melee_half_is_the_off_hand_strength_four_attack():
     assert items()["sun_gauntlet"]["mechanic_id"] == "weapon.sun-gauntlet"
     with pytest.raises(ValueError, match="illegal main-hand selection"):

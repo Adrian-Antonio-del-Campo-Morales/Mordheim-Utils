@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/material.gromril
-# scaffold_fingerprint: 303d5da3fce43ce8108580ba8161736c44d46248c0b04e6b0a3ba9b70589d449
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clause carries two authored boundary
 #   scenarios. REVIEWED still requires manual semantic review and
@@ -10,46 +9,18 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 2 scenarios show one extra point of armour penetration:
+# AUTHORED: 2 scenarios show one extra point of armour penetration:
 #   against heavy armour (5+) a 5 fails while a 6 still holds. Pending semantic
 #   review.
-# origin_id:
-#   mechanic/material.gromril
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   060440d0da17542593c0355b6507196c2498a01c83e69013a620205ae5399a25
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   Adds a further -1 armour-save modifier.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Gromril adds a further -1 armour-save modifier. Closure: a Gromril weapon reduces the target armour save by one point on top of the weapon own modifier.
-# effect_id:
-#   material.gromril
-# relation:
-#   equivalent
-# parameters:
-#   {"armour_penetration":1}
-# conditions:
-#   {"trigger": "armour save"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   The contract carries armour_penetration 1, which prepare_armour_context adds to the printed Strength-based modifier; the item entry prints the same "+1 save modifier" wording so the material is additive as printed. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"whole","audit_group":"EQ-MAT-GROMRIL","verified_facet":"material.gromril","relationship":"shared_facet","boundary":"Additional weapon armour penetration while retaining base weapon rules; acquisition multiplier is excluded. Not Ithilmar Initiative.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
 
 # --- Authored scenarios ---
 # mechanic/material.gromril — one additional point of armour penetration.
 #
 # Expectations come from the printed rule and the accepted clause `whole` of
-# docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv, never from engine output:
+# the knowledge-base clause contracts (sources/knowledge), never from engine output:
 # gromril adds armour_penetration 1, so a Strength 3 bearer worsens the target
 # save by exactly one point.  Heavy armour (5+) becomes 6+: a 5 now fails where
 # it would save, and a 6 still holds.  The material is supplied on
@@ -60,7 +31,6 @@
 
 - audit_id: mechanic/material.gromril
   id: gromril-penetrates-one-more-point
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -83,7 +53,6 @@
 
 - audit_id: mechanic/material.gromril
   id: gromril-save-still-holds-on-six
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace

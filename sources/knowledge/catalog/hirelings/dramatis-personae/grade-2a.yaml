@@ -48,7 +48,7 @@ profiles:
   - id: hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne.rule.daemonic-flesh
     name: Daemonic Flesh
     name_i18n:
-      es: "Carne Demoníaca"
+      es: Carne Demoníaca
     effect: >-
       A 5+ base armour save is never modified and is entirely negated by magical or blessed weapons
       and spells. All of the daemon's close combat attacks count as magical.
@@ -108,9 +108,7 @@ profiles:
       effects:
       - id: excluded.scope
         scope: 'NO'
-        reason: >-
-          Banishment after Out of Action or loss of an external summoner; no campaign/group
-          producer.
+        reason: out-of-scope.campaign
         binding: null
   - id: hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne.rule.coward-king
     name: Coward King
@@ -145,8 +143,7 @@ profiles:
       effects:
       - id: excluded.scope
         scope: 'NO'
-        reason: >-
-          Flying movement is outside the close combat duel.
+        reason: out-of-scope.movement
         binding: null
   - id: hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne.rule.aethereal-hoarder
     name: Aethereal Hoarder
@@ -164,8 +161,7 @@ profiles:
       effects:
       - id: excluded.scope
         scope: 'NO'
-        reason: >-
-          Exploration, rarity and income after a battle are campaign consequences.
+        reason: out-of-scope.campaign
         binding: null
   unresolved_references:
   - kind: summoning_procedure
@@ -235,23 +231,15 @@ profiles:
       - id: massively-built-shooting-producer
         scope: 'NO'
         binding: null
-        reason: >-
-          The Leadership check is made in the shooting phase, with range and visibility; the duel
-          supplies no such activation and does not simulate shooting.
+        reason: out-of-scope.shooting
       - id: leadership-distraction
         scope: 'NO'
         binding: null
-        reason: >-
-          The failed check leaves the target, not Gwen, without its next turn. The caller supplies
-          that individual outcome as condition.massively-built-lost-turn; the engine spends it once
-          in the target's own turn. The shooting-phase check, range and visibility are not produced.
+        reason: out-of-scope.shooting
       - id: massively-built-optional-leadership
         scope: 'NO'
         binding: null
-        reason: >-
-          The optional residual penalty is a supplied target fact: the caller may add
-          condition.massively-built-leadership-penalty, which reduces Leadership by one for the
-          battle.  The failed check itself is not produced here.
+        reason: out-of-scope.construction
   - id: hireling.dramatis.busty-gwen.rule.not-hired-muscle
     name: Not Hired Muscle
     effect: >-
@@ -270,9 +258,7 @@ profiles:
       - id: busty-gwen-not-hired-muscle
         scope: 'NO'
         binding: null
-        reason: >-
-          Being found automatically, its special scenario and the outcome/payment procedure are
-          campaign consequences with no duel-time effect.
+        reason: out-of-scope.campaign
   source_notes:
   - The standard campaign rating is +40 plus experience according to Mordheimer; the one-off game rule
     instead uses 85 gc and +65 rating.
@@ -336,8 +322,7 @@ profiles:
       - id: loner
         scope: 'NO'
         binding: null
-        reason: >-
-          All Alone group counting is outside the individual duel.
+        reason: out-of-scope.group
   - id: hireling.dramatis.the-dark-jester-in-mordheim.rule.confound-and-confuse
     name: Confound and Confuse
     effect: Chooses a source combat trick each combat turn.
@@ -361,7 +346,7 @@ profiles:
       es: >-
         Puede usar la esquiva especial de 4+ de la fuente.
     name_i18n:
-      es: "Esquiva del Bufón"
+      es: Esquiva del Bufón
     runtime:
       scope: 'YES'
       implemented: 'YES'
@@ -527,9 +512,7 @@ profiles:
       - id: headless-horseman-faithful-steed
         scope: 'NO'
         binding: null
-        reason: >-
-          The dismount restriction belongs to mounted movement, which the duel does not evolve; the
-          steed is not a participant.
+        reason: out-of-scope.movement
   - id: hireling.dramatis.the-headless-horseman.rule.undead
     name: Undead
     effect: Horseman and steed count as Undead.
@@ -564,9 +547,7 @@ profiles:
       - id: headless-horseman-expert-rider
         scope: 'NO'
         binding: null
-        reason: >-
-          Counting as stationary for shooting is a missile-resolution benefit, and shooting is
-          outside the resolved duel.
+        reason: out-of-scope.shooting
   - id: hireling.dramatis.the-headless-horseman.rule.rapid-reload
     name: Rapid Reload
     effect: Can fire both duelling pistols each shooting phase.
@@ -583,9 +564,7 @@ profiles:
       - id: headless-horseman-rapid-reload
         scope: 'NO'
         binding: null
-        reason: >-
-          Firing both pistols in a shooting phase is the excluded missile subsystem; the printed
-          clause states no close-combat consequence.
+        reason: out-of-scope.shooting
   - id: hireling.dramatis.the-headless-horseman.rule.head-hewer
     name: Head Hewer
     effect: Source charge attacks with unique axe modify injury/critical results.
@@ -610,9 +589,7 @@ profiles:
       - id: headless-horseman-wanderer
         scope: 'NO'
         binding: null
-        reason: >-
-          Staying for one battle and the rehire interval are retention consequences settled on the
-          roster after the battle.
+        reason: out-of-scope.construction
   unresolved_references:
   - kind: multi_profile_entity
     source_name: Horseman M- WS4 BS5 S4 T4 W2 I6 A2 Ld8; Steed M8 WS2 BS0 S3 T4 W2 I2 A1 Ld5
@@ -701,8 +678,7 @@ profiles:
       - id: hireling.dramatis.the-foole.rule.bored-now.campaign
         scope: 'NO'
         binding: null
-        reason: >-
-          Hiring/participation across battles is excluded.
+        reason: out-of-scope.campaign
   - id: hireling.dramatis.the-foole.rule.poison-ring
     name: Poison Ring
     effect: >-
@@ -747,8 +723,7 @@ profiles:
       - id: hireling.dramatis.the-foole.rule.sadist.campaign
         scope: 'NO'
         binding: null
-        reason: >-
-          Killing a captured prisoner and receiving equipment after battle are excluded.
+        reason: out-of-scope.construction
   - id: hireling.dramatis.the-foole.rule.master-craftsman
     name: Master Craftsman
     effect: >-
@@ -775,10 +750,7 @@ profiles:
       - id: hireling.dramatis.the-foole.rule.master-craftsman.campaign
         scope: 'NO'
         binding: null
-        reason: >-
-          Post-battle rolls, encounter and two-battle accounting are excluded. Supplied results use
-          condition.master-craftsman-strength, condition.master-craftsman-initiative and
-          condition.giggle-juice-coating on the chosen physical weapon. The Poison Ring spray stays separate.
+        reason: out-of-scope.campaign
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -995,9 +967,7 @@ profiles:
       - id: william-pantomime-horse
         scope: 'NO'
         binding: null
-        reason: >-
-          The optional mount is a separate steed profile with mounted movement the duel does not
-          field.
+        reason: out-of-scope.movement
   - id: hireling.dramatis.william-schakestange-master-bard.rule.pages-of-couragio
     name: Pages of Couragio
     effect: >-
@@ -1016,9 +986,7 @@ profiles:
       - id: william-pages-of-couragio
         scope: 'NO'
         binding: null
-        reason: >-
-          Recording heroic acts and awarding extra post-battle Experience are campaign consequences
-          settled after the game.
+        reason: out-of-scope.campaign
   - id: hireling.dramatis.william-schakestange-master-bard.rule.campaign-eligibility
     name: Conditional Acceptance — Good-Aligned Employers
     effect: >-
@@ -1038,9 +1006,7 @@ profiles:
       - id: william-campaign-eligibility
         scope: 'NO'
         binding: null
-        reason: >-
-          The roster-composition and alignment acceptance roll is evaluated when the warband is
-          hired and has no duel-time consequence.
+        reason: out-of-scope.construction
   unresolved_references:
   - kind: skill
     source_name: Ride Pantomime Horse

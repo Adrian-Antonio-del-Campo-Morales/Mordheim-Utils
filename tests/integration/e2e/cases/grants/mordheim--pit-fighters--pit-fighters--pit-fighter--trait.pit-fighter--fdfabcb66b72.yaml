@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/pit-fighters/pit-fighters--pit-fighter/trait.pit-fighter
-# scaffold_fingerprint: 07749cb33d0ccca919e30653dd8a5ced42e320e8459d4161fafd1fe3774fe022
 # authoring_status: PARTIAL
 # authoring_progress_closing_review: category E - nothing authorable; identical disposition across the five
 #   pit-fighter grant origins (pit-fighters, pit-king, pursuers, pit-veterans, ogre-pit-fighter).
@@ -20,12 +19,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# PARTIAL[whole]: [E] excluded by accepted scope decisions, so nothing here is authorable: (1) this
+# PARTIAL: [E] excluded by accepted scope decisions, so nothing here is authorable: (1) this
 #   clause's own contract closes as "unmodelled while fighting-style selection stays in the construction
 #   and campaign layer", and (2) the band's own band--fighting-styles row is runtime scope NO /
 #   implemented NO with a null binding (initial recruitment packages, gold costs and swapping equipment
@@ -53,31 +50,5 @@
 #   the concrete requirement named above in this marker; the clause stays recorded as withheld and is not
 #   dropped, aliased to another origin or counted as covered.  Where this file also quotes a register
 #   exclusion, that exclusion applies to the campaign, roster or advancement faces it names.
-# origin_id:
-#   rule/mordheim/pit-fighters/pit-fighters--pit-fighter/trait.pit-fighter
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/pit-fighters/special-rules.yaml
-# source_fingerprint:
-#   9f91a963ac809ed6e30be2053f742761f51814fcecbc5fc072f705aba03eda02
-# source_sha256_at_generation:
-#   4b743a427096d672a1bf5a53fad379b4e5c09d9e585ec2bf06eabd86e7123015
-# Printed rule text:
-#   This warrior has the warband's Pit Fighter skill.
-# Semantic contract (check analysis_status before treating as accepted):
-#   The Pit Fighters' grant of the same warband skill is admitted as the same construction fact for those bearers. Printed clause: This warrior has the warband's Pit Fighter skill.
-# effect_id:
-#   (not recorded)
-# relation:
-#   unresolved
-# parameters:
-#   {}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Origin of the same printed stanza for the Pit Fighters recipient; composition-only concern, no duel clause, no effect ID and no consumer. Scope review integration: {"clause_id":"whole","review_clause_id":"whole","source_state":"matched","review_status":"reviewed","scope_reason":"The Pit Fighters' grant of the same warband skill is admitted as the same construction fact for those bearers.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"This warrior has the warband Pit Fighter skill and therefore a fighting style determining his equipment. Closure: unmodelled while fighting-style selection stays in the construction and campaign layer.","effect_id":"","relation":"equivalent","parameters":"{\"grant\": \"fighting styles\"}","conditions":"{\"subsystem\": \"construction / campaign\"}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"A12-construction-contract-rules","analysis_status":"reviewed","evidence":"none","evidence_refs":"[]"},"inherited_clause_text":"This warrior has the warband's Pit Fighter skill.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
 
 []  # Empty scenario list: this file contributes no test or coverage.

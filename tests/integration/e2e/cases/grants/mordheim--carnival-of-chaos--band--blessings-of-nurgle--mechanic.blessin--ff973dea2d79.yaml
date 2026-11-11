@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/carnival-of-chaos/band--blessings-of-nurgle/mechanic.blessings-of-nurgle
-# scaffold_fingerprint: 74e3bb629cad16f78486a95bf8eea82b3efbe7a2dc504949052ca477197c84e0
 # authoring_status: AUTHORED
 # authoring_progress: the admitted whole--scope--blessing-construction clause carries four authored
 # scenarios read through the shared construction stage the recorded consumer names.  The refusal
@@ -19,9 +18,8 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: whole--scope--blessing-construction (scope: YES)
 # AUTHORED[whole--scope--blessing-construction]: 4 scenarios cover the admitted construction face.
@@ -36,61 +34,9 @@
 # doubled price of second and later Blessings: both are campaign purchase facts with no duel
 # projection, and the cost sentence is a scope-NO sibling clause.  REVIEWED still requires manual
 # semantic review.
-# origin_id:
-#   rule/mordheim/carnival-of-chaos/band--blessings-of-nurgle/mechanic.blessings-of-nurgle
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/carnival-of-chaos/special-rules.yaml
-# source_fingerprint:
-#   b9079b63fb677aaaf67cfc620d2b732865ce8f39828605e8a7da4ced28dbfef3
-# source_sha256_at_generation:
-#   ea10f24ff3b1bb4a16d31e0550eb4b011c294a424bd719a00bfba5e72e42a217
-# Printed rule text:
-#   Blessings of Nurgle may be bought for Tainted Ones only when they are recruited; any Tainted may have one or more Blessings
-# Semantic contract (check analysis_status before treating as accepted):
-#   Restricting Blessings to Tainted Ones and to the moment of recruitment, and allowing one or more per model, are construction clauses. Printed clause: Blessings of Nurgle may be bought for Tainted Ones only when they are recruited; any Tainted may have one or more Blessings
-# effect_id:
-#   compiler.blessings-of-nurgle
-# relation:
-#   related
-# parameters:
-#   {}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Declared and implemented; the doubling is a recruitment cost rule rather than a duel consequence. Scope review integration: {"clause_id":"whole","review_clause_id":"blessing-construction","source_state":"matched","review_status":"reviewed","scope_reason":"Restricting Blessings to Tainted Ones and to the moment of recruitment, and allowing one or more per model, are construction clauses.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Recruitment-time purchase rule: Blessings of Nurgle are bought only at recruitment, in any number, with the second and later blessings at double cost.","effect_id":"compiler.blessings-of-nurgle","relation":"equivalent","parameters":"{}","conditions":"{\"purchase_time\":\"recruitment\",\"pricing\":{\"first\":\"printed\",\"later\":\"double\"}}","consumer":"[\"packages/python/roster-construction/mordheim_construction/contracts.py::COMPILER_CONTRACTS\",\"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"batch.D.declared-effects","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"sources/knowledge/bands/mordheim/carnival-of-chaos/special-rules.yaml\"]"},"inherited_clause_text":"Blessings of Nurgle may be bought for Tainted Ones only when they are recruited; any Tainted may have one or more Blessings, and second and subsequent Blessings cost double.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."}
 #
 # Clause: whole--scope--blessing-price (scope: NO)
 # Outside the admitted clause scope; retained for context, not a test TODO.
-# origin_id:
-#   rule/mordheim/carnival-of-chaos/band--blessings-of-nurgle/mechanic.blessings-of-nurgle
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/carnival-of-chaos/special-rules.yaml
-# source_fingerprint:
-#   b9079b63fb677aaaf67cfc620d2b732865ce8f39828605e8a7da4ced28dbfef3
-# source_sha256_at_generation:
-#   ea10f24ff3b1bb4a16d31e0550eb4b011c294a424bd719a00bfba5e72e42a217
-# Printed rule text:
-#   and second and subsequent Blessings cost double.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Charging double for second and subsequent Blessings is an acquisition price, excluded from the duel. Printed clause: and second and subsequent Blessings cost double.
-# effect_id:
-#   (not recorded)
-# relation:
-#   independent
-# parameters:
-#   {}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Declared and implemented; the doubling is a recruitment cost rule rather than a duel consequence. Scope review integration: {"clause_id":"whole","review_clause_id":"blessing-price","source_state":"matched","review_status":"reviewed","scope_reason":"Charging double for second and subsequent Blessings is an acquisition price, excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Recruitment-time purchase rule: Blessings of Nurgle are bought only at recruitment, in any number, with the second and later blessings at double cost.","effect_id":"compiler.blessings-of-nurgle","relation":"equivalent","parameters":"{}","conditions":"{\"purchase_time\":\"recruitment\",\"pricing\":{\"first\":\"printed\",\"later\":\"double\"}}","consumer":"[\"packages/python/roster-construction/mordheim_construction/contracts.py::COMPILER_CONTRACTS\",\"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"batch.D.declared-effects","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"sources/knowledge/bands/mordheim/carnival-of-chaos/special-rules.yaml\"]"},"inherited_clause_text":"Blessings of Nurgle may be bought for Tainted Ones only when they are recruited; any Tainted may have one or more Blessings, and second and subsequent Blessings cost double.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
 
 # --- Authored scenarios ---
 # Derived from the printed sentence, the printed profiles and the recorded contract; no engine output

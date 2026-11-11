@@ -59,9 +59,7 @@ rules:
     - id: unimplemented.sisters-of-sigmar.sigmarite-matriarch.prayers-of-sigmar
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: augur--blessed-sight
   runtime:
     scope: 'YES'
@@ -73,6 +71,11 @@ rules:
       binding:
         kind: mechanic
         id: skill.blessed-sight
+      clauses:
+      - id: whole
+        scope: 'YES'
+      - id: exploration-dice
+        scope: 'NO'
   name: Blessed Sight
   effect: >-
     The Augur may re-roll failed characteristic tests and failed rolls to hit in close combat or
@@ -120,9 +123,7 @@ rules:
     - id: unimplemented.sisters-of-sigmar.band.human-maximum-characteristics
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: band--special-skills-sign-of-sigmar
   kind: warband_skill
   name: Sign of Sigmar
@@ -190,8 +191,7 @@ rules:
     - id: unimplemented.sisters-of-sigmar.band.special-skills-protection-of-sigmar
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--special-skills-utter-determination
   kind: warband_skill
   name: Utter Determination
@@ -219,9 +219,7 @@ rules:
     - id: unimplemented.sisters-of-sigmar.band.special-skills-utter-determination
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: band--special-skills-righteous-fury
   kind: warband_skill
   name: Righteous Fury
@@ -289,6 +287,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.fear-reroll
+      clauses:
+      - id: fear-reroll
+        scope: 'YES'
+      - id: all-alone
+        scope: 'NO'
 - id: augur--no-armour
   name: No Armour
   effect: >-

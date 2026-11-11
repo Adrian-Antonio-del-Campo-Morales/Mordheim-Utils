@@ -39,9 +39,7 @@ rules:
     - id: unimplemented.dwarf-rangers.runesmith.inscribe-runes
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Inscribe Runes
   effect: >-
     A Runesmith knows one minor rune (see list at the end of this warband list ), determined
@@ -78,8 +76,7 @@ rules:
     - id: unimplemented.dwarf-rangers.apprentice-runesmith.extra-set-of-hands
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Extra Set of Hands
   effect: >-
     An Apprentice Runesmith helps his master fashion runic items, doing all the boring grunge-work
@@ -112,6 +109,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+      clauses:
+      - id: psychology-immunity
+        scope: 'YES'
+      - id: all-alone
+        scope: 'NO'
   name: Deathwish
   source:
     manual: mordheimer.net
@@ -171,8 +173,10 @@ rules:
     - id: unimplemented.dwarf-rangers.band.dont-trust-em
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: deferred.psychology
+      clauses:
+      - id: dont-trust-em
+        scope: 'NO'
   name: Don’t Trust ‘Em
   effect: >-
     In multiplayer games, Dwarf Rangers may ally with other Dwarf warbands, but models from the two
@@ -239,7 +243,7 @@ rules:
     es: Cabeza Dura
   applies_to:
     band: true
-  rule_ref: shared-rule.hard-head-2
+  rule_ref: shared-rule.dwarf-hard-head
 - id: band--armour
   runtime:
     scope: 'NO'
@@ -249,9 +253,7 @@ rules:
     - id: unimplemented.dwarf-rangers.band.armour
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Armour
   source:
     manual: mordheimer.net
@@ -262,7 +264,7 @@ rules:
     es: Armadura
   applies_to:
     band: true
-  rule_ref: shared-rule.armour-2
+  rule_ref: shared-rule.dwarf-armour
 - id: band--hate-orcs-and-goblins
   runtime:
     scope: 'YES'
@@ -294,8 +296,7 @@ rules:
     - id: unimplemented.dwarf-rangers.band.grudgebearers
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Grudgebearers
   source:
     manual: mordheimer.net
@@ -316,8 +317,7 @@ rules:
     - id: unimplemented.dwarf-rangers.band.incomparable-miners
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Incomparable Miners
   source:
     manual: mordheimer.net
@@ -401,9 +401,7 @@ rules:
     - id: unimplemented.dwarf-rangers.band.dwarf-special-skills-extra-tough
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Extra Tough
   source:
     manual: mordheimer.net
@@ -425,8 +423,7 @@ rules:
     - id: unimplemented.dwarf-rangers.band.dwarf-special-skills-resource-hunter
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Resource Hunter
   source:
     manual: mordheimer.net
@@ -576,8 +573,6 @@ rules:
     band: true
 - id: dwarf-troll-slayers--no-armour
   name: No Armour
-  effect: >-
-    Dwarf Troll Slayers may never wear any form of armour.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -585,9 +580,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dwarf-rangers
   name_i18n:
     es: Sin Armadura
-  effect_i18n:
-    es: >-
-      Los Matatrolles Enanos jamás pueden llevar ningún tipo de armadura.
   applies_to:
     profile_ids:
     - dwarf-troll-slayers
@@ -603,10 +595,9 @@ rules:
         id: profile.equipment-restrictions
         parameters:
           forbids: armour
+  rule_ref: shared-rule.no-armour
 - id: dwarf-troll-slayers--no-missile-weapons
   name: No Missile Weapons
-  effect: >-
-    Troll Slayers may never use missile weapons.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -614,9 +605,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dwarf-rangers
   name_i18n:
     es: Sin Armas de Proyectil
-  effect_i18n:
-    es: >-
-      Los Matatrolles Enanos jamás pueden usar armas de proyectil.
   applies_to:
     profile_ids:
     - dwarf-troll-slayers
@@ -630,3 +618,4 @@ rules:
       binding:
         kind: compiler
         id: compiler.no-missile-weapons
+  rule_ref: shared-rule.no-missile-weapons

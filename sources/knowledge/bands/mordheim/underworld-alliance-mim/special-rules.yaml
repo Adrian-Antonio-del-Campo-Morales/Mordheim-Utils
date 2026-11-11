@@ -10,9 +10,7 @@ rules:
     - id: unimplemented.underworld-alliance-mim.band.who-iz-da-boss
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Who'z Da Boss!
   effect: >-
     At the end of a victorious game, instead of giving the leader +1 experience, roll a D6: 1 =
@@ -44,9 +42,7 @@ rules:
     - id: unimplemented.underworld-alliance-mim.band.warpstone-for-breakfast
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Warpstone for Breakfast
   effect: >-
     Any Hero may start the campaign with a single mutation (leaders may start with two) from the
@@ -79,9 +75,10 @@ rules:
     - id: unimplemented.underworld-alliance-mim.band.alliance-of-inconvenience
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: deferred.other
+      clauses:
+      - id: alliance-of-inconvenience
+        scope: 'NO'
   name: An Alliance of Inconvenience
   effect: >-
     The Underworld has two leaders: only skaven can use the Slave King's Leadership bonus and only
@@ -114,9 +111,7 @@ rules:
     - id: unimplemented.underworld-alliance-mim.band.factional-jealousy
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Factional Jealousy
   effect: >-
     A warrior of one type may never intercept the charge meant for a warrior of the other type.
@@ -141,10 +136,7 @@ rules:
     - id: unimplemented.underworld-alliance-mim.band.glory-hogz
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: group Rout, All Alone or combat against multiple
-        opponents. Source prose is retained; this is an exclusion, not deferred modular
-        implementation.
+      reason: deferred.other
   name: Glory Hogz
   effect: >-
     If one of the factions has routed, at the start of your turn you may roll 2D6; on a double, the
@@ -175,10 +167,12 @@ rules:
     - id: unimplemented.underworld-alliance-mim.band.power-grab
       scope: LATER
       binding: null
-      reason: >-
-        Group producer: counting the two races in the warband is outside the duel. The individual
-        match-start adjustment is supplied per duelist as condition.power-grab-majority (+1)
-        or condition.power-grab-minority (-1), resolved by the shared supplied-condition route.
+      reason: out-of-scope.group
+      clauses:
+      - id: composition-producer
+        scope: 'NO'
+      - id: supplied-leadership-adjustment
+        scope: 'YES'
   name: Power Grab
   effect: >-
     If there is more of one type of race than the other at the start of a match, the race with more
@@ -205,9 +199,7 @@ rules:
     - id: unimplemented.underworld-alliance-mim.band.plenty-more-where-that-came-from
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Plenty More Where That Came From
   effect: >-
     If one of the two leaders dies, another hero of the same race takes command, earning the title
@@ -259,10 +251,7 @@ rules:
     - id: trait.re-roll-melee
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: group Rout, All Alone or combat against multiple
-        opponents. Source prose is retained; this is an exclusion, not deferred modular
-        implementation.
+      reason: deferred.other
   name: One Upmanship
   effect: >-
     The Goblin Bully may re-roll all to hit rolls when fighting in the same combat as the Skaven
@@ -313,9 +302,7 @@ rules:
     - id: unimplemented.underworld-alliance-mim.skaven-slum-lord.sneaky-snark
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Sneaky Snark
   effect: >-
     When fighting in the same combat as the Goblin Bully, if the Bully takes someone out of action
@@ -345,13 +332,8 @@ rules:
     - id: unimplemented.underworld-alliance-mim.skaven-slave-champions.tunnel-rat
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Tunnel Rat
-  effect: >-
-    Any characteristic-based tests being taken for scenarios set in sewers or elsewhere underground
-    can be re-rolled.
   source:
     manual: broheim.net
     printed_page: 3
@@ -359,13 +341,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Underworld Alliance.pdf
   name_i18n:
     es: Rata de Túnel
-  effect_i18n:
-    es: >-
-      Cualquier chequeo basado en características realizado en escenarios situados en cloacas u
-      otros lugares subterráneos puede repetirse.
   applies_to:
     profile_ids:
     - skaven-slave-champions
+  rule_ref: shared-rule.tunnel-rat
 - id: goblin-stinky-gits--disgusting
   runtime:
     scope: 'YES'
@@ -409,9 +388,7 @@ rules:
     - id: unimplemented.underworld-alliance-mim.boglars.largely-insignificant
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Largely Insignificant
   effect: >-
     Boglars count towards the number of warriors in a warband but are not considered for Rout tests
@@ -439,9 +416,7 @@ rules:
     - id: unimplemented.underworld-alliance-mim.boglars.bicker
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee: requires another friendly creature and a model not
-        engaged in close combat.
+      reason: out-of-scope.group
   name: Bicker
   effect: >-
     Roll a D6 at the beginning of the turn for each Boglar within 2 inches of another Boglar and not
@@ -502,8 +477,7 @@ rules:
     - id: unimplemented.underworld-alliance-mim.sewer-squigs.movement
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Movement
   effect: >-
     Sewer Squigs move 2D6-1 inches each turn on land; when in water, they can swim 2D6 inches each
@@ -532,11 +506,8 @@ rules:
     - id: unimplemented.underworld-alliance-mim.giant-rats.pack-size
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Pack Size
-  effect: You can recruit as many Giant Rats as you wish.
   source:
     manual: broheim.net
     printed_page: 4
@@ -544,11 +515,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Underworld Alliance.pdf
   name_i18n:
     es: Tamaño de la Manada
-  effect_i18n:
-    es: Puedes reclutar tantas Ratas Gigantes como desees.
   applies_to:
     profile_ids:
     - giant-rats
+  rule_ref: shared-rule.giant-rat-pack-size
 - id: giant-rats--experience
   runtime:
     scope: LATER
@@ -558,11 +528,11 @@ rules:
     - id: unimplemented.underworld-alliance-mim.giant-rats.experience
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: deferred.other
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Experience
-  effect: Giant Rats are animals and do not gain experience.
   source:
     manual: broheim.net
     printed_page: 4
@@ -570,11 +540,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Underworld Alliance.pdf
   name_i18n:
     es: Experiencia
-  effect_i18n:
-    es: Las Ratas Gigantes son animales y no ganan experiencia.
   applies_to:
     profile_ids:
     - giant-rats
+  rule_ref: shared-rule.animal
 - id: warpstone-troll--fear
   runtime:
     scope: 'YES'
@@ -612,8 +581,7 @@ rules:
     - id: unimplemented.underworld-alliance-mim.warpstone-troll.stupidity.movement
       scope: 'NO'
       binding: null
-      reason: >-
-        Random board movement after failure is outside the 1v1 duel scope.
+      reason: out-of-scope.movement
   name: Stupidity
   source:
     manual: broheim.net
@@ -625,7 +593,7 @@ rules:
   applies_to:
     profile_ids:
     - warpstone-troll
-  rule_ref: shared-rule.stupidity-2
+  rule_ref: shared-rule.troll-stupidity
 - id: warpstone-troll--regeneration
   runtime:
     scope: 'YES'
@@ -666,9 +634,7 @@ rules:
     - id: unimplemented.underworld-alliance-mim.warpstone-troll.mutates
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Mutates
   effect: If wounded 3 or more times, roll on the Random Mutation Chart unless taken out of action.
   source:
@@ -718,8 +684,7 @@ rules:
     - id: unimplemented.underworld-alliance-mim.warpstone-troll.large-target
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: shooting.
+      reason: out-of-scope.shooting
   name: Large Target
   source:
     manual: broheim.net
@@ -742,9 +707,7 @@ rules:
     - id: unimplemented.underworld-alliance-mim.band.wyrdstone-addict
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: eating a shard in the post-game to roll on the Warp Touch Chart is a
-        post-battle sequence mechanic; immunity to Tainted weapons is a damage-type interaction.
+      reason: out-of-scope.campaign
   name: Wyrdstone Addict
   effect: >-
     The warrior may eat a Wyrdstone shard after the battle to roll on the Warp Touch Chart. Also the
@@ -773,9 +736,7 @@ rules:
     - id: unimplemented.underworld-alliance-mim.band.stuff-em-with-green
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: feeding warpstone in the post-game and exploding on a charge are post-battle
-        and combat-phase mechanics.
+      reason: out-of-scope.campaign
   name: Stuff 'Em with Green
   effect: >-
     The Hero may feed 1 Warpstone to 1 squig or giant rat in the post-game. During the next battle,

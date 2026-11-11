@@ -39,9 +39,7 @@ rules:
     - id: unimplemented.kislevites.druzhina-captain.inheritance
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Inheritance
   effect: >-
     When the Kislevite warband is first created, the Druzhina Captain is allowed to purchase one
@@ -87,6 +85,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.bear-handler
+      clauses:
+      - id: handler-leadership--scope--roster-purchase
+        scope: 'NO'
+      - id: handler-leadership--scope--stupidity-waiver
+        scope: 'YES'
   name: Bear Handler
   effect: >-
     A Kislevite Warband that includes a Bear Tamer is allowed to purchase a Bear as a henchman. This
@@ -149,8 +152,7 @@ rules:
     - id: unimplemented.kislevites.streltsi.gun-rest
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: to-hit rolls.
+      reason: out-of-scope.non-duel
   name: Gun-Rest
   effect: >-
     A Streltsi warrior armed with both halberd and handgun may use the halberd as a gun-rest. The
@@ -182,8 +184,7 @@ rules:
     - id: unimplemented.kislevites.trained-bear.requires-bear-tamer
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Requires Bear Tamer
   effect: >-
     A Trained Bear may only be included in the warband if it includes a Bear Tamer, and it may not
@@ -213,18 +214,25 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.stupidity
+      clauses:
+      - id: stupidity--scope--stupidity
+        scope: 'YES'
+      - id: stupidity--scope--roster-condition
+        scope: 'NO'
     - id: mechanic.handler-leadership
       scope: 'YES'
       binding:
         kind: mechanic
         id: mechanic.handler-leadership
+      clauses:
+      - id: handler-leadership--scope--stupidity
+        scope: 'YES'
+      - id: handler-leadership--scope--roster-condition
+        scope: 'NO'
     - id: unimplemented.kislevites.trained-bear.trained.outside-duel
       scope: 'NO'
       binding: null
-      reason: >-
-        Board movement, campaign progression/participation and independently simulated
-        helper/rider/group producers are outside the 1v1 duel. Admissible individual exemptions and
-        bonuses are supplied active facts.
+      reason: out-of-scope.movement
     - id: mechanic.bear-handler-recipient
       scope: 'YES'
       binding:
@@ -339,8 +347,7 @@ rules:
     - id: unimplemented.kislevites.trained-bear.fiercely-loyal
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Fiercely Loyal
   effect: >-
     Such dedication is built into the relationship between Bear Tamer and bear that if his trainer
@@ -379,8 +386,7 @@ rules:
     - id: unimplemented.kislevites.trained-bear.animal
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Animal
   effect: Trained Bears are animals and do not gain experience.
   source:
@@ -404,10 +410,8 @@ rules:
     - id: unimplemented.kislevites.trained-bear.large-target
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: shooting.
+      reason: out-of-scope.shooting
   name: Large Target
-  effect: Bears are Large Targets as defined in the shooting rules.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -415,11 +419,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/kislevites
   name_i18n:
     es: Objetivo Grande
-  effect_i18n:
-    es: Los osos son Objetivos Grandes según se define en las reglas de disparo.
   applies_to:
     profile_ids:
     - trained-bear
+  rule_ref: shared-rule.large-target
 - id: band--may-hire
   runtime:
     scope: 'NO'
@@ -429,9 +432,7 @@ rules:
     - id: unimplemented.kislevites.band.may-hire
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: May Hire
   effect: A Kislevite warband may hire the same Hired Swords as Human Mercenary warbands.
   source:
@@ -456,8 +457,7 @@ rules:
     - id: unimplemented.kislevites.band.ancient-enemies
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Ancient Enemies
   effect: >-
     Kislevite warbands may never ally with Chaos warbands, including Possessed, Beastmen, Carnival
@@ -492,7 +492,6 @@ rules:
           forbids:
           - armour
   name: No Armour
-  effect: These profiles may not wear armour.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -500,11 +499,9 @@ rules:
     section: Kislevite Warrior Equipment List
   name_i18n:
     es: Sin Armadura
-  effect_i18n:
-    es: >-
-      Estos perfiles no pueden llevar armadura.
   applies_to:
     profile_ids:
     - esaul
     - bear-tamer
     - youths
+  rule_ref: shared-rule.no-armour

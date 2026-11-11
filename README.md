@@ -81,7 +81,7 @@ The source-checkout launcher is task-oriented: app launchers (`app combat-lab`, 
 | --- | --- |
 | Check the local environment | `python tools/mordheim-utils.py tests env` |
 | Validate KB structure and connections | `python tools/mordheim-utils.py check verify` |
-| Generate the rule inventory | `python tools/mordheim-utils.py check report rules` |
+| Generate the rule inventory and clause coverage | `python tools/mordheim-utils.py check report rules` |
 | Generate test reports | `python tools/mordheim-utils.py check report tests` |
 | Choose test selections and focused checks | `python tools/mordheim-utils.py tests --help` |
 | Run the original modular E2E corpus | `python tools/mordheim-utils.py tests kb e2e -q` |

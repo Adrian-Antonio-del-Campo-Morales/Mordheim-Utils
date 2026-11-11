@@ -1,0 +1,94 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/lustria-tileans/band--remas-officer-leadership/profile.characteristics
+# authoring_status: AUTHORED
+# authoring_progress: the admitted leadership-characteristic-bonus clause carries authored scenarios derived from the printed rule, the recorded contract (+1 Leadership at all times to the three printed recipient sets) and the printed profiles of sources/knowledge/bands/trollheim/lustria-tileans/profiles.yaml (Captain Ld 8, Champions Ld 7, Recruits Ld 6).  The recipient set is exercised through the band package and its closure is evidenced by the refusal of a profile outside it.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 4 scenarios cover the printed +1 Leadership on the Mercenary Captain and on the Champions, the Recruits recipient, and the refusal of a profile outside the printed recipient list.
+
+# --- Authored scenarios ---
+# The printed sentence is "+1 Leadership at all times, regardless of the opposing warband"
+# for the Mercenary Captain, the Champions and the Recruits.  Each recipient is built from the
+# band package with the rule selected through `special_rule_ids`, and the supplied Leadership is
+# read as the duel's own initial characteristic; the same build without the selection supplies
+# the printed base value, which is the contrast.
+- audit_id: rule/trollheim/lustria-tileans/band--remas-officer-leadership/profile.characteristics
+  id: the-mercenary-captain-is-supplied-leadership-nine
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-tileans
+      profile_id: mercenary-captain
+      special_rule_ids: [band--remas-officer-leadership]
+      main_weapon_id: weapon.mace
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &tilean-fixture {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &tilean-uncharged {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_fighters: {first.characteristics.leadership: 9}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same recipient without the printed rule: the printed Leadership 8 stands, so the bonus
+# is what supplies the ninth point rather than an unconditional profile value.
+- audit_id: rule/trollheim/lustria-tileans/band--remas-officer-leadership/profile.characteristics
+  id: the-unselected-captain-keeps-leadership-eight
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-tileans
+      profile_id: mercenary-captain
+      main_weapon_id: weapon.mace
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *tilean-fixture
+  duel_context: *tilean-uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_fighters: {first.characteristics.leadership: 8}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The Champions are the second printed recipient set (printed Leadership 7).
+- audit_id: rule/trollheim/lustria-tileans/band--remas-officer-leadership/profile.characteristics
+  id: the-champions-are-supplied-leadership-eight
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-tileans
+      profile_id: champions
+      special_rule_ids: [band--remas-officer-leadership]
+      main_weapon_id: weapon.mace
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *tilean-fixture
+  duel_context: *tilean-uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_fighters: {first.characteristics.leadership: 8}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A profile the printed sentence does not name keeps no bonus and is refused the rule itself,
+# which is the closure of the recipient set.
+- audit_id: rule/trollheim/lustria-tileans/band--remas-officer-leadership/profile.characteristics
+  id: a-profile-outside-the-recipient-list-is-refused
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-tileans
+      profile_id: warriors
+      special_rule_ids: [band--remas-officer-leadership]
+      main_weapon_id: weapon.dagger
+  expect_error: special rule is not available to lustria-tileans/warriors

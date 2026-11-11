@@ -12,6 +12,9 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.goblin-squabble
+      clauses:
+      - id: animosity
+        scope: 'NO'
   name: Animosity
   effect: >-
     Goblins spend much of their lives squabbling and fighting amongst themselves. Sometimes this
@@ -88,10 +91,16 @@ rules:
     - id: unimplemented.crooked-moon-kep.band.night-goblin-special-skills
       scope: LATER
       binding: null
-      reason: >-
-        Special skill list: Ded Shooty is a shooting modifier (out of scope), Sneaky Git is a
-        deployment mechanic and Infiltrate/Netter resolve against the equivalent rules from the
-        active KB at the equivalence review; preserved verbatim for now.
+      reason: out-of-scope.shooting
+      clauses:
+      - id: night-goblin-skills--scope--ded-shooty
+        scope: 'NO'
+      - id: night-goblin-skills--scope--sneaky-git
+        scope: 'NO'
+      - id: night-goblin-skills--scope--infiltrate
+        scope: 'NO'
+      - id: night-goblin-skills--scope--netter
+        scope: 'YES'
   name: Night Goblin Special Skills
   effect: >-
     Ded Shooty: the clever little git adds +6" to the range of any missile weapons he uses (not
@@ -191,11 +200,7 @@ rules:
     - id: band--night-goblin-special-skills-netter.net-charge-producer
       scope: 'NO'
       binding: null
-      reason: >-
-        The net charge is a throw resolved by ballistic skill followed by the target's Strength escape
-        test, and a miss or escape is a failed charge stopped short of contact; those producers and the
-        board placement remain outside the duel and are not simulated.  Only the caught victim's
-        individually admitted state applies, and the caller supplies it expressly as condition.netted.
+      reason: out-of-scope.movement
 - id: band--waagh-magic
   runtime:
     scope: 'NO'
@@ -205,9 +210,7 @@ rules:
     - id: unimplemented.crooked-moon-kep.band.waagh-magic
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: shooting, casting or escape without resolving the
-        duel. Source prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: WAAAGH Magic
   effect: >-
     WAAAGH spells are a ritual of art, prayer to Gork and Mork. The Shaman's spells: 1 Gork's Wacky
@@ -268,8 +271,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any model in the warband within 6" of the Big Boss may use his Leadership instead of their own.
   source:
     manual: broheim.net
     printed_page: 12
@@ -277,11 +278,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Crooked Moon Night Goblins.pdf
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: Cualquier modelo de la banda a 6" del Gran Jefe puede usar su Liderazgo en lugar del propio.
   applies_to:
     profile_ids:
     - big-boss
+  rule_ref: shared-rule.leader
 - id: shaman--wizard
   runtime:
     scope: 'NO'
@@ -291,9 +291,7 @@ rules:
     - id: unimplemented.crooked-moon-kep.shaman.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: shooting, casting or escape without resolving the
-        duel. Source prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Wizard
   effect: A Night Goblin Shaman is a Wizard and uses WAAAGH! magic.
   source:
@@ -317,9 +315,7 @@ rules:
     - id: unimplemented.crooked-moon-kep.squig-hopper.squig-jump
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Squig Jump
   effect: >-
     Squig Hoppers move using the random 2D6 Movement characteristic of their Squig mount instead of
@@ -351,10 +347,7 @@ rules:
     - id: unimplemented.crooked-moon-kep.fanatics.addict
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: campaign, recruitment, progression or post-duel
-        aftermath. Source prose is retained; this is an exclusion, not deferred modular
-        implementation.
+      reason: out-of-scope.campaign
   name: Addict
   effect: >-
     The Fanatic is dependent on a regular supply of Mad Cap mushrooms. If he can't get any before a
@@ -444,9 +437,7 @@ rules:
     - id: unimplemented.crooked-moon-kep.cave-squigs.movement
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Movement
   effect: >-
     Cave Squigs don't have a set movement characteristic but move with an unbelievably random
@@ -479,9 +470,7 @@ rules:
     - id: unimplemented.crooked-moon-kep.cave-squigs.minderz
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Minderz
   source:
     manual: broheim.net
@@ -503,9 +492,10 @@ rules:
     - id: unimplemented.crooked-moon-kep.cave-squigs.animals
       scope: LATER
       binding: null
-      reason: >-
-        Experience exclusion is a campaign mechanic; resolves against the shared-rule
-        animal/experience equivalence at the review.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Animals
   effect: Cave Squigs are animals of sorts and don't gain experience.
   source:
@@ -557,10 +547,7 @@ rules:
     - id: unimplemented.crooked-moon-kep.troll.stupidity.outside-duel
       scope: 'NO'
       binding: null
-      reason: >-
-        Board movement, campaign progression/participation and independently
-        simulated helper/rider/group producers are outside the 1v1 duel.
-        Admissible individual exemptions and bonuses are supplied active facts.
+      reason: out-of-scope.movement
   name: Stupidity
   source:
     manual: broheim.net
@@ -572,7 +559,7 @@ rules:
   applies_to:
     profile_ids:
     - troll
-  rule_ref: shared-rule.stupidity-2
+  rule_ref: shared-rule.troll-stupidity
 - id: troll--regeneration
   runtime:
     scope: 'YES'
@@ -584,11 +571,17 @@ rules:
       binding:
         kind: mechanic
         id: skill.regeneration
+      clauses:
+      - id: regenerate-wound
+        scope: 'YES'
+      - id: fire-exception
+        scope: 'YES'
+      - id: post-battle-injury
+        scope: 'NO'
     - id: campaign.post-battle-injury
       scope: 'NO'
       binding: null
-      reason: >-
-        Post-battle injury is a campaign state.
+      reason: out-of-scope.campaign
   name: Regeneration
   source:
     manual: broheim.net
@@ -610,8 +603,10 @@ rules:
     - id: unimplemented.crooked-moon-kep.troll.dumb-monster
       scope: LATER
       binding: null
-      reason: >-
-        Experience exclusion is a campaign mechanic; resolves against shared-rule.dumb-monster.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: dumb-monster
+        scope: 'NO'
   name: Dumb Monster
   source:
     manual: broheim.net
@@ -633,8 +628,10 @@ rules:
     - id: unimplemented.crooked-moon-kep.troll.always-hungry
       scope: LATER
       binding: null
-      reason: >-
-        Upkeep/sacrifice mechanic is a campaign subsystem outside the engine scope.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Always Hungry
   source:
     manual: broheim.net
@@ -679,9 +676,7 @@ rules:
     - id: unimplemented.crooked-moon-kep.snotling-mob.mob
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Mob
   effect: >-
     Snotlings are naturally gregarious creatures. All members must stay within 6" and all will join
@@ -734,9 +729,7 @@ rules:
     - id: unimplemented.crooked-moon-kep.snotling-mob.dodgy
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: shooting, casting or escape without resolving the
-        duel. Source prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Dodgy
   effect: >-
     The little creatures are constantly ducking and diving in the most infuriating way. They get a

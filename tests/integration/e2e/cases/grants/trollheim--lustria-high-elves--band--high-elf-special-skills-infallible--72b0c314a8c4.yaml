@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/lustria-high-elves/band--high-elf-special-skills-infallible-strike/skill.sure-strike
-# scaffold_fingerprint: 9fd941bdfbcdf3d2feed7bd232b000bcdea2964f08960bb66004f64b56d6e814
 # authoring_status: REVIEWED
 # authoring_progress: every admitted clause of this ID is represented by an authored
 #   scenario and contrasted with the printed rule, the recorded semantic contract and
@@ -11,40 +10,12 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 4 scenarios cover the failed To Wound roll taken again once, the
+# AUTHORED: 4 scenarios cover the failed To Wound roll taken again once, the
 #   second roll being final, the unselected contrast and the refusal of a profile
 #   outside the recipient list.
-# origin_id:
-#   rule/trollheim/lustria-high-elves/band--high-elf-special-skills-infallible-strike/skill.sure-strike
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/trollheim/lustria-high-elves/special-rules.yaml
-# source_fingerprint:
-#   17d64d6a6c27ff4f4f077f0a2d40df06c0245f72ed062c85acc8449e73798c93
-# source_sha256_at_generation:
-#   928dea06b6669fea5059222c8f5bd0045a9c16ea84ac406dbdbede9ea0dc851f
-# Printed rule text:
-#   The Hero may re-roll any failed To Wound roll.
-# Semantic contract (check analysis_status before treating as accepted):
-#   The Hero may re-roll any failed To Wound roll. Closure: a failed wound roll is taken again once.
-# effect_id:
-#   skill.sure-strike
-# relation:
-#   equivalent
-# parameters:
-#   {"reroll_wounds":true}
-# conditions:
-#   {"recipient": "High Elf Hero"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Band origin for the shared sure-strike operator. The printed text repeats the canonical clause of the shared operator without adding a term, so the band origin creates no second runtime contribution. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"whole","audit_group":"EQ-skill.sure-strike","verified_facet":"skill.sure-strike","relationship":"shared_facet","boundary":"Failed wound rolls only; accept the second roll and never reroll a reroll. Not an automatic hit target or a to-hit reroll.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
 #
 # --- Migrated authored scenarios ---
 # Source: cases/grants/warband-grants.yaml
@@ -55,7 +26,7 @@
 # rule/... grants — a closed batch of warband grants exercised end to end.
 #
 # Each identity here is a printed warband grant (a `rule/<collection>/<band>/
-# <rule>/<binding>` record of docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv).
+# <rule>/<binding>` record of the knowledge-base clause contracts (sources/knowledge)).
 # The scenarios take the real route: band and profile from the built warrior,
 # the grant selected through `special_rule_ids`, the shared construction and
 # compilation that bind it, the modular resolution that consumes it, and an
@@ -78,7 +49,6 @@
 
 - audit_id: rule/trollheim/lustria-high-elves/band--high-elf-special-skills-infallible-strike/skill.sure-strike
   id: the-recipient-rerolls-a-failed-wound
-  covers: [whole]
   fighters:
     first:
       collection: trollheim
@@ -103,7 +73,6 @@
 
 - audit_id: rule/trollheim/lustria-high-elves/band--high-elf-special-skills-infallible-strike/skill.sure-strike
   id: the-unselected-recipient-keeps-the-failed-wound
-  covers: [whole]
   fighters:
     first:
       collection: trollheim
@@ -125,7 +94,6 @@
 
 - audit_id: rule/trollheim/lustria-high-elves/band--high-elf-special-skills-infallible-strike/skill.sure-strike
   id: a-profile-outside-the-eligibility-is-refused
-  covers: [whole]
   fighters:
     first:
       collection: trollheim
@@ -147,7 +115,6 @@
 
 - audit_id: rule/trollheim/lustria-high-elves/band--high-elf-special-skills-infallible-strike/skill.sure-strike
   id: the-rerolled-wound-is-final
-  covers: [whole]
   fighters:
     first:
       collection: trollheim

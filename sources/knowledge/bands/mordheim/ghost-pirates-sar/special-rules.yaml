@@ -10,9 +10,7 @@ rules:
     - id: unimplemented.ghost-pirates-sar.band.ghost-pirate-rules
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Swabbies (Ghost Pirates)
   effect: >-
     Ghost Pirates may capture models, using the Swabbies rules. Willing members join the Crew,
@@ -42,12 +40,19 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.ghost-pirate-ethereal
+      clauses:
+      - id: four-plus-unmodifiable-save
+        scope: 'YES'
+      - id: magical-attacks-bypass
+        scope: 'YES'
+      - id: terrain-and-leadership
+        scope: 'NO'
+      - id: item-costs-and-ownership
+        scope: 'NO'
     - id: ghost-pirate-ethereal-map-campaign
       scope: 'NO'
       binding: null
-      reason: >-
-        Terrain, water, purchase costs and campaign item eligibility are outside a resolved 1v1
-        duel.
+      reason: out-of-scope.movement
   name: Ethereal
   effect: >-
     Ghost Pirates and Screaming Ghosts have the ability 'Ethereal', which gives a 4+ unmodifiable
@@ -94,9 +99,7 @@ rules:
     - id: unimplemented.ghost-pirates-sar.item.cursed-pistol
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Cursed Pistol
   effect: >-
     5 gc (10 gc for a Brace) - Common. A pistol dragged into the depths of the ocean, clasped tight
@@ -145,9 +148,7 @@ rules:
     - id: unimplemented.ghost-pirates-sar.ghost-captain.leader
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Leader
   effect: >-
     Any pirate within 6" of the Ghost Captain may use his Leadership characteristic when taking any
@@ -313,9 +314,7 @@ rules:
     - id: unimplemented.ghost-pirates-sar.skeleton-mates.may-not-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: May Not Run (Skeleton Mates)
   effect: >-
     Skeleton Mates are slow moving creatures, and may not run, though they may charge as normal.
@@ -342,9 +341,7 @@ rules:
     - id: unimplemented.ghost-pirates-sar.sea-singer.spells
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Spells (Sea Singer)
   effect: >-
     A Sea Singer starts with one spell from the Songs of Sorrow spell list (see Songs of Sorrow): 1
@@ -454,7 +451,6 @@ rules:
         kind: mechanic
         id: skill.ignore-pain
   name: No Pain (Gibbets)
-  effect: Gibbets treat a 'stunned' result on the injury chart as 'knocked down'.
   source:
     manual: broheim.net
     printed_page: 4
@@ -462,11 +458,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
   name_i18n:
     es: Sin Dolor (Jaulas de Hierro)
-  effect_i18n:
-    es: Las Jaulas de Hierro tratan un resultado 'aturdido' en la tabla de heridas como 'derribado'.
   applies_to:
     profile_ids:
     - gibbets
+  rule_ref: shared-rule.no-pain
 - id: gibbets--no-brain
   runtime:
     scope: 'NO'
@@ -476,9 +471,7 @@ rules:
     - id: unimplemented.ghost-pirates-sar.gibbets.no-brain
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: No Brain (Gibbets)
   effect: Gibbets do not gain experience.
   source:
@@ -502,9 +495,7 @@ rules:
     - id: unimplemented.ghost-pirates-sar.gibbets.may-not-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: May Not Run (Gibbets)
   effect: Gibbets are slow moving creatures, and may not run, though they may charge as normal.
   source:
@@ -532,6 +523,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.iron-cage
+      clauses:
+      - id: five-plus-armour-save
+        scope: 'YES'
+      - id: not-lost-stolen-or-given
+        scope: 'NO'
     - id: profile.equipment-restrictions
       scope: 'YES'
       binding:
@@ -539,6 +535,11 @@ rules:
         id: profile.equipment-restrictions
         parameters:
           forbids: [armour-suit]
+      clauses:
+      - id: armour-prohibition
+        scope: 'YES'
+      - id: intrinsic-save
+        scope: 'YES'
   name: Iron Cage
   effect: >-
     The gibbet cage fastened around the skeleton forms a makeshift protection. Gibbets receive a 5+
@@ -568,9 +569,7 @@ rules:
     - id: unimplemented.ghost-pirates-sar.gibbets.sink
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Sink
   effect: >-
     In their heavy cages, Gibbets sink to the bottom of any water they move through. The river or
@@ -642,9 +641,7 @@ rules:
     - id: unimplemented.ghost-pirates-sar.the-bloated.no-pain
       scope: 'NO'
       binding: null
-      reason: >-
-        Q037 user ruling 2026-10-04; Squishy overrides this No Pain clause, so stunned remains
-        stunned.
+      reason: out-of-scope.non-duel
   name: No Pain (the Bloated)
   effect: >-
     The Bloated treat a 'stunned' result on the injury chart as 'knocked down'. (Note: the PDF also
@@ -672,9 +669,7 @@ rules:
     - id: unimplemented.ghost-pirates-sar.the-bloated.may-not-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: May Not Run (the Bloated)
   effect: The Bloated are slow moving creatures, and may not run, though they may charge as normal.
   source:
@@ -698,9 +693,7 @@ rules:
     - id: unimplemented.ghost-pirates-sar.the-bloated.no-brain
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: No Brain (the Bloated)
   effect: The Bloated do not gain experience.
   source:
@@ -753,9 +746,7 @@ rules:
     - id: unimplemented.ghost-pirates-sar.the-bloated.dead-mans-float
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Dead Man's Float
   effect: >-
     The Bloated can float on the water, and thus can use this to their advantage. While in the
@@ -785,9 +776,7 @@ rules:
     - id: unimplemented.ghost-pirates-sar.the-bloated.weak-magic
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Weak Magic
   effect: >-
     If the Ghost Pirate Warband itself Routs, any Bloated who have already left the table in
@@ -817,9 +806,7 @@ rules:
     - id: unimplemented.ghost-pirates-sar.the-bloated.plenty-more-with-the-next-tide
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Plenty More with the Next Tide!
   effect: >-
     The rest of the crew barely notice if any Bloated go Out of Action - they know they'll find them
@@ -849,9 +836,7 @@ rules:
     - id: unimplemented.ghost-pirates-sar.item.bloated-unarmed
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Unarmed Bloated
   effect: >-
     The Bloated do not REQUIRE equipment, and may make a single unarmed attack with no penalties.

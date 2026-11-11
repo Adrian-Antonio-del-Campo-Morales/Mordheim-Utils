@@ -35,8 +35,7 @@ rules:
     - id: unimplemented.maneaters.mountain-guide.ranger
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Ranger
   effect: >-
     A Mountain Guide is a dedicated tracker. If he's not put out of action in the battle, you may
@@ -65,8 +64,10 @@ rules:
     - id: unimplemented.maneaters.mountain-guide.loner
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: deferred.psychology
+      clauses:
+      - id: all-alone
+        scope: 'NO'
   name: Loner
   effect: >-
     Mountain Guides are Ogre Hunters. They become used to the solitude of the highest peaks in the
@@ -131,6 +132,13 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.handler-leadership
+      clauses:
+      - id: trained--scope--roster-condition
+        scope: 'NO'
+      - id: trained--scope--handler-leadership
+        scope: 'YES'
+      - id: trained--scope--camp-departure
+        scope: 'NO'
   name: Trained
   effect: >-
     Sabretusks may only be included if the warband includes a Mountain Guide. They may use the
@@ -164,6 +172,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.feral-instinct
+      clauses:
+      - id: feral-instinct--scope--leadership-test
+        scope: 'YES'
+      - id: feral-instinct--scope--movement-control
+        scope: 'NO'
   name: Feral Instinct
   effect: >-
     Even a Guide has difficulty controlling such feral beasts. At the beginning of the Ogres turn
@@ -194,8 +207,10 @@ rules:
     - id: unimplemented.maneaters.sabretusks.ignored
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: deferred.psychology
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Ignored
   effect: >-
     Sabretusks that are out of action do not count to the number of out of action models for the
@@ -226,7 +241,6 @@ rules:
         kind: mechanic
         id: mechanic.causes-fear
   name: Fear
-  effect: Sabretusks are huge feline predators and thus cause fear.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -234,11 +248,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/maneaters
   name_i18n:
     es: Miedo
-  effect_i18n:
-    es: Los Dientes de Sable son enormes depredadores felinos y por tanto causan miedo.
   applies_to:
     profile_ids:
     - sabretusks
+  rule_ref: shared-rule.fear
 - id: sabretusks--animals
   runtime:
     scope: 'NO'
@@ -248,8 +261,7 @@ rules:
     - id: unimplemented.maneaters.sabretusks.animals
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Animals
   effect: Sabretusks are animals and thus do not gain experience.
   source:
@@ -302,8 +314,7 @@ rules:
     - id: unimplemented.maneaters.band.large
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: to-hit rolls.
+      reason: out-of-scope.non-duel
   name: Large
   effect: >-
     All Ogre warriors except Youngbloods and Half-growns are Large targets: they may be selected as
@@ -332,8 +343,10 @@ rules:
     - id: unimplemented.maneaters.band.gluttony
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: mounts.
+      reason: deferred.mounts
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Gluttony
   effect: >-
     Each Ogre model counts as two models when selling wyrdstone or treasure. Captured models may be
@@ -367,8 +380,7 @@ rules:
     - id: unimplemented.maneaters.band.slow-witted
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Slow Witted
   effect: >-
     Ogres gain advances at half the normal rate and must earn twice the usual number of Experience
@@ -395,8 +407,7 @@ rules:
     - id: unimplemented.maneaters.band.difficult-customers
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Difficult Customers
   effect: >-
     Ogre Heroes suffer -1 on rolls to find Rare items unless those items are exclusively available
@@ -423,9 +434,7 @@ rules:
     - id: unimplemented.maneaters.band.cannibals
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Cannibals
   effect: >-
     The warband may not hire Hired Swords except Halflings such as Scouts or Thieves, the Ogre
@@ -452,9 +461,7 @@ rules:
     - id: unimplemented.maneaters.band.ogre-maximum-characteristics
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Ogre Maximum Characteristics
   effect: >-
     Ogre warriors use the Ogre maximum characteristic profile when gaining advances
@@ -546,8 +553,7 @@ rules:
     - id: unimplemented.maneaters.band.ogres-special-skills-maneater
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: shooting.
+      reason: out-of-scope.shooting
   name: Maneater
   effect: >-
     Ogres are not civilized of their own accord but it is proven they are prone to absorb foreign
@@ -612,8 +618,7 @@ rules:
     - id: unimplemented.maneaters.band.ogres-special-skills-dog-of-war
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Dog of War
   effect: >-
     When an Ogre travels south he can find employment as a tavern bouncer. Some are enlisted by
@@ -646,8 +651,10 @@ rules:
     - id: unimplemented.maneaters.band.ogres-special-skills-bellowing-roar
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: deferred.psychology
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Bellowing Roar
   effect: >-
     An Ogre leader expects challenges to his authority. One of the best ways to suppress a mutineer
@@ -683,8 +690,6 @@ rules:
           forbids:
           - weapon.dagger
   name: Equipment Restrictions
-  effect: >-
-    Ogres do not receive free daggers and never fight with daggers in close combat.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -692,12 +697,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/maneaters
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      Los Ogros no reciben dagas gratis y nunca luchan con dagas en combate cuerpo a cuerpo.
   applies_to:
     profile_ids:
     - bulls
+  rule_ref: shared-rule.ogre-no-daggers
 - id: captain--equipment-restrictions
   runtime:
     scope: 'YES'
@@ -713,8 +716,6 @@ rules:
           forbids:
           - weapon.dagger
   name: Equipment Restrictions
-  effect: >-
-    Ogres do not receive free daggers and never fight with daggers in close combat.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -722,12 +723,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/maneaters
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      Los Ogros no reciben dagas gratis y nunca luchan con dagas en combate cuerpo a cuerpo.
   applies_to:
     profile_ids:
     - captain
+  rule_ref: shared-rule.ogre-no-daggers
 - id: half-growns--equipment-restrictions
   runtime:
     scope: 'YES'
@@ -743,8 +742,6 @@ rules:
           forbids:
           - weapon.dagger
   name: Equipment Restrictions
-  effect: >-
-    Ogres do not receive free daggers and never fight with daggers in close combat.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -752,12 +749,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/maneaters
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      Los Ogros no reciben dagas gratis y nunca luchan con dagas en combate cuerpo a cuerpo.
   applies_to:
     profile_ids:
     - half-growns
+  rule_ref: shared-rule.ogre-no-daggers
 - id: mountain-guide--equipment-restrictions
   runtime:
     scope: 'YES'
@@ -773,8 +768,6 @@ rules:
           forbids:
           - weapon.dagger
   name: Equipment Restrictions
-  effect: >-
-    Ogres do not receive free daggers and never fight with daggers in close combat.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -782,12 +775,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/maneaters
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      Los Ogros no reciben dagas gratis y nunca luchan con dagas en combate cuerpo a cuerpo.
   applies_to:
     profile_ids:
     - mountain-guide
+  rule_ref: shared-rule.ogre-no-daggers
 - id: sabretusks--equipment-restrictions
   runtime:
     scope: 'YES'
@@ -835,8 +826,6 @@ rules:
           forbids:
           - weapon.dagger
   name: Equipment Restrictions
-  effect: >-
-    Ogres do not receive free daggers and never fight with daggers in close combat.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -844,9 +833,7 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/maneaters
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      Los Ogros no reciben dagas gratis y nunca luchan con dagas en combate cuerpo a cuerpo.
   applies_to:
     profile_ids:
     - youngbloods
+  rule_ref: shared-rule.ogre-no-daggers

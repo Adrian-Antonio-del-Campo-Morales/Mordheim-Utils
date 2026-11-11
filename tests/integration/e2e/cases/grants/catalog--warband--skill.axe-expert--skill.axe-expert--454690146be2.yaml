@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/warband/skill.axe-expert/skill.axe-expert
-# scaffold_fingerprint: f085aa4dceb3fb0fbcf01d6a3abc30661e59544829c36e2b0104efc025ff542f
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clause carries authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -8,39 +7,11 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 2 scenarios show a failed axe hit taken again while charging and
+# AUTHORED: 2 scenarios show a failed axe hit taken again while charging and
 #   the same roll standing without the skill.
-# origin_id:
-#   rule/catalog/warband/skill.axe-expert/unclassified
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/skills/warband.yaml
-# source_fingerprint:
-#   6b82ad3c1e1650daf21421b577c8c208a6857509208f407ca8449dd8f8c1113d
-# source_sha256_at_generation:
-#   cbce88f8e195c72b1767c88af362131455b99435c0ffb53e58b55b7306161198
-# Printed rule text:
-#   Re-rolls missed axe attacks when charging.
-# Semantic contract (check analysis_status before treating as accepted):
-#   The fighter re-rolls missed axe attacks when charging. Closure: a charging axe attack re-rolls its misses.
-# effect_id:
-#   skill.axe-expert
-# relation:
-#   equivalent
-# parameters:
-#   {"reroll_hits": "missed axe attacks", "trigger": "charging"}
-# conditions:
-#   {"source": "canonical warband skill list"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Canonical definition of the shared axe-expert operator. The printed text repeats the canonical clause of the shared operator without adding a term, so the band origin creates no second runtime contribution. Surface reuse candidate: {"family":"skill.axe-expert","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare actual weapon identity, charge/first-round condition, natural versus modified Strength, failed versus all-roll reroll and critical eligibility. Keep weapon-independent restrictions and special attacks outside an unsupported shared benefit.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
 # --- Authored scenarios ---
 # The warband skill list prints the canonical axe-expert wording: the charging
@@ -48,7 +19,6 @@
 # without the skill.
 - audit_id: rule/catalog/warband/skill.axe-expert/skill.axe-expert
   id: the-charging-axe-rerolls-a-missed-hit
-  covers: [whole]
   fighters:
     first:
       skill_ids: [skill.axe-expert]
@@ -69,7 +39,6 @@
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 - audit_id: rule/catalog/warband/skill.axe-expert/skill.axe-expert
   id: the-same-roll-stands-without-the-skill
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.axe

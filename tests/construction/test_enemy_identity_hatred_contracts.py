@@ -61,6 +61,10 @@ def test_burn_the_witch_is_shared_by_both_witch_hunter_warbands():
         assert rerolls(hunter, caster) is True, (band, profile)
 
 
+@pytest.mark.covers("rule/mordheim/witch-hunters/witch-hunter-captain--burn-the-witch/mechanic.burn-the-witch")
+@pytest.mark.covers("rule/mordheim/witch-hunters/witch-hunters--burn-the-witch/mechanic.burn-the-witch")
+@pytest.mark.covers("rule/trollheim/trollheim-witch-hunters/witch-hunter-captain--burn-the-witch/mechanic.burn-the-witch")
+@pytest.mark.covers("rule/trollheim/trollheim-witch-hunters/witch-hunters--burn-the-witch/mechanic.burn-the-witch")
 def test_burn_the_witch_targets_the_casters_the_rule_name_list_missed():
     # The two canonical casters whose printed rule heading never says "Wizard":
     # the Apprentice Sorcerer's "Rituals of Chaos" and the Mist Mage's

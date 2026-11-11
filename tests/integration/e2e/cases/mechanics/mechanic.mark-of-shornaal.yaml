@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.mark-of-shornaal
-# scaffold_fingerprint: b0ef636d0664ade5e729a4ce15264aecc3295cbd37a4792ff6cd6d7a2f5754c8
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clause carries authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -8,38 +7,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 3 scenarios cover the failed 3D6-keep-highest test that blocks the enemy's attacks and leaves the marked leader's blows automatic, the passed test that spends the one-shot resource and leaves both attacks standing, and the Immune-to-Psychology enemy that passes without rolling any die. Documented gap: neither the automatic-hit consequence nor the once-per-battle duration is stated in the frozen printed clause; both come from the recorded contract, and the duration is observable only as the spent `mark-of-shornaal.passed` resource inside the single taped round (rounds.py:328-343).
-# origin_id:
-#   mechanic/mechanic.mark-of-shornaal
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   50f643ec9a5829aa39e71bc8d0a92f03373313ddbeaf3ca0ce15c1012e2dbf1b
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   Enemy models that are not Immune to Psychology cannot attack a marked leader unless they pass a Leadership test on 3D6, discarding the lowest die.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Shared mechanic contract: Mark of Shornaal gates enemy attacks behind a 3D6-discard-lowest Leadership test, hit automatically on failure, once per battle.
-# effect_id:
-#   mechanic.mark-of-shornaal
-# relation:
-#   equivalent
-# parameters:
-#   {}
-# conditions:
-#   {"test":"3D6 discard lowest","failure":"automatic hits","once_per_battle":true}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Shared mechanic definition; Cold Blooded cannot be used for this test and the Seer ritual is not modelled. Surface review warning: Reject the reversed dice draft for Mark of Shornaal. Keep the two HIGHEST dice, unlike the Cold-Blooded benefit that keeps the lowest two.
+# AUTHORED: 3 scenarios cover the failed 3D6-keep-highest test that blocks the enemy's attacks and leaves the marked leader's blows automatic, the passed test that spends the one-shot resource and leaves both attacks standing, and the Immune-to-Psychology enemy that passes without rolling any die. Documented gap: neither the automatic-hit consequence nor the once-per-battle duration is stated in the frozen printed clause; both come from the recorded contract, and the duration is observable only as the spent `mark-of-shornaal.passed` resource inside the single taped round (rounds.py:328-343).
 
 # --- Authored scenarios ---
 # The target's three dice 6, 6, 6 keep the two highest for twelve against its
@@ -48,7 +19,6 @@
 # marked leader, which is exactly what an automatic hit means here.
 - audit_id: mechanic/mechanic.mark-of-shornaal
   id: a-failed-test-blocks-the-enemy-attack-and-leaves-the-marked-leader-hitting-automatically
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -74,7 +44,6 @@
 # resource is recorded as spent.
 - audit_id: mechanic/mechanic.mark-of-shornaal
   id: a-passed-test-leaves-the-enemy-attacks-standing-and-spends-the-one-shot-resource
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -101,7 +70,6 @@
 # without requesting any shornaal die, and the same one-shot resource is recorded.
 - audit_id: mechanic/mechanic.mark-of-shornaal
   id: an-enemy-immune-to-psychology-passes-the-gate-without-rolling
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace

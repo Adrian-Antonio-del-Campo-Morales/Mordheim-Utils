@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.titanic-strength
-# scaffold_fingerprint: 043abb603beaf44e336a98e7aa69565d05d2ff8765a16239fd7955d59eb10820
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clause carries authored scenarios derived from the printed rule and the recorded contract; the three tapes differ only in the declared Strength-test die and in the presence of the rule, so the test and its two outcomes are isolated. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -8,38 +7,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 3 scenarios cover the Strength test requested after a hit that fails to wound, the Knocked Down condition on a failed test, the Standing result on a passed test and the absence of any test without the rule.
-# origin_id:
-#   mechanic/mechanic.titanic-strength
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   872a283cbba333e494e9de66455dc01dd82924992464689920b3d92a90023aff
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   The hero is titanic in size and muscle mass. Whenever this Brood member hits an enemy warrior, but fails to wound, the hit model must pass a Strength test to avoid getting knocked down.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Whenever this Brood member hits an enemy warrior but fails to wound, the hit model must pass a Strength test or be knocked down. Closure: a hit whose To Wound roll fails forces a Strength test on the defender and a failed test leaves it Knocked Down.
-# effect_id:
-#   mechanic.titanic-strength
-# relation:
-#   equivalent
-# parameters:
-#   {"failure": "knocked down", "test": "Strength", "trigger": "hit that fails to wound"}
-# conditions:
-#   {"trigger": "failed To Wound roll after a hit"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   _resolve_reference_attack_once runs the titanic-strength branch after a failed wound, rolling a Strength test (with the blessed-sight reroll honoured) and setting KNOCKED_DOWN on failure. Surface reuse candidate: {"family":"mechanic.titanic-strength","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare full special-attack/rescue contract: replacement scope, prerequisite count, per-hit versus per-wound triggers, save/parry eligibility, ordering, interruption and state/resources. Do not substitute an ordinary attack or reset a per-battle effect each round.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+# AUTHORED: 3 scenarios cover the Strength test requested after a hit that fails to wound, the Knocked Down condition on a failed test, the Standing result on a passed test and the absence of any test without the rule.
 
 # --- Authored scenarios ---
 # The bearer attacks last in the round (the opponent charges first), so the
@@ -50,7 +21,6 @@
 # leaves the defender Knocked Down.
 - audit_id: mechanic/mechanic.titanic-strength
   id: a-failed-strength-test-knocks-the-defender-down
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -74,7 +44,6 @@
 # wound leaves the board unchanged.
 - audit_id: mechanic/mechanic.titanic-strength
   id: a-passed-strength-test-leaves-the-defender-standing
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -97,7 +66,6 @@
 # strict tape records by containing one fewer die.
 - audit_id: mechanic/mechanic.titanic-strength
   id: without-the-rule-the-failed-wound-tests-nothing
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace

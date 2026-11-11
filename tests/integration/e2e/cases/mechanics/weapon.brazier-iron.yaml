@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/weapon.brazier-iron
-# scaffold_fingerprint: fb98b93a344f8dda8512c63f262b9bd7072ae56eb46087b3e680f88e3d64f3d9
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clause carries four authored scenarios for the boosted wound target and the ignition threshold plus one refusal for the two-handed occupancy. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -8,38 +7,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 4 scenarios and 1 refusal cover the +1 Strength boundary, both faces of the 5+ ignition, and the two-handed occupancy.
-# origin_id:
-#   mechanic/weapon.brazier-iron
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   cf0b79e91e5bc6f3b5611f42217bf567808183f1beea7a9fba1ee760ab2df525
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   Range: Close Combat Strength: As user +1 Special Rules Two handed: A warrior armed with a brazier staff requires two hands to wield it effectively and so may not use a shield with it or another hand weapon or buckler in close combat.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Two-handed brazier that adds +1 Strength, may not be combined with a shield or other weapon, and sets targets alight on 5+. Closure: the profile is two-handed, S+1, carries attack.fire with ignition 5 and denies a shield.
-# effect_id:
-#   weapon.brazier-iron
-# relation:
-#   equivalent
-# parameters:
-#   {"ignition_threshold": 5, "strength_bonus": 1, "tags": ["weapon.brazier-iron", "attack.fire"], "two_handed": true}
-# conditions:
-#   {"application": "attack", "stacking": "stack", "trigger": "attack"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Printed profile equals the contract parameters; the compiled attack EffectSet is consumed by build_attacks and the hit/wound/armour/injury contexts. The two-handed loadout restriction and the shield refusal are the shared two-handed handling; ignition is consumed by the fire branch of _resolve_reference_attack_once. Surface reuse candidate: {"family":"W-weapon.brazier-iron","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the printed local weapon mode and parameters with the active contract. Confirm hand use, effective Strength, save/critical/parry modifiers, natural-die trigger, temporary states and end conditions. Reuse the base only; retain extra properties and construction recipients.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+# AUTHORED: 4 scenarios and 1 refusal cover the +1 Strength boundary, both faces of the 5+ ignition, and the two-handed occupancy.
 
 # --- Authored scenarios ---
 # mechanic/weapon.brazier-iron - two-handed, Strength +1, sets targets alight
@@ -52,7 +23,6 @@
 
 - audit_id: mechanic/weapon.brazier-iron
   id: brazier-iron-wounds-at-the-boosted-strength
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.brazier-iron
@@ -74,7 +44,6 @@
 
 - audit_id: mechanic/weapon.brazier-iron
   id: brazier-iron-does-not-wound-one-face-below
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.brazier-iron
@@ -96,7 +65,6 @@
 
 - audit_id: mechanic/weapon.brazier-iron
   id: brazier-iron-sets-the-target-alight-on-five
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.brazier-iron
@@ -118,7 +86,6 @@
 
 - audit_id: mechanic/weapon.brazier-iron
   id: brazier-iron-does-not-set-the-target-alight-on-four
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.brazier-iron
@@ -140,7 +107,6 @@
 
 - audit_id: mechanic/weapon.brazier-iron
   id: brazier-iron-occupies-both-hands-so-an-off-hand-weapon-is-refused
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.brazier-iron

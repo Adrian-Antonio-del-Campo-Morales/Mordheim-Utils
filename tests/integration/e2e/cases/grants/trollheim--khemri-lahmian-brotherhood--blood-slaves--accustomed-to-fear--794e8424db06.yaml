@@ -1,0 +1,91 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/khemri-lahmian-brotherhood/blood-slaves--accustomed-to-fear/mechanic.accustomed-to-fear
+# authoring_status: AUTHORED
+# authoring_progress: the admitted accustomed-to-fear clause carries 4 authored scenario(s) derived
+# from the printed rule, the recorded semantic contract and the printed profile; any remaining
+# face of the file stays recorded as pending below.  REVIEWED still requires manual semantic
+# review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: the bearer blood-slaves is the declared recipient, built from its printed profile (W1 A1); the opponent is a hand-built fixture that declares its own facts.
+#   4 scenario(s) cover the clause: the printed exemption names a Skeleton among the three causer kinds, so that charger reaches the bearer without any Fear die; the printed exemption names a Spirit among the three causer kinds, so that charger reaches the bearer without any Fear die; the printed exemption names a Vampire among the three causer kinds, so that charger reaches the bearer without any Fear die; Fear from a fear-causer that is none of the printed three kinds is still tested, so the exemption is filtered rather than unconditional.
+#   Every strike is declared as a natural 1, so each round reports the Fear or Stupidity request under test and nothing else.
+#   REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/trollheim/khemri-lahmian-brotherhood/blood-slaves--accustomed-to-fear/mechanic.accustomed-to-fear
+  id: no-fear-test-against-skeleton-causer
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true, undead_kind: skeleton}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: trollheim, band_id: khemri-lahmian-brotherhood, profile_id: blood-slaves}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/khemri-lahmian-brotherhood/blood-slaves--accustomed-to-fear/mechanic.accustomed-to-fear
+  id: no-fear-test-against-spirit-causer
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true, undead_kind: spirit}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: trollheim, band_id: khemri-lahmian-brotherhood, profile_id: blood-slaves}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/khemri-lahmian-brotherhood/blood-slaves--accustomed-to-fear/mechanic.accustomed-to-fear
+  id: no-fear-test-against-vampire-causer
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true, vampire: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: trollheim, band_id: khemri-lahmian-brotherhood, profile_id: blood-slaves}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/khemri-lahmian-brotherhood/blood-slaves--accustomed-to-fear/mechanic.accustomed-to-fear
+  id: a-causer-outside-the-three-kinds-is-still-feared
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: trollheim, band_id: khemri-lahmian-brotherhood, profile_id: blood-slaves}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

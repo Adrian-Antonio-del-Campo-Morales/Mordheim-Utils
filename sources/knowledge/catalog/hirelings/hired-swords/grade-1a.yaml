@@ -52,9 +52,7 @@ profiles:
       - id: arabian-merchant-pawnbroker-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          The improved sale proceeds are settled during the post-battle trading phase and no
-          duel-time consequence remains.
+        reason: out-of-scope.campaign
   - id: hireling.hired-sword.arabian-merchant.rule.marketeer
     name: Marketeer
     effect: May search one of the special merchant markets after a battle if eligible.
@@ -72,9 +70,7 @@ profiles:
       - id: arabian-merchant-marketeer-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          Searching a special merchant market after a battle is a campaign acquisition action with
-          no consequence in a resolved duel.
+        reason: out-of-scope.campaign
   source_notes:
   - The source calls the weapon a Scimitar and explicitly states that it counts as a Sword.
   source_refs:
@@ -182,9 +178,7 @@ profiles:
       - id: beast-hunter-predator
         scope: 'NO'
         binding: null
-        reason: >-
-          A deployment permission in a wilderness scenario is outside the duel; no individual combat
-          consequence remains once the deployment clause is removed.
+        reason: out-of-scope.movement
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -262,8 +256,7 @@ profiles:
       - id: highwayman-expert-rider-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          The clause governs riding a mount, and the duel fields no mount, so no riding consequence survives.
+        reason: deferred.mounts
   - id: hireling.hired-sword.highwayman.rule.unscrupulous
     name: Unscrupulous
     effect: Uses the source post-battle/behaviour rule.
@@ -280,8 +273,7 @@ profiles:
       - id: highwayman-unscrupulous-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          The printed behaviour is a post-battle conduct rule with no consequence in a resolved duel.
+        reason: out-of-scope.campaign
   - id: hireling.hired-sword.highwayman.rule.campaign-eligibility
     name: Dynamic Hiring Eligibility — Roadwarden Incompatibility
     effect: >-
@@ -301,8 +293,7 @@ profiles:
       - id: highwayman-roadwarden-incompatibility-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          The roster-composition restriction is evaluated when the warband is hired and has no duel-time consequence.
+        reason: out-of-scope.construction
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -382,8 +373,7 @@ profiles:
       - id: acquisition-and-lending
         scope: 'NO'
         binding: null
-        reason: >-
-          Campaign trading and equipment lending are outside the duel.
+        reason: out-of-scope.campaign
   - id: hireling.hired-sword.imperial-assassin.rule.weapons-master
     name: Weapons Master
     effect: >-
@@ -415,8 +405,7 @@ profiles:
       - id: permanent-ownership
         scope: 'NO'
         binding: null
-        reason: >-
-          Purchases and permanent ownership are campaign state.
+        reason: out-of-scope.campaign
   - id: hireling.hired-sword.imperial-assassin.rule.backstabber
     name: Backstabber
     effect: >-
@@ -460,8 +449,7 @@ profiles:
       - id: terrain-concealment
         scope: 'NO'
         binding: null
-        reason: >-
-          Terrain-qualified charge and shooting tests are excluded by the map ruling.
+        reason: out-of-scope.shooting
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -531,8 +519,7 @@ profiles:
       - id: roadwarden-expert-rider-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          The clause governs riding a mount, and the duel fields no mount, so no riding consequence survives.
+        reason: deferred.mounts
   - id: hireling.hired-sword.roadwarden.rule.lethal-marksman
     name: Lethal Marksman
     effect: Uses the source lethal marksman rule.
@@ -549,8 +536,7 @@ profiles:
       - id: roadwarden-lethal-marksman-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          The trick-shooter and eagle-eyes clauses modify missile resolution, the excluded shooting subsystem.
+        reason: out-of-scope.shooting
   - id: hireling.hired-sword.roadwarden.rule.stern
     name: Stern
     effect: >-
@@ -594,8 +580,7 @@ profiles:
       - id: roadwarden-highwayman-incompatibility-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          The roster-composition restriction is evaluated when the warband is hired and has no duel-time consequence.
+        reason: out-of-scope.construction
   unresolved_references:
   - kind: equipment_mapping
     source_name: three Torches
@@ -664,9 +649,7 @@ profiles:
       - id: tilean-marksman-steady-hands-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          The printed clause removes a long-range missile modifier, so its whole consequence lies in
-          the excluded shooting subsystem.
+        reason: out-of-scope.shooting
   - id: hireling.hired-sword.tilean-marksman.rule.dead-eye-shot
     name: Dead Eye Shot
     effect: Uses the source dead-eye-shot rule.
@@ -683,8 +666,7 @@ profiles:
       - id: tilean-marksman-dead-eye-shot-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          The dead-eye shot is a missile-resolution clause of the excluded shooting subsystem.
+        reason: out-of-scope.shooting
   source_refs:
   - manual: mordheimer.net
     printed_page: 0

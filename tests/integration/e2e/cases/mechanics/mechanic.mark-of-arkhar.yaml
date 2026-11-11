@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.mark-of-arkhar
-# scaffold_fingerprint: fb4b617c31186b29212587983acb555a2e414b5a5c941e9e962d835f598e3ba9
 # authoring_status: PARTIAL
 # authoring_progress: the frenzy clause carries authored scenarios derived from the printed rule and the recorded contract; the Bloodfather-role clause is PARTIAL because no duel observable exists for it. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -8,9 +7,8 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: whole--scope--bloodfather-role (scope: YES)
 # PARTIAL[whole--scope--bloodfather-role]: resolved by coordinator decision, closing
@@ -40,90 +38,12 @@
 #   after-combat consequences transfer to the campaign continuity record; no
 #   additional-scenario gap remains in this file and the frenzy clause's two authored
 #   scenarios (below) carry the file's executable side.
-# origin_id:
-#   mechanic/mechanic.mark-of-arkhar
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   5b3ef1fdf81be1e6bfdf36f3f5988f327aaaad68693121d10b1d665c645ece36
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   A Seer with this mark becomes a Bloodfather.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Becoming a Bloodfather is a role change whose printed consequences are an admitted individual combat effect and a construction skill access of this duelist. Printed clause: A Seer with this mark becomes a Bloodfather.
-# effect_id:
-#   (not recorded)
-# relation:
-#   unresolved
-# parameters:
-#   {}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Shared mechanic definition; spell targeting excluded. Scope review integration: {"clause_id":"whole","review_clause_id":"bloodfather-role","source_state":"matched","review_status":"reviewed","scope_reason":"Becoming a Bloodfather is a role change whose printed consequences are an admitted individual combat effect and a construction skill access of this duelist.","notes":"The frozen clause truncates the printed rule, which continues in the same source with the Bloodfather's own effects; those printed effects are individual and in scope, while the printed casting prohibition is excluded. This truncation is recorded rather than repaired.","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Shared mechanic contract: Mark of Arkhar grants the marked leader Frenzy and a 4+ spell save; the Bloodfather progression is campaign.","effect_id":"mechanic.mark-of-arkhar","relation":"equivalent","parameters":"{}","conditions":"{}","consumer":"[\"apps/combat-lab/mordheim_combat_lab/verification/consumers.py::MODULAR_TAG_CONSUMERS\",\"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"batch.D.mechanics","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"sources/knowledge/catalog/mechanics/close-combat.yaml\"]"},"inherited_clause_text":"A marked leader is subject to Frenzy and spells targeting him fail on 4+. A Seer with this mark becomes a Bloodfather.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."} Surface reuse candidate: {"family":"mechanic.mark-of-arkhar","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare each admitted current clause only. Keep charge gate, hit penalty, state, impact modification and supplied beneficiary separate. Spell, ranged/BS, third-fighter and group-emission clauses remain excluded; do not copy combined parent parameters.","boundary":"Current child only; do not import excluded sibling or combined-parent behavior.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: whole--scope--frenzy (scope: YES)
 # AUTHORED[whole--scope--frenzy]: 2 scenarios cover the marked leader being Frenzied with his printed A1 doubled into two blows, observed through the attack indices the engine then requests, and the same warrior without the mark keeping one attack. Documented key: the mark supplies no dice of its own and grants the frenzy flag from the executor's own effect set (execution.yaml mechanic.mark-of-arkhar, frenzy: true), which state.<side>.frenzy exposes in the round snapshot.
-# origin_id:
-#   mechanic/mechanic.mark-of-arkhar
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   5b3ef1fdf81be1e6bfdf36f3f5988f327aaaad68693121d10b1d665c645ece36
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   A marked leader is subject to Frenzy
-# Semantic contract (check analysis_status before treating as accepted):
-#   Being subject to Frenzy is an admitted lasting individual psychology state of this marked leader. Printed clause: A marked leader is subject to Frenzy
-# effect_id:
-#   mechanic.mark-of-arkhar
-# relation:
-#   related
-# parameters:
-#   {}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Shared mechanic definition; spell targeting excluded. Scope review integration: {"clause_id":"whole","review_clause_id":"frenzy","source_state":"matched","review_status":"reviewed","scope_reason":"Being subject to Frenzy is an admitted lasting individual psychology state of this marked leader.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Shared mechanic contract: Mark of Arkhar grants the marked leader Frenzy and a 4+ spell save; the Bloodfather progression is campaign.","effect_id":"mechanic.mark-of-arkhar","relation":"equivalent","parameters":"{}","conditions":"{}","consumer":"[\"apps/combat-lab/mordheim_combat_lab/verification/consumers.py::MODULAR_TAG_CONSUMERS\",\"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"batch.D.mechanics","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"sources/knowledge/catalog/mechanics/close-combat.yaml\"]"},"inherited_clause_text":"A marked leader is subject to Frenzy and spells targeting him fail on 4+. A Seer with this mark becomes a Bloodfather.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."} Surface reuse candidate: {"family":"mechanic.mark-of-arkhar","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare each admitted current clause only. Keep charge gate, hit penalty, state, impact modification and supplied beneficiary separate. Spell, ranged/BS, third-fighter and group-emission clauses remain excluded; do not copy combined parent parameters.","boundary":"Current child only; do not import excluded sibling or combined-parent behavior.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: whole--scope--spell-targeting (scope: NO)
 # Outside the admitted clause scope; retained for context, not a test TODO.
-# origin_id:
-#   mechanic/mechanic.mark-of-arkhar
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   5b3ef1fdf81be1e6bfdf36f3f5988f327aaaad68693121d10b1d665c645ece36
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   spells targeting him fail on 4+.
-# Semantic contract (check analysis_status before treating as accepted):
-#   The failure of spells targeting him on 4+ concerns the excluded casting subsystem and states no separate duel consequence. Printed clause: spells targeting him fail on 4+.
-# effect_id:
-#   (not recorded)
-# relation:
-#   independent
-# parameters:
-#   {}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Shared mechanic definition; spell targeting excluded. Scope review integration: {"clause_id":"whole","review_clause_id":"spell-targeting","source_state":"matched","review_status":"reviewed","scope_reason":"The failure of spells targeting him on 4+ concerns the excluded casting subsystem and states no separate duel consequence.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Shared mechanic contract: Mark of Arkhar grants the marked leader Frenzy and a 4+ spell save; the Bloodfather progression is campaign.","effect_id":"mechanic.mark-of-arkhar","relation":"equivalent","parameters":"{}","conditions":"{}","consumer":"[\"apps/combat-lab/mordheim_combat_lab/verification/consumers.py::MODULAR_TAG_CONSUMERS\",\"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"batch.D.mechanics","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"sources/knowledge/catalog/mechanics/close-combat.yaml\"]"},"inherited_clause_text":"A marked leader is subject to Frenzy and spells targeting him fail on 4+. A Seer with this mark becomes a Bloodfather.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
 
 # --- Authored scenarios ---
 # The marked leader is subject to Frenzy: the round snapshot records it and the

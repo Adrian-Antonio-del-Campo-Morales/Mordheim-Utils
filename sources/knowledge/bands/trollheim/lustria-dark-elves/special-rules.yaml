@@ -75,8 +75,7 @@ rules:
     - id: unimplemented.lustria-dark-elves.beastmaster.cold-one-handler
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: dark-elf-sorceress--spellcaster
   name: Spellcaster
   effect: >-
@@ -104,8 +103,7 @@ rules:
     - id: unimplemented.lustria-dark-elves.dark-elf-sorceress.spellcaster
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: shadows--natural-stealth
   name: Natural Stealth
   effect: >-
@@ -132,8 +130,7 @@ rules:
     - id: unimplemented.lustria-dark-elves.shadows.natural-stealth
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: cold-ones--animal
   name: Animal
   effect: Cold Ones are animals and never gain Experience.
@@ -156,8 +153,7 @@ rules:
     - id: unimplemented.lustria-dark-elves.cold-ones.animal
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: cold-ones--beastmaster-dependency
   name: Beastmaster Dependency
   effect: >-
@@ -186,8 +182,7 @@ rules:
     - id: unimplemented.lustria-dark-elves.cold-ones.beastmaster-dependency
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: cold-ones--stupidity
   name: Stupidity
   effect: >-
@@ -219,8 +214,6 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.stupidity
-    # The Cold One borrows the Beastmaster's own Leadership through the
-    # supplied handler value; it never borrows the warband leader's.
     - id: mechanic.handler-leadership
       scope: 'YES'
       binding:
@@ -305,20 +298,12 @@ rules:
         id: mechanic.hatred-high-elves
 - id: band--excellent-sight
   name: Excellent Sight
-  effect: >-
-    Dark Elves detect Hidden enemies at twice the normal detection distance. The Spanish source
-    parenthetically expresses this as twice the warrior's Initiative characteristic in centimetres.
   source:
     manual: lustria
     printed_page: 59
     section: Dark Elf Special Rules / Excellent Sight
   name_i18n:
     es: Vista Excepcional
-  effect_i18n:
-    es: >-
-      Los elfos oscuros detectan enemigos Ocultos al doble de la distancia normal de detección. La
-      fuente en español lo expresa entre paréntesis como el doble de la característica de Iniciativa
-      del guerrero en centímetros.
   applies_to:
     band: true
   runtime:
@@ -329,8 +314,8 @@ rules:
     - id: unimplemented.lustria-dark-elves.band.excellent-sight
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
+  rule_ref: shared-rule.excellent-sight
 - id: band--ancestral-customs
   name: Ancestral Customs
   effect: Dark Elves may never use blackpowder weapons.
@@ -375,8 +360,7 @@ rules:
     - id: unimplemented.lustria-dark-elves.band.cold-one-requirement
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--dark-elf-special-skills-infiltration
   kind: warband_skill
   name: Infiltration
@@ -408,8 +392,7 @@ rules:
     - id: unimplemented.lustria-dark-elves.band.dark-elf-special-skills-infiltration
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--dark-elf-special-skills-fury-of-khaine
   kind: warband_skill
   name: Fury of Khaine
@@ -444,8 +427,7 @@ rules:
     - id: unimplemented.lustria-dark-elves.band.dark-elf-special-skills-fury-of-khaine
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--dark-elf-special-skills-strong-constitution
   kind: warband_skill
   name: Strong Constitution
@@ -483,8 +465,7 @@ rules:
     - id: roster.maximum-two-strong-constitution
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: warband-level roster limit.
+      reason: out-of-scope.construction
 - id: band--dark-elf-special-skills-elven-agility
   kind: warband_skill
   runtime:
@@ -545,21 +526,15 @@ rules:
     - id: unimplemented.lustria-dark-elves.band.dark-elf-special-skills-poison-expert
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: dark-elf-sorceress--no-armoured-casting
   name: No Armour Casting
-  effect: >-
-    The Dark Elf Sorceress may not cast spells while wearing armour.
   source:
     manual: lustria
     printed_page: 62
     section: Heroes / 0-1 Dark Elf Sorceress / No Armour Casting
   name_i18n:
     es: Sin Conjuros con Armadura
-  effect_i18n:
-    es: >-
-      La Hechicera Elfa Oscura no puede lanzar conjuros mientras lleva armadura.
   applies_to:
     profile_ids:
     - dark-elf-sorceress
@@ -571,8 +546,8 @@ rules:
     - id: unimplemented.lustria-dark-elves.dark-elf-sorceress.no-armoured-casting
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic.
+      reason: out-of-scope.magic
+  rule_ref: shared-rule.no-armoured-casting
 
 - id: corsairs--equipment-restrictions
   runtime:
@@ -624,6 +599,11 @@ rules:
         parameters:
           forbids:
           - beastmaster_whip
+      clauses:
+      - id: whole--scope--equipment-bars
+        scope: 'YES'
+      - id: whole--scope--casting-while-armoured
+        scope: 'NO'
   name: Equipment Restrictions
   effect: >-
     May never use blackpowder weapons. May not select the Beastmaster's Whip; it is Beastmaster

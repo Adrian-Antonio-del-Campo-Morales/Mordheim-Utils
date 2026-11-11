@@ -1,0 +1,114 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/pit-fighters/band--free-the-slaves/mechanic.hatred-slavers
+# authoring_status: AUTHORED
+# authoring_progress: the admitted hate-slavers clause carries two authored scenarios that declare the
+# printed configuration (a Pit Fighter build against a slaver) and its printed result (the first-round
+# missed-To-Hit reroll offered only against a slaver identity).  The configuration is expressible in the
+# corpus vocabulary, so the expectation is written even though no accepted operator carries it yet:
+# Documented difference (AUTHORED vs implementation): every representable face of the clause has a written scenario, so AUTHORED is the correct header; what stays pending is the motor side [B]: `contexts._hit_reroll` needs the slaver identity filter and an accepted effect id in place
+# of `proposed.hatred-slavers`, so the first scenario fails until that filter exists.  REVIEWED still
+# requires manual semantic review and execution_status stays UNEXECUTED.
+# Superseded investigation (kept for provenance): no scenario is derived for the admitted hate-slavers clause.  The printed
+#   Hatred is recorded as `proposed.hatred-slavers`, so no accepted operator carries it: the accepted
+#   Hatred operators key the first-round reroll on printed enemy identities
+#   (mechanic.hatred-orcs-goblins, -dark-elves, -undead, -dwarfs, -skaven, -high-elves, -human) and
+#   none of them names slavers.  The contract's own observable - the reroll offered only against a
+#   slaver identity - therefore cannot be declared without inventing an operator, and a fixture
+#   carrying an accepted Hatred operator would evidence that operator's clause rather than this
+#   origin's.  REVIEWED still requires manual semantic review and execution_status stays
+#   UNEXECUTED; no behavioral result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: hate-slavers (scope: YES)
+# AUTHORED[hate-slavers]: 2 authored scenarios declare the printed qualifier and consequence - the
+#   first-round missed-To-Hit reroll is taken against a Slavers build chosen as the corpus's slaver
+#   identity (`slavers-rel/overseer`, printed WS3/S4/T4/W1/I3/A1/Ld7), and the same miss stands
+#   unconsumed against a numerically identical opponent that is not a Slaver.  Documented difference (AUTHORED vs implementation): every representable face of the clause has a written scenario, so AUTHORED is the correct header; what stays pending is the motor side [B]: the
+#   acceptance steps - an accepted effect id in place of `proposed.hatred-slavers` and the identity
+#   filter in `contexts._hit_reroll` that reads the slaver fact; the reroll key used here is the
+#   accepted Hatred key, so the scenario fails until that filter exists.
+#
+# Superseded note (kept for provenance): pending requirement named exactly: an accepted Hatred operator
+#   (or a binding) that keys the first-round missed-To-Hit reroll on a slaver enemy identity.  Until that
+#   exists, the clause's qualifier ("slavers") has no identity the construction can resolve and no
+#   runtime consumer to read, so both the reroll scenario and its non-slaver control would assert an
+#   invented identity rather than the printed rule.
+#
+# Clause: never-sell-captives (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+
+# --- Authored scenarios ---
+# CHANNEL (checked statically in the shared construction stage, not by running it): this clause is a
+# band grant, not a selection - band--free-the-slaves carries `runtime.grant: band` and
+# `applies_to.band: true` - and `compile_fighter()` refuses a declared `special_rule_ids` entry whose
+# grant is not `selectable` ("special rule is not selectable: band--free-the-slaves"), so the declared
+# selection channel could never reach this clause and no tape through it would evidence it.  The bearer
+# is therefore a printed band build (pit-fighters/pit-fighters) that receives the band rule
+# automatically; no construction refusal stands in front of them.  (The earlier note that the band
+# binding was still a placeholder is superseded: `contexts._hit_reroll` now carries the accepted
+# `mechanic.hatred-slavers` filter over the supplied `identity.slaver` fact, so the tape below records
+# the offered reroll and its outcome.  The bearer's first-round wound now scripts its Injury die
+# explicitly, because the printed first wound takes the W1 Overseer to zero and the round ends with the
+# defender out.)  The bearer's weapon is
+# the printed axe of the pit-fighter-equipment-list (the printed mace is not on that list), one-handed
+# and Strength 3 like the mace it replaces, so the declared wound threshold is unchanged.
+# Derived from the printed rule and the recorded semantic contract; no engine output was consulted.
+# The bearer is a hand-built fixture carrying the printed band rule (this origin's kb binding is the
+# placeholder `unimplemented.pit-fighters.band.free-the-slaves`, so no profile build receives it) and
+# its characteristics are fixture facts.  Scenario 1's opponent is the Slavers build the corpus
+# carries; scenario 2's opponent is numerically identical but is not a Slavers model, so the only
+# difference between the two tapes is the printed qualifier "slavers".
+
+- audit_id: rule/mordheim/pit-fighters/band--free-the-slaves/mechanic.hatred-slavers
+  id: a-first-round-miss-against-a-slaver-is-rerolled-and-wounds
+  covers: [hate-slavers]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: pit-fighters
+      profile_id: pit-fighters
+      main_weapon_id: weapon.axe
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: slavers-rel
+      profile_id: overseer
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit.reroll, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 6}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+- audit_id: rule/mordheim/pit-fighters/band--free-the-slaves/mechanic.hatred-slavers
+  id: the-same-miss-against-a-non-slaver-is-not-rerolled
+  covers: [hate-slavers]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: pit-fighters
+      profile_id: pit-fighters
+      main_weapon_id: weapon.axe
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 4, wounds: 1, initiative: 3, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

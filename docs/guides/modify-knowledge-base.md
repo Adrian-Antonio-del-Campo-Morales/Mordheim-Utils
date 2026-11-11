@@ -11,17 +11,26 @@ that guide's last section.
    to `registry/aliases.yaml` instead.
 2. Classify every effect with `scope`, `implemented`, `grant` and `binding`
    per the `runtime-schema.yaml` contract. `implemented: YES` requires every
-   `YES` effect to carry a binding; unbound effects need a `reason`.
+   `YES` effect to carry a binding; unbound effects need a `reason` code from
+   the schema's `reason_codes`.
 3. Reuse shared mechanics (`catalog/mechanics/execution.yaml`); do not
    introduce editorial names into the combat loop. Equivalence is declared by
    sharing `binding.kind` + `binding.id` (+ `parameters`), never inferred from
    names or prose.
-4. For campaign catalogue data, follow the modelling conventions and
+4. Declare `clauses` (id and scope only) on an effect, core rule, mechanic or
+   item only when its printed text has several observable parts or excludes
+   one; otherwise the record itself is the obligation. Keep clause ids stable:
+   E2E scenarios and `covers` markers name them, and
+   `python tools/knowledge/clauses.py check` reports a reference that no
+   longer resolves. When two rules print the same text, promote it to
+   `catalog/rules/special-rules.yaml` (neutralising the recipient's name) and
+   point both at it with `rule_ref`; a mechanic never carries prose.
+5. For campaign catalogue data, follow the modelling conventions and
    data-ownership table in
    [campaign knowledge guide](campaign-knowledge.md)
    and its HOWTO — the KB declares rules and tables, never a concrete
    campaign's state.
-5. Run `python tools/knowledge/maintenance/format_yaml.py --check sources/knowledge` (or `--write`,
+6. Run `python tools/knowledge/maintenance/format_yaml.py --check sources/knowledge` (or `--write`,
    then re-check), then `python tools/mordheim-utils.py check verify`.
    That gate also checks every maintained document against
    [`contracts/knowledge-editorial-v1`](../../contracts/knowledge-editorial-v1/README.md):
@@ -34,11 +43,11 @@ that guide's last section.
    behind it, so a field added "just in case" is a review question, not a
    silent allowance (see
    [Verification](../reference/verification.md#deterministic-modular-evidence)).
-6. If a reviewed obligation changes, review the corresponding modular mechanics,
+7. If a reviewed obligation changes, review the corresponding modular mechanics,
    construction and E2E expectations against the new text. Preserve adopted
    rulings and source traceability; do not replace an expected result with current
    engine output. The retired semantic YAML corpus is not a validation step.
-7. Regenerate the generated reports you touched instead of hand-editing them.
+8. Regenerate the generated reports you touched instead of hand-editing them.
 
 Done when legal cases compile, illegal ones are rejected, and the affected
 evidence is reviewed or explicitly pending. See

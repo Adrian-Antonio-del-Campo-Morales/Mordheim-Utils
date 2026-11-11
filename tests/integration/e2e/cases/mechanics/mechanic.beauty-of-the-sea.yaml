@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.beauty-of-the-sea
-# scaffold_fingerprint: 8a0bc540860e50ea14008a29a4b1f5b690ca7fbb2330bcd96ecd65a966ecf75f
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -8,39 +7,11 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 3 scenarios cover the male charger's Leadership gate passed
+# AUTHORED: 3 scenarios cover the male charger's Leadership gate passed
 #   and failed, and the female charger's Fear test.
-# origin_id:
-#   mechanic/mechanic.beauty-of-the-sea
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   f0280686aefc9207f92cda8efa157f5ca0e02f4f59d085250fae8202e3cf3a47
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   A male, non-animal enemy must pass a Leadership test to charge a Sea Singer... The Sea Singer causes Fear in female models.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Shared mechanic contract: sex-qualified Fear plus a charge/combat Leadership gate until one successful test.
-# effect_id:
-#   mechanic.beauty-of-the-sea
-# relation:
-#   equivalent
-# parameters:
-#   {}
-# conditions:
-#   {"target_gender":"male","female_effect":"fear"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   The recorded question about unrecorded target gender requires explicit simulation input; no gender is inferred. Surface reuse candidate: {"family":"opponent-leadership-charge-or-contact-gates","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Distinct source variants: a charge gate, inability to attack, automatic hits, +1 To Hit and opponent control are not equivalent. Compare target sex/species, Psychology immunity, who tests, test frequency and exact failure consequence. The Sea Singer contract cannot supply values for Lahmia or Charismatic.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
 # --- Authored scenarios ---
 # The male, non-animal enemy charging the Sea Singer passes the printed Leadership gate
@@ -48,7 +19,6 @@
 # the charge proceeds.
 - audit_id: mechanic/mechanic.beauty-of-the-sea
   id: a-male-charger-passes-the-leadership-gate
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -73,7 +43,6 @@
 # attack.
 - audit_id: mechanic/mechanic.beauty-of-the-sea
   id: a-male-charger-who-fails-cannot-close
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -96,7 +65,6 @@
 # male Leadership gate, and her failure cancels the charge.
 - audit_id: mechanic/mechanic.beauty-of-the-sea
   id: a-female-charger-tests-fear-instead
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace

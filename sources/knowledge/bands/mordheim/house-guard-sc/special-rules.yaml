@@ -10,9 +10,10 @@ rules:
     - id: unimplemented.house-guard-sc.band.chain-of-command
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: deferred.other
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Chain of Command
   effect: >-
     If the warband's leader is taken out of action, immediately determine a new temporary leader as
@@ -42,9 +43,7 @@ rules:
     - id: unimplemented.house-guard-sc.band.personal-guard
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Personal Guard
   effect: >-
     Every hero and henchman in a House Guard has a range of 3 inches instead of the normal 2 inches
@@ -73,9 +72,7 @@ rules:
     - id: unimplemented.house-guard-sc.band.houses
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Houses
   effect: >-
     As a House Guard warband you must decide which of the expedition's financiers you fight for.
@@ -132,9 +129,7 @@ rules:
     - id: unimplemented.house-guard-sc.band.martial-finesse
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Martial Finesse (House Fierezza)
   effect: The Commander starts with the 'Web of Steel' skill.
   source:
@@ -157,8 +152,7 @@ rules:
     - id: unimplemented.house-guard-sc.band.sharp-aim
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Sharp Aim (House Halcon)
   effect: >-
     All warriors from House Halcon ignore modifiers for long range when firing missile weapons.
@@ -184,9 +178,7 @@ rules:
     - id: unimplemented.house-guard-sc.band.merchantry
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Merchantry (House Halcon)
   effect: The Commander starts with the 'Haggle' skill.
   source:
@@ -209,9 +201,7 @@ rules:
     - id: unimplemented.house-guard-sc.band.baluardo-armour
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Armour (House Baluardo)
   effect: Baluardo Heroes do not suffer movement penalties for wearing armour.
   source:
@@ -234,9 +224,7 @@ rules:
     - id: unimplemented.house-guard-sc.band.battle-seasoned
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Battle Seasoned (House Baluardo)
   effect: The Commander starts with the 'Battle Tongue' skill.
   source:
@@ -344,9 +332,10 @@ rules:
     - id: unimplemented.house-guard-sc.warhounds.animals
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: deferred.other
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Animals
   effect: Warhounds are animals and thus do not gain experience.
   source:

@@ -30,7 +30,6 @@ rules:
         id: mechanic.leader-six
 - id: pit-king--pit-fighter
   name: Pit Fighter
-  effect: This warrior has the warband's Pit Fighter skill.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -38,8 +37,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
     es: Luchador de Foso
-  effect_i18n:
-    es: Este guerrero tiene la habilidad Luchador de foso de la banda.
   applies_to:
     profile_ids:
     - pit-king
@@ -55,9 +52,9 @@ rules:
         id: trait.pit-fighter
         parameters:
           value: true
+  rule_ref: shared-rule.pit-fighter
 - id: dwarf-troll-slayer--pit-fighter
   name: Pit Fighter
-  effect: This warrior has the warband's Pit Fighter skill.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -65,8 +62,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
     es: Luchador de Foso
-  effect_i18n:
-    es: Este guerrero tiene la habilidad Luchador de foso de la banda.
   applies_to:
     profile_ids:
     - dwarf-troll-slayer
@@ -82,6 +77,7 @@ rules:
         id: trait.pit-fighter
         parameters:
           value: true
+  rule_ref: shared-rule.pit-fighter
 - id: dwarf-troll-slayer--hard-to-kill
   runtime:
     scope: 'YES'
@@ -94,10 +90,6 @@ rules:
         kind: mechanic
         id: skill.hard-to-kill
   name: Hard to Kill
-  effect: >-
-    Dwarfs are tough, resilient individuals who can only be taken out of action on a roll of a 6
-    instead of 5-6 when rolling on the Injury chart. Treat a roll of 1-2 as knocked down, 3-5 as
-    stunned, and 6 as out of action.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -105,14 +97,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
     es: Difíciles de Matar
-  effect_i18n:
-    es: >-
-      Los enanos son individuos duros y resistentes que solo pueden ser puestos Fuera de combate con
-      un resultado de 6 en lugar de 5-6 al tirar en la tabla de Heridas. Trata un resultado de 1-2
-      como derribado, 3-5 como aturdido y 6 como Fuera de combate.
   applies_to:
     profile_ids:
     - dwarf-troll-slayer
+  rule_ref: shared-rule.hard-to-kill
 - id: dwarf-troll-slayer--hard-head
   name: Hard Head
   effect: Dwarfs ignores the special rules for maces, clubs, etc. They are not easy to knock out!
@@ -199,9 +187,7 @@ rules:
     - id: unimplemented.pit-fighters.dwarf-troll-slayer.grudgebearers
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: dwarf-troll-slayer--death-wish
   name: Death Wish
   effect: >-
@@ -232,7 +218,6 @@ rules:
         id: mechanic.psychology-immunity
 - id: pit-veterans--pit-fighter
   name: Pit Fighter
-  effect: This warrior has the warband's Pit Fighter skill.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -240,8 +225,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
     es: Luchador de Foso
-  effect_i18n:
-    es: Este guerrero tiene la habilidad Luchador de foso de la banda.
   applies_to:
     profile_ids:
     - pit-veterans
@@ -257,9 +240,9 @@ rules:
         id: trait.pit-fighter
         parameters:
           value: true
+  rule_ref: shared-rule.pit-fighter
 - id: pit-fighters--pit-fighter
   name: Pit Fighter
-  effect: This warrior has the warband's Pit Fighter skill.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -267,8 +250,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
     es: Luchador de Foso
-  effect_i18n:
-    es: Este guerrero tiene la habilidad Luchador de foso de la banda.
   applies_to:
     profile_ids:
     - pit-fighters
@@ -284,9 +265,9 @@ rules:
         id: trait.pit-fighter
         parameters:
           value: true
+  rule_ref: shared-rule.pit-fighter
 - id: pursuers--pit-fighter
   name: Pit Fighter
-  effect: This warrior has the warband's Pit Fighter skill.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -294,8 +275,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
     es: Luchador de Foso
-  effect_i18n:
-    es: Este guerrero tiene la habilidad Luchador de foso de la banda.
   applies_to:
     profile_ids:
     - pursuers
@@ -311,6 +290,7 @@ rules:
         id: trait.pit-fighter
         parameters:
           value: true
+  rule_ref: shared-rule.pit-fighter
 - id: pursuers--evade
   name: Evade
   source:
@@ -331,13 +311,10 @@ rules:
     - id: unimplemented.pit-fighters.pursuers.evade
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   rule_ref: shared-rule.evade
 - id: ogre-pit-fighter--pit-fighter
   name: Pit Fighter
-  effect: This warrior has the warband's Pit Fighter skill.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -345,8 +322,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
     es: Luchador de Foso
-  effect_i18n:
-    es: Este guerrero tiene la habilidad Luchador de foso de la banda.
   applies_to:
     profile_ids:
     - ogre-pit-fighter
@@ -362,6 +337,7 @@ rules:
         id: trait.pit-fighter
         parameters:
           value: true
+  rule_ref: shared-rule.pit-fighter
 - id: ogre-pit-fighter--fear
   name: Fear
   effect: Ogre Pit Fighters are large, threatening creatures that cause fear.
@@ -415,8 +391,7 @@ rules:
     - id: unimplemented.pit-fighters.ogre-pit-fighter.large
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: ogre-pit-fighter--skills
   name: Skills
   source:
@@ -474,8 +449,7 @@ rules:
     - id: unimplemented.pit-fighters.ogre-pit-fighter.slow-witted
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--pit-fighter-skill
   name: Pit Fighter
   effect: >-
@@ -502,8 +476,7 @@ rules:
     - id: unimplemented.pit-fighters.band.pit-fighter-skill
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--hired-swords
   name: Hired Swords
   effect: Pit Fighters may hire all normally available Hired Swords except the Elf Ranger.
@@ -528,9 +501,7 @@ rules:
     - id: unimplemented.pit-fighters.band.hired-swords
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: band--fighting-styles
   name: Weapons & Armour — Fighting Styles
   effect: >-
@@ -568,9 +539,7 @@ rules:
     - id: compiler.pit-fighter-fighting-styles
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: initial recruitment packages, gold costs, later purchases and swapping
-        equipment between warband members require roster and campaign state.
+      reason: out-of-scope.campaign
 - id: band--free-the-slaves
   name: Free the Slaves!
   source:
@@ -592,6 +561,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.hatred-slavers
+      clauses:
+      - id: never-sell-captives
+        scope: 'NO'
+      - id: hate-slavers
+        scope: 'YES'
   rule_ref: shared-rule.free-the-slaves
 - id: band--in-the-pit
   name: In the Pit!
@@ -630,8 +604,7 @@ rules:
     - id: unimplemented.pit-fighters.band.in-the-pit
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--pit-fighter-skill-bulging-biceps
   kind: warband_skill
   runtime:
@@ -880,8 +853,6 @@ rules:
     band: true
 - id: dwarf-troll-slayer--no-armour
   name: No Armour
-  effect: >-
-    A Dwarf Troll Slayer may never wear any form of armour.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -889,9 +860,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
     es: Sin Armadura
-  effect_i18n:
-    es: >-
-      Un Matatrolles Enano jamás puede llevar ningún tipo de armadura.
   applies_to:
     profile_ids:
     - dwarf-troll-slayer
@@ -907,10 +875,9 @@ rules:
         id: profile.equipment-restrictions
         parameters:
           forbids: armour
+  rule_ref: shared-rule.no-armour
 - id: dwarf-troll-slayer--no-missile-weapons
   name: No Missile Weapons
-  effect: >-
-    A Dwarf Troll Slayer may never use missile weapons.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -918,9 +885,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
     es: Sin Armas de Proyectil
-  effect_i18n:
-    es: >-
-      Un Matatrolles Enano jamás puede usar armas de proyectil.
   applies_to:
     profile_ids:
     - dwarf-troll-slayer
@@ -934,6 +898,7 @@ rules:
       binding:
         kind: compiler
         id: compiler.no-missile-weapons
+  rule_ref: shared-rule.no-missile-weapons
 
 - id: ogre-pit-fighter--equipment-restrictions
   runtime:

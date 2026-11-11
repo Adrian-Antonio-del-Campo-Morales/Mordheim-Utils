@@ -58,8 +58,7 @@ rules:
     - id: unimplemented.lustria-pirates.gunners.carronades-are-dangerous
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: boatswains--expert-rigger
   name: Expert Rigger
   effect: >-
@@ -87,8 +86,7 @@ rules:
     - id: unimplemented.lustria-pirates.boatswains.expert-rigger
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: swabbies--special-recruitment
   name: Not Recruited Normally
   effect: >-
@@ -115,19 +113,15 @@ rules:
     - id: unimplemented.lustria-pirates.swabbies.special-recruitment
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: swabbies--never-gain-experience
   name: Never Gain Experience
-  effect: Swabbies never gain Experience.
   source:
     manual: lustria
     printed_page: 94
     section: Henchmen / 0-5 Swabbies / Never Gain Experience
   name_i18n:
     es: Nunca Ganan Experiencia
-  effect_i18n:
-    es: Los Fregones nunca ganan Experiencia.
   applies_to:
     profile_ids:
     - swabbies
@@ -139,8 +133,8 @@ rules:
     - id: unimplemented.lustria-pirates.swabbies.never-gain-experience
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
+  rule_ref: shared-rule.never-gain-experience
 - id: swabbies--rabble
   name: Rabble
   effect: >-
@@ -171,6 +165,11 @@ rules:
       binding:
         kind: compiler
         id: compiler.swabbie-rabble-loadout
+      clauses:
+      - id: whole--scope--equipment-list-access
+        scope: 'YES'
+      - id: whole--scope--casting-bar
+        scope: 'NO'
 - id: swabbies--curse-they-have-escaped
   name: Curse Them, They've Escaped!
   effect: >-
@@ -199,8 +198,7 @@ rules:
     - id: unimplemented.lustria-pirates.swabbies.curse-they-have-escaped
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: swabbies--do-not-worry-about-them
   name: Don't Worry About Them
   effect: >-
@@ -227,8 +225,10 @@ rules:
     - id: unimplemented.lustria-pirates.swabbies.do-not-worry-about-them
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.psychology
+      clauses:
+      - id: whole
+        scope: 'NO'
 - id: band--swabbie-limit
   name: Swabbie Limit
   effect: The warband may never include more Swabbies than Crew models.
@@ -250,8 +250,7 @@ rules:
     - id: unimplemented.lustria-pirates.band.swabbie-limit
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--kidnapped
   name: Kidnapped!
   effect: >-
@@ -303,8 +302,7 @@ rules:
     - id: unimplemented.lustria-pirates.band.kidnapped
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--stragglers-and-prisoners
   name: Stragglers and Prisoners
   effect: >-
@@ -345,8 +343,7 @@ rules:
     - id: unimplemented.lustria-pirates.band.stragglers-and-prisoners
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--hired-swords
   name: Hired Swords
   effect: >-
@@ -376,6 +373,11 @@ rules:
       binding:
         kind: compiler
         id: compiler.pirate-human-mercenary-equipment-access
+      clauses:
+      - id: whole--scope--hired-sword-access
+        scope: 'NO'
+      - id: whole--scope--equipment-access
+        scope: 'YES'
 - id: band--one-off-games
   name: One-Off Games
   effect: >-
@@ -400,8 +402,7 @@ rules:
     - id: unimplemented.lustria-pirates.band.one-off-games
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--succession
   name: Succession
   effect: >-
@@ -427,8 +428,7 @@ rules:
     - id: unimplemented.lustria-pirates.band.succession
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--pirate-special-skills-sea-shanty-singer
   kind: warband_skill
   name: Sea Shanty Singer
@@ -495,8 +495,7 @@ rules:
     - id: unimplemented.lustria-pirates.band.pirate-special-skills-sea-legs
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--pirate-special-skills-cutlass-master
   kind: warband_skill
   name: Cutlass Master
@@ -530,8 +529,7 @@ rules:
     - id: unimplemented.lustria-pirates.band.pirate-special-skills-cutlass-master
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--pirate-special-skills-booming-voice
   kind: warband_skill
   name: Booming Voice
@@ -562,8 +560,10 @@ rules:
     - id: unimplemented.lustria-pirates.band.pirate-special-skills-booming-voice
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.psychology
+      clauses:
+      - id: fleeing-reroll
+        scope: 'NO'
 - id: band--pirate-special-skills-hardy-constitution
   kind: warband_skill
   runtime:
@@ -631,8 +631,10 @@ rules:
     - id: unimplemented.lustria-pirates.band.pirate-special-skills-swashbuckler
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.psychology
+      clauses:
+      - id: swashbuckler
+        scope: 'NO'
 
 - id: boatswains--equipment-restrictions
   runtime:
@@ -682,20 +684,16 @@ rules:
           forbids:
           - parrot
   name: Equipment Restrictions
-  effect: >-
-    May not select a Parrot; it is restricted to the Pirate Captain and Boatswains.
   source:
     manual: lustria
     printed_page: 92
     section: "0-2 Cabin Boys"
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      No puede elegir un Loro; está restringido al Capitán Pirata y a los Contramaestres.
   applies_to:
     profile_ids:
     - cabin-boys
+  rule_ref: shared-rule.parrot-restriction
 - id: crew--equipment-restrictions
   runtime:
     scope: 'YES'
@@ -746,17 +744,13 @@ rules:
           forbids:
           - parrot
   name: Equipment Restrictions
-  effect: >-
-    May not select a Parrot; it is restricted to the Pirate Captain and Boatswains.
   source:
     manual: lustria
     printed_page: 92
     section: "0-2 Ship's Mates"
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      No puede elegir un Loro; está restringido al Capitán Pirata y a los Contramaestres.
   applies_to:
     profile_ids:
     - ships-mates
+  rule_ref: shared-rule.parrot-restriction

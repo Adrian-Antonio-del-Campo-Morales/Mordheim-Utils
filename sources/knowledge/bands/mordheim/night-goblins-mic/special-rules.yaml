@@ -39,8 +39,7 @@ rules:
     - id: unimplemented.night-goblins-mic.shaman.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic.
+      reason: out-of-scope.magic
   name: Wizard
   effect: A Shaman is a wizard and uses Waaagh! Magic.
   source:
@@ -64,8 +63,7 @@ rules:
     - id: unimplemented.night-goblins-mic.fanatics.addict
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Addict
   effect: >-
     The Fanatic is dependent on a regular supply of Madcap Mushrooms which must be bought each game.
@@ -95,8 +93,7 @@ rules:
     - id: unimplemented.night-goblins-mic.fanatics.mushroom-brain
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Mushroom Brain
   effect: >-
     Due to the effect of prolonged use of Madcap Mushrooms the Fanatic's brain is about useless. He
@@ -128,11 +125,15 @@ rules:
         id: trait.frenzy
         parameters:
           value: true
+      clauses:
+      - id: frenzy
+        scope: 'YES'
+      - id: after-battle-damage
+        scope: 'NO'
     - id: excluded.post-battle-mushroom-damage
       scope: 'NO'
       binding: null
-      reason: >-
-        Permanent damage after the battle is campaign aftermath, outside the 1v1 duel.
+      reason: out-of-scope.campaign
   name: Looney
   effect: >-
     Due to the effect of the Mushrooms he is subject to frenzy. He must also test for permanent
@@ -189,8 +190,7 @@ rules:
     - id: unimplemented.night-goblins-mic.cave-squigs.movement
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Movement
   source:
     manual: mordheimer.net
@@ -212,8 +212,7 @@ rules:
     - id: unimplemented.night-goblins-mic.cave-squigs.minderz
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Minderz
   source:
     manual: mordheimer.net
@@ -235,8 +234,7 @@ rules:
     - id: unimplemented.night-goblins-mic.cave-squigs.animals
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Animals
   source:
     manual: mordheimer.net
@@ -286,8 +284,7 @@ rules:
     - id: unimplemented.night-goblins-mic.troll.stupidity.movement
       scope: 'NO'
       binding: null
-      reason: >-
-        Random board movement after failure is outside the 1v1 duel scope.
+      reason: out-of-scope.movement
   name: Stupidity
   source:
     manual: mordheimer.net
@@ -299,7 +296,7 @@ rules:
   applies_to:
     profile_ids:
     - troll
-  rule_ref: shared-rule.stupidity-2
+  rule_ref: shared-rule.troll-stupidity
 - id: troll--regeneration
   runtime:
     scope: 'YES'
@@ -311,11 +308,17 @@ rules:
       binding:
         kind: mechanic
         id: skill.regeneration
+      clauses:
+      - id: regenerate-wound
+        scope: 'YES'
+      - id: fire-exception
+        scope: 'YES'
+      - id: post-battle-injury
+        scope: 'NO'
     - id: campaign.post-battle-injury
       scope: 'NO'
       binding: null
-      reason: >-
-        Post-battle injury is a campaign state.
+      reason: out-of-scope.campaign
   name: Regeneration
   source:
     manual: mordheimer.net
@@ -337,8 +340,7 @@ rules:
     - id: unimplemented.night-goblins-mic.troll.dumb-monster
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: psychology.
+      reason: out-of-scope.non-duel
   name: Dumb Monster
   source:
     manual: mordheimer.net
@@ -360,8 +362,7 @@ rules:
     - id: unimplemented.night-goblins-mic.troll.always-hungry
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Always Hungry
   source:
     manual: mordheimer.net
@@ -407,8 +408,7 @@ rules:
     - id: unimplemented.night-goblins-mic.troll.large-target
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: shooting.
+      reason: out-of-scope.shooting
   name: Large Target
   source:
     manual: mordheimer.net
@@ -430,14 +430,8 @@ rules:
     - id: unimplemented.night-goblins-mic.snotling-mob-consists-of-5-snotlings.mob
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Mob
-  effect: >-
-    Snotlings are naturally gregarious creatures. They are initially bought in a mob of 5. You may
-    replace mob members up to the maximum of 5. They will always move and fight as a mob. All
-    members must stay within 1" and all will join in the same combat if possible.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -445,15 +439,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
   name_i18n:
     es: Horda
-  effect_i18n:
-    es: >-
-      Los Snotlings son criaturas naturalmente gregarias. Se compran inicialmente en una horda de 5.
-      Puedes reponer miembros de la horda hasta un máximo de 5. Siempre se moverán y lucharán como
-      una horda. Todos los miembros deben permanecer a 1" y todos se unirán al mismo combate si es
-      posible.
   applies_to:
     profile_ids:
     - snotling-mob-consists-of-5-snotlings
+  rule_ref: shared-rule.snotling-mob
 - id: snotling-mob-consists-of-5-snotlings--weedy
   runtime:
     scope: 'YES'
@@ -488,13 +477,8 @@ rules:
     - id: unimplemented.night-goblins-mic.snotling-mob-consists-of-5-snotlings.dodgy
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Dodgy
-  effect: >-
-    The little creatures are constantly ducking and diving in the most infuriating way. They get a
-    6+ dodge save against shooting.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -502,13 +486,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
   name_i18n:
     es: Escurridizos
-  effect_i18n:
-    es: >-
-      Las pequeñas criaturas se agachan y esquivan constantemente de la forma más irritante. Tienen
-      una salvación de esquiva de 6+ contra disparos.
   applies_to:
     profile_ids:
     - snotling-mob-consists-of-5-snotlings
+  rule_ref: shared-rule.dodgy
 - id: snotling-mob-consists-of-5-snotlings--insignificant
   runtime:
     scope: LATER
@@ -518,8 +499,10 @@ rules:
     - id: unimplemented.night-goblins-mic.snotling-mob-consists-of-5-snotlings.insignificant
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: deferred.psychology
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Insignificant
   effect: >-
     Nobody cares about the Snotlings. The whole mob counts as a single model for the purposes of
@@ -551,6 +534,9 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.goblin-squabble
+      clauses:
+      - id: animosity
+        scope: 'NO'
   name: Animosity
   effect: >-
     At the beginning of each Night Goblin turn roll a D6. On a 1, the Night Goblins squabble and do
@@ -618,8 +604,7 @@ rules:
     - id: unimplemented.night-goblins-mic.band.squig-minder-ratio
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Cave Squig Limit
   effect: The warband may never include more Cave Squigs than Night Goblins.
   source:
@@ -643,8 +628,7 @@ rules:
     - id: unimplemented.night-goblins-mic.band.night-goblin-special-skills-ded-shooty
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: shooting.
+      reason: out-of-scope.shooting
   name: Ded Shooty
   effect: >-
     The clever little git adds +6" to the range of any missile weapons he uses (not including nets)
@@ -670,8 +654,7 @@ rules:
     - id: unimplemented.night-goblins-mic.band.night-goblin-special-skills-sneaky-git
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Sneaky Git
   effect: >-
     The greenskin is so sneaky that he can move D3 of his warband members after all other deployment
@@ -699,14 +682,8 @@ rules:
     - id: unimplemented.night-goblins-mic.band.night-goblin-special-skills-infiltrate
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Infiltrate
-  effect: >-
-    A Night Goblin with this skill is always placed on the battlefield after the opposing warband
-    and can be placed anywhere on the table as long as it is out of sight of the opposing warband
-    and more than 12" away from any enemy model. If both players have models which infiltrate, roll
-    a D6 for each, and the lowest roll sets up first.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -714,15 +691,9 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
   name_i18n:
     es: Infiltración
-  effect_i18n:
-    es: >-
-      Un Goblin Nocturno con esta habilidad siempre se sitúa en el campo de batalla después de la
-      banda rival y puede colocarse en cualquier punto de la mesa mientras esté fuera de la línea de
-      visión de la banda rival y a más de 12" de cualquier modelo enemigo. Si ambos jugadores tienen
-      modelos que se infiltran, tira 1D6 por cada uno, y el que obtenga la tirada más baja se
-      despliega primero.
   applies_to:
     band: true
+  rule_ref: shared-rule.infiltration
 - id: band--night-goblin-special-skills-netter
   kind: warband_skill
   runtime:
@@ -738,10 +709,7 @@ rules:
     - id: band--night-goblin-special-skills-netter.net-charge-producer
       scope: 'NO'
       binding: null
-      reason: The net charge is a throw resolved by ballistic skill followed by the target's Strength escape
-        test, and a miss or escape is a failed charge stopped short of contact; those producers and the
-        board placement remain outside the duel and are not simulated.  Only the caught victim's individually
-        admitted state applies, and the caller supplies it expressly as condition.netted.
+      reason: out-of-scope.movement
   name: Netter
   effect: >-
     The goblin is adept at using a net to disable his enemies. They learn their skill hunting wild

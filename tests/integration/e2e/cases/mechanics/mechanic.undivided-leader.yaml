@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.undivided-leader
-# scaffold_fingerprint: 72ba00afc71850f208b98cf9dbb43f0b4365f32ed7bdf0c2bb5c42990dfc83a0
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -8,70 +7,17 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: undivided-leader--scope--leadership-reroll-aura (scope: YES)
 # AUTHORED[undivided-leader--scope--leadership-reroll-aura]: 2 scenarios cover the aura reroll
 #   from a supplied marked leader and its absence for an unmarked one.  Documented gap: the
 #   Leader radius and the warband membership are admitted nearby-participant facts, and the
 #   mark's roster and spell clauses are outside the duel (clause scope NO).
-# origin_id:
-#   mechanic/mechanic.undivided-leader
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   b342770ec7939ff6810f2d42197717745912972ef7b371e34e9a47a3956a959a
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   A marked leader allows all warband members within the Leader radius to re-roll failed Leadership tests.
-# Semantic contract (check analysis_status before treating as accepted):
-#   The supplied Leadership reroll for warband members within the Leader radius is an admitted individual Leadership consequence with the provider supplied as a current condition. Printed clause: A marked leader allows all warband members within the Leader radius to re-roll failed Leadership tests.
-# effect_id:
-#   mechanic.undivided-leader
-# relation:
-#   related
-# parameters:
-#   {}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   leadership.resolve_local_leadership sets supplied_reroll for a nearby severed provider carrying mechanic.undivided-leader; the mark's Gors/spell clauses are construction and magic, outside the duel. Scope review integration: {"clause_id":"undivided-leader","review_clause_id":"leadership-reroll-aura","source_state":"matched","review_status":"reviewed","scope_reason":"The supplied Leadership reroll for warband members within the Leader radius is an admitted individual Leadership consequence with the provider supplied as a current condition.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"A leader with this mark lets warband members within the leader radius reroll failed Leadership tests. Observable: the supplied marked leader grants a Leadership reroll to a nearby same-side warrior.","effect_id":"mechanic.undivided-leader","relation":"equivalent","parameters":"{}","conditions":"{\"trigger\":\"a supplied marked leader within the radius\",\"resolution\":\"supplied reroll in leadership.resolve_local_leadership\",\"recipient\":\"warband members\",\"exceptions\":\"the mark's warband-composition and spell clauses are excluded\"}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"C07-leadership-rerolls","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\"]"},"inherited_clause_text":"A marked leader allows all warband members within the Leader radius to re-roll failed Leadership tests. If the Seer has this mark, the warband may include 0-3 Gors counting toward the normal warband maximum; The Lad's Got Talent results for those Gors are re-rolled. Spell details are not modelled here.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."} Surface reuse candidate: {"family":"M-LEADER-SIX","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare supplied provider, same side/band, standing status, recipient, distance, range upgrades and borrowing/reroll effects. Do not simulate another fighter or erase handler/leader restrictions; a range upgrade is not another aura.","boundary":"Current child only; do not import excluded sibling or combined-parent behavior.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: undivided-leader--scope--roster-and-campaign (scope: NO)
 # Outside the admitted clause scope; retained for context, not a test TODO.
-# origin_id:
-#   mechanic/mechanic.undivided-leader
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   b342770ec7939ff6810f2d42197717745912972ef7b371e34e9a47a3956a959a
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   If the Seer has this mark, the warband may include 0-3 Gors counting toward the normal warband maximum; The Lad's Got Talent results for those Gors are re-rolled. Spell details are not modelled here.
-# Semantic contract (check analysis_status before treating as accepted):
-#   The extra Gors against the warband maximum, the rerolled Lad's Got Talent results and the unmodelled spell details are roster and campaign content, excluded from the duel. Printed clause: If the Seer has this mark, the warband may include 0-3 Gors counting toward the normal warband maximum; The Lad's Got Talent results for those Gors are re-rolled. Spell details are not modelled here.
-# effect_id:
-#   (not recorded)
-# relation:
-#   independent
-# parameters:
-#   {}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   leadership.resolve_local_leadership sets supplied_reroll for a nearby severed provider carrying mechanic.undivided-leader; the mark's Gors/spell clauses are construction and magic, outside the duel. Scope review integration: {"clause_id":"undivided-leader","review_clause_id":"roster-and-campaign","source_state":"matched","review_status":"reviewed","scope_reason":"The extra Gors against the warband maximum, the rerolled Lad's Got Talent results and the unmodelled spell details are roster and campaign content, excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"A leader with this mark lets warband members within the leader radius reroll failed Leadership tests. Observable: the supplied marked leader grants a Leadership reroll to a nearby same-side warrior.","effect_id":"mechanic.undivided-leader","relation":"equivalent","parameters":"{}","conditions":"{\"trigger\":\"a supplied marked leader within the radius\",\"resolution\":\"supplied reroll in leadership.resolve_local_leadership\",\"recipient\":\"warband members\",\"exceptions\":\"the mark's warband-composition and spell clauses are excluded\"}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"C07-leadership-rerolls","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\"]"},"inherited_clause_text":"A marked leader allows all warband members within the Leader radius to re-roll failed Leadership tests. If the Seer has this mark, the warband may include 0-3 Gors counting toward the normal warband maximum; The Lad's Got Talent results for those Gors are re-rolled. Spell details are not modelled here.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
 
 # --- Authored scenarios ---
 # The printed clause belongs to the Marauders of Chaos mark, and the source list its

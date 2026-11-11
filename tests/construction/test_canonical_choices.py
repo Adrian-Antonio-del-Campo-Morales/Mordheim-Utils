@@ -52,7 +52,11 @@ def test_named_table_member_is_offered_and_support_is_separate(profile, skill):
     assert catalogue().skill_rule_ids((skill,)) == ((skill,), ())
     build = FighterBuild('mordheim', band_id='adventurers-kaz', profile_id=profile, skill_ids=(skill,))
     if skill not in SUPPORTED:
-        assert options[skill].unavailable_reason == 'No executable duel mechanic.'
+        # A member classified out of the duel scope reports its own reason; an
+        # unclassified one the generic absence of an operator.
+        assert options[skill].unavailable_reason
+        assert (options[skill].unavailable_reason == 'No executable duel mechanic.'
+                or options[skill].unavailable_reason.startswith('Out of scope'))
         # The printed table's membership admits the selection; support stays a
         # separate fact, so the member is carried as construction only and
         # contributes no duel effect.
@@ -198,13 +202,12 @@ def test_compiler_checks_a_supplied_owned_kit_without_folding_holstered_items(ow
     ('protectorate-of-sigmar-lotd3', 'warrior-priest', 'band--special-skill-rousing-sermon', 'templar', 'mechanic.rousing-sermon'),
 ])
 def test_source_backed_options_have_recipients_and_registered_activation(band, profile, prefix, other, effect_prefix):
-    """Printed options reach their own recipients; the register decides activation.
+    """Printed options reach their own recipients; the runtime binding decides activation.
 
-    A family the register declares implemented
-    (catalog/rules/implemented-canonical-families.yaml, with its engine consumer in
-    verification/consumers.py: the four Shadow Dances and Rousing Sermon) activates
-    and delivers its tag; a family still pending is refused when supplied as a
-    current warrior fact. Offering is one fact and activation another, so both
+    A rule whose runtime declares an implemented binding (with its engine consumer
+    in verification/consumers.py: the four Shadow Dances and Rousing Sermon)
+    activates and delivers its tag; a rule still pending is refused when supplied
+    as a current warrior fact. Offering is one fact and activation another, so both
     states are asserted rather than dropped.
     """
     build = FighterBuild('mordheim', band_id=band, profile_id=profile)
@@ -420,7 +423,7 @@ def test_runtime_distinguishes_planned_and_active_bindings():
         runtime_bindings(active)
     active['runtime']['scope'] = 'YES'; active['runtime']['effects'][0]['scope'] = 'YES'
     assert len(runtime_bindings(active)) == 1
-    active['runtime']['effects'][0].update(binding=None, reason='Not implemented yet.')
+    active['runtime']['effects'][0].update(binding=None, reason='pending-implementation')
     with pytest.raises(ValueError, match='implemented YES effect has no binding'):
         validate_rule_runtime(active)
     active['runtime']['implemented'] = 'NO'; validate_rule_runtime(active)
@@ -657,7 +660,7 @@ def test_condition_validation_rejects_a_malformed_declaration():
         validate_rule_runtime({'id': 'condition.broken', 'runtime': {
             'scope': 'YES', 'implemented': 'YES', 'grant': 'none',
             'effects': [{'id': 'mechanic.causes-fear', 'scope': 'YES', 'binding': None,
-                         'reason': 'not actually implemented'}]}},
+                         'reason': 'pending-implementation'}]}},
             context='condition')
     with pytest.raises(ValueError, match='unknown profile binding'):
         validate_rule_runtime({'id': 'condition.broken', 'runtime': {

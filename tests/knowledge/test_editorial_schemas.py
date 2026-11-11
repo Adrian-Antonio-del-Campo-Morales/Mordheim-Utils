@@ -190,6 +190,9 @@ def test_runtime_enums_match_the_registry_contract():
         definitions["runtime_binding"]["properties"]["kind"]["enum"]
         == registry["selectable_rule"]["binding_kinds"]
     )
+    assert definitions["runtime_effect"]["properties"]["reason"]["enum"] == [
+        row["id"] for row in registry["reason_codes"]
+    ]
 
 
 def test_a_stray_band_key_is_rejected():

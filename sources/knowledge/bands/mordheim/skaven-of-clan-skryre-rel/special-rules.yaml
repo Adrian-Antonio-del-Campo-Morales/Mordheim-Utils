@@ -10,9 +10,7 @@ rules:
     - id: unimplemented.skaven-of-clan-skryre-rel.band.clan-skryre-special-equipment
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Clan Skryre Special Equipment
   effect: >-
     This equipment is only available to Clan Skryre, and no other warbands may purchase it. Poison
@@ -81,9 +79,7 @@ rules:
     - id: unimplemented.skaven-of-clan-skryre-rel.band.clan-skryre-magic
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Clan Skryre Magic - Chain Lightning
   effect: >-
     Difficulty 7. Lightening arcs from the complex devices attached to the warlock's weapon and into
@@ -147,9 +143,7 @@ rules:
     - id: unimplemented.skaven-of-clan-skryre-rel.warlock-engineer.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Wizard
   effect: >-
     A Warlock Engineer is a wizard and uses the Magic of the Horned Rat (see the Magic section for
@@ -206,9 +200,10 @@ rules:
     - id: unimplemented.skaven-of-clan-skryre-rel.overseer.slave-master
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: deferred.other
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Slave Master
   effect: >-
     Though he works the slaves to their limits, a Skaven Overseer knows that it is in the warband's
@@ -238,9 +233,7 @@ rules:
     - id: unimplemented.skaven-of-clan-skryre-rel.skaven-slaves.life-is-cheap
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Life Is Cheap
   effect: >-
     Skaven slaves are worthless to the Warlock Engineers. Members of a Clan Skryre warband may shoot
@@ -269,9 +262,10 @@ rules:
     - id: unimplemented.skaven-of-clan-skryre-rel.skaven-slaves.easy-come-easy-go
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: deferred.other
+      clauses:
+      - id: remove-slaves
+        scope: 'NO'
   name: Easy Come, Easy Go
   effect: >-
     Skaven Slaves are often used as living experiments and their lifespans are mercifully short.
@@ -301,9 +295,10 @@ rules:
     - id: unimplemented.skaven-of-clan-skryre-rel.skaven-slaves.numerous
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: deferred.other
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Numerous
   effect: >-
     Skaven Slaves may be used to increase the Clan Skryre's warband numbers up to 20. For example if
@@ -331,9 +326,7 @@ rules:
     - id: unimplemented.skaven-of-clan-skryre-rel.skaven-slaves.experience
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Experience
   effect: Skaven Slaves don't survive long enough to gain experience.
   source:
@@ -357,10 +350,7 @@ rules:
     - id: unimplemented.skaven-of-clan-skryre-rel.skaven-slaves.worthless
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: group Rout, All Alone or combat against multiple
-        opponents. Source prose is retained; this is an exclusion, not deferred modular
-        implementation.
+      reason: deferred.other
   name: Worthless
   effect: >-
     A Warlock Engineer doesn't expect much from slaves, and is therefore not unsettled if skaven
@@ -396,11 +386,8 @@ rules:
     - id: unimplemented.skaven-of-clan-skryre-rel.giant-rats.pack-size
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Pack Size
-  effect: You can recruit as many Giant Rats as you wish.
   source:
     manual: broheim.net
     printed_page: 8
@@ -408,11 +395,10 @@ rules:
     url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
   name_i18n:
     es: Tamaño de la Manada
-  effect_i18n:
-    es: Puedes reclutar tantas Ratas Gigantes como desees.
   applies_to:
     profile_ids:
     - giant-rats
+  rule_ref: shared-rule.giant-rat-pack-size
 - id: giant-rats--experience
   runtime:
     scope: 'NO'
@@ -422,11 +408,8 @@ rules:
     - id: unimplemented.skaven-of-clan-skryre-rel.giant-rats.experience
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Experience
-  effect: Giant Rats are animals and do not gain experience.
   source:
     manual: broheim.net
     printed_page: 8
@@ -434,11 +417,10 @@ rules:
     url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
   name_i18n:
     es: Experiencia
-  effect_i18n:
-    es: Las Ratas Gigantes son animales y no ganan experiencia.
   applies_to:
     profile_ids:
     - giant-rats
+  rule_ref: shared-rule.animal
 
 - id: giant-rats--equipment-restrictions
   runtime:

@@ -112,27 +112,15 @@ rules:
     - id: unimplemented.chaos-streets-deathbringers.shadow-blade.fade-into-shadows
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: silent-hunter--infiltration
   name: Infiltration
-  effect: >-
-    The Silent Hunter deploys after the opposing warband and may be placed anywhere outside enemy
-    line of sight and more than 12" from every enemy model. If both players have infiltrators, roll
-    D6 for each; the lowest roll deploys first.
   source:
     manual: chaos-in-the-streets
     printed_page: 163
     section: Heroes / 0-1 Silent Hunter / Infiltration
   name_i18n:
     es: Infiltración
-  effect_i18n:
-    es: >-
-      El Cazador Silencioso se despliega después de la banda rival y puede colocarse en cualquier
-      punto fuera de la línea de visión enemiga y a más de 12" de cada modelo enemigo. Si ambos
-      jugadores tienen infiltrados, tira D6 por cada uno; el de la tirada más baja se despliega
-      primero.
   applies_to:
     profile_ids:
     - silent-hunter
@@ -144,8 +132,8 @@ rules:
     - id: unimplemented.chaos-streets-deathbringers.silent-hunter.infiltration
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
+  rule_ref: shared-rule.infiltration
 - id: silent-hunter--loner
   name: Loner
   effect: The Silent Hunter is immune to All Alone tests.
@@ -168,8 +156,10 @@ rules:
     - id: unimplemented.chaos-streets-deathbringers.silent-hunter.loner
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.psychology
+      clauses:
+      - id: all-alone
+        scope: 'NO'
 - id: snipers--concealed-shot
   name: Concealed Shot
   effect: >-
@@ -196,8 +186,7 @@ rules:
     - id: unimplemented.chaos-streets-deathbringers.snipers.concealed-shot
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: knives--dagger-master
   runtime:
     scope: 'YES'
@@ -252,8 +241,7 @@ rules:
     - id: unimplemented.chaos-streets-deathbringers.band.look-behind-you
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--no-noise
   name: No Noise!
   effect: No member of the warband may use blackpowder weapons.
@@ -309,9 +297,7 @@ rules:
     - id: unimplemented.chaos-streets-deathbringers.band.leader-death
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: band--deathbringer-special-skills-hit-and-fade
   kind: warband_skill
   name: Hit and Fade
@@ -348,9 +334,7 @@ rules:
     - id: unimplemented.chaos-streets-deathbringers.band.deathbringer-special-skills-hit-and-fade
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: band--deathbringer-special-skills-death-blow
   kind: warband_skill
   name: Death Blow
@@ -384,6 +368,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.death-blow
+      clauses:
+      - id: single-attack-with-bonuses
+        scope: 'YES'
+      - id: optional-use
+        scope: 'YES'
 - id: band--deathbringer-special-skills-poison-master
   kind: warband_skill
   name: Poison Master
@@ -417,8 +406,7 @@ rules:
     - id: unimplemented.chaos-streets-deathbringers.band.deathbringer-special-skills-poison-master
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--deathbringer-special-skills-defensive-stance
   kind: warband_skill
   runtime:
@@ -431,6 +419,11 @@ rules:
       binding:
         kind: mechanic
         id: skill.defensive-stance
+      clauses:
+      - id: parry-with-any-weapon
+        scope: 'YES'
+      - id: match-with-a-parrying-weapon
+        scope: 'YES'
   name: Defensive Stance
   effect: >-
     The Hero may parry with any weapon it carries. If that weapon already has the Parry rule, the
@@ -522,26 +515,16 @@ rules:
     - id: unimplemented.chaos-streets-deathbringers.band.deathbringer-special-skills-feign-death
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--deathbringer-special-skills-infiltration
   kind: warband_skill
   name: Infiltration
-  effect: >-
-    The Hero deploys after the opposing warband and may be placed anywhere outside enemy line of
-    sight and more than 12" from every enemy model. If both players have infiltrators, roll D6 for
-    each; the lowest roll deploys first.
   source:
     manual: chaos-in-the-streets
     printed_page: 165
     section: Deathbringer Special Skills / Infiltration
   name_i18n:
     es: Infiltración
-  effect_i18n:
-    es: >-
-      El Héroe se despliega después de la banda rival y puede colocarse en cualquier punto fuera de
-      la línea de visión enemiga y a más de 12" de cada modelo enemigo. Si ambos jugadores tienen
-      infiltrados, tira D6 por cada uno; el de la tirada más baja se despliega primero.
   eligibility:
   - shadow-blade
   - silent-hunter
@@ -557,5 +540,5 @@ rules:
     - id: unimplemented.chaos-streets-deathbringers.band.deathbringer-special-skills-infiltration
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
+  rule_ref: shared-rule.infiltration

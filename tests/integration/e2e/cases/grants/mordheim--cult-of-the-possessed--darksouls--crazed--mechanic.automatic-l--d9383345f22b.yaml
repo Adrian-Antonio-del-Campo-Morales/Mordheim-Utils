@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/cult-of-the-possessed/darksouls--crazed/mechanic.automatic-leadership
-# scaffold_fingerprint: 7ec253854c93626de1aa81771795328c6894a9d427e4d2b547cbd5feae8f5970
 # authoring_status: PARTIAL
 # authoring_progress: the admitted automatic-leadership clause carries 3 authored scenarios read
 #   through the only Leadership tests this 1v1 setup can force on a Darksoul: the round-0 Fear test
@@ -15,12 +14,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: automatic-leadership (scope: YES)
-# PARTIAL[automatic-leadership]: [C] CLOSING-REVIEW CLASSIFICATION: input/observation absent from the executor contract.  The operator itself IS implemented (leadership.py::resolve_local_leadership returns a pass on the mechanic.automatic-leadership tag before any die is requested) and the authored scenarios assert the printed consequence through every Leadership request the 1v1 duel routes on this bearer; what does not exist is any non-Psychology Leadership test route, so the clause's wider face cannot be observed separately from mechanic.psychology-immunity.  Missing capability: one admitted non-Psychology Leadership request in the corpus.  [B] where the register note also records no KB binding, that missing step is the binding itself - the printed consequence is already authored, so it is an implementation step, not an authoring gap.  Original note follows: the printed sentence passes any Leadership tests they are required
+# PARTIAL: [C] CLOSING-REVIEW CLASSIFICATION: input/observation absent from the executor contract.  The operator itself IS implemented (leadership.py::resolve_local_leadership returns a pass on the mechanic.automatic-leadership tag before any die is requested) and the authored scenarios assert the printed consequence through every Leadership request the 1v1 duel routes on this bearer; what does not exist is any non-Psychology Leadership test route, so the clause's wider face cannot be observed separately from mechanic.psychology-immunity.  Missing capability: one admitted non-Psychology Leadership request in the corpus.  [B] where the register note also records no KB binding, that missing step is the binding itself - the printed consequence is already authored, so it is an implementation step, not an authoring gap.  Original note follows: the printed sentence passes any Leadership tests they are required
 #   to take, and the three scenarios cover the Leadership tests this setup can force on a Darksoul:
 #   the charged warrior's Fear test, the charging warrior's Fear test, and the Stupidity test of the
 #   declared Head Injury result 6.  The printed "know no fear" rider is not turned into a second
@@ -36,32 +33,6 @@
 #   causes_fear trait; the Darksouls profile is read as printed (W1, A1, I3, Ld6), and every strike
 #   is declared as a natural 1, so each round reports the under-test request and nothing else.
 #   REVIEWED still requires manual semantic review.
-# origin_id:
-#   rule/mordheim/cult-of-the-possessed/darksouls--crazed/mechanic.automatic-leadership
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/cult-of-the-possessed/special-rules.yaml
-# source_fingerprint:
-#   582bf077623826207c5742d8f40584cf6f7a545e2907ae675a9a8ab22906eaf1
-# source_sha256_at_generation:
-#   6e992ccfd48a6106eaaf66a5af08cf6eda3fc61a966227bcb975fb73cc2c3776
-# Printed rule text:
-#   Darksouls have been driven insane by daemonic possession and know no fear. They automatically pass any Leadership tests they are required to take.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Automatically passes every Leadership-based test it is required to take, without rolling. Observable: no Leadership test — including Fear, Stupidity and other Psychology — ever fails for this warrior.
-# effect_id:
-#   mechanic.automatic-leadership
-# relation:
-#   equivalent
-# parameters:
-#   {}
-# conditions:
-#   {"trigger":"any Leadership-based test this warrior must take","resolution":"leadership.resolve_local_leadership returns a pass before dice","consequence":"the test cannot fail","recipient":"this warrior","duration":"whole duel","stacking":"not cumulative","exceptions":"does not remove the need to attack/charge; separate prohibition clauses are recorded individually"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Auto-pass leadership. Daemonic/Darksoul/Flagellant wording states the same outcome as mechanic.automatic-leadership; the KB entry name 'Immune to Psychology' is a source label, the printed sentence is the auto-pass rule. Surface reuse candidate: {"family":"mechanic.automatic-leadership","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare each immunity or automatic-pass clause separately. Psychology immunity is not automatic success on every Leadership test. Preserve ordinary Hatred/Frenzy suppression and the explicit Strigoi exception; excluded running, experience and group tests remain excluded.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
 # --- Authored scenarios ---
 # Derived from the printed rule text, the Darksouls profile and the recorded semantic contract; no
@@ -73,7 +44,6 @@
 
 - audit_id: rule/mordheim/cult-of-the-possessed/darksouls--crazed/mechanic.automatic-leadership
   id: the-charged-darksouls-never-roll-a-fear-die
-  covers: [automatic-leadership]
   fighters:
     first:
       trait_overrides: {causes_fear: true}
@@ -90,7 +60,6 @@
 
 - audit_id: rule/mordheim/cult-of-the-possessed/darksouls--crazed/mechanic.automatic-leadership
   id: the-charging-darksouls-keep-their-charge-without-a-die
-  covers: [automatic-leadership]
   fighters:
     first: {collection: mordheim, band_id: cult-of-the-possessed, profile_id: darksouls}
     second:
@@ -107,7 +76,6 @@
 
 - audit_id: rule/mordheim/cult-of-the-possessed/darksouls--crazed/mechanic.automatic-leadership
   id: the-head-injury-stupidity-test-needs-no-die-either
-  covers: [automatic-leadership]
   fighters:
     first: {collection: mordheim, band_id: cult-of-the-possessed, profile_id: darksouls}
     second:
@@ -134,7 +102,6 @@
 # under test.
 - audit_id: rule/mordheim/cult-of-the-possessed/darksouls--crazed/mechanic.automatic-leadership
   id: the-supplied-danse-state-clears-through-the-non-psychology-route
-  covers: [automatic-leadership]
   fighters:
     first:
       condition_ids: [condition.danse-macabre-controlled]

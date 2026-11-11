@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/adventurers-kaz/dwarf--hard-to-kill/skill.hard-to-kill
-# scaffold_fingerprint: 9050271c203b399214a65e2ee6fedb1e6daef147e86c00b6b1e2a2022025e5b5
 # authoring_status: AUTHORED
 # authoring_progress: the admitted stub clause carries three authored scenarios.  The printed entry is
 # only a rulebook page pointer, so the asserted table is the one the semantic contract recovers from the
@@ -14,44 +13,16 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: stub (scope: YES)
-# AUTHORED[stub]: 3 scenarios evidence the recovered table at its boundary (a five Stuns instead of
+# AUTHORED: 3 scenarios evidence the recovered table at its boundary (a five Stuns instead of
 #   taking the bearer out), the six that still takes it out, and the ordinary chart on an unmarked
 #   bearer, so the wider band is attributable to the rule rather than to the fixture.  The printed text
 #   is a page reference, so the table is taken from the accepted parallel definition recorded in this
 #   file's contract and not from the pointer sentence; the recipient is the printed Dwarf profile.  The
 #   printed pointer itself is not observable and is not asserted.  REVIEWED still requires manual
 #   semantic review.
-# origin_id:
-#   rule/mordheim/adventurers-kaz/dwarf--hard-to-kill/skill.hard-to-kill
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/adventurers-kaz/special-rules.yaml
-# source_fingerprint:
-#   b4c6c032297e595112f00651e4b9f6502ad012188ed40f3d44b5cdd1c77fdc44
-# source_sha256_at_generation:
-#   e59d9527e127b6f401008b4fd0e1e466aaf141f6138db69329e8175a735dcd03
-# Printed rule text:
-#   See Mordheim rulebook page 151.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Printed text is only a rulebook page reference; the definition recovered from the parallel Hard to Kill records is 'taken out of action only on a 6 on the Injury chart; 1-2 knocked down, 3-5 stunned'.
-# effect_id:
-#   skill.hard-to-kill
-# relation:
-#   equivalent
-# parameters:
-#   {"injury_chart":{"1-2":"knocked-down","3-5":"stunned","6+":"out-of-action"}}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Definition recovered from the parallel Dwarf Hard to Kill origins (G048/G126/G184); same candidate binding. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"stub","audit_group":"EQ-skill.hard-to-kill","verified_facet":"skill.hard-to-kill","relationship":"shared_facet","boundary":"Share the wider Stunned band, not True Grit, concussion immunity, or a stun save. Keep printed recipients; the Saurus Hero variant remains Hero-only. Modified injury totals and later injury transformations still apply.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
 
 # --- Authored scenarios ---
 # Derived from the recovered definition recorded in this file's contract and the printed band record;
@@ -62,7 +33,6 @@
 
 - audit_id: rule/mordheim/adventurers-kaz/dwarf--hard-to-kill/skill.hard-to-kill
   id: a-five-only-stuns-the-adventurer-dwarf
-  covers: [stub]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -81,7 +51,6 @@
 
 - audit_id: rule/mordheim/adventurers-kaz/dwarf--hard-to-kill/skill.hard-to-kill
   id: only-the-six-takes-the-adventurer-dwarf-out
-  covers: [stub]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -100,7 +69,6 @@
 
 - audit_id: rule/mordheim/adventurers-kaz/dwarf--hard-to-kill/skill.hard-to-kill
   id: the-ordinary-chart-still-takes-an-unmarked-bearer-out-on-a-five
-  covers: [stub]
   fighters:
     first:
       main_weapon_id: weapon.mace

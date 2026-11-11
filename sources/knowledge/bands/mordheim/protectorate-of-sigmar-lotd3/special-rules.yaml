@@ -10,9 +10,7 @@ rules:
     - id: unimplemented.protectorate-of-sigmar-lotd3.band.death-of-a-leader
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: leader replacement, promotion of the Acolyte and re-hiring are campaign
-        mechanics outside the duel scope.
+      reason: out-of-scope.campaign
   name: Death of a Leader
   effect: >-
     Should the Warrior Priest fall, the Acolyte with the most experience takes up the Mantle of
@@ -48,8 +46,7 @@ rules:
     - id: unimplemented.protectorate-of-sigmar-lotd3.band.witch-hunter-hired-swords
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: hired-sword recruitment eligibility is a campaign/hiring mechanic.
+      reason: out-of-scope.campaign
   name: Selective Hired Swords
   effect: >-
     The Protectorates are selective when it comes to which Hired Swords may accompany them. As such,
@@ -76,9 +73,7 @@ rules:
     - id: unimplemented.protectorate-of-sigmar-lotd3.band.huntsman-hero-slot
       scope: 'NO'
       binding: null
-      reason: >-
-        Warband-composition limit: roster-slot rules are validated at warband construction, outside
-        the duel engine scope.
+      reason: out-of-scope.construction
   name: Huntsman Hero Slot
   effect: >-
     A Huntsman takes place of one Templar. Therefore, if a Huntsman is included, the warband may not
@@ -128,10 +123,7 @@ rules:
     - id: unimplemented.protectorate-of-sigmar-lotd3.warrior-priest.prayers-of-sigmar
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic subsystem (divine prayers). The Prayers of Sigmar lore is already
-        modeled by the active KB as lore.prayers-of-sigmar; the page defers to 'the Magic section'
-        and prints no spell text of its own.
+      reason: out-of-scope.magic
   name: Prayers of Sigmar
   effect: >-
     The Warrior Priest has studied the Prayers of Sigmar, and as such begins with one randomly
@@ -221,8 +213,7 @@ rules:
     - id: unimplemented.protectorate-of-sigmar-lotd3.hound.animals
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: experience progression is a campaign mechanic.
+      reason: out-of-scope.campaign
   name: Animals
   source:
     manual: mordheimer.net
@@ -275,8 +266,7 @@ rules:
     - id: unimplemented.protectorate-of-sigmar-lotd3.band.protection-of-sigmar
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: spell nullification is a magic-subsystem interaction.
+      reason: out-of-scope.magic
   name: Protection of Sigmar
   effect: >-
     The pious has been blessed by the Church. Any spell which would affect him is nullified on a D6
@@ -336,8 +326,7 @@ rules:
     - id: unimplemented.protectorate-of-sigmar-lotd3.band.utter-determination
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: rout tests are a campaign-resolution mechanic.
+      reason: out-of-scope.campaign
   name: Utter Determination
   effect: >-
     Only the Warrior Priest may have this skill, which allows him to re-roll any failed Rout tests.
@@ -368,6 +357,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.rousing-sermon
+      clauses:
+      - id: self-attack-bonus
+        scope: 'YES'
+      - id: friendly-group-emission
+        scope: 'NO'
   name: Rousing Sermon
   effect: >-
     Only the Warrior Priest may have this skill. The Warrior Priest bellows his prayers to Sigmar,
@@ -404,8 +398,7 @@ rules:
     - id: unimplemented.protectorate-of-sigmar-lotd3.band.sigmars-guidance
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: target selection for ranged attacks belongs to the shooting subsystem.
+      reason: out-of-scope.shooting
   name: Sigmar's Guidance
   effect: >-
     With the blessed hand of Sigmar guiding his aim, the warrior lets loose his arrow. He may freely

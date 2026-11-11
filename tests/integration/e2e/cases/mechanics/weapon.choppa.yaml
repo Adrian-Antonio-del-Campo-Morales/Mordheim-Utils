@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/weapon.choppa
-# scaffold_fingerprint: 92ac9ab2826e83bb0697da87ff1cf81d6f5194acb3300f4f35584eae8c50b443
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clause carries four authored scenarios for the first-round Strength bonus and its expiry, the armour target on both faces and the permitted shield. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -8,38 +7,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 4 scenarios cover the first-round +1 Strength and its expiry, both faces of the extra armour penalty and the permitted shield.
-# origin_id:
-#   mechanic/weapon.choppa
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   c95e241116d7c7edc6f3c3e78b0a5ac466baf0a72a47089c2b27eaefa3dc3274
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   +1 Strength in the first round and an additional -1 armour-save modifier; may be used with a shield.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Choppa adds +1 Strength in the first round and an extra -1 armour save, and may be used with a shield. Closure: first-round Strength +1, armour_penetration 1, and a shield remains a legal off hand.
-# effect_id:
-#   weapon.choppa
-# relation:
-#   equivalent
-# parameters:
-#   {"armour_penetration": 1, "first_round_strength_bonus": 1}
-# conditions:
-#   {"application": "attack", "stacking": "stack", "trigger": "attack"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Printed profile equals the contract parameters; the compiled attack EffectSet is consumed by build_attacks and the hit/wound/armour/injury contexts. The printed shield permission is the shared loadout check; no duel-specific clause remains. Surface reuse candidate: {"family":"W-weapon.choppa","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare source-specific weapon/alias identity and each mode or clause. Retain mounted/charge conditions, parry limits, dagger/armour effect, poison coating, active hand allocation and local overrides. The magical Misericordia injury chart is not the ordinary dagger variant; a counts-as alias does not inherit every local extension.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+# AUTHORED: 4 scenarios cover the first-round +1 Strength and its expiry, both faces of the extra armour penalty and the permitted shield.
 
 # --- Authored scenarios ---
 # mechanic/weapon.choppa - +1 Strength in the first round, an extra -1 armour
@@ -53,7 +24,6 @@
 
 - audit_id: mechanic/weapon.choppa
   id: choppa-adds-one-strength-in-the-first-round-only
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.choppa
@@ -78,7 +48,6 @@
 
 - audit_id: mechanic/weapon.choppa
   id: choppa-save-holds-on-the-penalised-target
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.choppa
@@ -101,7 +70,6 @@
 
 - audit_id: mechanic/weapon.choppa
   id: choppa-save-fails-one-below-the-penalised-target
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.choppa
@@ -124,7 +92,6 @@
 
 - audit_id: mechanic/weapon.choppa
   id: choppa-is-accepted-with-a-shield
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.choppa

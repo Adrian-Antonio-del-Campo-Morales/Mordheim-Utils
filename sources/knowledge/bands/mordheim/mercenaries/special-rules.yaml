@@ -100,8 +100,7 @@ rules:
     - id: unimplemented.mercenaries.band.reikland-marksman-training
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: shooting.
+      reason: out-of-scope.shooting
   name: Reikland — Marksman Training
   effect: >-
     All Reikland Marksmen have +1 Ballistic Skill, including Marksmen recruited after the warband is
@@ -160,8 +159,7 @@ rules:
     - id: unimplemented.mercenaries.band.marienburg-traders
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Marienburg — Natural Traders
   source:
     manual: mordheimer.net
@@ -182,8 +180,7 @@ rules:
     - id: unimplemented.mercenaries.band.marienburg-wealth
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Marienburg — Enormous Wealth
   source:
     manual: mordheimer.net
@@ -204,8 +201,10 @@ rules:
     - id: unimplemented.mercenaries.band.ostermark-stubborn-resolve
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: deferred.psychology
+      clauses:
+      - id: fear-immunity
+        scope: 'NO'
   name: Ostermark — Stubborn Resolve
   effect: >-
     Ostermark Heroes and Henchmen may re-roll a failed Leadership test for All Alone, and the

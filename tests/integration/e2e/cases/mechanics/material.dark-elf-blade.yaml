@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/material.dark-elf-blade
-# scaffold_fingerprint: e434bf8ba0fca6875188c4e2b35a88f5036d1ddddf8d2405c7a7c51376f6df7e
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clause carries two authored scenarios.
 #   REVIEWED still requires manual semantic review and execution_status stays
@@ -10,46 +9,18 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 2 scenarios cover the +1 on the critical table (a table die
+# AUTHORED: 2 scenarios cover the +1 on the critical table (a table die
 #   of 2 reaches 3 and denies armour) and the Concussion treatment of an Injury
 #   total of 2 as Stunned. Pending semantic review.
-# origin_id:
-#   mechanic/material.dark-elf-blade
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   33de3bc81890c67731196209958a7f64311c37e21cbaeafb323c57dbc3a037b4
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   Adds +1 to the critical hit table and treats Injury results of 2-4 as stunned; retains the underlying weapon's properties.
-# Semantic contract (check analysis_status before treating as accepted):
-#   The Dark Elf Blade adds +1 to the critical hit table and treats Injury results of 2-4 as stunned, while retaining the underlying weapon properties. Closure: a critical wound with the blade rolls its critical table with one extra point, an Injury total of 2-4 is Stunned and all other weapon properties stay unchanged.
-# effect_id:
-#   material.dark-elf-blade
-# relation:
-#   equivalent
-# parameters:
-#   {"concussion": true, "critical_injury_bonus": 1, "retains": "underlying weapon properties"}
-# conditions:
-#   {"trigger": "attack and critical"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   The contract carries critical_injury_bonus 1, which reaches resolve_critical, and concussion, which the injury condition consumes; the material merges with the weapon profile rather than replacing it, which is the printed "retains the underlying weapon properties".
 
 # --- Authored scenarios ---
 # mechanic/material.dark-elf-blade — +1 critical table and Concussion.
 #
 # Expectations come from the printed rule and the accepted clause `whole` of
-# docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv, never from engine output:
+# the knowledge-base clause contracts (sources/knowledge), never from engine output:
 # the material adds critical_injury_bonus 1 and concussion while keeping the
 # underlying weapon properties.  The critical die is rolled plus that modifier,
 # so a face of 2 reaches 3 and denies armour (a face of 2 alone would not).  The
@@ -61,7 +32,6 @@
 
 - audit_id: mechanic/material.dark-elf-blade
   id: dark-elf-blade-raises-the-critical-table
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.sword
@@ -88,7 +58,6 @@
 
 - audit_id: mechanic/material.dark-elf-blade
   id: dark-elf-blade-stuns-a-low-injury
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.sword

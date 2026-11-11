@@ -33,12 +33,13 @@ rules:
     - id: unimplemented.bretonnian-knights.questing-knight.knights-virtue
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: deferred.psychology
+      clauses:
+      - id: no-panic-and-all-alone--scope--no-panic
+        scope: 'NO'
+      - id: no-panic-and-all-alone--scope--all-alone
+        scope: 'NO'
   name: Knights Virtue
-  effect: >-
-    A Questing Knight is a chivalrous warrior who is superior to ordinary warriors. He will never
-    panic and break from combat and so does not have to pass a Leadership test for being all alone.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -46,14 +47,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/bretonnian
   name_i18n:
     es: Virtud del Caballero
-  effect_i18n:
-    es: >-
-      El Caballero Andante es un guerrero caballeroso, superior a los guerreros corrientes: nunca
-      entra en pánico ni huye del combate, por lo que no necesita superar un chequeo de Liderazgo
-      por estar solo.
   applies_to:
     profile_ids:
     - questing-knight
+  rule_ref: shared-rule.knights-virtue
 - id: knights-errant--knights-virtue
   runtime:
     scope: LATER
@@ -63,12 +60,13 @@ rules:
     - id: unimplemented.bretonnian-knights.knights-errant.knights-virtue
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: deferred.psychology
+      clauses:
+      - id: no-panic-and-all-alone--scope--no-panic
+        scope: 'NO'
+      - id: no-panic-and-all-alone--scope--all-alone
+        scope: 'NO'
   name: Knights Virtue
-  effect: >-
-    A Knight Errant is a chivalrous warrior who is superior to ordinary warriors. He will never
-    panic and break from combat and so does not have to pass a Leadership test for being all alone.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -76,14 +74,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/bretonnian
   name_i18n:
     es: Virtud del Caballero
-  effect_i18n:
-    es: >-
-      El Caballero Novel es un guerrero caballeroso, superior a los guerreros corrientes: nunca
-      entra en pánico ni huye del combate, por lo que no necesita superar un chequeo de Liderazgo
-      por estar solo.
   applies_to:
     profile_ids:
     - knights-errant
+  rule_ref: shared-rule.knights-virtue
 - id: band--lady-of-the-lake-blessing
   runtime:
     scope: 'NO'
@@ -93,8 +87,7 @@ rules:
     - id: unimplemented.bretonnian-knights.band.lady-of-the-lake-blessing
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: shooting.
+      reason: out-of-scope.shooting
   name: Lady of the Lake's Blessing
   effect: >-
     Before heading into battle Bretonnian Knights kneel and pray to the Lady of the Lake, avowing to
@@ -142,8 +135,7 @@ rules:
     - id: unimplemented.bretonnian-knights.band.squire-retinue-limit
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Squire Retinue Limit
   effect: >-
     The warband may not include more Squires than Knights. For this limit, Knights are the Questing
@@ -171,8 +163,7 @@ rules:
     - id: unimplemented.bretonnian-knights.band.virtue-of-purity
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic.
+      reason: out-of-scope.magic
   name: Virtue of Purity
   effect: Any spell cast against the warrior is dispelled on a D6 roll of 4+.
   source:
@@ -225,8 +216,7 @@ rules:
     - id: unimplemented.bretonnian-knights.band.virtue-of-discipline
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the 1v1 duel: a warband Rout-test reroll.
+      reason: out-of-scope.group
   name: Virtue of Discipline
   effect: >-
     Once per game, if the warrior is not out of action, stunned or knocked down, the warband may
@@ -279,8 +269,7 @@ rules:
     - id: unimplemented.bretonnian-knights.band.virtue-of-impetuous
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: attacks.
+      reason: out-of-scope.non-duel
   name: Virtue of Impetuous
   effect: >-
     The warrior may add +D3" to a charge move. Roll the D3 each time a charge is declared and before

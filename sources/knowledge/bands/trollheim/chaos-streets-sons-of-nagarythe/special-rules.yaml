@@ -55,8 +55,7 @@ rules:
     - id: unimplemented.chaos-streets-sons-of-nagarythe.shadow-weaver.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--hate-dark-elves
   name: Hate Dark Elves
   effect: >-
@@ -105,8 +104,7 @@ rules:
     - id: unimplemented.chaos-streets-sons-of-nagarythe.band.excellent-sight
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--honourable
   name: Honourable
   effect: Warriors in the warband may not use poisons or drugs of any kind.
@@ -159,8 +157,7 @@ rules:
     - id: unimplemented.chaos-streets-sons-of-nagarythe.band.unforgiving
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--tolerant
   name: Tolerant
   effect: >-
@@ -188,9 +185,7 @@ rules:
     - id: unimplemented.chaos-streets-sons-of-nagarythe.band.tolerant
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: band--shadow-warrior-special-skills-see-in-shadows
   kind: warband_skill
   name: See in Shadows
@@ -222,8 +217,7 @@ rules:
     - id: unimplemented.chaos-streets-sons-of-nagarythe.band.shadow-warrior-special-skills-see-in-shadows
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--shadow-warrior-special-skills-master-of-runes
   kind: warband_skill
   name: Master of Runes
@@ -261,9 +255,7 @@ rules:
     - id: unimplemented.chaos-streets-sons-of-nagarythe.band.shadow-warrior-special-skills-master-of-runes
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: band--shadow-warrior-special-skills-elven-agility
   kind: warband_skill
   runtime:
@@ -334,26 +326,16 @@ rules:
     - id: roster.maximum-two-powerful-build
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: warband-level roster limit.
+      reason: out-of-scope.construction
 - id: band--shadow-warrior-special-skills-infiltration
   kind: warband_skill
   name: Infiltration
-  effect: >-
-    The warrior deploys after the opposing warband and may be placed anywhere outside enemy line of
-    sight and more than 12" from every enemy model. If both players have infiltrating models, roll
-    D6 for each; the lowest roll deploys first.
   source:
     manual: chaos-in-the-streets
     printed_page: 142
     section: Sons of Nagarythe Special Skills / Infiltration
   name_i18n:
     es: Infiltración
-  effect_i18n:
-    es: >-
-      El guerrero se despliega después de la banda rival y puede colocarse en cualquier punto fuera
-      de la línea de visión enemiga y a más de 12" de cada modelo enemigo. Si ambos jugadores tienen
-      modelos que se infiltran, tira D6 por cada uno; el de la tirada más baja se despliega primero.
   eligibility:
   - shadow-master
   - shadow-weaver
@@ -368,8 +350,8 @@ rules:
     - id: unimplemented.chaos-streets-sons-of-nagarythe.band.shadow-warrior-special-skills-infiltration
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
+  rule_ref: shared-rule.infiltration
 - id: band--shadow-warrior-special-skills-sniper
   kind: warband_skill
   name: Sniper
@@ -396,8 +378,7 @@ rules:
     - id: unimplemented.chaos-streets-sons-of-nagarythe.band.shadow-warrior-special-skills-sniper
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--shadow-warrior-special-skills-hide-in-shadows
   kind: warband_skill
   name: Hide in Shadows
@@ -428,21 +409,15 @@ rules:
     - id: unimplemented.chaos-streets-sons-of-nagarythe.band.shadow-warrior-special-skills-hide-in-shadows
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: shadow-weaver--no-armoured-casting
   name: No Armour Casting
-  effect: >-
-    A Shadow Weaver may not cast spells while wearing armour.
   source:
     manual: chaos-in-the-streets
     printed_page: 140
     section: Heroes / 0-1 Shadow Weaver / Special Rules / No Armour Casting
   name_i18n:
     es: Sin Conjuros con Armadura
-  effect_i18n:
-    es: >-
-      Un Tejedor de Sombras no puede lanzar conjuros mientras lleva armadura.
   applies_to:
     profile_ids:
     - shadow-weaver
@@ -454,5 +429,5 @@ rules:
     - id: unimplemented.chaos-streets-sons-of-nagarythe.shadow-weaver.no-armoured-casting
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic.
+      reason: out-of-scope.magic
+  rule_ref: shared-rule.no-armoured-casting

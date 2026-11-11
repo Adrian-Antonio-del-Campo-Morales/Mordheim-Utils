@@ -1,0 +1,103 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/khemri-lahmian-brotherhood/band--lahmian-special-skills-hypnotize/mechanic.lahmian-hypnotize
+# authoring_status: AUTHORED
+# authoring_progress: the admitted hypnotize clause carries 3 authored scenarios derived from the printed
+# sentence and the modular consumer.  The blocker recorded here previously was FALSE and is corrected:
+# rounds.py lists ("mechanic.lahmian-hypnotize", ("mechanic.psychology-immunity",), "hypnotize", False) in
+# LAHMIA_POWERS, so the chosen enemy of the duel tests at round.<round>.<target label>.hypnotize (.0/.1); a
+# failure sets charm_attack_blocked and marks the model with condition.hypnotized, which the hit context
+# consumes as the printed "all attacks directed against it gain +1 To Hit" (modular/contexts.py adds one to
+# the attack modifier of every attack aimed at a model carrying that tag, whoever makes it).  The printed
+# Psychology exemption is that tuple's own exclusion.  The printed "may attack another model in base contact"
+# remainder has no second target in a duel and is recorded, not asserted.  REVIEWED still requires manual
+# semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 3 scenarios cover the printed charm.  The register's "no consumer implements the
+# printed charm" was not correct: the LAHMIA_POWERS entry for mechanic.lahmian-hypnotize is exactly this
+# idiom (the target's Leadership tested, a failure barring it and marking it hypnotized).  Scenario 1 fails
+# the target's test and shows both consumed halves at once - the target barred, and the attacker's declared
+# to-hit die of three reaching an equal-Weapon-Skill bearer only because the printed +1 lifts it onto the
+# printed four.  Scenario 2 passes the same test and shows the identical die of three missing, which is what
+# isolates the +1 from the ordinary attack.  Scenario 3 supplies the printed exemption (models immune to
+# Psychology) and shows that no hypnotize die is requested at all.  REVIEWED still requires manual semantic
+# review.
+
+# --- Authored scenarios ---
+# The failed test consumes both printed halves: the target may not attack this turn, and the attacker's
+# declared three reaches it only through the printed +1 (an equal Weapon Skill needs four).
+- audit_id: rule/trollheim/khemri-lahmian-brotherhood/band--lahmian-special-skills-hypnotize/mechanic.lahmian-hypnotize
+  id: a-failed-hypnotize-test-bars-the-target-and-gives-the-printed-plus-one
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.lahmian-hypnotize]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 8}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.hypnotize, value: true}
+  rolls:
+    - {key: round.0.second.hypnotize.0, value: 6}
+    - {key: round.0.second.hypnotize.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {state.second.charm_attack_blocked: true, attacks.0.hit: true, state.second.condition: STANDING, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The passed test: with no hypnotized tag the identical declared three misses the same defender, which is
+# what isolates the printed +1 from an ordinary attack.
+- audit_id: rule/trollheim/khemri-lahmian-brotherhood/band--lahmian-special-skills-hypnotize/mechanic.lahmian-hypnotize
+  id: a-passed-hypnotize-test-leaves-the-declared-three-short
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.lahmian-hypnotize]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 8}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.hypnotize, value: true}
+  rolls:
+    - {key: round.0.second.hypnotize.0, value: 1}
+    - {key: round.0.second.hypnotize.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.charm_attack_blocked: false, attacks.0.hit: false, attacks.1.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed exemption: "Models immune to Psychology are unaffected", so no hypnotize die is requested and
+# the target keeps its whole pool.
+- audit_id: rule/trollheim/khemri-lahmian-brotherhood/band--lahmian-special-skills-hypnotize/mechanic.lahmian-hypnotize
+  id: a-psychology-immune-target-skips-hypnotize
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.lahmian-hypnotize]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 8}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.psychology-immunity]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.charm_attack_blocked: false, attacks.0.hit: false, attacks.1.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

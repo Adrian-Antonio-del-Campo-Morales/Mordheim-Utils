@@ -67,18 +67,16 @@ rules:
         parameters:
           value: true
   name: Flammable
-  effect: A fire-based attack that wounds the Tomb Lord causes double the normal number of Wounds.
   source:
     manual: khemri
     printed_page: 43
     section: Undead Special Rules / Flammable
   name_i18n:
     es: Inflamable
-  effect_i18n:
-    es: Un ataque de fuego que hiere al Señor de la tumba causa el doble de Heridas de lo normal.
   applies_to:
     profile_ids:
     - tomb-lord
+  rule_ref: shared-rule.flammable
 - id: mortuary-priest--wizard
   name: Wizard
   effect: >-
@@ -106,8 +104,7 @@ rules:
     - id: unimplemented.khemri-tomb-guardians.mortuary-priest.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: mortuary-priest--undead
   name: Undead
   effect: The Mortuary Priest is Undead and is subject to the warband's Undead special rules.
@@ -209,8 +206,7 @@ rules:
     - id: unimplemented.khemri-tomb-guardians.necrotect.stone-forger
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: mortuary-acolytes--undead
   name: Undead
   effect: Mortuary Acolytes are Undead and are subject to the warband's Undead special rules.
@@ -291,19 +287,12 @@ rules:
         id: mechanic.undead
 - id: tomb-scorpions--living
   name: Living
-  effect: >-
-    Tomb Scorpions are living creatures and are affected by Psychology normally, but they do not
-    need water.
   source:
     manual: khemri
     printed_page: 46
     section: Henchmen / 0-3 Tomb Scorpions / Living
   name_i18n:
     es: Viviente
-  effect_i18n:
-    es: >-
-      Los Escorpiones de tumba son criaturas vivientes y se ven afectados por la Psicología con
-      normalidad, pero no necesitan agua.
   applies_to:
     profile_ids:
     - tomb-scorpions
@@ -315,8 +304,8 @@ rules:
     - id: unimplemented.khemri-tomb-guardians.tomb-scorpions.living
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.psychology
+  rule_ref: shared-rule.living
 - id: tomb-scorpions--animal
   name: Animal
   effect: Tomb Scorpions are animals and never gain Experience.
@@ -339,8 +328,7 @@ rules:
     - id: unimplemented.khemri-tomb-guardians.tomb-scorpions.animal
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: tomb-scorpions--scorpion-sting
   runtime:
     scope: 'YES'
@@ -425,17 +413,12 @@ rules:
         id: mechanic.causes-fear
 - id: stone-golem--immune-to-psychology
   name: Immune to Psychology
-  effect: The Stone Golem is immune to Psychology and never leaves combat because of Psychology.
   source:
     manual: khemri
     printed_page: 47
     section: Henchmen / 0-1 Stone Golem / Immune to Psychology
   name_i18n:
     es: Inmune a la Psicología
-  effect_i18n:
-    es: >-
-      El Gólem de piedra es inmune a la Psicología y nunca abandona el combate a causa de la
-      Psicología.
   applies_to:
     profile_ids:
     - stone-golem
@@ -449,6 +432,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+  rule_ref: shared-rule.immune-to-psychology
 - id: stone-golem--immune-to-poison
   runtime:
     scope: 'YES'
@@ -497,8 +481,7 @@ rules:
     - id: unimplemented.khemri-tomb-guardians.stone-golem.brainless
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: stone-golem--impossible-to-hide
   name: Impossible to Hide
   effect: The Stone Golem is too large to Hide.
@@ -521,8 +504,7 @@ rules:
     - id: unimplemented.khemri-tomb-guardians.stone-golem.impossible-to-hide
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: stone-golem--large-target
   name: Large Target
   effect: >-
@@ -549,8 +531,7 @@ rules:
     - id: unimplemented.khemri-tomb-guardians.stone-golem.large-target
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: stone-golem--no-water
   name: No Water
   effect: The Stone Golem does not need water.
@@ -573,8 +554,7 @@ rules:
     - id: unimplemented.khemri-tomb-guardians.stone-golem.no-water
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: stone-golem--animated
   name: Animated
   effect: The Stone Golem is an animated being and is not Undead.
@@ -597,19 +577,15 @@ rules:
     - id: unimplemented.khemri-tomb-guardians.stone-golem.animated
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.psychology
 - id: band--cause-fear
   name: Cause Fear
-  effect: All warriors with the Undead special rule cause Fear.
   source:
     manual: khemri
     printed_page: 43
     section: Undead Special Rules / Cause Fear
   name_i18n:
     es: Causan Miedo
-  effect_i18n:
-    es: Todos los guerreros con la regla especial No muerto causan Miedo.
   eligibility:
   - tomb-lord
   - mortuary-priest
@@ -629,21 +605,15 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.causes-fear
+  rule_ref: shared-rule.cause-fear-undead
 - id: band--immune-to-psychology
   name: Immune to Psychology
-  effect: >-
-    All warriors with the Undead special rule are immune to Psychology and never leave combat
-    because of Psychology.
   source:
     manual: khemri
     printed_page: 43
     section: Undead Special Rules / Immune to Psychology
   name_i18n:
     es: Inmune a la Psicología
-  effect_i18n:
-    es: >-
-      Todos los guerreros con la regla especial No muerto son inmunes a la Psicología y nunca
-      abandonan el combate a causa de la Psicología.
   eligibility:
   - tomb-lord
   - mortuary-priest
@@ -663,6 +633,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+  rule_ref: shared-rule.immune-to-psychology-undead
 - id: band--no-pain
   runtime:
     scope: 'YES'
@@ -675,19 +646,12 @@ rules:
         kind: mechanic
         id: skill.ignore-pain
   name: No Pain
-  effect: >-
-    All warriors with the Undead special rule treat a Stunned result on the Injury chart as Knocked
-    Down.
   source:
     manual: khemri
     printed_page: 43
     section: Undead Special Rules / No Pain
   name_i18n:
     es: Sin Dolor
-  effect_i18n:
-    es: >-
-      Todos los guerreros con la regla especial No muerto tratan un resultado Aturdido de la tabla
-      de Heridas como Derribado.
   eligibility:
   - tomb-lord
   - mortuary-priest
@@ -697,6 +661,7 @@ rules:
   - tomb-guardians
   applies_to:
     band: true
+  rule_ref: shared-rule.no-pain-undead
 - id: band--no-food-or-water
   name: No Food or Water
   effect: Warriors with the Undead special rule do not need food or water.
@@ -725,21 +690,15 @@ rules:
     - id: unimplemented.khemri-tomb-guardians.band.no-food-or-water
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--may-not-run
   name: May Not Run
-  effect: Warriors with the Undead special rule may not run, but may charge normally.
   source:
     manual: khemri
     printed_page: 43
     section: Undead Special Rules / May Not Run
   name_i18n:
     es: No Pueden Correr
-  effect_i18n:
-    es: >-
-      Los guerreros con la regla especial No muerto no pueden correr, pero pueden cargar con
-      normalidad.
   eligibility:
   - tomb-lord
   - mortuary-priest
@@ -757,8 +716,8 @@ rules:
     - id: unimplemented.khemri-tomb-guardians.band.may-not-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
+  rule_ref: shared-rule.may-not-run-undead
 - id: band--immune-to-poison
   runtime:
     scope: 'YES'
@@ -773,15 +732,12 @@ rules:
         parameters:
           value: true
   name: Immune to Poison
-  effect: Warriors with the Undead special rule are immune to poison.
   source:
     manual: khemri
     printed_page: 43
     section: Undead Special Rules / Immune to Poison
   name_i18n:
     es: Inmune al Veneno
-  effect_i18n:
-    es: Los guerreros con la regla especial No muerto son inmunes al veneno.
   eligibility:
   - tomb-lord
   - mortuary-priest
@@ -791,6 +747,7 @@ rules:
   - tomb-guardians
   applies_to:
     band: true
+  rule_ref: shared-rule.immune-to-poison-undead
 - id: band--brainless
   name: Brainless
   effect: >-
@@ -824,8 +781,7 @@ rules:
     - id: unimplemented.khemri-tomb-guardians.band.brainless
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--at-home
   name: At Home
   effect: When the warband explores in Khemri, roll one additional die during the Exploration phase.
@@ -847,8 +803,7 @@ rules:
     - id: unimplemented.khemri-tomb-guardians.band.at-home
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: mortuary-priest--no-armour
   name: No Armour
   effect: >-
@@ -924,17 +879,13 @@ rules:
           - weapons
           - armour
   name: Equipment Restrictions
-  effect: >-
-    Tomb Scorpions do not use weapons or armour.
   source:
     manual: khemri
     printed_page: 46
     section: "0-3 Tomb Scorpions"
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      es
   applies_to:
     profile_ids:
     - tomb-scorpions
+  rule_ref: shared-rule.no-weapons-or-armour

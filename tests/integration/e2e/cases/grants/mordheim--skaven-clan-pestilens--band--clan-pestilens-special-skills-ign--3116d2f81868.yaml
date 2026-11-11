@@ -1,6 +1,5 @@
 ﻿# E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-ignore-pain/skill.ignore-pain
-# scaffold_fingerprint: 75ee4fa5a4ccf2d04ef6249f8d24062d846092b85890d77b3fbc117f940c3b52
 # authoring_status: PARTIAL
 # authoring_progress: the admitted ignore-pain clause carries one authored scenario whose bearer is the
 #   printed recipient of the band's rule (read statically from the band eligibility declaration); the
@@ -11,38 +10,11 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: ignore-pain (scope: YES)
 # AUTHORED[ignore-pain]: 1 scenario evidences the conversion (see the closing note above).
-# origin_id:
-#   rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-ignore-pain/skill.ignore-pain
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/skaven-clan-pestilens/special-rules.yaml
-# source_fingerprint:
-#   83dc2c248f67d5eee77f30a25f2ab6a826522635a943e6723295909ebdea2e25
-# source_sha256_at_generation:
-#   fd4ce1ba1a0a29841e324a3b43cdb0d680015e9d6574e092673f0667381e46c3
-# Printed rule text:
-#   Requires the Resilient Strength skill. The Hero treats Stunned injury results as Knocked Down.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Treats Stunned injury results as Knocked Down; observable: Stunned becomes Knocked Down.
-# effect_id:
-#   skill.ignore-pain
-# relation:
-#   equivalent
-# parameters:
-#   {"stunned_becomes":"knocked-down"}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#    Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"ignore-pain","audit_group":"EQ-skill.ignore-pain","verified_facet":"skill.ignore-pain","relationship":"shared_facet","boundary":"Share the post-chart Stunned-to-Knocked-Down transformation. Preserve recipients and printed Resilient prerequisites; do not add that prerequisite to innate No Pain. Squishy expressly disables No Pain. A conversion is not a helmet roll or ordinary Knocked Down for Jump Up.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
 #
 # Clause: requires-resilient (scope: YES)
 # PARTIAL[requires-resilient]: [D] the clause is a construction prerequisite ("Requires the Resilient
@@ -56,32 +28,6 @@
 #   detect, recorded separately and not as the blocker: the skillIssue / loadoutRestriction skill stage
 #   performs no Resilient check for an ignore-pain bearer, which is the missing connection the register
 #   names.  The duel-side clause ignore-pain is authored below.
-# origin_id:
-#   rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-ignore-pain/skill.ignore-pain
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/skaven-clan-pestilens/special-rules.yaml
-# source_fingerprint:
-#   83dc2c248f67d5eee77f30a25f2ab6a826522635a943e6723295909ebdea2e25
-# source_sha256_at_generation:
-#   fd4ce1ba1a0a29841e324a3b43cdb0d680015e9d6574e092673f0667381e46c3
-# Printed rule text:
-#   Requires the Resilient Strength skill. The Hero treats Stunned injury results as Knocked Down.
-# Semantic contract (check analysis_status before treating as accepted):
-#   The skill requires the Resilient Strength skill; observable: the profile must already have Resilient.
-# effect_id:
-#   (not recorded)
-# relation:
-#   related
-# parameters:
-#   {}
-# conditions:
-#   {"requires_skill":"skill.resilient"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Prerequisite/eligibility text, resolved in construction rather than in the duel: the shared eligibility contract decides the prerequisite (skillIssue), while the duel consumes only the ignore-pain flag. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"requires-resilient","audit_group":"EQ-skill.ignore-pain","verified_facet":"ignore-pain/prerequisite","relationship":"shared_facet","boundary":"Acquisition prerequisite only, separate from the Stunned-to-Knocked-Down behavior and absent from innate No Pain.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
 
 
 # --- Authored scenarios ---

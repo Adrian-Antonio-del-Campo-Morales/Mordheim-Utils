@@ -41,11 +41,11 @@ a single affected file or node ID; the complete corpus is an integration run.
 | `execution/test_cases.py` | Collects every declared scenario and runs it through the production pipeline. |
 | `integrity/test_corpus_contract.py` | Engine-free contract checks for `corpus.py` using synthetic documents; it imports no combat package. |
 | `integrity/validate_corpus.py` | Engine-free structural report and CLI for the corpus, with exit codes `0` (integrity clean), `1` (integrity failure) and `2` (incomplete under `--require-complete`). |
-| `integrity/test_inventory.py` | Reconciles the corpus with the audit register, prints the coverage report and runs the opt-in completeness gate. |
+| `integrity/test_inventory.py` | Reconciles the corpus with the knowledge-base clause inventory, prints the coverage report and runs the opt-in completeness gate. |
 | `integrity/test_non_regression.py` | Compares the live corpus with the reviewed accepted-evidence reference set-wise, and demonstrates that the control detects a lost scenario, clause reference or identity. |
 | `integrity/test_variants.py` | Proves that sibling scenarios share variant data through YAML anchors and that running or editing one variant leaves its siblings intact. |
-| `integrity/evidence/coverage-baseline.yaml` | Reviewed accepted coverage evidence (identity, protected scenarios and their clause references) with the register revision it was accepted against. Read-only for the tests. |
-| `cases/core`, `cases/mechanics`, `cases/grants` | One YAML authoring document per admitted ID, named from that ID by `generate_skeletons.relative_path()` and carrying that identity in its header. A file holds that ID's scenarios, or an empty scaffold body while the ID is unauthored; empty scaffolds contribute no collected scenarios or coverage. |
+| `integrity/evidence/coverage-baseline.yaml` | Reviewed accepted coverage evidence (identity, protected scenarios and their clause references) with the clause-inventory digest it was accepted against. Read-only for the tests. |
+| `cases/core`, `cases/mechanics`, `cases/grants` | One YAML authoring document per admitted identity, named from it by `generate_skeletons.relative_path()` and carrying it in its header. A file holds that identity's scenarios, or an empty scaffold body while it is unauthored; empty scaffolds contribute no collected scenarios or coverage. |
 
 The pytest package loader avoids generic top-level `dice` or `runner` imports
 and does not change production import paths. All copied support is local; it
@@ -63,13 +63,15 @@ python tests/integration/e2e/generate_skeletons.py --check
 python tests/integration/e2e/integrity/test_generate_skeletons.py -q
 ```
 
-The generator uses only the Python standard library, never the production
-compiler or combat engine. Its checks use standalone unittest and the existing
-YAML dependency rather than pytest collection of the runtime suite.
+The generator reads the knowledge base through `mordheim_knowledge.clauses`
+and never imports the production compiler or combat engine. Its checks use
+standalone unittest and the existing YAML dependency rather than pytest
+collection of the runtime suite.
 
-The generator uses explicit `clause_scope: YES` rows in the semantic register
-and complete `core/`, `mechanic/` and `rule/` IDs. It creates one YAML authoring
-file for each admitted ID. Every file starts at TODO. All new cases are authored
+The generator uses the clauses declared on the knowledge-base records: an
+identity is admitted when one of its clauses has `scope: 'YES'` and its kind is
+`core/`, `mechanic/` or `rule/`. It creates one YAML authoring file for each
+admitted ID. Every file starts at TODO. All new cases are authored
 from scratch using the rule and accepted contract; the only exception is the
 one-time migration of the pilot scenarios recorded under *Migrated pilot
 scenarios* below, after which no older scenario is copied or referenced.
@@ -78,15 +80,12 @@ collected as a passing test. Rule IDs use bounded readable filenames with a
 hash suffix to avoid collisions and long Windows paths; the full identity is
 always retained in the header.
 
-Comments copy the printed rule, recorded semantic contract and analysis state,
-origin, parameters, conditions, dependencies and notes. Excluded clauses of an
-admitted ID remain visible without becoming test TODOs. Pending analysis stays
-pending; the generator does not decide interpretations, scenarios or outcomes.
-Original record-level source fingerprints are preserved alongside separate
-whole-file SHA-256 snapshots. They have different granularity and are not
-compared as equivalent hashes. Missing sources retain a source-review TODO;
-changes to the captured files or register definitions make existing scaffolds
-stale on the next check. Register notes are context, not behavioral authority.
+Comments list the clauses of a split identity with their scope and point at
+the knowledge-base record that holds the printed text; the scaffold copies
+nothing, so the knowledge base stays the single place to read and edit the
+rule. What a scenario observes is written in the scenario's own comments. Excluded clauses of an admitted ID remain visible
+without becoming test TODOs. The generator does not decide interpretations,
+scenarios or outcomes.
 
 Search `# authoring_status: TODO` for IDs to author, or `# TODO[` for clause
 work. Update authoring status manually as work progresses; the generator never
@@ -98,21 +97,24 @@ remains separate and unexecuted during authoring.
 
 Regeneration creates missing files only. It never rewrites existing comments
 or scenario bodies, and never deletes retired files. Preserve the `audit_id`
-and `scaffold_fingerprint` header when authoring. `--check` writes nothing and
-returns exit 1 for missing, stale, conflicting or retired scaffolds; it checks
-file presence, identity and snapshot integrity, not scenario bodies, semantic
-sufficiency or engine behavior. Source changes require manual review of owned files before updating
-their snapshot; there is deliberately no force-overwrite mode.
+header when authoring. An identity counts as present when a file is headed by
+it or a scenario declares it, so a file may host scenarios of several
+identities when the knowledge base splits one printed rule across effects.
+`--check` writes nothing and returns exit 1 for missing or retired scaffolds
+(a header identity that is no longer admitted, or a file not at the path its
+identity derives); it checks presence and identity, not scenario bodies,
+semantic sufficiency or engine behavior. A changed clause contract is reviewed
+in the knowledge base (`git log` on the record), not through a scaffold snapshot.
 
-`--register`, `--knowledge-root` and `--output-dir` accept alternative inputs
-and destinations for isolated generation checks. `--dry-run` previews missing
+`--knowledge-root` and `--output-dir` accept alternative inputs and
+destinations for isolated generation checks. `--dry-run` previews missing
 files without creating directories or files.
 
 ## Author by semantic family
 
 Use family-based data generation for repeated contracts. Keep one YAML file per
 audit ID and the existing loader and runner. This workflow adds no runtime
-template language, new test framework or editorial register. The scaffold
+template language, new test framework or second clause inventory. The scaffold
 generator still creates empty files only; an authoring helper expands a
 source-derived family model into ordinary scenario declarations.
 
@@ -381,14 +383,14 @@ vocabulary plus two corpus metadata fields:
 
 | Field | Purpose |
 | --- | --- |
-| `audit_id` | The admitted `core/`, `mechanic/` or `rule/` identity that owns the scenario. |
-| `covers` | Admitted clause ids of that identity that the scenario demonstrates. |
+| `audit_id` | The `core/`, `mechanic/` or `rule/` identity that owns the scenario. |
+| `covers` | Only for an identity split into clauses: the clause ids the scenario demonstrates. An undivided identity is covered by any scenario naming it. |
 
 All other fields are exactly the runner's scenario contract (`fighters`,
 `initial_state`, `duel_context`, `maximum_rounds`, `rolls`, `decisions`,
 `expect_initial`, `expect_rounds`, `expect_final`, `expect_events`,
 `expect_fighters`, `expect_error`). Unknown
-fields, a missing `audit_id`/`covers`, a missing assertion, a duplicate
+fields, a missing `audit_id`, a missing assertion, a duplicate
 `audit-ID::scenario-ID` and a non-list document all raise `CorpusError` naming
 the file and the offending scenario. `expect_events` may be the empty list; it
 asserts that no event occurred. Observation maps are nonempty mappings of
@@ -397,17 +399,15 @@ positive integer that may not be a boolean, roll values are integers inside
 die faces (no boolean values, nonempty keys, positive side counts), and
 decision values are booleans.
 `corpus.py` validates structure only;
-reference checking against the register belongs to `integrity/test_inventory.py`.
+reference checking against the clause inventory belongs to `integrity/test_inventory.py`.
 
 `tests/integration/e2e/integrity/validate_corpus.py [corpus_directory] [--require-complete]`
-is the global structural report: it reuses the loader above plus the register reading in
+is the global structural report: it reuses the loader above plus the clause-inventory reading in
 `integrity/test_inventory.py` (nothing from a combat package), reports integrity
 (unknown references, duplicates, unloadable files), the authoring-metadata
 grammar per file (`# authoring_status` markers vs. declared clauses), and the
-declared coverage with its gaps. Retirement from the register is reported
-separately, never mistaken for pending authoring, and scaffold staleness is
-not measured here — generative source snapshots remain
-`generate_skeletons.py`'s concern. Exit codes: `0` when nothing failed (gaps
+declared coverage with its gaps. Retirement from the inventory is reported
+separately, never mistaken for pending authoring. Exit codes: `0` when nothing failed (gaps
 stay reported and do not pretend completeness), `1` on integrity problems, `2`
 when `--require-complete` was requested and coverage is still incomplete.
 Run it directly, engine-free, as a companion to the pytest contract tests;
@@ -452,11 +452,13 @@ never shares an outcome.
 
 ## Inventory, coverage and completeness
 
-`integrity/test_inventory.py` reads the canonical register
-(`sources/knowledge/verification/clause-contracts.csv`) read-only. It requires
-every scenario to name a registered identity, an admitted `core/`, `mechanic/`
-or `rule/` identity and one of that identity's in-scope clauses; a shared
-executable binding never admits an excluded clause.
+`integrity/test_inventory.py` reads the knowledge-base clause inventory
+(`mordheim_knowledge.clauses.load_clauses`, the `clauses` declared on every
+classified record) read-only. It requires every scenario to name a declared
+identity, an admitted `core/`, `mechanic/` or `rule/` identity and one of that
+identity's in-scope clauses; a shared executable binding never admits an
+excluded clause. `python tools/knowledge/clauses.py coverage` prints the same
+reconciliation together with the deterministic tests' `covers` markers.
 
 `coverage()` and `report.render()` distinguish, per admitted identity, complete
 coverage, partial coverage with its pending clauses, and no scenarios. Ordinary
@@ -464,25 +466,25 @@ runs reconcile the corpus and print that report (visible with `-s`). The strict
 gate that fails on any admitted identity without scenarios or any uncovered
 admitted clause runs only when `MORDHEIM_E2E_REQUIRE_COMPLETE=1` is set,
 mirroring the existing `verify --require-complete` convention; there is no skip
-or expected failure. This evidence is E2E coverage and never replaces the
-maintained `semantic_status` of the reference suite.
+or expected failure. This evidence is E2E coverage, not behavioural proof: the
+scenarios must also run and pass.
 
 ## Accepted coverage evidence and the non-regression control
 
 `integrity/evidence/coverage-baseline.yaml` is a reviewed test artefact, not another
 editorial rules register. For every identity the corpus had already accepted it
 records the protected scenario identities and the clause references each
-scenario demonstrates, with the register revision it was accepted against. The
-tests never rewrite it; extending it is a reviewed edit that follows the corpus
-review.
+scenario demonstrates, with the clause-inventory digest it was accepted against.
+The tests never rewrite it; extending it is a reviewed edit that follows the
+corpus review.
 
 `integrity/test_non_regression.py` compares that reference with the live corpus set-wise.
 An identity, a scenario, a clause reference inside a scenario, or a clause that
 left the admitted scope is a regression even when every total is unchanged, so a
-reviewed scenario cannot be substituted by another one. A moved register
-revision is reported rather than trusted, and every accepted clause is re-checked
-against the register's current scope. An isolated control test doctors a corpus
-to demonstrate that each kind of loss is detected.
+reviewed scenario cannot be substituted by another one. A moved inventory
+digest is reported rather than trusted, and every accepted clause is re-checked
+against the knowledge base's current scope. An isolated control test doctors a
+corpus to demonstrate that each kind of loss is detected.
 
 The reference is deliberately separate from the opt-in global completeness gate:
 the gate lists every pending identity and admitted clause and fails when

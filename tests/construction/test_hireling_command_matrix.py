@@ -266,7 +266,7 @@ def test_command_band_rule_is_declared_out_of_scope_without_binding(spell_id, ba
     effects = runtime["effects"]
     assert len(effects) == 1, band_rule_id
     assert effects[0]["binding"] is None, band_rule_id
-    assert "Out of scope" in effects[0]["reason"], band_rule_id
+    assert effects[0]["reason"].startswith("out-of-scope."), band_rule_id
     assert runtime_bindings(rule) == (), band_rule_id
     assert rule["applies_to"]["profile_ids"] == [WANDERING_KNIGHT], band_rule_id
     assert rule["effect"].startswith(f"Difficulty: {difficulty}."), band_rule_id
@@ -281,9 +281,7 @@ def test_commands_gate_rule_declares_the_subsystem_out_of_scope():
     assert runtime["grant"] == "profile"
     assert runtime_bindings(rule) == ()
     assert rule["applies_to"]["profile_ids"] == [WANDERING_KNIGHT]
-    reason = runtime["effects"][0]["reason"]
-    assert "Out of scope" in reason
-    assert "Commands" in reason
+    assert runtime["effects"][0]["reason"].startswith("out-of-scope.")
 
 
 def test_canonical_wandering_knight_compiles_without_command_effects():

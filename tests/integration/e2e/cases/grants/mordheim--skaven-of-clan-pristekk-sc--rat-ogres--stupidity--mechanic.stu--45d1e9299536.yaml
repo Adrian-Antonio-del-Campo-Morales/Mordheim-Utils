@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/skaven-of-clan-pristekk-sc/rat-ogres--stupidity/mechanic.stupidity
-# scaffold_fingerprint: 36c894775b569c1a5e6004cf2e7617539cfb6020a2532ae09956ceaa2fe5cc05
 # authoring_status: AUTHORED
 # authoring_progress: the admitted conditional stupidity clause carries 3 authored scenario(s) for
 #   the family model derived from the printed rule and the recorded semantic contract: the bearer's
@@ -17,44 +16,16 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: stupidity (scope: YES)
-# AUTHORED[stupidity]: 3 scenarios cover the start-of-own-turn individual Leadership test of the
+# AUTHORED: 3 scenarios cover the start-of-own-turn individual Leadership test of the
 #   bearer built from its printed profile: a total of twelve fails and cancels its charge, a total of
 #   two passes and it strikes normally, and the printed Skaven-Hero exemption supplied as the admitted
 #   condition.stupidity-exempt fact skips the test with no die requested.
 # Clause face - printed proximity concession (evidenced by the scenario below, which covers the admitted clause `stupidity`): the scenario below declares the concession's own configuration instead of the caller-supplied exemption.
 #   Documented difference (AUTHORED vs implementation): every requirement of the clause has a written scenario, so AUTHORED is the correct header; what remains pending is the motor side only - a consumer that maps the declarable supplied nearby same-band Hero (duel_context.nearby) onto condition.stupidity-exempt does not exist yet, so the nearby-provider scenario is expected to fail until that branch lands [B]; that failure is the evidence of the printed requirement, not an authoring gap.
 #   Original pending note, kept for the record: not asserted here. The printed exemption is a concession awarded by nearby company (the printed rule states it as a Hero within 6"), not a property of the bearer: no consumer in the runtime derives an exemption from a nearby provider, so the authored scenario supplies the exemption as the admitted condition.stupidity-exempt fact and evidences the reaction to the exemption alone. The documented route for a supplied nearby provider is the duel context's `nearby` participant, which mechanic.leader-six uses for the Leadership borrow; the concession itself stays pending until a consumer maps a nearby hero provider onto condition.stupidity-exempt.
-# origin_id:
-#   rule/mordheim/skaven-of-clan-pristekk-sc/rat-ogres--stupidity/mechanic.stupidity
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/skaven-of-clan-pristekk-sc/special-rules.yaml
-# source_fingerprint:
-#   ad96d4f973bf37ae3536724d5a69a0f6167b5f9a520e6c7790dff577c77c87a4
-# source_sha256_at_generation:
-#   e9bde4267b11d1fcd974cc1c62c60a2a5e5ce934f0da790dc476b3349094ec78
-# Printed rule text:
-#   The Rat Ogre is subject to Stupidity unless a Skaven Hero is within 6".
-# Semantic contract (check analysis_status before treating as accepted):
-#   Stupidity: at the start of this warrior's own turn it tests individual Leadership; on failure it cannot make close-combat attacks until its next own turn. Observable: a failed stupidity test yields zero close-combat attacks for this warrior that turn, without changing enemy To-Hit rolls. Printed text exempts the warrior when its designated handler is within 6 inches.
-# effect_id:
-#   mechanic.stupidity
-# relation:
-#   parameterized_variant
-# parameters:
-#   {"exempt_when":"supplied qualifying handler within 6 inches"}
-# conditions:
-#   {"trigger":"start of this warrior's own turn","resolution":"individual Leadership test via leadership.resolve_local_leadership (stupidity key); resolves before fear in the round pipeline","consequence":"on failure no close-combat attacks until its next own turn","recipient":"this warrior","duration":"until its next own turn","stacking":"not cumulative","exceptions":"exempt while the designated handler is supplied within 6 inches"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Conditional Stupidity: resolve_stupidity honours a supplied condition.stupidity-exempt tag, but nothing derives the handler's 6-inch proximity from a group; the exemption must be supplied as an admitted nearby fact (proposed connection, not a new behaviour). Scope review integration: {"clause_id":"stupidity","review_clause_id":"stupidity","source_state":"unverified","review_status":"reviewed","scope_reason":"Being subject to stupidity unless a named nearby provider is within 6 inches is an admitted individual state of this duelist, with the provider supplied as a current condition rather than a simulated group.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"} Surface reuse candidate: {"family":"mechanic.handler-leadership","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare supplied provider, same side/band, standing status, recipient, distance, range upgrades and borrowing/reroll effects. Do not simulate another fighter or erase handler/leader restrictions; a range upgrade is not another aura.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
 # --- Authored scenarios ---
 # Family model (conditional Stupidity): the bearer is the printed recipient of this record, built
@@ -75,7 +46,6 @@
 # no close-combat attack is resolved at all.
 - audit_id: rule/mordheim/skaven-of-clan-pristekk-sc/rat-ogres--stupidity/mechanic.stupidity
   id: a-failed-stupidity-test-cancels-its-charge-and-bars-its-attacks
-  covers: [stupidity]
   fighters:
     first:
       collection: mordheim
@@ -98,7 +68,6 @@
 # roll is unchanged by the test.
 - audit_id: rule/mordheim/skaven-of-clan-pristekk-sc/rat-ogres--stupidity/mechanic.stupidity
   id: a-passed-stupidity-test-keeps-contact-and-lets-it-strike
-  covers: [stupidity]
   fighters:
     first:
       collection: mordheim
@@ -126,7 +95,6 @@
 # strikes normally.
 - audit_id: rule/mordheim/skaven-of-clan-pristekk-sc/rat-ogres--stupidity/mechanic.stupidity
   id: the-printed-skaven-hero-exemption-skips-the-test
-  covers: [stupidity]
   fighters:
     first:
       collection: mordheim
@@ -158,7 +126,6 @@
 # gap, is the remaining pending requirement [B].
 - audit_id: rule/mordheim/skaven-of-clan-pristekk-sc/rat-ogres--stupidity/mechanic.stupidity
   id: a-nearby-hero-within-six-inches-exempts-the-bearer
-  covers: [stupidity]
   fighters:
     first:
       collection: mordheim

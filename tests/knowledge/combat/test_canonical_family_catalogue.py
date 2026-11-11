@@ -1,18 +1,15 @@
 """Catalogue contracts for executable combat rule families.
 
-Moved from ``tests/engines/vectorized/test_shared_families.py`` by T08: the
-subject is the knowledge catalogue and its runtime bindings, not the
-vectorized engine.
+The family of a rule is its executable binding: rules bound to the same
+``(kind, id)`` are one family, declared on the rules themselves and never kept
+in a separate tracker document.
 """
 from __future__ import annotations
 
-from collections import Counter
 from mordheim_knowledge.loader import load_bands
 from mordheim_knowledge.loader import runtime_bindings
-import json as json
 from pathlib import Path
 import pytest as pytest
-import yaml as yaml
 
 
 ROOT = Path(__file__).resolve().parents[3] / "sources/knowledge"
@@ -41,33 +38,6 @@ def _family_binding(rule: dict, kind: str, family_id: str, member: str = "member
     return matches[0]
 
 
-def test_all_implemented_canonical_families_are_executable_for_every_member():
-    document = yaml.safe_load((ROOT / "catalog/rules/implemented-canonical-families.yaml").read_text(encoding="utf-8"))
-    families = document["families"]
-    # The counts are declared next to the roster, so they must equal it; freezing
-    # them here made the gate fail every time the catalogue grew.
-    assert document["counts"] == {
-        "families": len(families),
-        "rules": sum(len(family["members"]) for family in families),
-        "kinds": dict(Counter(family["kind"] for family in families)),
-    }
-    packages = {
-        package.band["id"]: package
-        for collection in ("mordheim", "trollheim")
-        for package in load_bands(collection, ROOT)
-    }
-    for family in document["families"]:
-        assert family["implemented"] == "YES"
-        for member in family["members"]:
-            band_id, rule_id = member.split("/", 1)
-            rule = next(rule for rule in packages[band_id].special_rules if rule["id"] == rule_id)
-            assert rule["runtime"]["implemented"] == "YES"
-            # The roster is the membership contract of this one binding, not an
-            # inventory of every binding the rule carries: a rule may implement
-            # several mechanics and therefore appear in several families.
-            _family_binding(rule, family["kind"], family["id"], member)
-
-
 def test_family_binding_lookup_accepts_only_the_family_contract():
     kind, family_id = "compiler", "compiler.bow-discipline"
 
@@ -94,53 +64,6 @@ def test_family_binding_lookup_accepts_only_the_family_contract():
     # A different binding id does not substitute the family binding.
     with pytest.raises(AssertionError, match="absent"):
         _family_binding(rule_with({"kind": kind, "id": "compiler.some-other-contract"}), kind, family_id)
-
-
-def test_unique_effect_members_share_the_family_binding_parameters():
-    """Identical-effect families must share the family binding parameters.
-
-    ``basis: unique-effect`` declares one identical effect everywhere, so the
-    binding parameters cannot differ between members. Wider bases
-    (``equivalent-effects``, ``shared-effect``) legitimately parameterise the
-    same binding per band, e.g. ``compiler.forbid-item-categories`` forbids
-    only poison for the monk bands and poison plus drugs for the honourable
-    ones.
-    """
-    document = yaml.safe_load((ROOT / "catalog/rules/implemented-canonical-families.yaml").read_text(encoding="utf-8"))
-    packages = {
-        package.band["id"]: package
-        for collection in ("mordheim", "trollheim")
-        for package in load_bands(collection, ROOT)
-    }
-    for family in document["families"]:
-        if family["basis"] != "unique-effect":
-            continue
-        observed = {}
-        for member in family["members"]:
-            band_id, rule_id = member.split("/", 1)
-            rule = next(rule for rule in packages[band_id].special_rules if rule["id"] == rule_id)
-            binding = _family_binding(rule, family["kind"], family["id"], member)
-            parameters = json.dumps(binding.get("parameters") or {}, sort_keys=True)
-            observed.setdefault(parameters, []).append(member)
-        assert len(observed) == 1, (
-            f"family {family['id']}: unique-effect members disagree on parameters: {observed}"
-        )
-
-
-def test_family_roster_covers_each_declared_binding():
-    document = yaml.safe_load((ROOT / "catalog/rules/implemented-canonical-families.yaml").read_text(encoding="utf-8"))
-    families = document["families"]
-    family_ids = [(family["kind"], family["id"]) for family in families]
-    assert len(family_ids) == len(set(family_ids)) == document["counts"]["families"]
-    assert Counter(family["kind"] for family in families) == document["counts"]["kinds"]
-    members = [member for family in families for member in family["members"]]
-    # A rule may carry two executable bindings, so it is listed once in each
-    # binding's family; the catalogue's `rules` count is the membership total.
-    assert len(members) == document["counts"]["rules"]
-    for family in families:
-        assert len(family["members"]) == len(set(family["members"])), (
-            f"family {family['id']}: a member is listed more than once"
-        )
 
 
 def test_bow_discipline_keeps_both_of_its_declared_bindings():

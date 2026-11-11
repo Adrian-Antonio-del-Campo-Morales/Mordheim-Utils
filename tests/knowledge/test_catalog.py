@@ -463,6 +463,8 @@ def test_final_batch_profile_backed_rules_have_explicit_contracts():
         assert {binding["id"] for binding in runtime_bindings(rule)}==binding_ids
 
 
+@pytest.mark.covers("rule/mordheim/carnival-of-chaos/nurglings--daemonic-aura/trait.magical-attacks")
+@pytest.mark.covers("rule/mordheim/carnival-of-chaos/plague-bearers--daemonic-aura/trait.magical-attacks")
 def test_revision_specific_defences_and_regeneration_compile_with_their_conditions():
     ethereal=compile_fighter(FighterBuild(
         "mordheim",band_id="lustria-pygmies",profile_id="silent-walker",collection="trollheim"),ROOT)

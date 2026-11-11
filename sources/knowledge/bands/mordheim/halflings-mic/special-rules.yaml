@@ -10,8 +10,10 @@ rules:
     - id: unimplemented.halflings-mic.band.pretty-much-human
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: hiring rules are campaign mechanics outside the duel scope.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Pretty Much Human
   effect: >-
     Halflings are pretty much human and therefore may hire any hired sword available to human
@@ -84,8 +86,10 @@ rules:
     - id: unimplemented.halflings-mic.band.halfling-items
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: item-bonus interactions are campaign mechanics outside the duel scope.
+      reason: deferred.other
+      clauses:
+      - id: knowledge-item-bonus-exemption
+        scope: 'NO'
   name: Halfling Items
   effect: >-
     Halflings do not gain any bonuses from having Halfling items (such as the Halfling Cookbook)
@@ -135,9 +139,10 @@ rules:
     - id: unimplemented.halflings-mic.halfling-cook.master-chef
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: post-battle treasure/wyrdstone selling is a campaign resolution
-        mechanic.
+      reason: deferred.other
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Master Chef
   effect: >-
     Halfling Cooks have a vast range of knowledge when and it comes to culinary matters, and their
@@ -174,9 +179,7 @@ rules:
     - id: unimplemented.halflings-mic.halfling-thief.infiltrator
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Infiltrator
   effect: >-
     He may always be placed on the battlefield after enemy warband(s), and can be placed anywheres
@@ -207,9 +210,7 @@ rules:
     - id: unimplemented.halflings-mic.halfling-thief.pick-locks
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Pick Locks
   effect: >-
     When testing to open a locked door, a Halfling Thief needs only make a successful Initiative
@@ -237,8 +238,10 @@ rules:
     - id: unimplemented.halflings-mic.halfling-thief.cutpurse
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: post-battle treasure counts are campaign resolution mechanics.
+      reason: deferred.other
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Cutpurse
   effect: >-
     A Halfling Thief makes a living of "finding" things others have "lost". If the Halfling Thief
@@ -268,8 +271,10 @@ rules:
     - id: unimplemented.halflings-mic.piggies.animals
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: experience gain rules are post-duel/campaign progression mechanics.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Animals
   effect: Piggies are animals and never gain experience.
   source:
@@ -318,9 +323,7 @@ rules:
     - id: unimplemented.halflings-mic.village-ogre.large
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: shooting, casting or escape without resolving the
-        duel. Source prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Large
   effect: >-
     Ogre-kin are huge, lumbering creatures and therefor make tempting targets for archers. Any
@@ -380,8 +383,10 @@ rules:
     - id: unimplemented.halflings-mic.village-ogre.slow-witted
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: experience gain rules are post-duel/campaign progression mechanics.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Slow Witted
   effect: Ogre-kin are not the brightest creatures about. They earn experience at half-rate.
   source:
@@ -407,8 +412,10 @@ rules:
     - id: unimplemented.halflings-mic.village-ogre.protective
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: hiring rules are campaign mechanics outside the duel scope.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Protective
   effect: >-
     The Ogre is content with his pay and more importantly, his meals. He will therefor scare off any
@@ -440,9 +447,7 @@ rules:
     - id: unimplemented.halflings-mic.special.quiet-as-a-mouse
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Quiet as a Mouse
   effect: >-
     The halfling as adept at staying as quiet as a mouse whilst hiding. Enemy warriors must use half
@@ -546,9 +551,7 @@ rules:
     - id: unimplemented.halflings-mic.special.stealthy
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Stealthy (Halfling Thieves Only)
   effect: >-
     The Halfling Thief can hide even after running, and can run while within 8" of enemy models if
@@ -576,9 +579,7 @@ rules:
     - id: unimplemented.halflings-mic.special.skilled-huntsman
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: shooting, casting or escape without resolving the
-        duel. Source prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Skilled Huntsman
   effect: >-
     The halfling has been hunting things ever since he was young (the more food he has, the better!)
@@ -622,6 +623,11 @@ rules:
         id: trait.natural-armour-save
         parameters:
           value: 6
+      clauses:
+      - id: six-plus-basic-save
+        scope: 'YES'
+      - id: regardless-of-strength
+        scope: 'YES'
     - id: trait.natural-armour-unmodified
       scope: 'YES'
       binding:

@@ -174,11 +174,7 @@ skills:
       binding:
         kind: mechanic
         id: skill.axe-expert
-      reason: >-
-        Shares the canonical Axe Expert operator (a failed to-hit roll with an axe or dwarven axe is
-        repeated in the turn the bearer charges) and keeps its own provenance tag. Whirling Blades is
-        out of the resolved runtime (catalog/items/combat-equipment.yaml, combat_status out_of_scope),
-        so the printed prohibition cannot be violated by a reused reroll.
+      reason: out-of-scope.construction
   name_i18n:
     es: Maestría con el Hacha
 - id: skill.bellowing-battle-roar
@@ -333,9 +329,7 @@ skills:
     - id: unimplemented.skill.deathwish.all-alone
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: the fighting-alone rider belongs to the excluded group enemy-counting
-        subsystem, which an isolated duel never triggers.
+      reason: out-of-scope.group
   name_i18n:
     es: Deseo de Muerte
 - id: skill.defensive-stance
@@ -357,6 +351,11 @@ skills:
       binding:
         kind: mechanic
         id: skill.defensive-stance
+      clauses:
+      - id: parry-with-any-weapon
+        scope: 'YES'
+      - id: match-with-a-parrying-weapon
+        scope: 'YES'
   name_i18n:
     es: Postura Defensiva
   effect_i18n:
@@ -653,9 +652,7 @@ skills:
     - id: unimplemented.skill.iron-sinews.characteristic-maximum
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: exempting the bonus from the warrior's characteristic maximum is an
-        advancement rule; the duel runtime resolves the +1 Strength only.
+      reason: out-of-scope.campaign
   name_i18n:
     es: Tirones de Hierro
   effect_i18n:
@@ -756,6 +753,11 @@ skills:
       binding:
         kind: mechanic
         id: skill.miniath
+      clauses:
+      - id: parry-with-any-weapon
+        scope: 'YES'
+      - id: reroll-with-a-parrying-weapon
+        scope: 'YES'
   name_i18n:
     es: Miniath
 - id: skill.monster-slayer
@@ -839,9 +841,7 @@ skills:
     - id: unimplemented.skill.red-fury.characteristic-maximum
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: exempting the bonus from the warrior's characteristic maximum is an
-        advancement rule; the duel runtime resolves the +1 Attack only.
+      reason: out-of-scope.campaign
   name_i18n:
     es: Furia Roja
   effect_i18n:
@@ -974,9 +974,7 @@ skills:
     - id: unimplemented.skill.strength-of-steel.characteristic-maximum
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: exempting the bonus from the warrior's characteristic maximum is an
-        advancement rule; the duel runtime resolves the charge Strength bonus only.
+      reason: out-of-scope.campaign
   name_i18n:
     es: Fuerza del Acero
   effect_i18n:
@@ -1050,6 +1048,11 @@ skills:
       binding:
         kind: mechanic
         id: skill.sword-master
+      clauses:
+      - id: match-parry-and-parry-a-six
+        scope: 'YES'
+      - id: one-reroll-only
+        scope: 'YES'
   name_i18n:
     es: Maestro de la Espada
   effect_i18n:
@@ -1088,6 +1091,11 @@ skills:
       binding:
         kind: mechanic
         id: skill.thick-skull
+      clauses:
+      - id: stun-to-knocked-down-on-three
+        scope: 'YES'
+      - id: helmet-improves-to-two-and-replaces
+        scope: 'YES'
   name_i18n:
     es: Cráneo Grueso
   effect_i18n:
@@ -1183,6 +1191,11 @@ skills:
       binding:
         kind: mechanic
         id: skill.vampire-reflexes
+      clauses:
+      - id: six-plus-unmodifiable-save
+        scope: 'YES'
+      - id: combines-with-step-aside-to-four
+        scope: 'YES'
   name_i18n:
     es: Reflejos de Vampiro
   effect_i18n:
@@ -1259,6 +1272,15 @@ skills:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Talento para el Comercio
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: none
+    effects:
+    - id: unimplemented.skill.trading-flair
+      scope: 'NO'
+      binding: null
+      reason: out-of-scope.campaign
 - id: skill.taunt
   name: Taunt
   category: special
@@ -1277,6 +1299,15 @@ skills:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Provocación
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: none
+    effects:
+    - id: unimplemented.skill.taunt
+      scope: 'NO'
+      binding: null
+      reason: out-of-scope.movement
 - id: skill.fey
   name: Fey
   category: special
@@ -1294,6 +1325,15 @@ skills:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Hada
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: none
+    effects:
+    - id: unimplemented.skill.fey
+      scope: 'NO'
+      binding: null
+      reason: out-of-scope.magic
 - id: skill.chosen-of-the-white-tower
   name: Chosen of the White Tower
   category: special
@@ -1313,6 +1353,16 @@ skills:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Elegido de la Torre Blanca
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: skill.chosen-of-the-white-tower
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.chosen-of-the-white-tower
 - id: skill.fey-quickness
   name: Fey Quickness
   category: special
@@ -1359,6 +1409,16 @@ skills:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Guerrero Instintivo
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: skill.instinctive-warrior
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.instinctive-warrior
 - id: skill.magic-resistant
   name: Magic Resistant
   category: special
@@ -1376,6 +1436,15 @@ skills:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Resistente a la Magia
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: none
+    effects:
+    - id: unimplemented.skill.magic-resistant
+      scope: 'NO'
+      binding: null
+      reason: out-of-scope.magic
 - id: skill.protection-of-sigmar
   name: Protection of Sigmar
   category: special
@@ -1400,8 +1469,7 @@ skills:
     - id: unimplemented.skill.protection-of-sigmar
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: spell nullification is a magic-subsystem interaction.
+      reason: out-of-scope.magic
   name_i18n:
     es: Protección de Sigmar
 - id: skill.righteous-fury

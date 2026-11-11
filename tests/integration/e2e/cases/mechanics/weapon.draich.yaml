@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/weapon.draich
-# scaffold_fingerprint: aa89a54e0654ba7c50d581243eee4585a211fafe9e5188dd6e208961fc7bee6c
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clause carries nine authored scenarios for the +2 Strength, the Injury band, the priority, the parry and the critical-table bonus with a control, plus one refusal for the two-handed occupancy. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -8,38 +7,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 9 scenarios and 1 refusal cover the +2 Strength boundary, the Concussion band, the strike-last tier, the parry, the critical +1 with its unmodified control, and the two-handed occupancy.
-# origin_id:
-#   mechanic/weapon.draich
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   bfd671e0af54b38574e90e09519e802c2db13fceb06ad08bd574a7934d6378c2
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   Two-handed, +2 Strength, strikes last, may parry, has Concussion and adds +1 on Critical Hit tables.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Two-handed Strength +2 weapon that strikes last, may parry, treats Injury 2-4 as stunned and adds +1 on the critical hit table. Closure: all five printed modifications appear on the attack profile.
-# effect_id:
-#   weapon.draich
-# relation:
-#   equivalent
-# parameters:
-#   {"concussion": true, "critical_injury_bonus": 1, "parry": true, "priority": -1, "strength_bonus": 2, "two_handed": true}
-# conditions:
-#   {"application": "attack", "stacking": "stack", "trigger": "attack"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Printed profile equals the contract parameters; the compiled attack EffectSet is consumed by build_attacks and the hit/wound/armour/injury contexts. critical_injury_bonus 1 reaches resolve_critical through the +1 modifier; concussion reaches _injury_context. This is one of the L06-reviewed weapon blocks referenced by the plan. Surface reuse candidate: {"family":"W-weapon.draich","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare source-specific weapon/alias identity and each mode or clause. Retain mounted/charge conditions, parry limits, dagger/armour effect, poison coating, active hand allocation and local overrides. The magical Misericordia injury chart is not the ordinary dagger variant; a counts-as alias does not inherit every local extension.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+# AUTHORED: 9 scenarios and 1 refusal cover the +2 Strength boundary, the Concussion band, the strike-last tier, the parry, the critical +1 with its unmodified control, and the two-handed occupancy.
 
 # --- Authored scenarios ---
 # mechanic/weapon.draich - two-handed, Strength +2, strikes last, parry,
@@ -53,7 +24,6 @@
 
 - audit_id: mechanic/weapon.draich
   id: draich-wounds-at-the-boosted-strength
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.draich
@@ -75,7 +45,6 @@
 
 - audit_id: mechanic/weapon.draich
   id: draich-does-not-wound-one-face-below
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.draich
@@ -96,7 +65,6 @@
 
 - audit_id: mechanic/weapon.draich
   id: draich-injury-2-is-stunned
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.draich
@@ -118,7 +86,6 @@
 
 - audit_id: mechanic/weapon.draich
   id: draich-injury-4-is-stunned
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.draich
@@ -140,7 +107,6 @@
 
 - audit_id: mechanic/weapon.draich
   id: draich-strikes-after-an-ordinary-weapon
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.draich
@@ -163,7 +129,6 @@
 
 - audit_id: mechanic/weapon.draich
   id: draich-parries-a-hit-that-beats-the-to-hit-roll
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -187,7 +152,6 @@
 
 - audit_id: mechanic/weapon.draich
   id: draich-adds-one-on-the-critical-table
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.draich
@@ -210,7 +174,6 @@
 
 - audit_id: mechanic/weapon.draich
   id: an-ordinary-weapons-critical-two-does-not-yet-ignore-armour
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -236,7 +199,6 @@
 
 - audit_id: mechanic/weapon.draich
   id: draich-occupies-both-hands-so-an-off-hand-weapon-is-refused
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.draich

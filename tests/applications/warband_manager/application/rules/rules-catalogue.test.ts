@@ -35,7 +35,7 @@ describe("desktop test_rules_catalogue.py → web RulesCatalogue", () => {
   it("keeps canonical shared rules separate from scoped warband rules", () => {
     const c = catalogue();
     const sharedRules = c.entries("special-rules").filter((entry) => entry.entry_id.startsWith("shared-rule."));
-    expect(sharedRules).toHaveLength(68);
+    expect(sharedRules).toHaveLength(143);
     expect(c.entries("band-rules").length).toBeGreaterThan(900);
     expect(new Set(c.entries("band-rules").map((entry) => entry.entry_id)).size).toBe(c.entries("band-rules").length);
     expect(c.entries("conditions").length).toBeGreaterThan(0);

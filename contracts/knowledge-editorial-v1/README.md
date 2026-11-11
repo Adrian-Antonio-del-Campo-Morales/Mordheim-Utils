@@ -30,8 +30,7 @@ classification contract and legal construction.
 | `catalog/rules/core-combat.yaml`, `catalog/rules/special-rules.yaml` | [`catalog-rules-prose.yaml`](./catalog-rules-prose.yaml.schema.json) | Rule text without runtime classification; band rules point at it with `rule_ref`. |
 | `catalog/rules/racial-maximums.yaml` | [`catalog-rules-racial-maximums.yaml`](./catalog-rules-racial-maximums.yaml.schema.json) | The only source of racial characteristic maximums. |
 | `catalog/rules/resolution.yaml` | [`catalog-rules-resolution.yaml`](./catalog-rules-resolution.yaml.schema.json) | The numeric contracts the engines roll against: to-hit, to-wound, armour modifier, injury, critical hits, parry. |
-| `catalog/rules/implemented-canonical-families.yaml` | [`catalog-rules-implemented-canonical-families.yaml`](./catalog-rules-implemented-canonical-families.yaml.schema.json) | Tracker of the shared executable families and their member rules. |
-| `catalog/mechanics/close-combat.yaml` | [`catalog-mechanics-close-combat.yaml`](./catalog-mechanics-close-combat.yaml.schema.json) | Engine-facing weapon, armour, defence, material, preparation, poison and skill mechanics with their engine options. |
+| `catalog/mechanics/close-combat.yaml` | [`catalog-mechanics-close-combat.yaml`](./catalog-mechanics-close-combat.yaml.schema.json) | Engine-facing weapon, armour, defence, material, preparation, poison and skill mechanics with their engine options; no prose, the bound rules and items print the text. |
 | `catalog/mechanics/execution.yaml` | [`catalog-mechanics-execution.yaml`](./catalog-mechanics-execution.yaml.schema.json) | The execution contract: handler, trigger, application, stacking and parameters per mechanic id. |
 | `catalog/mechanics/simulation-mappings.yaml` | [`catalog-mechanics-simulation-mappings.yaml`](./catalog-mechanics-simulation-mappings.yaml.schema.json) | The item→engine bridge. |
 | `registry/aliases.yaml` | [`registry-aliases.yaml`](./registry-aliases.yaml.schema.json) | Band aliases for name normalization. |
@@ -41,7 +40,7 @@ classification contract and legal construction.
 | `registry/sources.yaml` | [`registry-sources.yaml`](./registry-sources.yaml.schema.json) | Registered editorial sources. |
 | `registry/warband-groups.yaml` | [`registry-warband-groups.yaml`](./registry-warband-groups.yaml.schema.json) | Cross-band groups by race, alignment, faction and culture. |
 | `registry/runtime-scope.yaml` | [`registry-runtime-scope.yaml`](./registry-runtime-scope.yaml.schema.json) | Scope policy, exclusions with reasons, supported combat traits. |
-| `registry/runtime-schema.yaml` | [`registry-runtime-schema.yaml`](./registry-runtime-schema.yaml.schema.json) | The classification contract itself. |
+| `registry/runtime-schema.yaml` | [`registry-runtime-schema.yaml`](./registry-runtime-schema.yaml.schema.json) | The classification contract itself, including the `reason_codes` an unbound effect may carry. |
 | `catalog/hirelings/hired-swords/*.yaml` | [`hireling-profile-hired-sword.yaml`](./hireling-profile-hired-sword.yaml.schema.json) | The Hired Swords: characteristics, intrinsic equipment, skill access, starting skills, intrinsic rules and rating contribution. |
 | `catalog/hirelings/dramatis-personae/*.yaml` | [`hireling-profile-dramatis-personae.yaml`](./hireling-profile-dramatis-personae.yaml.schema.json) | The Dramatis Personae, including the entries published `out_of_scope` with their reason. |
 | `catalog/hirelings/*/rules.yaml` | [`hireling-rules.yaml`](./hireling-rules.yaml.schema.json) | The shared hiring rules the profiles point at with `rule_ids`. |
@@ -62,11 +61,18 @@ classification contract and legal construction.
 
 Every maintained YAML document of `sources/knowledge/` is claimed: the test
 suite fails when a new file appears without a schema, and when a document is
-claimed by two schemas. One document is declared outside the contract
-(`registry/bindings.yaml`, a legacy binding registry gated by
-`tests/knowledge/test_knowledge_pipeline_guards.py`); the exception is
-listed in `editorial_schemas.UNCOVERED_DOCUMENTS` and the suite fails if it goes
-stale.
+claimed by two schemas. `editorial_schemas.UNCOVERED_DOCUMENTS` lists any
+document deliberately kept outside the contract (none today) and the suite
+fails if an entry goes stale.
+
+Classified records may carry `clauses` (shared definition `clause` in
+`defs.schema.json`): the observable parts of a core rule, a mechanic, an item
+or a rule effect whose printed text splits or excludes a part, each with `id`
+and `scope`. A record without clauses is one undivided obligation. An unbound
+effect's `reason` is one of the `reason_codes` declared in
+`registry/runtime-schema.yaml`. Mechanics carry no prose (`note` only for the
+ones nothing prints). All of it is the denominator of the coverage tool
+(`tools/knowledge/clauses.py`) and carries no evidence itself.
 
 ## Conventions the schemas encode
 
@@ -143,8 +149,6 @@ accept them explicitly:
 - `special-rules.yaml` still carries the legacy `runtime_selectable` and
   `skill_category` fields; `runtime.grant: selectable` supersedes the first.
   They are accepted, documented and awaiting removal in an editorial pass.
-- `implemented-canonical-families.yaml` still declares `schema_version: 1`
-  while the other editorial documents are at 2.
 - `trading-post.yaml` `price` is `null` for the entries the source lists without
   printing a market price (the four common entries such as `fist`, and every
   `not_sold` entry), and the price of a record being upgraded may be a
@@ -172,9 +176,6 @@ accept them explicitly:
   `no restriction`: `restrictions`, `unresolved_references`, `tags`,
   `effects`, `exclusions` and `modifiers` are written as `[]` where the source
   declares nothing.
-- `registry/bindings.yaml` is a legacy registry outside the contract,
-  listed explicitly in
-  `editorial_schemas.UNCOVERED_DOCUMENTS`.
 
 ## Validation
 

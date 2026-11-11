@@ -87,10 +87,10 @@ describe("KnowledgeHint", () => {
     expect(screen.getByText("Capucha del Verdugo")).toHaveAttribute("data-tooltip", expect.stringContaining("siempre frenético"));
   });
 
-  it("resolves legacy rule names with the profile-specific Spanish description", () => {
+  it("resolves legacy rule names with the shared Spanish description the band rule delegates to", () => {
     const reader = loadReader();
     render(<KnowledgeHint knowledge={reader} kind="rule" id="dwarf-troll-slayers--no-armour" profileId="dwarf-troll-slayers" bandId="dwarf-treasure-hunters" locale="es">Sin Armadura</KnowledgeHint>);
-    expect(screen.getByText("Sin Armadura")).toHaveAttribute("data-tooltip", "Los Matatrolles Enanos jamás pueden llevar ningún tipo de armadura.");
+    expect(screen.getByText("Sin Armadura")).toHaveAttribute("data-tooltip", "Este guerrero nunca puede llevar ningún tipo de armadura.");
   });
 
   it("resolves names and tooltips for every hireling ability in the artefact", () => {

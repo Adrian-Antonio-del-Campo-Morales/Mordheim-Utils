@@ -38,8 +38,7 @@ rules:
     - id: unimplemented.carnival-of-chaos.carnival-master.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic.
+      reason: out-of-scope.magic
   name: Wizard
   effect: The Master is a wizard and uses Nurgle Rituals.
   source:
@@ -125,14 +124,15 @@ rules:
         id: trait.cloud-of-flies
         parameters:
           value: true
+      clauses:
+      - id: whole
+        scope: 'YES'
+      - id: dodgy-ranged-part
+        scope: 'NO'
     - id: unimplemented.carnival-of-chaos.plague-bearers.dodgy-ranged-part
       scope: 'NO'
       binding: null
-      reason: >-
-        The claimed ranged part has no source support in this origin: the printed Cloud of Flies
-        sentence names only the close-combat opponent. Missile resolution is also outside the
-        isolated 1v1 duel, so the ranged half is recorded as excluded rather than folded into the
-        admitted close-combat modifier.
+      reason: out-of-scope.shooting
   name: Cloud of Flies
   effect: >-
     Plague Bearers are surrounded by a cloud of flies, which buzz around them and their combat
@@ -163,8 +163,7 @@ rules:
     - id: unimplemented.carnival-of-chaos.plague-bearers.stream-of-corruption
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: shooting.
+      reason: out-of-scope.shooting
   name: Stream of Corruption
   effect: >-
     Plague Bearers can spew forth a grotesque stream of maggots, entrails and filth. This is counted
@@ -193,8 +192,7 @@ rules:
     - id: unimplemented.carnival-of-chaos.plague-bearers.demonic
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Demonic
   effect: >-
     Plague Bearers are Daemons of the lord of disease, Nurgle, and are not made of living flesh but
@@ -227,6 +225,11 @@ rules:
         id: trait.poison-immune
         parameters:
           value: true
+      clauses:
+      - id: poison-immunity
+        scope: 'YES'
+      - id: disease-immunity
+        scope: 'NO'
   name: Immune to Poison
   effect: >-
     Plague Bearers are the Daemonic embodiment of disease and pestilence. They are totally immune to
@@ -314,6 +317,13 @@ rules:
         id: trait.natural-armour-save
         parameters:
           value: 5
+      clauses:
+      - id: five-plus-save
+        scope: 'YES'
+      - id: magic-negation
+        scope: 'YES'
+      - id: magical-attacks
+        scope: 'YES'
     - id: trait.natural-armour-negated-by-magic
       scope: 'YES'
       binding:
@@ -329,10 +339,6 @@ rules:
         parameters:
           value: true
   name: Daemonic Aura
-  effect: >-
-    Due to the magical, intangible nature of Daemons they have a special Armour save of 5+. This is
-    modified by the Strength of the attack as normal and is completely negated by magic weapons and
-    spells. Plague Bearers’ attacks are considered as magical also.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -340,15 +346,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
   name_i18n:
     es: Aura Demoníaca
-  effect_i18n:
-    es: >-
-      Debido a la naturaleza mágica e intangible de los Demonios, tienen una salvación de armadura
-      especial de 5+. Esta se modifica por la Fuerza del ataque con normalidad y queda completamente
-      anulada por armas y hechizos mágicos. Los ataques de los Portadores de la Peste también se
-      consideran mágicos.
   applies_to:
     profile_ids:
     - plague-bearers
+  rule_ref: shared-rule.daemonic-aura
 - id: plague-bearers--daemonic-instability
   runtime:
     scope: 'NO'
@@ -358,8 +359,7 @@ rules:
     - id: unimplemented.carnival-of-chaos.plague-bearers.daemonic-instability
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the resolved 1v1 duel: destruction after Out of Action or warband Rout.
+      reason: out-of-scope.group
   name: Daemonic Instability
   effect: >-
     Plague Bearers are bound to the world by Dark Sorcery that is highly volatile and unstable. If
@@ -397,14 +397,15 @@ rules:
         id: trait.cloud-of-flies
         parameters:
           value: true
+      clauses:
+      - id: whole
+        scope: 'YES'
+      - id: dodgy-ranged-part
+        scope: 'NO'
     - id: unimplemented.carnival-of-chaos.nurglings.dodgy-ranged-part
       scope: 'NO'
       binding: null
-      reason: >-
-        The claimed ranged part has no source support in this origin: the printed Cloud of Flies
-        sentence names only the close-combat opponent. Missile resolution is also outside the
-        isolated 1v1 duel, so the ranged half is recorded as excluded rather than folded into the
-        admitted close-combat modifier.
+      reason: out-of-scope.shooting
   name: Cloud of Flies
   effect: >-
     Nurglings are surrounded by a cloud of flies, which buzz around them and their combat opponent.
@@ -435,8 +436,7 @@ rules:
     - id: unimplemented.carnival-of-chaos.nurglings.swarm
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Swarm
   effect: >-
     You may summon as many Nurglings as you wish (ie. you may have more than five Nurglings in a
@@ -464,8 +464,7 @@ rules:
     - id: unimplemented.carnival-of-chaos.nurglings.daemonic
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Daemonic
   effect: >-
     Nurglings are Daemons of the diseased Lord Nurgle and are not made of living flesh but the
@@ -497,6 +496,11 @@ rules:
         id: trait.poison-immune
         parameters:
           value: true
+      clauses:
+      - id: poison-immunity
+        scope: 'YES'
+      - id: disease-immunity
+        scope: 'NO'
   name: Immune to Poison
   effect: >-
     Nurglings are the Daemonic embodiment of disease and pestilence. They are totally immune to all
@@ -557,6 +561,13 @@ rules:
         id: trait.natural-armour-save
         parameters:
           value: 5
+      clauses:
+      - id: five-plus-save
+        scope: 'YES'
+      - id: magic-negation
+        scope: 'YES'
+      - id: magical-attacks
+        scope: 'YES'
     - id: trait.natural-armour-negated-by-magic
       scope: 'YES'
       binding:
@@ -572,10 +583,6 @@ rules:
         parameters:
           value: true
   name: Daemonic Aura
-  effect: >-
-    Due to the magical, intangible nature of Daemons they have a special Armour save of 5+. This is
-    modified by the Strength of the attack as normal and is completely negated by magic weapons and
-    spells. Nurglings’ attacks are also considered as magical.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -583,15 +590,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
   name_i18n:
     es: Aura Demoníaca
-  effect_i18n:
-    es: >-
-      Debido a la naturaleza mágica e intangible de los Demonios, tienen una salvación de armadura
-      especial de 5+. Esta se modifica por la Fuerza del ataque con normalidad y queda completamente
-      anulada por armas y hechizos mágicos. Los ataques de los Nurglins también se consideran
-      mágicos.
   applies_to:
     profile_ids:
     - nurglings
+  rule_ref: shared-rule.daemonic-aura
 - id: nurglings--daemonic-instability
   runtime:
     scope: 'NO'
@@ -601,8 +603,7 @@ rules:
     - id: unimplemented.carnival-of-chaos.nurglings.daemonic-instability
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the resolved 1v1 duel: destruction after Out of Action or warband Rout.
+      reason: out-of-scope.group
   name: Daemonic Instability
   effect: >-
     Nurglings are bound to the world by Dark Sorcery that is highly volatile and unstable. If taken
@@ -635,16 +636,7 @@ rules:
     - id: unimplemented.carnival-of-chaos.plague-cart.plague-cart
       scope: 'NO'
       binding: null
-      reason: >-
-        Content exclusion, not a missing binding. The printed sentence raises the warband size (a
-        roster limit) and offsets the Daemonic Instability of the band's daemons: it re-rolls the
-        Leadership tests of Instability and adds +1 to the Injury tests of the Plague Bearers and
-        Nurglings taken out of action. Both daemon halves belong to the Instability subsystem the
-        source itself frames as offsetting that instability - the Rout Leadership test and the roll
-        taken after being taken out of action - and the resolved duel never reaches them; the band's
-        own daemonic-instability records and the shared daemon record are NO for the same reason. The
-        supplied facts stay caller-supplied, never simulated: no Plague Cart, no group and no table
-        distance is drawn or counted here.
+      reason: source-blocked
   name: Plague Cart
   effect: >-
     While the Plague Cart is in the warband, the maximum number of warriors is increased by 2.
@@ -674,8 +666,7 @@ rules:
     - id: unimplemented.carnival-of-chaos.plague-cart.guardian
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: attacks.
+      reason: out-of-scope.non-duel
   name: Guardian
   effect: >-
     The Guardian is permanently part of the Cart and can never dismount. It cannot be injured
@@ -761,8 +752,7 @@ rules:
     - id: unimplemented.carnival-of-chaos.band.dangerous-to-know
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Dangerous to Know
   effect: A Carnival of Chaos may never hire any type of Hired Sword.
   source:
@@ -785,8 +775,7 @@ rules:
     - id: unimplemented.carnival-of-chaos.band.tainted
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Tainted
   effect: >-
     The Carnival counts as a Possessed warband for purposes of exploration and serious injuries.
@@ -812,12 +801,15 @@ rules:
       binding:
         kind: compiler
         id: compiler.blessings-of-nurgle
+      clauses:
+      - id: whole--scope--blessing-construction
+        scope: 'YES'
+      - id: whole--scope--blessing-price
+        scope: 'NO'
     - id: campaign.blessings-of-nurgle-purchase-history-and-costs
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: recruitment timing, later purchases and escalating campaign costs require
-        roster history and an economy model.
+      reason: out-of-scope.campaign
   name: Blessings of Nurgle
   effect: >-
     Those that worship at the fetid altar of the Lord of Decay suffer from terrible diseases and
@@ -852,8 +844,7 @@ rules:
     - id: unimplemented.band-blessings-of-nurgle-stream-of-corruption
       scope: 'NO'
       binding: null
-      reason: >-
-        is a shooting attack
+      reason: out-of-scope.shooting
   name: Stream of Corruption
   effect: >-
     Cost: 25 Gold Crowns The Tainted One can spew forth a grotesque stream of maggots, entrails and
@@ -887,12 +878,17 @@ rules:
         id: trait.poison-immune
         parameters:
           value: true
+      clauses:
+      - id: poison-immunity
+        scope: 'YES'
+      - id: contagion
+        scope: 'NO'
+      - id: cost
+        scope: 'NO'
     - id: campaign.nurgles-rot-contagion
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: contagion, roster persistence, pre-battle Toughness tests and permanent
-        characteristic loss are campaign effects.
+      reason: out-of-scope.campaign
   name: Nurgle’s Rot
   effect: >-
     Cost: 50 Gold Crowns The Tainted One is infected with the deadly pestilence of its lord –
@@ -948,14 +944,17 @@ rules:
         id: trait.cloud-of-flies
         parameters:
           value: true
+      clauses:
+      - id: whole--scope--melee-hit-penalty
+        scope: 'YES'
+      - id: whole--scope--cost
+        scope: 'NO'
+      - id: dodgy-ranged-part
+        scope: 'NO'
     - id: unimplemented.carnival-of-chaos.band.dodgy-ranged-part
       scope: 'NO'
       binding: null
-      reason: >-
-        The claimed ranged part has no source support in this origin: the printed Cloud of Flies
-        sentence names only the close-combat opponent. Missile resolution is also outside the
-        isolated 1v1 duel, so the ranged half is recorded as excluded rather than folded into the
-        admitted close-combat modifier.
+      reason: out-of-scope.shooting
   name: Cloud of Flies
   effect: >-
     Cost: 25 Gold Crowns The Tainted One is surrounded by a cloud of flies, which buzz around him
@@ -1048,6 +1047,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.causes-fear
+      clauses:
+      - id: cause-fear--scope--cause-fear
+        scope: 'YES'
+      - id: cause-fear--scope--cost
+        scope: 'NO'
   name: Hideous
   effect: >-
     Cost: 40 Gold Crowns The Tainted One is so disgusting that its flesh hangs in tatters from its

@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/outlaws-of-stirwood-forest-redux-fbg/band--bow-restrictions/mechanic.bow-discipline
-# scaffold_fingerprint: f05a8ee0f68e39a1aa0243c6a0202133c8cf4d98b7260aead51272083a902040
 # authoring_status: AUTHORED
 # authoring_progress: no scenario is derived for the admitted bow-restrictions clause yet, for the concrete
 # reason recorded in its own note below.  REVIEWED still requires manual semantic review and
@@ -10,12 +9,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: [B] this origin shares compiler.bow-discipline with the sibling Outlaws band; the same kit-level route applies, and it is declarable through FighterBuild.owned_item_ids (the E2E runner passes the whole fighter mapping into the build), so the two kit refusals are now authored at the end of this file and the remaining gap is the projection that feeds equipmentSetIssues for a duel build (PENDING[B]).  Original note: this origin shares compiler.bow-discipline with the sibling Outlaws band, and the same
+# AUTHORED: [B] this origin shares compiler.bow-discipline with the sibling Outlaws band; the same kit-level route applies, and it is declarable through FighterBuild.owned_item_ids (the E2E runner passes the whole fighter mapping into the build), so the two kit refusals are now authored at the end of this file and the remaining gap is the projection that feeds equipmentSetIssues for a duel build (PENDING[B]).  Original note: this origin shares compiler.bow-discipline with the sibling Outlaws band, and the same
 # representation limit applies: both printed halves are enforced over the supplied kit rather than the
 # duel loadout.  The bound half is emitted by _eligibility.js::equipmentSetIssues as
 # "<band>/<profile> carries <n> missile weapons; the band allows <max>." over the carried items, and the
@@ -33,36 +30,9 @@
 #   pass corrects: PARTIAL is reserved for a genuinely missing scenario, input identity, executor
 #   observation or normative decision.  The pending note above is retained unchanged as the record of
 #   the defect.  REVIEWED (manual semantic review) remains separate and is not claimed here.
-# origin_id:
-#   rule/mordheim/outlaws-of-stirwood-forest-redux-fbg/band--bow-restrictions/mechanic.bow-discipline
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/outlaws-of-stirwood-forest-redux-fbg/special-rules.yaml
-# source_fingerprint:
-#   7bb34f32b2cd761bb6d016ec9fe16f01f2427a3fc2c6862d4614654860ddc9a1
-# source_sha256_at_generation:
-#   8c7e382ae387b5103b5a482eac03052cdba7656f28196095c659d9902c643e06
-# Printed rule text:
-#   All warriors in an Outlaws warband may be equipped with only one missile weapon at any time.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Missile-weapon bound plus bow obligation: each Outlaw may carry at most one missile weapon and must carry a bow-type weapon, with the Cleric exempt from the obligation.
-# effect_id:
-#   compiler.bow-discipline
-# relation:
-#   equivalent
-# parameters:
-#   {}
-# conditions:
-#   {"max_missile_weapons":1,"required_tag":"bow","exempt":["cleric"]}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   The same printed clause also carries the shared profile.equipment-restrictions variant recorded below.
 
 - audit_id: rule/mordheim/outlaws-of-stirwood-forest-redux-fbg/band--bow-restrictions/mechanic.bow-discipline
   id: a-kit-carrying-two-missile-weapons-is-refused
-  covers: [whole]
   fighters:
     first:
       collection: mordheim
@@ -74,7 +44,6 @@
 
 - audit_id: rule/mordheim/outlaws-of-stirwood-forest-redux-fbg/band--bow-restrictions/mechanic.bow-discipline
   id: a-kit-without-a-bow-type-weapon-is-refused
-  covers: [whole]
   fighters:
     first:
       collection: mordheim

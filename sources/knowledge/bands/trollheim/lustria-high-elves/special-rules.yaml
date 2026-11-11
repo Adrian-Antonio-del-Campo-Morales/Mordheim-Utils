@@ -58,8 +58,7 @@ rules:
     - id: unimplemented.lustria-high-elves.loremaster.spellcaster
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: sword-guardians--swordmaster-protection
   name: Swordmaster Protection
   effect: >-
@@ -88,8 +87,7 @@ rules:
     - id: unimplemented.lustria-high-elves.sword-guardians.swordmaster-protection
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: explorers--searcher
   name: Searcher
   effect: >-
@@ -116,24 +114,15 @@ rules:
     - id: unimplemented.lustria-high-elves.explorers.searcher
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--excellent-sight
   name: Excellent Sight
-  effect: >-
-    High Elves detect Hidden enemies at twice the normal detection distance. The Spanish source
-    parenthetically expresses this as twice the warrior's Initiative characteristic in centimetres.
   source:
     manual: lustria
     printed_page: 114
     section: High Elf Special Rules / Excellent Sight
   name_i18n:
     es: Vista Excepcional
-  effect_i18n:
-    es: >-
-      Los altos elfos detectan enemigos Ocultos al doble de la distancia normal de detección. La
-      fuente en español lo expresa entre paréntesis como el doble de la característica de Iniciativa
-      del guerrero en centímetros.
   applies_to:
     band: true
   runtime:
@@ -144,8 +133,8 @@ rules:
     - id: unimplemented.lustria-high-elves.band.excellent-sight
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
+  rule_ref: shared-rule.excellent-sight
 - id: band--haughty
   name: Haughty
   effect: >-
@@ -173,6 +162,11 @@ rules:
       binding:
         kind: compiler
         id: compiler.haughty
+      clauses:
+      - id: whole--scope--hired-sword-blood-bar
+        scope: 'NO'
+      - id: whole--scope--dwarf-equipment-bar
+        scope: 'YES'
 - id: band--honourable
   name: Honourable
   effect: High Elves may never use drugs or poisons of any kind under any circumstances.
@@ -249,8 +243,10 @@ rules:
     - id: unimplemented.lustria-high-elves.band.determination
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.psychology
+      clauses:
+      - id: determination
+        scope: 'NO'
 - id: band--high-elf-special-skills-elven-agility
   kind: warband_skill
   runtime:
@@ -309,9 +305,7 @@ rules:
     - id: unimplemented.lustria-high-elves.band.high-elf-special-skills-rune-master
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: band--high-elf-special-skills-miniath
   kind: warband_skill
   runtime:
@@ -324,6 +318,11 @@ rules:
       binding:
         kind: mechanic
         id: skill.miniath
+      clauses:
+      - id: parry-with-any-weapon
+        scope: 'YES'
+      - id: reroll-with-a-parrying-weapon
+        scope: 'YES'
   name: Miniath
   effect: >-
     The Hero may parry with any weapon. If using a weapon that normally allows parrying, the Hero
@@ -405,8 +404,7 @@ rules:
     - id: unimplemented.lustria-high-elves.band.high-elf-special-skills-stand-and-shoot
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--high-elf-special-skills-faerie
   kind: warband_skill
   name: Faerie
@@ -433,8 +431,7 @@ rules:
     - id: unimplemented.lustria-high-elves.band.high-elf-special-skills-faerie
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--high-elf-special-skills-luck
   kind: warband_skill
   runtime:
@@ -483,24 +480,16 @@ rules:
           - mage_staff
           - elven_runestones
   name: Equipment Restrictions
-  effect: >-
-    May never use blackpowder weapons. May never use drugs or poisons. May never use Dwarf-made
-    equipment, including Gromril and Obsidian equipment. May not select the Mage Staff or Elven
-    Runestones; those entries are Loremaster only.
   source:
     manual: lustria
     printed_page: 116
     section: "0-2 Explorers"
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      Nunca puede usar armas de pólvora negra. Nunca puede usar drogas ni venenos. Nunca puede usar
-      equipo de fabricación enana, incluido el equipo de Gromril y Obsidiana. No puede elegir el
-      Bastón de Mago ni las Runas Élficas; esas entradas son solo para el Maestro de Saberes.
   applies_to:
     profile_ids:
     - explorers
+  rule_ref: shared-rule.high-elf-equipment-restrictions
 - id: sea-guard--equipment-restrictions
   runtime:
     scope: 'YES'
@@ -517,24 +506,16 @@ rules:
           - mage_staff
           - elven_runestones
   name: Equipment Restrictions
-  effect: >-
-    May never use blackpowder weapons. May never use drugs or poisons. May never use Dwarf-made
-    equipment, including Gromril and Obsidian equipment. May not select the Mage Staff or Elven
-    Runestones; those entries are Loremaster only.
   source:
     manual: lustria
     printed_page: 118
     section: "Sea Guard"
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      Nunca puede usar armas de pólvora negra. Nunca puede usar drogas ni venenos. Nunca puede usar
-      equipo de fabricación enana, incluido el equipo de Gromril y Obsidiana. No puede elegir el
-      Bastón de Mago ni las Runas Élficas; esas entradas son solo para el Maestro de Saberes.
   applies_to:
     profile_ids:
     - sea-guard
+  rule_ref: shared-rule.high-elf-equipment-restrictions
 - id: sword-guardians--equipment-restrictions
   runtime:
     scope: 'YES'

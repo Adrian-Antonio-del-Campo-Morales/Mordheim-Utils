@@ -57,8 +57,7 @@ rules:
     - id: unimplemented.khemri-thieves-guild.guild-chief.wanted
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: guild-chief--contacts
   name: Contacts
   effect: The Guild Chief gains +1 on rolls to find Rare items in the black market.
@@ -82,8 +81,7 @@ rules:
     - id: unimplemented.khemri-thieves-guild.guild-chief.contacts
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: guild-chief--disable-traps
   name: Disable Traps
   effect: >-
@@ -110,8 +108,7 @@ rules:
     - id: unimplemented.khemri-thieves-guild.guild-chief.disable-traps
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: guild-master-thief--wanted
   name: Wanted
   effect: >-
@@ -142,8 +139,7 @@ rules:
     - id: unimplemented.khemri-thieves-guild.guild-master-thief.wanted
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: guild-master-thief--contacts
   name: Contacts
   effect: The Master Thief gains +1 on rolls to find Rare items in the black market.
@@ -167,8 +163,7 @@ rules:
     - id: unimplemented.khemri-thieves-guild.guild-master-thief.contacts
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: guild-master-thief--disable-traps
   name: Disable Traps
   effect: >-
@@ -195,8 +190,7 @@ rules:
     - id: unimplemented.khemri-thieves-guild.guild-master-thief.disable-traps
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: guild-ruffian--contacts
   name: Contacts
   effect: A Ruffian gains +1 on rolls to find Rare items in the black market.
@@ -219,8 +213,7 @@ rules:
     - id: unimplemented.khemri-thieves-guild.guild-ruffian.contacts
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: guild-ruffian--disable-traps
   name: Disable Traps
   effect: >-
@@ -247,8 +240,7 @@ rules:
     - id: unimplemented.khemri-thieves-guild.guild-ruffian.disable-traps
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: guild-hashashiyyin--consummate-fighter
   name: Consummate Fighter
   effect: >-
@@ -303,8 +295,7 @@ rules:
     - id: unimplemented.khemri-thieves-guild.guild-hashashiyyin.contacts
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: guild-hashashiyyin--disable-traps
   name: Disable Traps
   effect: >-
@@ -331,8 +322,7 @@ rules:
     - id: unimplemented.khemri-thieves-guild.guild-hashashiyyin.disable-traps
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: guild-beggar--alms
   name: Alms
   effect: >-
@@ -360,8 +350,7 @@ rules:
     - id: unimplemented.khemri-thieves-guild.guild-beggar.alms
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--guild-special-skills-pickpocket
   kind: warband_skill
   name: Pickpocket
@@ -396,8 +385,7 @@ rules:
     - id: unimplemented.khemri-thieves-guild.band.guild-special-skills-pickpocket
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--guild-special-skills-knife-fighting
   kind: warband_skill
   runtime:
@@ -464,8 +452,7 @@ rules:
     - id: unimplemented.khemri-thieves-guild.band.guild-special-skills-hide-in-shadows
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--guild-special-skills-poisoner
   kind: warband_skill
   name: Poisoner
@@ -501,8 +488,7 @@ rules:
     - id: unimplemented.khemri-thieves-guild.band.guild-special-skills-poisoner
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--guild-special-skills-fast-legs
   kind: warband_skill
   name: Fast Legs
@@ -533,27 +519,16 @@ rules:
     - id: unimplemented.khemri-thieves-guild.band.guild-special-skills-fast-legs
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--guild-special-skills-infiltration
   kind: warband_skill
   name: Infiltration
-  effect: >-
-    Ruffians may not take this skill. The Hero deploys after the opposing warband and may be placed
-    anywhere outside enemy line of sight and more than 12" from every enemy model. If both players
-    have infiltrating models, roll D6 for each; the lowest result deploys first.
   source:
     manual: khemri
     printed_page: 75
     section: Thieves' Special Skills / Infiltration
   name_i18n:
     es: Infiltración
-  effect_i18n:
-    es: >-
-      Los Matones no pueden tomar esta habilidad. El Héroe se despliega después de la banda rival y
-      puede colocarse en cualquier punto fuera de la línea de visión enemiga y a más de 12" de cada
-      modelo enemigo. Si ambos jugadores tienen modelos que se infiltran, tira D6 por cada uno; el
-      de menor resultado se despliega primero.
   eligibility:
   - guild-chief
   - guild-master-thief
@@ -568,8 +543,8 @@ rules:
     - id: unimplemented.khemri-thieves-guild.band.guild-special-skills-infiltration
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
+  rule_ref: shared-rule.infiltration
 
 - id: guild-chief--equipment-restrictions
   runtime:
@@ -590,25 +565,16 @@ rules:
           - armour.heavy-armour
           - weapon.bagh-nakh
   name: Equipment Restrictions
-  effect: >-
-    May not select Spear, Ankus, Shield or Heavy Armour from the Thief Equipment List; those entries
-    are Ruffians and Enforcers only. May not select Bagh Nakh at the listed warband-creation price;
-    only the Hashashiyyin Assassin may do so. Other warband members must acquire it through Trading.
   source:
     manual: khemri
     printed_page: 72
     section: "1 Guild Chief"
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      No puede elegir Lanza, Ankus, Escudo ni Armadura Pesada de la Lista de Equipo de Ladrones;
-      esas entradas son solo para Rufianes y Ejecutores. No puede elegir Bagh Nakh al precio
-      indicado para la creación de la banda; solo el Asesino Hashashiyyin puede hacerlo. Los demás
-      miembros de la banda deben adquirirlo mediante Comercio.
   applies_to:
     profile_ids:
     - guild-chief
+  rule_ref: shared-rule.thieves-guild-equipment-restrictions
 - id: guild-enforcer--equipment-restrictions
   runtime:
     scope: 'YES'
@@ -624,22 +590,16 @@ rules:
           forbids:
           - weapon.bagh-nakh
   name: Equipment Restrictions
-  effect: >-
-    May not select Bagh Nakh at the listed warband-creation price; only the Hashashiyyin Assassin
-    may do so. Other warband members must acquire it through Trading.
   source:
     manual: khemri
     printed_page: 74
     section: "0-3 Enforcers"
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      No puede elegir Bagh Nakh al precio indicado para la creación de la banda; solo el Asesino
-      Hashashiyyin puede hacerlo. Los demás miembros de la banda deben adquirirlo mediante Comercio.
   applies_to:
     profile_ids:
     - guild-enforcer
+  rule_ref: shared-rule.thieves-guild-bagh-nakh-restriction
 - id: guild-hashashiyyin--equipment-restrictions
   runtime:
     scope: 'YES'
@@ -693,25 +653,16 @@ rules:
           - armour.heavy-armour
           - weapon.bagh-nakh
   name: Equipment Restrictions
-  effect: >-
-    May not select Spear, Ankus, Shield or Heavy Armour from the Thief Equipment List; those entries
-    are Ruffians and Enforcers only. May not select Bagh Nakh at the listed warband-creation price;
-    only the Hashashiyyin Assassin may do so. Other warband members must acquire it through Trading.
   source:
     manual: khemri
     printed_page: 72
     section: "0-1 Master Thief"
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      No puede elegir Lanza, Ankus, Escudo ni Armadura Pesada de la Lista de Equipo de Ladrones;
-      esas entradas son solo para Rufianes y Ejecutores. No puede elegir Bagh Nakh al precio
-      indicado para la creación de la banda; solo el Asesino Hashashiyyin puede hacerlo. Los demás
-      miembros de la banda deben adquirirlo mediante Comercio.
   applies_to:
     profile_ids:
     - guild-master-thief
+  rule_ref: shared-rule.thieves-guild-equipment-restrictions
 - id: guild-ruffian--equipment-restrictions
   runtime:
     scope: 'YES'
@@ -727,22 +678,16 @@ rules:
           forbids:
           - weapon.bagh-nakh
   name: Equipment Restrictions
-  effect: >-
-    May not select Bagh Nakh at the listed warband-creation price; only the Hashashiyyin Assassin
-    may do so. Other warband members must acquire it through Trading.
   source:
     manual: khemri
     printed_page: 73
     section: "0-2 Ruffians"
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      No puede elegir Bagh Nakh al precio indicado para la creación de la banda; solo el Asesino
-      Hashashiyyin puede hacerlo. Los demás miembros de la banda deben adquirirlo mediante Comercio.
   applies_to:
     profile_ids:
     - guild-ruffian
+  rule_ref: shared-rule.thieves-guild-bagh-nakh-restriction
 - id: guild-thief--equipment-restrictions
   runtime:
     scope: 'YES'
@@ -762,22 +707,13 @@ rules:
           - armour.heavy-armour
           - weapon.bagh-nakh
   name: Equipment Restrictions
-  effect: >-
-    May not select Spear, Ankus, Shield or Heavy Armour from the Thief Equipment List; those entries
-    are Ruffians and Enforcers only. May not select Bagh Nakh at the listed warband-creation price;
-    only the Hashashiyyin Assassin may do so. Other warband members must acquire it through Trading.
   source:
     manual: khemri
     printed_page: 74
     section: "0-5 Thieves"
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      No puede elegir Lanza, Ankus, Escudo ni Armadura Pesada de la Lista de Equipo de Ladrones;
-      esas entradas son solo para Rufianes y Ejecutores. No puede elegir Bagh Nakh al precio
-      indicado para la creación de la banda; solo el Asesino Hashashiyyin puede hacerlo. Los demás
-      miembros de la banda deben adquirirlo mediante Comercio.
   applies_to:
     profile_ids:
     - guild-thief
+  rule_ref: shared-rule.thieves-guild-equipment-restrictions

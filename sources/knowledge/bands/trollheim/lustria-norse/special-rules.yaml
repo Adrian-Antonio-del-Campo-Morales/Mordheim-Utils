@@ -155,8 +155,7 @@ rules:
     - id: unimplemented.lustria-norse.wolves.animal
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: wolves--pack-leader
   name: Pack Leader
   effect: >-
@@ -185,8 +184,7 @@ rules:
     - id: unimplemented.lustria-norse.wolves.pack-leader
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--seafarers
   name: Seafarers
   effect: Every Norse warrior gains +2 Strength when rowing a boat.
@@ -215,8 +213,7 @@ rules:
     - id: unimplemented.lustria-norse.band.seafarers
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--norse-special-skills-shield-mastery
   kind: warband_skill
   runtime:
@@ -321,9 +318,7 @@ rules:
     - id: mechanic.leader-twelve
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: Battle Tongue range extensions are excluded from the resolved duel (user
-        decision 2026-10-21). Innate Leader radii remain separate.
+      reason: out-of-scope.group
 
 - id: band--norse-special-skills-barbarian-courage
   kind: warband_skill
@@ -352,8 +347,10 @@ rules:
     - id: unimplemented.lustria-norse.band.norse-special-skills-barbarian-courage
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.psychology
+      clauses:
+      - id: barbarian-courage
+        scope: 'NO'
 - id: band--norse-special-skills-crushing-blow
   kind: warband_skill
   runtime:

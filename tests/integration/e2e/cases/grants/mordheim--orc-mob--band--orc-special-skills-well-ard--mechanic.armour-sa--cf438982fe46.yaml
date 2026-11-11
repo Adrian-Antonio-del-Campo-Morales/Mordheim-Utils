@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/orc-mob/band--orc-special-skills-well-ard/mechanic.armour-save-bonus
-# scaffold_fingerprint: a9a78fe08b02e67b739d9d57a3956a9af043db73d7ced06ec43fd1248bb945f9
 # authoring_status: AUTHORED
 # authoring_progress: the admitted plus-one-to-armour-saves clause carries one authored scenario pair
 # derived from the printed rule, this band's own binding (special-rules.yaml id
@@ -15,43 +14,15 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: plus-one-to-armour-saves (scope: YES)
-# AUTHORED[plus-one-to-armour-saves]: 2 scenarios show the printed one-point improvement on the Orc
+# AUTHORED: 2 scenarios show the printed one-point improvement on the Orc
 # this band grants it to (orc-mob / Well 'Ard bound to mechanic.armour-save-bonus, selected by the
 # fixture on the admitted Orc Boyz profile).  Because the adopted ruling resolves that the bonus
 # creates a 6+ save for a warrior with no armour save at all, the unarmoured bearer is offered an
 # armour die: the six holds the wound and the five does not, so the two faces isolate the single point
 # of improvement.  REVIEWED still requires manual semantic review.
-# origin_id:
-#   rule/mordheim/orc-mob/band--orc-special-skills-well-ard/mechanic.armour-save-bonus
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/orc-mob/special-rules.yaml
-# source_fingerprint:
-#   203367cb465e0e513f0ccc937a572af653c7c193057064b614558a0791265b0d
-# source_sha256_at_generation:
-#   16228e2465fa736100bded52e10a19f16cd4ee634392baacb634ba1d5a5ff3e2
-# Printed rule text:
-#   The Orc has a thick, dark-green skin, possibly indicating Black Orc blood. Such is the toughness of the Orc that he may add +1 to any armour saves.
-# Semantic contract (check analysis_status before treating as accepted):
-#   The Orc adds +1 to any armour saves; the bonus also creates a 6+ save when he carries no body armour, and it is ordinary armour subject to the relevant penetration modifiers; observable: the armour target is one point better and an unarmoured bearer saves on 6+.
-# effect_id:
-#   mechanic.armour-save-bonus
-# relation:
-#   equivalent
-# parameters:
-#   {"armour_save_bonus":1}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Resolved by an existing adopted ruling, not by the code agreeing with itself: tests/specs/semantic/rules/contextual-bonuses-and-rulings.yaml entry 'well-ard-no-armour-ruling' (question_status resolved) answers 'Does the +1 from Well 'Ard create a 6+ armour save when the warrior has no armour save at all?' with 'Well 'Ard creates a 6+ armour save if the warrior had none.'; its interpretation adds that Well 'Ard turns the absence of armour into a 6+ save and applies as ordinary armour, so it still suffers the relevant penetration modifiers. That decision settles the no-prior-save case for both Well 'Ard printings and is not extended to any other bonus. The compiler implements the decided reading (compile_fighter: armour_base is 7 when no body armour, then max(1, base - bonus), giving 6+) and is recorded as the matching consumer, not as the basis of the interpretation. Selectively verified equivalence: {"review_file":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"plus-one-to-armour-saves","verified_family":"mechanic.armour-save-bonus","verified_peer_keys":[{"origin_id":"rule/mordheim/orc-mob/band--orc-special-skills-well-ard/mechanic.armour-save-bonus","clause_id":"plus-one-to-armour-saves"},{"origin_id":"rule/trollheim/chaos-streets-greenskins/band--orc-special-skills-well-ard/mechanic.armour-save-bonus","clause_id":"plus-one-to-armour-saves"}],"sharing_boundary":"Same bearer armour-save improvement. Preserve the maintained 6+ unarmoured baseline and armour-penetration clauses; the review wording does not replace them.","evidence":"inspection","limit":"Only this closed selection was checked. No acceptance of the entire review, KB activation, implementation closure or execution evidence."}
 
 # --- Authored scenarios ---
 # RECIPIENT BOUNDARY (checked statically in the shared construction stage, not by running it): the
@@ -69,7 +40,6 @@
 # improvement the ruling settles.
 - audit_id: rule/mordheim/orc-mob/band--orc-special-skills-well-ard/mechanic.armour-save-bonus
   id: the-well-ard-save-holds-on-six
-  covers: [plus-one-to-armour-saves]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -93,7 +63,6 @@
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 - audit_id: rule/mordheim/orc-mob/band--orc-special-skills-well-ard/mechanic.armour-save-bonus
   id: the-well-ard-save-fails-on-five
-  covers: [plus-one-to-armour-saves]
   fighters:
     first:
       main_weapon_id: weapon.mace

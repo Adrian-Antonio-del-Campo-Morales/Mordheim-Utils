@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "not-applicable",
+  "source": {
+    "revision": "84a634dbdfc45973ebb93a9dd90c852e21c7c12b",
+    "path": "tests/integration/e2e/cases/grants/mordheim--ogre-hunting-party-web--band--ogre-hunting-skills--profile.ski--2bc4a5c940e5.yaml",
+    "sha256": "5839130de5f1f38e3343b523cbb0b2ea42582a6a0cc4e05d8dbd47e1efb73ccf",
+    "test_id": "rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills/profile.skill-access::the-same-skill-is-refused-for-a-band-henchman"
+  },
+  "case_key": "e2e/rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills/profile.skill-access/the-same-skill-is-refused-for-a-band-henchman",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E declares an expected construction refusal (\"skills are not available to ogre-hunting-party-web/gnoblar-fighters: ['skill.monster-slayer']\"); the build is refused with \"skills are not available to ogre-hunting-party-web/gnoblar-fighters: ['skill.monster-slayer']\", so no statistical scenario can be frozen."
+}

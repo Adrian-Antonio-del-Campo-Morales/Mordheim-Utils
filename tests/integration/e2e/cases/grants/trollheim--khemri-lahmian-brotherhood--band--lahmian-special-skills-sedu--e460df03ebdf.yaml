@@ -1,0 +1,105 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/khemri-lahmian-brotherhood/band--lahmian-special-skills-seduction/mechanic.lahmian-seduction
+# authoring_status: AUTHORED
+# authoring_progress: the admitted seduction clause carries 3 authored scenarios for its individual half,
+# derived from the printed sentence and the modular consumer.  The blocker recorded here previously was FALSE
+# for that half and is corrected: rounds.py declares ControlPower("mechanic.lahmian-seduction",
+# ("mechanic.psychology-immunity",), "lahmian-seduction", own_value_only=True, own_test=True, persistent=True)
+# in CONTROL_POWERS - the Khemrian copy prints the Vampire's own Leadership test first, at the key
+# round.<round>.<owner label>.lahmian-seduction.own-test, then the chosen enemy tests against its own value at
+# round.<round>.<target label>.lahmian-seduction (.0/.1) and a failure bars it through
+# state.<target label>.charm_attack_blocked while the lasting control rides on the victim's spent resources
+# (seduction.controlled.lahmian) - and tests/python/combat/modular/test_t13_control_family.py witnesses that
+# consumer together with this band row's own mapping.  The printed group/campaign faces remain out of the duel
+# frame and are recorded, not asserted: the one-controlled-warrior limit, the Recovery-phase regain test, the
+# break on a hit and the Out-of-Action result at battle end.  REVIEWED still requires manual semantic review
+# and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 3 scenarios cover the admitted individual clause.  The register's "no consumer
+# implements the printed charm" was not correct: CONTROL_POWERS implements the Khemrian copy with its own
+# printed qualifiers (own test first, own value only, lasting control).  Scenario 1 passes the Vampire's own
+# test and fails the target's own test, showing the target barred (charm_attack_blocked) for the round.
+# Scenario 2 fails the Vampire's own test, which the printed sentence puts first, so the victim is left alone
+# and unbarred.  Scenario 3 supplies the printed exemption (models immune to Psychology) and shows that no
+# seduction die is requested at all.  The remaining printed faces are group or campaign scope and are recorded
+# above: the one-controlled-warrior limit, the Recovery-phase regain test, the break on a hit and the
+# Out-of-Action result at battle end.  REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+# The printed order: the Vampire's own test first (two ones against her printed eight pass), then the chosen
+# enemy's own test (two sixes against its printed seven fail), which bars it for the round.
+- audit_id: rule/trollheim/khemri-lahmian-brotherhood/band--lahmian-special-skills-seduction/mechanic.lahmian-seduction
+  id: the-vampires-own-test-passes-and-the-target-fails-its-own
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.lahmian-seduction]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 8}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  decisions:
+    - {key: round.0.second.lahmian-seduction, value: true}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.lahmian-seduction.own-test.0, value: 1}
+    - {key: round.0.first.lahmian-seduction.own-test.1, value: 1}
+    - {key: round.0.second.lahmian-seduction.0, value: 6}
+    - {key: round.0.second.lahmian-seduction.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.charm_attack_blocked: true, state.second.condition: STANDING, attacks.0.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed first test is the Vampire's own: a failure leaves the victim alone in reach and unbarred, and
+# the strict tape therefore declares no seduction die for the target.
+- audit_id: rule/trollheim/khemri-lahmian-brotherhood/band--lahmian-special-skills-seduction/mechanic.lahmian-seduction
+  id: a-failed-own-test-leaves-the-victim-unbarred
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.lahmian-seduction]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 8}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.lahmian-seduction.own-test.0, value: 6}
+    - {key: round.0.first.lahmian-seduction.own-test.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.charm_attack_blocked: false, attacks.0.hit: false, attacks.1.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed exemption: "models immune to Psychology are unaffected", so the target asks for no test and the
+# Vampire's own test is not requested either.
+- audit_id: rule/trollheim/khemri-lahmian-brotherhood/band--lahmian-special-skills-seduction/mechanic.lahmian-seduction
+  id: a-psychology-immune-target-skips-the-seduction
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.lahmian-seduction]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 8}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.psychology-immunity]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.charm_attack_blocked: false, attacks.0.hit: false, attacks.1.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

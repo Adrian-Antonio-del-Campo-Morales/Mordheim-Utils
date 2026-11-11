@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/dwarf-rangers/band--dwarf-special-skills-combat-master/skill.unbeatable-warrior
-# scaffold_fingerprint: fdfbd2872751624be0e3e36c2c03d7689d0be01129d3022df7c7d7b5410c6e5a
 # authoring_status: AUTHORED
 # authoring_progress: the admitted whole clause carries four authored scenarios derived from the
 # printed rule, the printed profile and the recorded contract: with a Parry weapon the bearer's parry
@@ -13,41 +12,13 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 4 scenario(s) cover the clause: the printed equality of the parry and its absence
+# AUTHORED: 4 scenario(s) cover the clause: the printed equality of the parry and its absence
 # without the band rule, the second attempt two Parry weapons allow, and the normal maximum of one that
 # a single Parry weapon keeps.  This printing carries no Dwarf Axe reroll sentence, so no reroll
 # facet is asserted here.
-# origin_id:
-#   rule/mordheim/dwarf-rangers/band--dwarf-special-skills-combat-master/skill.unbeatable-warrior
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/dwarf-rangers/special-rules.yaml
-# source_fingerprint:
-#   4818c0fcf3421aae5d58cc2ba32b86b12a47dd99f47a1de06fec0d5da3656e9d
-# source_sha256_at_generation:
-#   d777a264de4362ae1b1ae198d5635b010629d1b82186950a5d4a360591eaf6d5
-# Printed rule text:
-#   This Dwarf’s martial skills surpass those of an ormal warrior; he is used to fighting by himself against hordes of opponents and coming through unscathed. When using a weapon that has a Parry special rule, this hero parries successfully if he beats OR MATCHES his opponent’s highest ‘to hit’ roll, not just if he beats the roll. In addition, if this warrior is using two weapons that have the Parry special rule, he is allowed to parry two attacks (if his two dice match or beat the highest two attack dice against him) instead of the normal maximum of one.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Combat Master: with a Parry weapon the hero parries by equalling or beating the highest hit roll, and with two Parry weapons may parry two attacks; observable: an equal roll blocks and two attempts are allowed.
-# effect_id:
-#   skill.unbeatable-warrior
-# relation:
-#   parameterized_variant
-# parameters:
-#   {}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Same behaviour as Master of Blades without the Dwarf Axe reroll sentence; the engine consumes unbeatable-warrior for the equalling rule and the second attempt. Surface reuse candidate: {"family":"skill.unbeatable-warrior","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the individual clause and current active contract. Distinguish dance choices; parry enablement, equality, rerolls and extra attempts; and fists/claws count or critical facets. Sharing preparation/state machinery is not sharing the entire combined rule.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
 # --- Authored scenarios ---
 # Family model (Combat Master, Dwarf Rangers printing): the bearer is the printed recipient of this
@@ -75,7 +46,6 @@
 # The printed equality: a parry die equal to the declared To Hit four blocks the blow.
 - audit_id: rule/mordheim/dwarf-rangers/band--dwarf-special-skills-combat-master/skill.unbeatable-warrior
   id: an-equal-roll-matches-the-highest-to-hit
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -101,7 +71,6 @@
 # is resolved and wounds.
 - audit_id: rule/mordheim/dwarf-rangers/band--dwarf-special-skills-combat-master/skill.unbeatable-warrior
   id: without-the-band-rule-an-equal-roll-does-not-match
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -127,7 +96,6 @@
 # beating its own To Hit roll.
 - audit_id: rule/mordheim/dwarf-rangers/band--dwarf-special-skills-combat-master/skill.unbeatable-warrior
   id: two-parry-weapons-give-two-attempts
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -159,7 +127,6 @@
 # attack of the pool is resolved even though the hero carries this rule.
 - audit_id: rule/mordheim/dwarf-rangers/band--dwarf-special-skills-combat-master/skill.unbeatable-warrior
   id: one-parry-weapon-keeps-the-normal-maximum
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace

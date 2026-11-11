@@ -84,8 +84,7 @@ rules:
     - id: unimplemented.trollheim-skaven-clan-eshin.eshin-sorcerer.spellcaster
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: giant-rats--pack-size
   name: Pack Size
   effect: The warband may recruit any number of Giant Rats.
@@ -108,8 +107,7 @@ rules:
     - id: unimplemented.trollheim-skaven-clan-eshin.giant-rats.pack-size
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: giant-rats--animal
   name: Animal
   source:
@@ -129,8 +127,7 @@ rules:
     - id: unimplemented.trollheim-skaven-clan-eshin.giant-rats.animal
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
   rule_ref: shared-rule.animal
 - id: rat-ogre--fear
   name: Fear
@@ -195,9 +192,8 @@ rules:
     - id: unimplemented.trollheim-skaven-clan-eshin.rat-ogre.experience
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
-  rule_ref: shared-rule.experience
+      reason: out-of-scope.magic
+  rule_ref: shared-rule.never-gain-experience
 - id: rat-ogre--large-target
   name: Large Target
   effect: >-
@@ -224,26 +220,16 @@ rules:
     - id: unimplemented.trollheim-skaven-clan-eshin.rat-ogre.large-target
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--skaven-special-skills-black-hunger
   kind: warband_skill
   name: Black Hunger
-  effect: >-
-    At the start of his turn, the Skaven Hero may invoke Black Hunger. For that turn he gains +1
-    Attack and adds the result of 1D6 x 0.4" + 1" to his Movement. At the end of the turn he suffers
-    1D3 Strength 3 hits with no armour save.
   source:
     manual: trollheim
     printed_page: 93
     section: Skaven Special Skills / Black Hunger
   name_i18n:
     es: Hambre Negra
-  effect_i18n:
-    es: >-
-      Al comienzo de su turno, el Héroe skaven puede invocar el Hambre negra. Durante ese turno gana
-      +1 Ataque y añade a su Movimiento el resultado de 1D6 x 0,4" + 1". Al final del turno sufre
-      1D3 impactos de Fuerza 3 sin tirada de salvación por armadura.
   eligibility:
   - assassin-adept
   - black-skaven
@@ -261,6 +247,12 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.black-hunger
+      clauses:
+      - id: attack-and-backlash
+        scope: 'YES'
+      - id: movement
+        scope: 'NO'
+  rule_ref: shared-rule.black-hunger
 - id: band--skaven-special-skills-tail-fighting
   kind: warband_skill
   runtime:
@@ -327,27 +319,16 @@ rules:
     - id: unimplemented.trollheim-skaven-clan-eshin.band.skaven-special-skills-wall-runner
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--skaven-special-skills-infiltration
   kind: warband_skill
   name: Infiltration
-  effect: >-
-    The Skaven deploys after the opposing warband and may be placed anywhere outside the opponent's
-    line of sight and more than 12" from every enemy model. If both players have infiltrating
-    models, roll 1D6 for each such model; the model with the lower result deploys first.
   source:
     manual: trollheim
     printed_page: 93
     section: Skaven Special Skills / Infiltration
   name_i18n:
     es: Infiltración
-  effect_i18n:
-    es: >-
-      El skaven se despliega después de la banda rival y puede colocarse en cualquier lugar fuera de
-      la línea de visión del oponente y a más de 12" de cada modelo enemigo. Si ambos jugadores
-      tienen modelos con infiltración, tira 1D6 por cada uno de esos modelos; el modelo con el
-      resultado más bajo se despliega primero.
   eligibility:
   - assassin-adept
   - black-skaven
@@ -363,8 +344,8 @@ rules:
     - id: unimplemented.trollheim-skaven-clan-eshin.band.skaven-special-skills-infiltration
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
+  rule_ref: shared-rule.infiltration
 - id: band--skaven-special-skills-art-of-silent-death
   kind: warband_skill
   runtime:

@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.energy-focus
-# scaffold_fingerprint: fb5738937e9744b46b3872c46b1b02acb1bcf1580259933f792f582c5c81ba47
 # authoring_status: AUTHORED
 # authoring_progress: the single admitted clause carries 3 authored scenarios derived from the printed rule and the recorded contract; the printed sacrifice is supplied through the declared count, and the executor's unarmed floor is documented in the third scenario; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -8,38 +7,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 3 scenarios cover the pool one attack smaller with the printed Strength gain, the same soldier without the sacrifice keeping the larger pool at the lower Strength, and the unarmed floor that leaves no attack at all when the sacrifice is taken without a printed unarmed skill.
-# origin_id:
-#   mechanic/mechanic.energy-focus
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   b6101f3fd53731e84b765292f7b3d836574eb94e0468a0061fbe51e54a980bbd
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   If fighting unarmed, the Hero may choose to reduce his Attacks by –1 and thus gain +1 Strength in close combat. The monk may sacrifice any number of attacks this way.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Fighting unarmed, the monk may reduce his Attacks by one to gain +1 Strength in close combat and may sacrifice any number of attacks this way. Closure: for each attack given up while fighting with fists or natural attacks the attack Strength rises by one, and the pool and the Strength term move by the same amount.
-# effect_id:
-#   mechanic.energy-focus
-# relation:
-#   parameterized_variant
-# parameters:
-#   {"attacks_sacrificed": "chosen number", "strength_gain": "equal to attacks sacrificed", "weapon_scope": ["weapon.fist", "weapon.natural-attacks"]}
-# conditions:
-#   {"trigger": "declaration", "weapon": "unarmed"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   _attack_strength adds effect.energy_focus_attacks for fist and natural attacks while build_attacks removes the same number from the pool, and compile_fighter validates the energy-focus count through the characteristic block, so an out-of-range choice is refused instead of silently applied. Surface reuse candidate: {"family":"mechanic.energy-focus","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare full special-attack/rescue contract: replacement scope, prerequisite count, per-hit versus per-wound triggers, save/parry eligibility, ordering, interruption and state/resources. Do not substitute an ordinary attack or reset a per-battle effect each round.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+# AUTHORED: 3 scenarios cover the pool one attack smaller with the printed Strength gain, the same soldier without the sacrifice keeping the larger pool at the lower Strength, and the unarmed floor that leaves no attack at all when the sacrifice is taken without a printed unarmed skill.
 
 # --- Authored scenarios ---
 # The printed choice is supplied as the declared count of sacrificed attacks, which the executor
@@ -53,7 +24,6 @@
 # directions.
 - audit_id: mechanic/mechanic.energy-focus
   id: the-sacrifice-trades-one-attack-for-one-strength
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.fist
@@ -82,7 +52,6 @@
 # at the lower Strength, so the declared wound face of two no longer reaches the wound target.
 - audit_id: mechanic/mechanic.energy-focus
   id: without-the-sacrifice-the-pool-and-strength-are-unchanged
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.fist
@@ -114,7 +83,6 @@
 # leaves nothing to strike with, which is the executor's floor read through this clause.
 - audit_id: mechanic/mechanic.energy-focus
   id: the-only-unarmed-attack-is-the-one-that-is-sacrificed
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.fist

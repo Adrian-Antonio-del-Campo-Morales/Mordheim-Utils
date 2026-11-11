@@ -39,8 +39,7 @@ rules:
     - id: unimplemented.dark-elves.beastmaster.cold-one-beasthound
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Cold One Beasthound
   effect: >-
     The Beastmaster may be accompanied by up to two Cold One Beasthounds, these are bought as
@@ -97,8 +96,7 @@ rules:
     - id: unimplemented.dark-elves.dark-elf-sorceress.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic.
+      reason: out-of-scope.magic
   name: Wizard
   effect: The Dark Elf Sorceress is a wizard and uses Dark Elf Magic.
   source:
@@ -122,9 +120,7 @@ rules:
     - id: unimplemented.dark-elves.shades.natural-stealth
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Natural Stealth
   effect: >-
     The first thing that Dark Elf Scouts master is the art of moving without being seen or heard. If
@@ -154,8 +150,7 @@ rules:
     - id: unimplemented.dark-elves.cold-one-beasthounds.animals
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Animals
   effect: >-
     Cold One Beasthounds are animals and all animal rules apply to them, they never gain experience.
@@ -182,8 +177,7 @@ rules:
     - id: unimplemented.dark-elves.cold-one-beasthounds.beastmaster
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Beastmaster
   effect: >-
     Cold One Beasthounds are nasty viscous brutes that are barely kept under control. If the
@@ -225,10 +219,7 @@ rules:
     - id: unimplemented.dark-elves.cold-one-beasthounds.stupidity.outside-duel
       scope: 'NO'
       binding: null
-      reason: >-
-        Board movement, campaign progression/participation and independently
-        simulated helper/rider/group producers are outside the 1v1 duel.
-        Admissible individual exemptions and bonuses are supplied active facts.
+      reason: out-of-scope.movement
   name: Stupidity
   effect: >-
     Cold One Beasthounds may use the basic Leadership of the Beastmaster if they are within 6" of
@@ -262,6 +253,11 @@ rules:
         id: trait.natural-armour-save
         parameters:
           value: 6
+      clauses:
+      - id: six-plus-save
+        scope: 'YES'
+      - id: unmodified-six
+        scope: 'YES'
     - id: trait.natural-armour-unmodified
       scope: 'YES'
       binding:
@@ -269,6 +265,11 @@ rules:
         id: trait.natural-armour-unmodified
         parameters:
           value: true
+      clauses:
+      - id: no-strength-reduction
+        scope: 'YES'
+      - id: critical-negation
+        scope: 'YES'
   name: Scaly Skin
   effect: >-
     Cold One Beasthounds have tough scaly skin, and are considered to have a 6+ armour save. This
@@ -327,7 +328,6 @@ rules:
         kind: mechanic
         id: mechanic.hatred-high-elves
   name: Kindred Hatred
-  effect: Dark Elves Hate all High Elf warriors, including High Elf Hired Swords.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -335,10 +335,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dark-elves
   name_i18n:
     es: Odio Ancestral
-  effect_i18n:
-    es: >-
-      Los Elfos Oscuros Odian a todos los guerreros Elfos Altos, incluidas las Espadas a Sueldo de
-      Elfos Altos.
   applies_to:
     band: true
     profile_ids:
@@ -348,6 +344,7 @@ rules:
     - dark-elf-sorceress
     - corsairs
     - shades
+  rule_ref: shared-rule.kindred-hatred
 - id: band--excellent-sight
   runtime:
     scope: 'NO'
@@ -357,8 +354,7 @@ rules:
     - id: unimplemented.dark-elves.band.excellent-sight
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Excellent Sight
   effect: >-
     All Elves in the warband can spot Hidden enemies from twice as far away as normal: twice their
@@ -410,9 +406,7 @@ rules:
     - id: unimplemented.dark-elves.band.dark-elf-special-skills-fury-of-khaine
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Fury of Khaine
   effect: >-
     The Dark Elf is infused with an intense raging thirst for blood and is a whirlwind in
@@ -450,11 +444,15 @@ rules:
         id: profile.skill-access
         parameters:
           category: strength
+      clauses:
+      - id: whole--scope--skill-access
+        scope: 'YES'
+      - id: whole--scope--warband-take-limit
+        scope: 'NO'
     - id: roster.maximum-two-powerful-build
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: warband-level roster limit.
+      reason: out-of-scope.construction
   name: Powerful Build
   effect: >-
     The warrior is strongly built for an Elf and is capable of feats of strength. A warrior with
@@ -491,12 +489,12 @@ rules:
       binding:
         kind: mechanic
         id: skill.elven-agility
+      clauses:
+      - id: six-plus-avoid
+        scope: 'YES'
+      - id: combination-upgrades
+        scope: 'YES'
   name: Fey Quickness
-  effect: >-
-    Few can ever hope to match an Elf’s inhuman quickness and agility. An Elf with Fey Quickness can
-    avoid melee or missile attacks on a roll of 6. If the Elf also has Step Aside or Dodge this will
-    increase to a 4+ in the relevant area. For example, an Elf with Fey Quickness and Step Aside
-    avoids melee attacks on a 4+ and missile attacks on a 6.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -504,15 +502,9 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dark-elves
   name_i18n:
     es: Celeridad Feérica
-  effect_i18n:
-    es: >-
-      Pocos pueden esperar igualar la inhumana rapidez y agilidad de un elfo. Un elfo con Celeridad
-      feérica puede evitar ataques cuerpo a cuerpo o de misil con una tirada de 6. Si el elfo
-      también tiene Echarse a un lado o Esquiva, esto aumentará a 4+ en el área correspondiente. Por
-      ejemplo, un elfo con Celeridad feérica y Echarse a un lado evita ataques cuerpo a cuerpo con un 4+ y
-      ataques de misil con un 6.
   applies_to:
     band: true
+  rule_ref: shared-rule.fey-quickness
 - id: band--dark-elf-special-skills-infiltration
   kind: warband_skill
   runtime:
@@ -523,14 +515,8 @@ rules:
     - id: unimplemented.dark-elves.band.dark-elf-special-skills-infiltration
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Infiltration
-  effect: >-
-    The Dark Elf with this skill is always placed on the battlefield after the opposing warband and
-    can be placed anywhere on the table as long as it is out of sight of the opposing warband and
-    more than 12" away from any enemy model. If both players have models which infiltrate, roll a D6
-    for each, and the lowest roll sets up first.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -538,15 +524,9 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dark-elves
   name_i18n:
     es: Infiltración
-  effect_i18n:
-    es: >-
-      El Elfo Oscuro con esta habilidad siempre se sitúa en el campo de batalla después de la banda
-      rival y puede colocarse en cualquier punto de la mesa mientras esté fuera de la línea de
-      visión de la banda rival y a más de 12" de cualquier modelo enemigo. Si ambos jugadores tienen
-      modelos que se infiltran, tira 1D6 por cada uno, y el que obtenga la tirada más baja se
-      despliega primero.
   applies_to:
     band: true
+  rule_ref: shared-rule.infiltration
 - id: band--dark-elf-special-skills-master-of-poisons
   kind: warband_skill
   runtime:
@@ -557,8 +537,7 @@ rules:
     - id: unimplemented.dark-elves.band.dark-elf-special-skills-master-of-poisons
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: intermediate resources.
+      reason: out-of-scope.campaign
   name: Master of Poisons
   effect: >-
     The Dark Elf is proficient in concocting different poisons. If the Hero doesn’t search for rare
@@ -583,8 +562,6 @@ rules:
     band: true
 - id: dark-elf-sorceress--no-armoured-casting
   name: No Armour Casting
-  effect: >-
-    The Dark Elf Sorceress may not cast spells while wearing armour.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -592,9 +569,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dark-elves
   name_i18n:
     es: Sin Conjuros con Armadura
-  effect_i18n:
-    es: >-
-      La Hechicera Elfa Oscura no puede lanzar conjuros mientras lleva armadura.
   applies_to:
     profile_ids:
     - dark-elf-sorceress
@@ -606,8 +580,8 @@ rules:
     - id: unimplemented.dark-elves.dark-elf-sorceress.no-armoured-casting
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic.
+      reason: out-of-scope.magic
+  rule_ref: shared-rule.no-armoured-casting
 
 - id: cold-one-beasthounds--equipment-restrictions
   runtime:

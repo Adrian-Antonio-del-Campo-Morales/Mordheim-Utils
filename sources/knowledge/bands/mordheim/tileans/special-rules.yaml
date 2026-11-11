@@ -76,9 +76,7 @@ rules:
     - id: unimplemented.tileans.band.human-maximum-characteristics
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: band--miraglean-crossbow-mastery
   name: Miraglean — Crossbow Mastery
   effect: Miraglean Heroes gain +1 to hit when using crossbows. The bonus applies only to crossbows.
@@ -103,8 +101,7 @@ rules:
     - id: unimplemented.tileans.band.miraglean-crossbow-mastery
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--miraglean-marksman-accuracy
   name: Miraglean — Marksman Accuracy
   effect: Miraglean Marksmen gain +1 to hit with any missile weapon they use.
@@ -127,8 +124,7 @@ rules:
     - id: unimplemented.tileans.band.miraglean-marksman-accuracy
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--miraglean-hatred-skaven
   name: Miraglean — Hatred of Skaven
   effect: >-
@@ -179,9 +175,7 @@ rules:
     - id: unimplemented.tileans.band.miraglean-hired-sword-restriction
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: band--remasen-dark-elf-rout
   name: Remasen — Defiance Against Dark Elves
   effect: >-
@@ -208,8 +202,10 @@ rules:
     - id: unimplemented.tileans.band.remasen-dark-elf-rout
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.psychology
+      clauses:
+      - id: whole
+        scope: 'NO'
 - id: band--remasen-officer-leadership
   kind: warband_variant
   name: Remasen — Steadfast Officers
@@ -271,9 +267,7 @@ rules:
     - id: unimplemented.tileans.band.remasen-hired-sword-restriction
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: band--trantio-wealth
   name: Trantio — Wealth and Experience
   effect: >-
@@ -301,5 +295,4 @@ rules:
     - id: unimplemented.tileans.band.trantio-wealth
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting

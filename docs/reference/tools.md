@@ -495,7 +495,7 @@ Each entry explains what it executes in `<entry> --help`.
 | Entry | Executes |
 |---|---|
 | `check verify` | `python -m mordheim_combat_lab verify`: KB structure, editorial schemas, execution contract, binding contracts and default profile compilation. It is a structural gate, not the knowledge or E2E test suites (see [Verification](verification.md#deterministic-modular-evidence)). |
-| `check report rules` | `python -m mordheim_combat_lab audit`: separate combat-mechanic and editorial-rule CSVs in `outputs/audit/`. |
+| `check report rules` | `python -m tools.knowledge.clauses report`: every classified rule effect, mechanic and item with its scope, binding and declared clause coverage (`rules-inventory.csv`, `clause-coverage.csv`, `summary.json` in `outputs/audit/`). |
 | `check report tests` | `python -m mordheim_combat_lab test-report`: runs the test suite and writes an Excel-friendly technical CSV (`--output DIR`). |
 | `check parity` | `python -m mordheim_combat_lab parity`: compare the optimized engines with the modular oracle now (or, without `--scenarios`, the exact obligation checks). Its pytest checks are `tests parity statistical`. |
 | `check samples` | `python -m tools.verification.parity_samples`: sample one engine into a store; compare stored samples later. |
@@ -694,8 +694,7 @@ Permanent validation and generation:
 | `tools/knowledge/export_compiled_cases.py` | Python export API for explicit compiled case plans; reads the KB during fixture generation. |
 | `tools/knowledge/audit_kb_conformance.py` | Check canonical knowledge against the expected model. |
 | `tools/knowledge/audit_schema_strictness.py` | Detect gaps and unintended permissiveness in editorial schemas. |
-| `tools/knowledge/clause_registry.py` | Query, prepare and guarded-apply edits to the maintained clause register; previews by default and preserves the CSV when conservation checks fail. |
-| `tools/knowledge/clause_registry_validation.py` | Structural checks for the clause register's fields, vocabularies, references and row conservation; imported by `clause_registry.py`. |
+| `tools/knowledge/clauses.py` | Clause inventory of the knowledge base and its declared test coverage: `inventory`, `coverage [--pending]`, `check` (unknown references, inconsistencies) and `report` (the CSVs behind `check report rules`). Engine-free. |
 | `tools/knowledge/generate_knowledge_web.py` | Generate deterministic JSON consumed by the web application. |
 | `tools/knowledge/artefact_document.py` | Load the complete generated web KB artefact (initial document plus prose, display-text and catalogue fragments) for tools and tests. |
 | `tools/knowledge/normalize_open_fields.py` | Normalize controlled vocabulary in open editorial fields. |

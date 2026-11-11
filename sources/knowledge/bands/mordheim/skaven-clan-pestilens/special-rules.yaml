@@ -55,8 +55,7 @@ rules:
     - id: unimplemented.skaven-clan-pestilens.pestilens-sorcerer.spellcaster
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: giant-rats--animal
   name: Animal
   source:
@@ -77,8 +76,7 @@ rules:
     - id: unimplemented.skaven-clan-pestilens.giant-rats.animal
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
   rule_ref: shared-rule.animal
 - id: rat-ogre--fear
   name: Fear
@@ -128,10 +126,7 @@ rules:
     - id: unimplemented.skaven-clan-pestilens.rat-ogre.stupidity.outside-duel
       scope: 'NO'
       binding: null
-      reason: >-
-        Board movement, campaign progression/participation and independently
-        simulated helper/rider/group producers are outside the 1v1 duel.
-        Admissible individual exemptions and bonuses are supplied active facts.
+      reason: out-of-scope.movement
   rule_ref: shared-rule.stupidity
 - id: rat-ogre--experience
   name: Experience
@@ -153,9 +148,8 @@ rules:
     - id: unimplemented.skaven-clan-pestilens.rat-ogre.experience
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
-  rule_ref: shared-rule.experience
+      reason: out-of-scope.shooting
+  rule_ref: shared-rule.never-gain-experience
 - id: rat-ogre--large-target
   name: Large Target
   source:
@@ -176,8 +170,7 @@ rules:
     - id: unimplemented.skaven-clan-pestilens.rat-ogre.large-target
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
   rule_ref: shared-rule.large-target
 - id: band--clan-pestilens-maximum-characteristics
   name: Clan Pestilens Maximum Characteristics
@@ -205,9 +198,7 @@ rules:
     - id: unimplemented.skaven-clan-pestilens.band.clan-pestilens-maximum-characteristics
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: band--clan-pestilens-special-skills-black-hunger
   kind: warband_skill
   name: Black Hunger
@@ -244,6 +235,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.black-hunger
+      clauses:
+      - id: attack-and-backlash
+        scope: 'YES'
+      - id: movement
+        scope: 'NO'
 - id: band--clan-pestilens-special-skills-censer-bearer
   kind: warband_skill
   name: Censer Bearer
@@ -309,11 +305,17 @@ rules:
         id: trait.poison-immune
         parameters:
           value: true
+      clauses:
+      - id: poison-immunity
+        scope: 'YES'
+      - id: disease-immunity
+        scope: 'NO'
+      - id: censer-recovery
+        scope: 'NO'
     - id: campaign.censer-recovery
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: post-battle recovery and Serious Injury.
+      reason: out-of-scope.campaign
 - id: band--clan-pestilens-special-skills-contagious
   kind: warband_skill
   name: Contagious
@@ -353,6 +355,11 @@ rules:
         id: trait.contagious
         parameters:
           value: true
+      clauses:
+      - id: contagious-reaction
+        scope: 'YES'
+      - id: contagious-rotten-body-prerequisite
+        scope: 'YES'
 - id: band--clan-pestilens-special-skills-ignore-pain
   kind: warband_skill
   name: Ignore Pain
@@ -386,3 +393,8 @@ rules:
       binding:
         kind: mechanic
         id: skill.ignore-pain
+      clauses:
+      - id: ignore-pain
+        scope: 'YES'
+      - id: requires-resilient
+        scope: 'YES'

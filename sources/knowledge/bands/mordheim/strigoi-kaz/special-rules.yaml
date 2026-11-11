@@ -10,9 +10,7 @@ rules:
     - id: unimplemented.strigoi-kaz.band.dead-leader
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: leader replacement and equipment loss are campaign mechanics; the crumble
-        cascade is an all-models effect outside the duel scope.
+      reason: out-of-scope.campaign
   name: Dead Leader
   effect: >-
     If the vampire is killed then he cannot be replaced. All undead creatures will crumble and will
@@ -44,10 +42,7 @@ rules:
     - id: unimplemented.strigoi-kaz.band.corpse-liquor
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: poison on to-hit rolls of 6 is a shooting/weapon-quality interaction outside
-        the current close-combat scope; the item is captured provisionally in
-        catalog/items/combat-equipment.yaml.
+      reason: out-of-scope.shooting
   name: Corpse Liquor
   effect: >-
     The Strigoi distil the liquor that seeps from rotting corpses; see the Corpse Liquor special
@@ -79,8 +74,7 @@ rules:
     - id: unimplemented.strigoi-kaz.band.bat-restriction
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: recruitment restriction enforced at warband-creation, not in combat.
+      reason: out-of-scope.campaign
   name: Bat Restriction
   effect: >-
     Your warband may include either up to 5 Bats or up to 2 Fell Bats. You may not have both types
@@ -161,8 +155,7 @@ rules:
     - id: unimplemented.strigoi-kaz.vampire.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic subsystem (Necromantic magic).
+      reason: out-of-scope.magic
   name: Wizard
   effect: >-
     The Vampire is a wizard and so is able to use Necromantic magic. See the Magic section of the
@@ -190,9 +183,7 @@ rules:
     - id: unimplemented.strigoi-kaz.vampire.bloodline
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: the twelve Bloodline Abilities are campaign purchases with effects across
-        psychology, movement, and magic; full text is preserved below.
+      reason: out-of-scope.magic
   name: Bloodline Abilities
   effect: >-
     The vampire may take any of the Bloodline Abilities instead of searching for rare equipment. The
@@ -282,10 +273,7 @@ rules:
     - id: unimplemented.strigoi-kaz.charnel-guard.cunning.weapons-expert
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: the only consequence of Weapons Expert is additional missile-weapon
-        equipment access, and missile equipment is outside the close-combat-only duel. The
-        hand-to-hand permission of Weapons Training is delivered by the binding above.
+      reason: out-of-scope.shooting
   name: Cunning
   effect: >-
     Unlike ordinary ghouls a Charnel Guard can take the Weapons Training or Weapons Expert skills
@@ -313,9 +301,7 @@ rules:
     - id: unimplemented.strigoi-kaz.strigany.living
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: exemption rule with no direct combat effect; the Undead rules themselves are
-        not part of this band's package.
+      reason: out-of-scope.non-duel
   name: Living
   effect: The Strigany are living humans and none of the Undead rules apply.
   source:
@@ -342,7 +328,6 @@ rules:
         kind: mechanic
         id: mechanic.causes-fear
   name: Cause Fear
-  effect: Ghouls are twisted and repulsive creatures and therefore cause fear.
   source:
     manual: broheim.net
     printed_page: 53
@@ -350,11 +335,10 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Causan Miedo
-  effect_i18n:
-    es: Los Gulles son criaturas retorcidas y repugnantes y por tanto causan miedo.
   applies_to:
     profile_ids:
     - ghouls
+  rule_ref: shared-rule.fear
 - id: skeletons--cause-fear
   runtime:
     scope: 'YES'
@@ -367,7 +351,6 @@ rules:
         kind: mechanic
         id: mechanic.causes-fear
   name: Cause Fear
-  effect: Skeletons are terrifying Undead creatures and therefore cause fear.
   source:
     manual: broheim.net
     printed_page: 53
@@ -375,11 +358,10 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Causan Miedo
-  effect_i18n:
-    es: Los Esqueletos son criaturas No-Muertas aterradoras y por tanto causan miedo.
   applies_to:
     profile_ids:
     - skeletons
+  rule_ref: shared-rule.fear
 - id: skeletons--may-not-run
   runtime:
     scope: 'NO'
@@ -389,10 +371,8 @@ rules:
     - id: unimplemented.strigoi-kaz.skeletons.may-not-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
   name: May Not Run
-  effect: Skeletons are slow Undead creatures and may not run (but may charge normally).
   source:
     manual: broheim.net
     printed_page: 53
@@ -400,13 +380,10 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: No Pueden Correr
-  effect_i18n:
-    es: >-
-      Los Esqueletos son criaturas No-Muertas lentas y no pueden correr (pero pueden cargar con
-      normalidad).
   applies_to:
     profile_ids:
     - skeletons
+  rule_ref: shared-rule.may-not-run
 - id: skeletons--immune-to-psychology
   runtime:
     scope: 'YES'
@@ -418,8 +395,12 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+      clauses:
+      - id: psychology-immunity
+        scope: 'YES'
+      - id: never-leaves-combat
+        scope: 'NO'
   name: Immune to Psychology
-  effect: Skeletons are not affected by psychology and never leave combat.
   source:
     manual: broheim.net
     printed_page: 53
@@ -427,11 +408,10 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Inmune a la Psicología
-  effect_i18n:
-    es: Los Esqueletos no se ven afectados por la psicología y nunca abandonan el combate.
   applies_to:
     profile_ids:
     - skeletons
+  rule_ref: shared-rule.immune-to-psychology
 - id: skeletons--immune-to-poison
   runtime:
     scope: 'YES'
@@ -446,7 +426,6 @@ rules:
         parameters:
           value: true
   name: Immune to Poison
-  effect: Skeletons are not affected by any drug or poison.
   source:
     manual: broheim.net
     printed_page: 53
@@ -454,11 +433,10 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Inmune al Veneno
-  effect_i18n:
-    es: Los Esqueletos no se ven afectados por ninguna droga o veneno.
   applies_to:
     profile_ids:
     - skeletons
+  rule_ref: shared-rule.immune-to-poison
 - id: skeletons--no-pain
   runtime:
     scope: 'YES'
@@ -491,8 +469,7 @@ rules:
     - id: unimplemented.strigoi-kaz.skeletons.no-brain
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: experience progression is a campaign mechanic.
+      reason: out-of-scope.campaign
   name: No Brain
   source:
     manual: broheim.net
@@ -504,7 +481,7 @@ rules:
   applies_to:
     profile_ids:
     - skeletons
-  rule_ref: shared-rule.brainless
+  rule_ref: shared-rule.never-gain-experience
 - id: bats--living
   runtime:
     scope: 'NO'
@@ -514,8 +491,7 @@ rules:
     - id: unimplemented.strigoi-kaz.bats.living
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: exemption rule with no direct combat effect.
+      reason: out-of-scope.non-duel
   name: Living
   source:
     manual: broheim.net
@@ -537,8 +513,7 @@ rules:
     - id: unimplemented.strigoi-kaz.bats.animals
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: experience progression is a campaign mechanic.
+      reason: out-of-scope.campaign
   name: Animals
   effect: The Bats are animals and never gain experience.
   source:
@@ -562,12 +537,8 @@ rules:
     - id: unimplemented.strigoi-kaz.bats.flyers
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement/terrain and charge-range rules are outside the duel scope.
+      reason: out-of-scope.movement
   name: Flyers
-  effect: >-
-    The Bats ignore terrain when they move and can freely charge any model that they can see,
-    regardless of height and interceptors.
   source:
     manual: broheim.net
     printed_page: 53
@@ -575,13 +546,10 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Voladores
-  effect_i18n:
-    es: >-
-      Los Murciélagos ignoran el terreno cuando se mueven y pueden cargar libremente contra
-      cualquier modelo que puedan ver, sin importar la altura ni los interceptores.
   applies_to:
     profile_ids:
     - bats
+  rule_ref: shared-rule.bat-flyers
 - id: bats--squishy
   runtime:
     scope: 'YES'
@@ -620,8 +588,7 @@ rules:
     - id: unimplemented.strigoi-kaz.fell-bats.animals
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: experience progression is a campaign mechanic.
+      reason: out-of-scope.campaign
   name: Animals
   effect: The Fell Bats are animals and never gain experience.
   source:
@@ -645,12 +612,8 @@ rules:
     - id: unimplemented.strigoi-kaz.fell-bats.flyers
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement/terrain and charge-range rules are outside the duel scope.
+      reason: out-of-scope.movement
   name: Flyers
-  effect: >-
-    The Bats ignore terrain when they move and can freely charge any model that they can see,
-    regardless of height and interceptors.
   source:
     manual: broheim.net
     printed_page: 54
@@ -658,13 +621,10 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Voladores
-  effect_i18n:
-    es: >-
-      Los Murciélagos ignoran el terreno cuando se mueven y pueden cargar libremente contra
-      cualquier modelo que puedan ver, sin importar la altura ni los interceptores.
   applies_to:
     profile_ids:
     - fell-bats
+  rule_ref: shared-rule.bat-flyers
 - id: fell-bats--cause-fear
   runtime:
     scope: 'YES'
@@ -687,7 +647,7 @@ rules:
   applies_to:
     profile_ids:
     - fell-bats
-  rule_ref: shared-rule.cause-fear-2
+  rule_ref: shared-rule.cause-fear-undead
 - id: fell-bats--may-not-run
   runtime:
     scope: 'NO'
@@ -697,8 +657,7 @@ rules:
     - id: unimplemented.strigoi-kaz.fell-bats.may-not-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
   name: May Not Run
   source:
     manual: broheim.net
@@ -722,6 +681,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+      clauses:
+      - id: psychology-immunity
+        scope: 'YES'
+      - id: never-leaves-combat
+        scope: 'NO'
   name: Immune to Psychology
   source:
     manual: broheim.net
@@ -733,7 +697,7 @@ rules:
   applies_to:
     profile_ids:
     - fell-bats
-  rule_ref: shared-rule.immune-to-psychology-4
+  rule_ref: shared-rule.immune-to-psychology-undead
 - id: fell-bats--immune-to-poison
   runtime:
     scope: 'YES'
@@ -758,7 +722,7 @@ rules:
   applies_to:
     profile_ids:
     - fell-bats
-  rule_ref: shared-rule.immune-to-poison-3
+  rule_ref: shared-rule.immune-to-poison-undead
 - id: fell-bats--no-pain
   runtime:
     scope: 'YES'
@@ -791,9 +755,7 @@ rules:
     - id: unimplemented.strigoi-kaz.band.hired-swords
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Hired Swords
   effect: >-
     Although they are normally secretive and avoid outside contact, the Strigoi Vampire warband may
@@ -829,8 +791,6 @@ rules:
           forbids:
           - equipment
   name: Equipment Restrictions
-  effect: >-
-    Equipment: None.
   source:
     manual: broheim.net
     printed_page: 53
@@ -838,12 +798,10 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      es
   applies_to:
     profile_ids:
     - bats
+  rule_ref: shared-rule.no-weapons-or-armour
 - id: charnel-guard--equipment-restrictions
   runtime:
     scope: 'YES'
@@ -891,8 +849,6 @@ rules:
           forbids:
           - equipment
   name: Equipment Restrictions
-  effect: >-
-    Equipment: None.
   source:
     manual: broheim.net
     printed_page: 54
@@ -900,12 +856,10 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      es
   applies_to:
     profile_ids:
     - fell-bats
+  rule_ref: shared-rule.no-weapons-or-armour
 - id: ghouls--equipment-restrictions
   runtime:
     scope: 'YES'

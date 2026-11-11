@@ -13,9 +13,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any models in the warband within 6" of the Dwarf Noble may use his Leadership instead of their
-    own.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -23,13 +20,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Todas las miniaturas de la banda a 6" del Noble enano pueden usar su Liderazgo en lugar del
-      suyo propio.
   applies_to:
     profile_ids:
     - dwarf-noble
+  rule_ref: shared-rule.leader
 - id: dwarf-engineer--expert-weaponsmith
   runtime:
     scope: 'NO'
@@ -39,8 +33,7 @@ rules:
     - id: unimplemented.dwarf-treasure-hunters.dwarf-engineer.expert-weaponsmith
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: shooting.
+      reason: out-of-scope.shooting
   name: Expert Weaponsmith
   effect: >-
     A Dwarf Engineer is a master of mechanical devices. By using stronger construction materials and
@@ -81,6 +74,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+      clauses:
+      - id: psychology-immunity
+        scope: 'YES'
+      - id: all-alone
+        scope: 'NO'
   name: Deathwish
   source:
     manual: mordheimer.net
@@ -169,7 +167,7 @@ rules:
     es: Cabeza Dura
   applies_to:
     band: true
-  rule_ref: shared-rule.hard-head-2
+  rule_ref: shared-rule.dwarf-hard-head
 - id: band--armour
   runtime:
     scope: 'NO'
@@ -179,9 +177,7 @@ rules:
     - id: unimplemented.dwarf-treasure-hunters.band.armour
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Armour
   source:
     manual: mordheimer.net
@@ -192,7 +188,7 @@ rules:
     es: Armadura
   applies_to:
     band: true
-  rule_ref: shared-rule.armour-2
+  rule_ref: shared-rule.dwarf-armour
 - id: band--hate-orcs-and-goblins
   runtime:
     scope: 'YES'
@@ -224,8 +220,7 @@ rules:
     - id: unimplemented.dwarf-treasure-hunters.band.grudgebearers
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Grudgebearers
   source:
     manual: mordheimer.net
@@ -246,8 +241,7 @@ rules:
     - id: unimplemented.dwarf-treasure-hunters.band.incomparable-miners
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Incomparable Miners
   source:
     manual: mordheimer.net
@@ -271,20 +265,26 @@ rules:
       binding:
         kind: mechanic
         id: skill.unbeatable-warrior
+      clauses:
+      - id: match-the-to-hit-roll
+        scope: 'YES'
+      - id: two-parries-with-two-parry-weapons
+        scope: 'YES'
+      - id: reroll-with-two-dwarf-axes
+        scope: 'YES'
     - id: skill.sword-master
       scope: 'YES'
       binding:
         kind: mechanic
         id: skill.sword-master
+      clauses:
+      - id: match-the-to-hit-roll
+        scope: 'YES'
+      - id: two-parries-with-two-parry-weapons
+        scope: 'YES'
+      - id: reroll-with-two-dwarf-axes
+        scope: 'YES'
   name: Master of Blades
-  effect: >-
-    This Dwarf’s martial skills surpass those of a normal warrior; he has fought unscathed against
-    hordes of Orcs and Goblins. When using a weapon that has a Parry special rule, this hero parries
-    successfully if he beats or matches his opponents highest ‘to hit’ roll, not just if he beats
-    the roll. In addition, if this warrior is using two weapons that have the Parry special rule, he
-    is allowed to parry two attacks (if his two dice match or beat the two highest Attack dice
-    against him) instead of the normal maximum of one. Note that if this Dwarf has two Dwarf axes
-    (as detailed above) he can reroll any failed parries.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -292,17 +292,9 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
   name_i18n:
     es: Maestro de las Hojas
-  effect_i18n:
-    es: >-
-      Las habilidades marciales de este enano superan las de un guerrero normal; ha luchado ileso
-      contra hordas de orcos y goblins. Al usar un arma con la regla especial Aturdir (Parry), este
-      héroe aturde con éxito si iguala o supera la tirada de 'impactar' más alta de su oponente, no
-      solo si la supera. Además, si este guerrero usa dos armas con la regla especial Aturdir, se le
-      permite aturdir dos ataques (si sus dos dados igualan o superan los dos dados de ataque más
-      altos contra él) en lugar del máximo normal de uno. Nótese que si este enano lleva dos hachas
-      enanas (como se detalla arriba) puede repetir cualquier aturdimiento fallido.
   applies_to:
     band: true
+  rule_ref: shared-rule.master-of-blades
 - id: band--dwarf-special-skills-extra-tough
   kind: warband_skill
   runtime:
@@ -313,9 +305,7 @@ rules:
     - id: unimplemented.dwarf-treasure-hunters.band.dwarf-special-skills-extra-tough
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Extra Tough
   source:
     manual: mordheimer.net
@@ -337,8 +327,7 @@ rules:
     - id: unimplemented.dwarf-treasure-hunters.band.dwarf-special-skills-resource-hunter
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Resource Hunter
   source:
     manual: mordheimer.net
@@ -489,8 +478,6 @@ rules:
     band: true
 - id: dwarf-troll-slayers--no-armour
   name: No Armour
-  effect: >-
-    Dwarf Troll Slayers may never wear any form of armour.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -498,9 +485,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
   name_i18n:
     es: Sin Armadura
-  effect_i18n:
-    es: >-
-      Los Matatrolles Enanos jamás pueden llevar ningún tipo de armadura.
   applies_to:
     profile_ids:
     - dwarf-troll-slayers
@@ -516,10 +500,9 @@ rules:
         id: profile.equipment-restrictions
         parameters:
           forbids: armour
+  rule_ref: shared-rule.no-armour
 - id: dwarf-troll-slayers--no-missile-weapons
   name: No Missile Weapons
-  effect: >-
-    Troll Slayers may never use missile weapons.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -527,9 +510,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
   name_i18n:
     es: Sin Armas de Proyectil
-  effect_i18n:
-    es: >-
-      Los Matatrolles Enanos jamás pueden usar armas de proyectil.
   applies_to:
     profile_ids:
     - dwarf-troll-slayers
@@ -543,3 +523,4 @@ rules:
       binding:
         kind: compiler
         id: compiler.no-missile-weapons
+  rule_ref: shared-rule.no-missile-weapons

@@ -53,17 +53,12 @@ rules:
         id: mechanic.causes-fear
 - id: vampire--immune-to-psychology
   name: Immune to Psychology
-  effect: The Vampire is immune to Psychology and never leaves close combat because of Psychology.
   source:
     manual: trollheim
     printed_page: 88
     section: Heroes / 1 Vampire / Immune to Psychology
   name_i18n:
     es: Inmune a la Psicología
-  effect_i18n:
-    es: >-
-      El Vampiro es inmune a la Psicología y nunca abandona el combate cuerpo a cuerpo a causa de la
-      Psicología.
   applies_to:
     profile_ids:
     - vampire
@@ -77,6 +72,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+  rule_ref: shared-rule.immune-to-psychology
 - id: vampire--immune-to-poison
   runtime:
     scope: 'YES'
@@ -115,18 +111,16 @@ rules:
         kind: mechanic
         id: skill.ignore-pain
   name: No Pain
-  effect: The Vampire treats a Stunned result on the Injury chart as Knocked Down.
   source:
     manual: trollheim
     printed_page: 88
     section: Heroes / 1 Vampire / No Pain
   name_i18n:
     es: Sin Dolor
-  effect_i18n:
-    es: El Vampiro trata un resultado Aturdido de la tabla de Heridas como Derribado.
   applies_to:
     profile_ids:
     - vampire
+  rule_ref: shared-rule.no-pain
 - id: necromancer--spellcaster
   name: Spellcaster
   effect: >-
@@ -153,8 +147,7 @@ rules:
     - id: unimplemented.trollheim-undead.necromancer.spellcaster
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: zombies--may-not-run
   name: May Not Run
   effect: Zombies may not run, but may charge normally.
@@ -177,8 +170,7 @@ rules:
     - id: unimplemented.trollheim-undead.zombies.may-not-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: zombies--fear
   name: Fear
   effect: Zombies cause Fear.
@@ -205,17 +197,12 @@ rules:
         id: mechanic.causes-fear
 - id: zombies--immune-to-psychology
   name: Immune to Psychology
-  effect: Zombies are immune to Psychology and never leave close combat because of Psychology.
   source:
     manual: trollheim
     printed_page: 89
     section: Henchmen / Zombies / Immune to Psychology
   name_i18n:
     es: Inmune a la Psicología
-  effect_i18n:
-    es: >-
-      Los Zombis son inmunes a la Psicología y nunca abandonan el combate cuerpo a cuerpo a causa de
-      la Psicología.
   applies_to:
     profile_ids:
     - zombies
@@ -229,6 +216,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+  rule_ref: shared-rule.immune-to-psychology
 - id: zombies--immune-to-poison
   runtime:
     scope: 'YES'
@@ -267,29 +255,24 @@ rules:
         kind: mechanic
         id: skill.ignore-pain
   name: No Pain
-  effect: Zombies treat a Stunned result on the Injury chart as Knocked Down.
   source:
     manual: trollheim
     printed_page: 89
     section: Henchmen / Zombies / No Pain
   name_i18n:
     es: Sin Dolor
-  effect_i18n:
-    es: Los Zombis tratan un resultado Aturdido de la tabla de Heridas como Derribado.
   applies_to:
     profile_ids:
     - zombies
+  rule_ref: shared-rule.no-pain
 - id: zombies--brainless
   name: Brainless
-  effect: Zombies never gain Experience.
   source:
     manual: trollheim
     printed_page: 89
     section: Henchmen / Zombies / Brainless
   name_i18n:
     es: Descerebrados
-  effect_i18n:
-    es: Los Zombis nunca ganan Experiencia.
   applies_to:
     profile_ids:
     - zombies
@@ -301,8 +284,8 @@ rules:
     - id: unimplemented.trollheim-undead.zombies.brainless
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
+  rule_ref: shared-rule.never-gain-experience
 - id: ghouls--fear
   name: Fear
   effect: Ghouls cause Fear.
@@ -329,15 +312,12 @@ rules:
         id: mechanic.causes-fear
 - id: dire-wolves--charge
   name: Charge
-  effect: A Dire Wolf has 2 Attacks instead of 1 during a turn in which it charges.
   source:
     manual: trollheim
     printed_page: 89
     section: Henchmen / 0-5 Dire Wolves / Charge
   name_i18n:
     es: Carga
-  effect_i18n:
-    es: Un Lobo dire tiene 2 Ataques en lugar de 1 durante un turno en el que cargue.
   applies_to:
     profile_ids:
     - dire-wolves
@@ -353,6 +333,7 @@ rules:
         id: trait.charge-attack-bonus
         parameters:
           value: true
+  rule_ref: shared-rule.charge
 - id: dire-wolves--may-not-run
   name: May Not Run
   effect: Dire Wolves may not run, but may charge normally.
@@ -375,9 +356,7 @@ rules:
     - id: unimplemented.trollheim-undead.dire-wolves.may-not-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: dire-wolves--fear
   name: Fear
   effect: Dire Wolves cause Fear.
@@ -404,17 +383,12 @@ rules:
         id: mechanic.causes-fear
 - id: dire-wolves--immune-to-psychology
   name: Immune to Psychology
-  effect: Dire Wolves are immune to Psychology and never leave close combat because of Psychology.
   source:
     manual: trollheim
     printed_page: 89
     section: Henchmen / 0-5 Dire Wolves / Immune to Psychology
   name_i18n:
     es: Inmune a la Psicología
-  effect_i18n:
-    es: >-
-      Los Lobos dire son inmunes a la Psicología y nunca abandonan el combate cuerpo a cuerpo a
-      causa de la Psicología.
   applies_to:
     profile_ids:
     - dire-wolves
@@ -428,6 +402,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+  rule_ref: shared-rule.immune-to-psychology
 - id: dire-wolves--immune-to-poison
   runtime:
     scope: 'YES'
@@ -456,15 +431,12 @@ rules:
     - dire-wolves
 - id: dire-wolves--dead
   name: Dead
-  effect: Dire Wolves never gain Experience.
   source:
     manual: trollheim
     printed_page: 89
     section: Henchmen / 0-5 Dire Wolves / Dead
   name_i18n:
     es: Muertos
-  effect_i18n:
-    es: Los Lobos dire nunca ganan Experiencia.
   applies_to:
     profile_ids:
     - dire-wolves
@@ -476,8 +448,8 @@ rules:
     - id: unimplemented.trollheim-undead.dire-wolves.dead
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
+  rule_ref: shared-rule.never-gain-experience
 - id: dire-wolves--no-pain
   runtime:
     scope: 'YES'
@@ -490,18 +462,16 @@ rules:
         kind: mechanic
         id: skill.ignore-pain
   name: No Pain
-  effect: Dire Wolves treat a Stunned result on the Injury chart as Knocked Down.
   source:
     manual: trollheim
     printed_page: 89
     section: Henchmen / 0-5 Dire Wolves / No Pain
   name_i18n:
     es: Sin Dolor
-  effect_i18n:
-    es: Los Lobos dire tratan un resultado Aturdido de la tabla de Heridas como Derribado.
   applies_to:
     profile_ids:
     - dire-wolves
+  rule_ref: shared-rule.no-pain
 
 - id: dire-wolves--equipment-restrictions
   runtime:

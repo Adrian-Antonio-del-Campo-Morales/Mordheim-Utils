@@ -235,9 +235,11 @@ def test_every_translated_band_rule_publishes_a_legacy_name_label() -> None:
     assert labels_by_id["dwarf-troll-slayers--no-armour"] == "Sin Armadura"
     assert labels_by_id["dwarf-troll-slayers--no-missile-weapons"] == "Sin Armas de Proyectil"
     assert labels_by_id["dwarf-troll-slayers--slayer-skills"] == "Habilidades de Matatrolles"
-    contextual = [row for row in artefact["rules_prose"]["profile-special-rules"]
-                  if row["id"] == "dwarf-troll-slayers--no-armour"]
-    assert any("Matatrolles Enanos" in row["effects"]["es"] for row in contextual)
+    # The printed text is the shared rule's; the band rule only delegates to it.
+    assert not any(row["id"] == "dwarf-troll-slayers--no-armour"
+                   for row in artefact["rules_prose"]["profile-special-rules"])
+    shared = next(row for row in artefact["rules_prose"]["special-rules"] if row["id"] == "shared-rule.no-armour")
+    assert shared["effects"]["es"].startswith("Este guerrero nunca puede llevar")
 
 
 def test_campaign_items_include_entries_outside_combat_lab_scope() -> None:
@@ -257,6 +259,18 @@ def test_excluded_combat_lab_surfaces_do_not_leak() -> None:
     text = json.dumps(artefact)
     for forbidden in ("simulation-mappings", "execution-contract", "runtime-scope"):
         assert forbidden not in text
+
+
+def test_verification_clauses_never_ship_to_the_browser() -> None:
+    """The KB declares its clauses next to every classified record; the web renders none."""
+    artefact = _artefact()
+
+    def carries_clauses(value) -> bool:
+        if isinstance(value, dict):
+            return "clauses" in value or any(carries_clauses(item) for item in value.values())
+        return isinstance(value, list) and any(carries_clauses(item) for item in value)
+
+    assert not carries_clauses(artefact)
 
 
 def test_display_names_travel_per_locale_with_canonical_english() -> None:

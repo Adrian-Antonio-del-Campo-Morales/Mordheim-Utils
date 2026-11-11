@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-e2e-statistical-delivery/v1",
+  "status": "blocked",
+  "source": {
+    "revision": "84a634dbdfc45973ebb93a9dd90c852e21c7c12b",
+    "path": "tests/integration/e2e/cases/grants/mordheim--dwarf-slayer-cult-web--rememberer--rememberer--rememberer--rem--2ed8f04caec5.yaml",
+    "sha256": "12e1747255b14f93bac0331f0356e493137b0663a75d570708b0fabb443f4ce8",
+    "test_id": "rule/mordheim/dwarf-slayer-cult-web/rememberer--rememberer/rememberer--rememberer.provider::the-supplied-rememberer-rerolls-a-failed-to-hit-roll"
+  },
+  "case_key": "e2e/rule/mordheim/dwarf-slayer-cult-web/rememberer--rememberer/rememberer--rememberer.provider/the-supplied-rememberer-rerolls-a-failed-to-hit-roll",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E prescribes explicit decisions (round.0.first.attack.0.rememberer); the contract admits only the engine-default decision policy, and no general policy for randomly branched trajectories exists for these keys."
+}

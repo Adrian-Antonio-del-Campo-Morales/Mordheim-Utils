@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/skill.web-of-steel
-# scaffold_fingerprint: d82466e6e2c2bc245adb1a7d369e6e716e8f6533e589284a7654040f35a82437
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clause carries 2 authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -8,38 +7,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 2 scenarios show one point of critical-table modifier moving a raw roll of two into the armour-denying band, and the same raw roll without the skill leaving the worn suit its save.
-# origin_id:
-#   mechanic/skill.web-of-steel
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   afcf4aa8b1e207f95bb174d8bf5112bc82b8ec88b50d768569de3ea4a0b75c0c
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   +1 on close-combat Critical Hit tables.
-# Semantic contract (check analysis_status before treating as accepted):
-#   The fighter adds +1 on close-combat Critical Hit tables. Closure: a critical wound caused by the bearer rolls its critical result with one extra point of modifier.
-# effect_id:
-#   skill.web-of-steel
-# relation:
-#   equivalent
-# parameters:
-#   {"critical_table_modifier": 1, "scope": "close-combat critical hit tables"}
-# conditions:
-#   {"trigger": "critical wound"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   The critical resolution adds one to the modifier for the web-of-steel tag, on top of the printed critical_injury_bonus of materials such as the Dark Elf Blade, so the two printed modifiers remain separate additive terms. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"whole","audit_group":"EQ-skill.web-of-steel","verified_facet":"skill.web-of-steel","relationship":"shared_facet","boundary":"Bonus to the close-combat critical table, not every ordinary Injury roll. Keep the existing critical_table_modifier key rather than the review misleading critical_injury_bonus.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+# AUTHORED: 2 scenarios show one point of critical-table modifier moving a raw roll of two into the armour-denying band, and the same raw roll without the skill leaving the worn suit its save.
 
 # --- Authored scenarios ---
 # mechanic/skill.web-of-steel - authored from the printed "+1 on close-combat
@@ -50,7 +21,6 @@
 # not, and the armour stage is reached only in the second scenario.
 - audit_id: mechanic/skill.web-of-steel
   id: the-skill-moves-a-raw-two-into-the-armour-denying-band
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -73,7 +43,6 @@
 
 - audit_id: mechanic/skill.web-of-steel
   id: the-same-raw-two-leaves-the-worn-suit-its-save-without-the-skill
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace

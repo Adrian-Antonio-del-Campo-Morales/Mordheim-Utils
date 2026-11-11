@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/chaos-streets-deathbringers/shadow-blade--consummate-fighter/trait.perfect-killer
-# scaffold_fingerprint: c4d4139e57fcdbabaa85937f7ca06756c01f14cf101976924c81ed8431e681f4
 # authoring_status: AUTHORED
 # authoring_progress: the admitted whole clause carries two authored scenarios derived from the printed
 # sentence and the recorded contract that names the delivery (the trait is compiled into the bearer's
@@ -14,42 +13,14 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 2 scenarios cover the printed additional -1 on the enemy armour save read on the
+# AUTHORED: 2 scenarios cover the printed additional -1 on the enemy armour save read on the
 # armour roll: against a heavy-armoured Toughness 3 defender the very same armour face of five fails to
 # save while the row is selected, and the identical blow without the row is saved.  The biting venue of
 # the printed sentence is shooting, which the duel vocabulary does not express, so only the close-combat
 # consequence is asserted.
-# origin_id:
-#   rule/trollheim/chaos-streets-deathbringers/shadow-blade--consummate-fighter/trait.perfect-killer
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/trollheim/chaos-streets-deathbringers/special-rules.yaml
-# source_fingerprint:
-#   648790dcbf20cbed416b450026c88ad56a2cb93c5c845a7412b9b8f5f9446566
-# source_sha256_at_generation:
-#   a1e85e663a8232b4d2114c2431b7a400db58e753da037a543ef2a0307f5d1cbf
-# Printed rule text:
-#   Wounds inflicted by the Shadow Blade, whether in shooting or close combat, impose an additional -1 modifier to the enemy's armour save.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Wounds inflicted by this fighter, in shooting and close combat, impose an additional -1 modifier on the enemy armour save; observable: the armour target is one lower.
-# effect_id:
-#   trait.perfect-killer
-# relation:
-#   equivalent
-# parameters:
-#   {}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   perfect_killer is compiled into armour_penetration, so it applies to shooting and melee alike. Surface reuse candidate: {"family":"T-PERFECT-KILLER","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Possible shared additional enemy armour-save modifier on inflicted melee wounds. Preserve the local magnitude, recipient and weapon restrictions; excluded shooting does not create an additional melee contribution.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
 # --- Authored scenarios ---
 # Derived from the printed sentence and the recorded contract, never from engine output.  The bearer is the
@@ -59,7 +30,6 @@
 
 - audit_id: rule/trollheim/chaos-streets-deathbringers/shadow-blade--consummate-fighter/trait.perfect-killer
   id: the-additional-penalty-drops-the-armour-save
-  covers: [whole]
   fighters:
     first:
       collection: trollheim
@@ -89,7 +59,6 @@
 
 - audit_id: rule/trollheim/chaos-streets-deathbringers/shadow-blade--consummate-fighter/trait.perfect-killer
   id: without-the-row-the-same-armour-face-holds
-  covers: [whole]
   fighters:
     first:
       collection: trollheim

@@ -86,9 +86,7 @@ rules:
     - id: unimplemented.skaven-clan-eshin.eshin-sorcerer.magic-user
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: giant-rats--pack-size
   name: Pack Size
   effect: >-
@@ -115,8 +113,7 @@ rules:
     - id: unimplemented.skaven-clan-eshin.giant-rats.pack-size
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: giant-rats--animal
   name: Animal
   source:
@@ -137,8 +134,7 @@ rules:
     - id: unimplemented.skaven-clan-eshin.giant-rats.animal
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
   rule_ref: shared-rule.animal
 - id: rat-ogre--fear
   name: Fear
@@ -188,10 +184,7 @@ rules:
     - id: unimplemented.skaven-clan-eshin.rat-ogre.stupidity.outside-duel
       scope: 'NO'
       binding: null
-      reason: >-
-        Board movement, campaign progression/participation and independently
-        simulated helper/rider/group producers are outside the 1v1 duel.
-        Admissible individual exemptions and bonuses are supplied active facts.
+      reason: out-of-scope.movement
   rule_ref: shared-rule.stupidity
 - id: rat-ogre--experience
   name: Experience
@@ -213,9 +206,8 @@ rules:
     - id: unimplemented.skaven-clan-eshin.rat-ogre.experience
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
-  rule_ref: shared-rule.experience
+      reason: out-of-scope.shooting
+  rule_ref: shared-rule.never-gain-experience
 - id: rat-ogre--large-target
   name: Large Target
   source:
@@ -236,8 +228,7 @@ rules:
     - id: unimplemented.skaven-clan-eshin.rat-ogre.large-target
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
   rule_ref: shared-rule.large-target
 - id: band--skaven-maximum-characteristics
   name: Skaven Maximum Characteristics
@@ -264,16 +255,10 @@ rules:
     - id: unimplemented.skaven-clan-eshin.band.skaven-maximum-characteristics
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: band--skaven-special-skills-black-hunger
   kind: warband_skill
   name: Black Hunger
-  effect: >-
-    At the start of his turn, the Skaven Hero may invoke Black Hunger. For that turn he gains +1
-    Attack and +D3 inches to his total Movement, then suffers D3 Strength 3 hits with no armour save
-    at the end of the turn.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -281,11 +266,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
   name_i18n:
     es: Hambre Negra
-  effect_i18n:
-    es: >-
-      Al comienzo de su turno, el Héroe skaven puede invocar el Hambre negra. Durante ese turno gana
-      +1 Ataque y +D3 pulgadas a su Movimiento total, y luego sufre D3 impactos de Fuerza 3 sin
-      salvación por armadura al final del turno.
   eligibility:
   - assassin-adept
   - black-skaven
@@ -303,6 +283,12 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.black-hunger
+      clauses:
+      - id: attack-and-backlash
+        scope: 'YES'
+      - id: movement
+        scope: 'NO'
+  rule_ref: shared-rule.black-hunger
 - id: band--skaven-special-skills-tail-fighting
   kind: warband_skill
   runtime:
@@ -317,9 +303,6 @@ rules:
         id: special-rule.band--skaven-special-skills-tail-fighting
   runtime_selectable: true
   name: Tail Fighting
-  effect: >-
-    The Skaven may wield a shield, knife or sword with his tail. A weapon grants one additional
-    attack with that weapon; a shield grants +1 to the model's armour save.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -327,10 +310,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
   name_i18n:
     es: Combate con la Cola
-  effect_i18n:
-    es: >-
-      El skaven puede empuñar un escudo, cuchillo o espada con su cola. Un arma concede un ataque
-      adicional con esa arma; un escudo concede +1 a la salvación por armadura de la miniatura.
   eligibility:
   - assassin-adept
   - black-skaven
@@ -338,12 +317,10 @@ rules:
   - night-runners
   applies_to:
     band: true
+  rule_ref: shared-rule.tail-fighting
 - id: band--skaven-special-skills-wall-runner
   kind: warband_skill
   name: Wall Runner
-  effect: >-
-    The Skaven automatically passes Initiative tests required to climb walls and other sheer
-    surfaces.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -351,10 +328,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
   name_i18n:
     es: Corredor de Muros
-  effect_i18n:
-    es: >-
-      El skaven supera automáticamente los chequeos de Iniciativa necesarios para trepar por muros y
-      otras superficies verticales.
   eligibility:
   - assassin-adept
   - black-skaven
@@ -370,15 +343,11 @@ rules:
     - id: unimplemented.skaven-clan-eshin.band.skaven-special-skills-wall-runner
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
+  rule_ref: shared-rule.wall-runner
 - id: band--skaven-special-skills-infiltration
   kind: warband_skill
   name: Infiltration
-  effect: >-
-    The Skaven deploys after the opposing warband and may be placed anywhere out of enemy sight and
-    more than 12" from every enemy model. If both players have infiltrators, roll a D6 for each; the
-    lowest roll deploys first.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -386,11 +355,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
   name_i18n:
     es: Infiltración
-  effect_i18n:
-    es: >-
-      El skaven se despliega después de la banda contraria y puede situarse en cualquier lugar fuera
-      de la vista enemiga y a más de 12" de cada miniatura enemiga. Si ambos jugadores tienen
-      infiltradores, tira un D6 por cada uno; la tirada más baja despliega primero.
   eligibility:
   - assassin-adept
   - black-skaven
@@ -406,8 +370,8 @@ rules:
     - id: unimplemented.skaven-clan-eshin.band.skaven-special-skills-infiltration
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
+  rule_ref: shared-rule.infiltration
 - id: band--skaven-special-skills-art-of-silent-death
   kind: warband_skill
   runtime:

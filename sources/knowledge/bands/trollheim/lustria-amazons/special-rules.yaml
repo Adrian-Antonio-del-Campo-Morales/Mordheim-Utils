@@ -56,8 +56,7 @@ rules:
     - id: unimplemented.lustria-amazons.amazon-priestess.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: amazon-totem-warriors--frenzy
   runtime:
     scope: 'YES'
@@ -110,8 +109,7 @@ rules:
     - id: unimplemented.lustria-amazons.amazon-scouts.silent
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: amazon-scouts--animal-companion
   name: Animal Companion
   effect: >-
@@ -138,8 +136,7 @@ rules:
     - id: unimplemented.lustria-amazons.amazon-scouts.animal-companion
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: great-cats--animal
   name: Animal
   effect: Great Cats are animals and never gain Experience.
@@ -162,8 +159,7 @@ rules:
     - id: unimplemented.lustria-amazons.great-cats.animal
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: great-cats--natural-stealth
   name: Natural Stealth
   effect: >-
@@ -190,8 +186,7 @@ rules:
     - id: unimplemented.lustria-amazons.great-cats.natural-stealth
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: great-cats--animal-companion
   name: Animal Companion
   effect: >-
@@ -221,8 +216,14 @@ rules:
     - id: unimplemented.lustria-amazons.great-cats.animal-companion
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.psychology
+      clauses:
+      - id: companion-deployment
+        scope: 'NO'
+      - id: scout-loss-frenzy
+        scope: 'NO'
+      - id: companion-campaign-departure
+        scope: 'NO'
 - id: band--sacrifice
   name: Sacrifice
   effect: >-
@@ -248,8 +249,7 @@ rules:
     - id: unimplemented.lustria-amazons.band.sacrifice
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--not-one-of-us
   name: Not One of Us
   effect: >-
@@ -275,9 +275,7 @@ rules:
     - id: unimplemented.lustria-amazons.band.not-one-of-us
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: band--isolationists
   name: Isolationists
   effect: All Amazons are subject to Hatred against Norse and Lizardmen.
@@ -326,8 +324,10 @@ rules:
     - id: unimplemented.lustria-amazons.band.norse-enmity
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.psychology
+      clauses:
+      - id: whole
+        scope: 'NO'
 - id: band--great-cat-limit
   name: Great Cat Limit
   effect: >-
@@ -352,8 +352,7 @@ rules:
     - id: unimplemented.lustria-amazons.band.great-cat-limit
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--amazon-special-skills-lizard-hunter
   kind: warband_skill
   name: Lizard Hunter
@@ -416,8 +415,7 @@ rules:
     - id: unimplemented.lustria-amazons.band.amazon-special-skills-concealment
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--amazon-special-skills-hypnotic-dance
   kind: warband_skill
   name: Hypnotic Dance
@@ -484,6 +482,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.fear-immunity
+      clauses:
+      - id: fear-immunity--scope--fear-immunity
+        scope: 'YES'
+      - id: all-alone-and-reroll
+        scope: 'NO'
     # The printed clause carries the charge attack on the same sentence as the
     # Fear immunity; the All Alone half is a separate group-subsystem clause.
     # The shared charge trait adds its attack only on the turn she charges.
@@ -524,8 +527,7 @@ rules:
     - id: unimplemented.lustria-amazons.band.amazon-special-skills-elixir-of-life
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 
 - id: great-cats--natural-weapons
   runtime:

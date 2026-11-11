@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.frustratingly-tiny
-# scaffold_fingerprint: 94af274033ca1442eb0a4a62d9ba341167d8c24a517cb62ae1e43c639610e54f
 # authoring_status: PARTIAL
 # authoring_progress: the melee To-Hit penalty clause carries 2 authored scenarios;
 #   the printed mutual exclusion with Big Bully cannot compile a duel scenario (Big
@@ -12,9 +11,8 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: cannot-combine-with-big-bully (scope: YES)
 # PARTIAL[cannot-combine-with-big-bully]: the exclusion is not authorable as a duel
@@ -35,61 +33,9 @@
 #   work, register implementation_batch B17-construction) plus a runtime grant id for
 #   Big Bully should the duel ever take that skill.; the pairing itself stays in the
 #   register as printed.
-# origin_id:
-#   mechanic/mechanic.frustratingly-tiny
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   4fcb15ce852420d8dac5ded449c83155ed49173971923c3117f34c675b3bb627
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   Cannot combine with Big Bully
-# Semantic contract (check analysis_status before treating as accepted):
-#   A printed mutual exclusion between two skills of the same fighter is a legal-combination restriction on that bearer's construction, which the scope admits; implementation status is not a criterion. Printed clause: Cannot combine with Big Bully
-# effect_id:
-#   mechanic.frustratingly-tiny
-# relation:
-#   equivalent
-# parameters:
-#   {"excludes":"big-bully"}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   No construction or eligibility check enforces the mutual exclusion, and hidden-model detection is outside the duel scope; the exclusion is recorded as a missing connection. Scope review integration: {"clause_id":"cannot-combine-with-big-bully","review_clause_id":"cannot-combine-with-big-bully","source_state":"matched","review_status":"reviewed","scope_reason":"A printed mutual exclusion between two skills of the same fighter is a legal-combination restriction on that bearer's construction, which the scope admits; implementation status is not a criterion.","notes":"No construction or eligibility check enforces the exclusion in the frozen revision; recorded as a missing connection, not as a scope change.","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The skill cannot be combined with Big Bully; observable: the loadout is rejected when both are taken.","effect_id":"mechanic.frustratingly-tiny","relation":"equivalent","parameters":"{\"excludes\":\"big-bully\"}","conditions":"{}","consumer":"[]","implementation_work":"connection","dependencies":"[]","implementation_batch":"B17-construction","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"Acquired Snotling skill; enemies suffer -1 to hit in melee. Cannot combine with Big Bully. Hidden detection is outside the duel scope.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."} Surface reuse candidate: {"family":"M-SMALL","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare penalty recipient, melee-only/first-round timing, species/fire exceptions and stacking. A hit penalty is not an armour modifier, and natural six handling remains part of the hit resolver.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: minus-one-to-hit-in-melee (scope: YES)
 # AUTHORED[minus-one-to-hit-in-melee]: 2 scenarios show the same declared To-Hit face of four missing against the bearer and hitting the same way against a warrior without the trait.
-# origin_id:
-#   mechanic/mechanic.frustratingly-tiny
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   4fcb15ce852420d8dac5ded449c83155ed49173971923c3117f34c675b3bb627
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   Acquired Snotling skill; enemies suffer -1 to hit in melee
-# Semantic contract (check analysis_status before treating as accepted):
-#   Enemies suffering -1 to hit in melee is a melee to-hit modifier suffered against that bearer, the same admitted form as Cloud of Flies and Sea Troll slime. Printed clause: Acquired Snotling skill; enemies suffer -1 to hit in melee
-# effect_id:
-#   mechanic.frustratingly-tiny
-# relation:
-#   equivalent
-# parameters:
-#   {"incoming_hit_modifier":-1}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#    Scope review integration: {"clause_id":"minus-one-to-hit-in-melee","review_clause_id":"minus-one-to-hit-in-melee","source_state":"matched","review_status":"reviewed","scope_reason":"Enemies suffering -1 to hit in melee is a melee to-hit modifier suffered against that bearer, the same admitted form as Cloud of Flies and Sea Troll slime.","notes":"The same frozen record also prints 'Cannot combine with Big Bully.' (classified as row 651) and 'Hidden detection is outside the duel scope.', which is an explicit exclusion statement with no consequence of its own and therefore gets no row.","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Enemies suffer -1 to hit this Snotling in melee; observable: the to-hit target is one point higher in melee.","effect_id":"mechanic.frustratingly-tiny","relation":"equivalent","parameters":"{\"incoming_hit_modifier\":-1}","conditions":"{}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/contexts.py::prepare_hit_context\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"B08-attacker-modifiers","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/contexts.py::prepare_hit_context\"]"},"inherited_clause_text":"Acquired Snotling skill; enemies suffer -1 to hit in melee. Cannot combine with Big Bully. Hidden detection is outside the duel scope.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."} Surface reuse candidate: {"family":"M-SMALL","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare penalty recipient, melee-only/first-round timing, species/fire exceptions and stacking. A hit penalty is not an armour modifier, and natural six handling remains part of the hit resolver.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
 # --- Authored scenarios ---
 # The printed penalty is suffered against the bearer, so the trait sits on the defending model

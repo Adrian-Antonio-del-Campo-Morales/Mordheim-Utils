@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/marauders-of-chaos/band--mark-of-arkhar/mechanic.mark-of-arkhar
-# scaffold_fingerprint: a4ebf90076e8774abc070364a4ef72c2f8732e67ecda427928fdb6d60b07c88d
 # authoring_status: AUTHORED
 # authoring_progress: the single admitted frenzy clause carries 3 authored scenarios derived from the
 #   printed rule, the recorded contract and the accepted construction test
@@ -16,9 +15,8 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: whole--scope--frenzy (scope: YES)
 # AUTHORED[whole--scope--frenzy]: 3 scenarios cover the printed consequence.  The bearer is the band's
@@ -28,61 +26,9 @@
 #   opponent's single answer as the third outcome.  The control repeats the identical dice on the same
 #   Chieftain without the mark, and the refusal case selects the mark on champions, which the source
 #   does not list as a recipient (applies_to.profile_ids: [marauder-chieftain]).
-# origin_id:
-#   rule/mordheim/marauders-of-chaos/band--mark-of-arkhar/mechanic.mark-of-arkhar
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/marauders-of-chaos/special-rules.yaml
-# source_fingerprint:
-#   515c40da3fd3d5759a513e2ccbabeca0e8f82dd6ecc54300e53900d2c77efc29
-# source_sha256_at_generation:
-#   501a50b0b257497d4817e6d76326eb3504f13f454c12a57d3e72077681bbe574
-# Printed rule text:
-#   A marked leader is subject to Frenzy
-# Semantic contract (check analysis_status before treating as accepted):
-#   Being subject to Frenzy is an admitted lasting individual psychology state of this marked leader. Printed clause: A marked leader is subject to Frenzy
-# effect_id:
-#   mechanic.mark-of-arkhar
-# relation:
-#   related
-# parameters:
-#   {}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Spell targeting is excluded; Frenzy and the spell-save constant are the admitted duel facts, and the Bloodfather progression/Strength access stays campaign. Scope review integration: {"clause_id":"whole","review_clause_id":"frenzy","source_state":"matched","review_status":"reviewed","scope_reason":"Being subject to Frenzy is an admitted lasting individual psychology state of this marked leader.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Mark effect: a leader bearing the Mark of Arkhar is subject to Frenzy and gains a 4+ spell-save; the Bloodfather branch grants campaign/advance-based characteristic gains.","effect_id":"mechanic.mark-of-arkhar","relation":"equivalent","parameters":"{}","conditions":"{\"recipient\":\"marked leader\",\"frenzy\":true,\"spell_save\":4}","consumer":"[\"apps/combat-lab/mordheim_combat_lab/verification/consumers.py::MODULAR_TAG_CONSUMERS\",\"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"batch.D.marks","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"sources/knowledge/bands/mordheim/marauders-of-chaos/special-rules.yaml\"]"},"inherited_clause_text":"A marked leader is subject to Frenzy and spells targeting him fail on 4+.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."} Surface reuse candidate: {"family":"mechanic.mark-of-arkhar","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare each admitted current clause only. Keep charge gate, hit penalty, state, impact modification and supplied beneficiary separate. Spell, ranged/BS, third-fighter and group-emission clauses remain excluded; do not copy combined parent parameters.","boundary":"Current child only; do not import excluded sibling or combined-parent behavior.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: whole--scope--spell-resistance (scope: NO)
 # Outside the admitted clause scope; retained for context, not a test TODO.
-# origin_id:
-#   rule/mordheim/marauders-of-chaos/band--mark-of-arkhar/mechanic.mark-of-arkhar
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/marauders-of-chaos/special-rules.yaml
-# source_fingerprint:
-#   515c40da3fd3d5759a513e2ccbabeca0e8f82dd6ecc54300e53900d2c77efc29
-# source_sha256_at_generation:
-#   501a50b0b257497d4817e6d76326eb3504f13f454c12a57d3e72077681bbe574
-# Printed rule text:
-#   spells targeting him fail on 4+.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Spells failing on a 4+ concerns the excluded casting subsystem and adds no admitted duel consequence. Printed clause: spells targeting him fail on 4+.
-# effect_id:
-#   (not recorded)
-# relation:
-#   independent
-# parameters:
-#   {}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Spell targeting is excluded; Frenzy and the spell-save constant are the admitted duel facts, and the Bloodfather progression/Strength access stays campaign. Scope review integration: {"clause_id":"whole","review_clause_id":"spell-resistance","source_state":"matched","review_status":"reviewed","scope_reason":"Spells failing on a 4+ concerns the excluded casting subsystem and adds no admitted duel consequence.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Mark effect: a leader bearing the Mark of Arkhar is subject to Frenzy and gains a 4+ spell-save; the Bloodfather branch grants campaign/advance-based characteristic gains.","effect_id":"mechanic.mark-of-arkhar","relation":"equivalent","parameters":"{}","conditions":"{\"recipient\":\"marked leader\",\"frenzy\":true,\"spell_save\":4}","consumer":"[\"apps/combat-lab/mordheim_combat_lab/verification/consumers.py::MODULAR_TAG_CONSUMERS\",\"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"batch.D.marks","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"sources/knowledge/bands/mordheim/marauders-of-chaos/special-rules.yaml\"]"},"inherited_clause_text":"A marked leader is subject to Frenzy and spells targeting him fail on 4+.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
 
 # --- Authored scenarios ---
 # Derived from the printed rule, the recorded contract and the accepted test; no engine output was

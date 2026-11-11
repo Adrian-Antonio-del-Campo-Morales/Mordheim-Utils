@@ -54,7 +54,7 @@ jobs:
       # regression net above deliberately excludes tests/integration/e2e.  This step runs
       # the strict support checks, the full-loop proofs, the declared scenarios
       # and the shared-variant isolation checks, and reconciles them against
-      # the audit register.  Incomplete admitted-clause coverage is reported,
+      # the knowledge-base clause inventory.  Incomplete admitted-clause coverage is reported,
       # and fails only under MORDHEIM_E2E_REQUIRE_COMPLETE=1.
       - name: Run the modular engine E2E battery
         run: python -m pytest tests/integration/e2e -q --ignore=tests/integration/e2e/integrity/test_non_regression.py

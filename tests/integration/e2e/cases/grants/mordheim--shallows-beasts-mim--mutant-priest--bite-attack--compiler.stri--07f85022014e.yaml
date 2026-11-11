@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/shallows-beasts-mim/mutant-priest--bite-attack/compiler.strikes-last-bite
-# scaffold_fingerprint: 6c5eea25aefc20aed401be38f53f5d2d459950e6768fce0e432ff1f1383c79f2
 # authoring_status: AUTHORED
 # authoring_progress: the admitted whole clause carries three authored scenarios derived from the printed
 # sentence, the recorded contract and the printed mutant-priest profile, following the authored sibling of
@@ -14,12 +13,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 3 scenarios cover the printed "powerful bite attack ... uses the Priest's own strength
+# AUTHORED: 3 scenarios cover the printed "powerful bite attack ... uses the Priest's own strength
 # to wound and receives no penalty for not using a weapon.  The bite attack always strikes last, regardless
 # of who charged or which weapon is used.  The bite even attacks after double-handed weapons."  The bearer
 # is the printed mutant-priest (Weapon Skill 4, Strength 3, Toughness 4, Wounds 1, Initiative 4, Attacks 1,
@@ -27,32 +24,6 @@
 # final pool round.<r>.<owner>.last-bite.attack.0.*, the label the authored sibling bite files and the
 # engine's own unit tape use; a wrong label would fail on the pool name and that failure is the finding.
 # REVIEWED still requires manual semantic review.
-# origin_id:
-#   rule/mordheim/shallows-beasts-mim/mutant-priest--bite-attack/compiler.strikes-last-bite
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/shallows-beasts-mim/special-rules.yaml
-# source_fingerprint:
-#   0ccccf144aa1a9bf4d970833e1db17b43e690329655f47c83938dfe7c5238ed4
-# source_sha256_at_generation:
-#   5d440a668d198dd7e2f1302ea6d09305979dddaff958872dfd8ca9be5108cf18
-# Printed rule text:
-#   The Mutant-Priest has a powerful bite attack... The bite attack always strikes last.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Granted attack: the Mutant-Priest makes one extra bite attack using its own Strength, striking last after all other attacks including double-handed weapons.
-# effect_id:
-#   compiler.strikes-last-bite
-# relation:
-#   equivalent
-# parameters:
-#   {}
-# conditions:
-#   {"recipient":"mutant-priest","uses_own_strength":true,"strikes_last":true}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Separate contract id from compiler.bite-attack but the same striking-last extra-attack shape. Scope review integration: {"clause_id":"whole","review_clause_id":"whole","source_state":"unverified","review_status":"reviewed","scope_reason":"The bite attack always striking last is an admitted attack-priority consequence.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"}
 
 # --- Authored scenarios ---
 # Derived from the printed rule, the recorded contract and the printed profile; no engine output was
@@ -62,7 +33,6 @@
 
 - audit_id: rule/mordheim/shallows-beasts-mim/mutant-priest--bite-attack/compiler.strikes-last-bite
   id: the-bite-is-an-extra-attack-that-strikes-after-the-weapon-attacks
-  covers: [whole]
   fighters:
     first:
       collection: mordheim
@@ -87,7 +57,6 @@
 
 - audit_id: rule/mordheim/shallows-beasts-mim/mutant-priest--bite-attack/compiler.strikes-last-bite
   id: the-bite-uses-the-priests-own-strength-not-the-weapons-bonus
-  covers: [whole]
   fighters:
     first:
       collection: mordheim
@@ -114,7 +83,6 @@
 
 - audit_id: rule/mordheim/shallows-beasts-mim/mutant-priest--bite-attack/compiler.strikes-last-bite
   id: a-fighter-without-the-printed-rule-gains-no-bite
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace

@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/khorne-raiders-sar/madbrains--immune-to-psychology/mechanic.automatic-leadership
-# scaffold_fingerprint: 600dda383365493dfbd934e05a2277b5985adb83c7fdaf19c1cf4c5fe15d7b9d
 # authoring_status: PARTIAL
 # authoring_progress: the admitted automatic-leadership clause carries 3 authored scenarios read
 #   through the only Leadership tests this 1v1 setup can force on a Madbrain: the round-0 Fear test
@@ -15,9 +14,8 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: automatic-leadership (scope: YES)
 # PARTIAL[automatic-leadership]: [C] CLOSING-REVIEW CLASSIFICATION: input/observation absent from the executor contract.  The operator itself IS implemented (leadership.py::resolve_local_leadership returns a pass on the mechanic.automatic-leadership tag before any die is requested) and the authored scenarios assert the printed consequence through every Leadership request the 1v1 duel routes on this bearer; what does not exist is any non-Psychology Leadership test route, so the clause's wider face cannot be observed separately from mechanic.psychology-immunity.  Missing capability: one admitted non-Psychology Leadership request in the corpus.  [B] where the register note also records no KB binding, that missing step is the binding itself - the printed consequence is already authored, so it is an implementation step, not an authoring gap.  Original note follows: the printed sentence passes any Leadership test they are required
@@ -35,61 +33,9 @@
 #   causes_fear trait; the Madbrains profile is read as printed (W1, A1, I3, Ld6), and every strike
 #   is declared as a natural 1, so each round reports the under-test request and nothing else.
 #   REVIEWED still requires manual semantic review.
-# origin_id:
-#   rule/mordheim/khorne-raiders-sar/madbrains--immune-to-psychology/mechanic.automatic-leadership
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/khorne-raiders-sar/special-rules.yaml
-# source_fingerprint:
-#   ce104fb5d2673bab8d95bba0906a9773e2d7744ba33ebfc6021e9d19b91f41f2
-# source_sha256_at_generation:
-#   9f74e3d63c17e04e6c9495f4a23a951580596577ac30feadba8504194b917d94
-# Printed rule text:
-#   Madbrains pass any Leadership test they are required to take.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Automatically passing every required Leadership test is an admitted lasting individual state; the bar on promotion belongs to its own separated clause. Printed clause: Madbrains pass any Leadership test they are required to take.
-# effect_id:
-#   mechanic.automatic-leadership
-# relation:
-#   equivalent
-# parameters:
-#   {}
-# conditions:
-#   {"trigger":"any Leadership-based test this warrior must take","resolution":"leadership.resolve_local_leadership returns a pass before dice","consequence":"the test cannot fail","recipient":"this warrior","duration":"whole duel","stacking":"not cumulative","exceptions":"does not remove the need to attack/charge; separate prohibition clauses are recorded individually"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Auto-pass leadership. Daemonic/Darksoul/Flagellant wording states the same outcome as mechanic.automatic-leadership; the KB entry name 'Immune to Psychology' is a source label, the printed sentence is the auto-pass rule. Scope review integration: {"clause_id":"automatic-leadership","review_clause_id":"automatic-leadership","source_state":"matched","review_status":"reviewed","scope_reason":"Automatically passing every required Leadership test is an admitted lasting individual state; the bar on promotion belongs to its own separated clause.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Automatically passes every Leadership-based test it is required to take, without rolling. Observable: no Leadership test — including Fear, Stupidity and other Psychology — ever fails for this warrior.","effect_id":"mechanic.automatic-leadership","relation":"equivalent","parameters":"{}","conditions":"{\"trigger\":\"any Leadership-based test this warrior must take\",\"resolution\":\"leadership.resolve_local_leadership returns a pass before dice\",\"consequence\":\"the test cannot fail\",\"recipient\":\"this warrior\",\"duration\":\"whole duel\",\"stacking\":\"not cumulative\",\"exceptions\":\"does not remove the need to attack/charge; separate prohibition clauses are recorded individually\"}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"C07-leadership-rerolls","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\"]"},"inherited_clause_text":"Madbrains pass any Leadership test they are required to take. They cannot be promoted to Leader.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."} Surface reuse candidate: {"family":"mechanic.automatic-leadership","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare each immunity or automatic-pass clause separately. Psychology immunity is not automatic success on every Leadership test. Preserve ordinary Hatred/Frenzy suppression and the explicit Strigoi exception; excluded running, experience and group tests remain excluded.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: leader-restriction (scope: NO)
 # Outside the admitted clause scope; retained for context, not a test TODO.
-# origin_id:
-#   rule/mordheim/khorne-raiders-sar/madbrains--immune-to-psychology/mechanic.automatic-leadership
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/khorne-raiders-sar/special-rules.yaml
-# source_fingerprint:
-#   ce104fb5d2673bab8d95bba0906a9773e2d7744ba33ebfc6021e9d19b91f41f2
-# source_sha256_at_generation:
-#   9f74e3d63c17e04e6c9495f4a23a951580596577ac30feadba8504194b917d94
-# Printed rule text:
-#   may never become the warband leader
-# Semantic contract (check analysis_status before treating as accepted):
-#   (not recorded)
-# effect_id:
-#   (not recorded)
-# relation:
-#   independent
-# parameters:
-#   {}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Leader succession restriction; roster construction, not an in-duel behaviour; no runtime consumer assigned. Scope review integration: {"clause_id":"leader-restriction","review_clause_id":"leader-restriction","source_state":"unverified","review_status":"reviewed","scope_reason":"The bar on becoming warband leader is a warband composition rule, outside the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"}
 
 # --- Authored scenarios ---
 # Derived from the printed rule text, the Madbrains profile and the recorded semantic contract; no

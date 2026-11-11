@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/sons-of-hashut/band--chaos-dwarfs-special-skills-true-grit/skill.tough-as-steel
-# scaffold_fingerprint: fe7d6f60d7709f722012aba53cd966d66c46482064615903c8ab55fd35b922ae
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clause carries 5 authored scenarios derived from the printed injury-table
 # sentence and the recorded contract.  The bearer is a fixture declaring the canonical skill this band's
@@ -12,42 +11,14 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: injury-table-1-3-4-5-6 (scope: YES)
-# AUTHORED[injury-table-1-3-4-5-6]: 5 scenarios cover the printed chart: an injury total of 5 leaves the
+# AUTHORED: 5 scenarios cover the printed chart: an injury total of 5 leaves the
 # bearer Stunned where the ordinary table takes the same total Out of Action, a total of 3 leaves it Knocked
 # Down where the ordinary table merely Stuns, a total of 6 still takes the bearer out of action, and the
 # control scenarios show the same totals on a bearer without the skill.  A total of 4 is Stunned on both
 # tables, so it does not discriminate and is not used.
-# origin_id:
-#   rule/mordheim/sons-of-hashut/band--chaos-dwarfs-special-skills-true-grit/skill.tough-as-steel
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/sons-of-hashut/special-rules.yaml
-# source_fingerprint:
-#   f4fe9f2b31eba1fe52afac06a7fc3d4af98aa1cec4fc4a68174589de87a8da93
-# source_sha256_at_generation:
-#   8a3ed07934e595765c52e8cdfb97bb5b56e12bbc0714eae6fca1db6dc2af84dc
-# Printed rule text:
-#   When rolling on the Injury table for this Hero, 1-3 is Knocked Down, 4-5 is Stunned, and 6 is Out of Action.
-# Semantic contract (check analysis_status before treating as accepted):
-#   On the Injury table 1-3 is Knocked Down, 4-5 is Stunned and 6 is Out of Action; observable: an injury total of 4-5 leaves the bearer Stunned and only a 6 takes him out of action.
-# effect_id:
-#   skill.tough-as-steel
-# relation:
-#   equivalent
-# parameters:
-#   {"out_of_action_threshold":6,"stunned_from":4}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Consumed as the true-grit flag, which raises the out-of-action band to 6 and the stunned band to 4. Discriminating totals are 3 (ordinary Stunned, true grit Knocked Down) and 5 (ordinary Out of Action, true grit Stunned); a total of 4 is Stunned for both tables, so it does not discriminate.
 
 # --- Authored scenarios ---
 # Derived from the printed sentence and the register's true-grit branch (out at 6+, stunned at 4-5, knocked
@@ -57,7 +28,6 @@
 # own because every scenario leaves it Stunned, Knocked Down or Out of Action in this round.
 - audit_id: rule/mordheim/sons-of-hashut/band--chaos-dwarfs-special-skills-true-grit/skill.tough-as-steel
   id: an-injury-total-of-five-stuns-instead-of-removing-the-bearer
-  covers: [injury-table-1-3-4-5-6]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -78,7 +48,6 @@
 
 - audit_id: rule/mordheim/sons-of-hashut/band--chaos-dwarfs-special-skills-true-grit/skill.tough-as-steel
   id: the-same-total-takes-an-ordinary-bearer-out-of-action
-  covers: [injury-table-1-3-4-5-6]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -95,7 +64,6 @@
 
 - audit_id: rule/mordheim/sons-of-hashut/band--chaos-dwarfs-special-skills-true-grit/skill.tough-as-steel
   id: an-injury-total-of-three-leaves-the-bearer-knocked-down
-  covers: [injury-table-1-3-4-5-6]
   fighters:
     # An axe isolates the printed chart: a mace's own concussion rule would stun a two-to-four
     # result regardless of Tough as Steel, and its Stunned band would hide the Knocked Down
@@ -119,7 +87,6 @@
 
 - audit_id: rule/mordheim/sons-of-hashut/band--chaos-dwarfs-special-skills-true-grit/skill.tough-as-steel
   id: the-same-total-merely-stuns-an-ordinary-bearer
-  covers: [injury-table-1-3-4-5-6]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -136,7 +103,6 @@
 
 - audit_id: rule/mordheim/sons-of-hashut/band--chaos-dwarfs-special-skills-true-grit/skill.tough-as-steel
   id: a-total-of-six-still-removes-the-bearer
-  covers: [injury-table-1-3-4-5-6]
   fighters:
     first:
       main_weapon_id: weapon.mace

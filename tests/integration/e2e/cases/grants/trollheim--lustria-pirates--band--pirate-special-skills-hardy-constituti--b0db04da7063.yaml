@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/lustria-pirates/band--pirate-special-skills-hardy-constitution/skill.hardy-constitution
-# scaffold_fingerprint: 1406eb2ba11447e6327352b37a6611eecb5edc730608b23bb5caef22f6106fac
 # authoring_status: REVIEWED
 # authoring_progress: every admitted clause of this ID is represented by an authored
 #   scenario and contrasted with the printed rule, the recorded semantic contract and
@@ -11,40 +10,12 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: critical-ignored-on-five (scope: YES)
-# AUTHORED[critical-ignored-on-five]: 4 scenarios cover the 5+ that drops the critical
+# AUTHORED: 4 scenarios cover the 5+ that drops the critical
 #   and keeps the normal wound resolving, the 4 that resolves the critical, the
 #   unselected contrast and the refusal of an ineligible profile.
-# origin_id:
-#   rule/trollheim/lustria-pirates/band--pirate-special-skills-hardy-constitution/skill.hardy-constitution
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/trollheim/lustria-pirates/special-rules.yaml
-# source_fingerprint:
-#   7f98645346de1eb00eb9123d69d169bcabd8e64162f1fb84383caf8018cf8f33
-# source_sha256_at_generation:
-#   f93f6698f586a558e4681de07b60202970b5eb60350a4caa9c9e4e4d4d1931d3
-# Printed rule text:
-#   When the Hero suffers a critical hit, roll D6. On 5+ the critical effect is ignored and the wound is resolved normally; on a failure, resolve the critical hit normally.
-# Semantic contract (check analysis_status before treating as accepted):
-#   When the Hero suffers a critical hit a 5+ ignores the critical and the wound is resolved normally, while a failure resolves it as a critical; observable: the critical's armour-ignoring and injury bonus are dropped on a 5+.
-# effect_id:
-#   skill.hardy-constitution
-# relation:
-#   equivalent
-# parameters:
-#   {"ignore_critical_on":5,"normal_wound_remains":true}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Same skill as the Sartosa pirates printing (G123). The consumer on the reference attack path rolls when the wound is critical and clears the critical flag on a 5+. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"critical-ignored-on-five","audit_group":"EQ-skill.hardy-constitution","verified_facet":"skill.hardy-constitution","relationship":"shared_facet","boundary":"On 5+ remove the critical effect but resolve the normal wound; not a save that cancels the hit or wound.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
 #
 # --- Migrated authored scenarios ---
 # Source: cases/grants/warband-grants.yaml
@@ -55,7 +26,7 @@
 # rule/... grants — a closed batch of warband grants exercised end to end.
 #
 # Each identity here is a printed warband grant (a `rule/<collection>/<band>/
-# <rule>/<binding>` record of docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv).
+# <rule>/<binding>` record of the knowledge-base clause contracts (sources/knowledge)).
 # The scenarios take the real route: band and profile from the built warrior,
 # the grant selected through `special_rule_ids`, the shared construction and
 # compilation that bind it, the modular resolution that consumes it, and an
@@ -78,7 +49,6 @@
 
 - audit_id: rule/trollheim/lustria-pirates/band--pirate-special-skills-hardy-constitution/skill.hardy-constitution
   id: the-recipient-ignores-a-critical-on-five
-  covers: [critical-ignored-on-five]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -103,7 +73,6 @@
 
 - audit_id: rule/trollheim/lustria-pirates/band--pirate-special-skills-hardy-constitution/skill.hardy-constitution
   id: the-recipient-takes-the-critical-on-four
-  covers: [critical-ignored-on-five]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -129,7 +98,6 @@
 
 - audit_id: rule/trollheim/lustria-pirates/band--pirate-special-skills-hardy-constitution/skill.hardy-constitution
   id: the-unselected-recipient-always-takes-the-critical
-  covers: [critical-ignored-on-five]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -153,7 +121,6 @@
 
 - audit_id: rule/trollheim/lustria-pirates/band--pirate-special-skills-hardy-constitution/skill.hardy-constitution
   id: a-profile-outside-the-eligibility-is-refused
-  covers: [critical-ignored-on-five]
   fighters:
     first:
       collection: trollheim

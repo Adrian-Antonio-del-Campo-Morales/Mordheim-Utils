@@ -356,6 +356,8 @@ def test_reference_bear_hug_replaces_two_hits_before_wound_resolution(precompile
     assert t.condition == Condition.OUT
 
 
+@pytest.mark.covers("mechanic/mechanic.disability", "head-injury-stupidity", "no-two-weapons-or-weapon-and-shield", "permanent-characteristic-penalty")
+@pytest.mark.covers("rule/trollheim/chaos-streets-mordheim-inhabitants/cripples--disability/compiler.disability", "head-injury-stupidity", "no-two-weapons-or-weapon-and-shield", "permanent-characteristic-penalty")
 def test_reference_disability_uses_the_permanent_supplied_result_without_reroll(precompiled):
     disabled = precompiled().first
     state = initialize_fighter(disabled, TapeDice(), "disabled")

@@ -8,8 +8,9 @@ contract.  The matrix pins the three classes the lot must not blur:
 * classified candidates (scope YES, implemented YES, grant none, one bound effect),
 * the printed clauses the entry itself leaves outside the duel runtime
   (an explicit NO effect with its reason), and
-* the skills with no operator at all, which stay unclassified: a name match is
-  never an equivalence, and an unbound YES effect may not be declared implemented.
+* the skills with no operator at all, which never claim one: a name match is
+  never an equivalence, so their YES effects stay unbound (``implemented: NO``
+  with a reason) or the skill is classified out of scope.
 """
 from __future__ import annotations
 
@@ -39,6 +40,7 @@ CLASSIFIED = (
     "skill.sword-master", "skill.thick-skull", "skill.tireless", "skill.tough-as-steel",
     "skill.unarmed-fighting", "skill.unbeatable-warrior", "skill.vampire-reflexes",
     "skill.virtue-of-valour", "skill.weapons-of-the-north", "skill.fey-quickness",
+    "skill.chosen-of-the-white-tower", "skill.instinctive-warrior",
 )
 
 #: Advancement clauses outside the duel runtime, kept as explicit NO effects.
@@ -48,12 +50,11 @@ OUT_OF_SCOPE_CLAUSES = {
     "skill.strength-of-steel": "unimplemented.skill.strength-of-steel.characteristic-maximum",
 }
 
-#: C rows with status=connection_gap plus the review-excluded skills: no operator exists,
-#: so F073 adds no classification and no invented equivalence.
+#: The review-excluded skills: no operator exists, so no binding may be invented.
+#: Their scope review lives in their runtime block as an explicit NO effect with
+#: its reason; a pending duel skill would carry an unbound YES effect instead.
 WITHOUT_OPERATOR = (
-    "skill.chosen-of-the-white-tower", "skill.fey",
-    "skill.instinctive-warrior", "skill.magic-resistant", "skill.taunt",
-    "skill.trading-flair",
+    "skill.fey", "skill.magic-resistant", "skill.taunt", "skill.trading-flair",
 )
 
 #: Field or tag the maintained engine exposes for the classified operator.
@@ -119,17 +120,19 @@ def test_the_remaining_clauses_are_explicit_and_never_invent_an_operator():
         assert clause["id"] not in execution_ids(), skill_id
 
 
-def test_skills_without_an_operator_stay_unclassified():
+def test_skills_without_an_operator_never_claim_one():
     catalogued = skills()
     mechanics = execution_ids()
     for skill_id in WITHOUT_OPERATOR:
         runtime = catalogued[skill_id].get("runtime")
         if runtime is None:
             continue
+        assert runtime["implemented"] == "NO", f"{skill_id}: declared implemented without an operator"
         for effect in runtime.get("effects") or ():
-            if effect.get("scope") != "YES":
+            binding = effect.get("binding")
+            if binding is None:
+                assert effect["reason"].strip(), f"{skill_id}: unbound effect without a reason"
                 continue
-            binding = effect.get("binding") or {}
             assert binding.get("id") in mechanics, f"{skill_id}: unverified equivalence"
 
 

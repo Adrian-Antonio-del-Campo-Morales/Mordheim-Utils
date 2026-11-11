@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/material.ithilmar
-# scaffold_fingerprint: c468cc592c67c660053ec8ce92281596fcc68b4a43257ead2bfc8af667c011c9
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clause carries two authored scenarios that
 #   pin the bonus at exactly +1 through the priority order. REVIEWED still
@@ -10,47 +9,19 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 2 scenarios fix the Initiative bonus at one point: an
+# AUTHORED: 2 scenarios fix the Initiative bonus at one point: an
 #   Initiative 3 bearer with the weapon now acts before an Initiative 3
 #   opponent with no tie die, while an Initiative 2 bearer reaches exactly a
 #   tie with that opponent and needs the priority die. Pending semantic review.
-# origin_id:
-#   mechanic/material.ithilmar
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   ca29a9651bdec6706ae554add280534edbbf2bc1549ddeaa191a8db6a9e017e0
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   +1 Initiative while the weapon is equipped.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Ithilmar adds +1 Initiative while the weapon is equipped. Closure: a fighter with an Ithilmar weapon has one point more Initiative for the whole exchange in which the weapon is equipped.
-# effect_id:
-#   material.ithilmar
-# relation:
-#   equivalent
-# parameters:
-#   {"initiative_bonus": 1}
-# conditions:
-#   {"trigger": "weapon equipped"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   The contract carries initiative_bonus 1 and resolve_priority sums the weapon initiative bonus into the break tie term, which is the printed "while the weapon is equipped". Rejected equivalence recommendation: Rejected EQ-MAT-ITHILMAR armour_penetration: Ithilmar supplies +1 Initiative, not Gromril additional -1 armour save. Retain the existing initiative_bonus.
 
 # --- Authored scenarios ---
 # mechanic/material.ithilmar — +1 Initiative while the weapon is equipped.
 #
 # Expectations come from the printed rule and the accepted clause `whole` of
-# docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv, never from engine output:
+# the knowledge-base clause contracts (sources/knowledge), never from engine output:
 # ithilmar adds initiative_bonus 1 to the equipped weapon, which the priority
 # resolution sums into the tie-break term.  The two scenarios fix the bonus at
 # exactly one point through the acting order: an Initiative 3 bearer with the
@@ -63,7 +34,6 @@
 
 - audit_id: mechanic/material.ithilmar
   id: ithilmar-raises-initiative-above-an-equal-opponent
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -86,7 +56,6 @@
 
 - audit_id: mechanic/material.ithilmar
   id: ithilmar-reaches-exactly-a-tie-from-one-below
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace

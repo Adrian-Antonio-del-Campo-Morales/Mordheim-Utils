@@ -46,8 +46,7 @@ rules:
     - id: unimplemented.khemri-necromancers.necromancer.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
   rule_ref: shared-rule.wizard
 - id: apprentice--student
   name: Student
@@ -77,8 +76,7 @@ rules:
     - id: unimplemented.khemri-necromancers.apprentice.student
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: tomb-robbers--disable-traps
   name: Disable Traps
   effect: >-
@@ -105,8 +103,7 @@ rules:
     - id: unimplemented.khemri-necromancers.tomb-robbers.disable-traps
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: skeleton-warriors--undead
   name: Undead
   source:
@@ -183,8 +180,7 @@ rules:
     - id: unimplemented.khemri-necromancers.nehekharan-vultures.flight
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: nehekharan-vultures--fragile
   name: Fragile
   effect: >-
@@ -264,8 +260,7 @@ rules:
     - id: unimplemented.khemri-necromancers.necromantic-abomination.impossible-to-hide
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: necromantic-abomination--large
   name: Large
   effect: >-
@@ -292,8 +287,7 @@ rules:
     - id: unimplemented.khemri-necromancers.necromantic-abomination.large
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: necromantic-abomination--upkeep
   name: Upkeep
   effect: After each battle, the Necromancer must pay 15 gc to maintain the Necromantic Abomination.
@@ -318,8 +312,7 @@ rules:
     - id: unimplemented.khemri-necromancers.necromantic-abomination.upkeep
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: necromantic-abomination--constant-evolution
   name: Constant Evolution
   effect: >-
@@ -351,8 +344,7 @@ rules:
     - id: unimplemented.khemri-necromancers.necromantic-abomination.constant-evolution
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--death-of-the-necromancer
   name: Death of the Necromancer
   effect: >-
@@ -381,8 +373,7 @@ rules:
     - id: unimplemented.khemri-necromancers.band.death-of-the-necromancer
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--cause-fear
   name: Cause Fear
   source:
@@ -407,7 +398,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.causes-fear
-  rule_ref: shared-rule.cause-fear-2
+  rule_ref: shared-rule.cause-fear-undead
 - id: band--immune-to-psychology
   name: Immune to Psychology
   source:
@@ -432,7 +423,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
-  rule_ref: shared-rule.immune-to-psychology-4
+  rule_ref: shared-rule.immune-to-psychology-undead
 - id: band--no-pain
   runtime:
     scope: 'YES'
@@ -457,7 +448,7 @@ rules:
   - necromantic-abomination
   applies_to:
     band: true
-  rule_ref: shared-rule.no-pain-4
+  rule_ref: shared-rule.no-pain-undead
 - id: band--may-not-run
   name: May Not Run
   source:
@@ -480,9 +471,8 @@ rules:
     - id: unimplemented.khemri-necromancers.band.may-not-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
-  rule_ref: shared-rule.may-not-run-2
+      reason: out-of-scope.magic
+  rule_ref: shared-rule.may-not-run-undead
 - id: band--immune-to-poison
   runtime:
     scope: 'YES'
@@ -509,7 +499,7 @@ rules:
   - necromantic-abomination
   applies_to:
     band: true
-  rule_ref: shared-rule.immune-to-poison-3
+  rule_ref: shared-rule.immune-to-poison-undead
 - id: band--brainless
   name: Brainless
   effect: >-
@@ -540,8 +530,7 @@ rules:
     - id: unimplemented.khemri-necromancers.band.brainless
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--no-food-or-water
   name: No Food or Water
   effect: >-
@@ -571,8 +560,7 @@ rules:
     - id: unimplemented.khemri-necromancers.band.no-food-or-water
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--necromantic-modification-ogre-flesh
   kind: modification
   name: Ogre Flesh
@@ -599,6 +587,11 @@ rules:
       binding:
         kind: mechanic
         id: skill.monstrous
+      clauses:
+      - id: whole--scope--wound-bonus
+        scope: 'YES'
+      - id: whole--scope--advancement-roll-and-cost
+        scope: 'NO'
 - id: band--necromantic-modification-bone-armour
   kind: modification
   name: Bone Armour
@@ -792,8 +785,7 @@ rules:
     - id: unimplemented.khemri-necromancers.band.necromantic-modification-ram-legs
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--necromantic-modification-wings
   name: Wings
   effect: >-
@@ -821,8 +813,7 @@ rules:
     - id: unimplemented.khemri-necromancers.band.necromantic-modification-wings
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--necromantic-modification-anvil-head
   kind: modification
   name: Anvil Head
@@ -855,6 +846,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.anvil-head
+      clauses:
+      - id: whole--scope--special-attack
+        scope: 'YES'
+      - id: whole--scope--advancement-roll-and-cost
+        scope: 'NO'
 - id: band--necromantic-modification-putrid-stench
   kind: modification
   runtime:

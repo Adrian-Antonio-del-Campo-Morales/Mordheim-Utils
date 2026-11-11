@@ -46,7 +46,7 @@ rules:
     es: Cabeza Dura
   applies_to:
     band: true
-  rule_ref: shared-rule.hard-head-2
+  rule_ref: shared-rule.dwarf-hard-head
 - id: band--grudgebearers
   runtime:
     scope: LATER
@@ -56,9 +56,10 @@ rules:
     - id: unimplemented.dwarf-slayer-cult-web.band.grudgebearers
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: hired-sword availability is a roster-construction/campaign mechanic
-        outside the duel scope.
+      reason: deferred.other
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Grudgebearers
   source:
     manual: mordheimer.net
@@ -117,6 +118,23 @@ rules:
           - giant-slayer
           - doomseeker
           - troll-slayers
+      clauses:
+      - id: psychology-immunity--scope--psychology-immunity
+        scope: 'YES'
+      - id: psychology-immunity--scope--psychology-coverage
+        scope: 'YES'
+      - id: psychology-immunity--scope--all-alone
+        scope: 'NO'
+      - id: psychology-immunity--scope--postgame-death-reroll
+        scope: 'NO'
+      - id: psychology-immunity--scope--kit-restrictions
+        scope: 'YES'
+      - id: psychology-immunity--scope--magic-bar
+        scope: 'NO'
+      - id: psychology-immunity--scope--victory-exploration
+        scope: 'NO'
+      - id: all-alone
+        scope: 'NO'
     - id: profile.equipment-restrictions
       scope: 'YES'
       binding:
@@ -127,12 +145,19 @@ rules:
           - armour
           - constant-save-cloak
           - non-thrown-ranged
+      clauses:
+      - id: deathwish--scope--deathwish-psychology
+        scope: 'YES'
+      - id: deathwish--scope--deathwish-all-alone
+        scope: 'NO'
+      - id: no-armour-no-toys
+        scope: 'YES'
+      - id: postgame
+        scope: 'NO'
     - id: unimplemented.dwarf-slayer-cult-web.band.slayer-campaign
       scope: 'NO'
       binding: null
-      reason: >-
-        Postgame injury rerolls, exploration, advancement and learning magic are outside the duel;
-        Rememberer is expressly not a Slayer.
+      reason: out-of-scope.magic
     - id: mechanic.slayer-identity
       scope: 'YES'
       binding:
@@ -193,9 +218,10 @@ rules:
     - id: unimplemented.dwarf-slayer-cult-web.rememberer.record-of-valor
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: post-battle exploration-dice grants are campaign mechanics outside the
-        duel scope.
+      reason: deferred.other
+      clauses:
+      - id: exploration-die
+        scope: 'NO'
   name: Record of Valor
   effect: >-
     If a Slayer hero is taken out of action while the Rememberer was present on the board, you
@@ -242,10 +268,7 @@ rules:
     - id: rememberer--rememberer.provider
       scope: 'NO'
       binding: null
-      reason: >-
-        The independent Rememberer provider and radius are excluded. Its qualified Slayer Hero
-        recipient supplies condition.rememberer-web-support; the Large-only and Large-or-T5+
-        variants remain distinct.
+      reason: out-of-scope.group
   name: Rememberer
   effect: >-
     The Rememberer's task is to record the doom of each of the slayers. When he is close by, the
@@ -278,8 +301,10 @@ rules:
     - id: unimplemented.dwarf-slayer-cult-web.rememberer.pick-up-the-slack
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: rarity searches are campaign mechanics outside the duel scope.
+      reason: deferred.other
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Pick Up the Slack
   effect: >-
     If he was not taken out of action, the Rememberer may make a rarity or Dramatis Personae roll
@@ -309,9 +334,14 @@ rules:
     - id: unimplemented.dwarf-slayer-cult-web.rememberer.not-a-slayer
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: skill-access restrictions and leader designation are roster-construction
-        mechanics outside the duel scope.
+      reason: deferred.other
+      clauses:
+      - id: not-a-slayer
+        scope: 'YES'
+      - id: no-slayer-skill-access
+        scope: 'YES'
+      - id: no-leader
+        scope: 'NO'
   name: Not a Slayer
   effect: >-
     A Rememberer is not a Slayer, and the slayer rules don't apply. Also, they may not learn "Slayer
@@ -362,9 +392,10 @@ rules:
     - id: unimplemented.dwarf-slayer-cult-web.stubbles.skittish
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: skill grants on promotion are advancement-time mechanics outside the
-        duel scope.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: skittish
+        scope: 'NO'
   name: Skittish
   effect: >-
     As newly crowned Slayers, Stubbles do not have the skill 'Death Wish', and suffer psychology
@@ -395,9 +426,7 @@ rules:
     - id: unimplemented.dwarf-slayer-cult-web.axe-hurlers.strong-arm
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: shooting, casting or escape without resolving the
-        duel. Source prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Strong Arm
   effect: >-
     The Axe Hurler can use his strength to hurl thrown weapons farther still. When throwing weapons,
@@ -449,6 +478,9 @@ rules:
         parameters:
           allowed_skill_lists:
           - shooting
+      clauses:
+      - id: promotion-shooting-skill-choice--scope--promotion-event
+        scope: 'NO'
     - id: profile.equipment-restrictions
       scope: 'YES'
       binding:
@@ -488,9 +520,10 @@ rules:
     - id: unimplemented.dwarf-slayer-cult-web.axe-hurlers.skittish
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: skill grants on promotion are advancement-time mechanics outside the
-        duel scope.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: skittish
+        scope: 'NO'
   name: Skittish
   effect: >-
     As newly crowned Slayers, Hurlers do not have the skill 'Death Wish,' and suffer psychology like
@@ -537,12 +570,7 @@ rules:
     - id: unimplemented.dwarf-slayer-cult-web.special.slayer-special-skills-relentless
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope by content: the printed Relentless lets a Slayer whose charge failed still move
-        the full distance of his move against an enemy within sight or that he can detect. Movement,
-        sight and detection are outside the resolved duel, so the member has no duel consequence. It
-        is a real printed member of this list and is disposed here instead of being dropped for
-        lacking a catalogue row.
+      reason: out-of-scope.movement
   name: Slayer Special Skills
   effect: >-
     The Slayer hero skill list (Slayers Only): Deathwish — the hero is completely immune to all
@@ -606,20 +634,14 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.songster
-    # The printed post-game experience is campaign, and the printed extension to
-    # Rout tests belongs to the excluded group subsystem.
     - id: band--rememberer-skills.song-of-honor
       scope: 'NO'
       binding: null
-      reason: >-
-        +1 Experience to every hero and henchman after a game in which a Slayer died is post-game
-        campaign advancement, not a duel consequence.
+      reason: out-of-scope.campaign
     - id: band--rememberer-skills.rout-tests
       scope: 'NO'
       binding: null
-      reason: >-
-        The printed extension of the re-roll to Rout tests belongs to the excluded group Rout
-        subsystem; only the individual Leadership re-roll of a supplied friendly model is admitted.
+      reason: out-of-scope.group
   name: Rememberer Skills
   effect: >-
     Songster — a Bard's rousing war songs steel the hearts of all those around him. Any friendly
@@ -652,9 +674,12 @@ rules:
     - id: unimplemented.dwarf-slayer-cult-web.rites.slayer-rites
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: post-game promotion and equipment awards are campaign-progression
-        mechanics outside the duel scope.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: post-battle-experience
+        scope: 'NO'
+      - id: tan-the-hide
+        scope: 'NO'
   name: Slayer Rites
   effect: >-
     The Rite of Trollslaying: if a slayer henchman takes an enemy out of action, if it was Large and

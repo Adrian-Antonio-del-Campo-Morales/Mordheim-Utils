@@ -2,7 +2,7 @@
 
 The RULES browser needs every prose rules document in one validated
 catalogue: ``special-rules``, ``conditions``, ``core-combat``,
-``resolution``, ``racial-maximums`` and ``implemented-canonical-families``.
+``resolution`` and ``racial-maximums``.
 The typed loaders that already exist (``load_skills``, ``load_items``,
 ``load_shared_rules``, ``load_racial_maximums``) stay canonical for their
 domains; this module only adds the shared validation pass so one bad file
@@ -45,8 +45,7 @@ def load_rules_catalog(
     documents: dict[str, dict] = {}
     for path in sorted(base.glob("*.yaml")):
         document = read_yaml(path)
-        # Engineering manifests (e.g. implemented-canonical-families) carry no
-        # ruleset header and are not browsable prose: skip them.
+        # A document without a ruleset header is not browsable prose: skip it.
         if document.get("ruleset") is None:
             continue
         if document.get("ruleset") != ruleset:

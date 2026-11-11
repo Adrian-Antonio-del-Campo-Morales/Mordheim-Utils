@@ -10,8 +10,7 @@ rules:
     - id: unimplemented.vampire-hunters-of-sylvania-lotd5.band.hired-swords
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: hired-sword recruitment eligibility is a campaign/hiring mechanic.
+      reason: out-of-scope.campaign
   name: Hired Swords
   effect: >-
     Vampire Hunters accept nearly all aid that is available. As such, they may recruit Hired Swords
@@ -61,13 +60,8 @@ rules:
     - id: unimplemented.vampire-hunters-of-sylvania-lotd5.vampire-hunter.stake-the-vampire
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: forced movement towards an enemy type is a movement/psychology interaction
-        outside the duel scope.
+      reason: out-of-scope.movement
   name: Stake the Vampire!
-  effect: >-
-    A Vampire Hunter Hates Vampires. They must always move towards a Vampire on the field (if he can
-    see them) unless he can shoot (in which case he may choose).
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -75,13 +69,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/vampire-hunters-of-sylvania
   name_i18n:
     es: ¡Empala al Vampiro!
-  effect_i18n:
-    es: >-
-      Un Cazador de Vampiros Odia a los Vampiros. Siempre debe moverse hacia un Vampiro en el campo
-      (si puede verlo) a menos que pueda disparar (en cuyo caso puede elegir).
   applies_to:
     profile_ids:
     - vampire-hunter
+  rule_ref: shared-rule.stake-the-vampire
 - id: priest-of-morr--loner
   runtime:
     scope: 'NO'
@@ -91,13 +82,8 @@ rules:
     - id: unimplemented.vampire-hunters-of-sylvania-lotd5.priest-of-morr.loner
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: the All Alone psychology check is a morale mechanic outside the duel scope.
+      reason: out-of-scope.group
   name: Loner
-  effect: >-
-    Few people care to spend any length of time in the company of a priest of Morr - even when it is
-    their duty to do so. As such, a priest of Morr is used to being alone and probably prefers it
-    that way. Priests of Morr do not suffer from the All Alone rules.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -105,14 +91,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/vampire-hunters-of-sylvania
   name_i18n:
     es: Solitario
-  effect_i18n:
-    es: >-
-      Poca gente quiere pasar tiempo en compañía de un sacerdote de Morr, aunque sea su deber
-      hacerlo. Por tanto, un sacerdote de Morr está acostumbrado a estar solo y probablemente lo
-      prefiere así. Los sacerdotes de Morr no sufren las reglas de Solo Contra Todos.
   applies_to:
     profile_ids:
     - priest-of-morr
+  rule_ref: shared-rule.loner
 - id: priest-of-morr--funerary-rites
   runtime:
     scope: 'NO'
@@ -122,10 +104,7 @@ rules:
     - id: unimplemented.vampire-hunters-of-sylvania-lotd5.priest-of-morr.funerary-rites
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic subsystem (divine rites). This page prints its own variant of the
-        Funerary Rites with different difficulties than the active KB's lore.funerary-rites; the
-        variant is preserved in catalog/campaign/magic.yaml without merging.
+      reason: out-of-scope.magic
   name: Funerary Rites
   effect: >-
     Priests of Morr are not wizards, however they do have numerous Funerary Rites which they may
@@ -155,13 +134,8 @@ rules:
     - id: unimplemented.vampire-hunters-of-sylvania-lotd5.slayer.stake-the-vampire
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: forced movement towards an enemy type is a movement/psychology interaction
-        outside the duel scope.
+      reason: out-of-scope.movement
   name: Stake the Vampire!
-  effect: >-
-    A Slayer Hates Vampires. They must always move towards a Vampire on the field (if he can see
-    them) unless he can shoot (in which case he may choose).
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -169,13 +143,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/vampire-hunters-of-sylvania
   name_i18n:
     es: ¡Empala al Vampiro!
-  effect_i18n:
-    es: >-
-      Un Asesino Odia a los Vampiros. Siempre debe moverse hacia un Vampiro en el campo (si puede
-      verlo) a menos que pueda disparar (en cuyo caso puede elegir).
   applies_to:
     profile_ids:
     - slayer
+  rule_ref: shared-rule.stake-the-vampire
 - id: pilgrim--fanatical
   runtime:
     scope: 'NO'
@@ -185,9 +156,7 @@ rules:
     - id: unimplemented.vampire-hunters-of-sylvania-lotd5.pilgrim.fanatical
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: automatic leadership-test passes and leader eligibility are
-        campaign-resolution mechanics.
+      reason: out-of-scope.campaign
   name: Fanatical
   effect: >-
     A Pilgrim of Pain believes that the end of the world is nigh should the undead threat not be
@@ -219,9 +188,7 @@ rules:
     - id: unimplemented.vampire-hunters-of-sylvania-lotd5.pilgrim.blunt
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: equipment-choice restriction with no direct combat effect; the Pilgrim
-        Equipment List already models the allowed options.
+      reason: out-of-scope.construction
   name: Blunt
   effect: >-
     Due to bludgeoning weapons having a much more profound effect upon the undead, Pilgrims ignore
@@ -252,8 +219,7 @@ rules:
     - id: unimplemented.vampire-hunters-of-sylvania-lotd5.wolfhound.animal
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: experience progression is a campaign mechanic.
+      reason: out-of-scope.campaign
   name: Animal
   source:
     manual: mordheimer.net
@@ -342,6 +308,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.thirst-for-vengeance
+      clauses:
+      - id: hatred-undead
+        scope: 'YES'
+      - id: charge-attack-bonus
+        scope: 'YES'
   name: Thirst for Vengeance
   effect: >-
     The warrior Hates all undead. In his quest for revenge, he gains +1 attack in a turn where he
@@ -398,8 +369,7 @@ rules:
     - id: unimplemented.vampire-hunters-of-sylvania-lotd5.band.touch-of-darkness
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: darkness/visibility penalties belong to the shooting and movement subsystems.
+      reason: out-of-scope.shooting
   name: Touch of Darkness
   effect: >-
     Long has the Slayer been dealing in death. Perhaps too long. Due to his heightened intuition, he

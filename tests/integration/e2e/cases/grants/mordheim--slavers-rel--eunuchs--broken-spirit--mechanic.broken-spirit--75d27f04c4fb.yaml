@@ -1,0 +1,127 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/slavers-rel/eunuchs--broken-spirit/mechanic.broken-spirit
+# authoring_status: PARTIAL
+# authoring_progress: the admitted automatic-leadership clause carries 3 authored scenarios for its
+#   two faces: with the Slave Merchant supplied in action the charged and the charging Eunuch pass
+#   without a die, and with the Slave Merchant supplied out of action the charged Eunuch has to roll
+#   its two Leadership dice and can fail.  The provider is supplied as an admitted nearby local fact
+#   (its printed profile, its printed standing condition and a declared distance), never as a
+#   simulated group.  REVIEWED still requires manual semantic review and execution_status stays
+#   UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: broken-spirit--scope--automatic-leadership (scope: YES)
+# PARTIAL[broken-spirit--scope--automatic-leadership]: [C] the printed sentence passes any Leadership
+#   test the Eunuch is required to make while the Slave Merchant is not out of action, and the three
+#   scenarios cover the conditional face in both directions plus the charge direction of the test:
+#   the charged Eunuch with the provider standing (no die), the charging Eunuch with the provider
+#   standing (no die, charge kept), and the charged Eunuch with the provider out of action (the two
+#   Leadership dice are declared and the failed test clamps its strike to sixes).
+#   Named gap (recorded connection): the register note records implementation work of kind
+#   'connection' - the consumer exists and the conditional clause needs its canonical link - so the
+#   provider condition is supplied as a current local fact here and the connection itself is not
+#   claimed as done.
+#   Named gap (representation): a Leadership test that is not a Psychology test is not available in
+#   this 1v1 vocabulary, so the scenarios read the clause through Fear requests, the Leadership
+#   tests a duel round can force on the Eunuch.  The leader bar in the same sentence belongs to its
+#   own separated clause, recorded outside the admitted scope.
+#   Derivation (sources): the Fear source is a hand-built opposing warrior declaring the printed
+#   causes_fear trait; the Eunuchs profile is read as printed (W1, A1, I3, Ld10) and the supplied
+#   Slave Merchant is the band's printed leader profile (Ld8, I4).  Every strike is declared as a
+#   natural 1 in the passing scenarios, and the failing scenario declares the two dice of its own
+#   Leadership test as 6 and 6, a total of 12 above the printed Leadership 10.
+#   REVIEWED still requires manual semantic review.
+#
+# Clause: broken-spirit--scope--leader-restriction (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+# --- Authored scenarios ---
+# Derived from the printed rule text, the Eunuchs and Slave Merchant profiles and the recorded
+# semantic contract; no engine output was consulted.  The Slave Merchant is supplied as a nearby
+# local participant of the Eunuch's own side and band, with a declared distance and the printed
+# provider condition as the one thing that varies between the scenarios.  Every strike is declared
+# as a natural 1 where the Eunuch passes, so the passing rounds report nothing but the absence of
+# the Fear request.
+
+- audit_id: rule/mordheim/slavers-rel/eunuchs--broken-spirit/mechanic.broken-spirit
+  id: the-charged-eunuch-passes-without-a-die-while-the-slave-merchant-stands
+  covers: [broken-spirit--scope--automatic-leadership]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 8, strength: 8, toughness: 3, wounds: 3, initiative: 7, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: slavers-rel, profile_id: eunuchs}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+    - participant_id: slave-merchant
+      side_id: second
+      condition: standing
+      fighter: {collection: mordheim, band_id: slavers-rel, profile_id: slave-merchant}
+    distances: [[second, slave-merchant, 6]]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING, state.second.fear_hit_sixes: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/slavers-rel/eunuchs--broken-spirit/mechanic.broken-spirit
+  id: the-charging-eunuch-keeps-its-charge-without-a-die-while-the-slave-merchant-stands
+  covers: [broken-spirit--scope--automatic-leadership]
+  fighters:
+    first: {collection: mordheim, band_id: slavers-rel, profile_id: eunuchs}
+    second:
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 8, strength: 8, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+    - participant_id: slave-merchant
+      side_id: first
+      condition: standing
+      fighter: {collection: mordheim, band_id: slavers-rel, profile_id: slave-merchant}
+    distances: [[first, slave-merchant, 6]]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 1, state.first.condition: STANDING, state.first.fear_hit_sixes: false, state.second.wounds: 3, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/slavers-rel/eunuchs--broken-spirit/mechanic.broken-spirit
+  id: without-the-slave-merchant-the-charged-eunuch-rolls-its-leadership
+  covers: [broken-spirit--scope--automatic-leadership]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 8, strength: 8, toughness: 3, wounds: 3, initiative: 7, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: slavers-rel, profile_id: eunuchs}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+    - participant_id: slave-merchant
+      side_id: second
+      condition: out
+      fighter: {collection: mordheim, band_id: slavers-rel, profile_id: slave-merchant}
+    distances: [[second, slave-merchant, 6]]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 6}
+    - {key: round.0.second.fear.charged.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING, state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

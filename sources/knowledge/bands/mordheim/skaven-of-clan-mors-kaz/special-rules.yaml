@@ -26,18 +26,8 @@ rules:
     - id: unimplemented.skaven-of-clan-mors-kaz.band.rulebook-inheritance.art-of-silent-death
       scope: 'NO'
       binding: null
-      reason: >-
-        Printed exclusion, refused instead of granted: the rulebook Skaven table's fifth member, the
-        Art of Silent Death, is published as no member rule for this band, so a selection is refused
-        as unavailable for these Heroes. The denial is recorded here rather than being converted
-        into a silent ability.
+      reason: out-of-scope.construction
   name: Rulebook Inheritance
-  effect: >-
-    Skaven Clan Mors may use the Skaven weapons as detailed in the rulebook. Skaven Heroes may use
-    any of the Skaven Special Skills in the rulebook except for the Art of Silent Death. The Skaven
-    weapons travel in the declared Skaven Hero and Henchmen equipment lists; the admitted special
-    skills are published as the four member rules Black Hunger, Tail Fighting, Wall Runner and
-    Infiltration, each naming the Heroes it reaches, while the Art of Silent Death stays refused.
   source:
     manual: broheim.net
     printed_page: 36
@@ -45,18 +35,10 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Herencia del Libro de Reglas
-  effect_i18n:
-    es: >-
-      Los Skaven del Clan Mors pueden usar las armas Skaven tal y como se detallan en el libro de
-      reglas. Los Héroes Skaven pueden usar cualquiera de las Habilidades Especiales Skaven del
-      libro de reglas, excepto el Arte de la Muerte Silenciosa. Las armas Skaven viajan en las
-      listas de equipo declaradas de Héroes y Secuaces Skaven; las habilidades especiales admitidas
-      se publican como las cuatro reglas miembro Hambre Negra, Combate con la Cola, Corredor de
-      Muros e Infiltración, cada una nombrando a los Héroes a los que alcanza, mientras que el Arte
-      de la Muerte Silenciosa queda rechazado.
   applies_to:
     band: true
     profile_types: [hero]
+  rule_ref: shared-rule.skaven-rulebook-inheritance
 - id: band--skaven-special-skills-black-hunger
   kind: warband_skill
   runtime:
@@ -71,10 +53,6 @@ rules:
         id: mechanic.black-hunger
   runtime_selectable: true
   name: Black Hunger
-  effect: >-
-    At the start of his turn, the Skaven Hero may invoke Black Hunger. For that turn he gains +1
-    Attack and +D3 inches to his total Movement, then suffers D3 Strength 3 hits with no armour save
-    at the end of the turn.
   source:
     manual: broheim.net
     printed_page: 36
@@ -82,11 +60,6 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Hambre Negra
-  effect_i18n:
-    es: >-
-      Al comienzo de su turno, el Héroe skaven puede invocar el Hambre negra. Durante ese turno gana
-      +1 Ataque y +D3 pulgadas a su Movimiento total, y luego sufre D3 impactos de Fuerza 3 sin
-      salvación por armadura al final del turno.
   eligibility:
   - claw-leader
   - stormvermin
@@ -97,6 +70,7 @@ rules:
   applies_to:
     band: true
     profile_types: [hero]
+  rule_ref: shared-rule.black-hunger
 - id: band--skaven-special-skills-tail-fighting
   kind: warband_skill
   runtime:
@@ -111,9 +85,6 @@ rules:
         id: special-rule.band--skaven-special-skills-tail-fighting
   runtime_selectable: true
   name: Tail Fighting
-  effect: >-
-    The Skaven may wield a shield, knife or sword with his tail. A weapon grants one additional
-    attack with that weapon; a shield grants +1 to the model's armour save.
   source:
     manual: broheim.net
     printed_page: 36
@@ -121,10 +92,6 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Combate con la Cola
-  effect_i18n:
-    es: >-
-      El skaven puede empuñar un escudo, cuchillo o espada con su cola. Un arma concede un ataque
-      adicional con esa arma; un escudo concede +1 a la salvación por armadura de la miniatura.
   eligibility:
   - claw-leader
   - stormvermin
@@ -135,6 +102,7 @@ rules:
   applies_to:
     band: true
     profile_types: [hero]
+  rule_ref: shared-rule.tail-fighting
 - id: band--skaven-special-skills-wall-runner
   kind: warband_skill
   runtime:
@@ -145,14 +113,8 @@ rules:
     - id: unimplemented.skaven-of-clan-mors-kaz.band.skaven-special-skills-wall-runner
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: climbing walls and other sheer surfaces is a movement and terrain consequence
-        the isolated duel never resolves. The printed member stays published for its Hero recipients
-        instead of being dropped for lacking a duel contract.
+      reason: out-of-scope.movement
   name: Wall Runner
-  effect: >-
-    The Skaven automatically passes Initiative tests required to climb walls and other sheer
-    surfaces.
   source:
     manual: broheim.net
     printed_page: 36
@@ -160,10 +122,6 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Corredor de Muros
-  effect_i18n:
-    es: >-
-      El skaven supera automáticamente los chequeos de Iniciativa necesarios para trepar por muros y
-      otras superficies verticales.
   eligibility:
   - claw-leader
   - stormvermin
@@ -174,6 +132,7 @@ rules:
   applies_to:
     band: true
     profile_types: [hero]
+  rule_ref: shared-rule.wall-runner
 - id: band--skaven-special-skills-infiltration
   kind: warband_skill
   runtime:
@@ -184,15 +143,8 @@ rules:
     - id: unimplemented.skaven-of-clan-mors-kaz.band.skaven-special-skills-infiltration
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: deployment order and placement of a fighter before the duel are outside the
-        isolated 1v1 runtime. The printed member stays published for its Hero recipients instead of
-        being dropped for lacking a duel contract.
+      reason: out-of-scope.movement
   name: Infiltration
-  effect: >-
-    The Skaven deploys after the opposing warband and may be placed anywhere out of enemy sight and
-    more than 12" from every enemy model. If both players have infiltrators, roll a D6 for each; the
-    lowest roll deploys first.
   source:
     manual: broheim.net
     printed_page: 36
@@ -200,11 +152,6 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Infiltración
-  effect_i18n:
-    es: >-
-      El skaven se despliega después de la banda contraria y puede situarse en cualquier lugar fuera
-      de la vista enemiga y a más de 12" de cada miniatura enemiga. Si ambos jugadores tienen
-      infiltradores, tira un D6 por cada uno; la tirada más baja despliega primero.
   eligibility:
   - claw-leader
   - stormvermin
@@ -215,6 +162,7 @@ rules:
   applies_to:
     band: true
     profile_types: [hero]
+  rule_ref: shared-rule.infiltration
 - id: claw-leader--leader
   runtime:
     scope: 'YES'
@@ -252,8 +200,7 @@ rules:
     - id: unimplemented.skaven-of-clan-mors-kaz.claw-leader.tactical-genius
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: setup sequence is outside the close-combat runtime.
+      reason: out-of-scope.non-duel
   name: Tactical Genius
   effect: >-
     Clan Mors' warlords are trained in the arts of war and are strategic geniuses (in their eyes at
@@ -282,8 +229,7 @@ rules:
     - id: unimplemented.skaven-of-clan-mors-kaz.mors-sorcerer.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic subsystem (Magic of the Horned Rat).
+      reason: out-of-scope.magic
   name: Wizard
   effect: >-
     A Mors Sorcerer is a wizard and uses the Magic of the Horned Rat. See the Magic section of the
@@ -311,8 +257,7 @@ rules:
     - id: unimplemented.skaven-of-clan-mors-kaz.skavenslaves.experience
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: experience progression is a campaign mechanic.
+      reason: out-of-scope.campaign
   name: Experience
   effect: Skavenslaves are little better than animals and do not gain experience.
   source:
@@ -336,12 +281,8 @@ rules:
     - id: unimplemented.skaven-of-clan-mors-kaz.skavenslaves.all-races
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: warband-flavour rule with no combat effect.
+      reason: out-of-scope.campaign
   name: All Races
-  effect: >-
-    Skaven slaves may be from any race including their fellow Skaven. The above profile represents
-    the weakened state of all of them.
   source:
     manual: broheim.net
     printed_page: 38
@@ -349,13 +290,10 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Todas las Razas
-  effect_i18n:
-    es: >-
-      Los esclavos Skaven pueden ser de cualquier raza, incluidos sus propios compañeros Skaven. El
-      perfil anterior representa el estado debilitado de todos ellos.
   applies_to:
     profile_ids:
     - skavenslaves
+  rule_ref: shared-rule.slaves-all-races
 - id: skavenslaves--slavers
   runtime:
     scope: 'NO'
@@ -365,13 +303,8 @@ rules:
     - id: unimplemented.skaven-of-clan-mors-kaz.skavenslaves.slavers
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: capture is a campaign mechanic.
+      reason: out-of-scope.campaign
   name: Slavers
-  effect: >-
-    Any enemy warrior who is captured may be added to a Skavenslave group. He will have the above
-    profile and will have to be equipped the same as the rest of the group. Any equipment he carried
-    when he was captured may be kept or sold by the warband.
   source:
     manual: broheim.net
     printed_page: 38
@@ -379,14 +312,10 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Esclavistas
-  effect_i18n:
-    es: >-
-      Cualquier guerrero enemigo que sea capturado puede añadirse a un grupo de Esclavos Skaven.
-      Tendrá el perfil anterior y deberá equiparse igual que el resto del grupo. Cualquier equipo
-      que llevara cuando fue capturado puede quedarse la banda o venderse.
   applies_to:
     profile_ids:
     - skavenslaves
+  rule_ref: shared-rule.slavers
 - id: rat-ogre--fear
   runtime:
     scope: 'YES'
@@ -399,7 +328,6 @@ rules:
         kind: mechanic
         id: mechanic.causes-fear
   name: Fear
-  effect: Rat Ogres are so frightening they cause fear.
   source:
     manual: broheim.net
     printed_page: 38
@@ -407,11 +335,10 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Miedo
-  effect_i18n:
-    es: Los Ogros Rata son tan aterradores que causan miedo.
   applies_to:
     profile_ids:
     - rat-ogre
+  rule_ref: shared-rule.fear
 - id: rat-ogre--stupidity
   runtime:
     scope: 'YES'
@@ -426,10 +353,7 @@ rules:
     - id: unimplemented.skaven-of-clan-mors-kaz.rat-ogre.stupidity.outside-duel
       scope: 'NO'
       binding: null
-      reason: >-
-        Board movement, campaign progression/participation and independently
-        simulated helper/rider/group producers are outside the 1v1 duel.
-        Admissible individual exemptions and bonuses are supplied active facts.
+      reason: out-of-scope.movement
   name: Stupidity
   source:
     manual: broheim.net
@@ -451,8 +375,7 @@ rules:
     - id: unimplemented.skaven-of-clan-mors-kaz.rat-ogre.experience
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: experience progression is a campaign mechanic.
+      reason: out-of-scope.campaign
   name: Experience
   source:
     manual: broheim.net
@@ -464,7 +387,7 @@ rules:
   applies_to:
     profile_ids:
     - rat-ogre
-  rule_ref: shared-rule.experience
+  rule_ref: shared-rule.never-gain-experience
 - id: rat-ogre--large
   runtime:
     scope: 'NO'
@@ -474,8 +397,7 @@ rules:
     - id: unimplemented.skaven-of-clan-mors-kaz.rat-ogre.large
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: shooting-target selection is outside the close-combat runtime.
+      reason: out-of-scope.shooting
   name: Large
   effect: >-
     Rat Ogres are huge creatures and therefore make tempting targets for archers. Any model may
@@ -504,9 +426,7 @@ rules:
     - id: unimplemented.skaven-of-clan-mors-kaz.band.wolf-rats-variant
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: the source marks Rat Ogres and Wolf Rats as alternative list entries to be
-        confirmed; Wolf Rats have no confirmed profile in this version (v1.2).
+      reason: out-of-scope.non-duel
   name: Wolf Rats (to Be Confirmed)
   effect: >-
     Note: Rat Ogres and Wolf Rats are alternative list entries to be confirmed. 0-5 Wolf Rats (60

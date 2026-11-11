@@ -10,9 +10,7 @@ rules:
     - id: unimplemented.watchmen-mim.band.black-caps
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Black Caps
   effect: City Watch patrols may requisition one Watch Carriage with two horses before every battle.
   source:
@@ -37,9 +35,7 @@ rules:
     - id: unimplemented.watchmen-mim.band.secretariat
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Secretariat
   effect: River Watch patrols may commandeer a River Boat before the start of every battle.
   source:
@@ -64,9 +60,7 @@ rules:
     - id: unimplemented.watchmen-mim.band.whistling
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: actions outside an already engaged two-participant
-        duel. Source prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Whistling
   effect: >-
     Watch patrols can summon assistance in the recovery phase by blowing their whistles: D3+1 Watch
@@ -97,9 +91,7 @@ rules:
     - id: unimplemented.watchmen-mim.band.jurisdiction
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Jurisdiction
   effect: >-
     Instead of rolling on the Serious Injury Chart, warriors taken out of action in close combat are
@@ -132,9 +124,7 @@ rules:
     - id: unimplemented.watchmen-mim.band.interrogation
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Interrogation
   effect: >-
     Instead of searching for a rare item, the leader of the Watch may interrogate a suspect Hero
@@ -166,6 +156,15 @@ rules:
       binding:
         kind: compiler
         id: compiler.knight-of-purity
+      clauses:
+      - id: fanatical-advance--scope--campaign-trigger
+        scope: 'NO'
+      - id: fanatical-advance--scope--automatic-leadership
+        scope: 'YES'
+      - id: fanatical-autopass--scope--campaign-trigger
+        scope: 'NO'
+      - id: fanatical-autopass--scope--automatic-leadership
+        scope: 'YES'
   name: Fanatical
   effect: >-
     Knights of Purity are vigilante crusaders hell-bent on the destruction of Chaos. Any Hero of the
@@ -195,8 +194,7 @@ rules:
     - id: unimplemented.watchmen-mim.band.fenland-striders
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Fenland Striders (Marsh Watch)
   effect: Marsh-watch Heroes and Officers re-roll any failed Initiative tests.
   source:
@@ -244,8 +242,7 @@ rules:
     - id: unimplemented.watchmen-mim.sergeants.falconer
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Falconer
   effect: >-
     Hunting birds may only be used by a Hero with the animal handling skill 'Falconer'. The falcon
@@ -366,8 +363,7 @@ rules:
     - id: unimplemented.watchmen-mim.sewer-jacks.immune-to-disease
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Immune to Disease
   effect: >-
     A Sewer Jack is able to shrug off the effects of almost any malady; they are not affected by any
@@ -395,13 +391,8 @@ rules:
     - id: unimplemented.watchmen-mim.sewer-jacks.tunnel-rat
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Tunnel Rat
-  effect: >-
-    Any characteristic-based tests taken for scenarios set in sewers or elsewhere underground can be
-    re-rolled.
   source:
     manual: broheim.net
     printed_page: 5
@@ -409,10 +400,7 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Watchmen.pdf
   name_i18n:
     es: Rata de Túnel
-  effect_i18n:
-    es: >-
-      Cualquier chequeo basado en características realizado en escenarios situados en cloacas u
-      otros lugares subterráneos puede repetirse.
   applies_to:
     profile_ids:
     - sewer-jacks
+  rule_ref: shared-rule.tunnel-rat

@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/masters-of-horror-sylv/mad-scientist--lunatic/mechanic.leadership-reroll
-# scaffold_fingerprint: 786d0b95bac75a2251cb3b03e7b6027149f3af7d82ead75c13d9d9bcd47e657e
 # authoring_status: AUTHORED
 # authoring_progress: both admitted clauses of this compound record now carry authored scenarios: the
 # cause-fear clause covers the two faces of the charged opponent's Leadership test, and the leadership-reroll
@@ -17,9 +16,8 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: cause-fear (scope: YES)
 # AUTHORED[cause-fear]: 2 scenarios cover the printed Fear consequence for the warrior charged by this
@@ -32,32 +30,6 @@
 # Psychology or Fear, or is Frenzied) are not asserted here: the cancelled charge is a
 # charge-flag consequence rather than a wound outcome and the exemptions need a second bearer
 # this file does not declare.  REVIEWED still requires manual semantic review.
-# origin_id:
-#   rule/mordheim/masters-of-horror-sylv/mad-scientist--lunatic/mechanic.leadership-reroll
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/masters-of-horror-sylv/special-rules.yaml
-# source_fingerprint:
-#   9ed18967df2f47ac00144918a633c5bf8a67453b0cbb10ac764a0651cabab432
-# source_sha256_at_generation:
-#   aa3a466c2d2cd487c57151b91ed10b743efa71fdc3ee7c0bbf78b192034ed272
-# Printed rule text:
-#   The model causes Fear
-# Semantic contract (check analysis_status before treating as accepted):
-#   This warrior causes Fear, and additionally may reroll any failed Leadership test.
-# effect_id:
-#   mechanic.causes-fear
-# relation:
-#   equivalent
-# parameters:
-#   {"value":true}
-# conditions:
-#   {"trigger":"round 0, opponent charges or is charged","exemption":"fear-causing / Psychology-immune / frenzied opponents","recipient":"the opposing warrior"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Fear clause of a compound record. Surface reuse candidate: {"family":"mechanic.causes-fear","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare enemy/bearer identity, charge direction, individual test, failed-charge versus hit penalty, and immunity/reroll exceptions. Ordinary Fear has both charging and charged consequences; narrow immunity or charging-only Fear must not become unconditional.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: leadership-reroll (scope: YES)
 # AUTHORED[leadership-reroll]: 3 scenarios carry the printed reroll onto the real route: the bearer fails
@@ -70,32 +42,6 @@
 #   blocks the charged-side Fear test by reciprocity, so no Leadership test could ever fail for it.  Both
 #   halves of the row are bound to mechanics in the band's special-rules.yaml, so the offer comes from the
 #   printed record and not from an injected mechanic.
-# origin_id:
-#   rule/mordheim/masters-of-horror-sylv/mad-scientist--lunatic/mechanic.leadership-reroll
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/masters-of-horror-sylv/special-rules.yaml
-# source_fingerprint:
-#   9ed18967df2f47ac00144918a633c5bf8a67453b0cbb10ac764a0651cabab432
-# source_sha256_at_generation:
-#   aa3a466c2d2cd487c57151b91ed10b743efa71fdc3ee7c0bbf78b192034ed272
-# Printed rule text:
-#   and may reroll any Leadership Test
-# Semantic contract (check analysis_status before treating as accepted):
-#   May reroll any failed individual Leadership test once and accept the second result; a roll may never be rerolled twice. Observable: exactly one reroll is offered per failed Leadership test.
-# effect_id:
-#   mechanic.leadership-reroll
-# relation:
-#   equivalent
-# parameters:
-#   {"max_rerolls_per_roll":1}
-# conditions:
-#   {"trigger":"failed individual Leadership test","resolution":"optional reroll","consequence":"second result accepted","recipient":"this warrior","duration":"per failure","stacking":"one reroll; never reroll a reroll"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Optional Leadership reroll clause of a compound record. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"leadership-reroll","audit_group":"EQ-mechanic.leadership-reroll","verified_facet":"leadership/optional-reroll","relationship":"shared_facet","boundary":"Optional failed individual Leadership reroll. Hound requires the supplied Priest within 12 inches; Songster also supplies +1 Leadership. Sharing the dice helper does not erase either provider condition.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
 
 # --- Authored scenarios ---
 # Derived from the printed rule, the recorded cause-fear contract and the printed profile;

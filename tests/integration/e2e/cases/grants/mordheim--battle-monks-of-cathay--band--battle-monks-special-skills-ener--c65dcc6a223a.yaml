@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/battle-monks-of-cathay/band--battle-monks-special-skills-energy-focus/compiler.energy-focus
-# scaffold_fingerprint: f8e03316220270dd2767c184de1d5d3895e8107ac18f9551921060d1e327146b
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clause carries 3 authored scenarios mirroring the published
 #   mechanic case of the same operator.  The declaration route the earlier note called missing does
@@ -15,44 +14,16 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 3 scenarios cover the exchange through the printed unarmed scope: the declared
+# AUTHORED: 3 scenarios cover the exchange through the printed unarmed scope: the declared
 #   sacrifice of one attack leaves the pool one die smaller while the same die wounds at one Strength
 #   higher (Strength 5 against Toughness 3 wounds on a 2+ where Strength 4 needs a 3+), the control
 #   without the sacrifice keeps the whole pool at the lower Strength, and the executor's unarmed floor
 #   leaves no attack at all when the sacrifice is taken without a printed unarmed skill.  The declared
 #   count is supplied as energy_focus_attacks - the same declaration route the published case of this
 #   operator uses - and the band row is recorded as adding no second runtime term.
-# origin_id:
-#   rule/mordheim/battle-monks-of-cathay/band--battle-monks-special-skills-energy-focus/compiler.energy-focus
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/battle-monks-of-cathay/special-rules.yaml
-# source_fingerprint:
-#   4098d72ac25720033e060e7827644e64d12ebd5c4381a80316debe4f062a69cc
-# source_sha256_at_generation:
-#   65e9f82a2212d3ba8786f77258b0aaf254d75b70d3261ea045fe2592c5608853
-# Printed rule text:
-#   If fighting unarmed, the Hero may choose to reduce his Attacks by –1 and thus gain +1 Strength in close combat. The monk may sacrifice any number of attacks this way.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Fighting unarmed the monk may reduce his Attacks by one to gain +1 Strength and may sacrifice any number of attacks this way. Closure: each sacrificed attack raises the unarmed attack Strength by one and lowers the pool by one.
-# effect_id:
-#   mechanic.energy-focus
-# relation:
-#   equivalent
-# parameters:
-#   {"attacks_sacrificed": "chosen number", "strength_gain": "equal to attacks sacrificed", "weapon_scope": "unarmed"}
-# conditions:
-#   {"recipient": "Battle Monk", "weapon": "unarmed"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   The origin identifier names the compiler contract compiler.energy-focus while the binding is the shared mechanic.energy-focus; the decision is taken on the binding, so the clause is the canonical unarmed exchange analysed for that mechanic and the identifier is a project-level contract reference. Surface reuse candidate: {"family":"mechanic.energy-focus","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare full special-attack/rescue contract: replacement scope, prerequisite count, per-hit versus per-wound triggers, save/parry eligibility, ordering, interruption and state/resources. Do not substitute an ordinary attack or reset a per-battle effect each round.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
 # --- Authored scenarios ---
 # Mirrors cases/mechanics/mechanic.energy-focus.yaml (same printed clause, same operator): the
@@ -64,7 +35,6 @@
 # control while the declared tape length pins the pool size in both directions.
 - audit_id: rule/mordheim/battle-monks-of-cathay/band--battle-monks-special-skills-energy-focus/compiler.energy-focus
   id: the-sacrifice-trades-one-attack-for-one-strength
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.fist
@@ -89,7 +59,6 @@
 
 - audit_id: rule/mordheim/battle-monks-of-cathay/band--battle-monks-special-skills-energy-focus/compiler.energy-focus
   id: without-the-sacrifice-the-pool-and-strength-are-unchanged
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.fist
@@ -115,7 +84,6 @@
 
 - audit_id: rule/mordheim/battle-monks-of-cathay/band--battle-monks-special-skills-energy-focus/compiler.energy-focus
   id: the-only-unarmed-attack-is-the-one-that-is-sacrificed
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.fist

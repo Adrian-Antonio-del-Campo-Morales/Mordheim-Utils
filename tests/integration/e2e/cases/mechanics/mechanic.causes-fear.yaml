@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.causes-fear
-# scaffold_fingerprint: f2927a6427dad5043c0bea7c1139e4ae5392638a0843c234edafc97f0eda51d7
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -8,40 +7,12 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: cause-fear (scope: YES)
-# AUTHORED[cause-fear]: 3 scenarios cover the cancelled voluntary charge, the
+# AUTHORED: 3 scenarios cover the cancelled voluntary charge, the
 #   sixes-to-hit consequence for the charged warrior and the exemption of a
 #   fear-causing opponent.
-# origin_id:
-#   mechanic/mechanic.causes-fear
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   8db0d847446cfbb040c3b5c525c14bed20aa78d87d025c786312e0bc748d846f
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   Enemies test Leadership when charging or being charged by this warrior; failure prevents a voluntary charge or requires sixes to hit for that combat round. Fear-causing warriors ignore these tests.
-# Semantic contract (check analysis_status before treating as accepted):
-#   This warrior causes Fear. Observable: in the initial round, an opposing warrior that volunteers a charge must first pass a Leadership test or the charge is cancelled; one that is charged must pass it or can hit only with sixes for that combat round.
-# effect_id:
-#   mechanic.causes-fear
-# relation:
-#   equivalent
-# parameters:
-#   {"value":true}
-# conditions:
-#   {"trigger":"initial round, the opponent charges or is charged by this warrior","resolution":"opponent Leadership test before a voluntary charge or after being charged","consequence":"cancelled voluntary charge, or sixes-to-hit for that combat round","recipient":"the opposing warrior","duration":"that combat round only","stacking":"one test per fighter pairing; no cumulative effect","exceptions":"skipped by an opponent that causes Fear, is immune to Psychology or Fear, or is Frenzied"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Canonical per-warrior Fear (mechanic.causes-fear). psychology.causes_fear declares the threat and psychology.resolve_fear resolves the round-0 test; the printed sentence is a band-specific synonym with no extra clause.
 
 # --- Authored scenarios ---
 # The warrior who volunteers the charge must pass before contact exists; the two
@@ -49,7 +20,6 @@
 # carries no attack.
 - audit_id: mechanic/mechanic.causes-fear
   id: a-failed-charge-test-cancels-the-voluntary-charge
-  covers: [cause-fear]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -71,7 +41,6 @@
 # five then misses where it would have hit a target of four.
 - audit_id: mechanic/mechanic.causes-fear
   id: a-failed-charged-test-leaves-only-sixes-to-hit
-  covers: [cause-fear]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -96,7 +65,6 @@
 # attack.
 - audit_id: mechanic/mechanic.causes-fear
   id: two-fear-causing-warriors-test-nothing
-  covers: [cause-fear]
   fighters:
     first:
       main_weapon_id: weapon.mace

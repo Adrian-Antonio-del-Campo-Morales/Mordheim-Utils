@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/call-of-the-night-haint-mim/corpse-master--magical-void/mechanic.magical-void
-# scaffold_fingerprint: e4416bd035ace406eef1cfc06c17e842deab77f8504eb94cd871171431af44ca
 # authoring_status: AUTHORED
 # authoring_progress: the admitted whole clause carries two authored scenarios derived from the
 # printed rule and the recorded contract: the 4+ save against a declared magical attack and the
@@ -12,39 +11,11 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 2 scenarios cover the printed 4+ save against magic weapons and its absence
+# AUTHORED: 2 scenarios cover the printed 4+ save against magic weapons and its absence
 #   against a mundane attack.
-# origin_id:
-#   rule/mordheim/call-of-the-night-haint-mim/corpse-master--magical-void/mechanic.magical-void
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/call-of-the-night-haint-mim/special-rules.yaml
-# source_fingerprint:
-#   b10e4e996549bf6c54f14dec60fb13f5c6db3f1bf74b3ab8bf1f7b7f62d63367
-# source_sha256_at_generation:
-#   d2e90dc0bf631c7cf3b2aaef1f8477ffa2db9a479224496cd5720932414cb94b
-# Printed rule text:
-#   The Corpse Master is a space void of magic and thus gains a 4+ save against enemy spells and magic weapons.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Conditional save: the Corpse Master has a 4+ save against enemy spells and magic weapons.
-# effect_id:
-#   mechanic.magical-void
-# relation:
-#   equivalent
-# parameters:
-#   {"value":4,"against":["spells","magic-weapons"]}
-# conditions:
-#   {"recipient":"corpse-master"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Declared as mechanic.magical-void and implemented; the save itself belongs to the defence family and is recorded here only as its declared owner.
 
 # --- Authored scenarios ---
 # Derived from the printed rule and the recorded contract; no engine output was consulted.  Magic
@@ -52,7 +23,6 @@
 # supplies it.
 - audit_id: rule/mordheim/call-of-the-night-haint-mim/corpse-master--magical-void/mechanic.magical-void
   id: a-magical-attack-is-saved-on-four
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -74,7 +44,6 @@
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 - audit_id: rule/mordheim/call-of-the-night-haint-mim/corpse-master--magical-void/mechanic.magical-void
   id: the-mundane-attack-is-not-qualified-so-no-save-is-rolled
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace

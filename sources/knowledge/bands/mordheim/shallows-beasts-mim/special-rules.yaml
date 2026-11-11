@@ -44,9 +44,7 @@ rules:
     - id: unimplemented.shallows-beasts-mim.band.seafaring
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Seafaring
   effect: >-
     Stromfels Reavers are seafarers and spend much of their time rowing boats. To represent this,
@@ -73,9 +71,7 @@ rules:
     - id: unimplemented.shallows-beasts-mim.band.stromfels-special-equipment
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Stromfels Reavers Special Equipment
   effect: >-
     This equipment is only available to the Cult of Stromfels, and no other warband may purchase it.
@@ -161,10 +157,7 @@ rules:
     - id: unimplemented.shallows-beasts-mim.buccaneer.swashbuckler
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: voluntary escape/withdrawal ends the duel without resolving it.
-        Associated movement, interception, re-engagement and campaign injury clauses
-        are also outside the 1v1 combat scope (user ruling 2026-10-04).
+      reason: out-of-scope.movement
   name: Swashbuckler
   effect: >-
     The Buccaneer cuts a dashing figure in combat, mixing dazzling swordplay and daring feats with
@@ -201,9 +194,7 @@ rules:
     - id: unimplemented.shallows-beasts-mim.mutant-priest.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Wizard
   effect: >-
     The Mutant-Priest is a wizard and uses the Chaos Rituals on page 59 of the Mordheim rulebook.
@@ -230,9 +221,7 @@ rules:
     - id: unimplemented.shallows-beasts-mim.mutant-priest.prayers
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Prayers
   effect: >-
     Mutant-Priests are servants of Manann's dark opposite Stromfels and may use the Prayers of
@@ -296,9 +285,10 @@ rules:
     - id: unimplemented.shallows-beasts-mim.foundlings.blessed-child
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: deferred.other
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Blessed Child
   effect: Foundlings can re-roll the result of any Advance rolls. Re-roll results must be accepted.
   source:
@@ -324,9 +314,7 @@ rules:
     - id: unimplemented.shallows-beasts-mim.fishmen.mer-creatures
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Mer-Creatures
   effect: >-
     Stromfels cultists whose legs and arms warp in such a way that fish-scaled webbed limbs
@@ -360,11 +348,8 @@ rules:
     - id: unimplemented.shallows-beasts-mim.swampers.swamp-striders
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Swamp Striders
-  effect: Swampers can move through any swamp and marshland terrain without penalty.
   source:
     manual: broheim.net
     printed_page: 4
@@ -372,11 +357,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Shallows%20Beasts.pdf
   name_i18n:
     es: Zancudos del Pantano
-  effect_i18n:
-    es: Los Ciénagueros pueden moverse por cualquier terreno de ciénaga y pantano sin penalización.
   applies_to:
     profile_ids:
     - swampers
+  rule_ref: shared-rule.swamp-striders
 - id: swampers--marsh-born
   runtime:
     scope: 'NO'
@@ -386,9 +370,7 @@ rules:
     - id: unimplemented.shallows-beasts-mim.swampers.marsh-born
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Marsh Born
   effect: >-
     Dense areas of watery fenland and log causeways are called home by Swampers. Swampers re-roll
@@ -419,6 +401,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.herb-lore
+      clauses:
+      - id: heal-in-recovery-phase--scope--self-heal
+        scope: 'YES'
+      - id: heal-in-recovery-phase--scope--ally-heal
+        scope: 'NO'
   name: Herb Lore
   effect: >-
     Out in the Cursed Marsh, Swamp-folk learn basic herb lore to cure simple injuries. Any model in
@@ -457,9 +444,6 @@ rules:
         parameters:
           value: true
   name: Blackblood
-  effect: >-
-    If the model loses a wound in close combat, anyone in base contact with the model suffers a
-    Strength 3 hit (no critical hits) from the spurting corrosive blood. Cost: 30 gold crowns
   source:
     manual: broheim.net
     printed_page: 1
@@ -467,14 +451,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Shallows%20Beasts.pdf
   name_i18n:
     es: Sangre Negra
-  effect_i18n:
-    es: >-
-      Si la miniatura pierde una herida en combate cuerpo a cuerpo, cualquiera en contacto base con
-      la miniatura sufre un impacto de Fuerza 3 (sin golpes críticos) de la sangre corrosiva a
-      chorro. Coste: 30 coronas de oro.
   applies_to:
     profile_types:
     - hero
+  rule_ref: shared-rule.mutations-blackblood
 - id: band--mutations-great-claw
   kind: mutation
   runtime:
@@ -488,9 +468,6 @@ rules:
         kind: compiler
         id: special-rule.band--mutations-great-claw
   name: Great Claw
-  effect: >-
-    One of the mutant’s arms ends in a great, crab-like claw. He may carry no weapons in this arm,
-    but gains an extra attack in hand-to-hand combat with a +1 Strength bonus. Cost: 50 gold crowns.
   source:
     manual: broheim.net
     printed_page: 1
@@ -498,14 +475,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Shallows%20Beasts.pdf
   name_i18n:
     es: Garra Enorme
-  effect_i18n:
-    es: >-
-      Uno de los brazos del mutante termina en una gran garra parecida a la de un cangrejo. No puede
-      llevar armas en este brazo, pero gana un ataque extra en combate cuerpo a cuerpo con un bonus
-      de +1 de Fuerza. Coste: 50 coronas de oro.
   applies_to:
     profile_types:
     - hero
+  rule_ref: shared-rule.mutations-great-claw
 - id: band--mutations-tentacle
   kind: mutation
   runtime:
@@ -519,10 +492,6 @@ rules:
         kind: compiler
         id: special-rule.band--mutations-tentacle
   name: Tentacle
-  effect: >-
-    One of the mutant’s arms ends in a tentacle. He may grapple his opponent in close combat to
-    reduce his attacks by -1, down to a minimum of 1. The mutant may decide which attack his
-    opponent loses. Cost: 35 gold crowns
   source:
     manual: broheim.net
     printed_page: 1
@@ -530,19 +499,15 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Shallows%20Beasts.pdf
   name_i18n:
     es: Tentáculo
-  effect_i18n:
-    es: >-
-      Uno de los brazos del mutante termina en un tentáculo. Puede atrapar a su oponente en combate
-      cuerpo a cuerpo para reducir sus ataques en -1, hasta un mínimo de 1. El mutante puede decidir
-      qué ataque pierde su oponente. Coste: 35 coronas de oro.
   applies_to:
     profile_types:
     - hero
+  rule_ref: shared-rule.mutations-tentacle
 - id: band--mutations-prehensile-tail
   kind: mutation
   name: Prehensile Tail
   name_i18n:
-    es: "Cola Prehensil"
+    es: Cola Prehensil
   effect: >-
     Unless it already possesses a tail, gains one tail attack; may equip one single-handed weapon or
     shield/buckler in that tail. Choosing an equipped prehensile tail excludes every other tail
@@ -574,7 +539,7 @@ rules:
   kind: mutation
   name: Beak
   name_i18n:
-    es: "Pico"
+    es: Pico
   effect: >-
     Unless it already possesses a bite, gains one additional close-combat bite at own Strength with
     no unarmed penalty. Always strikes after double-handed weapons, regardless of charge.
@@ -605,7 +570,7 @@ rules:
   kind: mutation
   name: Electrical Touch
   name_i18n:
-    es: "Toque Eléctrico"
+    es: Toque Eléctrico
   effect: >-
     May forfeit one close-combat attack to jolt at +1 Initiative: automatic Strength3 hit, ignores
     all armour; Strength5 against metal armour. Recharge D3 turns after use.
@@ -673,14 +638,12 @@ rules:
     - id: band--mutations-mer-creature.terrain
       scope: 'NO'
       binding: null
-      reason: >-
-        Terrain, submersion and climbing are outside the supplied melee duel; the source choice
-        remains an owned initial configuration fact.
+      reason: out-of-scope.movement
 - id: band--mutations-suckers
   kind: mutation
   name: Suckers
   name_i18n:
-    es: "Ventosas"
+    es: Ventosas
   effect: Automatically passes Initiative tests when climbing. Climbing is outside the duel.
   effect_i18n:
     es: >-
@@ -706,14 +669,12 @@ rules:
     - id: band--mutations-suckers.terrain
       scope: 'NO'
       binding: null
-      reason: >-
-        Terrain, submersion and climbing are outside the supplied melee duel; the source choice
-        remains an owned initial configuration fact.
+      reason: out-of-scope.movement
 - id: band--mutations-eye-stalks
   kind: mutation
   name: Eye Stalks
   name_i18n:
-    es: "Ojos Pedunculados"
+    es: Ojos Pedunculados
   effect: Crab-like stalked eyes cause Fear (counts as Hideous).
   effect_i18n:
     es: >-

@@ -10,10 +10,10 @@ rules:
     - id: unimplemented.skaven-of-clan-moulder-web.band.packmasters-and-goading
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: the Goading system (difficulty checks, results chart, backfire
-        Stupidity/enrage) is a magic-like pre-turn subsystem outside the current engine scope; the
-        full chart is preserved in the band's rules text.
+      reason: deferred.other
+      clauses:
+      - id: packmasters-and-goading
+        scope: 'NO'
   name: Packmasters and Goading
   effect: >-
     Clan Moulder Packmasters and Apprentices have access to a unique system known as "Goading,"
@@ -75,12 +75,7 @@ rules:
     - id: unimplemented.skaven-of-clan-moulder-web.band.mutations
       scope: 'NO'
       binding: null
-      reason: >-
-        The band sentence is an authorization, not a choice of its own: each printed recipient
-        carries the admitting clause and its quantity. `rat-ogres--its-alive` requires exactly one
-        Possessed mutation when recruited and `band--clan-moulder-special-skills-twistkin` requires
-        exactly one upon taking Twistkin (Stormvermin only); no other member may buy one. Prices and
-        campaign history stay outside the duel.
+      reason: out-of-scope.campaign
   name: Mutations
   effect: >-
     Certain models may purchase Mutations from the Possessed Warband list in the Mordheim Rulebook.
@@ -106,9 +101,10 @@ rules:
     - id: unimplemented.skaven-of-clan-moulder-web.band.animal-limitations
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: experience exemption is a campaign-progression mechanic outside the duel
-        scope.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Animal Limitations
   effect: Giant Rats, Wolf Rats, and Rat Ogres do not gain Experience unless otherwise stated.
   source:
@@ -156,9 +152,10 @@ rules:
     - id: unimplemented.skaven-of-clan-moulder-web.packmaster.master-handler
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: skill grants and the Goading system are roster/psychology mechanics
-        outside the duel scope.
+      reason: deferred.psychology
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Master Handler
   effect: >-
     Packmasters are experts at handling all manner of twisted creatures. They have access to the
@@ -189,8 +186,10 @@ rules:
     - id: unimplemented.skaven-of-clan-moulder-web.packmaster.poke-em-in-the-squidgy-bits
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: equipment interaction with the Goading system is outside the duel scope.
+      reason: deferred.other
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Poke 'Em in the Squidgy Bits
   effect: >-
     Packmasters are trained to take full advantage of the tools of Clan Moulder's trade. If so
@@ -220,8 +219,10 @@ rules:
     - id: unimplemented.skaven-of-clan-moulder-web.apprentices.novice-handler
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: equipment interaction with the Goading system is outside the duel scope.
+      reason: deferred.other
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Novice Handler
   effect: >-
     An Apprentice has access to the Goading system detailed below, but can only use the beneficial
@@ -250,9 +251,10 @@ rules:
     - id: unimplemented.skaven-of-clan-moulder-web.apprentices.heir-to-power
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: leader succession and warband disbandment are roster/campaign mechanics
-        outside the duel scope.
+      reason: deferred.other
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Heir to Power
   effect: >-
     If the Packmaster is slain, one of the Apprentices must be chosen to succeed him as Leader. They
@@ -287,9 +289,10 @@ rules:
     - id: unimplemented.skaven-of-clan-moulder-web.giant-rats.pack-size
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: recruitment limits are roster-construction mechanics outside the duel
-        scope.
+      reason: deferred.other
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Pack Size
   effect: >-
     You may recruit as many Giant Rats as you wish subject to the warband's maximum number of
@@ -317,11 +320,11 @@ rules:
     - id: unimplemented.skaven-of-clan-moulder-web.giant-rats.experience
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: experience exemption is a campaign-progression mechanic outside the duel
-        scope.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Experience
-  effect: Giant Rats are animals and so do not gain Experience.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -329,12 +332,11 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/skaven-of-clan-moulder
   name_i18n:
     es: Experiencia
-  effect_i18n:
-    es: Las Ratas Gigantes son animales y por tanto no ganan Experiencia.
   applies_to:
     profile_ids:
     - giant-rats
     - wolf-rats
+  rule_ref: shared-rule.animal
 - id: wolf-rats--poisoned-attack
   runtime:
     scope: 'YES'
@@ -403,10 +405,7 @@ rules:
     - id: unimplemented.skaven-of-clan-moulder-web.rat-ogres.stupidity.outside-duel
       scope: 'NO'
       binding: null
-      reason: >-
-        Board movement, campaign progression/participation and independently
-        simulated helper/rider/group producers are outside the 1v1 duel.
-        Admissible individual exemptions and bonuses are supplied active facts.
+      reason: out-of-scope.movement
   name: Stupidity
   source:
     manual: mordheimer.net
@@ -430,9 +429,10 @@ rules:
     - id: unimplemented.skaven-of-clan-moulder-web.rat-ogres.experience
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: experience exemption is a campaign-progression mechanic outside the duel
-        scope.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Experience
   source:
     manual: mordheimer.net
@@ -444,7 +444,7 @@ rules:
   applies_to:
     profile_ids:
     - rat-ogres
-  rule_ref: shared-rule.experience
+  rule_ref: shared-rule.never-gain-experience
 - id: rat-ogres--large-target
   runtime:
     scope: 'NO'
@@ -454,9 +454,7 @@ rules:
     - id: unimplemented.skaven-of-clan-moulder-web.rat-ogres.large-target
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Large Target
   source:
     manual: mordheimer.net
@@ -480,6 +478,11 @@ rules:
       binding:
         kind: compiler
         id: compiler.rat-ogre-single-mutation-at-recruitment
+      clauses:
+      - id: starting-mutation
+        scope: 'YES'
+      - id: mutation-payment
+        scope: 'NO'
   name: It's Alive!
   effect: >-
     Moulder Rat Ogres are twisted creatures ever subject to the cruel curiosity of their masters.
@@ -510,9 +513,10 @@ rules:
     - id: unimplemented.skaven-of-clan-moulder-web.rat-ogres.hard-to-handle
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: henchmen grouping rules are roster-construction mechanics outside the
-        duel scope.
+      reason: deferred.other
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Hard to Handle
   effect: >-
     Rat Ogres can only be bought individually, they never form a Henchmen Group even if you hire
@@ -547,11 +551,16 @@ rules:
     - id: unimplemented.skaven-of-clan-moulder-web.special.clan-moulder-special-skills
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: Beastkin's handling range and Subjugator of Mankind's post-battle capture are
-        beast-handling and campaign rules. The list's own members keep their own records
-        (`band--clan-moulder-special-skills-black-hunger`, `-hypnotic-musk` and `-twistkin`) and the
-        access above is the printed grant.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: black-hunger--scope--skill-list-access
+        scope: 'YES'
+      - id: black-hunger--scope--black-hunger-attack
+        scope: 'YES'
+      - id: black-hunger--scope--black-hunger-backlash
+        scope: 'YES'
+      - id: hypnotic-musk--scope--hypnotic-musk
+        scope: 'YES'
   name: Clan Moulder Special Skills
   effect: >-
     Clan Moulder heroes may choose to use the following Skill list instead of any of the standard

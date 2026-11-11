@@ -13,7 +13,6 @@ rules:
         kind: mechanic
         id: mechanic.hatred-high-elves
   name: Kindred Hatred
-  effect: Dark Elves Hate any High Elf warriors including High Elf Hired Swords.
   source:
     manual: mordheim-index-catalog
     printed_page: 0
@@ -21,10 +20,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/druchii
   name_i18n:
     es: Odio Ancestral
-  effect_i18n:
-    es: >-
-      Los Elfos Oscuros Odian a cualquier guerrero Elfos Alto, incluidas las Espadas a Sueldo de
-      Altos Elfos.
   applies_to:
     band: true
     profile_ids:
@@ -35,6 +30,7 @@ rules:
     - corsairs
     - shades
     - witch-elves
+  rule_ref: shared-rule.kindred-hatred
 - id: band--fey-acuity
   runtime:
     scope: LATER
@@ -44,9 +40,10 @@ rules:
     - id: unimplemented.druchii-mic.band.fey-acuity
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: exploration-phase wyrdstone/artefact counts are post-duel/campaign
-        resolution mechanics.
+      reason: deferred.other
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Fey Acuity
   effect: >-
     During the Exploration phase when checking for artifacts or wyrdstone at the end of the game,
@@ -108,8 +105,7 @@ rules:
     - id: unimplemented.druchii-mic.band.hired-swords
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: hired-sword recruitment eligibility is a campaign/hiring mechanic.
+      reason: out-of-scope.campaign
   name: Hired Swords
   effect: >-
     Due to their merciless nature a Druchii warband may only employ the following Hired Swords:
@@ -142,8 +138,10 @@ rules:
     - id: unimplemented.druchii-mic.band.slavers
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: prisoner-taking during exploration is a campaign resolution mechanic.
+      reason: deferred.other
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Slavers
   effect: >-
     In case of finding prisoners (roll of "333" during Exploration phase) Druchii may follow the
@@ -170,8 +168,10 @@ rules:
     - id: unimplemented.druchii-mic.band.maximum-characteristics
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: characteristic-increase caps on advancement are outside the duel scope.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Maximum Characteristics
   effect: >-
     Druchii warriors may never increase their characteristics beyond the following maximums: M 5, WS
@@ -221,9 +221,7 @@ rules:
     - id: unimplemented.druchii-mic.sorceress.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic subsystem (Dark Magic; the spell list is preserved in
-        catalog/campaign/magic.yaml).
+      reason: out-of-scope.magic
   name: Wizard
   effect: The Dark Elf Sorceress is a wizard and uses Dark Magic, detailed below.
   source:
@@ -247,8 +245,10 @@ rules:
     - id: unimplemented.druchii-mic.beastmaster.slavehounds
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: hiring rules are campaign mechanics outside the duel scope.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Slavehounds
   effect: >-
     The Beastmaster may be accompanied by up to three Slavehounds. These are bought as henchmen and
@@ -276,9 +276,7 @@ rules:
     - id: unimplemented.druchii-mic.shades.natural-stealth
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Natural Stealth
   effect: >-
     If a Shade is Hidden, enemy models halve their Initiative value for determining if they can
@@ -337,9 +335,14 @@ rules:
     - id: unimplemented.druchii-mic.witch-elves.maibd-poison
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: equipment-purchase pricing/availability and poison use are
-        roster-construction mechanics outside the duel scope.
+      reason: deferred.other
+      clauses:
+      - id: whole--scope--witch-elves-only
+        scope: 'YES'
+      - id: whole--scope--acquisition-discount
+        scope: 'NO'
+      - id: whole--scope--next-battle-and-trade
+        scope: 'NO'
   name: Maibd Poison
   effect: >-
     Witch Elves often anoint their weapons in various poisons, for both martial and religious
@@ -375,10 +378,7 @@ rules:
     - id: unimplemented.druchii-mic.slavehounds.animals
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: campaign, recruitment, progression or post-duel
-        aftermath. Source prose is retained; this is an exclusion, not deferred modular
-        implementation.
+      reason: out-of-scope.campaign
   name: Animals
   effect: Slavehounds are animals, and all animal rules apply to them. They never gain experience.
   source:
@@ -406,6 +406,13 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.handler-leadership
+      clauses:
+      - id: handler-leadership--scope--handler-leadership
+        scope: 'YES'
+      - id: handler-leadership--scope--handler-leadership-source-limits
+        scope: 'YES'
+      - id: handler-leadership--scope--handler-presence-condition
+        scope: 'NO'
   name: Beastmaster
   effect: >-
     Slavehounds are vicious creatures that are barely kept under control by their Beastmaster. As
@@ -446,9 +453,7 @@ rules:
     - id: unimplemented.druchii-mic.slavehounds.pack-work
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Pack Work
   effect: >-
     Slavehounds are trained to detect hiding slaves and show them to their masters. If a Slavehound
@@ -480,9 +485,7 @@ rules:
     - id: unimplemented.druchii-mic.special.frenzied-charge
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Frenzied Charge
   effect: >-
     The Dark Elf is infused with an intense raging thirst for blood and is a whirlwind in
@@ -523,11 +526,6 @@ rules:
         kind: mechanic
         id: skill.elven-agility
   name: Fey Quickness
-  effect: >-
-    Few can ever hope to match an Elf's inhuman quickness and agility. An Elf with Fey Quickness can
-    avoid melee or missile attacks on a roll of 6. If the Elf also has Step Aside or Dodge, this
-    will increase to a 4+ in the relevant area. For example, an Elf with Fey Quickness and Step
-    Aside avoids melee attacks on a 4+ and missile attacks on a 6.
   source:
     manual: mordheim-index-catalog
     printed_page: 0
@@ -535,19 +533,13 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/druchii
   name_i18n:
     es: Celeridad Feérica
-  effect_i18n:
-    es: >-
-      Pocos pueden esperar igualar la rapidez y agilidad inhumanas de un Elfo. Un Elfo con Celeridad
-      Feérica puede esquivar ataques cuerpo a cuerpo o de misiles con una tirada de 6. Si el Elfo
-      también tiene Echarse a un lado o Esquivar, esto aumentará a 4+ en el área correspondiente. Por
-      ejemplo, un Elfo con Celeridad Feérica y Echarse a un lado esquiva ataques cuerpo a cuerpo con un 4+ y
-      ataques de misiles con un 6.
   applies_to:
     profile_ids:
     - noble
     - lordlings
     - sorceress
     - beastmaster
+  rule_ref: shared-rule.fey-quickness
 - id: noble--infiltration
   runtime:
     scope: 'NO'
@@ -557,9 +549,7 @@ rules:
     - id: unimplemented.druchii-mic.special.infiltration
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Infiltration
   effect: The Dark Elf can Infiltrate. This skill is identical to the Skaven skill.
   source:
@@ -586,9 +576,10 @@ rules:
     - id: unimplemented.druchii-mic.special.poisoner
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: search-for-rare-items alternatives and poison doses are campaign
-        mechanics outside the duel scope.
+      reason: deferred.other
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Poisoner
   effect: >-
     The Dark Elf is proficient in concocting different poisons. If the Hero doesn't search for rare
@@ -623,9 +614,7 @@ rules:
     - id: unimplemented.druchii-mic.special.marksman-of-naggaroth
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: shooting, casting or escape without resolving the
-        duel. Source prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Marksman of Naggaroth
   effect: >-
     Eyes of this hero are so keen and hands so steady that he can completely omit the penalty for
@@ -660,8 +649,10 @@ rules:
     - id: unimplemented.druchii-mic.special.will-to-survive
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: post-duel Serious Injuries rolls are campaign resolution mechanics.
+      reason: deferred.other
+      clauses:
+      - id: will-to-survive
+        scope: 'NO'
   name: Will to Survive
   effect: >-
     Naggaroth is a harsh land with harsh inhabitants and weaklings are shown no mercy. This elf is
@@ -697,9 +688,7 @@ rules:
     - id: unimplemented.druchii-mic.special.keen-sight
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Keen Sight
   effect: >-
     There are numerous legends detailing the excellent eyesight of the Elves, both Druchii and Asur
@@ -732,8 +721,7 @@ rules:
     - id: unimplemented.druchii-mic.band.naggaroth-prices
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
   name: Naggaroth Prices
   effect: >-
     These special prices represent the lower rarity of these items in Naggaroth. When attempting to

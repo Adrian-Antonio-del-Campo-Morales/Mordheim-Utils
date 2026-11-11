@@ -10,9 +10,7 @@ rules:
     - id: unimplemented.silent-brotherhood-sc.band.assignments
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Assignments
   effect: >-
     After the game any hero who did not go out of action may fulfil a client's assignment instead of
@@ -45,9 +43,7 @@ rules:
     - id: unimplemented.silent-brotherhood-sc.band.sworn-brotherhood
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Sworn Brotherhood
   effect: >-
     Whenever you want to hire a new hero during a campaign, the warband's leader must first pass a
@@ -106,9 +102,7 @@ rules:
     - id: unimplemented.silent-brotherhood-sc.band.modus-operandi
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Modus Operandi
   effect: >-
     Every hero may choose one modus operandi when hired (sniper 30 gc, executor 35 gc, lurker 35 gc;
@@ -212,9 +206,7 @@ rules:
     - id: unimplemented.silent-brotherhood-sc.poisoner.toxic-trades
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Toxic Trades
   effect: >-
     If the hero doesn't search for rare items, he may make a single dose of Black Lotus instead. The
@@ -243,9 +235,7 @@ rules:
     - id: unimplemented.silent-brotherhood-sc.poisoner.master-of-poisons
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Master of Poisons
   effect: >-
     When using his toxic trades rule, the Poisoner may make D3-1 doses of Dark Venom instead of
@@ -275,9 +265,7 @@ rules:
     - id: unimplemented.silent-brotherhood-sc.thugs.loudmouths
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Loudmouths
   effect: Thugs never become heroes; re-roll all results of 'that lad's got talent'.
   source:
@@ -338,10 +326,7 @@ rules:
     - id: unimplemented.silent-brotherhood-sc.band.hit-and-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: voluntary escape/withdrawal ends the duel without resolving it.
-        Associated movement, interception, re-engagement and campaign injury clauses
-        are also outside the 1v1 combat scope (user ruling 2026-10-04).
+      reason: out-of-scope.movement
   name: Hit and Run
   effect: >-
     The hero may make a Leadership Test at the end of any Hand-to-Hand phase, if he is still in base
@@ -374,9 +359,7 @@ rules:
     - id: unimplemented.silent-brotherhood-sc.band.backstabber
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: charging a target the hero cannot see and the injury-roll modifier are
-        combat-phase mechanics.
+      reason: out-of-scope.non-duel
   name: Backstabber
   effect: >-
     The Assassin specializes in attacking his targets when their back is turned. The Assassin may
@@ -412,14 +395,8 @@ rules:
     - id: unimplemented.silent-brotherhood-sc.band.infiltration
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: deployment order and placement are scenario-setup mechanics.
+      reason: out-of-scope.movement
   name: Infiltration
-  effect: >-
-    A Hero with this skill is always placed on the battlefield after the opposing warband and can be
-    placed anywhere on the table as long as it is out of sight of the opposing warband and more than
-    12" away from any enemy model. If both players have models which infiltrate, roll a D6 for each,
-    and the lowest roll sets up first.
   source:
     manual: broheim.net
     printed_page: 2
@@ -427,11 +404,6 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sealedcity/Silent Brotherhood.pdf
   name_i18n:
     es: Infiltración
-  effect_i18n:
-    es: >-
-      Un Héroe con esta habilidad siempre se despliega en el campo de batalla después de la banda
-      rival y puede colocarse en cualquier punto de la mesa siempre que quede fuera de la vista de
-      la banda rival y a más de 12" de cualquier modelo enemigo. Si ambos jugadores tienen modelos
-      que se infiltran, cada uno tira 1D6 y el resultado más bajo despliega primero.
   applies_to:
     band: true
+  rule_ref: shared-rule.infiltration

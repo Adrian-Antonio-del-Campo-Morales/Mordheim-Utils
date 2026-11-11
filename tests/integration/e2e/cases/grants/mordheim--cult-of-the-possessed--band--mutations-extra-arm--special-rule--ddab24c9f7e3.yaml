@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/cult-of-the-possessed/band--mutations-extra-arm/special-rule.band--mutations-extra-arm
-# scaffold_fingerprint: 59bfd557449b8b216e4b2718194899d43651509d55e3f13a4dc433248d685b9f
 # authoring_status: AUTHORED
 # authoring_progress: the admitted whole clause carries 3 authored scenarios derived from the printed
 #   rule and the recorded contract: a single-handed weapon in the extra arm adds one attack die, a
@@ -17,12 +16,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 3 scenarios evidence the printed alternative - the weapon arm and the shield arm -
+# AUTHORED: 3 scenarios evidence the printed alternative - the weapon arm and the shield arm -
 #   and their non-regression control.  Both printed cases put one extra attack die in the bearer's own
 #   pool, and the control shows that the shield itself is not what strikes: the same bearer, wearing the
 #   same shield the ordinary way and carrying a different mutation, resolves exactly one attack.
@@ -31,32 +28,6 @@
 #   fire in this scenario (Blackblood fires only when the bearer loses a wound, and the opponent declares
 #   no attacks) instead of removing the row and producing a build the mandate must refuse.  REVIEWED
 #   still requires manual semantic review.
-# origin_id:
-#   rule/mordheim/cult-of-the-possessed/band--mutations-extra-arm/special-rule.band--mutations-extra-arm
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/cult-of-the-possessed/special-rules.yaml
-# source_fingerprint:
-#   c24cd7e13fb6a7d2caf21bf6baf3176dacb60fe0262fd8bd90a9b07aa319b11d
-# source_sha256_at_generation:
-#   6e992ccfd48a6106eaaf66a5af08cf6eda3fc61a966227bcb975fb73cc2c3776
-# Printed rule text:
-#   The mutant may use any single-handed weapon in the extra arm, giving him +1 attack in hand-to-hand combat. Alternatively he may carry a shield or buckler in the extra arm, gaining an extra attack but still not carrying a weapon.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Mutation consequence: the Extra Arm may hold a single-handed weapon for +1 attack, or a shield/buckler for an extra attack while the character may not carry a weapon.
-# effect_id:
-#   special-rule.band--mutations-extra-arm
-# relation:
-#   equivalent
-# parameters:
-#   {"attack_bonus":1,"slot":"single-handed or shield"}
-# conditions:
-#   {"recipient":"mutant"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Declared and implemented; the recorded F074 mutation clarifications cover which models may buy mutations, not this arm's consequence.
 
 # --- Authored scenarios ---
 # Derived from the printed rule and the recorded contract; no engine output was consulted.  The
@@ -66,7 +37,6 @@
 
 - audit_id: rule/mordheim/cult-of-the-possessed/band--mutations-extra-arm/special-rule.band--mutations-extra-arm
   id: a-single-handed-weapon-in-the-extra-arm-adds-one-attack
-  covers: [whole]
   fighters:
     first:
       collection: mordheim
@@ -94,7 +64,6 @@
 # extra attack with the bearer's own natural profile while carrying no weapon in that arm.
 - audit_id: rule/mordheim/cult-of-the-possessed/band--mutations-extra-arm/special-rule.band--mutations-extra-arm
   id: a-shield-in-the-extra-arm-still-adds-one-attack
-  covers: [whole]
   fighters:
     first:
       collection: mordheim
@@ -123,7 +92,6 @@
 # exactly one attack's two rolls, which is the observation: the shield supplies no attack of its own.
 - audit_id: rule/mordheim/cult-of-the-possessed/band--mutations-extra-arm/special-rule.band--mutations-extra-arm
   id: the-same-shield-without-the-extra-arm-adds-no-attack
-  covers: [whole]
   fighters:
     first:
       collection: mordheim

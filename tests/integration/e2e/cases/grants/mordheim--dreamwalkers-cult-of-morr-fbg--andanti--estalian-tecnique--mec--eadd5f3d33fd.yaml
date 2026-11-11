@@ -1,0 +1,19 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/dreamwalkers-cult-of-morr-fbg/andanti--estalian-tecnique/mechanic.estalian-technique
+# authoring_status: PARTIAL
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# PARTIAL: [D] not asserted, and the pending datum is a normative decision rather than an engine branch. the printed sentence is that the Andanti "may parry using his rapier and Main Gauche if he can roll under his weapon skill as opposed to over his opponent's highest hit roll as per the normal rules", i.e. a parry whose success condition is inverted; the record's own analysis_status is needs_clarification, its relation is only related, and both the record and its M3 note state that the parry operator supports a fixed target (weapon.starblade) and a match-allowed success condition (sword-master) but no roll-under-the-defender's-own-Weapon-Skill mode, and that the coordinator must choose between adding an inverted-target parry mode and recording the Andanti as an ordinary parry. The discriminating case is fixed by the record itself: an opponent's hit roll of 6 against the Andanti's Weapon Skill 4, where the printed reading succeeds on any parry die below 4 and the ordinary reading cannot succeed at all. Missing: an accepted ruling or licence choosing one reading (its trigger and success condition), after which the parry die key and the fixed target are derivable from the authored parry cases; the printed expectation is recorded here so the ruling is the only step left. REVIEWED still requires manual semantic review.
+
+# authoring_progress: the admitted parry-rolls-under-ws clause carries no scenario and stays pending
+#   on the normative choice named in its clause note (add an inverted-target parry mode or treat the
+#   Andanti as an ordinary parry); the printed expectation and the discriminating case are recorded
+#   above.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+
+[]  # Empty scenario list: this file contributes no test or coverage.

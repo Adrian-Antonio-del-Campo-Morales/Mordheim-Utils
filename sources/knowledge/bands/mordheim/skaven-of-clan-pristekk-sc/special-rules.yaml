@@ -10,9 +10,7 @@ rules:
     - id: unimplemented.skaven-of-clan-pristekk-sc.band.countless
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Countless
   effect: Giant rats may increase the Clan Pristekk warband's numbers up to 20.
   source:
@@ -58,8 +56,7 @@ rules:
     - id: unimplemented.skaven-of-clan-pristekk-sc.sorcerer.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Wizard
   effect: >-
     A Clan Pristekk Sorcerer is a wizard and uses the Magic of the Horned Rat. See the Magic section
@@ -87,9 +84,7 @@ rules:
     - id: unimplemented.skaven-of-clan-pristekk-sc.giant-rats.countless
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Countless
   effect: Giant rats may increase the warband's numbers up to 20.
   source:
@@ -113,11 +108,11 @@ rules:
     - id: unimplemented.skaven-of-clan-pristekk-sc.giant-rats.animals
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: deferred.other
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Animals
-  effect: Giant rats are animals and do not gain experience.
   source:
     manual: broheim.net
     printed_page: 4
@@ -125,11 +120,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clan Pristekk.pdf
   name_i18n:
     es: Animales
-  effect_i18n:
-    es: Las ratas gigantes son animales y no ganan experiencia.
   applies_to:
     profile_ids:
     - giant-rats
+  rule_ref: shared-rule.animal
 - id: rat-ogres--fear
   runtime:
     scope: 'YES'
@@ -142,7 +136,6 @@ rules:
         kind: mechanic
         id: mechanic.causes-fear
   name: Fear
-  effect: Rat Ogres are so frightening they cause fear.
   source:
     manual: broheim.net
     printed_page: 4
@@ -150,11 +143,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clan Pristekk.pdf
   name_i18n:
     es: Miedo
-  effect_i18n:
-    es: Los Ogros Rata son tan aterradores que causan miedo.
   applies_to:
     profile_ids:
     - rat-ogres
+  rule_ref: shared-rule.fear
 - id: rat-ogres--stupidity
   runtime:
     scope: 'YES'
@@ -169,10 +161,7 @@ rules:
     - id: unimplemented.skaven-of-clan-pristekk-sc.rat-ogres.stupidity.outside-duel
       scope: 'NO'
       binding: null
-      reason: >-
-        Board movement, campaign progression/participation and independently
-        simulated helper/rider/group producers are outside the 1v1 duel.
-        Admissible individual exemptions and bonuses are supplied active facts.
+      reason: out-of-scope.movement
   name: Stupidity
   source:
     manual: broheim.net
@@ -194,8 +183,7 @@ rules:
     - id: unimplemented.skaven-of-clan-pristekk-sc.rat-ogres.experience
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
   name: Experience
   source:
     manual: broheim.net
@@ -207,7 +195,7 @@ rules:
   applies_to:
     profile_ids:
     - rat-ogres
-  rule_ref: shared-rule.experience
+  rule_ref: shared-rule.never-gain-experience
 - id: rat-ogres--large-target
   runtime:
     scope: 'NO'
@@ -217,8 +205,7 @@ rules:
     - id: unimplemented.skaven-of-clan-pristekk-sc.rat-ogres.large-target
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: shooting.
+      reason: out-of-scope.shooting
   name: Large Target
   source:
     manual: broheim.net
@@ -241,9 +228,7 @@ rules:
     - id: unimplemented.skaven-of-clan-pristekk-sc.band.mutating-experiment
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: rolling on the Stygian Mutation Chart is an advancement-time interaction with the
-        mutation subsystem. Chieftain and Packmaster only.
+      reason: out-of-scope.campaign
   name: Mutating Experiment
   effect: >-
     Chieftain & Packmaster only, may be chosen multiple times. This hero may force any of your heroes
@@ -273,8 +258,7 @@ rules:
     - id: unimplemented.skaven-of-clan-pristekk-sc.band.thing-handler
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: lending Leadership to animal henchmen inside 6" is a Leadership-range interaction.
+      reason: out-of-scope.non-duel
   name: Thing Handler
   effect: >-
     This Skaven has a beneficial effect on the animals under his care. Any Giant rats, Rat Ogres and

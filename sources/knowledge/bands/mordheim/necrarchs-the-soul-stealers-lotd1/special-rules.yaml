@@ -10,9 +10,7 @@ rules:
     - id: unimplemented.necrarchs-the-soul-stealers-lotd1.band.death-of-the-leader
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: leader replacement, warband-wide crumble cascade and hiring rules are campaign
-        mechanics outside the duel scope.
+      reason: out-of-scope.campaign
   name: Death of the Leader
   effect: >-
     Should the Necrarch perish, the Thrall shall pick up the mantle of Leader and all conferred
@@ -85,7 +83,7 @@ rules:
   applies_to:
     profile_ids:
     - necrarch-vampire
-  rule_ref: shared-rule.cause-fear-2
+  rule_ref: shared-rule.cause-fear-undead
 - id: necrarch-vampire--wizard
   runtime:
     scope: 'NO'
@@ -95,9 +93,7 @@ rules:
     - id: unimplemented.necrarchs-the-soul-stealers-lotd1.necrarch-vampire.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic subsystem (Necromantic magic; the Dreaded Scrolls of Nagash are
-        preserved in catalog/campaign/magic.yaml).
+      reason: out-of-scope.magic
   name: Wizard
   effect: Necrarch Vampires have one spell randomly generated from the Necromancy spell list.
   source:
@@ -125,6 +121,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+      clauses:
+      - id: psychology-immunity
+        scope: 'YES'
+      - id: never-leaves-combat
+        scope: 'NO'
   name: Immune to Psychology
   source:
     manual: mordheimer.net
@@ -207,7 +208,7 @@ rules:
   applies_to:
     profile_ids:
     - thrall
-  rule_ref: shared-rule.cause-fear-2
+  rule_ref: shared-rule.cause-fear-undead
 - id: thrall--immune-to-psychology
   runtime:
     scope: 'YES'
@@ -219,6 +220,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+      clauses:
+      - id: psychology-immunity
+        scope: 'YES'
+      - id: never-leaves-combat
+        scope: 'NO'
   name: Immune to Psychology
   source:
     manual: mordheimer.net
@@ -288,9 +294,7 @@ rules:
     - id: unimplemented.necrarchs-the-soul-stealers-lotd1.acolyte.vassal
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: spell-casting relay and casting-failure penalties are magic-subsystem
-        interactions.
+      reason: out-of-scope.magic
   name: Vassal
   effect: >-
     The Acolyte has given himself over to his dark lord. At a whim, the Necrarch can see what the
@@ -339,7 +343,7 @@ rules:
   applies_to:
     profile_ids:
     - skeletal-warrior
-  rule_ref: shared-rule.cause-fear-2
+  rule_ref: shared-rule.cause-fear-undead
 - id: skeletal-warrior--may-not-run
   runtime:
     scope: 'NO'
@@ -349,8 +353,7 @@ rules:
     - id: unimplemented.necrarchs-the-soul-stealers-lotd1.skeletal-warrior.may-not-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement-phase run/charge rules are outside the duel scope.
+      reason: out-of-scope.movement
   name: May Not Run
   source:
     manual: mordheimer.net
@@ -374,6 +377,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+      clauses:
+      - id: psychology-immunity
+        scope: 'YES'
+      - id: never-leaves-combat
+        scope: 'NO'
   name: Immune to Psychology
   source:
     manual: mordheimer.net
@@ -443,8 +451,7 @@ rules:
     - id: unimplemented.necrarchs-the-soul-stealers-lotd1.skeletal-warrior.no-brain
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: experience progression is a campaign mechanic.
+      reason: out-of-scope.campaign
   name: No Brain
   effect: Skeletal Warriors do not gain experience.
   source:
@@ -481,7 +488,7 @@ rules:
   applies_to:
     profile_ids:
     - zombie
-  rule_ref: shared-rule.cause-fear-2
+  rule_ref: shared-rule.cause-fear-undead
 - id: zombie--may-not-run
   runtime:
     scope: 'NO'
@@ -491,8 +498,7 @@ rules:
     - id: unimplemented.necrarchs-the-soul-stealers-lotd1.zombie.may-not-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement-phase run/charge rules are outside the duel scope.
+      reason: out-of-scope.movement
   name: May Not Run
   source:
     manual: mordheimer.net
@@ -516,6 +522,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+      clauses:
+      - id: psychology-immunity
+        scope: 'YES'
+      - id: never-leaves-combat
+        scope: 'NO'
   name: Immune to Psychology
   source:
     manual: mordheimer.net
@@ -585,8 +596,7 @@ rules:
     - id: unimplemented.necrarchs-the-soul-stealers-lotd1.zombie.no-brain
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: experience progression is a campaign mechanic.
+      reason: out-of-scope.campaign
   name: No Brain
   source:
     manual: mordheimer.net
@@ -598,7 +608,7 @@ rules:
   applies_to:
     profile_ids:
     - zombie
-  rule_ref: shared-rule.brainless
+  rule_ref: shared-rule.never-gain-experience
 - id: abomination--cause-fear
   runtime:
     scope: 'YES'
@@ -621,7 +631,7 @@ rules:
   applies_to:
     profile_ids:
     - abomination
-  rule_ref: shared-rule.cause-fear-2
+  rule_ref: shared-rule.cause-fear-undead
 - id: abomination--immune-to-psychology
   runtime:
     scope: 'YES'
@@ -633,6 +643,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+      clauses:
+      - id: psychology-immunity
+        scope: 'YES'
+      - id: never-leaves-combat
+        scope: 'NO'
   name: Immune to Psychology
   source:
     manual: mordheimer.net
@@ -702,8 +717,7 @@ rules:
     - id: unimplemented.necrarchs-the-soul-stealers-lotd1.abomination.no-brain
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: experience progression is a campaign mechanic.
+      reason: out-of-scope.campaign
   name: No Brain
   effect: Abominations do not gain experience.
   source:
@@ -727,8 +741,7 @@ rules:
     - id: unimplemented.necrarchs-the-soul-stealers-lotd1.abomination.large-target
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: large-target modifiers belong to the shooting subsystem.
+      reason: out-of-scope.shooting
   name: Large Target
   source:
     manual: mordheimer.net
@@ -750,8 +763,7 @@ rules:
     - id: unimplemented.necrarchs-the-soul-stealers-lotd1.abomination.powered
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: wyrdstone-shard transfer and re-animation are campaign economy mechanics.
+      reason: out-of-scope.campaign
   name: Powered
   effect: >-
     A Necrarch has placed a shard of wyrdstone in the Abomination to bring it life. Should the
@@ -781,8 +793,7 @@ rules:
     - id: unimplemented.necrarchs-the-soul-stealers-lotd1.abomination.spare-parts
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: post-battle injury-table rolls are a campaign mechanic.
+      reason: out-of-scope.campaign
   name: Spare Parts
   effect: >-
     Thanks to the dark magics of their lords and the manner of their construction, Abominations
@@ -812,8 +823,7 @@ rules:
     - id: unimplemented.necrarchs-the-soul-stealers-lotd1.band.pupil-of-nagash
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: rolling on a spell list is a magic-subsystem interaction.
+      reason: out-of-scope.magic
   name: Pupil of Nagash
   effect: >-
     Delving further into the evil teachings of Nagash, the Necrarch Vampire brings greater darkness
@@ -843,8 +853,7 @@ rules:
     - id: unimplemented.necrarchs-the-soul-stealers-lotd1.band.master-of-the-black-arts
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: spell range extension is a magic-subsystem interaction.
+      reason: out-of-scope.magic
   name: Master of the Black Arts
   effect: >-
     Such is the power of the Necrarch that the range of all his magical workings is extended by
@@ -872,8 +881,7 @@ rules:
     - id: unimplemented.necrarchs-the-soul-stealers-lotd1.band.pull-of-undeath
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: out-of-action determination is a post-duel/campaign resolution mechanic.
+      reason: out-of-scope.campaign
   name: Pull of Undeath
   effect: >-
     So strong is the center of undeath within the Necrarch that he may save his constructs around
@@ -903,8 +911,10 @@ rules:
     - id: unimplemented.necrarchs-the-soul-stealers-lotd1.band.racial-maximum
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: characteristic-increase caps on advancement are outside the duel scope.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Racial Maximum
   effect: >-
     Necrarch Vampires may never increase their characteristics beyond the following maximums: M 6,

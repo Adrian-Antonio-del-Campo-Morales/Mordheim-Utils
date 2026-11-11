@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.myrmidia-eagle-friend
-# scaffold_fingerprint: 55478d7ab349ba87f0c474b724830ba679dd10f80576e836c55c85c0ac3a663c
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clause carries authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -8,38 +7,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 2 scenarios cover the eagle as its own strike-first Strength 3 attack resolved in its own pool before the bearer's hand weapon, and the same configuration without the mark, whose tape carries no eagle die at all.
-# origin_id:
-#   mechanic/mechanic.myrmidia-eagle-friend
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   46f5beb355127da50cde73e803a2b6a059edd74f5629ce4f9d651fb7f0c2cbd9
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   The Priestess gains an eagle companion each time she acquires this mark... each successful attack inflicts a Strength 3 hit.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Shared mechanic contract: each supplied eagle contributes a separate repeatable Strike-First Strength 3 attack; shooting and post-battle return are excluded.
-# effect_id:
-#   mechanic.myrmidia-eagle-friend
-# relation:
-#   equivalent
-# parameters:
-#   {}
-# conditions:
-#   {"attacks":"strength 3","strike_first":true,"immortal":true}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   The 24-inch shooting attack and post-battle return/loss are outside the duel.
+# AUTHORED: 2 scenarios cover the eagle as its own strike-first Strength 3 attack resolved in its own pool before the bearer's hand weapon, and the same configuration without the mark, whose tape carries no eagle die at all.
 
 # --- Authored scenarios ---
 # The eagle is a directed weapon contribution, not a third fighter: it resolves first
@@ -49,7 +20,6 @@
 # wounding and the bearer is left to swing (and miss) on its own die.
 - audit_id: mechanic/mechanic.myrmidia-eagle-friend
   id: the-eagle-strikes-first-as-its-own-strength-three-attack
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -74,7 +44,6 @@
 # attack pools.
 - audit_id: mechanic/mechanic.myrmidia-eagle-friend
   id: without-the-mark-no-eagle-attack-is-made
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace

@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/sisters-of-sigmar/band--special-skills-righteous-fury/skill.righteous-fury
-# scaffold_fingerprint: 903315770520175f92a6931e6d1fdd5be968d1ab3d8088801fb33ad39bad46a6
 # authoring_status: AUTHORED
 # authoring_progress: the admitted whole clause carries 3 authored scenario(s) derived from the
 #   printed rule, the recorded semantic contract and the printed band rule: the bearer is one of the
@@ -13,12 +12,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: the band rule band--special-skills-righteous-fury is a printed selectable warband
+# AUTHORED: the band rule band--special-skills-righteous-fury is a printed selectable warband
 #   skill (runtime grant selectable, eligibility sigmarite-matriarch, sister-superior and augur,
 #   applies_to the band, binding mechanic skill.righteous-fury), so the scenario declares it on one of
 #   its printed recipients exactly as the KB offers it.
@@ -27,32 +24,6 @@
 #   eligibility receives none.  The printed list also names Undead, Possessed, Beastmen, Dark Elves
 #   and other evil warbands; those identities are not additionally evidenced here and stay recorded as
 #   the uncovered face of the printed list.  REVIEWED still requires manual semantic review.
-# origin_id:
-#   rule/mordheim/sisters-of-sigmar/band--special-skills-righteous-fury/skill.righteous-fury
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/sisters-of-sigmar/special-rules.yaml
-# source_fingerprint:
-#   d7921d4bcca443377dfba7b838414ca0a0ea2ecfd0d7332deaf738d7a5392c0e
-# source_sha256_at_generation:
-#   47dd3f6aa9031cbf2945b63e084ee09b61a9c89570af9b3eca86c08430b244a5
-# Printed rule text:
-#   The Sister hates all Skaven, Undead, Possessed, Beastmen, Dark Elves, and other warbands classed as evil. Non-Chaos human warbands whose members are merely killers or looters are not included.
-# Semantic contract (check analysis_status before treating as accepted):
-#   The Sister hates Skaven, Undead, Possessed, Beastmen, Dark Elves and other evil warbands, but not non-Chaos human warbands of mere killers or looters. Closure: the first-round hit reroll applies against the listed species and evil identities and never against a plain human warband.
-# effect_id:
-#   skill.righteous-fury
-# relation:
-#   equivalent
-# parameters:
-#   {"excludes": "non-Chaos human killers or looters", "first_round": true, "reroll": "failed hits", "targets": ["Skaven", "Undead", "Possessed", "Beastmen", "Dark Elves", "evil warbands"]}
-# conditions:
-#   {"recipient": "Sister of Sigmar"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Band origin for the shared righteous-fury operator; the printed exclusion of non-Chaos human warbands is the human and human-mercenary group test in the hatred resolution. The printed text repeats the canonical clause of the shared operator without adding a term, so the band origin creates no second runtime contribution. Surface reuse candidate: {"family":"M-HATRED-TARGET","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Possible shared first-round hit-reroll consumer only. Resolve each printed hated target and the ordinary Psychology/Frenzy gates; do not inherit the audit Orc/Goblin effect ID for every target or the Strigoi immunity exception.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
 # --- Authored scenarios ---
 # Family model (Righteous Fury as a Sisters of Sigmar band special skill): the bearer is built from
@@ -65,7 +36,6 @@
 
 - audit_id: rule/mordheim/sisters-of-sigmar/band--special-skills-righteous-fury/skill.righteous-fury
   id: a-listed-species-receives-the-first-round-reroll
-  covers: [whole]
   fighters:
     first:
       collection: mordheim
@@ -93,7 +63,6 @@
 # strict tape holds none, so the miss stands.
 - audit_id: rule/mordheim/sisters-of-sigmar/band--special-skills-righteous-fury/skill.righteous-fury
   id: a-plain-human-warband-is-excluded
-  covers: [whole]
   fighters:
     first:
       collection: mordheim
@@ -119,7 +88,6 @@
 # band-mate outside it receives no reroll even against the printed Skaven.
 - audit_id: rule/mordheim/sisters-of-sigmar/band--special-skills-righteous-fury/skill.righteous-fury
   id: a-band-mate-outside-the-printed-eligibility-receives-no-reroll
-  covers: [whole]
   fighters:
     first:
       collection: mordheim

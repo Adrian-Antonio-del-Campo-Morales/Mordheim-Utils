@@ -39,8 +39,7 @@ rules:
     - id: unimplemented.marauders-of-chaos.seer.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic.
+      reason: out-of-scope.magic
   name: Wizard
   effect: A Seer is a Wizard and may use Magic as detailed in the Magic section.
   source:
@@ -64,8 +63,7 @@ rules:
     - id: unimplemented.marauders-of-chaos.seer.mark-of-chaos
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic.
+      reason: out-of-scope.magic
   name: Mark of Chaos
   effect: >-
     The Seer gets a Mark of Chaos when hired to determine the kind of magic he uses. He can have the
@@ -153,8 +151,7 @@ rules:
     - id: unimplemented.marauders-of-chaos.warhounds-of-chaos.animals
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Animals
   source:
     manual: mordheimer.net
@@ -241,9 +238,7 @@ rules:
     - id: unimplemented.marauders-of-chaos.condemned.variable-experience
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Experience
   effect: >-
     When an advance would increase a variable characteristic, roll its die instead. The player may
@@ -274,9 +269,7 @@ rules:
     - id: unimplemented.marauders-of-chaos.condemned.fate
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Fate
   effect: >-
     Once all variable characteristics are permanently fixed, the Condemned may use equipment
@@ -362,8 +355,7 @@ rules:
     - id: unimplemented.marauders-of-chaos.spawn-of-chaos.special-movement
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Special Movement
   effect: >-
     The Spawn moves 2D6" straight ahead in each Movement phase after choosing its facing. It does
@@ -419,8 +411,7 @@ rules:
     - id: unimplemented.marauders-of-chaos.spawn-of-chaos.no-brain
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: No Brain
   effect: The Spawn never gains Experience.
   source:
@@ -444,8 +435,7 @@ rules:
     - id: unimplemented.marauders-of-chaos.spawn-of-chaos.large
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: shooting.
+      reason: out-of-scope.shooting
   name: Large
   effect: The Spawn counts as a Large Target.
   source:
@@ -469,8 +459,7 @@ rules:
     - id: unimplemented.marauders-of-chaos.band.eye-of-the-gods
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Eye of the Gods
   effect: >-
     After each battle, if the warband leader took part, roll 2D6. If the battle was lost, add +1 for
@@ -505,9 +494,7 @@ rules:
     - id: unimplemented.marauders-of-chaos.band.hired-swords
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Hired Swords
   effect: >-
     The warband may hire Pit Fighters, Ogres, Norse Shamans and Imperial Assassins, plus entries
@@ -536,9 +523,7 @@ rules:
     - id: mechanic.follow-the-darkest-tribe
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: this is an immutable warband-creation choice whose listed consequences concern
-        roster limits, campaign rarity, post-game rewards, riding and mounted campaign options.
+      reason: out-of-scope.movement
   name: Follow the Darkest Tribe
   effect: >-
     When the warband is created, choose one tribe: Norse, Kurgan or Hung. Apply only the special
@@ -565,8 +550,7 @@ rules:
     - id: unimplemented.marauders-of-chaos.band.norse-reavers
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Norse — Reavers
   effect: Norse warbands gain +1 on rarity rolls during the post-game sequence.
   source:
@@ -591,8 +575,7 @@ rules:
     - id: unimplemented.marauders-of-chaos.band.norse-pantheon
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Norse — Pantheon
   effect: >-
     For a Norse warband, Eye of the Gods normally triggers on 13+ instead of 12+. If the leader has
@@ -619,8 +602,7 @@ rules:
     - id: unimplemented.marauders-of-chaos.band.kurgan-pedigree
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Kurgan — Pedigree
   effect: >-
     A Kurgan warband may include any number of Warhounds of Chaos instead of being limited to five.
@@ -646,8 +628,7 @@ rules:
     - id: unimplemented.marauders-of-chaos.band.kurgan-difficult-customers
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Kurgan — Difficult Customers
   effect: >-
     A Kurgan warband suffers -1 on rolls to find Rare items, except Great Axes and Barbed Whips.
@@ -673,8 +654,7 @@ rules:
     - id: unimplemented.marauders-of-chaos.band.hung-disloyalty
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Hung — Disloyalty
   effect: A Hung warband has a maximum of 12 warriors instead of 15.
   source:
@@ -697,8 +677,10 @@ rules:
     - id: unimplemented.marauders-of-chaos.band.hung-affinity-with-horses
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: mounts.
+      reason: deferred.mounts
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Hung — Affinity with Horses
   effect: >-
     All Heroes, including Henchmen promoted to Heroes, automatically have the Ride Warhorse skill.
@@ -726,9 +708,7 @@ rules:
     - id: unimplemented.marauders-of-chaos.band.marauder-maximum-characteristics
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Marauder Maximum Characteristics
   effect: >-
     Marauders of Chaos use the Marauder of Chaos maximum characteristic profile
@@ -761,6 +741,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.undivided-leader
+      clauses:
+      - id: undivided-leader--scope--leadership-reroll-aura
+        scope: 'YES'
+      - id: undivided-leader--scope--roster-and-campaign
+        scope: 'NO'
   name: Mark of Chaos Undivided
   effect: >-
     A marked leader allows all warband members within the Leader radius to re-roll failed Leadership
@@ -793,8 +778,7 @@ rules:
     - id: unimplemented.marauders-of-chaos.band.mark-of-tchar
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic.
+      reason: out-of-scope.magic
   name: Mark of Tchar the Eagle
   effect: >-
     This Mark changes the Hero or Seer's magic access. The spell list and spell effects are
@@ -823,6 +807,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.mark-of-arkhar
+      clauses:
+      - id: whole--scope--frenzy
+        scope: 'YES'
+      - id: whole--scope--spell-resistance
+        scope: 'NO'
     # 'A Seer with this mark becomes a Bloodfather ... A Bloodfather may also
     # take Strength skills': the role's construction consequence belongs to the
     # Seer alone, so the binding names its profiles instead of widening the
@@ -842,23 +831,15 @@ rules:
     - id: bloodfather--spell-targeting
       scope: 'NO'
       binding: null
-      reason: >-
-        'spells targeting him fail on 4+' resolves a prayer/spell target roll; casting is outside
-        the duel.
+      reason: out-of-scope.magic
     - id: bloodfather--cannot-cast
       scope: 'NO'
       binding: null
-      reason: >-
-        'he cannot cast spells' is a magic-access clause; spell resolution is outside the duel.
+      reason: out-of-scope.magic
     - id: bloodfather--post-combat-gain
       scope: 'NO'
       binding: null
-      reason: >-
-        The printed +1 WS/S/T/I after taking an enemy Out of Action in hand-to-hand combat needs a
-        duelist still fighting to carry the gain until the end of the battle. A resolved 1v1 duel
-        ends at that Out of Action result, so no later close combat exists in which the Leadership
-        test and its once-per-characteristic cap could operate; no second enemy is supplied and a
-        resolved duel is not prolonged to manufacture one.
+      reason: out-of-scope.non-duel
   name: Mark of Arkhar the Dog
   effect: >-
     A marked leader is subject to Frenzy and spells targeting him fail on 4+. A Seer with this mark
@@ -899,6 +880,11 @@ rules:
         id: trait.mark-of-onogal-the-crow
         parameters:
           value: true
+      clauses:
+      - id: mark-admitted-effects
+        scope: 'YES'
+      - id: serious-injuries-reroll
+        scope: 'NO'
   name: Mark of Onogal the Crow
   effect: >-
     A marked leader gains +1 Toughness, may re-roll once on the Serious Injuries table, and is
@@ -1007,9 +993,7 @@ rules:
     - id: unimplemented.marauders-of-chaos.band.marauder-special-skills-tattooed-body
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Tattooed Body
   effect: >-
     Only the warband's leader may have this skill. The Hero's body is covered with unholy Chaos
@@ -1042,9 +1026,7 @@ rules:
     - id: unimplemented.marauders-of-chaos.band.marauder-special-skills-sweeping-blow
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Sweeping Blow
   effect: >-
     Whenever the Hero takes an enemy model out of action using a double-handed weapon he may
@@ -1076,6 +1058,9 @@ rules:
       binding:
         kind: compiler
         id: special-rule.band--marauder-special-skills-mutant
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Mutant
   effect: >-
     The Hero may buy one mutation. See the Mutations section of the Possessed on special rules .
@@ -1106,8 +1091,10 @@ rules:
     - id: unimplemented.marauders-of-chaos.band.marauder-special-skills-heart-of-the-warrior
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.psychology
+      clauses:
+      - id: heart-rout-and-all-alone
+        scope: 'NO'
   name: Heart of the Warrior
   effect: >-
     Only the warband's leader may have this skill. He may re-roll any failed Rout test and is immune

@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/khemri-tomb-guardians/stone-golem--animated/unimplemented.khemri-tomb-guardians.stone-golem.animated
-# scaffold_fingerprint: a92e780677ffbf3c7769b569b9e3527650c606f6b09aa5829908fa17ffee506f
 # authoring_status: AUTHORED
 # authoring_progress: the admitted animated clause carries 2 authored scenarios and is no longer pending.  The
 # half of the printed sentence that had no tape is "is not Undead", and it is observable through an
@@ -22,44 +21,16 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: animated (scope: YES)
-# AUTHORED[animated]: 2 scenarios carry the printed "is not Undead" onto the implemented hatred-(Undead)
+# AUTHORED: 2 scenarios carry the printed "is not Undead" onto the implemented hatred-(Undead)
 # first-round hit reroll, whose qualifying identity is the defender's `nature.undead` tag.  Against the
 # published `stone-golem` profile the declared miss stands and no reroll die is declared, while the same
 # device rerolls the same miss against a supplied `creature_kind: undead` enemy, so the absence is a statement
 # about the golem.  Recorded, not dropped: the label "animated being" has no key of its own and the three
 # adjacent consequences of the classification are separately bound sibling rows, so they are not restated; the
 # register row keeps its deferred null binding, the missing consumer the tape detects.
-# origin_id:
-#   rule/trollheim/khemri-tomb-guardians/stone-golem--animated/unimplemented.khemri-tomb-guardians.stone-golem.animated
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/trollheim/khemri-tomb-guardians/special-rules.yaml
-# source_fingerprint:
-#   027d47b412c93d1c8c64946b4881da41d9466f18be091a69b1a15a3d8d49c08d
-# source_sha256_at_generation:
-#   a9c8df6aaba67eeae09b5dee369da75a30c41cfc563e893c57ef2a764afbfc0f
-# Printed rule text:
-#   The Stone Golem is an animated being and is not Undead.
-# Semantic contract (check analysis_status before treating as accepted):
-#   The classification that the Stone Golem is animated and not Undead decides which admitted rule sets apply to this duelist. Printed clause: The Stone Golem is an animated being and is not Undead.
-# effect_id:
-#   (not recorded)
-# relation:
-#   unresolved
-# parameters:
-#   {}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Map/movement, deployment, water/weather or mount mechanics are permanent 1v1 exclusions; the clause is recorded explicitly and no implementation consumer is assigned. Scope review integration: {"clause_id":"animated","review_clause_id":"whole","source_state":"matched","review_status":"reviewed","scope_reason":"The classification that the Stone Golem is animated and not Undead decides which admitted rule sets apply to this duelist.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"The Stone Golem is an animated being and is not Undead.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
 
 # --- Authored scenarios ---
 # Derived from the printed rule, the published profile stanza and the recorded contract of the device the
@@ -71,7 +42,6 @@
 # its own Leadership first, and the declared 1+1 passes its printed 7 without cancelling the charge.
 - audit_id: rule/trollheim/khemri-tomb-guardians/stone-golem--animated/unimplemented.khemri-tomb-guardians.stone-golem.animated
   id: the-printed-not-undead-golem-is-not-a-hatred-undead-target
-  covers: [animated]
   fighters:
     first:
       skill_ids: [mechanic.hatred-undead]
@@ -94,7 +64,6 @@
 # nature.undead, so the absence recorded above is a statement about the printed classification.
 - audit_id: rule/trollheim/khemri-tomb-guardians/stone-golem--animated/unimplemented.khemri-tomb-guardians.stone-golem.animated
   id: the-same-miss-is-rerolled-against-a-supplied-undead-enemy
-  covers: [animated]
   fighters:
     first:
       skill_ids: [mechanic.hatred-undead]

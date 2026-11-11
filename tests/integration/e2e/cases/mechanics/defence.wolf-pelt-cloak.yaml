@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/defence.wolf-pelt-cloak
-# scaffold_fingerprint: 174351cf45cbde2c6d9dc86736367f8a54424092baa80200c5a3ebbeb40bc4e2
 # authoring_status: AUTHORED
 # authoring_progress: all three admitted clauses carry authored scenarios: the
 #   6+ saving throw at its boundary and two refusals of the strictures. REVIEWED
@@ -10,131 +9,26 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: may-not-carry-blackpowder-weapons (scope: YES)
 # AUTHORED[may-not-carry-blackpowder-weapons]: 1 refusal declares that a
 #   blackpowder weapon is not available to the pelt's recipient, so the build is
 #   rejected instead of silently gaining the kit. Pending semantic review.
-# origin_id:
-#   mechanic/defence.wolf-pelt-cloak
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   9b7386e21072e30a01cedbacc8c47469b72e84466153619a3e59443fe0d1de27
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   The Wolf-Priest's white wolf pelt grants a 6+ armour save; his Strictures forbid other armour.
-# Semantic contract (check analysis_status before treating as accepted):
-#   A Wolf-Priest of Ulric may never be equipped with blackpowder weapons; observable: blackpowder weapons are refused in his equipment list.
-# effect_id:
-#   (not recorded)
-# relation:
-#   related
-# parameters:
-#   {}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   The same eligibility class as the armour prohibition. Decision needed at registration: whether the restriction is enforced by the shared eligibility contract or only by the profile's own equipment list. Surface reuse candidate: {"family":"C-FORBID","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the actual forbidden categories and recipients. Body-armour-only, all armour, missiles, blackpowder, drugs and poisons are distinct restrictions. Construction legality can affect a melee build even when shooting is excluded.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: may-not-wear-armour (scope: YES)
 # AUTHORED[may-not-wear-armour]: 1 refusal declares that wearing a suit of
 #   armour together with the pelt is rejected for this recipient. Pending
 #   semantic review.
-# origin_id:
-#   mechanic/defence.wolf-pelt-cloak
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   9b7386e21072e30a01cedbacc8c47469b72e84466153619a3e59443fe0d1de27
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   The Wolf-Priest's white wolf pelt grants a 6+ armour save; his Strictures forbid other armour.
-# Semantic contract (check analysis_status before treating as accepted):
-#   A Wolf-Priest of Ulric may never wear armour, the white wolf pelt being the only exception; observable: no body-armour save other than the pelt's 6+.
-# effect_id:
-#   (not recorded)
-# relation:
-#   related
-# parameters:
-#   {}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   An equipment-eligibility restriction rather than a combat effect. The KB already expresses this class of restriction for another hireling (hireling.dramatis.snorri-nosebiter.rule.slayer-rules to profile.equipment-restrictions), so the missing step is registering the restriction for this profile's equipment list; the pelt exception is the defence.wolf-pelt-cloak entry of the same row. Surface reuse candidate: {"family":"902","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the actual forbidden categories and recipients. Body-armour-only, all armour, missiles, blackpowder, drugs and poisons are distinct restrictions. Construction legality can affect a melee build even when shooting is excluded.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: six-plus-saving-throw (scope: YES)
 # AUTHORED[six-plus-saving-throw]: 2 scenarios evidence the 6+ armour save
 #   holding at the threshold and failing one face below it, both under an
 #   unmodified Strength 3 attack. Pending semantic review.
-# origin_id:
-#   mechanic/defence.wolf-pelt-cloak
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   9b7386e21072e30a01cedbacc8c47469b72e84466153619a3e59443fe0d1de27
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   The Wolf-Priest's white wolf pelt grants a 6+ armour save; his Strictures forbid other armour.
-# Semantic contract (check analysis_status before treating as accepted):
-#   The white wolf pelt grants a 6+ saving throw and the Wolf-Priest may wear no other armour; observable: a 6+ save with no body armour.
-# effect_id:
-#   defence.wolf-pelt-cloak
-# relation:
-#   equivalent
-# parameters:
-#   {"armour_save_bonus":1}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Consumed as a one-point armour bonus on an unarmoured body, which composes to the printed 6+. The three records are the equipment entry, the mechanic definition and the hired-sword strictures; they describe one item and the strictures forbid any other armour, which construction enforces through the equipment list. Surface reuse candidate: {"family":"D-WOLF-PELT","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact threshold, armour versus special save, Strength/magic/blessed modification, combination/replacement, per-profile recipients and save stage. Equal thresholds do not establish equivalence; 3+ Ethereal is not 4+, and daemonic armour need not be unmodifiable.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: helmets-and-crossbows-unfavoured (scope: NO)
 # Outside the admitted clause scope; retained for context, not a test TODO.
-# origin_id:
-#   mechanic/defence.wolf-pelt-cloak
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   9b7386e21072e30a01cedbacc8c47469b72e84466153619a3e59443fe0d1de27
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   The Wolf-Priest's white wolf pelt grants a 6+ armour save; his Strictures forbid other armour.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Helmets and crossbows are described as not favoured by Ulric; the sentence names no refusal, so it states a preference; observable: none beyond the blackpowder prohibition.
-# effect_id:
-#   (not recorded)
-# relation:
-#   independent
-# parameters:
-#   {}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Recorded so the printed sentence is represented and not silently turned into a prohibition. If a ruling treats the preference as a restriction, the clause moves with the blackpowder item above.
 
 # --- Authored scenarios ---
 # mechanic/defence.wolf-pelt-cloak — the 6+ pelt save and the Strictures.
@@ -142,7 +36,7 @@
 # Expectations come from the printed clause text and the admitted clauses
 # `six-plus-saving-throw`, `may-not-wear-armour` and
 # `may-not-carry-blackpowder-weapons` of
-# docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv, never from engine output.
+# the knowledge-base clause contracts (sources/knowledge), never from engine output.
 # The registered recipient is the canonical Wolf-Priest of Ulric
 # (hirelings.hired-sword.2b / hireling.hired-sword.wolf-priest-of-ulric-miracle-workers),
 # whose printed strictures give the pelt as the one armour exception: "Wolf-Priests

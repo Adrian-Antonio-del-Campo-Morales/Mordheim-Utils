@@ -10,8 +10,7 @@ rules:
     - id: unimplemented.skaven-of-clan-pestilens-mou.band.pestilens-special-skills
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Clan Pestilence Special Skills
   effect: >-
     Skaven Heroes with the Special skill available to them may choose to use the following Skill
@@ -49,8 +48,7 @@ rules:
     - id: unimplemented.skaven-of-clan-pestilens-mou.band.plague-censer
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Plague Censer
   effect: >-
     Cost 75+5D6 wt, Rare 12. A Plague Censer is a hollow spiked metal ball attached to a long chain
@@ -132,14 +130,8 @@ rules:
     - id: excluded.skaven-of-clan-pestilens-mou.plague-priest--frenzy.board-charge
       scope: 'NO'
       binding: null
-      reason: >-
-        Compulsory charge range, movement and target selection on a board are outside the 1v1 duel.
-        In-contact attack doubling, psychology exemption and loss after knockdown/stun use the
-        existing Frenzy operator.
+      reason: out-of-scope.movement
   name: Frenzy (Plague Priest)
-  effect: >-
-    The Skaven has contracted a disease that gives him feverish nightmares that turn him into a
-    frothing madman in combat. The Skaven is subject to Frenzy.
   source:
     manual: broheim.net
     printed_page: 5
@@ -147,13 +139,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Skaven%20of%20Clan%20Pestilens.pdf
   name_i18n:
     es: Frenesí
-  effect_i18n:
-    es: >-
-      El skaven ha contraído una enfermedad que le da pesadillas febriles que lo convierten en un
-      loco espumeante en combate. El skaven está sujeto a Frenesí.
   applies_to:
     profile_ids:
     - plague-priest
+  rule_ref: shared-rule.diseased-frenzy
 - id: plague-priest--resilient
   runtime:
     scope: 'YES'
@@ -198,14 +187,8 @@ rules:
     - id: excluded.skaven-of-clan-pestilens-mou.plague-champion--frenzy.board-charge
       scope: 'NO'
       binding: null
-      reason: >-
-        Compulsory charge range, movement and target selection on a board are outside the 1v1 duel.
-        In-contact attack doubling, psychology exemption and loss after knockdown/stun use the
-        existing Frenzy operator.
+      reason: out-of-scope.movement
   name: Frenzy (Plague Champion)
-  effect: >-
-    The Skaven has contracted a disease that gives him feverish nightmares that turn him into a
-    frothing madman in combat. The Skaven is subject to Frenzy.
   source:
     manual: broheim.net
     printed_page: 5
@@ -213,13 +196,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Skaven%20of%20Clan%20Pestilens.pdf
   name_i18n:
     es: Frenesí
-  effect_i18n:
-    es: >-
-      El skaven ha contraído una enfermedad que le da pesadillas febriles que lo convierten en un
-      loco espumeante en combate. El skaven está sujeto a Frenesí.
   applies_to:
     profile_ids:
     - plague-champion
+  rule_ref: shared-rule.diseased-frenzy
 - id: plague-champion--resilient
   runtime:
     scope: 'YES'
@@ -286,8 +266,7 @@ rules:
     - id: unimplemented.skaven-of-clan-pestilens-mou.plague-rat.animals
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Animals
   effect: The Plague-Rats are animals and never gain experience.
   source:
@@ -311,8 +290,7 @@ rules:
     - id: unimplemented.skaven-of-clan-pestilens-mou.skaven-slave.abused
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Abused
   effect: >-
     Skaven Slaves are badly mistreated and never have the chance to advance. Slaves do not gain

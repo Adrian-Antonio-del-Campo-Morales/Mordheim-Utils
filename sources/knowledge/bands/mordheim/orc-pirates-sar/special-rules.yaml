@@ -10,9 +10,7 @@ rules:
     - id: unimplemented.orc-pirates-sar.band.da-mob-rules
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Base Rules (Da Mob)
   effect: >-
     The Orc Pirates use the exact same rules as the Da Mob Warband with the changes listed in this
@@ -39,9 +37,7 @@ rules:
     - id: unimplemented.orc-pirates-sar.band.pressganging-orc
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Pressganging (Orc Pirates)
   effect: >-
     The Orc may attempt to pressgang enemies they capture following the normal rules for
@@ -73,9 +69,7 @@ rules:
     - id: unimplemented.orc-pirates-sar.item.booma-pistol
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Booma Pistol
   effect: >-
     Cost 20 gc (40 gc for a brace), Common, Greenskins Only. Maximum Range: Special; Strength: 5;
@@ -137,9 +131,7 @@ rules:
     - id: unimplemented.orc-pirates-sar.goblin-enjuneer.glass-ceiling
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Glass Ceiling
   effect: While the goblin is respected enough to be a hero, he can never be warband Leader.
   source:
@@ -165,9 +157,7 @@ rules:
     - id: unimplemented.orc-pirates-sar.goblin-enjuneer.booma-tweaker
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Booma Tweaker
   effect: >-
     During any game that includes your Enjuneer, you may improve Booma Pistol shots. Any time you
@@ -198,9 +188,7 @@ rules:
     - id: unimplemented.orc-pirates-sar.goblin-enjuneer.mad-bomba
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Mad Bomba
   effect: >-
     If the Enjuneer uses his Rarity roll in the Postgame phase to look for a Firebomb, he treats it
@@ -229,9 +217,7 @@ rules:
     - id: unimplemented.orc-pirates-sar.goblin-swabbies.under-der-thumb
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Under Der Thumb
   effect: >-
     Unlike most Goblins, the Swabbies DON'T suffer Animosity - they are far too oppressed to do
@@ -259,9 +245,7 @@ rules:
     - id: unimplemented.orc-pirates-sar.goblin-swabbies.spendible
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Spendible
   effect: >-
     The Orcs don't consider the Swabbies as equals, and have no problem shooting into a combat that
@@ -289,13 +273,8 @@ rules:
     - id: unimplemented.orc-pirates-sar.goblin-swabbies.never-gain-experience
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Never Gain Experience (Goblin Swabbies)
-  effect: >-
-    Swabbies generally aren't interested in proving their worth to the crew; they are interested in
-    survival and hopefully escape! Swabbies never gain experience in games.
   source:
     manual: broheim.net
     printed_page: 3
@@ -303,13 +282,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
   name_i18n:
     es: Nunca Ganarán Experiencia (Fregones Goblins)
-  effect_i18n:
-    es: >-
-      Los Fregones no están interesados en demostrar su valor a la tripulación; ¡les interesa
-      sobrevivir y escapar si pueden! Los Fregones nunca ganan experiencia en las partidas.
   applies_to:
     profile_ids:
     - goblin-swabbies
+  rule_ref: shared-rule.crew-never-gain-experience
 - id: goblin-swabbies--rabble
   runtime:
     scope: 'NO'
@@ -319,14 +295,8 @@ rules:
     - id: unimplemented.orc-pirates-sar.goblin-swabbies.rabble
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Rabble (Goblin Swabbies)
-  effect: >-
-    Swabbies do not need to be armed all the same. Each may be given different equipment, but only
-    items listed in the Swabbie equipment list. Swabbies can never use magic, or cast spells of any
-    sort, no matter their original background or abilities.
   source:
     manual: broheim.net
     printed_page: 3
@@ -334,14 +304,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
   name_i18n:
     es: Chusma (Fregones Goblins)
-  effect_i18n:
-    es: >-
-      Los Fregones no necesitan ir armados todos igual. Cada uno puede recibir equipo distinto, pero
-      solo objetos de la lista de equipo de Fregones. Los Fregones nunca pueden usar magia ni lanzar
-      hechizos de ningún tipo, sin importar su origen o habilidades previas.
   applies_to:
     profile_ids:
     - goblin-swabbies
+  rule_ref: shared-rule.rabble
 - id: goblin-swabbies--blimey-they-got-away
   runtime:
     scope: 'NO'
@@ -351,14 +317,8 @@ rules:
     - id: unimplemented.orc-pirates-sar.goblin-swabbies.blimey-they-got-away
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Blimey, They Got Away! (Goblin Swabbies)
-  effect: >-
-    If the Pirate Warband itself Routs, any Swabbies who have already left the table in previous
-    turns are presumed to have made a successful escape, and are never seen from again. Remove them
-    from your warband roster as if they had been killed.
   source:
     manual: broheim.net
     printed_page: 3
@@ -366,14 +326,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
   name_i18n:
     es: ¡Maldición, Se Han Escapado! (Fregones Goblins)
-  effect_i18n:
-    es: >-
-      Si la Banda Pirata Huye, cualquier Fregón que ya haya abandonado la mesa en turnos anteriores
-      se da por escapado con éxito, y nunca más se le verá. Retíralos de la lista de la banda como
-      si hubieran muerto.
   applies_to:
     profile_ids:
     - goblin-swabbies
+  rule_ref: shared-rule.they-got-away
 - id: goblin-swabbies--dont-mind-them-mates
   runtime:
     scope: 'NO'
@@ -383,15 +339,8 @@ rules:
     - id: unimplemented.orc-pirates-sar.goblin-swabbies.dont-mind-them-mates
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Don't Mind Them Mates, They Ain't True Pirates! (Goblin Swabbies)
-  effect: >-
-    The rest of the crew barely notice if any Swabbies run away or go Out of Action - they know
-    they'll find them later on and give them 30 lashes if they're lucky! Any Swabbies who are
-    running away or have been taken out of action do not count towards the need to take a Rout test
-    for the warband.
   source:
     manual: broheim.net
     printed_page: 3
@@ -399,15 +348,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
   name_i18n:
     es: No Les Hagas Caso, ¡No Son Piratas de Verdad! (Fregones Goblins)
-  effect_i18n:
-    es: >-
-      El resto de la tripulación apenas nota si algún Fregón huye o queda Fuera de Combate: ¡saben
-      que los encontrarán más tarde y les darán 30 latigazos si tienen suerte! Cualquier Fregón que
-      esté huyendo o haya sido dejado fuera de combate no cuenta para la necesidad de hacer un
-      chequeo de Huida de la banda.
   applies_to:
     profile_ids:
     - goblin-swabbies
+  rule_ref: shared-rule.dont-mind-them
 - id: sea-squigs--stats-like-da-mob
   runtime:
     scope: 'NO'
@@ -417,9 +361,7 @@ rules:
     - id: unimplemented.orc-pirates-sar.sea-squigs.stats-like-da-mob
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Sea Squigs (Base Profile)
   effect: >-
     Sea Squigs use the Cave Squig profile from the Da Mob warband. While not drastically different
@@ -448,9 +390,7 @@ rules:
     - id: unimplemented.orc-pirates-sar.sea-squigs.movement
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Sea Squig Movement
   effect: >-
     They move 2D6-1" each turn on land. However, when in water, they are able to swim 2D6" each
@@ -480,9 +420,7 @@ rules:
     - id: unimplemented.orc-pirates-sar.sea-squigs.cats-of-nine-tails
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Sea Squigs and Cats of Nine Tails
   effect: >-
     On a Pirate Ship, Cats of Nine Tails are far more common than prodders - Sea Squigs will not go
@@ -511,9 +449,7 @@ rules:
     - id: unimplemented.orc-pirates-sar.sea-troll.aquatic
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Aquatic (Sea Troll)
   effect: The Sea Troll does not suffer penalty for moving through water. It counts as 'Aquatic'.
   source:
@@ -539,6 +475,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.sea-troll-slime
+      clauses:
+      - id: minus-one-to-hit-in-melee
+        scope: 'YES'
+      - id: natural-six-always-hits
+        scope: 'YES'
   name: Slimy
   effect: >-
     All models attempting to hit the Sea Troll in hand-to-hand combat are at -1 to hit. A natural
@@ -566,9 +507,7 @@ rules:
     - id: unimplemented.orc-pirates-sar.sea-troll.loses-vomit
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Sea Troll (Base Rules)
   effect: >-
     Orc Pirates often find it easiest to pick up a Sea Troll or a River Troll over a Troll of the

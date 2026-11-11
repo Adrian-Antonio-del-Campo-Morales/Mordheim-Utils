@@ -1,0 +1,57 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/halflings-mic/village-ogre--skills/compiler.promoted-hero-skill-access
+# authoring_status: AUTHORED
+# authoring_progress: no scenario is authorable from this file's recorded evidence.  The printed sentence is a skill-access restriction on legal construction (a promoted Ogre-kin Hero may only choose from the Combat and Strength lists) of the same family the shared eligibility decides, but the clause records effect_id (not recorded) with relation "unresolved" and names neither the resolved profile id of the promoted recipient nor the construction access set.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: [B] the promoted recipient is declarable with the fixture's own promotion variant: this origin names the band's Ogre-kin profile (halflings-mic/village-ogre) and the runner turns `variant_ids: [promotion.hero]` into the promoted build, so the printed Combat/Strength admission and the refusal of a list outside them are authored below (the accepted shape of the sibling skill-access origins).  PENDING[B]: the compiled access projection for the promoted recipient; the tapes fail loudly until it exists.  The shared category vocabulary is confirmed by the authored sibling files.
+# STATUS REVIEW (this pass): AUTHORED.  The clause's applicable requirements are represented by the
+#   scenarios in this file: the fixture declares the case (the offending input or the admitted
+#   configuration) and the expectation is the rule-derived outcome in the established diagnostic
+#   family.  The pending item named above is engine wiring - the compiled access projection for the promoted recipient - which is not a missing case,
+#   input or observation but the defect the authored scenarios are written to detect.  Holding the ID at
+#   PARTIAL for it treated an absent binding/projection/consumer as an absent requirement, which this
+#   pass corrects: PARTIAL is reserved for a genuinely missing scenario, input identity, executor
+#   observation or normative decision.  The pending note above is retained unchanged as the record of
+#   the defect.  REVIEWED (manual semantic review) remains separate and is not claimed here.
+
+# --- Authored scenarios ---
+# Derived from the printed sentence ("An Ogre-kin who becomes a Hero may only choose from Combat and
+# Strength skill-lists"); no engine output was consulted.  The recipient is the band's own Ogre-kin
+# profile carrying the supplied promotion result the runner converts, and the two declared skills are
+# the canonical Strength skill and a canonical Academic skill outside the printed two lists.
+- audit_id: rule/mordheim/halflings-mic/village-ogre--skills/compiler.promoted-hero-skill-access
+  id: the-promoted-ogre-kin-may-take-a-strength-skill
+  fighters:
+    first:
+      collection: mordheim
+      band_id: halflings-mic
+      profile_id: village-ogre
+      variant_ids: [promotion.hero]
+      skill_ids: [skill.mighty-blow]
+      main_weapon_id: weapon.mace
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_final: {rounds_executed: 1}
+
+- audit_id: rule/mordheim/halflings-mic/village-ogre--skills/compiler.promoted-hero-skill-access
+  id: the-promoted-ogre-kin-is-refused-an-academic-skill
+  fighters:
+    first:
+      collection: mordheim
+      band_id: halflings-mic
+      profile_id: village-ogre
+      variant_ids: [promotion.hero]
+      skill_ids: [skill.haggle]
+      main_weapon_id: weapon.mace
+  expect_error: "skills are not available to halflings-mic/village-ogre: ['skill.haggle']"

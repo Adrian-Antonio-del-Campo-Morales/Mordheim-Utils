@@ -151,9 +151,11 @@ unsupported inputs.
 
 Successful selected commands alone do not establish modular closure.
 
-The admitted clause register records implementation scope and pending work.
-Inspect it with `python -X utf8 tools/knowledge/clause_registry.py query --pending`.
-An empty queue does not certify runtime behavior or engine parity.
+The knowledge base is the inventory of obligations (see
+[Identities and clauses](knowledge-base.md#identities-and-clauses)). Inspect
+the ones no scenario or `covers` marker names yet with
+`python tools/knowledge/clauses.py coverage --pending`. An empty queue does not
+certify runtime behavior or engine parity.
 
 Modular integration closure includes the E2E battery in
 `tests/integration/e2e/`: declared scenarios, coverage inventory and
@@ -235,7 +237,13 @@ commands and current defaults are discoverable through
 Mechanics tests state expectations from the written rule, not from engine
 output. Use explicit dice and decisions for local results and short sequences
 for stateful interactions. Cover activation, non-activation, limits, resource
-consumption, expiry and relevant composition in the owning tests.
+consumption, expiry and relevant composition in the owning tests. Declare the
+knowledge-base identity a test demonstrates with
+`@pytest.mark.covers("<identity>")`, adding the clause ids when the identity
+is split into clauses, so `python tools/knowledge/clauses.py coverage` counts
+it next to the E2E scenarios; the marker is a declaration, never proof. The
+observable the test checks belongs in the test's docstring, not in the
+knowledge base.
 
 E2E cases exercise actual KB/compiler/modular integration. Their declaration,
 coverage and accepted-evidence checks are useful but not behavioural proof by
@@ -503,9 +511,10 @@ and `XFAIL`, never as passes. The CSV left by an earlier run is removed before
 pytest starts, so a run that crashes before writing its own reports the CSV as
 missing instead of reusing stale results; from a source checkout the child
 pytest imports that checkout's packages. `check parity --output` writes comparison reports
-(JSON or Markdown); `check report rules` exports structural/planning inventory without
-claiming new semantic verification. Legacy semantic columns in existing CSVs
-are historical fields, not current certificates.
+(JSON or Markdown); `check report rules` exports the rule inventory and the
+declared clause coverage without claiming semantic verification. The retired
+clause register CSVs under `docs/archive/` are historical records, not current
+certificates.
 
 The retired interaction-specification matrix and its policy file no longer gate
 verification. Rule interactions belong to modular mechanics/E2E and the curated

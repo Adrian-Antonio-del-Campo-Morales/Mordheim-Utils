@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/lustria-savage-goblins/band--savage-goblin-special-skills-master-of-throwing-weapons/mechanic.master-of-throwing-weapons
-# scaffold_fingerprint: 5daf7a4fdfdbe142ef943e21082ac969c020281263676a2c1d010725b47b9f31
 # authoring_status: AUTHORED
 # authoring_progress: 4 authored scenario(s) in this file; the admitted whole clause carries the printed
 #   recipients, the printed items and the printed bound, all read from the sources and not from the current
@@ -49,12 +48,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: the printed allowance has three reachable faces and all three are authored.  (1) The
+# AUTHORED: the printed allowance has three reachable faces and all three are authored.  (1) The
 #   recipient face: selecting the rule is admitted for a Tracker (the printed recipient) and refused for
 #   big-boss, the band's own hero that is not one, which the shared stage answers with
 #   `special rule is not available to <band>/<profile>: <rule id>` from specialRuleRestriction's recipients
@@ -67,32 +64,6 @@
 #   loadout are distinct, and a carried bound is not observable from the hand slots.  The three engine gaps
 #   that keep the refusals from firing today are named in authoring_progress; they are the defect these
 #   scenarios are written to detect, not a reason to drop the requirement.
-# origin_id:
-#   rule/trollheim/lustria-savage-goblins/band--savage-goblin-special-skills-master-of-throwing-weapons/mechanic.master-of-throwing-weapons
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/trollheim/lustria-savage-goblins/special-rules.yaml
-# source_fingerprint:
-#   327414888edf4bbfac2064ae2359d03eade85cb74a2f0c533338b8c97e9804e4
-# source_sha256_at_generation:
-#   84746d9c2e37bfd46fb68ab1b459a9ab5317d55037c20eb6197fbd206ca12c00
-# Printed rule text:
-#   Trackers only. The Hero may carry up to five missile weapons instead of the usual two.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Possession bound: a Tracker may carry up to five missile weapons instead of the usual two.
-# effect_id:
-#   compiler.master-of-throwing-weapons
-# relation:
-#   equivalent
-# parameters:
-#   {}
-# conditions:
-#   {"recipient":"trackers","max_missile_weapons":5,"control":2}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   The compiled value five replaces the ordinary control two.
 
 # --- Authored scenarios ---
 # Derived from the printed clause, the recorded contract and the band's own profile and equipment-list
@@ -101,7 +72,6 @@
 
 - audit_id: rule/trollheim/lustria-savage-goblins/band--savage-goblin-special-skills-master-of-throwing-weapons/mechanic.master-of-throwing-weapons
   id: the-tracker-is-admitted-with-five-carried-missile-weapons
-  covers: [whole]
   # The printed allowance is the required behaviour: a Tracker carrying five missile weapons is
   # admitted at construction (the ordinary control of two would refuse the third unit).  Every carried
   # id is on the profile's own hero equipment list, and the carried channel is where a possession bound
@@ -127,7 +97,6 @@
 
 - audit_id: rule/trollheim/lustria-savage-goblins/band--savage-goblin-special-skills-master-of-throwing-weapons/mechanic.master-of-throwing-weapons
   id: a-tracker-carrying-six-missile-weapons-exceeds-the-printed-five
-  covers: [whole]
   # One counted unit above the printed allowance.  The shared excess-weapons refusal for a
   # profile-scoped possession bound is "${band}/${profile} carries ${n} missile weapons; the printed
   # clause allows ${maximum}." and this bound exempts no item, so the message ends at the bound.  Both
@@ -144,7 +113,6 @@
 
 - audit_id: rule/trollheim/lustria-savage-goblins/band--savage-goblin-special-skills-master-of-throwing-weapons/mechanic.master-of-throwing-weapons
   id: a-tracker-without-the-ability-is-refused-at-three-missile-weapons
-  covers: [whole]
   # The ordinary control the printed clause enlarges: the same profile, the same carried units and no
   # ability selected, so the "usual two" applies and the third counted unit exceeds it.  This is the
   # boundary the clause's own sentence fixes ("instead of the usual two", register control:2).
@@ -158,7 +126,6 @@
 
 - audit_id: rule/trollheim/lustria-savage-goblins/band--savage-goblin-special-skills-master-of-throwing-weapons/mechanic.master-of-throwing-weapons
   id: a-hero-of-the-band-that-is-not-a-tracker-may-not-take-the-allowance
-  covers: [whole]
   # "Trackers only" is the printed narrowing: the same band's Big Boss is not a recipient of the rule,
   # so selecting it is refused before any possession question is asked.
   fighters:

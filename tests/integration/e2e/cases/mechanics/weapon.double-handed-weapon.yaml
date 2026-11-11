@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/weapon.double-handed-weapon
-# scaffold_fingerprint: b31a707410851b0fe4fb37d107083ee63f1d6462188a99e32e49775bc608f509
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clause carries four authored scenarios for the +2 Strength boundary, the strike-last order, its Strongman exception and one refusal for the two-handed occupancy. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -8,38 +7,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 4 scenarios and 1 refusal cover the +2 Strength boundary, the strike-last tier, the Strongman exception and the two-handed occupancy.
-# origin_id:
-#   mechanic/weapon.double-handed-weapon
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   bfc50ccb41e97f78a7c35a80769096278b17e501e7082db376c1aec05f0e09f1
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   Two-handed, +2 Strength and strikes last unless Strongman applies.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Two-handed weapon with +2 Strength that strikes last unless Strongman applies. Closure: S+2, priority -1, and the priority returns to ordinary order for a Strongman bearer.
-# effect_id:
-#   weapon.double-handed-weapon
-# relation:
-#   equivalent
-# parameters:
-#   {"priority": -1, "strength_bonus": 2, "two_handed": true}
-# conditions:
-#   {"application": "attack", "stacking": "stack", "trigger": "attack"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Printed profile equals the contract parameters; the compiled attack EffectSet is consumed by build_attacks and the hit/wound/armour/injury contexts. The Strongman exception is implemented in resolve_priority for a two-handed weapon, exactly the printed "unless Strongman applies". Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"whole","audit_group":"EQ-W-weapon.double-handed-weapon","verified_facet":"weapon.double-handed-weapon","relationship":"shared_facet","boundary":"Two hands, +2 Strength and weapon Strike Last. Icefang additionally has Parry and +1 injury; the two-handed club retains its own bludgeoning properties. Sharing the base does not erase extensions.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+# AUTHORED: 4 scenarios and 1 refusal cover the +2 Strength boundary, the strike-last tier, the Strongman exception and the two-handed occupancy.
 
 # --- Authored scenarios ---
 # mechanic/weapon.double-handed-weapon - two-handed, Strength +2, strikes last
@@ -52,7 +23,6 @@
 
 - audit_id: mechanic/weapon.double-handed-weapon
   id: double-handed-weapon-wounds-at-the-boosted-strength
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.double-handed-weapon
@@ -74,7 +44,6 @@
 
 - audit_id: mechanic/weapon.double-handed-weapon
   id: double-handed-weapon-does-not-wound-one-face-below
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.double-handed-weapon
@@ -95,7 +64,6 @@
 
 - audit_id: mechanic/weapon.double-handed-weapon
   id: double-handed-weapon-strikes-after-an-ordinary-weapon
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.double-handed-weapon
@@ -118,7 +86,6 @@
 
 - audit_id: mechanic/weapon.double-handed-weapon
   id: strongman-lifts-the-printed-strike-last-penalty
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.double-handed-weapon
@@ -142,7 +109,6 @@
 
 - audit_id: mechanic/weapon.double-handed-weapon
   id: double-handed-weapon-occupies-both-hands-so-an-off-hand-weapon-is-refused
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.double-handed-weapon

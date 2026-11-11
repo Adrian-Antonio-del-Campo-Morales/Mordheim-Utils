@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--strigoi-power-curse-of-the-reborn/skill.regeneration-blocked-by-blessed
-# scaffold_fingerprint: 655da82fc3aeb1bfde0e78d4e128997b31532585e99e84b2a03d0472b810fc68
 # authoring_status: PARTIAL
 # authoring_progress: 3 authored scenario(s) in this file; the shared regeneration faces of
 #   'four-plus-regeneration' and the fire half of 'blocked-by-fire-and-blessed' are evidenced.  The
@@ -13,9 +12,8 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: blocked-by-fire-and-blessed (scope: YES)
 # PARTIAL[blocked-by-fire-and-blessed]: [CLOSING-REVIEW [C]] the clause names two exclusions and only one is
@@ -29,62 +27,10 @@
 #   boundary: the same flag leaves an unblessed attack's Regeneration roll intact, which the
 #   four-plus-regeneration scenarios below show.  Missing datum: a selectable source of
 #   attack.blessed (or a supplied-input route for effect tags) so the blocked branch can be built.
-# origin_id:
-#   rule/trollheim/chaos-streets-undead-bloodlines/band--strigoi-power-curse-of-the-reborn/skill.regeneration-blocked-by-blessed
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/trollheim/chaos-streets-undead-bloodlines/special-rules.yaml
-# source_fingerprint:
-#   7674afd7884b9b35f880d0e3909a39a2f348fb4d62c1d1db27b06983ba219645
-# source_sha256_at_generation:
-#   aaa7750bfbf16797ddd93878e0cd88fd550a10fdd09818c2cdb767f9356d47d2
-# Printed rule text:
-#   For each unsaved Wound, roll D6; on 4+ the Wound is regenerated and ignored. This regeneration does not work against fire, Holy Water or other blessed attacks/items.
-# Semantic contract (check analysis_status before treating as accepted):
-#   The regeneration does not work against fire, Holy Water or other blessed attacks and items; observable: no regeneration roll against a fire or blessed attack.
-# effect_id:
-#   skill.regeneration-blocked-by-blessed
-# relation:
-#   equivalent
-# parameters:
-#   {"blocked_by":["attack.fire","attack.blessed"]}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Two printed exclusions share one clause here because the engine consumes them as one blocked flag; fire is declared by the base regeneration row and blessed by this second row, so the pair must stay together.
 #
 # Clause: four-plus-regeneration (scope: YES)
 # AUTHORED[four-plus-regeneration]: 2 scenarios show the printed base of the power: a 4 takes the
 #   unsaved Wound back and the bearer keeps both Wounds, one face below lets it through.
-# origin_id:
-#   rule/trollheim/chaos-streets-undead-bloodlines/band--strigoi-power-curse-of-the-reborn/skill.regeneration-blocked-by-blessed
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/trollheim/chaos-streets-undead-bloodlines/special-rules.yaml
-# source_fingerprint:
-#   7674afd7884b9b35f880d0e3909a39a2f348fb4d62c1d1db27b06983ba219645
-# source_sha256_at_generation:
-#   aaa7750bfbf16797ddd93878e0cd88fd550a10fdd09818c2cdb767f9356d47d2
-# Printed rule text:
-#   For each unsaved Wound, roll D6; on 4+ the Wound is regenerated and ignored. This regeneration does not work against fire, Holy Water or other blessed attacks/items.
-# Semantic contract (check analysis_status before treating as accepted):
-#   For each unsaved Wound a 4+ regenerates and ignores it; observable: a 4+ special save after armour.
-# effect_id:
-#   skill.regeneration
-# relation:
-#   equivalent
-# parameters:
-#   {"regeneration_save":4}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   (not recorded)
 
 # --- Authored scenarios ---
 # Derived from the printed sentence, the recorded contract and the printed rule binding; no engine

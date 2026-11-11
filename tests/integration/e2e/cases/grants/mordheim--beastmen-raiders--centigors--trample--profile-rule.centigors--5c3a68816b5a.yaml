@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/beastmen-raiders/centigors--trample/profile-rule.centigors--trample
-# scaffold_fingerprint: b0bc8487d6d5cb0cd83dd9b981c135724b17a10feda89e2536b96cfeadf111d7
 # authoring_status: AUTHORED
 # authoring_progress: the admitted profile rule carries two authored scenarios derived from the
 # printed sentence, the printed Centigor profile and the recorded contract: the hooves attack is
@@ -12,12 +11,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 2 scenarios cover the printed additional attack: the bearer resolves a second
+# AUTHORED: 2 scenarios cover the printed additional attack: the bearer resolves a second
 # attack entry after its ordinary weapon attack, once while charging and once while it is the model
 # charged, so the hooves attack is shown to be independent of the charge (unlike the Horned One
 # charge attack).  Bearer is the printed Centigor profile, which receives the rule from its own
@@ -26,32 +23,6 @@
 # the mace carries no Strength bonus in the executable item set, so the separation is evidenced by
 # the extra attack's own attack entry rather than by a Strength comparison.  REVIEWED still requires
 # manual semantic review.
-# origin_id:
-#   rule/mordheim/beastmen-raiders/centigors--trample/profile-rule.centigors--trample
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/beastmen-raiders/special-rules.yaml
-# source_fingerprint:
-#   7d8ab811064471d12dff7537b4a76fe5e5295929b6b51026a4faed0af67471ad
-# source_sha256_at_generation:
-#   246c28766a6fc502a70a5cc2b89712a36e62bf3385e838fc7503203831861f5e
-# Printed rule text:
-#   As well as their weapons, Centigors use their hooves and sheer size to crush their enemies. This counts as an additional attack...
-# Semantic contract (check analysis_status before treating as accepted):
-#   Profile rule: one extra Strength 4 attack separate from the weapon; the two-handed weapon bonus applies to its own attack only, not to the hoof attack.
-# effect_id:
-#   profile-rule.centigors--trample
-# relation:
-#   equivalent
-# parameters:
-#   {}
-# conditions:
-#   {"recipient":"centigors","extra_attack":{"strength":4},"separate_from_weapon":true}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   Registered in PROFILE_RULE_EFFECTS and granted automatically to the Centigor profile.
 
 # --- Authored scenarios ---
 # Derived from the printed sentence and the printed profile; no engine output was consulted.
@@ -61,7 +32,6 @@
 
 - audit_id: rule/mordheim/beastmen-raiders/centigors--trample/profile-rule.centigors--trample
   id: the-charging-centigor-resolves-the-hooves-attack-next-to-its-weapon
-  covers: [whole]
   fighters:
     first:
       collection: mordheim
@@ -87,7 +57,6 @@
 # bearer that is itself charged still resolves it after its ordinary weapon attack.
 - audit_id: rule/mordheim/beastmen-raiders/centigors--trample/profile-rule.centigors--trample
   id: the-charged-centigor-still-resolves-the-hooves-attack
-  covers: [whole]
   fighters:
     first:
       collection: mordheim

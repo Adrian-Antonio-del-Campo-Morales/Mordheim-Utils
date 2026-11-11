@@ -56,6 +56,11 @@ items:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/imperial-outriders
   combat_status: implemented
   mechanic_id: armour.gromril-armour
+  clauses:
+  - id: four-plus-basic-save
+    scope: 'YES'
+  - id: no-penalty-with-a-shield
+    scope: 'NO'
 - id: heavy_armour
   kind: armour
   name: Heavy Armour
@@ -210,6 +215,11 @@ items:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/witch-hunters
   combat_status: implemented
   mechanic_id: armour.heavy-armour
+  clauses:
+  - id: five-plus-basic-save
+    scope: 'YES'
+  - id: movement-penalty-with-a-shield
+    scope: 'NO'
 - id: ithilmar_armour
   kind: armour
   name: Ithilmar Armour
@@ -231,6 +241,11 @@ items:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/shadow-warriors
   combat_status: implemented
   mechanic_id: armour.ithilmar-armour
+  clauses:
+  - id: five-plus-basic-save
+    scope: 'YES'
+  - id: no-penalty-with-a-shield
+    scope: 'NO'
 - id: light_armour
   kind: armour
   name: Light Armour
@@ -489,6 +504,11 @@ items:
   - *id035
   combat_status: implemented
   mechanic_id: armour.toughened-leathers
+  clauses:
+  - id: six-plus-and-compatibility
+    scope: 'YES'
+  - id: no-sellback
+    scope: 'NO'
 - id: horo
   kind: armour
   name: Horo

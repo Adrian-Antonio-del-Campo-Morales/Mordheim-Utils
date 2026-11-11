@@ -80,8 +80,7 @@ rules:
     - id: unimplemented.lustria-pygmies.silent-walker.spirit-form
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: silent-walker--ethereal
   name: Ethereal
   effect: >-
@@ -112,6 +111,11 @@ rules:
         id: trait.ward-save
         parameters:
           value: 5
+      clauses:
+      - id: five-plus-ward-against-mundane
+        scope: 'YES'
+      - id: negated-by-magic
+        scope: 'YES'
     - id: trait.ward-save-mundane-only
       scope: 'YES'
       binding:
@@ -119,6 +123,11 @@ rules:
         id: trait.ward-save-mundane-only
         parameters:
           value: true
+      clauses:
+      - id: five-plus-ward-against-mundane
+        scope: 'YES'
+      - id: negated-by-magic
+        scope: 'YES'
 - id: silent-walker--immune-to-psychology
   name: Immune to Psychology
   effect: The Silent Walker is immune to Psychology.
@@ -294,8 +303,7 @@ rules:
     - id: unimplemented.lustria-pygmies.band.jungle-natives
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--poison-experts
   name: Poison Experts
   effect: Pygmies treat all poisons as Common on the Trading table.
@@ -317,9 +325,7 @@ rules:
     - id: unimplemented.lustria-pygmies.band.poison-experts
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: band--camouflage
   name: Camouflage
   effect: >-
@@ -347,5 +353,4 @@ rules:
     - id: unimplemented.lustria-pygmies.band.camouflage
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic

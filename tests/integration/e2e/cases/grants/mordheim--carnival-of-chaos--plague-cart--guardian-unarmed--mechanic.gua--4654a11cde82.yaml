@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/carnival-of-chaos/plague-cart--guardian-unarmed/mechanic.guardian-unarmed
-# scaffold_fingerprint: 3e84bce73b561227d19280e820bbf0421924e290700daa268fd391dd962bfef1
 # authoring_status: AUTHORED
 # authoring_progress: the admitted whole clause carries three authored scenarios.  The numeric
 # unarmed penalty set this trait cancels IS recorded, in the catalogue's own Fist entry
@@ -20,12 +19,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 3 scenarios cover the admitted "suffers no penalties for fighting unarmed" clause
+# AUTHORED: 3 scenarios cover the admitted "suffers no penalties for fighting unarmed" clause
 # against the Fist entry's own printed penalties.  With the trait the bare fist keeps its printed
 # Strength, so a declared four wounds an equal-Toughness target while the same four fails against the
 # trait-less control (whose Strength is the Fist's user-1, moving the wound target from four to five),
@@ -39,32 +36,6 @@
 # leaves Weapon Skill, Strength, Initiative, Attacks and Leadership empty and the Guardian is a
 # component of it, so the component identity has no build vocabulary in the corpus.  REVIEWED still
 # requires manual semantic review.
-# origin_id:
-#   rule/mordheim/carnival-of-chaos/plague-cart--guardian-unarmed/mechanic.guardian-unarmed
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/carnival-of-chaos/special-rules.yaml
-# source_fingerprint:
-#   080ee5a33d2027d42ea30354fd891c1b57495e0b106ab3b034adb4cf22eced42
-# source_sha256_at_generation:
-#   ea10f24ff3b1bb4a16d31e0550eb4b011c294a424bd719a00bfba5e72e42a217
-# Printed rule text:
-#   The Guardian suffers no penalties for fighting unarmed.
-# Semantic contract (check analysis_status before treating as accepted):
-#   The Guardian suffers no penalties for fighting unarmed. Closure: the fist clamp and the unarmed Strength and armour penalties do not apply to the bearer.
-# effect_id:
-#   trait.guardian-unarmed
-# relation:
-#   equivalent
-# parameters:
-#   {"unarmed_penalties": false}
-# conditions:
-#   {"recipient": "Plague Cart Guardian"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   The guardian-unarmed trait is listed by ignores_unarmed_penalties, which removes the fist clamp and the unarmed penalties; the binding is a mechanic whose identifier differs from its trait id, so the decision is taken on the trait identity the engine consumes. Surface reuse candidate: {"family":"trait.guardian-unarmed","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare current admitted facet, weapon/size/recipient conditions and usage limit. A supplied Rememberer benefit does not introduce a third combatant; target Toughness and Large identity need their own source condition. Keep specific attack and critical guards.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
 # --- Authored scenarios ---
 # Derived from the printed sentence, the catalogue's Fist entry and the recorded consumers; no engine
@@ -76,7 +47,6 @@
 
 - audit_id: rule/mordheim/carnival-of-chaos/plague-cart--guardian-unarmed/mechanic.guardian-unarmed
   id: with-the-trait-the-bare-fist-keeps-its-printed-strength
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.fist
@@ -97,7 +67,6 @@
 
 - audit_id: rule/mordheim/carnival-of-chaos/plague-cart--guardian-unarmed/mechanic.guardian-unarmed
   id: without-the-trait-the-fist-loses-one-strength-and-the-same-four-fails
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.fist
@@ -117,7 +86,6 @@
 
 - audit_id: rule/mordheim/carnival-of-chaos/plague-cart--guardian-unarmed/mechanic.guardian-unarmed
   id: with-the-trait-the-fist-is-not-capped-at-one-attack
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.fist

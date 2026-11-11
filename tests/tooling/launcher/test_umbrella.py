@@ -470,13 +470,12 @@ def test_check_lab_commands_forward_to_the_lab(cli, monkeypatch, arguments, modu
     assert calls == [[sys.executable, "-m", "mordheim_combat_lab", module, *forwarded]]
 
 
-@pytest.mark.parametrize("kind, command", [("rules", "audit"),
-                                           ("tests", "test-report")])
-def test_check_report_routes_to_the_generator(cli, monkeypatch, kind, command):
+@pytest.mark.parametrize("kind, module, command", [("rules", "tools.knowledge.clauses", "report"),
+                                                   ("tests", "mordheim_combat_lab", "test-report")])
+def test_check_report_routes_to_the_generator(cli, monkeypatch, kind, module, command):
     calls = _record(cli, monkeypatch)
     assert cli.main(["check", "report", kind, "--output", "outputs"]) == 0
-    assert calls == [[sys.executable, "-m", "mordheim_combat_lab", command,
-                      "--output", "outputs"]]
+    assert calls == [[sys.executable, "-m", module, command, "--output", "outputs"]]
 
 
 def test_check_report_rejects_unknown_kinds(cli, monkeypatch):

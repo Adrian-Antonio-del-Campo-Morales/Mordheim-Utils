@@ -40,6 +40,9 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.fears-fire
+      clauses:
+      - id: fears-fire
+        scope: 'NO'
   name: Fear of Fire
   effect: >-
     Active fires, torch wielding enemies or any flame on the battlefield cause fear in Fen Guard.
@@ -65,9 +68,7 @@ rules:
     - id: unimplemented.fen-guard-mim.band.hired-swords
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Hired Swords
   effect: >-
     Fen Guard are reclusive inhuman creatures with little to no way of communicating with the
@@ -98,6 +99,13 @@ rules:
         id: trait.natural-armour-save
         parameters:
           value: 6
+      clauses:
+      - id: six-plus-natural-save
+        scope: 'YES'
+      - id: strength-cap-at-six
+        scope: 'YES'
+      - id: no-save-and-fire-negation
+        scope: 'YES'
     - id: trait.natural-armour-stacks
       scope: 'YES'
       binding:
@@ -150,6 +158,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.fen-hard-to-kill
+      clauses:
+      - id: out-of-action-only-on-six
+        scope: 'YES'
+      - id: fire-cancels-the-rule
+        scope: 'YES'
   name: Hard to Kill
   effect: >-
     Dryads and Spiteborn can only be taken out of action on a roll of 6 instead of 5-6 on the injury
@@ -207,8 +220,7 @@ rules:
     - id: unimplemented.fen-guard-mim.band.forest-and-swamp-walk
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Forest and Swamp Walk
   effect: Fen Guard can move through swamp and forest terrain without penalty.
   source:
@@ -231,9 +243,7 @@ rules:
     - id: unimplemented.fen-guard-mim.band.grown-weapons
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Grown Weapons
   effect: >-
     Weapons purchased grow from within the warrior: Forest Folk cannot be disarmed and captured
@@ -264,9 +274,7 @@ rules:
     - id: unimplemented.fen-guard-mim.band.regrowth
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Regrowth
   effect: >-
     If a Fen Guard ever suffers a serious injury, they can use a future skill advancement to regrow
@@ -293,9 +301,7 @@ rules:
     - id: unimplemented.fen-guard-mim.band.natural-state
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Natural State
   effect: >-
     Fen Guard may never wear cloaks, boots or armour other than that listed on their starting
@@ -323,9 +329,7 @@ rules:
     - id: unimplemented.fen-guard-mim.band.untainted
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Untainted
   effect: >-
     Anytime a member of the warband receives an actual mutation, they must roll on the serious
@@ -354,9 +358,7 @@ rules:
     - id: unimplemented.fen-guard-mim.band.variation
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Variation
   effect: >-
     Warriors may start with a single "Variation" when hired, or choose a new one when rolling
@@ -444,8 +446,7 @@ rules:
     - id: unimplemented.fen-guard-mim.branchwych.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Wizard
   effect: >-
     A Branchwych is a powerful wizard and starts with two spells from the Utterances of the Oak
@@ -473,9 +474,10 @@ rules:
     - id: unimplemented.fen-guard-mim.branchwych.eternal
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: deferred.other
+      clauses:
+      - id: serious-injury-substitution
+        scope: 'NO'
   name: Eternal
   effect: >-
     A Branchwych can ignore any result on the hero's Serious Injury chart except Killed by taking a
@@ -506,9 +508,7 @@ rules:
     - id: unimplemented.fen-guard-mim.branchwych.feed-upon-magic
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Feed Upon Magic
   effect: >-
     A Branchwych can perform spells that, with the consumption of D3 Treasures, give her a permanent
@@ -540,9 +540,7 @@ rules:
     - id: unimplemented.fen-guard-mim.branchwych.advancement
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-classification
   name: Advancement
   effect: >-
     If a Branchwych gets an advance roll of +1 Wound, she may instead pick a new skill from her
@@ -572,11 +570,23 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.causes-fear
+      clauses:
+      - id: cause-fear--scope--immunity-and-fear
+        scope: 'YES'
+      - id: cause-fear--scope--fear-of-fire-rider
+        scope: 'YES'
+      - id: cause-fear--scope--leader-role-ban
+        scope: 'NO'
     - id: mechanic.psychology-immunity
       scope: 'YES'
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+      clauses:
+      - id: psychology-immunity
+        scope: 'YES'
+      - id: leader-restriction
+        scope: 'NO'
   name: Instinctual
   effect: >-
     Branch Nymphs live only to battle in defence of their home: they are immune to psychology and
@@ -631,9 +641,7 @@ rules:
     - id: unimplemented.fen-guard-mim.dryads.root-walk
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Root Walk
   effect: >-
     Dryads may only run in swamp, dirt or forest terrain; on any city terrain a dryad may only walk
@@ -661,10 +669,7 @@ rules:
     - id: unimplemented.fen-guard-mim.dryads.tanglevine
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: group Rout, All Alone or combat against multiple
-        opponents. Source prose is retained; this is an exclusion, not deferred modular
-        implementation.
+      reason: deferred.other
   name: Tanglevine
   effect: >-
     For each Dryad a warrior is in combat with after the first, they lose 1 attack, to a minimum of
@@ -742,9 +747,7 @@ rules:
     - id: unimplemented.fen-guard-mim.treekin.may-not-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: May Not Run
   source:
     manual: broheim.net
@@ -766,8 +769,7 @@ rules:
     - id: unimplemented.fen-guard-mim.treekin.large
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.non-duel
   name: Large
   effect: >-
     Treekin strike an imposing figure towering above normal men; any warrior may choose to target
@@ -822,9 +824,10 @@ rules:
     - id: unimplemented.fen-guard-mim.treekin.slow-growing
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: deferred.other
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Slow Growing
   effect: Treekin earn experience at half the rate of a normal warrior.
   source:
@@ -848,8 +851,10 @@ rules:
     - id: unimplemented.fen-guard-mim.band.characteristic-increase
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: characteristic-increase caps on advancement.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Characteristic Increase (Dryad and Treekin Maximums)
   effect: >-
     Dryad maximums: M 5, WS 6, BS 4, S 4, T 5, W 4, I 5, A 3, Ld 10. Treekin maximums: M 6, WS 5, BS

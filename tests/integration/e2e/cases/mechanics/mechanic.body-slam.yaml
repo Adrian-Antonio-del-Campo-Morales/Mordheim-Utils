@@ -1,6 +1,5 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.body-slam
-# scaffold_fingerprint: db28cc5a8122e2f14274bdc56e8c65a845c9256f633a0e42bb3c2f0c71a090a0
 # authoring_status: AUTHORED
 # authoring_progress: the admitted clause carries authored scenarios for every printed
 #   facet of the acceptance: the declared replacement hitting on the raised target and
@@ -17,12 +16,10 @@
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
-# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: whole (scope: YES)
-# AUTHORED[whole]: 8 scenarios cover the declared charge
+# AUTHORED: 8 scenarios cover the declared charge
 #   replacement (+1 To Hit, +1 Strength, pool declined keeps the ordinary charge),
 #   the printed 5+ critical threshold on both boundary faces (the declared five
 #   scores the critical under the basic chart mirrored from core/combat-critical-hits;
@@ -36,32 +33,6 @@
 #   wound target stays 3 so a declared four misses (a merged modifier would make the
 #   four wound), while the same skill on the ordinary pool turns the declared three
 #   into a wound that the plain profile would need a four for.
-# origin_id:
-#   mechanic/mechanic.body-slam
-# analysis_status:
-#   reviewed
-# source_file:
-#   catalog/mechanics/close-combat.yaml
-# source_fingerprint:
-#   a92e8bf3fce28805766e14904d6432ddb342429464a218072d3eec4e35d83bde
-# source_sha256_at_generation:
-#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
-# Printed rule text:
-#   Replaces charge attacks with one +1 Strength, +1 To Hit attack that critically wounds on 5+ and ignores weapon and skill modifiers.
-# Semantic contract (check analysis_status before treating as accepted):
-#   A charge may be resolved as one single attack at +1 Strength and +1 To Hit that wounds critically on 5+ and ignores weapon and skill modifiers. Closure: the whole pool is replaced by exactly one attack carrying S+1, +1 to hit and a critical threshold of 5, and no equipped-weapon or skill modifier reaches it.
-# effect_id:
-#   mechanic.body-slam
-# relation:
-#   equivalent
-# parameters:
-#   {"attack_count": 1, "critical_threshold": 5, "hit_modifier": 1, "ignores": ["weapon modifiers", "skill modifiers"], "replaces": "charge attacks", "strength_bonus": 1}
-# conditions:
-#   {"first_round": true, "replaces_pool": true, "trigger": "charge"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   _resolve_attack_pool substitutes the pool with the body-slam EffectSet (strength_bonus 1, hit_modifier 1), build_attacks clamps the charging round to one attack, prepare_wound_context raises the critical threshold to 5 and _combined_effect returns the slam profile alone so global (skill) modifiers never merge into it. The printed "ignores weapon modifiers" is realised more strongly: the equipped weapon is replaced outright. Surface reuse candidate: {"family":"mechanic.body-slam","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare full special-attack/rescue contract: replacement scope, prerequisite count, per-hit versus per-wound triggers, save/parry eligibility, ordering, interruption and state/resources. Do not substitute an ordinary attack or reset a per-battle effect each round.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
 # --- Authored scenarios ---
 # The declaration is accepted, so the charge resolves as the printed single
@@ -72,7 +43,6 @@
 # other damage.
 - audit_id: mechanic/mechanic.body-slam
   id: the-declared-slam-hits-on-the-raised-target-and-wounds-on-the-raised-strength
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -97,7 +67,6 @@
 # no wound die is requested at all.
 - audit_id: mechanic/mechanic.body-slam
   id: declining-keeps-the-ordinary-charge-attack
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -125,7 +94,6 @@
 # that chart shape and not an invented one.
 - audit_id: mechanic/mechanic.body-slam
   id: the-declared-five-wounds-critically-under-the-slam-threshold
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -151,7 +119,6 @@
 # would fail if the threshold were four or if the critical chart were entered.
 - audit_id: mechanic/mechanic.body-slam
   id: the-declared-four-stays-an-ordinary-wound
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -179,7 +146,6 @@
 # prepared into the context above is excluded by the strict tape.
 - audit_id: mechanic/mechanic.body-slam
   id: the-weapon-hit-modifier-never-reaches-the-replacement-attack
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.duelling-pistol
@@ -204,7 +170,6 @@
 # unmodified four - so the exclusion above does not mean the modifier is inert.
 - audit_id: mechanic/mechanic.body-slam
   id: the-modifier-bearing-weapon-applies-its-bonus-to-the-ordinary-charge
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.duelling-pistol
@@ -229,7 +194,6 @@
 # (an equal Weapon Skill needs a four unraised).
 - audit_id: mechanic/mechanic.body-slam
   id: the-skill-wound-modifier-never-reaches-the-replacement-attack
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -257,7 +221,6 @@
 # faces so the only difference between the pair is the replaced pool.
 - audit_id: mechanic/mechanic.body-slam
   id: the-skill-wound-modifier-applies-to-the-ordinary-pool
-  covers: [whole]
   fighters:
     first:
       main_weapon_id: weapon.mace

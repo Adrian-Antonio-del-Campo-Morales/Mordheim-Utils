@@ -9,9 +9,8 @@ values that spill over lines or exceed the target width are rewritten as `>-`
 blocks rewrapped to the target width. A folded block whose body carries a
 physical line past the 120 maximum is rewrapped too: writers that emit one
 physical line per value leave prose that the check flags and can repair, so
-the warning and the repair are the same policy. `reason` strings always fold
-(quoted or plain, any length) so the audit-taxonomy metadata shares one style;
-the other descriptive keys (`description`, `notes`, ...) fold when they need
+the warning and the repair are the same policy. The other descriptive keys
+(`description`, `notes`, ...) fold when they need
 wrapping (multi-line quoted scalars, content beyond the target width, or a
 physical line past the 120 maximum) and short values keep their single-line
 quotes.
@@ -37,7 +36,7 @@ SAFE_YAML_LOADER = getattr(yaml, "CSafeLoader", yaml.SafeLoader)
 
 ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_ROOT = ROOT / "sources" / "knowledge"
-TEXT_KEYS = {"effect", "description", "notes", "reason"}
+TEXT_KEYS = {"effect", "description", "notes"}
 TARGET_WIDTH = 100
 MAX_WIDTH = 120
 KEY_RE = re.compile(r"^(?P<indent>\s*)(?P<key>[A-Za-z0-9_.-]+):(?P<rest>.*)$")
@@ -180,11 +179,6 @@ def text_target_indices(lines: list[str]) -> set[int]:
         lines, lambda key, parent: key == "effect" or (key == "es" and parent == "effect_i18n"))
 
 
-def reason_indices(lines: list[str]) -> set[int]:
-    """Line indexes whose key is a genuine ``reason`` mapping key."""
-    return mapping_key_indices(lines, lambda key, parent: key == "reason")
-
-
 def plain_scalar_end(lines: list[str], index: int, indent: int) -> int:
     """Index just past a plain scalar opened at ``lines[index]``.
 
@@ -233,7 +227,6 @@ def normalize_lines(original: str) -> tuple[str, list[str]]:
     output: list[str] = []
     changed_fields: list[str] = []
     targets = text_target_indices(lines)
-    reasons = reason_indices(lines)
     index = 0
     while index < len(lines):
         line = lines[index].rstrip()
@@ -245,8 +238,7 @@ def normalize_lines(original: str) -> tuple[str, list[str]]:
             quoted = rest.startswith(("'", '"'))
             multiline_quoted = quoted and not quote_closes(rest[1:], rest[0])
             is_target = index in targets  # effect / effect_i18n.es prose
-            is_reason = index in reasons  # genuine reason mapping key
-            is_text_key = key in TEXT_KEYS  # summary / description / notes / reason
+            is_text_key = key in TEXT_KEYS  # description / notes
 
             # Decide whether the scalar opened on this line must be folded.
             fold = False
@@ -261,10 +253,6 @@ def normalize_lines(original: str) -> tuple[str, list[str]]:
                 multiline_plain = end > index + 1
                 if multiline_plain or len(line) > TARGET_WIDTH:
                     fold = True
-            elif is_reason and rest and not rest.startswith((">", "|")):
-                # Every reason string folds unconditionally — quoted or plain,
-                # any length — so the audit-taxonomy metadata shares one style.
-                fold = True
             elif is_text_key and not is_target and multiline_quoted:
                 # Legacy: multi-line quoted descriptive scalars fold too.
                 fold = True

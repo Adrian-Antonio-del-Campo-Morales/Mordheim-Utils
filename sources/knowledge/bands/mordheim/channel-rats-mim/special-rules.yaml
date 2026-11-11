@@ -10,10 +10,10 @@ rules:
     - id: unimplemented.channel-rats-mim.band.water-caravan
       scope: LATER
       binding: null
-      reason: >-
-        Deferred mechanic: vehicles (Riverboat/River Barge) are a campaign/board subsystem out of
-        the current combat engine scope; the wagon-and-horses replacement is purely a
-        recruitment/narrative swap.
+      reason: deferred.other
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Water Caravan
   effect: >-
     Each Strigany warband must include one Riverboat or River Barge. If there are no rivers in your
@@ -43,9 +43,10 @@ rules:
     - id: unimplemented.channel-rats-mim.band.lucky-white-heather
       scope: LATER
       binding: null
-      reason: >-
-        Campaign mechanic: post-battle sequence thefts, cons and Serious Injuries are outside the
-        current combat engine scope.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: post-battle-job
+        scope: 'NO'
   name: Lucky White Heather
   effect: >-
     Instead of searching for a rare item during the post battle sequence, one of the Heroes prepares
@@ -83,10 +84,10 @@ rules:
     - id: unimplemented.channel-rats-mim.band.shadowy-traditions
       scope: LATER
       binding: null
-      reason: >-
-        Campaign mechanic: the Father-in-Darkness chart permanently modifies hero profiles
-        (Blood-swain / Surrogate Vampire) and the Red Thirst is a turn-structure psychology effect;
-        both out of the current engine scope.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: shadowy-traditions
+        scope: 'NO'
   name: Shadowy Traditions
   effect: >-
     The Petru is an enchanter able to summon one of the Old Fathers. Instead of searching for a rare
@@ -143,10 +144,10 @@ rules:
     - id: unimplemented.channel-rats-mim.petru.wizard
       scope: LATER
       binding: null
-      reason: >-
-        Magic is out of the current engine scope. The Charms & Hexes spell list (Scry, Curse, Dust
-        of the Blind, Age of Stone, Warrior's Bane, Cure) is preserved verbatim in
-        band--charms-and-hexes.
+      reason: out-of-scope.magic
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Wizard
   effect: Petrus are Strigany mystics and have two spells generated from the Charms & Hexes list.
   source:
@@ -172,9 +173,7 @@ rules:
     - id: unimplemented.channel-rats-mim.band.charms-and-hexes
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: shooting, casting or escape without resolving the
-        duel. Source prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Charms & Hexes
   effect: >-
     Charms and Hexes are the magic of witchcraft. They involve copious amounts of spell ingredients
@@ -228,8 +227,10 @@ rules:
     - id: unimplemented.channel-rats-mim.petru.necromancy
       scope: LATER
       binding: null
-      reason: >-
-        Magic and post-battle advancement are outside the current engine scope.
+      reason: out-of-scope.magic
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Necromancy
   effect: >-
     Knowing a little of the black arts, Petrus may randomly determine a new spell from the
@@ -257,9 +258,7 @@ rules:
     - id: unimplemented.channel-rats-mim.petru.potions
       scope: LATER
       binding: null
-      reason: >-
-        Pre-battle random allocation with cross-battle persistence is a campaign mechanic outside
-        the current engine scope.
+      reason: out-of-scope.campaign
   name: Potions
   effect: >-
     Offering curatives through supplying suspicious potions, the Petru carries assorted philtres for
@@ -360,6 +359,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.bear-hug
+      clauses:
+      - id: bear-hug
+        scope: 'YES'
+      - id: replaces-normal-attacks
+        scope: 'YES'
     - id: rule.bear-hug-unarmed
       scope: 'YES'
       binding:
@@ -402,8 +406,10 @@ rules:
     - id: unimplemented.channel-rats-mim.tinker.grifter
       scope: LATER
       binding: null
-      reason: >-
-        Trading with other warbands is a campaign mechanic outside the engine scope.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Grifter
   effect: >-
     Tinkers are crooked dealers! Like a merchant, a Tinker allows trading deals to be arranged with
@@ -431,10 +437,7 @@ rules:
     - id: unimplemented.channel-rats-mim.tinker.rigger
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: campaign, recruitment, progression or post-duel
-        aftermath. Source prose is retained; this is an exclusion, not deferred modular
-        implementation.
+      reason: out-of-scope.campaign
   name: Rigger
   effect: >-
     The Tinker is skilled in fixing minor damage to watercraft. If the boat or barge is stationary
@@ -468,9 +471,7 @@ rules:
     - id: unimplemented.channel-rats-mim.truant.spry
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Spry
   effect: >-
     A Truant is used to climbing in and out of portholes, as well as running along rooftops with
@@ -498,9 +499,7 @@ rules:
     - id: unimplemented.channel-rats-mim.truant.taunt
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: shooting, casting or escape without resolving the
-        duel. Source prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Taunt
   effect: >-
     During the Shooting phase, the Truant may choose to taunt one enemy instead of shooting with a
@@ -534,9 +533,7 @@ rules:
     - id: unimplemented.channel-rats-mim.dead-eye.dead-eye-shot
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: shooting, casting or escape without resolving the
-        duel. Source prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Dead Eye Shot
   effect: >-
     The Dead-Eye has the eyes of an eagle and can hit the smallest target. He ignores to hit
@@ -564,9 +561,7 @@ rules:
     - id: unimplemented.channel-rats-mim.dead-eye.target-practice
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: shooting, casting or escape without resolving the
-        duel. Source prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: deferred.other
   name: Target Practice
   effect: >-
     The warrior can fire a single missile attack when being charged. Models that stand and shoot
@@ -594,9 +589,10 @@ rules:
     - id: unimplemented.channel-rats-mim.dead-eye.weapons-expert
       scope: LATER
       binding: null
-      reason: >-
-        Cross-reference to Mordheim Rulebook p. 122 skill; resolves after equivalence review against
-        the active skills catalog.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: weapons-expert-reference
+        scope: 'NO'
   name: Weapons Expert
   effect: See page 122 of the Mordheim Rulebook.
   source:
@@ -655,8 +651,6 @@ rules:
         id: profile.skill-access
         parameters:
           category: special
-    # Each printed member keeps its own record and runtime disposition; the
-    # table grants the choice, never the members' effects.
   name: Strigany Special Skills
   effect: >-
     River Strigany may choose to use the following skill list instead of the standard skill lists.
@@ -717,8 +711,7 @@ rules:
     - id: unimplemented.channel-rats-mim.strigany.knowledge-of-myths
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: the re-roll belongs to the Exploration phase, not to the duel.
+      reason: out-of-scope.campaign
   name: Knowledge of Myths and Legends
   effect: >-
     During the Exploration phase, if the Hero was not taken out of action, you may re-roll one
@@ -789,9 +782,7 @@ rules:
     - id: unimplemented.channel-rats-mim.strigany.songster
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: the re-roll is a provider effect for friendly models within 6 inches, a
-        group Leadership mechanic rather than the bearer's own test.
+      reason: out-of-scope.group
   name: Songster
   effect: >-
     Any friendly model within 6" of the Hero may re-roll any failed Leadership test with a +1 to
@@ -807,7 +798,7 @@ rules:
     section: Strigany Special Skills
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Channel Rats.pdf
   name_i18n:
-    es: "Cantador"
+    es: Cantador
   eligibility:
   - domnu
   - petru
@@ -825,10 +816,8 @@ rules:
     - id: unimplemented.channel-rats-mim.strigany.prize-fighter
       scope: LATER
       binding: null
-      reason: >-
-        Deferred: the printed bonus applies only while fighting unarmed, and no canonical operator
-        carries that condition; granting the attack unconditionally would widen the rule.
-  name: Prize-fighter
+      reason: deferred.other
+  name: Prize-Fighter
   effect: >-
     The Hero suffers no penalties whatsoever for fighting unarmed and receives +1 Attack when
     doing so.
@@ -860,9 +849,7 @@ rules:
     - id: unimplemented.channel-rats-mim.strigany.animal-charmer
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: controlling up to five animals and their random movement is a group/animal
-        subsystem, not an individual duel consequence.
+      reason: out-of-scope.movement
   name: Animal Charmer
   effect: >-
     The Hero can control up to five animals using Strigany charms provided that they remain
@@ -898,21 +885,9 @@ rules:
     - id: unimplemented.channel-rats-mim.strigany.infiltration
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: deployment order and off-table placement happen before the duel.
+      reason: out-of-scope.movement
   name: Infiltration
-  effect: >-
-    A Strigany with this skill is always placed on the battlefield after the opposing warband and
-    can be placed anywhere on the table as long as it is out of sight of the opposing warband and
-    more than 12" away from any enemy model; if both players have models which infiltrate, roll a
-    D6 for each, and the lowest roll sets up first.
 
-  effect_i18n:
-    es: >-
-      Un Estrigany con esta habilidad se despliega siempre después de la banda oponente y puede
-      colocarse en cualquier punto de la mesa siempre que quede fuera de la vista de la banda
-      contraria y a más de 12" de cualquier modelo enemigo; si ambos jugadores tienen modelos que se
-      infiltran, tira un D6 por cada uno y el resultado más bajo se despliega primero.
   source:
     manual: broheim.net
     printed_page: 181
@@ -927,3 +902,4 @@ rules:
   - truants
   applies_to:
     band: true
+  rule_ref: shared-rule.infiltration

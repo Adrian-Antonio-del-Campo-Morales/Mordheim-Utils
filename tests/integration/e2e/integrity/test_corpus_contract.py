@@ -96,8 +96,7 @@ def test_identity_contracts_fail():
     for dirty, message in (
             ({**VALID, "id": "  "}, "id must be a nonempty string"),
             ({**VALID, "audit_id": ""}, "audit_id must be a nonempty string"),
-            ({**VALID, "covers": []}, "covers must be a nonempty list of clause ids"),
-            ({**VALID, "covers": "whole"}, "covers must be a nonempty list of clause ids"),
+            ({**VALID, "covers": "whole"}, "covers must be a list of clause ids"),
             ({**VALID, "covers": ["whole", 12]}, "covers entry must be a nonempty string"),
     ):
         with pytest.raises(CorpusError, match=message):
@@ -327,18 +326,18 @@ TODO_HEADER = "# authoring_status: TODO\n# execution_status: UNEXECUTED\n\n"
 
 
 class _SyntheticInventory:
-    """The register, synthetic: same structure and coverage math, no CSV read.
+    """The clause inventory, synthetic: same structure and coverage math, no KB read.
 
     ``test_inventory.Coverage`` itself is reused, so the acceptance/exit codes
     the validator produces are computed by the real coverage logic; only the
-    register contents are synthetic and stable across corpus edits.
+    inventory contents are synthetic and stable across corpus edits.
     """
 
     declared = {"core/synthetic-rule": {"whole", "minimal"}}
     admitted = {"core/synthetic-rule": {"whole"}}
     admitted_ids = {"core/synthetic-rule"}
 
-    def read_register(self):
+    def read_inventory(self):
         return self.declared, self.admitted, set(self.admitted_ids)
 
     def coverage(self, scenarios):
