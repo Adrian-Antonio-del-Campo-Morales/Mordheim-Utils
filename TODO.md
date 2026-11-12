@@ -1,49 +1,63 @@
 # Project backlog
 
-Unresolved defects, verification work and deferred capabilities. Procedures
-belong in the linked guides; counts and execution details belong in generated
-reports. A historical pass does not certify the current tree.
+Open defects, verification gaps and deferred capabilities.
 
+## Local CI blockers
 
-## Knowledge-base consolidation — closed (2026-11-12)
+The 2026-11-12 local CI run on `719b3987` (Python 3.14.4, Node 22.16.0,
+eight test workers) finished with 13 passing steps and four failing steps.
 
-The consolidation is complete: every useful fact has one authoritative home in `sources/knowledge/`. The work, its decisions and its evidence are recorded in the commit history (`53a7ee05` through `dbd5e8e4`) and in `docs/archive/` (`prose-consolidation-2026-11-11.json`, `prose-consolidation-2026-11-11-equipment.json`, `construction-clauses-ledger-2026-11-12.json`, `mechanic-texts-2026-11-11.json`, `reason-texts.csv`, the clause register). The resulting model is documented in `docs/reference/knowledge-base.md`. No consolidation decision is pending; the structural checks (`format_yaml`, `normalize_names`, `clauses.py check`/`inventory`, `audit_schema_strictness`, `audit_kb_conformance`, `generate_knowledge_web.py --check`) all pass on this tree (4,943 identities, digest `1d83c558835a`, 0 clause reviews, 42 justified strictness findings, 103 conformance deviations).
+- **Python regression (`05-python-regression`).** The Scourge split left two
+  catalogue checks failing: the normalized name `scourge` now matches
+  `scourge` and `slaver_scourge`, and the generated catalogue has 465 items
+  against an expected 464. Reconcile both checks with the two printed entries.
+  The translation consistency check also found a missing Spanish name for
+  `night-goblin-special-skills` in `sources/knowledge/registry/sources.yaml`;
+  reuse the translation in the Crooked Moon band rules.
+- **Extra Arm with a shield (`06-modular-e2e`).** The scenario
+  `a-shield-in-the-extra-arm-still-adds-one-attack` still fails because the
+  second attack's hit and wound rolls are unused. Confirm the printed rule and
+  reconcile the attack sequence with the scenario.
+- **Web lint (`14-web-lint`).** Resolve 12 ESLint errors in Warband Manager
+  tests (unused bindings and explicit `any`). Rerun
+  `npm run lint --workspace warband-manager-web` to verify ESLint and the
+  presentation gate, which did not run.
+- **Web campaign artefact (`15-web-test`).** The campaign obligations suite
+  failed during collection. CI generates into `outputs/web-public/knowledge/`,
+  but the test helper looks in `build/generated/knowledge-web/`. Align the
+  helper with the generated artefact and rerun the campaign checks that depend
+  on it, including the skipped variant construction and catalogue reader tests.
 
-### Known failures and environment blockers
+KB generation and determinism, the accepted E2E evidence baseline, eligibility,
+TypeScript typechecks, package tests, web localization, the build and
+post-build bundle guardrails passed. Combat Lab UI checks are outside this CI
+selection and still need a Python environment with Tkinter.
 
-- **Extra Arm with a shield.** The E2E scenario `band--mutations-extra-arm::a-shield-in-the-extra-arm-still-adds-one-attack` fails on the committed tree (pre-existing).
-
-- **Combat Lab UI environment.** The UI tests require Tkinter, which is unavailable in the Python environment used for verification.
-
-### Full batteries and CI
-
-Report pending: the full Python, E2E, Combat Lab, engine and web batteries and the CI steps are being executed; their failing-test report replaces this paragraph.
-
-## Item catalogue: open problems
-
-Left over from the 2026-11-11 item consolidation. Each entry is independent; none was changed because it would alter behaviour, needs a decision, or needs a source that is not available. The two entries that only needed a source check — the Victuals “Fire :” label and the Quarter Staff text — were resolved on 2026-11-11 and are recorded in the handoff's Done list.
+## Item catalogue
 
 ### Derived descriptions awaiting their printed entries
 
-These items show a description built from their equipment-list data (list, cost, rarity, bearers) and carry a `# Derived description` comment. Their entries are printed only in Spanish books that are neither online nor mirrored here: *Khemri* (`dispelling_scroll`, `icon_of_manann`, `whip`), *Lustria* (`feather_headdress`, `sacrifice_dagger`, `magic_tattoos`, `shrunken_head` for the Savage Goblins; `jungle_roast`, `magic_tattoo`, `spider_amulet`, `poisoned_darts` for the Pygmies) and *Chaos in the Streets* (`travel_staff`, `poison_darts`). The Lustria *Spider Amulet* artefact (mordheimer.net, Lustrian Artefacts) is a different object from the Pygmy list item.
+These items show a description built from their equipment-list data (list, cost, rarity, bearers) and carry a `# Derived description` comment. Their entries are printed only in Spanish books that are neither online nor mirrored here: *Khemri* (`dispelling_scroll`, `icon_of_manann`, `whip`), *Lustria* (`feather_headdress`, `sacrifice_dagger`, `magic_tattoos`, `shrunken_head` for the Savage Goblins; `jungle_roast`, `magic_tattoo`, `spider_amulet`, `poisoned_darts` for the Pygmies) and *Chaos in the Streets* (`travel_staff`, `poison_darts`). The *Lustrian Artefacts* entry named *Spider Amulet* describes a different object from the Pygmy list item.
 
 ### Item coverage
 
-Of 163 implemented items, 159 have no deterministic test naming them and 1 more is only partly covered. Use `python tools/knowledge/clauses.py coverage --kind item --pending` to inspect the outstanding declarations.
+List implemented items with missing or partial deterministic coverage using
+`python tools/knowledge/clauses.py coverage --kind item --pending`.
 
 ## Modular integration and E2E coverage
 
-Strict E2E coverage of the modular oracle is unconfirmed. Close it with
-`MORDHEIM_E2E_REQUIRE_COMPLETE=1` over `tests/integration/e2e/` on the delivered
-revision, preserving the accepted-evidence baseline and clause identities.
-Pending clauses: `python tools/knowledge/clauses.py coverage --pending`.
-See the [verification reference](docs/reference/verification.md#modular-integration-closure).
+The local CI run passed the accepted-evidence baseline check. After resolving
+the modular E2E failure, run
+`MORDHEIM_E2E_REQUIRE_COMPLETE=1 python -m pytest tests/integration/e2e -q`
+on the delivered revision. Close when the scenarios, admitted-clause coverage
+and accepted-evidence baseline pass with the existing clause identities.
 
 ## Web projection verification
 
-Verify Dwarf inheritance in the generated web projection, with evidence from
-`outputs/web-public/knowledge/knowledge-web.json` (generate it with
-`python tools/knowledge/generate_knowledge_web.py`; never hand-edit it).
+Regenerate the web projection with `python tools/knowledge/generate_knowledge_web.py`.
+Check that `outputs/web-public/knowledge/knowledge-web.json` publishes the
+inherited rules, equipment access and skill access for the Karak Azgal
+Guildsmen and Slayers with the correct profile recipients.
 
 ## Combat Lab checklist popover closes during layout
 
@@ -56,10 +70,10 @@ theme, width and scrollbar assertions intact.
 
 ## Optimized-backend verification
 
-Qualify NumPy and Native separately against the modular oracle. Native was
-ported from NumPy, so agreement between the two never exonerates a deviation
-they share. Keep tolerances and reference provenance intact; procedures are in
-the [verification reference](docs/reference/verification.md).
+Qualify NumPy and Native separately against the modular oracle. For stored
+samples, use `python tools/mordheim-utils.py check samples compare` with the
+candidate and modular stores. Keep the six-sigma gate for first-win,
+second-win and unresolved rates, and verify source and input digests.
 
 - **Native.** Run the native runtime and deterministic replay selections
   (`tests/engines/native/`): attack-event gating, pool allocation and Rapier
@@ -95,10 +109,7 @@ the [verification reference](docs/reference/verification.md).
   refusals. The first two groups stay uncertified until the runner supports
   them.
 
-Stored samples live in `tests/engines/parity/reference_samples/` (seed 2026,
-50 rounds for E2E). Compare without running either engine:
-`python tools/mordheim-utils.py check samples compare --scenarios e2e
---backend <numpy|native> --store <candidate> --reference-store <modular store>`.
+Stored samples live in `tests/engines/parity/reference_samples/`.
 Running the modular engine requires explicit authorization.
 
 ## Knowledge gaps
@@ -108,12 +119,3 @@ Running the modular engine requires explicit authorization.
 | Implement the Sunstaff Lustria melee profile | Add the bearer-Strength profile without invented two-handed, +1 Strength or ignition properties, then reconnect its item/simulation mapping and pending register clause. Catalogue text is corrected; motor support remains pending by user decision (2026-11-10). Sunbolt shooting remains outside the duel. |
 | Resolve hireling `unresolved_references` | Replace references as canonical catalogues become available; keep genuinely unresolved links explicit. |
 | Define composite-entity schemas | Establish schemas before admitting multi-warrior, mounted or multi-persona Dramatis Personae. |
-| Make unsupported item-to-engine mappings explicit | Ensure catalogue presence cannot be mistaken for executable support. |
-| Complete interface translations | Translate missing messages and remove unused keys. |
-
-See the [knowledge-base reference](docs/reference/knowledge-base.md),
-[campaign knowledge guide](docs/guides/campaign-knowledge.md) and
-[web presentation conventions](docs/reference/web-presentation.md). Scope
-changes are governed by
-[`runtime-scope.yaml`](sources/knowledge/registry/runtime-scope.yaml);
-accepted decisions belong in [Design rulings](docs/decisions/design-rulings.md).
