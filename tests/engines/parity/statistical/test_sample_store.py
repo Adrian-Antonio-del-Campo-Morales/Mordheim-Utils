@@ -70,9 +70,9 @@ def test_shared_queue_crosses_scenario_boundary_and_resumes(cases, tmp_path, mon
         assert record.maximum_rounds == scenario.case.limits.maximum_rounds
 
 
-def test_e2e_selection_keeps_non_runnable_deliveries_and_rejects_unknown_ids():
-    from tools.verification import e2e_parity
-    from tests.engines.parity.statistical.test_e2e_parity import CASES
+def test_delivery_selection_keeps_non_runnable_deliveries_and_rejects_unknown_ids():
+    from tools.verification import parity_deliveries
+    from tests.engines.parity.statistical.test_parity_deliveries import CASES
 
     args = store._parser().parse_args(["status", "--scenarios", *CASES.values()])
     scenarios, rejected, chosen = store._selection(args)
@@ -83,16 +83,16 @@ def test_e2e_selection_keeps_non_runnable_deliveries_and_rejects_unknown_ids():
     assert reasons[CASES["blocked"]].startswith("blocked:")
     assert reasons[CASES["not_applicable"]].startswith("not-applicable:")
     assert "initial_state" in reasons[CASES["initial_state"]]
-    args.scenarios = ["e2e"]
+    args.scenarios = ["deliveries"]
     _, _, chosen = store._selection(args)
-    assert {entry.key for entry in chosen} == set(e2e_parity.discover()[0])
-    args.scenarios = ["e2e/unknown"]
+    assert {entry.key for entry in chosen} == set(parity_deliveries.discover()[0])
+    args.scenarios = ["delivery/unknown"]
     with pytest.raises(store.SampleStoreError):
         store._selection(args)
 
 
-def test_e2e_cli_samples_resumes_and_compares(tmp_path):
-    from tests.engines.parity.statistical.test_e2e_parity import CASES
+def test_delivery_cli_samples_resumes_and_compares(tmp_path):
+    from tests.engines.parity.statistical.test_parity_deliveries import CASES
 
     key = CASES["simple"]
     selection = ["--scenarios", key, "--store", str(tmp_path)]
@@ -118,7 +118,7 @@ def test_e2e_cli_samples_resumes_and_compares(tmp_path):
     assert store.main(["compare", "--backend", "numpy", *selection]) == 1
     report = json.loads((tmp_path / "compare" / "parity-campaign.json").read_text())
     assert report["config"]["scenario_keys"] == [key]
-    assert report["config"]["corpus"].endswith("e2e-statistical-deliveries")
+    assert report["config"]["corpus"].endswith("tests/engines/parity/deliveries")
     assert report["scenarios"][0]["status"] == "NOT_RUN"
 
 

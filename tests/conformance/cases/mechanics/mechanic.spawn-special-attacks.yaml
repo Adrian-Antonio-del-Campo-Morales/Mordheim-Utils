@@ -1,0 +1,61 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.spawn-special-attacks
+# authoring_status: AUTHORED
+# authoring_progress: the single admitted clause carries 2 authored scenarios: the spawn's D6+1 roll replacing the profile's printed Attacks, and the same bearer without the rule keeping its three profile attacks. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios cover the printed D6+1 attacks: the declared roll of one yields two attack dice on a bearer whose printed Attacks are three, while the identical bearer without the rule keeps all three profile dice. The roll's key is not in the printed text: the executor requests `<round>.<side>.spawn-attacks` (rounds.resolve_spawn_attack_count via rounds.py:568) and the printed exception for a bearer whose main weapon is the vomit replacement is the same function's first branch.
+
+# --- Authored scenarios ---
+# The printed "Rolls D6+1 Attacks again at the start of every close-combat phase" is a
+# replacement, not an addition: the bearer prints Attacks 3 but the declared spawn roll of
+# one yields exactly two attack dice, so the third outcome of the round is the
+# defender's own attack (declared as a two, a miss that is nevertheless not a one).
+- audit_id: mechanic/mechanic.spawn-special-attacks
+  id: the-spawn-roll-replaces-the-printed-attack-count
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.spawn-special-attacks]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 3}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.spawn-attacks, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 2}
+  expect_rounds:
+    0: {attacks.0.hit_roll: 1, attacks.1.hit_roll: 1, attacks.2.hit_roll: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The control: the same printed Attacks 3 and the same misses without the rule request no
+# spawn die at all (a declared one would be an unexpected roll), and the round carries the
+# three profile attacks before the defender's answer.
+- audit_id: mechanic/mechanic.spawn-special-attacks
+  id: without-the-rule-the-printed-three-attacks-stand
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 3}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.2.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 2}
+  expect_rounds:
+    0: {attacks.2.hit_roll: 1, attacks.3.hit_roll: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

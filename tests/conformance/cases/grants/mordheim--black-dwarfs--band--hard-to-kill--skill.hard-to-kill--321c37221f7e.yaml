@@ -1,0 +1,94 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/black-dwarfs/band--hard-to-kill/skill.hard-to-kill
+# authoring_status: AUTHORED
+# authoring_progress: both admitted clauses carry authored scenarios.  out-only-on-six: a five that the
+# ordinary chart takes Out of Action leaves the printed Chaos Dwarf bearer Stunned and the six still takes
+# it out.  bearer-scope: the printed Informer, which the printed sentence excludes, keeps the ordinary
+# chart, so the same five still takes it out of action.  The bearer profiles are read from the band source
+# and the band rule is supplied through its printed rule key; no engine output was consulted.  REVIEWED
+# still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: bearer-scope (scope: YES)
+# AUTHORED[bearer-scope]: 1 scenario exercises the printed exclusion: the Informer profile named in the
+#   printed sentence keeps the ordinary chart, so the same five that Stuns the Chaos Dwarf takes the
+#   Informer out of action.  The exclusion is evidenced by the absence of the wider band on a printed
+#   excluded recipient rather than by re-stating the applicability sentence.
+#
+# Clause: out-only-on-six (scope: YES)
+# AUTHORED[out-only-on-six]: 2 scenarios evidence the printed wider band at its boundary (a five Stuns
+#   instead of taking the bearer out) and the six that still takes it out.  The recipient is the printed
+#   Chaos Dwarf profile of the band and the band rule is supplied by its printed rule key.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the printed band record; no engine output was consulted.
+# The mace is the concussion weapon of the sibling injury-chart cases, the fixture's Initiative
+# lets it strike first, and the bearers start at their printed single wound.  The wound die stays
+# below a natural six, so no critical die is part of this evidence.
+
+- audit_id: rule/mordheim/black-dwarfs/band--hard-to-kill/skill.hard-to-kill
+  id: a-five-only-stuns-the-chaos-dwarf
+  covers: [out-only-on-six]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: black-dwarfs, profile_id: chaos-dwarfs}
+  initial_state: {second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/black-dwarfs/band--hard-to-kill/skill.hard-to-kill
+  id: only-the-six-takes-the-chaos-dwarf-out
+  covers: [out-only-on-six]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: black-dwarfs, profile_id: chaos-dwarfs}
+  initial_state: {second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 6}
+  expect_rounds:
+    0: {state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+- audit_id: rule/mordheim/black-dwarfs/band--hard-to-kill/skill.hard-to-kill
+  id: the-excluded-informer-keeps-the-ordinary-chart-on-a-five
+  covers: [bearer-scope]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    # The excluded recipient: the printed scope ("excluded_profile_ids": ["informers"]) is the reason
+    # the rule does not apply, so the control declares no rule at all - the informer keeps the ordinary
+    # chart because Hard to Kill never reached it. Declaring the id here would both contradict the
+    # clause's own exclusion and be refused as an unavailable recipient.
+    second: {collection: mordheim, band_id: black-dwarfs, profile_id: informers}
+  initial_state: {second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}

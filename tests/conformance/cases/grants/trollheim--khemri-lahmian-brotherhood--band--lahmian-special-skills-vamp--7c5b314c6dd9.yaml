@@ -1,0 +1,102 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/khemri-lahmian-brotherhood/band--lahmian-special-skills-vampire-reflexes/skill.vampire-reflexes
+# authoring_status: AUTHORED
+# authoring_progress: both admitted clauses now carry authored scenarios mirroring the canonical
+#   cases/mechanics/skill.vampire-reflexes.yaml tape and its accepted catalog twin
+#   (catalog--warband--skill.vampire-reflexes--skill.vampire-reflexes--0d66efd871b0.yaml): the unmodifiable
+#   6+ save holds at its threshold and fails on a face below it, and the same save holds on a four when Step
+#   Aside is held alongside it.  The improved threshold is declared through the fixture's own ward trait, so
+#   the residual is engine-side and is recorded as Documented difference (AUTHORED vs implementation): every representable face of the clause has a written scenario, so AUTHORED is the correct header; what stays pending is the motor side [B] - see the clause body below for the unconnected binding.  REVIEWED still requires
+#   manual semantic review and
+#   execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: combines-with-step-aside-to-four (scope: YES)
+# AUTHORED[combines-with-step-aside-to-four]: 1 scenario takes the printed improvement to 4+ onto the
+#   bearer: with skill.step-aside held alongside the rule the special ward is declared at four, blocks the
+#   wound and leaves the bearer standing, exactly as the accepted catalog twin of this same skill does.
+#   Documented difference (AUTHORED vs implementation): every representable face of the clause has a written scenario, so AUTHORED is the correct header; what stays pending is the motor side [B]: the engine-side lowering of the ward to four when the band row and Step Aside are both
+#   present: the improvement is declared here as the fixture's own ward trait, so this file evidences the
+#   printed outcome, not the combination logic that produces it.
+#
+# Clause: six-plus-unmodifiable-save (scope: YES)
+# AUTHORED[six-plus-unmodifiable-save]: 2 scenarios take the printed unmodifiable 6+ save against any
+#   Wound onto the bearer: a declared six stops the wound (saved, no damage, the bearer keeps its Wounds) and
+#   a five does not, both read at the attack's own special-save key after the wound.  REVIEWED still requires
+#   manual semantic review.
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded contract and the accepted catalog twin of the same skill; no
+# engine output was consulted.  The bearer is a hand-built fixture carrying the printed rule, the attacker
+# is the fixture whose mace the save faces, and the save is read at the attack's own special-save key.
+- audit_id: rule/trollheim/khemri-lahmian-brotherhood/band--lahmian-special-skills-vampire-reflexes/skill.vampire-reflexes
+  id: the-six-plus-save-holds-at-the-threshold
+  covers: [six-plus-unmodifiable-save]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.vampire-reflexes]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: True, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/khemri-lahmian-brotherhood/band--lahmian-special-skills-vampire-reflexes/skill.vampire-reflexes
+  id: a-face-below-the-six-plus-save-fails
+  covers: [six-plus-unmodifiable-save]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.vampire-reflexes]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: False, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/khemri-lahmian-brotherhood/band--lahmian-special-skills-vampire-reflexes/skill.vampire-reflexes
+  id: step-aside-improves-the-save-to-four
+  covers: [combines-with-step-aside-to-four]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.vampire-reflexes, skill.step-aside]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: True, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

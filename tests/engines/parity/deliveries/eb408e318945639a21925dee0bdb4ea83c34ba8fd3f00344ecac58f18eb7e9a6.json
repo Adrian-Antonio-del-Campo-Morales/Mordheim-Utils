@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-parity-delivery/v2",
+  "status": "not-applicable",
+  "source": {
+    "revision": "84a634dbdfc45973ebb93a9dd90c852e21c7c12b",
+    "path": "tests/conformance/cases/grants/mordheim--ogre-hunting-party-web--band--ogre-hunting-skills--profile.ski--2bc4a5c940e5.yaml",
+    "sha256": "0be8c34bb0d130ab0ed68b48fbbc4fd9fa22472763c05455bed36957a8cdf6d2",
+    "test_id": "rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills/profile.skill-access::a-special-skill-outside-the-printed-list-is-refused-for-the-ogre-hero"
+  },
+  "case_key": "delivery/rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills/profile.skill-access/a-special-skill-outside-the-printed-list-is-refused-for-the-ogre-hero",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E declares an expected construction refusal (\"skills are not available to ogre-hunting-party-web/ogre-hunter: ['skill.monster-slayer']\"); the build is refused with \"skills are not available to ogre-hunting-party-web/ogre-hunter: ['skill.monster-slayer']\", so no statistical scenario can be frozen."
+}

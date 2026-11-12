@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-parity-delivery/v2",
+  "status": "blocked",
+  "source": {
+    "revision": "84a634dbdfc45973ebb93a9dd90c852e21c7c12b",
+    "path": "tests/conformance/cases/mechanics/mechanic.hypnotist.yaml",
+    "sha256": "da12c8edd332e34ea7d529fb541eb7471ce00cd7da7142884724617f5f60b4aa",
+    "test_id": "mechanic/mechanic.hypnotist::the-sleuth-chooses-to-end-an-existing-trance"
+  },
+  "case_key": "delivery/mechanic/mechanic.hypnotist/the-sleuth-chooses-to-end-an-existing-trance",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E prescribes explicit decisions (round.0.second.end-hypnosis, round.0.second.hypnotist); the contract admits only the engine-default decision policy, and no general policy for randomly branched trajectories exists for these keys."
+}

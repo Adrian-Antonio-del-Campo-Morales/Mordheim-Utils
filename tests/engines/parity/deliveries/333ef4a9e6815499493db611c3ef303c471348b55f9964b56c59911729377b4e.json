@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-parity-delivery/v2",
+  "status": "blocked",
+  "source": {
+    "revision": "84a634dbdfc45973ebb93a9dd90c852e21c7c12b",
+    "path": "tests/conformance/cases/mechanics/weapon.kusara-kama.yaml",
+    "sha256": "b3d6400174e73b8c15381b01b427e828d510ee2dd7058d0788da7fb07a8df11b",
+    "test_id": "mechanic/weapon.kusara-kama::a-five-hampers-the-chosen-off-hand-and-removes-its-attack"
+  },
+  "case_key": "delivery/mechanic/weapon.kusara-kama/a-five-hampers-the-chosen-off-hand-and-removes-its-attack",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E prescribes explicit decisions (round.0.first.attack.0.kusara-main-hand); the contract admits only the engine-default decision policy, and no general policy for randomly branched trajectories exists for these keys."
+}

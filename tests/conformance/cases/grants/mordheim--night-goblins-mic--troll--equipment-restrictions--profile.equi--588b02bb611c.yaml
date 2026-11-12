@@ -1,0 +1,58 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/night-goblins-mic/troll--equipment-restrictions/profile.equipment-restrictions
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: the declared prohibition is evidenced as a construction refusal: the recipient build where carrying weapon.sword in main_weapon_id is refused with ""weapons" is forbidden for night-goblins-mic/troll.", and the same recipient without the item is accepted at construction. One refusal is declared per printed recipient of the rule. Consumer: the shared eligibility stage (packages/python/roster-construction/mordheim_construction/_eligibility.js).
+# authoring_progress: 3 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/night-goblins-mic/troll--equipment-restrictions/profile.equipment-restrictions
+  id: troll-with-weapons-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: night-goblins-mic
+      profile_id: troll
+      main_weapon_id: weapon.sword
+  expect_error: '"weapons" is forbidden for night-goblins-mic/troll.'
+
+- audit_id: rule/mordheim/night-goblins-mic/troll--equipment-restrictions/profile.equipment-restrictions
+  id: troll-with-armour-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: night-goblins-mic
+      profile_id: troll
+      armour_id: armour.heavy-armour
+  expect_error: armour is forbidden for night-goblins-mic/troll
+
+- audit_id: rule/mordheim/night-goblins-mic/troll--equipment-restrictions/profile.equipment-restrictions
+  id: troll-without-weapons-is-accepted-at-construction
+  fighters:
+    first:
+      collection: mordheim
+      band_id: night-goblins-mic
+      profile_id: troll
+    second:
+      collection: mordheim
+      band_id: night-goblins-mic
+      profile_id: troll
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

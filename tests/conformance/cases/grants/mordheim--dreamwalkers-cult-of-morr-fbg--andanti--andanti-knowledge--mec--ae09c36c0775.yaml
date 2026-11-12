@@ -1,0 +1,67 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/dreamwalkers-cult-of-morr-fbg/andanti--andanti-knowledge/mechanic.andanti-knowledge
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries 2 authored scenarios derived from the printed
+#   rule and the recorded contract: the Andanti's declared three hits an explicit Vampire opponent and
+#   the identical three misses any other opponent.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios evidence the printed +1 To Hit on the real attack route: the declared
+#   three that a Weapon Skill 3 opponent refuses hits once the opposing profile is supplied as a
+#   Vampire, and the same three misses without that supplied opponent.  The nominated bloodline is part
+#   of the supplied condition, so the bonus is tied to the printed opponent and not to a warband name.
+#   REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded contract; no engine output was consulted.  The
+# Andanti is the bearer with the printed operator declared, and the opponent's Vampire identity is the
+# supplied condition the contract names; the opposing fighter strikes back with a natural one so the
+# tape stays thin.
+
+- audit_id: rule/mordheim/dreamwalkers-cult-of-morr-fbg/andanti--andanti-knowledge/mechanic.andanti-knowledge
+  id: a-vampire-opponent-is-hit-on-three
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.andanti-knowledge]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {vampire: true, vampire_bloodline: von-carstein}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/dreamwalkers-cult-of-morr-fbg/andanti--andanti-knowledge/mechanic.andanti-knowledge
+  id: a-non-vampire-opponent-needs-the-four
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.andanti-knowledge]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

@@ -1,0 +1,67 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/dwarf-slayer-cult-web/rememberer--not-a-slayer/unimplemented.dwarf-slayer-cult-web.rememberer.not-a-slayer
+# authoring_status: AUTHORED
+# authoring_progress: both admitted clauses carry an authored refusal: a Slayer-only skill is refused
+#   to the Rememberer, and the band's Slayer package rule is refused when the Rememberer selects it.
+#   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: no-slayer-skill-access (scope: YES)
+# AUTHORED[no-slayer-skill-access]: 1 scenario shows a Slayer-only table skill (Monster Slayer, the
+#   Slayer special skill of this band's own Slayer tables) refused to the Rememberer with the shared
+#   access diagnostic.  The clause is single-faceted: the printed sentence is a bar, so no separate
+#   acceptance scenario exists for it.  REVIEWED still requires manual semantic review.
+#
+# Clause: not-a-slayer (scope: YES)
+# AUTHORED[not-a-slayer]: 1 scenario selects the band's Slayer package rule on the Rememberer and
+#   expects the special-rule route to refuse it (`special rule is not available to
+#   <band>/<profile>`), which is how the printed "the Slayer rules do not apply" is evidenced: the
+#   Scaffold's own note records that band--slayer omits this profile, so the refusal is the printed
+#   scope and not an engine accident.  REVIEWED still requires manual semantic review.
+#
+# Clause: no-leader (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+# --- Authored scenarios ---
+# RECEIPT (checked statically in the shared construction stage, not by running it): the declared id is
+# this band's own package row which carries the printed restriction - `band--slayer-rules`,
+# `applies_to {band: true, profile_ids: [giant-slayer, doomseeker, troll-slayers, stubbles, axe-hurlers]}`,
+# i.e. every profile of the band except the Rememberer - so the recipients stage of
+# `specialRuleRestriction()` raises this origin's own sentence and the declared fragment is the head of
+# that sentence.  The earlier revision declared the catalogue id `band--slayer`, which is not a row of
+# this band's package at all: for a band build `selectedRuleCandidates()` resolves ids from that package
+# alone, so the only sentence that id can produce is the band-level "special rule is not available to
+# dwarf-slayer-cult-web: band--slayer", which evidences that the id is foreign rather than that the
+# Slayer package is closed to this recipient.
+# Derived from the printed rule text and the recorded semantic contract; no engine output was
+# consulted.
+
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/rememberer--not-a-slayer/unimplemented.dwarf-slayer-cult-web.rememberer.not-a-slayer
+  id: the-rememberer-may-not-learn-a-slayer-only-skill
+  covers: [no-slayer-skill-access]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: rememberer
+      skill_ids: [skill.monster-slayer]
+      main_weapon_id: weapon.mace
+  expect_error: "skills are not available to dwarf-slayer-cult-web/rememberer: ['skill.monster-slayer']"
+
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/rememberer--not-a-slayer/unimplemented.dwarf-slayer-cult-web.rememberer.not-a-slayer
+  id: the-slayer-package-does-not-apply-to-the-rememberer
+  covers: [not-a-slayer]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: rememberer
+      special_rule_ids: [band--slayer-rules]
+      main_weapon_id: weapon.mace
+  expect_error: "special rule is not available to dwarf-slayer-cult-web/rememberer"

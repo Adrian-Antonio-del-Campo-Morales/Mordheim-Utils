@@ -1,0 +1,80 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/survivors-of-strigos-sylv/strigoi-vampire--iron-sinews/profile.characteristics
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries 2 authored scenarios derived from the printed
+# rule and the recorded contract: with the selected row the vampire's wound die of three lands because
+# the Strength it uses is one higher than the fixture base, while the identical strike without the row
+# needs a four and the same three falls short.  The bearer is supplied Strength 3 as a fixture base so
+# the printed bonus is the only thing that can lower the wound target, and the bearer charges, so no
+# charge test is declared and the tape holds only the two strikes.  REVIEWED still requires manual
+# semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios cover the printed +1 Strength as the selected profile row carries it.
+# Strength 3 is supplied as the bearer's fixture base so the printed bonus is the only thing that can
+# lower the wound target from four to three against the fixture's Toughness 3, and both scenarios
+# declare the same dice: the three lands with the row selected and the identical three falls short
+# without it.  The bearer is the attacking side, so its printed Cause Fear never forces a test on it.
+# REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded contract and the printed profile; no engine output was
+# consulted.  The row is the band's selectable special skill the audit id names, supplied on the
+# printed strigoi-vampire profile with Strength 3 as the fixture base; the vampire charges, so the
+# fixture's single reply is scripted as a miss and no charge test is part of the tape.
+
+- audit_id: rule/mordheim/survivors-of-strigos-sylv/strigoi-vampire--iron-sinews/profile.characteristics
+  id: the-selected-row-raises-the-strength-used-in-the-wound-roll
+  fighters:
+    first:
+      main_weapon_id: weapon.natural-attacks
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: survivors-of-strigos-sylv
+      profile_id: strigoi-vampire
+      special_rule_ids: [strigoi-vampire--iron-sinews]
+      main_weapon_id: weapon.natural-attacks
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charged.0, value: 1}
+    - {key: round.0.first.fear.charged.1, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 2, state.first.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/survivors-of-strigos-sylv/strigoi-vampire--iron-sinews/profile.characteristics
+  id: without-the-selected-row-the-same-wound-die-falls-short
+  fighters:
+    first:
+      main_weapon_id: weapon.natural-attacks
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: survivors-of-strigos-sylv
+      profile_id: strigoi-vampire
+      main_weapon_id: weapon.natural-attacks
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charged.0, value: 1}
+    - {key: round.0.first.fear.charged.1, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.second.wounds: 2, state.first.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

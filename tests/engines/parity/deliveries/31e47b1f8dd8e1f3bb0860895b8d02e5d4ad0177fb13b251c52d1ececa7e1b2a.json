@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-parity-delivery/v2",
+  "status": "blocked",
+  "source": {
+    "revision": "84a634dbdfc45973ebb93a9dd90c852e21c7c12b",
+    "path": "tests/conformance/cases/mechanics/weapon.poisoned-daggers.yaml",
+    "sha256": "20d56b2dcd1d792ad9499097d6fdc191df4718413c8c45b482635f0f87f7a26d",
+    "test_id": "mechanic/weapon.poisoned-daggers::the-optional-critical-attempt-can-instead-raise-the-damage"
+  },
+  "case_key": "delivery/mechanic/weapon.poisoned-daggers/the-optional-critical-attempt-can-instead-raise-the-damage",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E prescribes explicit decisions (round.0.first.attack.0.lotus-critical); the contract admits only the engine-default decision policy, and no general policy for randomly branched trajectories exists for these keys."
+}

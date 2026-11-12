@@ -1,0 +1,47 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/necrarchs-the-soul-stealers-lotd1/zombie--no-pain/skill.ignore-pain
+# authoring_status: AUTHORED
+# authoring_progress: the admitted stunned-becomes-knocked-down clause carries one authored
+# scenario derived from the printed rule and the printed profile: an injury result that the table
+# makes Stunned leaves this bearer Knocked Down instead.  The clause is single-faceted, so no
+# second scenario is required; the Out-of-Action boundary is not asserted here.  REVIEWED still
+# requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 1 scenario shows a Stunned result on the Injury chart leaving
+# the bearer Knocked Down.  The bearer is the profile that prints the rule and starts the duel at one
+# wound, so the fixture's single wound reaches the injury table; the injury die of 3 is a Stunned result
+# (Out of Action needs 5+), which the bearer's No Pain converts to Knocked Down.  Weapon Skill 10,
+# Strength 8 and Initiative 10 of the fixture are hand-built facts, not profile values, and its higher
+# Initiative lets it strike first; the bearer contributes no attacks of its own.  The printed Resilient
+# prerequisite of the Skill form is not asserted here; it is an acquisition gate, not a duel-time
+# condition, and this bearer prints the rule innately.  REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the printed profile; no engine output was consulted.
+# The fixture's Initiative is higher and the bearer contributes no attacks of its own (initial_state),
+# so the die of 3 at the injury table is Stunned, converted to Knocked Down by the bearer's rule.
+
+- audit_id: rule/mordheim/necrarchs-the-soul-stealers-lotd1/zombie--no-pain/skill.ignore-pain
+  id: a-stunned-result-becomes-knocked-down
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: necrarchs-the-soul-stealers-lotd1, profile_id: zombie}
+  initial_state: {second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 3}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -24,7 +24,7 @@ distinguishes implementation closure from certification.
   execution, the per-worktree environment setup (`setup_worktree.py`) and
   maintained scripts.
 - [Frozen engine inputs](reference/verification.md#engine-test-fixtures) — loaders,
-  regeneration and the boundary with source-backed rules/E2E checks.
+  regeneration and the boundary with source-backed rules/conformance checks.
 - [Web presentation](reference/web-presentation.md) — localization, provenance
   and output-boundary rules.
 
@@ -75,7 +75,7 @@ points and documents owned by a specific artefact live beside them:
   the checkout root.
 - `contracts/*/README.md` — `tests/knowledge/test_editorial_schemas.py`
   requires each contract README next to its schemas.
-- `tests/integration/e2e/README.md` — the E2E battery's own contract and
+- `tests/conformance/README.md` — the rules-conformance suite's own contract and
   procedure notes, owned with the corpus it describes.
 - [`docs/archive/`](archive/README.md) — retired working documents kept for
   reference (the former clause register CSVs and the completed review

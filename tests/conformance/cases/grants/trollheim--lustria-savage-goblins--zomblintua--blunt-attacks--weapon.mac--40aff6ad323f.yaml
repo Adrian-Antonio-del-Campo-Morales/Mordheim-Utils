@@ -1,0 +1,82 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/lustria-savage-goblins/zomblintua--blunt-attacks/weapon.mace
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios evidence the printed "counts as a blunt weapon" as the mace's
+#   concussion operator on the bearer's own attacks: an injury total of two leaves the victim
+#   Stunned when the Zomblintua strikes, while the identical natural strike from a fighter
+#   without the rule leaves the same total a Knocked Down result.  The bearer is the printed
+#   profile, which never uses weapons, so the plain fixture is the bearer's own attack and the
+#   pair differs only in the rule.  The injury total of two is the single face where the blunt
+#   operator and the ordinary ladder disagree (both stun at three and four), which is why the
+#   pair moves no other die.
+
+# authoring_progress: 2 authored scenario(s) in this file; authored clauses ['whole'];
+#   clauses still pending or unrepresentable in this file: [].  REVIEWED requires manual
+#   semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+# Derived from the printed rule ("All of Zomblintua's attacks count as if they were made with a
+# blunt weapon") and the recorded contract (counts_as blunt weapon, concussion true), whose
+# register note records that the origin binds the shared mace profile: the blunt term is the
+# mace's concussion operator, which re-reads an injury total of two as Stunned.  The printed
+# bearer never uses weapons or armour, so its attack is its own natural one and the fixture
+# gives it the fist identity; the paired control repeats the same natural strike on a hand-built
+# fighter that does not carry the rule.  Both tapes are fixed by their declared dice: the
+# trigger declares no armour die, because the blunt substitution replaces the unarmed attack's
+# own improved target save with the mace's plain one, and the control's unarmed strike declares
+# the target save the fist prints.  If the engine instead keeps the fist's target save on the
+# bearer, the trigger fails on an undeclared armour die, and that difference is the finding.
+
+- audit_id: rule/trollheim/lustria-savage-goblins/zomblintua--blunt-attacks/weapon.mace
+  id: a-blunt-injury-total-of-two-stuns-the-victim
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: zomblintua
+      main_weapon_id: weapon.fist
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 1}, second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [second], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charge.0, value: 1}
+    - {key: round.0.second.fear.charge.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-savage-goblins/zomblintua--blunt-attacks/weapon.mace
+  id: the-same-two-knocks-down-a-natural-strike-without-the-rule
+  fighters:
+    first:
+      main_weapon_id: weapon.fist
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {first: {attacks: 1}, second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [second], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 1}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

@@ -1,0 +1,67 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/poison.wolfsbane
+# authoring_status: AUTHORED
+# authoring_progress: the single admitted clause carries authored scenarios derived from the printed rule; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios show the 5 that sets the critical where the
+#   target allows it and the same die that cannot be critical when a natural 6 is
+#   required to wound.
+
+# --- Authored scenarios ---
+# mechanic/poison.wolfsbane - authored from the printed rule and the
+# admitted `whole` clause, never from engine output.
+# The poison lowers the critical threshold to 5, guarded by the shared rule that a
+# target of 6 admits no critical at all.
+- audit_id: mechanic/poison.wolfsbane
+  id: wolfsbane-scores-the-critical-on-five
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.wolfsbane
+      characteristics: &wb-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &wb-defender {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: &wb-context {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.critical, value: 1}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+    - {key: round.0.first.attack.0.injury.1, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: true, attacks.0.damage: 2, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# mechanic/poison.wolfsbane - authored from the printed rule and the
+# admitted `whole` clause, never from engine output.
+# The poison lowers the critical threshold to 5, guarded by the shared rule that a
+# target of 6 admits no critical at all.
+- audit_id: mechanic/poison.wolfsbane
+  id: the-guard-denies-the-critical-when-a-six-is-needed
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.wolfsbane
+      characteristics: {weapon_skill: 3, strength: 2, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {<<: *wb-defender, toughness: 4, wounds: 2}
+  duel_context: *wb-context
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

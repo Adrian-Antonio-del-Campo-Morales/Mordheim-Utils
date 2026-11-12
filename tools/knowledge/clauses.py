@@ -4,7 +4,7 @@
 The knowledge base is the denominator (``mordheim_knowledge.clauses``): every
 core rule, mechanic the runtime keeps, implemented item and ``YES`` rule effect
 is one identity, split into clauses only when its printed text has several
-observable parts.  Tests declare what they cover: the E2E corpus through
+observable parts.  Tests declare what they cover: the rules-conformance corpus through
 ``audit_id``/``covers`` and the deterministic suites through the
 ``@pytest.mark.covers(identity, *clause_ids)`` marker.  This tool joins the two
 sides without importing or running any engine.
@@ -46,22 +46,22 @@ from mordheim_knowledge.clauses import (  # noqa: E402
 from mordheim_knowledge.loader import knowledge_root, read_yaml  # noqa: E402
 
 SAFE_YAML_LOADER = getattr(yaml, "CSafeLoader", yaml.SafeLoader)
-E2E_CASES = ROOT / "tests/integration/e2e/cases"
+CONFORMANCE_CASES = ROOT / "tests/conformance/cases"
 TESTS = ROOT / "tests"
-#: Identity kinds the E2E corpus may declare (items are covered by deterministic tests only).
-E2E_KINDS = ("core", "mechanic", "rule")
+#: Identity kinds the conformance corpus may declare (items are covered by deterministic tests only).
+CONFORMANCE_KINDS = ("core", "mechanic", "rule")
 
 
 @dataclass(frozen=True, slots=True)
 class Reference:
     """One declared coverage reference: a scenario or a test function naming an identity or one of its clauses."""
-    source: str      # ``e2e`` or ``test``
+    source: str      # ``conformance`` or ``test``
     identity: str
     clause_id: str   # ``""`` when the reference names the identity as a whole
     where: str       # scenario test id or ``path::function``
 
 
-def e2e_references(cases: Path = E2E_CASES) -> list[Reference]:
+def conformance_references(cases: Path = CONFORMANCE_CASES) -> list[Reference]:
     references = []
     for path in sorted(cases.rglob("*.yaml")):
         scenarios = yaml.load(path.read_text(encoding="utf-8"), Loader=SAFE_YAML_LOADER) or []
@@ -71,9 +71,9 @@ def e2e_references(cases: Path = E2E_CASES) -> list[Reference]:
             where = f"{scenario['audit_id']}::{scenario.get('id')}"
             covers = scenario.get("covers") or ()
             if not covers:
-                references.append(Reference("e2e", str(scenario["audit_id"]), "", where))
+                references.append(Reference("conformance", str(scenario["audit_id"]), "", where))
             for clause_id in covers:
-                references.append(Reference("e2e", str(scenario["audit_id"]), str(clause_id), where))
+                references.append(Reference("conformance", str(scenario["audit_id"]), str(clause_id), where))
     return references
 
 
@@ -108,7 +108,7 @@ def test_references(tests: Path = TESTS) -> list[Reference]:
 
 
 def all_references() -> list[Reference]:
-    return [*e2e_references(), *test_references()]
+    return [*conformance_references(), *test_references()]
 
 
 # --------------------------------------------------------------------------- views
@@ -206,7 +206,7 @@ def command_coverage(args) -> int:
     statuses = Counter(identity_status(i, index) for i in admitted)
     print("Knowledge-base coverage (declared references, not executed evidence)")
     print(f"  obligations: {covered} / {total} covered"
-          f"  (E2E references: {by_source['e2e']}, test markers: {by_source['test']})")
+          f"  (conformance references: {by_source['conformance']}, test markers: {by_source['test']})")
     print(f"  admitted identities: {len(admitted)}; covered {statuses['covered']}, "
           f"partial {statuses['partial']}, uncovered {statuses['uncovered']}")
     for kind in kinds:
@@ -249,14 +249,14 @@ def write_clause_csv(path: Path, identities, index) -> None:
     with path.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.writer(handle)
         writer.writerow(["identity", "clause_id", "scope", "admitted", "effect_scope", "source_file",
-                         "e2e_references", "test_references"])
+                         "conformance_references", "test_references"])
         for record in identities:
             rows = [(c.clause_id, c.scope, index.get(c.key, set())) for c in record.clauses] or [
                 ("", "YES" if record.admitted else "NO", references_of(index, record.identity))]
             for clause_id, scope, refs in rows:
                 writer.writerow([
                     record.identity, clause_id, scope, record.admitted, record.effect_scope or "", record.source_file,
-                    sum(1 for r in refs if r.startswith("e2e:")), sum(1 for r in refs if r.startswith("test:")),
+                    sum(1 for r in refs if r.startswith("conformance:")), sum(1 for r in refs if r.startswith("test:")),
                 ])
 
 
@@ -362,7 +362,7 @@ def main(argv=None) -> int:
     inventory = commands.add_parser("inventory", help="identity counts by kind, with the clauses that split them")
     inventory.add_argument("--csv", metavar="PATH", help="also write the complete obligation table")
     inventory.set_defaults(handler=command_inventory)
-    coverage = commands.add_parser("coverage", help="declared E2E and test-marker coverage of the admitted identities")
+    coverage = commands.add_parser("coverage", help="declared conformance-scenario and test-marker coverage of the admitted identities")
     coverage.add_argument("--pending", action="store_true", help="list admitted obligations nobody covers")
     coverage.add_argument("--identity", metavar="ID", help="show one identity's clauses and references")
     coverage.add_argument("--kind", action="append", choices=IDENTITY_KINDS, help="restrict to identity kinds")

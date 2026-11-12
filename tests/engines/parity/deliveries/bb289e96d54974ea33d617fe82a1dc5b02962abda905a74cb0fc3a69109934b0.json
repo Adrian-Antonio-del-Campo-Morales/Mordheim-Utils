@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-parity-delivery/v2",
+  "status": "blocked",
+  "source": {
+    "revision": "84a634dbdfc45973ebb93a9dd90c852e21c7c12b",
+    "path": "tests/conformance/cases/mechanics/mechanic.fear-reroll.yaml",
+    "sha256": "3590e8121fc9f38356348eb5a256218205858f65b2647f753b2e83c02c8abb7e",
+    "test_id": "mechanic/mechanic.fear-reroll::the-failed-fear-test-is-taken-again"
+  },
+  "case_key": "delivery/mechanic/mechanic.fear-reroll/the-failed-fear-test-is-taken-again",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E prescribes explicit decisions (round.0.first.fear.charge.reroll); the contract admits only the engine-default decision policy, and no general policy for randomly branched trajectories exists for these keys."
+}

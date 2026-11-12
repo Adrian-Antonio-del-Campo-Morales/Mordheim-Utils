@@ -1,6 +1,6 @@
 """Deterministic line-coverage gate for the combat engines.
 
-The modular mechanics and E2E suites check rule behavior; this module measures
+The modular mechanics and conformance suites check rule behavior; this module measures
 which engine lines the selected tests exercise. It runs the deterministic
 engine suites under ``coverage`` and compares the result against a committed
 *budget*: a per-file list of statement lines that must remain exercised.

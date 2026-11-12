@@ -1,0 +1,77 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/lords-of-the-marsh-mim/shearls--craven/mechanic.craven
+# authoring_status: AUTHORED
+# authoring_progress: the admitted craven clause carries 2 authored scenarios for the printed
+# individual psychology consequence (a fear-causing Shearl that must take the round-0 Fear test
+# anyway, and the identical duel without the rule, where no Leadership die is asked for).
+# REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED; no
+# behavioral result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: craven--scope--craven (scope: YES)
+# AUTHORED[craven--scope--craven]: 2 scenarios cover the printed subjection to Fear: the bearer
+# that causes Fear still takes the round-0 Fear test before its own charge (two sixes against its
+# Leadership 6 cancel that charge and leave the duel disengaged), and the identical duel without the
+# rule asks for no Leadership die at all because a mutual Fear-causer is ordinarily exempt. The fixed
+# fixture declares the canonical mechanic.craven and mechanic.causes-fear operators that the band's
+# printed sentence repeats; the register records the band origin as adding no second runtime
+# contribution. The co-printed Mystic Mist exemption is the excluded terrain clause (scope NO) and
+# owes no scenario here. REVIEWED still requires manual semantic review.
+#
+# Clause: craven--scope--mystic-mist-exemption (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+# --- Authored scenarios ---
+# Both warriors cause Fear, which would ordinarily exempt them; the printed rule keeps this bearer
+# subject to Fear, so he still tests before his charge and the failed test cancels it.
+- audit_id: rule/mordheim/lords-of-the-marsh-mim/shearls--craven/mechanic.craven
+  id: a-fear-causing-shearl-still-tests-before-its-charge
+  covers: [craven--scope--craven]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.craven, mechanic.causes-fear]
+      trait_overrides: {species: human}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.causes-fear]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 6}
+    - {key: round.0.first.fear.charge.1, value: 6}
+  expect_rounds:
+    0: {attacks: [], state.first_charged: False, state.failed_charges: ['first'], state.engaged: False}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+# The identical duel without the rule: no Leadership die appears and the charge proceeds, which
+# isolates the printed exception to this clause.
+- audit_id: rule/mordheim/lords-of-the-marsh-mim/shearls--craven/mechanic.craven
+  id: without-the-rule-the-mutual-fear-shearl-tests-nothing
+  covers: [craven--scope--craven]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.causes-fear]
+      trait_overrides: {species: human}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.causes-fear]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.first_charged: True, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -1,0 +1,85 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/snotlings-web/wheelo--combat/mechanic.wheelo-impact
+# authoring_status: PARTIAL
+# authoring_progress: the admitted whole clause carries two authored scenarios derived from the
+# printed rule and the recorded contract; its remaining printed facet (the crew's Leadership test
+# when the Wheelo rolls into a Fear-causing opponent) is recorded as pending in the clause note.  The
+# bearer is the printed Wheelo identity that owns the rule.  REVIEWED still requires manual semantic
+# review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+#   EVIDENCED: 2 scenarios hold the printed charge direction: a Wheelo that is charged fights
+# its ordinary two crew attacks and is dealt no Impact Hit at all (the round requests no count die,
+# and the first outcome is the charger's declared miss rather than the automatic hit a collision
+# would be), and a Wheelo that rolls into an opponent counts as charging, so the collision block runs
+# before the strike sequence and its crew fights on afterwards in the same phase.
+# PARTIAL: [C] the pending facet is a missing request key, not a missing consequence: the corpus's
+# documented Fear key (cases/mechanics/mechanic.causes-fear.yaml) belongs to the side that is *charged by*
+# a Fear causer, and no authored case in this revision declares the key or direction of the Leadership test
+# the charging side takes when it charges a Fear-causing opponent, so the crew's test cannot be asserted
+# without inventing the key.  The printed Fear facet is not asserted.  When the Wheelo rolls into a Fear-causing
+# opponent the crew must pass a Leadership test or hit only on 6s; that consequence needs the Fear
+# request the charging side takes, and no authored case in this corpus revision declares the key and
+# direction of a Fear test taken by the side that charges a Fear causer (the corpus key documented by
+# mechanic.causes-fear belongs to the side that is charged by the causer).  The missing datum is that
+# request key, not the printed consequence, which the contract records in full.
+# REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded contract; no engine output was consulted.  The
+# Wheelo is built from its own band and profile, so the collision block is reached through the
+# identity that owns the printed rule, and both scenarios read the charge direction rather than the
+# impact arithmetic.
+- audit_id: rule/mordheim/snotlings-web/wheelo--combat/mechanic.wheelo-impact
+  id: an-uncharging-wheelo-is-charged-and-takes-no-impact-hits
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: snotlings-web
+      profile_id: wheelo
+      main_weapon_id: weapon.dagger
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, attacks.2.hit: false,
+        state.first.wounds: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed "if the Wheelo rolls into an opponent, it counts as a charge": the collision block
+# runs first and the crew's own two attacks follow it in the same phase.
+- audit_id: rule/mordheim/snotlings-web/wheelo--combat/mechanic.wheelo-impact
+  id: rolling-into-an-opponent-counts-as-a-charge-and-the-crew-fights
+  fighters:
+    first:
+      collection: mordheim
+      band_id: snotlings-web
+      profile_id: wheelo
+      main_weapon_id: weapon.dagger
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.impact-count, value: 1}
+    - {key: round.0.first.impact.0.wound, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, attacks.1.hit: false, attacks.2.hit: false,
+        state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -1,0 +1,111 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/skill.miniath
+# authoring_status: AUTHORED
+# authoring_progress: both admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: parry-with-any-weapon (scope: YES)
+# AUTHORED[parry-with-any-weapon]: 2 scenarios show the bearer's parry allowance with a weapon that cannot parry (a mace) and its absence without the skill.
+#
+# Clause: reroll-with-a-parrying-weapon (scope: YES)
+# AUTHORED[reroll-with-a-parrying-weapon]: 2 scenarios show a failed parry rolled again into a block with a parrying weapon and a parry that blocks on its first die alone.
+
+# --- Authored scenarios ---
+# mechanic/skill.miniath - authored from the printed "may parry with any weapon;
+# when using a weapon that normally allows parrying, re-rolls one failed parry"
+# clause and the recorded contracts, never from engine output.
+# clause: parry-with-any-weapon
+# A mace cannot parry, so the only difference in the two capacity scenarios is
+# the skill: the allowance is read from state.parries_remaining, and no parry
+# attempt is made (both attacks miss), so the allowance is untouched by the round.
+- audit_id: mechanic/skill.miniath
+  id: the-skill-allows-a-parry-with-a-weapon-that-cannot-parry
+  covers: [parry-with-any-weapon]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.miniath]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.parries_remaining: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: mechanic/skill.miniath
+  id: the-allowance-is-absent-without-the-skill
+  covers: [parry-with-any-weapon]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.parries_remaining: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# clause: reroll-with-a-parrying-weapon
+# The defender carries a starsword, whose own parry the printed clause requires;
+# a parry must beat the to-hit roll, so a 3 fails against a 4 and the re-rolled 5
+# blocks.  The starsword grants one parry, which the successful block consumes.
+- audit_id: mechanic/skill.miniath
+  id: a-failed-parry-is-rolled-again-with-a-parrying-weapon
+  covers: [reroll-with-a-parrying-weapon]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.starsword
+      skill_ids: [skill.miniath]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 3}
+    - {key: round.0.first.attack.0.parry.reroll, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: True, attacks.0.wounded: False, state.second.wounds: 2, state.second.parries_remaining: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: mechanic/skill.miniath
+  id: a-parry-that-blocks-outright-takes-no-second-die
+  covers: [reroll-with-a-parrying-weapon]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.starsword
+      skill_ids: [skill.miniath]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: True, attacks.0.wounded: False, state.second.wounds: 2, state.second.parries_remaining: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

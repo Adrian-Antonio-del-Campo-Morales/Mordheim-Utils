@@ -11,10 +11,10 @@ parity, samples).  Several values select their union, in the order given:
     the cumulative curated sets of realistic duels
 ``realistic/<nnn>``
     one curated realistic duel
-``e2e``
-    every E2E statistical delivery
-``<case_key>`` | ``<audit_id::id>``
-    one E2E delivery
+``deliveries``
+    every parity delivery (frozen configurations of conformance scenarios)
+``delivery/<audit_id>/<id>`` | ``<audit_id>::<id>``
+    one parity delivery
 ``battery``
     every case of the statistical battery
 ``battery/<id>``
@@ -27,7 +27,7 @@ so it resolves the same way and no tool learns a second loading path.
 ``load`` turns entries into runnable :class:`CampaignScenario` objects and
 lists, with its reason, every entry a tool cannot run.  Precompiled scenarios
 come from ``tests/engines/fixtures/compiled-cases.json`` (never compiled),
-E2E deliveries go through their admission rules, and battery cases are
+parity deliveries go through their admission rules, and battery cases are
 compiled from the knowledge base.  An input the engines' sample paths cannot
 pass on (initial-state overrides, auxiliary participants, scripted dice or
 decisions) rejects the case instead of running a different duel.
@@ -50,12 +50,13 @@ from tools.verification.compiled_cases import CaseLimits
 from tools.verification.compiled_cases import CaseOrigin
 from tools.verification.compiled_cases import CompiledCase
 from tools.verification.compiled_cases import encode_case
-from tools.verification.e2e_parity import expressiveness
+from tools.verification.parity_deliveries import KEY_PREFIX as DELIVERY_PREFIX
+from tools.verification.parity_deliveries import expressiveness
 
 CORPUS = Path(__file__).resolve().parents[2] / "tests" / "engines" / "fixtures" / "compiled-cases.json"
 
 #: The named sets ``--scenarios`` accepts besides individual names.
-SETS = (*LEVELS, *REALISTIC_LEVELS, "e2e", "battery")
+SETS = (*LEVELS, *REALISTIC_LEVELS, "deliveries", "battery")
 
 BATTERY_PREFIX = "battery/"
 
@@ -65,7 +66,7 @@ class Entry(NamedTuple):
 
     key: str
     name: str
-    kind: str  # "scenario", "e2e" or "battery"
+    kind: str  # "scenario", "delivery" or "battery"
 
 
 @dataclass(frozen=True, slots=True)
@@ -95,22 +96,31 @@ def _battery_cases() -> dict:
     return {str(case.id): case for case in battery.battery_cases()}
 
 
-def _e2e_index() -> Mapping:
-    from tools.verification import e2e_parity
+def _delivery_index() -> Mapping:
+    from tools.verification import parity_deliveries
 
-    index, defects = e2e_parity.discover()
+    index, defects = parity_deliveries.discover()
     if defects or not index:
-        raise ValueError("; ".join(defects) or "the E2E delivery catalogue is empty")
+        raise ValueError("; ".join(defects) or "the parity delivery catalogue is empty")
     return index
+
+
+def is_delivery_token(token: str) -> bool:
+    """``deliveries``, a ``delivery/...`` key or an ``<audit_id>::<id>`` id.
+
+    Only these consult the delivery catalogue, so a mistyped set or scenario
+    name is reported as unknown instead of being looked up as a delivery.
+    """
+    return token == "deliveries" or token.startswith(DELIVERY_PREFIX) or "::" in token
 
 
 def select(scenarios: Sequence[str] = ("small",)) -> tuple[Entry, ...]:
     """Resolve ``--scenarios`` values to ordered, de-duplicated entries.
 
-    Raises ``ValueError`` naming every value that selects nothing.  The E2E
-    catalogue is only read when a value needs it.
+    Raises ``ValueError`` naming every value that selects nothing.  The
+    delivery catalogue is only read when a value needs it.
     """
-    from tools.verification import e2e_parity
+    from tools.verification import parity_deliveries
 
     entries: dict[str, Entry] = {}
     battery = index = None
@@ -132,23 +142,25 @@ def select(scenarios: Sequence[str] = ("small",)) -> tuple[Entry, ...]:
                     unknown.append(token)
                     break
                 entries.setdefault(BATTERY_PREFIX + name, Entry(BATTERY_PREFIX + name, name, "battery"))
-        else:
-            index = index if index is not None else _e2e_index()
+        elif is_delivery_token(token):
+            index = index if index is not None else _delivery_index()
             deliveries = (
-                [index[key] for key in sorted(index)] if token == "e2e"
-                else [e2e_parity.resolve(index, token)]
+                [index[key] for key in sorted(index)] if token == "deliveries"
+                else [parity_deliveries.resolve(index, token)]
             )
             if deliveries == [None]:
                 unknown.append(token)
                 continue
             for delivery in deliveries:
                 entries.setdefault(
-                    delivery.case_key, Entry(delivery.case_key, delivery.test_id, "e2e"))
+                    delivery.case_key, Entry(delivery.case_key, delivery.test_id, "delivery"))
+        else:
+            unknown.append(token)
     if unknown:
         raise ValueError(
             "unknown scenario(s) " + ", ".join(repr(token) for token in unknown)
-            + f"; use {', '.join(SETS)}, a scenario name, battery/<id> or an E2E "
-            "delivery key"
+            + f"; use {', '.join(SETS)}, a scenario name, realistic/<nnn>, "
+            "battery/<id>, a delivery/<audit_id>/<id> key or an <audit_id>::<id> id"
         )
     return tuple(entries.values())
 
@@ -188,7 +200,7 @@ def load(
     case is never replaced by a compiled fighter.  ``cases`` supplies an
     already loaded frozen corpus.
     """
-    from tools.verification import e2e_parity
+    from tools.verification import parity_deliveries
 
     scenarios: list[CampaignScenario] = []
     rejected: list[tuple[str, str]] = []
@@ -204,24 +216,24 @@ def load(
             if case is None:
                 rejected.append((entry.key, f"the frozen corpus has no case {entry.key}"))
                 continue
-        elif entry.kind == "e2e":
+        elif entry.kind == "delivery":
             if index is None:
-                index = _e2e_index()
-                policy = e2e_parity.decision_policy_evidence()
+                index = _delivery_index()
+                policy = parity_deliveries.decision_policy_evidence()
                 if not policy["corresponds"]:
                     # Without corresponding default policies no sample means
                     # anything; this is a fault of the run, not of a case.
-                    raise ValueError(f"cannot admit E2E deliveries: {policy['detail']}")
+                    raise ValueError(f"cannot admit parity deliveries: {policy['detail']}")
             delivery = index[entry.key]
-            admission = e2e_parity.admit(
-                delivery.with_validation(e2e_parity.validate(delivery)),
+            admission = parity_deliveries.admit(
+                delivery.with_validation(parity_deliveries.validate(delivery)),
                 policy_corresponds=policy["corresponds"],
             )
             if admission.state != "admitted":
                 rejected.append((entry.key, f"{admission.state}: {admission.detail}"))
                 continue
             case = replace(admission.case, limits=replace(
-                admission.case.limits, maximum_rounds=e2e_parity.CAMPAIGN_MAXIMUM_ROUNDS))
+                admission.case.limits, maximum_rounds=parity_deliveries.CAMPAIGN_MAXIMUM_ROUNDS))
         else:
             if battery is None:
                 from mordheim_knowledge.loader import knowledge_root

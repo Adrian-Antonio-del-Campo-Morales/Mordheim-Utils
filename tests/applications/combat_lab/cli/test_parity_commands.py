@@ -4,7 +4,7 @@ import json
 
 import pytest
 
-E2E_KEY = "e2e/core/combat-critical-hits/a-critical-table-modifier-shifts-the-applied-band"
+DELIVERY_KEY = "delivery/core/combat-critical-hits/a-critical-table-modifier-shifts-the-applied-band"
 
 
 def _stub_runner(monkeypatch, status="PASS"):
@@ -58,12 +58,12 @@ def test_without_scenarios_only_the_exact_obligation_checks_run(monkeypatch, cap
 def test_every_kind_of_scenario_runs_together_in_selection_order(monkeypatch, capsys):
     calls = _stub_runner(monkeypatch)
     # A precompiled scenario, a battery case with scripted decisions and an
-    # E2E delivery: one runner, one report, the order asked.
-    assert _parity(["--scenarios", "long", "battery/q08-death-blow-optional", E2E_KEY,
+    # parity delivery: one runner, one report, the order asked.
+    assert _parity(["--scenarios", "long", "battery/q08-death-blow-optional", DELIVERY_KEY,
                     "--simulations", "7200", "--json"]) == 0
     (cases, options), = calls
     assert [case.label for case in cases] == [
-        "scenario/long", "battery/q08-death-blow-optional", E2E_KEY]
+        "scenario/long", "battery/q08-death-blow-optional", DELIVERY_KEY]
     assert options["backends"] == ("numpy",) and options["candidate"] == "observed"
     assert cases[1].decisions is not None and cases[2].context is not None
     payload = json.loads(capsys.readouterr().out)

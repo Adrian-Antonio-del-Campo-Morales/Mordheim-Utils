@@ -1,0 +1,81 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/lustria-amazons/band--amazon-special-skills-lizard-hunter/mechanic.strike-first-vs-skinks-always
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios evidence the printed priority: against a Skink of the Lizardmen
+#   band the bearer's attack die is requested before the opponent's even though the Skink's own
+#   Initiative is the higher one, and against a hand-built opponent outside the printed species
+#   the same bearer is the slower model, so the opponent's die comes first.  The tape order is
+#   the observable: the bearer's declared first-round strike is the printed "always strikes
+#   first ... regardless of the weapon used or which model charged".
+
+# authoring_progress: 2 authored scenario(s) in this file; authored clauses ['whole'];
+#   clauses still pending or unrepresentable in this file: [].  REVIEWED requires manual
+#   semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+# Derived from the printed rule ("The Hero always strikes first in close combat when fighting any
+# type of Skink, regardless of the weapon used or which model charged") and the recorded
+# contract (opponent species.skink, priority 20).  The bearer is a printed Amazon Hero with the
+# band skill selected; the qualifying opponent is a Skink of the Lizardmen band package, whose
+# own Initiative is higher than the bearer's (four against three), so nothing but the rule can
+# put the bearer's die first.  The control opponent is hand-built with the same higher Initiative
+# and no printed species, and there the opponent's die is the first one declared.  Both fighters
+# keep a single attack and the defender's wounds are supplied above one, so the tape holds the
+# ordering question alone.
+
+- audit_id: rule/trollheim/lustria-amazons/band--amazon-special-skills-lizard-hunter/mechanic.strike-first-vs-skinks-always
+  id: the-bearer-strikes-before-a-skink
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-amazons
+      profile_id: amazon-champions
+      special_rule_ids: [band--amazon-special-skills-lizard-hunter]
+      main_weapon_id: weapon.stone-axe
+    second:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: skink-braves
+      main_weapon_id: weapon.stone-axe
+  initial_state: {second: {wounds: 2}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    # The band's printed Hatred against Lizardmen offers the first-round reroll as well; the
+    # declared face keeps the miss so the ordering question is the only thing observed.
+    - {key: round.0.first.attack.0.hit.reroll, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-amazons/band--amazon-special-skills-lizard-hunter/mechanic.strike-first-vs-skinks-always
+  id: an-opponent-outside-the-printed-species-strikes-first
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-amazons
+      profile_id: amazon-champions
+      special_rule_ids: [band--amazon-special-skills-lizard-hunter]
+      main_weapon_id: weapon.stone-axe
+    second:
+      main_weapon_id: weapon.stone-axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

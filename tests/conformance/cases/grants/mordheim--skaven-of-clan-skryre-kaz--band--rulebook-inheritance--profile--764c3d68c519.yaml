@@ -1,0 +1,44 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/skaven-of-clan-skryre-kaz/band--rulebook-inheritance/profile.skill-access
+# authoring_status: PARTIAL
+# authoring_progress: no scenario is derived for the admitted whole clause, and the reason is a
+#   missing input rather than missing authoring work.  The printed sentence grants the rulebook
+#   Skaven weapons and special skills while denying the Art of Silent Death, which its own contract
+#   records as construction legality; the corpus route for such a rule is a construction refusal
+#   whose declared fragment is a verbatim part of the message the construction module emits for the
+#   denied skill.  This origin, however, names no recipient: the record has no effect_id, no consumer
+#   and empty conditions, and the printed recipient is the band's "Skaven Heroes" as a class.  A
+#   fixture would therefore have to name a hero profile id and a resolved rulebook skill list this
+#   origin does not declare; naming either from guesswork would misreport the origin.  REVIEWED
+#   still requires manual semantic review and execution_status stays UNEXECUTED; no behavioral
+#   result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# PARTIAL: [E] excluded by the register's own accepted scope disposition ("An equivalent printed
+#   CRITERION CORRECTION (final reconciliation): the wording "excluded by an accepted scope decision" above
+#   is replaced by the precise record.  This requirement is NOT out of the admitted scope: its own recorded
+#   scope_reason admits it - "Granting Clan Skryre the rulebook Skaven weapons and special skills while refusing Art of Silent Death is a printed access rule with a named denial, which is construction legality." - and nothing here is concluded from a scope-LATER / implemented-NO /
+#   null binding, which belongs to another row and carries its own recorded reason.  What blocks a tape is
+#   the concrete requirement named above in this marker; the clause stays recorded as withheld and is not
+#   dropped, aliased to another origin or counted as covered.  Where this file also quotes a register
+#   exclusion, that exclusion applies to the campaign, roster or advancement faces it names.
+# stanza for Clan Skryre: the access grants and the named exclusion are construction and campaign state, so
+# no duel operator is required and none exists"), whose inherited contract closes as "unmodelled while
+# equipment access and skill-list access are construction and campaign concerns".  [B] is not available
+# either: the printed recipient is the band's "Skaven Heroes" as a class with no effect_id, no consumer
+# and empty conditions, so a fixture would have to invent the recipient profile id and the resolved
+# rulebook list.  Closing review keeps PARTIAL with this citation; the narrower datum is recorded below.
+#   Pending requirement named exactly: this origin's recipients (the band's Skaven
+#   Heroes) must resolve to concrete profile ids, and the band's rulebook skill list must resolve as
+#   an access set, so that a construction refusal on the printed denial of skill.art-of-silent-death
+#   can be declared with its verbatim message fragment and an admission can be declared for a
+#   printed allowed rulebook skill.  Without those two resolutions the fixture would assert an
+#   invented recipient or an invented allowance.
+
+[]  # Empty scenario list: this file contributes no test or coverage.

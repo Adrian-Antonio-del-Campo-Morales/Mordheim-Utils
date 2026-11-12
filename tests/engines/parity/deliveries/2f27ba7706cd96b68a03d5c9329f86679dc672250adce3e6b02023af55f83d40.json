@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-parity-delivery/v2",
+  "status": "blocked",
+  "source": {
+    "revision": "84a634dbdfc45973ebb93a9dd90c852e21c7c12b",
+    "path": "tests/conformance/cases/mechanics/mechanic.death-blow.yaml",
+    "sha256": "b3272feb4d342086983d3d53ce4b8afdba3b368e401ad624504a7e796f1c6cec",
+    "test_id": "mechanic/mechanic.death-blow::the-single-attack-adds-one-on-the-injury-roll"
+  },
+  "case_key": "delivery/mechanic/mechanic.death-blow/the-single-attack-adds-one-on-the-injury-roll",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E prescribes explicit decisions (round.0.first.death-blow); the contract admits only the engine-default decision policy, and no general policy for randomly branched trajectories exists for these keys."
+}

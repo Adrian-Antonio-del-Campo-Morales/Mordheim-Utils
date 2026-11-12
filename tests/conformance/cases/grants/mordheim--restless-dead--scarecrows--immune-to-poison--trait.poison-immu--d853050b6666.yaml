@@ -1,0 +1,58 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/restless-dead/scarecrows--immune-to-poison/trait.poison-immune
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries one authored scenario derived
+# from the printed rule and the printed profile.
+# REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED;
+# no behavioral result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 1 scenario shows the printed poison immunity against the one duel-time
+# poison rider: a Nightshade-coated mace wounds the bearer, the wound is taken as any
+# wound would be, and the poisoned-wound Initiative penalty is suppressed, so the
+# bearer's recorded initiative_penalty stays 0.  The bearer is the restless-dead/scarecrows profile
+# that prints the rule, which declares no armour, ward or regeneration save and no
+# Ethereal-class hit gate, so the mace lands its wound without a declared defence die.
+# The bearer prints one wound and declares no attack, so the single unsaved wound takes it
+# to zero and the Injury table is reached; the printed band-1 result leaves it Knocked Down
+# and the construct's own re-roll clause offers a choice, which this tape declines so the
+# first result stands.  The clause is single-faceted, so no second scenario is required.
+# REVIEWED still requires manual semantic review and execution_status stays
+# UNEXECUTED.
+
+# --- Authored scenarios ---
+# Derived from the printed rule for this bearer and the admitted clause; no engine
+# output was consulted.  Nightshade is the one admitted poison whose consequence is a
+# state change on the warrior it wounds, so it is the rider the immunity must suppress:
+# the coated mace wounds the bearer as any mace would, and the poisoned-wound
+# Initiative penalty never lands.  The attacker's Weapon Skill 10, Strength 8 and
+# Initiative 10 are hand-built fixture facts, not profile values, and its higher
+# Initiative with no charge declared lets it strike first, so the bearer declares no
+# attack of its own and the tape holds only the attacker's hit, wound and Injury dice.
+- audit_id: rule/mordheim/restless-dead/scarecrows--immune-to-poison/trait.poison-immune
+  id: the-poisoned-wound-keeps-its-wound-and-loses-its-rider
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.nightshade
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: restless-dead, profile_id: scarecrows}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.injury.0.reroll-choice, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN,
+        state.second.initiative_penalty: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

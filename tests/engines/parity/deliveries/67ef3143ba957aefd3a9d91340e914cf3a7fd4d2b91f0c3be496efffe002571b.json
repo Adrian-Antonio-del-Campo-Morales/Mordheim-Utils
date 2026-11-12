@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-parity-delivery/v2",
+  "status": "blocked",
+  "source": {
+    "revision": "84a634dbdfc45973ebb93a9dd90c852e21c7c12b",
+    "path": "tests/conformance/cases/mechanics/weapon.weeping-blades.yaml",
+    "sha256": "baba59c9df0e2505302fdd681131f6dd146e4bbe53d1a0e94de6675165f157d5",
+    "test_id": "mechanic/weapon.weeping-blades::the-venom-wounds-automatically-on-a-natural-six"
+  },
+  "case_key": "delivery/mechanic/weapon.weeping-blades/the-venom-wounds-automatically-on-a-natural-six",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E prescribes explicit decisions (round.0.first.attack.0.lotus-critical); the contract admits only the engine-default decision policy, and no general policy for randomly branched trajectories exists for these keys."
+}

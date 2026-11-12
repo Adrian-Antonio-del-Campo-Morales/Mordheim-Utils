@@ -1,0 +1,109 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.wheelo-skill-modifications
+# authoring_status: PARTIAL
+# authoring_progress: the weapons-training clause carries 2 authored scenarios (the
+#   morning-star first impact at Strength 5 and the spear-fitted counter hit on a
+#   charger) while the Mighty Blow clause is a structured alternatives note: the
+#   printed +1 to wound and the executor's swap of Strength for it cannot be separated
+#   by a wound die, and the note now delivers both readings with their sources for the
+#   coordinator instead of choosing one (see the clause note). REVIEWED still requires
+#   manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: whole--scope--mighty-blow (scope: YES)
+# PARTIAL[whole--scope--mighty-blow]: no scenario separates the printed +1 to wound
+#   from the Strength the executor's mapping replaces with it. Both readings are kept
+#   with their sources; a scenario asserting either one silently adopts it.
+#   Alternative A (printed +1 to wound in combat, crew Strength unchanged): source is
+#   the printed clause of this file ("Mighty Blow: the crew gains +1 to wound in
+#   combat; has no effect on Impact Hits") together with the crew's printed Strength
+#   in the band profile; the crew then enters the wound table at its printed Strength
+#   with the wound die one better, and the attack's armour modifier keeps the printed
+#   Strength (one point harder for the defender than under B).
+#   Alternative B (the executor's swap, Strength -1 and to-wound +1 at once): source
+#   is the recorded mapping the register note and the compiler carry (compiler.py:581-584)
+#   subtracts one from strength_bonus and adds one to wound_modifier), so the wound
+#   target lands where A lands and the only duel-visible difference is the one-point
+#   softer armour save and the Strength-dependent gates (which follow from the
+#   substitution, not from the printed bonus).
+#   Where the readings separate: exactly on the armour-save modifier (A: crew Strength
+#   4 gives the defender +1; B: crew Strength 3 gives none) and those gates - both are
+#   authorable as a strict tape, which is why the note records rather than asserts:
+#   choosing one would silently adopt a new rule for this clause.
+#   DECISION (D12-A, 2026-10-14): the printed prose governs; the inherited mapping
+#   (compiler.py:581-584) is remitted to the engine team as dec-d12-mighty-blow-prose-binding.
+#   Until that corrected binding is executable this file keeps the two authored impact
+#   scenarios, and the armour-save/wound-target differential tape adopts the prose reading
+#   once they run under it.
+#
+# Clause: whole--scope--weapons-training-impact-modifications (scope: YES)
+# AUTHORED[whole--scope--weapons-training-impact-modifications]: 2 scenarios cover two of the printed fittings on a real Wheelo. The morning star scenario declares the fitting as the profile's supplied trait and reads the printed first-round Strength 5: the declared To Wound two wounds Toughness 3, which the unfitted Strength 4 cannot reach (its target is 3+). The spear scenario is the printed counter hit: with the Wheelo charged, the collision resolves one single hit even though the Wheelo did not charge, with no count die requested. The axe's -1 armour save, the club's Concussion and a second-round normal-Strength impact are not authored here (concussion needs the injury chart's 2-4 band and the axe/penetration facet is already a named gap in the weapon files); their keys are the same requested tape with the fitting tag changed.
+#
+# Clause: sprint-movement (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+# --- Authored scenarios ---
+# The morning star fitting declares the printed first-round improvement: the collision
+# carries Strength 5, so the declared To Wound two reaches Toughness 3 on the 2+ that only
+# the fitted impact has (the unfitted Strength 4 needs a 3).  The target has one Wound, so
+# the injury die leaves it Knocked Down and the crew's two attacks then hit it
+# automatically, taking only wound dice that both miss.
+- audit_id: mechanic/mechanic.wheelo-skill-modifications
+  id: the-morning-star-first-impact-resolves-at-strength-five
+  covers: [whole--scope--weapons-training-impact-modifications]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: snotlings-web
+      profile_id: wheelo
+      main_weapon_id: weapon.dagger
+      trait_overrides: {wheelo_fitting: morning-star}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.impact-count, value: 1}
+    - {key: round.0.first.impact.0.wound, value: 2}
+    - {key: round.0.first.impact.0.injury.0, value: 2}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.first.attack.1.wound, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: True, attacks.0.damage: 1,
+        state.second.condition: KNOCKED_DOWN, state.first.resources_spent: ['wheelo.first-impact']}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The spear fitting's printed exception: the Wheelo was charged, so it deals one single
+# Impact Hit to the charger before attacks are made.  The printed single hit is why the
+# round requests no count die at all, and the Strength 4 impact wounds Toughness 3 on the
+# declared 3+ even though the Wheelo never charged.
+- audit_id: mechanic/mechanic.wheelo-skill-modifications
+  id: the-spear-fitted-wheelo-still-hits-a-charger-once
+  covers: [whole--scope--weapons-training-impact-modifications]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: snotlings-web
+      profile_id: wheelo
+      main_weapon_id: weapon.dagger
+      trait_overrides: {wheelo_fitting: spear}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.impact.0.wound, value: 4}
+    - {key: round.0.first.impact.0.injury.0, value: 2}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.first.attack.1.wound, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: True, attacks.0.damage: 1,
+        state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

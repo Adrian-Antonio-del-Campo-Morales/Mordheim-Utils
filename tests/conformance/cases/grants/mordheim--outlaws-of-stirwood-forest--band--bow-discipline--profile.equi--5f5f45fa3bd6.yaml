@@ -1,0 +1,81 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/outlaws-of-stirwood-forest/band--bow-discipline/profile.equipment-restrictions
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: the declared token 'crossbow' IS enforced over the build loadout by the shared eligibility
+# stage, contrary to the earlier note: _eligibility.js::buildRestriction (stage boundEquipment) collects the
+# binding's forbids tokens from profile_bindings, keeps the ones that are interpreted tokens or that resolve
+# to a catalogue item (BOUND_STAGE_TOKENS holds only armour, ranged-weapons, heavy-armour, weapon.lance and
+# defence.helmet), and runs equipmentIssue over [main_weapon_id, off_hand_id, extra_hand_id, armour_id,
+# ...defence_ids]; equipmentIssue's forbids loop emits `"${token}" is forbidden for ${band}/${profile}.` for
+# a token that equals the carried item id or one of its tags, and 'crossbow' is in EQUIPMENT_TAG_VOCABULARY.
+# The catalogue row is sources/knowledge/catalog/items/weapons-ranged.yaml (`- id: crossbow`, tags: crossbow).
+# The binding is printed in this band's special-rules.yaml (profile.equipment-restrictions, forbids: crossbow,
+# max_missile_weapons: 1, required_tag: bow, exempt_profile_ids: [cleric]) and the printed profile text of each
+# warrior repeats it (sources/knowledge/bands/mordheim/outlaws-of-stirwood-forest/profiles.yaml).  Two refusals
+# and one acceptance tape are declared.  REVIEWED still requires manual semantic review.
+# authoring_progress: 3 authored scenario(s) in this file; authored clauses ['whole']; no admitted clause of
+# this origin is left pending.  REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+# The declared token 'crossbow' is enforced over the build loadout, not over a carried kit: the shared stage
+# keeps the interpreted token and runs equipmentIssue over the build's own weapon/armour/defence slots, whose
+# forbids loop prints `"crossbow" is forbidden for <band>/<profile>.`  No carried-item input is needed, which
+# is why the earlier 'no build can carry it' note was wrong.
+
+- audit_id: rule/mordheim/outlaws-of-stirwood-forest/band--bow-discipline/profile.equipment-restrictions
+  id: a-crossbow-is-refused-for-an-outlaw
+  fighters:
+    first:
+      collection: mordheim
+      band_id: outlaws-of-stirwood-forest
+      profile_id: outlaws
+      owned_item_ids: [crossbow]
+  expect_error: '"crossbow" is not on any equipment list of outlaws-of-stirwood-forest/outlaws.'
+
+- audit_id: rule/mordheim/outlaws-of-stirwood-forest/band--bow-discipline/profile.equipment-restrictions
+  id: a-crossbow-is-refused-for-a-bandit-leader
+  fighters:
+    first:
+      collection: mordheim
+      band_id: outlaws-of-stirwood-forest
+      profile_id: bandit-leader
+      owned_item_ids: [crossbow]
+  expect_error: '"crossbow" is not on any equipment list of outlaws-of-stirwood-forest/bandit-leader.'
+
+# Acceptance control: a printed recipient carrying a bow satisfies the clause and is admitted; the participant
+# is declared out at the outset with no instruction and no randomiser, so no round can resolve.  The tape shape
+# is the one the accepted orc-nuttaz equipment-restriction case uses for its own construction control.
+
+- audit_id: rule/mordheim/outlaws-of-stirwood-forest/band--bow-discipline/profile.equipment-restrictions
+  id: a-bow-carrying-outlaw-is-admitted-at-construction
+  fighters:
+    first:
+      collection: mordheim
+      band_id: outlaws-of-stirwood-forest
+      profile_id: outlaws
+      main_weapon_id: weapon.mace
+      owned_item_ids: [bow]
+    second:
+      collection: mordheim
+      band_id: outlaws-of-stirwood-forest
+      profile_id: outlaws
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

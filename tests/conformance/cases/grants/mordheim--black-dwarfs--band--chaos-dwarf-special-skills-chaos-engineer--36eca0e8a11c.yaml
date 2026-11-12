@@ -1,0 +1,72 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/black-dwarfs/band--chaos-dwarf-special-skills-chaos-engineer/mechanic.chaos-engineer
+# authoring_status: PARTIAL
+# authoring_progress: the positive half of the admitted armour-restriction clause carries one
+# authored scenario (the selectable band skill compiles for its printed recipient and the duel runs);
+# the negative half - the refusal of a build wearing the Chaos Armours - stays pending for the reason
+# named in the clause note below: the 1v1 catalogue publishes no in-scope Chaos Armour item.
+# REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: whole--scope--armour-restriction (scope: YES)
+# PARTIAL[whole--scope--armour-restriction]: [CLOSING-REVIEW [C]] the positive half is authored and the negative half is
+#   blocked by a catalogue gap.  The printed selection is observable: the band rule
+#   band--chaos-dwarf-special-skills-chaos-engineer is a selectable warband skill whose binding is
+#   compiler.chaos-engineer, so a Knight of the band that selects it compiles and the duel runs, and
+#   the accepted construction test asserts the compiled tag itself
+#   (tests/python/construction/test_selectable_bindings.py::
+#   test_chaos_engineer_is_an_explicit_positive_only_duel_contract, whose own note records that
+#   "Chaos Armour and rarity rolls are outside the 1v1 catalogue" and that there is "no legal
+#   in-scope forbidden item from which to manufacture a meaningful negative duel fixture").  The
+#   refusal half therefore stays pending: the shared stage answers the shared form
+#   `"<token>" is forbidden for <band>/<profile>` or the contract-specific "Chaos armour is forbidden
+#   for <who>" only for an equipment id that contains "chaos", and this revision records no
+#   executable armour id for that category (the item appears only as campaign and hireling data in
+#   sources/knowledge/catalog/campaign/trading-post.yaml and the hireling catalogues).  The missing
+#   datum is the executable Chaos Armour item id (or the category token the stage compares), not the
+#   printed rule, which is normative and recorded above.  The excluded campaign clauses are retained
+#   as context.
+#
+# Clause: search-and-rarity (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+#
+# Clause: whole--scope--rarity-and-gift (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded contract; no engine output was consulted.  The
+# admitted half is the selection of the band's own special skill, which the recorded binding turns
+# into the compiler contract.
+
+- audit_id: rule/mordheim/black-dwarfs/band--chaos-dwarf-special-skills-chaos-engineer/mechanic.chaos-engineer
+  id: the-selected-chaos-engineer-skill-compiles-and-the-duel-runs
+  covers:
+  - whole--scope--armour-restriction
+  fighters:
+    first:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: sorcerer
+      special_rule_ids:
+      - band--chaos-dwarf-special-skills-chaos-engineer
+    second:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: sorcerer
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

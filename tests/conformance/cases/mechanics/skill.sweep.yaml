@@ -1,0 +1,86 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/skill.sweep
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries 3 authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 3 scenarios cover the replaced pool of a double-handed bearer, the automatic hit when the opponent fails the Initiative test, no hit at all when the test is passed, and a one-handed bearer left with his ordinary attacks.
+
+# --- Authored scenarios ---
+# mechanic/skill.sweep - authored from the printed "with a double-handed weapon,
+# replaces all attacks with one automatic hit if the opponent fails an Initiative
+# test" clause and the recorded contract, never from engine output.
+# The opponent's own pool is suppressed with the supplied lasting state
+# `initial_state.second.attacks: 0` (a profile always prints at least one Attack,
+# so the zero belongs there and not in `characteristics`), and the round then
+# resolves the bearer's pool alone: no strike order between the two fighters is
+# assumed, and the absence of a second attack (index 1 and 2) is what evidences
+# the printed replacement of all attacks, because a three-attack pool could not
+# complete on the declared dice.
+- audit_id: mechanic/skill.sweep
+  id: a-failed-initiative-test-leaves-one-automatic-hit
+  fighters:
+    first:
+      main_weapon_id: weapon.double-handed-weapon
+      skill_ids: [skill.sweep]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 3}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.sweep, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 6}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: True, attacks.0.critical: False, attacks.0.damage: 1, state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+- audit_id: mechanic/skill.sweep
+  id: a-passed-initiative-test-grants-no-hit-at-all
+  fighters:
+    first:
+      main_weapon_id: weapon.double-handed-weapon
+      skill_ids: [skill.sweep]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 3}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 6, attacks: 1}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.sweep, value: 5}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.0.wounded: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: mechanic/skill.sweep
+  id: a-one-handed-bearer-keeps-his-ordinary-attacks
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.sweep]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.hit: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-parity-delivery/v2",
+  "status": "blocked",
+  "source": {
+    "revision": "84a634dbdfc45973ebb93a9dd90c852e21c7c12b",
+    "path": "tests/conformance/cases/grants/mordheim--restless-dead--scarecrows--immune-to-poison--trait.poison-immu--d853050b6666.yaml",
+    "sha256": "2b7e9c980a762ed0c445dfa71e2edb04430883b901ea71766ef2713848e03693",
+    "test_id": "rule/mordheim/restless-dead/scarecrows--immune-to-poison/trait.poison-immune::the-poisoned-wound-keeps-its-wound-and-loses-its-rider"
+  },
+  "case_key": "delivery/rule/mordheim/restless-dead/scarecrows--immune-to-poison/trait.poison-immune/the-poisoned-wound-keeps-its-wound-and-loses-its-rider",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E prescribes explicit decisions (round.0.first.attack.0.injury.0.reroll-choice); the contract admits only the engine-default decision policy, and no general policy for randomly branched trajectories exists for these keys."
+}

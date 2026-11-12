@@ -158,19 +158,28 @@ TESTS_SECTIONS = {
         "requires_native": True,
     },
     "kb": {
-        "summary": "knowledge base; construction and E2E are separate selections",
-        "dirs": ("tests/knowledge", "tests/construction", "tests/integration/e2e"),
+        "summary": "knowledge base; construction is a separate selection",
+        "dirs": ("tests/knowledge", "tests/construction"),
         "subsections": {
             "construction": (("pytest", ("tests/construction",)),),
-            "e2e": (("pytest", ("tests/integration/e2e",)),),
         },
-        # Plain `tests kb` is the knowledge suite only: the construction and
-        # E2E batteries are large and must be selected deliberately. The E2E
-        # corpus keeps its example serial; CI runs it that way too.
+        # Plain `tests kb` is the knowledge suite only: the construction
+        # suite is large and must be selected deliberately.
         "runs": (("pytest", ("tests/knowledge",)),),
         "example_options": "-n 8 --dist=load -q",
-        "subsection_options": {"construction": "-n 8 --dist=load -q",
-                               "e2e": "-q"},
+        "subsection_options": {"construction": "-n 8 --dist=load -q"},
+    },
+    "conformance": {
+        "summary": "rules conformance: scripted scenarios through KB, compiler and modular engine",
+        "dirs": ("tests/conformance",),
+        "subsections": {
+            "scenarios": (("pytest", ("tests/conformance/execution",)),),
+            "integrity": (("pytest", ("tests/conformance/integrity",)),),
+        },
+        # The whole suite is large and must be selected deliberately; its
+        # example stays serial, and CI runs it that way too.
+        "runs": (("pytest", ("tests/conformance",)),),
+        "example_options": "-q",
     },
     "parity": {
         "summary": "statistical engine comparisons and their tooling",
@@ -362,7 +371,8 @@ def _tests_help(name: str | None = None) -> str:
             "", "Find the right command:",
             "  tests modular mechanics -h     rule checks and eight-worker examples",
             "  tests modular runtime -h       execution/state/parallelism checks",
-            "  tests kb -h                    knowledge; construction and E2E are separate",
+            "  tests kb -h                    knowledge; construction is separate",
+            "  tests conformance -h           rules-conformance scenarios versus corpus integrity",
             "  tests warband-manager -h        choose python or web explicitly",
             "  tests parity -h                statistical tests versus runner self-checks",
             "", "Discover versus execute:",
@@ -398,7 +408,10 @@ def _tests_help(name: str | None = None) -> str:
         "vectorized": "Existing NumPy mechanics/runtime checks; statistical engine equivalence is tested separately.",
         "native": "Test the compiled engine and its runtime. If the extension does not import, the launcher\n"
                   "fails before pytest runs (exit 1); remaining skips are listed with their reasons.",
-        "kb": "The bare section runs knowledge contracts only. construction and e2e are explicit alternatives.",
+        "kb": "The bare section runs knowledge contracts only. construction is an explicit alternative.",
+        "conformance": "Scripted scenarios proving the KB -> compiler -> modular engine path follows the printed\n"
+                       "rules, clause by clause. scenarios executes the corpus; integrity checks the corpus,\n"
+                       "its clause coverage, the accepted-coverage baseline and the runner. Bare runs both.",
         "parity": "statistical runs engine comparisons; tooling tests the comparator/runner. Bare selection runs both.",
         "shared": "Common engine contracts and frozen-corpus codec/catalogue integrity; no complete rule battery.",
         "tooling": "Check test/development tools. Python is the bare default; web selects architecture Vitest checks.",
@@ -995,7 +1008,7 @@ def _check_command_help(name: str) -> int:
              "check parity --scenarios big --backend numpy native --simulations 100k --workers 4",
              "check parity --scenarios basic heavy-grind --rounds 2,4,8,15",
              "check parity --scenarios battery --simulations 7200 --require-complete",
-             "check parity --scenarios e2e --backend modular --simulations 1"),
+             "check parity --scenarios deliveries --backend modular --simulations 1"),
             ("A case an engine cannot run is listed NOT_RUN or INCOMPATIBLE with its reason.",
              "--backend modular alone checks executability: COMPLETED is not parity.",
              "To reuse expensive oracle samples, use `check samples` instead."),
@@ -1027,8 +1040,8 @@ def _check_command_help(name: str) -> int:
             "-h, --help  this guide; no other options",
             ("check ci",),
             ("May take substantial time and creates generated/build outputs.",
-             "Does not execute the E2E battery or a full engine-parity campaign.",
-             "Run those deliberately using tests kb e2e or check parity."),
+             "Does not execute the rules-conformance suite or a full engine-parity campaign.",
+             "Run those deliberately using tests conformance or check parity."),
         ),
     }
     detail, runs, options, examples, notes = guides[name]
@@ -1067,13 +1080,13 @@ def report_command(args: list[str]) -> int:
             return _delegated_help(
                 "python tools/mordheim-utils.py check report rules [options]",
                 "Export every classified rule, mechanic and item with its scope, binding and\n"
-                "clause coverage (declared E2E scenarios and `covers` markers).\n"
+                "clause coverage (declared conformance scenarios and `covers` markers).\n"
                 "This is a data report, not evidence that game rules execute correctly.",
                 "python -m tools.knowledge.clauses report",
                 "--output DIR    destination directory (default outputs/audit)",
                 examples=("check report rules --output outputs/audit",),
                 notes=("Writes rules-inventory.csv, clause-coverage.csv and summary.json; "
-                       "it does not run or certify E2E or parity coverage.",),
+                       "it does not run or certify conformance or parity coverage.",),
             )
         return _delegated_help(
             "python tools/mordheim-utils.py check report tests [options]",
@@ -1259,7 +1272,8 @@ Tests:
   tests modular               rule mechanics and reference-engine runtime
   tests vectorized            NumPy mechanics and runtime
   tests native                native-engine tests (extension required)
-  tests kb                    KB contracts; construction/E2E are subsections
+  tests kb                    KB contracts; construction is a subsection
+  tests conformance           rules-conformance scenarios and corpus integrity
   tests parity                statistical comparison tests and runner checks
   tests shared                common engine contracts and frozen inputs
   tests tooling               launcher, architecture, coverage and report tools
@@ -1281,9 +1295,9 @@ Checks and reports:
 Shared options (performance benchmark/calibrate, check parity/samples):
   --scenarios NAME...   what runs, the same values everywhere:
                           small (8) | normal (30) | big (all 43)  scenario levels
-                          e2e                   every E2E delivery
+                          deliveries            every parity delivery
                           battery               every battery case
-                          basic, long, ...      one scenario; e2e/... or audit_id::id
+                          basic, long, ...      one scenario; delivery/... or audit_id::id
                                                 one delivery; battery/<id> one case
                         several values run their union; a case a tool cannot
                         run is listed with the reason

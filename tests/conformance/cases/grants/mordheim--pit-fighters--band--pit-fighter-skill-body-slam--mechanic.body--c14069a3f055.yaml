@@ -1,0 +1,76 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/pit-fighters/band--pit-fighter-skill-body-slam/mechanic.body-slam
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries two authored scenarios derived from the printed
+# rule and the recorded contract: the declared charge replacement hits on the raised target and wounds
+# on the raised Strength, and declining it keeps the ordinary pool.  The printed 5+ critical threshold
+# and the excluded weapon/skill modifiers stay unasserted for the reasons the mechanic origin's own case
+# records (the critical's consequence belongs to the core critical table's clause, and showing an
+# ignored modifier needs a modifier-bearing weapon whose own clause would be imported).  REVIEWED still
+# requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios evidence the printed charge replacement on the duel route:
+# the accepted declaration resolves one attack whose raised To Hit target turns a declared three into a
+# hit an equal Weapon Skill would otherwise miss, and whose raised Strength wounds Toughness 3 on the
+# declared three where the plain profile needs a four; declining the option leaves the ordinary pool,
+# where the same three misses (the tape then declares no wound die at all).  The recorded register reads
+# this printed text as repeating the canonical body-slam clause without adding a term ("the band origin
+# creates no second runtime contribution"), so the scenarios read the canonical operator through the
+# fighter's grant list, exactly as the mechanic origin's own case does.  REVIEWED still requires manual
+# semantic review.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded contract; no engine output was consulted.  The
+# declaration is the printed option and the raised targets are the observable.
+- audit_id: rule/mordheim/pit-fighters/band--pit-fighter-skill-body-slam/mechanic.body-slam
+  id: the-declared-slam-hits-on-the-raised-target-and-wounds-on-the-raised-strength
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.body-slam]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.body-slam, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.hit_target: 3, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Declining the printed option keeps the ordinary charge attack, whose equal-Weapon-Skill target of four
+# turns the same declared three into a miss, so no wound die is requested.
+- audit_id: rule/mordheim/pit-fighters/band--pit-fighter-skill-body-slam/mechanic.body-slam
+  id: declining-keeps-the-ordinary-charge-attack
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.body-slam]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.body-slam, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.0.hit_target: 4, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

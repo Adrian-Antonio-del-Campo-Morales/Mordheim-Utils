@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-parity-delivery/v2",
+  "status": "not-applicable",
+  "source": {
+    "revision": "84a634dbdfc45973ebb93a9dd90c852e21c7c12b",
+    "path": "tests/conformance/cases/grants/mordheim--dwarf-slayers-kaz--band--slayer-special-skills--profile.skill--c53cbfed9a03.yaml",
+    "sha256": "20a1597f12547dfd88a9ee3dbb964aec5d019857534c2a869da922f2fdc0041f",
+    "test_id": "rule/mordheim/dwarf-slayers-kaz/band--slayer-special-skills/profile.skill-access::a-speed-skill-outside-the-slayer-column-is-refused"
+  },
+  "case_key": "delivery/rule/mordheim/dwarf-slayers-kaz/band--slayer-special-skills/profile.skill-access/a-speed-skill-outside-the-slayer-column-is-refused",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E declares an expected construction refusal (\"skills are not available to dwarf-slayers-kaz/giant-slayer: ['skill.sprint']\"); the build is refused with \"skills are not available to dwarf-slayers-kaz/giant-slayer: ['skill.sprint']\", so no statistical scenario can be frozen."
+}

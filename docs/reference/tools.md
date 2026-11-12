@@ -82,19 +82,21 @@ a tool does not know is an error (`unrecognized arguments`).
 | `basic`, `long`, … or `scenario/<name>` | One precompiled scenario. `long` is the 75-round stalemate scenario, never a level. |
 | `realistic-50`, `realistic-100` | The cumulative curated sets of realistic duels; `realistic-50` is contained in `realistic-100`. Use them to measure performance. |
 | `realistic/<nnn>` | One curated realistic duel (`realistic/000` … `realistic/099`). |
-| `e2e` | Every E2E statistical delivery. |
-| `<case_key>` or `<audit_id::id>` | One E2E delivery. |
+| `deliveries` | Every parity delivery (frozen configuration of a conformance scenario). |
+| `delivery/<audit_id>/<id>` or `<audit_id>::<id>` | One parity delivery. |
 | `battery` | Every case of the statistical battery. |
 | `battery/<id>` | One battery case. |
 
 Nothing narrows anything else: `--scenarios small heavy-grind` runs nine
-scenarios. Precompiled scenarios and realistic duels load frozen fighters (no compilation), E2E
+scenarios. Precompiled scenarios and realistic duels load frozen fighters (no compilation), parity
 deliveries pass their admission rules and run to 50 rounds, and battery cases
 are compiled from the knowledge base. A selected case a tool cannot run is
 listed with its reason, never dropped silently: a blocked or not-applicable
 delivery, inputs no runner can express (initial-state overrides, auxiliary
 participants, scripted dice) and — everywhere except `check parity`, whose
 per-duel comparison passes them on — battery cases with scripted decisions.
+An unknown token is reported as unknown immediately: only `deliveries`,
+`delivery/...` keys and `<audit_id>::<id>` ids consult the delivery catalogue.
 
 Under `tests`, `-n` is pytest-xdist's worker count: that option belongs to
 pytest, not to these tools.
@@ -152,7 +154,7 @@ The testing strategy has three complementary layers:
 - **Modular mechanics:** check game rules directly in the reference engine,
   where failures are easiest to isolate and debug.
 - **Source-backed integration:** knowledge contracts, construction tests and
-  E2E scenarios check the KB -> compiler -> modular combat path.
+  the rules-conformance suite check the KB -> compiler -> modular combat path.
 - **Statistical parity:** compare NumPy/native result distributions with the
   modular reference. The deterministic cross-engine replay suite was removed.
 
@@ -167,7 +169,7 @@ layer does not order or imply the others.
 
 The hierarchy mirrors the launcher: **app launchers** (`combat-lab`,
 `warband-manager`), **tests** (`env`, `combat-lab`, `warband-manager`,
-`modular`, `vectorized`, `native`, `kb`) and **performance** (`benchmark`,
+`modular`, `vectorized`, `native`, `kb`, `conformance`) and **performance** (`benchmark`,
 `calibrate`). Three cross-cutting test selections keep the integrity suites
 reachable without forcing them into those categories: `parity` (statistical
 comparisons and their tooling), `shared` (common engine contracts and frozen
@@ -191,7 +193,9 @@ for its files, its subsections and copyable examples, or
 | `native` | `runtime` | `pytest tests/engines/native/runtime` (the bare selection also runs `tests/engines/native/test_native_engine.py`). |
 | `kb` | none | `pytest tests/knowledge`. |
 | `kb` | `construction` | `pytest tests/construction`. |
-| `kb` | `e2e` | `pytest tests/integration/e2e`. |
+| `conformance` | none | `pytest tests/conformance` (the rules-conformance suite). |
+| `conformance` | `scenarios` | `pytest tests/conformance/execution`. |
+| `conformance` | `integrity` | `pytest tests/conformance/integrity`. |
 | `parity` | `statistical` | `pytest tests/engines/parity/statistical`. |
 | `parity` | `tooling` | `pytest tests/tooling/parity`. |
 | `shared` | none | `pytest tests/engines/shared`. |
@@ -216,8 +220,9 @@ Selection rules:
   and paths; without it the launcher exits 1 instead of reporting a run in
   which every test was skipped.
 - `tests kb` runs the **knowledge** suite only; there is no `knowledge`
-  subsection alias. Construction and E2E are large batteries and stay separate
-  selections instead of being bundled silently.
+  subsection alias. Construction is a large battery and stays a separate
+  subsection instead of being bundled silently; the rules-conformance suite is
+  its own `conformance` selection.
 - `tests warband-manager` has no shared default: pytest and Vitest do not accept
   the same options, so choose `python` or `web`.
 - Several subsections can be named together: `tests modular mechanics runtime`.
@@ -233,9 +238,9 @@ Selection rules:
 python tools/mordheim-utils.py tests --help
 python tools/mordheim-utils.py tests modular --help
 python tools/mordheim-utils.py tests modular mechanics --help
-python tools/mordheim-utils.py tests kb e2e --help
+python tools/mordheim-utils.py tests conformance --help
 python tools/mordheim-utils.py tests kb --list
-python tools/mordheim-utils.py tests kb e2e -q
+python tools/mordheim-utils.py tests conformance -q
 python tools/mordheim-utils.py tests modular mechanics -n 8 --dist=load -q
 python tools/mordheim-utils.py tests modular runtime -q
 ```
@@ -350,7 +355,7 @@ Collection and typechecks are not accelerated by xdist.
 Engine tests load checked-in `compiled-cases.json` and `compiled-builds.json`
 under `tests/engines/fixtures/`. Their loaders and conftest fixtures are required;
 ordinary execution does not regenerate inputs or fall back to compilation when
-a frozen input is missing. Knowledge, construction and E2E tests retain their
+a frozen input is missing. Knowledge, construction and conformance tests retain their
 source-backed preparation.
 
 - `precompiled_catalog.py` defines 43 unified scenarios with stable
@@ -494,14 +499,14 @@ Each entry explains what it executes in `<entry> --help`.
 
 | Entry | Executes |
 |---|---|
-| `check verify` | `python -m mordheim_combat_lab verify`: KB structure, editorial schemas, execution contract, binding contracts and default profile compilation. It is a structural gate, not the knowledge or E2E test suites (see [Verification](verification.md#deterministic-modular-evidence)). |
+| `check verify` | `python -m mordheim_combat_lab verify`: KB structure, editorial schemas, execution contract, binding contracts and default profile compilation. It is a structural gate, not the knowledge or rules-conformance test suites (see [Verification](verification.md#deterministic-modular-evidence)). |
 | `check report rules` | `python -m tools.knowledge.clauses report`: every classified rule effect, mechanic and item with its scope, binding and declared clause coverage (`rules-inventory.csv`, `clause-coverage.csv`, `summary.json` in `outputs/audit/`). |
 | `check report tests` | `python -m mordheim_combat_lab test-report`: runs the test suite and writes an Excel-friendly technical CSV (`--output DIR`). |
 | `check parity` | `python -m mordheim_combat_lab parity`: compare the optimized engines with the modular oracle now (or, without `--scenarios`, the exact obligation checks). Its pytest checks are `tests parity statistical`. |
 | `check samples` | `python -m tools.verification.parity_samples`: sample one engine into a store; compare stored samples later. |
 | `check coverage` | `python -m mordheim_combat_lab coverage-gate`: measure deterministic engine coverage and check the recorded budget; `--update-budget` replaces it deliberately after review. |
 | `check presentation` | `npm run check:presentation` in `apps/warband-manager-web`: detector tests, strict deep text audit and dynamic visible-completeness audit. |
-| `check ci` | Local integration gate, in order: KB generation and freshness, the Python net (campaign-file, architecture and `tests/knowledge`, including its `web/` audits), shared-eligibility transport, the eligibility bundle, TypeScript typecheck/tests, and web typecheck/lint/tests/build plus bundle guards. It does not run the modular E2E battery or its non-regression control, which CI runs as separate steps; add `tests kb e2e` for integration changes. |
+| `check ci` | Local integration gate, in order: KB generation and freshness, the Python net (campaign-file, architecture and `tests/knowledge`, including its `web/` audits), shared-eligibility transport, the eligibility bundle, TypeScript typecheck/tests, and web typecheck/lint/tests/build plus bundle guards. It does not run the rules-conformance suite or its coverage non-regression control, which CI runs as separate steps; add `tests conformance` for integration changes. |
 
 ```powershell
 python tools/mordheim-utils.py check verify --json
@@ -531,7 +536,7 @@ obligation is verified.
 
 | Option | Meaning |
 |---|---|
-| `--scenarios` | What runs (shared values); scenarios, E2E deliveries and battery cases can be mixed. |
+| `--scenarios` | What runs (shared values); scenarios, parity deliveries and battery cases can be mixed. |
 | `--backend` | `numpy` (default), `native` or both. `modular` alone only executes the oracle: rows report `COMPLETED` or the error, with no comparison and no approval. |
 | `--simulations` | Duels per scenario and engine (default 10,000). Below 7,200 a passing case is `UNDERPOWERED`: compared, never approved. |
 | `--rounds N[,N...]` | Each value replaces every case's round limit; a list runs each case once per value, which shows defects that only shift *when* duels resolve. |
@@ -550,7 +555,7 @@ python tools/mordheim-utils.py check parity --scenarios small --workers 4
 python tools/mordheim-utils.py check parity --scenarios big --backend numpy native --simulations 100k --workers 4 --output outputs/parity/big.md
 
 # Executability only: one duel per scenario on the oracle
-python tools/mordheim-utils.py check parity --scenarios big e2e battery --backend modular --simulations 1 --workers 4
+python tools/mordheim-utils.py check parity --scenarios big deliveries battery --backend modular --simulations 1 --workers 4
 
 # Round horizons, and the battery at an acceptance width
 python tools/mordheim-utils.py check parity --scenarios basic heavy-grind --rounds 2,4,8,15
@@ -599,21 +604,21 @@ carries no oracle, so it detects whether a later revision moved the engine's
 results; it never establishes that those results are correct. Its own README
 gives the self-check command.
 
-The stored E2E campaigns at 100,000 duels per delivery are also versioned:
-`tests/engines/parity/reference_samples/modular-e2e-100k` (oracle) and
-`tests/engines/parity/reference_samples/numpy-e2e-100k` (candidate). Each store
+The stored delivery parity campaigns at 100,000 duels per delivery are also versioned:
+`tests/engines/parity/reference_samples/modular-deliveries-100k` (oracle) and
+`tests/engines/parity/reference_samples/numpy-deliveries-100k` (candidate). Each store
 contains 2,678 records with seed 2026 and a 50-round limit. Modular retains its
 original oracle samples. The NumPy and Native candidate stores were refreshed
-on 2026-11-04 from the E2E stores under
+on 2026-11-04 from the stores under
 `D:/DEVEL/CC CLI/outputs BCKPU/parity-refresh-20261104-c10000/e2e/`,
 preserving the original compressed files byte for byte, including counts,
 chunks, timestamps, environment and engine digests. Each candidate record has
 100,000 duels in ten 10,000-duel chunks, produced from clean commit `38f4c12f`.
 
-`tests/engines/parity/reference_samples/native-e2e-100k` holds the corresponding
+`tests/engines/parity/reference_samples/native-deliveries-100k` holds the corresponding
 Native candidate store. Both candidate scenario sets match the 2,678-record
 Modular oracle. The refreshed comparisons report 2,677 approved and 1 divergent
-for NumPy, and 2,567 approved and 111 divergent for Native. Another 2,485 E2E
+for NumPy, and 2,567 approved and 111 divergent for Native. Another 2,485 parity
 deliveries are rejected before sampling and remain explicit in the reports.
 These are stored candidate results, not parity acceptance.
 The import was verified with the sample-store reader for all 5,356 candidate
@@ -622,8 +627,8 @@ contiguous chunks, outcome totals and current engine digests. All stored
 Modular references remained byte-identical; no simulations were rerun.
 
 ```bash
-python tools/mordheim-utils.py check samples compare --backend numpy --scenarios e2e --simulations 100k --store tests/engines/parity/reference_samples/numpy-e2e-100k --reference-store tests/engines/parity/reference_samples/modular-e2e-100k --output outputs/parity-e2e-stored/compare
-python tools/mordheim-utils.py check samples sample --backend modular --scenarios e2e --simulations 100k --batch-size 500 --workers 2 --store outputs/parity-modular-e2e
+python tools/mordheim-utils.py check samples compare --backend numpy --scenarios deliveries --simulations 100k --store tests/engines/parity/reference_samples/numpy-deliveries-100k --reference-store tests/engines/parity/reference_samples/modular-deliveries-100k --output outputs/parity-deliveries-stored/compare
+python tools/mordheim-utils.py check samples sample --backend modular --scenarios deliveries --simulations 100k --batch-size 500 --workers 2 --store outputs/parity-modular-deliveries
 ```
 
 Sampling resumes finished chunks. Comparison executes neither engine. It
@@ -661,7 +666,7 @@ submissions and saves in-flight chunks; a second aborts immediately; rerun the
 same command to resume. Sampling prints one start and one completion line per
 case (the completion line carries that case's elapsed wall time; concurrent
 cases overlap, so do not sum them) and returns 1 while any selected case is
-unfinished. E2E sample files use `e2e__<sha256(case_key)>.json.gz` names to
+unfinished. Delivery sample files use `delivery__<sha256(case_key)>.json.gz` names to
 avoid long Windows paths; stores keep winner counts only.
 
 On Windows, access/sharing locks during the atomic sample-file replacement
@@ -670,17 +675,18 @@ lock still fails, leaving the previous sample intact and the new temporary file
 available; unrelated I/O errors fail immediately. Retrying the replacement does
 not rerun duels or change the sample counts.
 
-### E2E statistical campaigns
+### Delivery parity campaigns
 
-E2E campaigns reuse frozen combat configurations with random dice, rather than
+Delivery parity campaigns reuse frozen combat configurations with random dice, rather than
 replaying the original test's scripted dice and exact assertions. Combats run
 until termination or 50 rounds. Preparing a delivery does not establish engine
-compatibility or statistical parity. The [delivery format and admission rules](verification.md#e2e-statistical-deliveries)
+compatibility or statistical parity. The [delivery format and admission rules](verification.md#parity-deliveries)
 define which inputs can execute; blocked, not-applicable, stale, invalid and
 incompatible deliveries keep their reasons in every report. A failed or
 disagreeing decision-policy probe or a corrupt delivery catalogue stops the run
 (exit 2) before anything is sampled. A small successful sample does not certify
-full engine parity.
+full engine parity. The [parity charter](../../tests/engines/parity/README.md)
+explains deliveries, stored samples and reference stores in one place.
 
 These catalogues require a source checkout with `tests/engines/fixtures` and
 its frozen JSON files; the battery also requires the KB/compiler.

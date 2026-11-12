@@ -84,7 +84,7 @@ The source-checkout launcher is task-oriented: app launchers (`app combat-lab`, 
 | Generate the rule inventory and clause coverage | `python tools/mordheim-utils.py check report rules` |
 | Generate test reports | `python tools/mordheim-utils.py check report tests` |
 | Choose test selections and focused checks | `python tools/mordheim-utils.py tests --help` |
-| Run the original modular E2E corpus | `python tools/mordheim-utils.py tests kb e2e -q` |
+| Run the rules-conformance suite | `python tools/mordheim-utils.py tests conformance -q` |
 | Check engine parity | `python tools/mordheim-utils.py check parity --require-complete` |
 | Measure local engine optima | `python tools/mordheim-utils.py performance calibrate` |
 | Run the web presentation checks | `python tools/mordheim-utils.py check presentation` |
@@ -116,11 +116,11 @@ Unlike browser assets, the generated `_eligibility.js` is versioned and must be 
 
 ### Checks and web build
 
-Choose a named selection from the test tree: `tests modular mechanics`, `tests kb e2e`, `tests kb construction` or `tests parity tooling`. Use `tests --list` to list every test file without importing it (Python and JavaScript/TypeScript); `<selection> --list` lists only the languages that selection's runner executes. `tests --help` shows the hierarchy. Vitest runs through `tests warband-manager web` or `tests tooling web`. No arguments displays help, and an explicit file, directory or pytest node ID inside the selection replaces its own paths (targets outside it are refused). Options are forwarded to the selected runner, except that serial runtime groups drop xdist options and every pytest call reports skip reasons.
+Choose a named selection from the test tree: `tests modular mechanics`, `tests conformance`, `tests kb construction` or `tests parity tooling`. Use `tests --list` to list every test file without importing it (Python and JavaScript/TypeScript); `<selection> --list` lists only the languages that selection's runner executes. `tests --help` shows the hierarchy. Vitest runs through `tests warband-manager web` or `tests tooling web`. No arguments displays help, and an explicit file, directory or pytest node ID inside the selection replaces its own paths (targets outside it are refused). Options are forwarded to the selected runner, except that serial runtime groups drop xdist options and every pytest call reports skip reasons.
 
 Cross-cutting suites keep their own selections: `tests parity` (statistical comparisons and the tools that check them), `tests shared` (engine contracts and frozen inputs) and `tests tooling` (architecture, launcher, coverage and verification-tool checks).
 
-Engine suites load versioned inputs from `tests/engines/fixtures/` through the existing loaders and conftest fixtures. Normal test runs do not regenerate them. The original E2E corpus remains in `tests/integration/e2e/`; rules, construction and E2E tests retain their compiler/KB workflow, as do documented compilation-rejection exceptions. Fixture loading is separate from whether an optimized engine implements every rule. See [engine test fixtures](docs/reference/verification.md#engine-test-fixtures).
+Engine suites load versioned inputs from `tests/engines/fixtures/` through the existing loaders and conftest fixtures. Normal test runs do not regenerate them. The conformance corpus lives in `tests/conformance/`; rules, construction and conformance tests retain their compiler/KB workflow, as do documented compilation-rejection exceptions. Fixture loading is separate from whether an optimized engine implements every rule. See [engine test fixtures](docs/reference/verification.md#engine-test-fixtures).
 
 Modular tests are separated into `tests/engines/modular/mechanics` for game-rule
 application and `tests/engines/modular/runtime` for simulator structure and
@@ -154,7 +154,7 @@ See [Tools and launcher](docs/reference/tools.md#selections) for test selection 
 | `sources/knowledge/` | Canonical YAML knowledge base |
 | `contracts/` | Campaign-file and knowledge editorial schemas |
 | `tests/engines/` | Modular, NumPy, native, shared and parity tests; versioned precompiled fixtures |
-| `tests/knowledge/`, `tests/construction/`, `tests/integration/` | KB, construction and integration tests, including the original E2E corpus |
+| `tests/knowledge/`, `tests/construction/`, `tests/conformance/` | KB, construction and rules-conformance tests |
 | `tests/applications/` | Combat Lab and Warband Manager tests across languages |
 | `tests/tooling/` | Launcher, architecture, coverage, verification and parity tooling checks |
 | `tools/` | Launcher, knowledge generation, verification, web checks and Windows packaging |

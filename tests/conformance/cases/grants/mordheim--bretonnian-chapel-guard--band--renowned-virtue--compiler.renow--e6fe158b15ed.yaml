@@ -1,0 +1,85 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/bretonnian-chapel-guard/band--renowned-virtue/compiler.renowned-virtue
+# authoring_status: AUTHORED
+# authoring_progress: the admitted selection-restriction clause carries three authored scenarios:
+#   the missing paired Virtue and the two-times Virtue are refused with the construction stage's own
+#   verbatim diagnostic, and the exactly-one build is accepted.  REVIEWED still requires manual
+#   semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: the selection restriction is evidenced as a construction refusal in both
+#   missing halves: a Knight carrying band--renowned-virtue with no Bretonnian Virtue is refused, the
+#   same Knight carrying the Virtue twice is refused, and the Knight carrying exactly one is accepted
+#   at construction.  The refusal fragment is the verbatim diagnostic the shared eligibility stage
+#   emits for this contract (packages/python/roster-construction/mordheim_construction/_eligibility.js:
+#   "Renowned Virtue requires exactly one Bretonnian Virtue", reached through the compiler contract
+#   COMPILER_CONTRACTS["compiler.renowned-virtue"] in contracts.py), and the same diagnostic is the
+#   accepted expectation recorded in tests/specs/semantic/grants/remaining-compiler-grants-a.yaml.
+#   The recipients named by the record are the band's two Knight profiles, so questing-knight stands
+#   for the printed recipient; band--virtue-of-valour is one of the original Bretonnian Virtues the
+#   printed sentence names as the pair.
+
+# authoring_progress: 3 authored scenario(s) in this file; authored clauses ['whole']; clauses still
+# pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and
+# execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded contract; no engine output was consulted.  The
+# admitted half is the obligation to pair Renowned Virtue with exactly one Virtue of the original
+# Bretonnian list, which the shared eligibility stage decides at construction.
+
+- audit_id: rule/mordheim/bretonnian-chapel-guard/band--renowned-virtue/compiler.renowned-virtue
+  id: renowned-virtue-without-a-bretonnian-virtue-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: bretonnian-chapel-guard
+      profile_id: questing-knight
+      special_rule_ids:
+      - band--renowned-virtue
+  expect_error: Renowned Virtue requires exactly one Bretonnian Virtue
+
+- audit_id: rule/mordheim/bretonnian-chapel-guard/band--renowned-virtue/compiler.renowned-virtue
+  id: renowned-virtue-with-two-bretonnian-virtues-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: bretonnian-chapel-guard
+      profile_id: questing-knight
+      special_rule_ids:
+      - band--renowned-virtue
+      - band--virtue-of-valour
+      - band--virtue-of-valour
+  expect_error: Renowned Virtue requires exactly one Bretonnian Virtue
+
+- audit_id: rule/mordheim/bretonnian-chapel-guard/band--renowned-virtue/compiler.renowned-virtue
+  id: renowned-virtue-with-exactly-one-bretonnian-virtue-is-accepted-at-construction
+  fighters:
+    first:
+      collection: mordheim
+      band_id: bretonnian-chapel-guard
+      profile_id: questing-knight
+      special_rule_ids:
+      - band--renowned-virtue
+      - band--virtue-of-valour
+    second:
+      collection: mordheim
+      band_id: bretonnian-chapel-guard
+      profile_id: questing-knight
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

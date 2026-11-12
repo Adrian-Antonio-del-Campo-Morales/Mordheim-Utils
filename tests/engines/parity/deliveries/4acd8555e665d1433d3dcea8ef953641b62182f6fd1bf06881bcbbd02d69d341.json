@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-parity-delivery/v2",
+  "status": "blocked",
+  "source": {
+    "revision": "84a634dbdfc45973ebb93a9dd90c852e21c7c12b",
+    "path": "tests/conformance/cases/mechanics/weapon.rapier.yaml",
+    "sha256": "ecac23a2b055a2301f4872a6b82e5b7099d2c4951630b31a34da9fcf002f908b",
+    "test_id": "mechanic/weapon.rapier::barrage-continues-after-a-hit-that-fails-to-wound"
+  },
+  "case_key": "delivery/mechanic/weapon.rapier/barrage-continues-after-a-hit-that-fails-to-wound",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E prescribes explicit decisions (round.0.first.attack.0.barrage); the contract admits only the engine-default decision policy, and no general policy for randomly branched trajectories exists for these keys."
+}

@@ -1,0 +1,37 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/skaven-of-clan-moulder-web/rat-ogres--its-alive/compiler.rat-ogre-single-mutation-at-recruitment
+# authoring_status: PARTIAL
+# authoring_progress: the admitted starting-mutation clause stays without scenarios for the concrete reason
+# recorded in its PARTIAL note below: the source's own runtime block is scope LATER with implemented NO and
+# a null binding, and the register records the purchase as a roster-construction/campaign mechanic, so the
+# required single mutation has no construction guard and no duel observable to assert.  The excluded
+# mutation-payment clause is retained for context.  execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: starting-mutation (scope: YES)
+# PARTIAL[starting-mutation]: [C] kept withheld, with the gap located precisely.  The fixture CAN state the
+# case - a Rat Ogre build compiles - so this is not a missing input this file could declare.  What is missing
+# is this origin's own accepted contract and binding for the printed required choice and the sentence such a
+# guard would raise: the register's effect_id is only the proposed `proposed.required-starting-mutation`, the
+# row's runtime is scope LATER / implemented NO with a null binding, and no contract id of this origin is
+# attached.  The shape the shared stage uses for a required choice exists for other origins -
+# compiler.sister-special-skills ("Blessing of Sigmar requires exactly two distinct Sisters special skills"),
+# compiler.mutant-requires-mutation-at-recruitment ("at least one mutation is required for <who>") and
+# compiler.nurgle-s-blessings ("Tainted Ones require at least one Blessing of Nurgle") - and none of them is
+# bound to this row.  Asserting a run for a Rat Ogre carrying one mutation would evidence nothing of the
+# requirement ("must purchase a single Mutation"), and asserting the refusal would have to invent the guard's
+# sentence, which this file will not do; the clause therefore stays withheld until that KB connection and its
+# sentence exist.  A scope LATER / implemented NO / null binding row is not by itself the reason: the reason
+# is the absent accepted contract and diagnostic, named here concretely.  REVIEWED still requires manual
+# semantic review.
+#
+# Clause: mutation-payment (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+[]  # Empty scenario list: this file contributes no test or coverage.

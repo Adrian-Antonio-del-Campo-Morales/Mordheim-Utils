@@ -3,6 +3,10 @@
 Retired working documents kept for reference. Nothing in the repository reads them, and the
 knowledge base under `sources/knowledge/` is the only source of rules, classification and clauses.
 
+Terminology: in archived documents "E2E" meant what is now the rules-conformance suite
+(`tests/conformance/`) and, for "E2E statistical deliveries/campaigns/samples", the parity
+deliveries (`tests/engines/parity/deliveries/`).
+
 | Document | Retired | Why it is kept |
 | --- | --- | --- |
 | [`clause-register/`](clause-register/README.md) | 2026-11-11 | The two CSV registers whose clauses moved into the knowledge base, with the migration report and the columns that were not migrated. |

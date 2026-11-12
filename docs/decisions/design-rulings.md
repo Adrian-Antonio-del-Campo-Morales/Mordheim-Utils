@@ -10,7 +10,7 @@ The former semantic YAML specifications also carried `question`/`ruling` fields.
 That test system has been retired. References to those specifications in older
 decisions are historical provenance, not instructions to restore it. This page
 retains the permanent rulings and their rationale; the retirement does not revoke
-any adopted decision. New rule evidence belongs in modular mechanics and E2E tests.
+any adopted decision. New rule evidence belongs in modular mechanics and conformance tests.
 
 ## Duel engine (modular oracle)
 
@@ -379,7 +379,7 @@ The coordinator decides that the printed prose governs: the Cathayan longsword
 gives only +1 Initiative and +1 Weapon Skill. The `armour_penetration: 1`
 parameter of the execution contract was project scaffolding and is removed from
 `sources/knowledge/catalog/mechanics/execution.yaml`. Armoured defenders save
-at their own printed face against the longsword. The corresponding E2E
+at their own printed face against the longsword. The corresponding conformance
 clauses-authored record is in the corpus ficha for `weapon.cathayan-longsword`.
 
 ## The Starsword printed Dodge save is the ward save — 2026-10-14
@@ -387,7 +387,7 @@ clauses-authored record is in the corpus ficha for `weapon.cathayan-longsword`.
 For the Starsword standing exception ("ignores all armour saves except for ward
 and Dodge saves"), the coordinator rules that the printed Dodge save and the ward
 save are the same thing. The engine's ward face therefore carries the printed
-Dodge exemption; no separate Dodge-save representation is added. The E2E
+Dodge exemption; no separate Dodge-save representation is added. The conformance
 scenarios live in the `dodge-exception` clause of the starsword ficha.
 
 

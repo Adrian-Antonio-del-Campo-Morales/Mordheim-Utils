@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-parity-delivery/v2",
+  "status": "blocked",
+  "source": {
+    "revision": "84a634dbdfc45973ebb93a9dd90c852e21c7c12b",
+    "path": "tests/conformance/cases/grants/trollheim--chaos-streets-undead-bloodlines--band--lahmia-power-seduction--d37cb13b5269.yaml",
+    "sha256": "26c4e9a009c84ea875f8ddef8364100ab99d313a764eaf346416f8325c65dc9a",
+    "test_id": "rule/trollheim/chaos-streets-undead-bloodlines/band--lahmia-power-seduction/mechanic.lahmia-seduction::a-male-target-that-fails-its-own-test-is-controlled"
+  },
+  "case_key": "delivery/rule/trollheim/chaos-streets-undead-bloodlines/band--lahmia-power-seduction/mechanic.lahmia-seduction/a-male-target-that-fails-its-own-test-is-controlled",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E prescribes explicit decisions (round.0.second.lahmia-seduction); the contract admits only the engine-default decision policy, and no general policy for randomly branched trajectories exists for these keys."
+}

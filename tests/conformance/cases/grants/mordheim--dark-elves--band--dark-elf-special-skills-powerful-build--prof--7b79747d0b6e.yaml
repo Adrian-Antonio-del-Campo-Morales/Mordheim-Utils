@@ -1,0 +1,63 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/dark-elves/band--dark-elf-special-skills-powerful-build/profile.skill-access
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries two authored scenarios in contrast: the Heavy
+#   Born that selects the Powerful Build grant adds the Strength list and may take a Strength skill,
+#   while the same warrior without the grant is refused.  The printed Sorceress exclusion and the
+#   two-bearer cap are the clause marked outside the duel scope below.  REVIEWED still requires
+#   manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: whole--scope--skill-access (scope: YES)
+# AUTHORED[whole--scope--skill-access]: 2 scenarios contrast the selected grant with its absence.
+#   The admission scenario builds the recipient with `special_rule_ids`
+#   [band--dark-elf-special-skills-powerful-build] and skill.mighty-blow, the canonical Strength
+#   skill, and records that the duel ran unrefused; the control scenario builds the same warrior
+#   with the same Strength skill and no grant, and the shared access route refuses it.  The printed
+#   Sorceress exclusion has no declared parameter and the excluded profile is not named here, so its
+#   refusal stays unrepresented.  REVIEWED still requires manual semantic review.
+#
+# Clause: whole--scope--warband-take-limit (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded semantic contract and the dark-elf profile's own
+# printed lists (combat, shooting, academic, speed, special: Strength is absent without the grant);
+# no engine output was consulted.  Both fighters are given zero attacks so the round resolves
+# without dice and the observation is about access, not about the skill's mechanics.
+
+- audit_id: rule/mordheim/dark-elves/band--dark-elf-special-skills-powerful-build/profile.skill-access
+  id: the-selected-grant-admits-a-strength-skill
+  covers: [whole--scope--skill-access]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: high-born
+      special_rule_ids: [band--dark-elf-special-skills-powerful-build]
+      skill_ids: [skill.mighty-blow]
+      main_weapon_id: weapon.axe
+    second:
+      main_weapon_id: weapon.axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_final: {rounds_executed: 1}
+
+- audit_id: rule/mordheim/dark-elves/band--dark-elf-special-skills-powerful-build/profile.skill-access
+  id: the-same-strength-skill-is-refused-without-the-grant
+  covers: [whole--scope--skill-access]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: high-born
+      skill_ids: [skill.mighty-blow]
+  expect_error: "skills are not available to dark-elves/high-born: ['skill.mighty-blow']"

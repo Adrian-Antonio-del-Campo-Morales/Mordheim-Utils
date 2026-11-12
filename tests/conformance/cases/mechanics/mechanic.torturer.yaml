@@ -1,0 +1,88 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.torturer
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries 3 authored scenarios: one unsaved close-combat wound costing the living defender one Strength, the same wound against an Undead defender costing nothing, and a supplied already-reduced defender whose Strength holds at the printed floor of one. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 3 scenarios cover the per-unsaved-wound Strength loss (the defender's own Strength state drops from 3 to 2 and its loss counter rises by one), the printed Undead immunity (the identical wound leaves the Undead defender's Strength and counter untouched), and the printed minimum of one (a defender supplied at Strength 1 with two recorded losses stays at 1 while the counter rises to three). The reduction is the executor's per-wound reaction (aftermath._react_to_wound), which is not a key in the printed text; it is observable only as the defender's Strength state.
+
+# --- Authored scenarios ---
+# One unsaved close-combat wound: Strength 3 wounds Toughness 3 on the declared 4+, the
+# defender is at three Wounds so no injury roll is needed, and the printed agony follows
+# the wound.  The defender's own Strength state is what the rule moves, and its loss
+# counter records the single application.
+- audit_id: mechanic/mechanic.torturer
+  id: an-unsaved-wound-costs-the-living-defender-one-strength
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.torturer]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: True, attacks.0.damage: 1, state.second.strength: 2,
+        state.second.torture_strength_loss: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed exception: the same attacker, the same declared faces and an Undead defender
+# of the same profile.  The wound still lands, but the Undead are immune, so its Strength
+# and its loss counter are untouched.
+- audit_id: mechanic/mechanic.torturer
+  id: the-printed-undead-are-immune
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.torturer]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: undead}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: True, attacks.0.damage: 1, state.second.strength: 3,
+        state.second.torture_strength_loss: 0, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed floor: the defender is supplied already reduced to Strength 1 with two
+# recorded losses, so the next unsaved wound still counts as an application but cannot
+# take its Strength below one.
+- audit_id: mechanic/mechanic.torturer
+  id: the-cumulative-loss-cannot-go-below-one-strength
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.torturer]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state:
+    second: {strength: 1, torture_strength_loss: 2}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: True, state.second.strength: 1,
+        state.second.torture_strength_loss: 3, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

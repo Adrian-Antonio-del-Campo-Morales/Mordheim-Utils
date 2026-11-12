@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-parity-delivery/v2",
+  "status": "blocked",
+  "source": {
+    "revision": "84a634dbdfc45973ebb93a9dd90c852e21c7c12b",
+    "path": "tests/conformance/cases/grants/mordheim--restless-dead--band--restless-dead-special-skills-wraith-touch--b5dabb4e4b4c.yaml",
+    "sha256": "1c30be5dacc2ec293bfa3225300461321a71b59a837c9916a5b5a794bbf08bad",
+    "test_id": "rule/mordheim/restless-dead/band--restless-dead-special-skills-wraith-touch/mechanic.wraith-touch::the-declared-wraith-touch-wounds-automatically-and-the-liche-regains-a-wound"
+  },
+  "case_key": "delivery/rule/mordheim/restless-dead/band--restless-dead-special-skills-wraith-touch/mechanic.wraith-touch/the-declared-wraith-touch-wounds-automatically-and-the-liche-regains-a-wound",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E prescribes explicit decisions (round.0.first.attack.0.wraith-heal, round.0.first.wraith-touch); the contract admits only the engine-default decision policy, and no general policy for randomly branched trajectories exists for these keys."
+}

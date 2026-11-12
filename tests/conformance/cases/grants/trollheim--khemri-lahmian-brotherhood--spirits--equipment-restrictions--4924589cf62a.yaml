@@ -1,0 +1,64 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/khemri-lahmian-brotherhood/spirits--equipment-restrictions/profile.equipment-restrictions
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: the printed reservation of the Snake Whip to the Lahmian Vampire and Blood Sister is evidenced
+#   in both directions.  CHALLENGE RESULT: the previous note is wrong on the facts.  The KB DOES declare the
+#   binding - bands/trollheim/khemri-lahmian-brotherhood/special-rules.yaml, id
+#   spirits--equipment-restrictions, runtime grant: profile, implemented: 'YES', effect
+#   profile.equipment-restrictions, parameters forbids: [snake_whip] - and `snake_whip` is the canonical catalogue
+#   item id (catalog/items/trollheim.yaml).  What decides the observable is the band's own list row:
+#   equipment-access.yaml gives snake_whip applies_to.profile_ids [lahmian-vampire, blood-sister] in both the
+#   foreign and the native Undead list, and the shared stage honours that selector - profileEquipmentItems filters
+#   list rows through entryReachesProfile, and equipmentIssue tests the resulting offered set before its forbids
+#   loop (packages/python/roster-construction/mordheim_construction/_eligibility.js) - so this recipient's build
+#   that slots the Whip is refused with the stage's own access diagnostic (code equipment_not_permitted, a hard
+#   issue: it is not one of the informational codes).  The second scenario is a printed holder of the Whip, whose
+#   build is admitted at construction, which is the positive half of the same printed reservation.  Consumer: the
+#   shared eligibility stage.  REVIEWED still requires manual semantic review.
+# authoring_progress: 2 authored scenario(s) in this file; authored clauses ['whole']; no admitted clause of this
+# origin is left pending.  REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/trollheim/khemri-lahmian-brotherhood/spirits--equipment-restrictions/profile.equipment-restrictions
+  id: spirits-may-not-slot-the-snake-whip
+  fighters:
+    first:
+      collection: trollheim
+      band_id: khemri-lahmian-brotherhood
+      profile_id: spirits
+      owned_item_ids: [snake_whip]
+  expect_error: '"snake_whip" is not on any equipment list of khemri-lahmian-brotherhood/spirits.'
+
+- audit_id: rule/trollheim/khemri-lahmian-brotherhood/spirits--equipment-restrictions/profile.equipment-restrictions
+  id: the-printed-holder-of-the-snake-whip-is-admitted-at-construction
+  fighters:
+    first:
+      collection: trollheim
+      band_id: khemri-lahmian-brotherhood
+      profile_id: blood-sister
+      main_weapon_id: weapon.mace
+      owned_item_ids: [snake_whip]
+    second:
+      collection: trollheim
+      band_id: khemri-lahmian-brotherhood
+      profile_id: spirits
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

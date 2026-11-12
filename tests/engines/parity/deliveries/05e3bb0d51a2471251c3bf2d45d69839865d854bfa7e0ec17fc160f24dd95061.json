@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-parity-delivery/v2",
+  "status": "blocked",
+  "source": {
+    "revision": "84a634dbdfc45973ebb93a9dd90c852e21c7c12b",
+    "path": "tests/conformance/cases/mechanics/skill.ferocious-charge.yaml",
+    "sha256": "2fe109945b7df9382dbdd187f85138ae70706f949d8319611a4ade2b4f8c1875",
+    "test_id": "mechanic/skill.ferocious-charge::the-charging-turn-doubles-the-pool-and-penalises-the-hit"
+  },
+  "case_key": "delivery/mechanic/skill.ferocious-charge/the-charging-turn-doubles-the-pool-and-penalises-the-hit",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E prescribes explicit decisions (round.0.first.ferocious-charge); the contract admits only the engine-default decision policy, and no general policy for randomly branched trajectories exists for these keys."
+}

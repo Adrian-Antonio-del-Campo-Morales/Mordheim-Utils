@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-parity-delivery/v2",
+  "status": "blocked",
+  "source": {
+    "revision": "84a634dbdfc45973ebb93a9dd90c852e21c7c12b",
+    "path": "tests/conformance/cases/core/combat-two-weapons.yaml",
+    "sha256": "2e1bf47f45ccf1aba5520cb5e65ae6d7f5e5a534dfc91f6150c8dd6e40b5fdef",
+    "test_id": "core/combat-two-weapons::nominating-the-off-hand-weapon-moves-the-profiles"
+  },
+  "case_key": "delivery/core/combat-two-weapons/nominating-the-off-hand-weapon-moves-the-profiles",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E prescribes explicit decisions (round.0.first.main-weapon-majority); the contract admits only the engine-default decision policy, and no general policy for randomly branched trajectories exists for these keys."
+}

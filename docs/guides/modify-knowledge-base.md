@@ -20,7 +20,7 @@ that guide's last section.
 4. Declare `clauses` (id and scope only) on an effect, core rule, mechanic or
    item only when its printed text has several observable parts or excludes
    one; otherwise the record itself is the obligation. Keep clause ids stable:
-   E2E scenarios and `covers` markers name them, and
+   conformance scenarios and `covers` markers name them, and
    `python tools/knowledge/clauses.py check` reports a reference that no
    longer resolves. When two rules print the same text, promote it to
    `catalog/rules/special-rules.yaml` (neutralising the recipient's name) and
@@ -44,7 +44,7 @@ that guide's last section.
    silent allowance (see
    [Verification](../reference/verification.md#deterministic-modular-evidence)).
 7. If a reviewed obligation changes, review the corresponding modular mechanics,
-   construction and E2E expectations against the new text. Preserve adopted
+   construction and conformance expectations against the new text. Preserve adopted
    rulings and source traceability; do not replace an expected result with current
    engine output. The retired semantic YAML corpus is not a validation step.
 8. Regenerate the generated reports you touched instead of hand-editing them.
@@ -81,7 +81,7 @@ For an authorized destructive merge:
 - document which IDs are retired and which campaign versions are accepted;
 - test the absence of retired IDs, reference resolution, recipients, bindings,
   affected campaign rules and read/write of the format;
-- run formatting, structural `verify`, the authorized mechanics/E2E checks and parity before
+- run formatting, structural `verify`, the authorized mechanics/conformance checks and parity before
   publishing.
 
 Do not merge when the recipient changes, a contextual exception exists, the

@@ -1,0 +1,144 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/mercenaries/band--reikland-command-radius/mechanic.leader-twelve
+# authoring_status: AUTHORED
+# authoring_progress: the admitted leader-twelve clause carries 3 authored scenarios derived from
+# the printed twelve-inch Reikland radius and the delivered mechanic.leader-twelve connection
+# recorded in this file's own register notes: a same-band borrower adopts the supplied Reikland
+# Captain's Leadership at twelve inches and passes with it, a supplied captain past twelve inches
+# supplies nothing, and a same-band warrior who does not print the Leader rule supplies nothing.
+# REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 3 scenarios evidence the printed twelve-inch radius.  The borrower is
+#   the band's printed warriors profile and the supplied leader is the printed mercenary-captain,
+#   the profile the band grant restricts the radius to; both Leadership values are supplied fixture
+#   facts (8 for the captain, 3 for the borrower), so the same dice separate a borrowed pass from an
+#   own-value failure.  The borrower's required test is the Fear test of the charge it receives,
+#   whose printed consequence is state.second.fear_hit_sixes.  The unchanged six-inch default of
+#   every other leader is the shared contract of mechanic.leader-six and is not asserted here.
+
+# --- Authored scenarios ---
+# The supplied leader is a nearby participant of the borrower's own side and band: the Reikland
+# Captain, the profile the band grant restricts the twelve-inch radius to.  The charged borrower
+# fails against its own supplied Leadership 3 and passes with the supplied captain's 8, so the
+# charge it received leaves it unclamped.
+- audit_id: rule/mordheim/mercenaries/band--reikland-command-radius/mechanic.leader-twelve
+  id: a-supplied-captain-at-twelve-inches-lends-his-leadership
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 8, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: mercenaries
+      profile_id: warriors
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1, leadership: 3}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: leader
+        side_id: second
+        condition: standing
+        fighter:
+          collection: mordheim
+          band_id: mercenaries
+          profile_id: mercenary-captain
+          characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1, leadership: 8}
+    distances:
+      - [second, leader, 12]
+  decisions:
+    - {key: round.0.second.fear.charged.leader.leader, value: true}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.second.wounds: 2, state.second.fear_hit_sixes: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Past the printed twelve inches no use is offered at all, which the strict decision tape itself
+# proves: the Reikland radius is not the ordinary six-inch default.
+- audit_id: rule/mordheim/mercenaries/band--reikland-command-radius/mechanic.leader-twelve
+  id: a-captain-beyond-twelve-inches-supplies-nothing
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 8, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: mercenaries
+      profile_id: warriors
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1, leadership: 3}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: leader
+        side_id: second
+        condition: standing
+        fighter:
+          collection: mordheim
+          band_id: mercenaries
+          profile_id: mercenary-captain
+          characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1, leadership: 8}
+    distances:
+      - [second, leader, 13.0]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.second.wounds: 2, state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed radius belongs to the Captain profile, not to every Reikland fighter: a same-band
+# participant that does not print the Leader rule is no provider, so no use is offered.
+- audit_id: rule/mordheim/mercenaries/band--reikland-command-radius/mechanic.leader-twelve
+  id: a-reikland-fighter-without-the-leader-rule-supplies-nothing
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 8, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: mercenaries
+      profile_id: warriors
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1, leadership: 3}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: leader
+        side_id: second
+        condition: standing
+        fighter:
+          collection: mordheim
+          band_id: mercenaries
+          profile_id: youngbloods
+          characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1, leadership: 8}
+    distances:
+      - [second, leader, 6]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.second.wounds: 2, state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

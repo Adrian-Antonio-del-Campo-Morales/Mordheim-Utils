@@ -1,0 +1,81 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/lustria-norse/band--norse-special-skills-shield-mastery/skill.shield-mastery
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios evidence both printed halves at once:
+#   the shield bearer's parry is a real attempt (the declared five blocks the blow), and in the
+#   second tape, where that parry fails, the shield's own armour point still stands, so light
+#   armour and shield together save on a declared five.  The parry comes from the skill and the
+#   save from the ordinary shield composition, so neither replaces the other.
+
+# authoring_progress: 2 authored scenario(s) in this file; authored clauses
+#   ['shield-parries-and-keeps-its-bonus']; clauses still pending or unrepresentable in this
+#   file: [].  REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+# Derived from the printed rule ("The Hero may parry with a Shield as if it were a Buckler while
+# still receiving the Shield's normal armour-save bonus") and the recorded contract
+# (shield_parry true, keeps_shield_save true), whose verified reuse guidance keeps the parry and
+# the ordinary armour benefit as coexisting halves.  The bearer is a printed Hero of the band
+# holding the shield with the skill selected and light armour worn; the attacker is hand-built.
+# In the first tape the parry die is declared above the To Hit roll and blocks the blow, which is
+# the parry half; in the second the parry dies below it, and the armour die is then declared at
+# the composed five (light armour's six less the shield's point), which is the save half.
+
+- audit_id: rule/trollheim/lustria-norse/band--norse-special-skills-shield-mastery/skill.shield-mastery
+  id: the-shield-parries-as-a-buckler
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+    second:
+      collection: trollheim
+      band_id: lustria-norse
+      profile_id: jarl
+      special_rule_ids: [band--norse-special-skills-shield-mastery]
+      armour_id: armour.light-armour
+      off_hand_id: defence.shield
+      main_weapon_id: weapon.mace
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+  expect_rounds:
+    0: {attacks.0.parried: true, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-norse/band--norse-special-skills-shield-mastery/skill.shield-mastery
+  id: the-shield-keeps-its-armour-point-when-the-parry-fails
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+    second:
+      collection: trollheim
+      band_id: lustria-norse
+      profile_id: jarl
+      special_rule_ids: [band--norse-special-skills-shield-mastery]
+      armour_id: armour.light-armour
+      off_hand_id: defence.shield
+      main_weapon_id: weapon.mace
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+  expect_rounds:
+    0: {attacks.0.parried: false, attacks.0.saved: true, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

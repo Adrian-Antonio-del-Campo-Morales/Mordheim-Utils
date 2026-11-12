@@ -1,0 +1,73 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/khemri-cursed-of-karak-zorn/band--troll-slayer-special-skills-monster-slayer/skill.monster-slayer-effective-strength-armour
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries two authored scenarios derived from the printed
+# wording, the recorded contract and the authored mechanic origin of the same variant.  The band origin
+# repeats the canonical clause of the shared monster-slayer operator, so the scenarios read the variant
+# through its canonical member, exactly as the mechanic origin's own pair does, and the pair differs only
+# in the effective-strength variant tag while the wound cap of the companion skill is held constant.
+# REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios cover the second printed half, the armour-save modifier computed from the
+# effective Strength needed to wound on 4+.  A Strength 2 bearer against a Toughness 4 armoured defender
+# is the boundary the printed wording names: the effective Strength is 4, so the armour save worsens by
+# that point and the same armour face of five separates the two readings.  The wound cap of the companion
+# monster-slayer clause is credited in neither reading's difference, as the register note records.
+
+# --- Authored scenarios ---
+# Derived from the printed wording and the recorded contract, never from engine output.  The band origin
+# repeats the canonical clause of the shared monster-slayer operator, so the bearer is a hand-built
+# fixture crediting the canonical operator and the effective-strength variant, and the pair varies only
+# that variant: the attack uses the effective Strength needed to wound on 4+ for the armour calculation
+# while the wound roll keeps the companion clause's printed maximum.
+- audit_id: rule/trollheim/khemri-cursed-of-karak-zorn/band--troll-slayer-special-skills-monster-slayer/skill.monster-slayer-effective-strength-armour
+  id: effective-strength-raises-the-armour-modifier
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.monster-slayer, skill.monster-slayer-effective-strength-armour]
+      characteristics: {weapon_skill: 3, strength: 2, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 4, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: False, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same attack without the variant keeps the raw Strength-2 basis, so the very same armour face holds.
+- audit_id: rule/trollheim/khemri-cursed-of-karak-zorn/band--troll-slayer-special-skills-monster-slayer/skill.monster-slayer-effective-strength-armour
+  id: effective-strength-without-the-variant-keeps-the-raw-strength
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.monster-slayer]
+      characteristics: {weapon_skill: 3, strength: 2, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 4, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: True, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -1,0 +1,93 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/skill.crude-belch-halfling
+# authoring_status: AUTHORED
+# authoring_progress: the single admitted clause carries 3 authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 3 scenarios cover the failed base-contact Leadership test that
+#   costs the enemy its first attack while the remaining attacks still resolve, the
+#   passed test that leaves the whole pool alone, and a single-attack enemy whose only
+#   attack is lost. The belch is declared by its bearer at the start of the first round.
+
+# --- Authored scenarios ---
+# The halfling declares the belch in the first round and the enemy fails the Leadership
+# test on two sixes against its own 7.  The enemy strikes with two Attacks, but the lost
+# first attack consumes no die at all: the tape carries only the second attack die.
+- audit_id: mechanic/skill.crude-belch-halfling
+  id: a-failed-test-costs-the-enemy-its-first-attack
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.crude-belch-halfling]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 2, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.crude-belch, value: true}
+  rolls:
+    - {key: round.0.first.crude-belch.leadership.0, value: 6}
+    - {key: round.0.first.crude-belch.leadership.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, attacks.2.hit: false, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The passed test changes nothing: the enemy's own 7 holds on two ones, so both of its
+# attacks are resolved and the first one lands on the declared hit and wound faces.  The
+# same slot that misses in the failed-test scenario here carries a wound.
+- audit_id: mechanic/skill.crude-belch-halfling
+  id: a-passed-test-leaves-the-attack-pool-alone
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.crude-belch-halfling]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 2, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.crude-belch, value: true}
+  rolls:
+    - {key: round.0.first.crude-belch.leadership.0, value: 1}
+    - {key: round.0.first.crude-belch.leadership.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.1.hit: true, attacks.2.hit: false, attacks.1.damage: 1, state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed "even their only attack": the enemy has a single Attack, and its loss is
+# still the whole pool, so the round carries no die for it at all.
+- audit_id: mechanic/skill.crude-belch-halfling
+  id: even-an-only-attack-is-lost
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.crude-belch-halfling]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.crude-belch, value: true}
+  rolls:
+    - {key: round.0.first.crude-belch.leadership.0, value: 6}
+    - {key: round.0.first.crude-belch.leadership.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

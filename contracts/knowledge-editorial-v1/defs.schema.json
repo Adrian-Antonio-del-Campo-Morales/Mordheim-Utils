@@ -421,13 +421,13 @@
       }
     },
     "clause": {
-      "description": "One observable part of a classified record's printed text. `id` is stable and unique within the record; `scope` says whether the duel runtime must honour it (`YES`) or it is documented as outside the duel (`NO`). Clauses carry no text and no evidence: the printed prose is the rule, and the tests declare what they cover (E2E `audit_id`/`covers`, the pytest `covers` marker).",
+      "description": "One observable part of a classified record's printed text. `id` is stable and unique within the record; `scope` says whether the duel runtime must honour it (`YES`) or it is documented as outside the duel (`NO`). Clauses carry no text and no evidence: the printed prose is the rule, and the tests declare what they cover (conformance `audit_id`/`covers`, the pytest `covers` marker).",
       "type": "object",
       "required": ["id", "scope"],
       "additionalProperties": false,
       "properties": {
         "id": {
-          "description": "Clause id, unique within its record; E2E `covers` entries and the `covers` marker name it.",
+          "description": "Clause id, unique within its record; conformance `covers` entries and the `covers` marker name it.",
           "$ref": "#/$defs/id"
         },
         "scope": {

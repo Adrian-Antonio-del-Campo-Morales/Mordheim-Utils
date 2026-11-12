@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-parity-delivery/v2",
+  "status": "blocked",
+  "source": {
+    "revision": "84a634dbdfc45973ebb93a9dd90c852e21c7c12b",
+    "path": "tests/conformance/cases/grants/mordheim--restless-dead--scarecrows--construct--trait.injury-reroll-out--da2dee25c9c3.yaml",
+    "sha256": "b1f2a9dc1d19cf329c1c572aa89796e11a8072bfbbab6c74ef8d5521ea059b19",
+    "test_id": "rule/mordheim/restless-dead/scarecrows--construct/trait.injury-reroll-out::the-construct-rerolls-an-injury-result-that-would-take-it-out"
+  },
+  "case_key": "delivery/rule/mordheim/restless-dead/scarecrows--construct/trait.injury-reroll-out/the-construct-rerolls-an-injury-result-that-would-take-it-out",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E prescribes explicit decisions (round.0.first.attack.0.injury.0.reroll-choice); the contract admits only the engine-default decision policy, and no general policy for randomly branched trajectories exists for these keys."
+}

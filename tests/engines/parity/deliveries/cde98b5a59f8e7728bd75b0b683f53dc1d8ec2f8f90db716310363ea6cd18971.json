@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-parity-delivery/v2",
+  "status": "blocked",
+  "source": {
+    "revision": "84a634dbdfc45973ebb93a9dd90c852e21c7c12b",
+    "path": "tests/conformance/cases/mechanics/mechanic.leadership-reroll.yaml",
+    "sha256": "43c4304c2c5702fe83ca68a9a1a1c732b52a7518138c485e862620229918f850",
+    "test_id": "mechanic/mechanic.leadership-reroll::the-reroll-is-accepted-even-when-it-fails"
+  },
+  "case_key": "delivery/mechanic/mechanic.leadership-reroll/the-reroll-is-accepted-even-when-it-fails",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E prescribes explicit decisions (round.0.first.fear.charge.reroll); the contract admits only the engine-default decision policy, and no general policy for randomly branched trajectories exists for these keys."
+}

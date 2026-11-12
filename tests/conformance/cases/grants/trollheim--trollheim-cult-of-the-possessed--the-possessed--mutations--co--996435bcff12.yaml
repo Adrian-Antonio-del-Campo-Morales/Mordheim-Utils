@@ -1,0 +1,42 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/trollheim-cult-of-the-possessed/the-possessed--mutations/compiler.possessed-optional-zero-to-two-mutations-at-recruitment
+# authoring_status: PARTIAL
+# authoring_progress: the admitted whole clause carries 1 authored scenario derived from the printed sentence and the accepted ruling that respects the source's "may" (zero mutations are allowed): a Possessed built with no mutation is admitted and the duel runs.  The recording of the upper bound as a refusal (a Possessed with three mutations) is pending because the scaffold records no diagnostic for exceeding the maximum.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# PARTIAL: [C] the pending upper-bound half is an expected result the contract does not establish:
+# the construction stage declares no diagnostic for exceeding the maximum, so a tape supplying three
+# mutation rows could only assert a refusal message nobody has derived (inventing the observable, which is
+# exactly what the user's rule forbids).  The configuration itself may be declarable; the expected
+# observation is not.  1 scenario evidences the recorded ruling that the printed "may begin with one or two Mutations" admits a Possessed with no mutation.  Pending: the upper-bound refusal (three mutations), whose missing datum is the diagnostic the construction stage emits when the maximum is exceeded.
+
+# --- Authored scenarios ---
+# The recorded user ruling reads the printed "may" as optional, so zero mutations are allowed;
+# the acceptance control is the recipient built with no mutation at all, which must be admitted
+# and must resolve its round.
+- audit_id: rule/trollheim/trollheim-cult-of-the-possessed/the-possessed--mutations/compiler.possessed-optional-zero-to-two-mutations-at-recruitment
+  id: a-possessed-with-no-mutation-is-admitted-at-recruitment
+  fighters:
+    first:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: the-possessed
+      main_weapon_id: weapon.natural-attacks
+    second:
+      main_weapon_id: weapon.natural-attacks
+      characteristics: &plain-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    # No charge is declared, so no charged-side Fear test is requested even though the
+    # Possessed causes Fear; the round opens with its own attack pool.
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

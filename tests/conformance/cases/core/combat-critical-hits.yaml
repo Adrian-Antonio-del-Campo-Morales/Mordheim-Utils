@@ -1,0 +1,476 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: core/combat-critical-hits
+# authoring_status: REVIEWED
+# authoring_progress: every admitted clause below has requirement-complete
+#   scenarios contrasted against the printed rule text, the recorded semantic
+#   contracts and the design rulings. REVIEWED is authoring/semantic contrast
+#   only; execution_status stays UNEXECUTED and no functional result exists.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# executor_capability_note: two scenarios depend on executor support that is not
+#   yet verified (engine gaps, not authoring pendings).
+#   a-critical-table-modifier-shifts-the-applied-band needs the build entry
+#   main_material_id: material.dark-elf-blade to compile and the compiled effect
+#   to carry critical_injury_bonus.
+#   a-higher-multiple-damage-source-prevails needs main_weapon_id:
+#   weapon.ball-and-chain to be an admitted loadout and the D3 damage die to be
+#   requested at key <attack-key>.damage (sides 3) and observed as
+#   attacks.<i>.damage.
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: basic-table (scope: YES)
+# AUTHORED[basic-table]: 8 scenarios cover the D6 bands 1-5, the save-before-
+#   doubling ordering, armour denial, the natural-six entry, and a critical-table
+#   modifier (material.dark-elf-blade, +1) shifting a raw 4 into the 5+ band.
+#
+# Clause: critical-trigger (scope: YES)
+# AUTHORED[critical-trigger]: 4 scenarios cover a natural six with target <=5, a
+#   six that was required, a non-six wound, and a successful rerolled wound that
+#   is not critical (poison.devil-s-toxin).
+#
+# Clause: damage-stacking (scope: YES)
+# AUTHORED[damage-stacking]: 2 scenarios cover a critical that ties another two-
+#   wound source (poison.bloodroot) and a multiple-wound source larger than the
+#   critical's two (weapon.ball-and-chain, D3), both using the higher value.
+#
+# Clause: one-per-phase (scope: YES)
+# AUTHORED[one-per-phase]: 3 scenarios cover one critical per warrior per close-
+#   combat phase, the allowance restored in the next round, and two fighters each
+#   scoring one critical in the same phase.
+#
+# --- Migrated authored scenarios ---
+# Source: cases/core/critical-hits.yaml
+# One-time migration authorized by the operator; see plan.md.  These
+# scenarios were authored from the rule text and the accepted rulings, not
+# from engine output.  Migrating them does not certify their interpretation
+# or complete coverage of the identity.
+# core/combat-critical-hits — trigger, allowance, table bands and damage stacking.
+#
+# Expectations come from the accepted clauses of
+# the knowledge-base clause contracts (sources/knowledge) (identity
+# core/combat-critical-hits, clauses critical-trigger / one-per-phase /
+# basic-table / damage-stacking), never from engine output.
+#
+# The basic table is a D6 with critical-table modifiers: every result deals two
+# wounds, 3 or more ignores armour, 5 or more adds two to the Injury roll, and
+# 1-2 leave armour and Injury untouched (the save comes before the doubling).
+#
+# The first scenario declares the shared profiles as YAML anchors.
+#
+
+- audit_id: core/combat-critical-hits
+  id: natural-six-critical-triggers-the-chart
+  covers: [critical-trigger, basic-table]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &s4-attacker {weapon_skill: 3, strength: 4, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &ws3-s3-t3-w3-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.critical, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 1, attacks.0.critical: true, attacks.0.damage: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "Unless a 6 was required": Strength 1 against Toughness 4 needs a 6 to wound,
+# so a rolled six wounds without ever being a critical.  No critical die is
+# scripted; the strict tape would fail if one were requested.
+
+- audit_id: core/combat-critical-hits
+  id: a-six-that-was-required-is-not-a-critical
+  covers: [critical-trigger]
+  fighters:
+    first:
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 1, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 4, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Basic table, result 3 or more: the armour save is ignored.  The defender wears
+# light armour, so a wrongly rolled armour die fails the strict tape because it
+# was never scripted.
+
+- audit_id: core/combat-critical-hits
+  id: critical-result-three-ignores-armour
+  covers: [basic-table]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *s4-attacker
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.light-armour
+      characteristics: {<<: *ws3-s3-t3-w3-i2, wounds: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.critical, value: 3}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+    - {key: round.0.first.attack.0.injury.1, value: 1}
+  expect_rounds:
+    0: {state.second.condition: KNOCKED_DOWN, attacks.0.saved: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Basic table, result 5 or more: +2 to the Injury roll.  Both rolls of one would
+# be Knocked Down without the modifier; the +2 makes them Stunned, which is the
+# observable that distinguishes the clause.
+
+- audit_id: core/combat-critical-hits
+  id: critical-result-five-adds-two-to-injury
+  covers: [basic-table]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *s4-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {<<: *ws3-s3-t3-w3-i2, wounds: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.critical, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+    - {key: round.0.first.attack.0.injury.1, value: 1}
+  expect_rounds:
+    0: {state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A critical-table result of 2 leaves armour untouched, so the save is rolled
+# before the doubling and this unprotected defender's six-plus save holds.
+
+- audit_id: core/combat-critical-hits
+  id: critical-result-two-still-rolls-the-armour-save
+  covers: [basic-table]
+  fighters:
+    first:
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.light-armour
+      characteristics: {<<: *ws3-s3-t3-w3-i2, wounds: 2}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.critical, value: 2}
+    - {key: round.0.first.attack.0.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same band with a failed save: the result of 2 still deals the table's two
+# wounds, so the doubling is untouched even though armour was allowed.
+
+- audit_id: core/combat-critical-hits
+  id: critical-result-two-with-a-failed-save-deals-two-wounds
+  covers: [basic-table]
+  fighters:
+    first:
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.light-armour
+      characteristics: {<<: *ws3-s3-t3-w3-i2, wounds: 2}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.critical, value: 2}
+    - {key: round.0.first.attack.0.armour, value: 2}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 2, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# At most one critical hit per phase: the second natural six in the same pool is
+# an ordinary wound and requests no critical die.
+
+- audit_id: core/combat-critical-hits
+  id: one-critical-per-close-combat-phase
+  covers: [one-per-phase]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {<<: *s4-attacker, attacks: 2}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {<<: *ws3-s3-t3-w3-i2, wounds: 4}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.critical, value: 1}
+    - {key: round.0.first.attack.1.wound, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: true, attacks.0.damage: 2,
+        attacks.1.critical: false, attacks.1.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The allowance is restored at the start of the next round: the same natural six
+# is a critical again in the following phase.
+
+- audit_id: core/combat-critical-hits
+  id: critical-allowance-is-restored-in-the-next-round
+  covers: [one-per-phase]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *s4-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {<<: *ws3-s3-t3-w3-i2, wounds: 5}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.critical, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 4}
+    - {key: round.1.first.attack.0.wound, value: 6}
+    - {key: round.1.first.attack.0.critical, value: 1}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: true, attacks.0.damage: 2, state.second.wounds: 3}
+    1: {attacks.0.critical: true, attacks.0.damage: 2, state.second.wounds: 1}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+
+# A critical doubling is never multiplied by another multiple-wound source: the
+# higher of the two values is used, so Bloodroot's two wounds and the table's
+# two wounds still inflict two, not four.
+
+- audit_id: core/combat-critical-hits
+  id: damage-stacking-uses-the-higher-value
+  covers: [damage-stacking]
+  fighters:
+    first:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {<<: *ws3-s3-t3-w3-i2, wounds: 2}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.critical, value: 1}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 2, attacks.0.critical: true, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A close-combat wound that succeeds but is not a natural six is not a critical;
+# no critical die is offered, so the strict tape would fail if one were requested.
+- audit_id: core/combat-critical-hits
+  id: a-wound-that-is-not-a-six-is-not-critical
+  covers: [critical-trigger]
+  fighters:
+    first:
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *ws3-s3-t3-w3-i2
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: false, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Basic table, result 1, the lower edge of the save-before-doubling band: the
+# armour save is still rolled and no Injury modifier applies.
+- audit_id: core/combat-critical-hits
+  id: critical-result-one-keeps-the-armour-save
+  covers: [basic-table]
+  fighters:
+    first:
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.light-armour
+      characteristics: {<<: *ws3-s3-t3-w3-i2, wounds: 2}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.critical, value: 1}
+    - {key: round.0.first.attack.0.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Basic table, result 4: 3 or more ignores armour, but the +2 to Injury begins
+# only at 5, so an Injury result of 4 is Stunned and not Out of Action.
+- audit_id: core/combat-critical-hits
+  id: critical-result-four-ignores-armour-without-an-injury-bonus
+  covers: [basic-table]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *s4-attacker
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.light-armour
+      characteristics: {<<: *ws3-s3-t3-w3-i2, wounds: 2}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.critical, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 4}
+  expect_rounds:
+    0: {state.second.condition: STUNNED, attacks.0.saved: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The allowance is per warrior, not per phase: two fighters can each score one
+# critical in the same phase, so both critical dice are offered.  Each defender
+# survives with wounds left, so the fight continues past the phase.
+- audit_id: core/combat-critical-hits
+  id: both-fighters-may-score-one-critical-in-the-same-phase
+  covers: [one-per-phase]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 4, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.critical, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 6}
+    - {key: round.0.second.attack.0.critical, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: true, attacks.0.damage: 2, state.second.wounds: 2, state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A critical-table modifier shifts which band the D6 lands in.  material.dark-elf-
+# blade adds +1 ("Adds +1 to the critical hit table", catalog/mechanics/
+# close-combat.yaml), so a raw critical die of 4 resolves as 5: it reaches the 5+
+# band and adds +2 to Injury.  A roll of 1 on the Injury table then becomes 3, a
+# Stunned result; without the modifier the same raw 4 would be the 3-4 band with
+# no Injury bonus and the 1 would be Knocked Down.
+- audit_id: core/combat-critical-hits
+  id: a-critical-table-modifier-shifts-the-applied-band
+  covers: [basic-table]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      main_material_id: material.dark-elf-blade
+      characteristics: *s4-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {<<: *ws3-s3-t3-w3-i2, wounds: 2}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.critical, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: true, attacks.0.damage: 2, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A successful rerolled wound is not a critical.  poison.devil-s-toxin rerolls a
+# failed wound and "the re-roll cannot cause a critical hit" (catalog/mechanics/
+# close-combat.yaml).  The first wound roll fails; the reroll succeeds on a 6 but
+# offers no critical die, so the hit deals one wound instead of the critical's two.
+- audit_id: core/combat-critical-hits
+  id: a-rerolled-wound-is-not-critical
+  covers: [critical-trigger]
+  fighters:
+    first:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.devil-s-toxin
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *ws3-s3-t3-w3-i2
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.0.wound.reroll, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: true, attacks.0.critical: false, attacks.0.damage: 1,
+        state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# When another multiple-wound source is larger than the critical's two wounds the
+# higher value prevails instead of multiplying.  weapon.ball-and-chain inflicts D3
+# damage ("Successful wounds inflict D3 damage", catalog/mechanics/close-combat.
+# yaml) and adds +2 Strength, so the S5 attacker wounds on 2+; the natural six is
+# critical for two wounds, the D3 shows 3, and max(1, 3, 2) is 3: three wounds,
+# not four and not six.  The defender survives on one Wound and keeps fighting.
+- audit_id: core/combat-critical-hits
+  id: a-higher-multiple-damage-source-prevails
+  covers: [damage-stacking]
+  fighters:
+    first:
+      main_weapon_id: weapon.ball-and-chain
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 4, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.critical, value: 1}
+    - {key: round.0.first.attack.0.damage, sides: 3, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: true, attacks.0.damage: 3, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

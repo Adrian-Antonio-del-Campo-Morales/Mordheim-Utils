@@ -115,7 +115,7 @@ class BenchmarkCase:
     """One runnable duel of a benchmark: what ``--scenarios`` selected.
 
     ``id`` is the precompiled scenario name (so stored baselines keep matching)
-    or the E2E / battery key; the fighters and context are the frozen inputs.
+    or the delivery / battery key; the fighters and context are the frozen inputs.
     """
 
     id: str

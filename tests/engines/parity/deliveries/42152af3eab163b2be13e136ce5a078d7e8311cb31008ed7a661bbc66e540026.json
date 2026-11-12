@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-parity-delivery/v2",
+  "status": "not-applicable",
+  "source": {
+    "revision": "84a634dbdfc45973ebb93a9dd90c852e21c7c12b",
+    "path": "tests/conformance/cases/grants/mordheim--ostlanders--ogre--skills--compiler.promoted-hero-skill-access--86d776a26fb6.yaml",
+    "sha256": "09d048335b49e0988504be45671e3aa035ecea45f9bbf6e3cfc68b03b2bae495",
+    "test_id": "rule/mordheim/ostlanders/ogre--skills/compiler.promoted-hero-skill-access::promoted-ogre-choosing-a-skill-outside-both-lists-is-refused"
+  },
+  "case_key": "delivery/rule/mordheim/ostlanders/ogre--skills/compiler.promoted-hero-skill-access/promoted-ogre-choosing-a-skill-outside-both-lists-is-refused",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E declares an expected construction refusal (\"skills are not available to ostlanders/ogre: ['skill.haggle']\"); the build is refused with \"skills are not available to ostlanders/ogre: ['skill.haggle']\", so no statistical scenario can be frozen."
+}

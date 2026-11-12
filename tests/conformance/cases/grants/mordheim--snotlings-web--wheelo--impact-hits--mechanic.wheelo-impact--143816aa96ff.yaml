@@ -1,0 +1,77 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/snotlings-web/wheelo--impact-hits/mechanic.wheelo-impact
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries two authored scenarios derived from the
+# printed rule, the recorded contract and the band package; the bearer is the printed Wheelo
+# identity that owns the impact rule.  REVIEWED still requires manual semantic review and
+# execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios hold the printed collision and its condition: a Wheelo that charged
+# resolves its declared 1D3 count die and one automatic Strength 4 Impact Hit before any blow (no To
+# Hit die is requested, the fixed Strength wounds Toughness 3 on the 3+ it needs, and the injury then
+# leaves the target down), and the same Wheelo that did not charge asks for no impact die at all, so
+# the absence of the count die is the assertion.  The bearer is the printed wheelo profile built from
+# its own band, whose printed two crew attacks follow the impact in the first scenario.  The printed
+# friendly-model sentence is the out-of-scope clause of this same record (a third model on the same
+# side) and is retained as context, and the "remains S4 even if the crew gains a Strength Upgrade"
+# facet has no printed Strength upgrade in this file's scope.  REVIEWED still requires manual
+# semantic review.
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded contract and the band package; no engine output was
+# consulted.  The impact block runs before the strike sequence, asks no To Hit die, and its count is
+# the printed D3; the crew's own two printed attacks follow on the knocked-down target.
+- audit_id: rule/mordheim/snotlings-web/wheelo--impact-hits/mechanic.wheelo-impact
+  id: a-charging-wheelo-deals-its-impact-hits-before-any-blow
+  fighters:
+    first:
+      collection: mordheim
+      band_id: snotlings-web
+      profile_id: wheelo
+      main_weapon_id: weapon.dagger
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.impact-count, value: 1}
+    - {key: round.0.first.impact.0.wound, value: 4}
+    - {key: round.0.first.impact.0.injury.0, value: 2}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.first.attack.1.wound, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: true, attacks.0.damage: 1,
+        state.second.condition: KNOCKED_DOWN, state.first.resources_spent: ['wheelo.first-impact']}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed condition: the same Wheelo that did not charge this turn is dealt no Impact Hits, so
+# the round requests no count die and resolves only the ordinary attack pools.
+- audit_id: rule/mordheim/snotlings-web/wheelo--impact-hits/mechanic.wheelo-impact
+  id: an-uncharging-wheelo-asks-for-no-impact-die
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: snotlings-web
+      profile_id: wheelo
+      main_weapon_id: weapon.dagger
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, attacks.2.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

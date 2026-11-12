@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-parity-delivery/v2",
+  "status": "not-applicable",
+  "source": {
+    "revision": "84a634dbdfc45973ebb93a9dd90c852e21c7c12b",
+    "path": "tests/conformance/cases/mechanics/defence.wolf-pelt-cloak.yaml",
+    "sha256": "27d6aa8465c9aac93a81b03b5035c7723193c6e6b39cd3d5d220bd741c3b062c",
+    "test_id": "mechanic/defence.wolf-pelt-cloak::wolf-priest-may-not-carry-a-blackpowder-weapon"
+  },
+  "case_key": "delivery/mechanic/defence.wolf-pelt-cloak/wolf-priest-may-not-carry-a-blackpowder-weapon",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E declares an expected construction refusal ('hireling active equipment and supplied ownership do not form a complete legal printed kit'); the build is refused with '<anonymous>:545: Error: hireling active equipment and supplied ownership do not form a complete legal printed kit\\n    if (!matched) throw new Error(\"hireling active equipment and supplied ownership do not form a complete legal printed kit\");\\n                  ^\\n\\nError: hireling active equipment and supplied ownership do not form a complete legal printed kit\\n    at resolveHirelingKit (<anonymous>:545:25)\\n    at desktopCall (<anonymous>:1932:45)\\n    at <anonymous>:1:68\\n    at <anonymous>:1:92471\\n', so no statistical scenario can be frozen."
+}

@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-parity-delivery/v2",
+  "status": "blocked",
+  "source": {
+    "revision": "84a634dbdfc45973ebb93a9dd90c852e21c7c12b",
+    "path": "tests/conformance/cases/grants/mordheim--crooked-moon-kep--troll--regeneration--skill.regeneration--a0c21ed9d6c9.yaml",
+    "sha256": "fb02d3beb21637a4489941dff250914901cfbd3b595087638db9af3e5d269850",
+    "test_id": "rule/mordheim/crooked-moon-kep/troll--regeneration/skill.regeneration::a-fire-attack-takes-the-wound-without-a-regeneration-roll"
+  },
+  "case_key": "delivery/rule/mordheim/crooked-moon-kep/troll--regeneration/skill.regeneration/a-fire-attack-takes-the-wound-without-a-regeneration-roll",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E prescribes explicit decisions (round.0.second.vomit-attack); the contract admits only the engine-default decision policy, and no general policy for randomly branched trajectories exists for these keys."
+}

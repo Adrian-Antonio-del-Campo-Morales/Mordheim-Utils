@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-parity-delivery/v2",
+  "status": "blocked",
+  "source": {
+    "revision": "84a634dbdfc45973ebb93a9dd90c852e21c7c12b",
+    "path": "tests/conformance/cases/grants/mordheim--skaven-of-clan-pestilens-mou--plague-rat--plague-infested--poi--85ce14ac1cca.yaml",
+    "sha256": "dff2dec3e13ddc57a8b98211a9fba3a78290e900accf48b54effa801560a0048",
+    "test_id": "rule/mordheim/skaven-of-clan-pestilens-mou/plague-rat--plague-infested/poison.black-lotus::the-optional-wound-die-of-five-leaves-a-normal-wound"
+  },
+  "case_key": "delivery/rule/mordheim/skaven-of-clan-pestilens-mou/plague-rat--plague-infested/poison.black-lotus/the-optional-wound-die-of-five-leaves-a-normal-wound",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E prescribes explicit decisions (round.0.first.attack.0.lotus-critical); the contract admits only the engine-default decision policy, and no general policy for randomly branched trajectories exists for these keys."
+}

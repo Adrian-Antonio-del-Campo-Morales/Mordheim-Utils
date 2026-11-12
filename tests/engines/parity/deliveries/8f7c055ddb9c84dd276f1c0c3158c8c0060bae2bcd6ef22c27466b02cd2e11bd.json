@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-parity-delivery/v2",
+  "status": "not-applicable",
+  "source": {
+    "revision": "84a634dbdfc45973ebb93a9dd90c852e21c7c12b",
+    "path": "tests/conformance/cases/grants/mordheim--black-dwarfs--band--chaos-dwarf-special-skills--profile.skill--9fe719018f9d.yaml",
+    "sha256": "43a435a1cd7ecb0daaaaa3a9a1806d730e9084bdcb1f16a25ecb4e1b71fbbb3f",
+    "test_id": "rule/mordheim/black-dwarfs/band--chaos-dwarf-special-skills/profile.skill-access::a-special-skill-outside-the-printed-table-is-refused"
+  },
+  "case_key": "delivery/rule/mordheim/black-dwarfs/band--chaos-dwarf-special-skills/profile.skill-access/a-special-skill-outside-the-printed-table-is-refused",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E declares an expected construction refusal (\"skills are not available to black-dwarfs/sorcerer: ['skill.monster-slayer']\"); the build is refused with \"skills are not available to black-dwarfs/sorcerer: ['skill.monster-slayer']\", so no statistical scenario can be frozen."
+}

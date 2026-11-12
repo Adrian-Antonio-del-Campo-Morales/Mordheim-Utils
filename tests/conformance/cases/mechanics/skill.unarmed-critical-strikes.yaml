@@ -1,0 +1,90 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/skill.unarmed-critical-strikes
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries 3 authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# executor_capability_note: the two unarmed scenarios depend on the build entry main_weapon_id: weapon.fist compiling and on the compiled main weapon carrying the weapon.fist tag, which is the scope the recorded contract names (engine gap, not an authoring pending).
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 3 scenarios cover the lowered critical threshold on a fist wound of five or six, a six that was required and is therefore no critical, and a weapon attack left at the ordinary threshold.
+
+# --- Authored scenarios ---
+# mechanic/skill.unarmed-critical-strikes - authored from the printed "unarmed
+# attacks score critical hits on To Wound rolls of 5-6" clause and the recorded
+# contract, never from engine output.  The last scenario is the contract's own
+# boundary: the lowered threshold belongs to the fists, so a carried weapon keeps
+# the ordinary natural-six threshold.
+# A critical doubles the damage to two, so the one-wound opponent rolls one injury
+# die per point of damage beyond his last wound and is left Knocked Down.  The
+# fist's own printed save applies before that damage: the unarmoured defender is
+# allowed a 6+ armour save, and the declared face of one fails it, so the wound
+# still lands.  The same saved step follows the plain wound of the second
+# scenario, whose face of six was required and is therefore no critical.
+- audit_id: mechanic/skill.unarmed-critical-strikes
+  id: an-unarmed-wound-on-a-five-or-six-is-critical
+  fighters:
+    first:
+      main_weapon_id: weapon.fist
+      skill_ids: [skill.unarmed-critical-strikes]
+      characteristics: &ucs-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: &ucs-context {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.critical, value: 1}
+    - {key: round.0.first.attack.0.armour, value: 1}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+    - {key: round.0.first.attack.0.injury.1, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: True, attacks.0.damage: 2, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: mechanic/skill.unarmed-critical-strikes
+  id: a-six-that-was-required-is-no-critical
+  fighters:
+    first:
+      main_weapon_id: weapon.fist
+      skill_ids: [skill.unarmed-critical-strikes]
+      characteristics: *ucs-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 5, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: *ucs-context
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.armour, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: False, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: mechanic/skill.unarmed-critical-strikes
+  id: a-carried-weapon-keeps-the-ordinary-threshold
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.unarmed-critical-strikes]
+      characteristics: *ucs-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: *ucs-context
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: False, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

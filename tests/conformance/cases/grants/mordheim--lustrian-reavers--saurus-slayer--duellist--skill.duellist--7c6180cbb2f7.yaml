@@ -1,0 +1,88 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/lustrian-reavers/saurus-slayer--duellist/skill.duellist
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries 3 authored scenarios for the printed first-round
+# re-roll: the bearer takes a missed hit again whether it charges or is charged (charge direction is
+# not a printed condition) and the identical miss without the rule stands.  REVIEWED still requires
+# manual semantic review and execution_status stays UNEXECUTED; no behavioral result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 3 scenarios cover the printed first-round re-roll of missed hits with a single
+# opponent: with the bearer charging, the declared To Hit two is taken again on
+# <attack-key>.hit.reroll and wounds; with the bearer charged the same two is taken again as well,
+# which is the printed "whether he charged or was charged" and the discriminator against a
+# charge-only skill; and the identical miss without the operator stands.  The fixed fixture declares
+# the canonical skill.duellist operator the band's sentence repeats; the register records the band
+# origin as adding no second runtime contribution.  The single-opponent requirement is inherent in the
+# duel of exactly two combatants and is not separately asserted.  REVIEWED still requires manual
+# semantic review.
+
+# --- Authored scenarios ---
+# First round, bearer charging, one opponent: the declared two misses and is taken again.
+- audit_id: rule/mordheim/lustrian-reavers/saurus-slayer--duellist/skill.duellist
+  id: a-charging-bearer-takes-a-missed-hit-again
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.duellist]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed "whether he charged or was charged": here the bearer is the one charged and the same
+# missed hit is still taken again.  The charger strikes first, so its attack is resolved before the
+# bearer's replacement blow.
+- audit_id: rule/mordheim/lustrian-reavers/saurus-slayer--duellist/skill.duellist
+  id: a-charged-bearer-takes-the-same-missed-hit-again
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.duellist]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.hit: True, attacks.1.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The control: the same charge and the same declared two without the operator, which stands as a miss.
+- audit_id: rule/mordheim/lustrian-reavers/saurus-slayer--duellist/skill.duellist
+  id: without-the-rule-the-same-two-stands
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

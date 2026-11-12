@@ -43,7 +43,7 @@ SCHEMA = "mordheim-compiled-cases"
 SCHEMA_VERSION = 1
 EFFECT_SCHEMA = "EffectSet/v1"
 
-_ORIGIN_KINDS = frozenset({"unit", "e2e", "semantic", "benchmark", "battery"})
+_ORIGIN_KINDS = frozenset({"unit", "conformance", "semantic", "benchmark", "battery"})
 _PARTICIPANT_CONDITIONS = frozenset({
     "standing", "knocked-down", "stunned", "paralyzed", "out", "fleeing",
 })
@@ -1046,7 +1046,7 @@ def _decode_expectations(raw, case_key: str, field: str) -> Mapping | None:
         else:
             checkpoints = _mapping(value, case_key, location)
             if name == "expect_rounds":
-                # JSON object keys are strings; the E2E runner addresses rounds
+                # JSON object keys are strings; the conformance runner addresses rounds
                 # by integer index, so the reviewed checkpoint map keeps ints.
                 decoded[name] = {
                     int(key) if key.isdigit() else key: checkpoint

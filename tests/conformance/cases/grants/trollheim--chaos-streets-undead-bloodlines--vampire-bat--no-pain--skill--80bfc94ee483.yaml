@@ -1,0 +1,41 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/chaos-streets-undead-bloodlines/vampire-bat--no-pain/skill.ignore-pain
+# authoring_status: PARTIAL
+# authoring_progress: this ID carries the CLOSING-REVIEW [C] note on the clause - the profile's
+#   printed Summoned Creature overrides the conversion tape and keeps it PARTIAL.  See the clause note
+#   below for the exact evidence.  execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# PARTIAL: [C] the single wound reaching the injury table cannot happen
+#   for this bearer: its own profile prints Summoned Creature (injury-profile 4), so the executed last
+#   wound is taken Out of Action without an injury roll and the printed conversion is unobservable for
+#   the same identity.  The scenario below is authored on the honest observation (the Out result the
+#   source actually produces) and the missing datum is an injury-profile bearer for this rule.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the printed profile; no engine output was consulted.
+# The fixture's Initiative is higher and the bearer contributes no attacks of its own (initial_state),
+# so the die of 3 at the injury table is Stunned, converted to Knocked Down by the bearer's rule.
+
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/vampire-bat--no-pain/skill.ignore-pain
+  id: a-stunned-result-becomes-knocked-down
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: vampire-bat}
+  initial_state: {second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}

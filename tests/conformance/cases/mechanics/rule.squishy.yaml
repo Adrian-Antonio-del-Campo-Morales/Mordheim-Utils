@@ -1,0 +1,62 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/rule.squishy
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios roll the same Stunned injury
+#   result against a bearer of No Pain, with and without Squishy, and observe
+#   the standing Stun against the downgrade.
+
+# --- Authored scenarios ---
+# The bearer carries No Pain, which would otherwise turn a Stunned injury result
+# into Knocked Down.  Squishy suppresses that flag, so the printed Stunned result
+# stands.  A Stunned warrior makes no attack of its own, so the tape closes on
+# the injury die.
+- audit_id: mechanic/rule.squishy
+  id: no-pain-cannot-quiet-the-stun-under-squishy
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.ignore-pain, rule.squishy]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 3}
+  expect_rounds:
+    0: {state.second.condition: STUNNED, state.second.wounds: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The identical duel and tape without Squishy: No Pain acts on the same Stunned
+# result and downgrades it, which isolates the printed override to Squishy.
+- audit_id: mechanic/rule.squishy
+  id: no-pain-alone-still-quiets-the-same-stun
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.ignore-pain]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 3}
+  expect_rounds:
+    0: {state.second.condition: KNOCKED_DOWN, state.second.wounds: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

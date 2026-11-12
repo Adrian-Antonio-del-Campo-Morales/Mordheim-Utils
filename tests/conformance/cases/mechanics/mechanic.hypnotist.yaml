@@ -1,0 +1,121 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.hypnotist
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 4 scenarios cover the failed Leadership test that entrances the target and suppresses its attacks, the passed test that leaves it free, the declined declaration with no test at all, and the Sleuth choosing to end an existing trance.
+
+# --- Authored scenarios ---
+# The Sleuth is the second fighter and hypnotises the opposing warrior before any blow
+# is struck.  The two declared sixes total twelve against the target's Leadership 6 and
+# fail it, so the target is entranced: its pool is suppressed entirely (the strict tape
+# carries no die for it) while the Sleuth's own attack finds the printed "treated as
+# knocked down for the purpose of being attacked" target, which is an automatic hit
+# whose To Wound die still has to be rolled.  The trance is consumed by that attack, as
+# the printed end condition says.
+- audit_id: mechanic/mechanic.hypnotist
+  id: a-failed-leadership-test-entrances-the-target
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.hypnotist]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.hypnotist, value: true}
+  rolls:
+    - {key: round.0.second.hypnotist.0, value: 6}
+    - {key: round.0.second.hypnotist.1, value: 6}
+    - {key: round.0.second.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.knocked_down_target: true, attacks.0.wounded: false, state.first.wounds: 2, state.first.condition: STANDING, state.first.entranced: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same declaration with a passed test: the two ones total two against Leadership 6,
+# so the target is not entranced at all.  Both warriors then resolve their ordinary
+# attacks, each with its own To Hit die, and no attack is an automatic one.
+- audit_id: mechanic/mechanic.hypnotist
+  id: a-passed-leadership-test-leaves-the-target-free
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.hypnotist]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.hypnotist, value: true}
+  rolls:
+    - {key: round.0.second.hypnotist.0, value: 1}
+    - {key: round.0.second.hypnotist.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, attacks.1.knocked_down_target: false, state.first.entranced: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed "may hypnotise" is a declaration: declining it requests no Leadership
+# test (the tape carries neither of the two dice) and leaves the round to the two
+# ordinary attack pools.
+- audit_id: mechanic/mechanic.hypnotist
+  id: declining-the-hypnosis-tests-nothing
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.hypnotist]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.hypnotist, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.first.entranced: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed "or when the Sleuth chooses to end it": the target starts the round
+# already entranced and the Sleuth spends the offered end-hypnosis declaration on it,
+# so the target is free and attacks normally; the same Sleuth then declines a new
+# hypnosis, which is why no Leadership die appears anywhere in the tape.
+- audit_id: mechanic/mechanic.hypnotist
+  id: the-sleuth-chooses-to-end-an-existing-trance
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.hypnotist]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  initial_state:
+    first: {entranced: true}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.end-hypnosis, value: true}
+    - {key: round.0.second.hypnotist, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.first.entranced: false, state.first.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

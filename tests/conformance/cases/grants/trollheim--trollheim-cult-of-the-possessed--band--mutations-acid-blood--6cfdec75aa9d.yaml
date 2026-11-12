@@ -1,0 +1,64 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-acid-blood/trait.acid-blood
+# authoring_status: AUTHORED
+# authoring_progress: 2 authored scenario(s) in this file; authored clauses ['whole--scope--acid-blood']; clauses still pending or unrepresentable in this file: [].  The tape key the earlier note called missing is the reaction handler's own composition (packages/python/combat-engine/mordheim_combat/modular/aftermath.py::_react_to_wound: `key=f"{key}.acid-blood.{index}"`, one index per lost wound), which the authored Mordheim copy of the same shared trait already exercises (tests/E2E/modular-engine/cases/grants/mordheim--cult-of-the-possessed--band--mutations-blackblood--trait.acid--0dff9f669885.yaml).  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: whole--scope--acid-blood (scope: YES)
+# AUTHORED[whole--scope--acid-blood]: 2 scenarios take the printed sentence onto the real wound route of the shared operator. The bearer loses an unsaved wound in close combat and the reaction resolves one automatic Strength 3 hit with criticals disabled against the contacting duel opponent, read on the attacker's own wounds at the key the handler composes (`round.0.first.attack.0.acid-blood.0.wound`); the identical wound on the identical fixture without the trait costs the attacker nothing and asks for no reaction die, so the trait is the only difference between the two tapes.
+#
+# Clause: whole--scope--cost (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+# --- Authored scenarios ---
+# The band origin repeats the canonical clause of the shared trait without adding a term, so the tape
+# is the shared operator's own route: the wound that triggers it is declared on the attack that
+# wounded the bearer, and the reaction's own wound die is read at `<attack key>.acid-blood.<index>`.
+
+- audit_id: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-acid-blood/trait.acid-blood
+  id: an-unsaved-wound-answers-with-the-printed-strength-three-hit
+  covers: [whole--scope--acid-blood]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {acid_blood: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.acid-blood.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.first.wounds: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-acid-blood/trait.acid-blood
+  id: the-same-wound-without-the-trait-costs-the-attacker-nothing
+  covers: [whole--scope--acid-blood]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.first.wounds: 3, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

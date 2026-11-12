@@ -1,0 +1,57 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/protectorate-of-sigmar-lotd3/band--special-skill-unshakeable-faith/mechanic.fear-immunity
+# authoring_status: PARTIAL
+# authoring_progress: the admitted fear-immunity clause is withheld: no declaration can carry this member to
+# any recipient of the clause.  The tape that asserted the printed effect named the member as its
+# declared-selection, and that channel refuses it at the access stage with the verbatim sentence "special rule
+# is not available to protectorate-of-sigmar-lotd3/<profile>: band--special-skill-unshakeable-faith"
+# (packages/python/roster-construction/mordheim_construction/_eligibility.js, specialRuleRestriction: a
+# warband_skill row with applies_to.band true and no eligibility list is admitted only for a recipient whose
+# own printed skill_access carries the "special" category, and no profile of this band prints it).  Both
+# authored scenarios were therefore withdrawn: the admission tape because the gate it feeds is refused before
+# the immunity is reached, and the band-mate boundary tape because without the admission half its expectation
+# holds whether or not the immunity exists, which makes it non-discriminating evidence for this clause.  The
+# requirement is not deleted - what is missing is the projection that carries the printed "special" category,
+# the same member-list projection the four band-table files record.  REVIEWED still requires manual semantic
+# review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# PARTIAL: [C] the requirement stands and is not weakened - the printed warrior is hardened and
+#   takes no Fear test - but no scenario covers it.  The printed recipient reaches this member only through the
+#   declared-selection channel, which refuses it at the access stage for every profile of this band (the
+#   verbatim sentence and the guard are quoted above), so the two tapes this file carried were withdrawn: the
+#   admission tape (a fear-causing charger reaching the bearer, which would be tested and is not) because its
+#   declared channel never reaches the immunity, and its band-mate boundary because a tape that holds in both
+#   worlds is not evidence (INVENTORY.md section 2, rule 5).  What is missing is the projection carrying the
+#   printed "special" category; the identities, the printed recipient and the required outcome are declarable
+#   and remain recorded here for the file that will carry them once that projection exists.
+
+# --- Recorded cause (this file carries no scenarios) ---
+# MISSING CAPABILITY (pending implementation, not an authoring blocker; checked statically in the shared
+# construction stage, not by running it): no profile of this band can currently be handed
+# band--special-skill-unshakeable-faith.  The row is `kind: warband_skill` with `applies_to.band: true`
+# and no `eligibility`, and `specialRuleRestriction()`'s access stage admits such a row only for a
+# recipient whose own printed `skill_access` carries the `special` category; this band prints
+# warrior-priest [combat, academic, strength, speed], templar [combat, strength, speed], huntsman
+# [combat, shooting], acolyte [combat, academic, strength, speed] and no Henchman row, so the sentence
+# "special rule is not available to protectorate-of-sigmar-lotd3/{profile}: band--special-skill-unshakeable-faith"
+# fires for every recipient before the immunity is reached.  The identities, the printed recipient (the
+# warrior the text names, built here as templar) and the required outcome (no Fear test is taken) are all
+# declarable and are recorded above; what is missing is the projection that carries the printed
+# `special` category - either a `profile.skill-access` grant on the band's own table row or an
+# `eligibility` list on this member - exactly the member-list projection the four band-table files record.
+# No tape is carried while that projection is absent: a declaration this gate refuses cannot evidence the
+# immunity, and the boundary tape alone would hold whether or not the immunity exists.
+
+# --- Withdrawn scenarios ---
+# The two scenarios this file carried were withdrawn with the finding recorded in the marker above; the
+# requirement they stated is not deleted and is restated there.  The admission tape and its band-mate
+# boundary return together, once the projection that carries the printed "special" category exists, since a
+# boundary tape without its admission half cannot evidence the clause.
+[]

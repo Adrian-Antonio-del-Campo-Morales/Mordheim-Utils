@@ -1,0 +1,98 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/sea-ghosts-mim/feast-master--talismanic-tattoos/trait.ward-save
+# authoring_status: AUTHORED
+# authoring_progress: the admitted tattoo-save clause carries three authored scenarios derived from
+# the printed rule and the recorded contract - the 6+ special save holding against a magical attack,
+# the same save still exactly six against a Strength 6 attack (the printed immutability), and the
+# boundary face that fails.  REVIEWED still requires manual semantic review and execution_status
+# stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 3 scenarios cover the printed special save and its two immutability claims:
+# a declared magical attack is rolled against at the printed six and saved, a Strength 6 attack is
+# rolled against at the same six and also saved (so neither magic nor Strength moves the printed
+# target), and a face of five fails so the wound stands, which is what shows the six really is the
+# threshold rather than an automatic save.  The bearer is the band's own Feast-Master through the
+# operator in its grant list, matching the ward family's own case, and the attacker's Strength and
+# the magical property are declared fixture facts.  The printed "warpaint" wording adds no separate
+# term, and combination with worn armour is not asserted because the printed clause governs a special
+# save of its own.  REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+# The printed qualifying case first: a magical attack is still rolled against the special
+# save, and the printed six holds.
+- audit_id: rule/mordheim/sea-ghosts-mim/feast-master--talismanic-tattoos/trait.ward-save
+  id: the-special-six-holds-against-a-magical-attack
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {magical_attacks: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: sea-ghosts-mim
+      profile_id: feast-master
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: True, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed immutability: a Strength 6 attack leaves the special save at the printed six,
+# so the same face still holds where a Strength-modified save would have been worsened.
+- audit_id: rule/mordheim/sea-ghosts-mim/feast-master--talismanic-tattoos/trait.ward-save
+  id: strength-does-not-modify-the-printed-six
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 6, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: sea-ghosts-mim
+      profile_id: feast-master
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.first.attack.0.special.ward, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: True, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The boundary face: five is one short of the printed six, so the wound stands and the
+# special save is a threshold rather than an automatic save.
+- audit_id: rule/mordheim/sea-ghosts-mim/feast-master--talismanic-tattoos/trait.ward-save
+  id: a-face-of-five-fails-the-printed-six
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: sea-ghosts-mim
+      profile_id: feast-master
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: False, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

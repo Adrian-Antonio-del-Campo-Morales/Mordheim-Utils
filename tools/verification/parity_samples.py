@@ -93,8 +93,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable, Mapping, Sequence
 
-from tools.verification.e2e_parity import bootstrap_paths
-from tools.verification.e2e_parity import repository_root
+from tools.verification.parity_deliveries import KEY_PREFIX as DELIVERY_PREFIX
+from tools.verification.parity_deliveries import bootstrap_paths
+from tools.verification.parity_deliveries import repository_root
 
 # Before any engine import: the digests below hash this checkout, so the parent
 # and every pool worker must import the engine from it too.
@@ -402,8 +403,9 @@ def sample_path(store: Path, engine: str, corpus_key: str) -> Path:
     """Resolve an existing JSON/gzip sample, or a new JSON path."""
     if engine not in ENGINES:
         raise ValueError(f"unknown engine {engine!r}")
-    name = ("e2e__" + hashlib.sha256(corpus_key.encode()).hexdigest()
-            if corpus_key.startswith("e2e/") else corpus_key.replace("/", "__"))
+    # Delivery keys embed whole audit ids: hash them to keep Windows paths short.
+    name = ("delivery__" + hashlib.sha256(corpus_key.encode()).hexdigest()
+            if corpus_key.startswith(DELIVERY_PREFIX) else corpus_key.replace("/", "__"))
     path = Path(store) / engine / f"{name}.json"
     compressed = path.with_suffix(".json.gz")
     return compressed if not path.exists() and compressed.exists() else path
@@ -1086,12 +1088,12 @@ def _run_compare(args) -> int:
     warnings = _grouped_warnings(provenance)
     for message in warnings:
         provenance_warning(message)
-    from tools.verification import e2e_parity
+    from tools.verification import parity_deliveries
 
     kinds = {entry.kind for entry in chosen}
     sources = [path for kind, path in (
         ("scenario", CORPUS),
-        ("e2e", e2e_parity.deliveries_directory()),
+        ("delivery", parity_deliveries.deliveries_directory()),
         ("battery", _ROOT / "apps/combat-lab/mordheim_combat_lab/verification/parity/_battery_cases.py"),
     ) if kind in kinds]
     corpus_digest = _digest_files(

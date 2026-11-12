@@ -1,0 +1,248 @@
+{
+  "schema": "mordheim-parity-delivery/v2",
+  "status": "translated",
+  "source": {
+    "revision": "84a634dbdfc45973ebb93a9dd90c852e21c7c12b",
+    "path": "tests/conformance/cases/grants/mordheim--tomb-guardians--tomb-lord--undead--mechanic.undead--1e5d476baa54.yaml",
+    "sha256": "18a7cf9380747f8930ee0ee2dc9816b9dbbb641b99453a53c9c7ed1c2c6a754b",
+    "test_id": "rule/mordheim/tomb-guardians/tomb-lord--undead/mechanic.undead::a-charging-opponent-that-passes-its-fear-test-reaches-contact"
+  },
+  "case_key": "delivery/rule/mordheim/tomb-guardians/tomb-lord--undead/mechanic.undead/a-charging-opponent-that-passes-its-fear-test-reaches-contact",
+  "case": {
+    "case_key": "delivery/rule/mordheim/tomb-guardians/tomb-lord--undead/mechanic.undead/a-charging-opponent-that-passes-its-fear-test-reaches-contact",
+    "origin": {
+      "kind": "conformance",
+      "node_id": "rule/mordheim/tomb-guardians/tomb-lord--undead/mechanic.undead::a-charging-opponent-that-passes-its-fear-test-reaches-contact",
+      "path": "tests/conformance/cases/grants/mordheim--tomb-guardians--tomb-lord--undead--mechanic.undead--1e5d476baa54.yaml",
+      "sha256": "18a7cf9380747f8930ee0ee2dc9816b9dbbb641b99453a53c9c7ed1c2c6a754b"
+    },
+    "fighters": {
+      "first": {
+        "fighter_id": "custom:custom",
+        "characteristics": {
+          "weapon_skill": 3,
+          "strength": 3,
+          "toughness": 3,
+          "wounds": 3,
+          "initiative": 2,
+          "attacks": 1,
+          "movement": null,
+          "leadership": 7
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.mace",
+            "material.normal"
+          ],
+          "concussion": true
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "armour.no-armour"
+          ]
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {},
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 0,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {},
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.mace",
+            "effect": {
+              "tags": [
+                "weapon.mace",
+                "material.normal"
+              ],
+              "concussion": true
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      },
+      "second": {
+        "fighter_id": "tomb-guardians:tomb-lord",
+        "characteristics": {
+          "weapon_skill": 4,
+          "strength": 4,
+          "toughness": 5,
+          "wounds": 3,
+          "initiative": 3,
+          "attacks": 2,
+          "movement": 4,
+          "leadership": 8
+        },
+        "main_weapon": {
+          "tags": [
+            "weapon.dagger",
+            "material.normal"
+          ],
+          "target_armour_bonus": 1
+        },
+        "off_hand": null,
+        "global_effects": {
+          "tags": [
+            "mechanic.leader-six",
+            "mechanic.causes-fear",
+            "mechanic.psychology-immunity",
+            "skill.ignore-pain",
+            "nature.undead",
+            "undead_or_possessed",
+            "armour.no-armour",
+            "flammable",
+            "poison_immune",
+            "fighter-kind.hero",
+            "band.tomb-guardians",
+            "warband-group.evil",
+            "warband-group.undead"
+          ],
+          "poison_immunity": true
+        },
+        "armour_save": 7,
+        "helmet_save": 7,
+        "natural_armour_save": 7,
+        "off_hand_attacks": false,
+        "natural_armour_unmodified": false,
+        "injury_profile": 0,
+        "random_characteristics": [],
+        "natural_armour_worst_save": 7,
+        "shield_and_skill_effects": {
+          "tags": [
+            "skill.ignore-pain"
+          ]
+        },
+        "extra_attacks": [],
+        "missile_weapon_limit": 2,
+        "ballistic_skill": 3,
+        "construction_tags": [],
+        "main_weapon_without_poison": null,
+        "off_hand_without_poison": null,
+        "mounted": false,
+        "unarmed_weapon": {
+          "tags": [
+            "weapon.fist"
+          ],
+          "strength_bonus": -1,
+          "target_armour_bonus": 1
+        },
+        "main_hand_slot": "main",
+        "off_hand_slot": "off",
+        "vomit_attack": null,
+        "stupidity_leadership": null,
+        "stupidity_leadership_bonus": 0,
+        "mob_allies": 0,
+        "animal_handler_leadership": null,
+        "skill_effects_only": {},
+        "global_effects_without_equipment": {
+          "tags": [
+            "mechanic.leader-six",
+            "mechanic.causes-fear",
+            "mechanic.psychology-immunity",
+            "skill.ignore-pain",
+            "nature.undead",
+            "undead_or_possessed",
+            "flammable",
+            "poison_immune",
+            "fighter-kind.hero",
+            "band.tomb-guardians",
+            "warband-group.evil",
+            "warband-group.undead"
+          ],
+          "poison_immunity": true
+        },
+        "mutation_options": [],
+        "mutation_equipment": [
+          {
+            "item_id": "weapon.dagger",
+            "effect": {
+              "tags": [
+                "weapon.dagger",
+                "material.normal"
+              ],
+              "target_armour_bonus": 1
+            },
+            "kind": "weapon",
+            "slot": "main",
+            "stat_bonuses": [],
+            "effect_without_poison": null
+          }
+        ],
+        "natural_armour_stacks": false,
+        "extra_attacks_without_poison": []
+      }
+    },
+    "context": {
+      "first_id": "first",
+      "second_id": "second",
+      "nearby": [],
+      "distances": [],
+      "contacts": null,
+      "terrain": [],
+      "charging": [
+        "first"
+      ],
+      "active_participant": "first"
+    },
+    "auxiliary_participants": [],
+    "initial_state": {
+      "first": {},
+      "second": {
+        "attacks": 0
+      }
+    },
+    "determinism": {
+      "dice": [],
+      "decisions": []
+    },
+    "limits": {
+      "maximum_rounds": 1
+    },
+    "benchmark": null,
+    "expectations": null,
+    "fingerprints": {
+      "inputs_sha256": "8518b07d9b526948c06024a31b61e1533748c8802143faaccf98f57170c08847",
+      "case_sha256": "1fc3832cc1041cee56779be49389bec5cedc8aa028480ba6d443b0ba29d3f93d"
+    }
+  },
+  "decision_policy": {
+    "kind": "engine-default"
+  },
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": null
+}

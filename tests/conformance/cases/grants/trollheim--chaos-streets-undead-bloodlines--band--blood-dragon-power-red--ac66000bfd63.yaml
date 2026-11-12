@@ -1,0 +1,78 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--blood-dragon-power-red-fury/skill.red-fury
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries 2 authored scenarios derived from the printed
+#   rule and the recorded contract: the bearer selecting the band row band--blood-dragon-power-red-fury
+#   carries one extra attack die beside its fixture base of one, and the identical bearer without the row
+#   keeps the single attack, so only the selected power explains the difference.  Attack 1 is supplied as
+#   a fixture base, so the printed off-maximum bonus is what adds the second die.  REVIEWED still requires
+#   manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios cover the printed +1 Attack of the shared skill.red-fury operator as this
+#   band origin carries it.  The bearer is the printed Blood Dragon Vampire of this band selecting the row
+#   the audit id names; the row is already the band's own selection of the power, so no catalogue lookup
+#   is invented here.  Every strike is a natural 1, so the tape holds only the attack dice of the round and
+#   the attack count itself is the evidence.  The printed rider "does not count toward its normal
+#   characteristic maximum" is a character-sheet consequence with no duel observable and is recorded here
+#   rather than asserted.  REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+# Derived from the printed sentence, the recorded contract and the band row the audit id names; no engine
+# output was consulted.  The bearer is charged by a hand-built fixture, so no side is charging a printed
+# Fear-causer and the tape carries no Fear die; the ledger shows one attack for the charger and the bearer's
+# own pool beside it.
+
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--blood-dragon-power-red-fury/skill.red-fury
+  id: the-selected-power-adds-one-attack-to-the-bearer
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: blood-dragon-vampire
+      special_rule_ids: [band--blood-dragon-power-red-fury]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.second.wounds: 2, state.first.condition: STANDING, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--blood-dragon-power-red-fury/skill.red-fury
+  id: without-the-selected-power-the-bearer-keeps-its-single-attack
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: blood-dragon-vampire
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.second.wounds: 2, state.first.condition: STANDING, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

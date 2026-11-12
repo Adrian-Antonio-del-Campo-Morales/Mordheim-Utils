@@ -1,0 +1,125 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/trollheim-skaven-clan-eshin/band--skaven-special-skills-art-of-silent-death/skill.art-of-silent-death
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries authored scenarios derived from the printed sentence and the recorded contract (the unarmed pool gains the printed attack, the critical threshold is 5, and the paired claw profile supplies the further attack through its own extra weapon attack).  The tape shapes mirror the authored canonical operator of the same effect_id; the register records this band origin as repeating it without adding a term.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 5 scenarios cover the unarmed extra attack, the critical hit on a To Wound roll of five, and the paired fighting-claw pool ending one attack higher, each with the same configuration without the skill where the printed improvement is the only difference.
+
+# --- Authored scenarios ---
+# The printed sentence claims three independently observable consequences: fighting with bare
+# claws without penalty carries an extra attack, a To Wound roll of 5-6 is a critical, and the
+# same skill combined with Eshin Fighting Claws grants +2 Attacks instead of +1 (the paired claw
+# profile supplies the further attack).  Every expectation comes from the printed text and the
+# recorded contract, never from engine output.
+- audit_id: rule/trollheim/trollheim-skaven-clan-eshin/band--skaven-special-skills-art-of-silent-death/skill.art-of-silent-death
+  id: a-five-is-a-critical-wound-with-the-skill
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.art-of-silent-death]
+      characteristics: &skaven-ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &plain-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: &charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.critical, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: true, attacks.0.damage: 2, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same five without the skill: the ordinary threshold of six applies and the wound is not
+# a critical.
+- audit_id: rule/trollheim/trollheim-skaven-clan-eshin/band--skaven-special-skills-art-of-silent-death/skill.art-of-silent-death
+  id: the-same-five-without-the-skill-is-an-ordinary-wound
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *skaven-ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *plain-ws3-s3-t3-w2-i2
+  duel_context: *charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: false, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Bare claws: the pool carries one further attack than the same fist without the skill.  Every
+# attack is scripted as a miss so the pool size is the only difference.
+- audit_id: rule/trollheim/trollheim-skaven-clan-eshin/band--skaven-special-skills-art-of-silent-death/skill.art-of-silent-death
+  id: bare-claws-carry-the-extra-attack
+  fighters:
+    first:
+      main_weapon_id: weapon.fist
+      skill_ids: [skill.art-of-silent-death]
+      characteristics: *skaven-ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *plain-ws3-s3-t3-w2-i2
+  duel_context: *charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, attacks.2.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same fist without the skill keeps a single attack.
+- audit_id: rule/trollheim/trollheim-skaven-clan-eshin/band--skaven-special-skills-art-of-silent-death/skill.art-of-silent-death
+  id: the-same-fist-without-the-skill-keeps-one-attack
+  fighters:
+    first:
+      main_weapon_id: weapon.fist
+      characteristics: *skaven-ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *plain-ws3-s3-t3-w2-i2
+  duel_context: *charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Eshin Fighting Claws with the skill: the paired claw profile contributes its own further
+# attack, so the printed "+2 instead of +1" ends one attack higher than the fist pool.
+- audit_id: rule/trollheim/trollheim-skaven-clan-eshin/band--skaven-special-skills-art-of-silent-death/skill.art-of-silent-death
+  id: the-paired-fighting-claws-carry-a-further-attack
+  fighters:
+    first:
+      main_weapon_id: weapon.fighting-claws
+      skill_ids: [skill.art-of-silent-death]
+      characteristics: *skaven-ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *plain-ws3-s3-t3-w2-i2
+  duel_context: *charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.2.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, attacks.2.hit: false, attacks.3.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

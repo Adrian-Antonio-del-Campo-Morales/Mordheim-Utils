@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-parity-delivery/v2",
+  "status": "not-applicable",
+  "source": {
+    "revision": "84a634dbdfc45973ebb93a9dd90c852e21c7c12b",
+    "path": "tests/conformance/cases/grants/mordheim--adventurers-kaz--band--dwarf-special-skills--profile.skill-acc--610573525119.yaml",
+    "sha256": "c10ce09d2c182f97d818279512bcee9d6c7dd9a6f74ee55cf1eb17886f917ac2",
+    "test_id": "rule/mordheim/adventurers-kaz/band--dwarf-special-skills/profile.skill-access::a-special-skill-outside-the-printed-table-is-refused"
+  },
+  "case_key": "delivery/rule/mordheim/adventurers-kaz/band--dwarf-special-skills/profile.skill-access/a-special-skill-outside-the-printed-table-is-refused",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E declares an expected construction refusal (\"skills are not available to adventurers-kaz/dwarf: ['skill.miniath']\"); the build is refused with \"skills are not available to adventurers-kaz/dwarf: ['skill.miniath']\", so no statistical scenario can be frozen."
+}

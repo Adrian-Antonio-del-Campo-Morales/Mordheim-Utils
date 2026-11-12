@@ -36,14 +36,20 @@ These items show a description built from their equipment-list data (list, cost,
 List implemented items with missing or partial deterministic coverage using
 `python tools/knowledge/clauses.py coverage --kind item --pending`.
 
-## Modular integration and E2E coverage
+## Rules-conformance coverage
 
 The scenarios and the accepted-evidence baseline pass (2026-11-12 run: 5,248
 passed). The completeness gate
-(`MORDHEIM_E2E_REQUIRE_COMPLETE=1 python -m pytest tests/integration/e2e -q`)
+(`MORDHEIM_CONFORMANCE_REQUIRE_COMPLETE=1 python -m pytest tests/conformance -q`)
 still reports 591 admitted identities without scenarios and 15 identities with
 uncovered admitted clauses — an authoring backlog, not a regression. Close when
 the gate passes with the existing clause identities.
+
+- **Missing conformance scaffolds.** 225 admitted identities have no authoring
+  file: `python tests/conformance/generate_skeletons.py --check` exits 1 listing
+  224 hireling identities (commit 0a46aab6) and
+  `night-goblins-kaz--band--animosity--mechanic.goblin-squabble` (35a01f4c).
+  Close when the check exits 0.
 
 ## Combat Lab checklist popover closes during layout
 
@@ -64,17 +70,17 @@ second-win and unresolved rates, and verify source and input digests.
 - **Native.** Run the native runtime and deterministic replay selections
   (`tests/engines/native/`): attack-event gating, pool allocation and Rapier
   Barrage touch the replay paths. Then requalify `--scenarios big` against
-  `modular-100k` and re-sample `native-e2e-100k` from a clean commit.
+  `modular-100k` and re-sample `native-deliveries-100k` from a clean commit.
 - **Stale and affected deliveries to regenerate at the next re-sample.** The stored samples still carry the two retired Cleaver deliveries; the 8 deliveries drawn from the two Night Goblins (KAZ) scenarios edited on 2026-11-11 pin an old scenario sha256 and are classified stale; and the samples of the other deliveries naming KAZ goblins or Main Gauche bearers predate the Animosity and Main Gauche behaviour changes.
 
-- **NumPy stored E2E sample.** `numpy-e2e-100k` predates the current engine.
-  Re-sample it from a clean commit (the current engine passes every E2E
-  delivery against `modular-e2e-100k` at 20,000 duels, including the Raging
+- **NumPy stored delivery sample.** `numpy-deliveries-100k` predates the current engine.
+  Re-sample it from a clean commit (the current engine passes every parity
+  delivery against `modular-deliveries-100k` at 20,000 duels, including the Raging
   Peasants fist case that diverged in the stored sample).
-- **Systematic E2E offset.** Every NumPy E2E delivery passes the six-sigma
+- **Systematic delivery-campaign offset.** Every NumPy parity delivery passes the six-sigma
   gate, yet the rates lean one way: over the 1,815 distinct inputs the
   first-win z-scores average about +0.2 and the unresolved ones about +0.9
-  against `modular-e2e-100k`. The per-case z-scores share one seed, so their
+  against `modular-deliveries-100k`. The per-case z-scores share one seed, so their
   mean is less significant than it looks. Determine whether this is an engine
   difference or the oracle-provenance problem below.
 - **Oracle provenance.** The stored modular samples carry a source digest that
@@ -89,7 +95,8 @@ second-win and unresolved rates, and verify source and input digests.
 - **Portable native digests.** `.pyx` and `.pxd` files have no line-ending rule
   in `.gitattributes`, so Windows and Linux checkouts of one commit produce
   different native digests and spurious provenance warnings.
-- **Rejected E2E deliveries.** 2,485 deliveries never run: 1,491 need
+- **Rejected parity deliveries.** Admission states of parity deliveries, not
+  failing conformance tests: 2,485 deliveries never run: 1,491 need
   `initial_state` overrides or auxiliary participants the shared runner cannot
   express, 530 prescribe scripted decisions and 464 are expected construction
   refusals. The first two groups stay uncertified until the runner supports

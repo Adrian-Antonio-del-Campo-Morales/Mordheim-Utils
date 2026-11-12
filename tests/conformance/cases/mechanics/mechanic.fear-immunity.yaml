@@ -1,0 +1,63 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.fear-immunity
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios evidence the printed skip of the Fear test taken
+#   only because the opponent causes Fear, and the same test being rolled without it.
+
+# --- Authored scenarios ---
+# The charged bearer is fear-immune, so the fear.charged test is not requested: the
+# tape carries no fear die and the round completes.  The immune warrior's own four
+# hits normally, which is the positive evidence for the skip: a warrior that had
+# taken and failed the Fear test would be reduced to hitting only with sixes.
+- audit_id: mechanic/mechanic.fear-immunity
+  id: the-immune-warrior-skips-the-fear-test
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1, leadership: 10}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.fear-immunity]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 10}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 3,
+        state.second.fear_hit_sixes: False}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The 2D6 Fear test passes on 7 against Ld 10, so the leader is not reduced to sixes.
+- audit_id: mechanic/mechanic.fear-immunity
+  id: without-the-immunity-the-charged-fear-test-is-rolled
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1, leadership: 10}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 10}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false, state.first.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

@@ -16,7 +16,7 @@ when it has several observable parts, or when part of the printed text is
 deliberately outside the duel (``scope: 'NO'``).  A record without clauses is
 one obligation: its identity is the clause.  Clauses carry no text and no
 evidence: the printed prose is the rule, and the tests declare what they cover
-(E2E ``audit_id``/``covers``, the ``covers`` pytest marker).
+(conformance-scenario ``audit_id``/``covers``, the ``covers`` pytest marker).
 
 This module reads the knowledge base only and imports nothing from the combat
 or construction packages.

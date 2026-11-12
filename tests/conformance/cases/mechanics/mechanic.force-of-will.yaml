@@ -1,0 +1,65 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.force-of-will
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios cover the passed rescue test (back on
+#   his feet with one Wound, still fighting) and the failed one.  The cumulative
+#   -1 of later rounds is a sustain test the same resource repeats; it is not
+#   part of these two scenarios.
+
+# --- Authored scenarios ---
+# A five on the injury chart takes the last Wound away, and the printed D6 against
+# Toughness 3 is then passed on a two: the warrior stands back up with one Wound and
+# his own attack still resolves in the same round.
+- audit_id: mechanic/mechanic.force-of-will
+  id: the-toughness-test-stands-him-back-up
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.force-of-will]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+    - {key: round.0.first.attack.0.force-of-will.rescue, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.condition: STANDING, state.second.wounds: 1, state.second.force_of_will_active: True}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The same rescue test fails above Toughness 3, so the warrior is removed normally and
+# the passive offer is spent.
+- audit_id: mechanic/mechanic.force-of-will
+  id: a-failed-test-leaves-him-out
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.force-of-will]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+    - {key: round.0.first.attack.0.force-of-will.rescue, value: 5}
+  expect_rounds:
+    0: {state.second.condition: OUT, state.second.force_of_will_active: False}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+

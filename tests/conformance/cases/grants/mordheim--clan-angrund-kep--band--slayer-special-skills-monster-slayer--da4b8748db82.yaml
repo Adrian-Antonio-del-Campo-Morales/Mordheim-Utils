@@ -1,0 +1,117 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/clan-angrund-kep/band--slayer-special-skills-monster-slayer/skill.monster-slayer
+# authoring_status: PARTIAL
+# authoring_progress: the wounds-on-four-plus clause carries three authored scenarios derived from
+# the printed stanza, the recorded contract and the admitted monster-slayer grants specification
+# (the Toughness-6 cap, its contrast without the grant, and the retained easier target), while the
+# companion effective-strength-for-armour clause stays pending with its reason recorded below.
+# REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: effective-strength-for-armour (scope: YES)
+# PARTIAL[effective-strength-for-armour]: [D] the armour-modifier face stays pending.  This origin's
+# printed stanza repeats only the wound sentence and does not itself print the armour sentence;
+# the effective-Strength reading is carried by the separate variant tag
+# skill.monster-slayer-effective-strength-armour, and no accepted source records that this band's
+# recipient is bound to that variant (the karak-zorn publication prints the sentence and is proved
+# by editorial-monster-slayer-armour.yaml).  A duel scenario cannot be fixed before that binding
+# is recorded, because the tape must declare exactly the armour die the engine asks for: a save the
+# effective Strength makes impossible is skipped while a raw-Strength basis still rolls it.
+#
+# Clause: wounds-on-four-plus (scope: YES)
+# AUTHORED[wounds-on-four-plus]: 3 scenarios read the printed cap on the band's Slayer recipient.
+# Against the Toughness-6 boundary the attacker's Strength 3 normally needs 5+, so a declared wound
+# roll of 4 wounds with the grant and fails without it, which fixes the cap to the band rule; and
+# against a Toughness-2 opponent a declared roll of 3 still wounds, so the printed retention of a
+# naturally lower target is asserted as well.  REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+# Derived from the printed stanza, the recorded contract and the admitted monster-slayer grants
+# specification; no engine output was consulted.  The bearer is the printed Slayer profile of this
+# band (WS4, BS3, S3, T4, W1, I2, A1) credited with this band's Monster Slayer rule through
+# special_rule_ids, so the case reads the band grant rather than a bare tag.  The hand-built
+# opponent is the Toughness-6 boundary the specification names (the easier-target scenario lowers
+# it to 2) and its own strike is a declared natural 1.
+
+- audit_id: rule/mordheim/clan-angrund-kep/band--slayer-special-skills-monster-slayer/skill.monster-slayer
+  id: the-wound-target-is-capped-at-four
+  covers: [wounds-on-four-plus]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: clan-angrund-kep
+      profile_id: dwarf-troll-slayers
+      special_rule_ids: [band--slayer-special-skills-monster-slayer]
+      main_weapon_id: weapon.dagger
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 6, wounds: 3, initiative: 1, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  # The troll slayer's dagger lets the opponent save at 6+ (`target_armour_bonus` 1 over
+  # the unarmoured 7), so the declared wound is followed by that save die.
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/clan-angrund-kep/band--slayer-special-skills-monster-slayer/skill.monster-slayer
+  id: without-the-grant-the-same-wound-roll-fails
+  covers: [wounds-on-four-plus]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: clan-angrund-kep
+      profile_id: dwarf-troll-slayers
+      main_weapon_id: weapon.dagger
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 6, wounds: 3, initiative: 1, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  # The same declared wound face fails here: without the grant the S3 dagger needs 5+ against
+  # Toughness 6, so the roll of 4 wounds nothing and no armour die is ever asked for - the absence
+  # of the save die is part of the control.
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/clan-angrund-kep/band--slayer-special-skills-monster-slayer/skill.monster-slayer
+  id: a-naturally-easier-target-is-retained
+  covers: [wounds-on-four-plus]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: clan-angrund-kep
+      profile_id: dwarf-troll-slayers
+      special_rule_ids: [band--slayer-special-skills-monster-slayer]
+      main_weapon_id: weapon.dagger
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 3, initiative: 1, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  # The troll slayer's dagger lets the opponent save at 6+ (`target_armour_bonus` 1 over
+  # the unarmoured 7), so the declared wound is followed by that save die.
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.0.armour, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

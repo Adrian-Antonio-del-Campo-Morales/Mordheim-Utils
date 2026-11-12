@@ -1,0 +1,62 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-spines/trait.spines
+# authoring_status: AUTHORED
+# authoring_progress: 2 authored scenario(s) in this file; authored clauses ['whole--scope--spines']; clauses still pending or unrepresentable in this file: [].  The tape key the earlier note called missing is the round-start handler's own composition (packages/python/combat-engine/mordheim_combat/modular/rounds.py::resolve_round passing `round.{round_index}.first.spines` / `.second.spines` into packages/python/combat-engine/mordheim_combat/modular/aftermath.py::_spines, whose automatic hit then reads `<key>.wound`), which the authored Mordheim copy of the same shared trait already exercises (tests/E2E/modular-engine/cases/grants/mordheim--cult-of-the-possessed--band--mutations-spines--trait.spines--6cea7551d294.yaml).  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: whole--scope--spines (scope: YES)
+# AUTHORED[whole--scope--spines]: 2 scenarios evidence the printed automatic hit on the real round route. At the start of the close-combat phase the bearer deals one automatic Strength 1 hit with criticals disabled to the contacting opponent while both attack pools declare misses, so the wound taken can only come from the trait; the identical phase on the identical fixture without the trait leaves every wound in place.
+#
+# Clause: whole--scope--cost (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+# --- Authored scenarios ---
+# The band origin repeats the canonical clause of the shared trait without adding a term, so the tape
+# is the shared operator's own route: the automatic hit is read at `round.<n>.<side>.spines` and the
+# printed "never cause critical hits" is respected by keeping both attack pools on a declared miss.
+
+- audit_id: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-spines/trait.spines
+  id: the-automatic-spines-hit-lands-on-the-contacting-opponent
+  covers: [whole--scope--spines]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {spines: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.spines.wound, value: 5}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 1, state.first.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-spines/trait.spines
+  id: without-the-trait-the-same-phase-holds-no-automatic-hit
+  covers: [whole--scope--spines]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.first.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -1,0 +1,138 @@
+# Runtime correction: Dwarf Rememberer has the Dwarf Special column, not the Slayer-only Monster Slayer entry.
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/dwarf-slayers-kaz/band--slayer-special-skills/profile.skill-access
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause now carries 4 authored scenarios of the Slayer column and its two
+# Rememberer columns, in the accepted sibling shape of this family.  The earlier blocker is withdrawn on the
+# evidence: the printed ranks resolve to published profile ids of this origin (profiles.yaml: giant-slayer,
+# troll-slayers, rememberer) whose recorded skill_access already declares the Slayer column's categories, and
+# the Town Cryer 6 Slayer Special Skills list has an admitted catalogue identity in the shared row the sibling
+# band file already uses (catalog/skills/warband.yaml: skill.monster-slayer, category special, source_refs
+# "Slayer Special Skills / Monster Slayer").  The two Rememberer columns are declared through the fixture's
+# established species override, which is how this corpus already states a fighter's species identity.  The
+# missing KB binding is recorded as the defect the scenarios detect, not as a reason to withhold them.
+# REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 4 scenarios evidence the printed columns of this row in the accepted access-family shape
+#   (a band/profile build declaring the supplied skill selection, plus the shared skill-availability
+#   sentence as the closure).
+#   SLAYER COLUMN.  RECIPIENT: the band's printed Slayer hero (profiles.yaml id giant-slayer, the band's
+#   leader rank and the first printed "Slayer" the column names; its recorded skill_access is
+#   combat / strength / special).  ADMISSION: the recipient selecting skill.monster-slayer - the shared
+#   catalogue row whose own source_refs name "Slayer Special Skills / Monster Slayer" - is admitted and the
+#   engagement reaches its declared checkpoint, which is the printed "Giant Slayer and Troll Slayer have
+#   access to Combat, Strength, Special and Slayer skills".  CLOSURE: a skill outside that column
+#   (skill.sprint, a registered speed row) is refused with the shared skill-availability fragment, the same
+#   diagnostic the sibling band file of this family uses for the identical closure.
+#   REMEMBERER COLUMNS.  The printed row splits the Rememberer by race: a Dwarf Rememberer to Combat,
+#   Shooting, Academic and Special, a Human Rememberer to Combat, Shooting, Academic and Speed.  The band
+#   publishes one `rememberer` profile (a random race at recruitment), so the race is declared through the
+#   fixture's established species override - the same channel this corpus already uses to state a fighter's
+#   species identity - and each column's own member is then asserted: skill.monster-slayer (special) for
+#   the Dwarf Rememberer and skill.sprint (speed) for the Human Rememberer, both admitted, each beside the
+#   other column's own access as recorded context.
+#   DEFECTS THE SCENARIOS DETECT (recorded, not hidden, and not a reason to withhold them): this origin's
+#   row records `scope: LATER / implemented: 'NO'` with `binding: null` and the reason "Deferred
+#   cross-reference: the Slayer skill column and the Slayer Special Skills list live in Town Cryer 6 (or
+#   Best of Town Crier), not in this document", so no machine-readable member list reaches the shared
+#   construction stage; and the published `rememberer` profile records one merged skill_access
+#   (combat / shooting / academic), so the printed race split is not projected at all and a Rememberer of
+#   either race is refused the column its own printed rule grants.  Those are implementation gaps; the
+#   expectations below stay the printed permissions.
+#   RECORDED, NOT ASSERTED: the halves whose outcome coincides with today's behaviour carry no
+#   discriminating boundary (the columns' shared Combat / Shooting / Academic categories are already
+#   recorded on the profile), so they are prose here rather than tapes that would pass for the wrong
+#   reason.
+
+# --- Authored scenarios ---
+# Derived from this origin's printed row, its published profiles.yaml (the Slayer ranks and the Rememberer
+# with its recorded categories) and the admitted catalogue rows the printed columns name; no engine output
+# was consulted.  Both fighters in each admission tape declare zero attacks, so the observation is access
+# itself and not a member skill's own duel consequence - each named skill keeps its own origin.
+
+- audit_id: rule/mordheim/dwarf-slayers-kaz/band--slayer-special-skills/profile.skill-access
+  id: the-printed-slayer-skill-is-admitted-to-a-giant-slayer
+  # The printed permission of the Slayer column: a Slayer hero may take a Slayer Special Skill, so the build
+  # must compile and the engagement must start.  skill.monster-slayer is the shared catalogue row whose own
+  # source_refs name the Slayer Special Skills lists.  The expectation is deliberately NOT the refusal this
+  # origin's null binding produces today.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayers-kaz
+      profile_id: giant-slayer
+      skill_ids: [skill.monster-slayer]
+    second:
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.priority-tie, value: 1}
+  expect_initial: {first.attacks: 0, second.attacks: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/dwarf-slayers-kaz/band--slayer-special-skills/profile.skill-access
+  id: a-speed-skill-outside-the-slayer-column-is-refused
+  # The closure of the same column: the printed access is Combat, Strength, Special and Slayer, so a speed
+  # row is not available to this recipient.  The fragment is the shared skill-availability sentence of this
+  # corpus's access family.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayers-kaz
+      profile_id: giant-slayer
+      skill_ids: [skill.sprint]
+      main_weapon_id: weapon.mace
+  expect_error: "skills are not available to dwarf-slayers-kaz/giant-slayer: ['skill.sprint']"
+
+- audit_id: rule/mordheim/dwarf-slayers-kaz/band--slayer-special-skills/profile.skill-access
+  id: a-dwarf-rememberer-reaches-the-special-column
+  # The printed Dwarf Rememberer column names Special; the band publishes one randomly-raced `rememberer`
+  # profile whose recorded skill_access (combat / shooting / academic) drops that category, so the race is
+  # declared through the fixture's established species override and the printed permission is the
+  # expectation.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayers-kaz
+      profile_id: rememberer
+      trait_overrides: {species: dwarf}
+      skill_ids: [skill.thick-skull]
+    second:
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.priority-tie, value: 1}
+  expect_initial: {first.attacks: 0, second.attacks: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/dwarf-slayers-kaz/band--slayer-special-skills/profile.skill-access
+  id: a-human-rememberer-reaches-the-speed-column
+  # The printed Human Rememberer column names Speed instead, which the same merged recorded access also
+  # drops; the declared species selects the printed column and the printed permission is the expectation.
+  # skill.jump-up is the Speed row with an executable duel contract, so the admission is observable at
+  # compilation instead of being refused later for a movement-only mechanic.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayers-kaz
+      profile_id: rememberer
+      trait_overrides: {species: human}
+      skill_ids: [skill.jump-up]
+    second:
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_initial: {first.attacks: 0, second.attacks: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

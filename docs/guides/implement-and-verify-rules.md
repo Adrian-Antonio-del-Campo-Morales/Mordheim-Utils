@@ -4,7 +4,7 @@ Prerequisites: [Architecture](../reference/architecture.md) and
 [Verification](../reference/verification.md).
 
 The modular engine is the rule reference. Its mechanics tests establish the
-expected behaviour from written sources; E2E tests exercise the connected
+expected behaviour from written sources; conformance scenarios exercise the connected
 KB/compiler/modular pipeline. Statistical parity compares NumPy and native
 with that reference. The former semantic YAML runner and NumPy operation
 adapters are retired; no parallel specification corpus is required.
@@ -23,7 +23,7 @@ adapters are retired; no parallel specification corpus is required.
 5. Express the rule and its relevant limits in
    `tests/engines/modular/mechanics/`. Reuse exact frozen inputs where available.
    Do not substitute a similar fighter or weaken an assertion for a missing key.
-6. Use `tests/integration/e2e/` for the connection from actual construction to
+6. Use the rules-conformance suite (`tests/conformance/`) for the connection from actual construction to
    observed modular results. Real compilation/eligibility and KB contracts
    belong in `tests/construction/` and `tests/knowledge/` respectively.
 
@@ -47,7 +47,7 @@ python tools/mordheim-utils.py check report rules --output outputs/audit
 
 The knowledge base is the queue. Every core rule, kept mechanic, implemented
 item and `YES` rule effect is one obligation, split into `clauses: [{id, scope}]`
-only when its printed text has several observable parts; the E2E corpus names
+only when its printed text has several observable parts; the conformance corpus names
 them through `audit_id`/`covers` and the deterministic suites through
 `@pytest.mark.covers(identity, *clause_ids)`. `rules-inventory.csv` lists every
 rule effect, mechanic and item with its scope, binding and `status`
@@ -55,12 +55,12 @@ rule effect, mechanic and item with its scope, binding and `status`
 
 A coverage export is a structural snapshot of declared references, not executed
 behavioural proof: the named scenarios and tests must still run and pass.
-Export success means files were written. It does not certify mechanics, E2E
+Export success means files were written. It does not certify mechanics, conformance
 or statistical parity.
 
 | Status | Next step |
 | --- | --- |
-| `uncovered` / `partial` | Author the missing E2E scenarios or mark the deterministic test that demonstrates the clause. |
+| `uncovered` / `partial` | Author the missing conformance scenarios or mark the deterministic test that demonstrates the clause. |
 | `covered` | Review the named evidence before changing the implementation; coverage is declared, not proven. |
 | effect `implemented: NO` with YES clauses | Implement the complete admitted effect, reusing its binding family. |
 | clause `YES` under a `NO`/`LATER` effect (`check`) | Reconcile the clause scope with the effect classification. |
@@ -88,7 +88,7 @@ A ruling by itself does not prove implementation or correct execution.
 
 ## Validate the owned change
 
-1. Inspect existing mechanics, construction and E2E checks before adding another.
+1. Inspect existing mechanics, construction and conformance checks before adding another.
 2. Run the smallest relevant checks only when execution is authorized. Test
    execution and broader integration/certification are separate scopes.
 3. Check structural KB/contracts with `check verify`. Verification is structural

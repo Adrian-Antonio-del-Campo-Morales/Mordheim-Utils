@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-parity-delivery/v2",
+  "status": "blocked",
+  "source": {
+    "revision": "84a634dbdfc45973ebb93a9dd90c852e21c7c12b",
+    "path": "tests/conformance/cases/grants/trollheim--lustria-high-elves--band--high-elf-special-skills-luck--skill--027bdf24fab1.yaml",
+    "sha256": "86601422231e5117b3d23c06a2194ba74f0f0d8153bf1d9a4fa39d2c60544c62",
+    "test_id": "rule/trollheim/lustria-high-elves/band--high-elf-special-skills-luck/skill.luck::a-missed-hit-is-rolled-again-and-the-resource-is-spent"
+  },
+  "case_key": "delivery/rule/trollheim/lustria-high-elves/band--high-elf-special-skills-luck/skill.luck/a-missed-hit-is-rolled-again-and-the-resource-is-spent",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E prescribes explicit decisions (round.0.first.attack.0.hit.luck); the contract admits only the engine-default decision policy, and no general policy for randomly branched trajectories exists for these keys."
+}

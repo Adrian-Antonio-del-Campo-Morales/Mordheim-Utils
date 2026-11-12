@@ -1,0 +1,77 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/warband/skill.regeneration/skill.regeneration
+# authoring_status: AUTHORED
+# authoring_progress: the admitted four-plus-regeneration clause carries authored scenarios derived
+# from the printed sentence and the recorded contract.  This is the generic catalogue skill, so the
+# bearer acquires it the way a warband skill is acquired (the build's skill selection), and the
+# printed parameter regeneration_save 4 is what the clause itself declares.  A plain mace blow
+# requests the Regeneration die after the armour step and a 4 takes the wound back; one face below
+# it stands.  The fire and blessed exceptions are NOT exercised here on purpose: the register note
+# for this row states that the generic 4+ catalogue clause does not itself specify them, and each
+# band printing that adds one carries its own clause in its own file.  REVIEWED still requires
+# manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios carry the clause: the 4+ special save after armour
+#   ignores the wound and the bearer keeps both Wounds; one face below lets the wound through and
+#   the bearer drops to one Wound.
+
+# --- Authored scenarios ---
+# Derived from the printed sentence and the recorded contract; no engine output was consulted.  The
+# bearer selects the catalogue skill itself, which is how a warband skill reaches a warrior, and
+# starts the duel at two Wounds with no attacks of its own, so round 0 carries only the attacker's
+# dice.  The blow is an ordinary mace: at Weapon Skill 10 against Weapon Skill 3 it needs a 3, and
+# Strength 8 against Toughness 3 needs a 2, so the declared 5 and 5 both pass.  Five is deliberately
+# below a natural six, which would be a critical hit and demand a further critical die.  An
+# unarmoured bearer keeps the armour step and, with no ward, the special save is reached directly.
+#
+# The strict tape is part of the evidence: StrictDice rejects a roll the fixture never declared, so
+# the first scenario fails if the Regeneration die is not requested at all.
+
+- audit_id: rule/catalog/warband/skill.regeneration/skill.regeneration
+  id: the-four-plus-regeneration-save-ignores-the-wound
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      skill_ids: [skill.regeneration]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.special.regeneration, value: 4}
+  expect_rounds:
+    0: {attacks.0.wounded: True, attacks.0.saved: True, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/catalog/warband/skill.regeneration/skill.regeneration
+  id: one-face-below-the-four-plus-does-not-regenerate
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      skill_ids: [skill.regeneration]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.special.regeneration, value: 3}
+  expect_rounds:
+    0: {attacks.0.saved: False, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-parity-delivery/v2",
+  "status": "blocked",
+  "source": {
+    "revision": "84a634dbdfc45973ebb93a9dd90c852e21c7c12b",
+    "path": "tests/conformance/cases/mechanics/skill.crude-belch-halfling.yaml",
+    "sha256": "83d81d8b334284374c614bc86b64ba2860fbe2d45469fe8a7590ed38172421d2",
+    "test_id": "mechanic/skill.crude-belch-halfling::a-failed-test-costs-the-enemy-its-first-attack"
+  },
+  "case_key": "delivery/mechanic/skill.crude-belch-halfling/a-failed-test-costs-the-enemy-its-first-attack",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E prescribes explicit decisions (round.0.first.crude-belch); the contract admits only the engine-default decision policy, and no general policy for randomly branched trajectories exists for these keys."
+}

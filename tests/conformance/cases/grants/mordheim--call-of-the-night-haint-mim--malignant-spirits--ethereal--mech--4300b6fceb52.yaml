@@ -1,0 +1,111 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/call-of-the-night-haint-mim/malignant-spirits--ethereal/mechanic.ethereal-hit-save
+# authoring_status: AUTHORED
+# authoring_progress: the admitted ethereal-save clause carries 3 authored scenarios derived from
+# the printed band Ethereal rule and the profile grant: the printed 4+ unmodifiable save discards
+# the hit before the wound roll, one face below lets the wound through and a magical attack never
+# rolls it.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: ethereal-save (scope: YES)
+# AUTHORED[ethereal-save]: 3 scenarios evidence the bearer's printed 4+ unmodifiable save taken
+#   after the To Hit roll: it holds on a 4 with no wound die requested at all, it fails one face
+#   below so the wound resolves, and a declared magical attack is never offered it.  The
+#   missile-pass-through and terrain/item sentences of the same printed rule stay excluded, as
+#   this file's own scope rows record; nothing here claims them.
+#
+# Clause: missile-passthrough (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+#
+# Clause: terrain-and-items (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+# --- Authored scenarios ---
+# The bearer is the band's Malignant Spirits profile, which prints the Ethereal rule through its
+# own rule grant; the fixture's characteristics are hand-built facts (the profile is never read
+# for them here) and the bearer contributes no attacks, so the incoming mace swing is the only one.
+#
+# The save holds on the printed 4 and no wound die follows: the save intercepts the hit.
+- audit_id: rule/mordheim/call-of-the-night-haint-mim/malignant-spirits--ethereal/mechanic.ethereal-hit-save
+  id: the-ethereal-save-holds-on-four
+  covers: [ethereal-save]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: call-of-the-night-haint-mim
+      profile_id: malignant-spirits
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.ethereal, value: 4}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# One face below the printed save lets the attack continue to the wound roll.
+- audit_id: rule/mordheim/call-of-the-night-haint-mim/malignant-spirits--ethereal/mechanic.ethereal-hit-save
+  id: one-face-below-the-ethereal-save-lets-the-wound-through
+  covers: [ethereal-save]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: call-of-the-night-haint-mim
+      profile_id: malignant-spirits
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.ethereal, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed exception removes the defence: no ethereal face is requested at all for a declared
+# magical attack, which the strict dice tape itself proves.
+- audit_id: rule/mordheim/call-of-the-night-haint-mim/malignant-spirits--ethereal/mechanic.ethereal-hit-save
+  id: a-magical-attack-bypasses-the-ethereal-save
+  covers: [ethereal-save]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {magical_attacks: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: call-of-the-night-haint-mim
+      profile_id: malignant-spirits
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

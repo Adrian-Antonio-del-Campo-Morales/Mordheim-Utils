@@ -63,7 +63,7 @@ TypeScript domain/eligibility → browser domain/application adapters
 
 ## Shared resources and entry points
 
-`mordheim_knowledge.loader.knowledge_root()` resolves `sources/knowledge/`, including the `MORDHEIM_COMBAT_LAB_KNOWLEDGE_PATH` override and frozen-executable support. Structural verification (`check verify`) audits the editorial and execution contracts, binding contracts and default construction. Rule evidence lives in modular mechanics and E2E tests, not in runtime resources.
+`mordheim_knowledge.loader.knowledge_root()` resolves `sources/knowledge/`, including the `MORDHEIM_COMBAT_LAB_KNOWLEDGE_PATH` override and frozen-executable support. Structural verification (`check verify`) audits the editorial and execution contracts, binding contracts and default construction. Rule evidence lives in modular mechanics and rules-conformance tests, not in runtime resources.
 
 Python entry points declared in `pyproject.toml`:
 
@@ -119,7 +119,7 @@ The web adapter is `packages/typescript/adapters/campaign-file/`; PDF export bel
 
 ## Verification corpus and reports
 
-`tests/engines/modular/mechanics/` checks written rules against the modular reference; `tests/integration/e2e/` checks the connected KB/compiler/modular path, and `check verify` runs the structural audit. Verification tooling provides structural audits, inventory export, statistical parity and coverage; the former semantic YAML runner is retired.
+`tests/engines/modular/mechanics/` checks written rules against the modular reference; the rules-conformance suite in `tests/conformance/` checks the connected KB/compiler/modular path, and `check verify` runs the structural audit. Verification tooling provides structural audits, inventory export, statistical parity and coverage; the former semantic YAML runner is retired.
 
 Generated reports are written below ignored `outputs/`:
 
@@ -141,7 +141,7 @@ The web knowledge artefact is generated under ignored `outputs/web-public/knowle
 | Combat Lab use case/UI | `apps/combat-lab/` |
 | Web domain/application/adapters | `packages/typescript/` |
 | Web shell and presentation | `apps/warband-manager-web/` |
-| Verification evidence | `tests/integration/e2e/`, `tests/engines/modular/mechanics/`, `tests/engines/parity/`, `tests/tooling/{architecture,coverage,parity}/`, related test suites |
+| Verification evidence | `tests/conformance/`, `tests/engines/modular/mechanics/`, `tests/engines/parity/`, `tests/tooling/{architecture,coverage,parity}/`, related test suites |
 | Build/release tooling | `tools/`, `.github/workflows/` |
 
 See [Knowledge base](knowledge-base.md) and [Verification](verification.md)

@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-parity-delivery/v2",
+  "status": "blocked",
+  "source": {
+    "revision": "84a634dbdfc45973ebb93a9dd90c852e21c7c12b",
+    "path": "tests/conformance/cases/grants/mordheim--restless-dead--scarecrows--no-pain--skill.ignore-pain--d95be874d886.yaml",
+    "sha256": "99eb09ef1d9a4544dce35063fed0692f731db66a0bcb5d6f6cc82526360c8567",
+    "test_id": "rule/mordheim/restless-dead/scarecrows--no-pain/skill.ignore-pain::a-stunned-result-becomes-knocked-down"
+  },
+  "case_key": "delivery/rule/mordheim/restless-dead/scarecrows--no-pain/skill.ignore-pain/a-stunned-result-becomes-knocked-down",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E prescribes explicit decisions (round.0.first.attack.0.injury.0.reroll-choice); the contract admits only the engine-default decision policy, and no general policy for randomly branched trajectories exists for these keys."
+}

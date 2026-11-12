@@ -539,7 +539,7 @@ def _parity_cases(entries, simulations: int, seed: int):
     """``ParityCase`` objects for the selected entries, plus the
     ``(key, rounds, status, reason)`` of every entry that cannot be prepared.
 
-    A declared limitation -- a blocked or not-applicable E2E delivery, inputs
+    A declared limitation -- a blocked or not-applicable parity delivery, inputs
     no runner can express -- is ``INCOMPATIBLE`` (listed, not a failure); a
     missing frozen case or a preparation crash is ``NOT_RUN`` (a failure).
     """
@@ -753,7 +753,7 @@ def _parity_command(args) -> int:
         return refuse(str(error))
     try:
         return _compare_parity(args, entries, backends)
-    except ValueError as error:  # e.g. the E2E decision policies do not correspond
+    except ValueError as error:  # e.g. the delivery decision policies do not correspond
         return refuse(str(error))
 
 
@@ -878,7 +878,7 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
         description="Validate the knowledge base and its structural connections "
                     "(editorial schemas, execution contract, default profile "
                     "compilation); structural errors fail.  Game rules are "
-                    "checked by the modular mechanics and E2E suites.  Set "
+                    "checked by the modular mechanics and conformance suites.  Set "
                     "MORDHEIM_COMBAT_LAB_KNOWLEDGE_PATH to check another "
                     "knowledge base.",
         formatter_class=_HelpFormatter)

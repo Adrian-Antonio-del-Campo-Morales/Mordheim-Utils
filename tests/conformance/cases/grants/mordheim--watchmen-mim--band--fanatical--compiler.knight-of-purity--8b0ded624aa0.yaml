@@ -1,0 +1,93 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/watchmen-mim/band--fanatical/compiler.knight-of-purity
+# authoring_status: PARTIAL
+# authoring_progress: the two admitted clauses of the band's Fanatical rule have no authored scenario, each
+#   for its own recorded reason.  The autopass clause owns an effect id (mechanic.automatic-leadership) but the
+#   record itself states there is no binding on it - "No binding on this record; the canonical effect exists,
+#   so the missing step is the KB connection" - so the band's grant cannot be told apart from its absence and
+#   the canonical effect is already evidenced by its own authored case.  The advance clause carries no effect
+#   id ("(not recorded)"), relation unresolved, and its printed text is the fragment "(auto-pass Leadership"
+#   whose only companion sentence is the 30-experience campaign promotion this file records as out of scope.
+#   Pending: (a) the KB connection that binds this band's Knight of Purity output to mechanic.automatic-leadership
+#   (then the admission is the passed Leadership-based test plus the non-fanatical control), and (b) the promoted
+#   profile identity the advance clause applies to.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: fanatical-advance--scope--automatic-leadership (scope: YES)
+# PARTIAL[fanatical-advance--scope--automatic-leadership]: [C] no scenario is authorable while the clause has no
+#   effect id, no consumer and an unresolved relation.  Its printed text is the fragment "(auto-pass Leadership",
+#   and the record's own integration note keeps the 30-experience promotion as roster progression outside the
+#   duel, so the admitted residue is the auto-pass state without a named recipient profile or binding.  The
+#   missing datum is the promoted profile the state attaches to; the runner cannot make a state the
+#   difference when nothing in the build carries it.
+#
+# Clause: fanatical-autopass--scope--automatic-leadership (scope: YES)
+# AUTHORED[fanatical-autopass--scope--automatic-leadership]: 2 scenarios take the printed auto-pass onto the
+#   Leadership tests a duel round forces on the bearer, in both directions: the charged Knight passes the
+#   Fear test with no Leadership die requested at all, and the charging Knight keeps the charge under the
+#   same dice.  The bearer is the hand-built fixture carrying the canonical operator directly, which is the
+#   device the accepted twins of this mechanic use (carnival-of-chaos nurglings/plague-bearers, black-orcs
+#   orc-nuttaz crazy, cult-of-the-possessed darksouls crazed), because this band row carries no binding of
+#   its own.  PENDING[B] the KB connection from this band origin to mechanic.automatic-leadership: with the
+#   operator supplied by the fixture these tapes evidence the printed outcome, and the band's own grant is
+#   what the connection would add.
+#
+# Clause: fanatical-advance--scope--campaign-trigger (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+#
+# Clause: fanatical-autopass--scope--campaign-trigger (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+# --- Authored scenarios ---
+# Derived from the printed sentence, the recorded contract and the accepted twins of the same mechanic; no
+# engine output was consulted.  The Fear causer opposite the bearer is a hand-built fixture declaring the
+# printed trait, and every strike is declared as a natural 1, so a passing round reports nothing but the
+# absence of the Fear request.
+- audit_id: rule/mordheim/watchmen-mim/band--fanatical/compiler.knight-of-purity
+  id: the-charged-knight-of-purity-passes-the-fear-test-without-a-die
+  covers: [fanatical-autopass--scope--automatic-leadership]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.automatic-leadership]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 5}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: false, state.first.condition: STANDING, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/watchmen-mim/band--fanatical/compiler.knight-of-purity
+  id: the-charging-knight-of-purity-keeps-its-charge-without-a-die
+  covers: [fanatical-autopass--scope--automatic-leadership]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.automatic-leadership]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 5}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: false, state.first_charged: true, state.first.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

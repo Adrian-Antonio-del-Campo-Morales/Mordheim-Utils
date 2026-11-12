@@ -2,21 +2,46 @@
 
 The modular engine is the rule reference: source-derived checks in
 `tests/engines/modular/mechanics/` verify rules, and
-`tests/integration/e2e/` verifies the KB/compiler/modular path. Each engine's
+the rules-conformance suite in `tests/conformance/` verifies the KB/compiler/modular path. Each engine's
 `runtime/` checks simulator contracts. Statistical parity compares NumPy and
 native with the modular oracle.
 
 The semantic YAML test runner and NumPy per-operation adapters are retired.
 There is no second semantic authoring or certification system. This change
-does not establish that current mechanics/E2E coverage is complete or that any
+does not establish that current mechanics/conformance coverage is complete or that any
 unexecuted tests pass. Structural audits, corpus contracts and evidence records
 remain separate from behavioural proof.
+
+## Test suites at a glance
+
+| Suite | Question it answers | Oracle | Dice | Launcher | When it runs |
+|---|---|---|---|---|---|
+| Rules conformance (`tests/conformance/`) | Does the KB -> compiler -> modular engine path follow the printed rules, clause by clause? | Printed rules and adopted rulings | Scripted, strict | `tests conformance` (`scenarios`, `integrity`) | CI (two steps: suite, then coverage non-regression) |
+| Modular mechanics and runtime (`tests/engines/modular`) | Does the reference engine implement each written rule, and does it execute correctly? | Printed rules (mechanics); simulator contracts (runtime) | Scripted (mechanics); seeded where relevant (runtime) | `tests modular` (`mechanics`, `runtime`) | Deliberate |
+| Vectorized (`tests/engines/vectorized`) | Does the NumPy engine honour its mechanics and runtime contracts? | Frozen cases and simulator contracts | Scripted/seeded | `tests vectorized` (`mechanics`, `runtime`) | Deliberate |
+| Native (`tests/engines/native`) | Does the native engine honour its mechanics and runtime contracts? | Frozen cases and simulator contracts | Scripted (frozen cases); seeded (runtime) | `tests native` (`runtime`; fails without the extension) | Deliberate |
+| Shared contracts and frozen inputs (`tests/engines/shared`, `tests/engines/fixtures`) | Do common engine contracts hold, and are the frozen corpora intact? | Contract definitions and stored fixtures | n.a. | `tests shared` | Deliberate |
+| Parity (`tests/engines/parity`) | Do NumPy and native produce the modular engine's outcome distributions? | The modular engine (six-sigma gate) | Random (seeded) | `check parity`, `check samples` (campaigns); `tests parity` (`statistical`, `tooling`; infrastructure checks, not parity proof) | Deliberate |
+| Knowledge (`tests/knowledge`) | Are the KB data and editorial/execution contracts valid? | Schemas and contracts | n.a. | `tests kb` | CI (regression net) |
+| Construction (`tests/construction`) | Are admission and compiled builds correct for the checked inputs? | Printed rules and contracts | n.a. | `tests kb construction` | CI runs `test_shared_eligibility.py`; the rest deliberate |
+| Applications (`tests/applications`) | Do Combat Lab and Warband Manager behave as specified? | Application contracts | n.a. | `tests combat-lab`, `tests warband-manager` (`python`, `web`) | CI runs campaign-file persistence and bundle guards; the rest deliberate |
+| Tooling (`tests/tooling`) | Do the launcher, architecture, coverage and report tools work? | Tool contracts | n.a. | `tests tooling` (`architecture`, `web`, `launcher`, `coverage`, `verification`) | CI runs `tests/tooling/architecture`; the rest deliberate |
+| Benchmarks | How fast are the engines on selected scenarios? | n.a. (measurement) | Seeded | `performance benchmark`, `performance calibrate` | Deliberate |
+
+Launcher commands are `python tools/mordheim-utils.py <command>`. The two
+charters define the contrasting suites:
+[rules-conformance suite](../../tests/conformance/README.md) and
+[engine parity](../../tests/engines/parity/README.md).
+
+Naming note: until 2026-11-12 both the rules-conformance suite and the parity
+deliveries were called "E2E" (for example "E2E battery", "E2E statistical
+deliveries"); old notes, commit messages and `docs/archive/` use that name.
 
 ## Engine test fixtures
 
 Tests are grouped under `tests/engines/{modular,vectorized,native,shared,parity}`;
-KB, construction and integration checks live under `tests/knowledge`,
-`tests/construction` and `tests/integration`, respectively, and retain
+KB, construction and rules-conformance checks live under `tests/knowledge`,
+`tests/construction` and `tests/conformance`, respectively, and retain
 access to the compiler and source indexes.
 
 `tests/engines/fixtures/compiled-cases.json` stores execution cases; its
@@ -94,22 +119,25 @@ never blocks a comparison. A historical reference is still not evidence about
 the current engine. See [the tools reference](tools.md) for sampling and
 comparison commands.
 
-## E2E statistical deliveries
+## Parity deliveries
 
-`tools/verification/e2e_parity.py` discovers and validates the frozen inputs for
-[E2E statistical campaigns](tools.md#e2e-statistical-campaigns). Deliveries live in
-`tests/engines/fixtures/e2e-statistical-deliveries/<sha256(case_key UTF-8)>.json`.
-Their keys are `e2e/<audit_id>/<id>` and their source test identifiers are
-`audit_id::id`. See the [encoded example](../examples/e2e-statistical-parity.json).
+A parity delivery is one frozen duel configuration derived from one
+conformance scenario: it keeps the combat configuration and strips the scripted
+dice, decisions and expectations. `tools/verification/parity_deliveries.py`
+discovers and validates the frozen inputs for
+[delivery parity campaigns](tools.md#delivery-parity-campaigns). Deliveries live in
+`tests/engines/parity/deliveries/<sha256(case_key UTF-8)>.json`.
+Their keys are `delivery/<audit_id>/<id>` and their source test identifiers are
+`audit_id::id`. See the [encoded example](../examples/parity-delivery.json).
 
 Each document contains exactly these fields:
 
 | Field | Contract |
 |---|---|
-| `schema` | `mordheim-e2e-statistical-delivery/v1`. |
+| `schema` | `mordheim-parity-delivery/v2`. |
 | `status` | `translated`, `blocked` or `not-applicable`. |
 | `source` | Exactly `revision` (preparation commit), `path` (repository-relative YAML), `sha256` (YAML bytes) and `test_id`. |
-| `case_key` | The E2E key matching `source.test_id`. |
+| `case_key` | `delivery/<audit_id>/<id>`, matching `source.test_id`; the filename is its SHA-256. |
 | `case` | `compiled_cases.encode_case` output for translated entries; otherwise `null`. |
 | `decision_policy` | `{"kind":"engine-default"}` for translated entries; otherwise `null`. |
 | `magnitudes` | `["winner"]`; campaigns may optionally add `rounds`. |
@@ -122,9 +150,9 @@ YAML; otherwise prepare it with the existing `export_cases` API. Compilation is
 preparation work, not part of statistical execution. Missing fighters or inputs
 must not be invented or simplified to make a case admissible.
 
-Translated cases have current E2E origin metadata, empty `determinism.dice` and
+Translated cases have current conformance origin metadata (`case.origin.kind` `conformance`), empty `determinism.dice` and
 `determinism.decisions`, null `expectations` and `benchmark`, and only
-`maximum_rounds` in `limits`. That stored limit preserves the original E2E value
+`maximum_rounds` in `limits`. That stored limit preserves the original conformance scenario's value
 (1 when omitted); campaigns independently use 50 rounds by default. Seeds,
 simulation counts, chunk sizes and workers are execution settings.
 Recalculate fingerprints with `encode_case` and check an exact codec round trip,
@@ -143,7 +171,7 @@ The shared execution path currently cannot express `initial_state` overrides or
 A run that compares no case exits non-zero unless every selected case is
 blocked or not-applicable, and delivery discovery defects fail it too.
 Stale source hashes and invalid documents cannot execute. `translated` describes
-prepared data, not engine compatibility, correct original E2E expectations or
+prepared data, not engine compatibility, correct original conformance expectations or
 approved statistical parity. No engine fallback or partial execution may conceal
 unsupported inputs.
 
@@ -157,10 +185,10 @@ the ones no scenario or `covers` marker names yet with
 `python tools/knowledge/clauses.py coverage --pending`. An empty queue does not
 certify runtime behavior or engine parity.
 
-Modular integration closure includes the E2E battery in
-`tests/integration/e2e/`: declared scenarios, coverage inventory and
+Modular integration closure includes the rules-conformance suite in
+`tests/conformance/`: declared scenarios, coverage inventory and
 accepted-evidence non-regression checks. Run it with
-`python -m pytest tests/integration/e2e -q` on the same integrated revision
+`python -m pytest tests/conformance -q` on the same integrated revision
 as the other modular checks. Source-derived authoring and semantic review
 remain separate from execution; static corpus validation alone is insufficient.
 
@@ -168,7 +196,7 @@ The multi-engine certification layers below are subsequent work. Modular closure
 does not include optimized-backend parity, statistical or engine coverage
 campaigns, NumPy/native implementation or optimized-port certification.
 
-1. Run the existing modular, construction and modular E2E
+1. Run the existing modular, construction and rules-conformance
    checks together on one integrated revision.
 2. Include the relevant type, generated eligibility bundle, editorial contract
    and CSV conservation checks.
@@ -181,7 +209,7 @@ campaigns, NumPy/native implementation or optimized-port certification.
 
 Closure requires accessible configuration, correct compilation and consumption
 for every admitted consequence, no known executable/composition defect, passing
-applicable integrated checks including the modular E2E battery, and preserved
+applicable integrated checks including the rules-conformance suite, and preserved
 CSV keys and traceability. A binding,
 closed row or test count alone proves none of these. Reuse existing tests; add
 only missing discriminators for behaviour, limits, consumption, expiry or
@@ -194,7 +222,7 @@ A genuinely missing source must be identified exactly; do not invent a rule.
 | --- | --- | --- |
 | KB and construction | `tests/knowledge/`, `tests/construction/`, structural `verify` | Data contracts, admission and compiled representation for the checked inputs. |
 | Modular rules | `tests/engines/modular/mechanics/` | Source-defined consequences and relevant boundaries of the reference implementation. |
-| Connected pipeline | `tests/integration/e2e/` | Configuration, real compilation and observed modular execution agree for the declared scenario. |
+| Connected pipeline | `tests/conformance/` | Configuration, real compilation and observed modular execution agree for the declared scenario. |
 | Simulator operation | Each engine's `runtime/` and shared contracts | Execution, context, reproducibility and lifecycle guarantees. |
 | Optimized-engine equivalence | Statistical parity and truncation scenarios | Observed distributions agree within the declared tolerances and sample limits. |
 | Test infrastructure | Tooling, corpus contracts and coverage checks | The specified measurement/detection mechanism works; no blanket rule certificate. |
@@ -241,18 +269,18 @@ consumption, expiry and relevant composition in the owning tests. Declare the
 knowledge-base identity a test demonstrates with
 `@pytest.mark.covers("<identity>")`, adding the clause ids when the identity
 is split into clauses, so `python tools/knowledge/clauses.py coverage` counts
-it next to the E2E scenarios; the marker is a declaration, never proof. The
+it next to the conformance scenarios; the marker is a declaration, never proof. The
 observable the test checks belongs in the test's docstring, not in the
 knowledge base.
 
-E2E cases exercise actual KB/compiler/modular integration. Their declaration,
+Conformance scenarios exercise actual KB/compiler/modular integration. Their declaration,
 coverage and accepted-evidence checks are useful but not behavioural proof by
 themselves: the scenarios must also be executed successfully.
 
 Structural verification is reached through `check verify` (the application's
 `verify` command). It checks the editorial and execution contracts, validates
 binding contracts and compiles every band profile with its default
-construction. It is a structural gate; the modular mechanics and E2E suites
+construction. It is a structural gate; the modular mechanics and conformance suites
 own rule behaviour.
 
 The cross-engine deterministic replay suite was retired; each engine keeps its
@@ -322,7 +350,7 @@ WS/Strength bonuses; first-round bonuses; random characteristics; bear hug and
 caught-fire threshold; and mundane-only ward/unmodified natural armour.
 
 This is a statistical interaction estimate, not overall rule correctness or
-Python line coverage. Source-derived modular mechanics and E2E assertions remain
+Python line coverage. Source-derived modular mechanics and conformance assertions remain
 the authority for individual rules. Several probes use benchmark-only
 trait/attack tags because the current catalogue has no legal selectable
 producer; they do not modify the KB or engines. No additional broad matchup
@@ -390,7 +418,7 @@ report merely to hide lost evidence.
 `--scenarios battery` (or a single `battery/<id>`) selects 122 short duels of
 one to three rounds, each built from the knowledge base so that one mechanic
 decides the outcome. They are a third catalogue beside the 43 precompiled
-scenarios and the E2E deliveries, not a subset of either: a long duel averages
+scenarios and the parity deliveries, not a subset of either: a long duel averages
 a defect away, and these do not. They are compared by the one parity
 comparison, with the same six-sigma gate, and they are the only cases that
 carry scripted decisions, which `check parity` passes on to both engines.
@@ -409,7 +437,7 @@ Two cases declare an input the engines cannot express and are reported
 scope, and `v01-restriction` needs a charge construction refuses.
 
 A battery case is not special once selected: it is sampled, compared and
-reported exactly like a precompiled scenario or an E2E delivery. Its declared
+reported exactly like a precompiled scenario or a parity delivery. Its declared
 width (64 rows) is a smoke size, so `--simulations` decides the real one and
 anything below 7,200 is `UNDERPOWERED`.
 
@@ -420,7 +448,7 @@ reproduce how the game is actually played; they exist to measure performance
 (see "Realistic performance sets" in `docs/reference/tools.md`). They are
 frozen corpus cases, so parity, samples, benchmark and calibration run them
 like precompiled scenarios. They are not a rules catalogue: a mechanic they
-miss is still covered by the 43 scenarios, the E2E deliveries and the battery.
+miss is still covered by the 43 scenarios, the parity deliveries and the battery.
 
 ```bash
 python -X utf8 tools/mordheim-utils.py check parity --scenarios realistic-100 --backend numpy native --simulations 20k --workers 4
@@ -465,12 +493,12 @@ differences only warn.
 
 A statistical PASS compares outcome distributions; it does not prove that a
 rule changes them. The with/without-rule contrast over the oracle belongs to
-the modular mechanics and E2E layers.
+the modular mechanics and conformance suites.
 
 ## Limits of the evidence
 
 Statistical agreement does not prove the source interpretation: modular mechanics
-and E2E expectations must be reviewed against the written rules and adopted
+and conformance expectations must be reviewed against the written rules and adopted
 rulings. Rare branches may require a focused modular test rather than more random
 sampling. Conversely, deterministic modular checks do not prove optimized-engine
 equivalence: the selected statistical scenarios must actually run on both engines.
@@ -517,7 +545,7 @@ clause register CSVs under `docs/archive/` are historical records, not current
 certificates.
 
 The retired interaction-specification matrix and its policy file no longer gate
-verification. Rule interactions belong to modular mechanics/E2E and the curated
+verification. Rule interactions belong to modular mechanics/conformance and the curated
 statistical scenario catalogue. Adopted decisions remain in
 [design-rulings.md](../decisions/design-rulings.md).
 
@@ -538,5 +566,5 @@ physical draw order explicitly; do not assume equal seeds imply equal streams.
 Native replay requires a rebuilt context-aware extension and never falls back.
 The native replay cases live in
 `tests/engines/native/runtime/test_duel_replay_native.py`; new
-mechanisms are specified and checked in modular mechanics/E2E tests, with
+mechanisms are specified and checked in modular mechanics/conformance tests, with
 statistical scenarios for optimized-engine comparison.

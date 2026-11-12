@@ -1,0 +1,106 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/norse-explorers-lustria/band--norse-special-skills-shield-master/skill.shield-mastery
+# authoring_status: AUTHORED
+# authoring_progress: both admitted clauses carry scenarios derived from the printed rule and this
+# band's own binding (special-rules.yaml id band--norse-special-skills-shield-master, a selectable
+# warband skill, effect skill.shield-mastery): the shield produces a parry attempt, the same shield
+# without the band skill produces none, and the shield still gives its own 6+ save.  The printed text
+# is the second band origin of the same stanza on the shared operator, so it adds no term and needs no
+# further scenario.  REVIEWED still requires manual semantic review and execution_status stays
+# UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: parry-with-a-shield (scope: YES)
+# AUTHORED[parry-with-a-shield]: 2 scenarios show the printed shield parry on the hero this band
+# grants it to (norse-explorers-lustria / the Shield Master warband skill bound to skill.shield-mastery,
+# selected by the fixture on the admitted Jarl profile).  A shield is not a parrying weapon of its own:
+# with the band skill the parry die of five beats the attacking four and the wound is never rolled,
+# and the control, the identical duel with a hand-built warrior of the same characteristics and no
+# skill, asks for no parry die and takes the wound instead.  REVIEWED still requires manual semantic
+# review.
+#
+# Clause: six-plus-save (scope: YES)
+# AUTHORED[six-plus-save]: 1 scenario carries the printed 6+ shield save that coexists with the parry
+# facet: the parry attempt fails, the wound roll is made, and the shield alone (no body armour) yields
+# an armour die whose six keeps the wound off, which is the ordinary shield composition rather than a
+# second application of the skill.  REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and this band's printed rule binding; no engine output was consulted.
+- audit_id: rule/mordheim/norse-explorers-lustria/band--norse-special-skills-shield-master/skill.shield-mastery
+  id: the-shield-parries-with-the-band-skill
+  covers: [parry-with-a-shield]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: norse-explorers-lustria
+      profile_id: jarl
+      special_rule_ids: [band--norse-special-skills-shield-master]
+      main_weapon_id: weapon.mace
+      off_hand_id: defence.shield
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+- audit_id: rule/mordheim/norse-explorers-lustria/band--norse-special-skills-shield-master/skill.shield-mastery
+  id: without-the-skill-the-same-shield-does-not-parry
+  covers: [parry-with-a-shield]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      off_hand_id: defence.shield
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: false, attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+- audit_id: rule/mordheim/norse-explorers-lustria/band--norse-special-skills-shield-master/skill.shield-mastery
+  id: the-shield-keeps-its-six-plus-save
+  covers: [six-plus-save]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: norse-explorers-lustria
+      profile_id: jarl
+      special_rule_ids: [band--norse-special-skills-shield-master]
+      main_weapon_id: weapon.mace
+      off_hand_id: defence.shield
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: false, attacks.0.saved: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

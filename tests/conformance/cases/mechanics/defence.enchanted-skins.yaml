@@ -1,0 +1,84 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/defence.enchanted-skins
+# authoring_status: AUTHORED
+# authoring_progress: the admitted special-save clause carries two authored
+#   boundary scenarios; the excluded enemy-magic clause stays excluded.
+#   REVIEWED still requires manual semantic review and execution_status stays
+#   UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: six-plus-special-save (scope: YES)
+# AUTHORED[six-plus-special-save]: 2 scenarios cover the 6+ special save after
+#   the armour phase holding at the threshold and failing one face below.
+#   Pending semantic review.
+#
+# Clause: unaffected-by-enemy-magic-on-five (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+# --- Authored scenarios ---
+# mechanic/defence.enchanted-skins — the 6+ special save after armour.
+#
+# Expectations come from the printed rule and the accepted clause
+# `six-plus-special-save` of
+# the knowledge-base clause contracts (sources/knowledge), never from engine output:
+# the enchanted skins give an unmodified 6+ special save against wounds, taken
+# after armour saves; observable on the special-save die that follows the
+# armour phase.  With no body armour there is no armour die, so the special-save
+# die is the only defence and its boundary is exactly 6.  The excluded enemy-
+# magic clause is not asserted here.
+#
+# The first scenario declares the shared profiles as YAML anchors; the sibling
+# aliases them and keeps its own special-save face and expectation.
+
+- audit_id: mechanic/defence.enchanted-skins
+  id: enchanted-skins-save-holds-on-six
+  covers: [six-plus-special-save]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &attacker-ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      defence_ids: [defence.enchanted-skins]
+      characteristics: &defender-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the printed target: a 5 fails the special save and the wound
+# is taken.
+
+- audit_id: mechanic/defence.enchanted-skins
+  id: enchanted-skins-fails-on-five
+  covers: [six-plus-special-save]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *attacker-ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.mace
+      defence_ids: [defence.enchanted-skins]
+      characteristics: *defender-ws3-s3-t3-w2-i2
+  duel_context: *charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

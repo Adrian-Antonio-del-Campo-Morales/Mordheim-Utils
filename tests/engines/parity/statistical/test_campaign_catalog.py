@@ -49,7 +49,7 @@ def test_levels_are_cumulative_and_big_is_the_catalogue():
 def test_level_names_never_collide_with_scenario_names():
     # A --scenarios value must select the same scenarios in every tool, so no
     # scenario may be named like a level or another reserved selection value.
-    reserved = {*LEVELS, "e2e"}
+    reserved = {*LEVELS, "deliveries"}
     names = {scenario.name for scenario in SCENARIOS}
     assert reserved.isdisjoint(names)
     assert not any(name.startswith("battery-") for name in names)
@@ -135,18 +135,32 @@ def test_inputs_the_samplers_cannot_pass_on_reject_the_case(cases):
     assert rejected[0][1].startswith("incompatible: initial_state overrides")
 
 
-def test_e2e_and_battery_are_named_sets_like_the_levels():
-    # Every tool takes the same values: the E2E corpus and the battery are
-    # selected whole by name, or one case at a time by key.
-    deliveries = select(("e2e",))
-    assert len(deliveries) > 2_000 and {entry.kind for entry in deliveries} == {"e2e"}
+def test_deliveries_and_battery_are_named_sets_like_the_levels():
+    # Every tool takes the same values: the parity deliveries and the battery
+    # are selected whole by name, or one case at a time by key.
+    deliveries = select(("deliveries",))
+    assert len(deliveries) > 2_000 and {entry.kind for entry in deliveries} == {"delivery"}
+    assert all(entry.key.startswith("delivery/") for entry in deliveries)
     battery = select(("battery",))
     assert {entry.kind for entry in battery} == {"battery"}
     assert all(entry.key == f"battery/{entry.name}" for entry in battery)
     one = select((battery[0].key, deliveries[0].key, "basic"))
-    assert [entry.kind for entry in one] == ["battery", "e2e", "scenario"]
+    assert [entry.kind for entry in one] == ["battery", "delivery", "scenario"]
     with pytest.raises(ValueError, match="unknown scenario"):
         select(("battery/no-such-case",))
+
+
+def test_an_unknown_token_is_not_looked_up_as_a_delivery(monkeypatch):
+    # Only "deliveries", delivery/<...> keys and <audit_id>::<id> ids consult
+    # the delivery catalogue; a typo is reported without loading it.
+    from tools.verification import parity_catalog
+
+    def unexpected():
+        raise AssertionError("the delivery catalogue must not be loaded")
+
+    monkeypatch.setattr(parity_catalog, "_delivery_index", unexpected)
+    with pytest.raises(ValueError, match="unknown scenario.*'smal'"):
+        select(("smal",))
 
 
 def test_loading_reports_every_case_a_tool_cannot_run(cases):
@@ -166,7 +180,7 @@ def test_realistic_sets_are_cumulative_and_disjoint_from_scenarios():
     assert (len(small), len(large)) == (50, 100)
     assert len(set(large)) == 100 and set(small) <= set(large)
     assert all(key.startswith("realistic/") for key in large)
-    assert set(REALISTIC_SETS).isdisjoint({*LEVELS, "e2e", "battery"})
+    assert set(REALISTIC_SETS).isdisjoint({*LEVELS, "deliveries", "battery"})
     assert set(REALISTIC_SETS).isdisjoint(scenario.name for scenario in SCENARIOS)
 
 

@@ -1,0 +1,103 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.sigmarite-hammer
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries four authored scenarios for the +1 Strength, the Concussion band and the Undead wound bonus with a control. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 4 scenarios cover the +1 Strength, the Concussion band and the +1 to wound the Undead with its living control.
+
+# --- Authored scenarios ---
+# mechanic/weapon.sigmarite-hammer - +1 Strength, Concussion, and +1 to wound
+# Undead or Possessed opponents.
+#
+# Expectations come from the printed rule and the admitted clause `whole`, never
+# from engine output.  The Undead bonus is declared through the opponent's own
+# undead/possessed fact and evidenced against the same face against a living one.
+# +1 Strength moves the wound target against Toughness 3 to 3+.
+
+- audit_id: mechanic/weapon.sigmarite-hammer
+  id: sigmarite-hammer-wounds-at-the-boosted-strength
+  fighters:
+    first:
+      main_weapon_id: weapon.sigmarite-hammer
+      characteristics: &a-ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &d-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Concussion on Injury rolls of 2-4 is the printed band.
+
+- audit_id: mechanic/weapon.sigmarite-hammer
+  id: sigmarite-hammer-injury-two-is-stunned
+  fighters:
+    first:
+      main_weapon_id: weapon.sigmarite-hammer
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &d-ws3-s3-t3-w1-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Against an Undead or Possessed opponent the printed +1 to wound moves the target from 3 to 2, so the 2 now wounds.
+
+- audit_id: mechanic/weapon.sigmarite-hammer
+  id: sigmarite-hammer-wounds-the-undead-one-face-earlier
+  fighters:
+    first:
+      main_weapon_id: weapon.sigmarite-hammer
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {undead_or_possessed: True}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Control on the same face: without the printed Undead bonus the 2 misses.
+
+- audit_id: mechanic/weapon.sigmarite-hammer
+  id: the-same-roll-against-a-living-opponent-does-not-wound
+  fighters:
+    first:
+      main_weapon_id: weapon.sigmarite-hammer
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

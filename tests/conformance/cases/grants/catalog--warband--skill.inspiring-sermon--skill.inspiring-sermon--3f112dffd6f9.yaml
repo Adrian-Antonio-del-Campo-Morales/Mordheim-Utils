@@ -1,0 +1,65 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/warband/skill.inspiring-sermon/skill.inspiring-sermon
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED. Documented reading: the printed clause says only '+1 Attack for the turn' and never names whose turn; the executor restricts it to the warrior's own turn (phases.build_attacks reads the round's player-turn flag), and that reading is the one tested.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios cover the +1 Attack on the warrior's
+#   own turn, observed through the attack index the engine then requests, and the
+#   same warrior keeping his printed single attack on the turn that is not his.
+
+# --- Authored scenarios ---
+# On his own turn the warrior's attack count is one higher than the printed A1: two
+# of his blows occupy the round's first two attack outcomes, so the declared tape
+# names both and the enemy's blow is only the third outcome.
+- audit_id: rule/catalog/warband/skill.inspiring-sermon/skill.inspiring-sermon
+  id: the-sermon-adds-one-attack-on-its-own-turn
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.inspiring-sermon]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, attacks.1.hit: False, attacks.2.hit: False,
+        state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The own-turn bonus does not follow the warrior into the enemy's turn: on this
+# round he is not the active player, so he keeps one attack and the enemy's blow is
+# the second outcome of the round.
+- audit_id: rule/catalog/warband/skill.inspiring-sermon/skill.inspiring-sermon
+  id: no-extra-attack-on-the-turn-that-is-not-his-own
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.inspiring-sermon]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.damage: 1, attacks.1.hit: True, attacks.1.damage: 1,
+        state.first.wounds: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

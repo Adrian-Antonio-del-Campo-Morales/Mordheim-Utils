@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-parity-delivery/v2",
+  "status": "not-applicable",
+  "source": {
+    "revision": "84a634dbdfc45973ebb93a9dd90c852e21c7c12b",
+    "path": "tests/conformance/cases/grants/mordheim--high-elves-lus--loremaster--tower-of-hoeth--profile.active-wea--de64eb1e85f2.yaml",
+    "sha256": "1b10c626c8bfa7a2574127383b64d4702826ee00c0ef0ebf205e6bf4b244bbf9",
+    "test_id": "rule/mordheim/high-elves-lus/loremaster--tower-of-hoeth/profile.active-weapon-restrictions::loremaster-with-a-mace-as-active-weapon-is-refused"
+  },
+  "case_key": "delivery/rule/mordheim/high-elves-lus/loremaster--tower-of-hoeth/profile.active-weapon-restrictions/loremaster-with-a-mace-as-active-weapon-is-refused",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E declares an expected construction refusal ('weapon.mace may not be used by high-elves-lus/loremaster'); the build is refused with 'weapon.mace may not be used by high-elves-lus/loremaster; the printed clause admits only weapon.sword, weapon.dagger, mage_staff_of_hoeth.', so no statistical scenario can be frozen."
+}

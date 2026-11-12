@@ -84,9 +84,9 @@ def test_scenarios_select_every_catalogue_with_the_same_values():
     # Without --scenarios: small.  ``long`` is a scenario name, not a level.
     assert len(benchmark_cases(None)[0]) == 8
     assert [case.id for case in benchmark_cases(["long"])[0]] == ["long"]
-    # Several values run their union; E2E deliveries and battery cases run
+    # Several values run their union; parity deliveries and battery cases run
     # with their own duel context, keyed by their full name.
-    key = "e2e/core/combat-critical-hits/a-critical-table-modifier-shifts-the-applied-band"
+    key = "delivery/core/combat-critical-hits/a-critical-table-modifier-shifts-the-applied-band"
     cases, _ = benchmark_cases(["basic", key, "battery/q04-parry-attempt"])
     assert [case.id for case in cases] == ["basic", key, "battery/q04-parry-attempt"]
     assert cases[1].context is not None and cases[2].context is not None

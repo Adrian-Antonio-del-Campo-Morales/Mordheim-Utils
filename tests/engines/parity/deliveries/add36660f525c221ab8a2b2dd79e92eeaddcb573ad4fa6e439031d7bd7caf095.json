@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-parity-delivery/v2",
+  "status": "blocked",
+  "source": {
+    "revision": "84a634dbdfc45973ebb93a9dd90c852e21c7c12b",
+    "path": "tests/conformance/cases/grants/mordheim--restless-dead--scarecrows--flammable--trait.flammable--74a40ed71143.yaml",
+    "sha256": "7af39ab1aa63a3fb0477cdc6e431f3ebd1eff11d33cb272c2236f25f2f11b0b0",
+    "test_id": "rule/mordheim/restless-dead/scarecrows--flammable/trait.flammable::the-same-unsaved-wound-from-an-ordinary-weapon-is-not-doubled"
+  },
+  "case_key": "delivery/rule/mordheim/restless-dead/scarecrows--flammable/trait.flammable/the-same-unsaved-wound-from-an-ordinary-weapon-is-not-doubled",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E prescribes explicit decisions (round.0.first.attack.0.injury.0.reroll-choice); the contract admits only the engine-default decision policy, and no general policy for randomly branched trajectories exists for these keys."
+}

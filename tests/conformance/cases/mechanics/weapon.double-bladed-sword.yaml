@@ -1,0 +1,107 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.double-bladed-sword
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries three authored scenarios for the added attack, the two parry attempts and the parry reroll plus one refusal for the two-handed occupancy. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 3 scenarios and 1 refusal cover the added attack, the two parry attempts in one round with their exhaustion, the reroll and the two-handed occupancy.
+
+# --- Authored scenarios ---
+# mechanic/weapon.double-bladed-sword - two-handed, +1 Attack and two parry
+# attempts.
+#
+# Expectations come from the printed rule and the admitted clause `whole`, never
+# from engine output.  The two-attempt scenario is the decisive evidence: one
+# round carries two blocked attacks, and the remaining parry capacity is observed
+# at zero afterwards.
+# The ordered tape carries two attack dice for the bearer of the two-handed blade.
+
+- audit_id: mechanic/weapon.double-bladed-sword
+  id: double-bladed-sword-grants-one-additional-attack
+  fighters:
+    first:
+      main_weapon_id: weapon.double-bladed-sword
+      characteristics: &a-ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &d-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.1.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+# Two attacks are each met with a parry in the same round, which a single-attempt parry could not do, and the capacity is then spent.
+
+- audit_id: mechanic/weapon.double-bladed-sword
+  id: double-bladed-sword-offers-two-parry-attempts
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &a-ws3-s3-t3-w2-i5-attacks2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      main_weapon_id: weapon.double-bladed-sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  # The pool resolves every To Hit die before any defence is offered, so both parries
+  # follow the two hit dice.
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.first.attack.1.parry, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: True, attacks.1.parried: True, state.second.parries_remaining: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed reroll is offered once the 3 fails to beat the 4, and the second die blocks the attack.
+
+- audit_id: mechanic/weapon.double-bladed-sword
+  id: double-bladed-sword-parry-reroll-recovers-a-failed-attempt
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.double-bladed-sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 3}
+    - {key: round.0.first.attack.0.parry.reroll, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: True, attacks.0.wounded: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed two-handed occupancy is declared as a refusal.
+
+- audit_id: mechanic/weapon.double-bladed-sword
+  id: double-bladed-sword-occupies-both-hands-so-an-off-hand-weapon-is-refused
+  fighters:
+    first:
+      main_weapon_id: weapon.double-bladed-sword
+      off_hand_id: weapon.dagger
+    second:
+      main_weapon_id: weapon.mace
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_error: "main weapon occupies both hands"
+

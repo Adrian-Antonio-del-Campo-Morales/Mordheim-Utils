@@ -1,0 +1,57 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/shadow-warriors/band--shadow-warrior-special-skills-powerful-build/profile.skill-access
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries two authored scenarios in contrast: the Shadow
+#   Master that selects the Powerful Build grant adds the Strength list and may take a Strength
+#   skill, while the same warrior without the grant is refused.  The printed Shadow Weaver exclusion
+#   and the two-bearer cap are named as pending below.  REVIEWED still requires manual semantic
+#   review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios contrast the selected grant with its absence.  The admission
+#   scenario builds the recipient with `special_rule_ids`
+#   [band--shadow-warrior-special-skills-powerful-build] and skill.mighty-blow, the canonical
+#   Strength skill, and records that the duel ran unrefused; the control scenario builds the same
+#   warrior with the same Strength skill and no grant, and the shared access route refuses it.  The
+#   printed Shadow Weaver exclusion is not represented: the excluded profile id is not asserted
+#   here.  REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded semantic contract and the shadow-master profile's own
+# printed lists (combat, shooting, academic, speed, special: Strength is absent without the grant);
+# no engine output was consulted.  Both fighters are given zero attacks so the round resolves
+# without dice and the observation is about access, not about the skill's mechanics.
+
+- audit_id: rule/mordheim/shadow-warriors/band--shadow-warrior-special-skills-powerful-build/profile.skill-access
+  id: the-selected-grant-admits-a-strength-skill
+  fighters:
+    first:
+      collection: mordheim
+      band_id: shadow-warriors
+      profile_id: shadow-master
+      special_rule_ids: [band--shadow-warrior-special-skills-powerful-build]
+      skill_ids: [skill.mighty-blow]
+      main_weapon_id: weapon.natural-attacks
+    second:
+      main_weapon_id: weapon.natural-attacks
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_final: {rounds_executed: 1}
+
+- audit_id: rule/mordheim/shadow-warriors/band--shadow-warrior-special-skills-powerful-build/profile.skill-access
+  id: the-same-strength-skill-is-refused-without-the-grant
+  fighters:
+    first:
+      collection: mordheim
+      band_id: shadow-warriors
+      profile_id: shadow-master
+      skill_ids: [skill.mighty-blow]
+  expect_error: "skills are not available to shadow-warriors/shadow-master: ['skill.mighty-blow']"

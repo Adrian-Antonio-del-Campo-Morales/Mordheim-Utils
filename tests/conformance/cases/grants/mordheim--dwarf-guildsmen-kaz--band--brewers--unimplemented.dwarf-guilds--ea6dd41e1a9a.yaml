@@ -1,0 +1,127 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/dwarf-guildsmen-kaz/band--brewers/unimplemented.dwarf-guildsmen-kaz.band.brewers
+# authoring_status: PARTIAL
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: brew-characteristic (scope: YES)
+# PARTIAL[brew-characteristic]: no scenario is authored for this row in this batch.  The supplied
+# identity it once lacked now exists: catalog/rules/conditions.yaml defines
+# condition.troll-brew-special-brew bound to profile.characteristics (+1 Weapon Skill and +1
+# Strength, capped at 10), the same supplied-condition route the 1-2 and 3-4 rows of this table use,
+# and compiler.py gates it to exactly a Dwarf Hero of these brewers.  Authoring the 5-6 tape is a
+# pending coverage task, not an input or engine blocker.  REVIEWED still requires manual semantic
+# review.
+#
+# Clause: brew-fear-immunity (scope: YES)
+# AUTHORED[brew-fear-immunity]: 2 scenarios read the printed "1-2: the warrior is immune to fear for the duration of the battle" through the canonical mechanic.fear-immunity the record assigns to this row (its band binding is the pending connection the register names): the nominated drinks are the printed Apprentices profile (a Dwarf Hero, Leadership 8) and the bearer supplied with the immunity takes no Fear test at all for the charge it receives, which the strict tape proves by requesting no fear die and leaving the hits unclamped, while the same bearer without the row consumes the declared fear dice - a total of eleven against its own 8 - and takes the clamped penalty. The supplied pre-battle D6 result stays the fixture's own fact. REVIEWED still requires manual semantic review.
+#
+# Clause: brew-frenzy (scope: YES)
+# AUTHORED[brew-frenzy]: 2 scenarios read the printed "3-4 Troll Brew: for the duration of the battle the warrior is subject to frenzy": the nominated drinks are the printed Apprentices profile (a Dwarf Hero) supplied with the canonical frenzy condition, and the printed doubled attack count is what the dice the round consumes prove - the bearer's single printed Attack spends two declared Strikes, so a third attack outcome exists at all, which the control without the row does not produce. The doubled pool, not the supplied flag, is the discriminating evidence. REVIEWED still requires manual semantic review.
+
+# authoring_progress: the brew-fear-immunity and brew-frenzy clauses carry four authored scenarios
+#   derived from the printed brew rows, the printed Apprentices profile and the recorded canonical
+#   conditions (condition.troll-brew-fear-immunity, condition.troll-brew-frenzy), supplied on the
+#   nominated Dwarf Hero exactly as the compiler requires for these brewers.  brew-characteristic stays pending with the reason named above: no
+#   effect id, no consumer and no declaration of a pre-battle characteristic adjustment.  REVIEWED
+#   still requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+# Derived from the printed brew table and the recorded contracts; no engine output was consulted.  The
+# nominated Dwarf is the printed Apprentices profile (the band's Dwarf Hero) and the brew row it drank
+# is supplied as the canonical condition of catalog/rules/conditions.yaml, which the compiler gates to
+# exactly a Dwarf Hero of these brewers.
+
+- audit_id: rule/mordheim/dwarf-guildsmen-kaz/band--brewers/unimplemented.dwarf-guildsmen-kaz.band.brewers
+  id: the-dwarf-nominated-for-the-fear-immune-brew-takes-no-fear-test
+  covers: [brew-fear-immunity]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1, leadership: 10}
+    second:
+      collection: mordheim
+      band_id: dwarf-guildsmen-kaz
+      profile_id: apprentices
+      condition_ids: [condition.troll-brew-fear-immunity]
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same nominated Dwarf without the brew row consumes the declared fear dice, and a
+# total of eleven against its own Leadership 8 fails, so the charge's hits are clamped to sixes.
+- audit_id: rule/mordheim/dwarf-guildsmen-kaz/band--brewers/unimplemented.dwarf-guildsmen-kaz.band.brewers
+  id: without-the-brew-row-the-nominated-dwarf-rolls-the-fear-test
+  covers: [brew-fear-immunity]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1, leadership: 10}
+    second: {collection: mordheim, band_id: dwarf-guildsmen-kaz, profile_id: apprentices}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 5}
+    - {key: round.0.second.fear.charged.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/dwarf-guildsmen-kaz/band--brewers/unimplemented.dwarf-guildsmen-kaz.band.brewers
+  id: the-troll-brew-doubles-the-nominated-dwarfs-single-attack
+  covers: [brew-frenzy]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: dwarf-guildsmen-kaz
+      profile_id: apprentices
+      condition_ids: [condition.troll-brew-frenzy]
+  initial_state:
+    second: {attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.second.frenzy: true, attacks.2.wounded: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: without the brew row the nominated Dwarf resolves its single printed Attack, so the
+# third attack outcome the trigger scenario reads does not exist and the frenzy flag stays false.
+- audit_id: rule/mordheim/dwarf-guildsmen-kaz/band--brewers/unimplemented.dwarf-guildsmen-kaz.band.brewers
+  id: without-the-troll-brew-the-nominated-dwarf-strikes-once
+  covers: [brew-frenzy]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: dwarf-guildsmen-kaz, profile_id: apprentices}
+  initial_state:
+    second: {attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.frenzy: false, attacks.1.wounded: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

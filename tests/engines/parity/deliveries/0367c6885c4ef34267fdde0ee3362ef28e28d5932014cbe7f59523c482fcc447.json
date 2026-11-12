@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-parity-delivery/v2",
+  "status": "blocked",
+  "source": {
+    "revision": "84a634dbdfc45973ebb93a9dd90c852e21c7c12b",
+    "path": "tests/conformance/cases/grants/mordheim--ogre-hunting-party-web--band--ogre-hunting-skills--profile.ski--2bc4a5c940e5.yaml",
+    "sha256": "0be8c34bb0d130ab0ed68b48fbbc4fd9fa22472763c05455bed36957a8cdf6d2",
+    "test_id": "rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills/profile.skill-access::an-unsaved-hit-knocks-down-while-a-save-leaves-the-defender-standing"
+  },
+  "case_key": "delivery/rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills/profile.skill-access/an-unsaved-hit-knocks-down-while-a-save-leaves-the-defender-standing",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E prescribes explicit decisions (round.0.first.bull-charge); the contract admits only the engine-default decision policy, and no general policy for randomly branched trajectories exists for these keys."
+}

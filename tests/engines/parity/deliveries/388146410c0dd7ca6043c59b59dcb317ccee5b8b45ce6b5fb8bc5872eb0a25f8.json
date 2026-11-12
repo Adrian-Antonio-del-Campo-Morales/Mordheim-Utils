@@ -1,0 +1,17 @@
+{
+  "schema": "mordheim-parity-delivery/v2",
+  "status": "blocked",
+  "source": {
+    "revision": "84a634dbdfc45973ebb93a9dd90c852e21c7c12b",
+    "path": "tests/conformance/cases/grants/catalog--warband--skill.luck--skill.luck--d7f94f89693f.yaml",
+    "sha256": "7f4465e83c0c3870c4e8ab5918cb28ff0f38d2c7ce433170a53da17731e116d4",
+    "test_id": "rule/catalog/warband/skill.luck/skill.luck::the-resource-is-spent-once-so-a-later-failed-wound-stands"
+  },
+  "case_key": "delivery/rule/catalog/warband/skill.luck/skill.luck/the-resource-is-spent-once-so-a-later-failed-wound-stands",
+  "case": null,
+  "decision_policy": null,
+  "magnitudes": [
+    "winner"
+  ],
+  "reason": "The E2E prescribes explicit decisions (round.0.first.attack.0.hit.luck); the contract admits only the engine-default decision policy, and no general policy for randomly branched trajectories exists for these keys."
+}

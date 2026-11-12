@@ -1,0 +1,199 @@
+# Accepted conformance coverage evidence (reviewed).
+# Regenerate only through a reviewed edit; the control never rewrites it.
+#
+# `clauses` is the accepted clause set of the identity (empty for an undivided
+# identity); `scenarios` maps each protected scenario identity to the clause
+# references it declares. Losing an
+# identity, a scenario or a reference inside a scenario is a regression, so a
+# scenario cannot be substituted by another that happens to keep the counts.
+#
+# `inventory.sha256` records the knowledge-base clause inventory the reference
+# was accepted against (mordheim_knowledge.clauses.inventory_digest); if the
+# digest moves, the control re-checks that every accepted clause is still an
+# admitted clause rather than trusting the old revision.
+schema_version: 1
+accepted_on: '2026-10-08'
+purpose: 'Accepted conformance coverage evidence. The non-regression control in test_non_regression.py compares
+  this reference with the live corpus set-wise: an identity, a scenario or a clause reference that disappears
+  is a regression even when the counts stay the same. This is a test artefact, not an editorial rules
+  register, and it is never rewritten automatically.'
+inventory:
+  source: sources/knowledge
+  sha256: 2b3d22bfa20405b83a200198b49f71558330d4c8bfaf686041bb71f4b3a6ff86
+identities:
+  core/combat-critical-hits:
+    clauses:
+    - basic-table
+    - critical-trigger
+    - damage-stacking
+    - one-per-phase
+    scenarios:
+      a-six-that-was-required-is-not-a-critical:
+      - critical-trigger
+      critical-allowance-is-restored-in-the-next-round:
+      - one-per-phase
+      critical-result-five-adds-two-to-injury:
+      - basic-table
+      critical-result-three-ignores-armour:
+      - basic-table
+      critical-result-two-still-rolls-the-armour-save:
+      - basic-table
+      critical-result-two-with-a-failed-save-deals-two-wounds:
+      - basic-table
+      damage-stacking-uses-the-higher-value:
+      - damage-stacking
+      natural-six-critical-triggers-the-chart:
+      - critical-trigger
+      - basic-table
+      one-critical-per-close-combat-phase:
+      - one-per-phase
+  core/combat-injury-states:
+    clauses:
+    - chart
+    - highest-result
+    - stand-up-strikes-last
+    scenarios:
+      chart-knocked-down-on-one:
+      - chart
+      chart-knocked-down-on-two:
+      - chart
+      chart-out-on-five:
+      - chart
+      chart-out-on-six:
+      - chart
+      chart-stunned-on-four:
+      - chart
+      chart-stunned-on-three:
+      - chart
+      highest-injury-result-applies:
+      - highest-result
+      highest-injury-result-beats-the-first-roll:
+      - highest-result
+      recovery-belongs-to-the-fighters-own-turn:
+      - stand-up-strikes-last
+      - chart
+  core/combat-order:
+    clauses:
+    - charge-before-initiative
+    - stood-up-strikes-last
+    scenarios:
+      a-lost-tie-lets-the-opponent-act-first:
+      - charge-before-initiative
+      an-exact-initiative-tie-is-decided-by-a-die:
+      - charge-before-initiative
+      charge-acts-before-higher-initiative:
+      - charge-before-initiative
+      charge-priority-expires-after-the-first-round:
+      - charge-before-initiative
+      higher-initiative-acts-first:
+      - charge-before-initiative
+      stood-up-fighter-strikes-last:
+      - stood-up-strikes-last
+      strike-first-overrides-the-standing-up-penalty:
+      - stood-up-strikes-last
+      the-standing-up-penalty-expires-the-following-round:
+      - stood-up-strikes-last
+  core/combat-parry:
+    clauses:
+    - parry-attempt
+    - reroll-and-capacity
+    scenarios:
+      a-buckler-alone-parries-one-hit:
+      - parry-attempt
+      a-natural-six-cannot-be-parried:
+      - parry-attempt
+      an-equal-roll-does-not-beat-the-hit:
+      - parry-attempt
+      double-strength-cannot-be-parried:
+      - parry-attempt
+      strength-below-double-may-be-parried:
+      - parry-attempt
+      sword-and-buckler-reroll-a-failed-parry:
+      - reroll-and-capacity
+      sword-parries-one-hit:
+      - parry-attempt
+      two-swords-give-one-attempt-per-phase:
+      - reroll-and-capacity
+  core/combat-two-weapons:
+    clauses:
+    - extra-attack
+    - mixed-weapons
+    scenarios:
+      different-weapons-give-the-off-hand-one-attack:
+      - mixed-weapons
+      nominating-the-off-hand-weapon-moves-the-profiles:
+      - mixed-weapons
+      the-extra-attack-is-not-doubled-by-frenzy:
+      - extra-attack
+      two-weapons-add-one-attack:
+      - extra-attack
+  mechanic/armour.light-armour:
+    clauses: []
+    scenarios:
+      six-plus-save-fails-on-five: []
+      six-plus-save-holds-on-six: []
+  mechanic/defence.lucky-charm:
+    clauses:
+    - first-hit-discarded-on-four
+    - two-charms-do-not-stack
+    scenarios:
+      charm-does-not-discard-on-three:
+      - first-hit-discarded-on-four
+      charm-is-consumed-after-one-hit:
+      - first-hit-discarded-on-four
+      first-hit-discarded-on-four:
+      - first-hit-discarded-on-four
+      two-charms-afford-one-attempt:
+      - two-charms-do-not-stack
+  mechanic/defence.shield:
+    clauses: []
+    scenarios:
+      shield-bonus-does-not-save-one-below: []
+      shield-improves-the-armour-save-by-one: []
+  rule/trollheim/chaos-streets-undead-bloodlines/band--lahmia-power-lost-innocence/skill.always-strikes-first:
+    clauses: []
+    scenarios:
+      another-profile-of-the-band-is-refused: []
+      the-recipient-keeps-strike-first-when-standing-up: []
+      the-recipient-strikes-before-higher-initiative: []
+      the-unselected-recipient-strikes-last-when-standing-up: []
+  rule/trollheim/khemri-hobgoblin-raiders/band--hobgoblin-special-skills-unpredictable/mechanic.unpredictable-attack:
+    clauses: []
+    scenarios:
+      a-declared-unpredictable-attack-cannot-be-parried: []
+      an-undeclared-attack-is-still-parried: []
+      another-profile-of-the-band-is-refused: []
+      the-unselected-recipient-is-parried: []
+  rule/trollheim/khemri-lahmian-brotherhood/band--lahmian-special-skills-lost-innocence/skill.always-strikes-first:
+    clauses: []
+    scenarios:
+      another-profile-of-the-band-is-refused: []
+      the-recipient-strikes-before-higher-initiative: []
+      the-unselected-recipient-loses-the-initiative-order: []
+  rule/trollheim/lustria-high-elves/band--high-elf-special-skills-infallible-strike/skill.sure-strike:
+    clauses: []
+    scenarios:
+      a-profile-outside-the-eligibility-is-refused: []
+      the-recipient-rerolls-a-failed-wound: []
+      the-unselected-recipient-keeps-the-failed-wound: []
+  rule/trollheim/lustria-lizardmen/band--lizardmen-special-skills-hardened-skin/skill.hard-to-kill:
+    clauses: []
+    scenarios:
+      another-profile-of-the-band-is-refused: []
+      the-recipient-is-not-out-of-action-on-five: []
+      the-recipient-is-out-of-action-on-six: []
+      the-unselected-recipient-is-out-of-action-on-five: []
+  rule/trollheim/lustria-pirates/band--pirate-special-skills-hardy-constitution/skill.hardy-constitution:
+    clauses: []
+    scenarios:
+      a-profile-outside-the-eligibility-is-refused: []
+      the-recipient-ignores-a-critical-on-five: []
+      the-recipient-takes-the-critical-on-four: []
+      the-unselected-recipient-always-takes-the-critical: []
+  rule/trollheim/trollheim-mercenaries/band--middenheim-physical-prowess/profile.characteristics:
+    clauses: []
+    scenarios:
+      a-profile-outside-the-recipient-list-is-refused: []
+      the-recipient-starts-at-strength-four: []
+      the-unselected-recipient-keeps-strength-three: []
+

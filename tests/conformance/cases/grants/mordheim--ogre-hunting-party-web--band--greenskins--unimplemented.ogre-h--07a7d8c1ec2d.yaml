@@ -1,0 +1,31 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/ogre-hunting-party-web/band--greenskins/unimplemented.ogre-hunting-party-web.band.greenskins
+# authoring_status: PARTIAL
+# authoring_progress: no scenario is derivable for the admitted classification clause: the fixture admits
+# no field for a rule-supplied identity, and the record carries no clause whose recipient selection could
+# evidence it, so a tape would have to supply the very fact under test.  The concrete evidence is in the
+# note below.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# PARTIAL: [C] blocker: an input the duel fixture does not admit, kept separate
+# from the implementation defect the eventual tape must detect.  The printed sentence is a rule-supplied
+# identity ("for all intents and purposes, they count as 'Greenskins'"); its second half is a scope-NO
+# subsystem (the Animosity exemption and Bicker, which is itself a scope-NO row of this same source), and the
+# record assigns the clause no effect_id, no parameters and no consumer, with its own runtime row at scope
+# LATER and a null binding.  The only observable such an identity could have is a recipient selection made by
+# another clause, and that route needs two things this record does not carry: a clause that selects
+# Greenskins, and a fixture able to declare the selecting grant.  The fixture's declaration channels are
+# checked and none of them states the fact - collection / band_id / profile_id name a compiled profile,
+# skill_ids and item ids name grants or possessions, characteristics and trait_overrides are facts the
+# fixture itself supplies - and declaring the classification through a trait override would supply the very
+# fact under test, so the tape could not discriminate.  The blocked item is therefore the missing
+# rule-supplied identity together with its selecting clause; the null binding of this origin's own row is the
+# implementation defect the tape must detect once that identity exists, not the blocker.
+
+[]  # Empty scenario list: this file contributes no test or coverage.

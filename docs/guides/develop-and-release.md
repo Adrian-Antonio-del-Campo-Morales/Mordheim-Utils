@@ -22,8 +22,8 @@ python tools/mordheim-utils.py tests modular mechanics -k leadership -q
 ```
 
 Engine tests consume versioned snapshots under `tests/engines/fixtures/`;
-ordinary execution needs no regeneration. The original E2E corpus is under
-`tests/integration/e2e/`, and source-backed construction/KB/integration
+ordinary execution needs no regeneration. The conformance corpus is under
+`tests/conformance/`, and source-backed construction/KB/conformance
 checks retain compiler access. See [fixture maintenance](../reference/verification.md#engine-test-fixtures)
 and [test tree and selection](../reference/tools.md#selections).
 `tests modular` and `tests vectorized` are broad selections, not default
@@ -70,7 +70,7 @@ project filters.
 | Test move or import/path update | `python -u -m pytest tests/engines/shared/contracts/test_kernel_plan.py --collect-only -q` (substitute the affected file) |
 | One engine adapter / frozen-input connection | Run the explicit NumPy or native node below |
 | Compiler behavior | Select affected files in `tests/construction/`; do not regenerate fixtures just to make changed outputs pass |
-| E2E scenario | Select the scenario's collected node ID in `tests/integration/e2e/`; use `--collect-only` on its runner when the ID is unknown |
+| Conformance scenario | Select the scenario's collected node ID in `tests/conformance/`; use `--collect-only` on its runner when the ID is unknown |
 | Launcher behavior | Select existing checks in `tests/tooling/launcher/` |
 | TypeScript domain change | Workspace typecheck and the affected Vitest file |
 
@@ -116,8 +116,8 @@ Runs the knowledge generator/check, the campaign-file, architecture and
 knowledge checks (including the `tests/knowledge/web` artefact audits),
 shared-eligibility transport, the eligibility bundle freshness check, the
 TypeScript typecheck/tests and the web typecheck/lint/tests/build plus the
-post-build bundle guard. It does not run the modular E2E battery or its
-non-regression control, which CI runs as separate steps. Add `tests kb e2e -q`
+post-build bundle guard. It does not run the rules-conformance suite or its
+non-regression control, which CI runs as separate steps. Add `tests conformance -q`
 when the change touches KB, compiler or engine integration. Those browser
 artefact checks read generated knowledge data and can be expensive; select the
 affected files while editing and reserve this gate for integration.
@@ -214,7 +214,7 @@ python tools/mordheim-utils.py performance calibrate --reset         # drop the 
 ```
 
 Benchmark, parity, calibration and the stored samples share one `--scenarios`
-vocabulary: the precompiled levels and scenarios, `e2e` and `battery`.
+vocabulary: the precompiled levels and scenarios, `deliveries` and `battery`.
 Missing frozen scenarios fail instead of compiling replacements; battery cases
 compile their declared builds.
 
@@ -254,7 +254,7 @@ and MiniRacer's native library; installing Node on the target machine is unneces
 ## Release checklist
 
 - [ ] Fast relevant tests pass.
-- [ ] Structural `check verify` passes; the authorized mechanics, construction and E2E checks have recorded results.
+- [ ] Structural `check verify` passes; the authorized mechanics, construction and conformance checks have recorded results.
 - [ ] TypeScript/web checks pass when applicable.
 - [ ] Contract fixtures and generated knowledge artefacts validate when applicable.
 - [ ] Shared eligibility bundle matches its sources and both consumer suites pass when its rules change.

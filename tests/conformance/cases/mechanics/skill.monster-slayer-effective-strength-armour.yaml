@@ -1,0 +1,69 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/skill.monster-slayer-effective-strength-armour
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries two authored scenarios derived from the printed rule and the recorded contract: the armour-save modifier of the same attack is taken from the effective Strength with the variant skill and from the raw profile Strength without it. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios cover an armour-save modifier taken from the effective Strength of the attack rather than the raw profile Strength: against a Toughness-4 model the same armour face of five fails with the skill and holds without it.
+
+# --- Authored scenarios ---
+# The admitted clause changes only the basis of the armour-save modifier: the
+# attack uses the effective Strength needed to wound on 4+ instead of the raw
+# profile Strength, while the wound roll itself is untouched.  A Strength-2
+# attacker against a Toughness-4 model is the boundary the printed wording
+# names: the effective Strength is 4, one point above the raw 2, so the armour
+# save worsens by exactly that point and the same armour face of five separates
+# the two readings.  The companion skill tag is held constant in both
+# configurations so that only this variant is the variable; per the register
+# note the printed maximum of four on the wound roll belongs to that companion,
+# and it is present in neither reading's difference.
+- audit_id: mechanic/skill.monster-slayer-effective-strength-armour
+  id: effective-strength-raises-the-armour-modifier
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.monster-slayer, skill.monster-slayer-effective-strength-armour]
+      characteristics: {weapon_skill: 3, strength: 2, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 4, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: False, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The same attack without the variant skill keeps the raw Strength-2 basis, so
+# the very same armour face now holds.
+- audit_id: mechanic/skill.monster-slayer-effective-strength-armour
+  id: effective-strength-without-the-skill-keeps-the-raw-strength
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.monster-slayer]
+      characteristics: {weapon_skill: 3, strength: 2, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 4, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: True, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

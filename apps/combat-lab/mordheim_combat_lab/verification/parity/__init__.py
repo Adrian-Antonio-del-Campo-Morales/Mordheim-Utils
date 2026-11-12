@@ -2,7 +2,7 @@
 
 Layered submodules: the report payloads, the vectorized obligation inventory,
 the single-sample comparator and the one statistical runner, which serves
-every selection (precompiled scenarios, E2E deliveries, battery cases).
+every selection (precompiled scenarios, parity deliveries, battery cases).
 """
 from mordheim_combat_lab.verification.parity._report import (
     UNDERPOWERED,

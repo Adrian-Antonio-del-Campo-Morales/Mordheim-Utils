@@ -10,7 +10,7 @@ Three ideas define the KB, and everything else follows from them:
    experience, gold, rolls and purchases of a concrete warband belong to the
    campaign state of the applications, not to the KB.
 2. **The KB carries no evidence of correctness.** Its structural contract is
-   checked by `check verify`; behavioural evidence lives in modular mechanics and E2E
+   checked by `check verify`; behavioural evidence lives in modular mechanics and conformance
    tests. Runtime does not depend on its own tests. Editorial text is reviewed against the written sources
    (mordheimer.net / The New Mordheimer), never against engine output.
 3. **Stable ids are the backbone.** Every rule, profile, item, mechanic and
@@ -110,8 +110,9 @@ Key invariants (abridged — the full list is in the schema file):
 Every obligation the duel runtime must honour is an **identity**: a core combat
 rule (`core/<rule-id>`), a close-combat mechanic the runtime scope keeps
 (`mechanic/<mechanic-id>`), an implemented item (`item/<item-id>`) or a `YES`
-effect of a band rule or catalogue skill
-(`rule/<collection>/<owner>/<rule-id>/<effect-id>`). The printed prose is the
+effect of a band rule, catalogue skill or hireling rule
+(`rule/<collection>/<owner>/<rule-id>/<effect-id>`; hireling rules are
+`rule/catalog/<dir>/...` with `<dir>` `hired-swords` or `dramatis-personae`). The printed prose is the
 rule; an identity is one undivided obligation unless its record declares
 **clauses**, which it does only when the printed text has several observable
 parts or deliberately excludes one:
@@ -136,7 +137,7 @@ no evidence (principle 2): what a test observes is written next to the test.
 schemas validate the shape (a single `YES` clause is refused: the record itself
 is that obligation).
 
-The tests declare what they cover: an E2E scenario through `audit_id` and,
+The tests declare what they cover: a conformance scenario through `audit_id` and,
 for a split identity, `covers`; a deterministic test through
 `@pytest.mark.covers("<identity>", "<clause-id>", ...)`. The coverage tool
 joins the two sides:
@@ -151,7 +152,7 @@ python tools/mordheim-utils.py check report rules       # rules-inventory.csv + 
 
 Coverage counts declared references, not executed evidence: a named scenario
 or test must still run and pass. Renaming an effect id moves its identity, so
-the E2E scaffolds that name it must move too (`check` reports the dangling
+the conformance scaffolds that name it must move too (`check` reports the dangling
 references).
 
 ### Reason codes
@@ -530,7 +531,7 @@ current shared catalogue.
 
 Structural verification is the `check verify` entry point. Rule behaviour is
 checked by `tests/engines/modular/mechanics/`, and connected construction/combat
-by `tests/integration/e2e/`. Construction and KB contracts have their own suites.
+by the rules-conformance suite in `tests/conformance/`. Construction and KB contracts have their own suites.
 Expectations come from written sources and adopted rulings, not engine output.
 
 The semantic YAML test system is retired. The archived register columns and
@@ -574,7 +575,7 @@ that all bind the same mechanic id — reuse without duplication.
    sharing the same modular sample. A divergence is presumed to be a defect
    of the candidate — `check parity` only reads the oracle and never modifies it.
 7. **Evidence.** Source-derived modular mechanics tests check rule consequences;
-   E2E scenarios exercise actual granting/compilation and observable duel results.
+   Conformance scenarios exercise actual granting/compilation and observable duel results.
    Statistical scenarios compare optimized engines with the reference. Both kinds
    of test name the clauses they demonstrate (`covers`), and
    `tools/knowledge/clauses.py` reports declared coverage, not an automatically
