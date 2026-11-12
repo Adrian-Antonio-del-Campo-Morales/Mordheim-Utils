@@ -4,34 +4,26 @@ Open defects, verification gaps and deferred capabilities.
 
 ## Local CI blockers
 
-The 2026-11-12 local CI run on `719b3987` (Python 3.14.4, Node 22.16.0,
-eight test workers) finished with 13 passing steps and four failing steps.
+The 2026-11-12 local CI re-run passed every step, including the presentation
+gate after the audit calibration below. Combat Lab UI checks are outside this
+CI selection and still need a Python environment with Tkinter.
 
-- **Python regression (`05-python-regression`).** The Scourge split left two
-  catalogue checks failing: the normalized name `scourge` now matches
-  `scourge` and `slaver_scourge`, and the generated catalogue has 465 items
-  against an expected 464. Reconcile both checks with the two printed entries.
-  The translation consistency check also found a missing Spanish name for
-  `night-goblin-special-skills` in `sources/knowledge/registry/sources.yaml`;
-  reuse the translation in the Crooked Moon band rules.
-- **Extra Arm with a shield (`06-modular-e2e`).** The scenario
-  `a-shield-in-the-extra-arm-still-adds-one-attack` still fails because the
-  second attack's hit and wound rolls are unused. Confirm the printed rule and
-  reconcile the attack sequence with the scenario.
-- **Web lint (`14-web-lint`).** Resolve 12 ESLint errors in Warband Manager
-  tests (unused bindings and explicit `any`). Rerun
-  `npm run lint --workspace warband-manager-web` to verify ESLint and the
-  presentation gate, which did not run.
-- **Web campaign artefact (`15-web-test`).** The campaign obligations suite
-  failed during collection. CI generates into `outputs/web-public/knowledge/`,
-  but the test helper looks in `build/generated/knowledge-web/`. Align the
-  helper with the generated artefact and rerun the campaign checks that depend
-  on it, including the skipped variant construction and catalogue reader tests.
+## Presentation audit maintenance
 
-KB generation and determinism, the accepted E2E evidence baseline, eligibility,
-TypeScript typechecks, package tests, web localization, the build and
-post-build bundle guardrails passed. Combat Lab UI checks are outside this CI
-selection and still need a Python environment with Tkinter.
+The static GUI text audit runs in CI with no baseline and a single execution
+mode (all GUI sources, resolved types, full flow trace — the retired
+strict/deep tiers and the accepted-findings baseline were removed on
+2026-11-12): any finding fails the gate. Its error rates are pinned by
+`tests/applications/warband_manager/presentation/completeness/presentation-audit-corpus.test.mjs`
+(leak cases that must be flagged, control cases that must stay clean, one
+adversarial leak per precision exemption), which runs inside the gate. When a
+new code pattern produces a false positive, fix the tool and add the pattern
+as a CONTROL case next to a LEAK case for the same exemption; never silence it
+in product code. Known limits: field-name heuristics for raw origins
+(`rawFields` in `presentation-flow-audit.mjs`) and a step budget on flow
+slices. Local resolution is symbol-keyed through the type checker
+(2026-11-12), so shadowed or same-named locals — including a local function
+shadowing `presentationOutput` — resolve to their own declarations.
 
 ## Item catalogue
 
@@ -46,18 +38,12 @@ List implemented items with missing or partial deterministic coverage using
 
 ## Modular integration and E2E coverage
 
-The local CI run passed the accepted-evidence baseline check. After resolving
-the modular E2E failure, run
-`MORDHEIM_E2E_REQUIRE_COMPLETE=1 python -m pytest tests/integration/e2e -q`
-on the delivered revision. Close when the scenarios, admitted-clause coverage
-and accepted-evidence baseline pass with the existing clause identities.
-
-## Web projection verification
-
-Regenerate the web projection with `python tools/knowledge/generate_knowledge_web.py`.
-Check that `outputs/web-public/knowledge/knowledge-web.json` publishes the
-inherited rules, equipment access and skill access for the Karak Azgal
-Guildsmen and Slayers with the correct profile recipients.
+The scenarios and the accepted-evidence baseline pass (2026-11-12 run: 5,248
+passed). The completeness gate
+(`MORDHEIM_E2E_REQUIRE_COMPLETE=1 python -m pytest tests/integration/e2e -q`)
+still reports 591 admitted identities without scenarios and 15 identities with
+uncovered admitted clauses — an authoring backlog, not a regression. Close when
+the gate passes with the existing clause identities.
 
 ## Combat Lab checklist popover closes during layout
 

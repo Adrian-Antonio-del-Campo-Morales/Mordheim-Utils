@@ -5,6 +5,12 @@ const constructors = new Map([
   ["src/features/campaign/i18n-core.ts", "uiTextBrand"],
   ["src/features/campaign/presentation-values.ts", "formattedTextBrand"],
   ["src/features/campaign/presentation-enums.ts", "enumTextBrand"],
+  // The packages/typescript text adapters mint their own brands: the reader
+  // resolves published KB translations (ResolvedKbText) and the catalogue
+  // formatter builds display text from printed data (CatalogueText). Both are
+  // reviewed constructor modules, exactly like the three web-app files above.
+  ["../../packages/typescript/adapters/knowledge-reader/presentation.ts", "resolvedTextBrand"],
+  ["../../packages/typescript/application/rules/catalogue-text.ts", "catalogueTextBrand"],
 ]);
 const brands = /__(?:@)?(?:uiTextBrand|formattedTextBrand|enumTextBrand|resolvedTextBrand|catalogueTextBrand)\b/;
 

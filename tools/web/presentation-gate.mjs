@@ -15,7 +15,7 @@
  *
  * Phases, in report order:
  * 1. Detector self-tests (`node:test` over the shared classifier suite).
- * 2. Static GUI text audit (`presentation-audit.mjs --strict --deep --check`).
+ * 2. Static GUI text audit (`presentation-audit.mjs --check`).
  * 3. Dynamic visible-completeness audit (`presentation-completeness-audit.mjs`).
  */
 import { spawn } from "node:child_process";
@@ -34,23 +34,27 @@ export function definePhases(root = REPO_ROOT, cwd = APP_DIR) {
   return [
     {
       id: "detector-tests",
-      label: "Detector self-tests (node:test)",
+      label: "Detector and audit self-tests (node:test)",
       kind: "tests",
       command: process.execPath,
       args: [
         "--test",
         resolve(root, "tests", "applications", "warband_manager", "presentation",
           "completeness", "presentation-completeness-detector.test.mjs"),
+        // The static audit's own leak/control corpus: proves the audit still
+        // flags every leak class and stays clean on correct code.
+        resolve(root, "tests", "applications", "warband_manager", "presentation",
+          "completeness", "presentation-audit-corpus.test.mjs"),
       ],
       cwd,
       parse: parseDetectorTests,
     },
     {
       id: "static-audit",
-      label: "Static GUI text audit (--strict --deep --check)",
+      label: "Static GUI text audit (--check)",
       kind: "static",
       command: process.execPath,
-      args: [resolve(root, "tools", "web", "presentation-audit.mjs"), "--strict", "--deep", "--check"],
+      args: [resolve(root, "tools", "web", "presentation-audit.mjs"), "--check"],
       cwd,
       parse: parseStaticAudit,
     },

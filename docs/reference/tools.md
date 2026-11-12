@@ -729,10 +729,10 @@ Reproducible editorial maintenance:
 | Tool | Purpose |
 |---|---|
 | `tools/web/build-eligibility.mjs` | Generate the versioned Python bundle from the shared TypeScript eligibility module; `--check` rejects stale output. Exposed as `npm run build:eligibility` / `npm run check:eligibility`. |
-| `tools/web/presentation-audit.mjs` | Detect visible text without validated resolution or provenance. |
+| `tools/web/presentation-audit.mjs` | Static GUI text audit (single mode: all GUI sources, resolved types, full flow trace); `--check` exits 1 on any finding. Exposed as `npm run audit:gui`; its leak/control corpus is `presentation-audit-corpus.test.mjs`. |
 | `tools/web/presentation-flow-audit.mjs` | Trace raw text to presentation sinks. |
 | `tools/web/presentation-type-audit.mjs` | Detect forged resolved-text types. |
-| `tools/web/presentation-completeness-audit.mjs` | Dynamic visible-completeness audit: execute the real consumers against the generated artefacts and classify every visible value (step 5 of `check presentation`). |
+| `tools/web/presentation-completeness-audit.mjs` | Dynamic visible-completeness audit: execute the real consumers against the generated artefacts and classify every visible value (phase 3 of `check presentation`). |
 | `tools/web/presentation-completeness-detector.mjs` | Shared pure classifier for visible completeness, used by the dynamic audit and its self-tests. |
 | `tools/web/presentation-gate.mjs` | Single entry point of `npm run check:presentation`; runs every phase unconditionally and preserves each phase's output and exit status. |
 | `tools/web/load-kb-artefact.mjs` | Load generated KB artefacts for the completeness tools through the same TypeScript helper the test suites use. |

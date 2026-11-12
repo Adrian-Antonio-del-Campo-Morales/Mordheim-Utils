@@ -1,8 +1,8 @@
 /**
  * Marked-data proofs for the producers the flow tracer reports as carriers.
  *
- * `audit:gui:deep` flags the rules browser and the scenario award table as
- * `raw-text-flow` because their inputs are raw KB rows. These probes keep the
+ * The static GUI text audit (`audit:gui`) traces the rules browser and the
+ * scenario award table because their inputs are raw KB rows. These probes keep the
  * canonical fields, ids and stale captures poisoned at the source and assert
  * that only resolved, active-language text can reach presentation.
  * `presentation-poison.test.tsx` covers the mounted screens; this file covers
