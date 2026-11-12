@@ -1,0 +1,82 @@
+﻿# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-ignore-pain/skill.ignore-pain
+# authoring_status: PARTIAL
+# authoring_progress: the admitted ignore-pain clause carries one authored scenario whose bearer is the
+#   printed recipient of the band's rule (read statically from the band eligibility declaration); the
+#   requires-resilient prerequisite of the same identity is PARTIAL with its concrete blocker below.
+#   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: ignore-pain (scope: YES)
+# AUTHORED[ignore-pain]: 1 scenario evidences the conversion (see the closing note above).
+#
+# Clause: requires-resilient (scope: YES)
+# PARTIAL[requires-resilient]: [D] the clause is a construction prerequisite ("Requires the Resilient
+#   Strength skill"), and no scenario evidences it.  The input side is not the problem: the fixture can
+#   declare a bearer with the granted skill and without it, and the shared eligibility contract does
+#   carry prerequisite refusals (loadoutRestriction and its skill stage return contract-keyed free-form
+#   sentences such as "Contagious requires Rotten Body").  What no source fixes is the *identity* of
+#   this refusal: there is no contract id for a Resilient prerequisite on this skill and no printed
+#   wording for the message, so any `expect_error` fragment here would be invented rather than derived.
+#   Blocker: that unresolved refusal identity (class D).  Implementation defect the future tape would
+#   detect, recorded separately and not as the blocker: the skillIssue / loadoutRestriction skill stage
+#   performs no Resilient check for an ignore-pain bearer, which is the missing connection the register
+#   names.  The duel-side clause ignore-pain is authored below.
+
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the printed profile (the printed recipient that binds the
+# rule is read statically from the band's eligibility and applies_to declaration); no engine
+# output was consulted. The fixture's Initiative is higher and the bearer contributes no
+# attacks of its own (initial_state), so the die of 3 at the injury table is Stunned,
+# converted to Knocked Down by the bearer's rule.
+- audit_id: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-ignore-pain/skill.ignore-pain
+  id: a-stunned-result-becomes-knocked-down
+  covers:
+  - ignore-pain
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 10
+        strength: 8
+        toughness: 3
+        wounds: 3
+        initiative: 10
+        attacks: 1
+    second:
+      collection: mordheim
+      band_id: skaven-clan-pestilens
+      profile_id: plague-monks
+      # The printed Ignore Pain is a band skill the recipient selects, together with
+      # the printed Resilient prerequisite; neither is an automatic profile trait.
+      skill_ids: [skill.resilient]
+      special_rule_ids: [band--clan-pestilens-special-skills-ignore-pain]
+  initial_state:
+    second:
+      wounds: 1
+      attacks: 0
+  duel_context:
+    charging: []
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - key: round.0.first.attack.0.hit
+    value: 4
+  - key: round.0.first.attack.0.wound
+    value: 5
+  - key: round.0.first.attack.0.injury.0
+    value: 3
+  expect_rounds:
+    0:
+      state.second.wounds: 0
+      state.second.condition: KNOCKED_DOWN
+  expect_final:
+    rounds_executed: 1
+    termination_reason: horizon

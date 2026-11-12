@@ -1,0 +1,116 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/adventurers-kaz/barbarian--frenzy/trait.frenzy
+# authoring_status: AUTHORED
+# authoring_progress: the admitted frenzy clause carries 4 authored scenarios for the family model read
+#   from the printed rule and the recorded semantic contract: the doubled attack count while the bearer
+#   is frenzied, the skipped ordinary Fear test of a charge it receives, the auto-passed Stupidity test,
+#   and the loss of Frenzy to the injury that knocks the bearer down.  The bearer is built from its
+#   printed profile; its attack count and any supplied condition are declared as explicit state facts.
+#   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED; no behavioral
+#   result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 4 scenario(s) cover the clause.  The doubled count is declared by the dice the
+#   round consumes: a first-round bearer whose supplied attack count is 1 strikes twice, and the third
+#   recorded attack outcome exists only while that doubling holds.  The Fear face asserts the absence of
+#   the round.0 fear dice a charge would otherwise demand against this charging opponent, together with
+#   the unclamped state.second.fear_hit_sixes the skipped test leaves.  The Stupidity face asserts that
+#   the printed Head Injury result that forces the test is auto-passed while frenzied, so no stupidity
+#   die is consumed and stupidity_failed stays false.  The termination face wounds the bearer and reads
+#   the cleared frenzy flag beside the KNOCKED_DOWN condition, then reads the second round: the bearer
+#   stands up again and its frenzy is not regranted.  The compulsory spatial charge, the parry
+#   prohibition the alias does not print and the Animosity subsystem are deliberately not asserted.
+
+# --- Authored scenarios ---
+# The barbarian carries a morning star in the doubling scenarios: a fighter with no weapon
+# resolves as unarmed, and the printed unarmed cap of one attack would mask the
+# profile's single Attack that Frenzy doubles. Equipping the profile's own weapon
+# keeps the doubling observable without changing the profile or the rule. The morning
+# star is on the profile's own Barbarian Equipment List.
+
+- audit_id: rule/mordheim/adventurers-kaz/barbarian--frenzy/trait.frenzy
+  id: a-frenzied-barbarian-strikes-twice-with-its-single-profile-attack
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: adventurers-kaz, profile_id: barbarian, main_weapon_id: weapon.morning-star}
+  initial_state:
+    second: {attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.second.frenzy: true, attacks.2.wounded: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/adventurers-kaz/barbarian--frenzy/trait.frenzy
+  id: a-frenzied-barbarian-takes-no-fear-test-for-the-charge-it-receives
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: adventurers-kaz, profile_id: barbarian, main_weapon_id: weapon.morning-star}
+  initial_state:
+    second: {attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.second.frenzy: true, state.second.fear_hit_sixes: false, attacks.2.wounded: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/adventurers-kaz/barbarian--frenzy/trait.frenzy
+  id: a-frenzied-barbarian-auto-passes-the-head-injury-stupidity-test
+  fighters:
+    first: {collection: mordheim, band_id: adventurers-kaz, profile_id: barbarian, main_weapon_id: weapon.morning-star}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+  initial_state:
+    first: {attacks: 1, resources_spent: [disability.6]}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.frenzy: true, state.first.stupidity_failed: false, attacks.2.wounded: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/adventurers-kaz/barbarian--frenzy/trait.frenzy
+  id: the-injury-that-knocks-the-barbarian-down-ends-its-frenzy-and-standing-does-not-regrant-it
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 8, strength: 8, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: adventurers-kaz, profile_id: barbarian}
+  initial_state:
+    second: {attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 1}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.frenzy: false, state.second.condition: KNOCKED_DOWN}
+    1: {state.second.frenzy: false, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}

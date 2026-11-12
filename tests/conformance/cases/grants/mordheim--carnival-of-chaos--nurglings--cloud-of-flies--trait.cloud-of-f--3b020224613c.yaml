@@ -1,0 +1,79 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/carnival-of-chaos/nurglings--cloud-of-flies/trait.cloud-of-flies
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries two authored scenarios derived from the
+# printed rule, the recorded contract and the printed profile: the bearer's close-combat opponent
+# suffers a -1 to hit modifier, so the same declared face that hits the bearer's equals without the
+# trait misses against the bearer.  REVIEWED still requires manual semantic review and
+# execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios evidence the melee-only incoming hit modifier the record consumes in
+# prepare_hit_context.  The bearer is the printed Nurglings profile that prints the trait, with its
+# Weapon Skill supplied as a fixture fact so the attacker's own Weapon Skill 3 meets an equal score
+# and the ordinary target is four; the declared face of four then misses, because the cloud of flies
+# raises the target by one.  The control repeats the identical duel with a hand-built bearer of the
+# same characteristics and no trait, where the same face of four hits and the declared wound face
+# fails, so the difference is the trait and not the attack.  No charge is declared, so the daemonic
+# bearer is offered no Fear test and the strict tape holds only the attacker's dice.  REVIEWED still
+# requires manual semantic review.
+#
+# Clause: dodgy-ranged-part (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded contract and the printed profile; no engine output was
+# consulted.  The attacker's Weapon Skill 3, Initiative 10 and Strength 3 are hand-built fixture
+# facts; the bearer's attacks are pinned to none by the initial state, so the tape holds only the
+# attacker's own dice.  Five is deliberately unused as a hit face: the discriminator below is the
+# same face of four, which is a hit at equal Weapon Skill and a miss under the printed -1.
+- audit_id: rule/mordheim/carnival-of-chaos/nurglings--cloud-of-flies/trait.cloud-of-flies
+  id: the-cloud-of-flies-raises-the-opponents-to-hit-target
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: nurglings
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the identical duel against a hand-built bearer with the same characteristics and no
+# cloud of flies, where the same declared face of four hits.
+- audit_id: rule/mordheim/carnival-of-chaos/nurglings--cloud-of-flies/trait.cloud-of-flies
+  id: without-the-cloud-of-flies-the-same-face-hits
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: false, state.second.wounds: 2,
+        state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

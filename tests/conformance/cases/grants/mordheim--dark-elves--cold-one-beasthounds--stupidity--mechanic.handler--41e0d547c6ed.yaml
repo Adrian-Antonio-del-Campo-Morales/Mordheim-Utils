@@ -1,0 +1,75 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/dark-elves/cold-one-beasthounds--stupidity/mechanic.handler-leadership
+# authoring_status: AUTHORED
+# authoring_progress: the admitted handler-leadership clause carries 2 authored scenarios derived from
+#   the printed rule and the recorded contract: the supplied handler's own Leadership is the value
+#   tested, and with no handler value supplied the warrior's own Leadership is tested even though a
+#   standing same-band leader is present, because the printed rule forbids the ordinary borrow.
+#   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios evidence the printed handler-only source.  The animal's
+#   own Leadership 3 would fail the declared total of eight, while the supplied handler value 8 is the
+#   one tested and the charge and attacks stand; in the second scenario the same eight is tested with no
+#   handler value supplied against the beast's own 3, and the failure cancels the charge even though a
+#   standing same-band leader four inches away is supplied as a nearby participant, which is the
+#   printed prohibition.  The printed 6-inch window stays a supplied fact of the duel, not a
+#   measurement.  REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded contract; no engine output was consulted.  The
+# bearer is a hand-built fixture for the Stupidity the band's rule subjects the beast to; the handler
+# is supplied as its value and the leader as an admitted nearby participant, never simulated.
+
+- audit_id: rule/mordheim/dark-elves/cold-one-beasthounds--stupidity/mechanic.handler-leadership
+  id: the-supplied-handler-value-is-the-one-tested
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.handler-leadership]
+      trait_overrides: {stupidity: true, stupidity_leadership: 8}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 3}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 4}
+    - {key: round.0.first.stupidity.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.stupidity_failed: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/dark-elves/cold-one-beasthounds--stupidity/mechanic.handler-leadership
+  id: the-warband-leader-is-never-the-source-of-this-test
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.handler-leadership]
+      trait_overrides: {stupidity: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 3}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {first_id: first, second_id: second, charging: [first], active_participant: first,
+    distances: [[first, high-born, 4]],
+    nearby: [{participant_id: high-born, side_id: first, condition: standing,
+              fighter: {collection: mordheim, band_id: dark-elves, profile_id: high-born}}]}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 4}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.first.stupidity_failed: true, state.first_charged: false, state.engaged: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+

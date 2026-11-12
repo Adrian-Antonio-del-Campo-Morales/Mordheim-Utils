@@ -1,0 +1,71 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/black-orcs/band--black-orc-special-skills-proven-warrior/compiler.proven-warrior
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: the recipient gate of the selectable rule is evidenced as a construction refusal: a
+#   non-Young'un build of the band that declares the selectable skill is refused with "Proven Warrior may
+#   only be selected by a Young'un", while the printed recipient black-orcs/younguns declaring the same
+#   skill is accepted and runs.  The message is the contract's own branch -
+#   `if (has("compiler.proven-warrior") && p.id !== "younguns") return "Proven Warrior may only be
+#   selected by a Young'un";` - reached through the band rule
+#   band--black-orc-special-skills-proven-warrior (runtime grant selectable, effect id
+#   compiler.proven-warrior, sources/knowledge/bands/mordheim/black-orcs/special-rules.yaml).  Consumer:
+#   the shared eligibility stage (packages/python/roster-construction/mordheim_construction/_eligibility.js,
+#   profileSelections).  The positive half of the clause (the promoted model uses the Black Orc lists) is a
+#   skill-list projection with no duel observation and is recorded, not asserted.
+# authoring_progress: 2 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+# RECIPIENT BOUNDARY (checked statically in the shared construction stage, not by running it): the
+# refused recipient is the printed Hero row black-orcs, not the Henchman row orc-boyz.
+# `_eligibility.js:1193` `specialRuleRestriction()` runs before `_validate_profile_selections()`, and its
+# access stage refuses a band warband_skill row with `applies_to.band: true` and no `eligibility` for a
+# recipient whose own printed `skill_access` lacks the `special` category; orc-boyz prints none, so that
+# earlier sentence - not the contract's own branch - would be the first one raised for it.  black-orcs
+# prints [combat, shooting, strength, speed, special], so the construction reaches
+# `profileSelections` and the contract's message.  The retarget adds only black-orcs' own automatic rule
+# (black-orcs--black-orc, a natural-armour trait) and the build declares the band default dagger, which
+# black-orc-list offers, so no earlier equipment sentence can stand in front of the refusal either.
+# The selectable rule is declared through special_rule_ids, the channel the sibling selectable band
+# skills use in this directory; the contract then gates the recipient.  The refusal is the contract's
+# own message verbatim.
+- audit_id: rule/mordheim/black-orcs/band--black-orc-special-skills-proven-warrior/compiler.proven-warrior
+  id: proven-warrior-on-a-non-young-un-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: black-orcs
+      profile_id: black-orcs
+      special_rule_ids: [band--black-orc-special-skills-proven-warrior]
+  expect_error: Proven Warrior may only be selected by a Young'un
+
+- audit_id: rule/mordheim/black-orcs/band--black-orc-special-skills-proven-warrior/compiler.proven-warrior
+  id: proven-warrior-on-a-young-un-is-accepted-at-construction
+  fighters:
+    first:
+      collection: mordheim
+      band_id: black-orcs
+      profile_id: younguns
+      special_rule_ids: [band--black-orc-special-skills-proven-warrior]
+    second:
+      collection: mordheim
+      band_id: black-orcs
+      profile_id: younguns
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

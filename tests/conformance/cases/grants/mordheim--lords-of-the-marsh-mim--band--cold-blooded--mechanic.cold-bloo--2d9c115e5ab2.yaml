@@ -1,0 +1,71 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/lords-of-the-marsh-mim/band--cold-blooded/mechanic.cold-blooded-leadership
+# authoring_status: AUTHORED
+# authoring_progress: the admitted cold-blooded-leadership clause carries 2 authored scenarios that
+# discriminate the variant from the ordinary two-dice test: an individual Leadership test (the
+# stupidity test of the same printed warrior) consumes three dice and discards the highest, and the
+# same test without the rule asks for only two.  REVIEWED still requires manual semantic review and
+# execution_status stays UNEXECUTED; no behavioral result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios cover the printed 3D6 discard-highest on an
+# individual Leadership test: with the rule the stupidity test draws three dice (a declared six is
+# discarded, the remaining seven passes against Leadership 7 and the charge stands), and the identical
+# bearer, tape and test without the rule draws only two dice whose sum of twelve fails it, so the
+# charge is cancelled.  Stupidity is used as the Leadership path because it is an individual local
+# Leadership test, which is the applicability this variant prints ("including Psychology") and the
+# discriminator against the Psychology-only variant.  The fixed fixture declares the canonical
+# mechanic.cold-blooded-leadership operator the band's sentence repeats.  REVIEWED still requires
+# manual semantic review.
+
+# --- Authored scenarios ---
+# The printed three dice: the highest of the declared two sixes and the one is discarded, so the
+# stupidity test passes on seven and the bearer keeps its charge and its attack.
+- audit_id: rule/mordheim/lords-of-the-marsh-mim/band--cold-blooded/mechanic.cold-blooded-leadership
+  id: an-individual-leadership-test-discards-the-highest-die
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.cold-blooded-leadership, mechanic.stupidity]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 6}
+    - {key: round.0.first.stupidity.1, value: 6}
+    - {key: round.0.first.stupidity.2, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.stupidity_failed: false, state.first.condition: STANDING, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The control: the identical bearer, tape and test without the rule take the ordinary two dice, whose
+# sum of twelve fails the Leadership 7, so the charge is cancelled and the round ends disengaged.
+- audit_id: rule/mordheim/lords-of-the-marsh-mim/band--cold-blooded/mechanic.cold-blooded-leadership
+  id: without-the-rule-the-same-test-takes-two-dice-and-fails
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.stupidity]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 6}
+    - {key: round.0.first.stupidity.1, value: 6}
+  expect_rounds:
+    0: {state.first.stupidity_failed: true, state.first.condition: STANDING, state.first.wounds: 3, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}

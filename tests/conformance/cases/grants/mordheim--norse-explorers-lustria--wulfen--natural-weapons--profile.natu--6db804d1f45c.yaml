@@ -1,0 +1,77 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/norse-explorers-lustria/wulfen--natural-weapons/profile.natural-attacks
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries 2 authored scenarios derived from the printed
+#   rule and the recorded contract: the printed Wulfen profile, carrying its own wulfen--natural-weapons
+#   row, fights with its two profile attacks at its own Strength, so a declared wound roll of three
+#   takes a Wound that the same roll leaves untaken when the row is absent (the unarmed penalty the rule
+#   waives).  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios cover the printed waiver of the unarmed penalty together with the two
+#   profile attacks for this twin origin.  The bearer is this band's printed Wulfen, whose Strength 4 is
+#   supplied as its fixture base, so against the hand-built Toughness 3 target the declared wound face
+#   of three is the single face that separates the rule from the ordinary fist penalty; the strict tape
+#   also declares the second attack die, which is the printed pair of profile attacks.  The
+#   weapon-and-armour refusal printed in the same sentence has no runner route and stays recorded.
+
+# --- Authored scenarios ---
+# Derived from the printed sentence, the recorded contract and the printed profile of this origin; no
+# engine output was consulted.  The Wulfen profile has no equipment lists, so it fights with its innate
+# attacks, and its printed Strength 4 is supplied as the fixture base of the two-attack bearer.
+
+- audit_id: rule/mordheim/norse-explorers-lustria/wulfen--natural-weapons/profile.natural-attacks
+  id: the-wulfen-fights-with-two-natural-attacks-at-its-own-strength
+  fighters:
+    first:
+      collection: mordheim
+      band_id: norse-explorers-lustria
+      profile_id: wulfen
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 4, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  # The printed Wulfen also causes Fear (wulfen--fear), and it is the charger, so the charged
+  # warrior takes the compulsory round-0 Fear test first; its Leadership is therefore supplied.
+  # The two faces total its Leadership exactly, which is a passed test: a failed one would
+  # force the warrior to hit on sixes, so the pair is not a double and the flag stays false.
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1, state.second.fear_hit_sixes: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/norse-explorers-lustria/wulfen--natural-weapons/profile.natural-attacks
+  id: without-the-row-the-unarmed-penalty-leaves-the-same-roll-unwounded
+  # The same declared faces through the ordinary fist instead of the granted natural attacks: the
+  # unarmed penalty the printed rule waives is the difference, and the fist's one-attack cap leaves
+  # the single declared attack.
+  fighters:
+    first:
+      main_weapon_id: weapon.fist
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 4, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {attacks.0.wounded: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

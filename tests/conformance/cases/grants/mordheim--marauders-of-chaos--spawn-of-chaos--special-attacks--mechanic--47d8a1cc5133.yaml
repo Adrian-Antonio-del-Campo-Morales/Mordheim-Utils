@@ -1,0 +1,79 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/marauders-of-chaos/spawn-of-chaos--special-attacks/mechanic.spawn-special-attacks
+# authoring_status: AUTHORED
+# authoring_progress: the single admitted clause carries 2 authored scenarios derived from the printed
+#   rule, the recorded contract and the accepted case of the same shared operator
+#   tests/E2E/modular-engine/cases/mechanics/mechanic.spawn-special-attacks.yaml: the printed Spawn of
+#   Chaos rolls its Attacks anew at the start of the close-combat phase, so the declared spawn die of
+#   one yields two attack dice on a bearer whose fixture prints three, while the same bearer without
+#   the rule keeps all three profile dice.  The band row's own binding is mechanic.spawn-special-attacks
+#   (special-rules.yaml line 265, applies_to.profile_ids: [spawn-of-chaos]) and the register records
+#   that the band origin adds no second runtime contribution, so only the shared operator is under
+#   test.  The printed characteristics are supplied because the profile prints M and A as dice
+#   expressions (2D6 and D6+1); supplying them keeps the spawn die under test the only rolled die.
+#   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios cover the printed reroll of the attack count.  The roll's key is not in
+#   the printed text: the executor requests `<round>.<side>.spawn-attacks` (rounds.resolve_spawn_attack_count)
+#   and supplies it as base_attacks, so the declared one yields exactly two attack dice; the tape then
+#   names the third outcome as the opponent's own attack.  The control repeats the same misses without
+#   the rule and requests no spawn die at all, which the strict tape proves because an undeclared roll
+#   fails the case.
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded contract and the accepted case of the same operator; no
+# engine output was consulted.
+
+- audit_id: rule/mordheim/marauders-of-chaos/spawn-of-chaos--special-attacks/mechanic.spawn-special-attacks
+  id: the-spawn-roll-replaces-the-attack-count-printed-for-the-phase
+  fighters:
+    first:
+      collection: mordheim
+      band_id: marauders-of-chaos
+      profile_id: spawn-of-chaos
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 5, wounds: 3, initiative: 2, attacks: 3, leadership: 10}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
+    - {key: round.0.first.spawn-attacks, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 2}
+  expect_rounds:
+    0: {attacks.0.hit_roll: 1, attacks.1.hit_roll: 1, attacks.2.hit_roll: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same three printed attacks and the same misses on a bearer that does not carry the
+# rule, so no spawn die is asked for and the three profile attacks stand before the opponent's answer.
+
+- audit_id: rule/mordheim/marauders-of-chaos/spawn-of-chaos--special-attacks/mechanic.spawn-special-attacks
+  id: without-the-rule-the-printed-three-attacks-stand
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 5, wounds: 3, initiative: 2, attacks: 3}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.2.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 2}
+  expect_rounds:
+    0: {attacks.2.hit_roll: 1, attacks.3.hit_roll: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

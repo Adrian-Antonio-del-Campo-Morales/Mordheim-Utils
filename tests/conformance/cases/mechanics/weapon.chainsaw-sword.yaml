@@ -1,0 +1,73 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.chainsaw-sword
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries two authored scenarios; the absent armour die is
+#   the observable, because the strict tape fails if one were requested. REVIEWED
+#   still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios evidence the printed two-point armour penalty: a
+#   worn 5+ suit is left with no save at all (no armour die is offered), and an
+#   unarmoured target is likewise denied a die. Pending semantic review.
+
+# --- Authored scenarios ---
+# weapon.chainsaw-sword - the printed -2 armour-save modifier.
+# The printed -2 pushes a 5+ save past 6, so no armour die exists to roll.
+# The same clause gives the bearer Fear ("A model bearing a Chainsaw Sword causes
+# Fear"), so the charged defender must pass a Leadership test before the round
+# resolves: the tape opens with that test at round.0.second.fear.charged, passing
+# on 3+3 against the declared Leadership 7.  Both fighters therefore carry an
+# explicit Leadership, which the test reads; the Fear grant is plumbing of the
+# same clause, while the observable this file evidences stays the absent armour
+# die.
+
+- audit_id: mechanic/weapon.chainsaw-sword
+  id: chainsaw-sword-leaves-a-worn-suit-with-no-save
+  fighters:
+    first:
+      main_weapon_id: weapon.chainsaw-sword
+      characteristics: &atk-ws3-s3-t3-w2-i5-ld7 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      characteristics: &dfn-ws3-s3-t3-w2-i2-ld7 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: &charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# No save die against an unarmoured target either.
+
+- audit_id: mechanic/weapon.chainsaw-sword
+  id: chainsaw-sword-offers-no-save-to-an-unarmoured-target
+  fighters:
+    first:
+      main_weapon_id: weapon.chainsaw-sword
+      characteristics: *atk-ws3-s3-t3-w2-i5-ld7
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *dfn-ws3-s3-t3-w2-i2-ld7
+  duel_context: *charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

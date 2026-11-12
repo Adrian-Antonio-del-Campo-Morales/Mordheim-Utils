@@ -1,0 +1,99 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/khemri-necromancers/band--necromantic-modification-putrid-stench/special-rule.band--necromantic-modification-putrid-stench
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries three authored scenarios derived from the
+# printed sentence and the recorded contract (incoming_hit_modifier -1 against living attackers): the
+# living striker's declared four misses the bearer only while the band row is selected, the identical
+# blow without the row hits, and an Undead striker keeps the printed four even with the row.  REVIEWED
+# still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 3 scenarios cover the printed -1 To Hit and its printed living-only condition: at
+# equal Weapon Skill the living striker needs five with the row where the same declaration needs four
+# without it, and the Undead striker's four still hits with the row.  The bearer is the Abomination
+# profile with the row selected and the striker's declared die is the only attack in every tape.
+
+# --- Authored scenarios ---
+# Derived from the printed sentence and the recorded contract, never from engine output.  The bearer is
+# the Abomination profile carrying the band row and the striker is a hand-built equal-Weapon-Skill
+# fighter, so the printed penalty is the only difference between the first two scenarios; the third
+# marks the striker Undead with the same grant the undead grant family uses, which is the printed
+# condition that exempts it.
+
+- audit_id: rule/trollheim/khemri-necromancers/band--necromantic-modification-putrid-stench/special-rule.band--necromantic-modification-putrid-stench
+  id: the-living-striker-suffers-the-printed-penalty
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+      special_rule_ids: [band--necromantic-modification-putrid-stench]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/khemri-necromancers/band--necromantic-modification-putrid-stench/special-rule.band--necromantic-modification-putrid-stench
+  id: without-the-selected-modification-the-same-four-strikes-home
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.wounded: True, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/khemri-necromancers/band--necromantic-modification-putrid-stench/special-rule.band--necromantic-modification-putrid-stench
+  id: an-undead-striker-is-exempt-from-the-penalty
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.undead]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+      special_rule_ids: [band--necromantic-modification-putrid-stench]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.wounded: True, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -1,0 +1,61 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/necrarchs-mou/skeleton--equipment-restrictions/profile.equipment-restrictions
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: the bounded active-weapon limit IS reachable, contrary to the earlier note.  The binding's
+# max_active_one_handed_weapons parameter feeds profile.active_weapon_limit, and _eligibility.js::buildRestriction
+# (stage boundEquipment) runs activeWeaponIssues over the build's own slots whenever that limit is present,
+# returning the exceeded-limit diagnostic
+# `${band}/${profile} may use at most ${maximum} one-handed weapon at a time.`  The counted weapons are the
+# one-handed close-combat entries among main_weapon_id, off_hand_id and extra_hand_id, so a Skeleton holding a
+# mace and an off-hand axe exceeds the printed limit of one while a single weapon does not.  REVIEWED still
+# requires manual semantic review.
+# authoring_progress: 2 authored scenario(s) in this file; authored clauses ['whole']; no admitted clause of this
+# origin is left pending.  REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+# The limit is read from the active-weapon projection of the binding, not from a carried kit: the shared stage
+# counts the one-handed weapons among the build's own main/off/extra slots.
+
+- audit_id: rule/mordheim/necrarchs-mou/skeleton--equipment-restrictions/profile.equipment-restrictions
+  id: a-skeleton-with-two-one-handed-weapons-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: necrarchs-mou
+      profile_id: skeleton
+      main_weapon_id: weapon.mace
+      off_hand_id: weapon.axe
+  expect_error: necrarchs-mou/skeleton may use at most 1 one-handed weapon at a time.
+
+- audit_id: rule/mordheim/necrarchs-mou/skeleton--equipment-restrictions/profile.equipment-restrictions
+  id: a-skeleton-with-one-weapon-is-admitted-at-construction
+  fighters:
+    first:
+      collection: mordheim
+      band_id: necrarchs-mou
+      profile_id: skeleton
+      main_weapon_id: weapon.mace
+    second:
+      collection: mordheim
+      band_id: necrarchs-mou
+      profile_id: skeleton
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

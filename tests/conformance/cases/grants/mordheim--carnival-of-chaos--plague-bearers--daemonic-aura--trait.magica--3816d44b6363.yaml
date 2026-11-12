@@ -1,0 +1,76 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/carnival-of-chaos/plague-bearers--daemonic-aura/trait.magical-attacks
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries two authored scenarios derived from the
+# printed rule and the printed profile: the Plague Bearers' attacks are considered magical, so the
+# bearer's own attack passes an opponent's Ethereal save with no save face requested while an
+# identical non-magical fixture is discarded by it.  REVIEWED still requires manual semantic review
+# and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios take the printed offensive half onto the real attack route.  The
+# bearer is the printed Plague Bearers profile, whose grant compiles to the attack.magical tag; the
+# supplied holder is a Cairn Wraith, whose own admitted grant discards a hit on 4+ before the wound
+# roll, so the strict tape carries no ethereal face at all and the wound is taken.  The control
+# repeats the identical duel with a hand-built non-magical attacker and the same declared hit face,
+# where the ethereal save is offered and discards the blow.  The same sentence's defensive half (the
+# 5+ daemonic save modified by Strength and negated by magic) belongs to the
+# trait.natural-armour-save identity of this origin and is evidenced there.  REVIEWED still requires
+# manual semantic review.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the printed profile; no engine output was consulted.  The bearer
+# starts the duel with a wound buffer so an unsaved wound leaves it standing and no injury roll
+# follows; Weapon Skill, Initiative and the buffer are hand-built fixture facts, and the holder
+# declares no attack of its own.
+- audit_id: rule/mordheim/carnival-of-chaos/plague-bearers--daemonic-aura/trait.magical-attacks
+  id: the-plague-bearers-attack-passes-the-ethereal-save
+  fighters:
+    first:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: plague-bearers
+      characteristics: {weapon_skill: 10, strength: 4, toughness: 4, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: call-of-the-night-haint-mim
+      profile_id: cairn-wraith
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the identical duel with a hand-built non-magical attacker and the same declared hit
+# face, where the Ethereal save is offered and discards the blow.
+- audit_id: rule/mordheim/carnival-of-chaos/plague-bearers--daemonic-aura/trait.magical-attacks
+  id: a-non-magical-attack-is-discarded-by-the-ethereal-save
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 4, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: call-of-the-night-haint-mim
+      profile_id: cairn-wraith
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.ethereal, value: 4}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

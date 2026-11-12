@@ -1,0 +1,125 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.snorri-drunk
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 5 scenarios cover the supplied results 5 (+1 Strength),
+#   2 (Weapon Skill and Strength -1), 4 (the contact penalty on both fighters), 6
+#   (Frenzy) and 1 (refused: absent from the battle).  Result 3's no-effect band is
+#   documented in the header and needs no separate tape.
+
+# --- Authored scenarios ---
+# # The supplied result of 5 is the printed +1 Strength: Strength 4 wounds Toughness 3 on a
+# # three, which the unmodified Strength 3 profile would fail.
+- audit_id: mechanic/mechanic.snorri-drunk
+  id: a-supplied-five-adds-one-strength
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.snorri-drunk]
+      trait_overrides: {snorri_drunk_result: 5}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# # Weapon Skill 2 against Weapon Skill 2 needs a four, so the printed reduction turns the
+# # three into a miss where the unmodified Weapon Skill 3 would have hit on it.
+- audit_id: mechanic/mechanic.snorri-drunk
+  id: a-supplied-two-lowers-weapon-skill-and-strength
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.snorri-drunk]
+      trait_overrides: {snorri_drunk_result: 2}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 2, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# # The supplied stench is printed for all combatants within two inches, so both warriors take
+# # the -1 to hit and each of the equal-Weapon-Skill fours becomes a miss.
+- audit_id: mechanic/mechanic.snorri-drunk
+  id: a-supplied-four-penalises-every-fighter-in-contact
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.snorri-drunk]
+      trait_overrides: {snorri_drunk_result: 4}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 3}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.hit: False}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# # The result of 6 is the printed Frenzy for that turn, doubling the attack pool.
+- audit_id: mechanic/mechanic.snorri-drunk
+  id: a-supplied-six-grants-the-printed-frenzy
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.snorri-drunk]
+      trait_overrides: {snorri_drunk_result: 6}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  # The pool resolves every To Hit die before any To Wound die: the frenzy-doubled
+  # pair of mace attacks rolls its two hits first, then the two wounds in the same
+  # allocation order, and only then the defender's reply.
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.1.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.frenzy: True, attacks.0.damage: 1, attacks.1.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# # The printed result of 1 is absence from the battle, which is not a state any duel
+# # participant can hold: the supplied combination is refused by name.
+- audit_id: mechanic/mechanic.snorri-drunk
+  id: a-supplied-one-is-outside-the-duel
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.snorri-drunk]
+      trait_overrides: {snorri_drunk_result: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  expect_error: "result 1 means no participant"
+

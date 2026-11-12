@@ -1,0 +1,121 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/trollheim-mercenaries/band--middenheim-physical-prowess/profile.characteristics
+# authoring_status: REVIEWED
+# authoring_progress: every admitted clause of this ID is represented by an authored
+#   scenario and contrasted with the printed rule, the recorded semantic contract and
+#   the band package. REVIEWED is authoring and semantic contrast only;
+#   execution_status stays UNEXECUTED and no functional result exists.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 4 scenarios cover both printed recipients (the Mercenary Captain
+#   and the Champions) starting at Strength 4, the unselected Captain at Strength 3
+#   and the refusal of a profile outside the recipient list.
+#
+# --- Migrated authored scenarios ---
+# Source: cases/grants/warband-grants.yaml
+# One-time migration authorized by the operator; see plan.md.  These
+# scenarios were authored from the rule text and the accepted rulings, not
+# from engine output.  Migrating them does not certify their interpretation
+# or complete coverage of the identity.
+# rule/... grants — a closed batch of warband grants exercised end to end.
+#
+# Each identity here is a printed warband grant (a `rule/<collection>/<band>/
+# <rule>/<binding>` record of the knowledge-base clause contracts (sources/knowledge)).
+# The scenarios take the real route: band and profile from the built warrior,
+# the grant selected through `special_rule_ids`, the shared construction and
+# compilation that bind it, the modular resolution that consumes it, and an
+# observation of the consequence.  No `effect_id` is injected anywhere, and a
+# scenario never lists the granted mechanic as a direct `skill_ids` entry.
+#
+# Recipients are taken from the band package: the profile that the grant's
+# eligibility admits gains the consequence, another profile of the same band is
+# refused with the binding's own diagnostic, and an unselected build of the same
+# recipient shows the consequence absent.  Sharing one binding does not admit
+# other origins, so each identity keeps its own scenarios and clauses.
+#
+# The batch is deliberately closed and small: priority, injury-chart, reroll,
+# critical-ignition, parry-exclusion and characteristic grants, one identity
+# each.  Expanding it needs another reviewed batch, not a wider query.
+
+# The Khemri Lahmian Vampire's Lost Innocence grants strike first.  Both duels
+# below are uncharged, so the only priority tier in play is the grant itself.
+#
+
+- audit_id: rule/trollheim/trollheim-mercenaries/band--middenheim-physical-prowess/profile.characteristics
+  id: the-recipient-starts-at-strength-four
+  fighters:
+    first:
+      collection: trollheim
+      band_id: trollheim-mercenaries
+      profile_id: mercenary-captain
+      special_rule_ids: [band--middenheim-physical-prowess]
+      main_weapon_id: weapon.mace
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_initial: {first.strength: 4}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/trollheim-mercenaries/band--middenheim-physical-prowess/profile.characteristics
+  id: the-unselected-recipient-keeps-strength-three
+  fighters:
+    first:
+      collection: trollheim
+      band_id: trollheim-mercenaries
+      profile_id: mercenary-captain
+      main_weapon_id: weapon.mace
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *ws3-s3-t3-w2-i2
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_initial: {first.strength: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/trollheim-mercenaries/band--middenheim-physical-prowess/profile.characteristics
+  id: a-profile-outside-the-recipient-list-is-refused
+  fighters:
+    first:
+      collection: trollheim
+      band_id: trollheim-mercenaries
+      profile_id: youngbloods
+      special_rule_ids: [band--middenheim-physical-prowess]
+      main_weapon_id: weapon.dagger
+  expect_error: "special rule is not available to trollheim-mercenaries/youngbloods"
+# Note: the comment block immediately above is the migration tail that describes
+# the following per-ID file; it does not describe the scenarios below.
+# --- Additional scenarios ---
+
+- audit_id: rule/trollheim/trollheim-mercenaries/band--middenheim-physical-prowess/profile.characteristics
+  id: the-champion-also-starts-at-strength-four
+  fighters:
+    first:
+      collection: trollheim
+      band_id: trollheim-mercenaries
+      profile_id: champions
+      special_rule_ids: [band--middenheim-physical-prowess]
+      main_weapon_id: weapon.mace
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *ws3-s3-t3-w2-i2
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_initial: {first.strength: 4}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

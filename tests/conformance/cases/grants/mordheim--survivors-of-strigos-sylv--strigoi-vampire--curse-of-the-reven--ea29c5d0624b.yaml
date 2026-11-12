@@ -1,0 +1,67 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/survivors-of-strigos-sylv/strigoi-vampire--curse-of-the-revenant/mechanic.curse-of-the-revenant
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries two authored scenarios derived from the
+# printed rule, the recorded contract and the printed profile; the bearer is the printed Strigoi
+# Vampire profile that prints the skill.  REVIEWED still requires manual semantic review and
+# execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios evidence the printed recovery at the bearer's own turn start: a
+# declared five restores exactly one lost wound and a declared four leaves it lost, so the same lost
+# wound separates the two faces.  The bearer is the printed Strigoi Vampire profile of this band and
+# carries the printed Great Thirster prerequisite alongside the recovery the skill grants, as the
+# printed sentence requires; it declares no attack of its own, so the tape holds only the recovery
+# die.  The printed one-wound-per-turn maximum and the fire independence are already evidenced by
+# the mechanic origin's own case, whose recovery operator this band row reuses; this row evidences
+# the band binding of that operator.  REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded contract and the printed profile; no engine output was
+# consulted.  The single declared recovery die is taken at the start of the bearer's own turn.
+- audit_id: rule/mordheim/survivors-of-strigos-sylv/strigoi-vampire--curse-of-the-revenant/mechanic.curse-of-the-revenant
+  id: a-five-restores-one-lost-wound-at-the-own-turn-start
+  fighters:
+    first:
+      collection: mordheim
+      band_id: survivors-of-strigos-sylv
+      profile_id: strigoi-vampire
+      special_rule_ids: [strigoi-vampire--curse-of-the-revenant, strigoi-vampire--great-thirster]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {first: {wounds: 1, attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.revenant, value: 5}
+  expect_rounds:
+    0: {state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The contrast: the same lost wound in the same round with a declared four, so the wound stays lost.
+- audit_id: rule/mordheim/survivors-of-strigos-sylv/strigoi-vampire--curse-of-the-revenant/mechanic.curse-of-the-revenant
+  id: a-four-leaves-the-lost-wound-unrecovered
+  fighters:
+    first:
+      collection: mordheim
+      band_id: survivors-of-strigos-sylv
+      profile_id: strigoi-vampire
+      special_rule_ids: [strigoi-vampire--curse-of-the-revenant, strigoi-vampire--great-thirster]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {first: {wounds: 1, attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.revenant, value: 4}
+  expect_rounds:
+    0: {state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

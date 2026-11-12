@@ -1,0 +1,73 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/khemri-necromancers/nehekharan-vultures--fragile/trait.injury-profile
+# authoring_status: AUTHORED
+# authoring_progress: the admitted fragile-injury-profile clause carries authored scenarios derived
+# from the printed sentence and the recorded contract (injury profile 3, which resolves 4+ as out of
+# action and everything below as Knocked Down).  The bearer is the profile build
+# trollheim/khemri-necromancers/nehekharan-vultures, which prints its own injury ladder; it starts at
+# one Wound and contributes no attacks, so a single unsaved wound reaches the injury table and the
+# die alone decides the condition.  A 3 leaves it Knocked Down and a 4 takes it out, where the normal
+# table would have stunned it on a 3 and only taken it out on a 5.  The print's 'including the Undead
+# No Pain effect' is redundant on this ladder, since every face below the 4 already resolves to
+# Knocked Down, and is recorded here rather than asserted as a second rule.  REVIEWED still requires
+# manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios show the printed ladder face by face: a 3 leaves the
+#   bearer Knocked Down and a 4 takes it Out of Action, where the normal table would have stunned it
+#   and only ended it on a 5.
+
+# --- Authored scenarios ---
+# Derived from the printed sentence and the recorded contract; no engine output was consulted.  The
+# bearer prints the rule, starts the duel at one Wound and contributes no attacks of its own, so round
+# 0 carries only the attacker's dice and the wound that lands is the one that reaches the injury
+# table.  The blow is an ordinary mace: at Weapon Skill 10 against this bearer's printed Weapon Skill
+# it needs a 3, and Strength 8 against Toughness 3 needs a 2, so the declared 5 and 5 both pass.  Five
+# is deliberately below a natural six, which would be a critical hit and add a further critical die
+# and an injury modifier.  The printed 1-3 half of the ladder resolves to Knocked Down, which the
+# bearer's No Pain would keep in any case, so both scenarios hold the ladder itself.
+
+- audit_id: rule/trollheim/khemri-necromancers/nehekharan-vultures--fragile/trait.injury-profile
+  id: a-three-on-the-printed-ladder-leaves-the-bearer-knocked-down
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: trollheim, band_id: khemri-necromancers, profile_id: nehekharan-vultures}
+  initial_state: {second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 3}
+  expect_rounds:
+    0: {attacks.0.wounded: True, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed 4-6 band: the same bearer is taken Out of Action one face earlier than the normal table
+# would.
+
+- audit_id: rule/trollheim/khemri-necromancers/nehekharan-vultures--fragile/trait.injury-profile
+  id: a-four-on-the-printed-ladder-takes-the-bearer-out
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: trollheim, band_id: khemri-necromancers, profile_id: nehekharan-vultures}
+  initial_state: {second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 4}
+  expect_rounds:
+    0: {attacks.0.wounded: True, state.second.wounds: 0, state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}

@@ -1,0 +1,69 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-scorpion-tail/trait.scorpion-tail
+# authoring_status: PARTIAL
+# authoring_progress: the admitted whole--scope--scorpion-tail clause carries 2 authored scenarios derived from the printed sentence and the recorded contract (one extra attack each close-combat phase, fixed Strength 5, Strength 2 against a poison-immune defender).  The extra attack is evidenced by the pool carrying one attack die more than the same recipient without the mutation.  Pending: the printed poison-immunity strength reduction, because the tail attack's own wound key inside the pool is not recorded, so an assertion on its wound face could not be placed without inventing the index.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: whole--scope--scorpion-tail (scope: YES)
+# PARTIAL[whole--scope--scorpion-tail]: [C] 2 scenarios evidence the printed additional attack of each close-combat phase through the pool size, with the same recipient without the mutation as the contrast.  Pending: the poison-immunity branch (the tail attack is Strength 2 instead of 5), whose missing datum is the roll key of the tail attack inside the pool.
+#
+# Clause: whole--scope--cost (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+# --- Authored scenarios ---
+# "The model gains one additional Strength 5 attack in each close-combat phase": the printed
+# extra attack is evidenced by the pool carrying one attack die more than the same recipient
+# without the mutation; every attack is a miss so the pool is the only difference.
+- audit_id: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-scorpion-tail/trait.scorpion-tail
+  id: the-tail-adds-an-attack-to-every-close-combat-phase
+  covers: [whole--scope--scorpion-tail]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids: [band--mutations-scorpion-tail]
+      main_weapon_id: weapon.mace
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &plain-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, attacks.2.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same recipient keeps its printed single attack when a different mutation is selected.  The
+# Mutant may not be recruited with no mutation at all (`requiredInitial`), so the control carries
+# the neutral Acid Blood instead.
+- audit_id: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-scorpion-tail/trait.scorpion-tail
+  id: without-the-mutation-the-bearer-keeps-one-attack
+  covers: [whole--scope--scorpion-tail]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids: [band--mutations-acid-blood]
+      main_weapon_id: weapon.mace
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *plain-ws3-s3-t3-w2-i2
+  duel_context: *charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

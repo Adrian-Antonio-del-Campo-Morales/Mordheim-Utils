@@ -1,0 +1,55 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/chaos-streets-undead-bloodlines/necrarch-vampire--no-strength-skills/compiler.forbid-skill-categories
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries 2 authored scenarios derived from the printed rule
+#   and the recorded contract: the Necrarch vampire selecting a Strength skill is refused by the shared
+#   skill-access diagnostic, and the same Strength skill on the Blood Dragon vampire of the same band is
+#   admitted, so the prohibition is attached to the printed recipient rather than to the skill.  REVIEWED
+#   still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios cover the printed prohibition (a Necrarch Vampire may never acquire
+#   Strength skills).  The refused build is the printed Necrarch recipient carrying a skill of the strength
+#   category the record names, and the diagnostic is the construction module's shared skill-access summary
+#   whose template is read statically from the eligibility module; the control gives the same skill to the
+#   band's other vampire, so only the recipient explains the refusal.  REVIEWED still requires manual
+#   semantic review.
+
+# --- Authored scenarios ---
+# Derived from the printed sentence, the recorded contract (categories: [strength]) and the shared
+# skill-access route; no engine output was consulted.
+
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/necrarch-vampire--no-strength-skills/compiler.forbid-skill-categories
+  id: a-strength-skill-is-refused-on-the-necrarch-vampire
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: necrarch-vampire
+      skill_ids: [skill.mighty-blow]
+      main_weapon_id: weapon.mace
+  expect_error: "skills are forbidden for chaos-streets-undead-bloodlines/necrarch-vampire: ['skill.mighty-blow']"
+
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/necrarch-vampire--no-strength-skills/compiler.forbid-skill-categories
+  id: the-same-strength-skill-is-admitted-on-another-bloodline
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: blood-dragon-vampire
+      skill_ids: [skill.mighty-blow]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_final: {rounds_executed: 1}

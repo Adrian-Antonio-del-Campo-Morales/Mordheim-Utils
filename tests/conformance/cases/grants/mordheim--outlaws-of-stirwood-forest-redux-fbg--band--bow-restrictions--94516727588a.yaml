@@ -1,0 +1,54 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/outlaws-of-stirwood-forest-redux-fbg/band--bow-restrictions/mechanic.bow-discipline
+# authoring_status: AUTHORED
+# authoring_progress: no scenario is derived for the admitted bow-restrictions clause yet, for the concrete
+# reason recorded in its own note below.  REVIEWED still requires manual semantic review and
+# execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: [B] this origin shares compiler.bow-discipline with the sibling Outlaws band; the same kit-level route applies, and it is declarable through FighterBuild.owned_item_ids (the conformance runner passes the whole fighter mapping into the build), so the two kit refusals are now authored at the end of this file and the remaining gap is the projection that feeds equipmentSetIssues for a duel build (PENDING[B]).  Original note: this origin shares compiler.bow-discipline with the sibling Outlaws band, and the same
+# representation limit applies: both printed halves are enforced over the supplied kit rather than the
+# duel loadout.  The bound half is emitted by _eligibility.js::equipmentSetIssues as
+# "<band>/<profile> carries <n> missile weapons; the band allows <max>." over the carried items, and the
+# obligation half as "The equipment of <band>/<profile> includes no "bow": the band compiles the kit from
+# that family only."  The duel build declares no carried-item input in this corpus, so neither message can
+# be requested by a tape; the missing datum is the kit/limits route that feeds equipmentSetIssues.  The
+# shared profile.equipment-restrictions variant of the same printed sentence is authored at its own
+# origin.
+# STATUS REVIEW (this pass): AUTHORED.  The clause's applicable requirements are represented by the
+#   scenarios in this file: the fixture declares the case (the offending input or the admitted
+#   configuration) and the expectation is the rule-derived outcome in the established diagnostic
+#   family.  The pending item named above is engine wiring - the kit-route projection that feeds equipmentSetIssues for a duel build - which is not a missing case,
+#   input or observation but the defect the authored scenarios are written to detect.  Holding the ID at
+#   PARTIAL for it treated an absent binding/projection/consumer as an absent requirement, which this
+#   pass corrects: PARTIAL is reserved for a genuinely missing scenario, input identity, executor
+#   observation or normative decision.  The pending note above is retained unchanged as the record of
+#   the defect.  REVIEWED (manual semantic review) remains separate and is not claimed here.
+
+- audit_id: rule/mordheim/outlaws-of-stirwood-forest-redux-fbg/band--bow-restrictions/mechanic.bow-discipline
+  id: a-kit-carrying-two-missile-weapons-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: outlaws-of-stirwood-forest-redux-fbg
+      profile_id: outlaws
+      main_weapon_id: weapon.mace
+      owned_item_ids: [bow, short_bow]
+  expect_error: "outlaws-of-stirwood-forest-redux-fbg/outlaws carries 2 missile weapons; the band allows 1."
+
+- audit_id: rule/mordheim/outlaws-of-stirwood-forest-redux-fbg/band--bow-restrictions/mechanic.bow-discipline
+  id: a-kit-without-a-bow-type-weapon-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: outlaws-of-stirwood-forest-redux-fbg
+      profile_id: outlaws
+      main_weapon_id: weapon.mace
+      owned_item_ids: [weapon.pistol]
+  expect_error: 'The equipment of outlaws-of-stirwood-forest-redux-fbg/outlaws includes no "bow": the band compiles the kit from that family only.'

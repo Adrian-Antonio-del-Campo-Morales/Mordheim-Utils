@@ -1,0 +1,68 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/strigoi-kaz/bats--squishy/mechanic.bat-injury-chart
+# authoring_status: AUTHORED
+# authoring_progress: the admitted bat-injury-chart clause carries two authored scenarios derived
+# from the printed chart and the recorded contract; the bearer is the printed Bats profile of this
+# band, the model the chart belongs to.  REVIEWED still requires manual semantic review and
+# execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios read the same declared injury face of four against a
+# one-wound defender: the printed Bats chart makes 4-6 Out of Action, so the four takes the bearer
+# out of action, while the identical four only Stuns the control warrior that does not carry the
+# chart (the ordinary 3-4 band).  The bearer is the printed Bats profile that prints the chart;
+# the attacking fixture's Weapon Skill, Strength, Toughness and Initiative are hand-built facts,
+# not profile values, and the bearer declares no attack so the tape holds only the attacker's hit,
+# wound and injury dice.  The printed 1-2 Knocked Down and 3 Stunned bands are the ordinary chart's
+# own bands and are not separated again here; the declared four is the face that distinguishes them.
+# REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+# Derived from the printed chart, the recorded contract and the printed profile; no engine output
+# was consulted.  Hit 4 is a hit against an equal Weapon Skill, wound 4 wounds at equal Strength
+# and Toughness, and the injury die of 4 is the face the two charts disagree about.
+- audit_id: rule/mordheim/strigoi-kaz/bats--squishy/mechanic.bat-injury-chart
+  id: an-injury-total-of-four-takes-the-bearer-out-of-action
+  fighters:
+    first:
+      main_weapon_id: weapon.axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: {collection: mordheim, band_id: strigoi-kaz, profile_id: bats}
+  initial_state: {second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 4}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.condition: OUT, state.second.wounds: 0}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+# The control for the clause: the same profiles, the same declared dice and a one-wound defender
+# that does not carry the chart, where the ordinary table leaves the four in the Stunned band.
+- audit_id: rule/mordheim/strigoi-kaz/bats--squishy/mechanic.bat-injury-chart
+  id: without-the-chart-the-same-four-only-stuns
+  fighters:
+    first:
+      main_weapon_id: weapon.axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 4}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.condition: STUNNED, state.second.wounds: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

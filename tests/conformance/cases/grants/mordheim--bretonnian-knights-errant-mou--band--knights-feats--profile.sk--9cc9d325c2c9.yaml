@@ -1,0 +1,57 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/bretonnian-knights-errant-mou/band--knights-feats/profile.skill-access
+# authoring_status: AUTHORED
+# authoring_progress: both halves of the admitted clause carry an authored scenario: the Knights
+#   Errant that selects a printed feat is built and the duel runs, and a special skill outside the
+#   printed list is refused with the shared access diagnostic.  The member used for the admission is
+#   Sword Master, one of the four feats the printed rule names.  REVIEWED still requires manual
+#   semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios cover the printed permission (Knights Errant may choose the Knights
+#   Feats list in place of the standard lists: Combat charge, Lancer, Sword master, Armour
+#   specialist).  The admission scenario builds the recipient with skill.sword-master, a printed
+#   feat with its own executable mechanic, and records that the duel ran unrefused; the closure
+#   scenario shows a special skill outside the printed list refused.  The band binding declares only
+#   the category, so the other three feats' canonical ids stay the KB's to publish and are not
+#   guessed here.  REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded semantic contract and the printed feat list in the
+# scaffold's own rule text; no engine output was consulted.  Both fighters are given zero attacks so
+# the round resolves without dice and the observation is about admission, not about the feat's
+# mechanics.
+
+- audit_id: rule/mordheim/bretonnian-knights-errant-mou/band--knights-feats/profile.skill-access
+  id: the-named-feat-sword-master-is-admitted-to-the-recipient
+  fighters:
+    first:
+      collection: mordheim
+      band_id: bretonnian-knights-errant-mou
+      profile_id: knights-errant
+      skill_ids: [skill.sword-master]
+      main_weapon_id: weapon.mace
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_final: {rounds_executed: 1}
+
+- audit_id: rule/mordheim/bretonnian-knights-errant-mou/band--knights-feats/profile.skill-access
+  id: a-special-skill-outside-the-printed-list-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: bretonnian-knights-errant-mou
+      profile_id: knights-errant
+      skill_ids: [skill.monster-slayer]
+      main_weapon_id: weapon.mace
+  expect_error: "skills are not available to bretonnian-knights-errant-mou/knights-errant: ['skill.monster-slayer']"

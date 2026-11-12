@@ -1,0 +1,101 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/dance.woven-mist
+# authoring_status: AUTHORED
+# authoring_progress: the single admitted clause carries 3 scenarios (the one-attack pool with strike-first, the faster opponent still acting second, and the equal strike-first tie); REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 3 scenarios show the reduced pool, the strike-first tier
+#   against a faster opponent and the Initiative tie-break when both strike first.
+
+# --- Authored scenarios ---
+# mechanic/dance.woven-mist - the canonical Shadow Dance operator, selected for the
+# combat phase through the decision `round.<round>.<side>.dance.<name>`.
+#
+# Expectations come from the printed rule and the admitted `whole` clause,
+# never from engine output.  The dance is supplied as the shared operator
+# through `skill_ids`, exactly as the core pilot supplies
+# `skill.always-strikes-first`; each performed dance must be declared, and the
+# strict tape records that declaration.
+
+- audit_id: mechanic/dance.woven-mist
+  id: the-performed-dance-trades-one-attack-for-striking-first
+  fighters:
+    first:
+      skill_ids: [dance.woven-mist]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 1, attacks: 2}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.dance.woven-mist, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: decision, key: round.0.first.dance.woven-mist, value: true}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+
+# The per-phase choice is the fighter's: declining the dance leaves the ordinary
+# two-attack pool and the ordinary Initiative tier, so the faster opponent acts
+# first and the bearer rolls both profile attacks.
+- audit_id: mechanic/dance.woven-mist
+  id: declining-the-dance-keeps-two-attacks-and-loses-strike-first
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 1, attacks: 2}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {attacks.1.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.1.hit, sides: 6, value: 1}
+
+# When the opponent also strikes first both sit in the top tier, so equal
+# Initiative is resolved by the unbiased priority die before either pool resolves.
+- audit_id: mechanic/dance.woven-mist
+  id: equal-strike-first-initiative-is-decided-by-the-priority-die
+  fighters:
+    first:
+      skill_ids: [dance.woven-mist]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      skill_ids: [skill.always-strikes-first]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.dance.woven-mist, value: true}
+  rolls:
+    - {key: round.0.priority-tie, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

@@ -1,0 +1,102 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/warband/skill.infinite-hatred/skill.infinite-hatred
+# authoring_status: AUTHORED
+# authoring_progress: the admitted infinite-hatred clause carries 3 authored scenario(s) derived from
+#   the printed rule and the recorded semantic contract: failed melee hits are taken again in every
+#   round, never twice, and the clause carries no target restriction.  This catalog record is the
+#   canonical operator (runtime grant none), so its scenarios declare the skill explicitly, exactly as
+#   the mechanic member does.  REVIEWED still requires manual semantic review and execution_status
+#   stays UNEXECUTED; no behavioral result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: the catalog entry is the canonical operator and carries runtime grant
+#   none, so no band profile receives it automatically and the scenarios declare the printed skill on
+#   the bearer, as cases/mechanics/skill.infinite-hatred.yaml does.
+#   3 scenario(s) cover the clause: a failed first-round hit is taken again and the taken-again hit
+#   wounds; the same reroll is offered again in a later round, where round zero's taken-again hit
+#   fails to wound and round one's lands; and the same miss stands for a bearer without the skill.
+#   REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+# Family model (Infinite Hatred): the bearer declares the printed warband skill itself (the catalog
+# record carries runtime grant none), strikes first with Initiative 5 against a single-attack fixture,
+# and both fighters are supplied with the same physical characteristics as fixture facts so the dice
+# thresholds and the strike order are fixed.  A natural 2 misses against Weapon Skill 3, the
+# taken-again die on 4 hits, and Strength 3 wounds Toughness 3 on 4.  The clause names no target, so
+# the opponent is an ordinary opponent fixture.
+
+- audit_id: rule/catalog/warband/skill.infinite-hatred/skill.infinite-hatred
+  id: a-failed-first-round-hit-is-taken-again
+  fighters:
+    first:
+      skill_ids: [skill.infinite-hatred]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Round zero's taken-again hit fails to wound, so nothing is removed and the duel continues; round
+# one takes the same miss again, and that taken-again hit does wound.  The reroll is therefore offered
+# outside the first round too, which is the clause's own boundary against ordinary Hatred.
+- audit_id: rule/catalog/warband/skill.infinite-hatred/skill.infinite-hatred
+  id: the-reroll-also-applies-beyond-the-first-round
+  fighters:
+    first:
+      skill_ids: [skill.infinite-hatred]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 2}
+    - {key: round.1.first.attack.0.hit.reroll, value: 4}
+    - {key: round.1.first.attack.0.wound, value: 4}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 0, state.second.wounds: 2}
+    1: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+
+# Without the printed skill the same miss stands: no taken-again die is declared and the strict tape
+# holds none.
+- audit_id: rule/catalog/warband/skill.infinite-hatred/skill.infinite-hatred
+  id: the-same-miss-stands-without-the-skill
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -1,0 +1,87 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-censer-bearer/compiler.censer-bearer-loadout
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries 3 authored scenarios derived from the printed
+# rule and the recorded contract: the censer bearer with Black Hunger is admitted and starts the duel
+# Frenzied, and the two printed refusals - no Black Hunger, and a close-combat weapon other than the
+# Censer - are declared with the verbatim diagnostics the construction layer emits.  REVIEWED still
+# requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 3 scenarios cover both printed halves.  The admission takes the printed loadout -
+# the Censer in the main hand with Black Hunger selected - and reads the Frenzy the compiler sets from
+# the loadout contract as the duel's initial Frenzy state, with both fighters' attacks pinned to zero so
+# the round carries only the end-of-turn Black Hunger backlash the printed skill prints.  The two
+# refusals are the other half of the printed sentence: the same bearer without Black Hunger, and the
+# same bearer armed with a close-combat weapon other than the Censer; both are declared with the exact
+# diagnostics the shared construction module emits, so an unrelated failure cannot satisfy them.
+# REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded contract; no engine output was consulted.  The Censer
+# is the printed weapon the construction layer names for this hero and Black Hunger is the printed
+# prerequisite, supplied as the canonical mechanic the band row binds.  Both fighters' attacks are
+# pinned to zero so the tape carries no attack dice at all: the admission turns on the initial Frenzy
+# state and on the unbeatable Black Hunger backlash, and the wound face stays below a natural six.
+
+- audit_id: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-censer-bearer/compiler.censer-bearer-loadout
+  id: the-censer-bearer-with-black-hunger-starts-frenzied
+  fighters:
+    first:
+      main_weapon_id: weapon.censer
+      # Black Hunger is the printed prerequisite, selected as its own band rule: the
+      # eligibility contract reads the loadout mechanics, not a bare skill id.
+      special_rule_ids: [band--clan-pestilens-special-skills-black-hunger, band--clan-pestilens-special-skills-censer-bearer]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    # Black Hunger's +1 Attack is doubled by the loadout's Frenzy, so the pinned pool
+    # still carries two attacks; both are declared as misses.
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.black-hunger.hits, sides: 3, value: 1}
+    - {key: round.0.first.black-hunger.hit.0.wound, value: 4}
+  expect_initial: {first.frenzy: true}
+  expect_rounds:
+    0: {state.first.wounds: 1, state.first.condition: STANDING, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-censer-bearer/compiler.censer-bearer-loadout
+  id: the-censer-bearer-without-black-hunger-is-refused
+  fighters:
+    first:
+      main_weapon_id: weapon.censer
+      special_rule_ids: [band--clan-pestilens-special-skills-censer-bearer]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_error: Censer Bearer requires Black Hunger
+
+- audit_id: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-censer-bearer/compiler.censer-bearer-loadout
+  id: a-close-combat-weapon-other-than-the-censer-is-refused
+  fighters:
+    first:
+      main_weapon_id: weapon.sword
+      special_rule_ids: [band--clan-pestilens-special-skills-black-hunger, band--clan-pestilens-special-skills-censer-bearer]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_error: Censer Bearer may use only a Censer in close combat
+

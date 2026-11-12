@@ -1,0 +1,80 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--lahmia-power-seduction/mechanic.lahmia-seduction
+# authoring_status: AUTHORED
+# authoring_progress: the admitted seduction clause carries 2 authored scenarios for its individual half,
+#   derived from the printed sentence and the modular consumer.  The blocker recorded here previously was
+#   FALSE for that half and is corrected: rounds.py declares ControlPower("mechanic.lahmia-seduction",
+#   ("mechanic.psychology-immunity", "nature.undead", "nature.daemon", "mechanic.stupidity"),
+#   "lahmia-seduction", own_value_only=True, own_turn_only=True, male_only=True, persistent=True) in
+#   CONTROL_POWERS, resolve_round runs it at the key round.<round>.<label>.lahmia-seduction (Leadership test
+#   on .0/.1), and test_t13_control_family.py already witnesses that consumer, including the supplied male
+#   fact and the lasting "seduction.controlled.lahmia" resource.  The printed group/campaign faces remain
+#   out of the duel frame and are recorded, not asserted: only one warrior may be controlled at a time, the
+#   Recovery-phase regain test, and the break on any hit by the warband.  REVIEWED still requires manual
+#   semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios cover the admitted individual clause - the printed "one male enemy in
+#   base contact must test against its own Leadership", tested with its own value (own_value_only), and its
+#   failure barring it (charm_attack_blocked) - and the printed exemption of every non-male opponent, whose
+#   tape carries no test die at all.  The male/female fact is a supplied build fact (the same route the
+#   accepted unit witness uses); the band row band--lahmia-power-seduction only names and binds this power,
+#   so the bearer is the fixture carrying the canonical tag and no second runtime term is claimed.  The
+#   remaining printed faces are group or campaign scope and are recorded above: the one-controlled-warrior
+#   limit, the Recovery-phase regain test, the break on a hit and the Out-of-Action result at battle end.
+#   REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+# The printed male recipient fails its own Leadership test (two sixes against its printed seven) and
+# is barred from attacking; the male fact is supplied on the build, as the accepted unit witness does.
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--lahmia-power-seduction/mechanic.lahmia-seduction
+  id: a-male-target-that-fails-its-own-test-is-controlled
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.lahmia-seduction]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {sex: male}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  # The admitted power is used: the male recipient takes its own Leadership test.
+  decisions:
+    - {key: round.0.second.lahmia-seduction, value: true}
+  rolls:
+    - {key: round.0.second.lahmia-seduction.0, value: 6}
+    - {key: round.0.second.lahmia-seduction.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.charm_attack_blocked: true, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed recipient is "one male enemy": a female opponent is outside the clause, so no
+# Leadership test is requested and both pools resolve normally.
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--lahmia-power-seduction/mechanic.lahmia-seduction
+  id: a-female-target-is-outside-the-printed-recipient
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.lahmia-seduction]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {sex: female}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.charm_attack_blocked: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -1,0 +1,98 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/lustria-high-elves/band--high-elf-special-skills-luck/skill.luck
+# authoring_status: AUTHORED
+# authoring_progress: the admitted once-per-battle-reroll clause carries 3 authored scenarios derived
+# from the printed rule and the recorded contract.  The printed "Explorers only" recipient head and the
+# exclusion of a roll made by another warband member are recorded, not asserted: the fixture carries the
+# grant and a duel models one opponent and no teammate.  REVIEWED still requires manual semantic review
+# and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 3 scenarios cover the bearer re-rolling his own missed to-hit roll,
+#   re-rolling his own failed to-wound roll, and the resource already spent so a later failed wound
+#   stands.  The printed "Explorers only" head and the exclusion of another warrior's roll are recorded,
+#   not asserted (the fixture carries the grant and a duel has no teammate).  REVIEWED still requires
+#   manual semantic review.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded contract; no engine output was consulted.  The bearer
+# (WS3/S3/T3/W2, I5, A1, mace) acts before his single opponent (I2, A1, mace), so the opponent's reply
+# is the same declared miss in every scenario and the bearer's Strength 3 wounds Toughness 3 on 4+.
+# The spent resource is the `luck` entry of the bearer's resources_spent set.
+- audit_id: rule/trollheim/lustria-high-elves/band--high-elf-special-skills-luck/skill.luck
+  id: a-missed-hit-is-rolled-again-and-the-resource-is-spent
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.luck]
+      characteristics: &luck-bearer {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &luck-opponent {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &luck-context {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    # The printed skill is spent through its declared decision; the resource is the `luck` entry.
+    - {key: round.0.first.attack.0.hit.luck, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: True, attacks.0.damage: 1, state.second.wounds: 1, state.first.resources_spent: [luck]}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-high-elves/band--high-elf-special-skills-luck/skill.luck
+  id: a-failed-wound-is-rolled-again
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.luck]
+      characteristics: *luck-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *luck-opponent
+  duel_context: *luck-context
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.hit.luck, value: false}
+    - {key: round.0.first.attack.0.wound.luck, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.first.attack.0.wound.reroll, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: True, attacks.0.damage: 1, state.second.wounds: 1, state.first.resources_spent: [luck]}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-high-elves/band--high-elf-special-skills-luck/skill.luck
+  id: the-resource-is-spent-once-so-a-later-failed-wound-stands
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.luck]
+      characteristics: *luck-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *luck-opponent
+  duel_context: *luck-context
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.hit.luck, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: False, attacks.0.damage: 0, state.second.wounds: 2, state.first.resources_spent: [luck]}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

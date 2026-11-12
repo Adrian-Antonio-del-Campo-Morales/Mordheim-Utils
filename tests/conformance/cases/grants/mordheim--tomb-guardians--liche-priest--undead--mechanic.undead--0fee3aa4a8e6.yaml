@@ -1,0 +1,144 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/tomb-guardians/liche-priest--undead/mechanic.undead
+# authoring_status: AUTHORED
+# authoring_progress: the admitted undead clause carries 6 authored scenarios covering its Fear,
+#   Psychology-immunity, ignore-pain and poison-immunity faces; REVIEWED still requires manual
+#   semantic review and execution_status stays UNEXECUTED; no behavioral result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 6 scenarios cover the four faces the composite expands to for this bearer.
+#   Fear: a charging opponent whose two-dice Leadership test fails is halted and the round ends in
+#   disengagement, while the same charge that passes reaches contact and the round runs to the
+#   horizon.  Psychology immunity: the bearer's own charge against a fear-causing warrior requests
+#   no charge test at all, and the identical setup with a hand-built non-immune warrior does request
+#   it and is halted by it.  Ignore pain: an Injury-chart Stunned result leaves the bearer Knocked
+#   Down.  Poison immunity: a Nightshade-coated wound keeps its wound and loses its Initiative
+#   rider.  Toughness 3, Wounds 3, Weapon Skill 10, Strength 8 and Initiative 10 are hand-built
+#   fixture facts, not profile values, and the fixture's single strike is declared so that no
+#   armour, ward or regeneration die is requested.  Not asserted: the composite's group, running
+#   and experience consequences, which the register note excludes, and any printed bloodline
+#   exception, which needs an exempting source this file does not carry.  The printed No Armour
+#   restriction of this profile is a legal-construction gate, not a duel-time condition, and is not
+#   asserted here.  REVIEWED still requires manual semantic review and execution_status stays
+#   UNEXECUTED.
+
+# --- Authored scenarios ---
+# Derived from the printed rule text and the accepted composite contract; no engine output was
+# consulted.  The bearer is the profile that prints the clause, so its own printed profile supplies
+# the band tag and the composite; every fixture warrior is hand-built and declares its own facts.
+
+- audit_id: rule/mordheim/tomb-guardians/liche-priest--undead/mechanic.undead
+  id: a-charging-opponent-that-fails-its-fear-test-is-halted
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: tomb-guardians, profile_id: liche-priest, characteristics: {weapon_skill: 2, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1, leadership: 7}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 5}
+    - {key: round.0.first.fear.charge.1, value: 4}
+  expect_rounds:
+    0: {state.first.condition: STANDING, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+- audit_id: rule/mordheim/tomb-guardians/liche-priest--undead/mechanic.undead
+  id: a-charging-opponent-that-passes-its-fear-test-reaches-contact
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: tomb-guardians, profile_id: liche-priest, characteristics: {weapon_skill: 2, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1, leadership: 7}}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 3}
+    - {key: round.0.first.fear.charge.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/tomb-guardians/liche-priest--undead/mechanic.undead
+  id: the-immune-bearer-is-not-tested-when-it-charges-a-fear-causer
+  fighters:
+    first: {collection: mordheim, band_id: tomb-guardians, profile_id: liche-priest}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state:
+    first: {attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 3, state.first.condition: STANDING, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/tomb-guardians/liche-priest--undead/mechanic.undead
+  id: a-non-immune-warrior-is-tested-in-the-same-setup
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 5}
+    - {key: round.0.first.fear.charge.1, value: 4}
+  expect_rounds:
+    0: {state.first.condition: STANDING, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+- audit_id: rule/mordheim/tomb-guardians/liche-priest--undead/mechanic.undead
+  id: a-stunned-injury-result-becomes-knocked-down
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: tomb-guardians, profile_id: liche-priest, characteristics: {weapon_skill: 2, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1, leadership: 7}}
+  initial_state:
+    second: {wounds: 1, attacks: 0}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.0.injury.0, value: 3}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/tomb-guardians/liche-priest--undead/mechanic.undead
+  id: the-poisoned-wound-keeps-its-wound-and-loses-its-rider
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.nightshade
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: tomb-guardians, profile_id: liche-priest, characteristics: {weapon_skill: 2, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1, leadership: 7}}
+  initial_state:
+    second: {wounds: 2, attacks: 0}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1, state.second.initiative_penalty: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

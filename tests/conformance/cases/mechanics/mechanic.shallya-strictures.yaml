@@ -1,0 +1,79 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.shallya-strictures
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 3 scenarios cover the refused charge against an unqualified opponent, the permitted charge against a Carnival of Chaos warrior, and the frontier case the clause does not forbid: the strictures warrior is charged by an unqualified enemy and the duel still resolves. Documented gap: nothing in the printed clause names the executor's qualification tags (band.carnival-of-chaos or identity.onogal-follower), so each scenario supplies the band fact the executor reads and the printed name maps to no key recorded in this clause (state.py:232-241).
+
+# --- Authored scenarios ---
+# The strictures warrior charges an opponent who is neither a Carnival of Chaos
+# warrior nor a follower of Onogal, so the printed permission is absent and the
+# duel is refused at its initialization instead of resolving a forbidden charge.
+- audit_id: mechanic/mechanic.shallya-strictures
+  id: a-charge-against-an-unqualified-opponent-is-refused
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.shallya-strictures]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  expect_error: "Charging configuration violates Cannot Charge or Shallyan Strictures"
+# The same charge against a Carnival of Chaos warrior is the printed exception, so
+# the duel initializes and the round resolves both blows.
+- audit_id: mechanic/mechanic.shallya-strictures
+  id: a-charge-against-a-carnival-of-chaos-warrior-is-permitted
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.shallya-strictures]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: brethren
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The frontier the printed clause leaves open: the strictures warrior does not
+# charge, and the enemy charging him is unqualified, so no permission is needed
+# and the same warrior does make his own attacks.
+- audit_id: mechanic/mechanic.shallya-strictures
+  id: being-charged-by-an-unqualified-enemy-is-not-refused
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.shallya-strictures]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [second], active_participant: first}
+  maximum_rounds: 1
+  # The charging enemy opens the round, so his miss is the first attack of the
+  # ledger and the strictures warrior's own blow is the second.
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first_charged: False, attacks.1.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

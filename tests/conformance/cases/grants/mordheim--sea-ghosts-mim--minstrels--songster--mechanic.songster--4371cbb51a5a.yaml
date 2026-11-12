@@ -1,0 +1,121 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/sea-ghosts-mim/minstrels--songster/mechanic.songster
+# authoring_status: AUTHORED
+# authoring_progress: the admitted songster clause carries three authored scenarios derived from the
+# printed sentence and the recorded contract, mirroring the authored optional-reroll grant of the same
+# family in this directory (dwarf-rangers dwarf-longbeards--stubborn): the failed Leadership test offers
+# exactly one reroll, the declared choice takes it and the second result passes, the accepted second result
+# stands when the reroll fails as well with no third attempt, and a bearer without the grant is offered no
+# reroll at all.  The register records this band origin as the shared optional-reroll facet with a supplied
+# producer and states that the record itself carries no binding, so the tapes read the canonical operator
+# through the fixture's grant list exactly as the mechanic origin's own case does.  Recorded, not asserted:
+# the printed +1 to Leadership and the six-inch recipient radius, which the band's own binding
+# mechanic.songster supplies from a nearby Minstrel provider and whose projection needs that supplied
+# third participant, while the printed Rout half is the excluded group procedure.  REVIEWED still requires
+# manual semantic review and
+# execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: songster (scope: YES)
+# AUTHORED[songster]: 3 scenarios read the printed "may re-roll any failed Leadership test" as the single
+# optional reroll the effect resolves.  The bearer is a hand-built fixture of the printed Leadership the
+# test uses, and the enemy charges it as a fear-causer (its causes-fear fact is its own trait_override), so
+# the test under evidence is the charged warrior's Fear test, whose printed failure makes its own hits need
+# a natural six.  The declared pair of sixes fails, the declared choice takes the one offered reroll and the
+# second pair of ones passes it; a second failure is accepted with no third attempt; and the same dice
+# without the grant show the failure standing.  REVIEWED still requires manual semantic review.
+#
+# Clause: songster-group-emission (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+#
+# Clause: songster-rout (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+# --- Authored scenarios ---
+# Derived from the printed sentence and the recorded contract; no engine output was consulted.  Both
+# fighters attack once with a plain mace and every declared attack die is a natural one, a miss, so the
+# Leadership test and its reroll are the whole of the evidence.
+
+- audit_id: rule/mordheim/sea-ghosts-mim/minstrels--songster/mechanic.songster
+  id: one-optional-reroll-turns-the-failed-leadership-test-around
+  covers: [songster]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.leadership-reroll]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.fear.charged.reroll, value: true}
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 6}
+    - {key: round.0.second.fear.charged.1, value: 6}
+    - {key: round.0.second.fear.charged.reroll.0, value: 1}
+    - {key: round.0.second.fear.charged.reroll.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/sea-ghosts-mim/minstrels--songster/mechanic.songster
+  id: the-reroll-is-accepted-even-when-it-fails-again
+  covers: [songster]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.leadership-reroll]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.fear.charged.reroll, value: true}
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 6}
+    - {key: round.0.second.fear.charged.1, value: 6}
+    - {key: round.0.second.fear.charged.reroll.0, value: 6}
+    - {key: round.0.second.fear.charged.reroll.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/sea-ghosts-mim/minstrels--songster/mechanic.songster
+  id: without-the-grant-the-first-failure-stands
+  covers: [songster]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 6}
+    - {key: round.0.second.fear.charged.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+

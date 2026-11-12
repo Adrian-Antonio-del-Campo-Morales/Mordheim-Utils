@@ -1,0 +1,80 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/dwarf-slayer-cult-web/band--slayer-special-skills/profile.skill-access
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause now carries 2 authored scenarios in the accepted sibling shape.  The
+# earlier blocker is withdrawn: both construction facts it named are published in this origin's own sources.
+# The Slayer hero recipients are the band's printed hero profiles (profiles.yaml: giant-slayer, doomseeker), and
+# the access set is the printed list this row's own effect field enumerates (Deathwish, Ferocious Charge,
+# Monster Slayer, Berserker, Deathblow, Relentless, Axe Mastery, True Grit, Thick Skull), whose members the
+# admitted catalogue carries (catalog/skills/warband.yaml: skill.monster-slayer).  The missing KB binding
+# (binding: null on this row, scope: LATER) is recorded as the defect the scenarios detect, not as a reason to
+# withhold them.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios cover the printed access in both directions, in the accepted sibling
+#   shape of this family (a band/profile build plus the shared skill-availability fragment).  RECIPIENT: the
+#   band's printed Slayer hero (profiles.yaml id giant-slayer, the band's leader rank and the first printed
+#   "Slayer hero" the clause names; its skill_access declares the special category).  ADMISSION: the recipient
+#   build that selects a printed member of the list - skill.monster-slayer, the row catalog/skills/warband.yaml
+#   publishes for "Slayer Special Skills / Monster Slayer" - is admitted and the engagement starts, which is
+#   the printed permission.  Both fighters declare zero attacks, so the observation is the admission itself
+#   and not a member's own duel consequence (each named skill keeps its own origin).  REFUSAL: a special skill
+#   outside the printed list is refused with the shared skill-availability fragment, the same diagnostic the
+#   sibling band files of this family use for the identical closure.
+#   DEFECTS THE SCENARIOS DETECT (recorded, not hidden, and not a reason to withhold them): this origin's row
+#   binds the placeholder `unimplemented.dwarf-slayer-cult-web.special.slayer-special-skills` with
+#   `binding: null` and records `scope: LATER / implemented: 'NO'` with the reason "Deferred subsystem: skill
+#   selections on promotion are advancement-time mechanics outside the duel scope", while the semantic register
+#   admits the clause as legal-construction access.  The printed member list is carried only by the row's prose
+#   `effect` field, so no machine-readable member list reaches the shared construction stage and the admitted
+#   build is refused today for the wrong reason.  The expectation stays the printed permission; it must not be
+#   relaxed to that diagnostic.  The register also dispositions skill selection as advancement-time, so this
+#   file evidences the printed access of the list itself and does not re-assert a member's advancement
+#   consequence, which is analysed at that skill's own origin.
+#   The sibling `band--rememberer-skills` and `axe-hurlers--born-marksmen` rows of the same band file are
+#   separate admitted clauses and keep their own scaffolds and markers.
+
+# --- Authored scenarios ---
+# Derived from the printed row, this band's own profiles.yaml (the Slayer hero ranks and their declared
+# skill categories) and the admitted catalogue rows the row's effect field names; no engine output was
+# consulted.  Both fighters are given zero attacks so the round resolves without dice and the observation is
+# access, not a member mechanic.
+
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/band--slayer-special-skills/profile.skill-access
+  id: the-printed-slayer-skill-is-admitted-to-a-slayer-hero
+  # The printed permission is the required behaviour: a Slayer hero may take a skill from the Slayer list, so
+  # the build must compile and the engagement must start.  skill.monster-slayer is one of the members this
+  # origin's own row enumerates.  The build is refused today because the row binds no member list, a KB
+  # connection gap; the expectation is deliberately NOT that refusal.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: giant-slayer
+      skill_ids: [skill.monster-slayer]
+    second:
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_initial: {first.attacks: 0, second.attacks: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/band--slayer-special-skills/profile.skill-access
+  id: a-special-skill-outside-the-printed-list-is-refused
+  # The closure of the same printed access: a special skill that is not a member of the Slayer list is not
+  # available to the recipient.  The fragment is the shared skill-availability sentence of this family.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: giant-slayer
+      skill_ids: [skill.miniath]
+      main_weapon_id: weapon.mace
+  expect_error: "skills are not available to dwarf-slayer-cult-web/giant-slayer: ['skill.miniath']"

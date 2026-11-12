@@ -1,0 +1,107 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/khemri-necromancers/nehekharan-vultures--undead/mechanic.undead
+# authoring_status: PARTIAL
+# authoring_progress: the admitted undead clause carries 4 authored scenarios covering its Fear and
+#   Psychology-immunity faces; its ignore-pain and poison-immunity faces stay pending in the PARTIAL
+#   note below.  REVIEWED still requires manual semantic review and execution_status stays
+#   UNEXECUTED; no behavioral result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+#   EVIDENCED: 4 scenarios cover two of the four faces the composite expands to for this
+#   bearer.  Fear: a charging opponent whose two-dice Leadership test fails is halted and the round
+#   ends in disengagement, while the same charge that passes reaches contact and the round runs to
+#   the horizon.  Psychology immunity: the bearer's own charge against a fear-causing warrior
+#   requests no charge test at all, and the identical setup with a hand-built non-immune warrior
+#   does request it and is halted by it.  Toughness 3, Wounds 3 and Leadership 7 are hand-built
+#   fixture facts, not profile values, and the fixture's single strike in the contact scenario is
+#   declared as a miss, so no attack reaches this bearer in the authored tapes.  The composite's
+#   group, running and experience consequences and any printed bloodline exception are not asserted.
+#   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# PARTIAL: [CLOSING-REVIEW [C]] the ignore-pain and poison-immunity faces are not asserted for this bearer.  Its
+#   own printed Fragile rule (bands/trollheim/khemri-necromancers, nehekharan-vultures--fragile)
+#   decides what the Injury chart does to it and what a wound leaves standing, and this authoring
+#   pass did not establish the printed consequence; the pain and poison expectations therefore stay
+#   pending rather than asserting a table result the source does not print.
+
+# --- Authored scenarios ---
+# Derived from the printed rule text and the accepted composite contract; no engine output was
+# consulted.  The bearer is the profile that prints the clause, so its own printed profile supplies
+# the band tag and the composite; every fixture warrior is hand-built and declares its own facts.
+
+- audit_id: rule/trollheim/khemri-necromancers/nehekharan-vultures--undead/mechanic.undead
+  id: a-charging-opponent-that-fails-its-fear-test-is-halted
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second: {collection: trollheim, band_id: khemri-necromancers, profile_id: nehekharan-vultures}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 5}
+    - {key: round.0.first.fear.charge.1, value: 4}
+  expect_rounds:
+    0: {state.first.condition: STANDING, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+- audit_id: rule/trollheim/khemri-necromancers/nehekharan-vultures--undead/mechanic.undead
+  id: a-charging-opponent-that-passes-its-fear-test-reaches-contact
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second: {collection: trollheim, band_id: khemri-necromancers, profile_id: nehekharan-vultures}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 3}
+    - {key: round.0.first.fear.charge.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/khemri-necromancers/nehekharan-vultures--undead/mechanic.undead
+  id: the-immune-bearer-is-not-tested-when-it-charges-a-fear-causer
+  fighters:
+    first: {collection: trollheim, band_id: khemri-necromancers, profile_id: nehekharan-vultures}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state:
+    first: {attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 3, state.first.condition: STANDING, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/khemri-necromancers/nehekharan-vultures--undead/mechanic.undead
+  id: a-non-immune-warrior-is-tested-in-the-same-setup
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 5}
+    - {key: round.0.first.fear.charge.1, value: 4}
+  expect_rounds:
+    0: {state.first.condition: STANDING, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}

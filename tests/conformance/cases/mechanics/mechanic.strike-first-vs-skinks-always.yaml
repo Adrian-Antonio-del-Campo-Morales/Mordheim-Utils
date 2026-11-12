@@ -1,0 +1,72 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.strike-first-vs-skinks-always
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios show the Hero resolving first against a Skink in
+#   spite of a charge and the lower Initiative, and the same duel without the
+#   mechanic.
+
+# --- Authored scenarios ---
+# The opponent is the printed Skink profile itself: the compiler derives the
+# `species.skink` tag the mechanic reads from that profile, so the opposed model is
+# the Lizardmen Skink Braves entry (dagger from its own weapon list) and not a
+# supplied species trait.  The Hero is charged and has the lower Initiative, yet the
+# printed priority spike outranks the charge, so he resolves first against the Skink.
+# The Skink carries the band's natural 6+ save, so the declared wound still asks for
+# its armour die and the declared below-threshold face leaves the wound landing.
+- audit_id: mechanic/mechanic.strike-first-vs-skinks-always
+  id: the-hero-strikes-first-though-he-is-charged
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.strike-first-vs-skinks-always]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: lizardmen
+      profile_id: skink-braves
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The identical duel without the mechanic: the charge tier decides, so the Skink
+# resolves first and the Hero's hit lands second.
+- audit_id: mechanic/mechanic.strike-first-vs-skinks-always
+  id: without-the-mechanic-the-charger-strikes-first
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: lizardmen
+      profile_id: skink-braves
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

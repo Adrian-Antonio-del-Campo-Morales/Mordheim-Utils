@@ -1,0 +1,71 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/khemri-lahmian-brotherhood/spirits--spiritual-weapons/trait.spiritual-weapons
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries 2 authored scenarios derived from the printed rule
+#   and the recorded contract: the printed Spirit bearer's To Wound roll of five requests the critical die
+#   because its weapon set counts as spiritual, while the identical roll from a hand-built non-spirit
+#   carrier requests none, so the lowered threshold is attached to the printed recipient.  Five is the
+#   discriminating face because a natural six is a critical for every fighter and is therefore not evidence
+#   of anything here.  REVIEWED still requires manual semantic review and execution_status stays
+#   UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios cover the printed critical threshold of five for all weapons carried by
+#   Spirits.  The bearer is the printed Spirit profile of this band, and both scenarios use the same fixture
+#   Weapon Skill 3 and Strength 3 so the four hits at equal Weapon Skill and the five wounds at Strength 3
+#   against Toughness 3; the bearer is charged by a hand-built fixture so no charge test intervenes and its
+#   own pool is declared as the round's attack.  The declared critical die itself is the evidence, because
+#   the strict tape refuses a die the fixture did not declare and a leftover declared die fails as well.
+#   REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+# Derived from the printed sentence and the recorded contract (critical threshold five for all weapons
+# carried by Spirits); no engine output was consulted.  Both scenarios keep the same dice and differ only in
+# which carrier swings, and the outcomes are left unasserted beyond the round executing because the printed
+# rule speaks about the critical threshold itself and not about a damage total.
+
+- audit_id: rule/trollheim/khemri-lahmian-brotherhood/spirits--spiritual-weapons/trait.spiritual-weapons
+  id: a-five-to-wound-from-the-spirit-carrier-is-a-critical
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      collection: trollheim
+      band_id: khemri-lahmian-brotherhood
+      profile_id: spirits
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 5}
+    - {key: round.0.second.attack.0.critical, value: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/khemri-lahmian-brotherhood/spirits--spiritual-weapons/trait.spiritual-weapons
+  id: the-same-five-from-an-ordinary-carrier-is-not-a-critical
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 5}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

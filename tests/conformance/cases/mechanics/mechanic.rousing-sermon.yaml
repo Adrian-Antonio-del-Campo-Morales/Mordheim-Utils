@@ -1,0 +1,76 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.rousing-sermon
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: self-attack-bonus (scope: YES)
+# AUTHORED[self-attack-bonus]: 2 scenarios cover the declared sermon that adds one attack for the combat phase and records the once-per-duel resource as spent, and the declined declaration that leaves the same warrior with his printed single attack and no spent resource. The +1 attack is observed structurally: with the declaration the first warrior's blow occupies attack indices 0 and 1 and the enemy's follows at index 2, and the declared tape names those rolls, so a missing or extra attack changes which roll the engine requests. Documented gap: the resource key round.<round>.rousing-sermon exists only in the executor (rounds.py:112-121); the clause text states once per duel without naming it.
+#
+# Clause: friendly-group-emission (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+# --- Authored scenarios ---
+# The Warrior Priest declares the sermon at the start of his own turn: his attack
+# count becomes two, and both the aggregate resource and the round-scoped key are
+# recorded as spent, which is what makes the declaration once per duel.
+- audit_id: mechanic/mechanic.rousing-sermon
+  id: the-declared-sermon-adds-one-attack-and-spends-the-once-per-duel-resource
+  covers: [self-attack-bonus]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.rousing-sermon]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.rousing-sermon, value: true}
+  # The whole pool's hit rolls are resolved before any wound step: the sermon's
+  # second attack is rolled first, then the first attack's To Wound die, then the
+  # enemy's own blow.
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.resources_spent: ['round.0.rousing-sermon', 'rousing-sermon'],
+        attacks.0.damage: 1, attacks.1.hit: False, attacks.2.hit: False,
+        state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The declaration is optional: declining it leaves the printed single attack, scopes
+# no resource, and the enemy's blow is the second outcome of the round.
+- audit_id: mechanic/mechanic.rousing-sermon
+  id: the-declined-sermon-leaves-one-attack-and-no-spent-resource
+  covers: [self-attack-bonus]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.rousing-sermon]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.rousing-sermon, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first.resources_spent: [], attacks.0.damage: 1, attacks.1.hit: True,
+        state.first.wounds: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

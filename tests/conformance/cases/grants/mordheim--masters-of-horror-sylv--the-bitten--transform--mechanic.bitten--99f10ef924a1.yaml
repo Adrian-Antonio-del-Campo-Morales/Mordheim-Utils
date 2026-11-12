@@ -1,0 +1,288 @@
+﻿# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/masters-of-horror-sylv/the-bitten--transform/mechanic.bitten-transform
+# authoring_status: PARTIAL
+# authoring_progress: three of the four admitted clauses carry authored scenarios derived from the
+#   printed rule, the recorded contract and the accepted end-to-end test of the same family
+#   tests/python/combat/modular/test_t13_devoted_and_bitten.py (The Bitten): the cast-off equipment, the
+#   duration of the form and the removal of the unarmed penalties are covered, and the per-turn roll's
+#   six, two-to-five and one faces are covered.  The one pending face is the printed "If Transformed,
+#   they revert to human form" half of the Madness result, which needs a transformed bearer in a
+#   disengaged duel and is named in its own clause note below; that is why the file stays PARTIAL.
+#   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: transformation-equipment-loss (scope: YES)
+# AUTHORED[transformation-equipment-loss]: 1 scenario covers the printed cast-off with a fixture the printed list actually permits - bitten-equipment-list offers dagger, mace, axe, sword, spear and shield and no armour at all, so the discarded item is the shield, not an armour piece no printed list gives this profile.  The first phase is the control: the worn shield still counts and its own 6+ save holds the incoming wound (the accepted family test reads the same shield bonus of one).  In the second phase the declared six enters the form, the shield is cast off, the same incoming wound requests no armour die at all - the strict tape declares none, so a surviving shield would fail the case - and the wound reaches the injury chart instead of being saved.  The sword of the same printed sentence is read through the same equipment projection; the retained dagger is the clause's exception and needs no separate tape because a retained item is what the fixture already carries.
+#   wears light armour, and while the form lasts the incoming wound of the second round requests no
+#   armour die at all: the strict tape declares no such roll, so an armour die would fail the case, and
+#   the same tape records the wound reaching the injury chart (KNOCKED_DOWN) instead of being saved.
+#   The sword and shield of the same sentence are the same seam (equipment_for_state) and are read
+#   through the same projection; the retained dagger is the clause's exception and needs no separate
+#   tape because a retained item is what the fixture already carries.
+#
+# Clause: transformation-state--scope--transformation-duration (scope: YES)
+# AUTHORED[transformation-state--scope--transformation-duration]: 1 scenario covers both printed
+#   sentences.  The Bitten transforms on a declared six in the first phase and the form still stands in
+#   the second and third snapshots; in the third phase - its own turn - the printed exception means no
+#   transformation die is asked for, which the strict tape proves because such a die is undeclared, and
+#   the accepted test asserts the same absence ("round.2.first.bitten" not in requests).
+#
+# Clause: transformation-state--scope--transformation-state (scope: YES)
+# PARTIAL[transformation-state--scope--transformation-state]: [C] 3 of the printed faces carry authored
+#   scenarios: a declared six transforms the bearer and grants the printed Frenzy, which doubles his
+#   printed A1; a declared four leaves the form unchanged and the bearer acting normally; and a declared
+#   one is the printed Madness, which imposes Stupidity for that turn (the test is taken against his
+#   printed Leadership 6 with two dice and fails on 6,6), so he strikes not at all that phase.  The
+#   pending face is the printed "If Transformed, they revert to human form" and it is not authorable
+#   here, and the blocker is an input the corpus cannot state, checked against the two routes that
+#   could state it.  (a) A tape cannot begin in the form: no authored tape in this corpus seeds
+#   `transformed` through `initial_state` - that FighterState field appears only inside expectations
+#   (this file's own `state.first.transformed` snapshots) - so the reversion has to be reached from a
+#   roll taken in play.  (b) A tape cannot reach the reversion's precondition in play either: the
+#   executor skips the form die while the bearer is transformed and engaged (rounds.py resolve_round),
+#   so the bearer must be disengaged at its own turn, and the only in-tape producer of disengagement
+#   (a Fear-cancelled charge) ends the duel there - the corpus's cancelled-charge tapes all finish
+#   `rounds_executed: 1, termination_reason: disengaged`, so no later own turn with a transformed,
+#   disengaged bearer exists.  The behaviour itself is evidenced by the accepted end-to-end test of
+#   this family, which supplies its own `engaged=False` fixture; what is missing is a corpus
+#   representation for that input (class C), not an expectation, and the implementation defect a tape
+#   would then detect is the reversion branch (and the engagement-aware form-die guard) in
+#   resolve_round.
+#
+# Clause: transformed-unarmed-penalties (scope: YES)
+# AUTHORED[transformed-unarmed-penalties]: 2 scenarios cover the printed penalty removal.  The bearer
+#   fights with the Fist in both, so the printed -1 to Strength is the discriminator: while transformed
+#   the declared wound face of three takes a Wound from a Toughness 3 opponent, and the very same face
+#   does not wound when the form was not entered, which mirrors the accepted test's own negative
+#   control.  The extra attack of a separate Unarmed Fighting skill is deliberately not granted.
+#
+# Clause: transformation-sprint (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+# --- Authored scenarios ---
+# Derived from the printed sentence, the recorded contract and the accepted end-to-end test of the same
+# family; no engine output was consulted.  The Bitten is the band's printed henchman, whose own rule row
+# the profile supplies, so the form die `<round>.<side>.bitten` is the executor's documented key.
+
+# The shield is the discarded item and the two phases are its controls: while untransformed the worn
+#   shield still saves the incoming wound on its own 6+, and once the declared six enters the form the
+#   shield is cast off, so the same face is not requested at all and the wound reaches the injury chart.
+- audit_id: rule/mordheim/masters-of-horror-sylv/the-bitten--transform/mechanic.bitten-transform
+  id: transforming-casts-off-the-worn-armour
+  covers: [transformation-equipment-loss]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: masters-of-horror-sylv
+      profile_id: the-bitten
+      main_weapon_id: weapon.sword
+      off_hand_id: defence.shield
+      characteristics: {weapon_skill: 2, strength: 4, toughness: 3, wounds: 1, initiative: 4, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 3
+  rolls:
+    - {key: round.0.first.bitten, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.parry, value: 1}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.armour, value: 6}
+    - {key: round.1.first.attack.0.hit, value: 1}
+    - {key: round.1.second.attack.0.hit, value: 4}
+    - {key: round.1.second.attack.0.parry, value: 1}
+    - {key: round.1.second.attack.0.wound, value: 4}
+    - {key: round.1.second.attack.0.armour, value: 6}
+    - {key: round.2.first.bitten, value: 6}
+    - {key: round.2.first.attack.0.hit, value: 1}
+    - {key: round.2.first.attack.1.hit, value: 1}
+    - {key: round.2.second.attack.0.hit, value: 4}
+    - {key: round.2.second.attack.0.wound, value: 4}
+    - {key: round.2.second.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {state.first.transformed: False, state.first.wounds: 1, state.first.condition: STANDING}
+    2: {state.first.transformed: True, state.first.wounds: 0, state.first.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 3, termination_reason: horizon}
+
+# The printed form lasts until a one and its own turn asks for no die while it lasts and the bearer is
+# in combat, so the second and the third phase consume no form die at all and the form still stands.
+
+- audit_id: rule/mordheim/masters-of-horror-sylv/the-bitten--transform/mechanic.bitten-transform
+  id: the-transformed-form-persists-and-asks-for-no-die-in-combat
+  covers: [transformation-state--scope--transformation-duration]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: masters-of-horror-sylv
+      profile_id: the-bitten
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 2, strength: 4, toughness: 3, wounds: 1, initiative: 4, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 3
+  rolls:
+    - {key: round.0.first.bitten, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.1.hit, value: 1}
+    - {key: round.2.first.attack.0.hit, value: 1}
+    - {key: round.2.first.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.first.transformed: True, state.first.frenzy: True}
+    1: {state.first.transformed: True}
+    2: {state.first.transformed: True}
+  expect_final: {rounds_executed: 3, termination_reason: horizon}
+
+# A declared six is the printed transformation: the state records the form and the printed Frenzy, so
+# the bearer's single profile Attack becomes two blows.
+
+- audit_id: rule/mordheim/masters-of-horror-sylv/the-bitten--transform/mechanic.bitten-transform
+  id: a-declared-six-transforms-the-bearer-and-grants-frenzy
+  covers: [transformation-state--scope--transformation-state]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: masters-of-horror-sylv
+      profile_id: the-bitten
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 2, strength: 4, toughness: 3, wounds: 1, initiative: 4, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.bitten, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.first.transformed: True, state.first.frenzy: True, attacks.0.hit_roll: 1, attacks.1.hit_roll: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Two to five is the printed "Act as normal": the result is recorded and the bearer keeps his single
+# Attack, so only one attack die is asked for.
+
+- audit_id: rule/mordheim/masters-of-horror-sylv/the-bitten--transform/mechanic.bitten-transform
+  id: a-declared-four-leaves-the-bearer-acting-normally
+  covers: [transformation-state--scope--transformation-state]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: masters-of-horror-sylv
+      profile_id: the-bitten
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 2, strength: 4, toughness: 3, wounds: 1, initiative: 4, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.bitten, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.transformed: False, state.first.bitten_result: 4, attacks.0.hit_roll: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A declared one is the printed Madness: Stupidity this turn, tested against the bearer's own printed
+# Leadership of six with two dice.  He is not the charging side here, so the failure is read only as the
+# printed consequence - no attack of his own, while the opponent still strikes.  The reversion half of
+# the same result is the named pending item of this file.
+
+- audit_id: rule/mordheim/masters-of-horror-sylv/the-bitten--transform/mechanic.bitten-transform
+  id: a-declared-one-is-madness-and-a-this-turn-stupidity
+  covers: [transformation-state--scope--transformation-state]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: masters-of-horror-sylv
+      profile_id: the-bitten
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 2, strength: 4, toughness: 3, wounds: 1, initiative: 4, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [second], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.bitten, value: 1}
+    - {key: round.0.first.stupidity.0, value: 6}
+    - {key: round.0.first.stupidity.1, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.stupidity_failed: True, state.first.bitten_result: 1, attacks.0.hit_roll: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# While transformed and fighting unarmed the printed penalty is removed, so the declared wound face of
+# three takes a Wound from a Toughness 3 opponent.
+
+- audit_id: rule/mordheim/masters-of-horror-sylv/the-bitten--transform/mechanic.bitten-transform
+  id: a-transformed-bitten-wounds-with-the-same-face-that-otherwise-fails
+  covers: [transformed-unarmed-penalties]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: masters-of-horror-sylv
+      profile_id: the-bitten
+      main_weapon_id: weapon.fist
+      characteristics: {weapon_skill: 2, strength: 4, toughness: 3, wounds: 1, initiative: 4, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.bitten, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same bearer and the same faces without entering the form, so the ordinary unarmed
+# penalty applies and the three does not wound the same opponent.
+
+- audit_id: rule/mordheim/masters-of-horror-sylv/the-bitten--transform/mechanic.bitten-transform
+  id: untransformed-the-unarmed-penalty-leaves-the-same-face-unwounded
+  covers: [transformed-unarmed-penalties]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: masters-of-horror-sylv
+      profile_id: the-bitten
+      main_weapon_id: weapon.fist
+      characteristics: {weapon_skill: 2, strength: 4, toughness: 3, wounds: 1, initiative: 4, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.bitten, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {attacks.0.wounded: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

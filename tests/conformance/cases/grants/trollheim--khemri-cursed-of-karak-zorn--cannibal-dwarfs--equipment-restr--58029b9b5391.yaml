@@ -1,0 +1,81 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/khemri-cursed-of-karak-zorn/cannibal-dwarfs--equipment-restrictions/profile.equipment-restrictions
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: three scenarios cover the printed sentence.  (1) The weapons bar: a build carrying
+#   weapon.sword in main_weapon_id is refused with ""weapons" is forbidden for
+#   khemri-cursed-of-karak-zorn/cannibal-dwarfs.".  (2) The armour bar: armour.heavy-armour is refused
+#   with "armour is forbidden for ...".  (3) The clause's own instrument: the profile is accepted when
+#   its only weapon is the one the printed sentence gives it - "their primitive bones count as Clubs",
+#   recorded on the profile row as fixed_equipment: [club] - so the acceptance carries that kit item in
+#   the possession channel (owned_item_ids: [club]) and the unarmed profile in the slot.  The possession
+#   channel is the right one for a fixed kit item: it is the recorded fixed equipment of the profile, not
+#   a purchased weapon, and the shared stage exempts fixed equipment in the possession route
+#   (equipmentIssue returns early on profile.fixed_equipment.includes(itemId)).  MISSING CAPABILITY
+#   (recorded, not hidden): the catalogue's club item carries no mechanic_id, so the bones have no
+#   loadout projection either, and the loadout stage of buildRestriction passes fixed_equipment: [] -
+#   a club placed in a hand slot is therefore refused by the same "weapons" token although it is the
+#   profile's own printed weapon.  The authored acceptance keeps the printed instrument and the
+#   rule-derived expectation; it must not be replaced by the refusal.  Consumer: the shared eligibility
+#   stage (packages/python/roster-construction/mordheim_construction/_eligibility.js).
+# authoring_progress: 3 authored scenario(s) in this file; authored clauses ['whole']; both bars and
+#   the clause's own instrument are represented, and the acceptance keeps the printed bones rather than
+#   the implementation's accommodation.  clauses still pending or unrepresentable in this file: [].
+#   REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/trollheim/khemri-cursed-of-karak-zorn/cannibal-dwarfs--equipment-restrictions/profile.equipment-restrictions
+  id: cannibal-dwarfs-with-weapons-is-refused
+  fighters:
+    first:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: cannibal-dwarfs
+      main_weapon_id: weapon.sword
+  expect_error: '"weapons" is forbidden for khemri-cursed-of-karak-zorn/cannibal-dwarfs.'
+
+- audit_id: rule/trollheim/khemri-cursed-of-karak-zorn/cannibal-dwarfs--equipment-restrictions/profile.equipment-restrictions
+  id: cannibal-dwarfs-with-armour-is-refused
+  fighters:
+    first:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: cannibal-dwarfs
+      armour_id: armour.heavy-armour
+  expect_error: armour is forbidden for khemri-cursed-of-karak-zorn/cannibal-dwarfs
+
+- audit_id: rule/trollheim/khemri-cursed-of-karak-zorn/cannibal-dwarfs--equipment-restrictions/profile.equipment-restrictions
+  id: cannibal-dwarfs-with-only-their-printed-bones-are-accepted-at-construction
+  # The printed instrument and no purchased weapon or armour: the profile's recorded fixed equipment
+  # (the bones, which the sentence counts as Clubs) is carried in the possession channel, and the hand
+  # slot stays unarmed because the catalogue records no mechanic for that club item.
+  fighters:
+    first:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: cannibal-dwarfs
+      owned_item_ids: [club]
+    second:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: cannibal-dwarfs
+      owned_item_ids: [club]
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

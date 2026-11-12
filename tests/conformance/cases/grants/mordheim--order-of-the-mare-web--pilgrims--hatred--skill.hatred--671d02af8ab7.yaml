@@ -1,0 +1,103 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/order-of-the-mare-web/pilgrims--hatred/skill.hatred
+# authoring_status: AUTHORED
+# authoring_progress: the admitted hatred clause carries 3 authored scenarios for the family model
+#   derived from the printed rule and the recorded semantic contract: the printed Pilgrim rerolls its
+#   first-round missed To-Hit roll against any enemy, the requirement stays with the printed recipient
+#   alone, and the benefit is limited to the first round.  REVIEWED still requires manual semantic
+#   review and execution_status stays UNEXECUTED; no behavioral result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 3 scenario(s) cover the clause: the printed Pilgrim rerolls its first-round
+#   missed hit against an enemy that declares no facts at all, a band-mate the record does not reach
+#   leaves the same miss standing, and the reroll belongs to the first round so a later-round miss
+#   stands.
+
+# --- Authored scenarios ---
+# Family model (Hatred against every enemy): the bearer is the printed Pilgrim built from its band
+# profile, so the granted skill is what the scenario exercises; its physical characteristics are
+# supplied as fixture facts (WS3 S3 T3 W2 I5 A1) so the dice thresholds and the strike order are fixed,
+# and its printed Leadership stays in place.  The opponent fixture declares no identity fact at all,
+# because the recorded contract qualifies every enemy and the identity gate is therefore open.  A
+# natural 2 misses against WS3, the reroll is taken on a 4+ and the wound rolls a 4+, so the reroll is
+# exactly what the tape shows.  The contrast bearer is a band profile the printed record does not
+# reach, and its tape holds no reroll key at all.
+
+- audit_id: rule/mordheim/order-of-the-mare-web/pilgrims--hatred/skill.hatred
+  id: the-pilgrims-first-round-miss-is-rerolled-against-any-enemy
+  fighters:
+    first:
+      collection: mordheim
+      band_id: order-of-the-mare-web
+      profile_id: pilgrims
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same fixture, but the bearer is a band profile outside the printed recipient of the record.
+- audit_id: rule/mordheim/order-of-the-mare-web/pilgrims--hatred/skill.hatred
+  id: the-same-miss-stands-for-a-band-mate-the-record-does-not-reach
+  fighters:
+    first:
+      collection: mordheim
+      band_id: order-of-the-mare-web
+      profile_id: bowmen
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The recorded contract limits the benefit to the first round of that close combat, so the same
+# natural 2 stands in the second round: the tape holds no reroll key there.
+- audit_id: rule/mordheim/order-of-the-mare-web/pilgrims--hatred/skill.hatred
+  id: the-reroll-belongs-to-the-first-round-so-a-later-miss-stands
+  fighters:
+    first:
+      collection: mordheim
+      band_id: order-of-the-mare-web
+      profile_id: pilgrims
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 2}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 1}
+    1: {state.second.wounds: 1}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}

@@ -1,0 +1,60 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/chaos-streets-dwarf-treasure-hunters/dwarf-troll-slayers--slayer-skills/profile.skill-access
+# authoring_status: AUTHORED
+# authoring_progress: both halves of the admitted clause carry an authored scenario: the Dwarf Troll
+#   Slayer that selects a printed Slayer skill is built and the duel runs, and a special skill
+#   outside its two tables is refused with the shared access diagnostic.  The member used for the
+#   admission is Ferocious Charge, the Slayer special skill this band binds.  REVIEWED still requires
+#   manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios cover the printed permission (a Dwarf Troll Slayer may choose from
+#   the Troll Slayer Special Skills and also from the Dwarf Treasure Hunter Special Skills: two
+#   published lists joined, neither replacing the other).  The admission scenario builds the
+#   recipient with skill.ferocious-charge, the Slayer skill this band binds, and records that the
+#   duel ran unrefused; the closure scenario shows a special skill outside both lists refused.  The
+#   binding declares only the category, so each list's full membership stays the KB's to publish.
+#   REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded semantic contract and this band's own Slayer Skills
+# binding; no engine output was consulted.  Both fighters are given zero attacks so the round
+# resolves without dice and the observation is about admission, not about the skill's mechanics.
+
+- audit_id: rule/trollheim/chaos-streets-dwarf-treasure-hunters/dwarf-troll-slayers--slayer-skills/profile.skill-access
+  id: a-printed-slayer-skill-is-admitted-to-the-recipient
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-troll-slayers
+      special_rule_ids: [band--slayer-special-skills-ferocious-charge]
+      main_weapon_id: weapon.mace
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    # With both pools suppressed the two Initiatives still tie, so the engine
+    # asks for its priority-tie die; the declared face lets the first act.
+    - {key: round.0.priority-tie, value: 1}
+  expect_final: {rounds_executed: 1}
+
+- audit_id: rule/trollheim/chaos-streets-dwarf-treasure-hunters/dwarf-troll-slayers--slayer-skills/profile.skill-access
+  id: a-special-skill-outside-both-lists-is-refused
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-troll-slayers
+      skill_ids: [skill.miniath]
+      main_weapon_id: weapon.mace
+  expect_error: "skills are not available to chaos-streets-dwarf-treasure-hunters/dwarf-troll-slayers: ['skill.miniath']"

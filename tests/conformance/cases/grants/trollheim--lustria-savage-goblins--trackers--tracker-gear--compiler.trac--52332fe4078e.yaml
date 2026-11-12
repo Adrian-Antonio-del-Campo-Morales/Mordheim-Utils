@@ -1,0 +1,20 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/lustria-savage-goblins/trackers--tracker-gear/compiler.tracker-gear
+# authoring_status: PARTIAL
+# authoring_progress: 0 authored scenario(s) in this file; authored clauses []; clauses still pending or unrepresentable in this file: ['whole'].  Re-derived: the contract's own diagnostic IS established - packages/python/roster-construction/mordheim_construction/_eligibility.js profileTail emits `Trackers must begin with Rope and Hook and Bolas`, and the printed kit is already declared as that profile's fixed_equipment (sources/knowledge/bands/trollheim/lustria-savage-goblins/profiles.yaml: rope_hook, bolas), so every build of the printed profile satisfies it and no tape can exhibit the refusal; the no-sale/replacement half is campaign data outside the duel.  Pending: a build surface that can withhold or override a profile's fixed kit.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# PARTIAL: [C] the refused configuration is genuinely undeclarable, not unwritten: the printed
+# profile's fixed_equipment already contains the two required items (sources/knowledge/bands/trollheim/
+# lustria-savage-goblins/profiles.yaml: rope_hook, bolas) and the executor exposes no surface that can
+# withhold or override a profile's fixed kit, so every buildable Tape satisfies the contract and its
+# acceptance would evidence nothing this clause owns; the campaign no-sale/replacement half is outside the
+# duel.  No scenario is declared for the clause. The contract's own refusal is `Trackers must begin with Rope and Hook and Bolas`, but the Trackers profile already prints those two items as fixed_equipment, so a conforming build is the only build the corpus can declare and its acceptance proves nothing the clause owns; the campaign no-sale/replacement half is excluded. Pending: a build surface that can withhold a profile's fixed kit.
+
+[]  # Empty scenario list: this file contributes no test or coverage.

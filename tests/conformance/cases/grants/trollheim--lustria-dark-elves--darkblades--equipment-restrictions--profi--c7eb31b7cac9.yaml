@@ -1,0 +1,51 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/lustria-dark-elves/darkblades--equipment-restrictions/profile.equipment-restrictions
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios evidence the declared prohibition on the construction route the record names. The token 'beastmaster_whip' is a carried item id of the catalogue (sources/knowledge/catalog/items/trollheim.yaml), so the bound profile.equipment-restrictions binding declared by this band's own special-rules.yaml (grant: profile, implemented YES) reaches it through the shared eligibility stage: a Darkblade build carrying the item is refused with '"beastmaster_whip" is not on any equipment list of lustria-dark-elves/darkblades.' and the identical build without the item is accepted at construction. REVIEWED still requires manual semantic review.
+# authoring_progress: 2 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+# The prohibition is carried by the profile binding the band declares for these Darkblades; the
+# offending item is supplied as carried gear, and the message is the shared stage's own template
+# `"${token}" is forbidden for ${band}/${profile}.` with this origin's token and recipient.
+
+- audit_id: rule/trollheim/lustria-dark-elves/darkblades--equipment-restrictions/profile.equipment-restrictions
+  id: darkblades-with-the-beastmasters-whip-is-refused
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: darkblades
+      owned_item_ids: [beastmaster_whip]
+  expect_error: '"beastmaster_whip" is not on any equipment list of lustria-dark-elves/darkblades.'
+
+- audit_id: rule/trollheim/lustria-dark-elves/darkblades--equipment-restrictions/profile.equipment-restrictions
+  id: darkblades-without-the-beastmasters-whip-is-accepted-at-construction
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: darkblades
+    second:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: darkblades
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

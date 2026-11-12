@@ -1,0 +1,68 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/norse-explorers-lustria/band--norse-special-skills-crushing-blow/skill.crushing-blow
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries one authored scenario pair derived from the
+# printed rule and this band's own binding (special-rules.yaml id
+# band--norse-special-skills-crushing-blow, a selectable warband skill, effect skill.crushing-blow): an
+# enemy parry against the hero's attack is refused, and the identical duel without the band skill lets
+# the same sword parry the same roll.  The printed text is the second band origin of the same stanza on
+# the shared operator, so it adds no term and needs no further scenario.  REVIEWED still requires
+# manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios show the printed parry refusal on the Norse hero this band grants it
+# to (norse-explorers-lustria / the Crushing Blow warband skill bound to skill.crushing-blow, selected
+# by the fixture on the admitted Jarl profile).  In the trigger the hero charges and its four would be
+# parried by the opponent's sword, but the tape resolves no parry die at all (attacks.0.parried false)
+# and the wound is taken; the control repeats the identical duel with a hand-built warrior of the same
+# characteristics and no skill, where the sword's five parries the same four.  REVIEWED still requires
+# manual semantic review.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and this band's printed rule binding; no engine output was consulted.
+- audit_id: rule/mordheim/norse-explorers-lustria/band--norse-special-skills-crushing-blow/skill.crushing-blow
+  id: a-parrying-opponent-is-denied-the-parry
+  fighters:
+    first:
+      collection: mordheim
+      band_id: norse-explorers-lustria
+      profile_id: jarl
+      special_rule_ids: [band--norse-special-skills-crushing-blow]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, attacks.0.parried: false, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+- audit_id: rule/mordheim/norse-explorers-lustria/band--norse-special-skills-crushing-blow/skill.crushing-blow
+  id: the-same-sword-parries-without-the-skill
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

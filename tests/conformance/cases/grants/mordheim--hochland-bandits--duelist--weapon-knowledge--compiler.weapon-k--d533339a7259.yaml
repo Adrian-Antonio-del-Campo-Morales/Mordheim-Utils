@@ -1,0 +1,52 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/hochland-bandits/duelist--weapon-knowledge/compiler.weapon-knowledge
+# authoring_status: PARTIAL
+# authoring_progress: the access operation the earlier note asked for is established, so the granted
+# admission is authored: the shared stage's buildAccess adds every `weapon.*` mechanic to the
+# recipient's access when this contract is active (packages/python/roster-construction/
+# mordheim_construction/_eligibility.js, compiler.weapon-knowledge row), so a Duelist fielding a mace -
+# an item on no Hochland list - constructs and resolves, while the same weapon on a Poacher of the same
+# band (a profile without the contract) is refused with "equipment is not available to
+# hochland-bandits/poachers".  Still pending: the supplied band-obtained set the register names for the
+# dynamic half of the sentence (the corpus declares no obtained-item fact), so the printed
+# "that the warband members can get hold of" condition is recorded rather than asserted.  REVIEWED
+# still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# PARTIAL: [C] the recipient identity and the access operation are established (_eligibility.js buildAccess, compiler.weapon-knowledge row) and two scenarios declare them.  The remaining requirement is the supplied band-obtained weapon set the register names, which the corpus does not carry as a fact; without it the printed condition on the grant cannot be asserted, only recorded.  The register's boundary is kept: ownership versus use, the no-free-dagger proviso, acquisition and casting stay separate clauses and are not folded into this one.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/hochland-bandits/duelist--weapon-knowledge/compiler.weapon-knowledge
+  id: duelist-fielding-a-weapon-outside-its-list-is-accepted-at-construction
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hochland-bandits
+      profile_id: duelist
+      main_weapon_id: weapon.mace
+    second:
+      collection: mordheim
+      band_id: hochland-bandits
+      profile_id: duelist
+      main_weapon_id: weapon.sword
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_initial: {first.condition: OUT}
+  expect_final: {rounds_executed: 0, termination_reason: first_out}
+
+- audit_id: rule/mordheim/hochland-bandits/duelist--weapon-knowledge/compiler.weapon-knowledge
+  id: poacher-fielding-the-same-weapon-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hochland-bandits
+      profile_id: poachers
+      main_weapon_id: weapon.mace
+  expect_error: equipment is not available to hochland-bandits/poachers

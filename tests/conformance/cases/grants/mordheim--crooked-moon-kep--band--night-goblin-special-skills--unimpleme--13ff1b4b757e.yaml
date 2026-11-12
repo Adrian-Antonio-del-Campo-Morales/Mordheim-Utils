@@ -1,0 +1,61 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/crooked-moon-kep/band--night-goblin-special-skills/unimplemented.crooked-moon-kep.band.night-goblin-special-skills
+# authoring_status: AUTHORED
+# authoring_progress: one control scenario retained. The net-charge producer (BS throw and
+# Strength escape) is excluded by special-rules.yaml:164-190 and the user's scope decision
+# of 2026-10-20. Its historical declaration is preserved in tests/TMP_E2E/FIX_E2E_0149.
+# This control does not certify the positive consequence of supplied condition.netted.
+# REVIEWED still requires manual semantic review; execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: night-goblin-skills--scope--netter (scope: YES)
+# AUTHORED[night-goblin-skills--scope--netter]: one control, without a net-charge producer.
+# The historical positive scenario is archived outside the active corpus by explicit
+# user decision. No positive coverage or semantic certification is claimed by this control.
+#
+# Clause: night-goblin-skills--scope--ded-shooty (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+#
+# Clause: night-goblin-skills--scope--infiltrate (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+#
+# Clause: night-goblin-skills--scope--sneaky-git (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+# --- Authored scenarios ---
+# The retained control preserves its source-derived ordinary charge and legal equipment.
+# The control: the identical charge on the same profile build without the band netter rule, where no
+# net die is requested at all and the ordinary attack misses.
+- audit_id: rule/mordheim/crooked-moon-kep/band--night-goblin-special-skills/unimplemented.crooked-moon-kep.band.night-goblin-special-skills
+  id: without-the-band-netter-rule-the-charge-asks-for-no-net-die
+  covers: [night-goblin-skills--scope--netter]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: crooked-moon-kep
+      profile_id: night-goblins
+      main_weapon_id: weapon.club
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.animosity, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.0.knocked_down_target: false, state.second.condition: STANDING,
+        state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.animosity, sides: 6, value: 4}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}

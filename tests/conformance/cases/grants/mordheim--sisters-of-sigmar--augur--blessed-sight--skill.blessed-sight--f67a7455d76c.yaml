@@ -1,0 +1,100 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/sisters-of-sigmar/augur--blessed-sight/skill.blessed-sight
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries three authored scenarios derived from the
+# printed rule and the recorded contract - a failed characteristic test rerolled into a pass, the
+# reroll that fails so the second result stands, and a missed close-combat To Hit roll rerolled into
+# a hit.  The printed Exploration half of the same stanza is scope NO and contributes no test.
+# REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 3 scenarios cover the printed rerolls the recorded contract carries
+# (`reroll_hits` reaches the hit rolls, and the round's own characteristic test takes the same tag as
+# its reroll argument): a failed paralysis test rerolled into a pass where the charge and its attack
+# stand, the reroll that also fails so the second result is the one that stands and the turn's attack
+# is lost, and a missed To Hit roll of one rerolled into a six that lands the hit the first die
+# missed.  The band origin's printed stanza is the same sentence as the canonical operator's; the
+# bearer is a fixture carrying the operator through its grant list, exactly as the mechanic origin's
+# own case does, because the Augur identity is not a datum the duel vocabulary reads.  The printed
+# Exploration dice are a post-battle campaign calculation and stay outside the duel, as that clause
+# records.  REVIEWED still requires manual semantic review.
+#
+# Clause: exploration-dice (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+# --- Authored scenarios ---
+- audit_id: rule/mordheim/sisters-of-sigmar/augur--blessed-sight/skill.blessed-sight
+  id: blessed-sight-reroll-saves-the-failed-characteristic-test
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.blessed-sight]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    first: {condition: PARALYZED}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.paralysis, value: 6}
+    - {key: round.0.first.paralysis.reroll, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.condition: STANDING, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+- audit_id: rule/mordheim/sisters-of-sigmar/augur--blessed-sight/skill.blessed-sight
+  id: blessed-sight-the-rerolled-failure-stands
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.blessed-sight]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    first: {condition: PARALYZED}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.paralysis, value: 6}
+    - {key: round.0.first.paralysis.reroll, value: 6}
+    - {key: round.0.second.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.damage: 0, state.first.condition: PARALYZED, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+- audit_id: rule/mordheim/sisters-of-sigmar/augur--blessed-sight/skill.blessed-sight
+  id: blessed-sight-rerolls-a-missed-to-hit-roll
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.blessed-sight]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit.reroll, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

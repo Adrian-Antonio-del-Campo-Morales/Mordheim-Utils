@@ -1,0 +1,128 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/lustria-high-elves/band--high-elf-special-skills-miniath/skill.miniath
+# authoring_status: AUTHORED
+# authoring_progress: both admitted clauses carry authored scenarios derived from the printed stanza and the
+# recorded contracts.  This is the second printing of Miniath (Lustria High Elves and the shared register),
+# whose sentence repeats the canonical clause without adding a term; the clause facts therefore mirror the
+# canonical shared case (cases/mechanics/skill.miniath.yaml).
+# REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: parry-with-any-weapon (scope: YES)
+# AUTHORED[parry-with-any-weapon]: 3 scenarios show the parry allowance the skill adds to a bearer whose
+# carried weapon cannot parry (a mace): the allowance is read as state.parries_remaining 1 against 0 without
+# the skill, and a mace parry attempt really resolves, blocking a hit of 4 with a parry die of 5.
+#
+# Clause: reroll-with-a-parrying-weapon (scope: YES)
+# AUTHORED[reroll-with-a-parrying-weapon]: 2 scenarios show a failed parry rolled again into a block with a
+# parrying weapon (a starsword) and a parry that blocks on its first die alone, which takes no second die.
+
+# --- Authored scenarios ---
+# Derived from the printed sentence and the recorded clause contracts; no engine output was consulted.
+# The band's own printing is the same sentence as the canonical one, so the fixture shape follows the
+# canonical shared case: a mace cannot parry on its own, so the only difference between the two capacity
+# scenarios is the skill; the third resolves a real mace parry, keyed on the attack being parried, of which
+# the attacker's hit of 4 is beaten by the parry die of 5, consuming the bearer's single allowance.
+- audit_id: rule/trollheim/lustria-high-elves/band--high-elf-special-skills-miniath/skill.miniath
+  id: the-skill-allows-a-parry-with-a-weapon-that-cannot-parry
+  covers: [parry-with-any-weapon]
+  fighters:
+    first: &miniath-attacker
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.miniath]
+      characteristics: &miniath-bearer {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &miniath-context {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.parries_remaining: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-high-elves/band--high-elf-special-skills-miniath/skill.miniath
+  id: the-allowance-is-absent-without-the-skill
+  covers: [parry-with-any-weapon]
+  fighters:
+    first: *miniath-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: *miniath-context
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.parries_remaining: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-high-elves/band--high-elf-special-skills-miniath/skill.miniath
+  id: the-mace-parry-attempt-blocks-the-hit
+  covers: [parry-with-any-weapon]
+  fighters:
+    first: *miniath-attacker
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.miniath]
+      characteristics: *miniath-bearer
+  duel_context: *miniath-context
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: True, attacks.0.wounded: False, state.second.wounds: 2, state.second.parries_remaining: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# clause: reroll-with-a-parrying-weapon
+# A parry must beat the to-hit roll, so a 3 fails against a 4 and the re-rolled 5 blocks; the starsword's
+# one native parry is what the printed clause requires and the successful block consumes it.
+- audit_id: rule/trollheim/lustria-high-elves/band--high-elf-special-skills-miniath/skill.miniath
+  id: a-failed-parry-is-rolled-again-with-a-parrying-weapon
+  covers: [reroll-with-a-parrying-weapon]
+  fighters:
+    first: *miniath-attacker
+    second:
+      main_weapon_id: weapon.starsword
+      skill_ids: [skill.miniath]
+      characteristics: *miniath-bearer
+  duel_context: *miniath-context
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 3}
+    - {key: round.0.first.attack.0.parry.reroll, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: True, attacks.0.wounded: False, state.second.wounds: 2, state.second.parries_remaining: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-high-elves/band--high-elf-special-skills-miniath/skill.miniath
+  id: a-parry-that-blocks-outright-takes-no-second-die
+  covers: [reroll-with-a-parrying-weapon]
+  fighters:
+    first: *miniath-attacker
+    second:
+      main_weapon_id: weapon.starsword
+      skill_ids: [skill.miniath]
+      characteristics: *miniath-bearer
+  duel_context: *miniath-context
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: True, attacks.0.wounded: False, state.second.wounds: 2, state.second.parries_remaining: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

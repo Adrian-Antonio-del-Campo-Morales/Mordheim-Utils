@@ -1,0 +1,153 @@
+﻿# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/lustria-lizardmen/kroxigor--scaly-skin-4plus/trait.natural-armour-save
+# authoring_status: PARTIAL
+# authoring_progress: the represented clauses are authored; the clause marked PARTIAL
+#   below carries its concrete blocker. PARTIAL is authoring and semantic contrast only;
+#   execution_status stays UNEXECUTED and no functional result exists.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: four-plus-scaly-skin (scope: YES)
+# AUTHORED[four-plus-scaly-skin]: 5 scenarios cover the printed 4+ Scaly Skin save on the real attack
+#   route (saved on 4, wounded on 3), its per-profile value against another
+#   Lizardman of the band that keeps its own save, and the Strength cap.
+#
+# Clause: stacks-with-armour-but-not-hardened-leather (scope: YES)
+# PARTIAL[stacks-with-armour-but-not-hardened-leather]: the printed exception - "Scaly Skin may be combined with other armour, except Hardened Leather provides no additional bonus" (bands/trollheim/lustria-lizardmen/special-rules.yaml, Scaly Skin, p.53) - needs a legal bearer wearing hardened or toughened leathers, and no source in this revision supplies one: skinks-, saurus- and kroxigor-equipment-list (Lustria p.53-56) offer no hardened or toughened leather, and no band package pairs the item with a Scaly Skin profile.  The leather's save-cancellation (the better of the two saves applies and the leather can never improve the scaly save) therefore has no observable and is asserted nowhere in this corpus; nothing is authored for that behaviour and no relaxation of the printed lists is assumed.  On this profile the printed entry bars the armour outright: "May select either a Halberd or a Great Weapon; no other weapons or armour are permitted" (profiles.yaml, Kroxigor, p.56).  What the source does make checkable is that prohibition, authored below as a construction refusal with the corpus's established armour-prohibition diagnostic `armour is forbidden for <band>/<profile>` - the same contract the sibling Dwarf Slayer and Orc Nuttaz armour refusals use - so an illegally armoured Kroxigor is refused instead of silently keeping the natural save.
+# Missing datum: a legal Scaly Skin bearer that may wear Hardened Leather - a printed list or a fixture route for a post-battle acquisition - which this revision does not contain.
+#
+# Clause: strength-cannot-go-beyond-six (scope: YES)
+# AUTHORED[strength-cannot-go-beyond-six]: 2 scenarios cover the printed cap - a Strength 6 attacker still
+#   leaves the save on 6 and its own five does not save, so the Strength modifier
+#   applies up to the cap and no further.
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded semantic contract of each clause
+# and the band package; no engine output was consulted.  The duel is uncharged
+# (`charging: []`) and the attacker holds the higher Initiative, so the only
+# Strength modifier reaching the defender's save is the attacker's own Strength
+# and the attacker's pool always resolves first.  A recipient that survives the
+# incoming attack still strikes back, so its own attack is scripted as a miss.
+
+- audit_id: rule/trollheim/lustria-lizardmen/kroxigor--scaly-skin-4plus/trait.natural-armour-save
+  id: the-kroxigor-saves-on-4-or-better
+  covers: [four-plus-scaly-skin]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 7, attacks: 1}
+    second: {collection: trollheim, band_id: lustria-lizardmen, profile_id: kroxigor, main_weapon_id: weapon.halberd}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.2.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 3, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-lizardmen/kroxigor--scaly-skin-4plus/trait.natural-armour-save
+  id: the-kroxigor-is-wounded-below-4
+  covers: [four-plus-scaly-skin]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 7, attacks: 1}
+    second: {collection: trollheim, band_id: lustria-lizardmen, profile_id: kroxigor, main_weapon_id: weapon.halberd}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.2.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-lizardmen/kroxigor--scaly-skin-4plus/trait.natural-armour-save
+  id: the-skink-braves-does-not-share-the-kroxigor-save
+  covers: [four-plus-scaly-skin]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 7, attacks: 1}
+    second: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-braves, main_weapon_id: weapon.stone-axe}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-lizardmen/kroxigor--scaly-skin-4plus/trait.natural-armour-save
+  id: a-strength-six-attacker-still-leaves-the-kroxigor-save-on-six
+  covers: [strength-cannot-go-beyond-six]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 6, toughness: 3, wounds: 2, initiative: 7, attacks: 1}
+    second: {collection: trollheim, band_id: lustria-lizardmen, profile_id: kroxigor, main_weapon_id: weapon.halberd}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.2.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 3, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-lizardmen/kroxigor--scaly-skin-4plus/trait.natural-armour-save
+  id: a-strength-six-attacker-beats-the-kroxigor-save-on-five
+  covers: [strength-cannot-go-beyond-six]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 6, toughness: 3, wounds: 2, initiative: 7, attacks: 1}
+    second: {collection: trollheim, band_id: lustria-lizardmen, profile_id: kroxigor, main_weapon_id: weapon.halberd}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.2.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed prohibition bars armour from this recipient, so the exception's save-cancellation
+#   observation can never be reached for a Kroxigor: the assertion is the construction refusal
+#   itself, not the behaviour of an illegally built combat, and no relaxation of the printed
+#   prohibition is assumed.
+- audit_id: rule/trollheim/lustria-lizardmen/kroxigor--scaly-skin-4plus/trait.natural-armour-save
+  id: a-kroxigor-in-hardened-leather-is-refused
+  covers: [stacks-with-armour-but-not-hardened-leather]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: kroxigor
+      main_weapon_id: weapon.halberd
+      armour_id: armour.toughened-leathers
+  expect_error: "equipment is not available to lustria-lizardmen/kroxigor: ['armour.toughened-leathers']"

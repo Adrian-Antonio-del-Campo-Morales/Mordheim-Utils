@@ -1,0 +1,31 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/mazzalupo-web/fallen-noble--ye-give-way/condition.ye-give-way-refused
+# authoring_status: PARTIAL
+# authoring_progress: the admitted individual-modifiers clause stays without scenarios, and the blocker is
+#   the missing canonical condition identity named in the clause marker below, not the executor: the marker
+#   records the declarable condition channel and the catalogue row the sources do not carry.  REVIEWED still
+#   requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# PARTIAL: [D] the blocker is a source identity, not the executor.  The declaring
+#   channel exists and is in use elsewhere: FighterBuild.condition_ids takes canonical condition ids and
+#   catalog/rules/conditions.yaml resolves each to its operator at compile time - the same channel
+#   condition.unseen-charge and condition.large-target use for supplied individual facts - and the register
+#   note records that the hit context already sums supplied condition modifiers while the Strength term is
+#   additive, so a condition carrying the printed -1 to hit or +1 to hit and +1 Strength would reach both
+#   terms.  What the sources do not carry is an identity for either modifier: the catalogue has no condition
+#   row whose effect is the refusal penalty or the challenge-victory bonus, and effect_id
+#   proposed.condition.challenge-modifiers is a proposal rather than a row.  Declaring one from a tape would
+#   invent both the identity and the ruling that a pre-combat challenge leaves a canonical condition at all;
+#   the producer of the printed rule (the challenge subsystem) is an accepted scope exclusion, so that row
+#   and that ruling belong to the knowledge owner.  Once the row exists the tape is the declared
+#   condition_ids entry plus the hit and wound boundary the two modifiers change.
+#
+
+[]  # Empty scenario list: this file contributes no test or coverage.

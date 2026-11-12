@@ -1,0 +1,136 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.boar-spear
+# authoring_status: AUTHORED
+# authoring_progress: the three admitted clauses carry authored scenarios: the shield-only restriction with its permitted control, the charging-enemy attack reduction with its minimum, and the strike-first priority. The printed mounted-charge Strength bonus is a clause outside the admitted scope. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: shield-only (scope: YES)
+# AUTHORED[shield-only]: 1 refusal declares the printed off-hand restriction and 1 scenario shows the permitted shield loadout compiling and resolving.
+#
+# Clause: whole--scope--charging-enemy-loses-one-attack (scope: YES)
+# AUTHORED[whole--scope--charging-enemy-loses-one-attack]: 2 scenarios cover the one-attack reduction and its printed minimum.
+#
+# Clause: whole--scope--strikes-first (scope: YES)
+# AUTHORED[whole--scope--strikes-first]: 1 scenario shows the bearer resolving before a higher-Initiative defender.
+#
+# Clause: whole--scope--mounted-charge-strength (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+# --- Authored scenarios ---
+# mechanic/weapon.boar-spear - shield-only, strikes first, and a charging enemy
+# loses one base Attack (minimum 1).
+#
+# Expectations come from the printed rule and the admitted clause register, never
+# from engine output.  Only the charging side loses an attack, so the reduced
+# enemy is the second fighter in both attack-count scenarios.
+# The printed shield-only restriction is declared as a refusal by the shared loadout validation.
+
+- audit_id: mechanic/weapon.boar-spear
+  id: boar-spear-is-refused-with-an-off-hand-weapon
+  covers: [shield-only]
+  fighters:
+    first:
+      main_weapon_id: weapon.boar-spear
+      off_hand_id: weapon.dagger
+    second:
+      main_weapon_id: weapon.mace
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  expect_error: "weapon.boar-spear cannot be combined with weapon.dagger"
+# Control: the same loadout with the permitted shield compiles and resolves a round.
+
+- audit_id: mechanic/weapon.boar-spear
+  id: boar-spear-is-accepted-with-a-shield
+  covers: [shield-only]
+  fighters:
+    first:
+      main_weapon_id: weapon.boar-spear
+      off_hand_id: defence.shield
+      characteristics: &a-ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &d-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# A charging enemy with two base Attacks loses one of them, so the ordered tape carries a single enemy attack die; a second one would be an unexpected roll.
+
+- audit_id: mechanic/weapon.boar-spear
+  id: boar-spear-reduces-a-charging-enemy-to-one-attack
+  covers: [whole--scope--charging-enemy-loses-one-attack]
+  fighters:
+    first:
+      main_weapon_id: weapon.boar-spear
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &a-ws3-s3-t3-w2-i2-attacks2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 2}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+# The printed minimum of one Attack: a charging enemy with a single base Attack still attacks once.
+
+- audit_id: mechanic/weapon.boar-spear
+  id: boar-spear-leaves-a-charging-enemy-with-at-least-one-attack
+  covers: [whole--scope--charging-enemy-loses-one-attack]
+  fighters:
+    first:
+      main_weapon_id: weapon.boar-spear
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &a-ws3-s3-t3-w2-i2-attacks1 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+# Neither fighter charges, so the only thing that can lift the bearer above the higher-Initiative defender is the printed strike-first priority.
+
+- audit_id: mechanic/weapon.boar-spear
+  id: boar-spear-strikes-first-despite-lower-initiative
+  covers: [whole--scope--strikes-first]
+  fighters:
+    first:
+      main_weapon_id: weapon.boar-spear
+      characteristics: &a-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+

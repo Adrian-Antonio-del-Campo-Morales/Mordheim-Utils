@@ -1,0 +1,80 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/carnival-of-chaos/band--blessings-of-nurgle-bloated-foulness/special-rule.band--blessings-of-nurgle-bloated-foulness
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries two authored scenarios derived from the
+# printed rule and the printed profile: the Bloated Foulness blessing grants +1 Wound and +1
+# Toughness, read as the compiled Wound beyond the supplied base and as the declared wound face that
+# fails against the raised Toughness while the same face wounds the un-blessed bearer.  REVIEWED
+# still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios read the printed grant on the real build.  The bearer is the printed
+# Tainted Ones profile the blessing is bought for, with the blessing row declared on the build; the
+# physical characteristics are supplied as fixture facts, so the duel-time state shows the compiled
+# +1 Wound (two where the same fixture holds one) and the declared wound face of four fails against
+# the raised Toughness.  The control repeats the identical duel without the blessing row, where the
+# same wound face lands and takes the single Wound away.  The printed -1 Movement is a board-movement
+# characteristic with no duel observable and is not asserted; the 40 Gold Crown cost is campaign
+# pricing.  REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the printed profile; no engine output was consulted.  The
+# attacker's Weapon Skill 10 lets the declared four hit, and its Strength 3 is unchanged between the
+# two scenarios so the only difference the wound face reads is the bearer's Toughness.
+- audit_id: rule/mordheim/carnival-of-chaos/band--blessings-of-nurgle-bloated-foulness/special-rule.band--blessings-of-nurgle-bloated-foulness
+  id: the-bloated-foulness-blessing-raises-the-bearers-wounds-and-toughness
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: tainted-ones
+      special_rule_ids: [band--blessings-of-nurgle-bloated-foulness]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_initial: {second.wounds: 2}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: false, state.second.wounds: 2,
+        state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same duel and the same declared dice with another blessing of the same band
+# (Nurgle's Rot, which adds no Wound or Toughness), where the bearer holds one Wound and a Toughness
+# one point lower, so the declared four wounds it.  The Nurgle's Blessings clause requires every
+# Tainted One to carry at least one Blessing, so the control is legal only with a different row.
+- audit_id: rule/mordheim/carnival-of-chaos/band--blessings-of-nurgle-bloated-foulness/special-rule.band--blessings-of-nurgle-bloated-foulness
+  id: without-the-blessing-the-same-wound-face-lands
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: tainted-ones
+      special_rule_ids: [band--blessings-of-nurgle-nurgles-rot]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+  expect_initial: {second.wounds: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: true, state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

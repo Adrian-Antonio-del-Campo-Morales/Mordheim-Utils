@@ -1,0 +1,74 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/lords-of-the-marsh-mim/fimir-warriors--spiked-tail/profile-rule.fimir-warriors--spiked-tail
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios read the printed "the warrior gains an extra tail attack in each hand-to-hand combat phase at the Fimir's Strength +1": the bearer is the printed Fimir Warriors profile (Attacks 3, Strength 4) that prints the rule, so its pool carries a fourth attack resolved at Strength 5, and the tail's own Strength is what the wound dice read against the declared Toughness 3 target (a declared three wounds only at Strength 5, while the hand-weapon attack at Strength 4 needs a four).  The control is a hand-built non-recipient that declares the single attack die its printed Attacks 1 gives it.  The attack order assumed here is the compiler's: the bearer's own attacks first, the repeated extra attack appended after them (the same order the companion construction test reads); a different index would fail the declared tape rather than pass silently.  REVIEWED still requires manual semantic review.
+
+# authoring_progress: the admitted whole clause carries 2 authored scenarios derived from the
+#   printed rule, the printed Fimir Warriors profile and the recorded profile-rule contract
+#   (extra_attacks 1, strength_bonus 1, recipient Fimir Warrior, every close-combat phase).  The
+#   bearer is the printed profile that prints the rule, so the compiler-bound identity is exercised
+#   directly.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded contract; no engine output was consulted.  The
+# bearer is the printed Fimir Warriors profile (Attacks 3, Strength 4) whose rule_ids carry
+# fimir-warriors--spiked-tail, so its pool is the hand weapon's attacks plus the repeated tail attack
+# resolved at Strength 5.  The declared two is the S4 attack's own target against Toughness 3 and the
+# declared three is reachable only at Strength 5, which is how the tail's +1 is read.
+- audit_id: rule/mordheim/lords-of-the-marsh-mim/fimir-warriors--spiked-tail/profile-rule.fimir-warriors--spiked-tail
+  id: the-tail-attack-wounds-at-the-bearers-strength-plus-one
+  fighters:
+    first:
+      collection: mordheim
+      band_id: lords-of-the-marsh-mim
+      profile_id: fimir-warriors
+      main_weapon_id: weapon.mace
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 1}
+    - {key: round.0.first.stupidity.1, value: 1}
+    - {key: round.0.first.stupidity.2, value: 1}
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.2.hit, value: 1}
+    - {key: round.0.first.attack.3.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.first.attack.3.wound, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: false, attacks.3.wounded: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: a hand-built bearer without the printed rule declares the single attack die its
+# Attacks 1 gives it, so the extra tail attack of the trigger scenario is the rule's own contribution.
+- audit_id: rule/mordheim/lords-of-the-marsh-mim/fimir-warriors--spiked-tail/profile-rule.fimir-warriors--spiked-tail
+  id: a-non-recipient-declares-a-single-attack-die
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 4, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

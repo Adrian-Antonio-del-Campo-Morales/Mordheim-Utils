@@ -1,0 +1,116 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/warband/skill.fey-quickness/skill.fey-quickness
+# authoring_status: AUTHORED
+# authoring_progress: the admitted six-plus-avoidance clause carries four authored scenarios
+# derived from the printed Fey Quickness text, the recorded contract (effect_id
+# skill.elven-agility) and the accepted elven-agility semantic specifications: the 6+ save
+# holds on its own face and not one below it, Step Aside replaces it with a single 4+ save,
+# and a warrior without the rule is not offered the save.  REVIEWED still requires manual
+# semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 4 scenarios read the accepted observable of the rule: an
+# incoming close-combat attack whose hit and wound steps cannot fail is discarded on a
+# special save of 6, is not discarded on 5, is discarded on 4 when the bearer also carries
+# Step Aside (one replacement save, not two sequential rolls), and reaches the bearer with no
+# save request at all when the tag is absent.  Per the register note this register row prints
+# the same predicate as shared-register Elven Agility and shares its effect_id, so the
+# fixture carries the canonical skill.elven-agility tag and the register row itself is
+# counted once.  REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded contract and the admitted elven-agility
+# semantic specifications; no engine output was consulted.  The assailant is a hand-built
+# fixture (Weapon Skill 10, Strength 8) whose hit of 4 and wound of 2 cannot fail against the
+# Toughness-3 bearer, so the only undecided step is the special save; both warriors strike
+# once and the bearer's strike is a declared natural 1.  The strict tape consumes exactly the
+# declared dice, so an extra sequential save or a save requested without the rule fails the
+# case instead of passing quietly.
+
+- audit_id: rule/catalog/warband/skill.fey-quickness/skill.fey-quickness
+  id: the-avoidance-holds-on-six
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      skill_ids: [skill.elven-agility]
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.first.attack.0.special.ward, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/catalog/warband/skill.fey-quickness/skill.fey-quickness
+  id: one-face-below-the-avoidance-is-not-enough
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      skill_ids: [skill.elven-agility]
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.first.attack.0.special.ward, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/catalog/warband/skill.fey-quickness/skill.fey-quickness
+  id: step-aside-replaces-the-save-with-one-four-plus
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      skill_ids: [skill.elven-agility, skill.step-aside]
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.first.attack.0.special.ward, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/catalog/warband/skill.fey-quickness/skill.fey-quickness
+  id: without-the-rule-no-save-is-requested
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

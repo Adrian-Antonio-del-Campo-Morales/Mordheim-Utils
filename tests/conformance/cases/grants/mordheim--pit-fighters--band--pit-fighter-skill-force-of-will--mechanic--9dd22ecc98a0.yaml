@@ -1,0 +1,72 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/pit-fighters/band--pit-fighter-skill-force-of-will/mechanic.force-of-will
+# authoring_status: AUTHORED
+# authoring_progress: the admitted force-of-will clause carries two authored scenarios derived from the
+# printed rule and the recorded contract: a passed D6 against the bearer's Toughness puts it back on its
+# feet with one Wound and still fighting, and a failed one leaves it out of action.  The printed
+# cumulative -1 of later rounds is the same resource repeated and is not part of these two scenarios,
+# as the mechanic origin's own case records.  REVIEWED still requires manual semantic review and
+# execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios cover the printed rescue test both ways: the passed D6 against
+# Toughness stands the bearer back up with one Wound and still fighting, and the failed one leaves it
+# out of action.  The recorded register reads this printed text as repeating the canonical force-of-will
+# clause without adding a term ("the band origin creates no second runtime contribution"), so the
+# scenarios read the canonical operator through the fighter's grant list, exactly as the mechanic
+# origin's own case does.  REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded contract; no engine output was consulted.  The rescue
+# test is the printed D6 against Toughness, offered when the last Wound is lost.
+- audit_id: rule/mordheim/pit-fighters/band--pit-fighter-skill-force-of-will/mechanic.force-of-will
+  id: the-toughness-test-stands-him-back-up
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.force-of-will]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+    - {key: round.0.first.attack.0.force-of-will.rescue, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.condition: STANDING, state.second.wounds: 1,
+        state.second.force_of_will_active: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same test above Toughness 3 fails, so the warrior is removed normally.
+- audit_id: rule/mordheim/pit-fighters/band--pit-fighter-skill-force-of-will/mechanic.force-of-will
+  id: a-failed-test-leaves-him-out
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.force-of-will]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+    - {key: round.0.first.attack.0.force-of-will.rescue, value: 5}
+  expect_rounds:
+    0: {state.second.condition: OUT, state.second.force_of_will_active: false}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+

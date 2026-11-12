@@ -1,0 +1,73 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/vampire-hunters-of-sylvania-lotd5/band--special-skill-blessing-of-morr/mechanic.blessing-of-morr
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries 2 authored scenarios derived from the printed rule
+#   and the recorded contract, mirroring the authored mechanic.blessing-of-morr case: the printed +1 lifts
+#   the same declared injury face against the same Undead defender into the Stunned band, and the same face
+#   without the band grant only Knocks him Down.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios read the printed "Add +1 to all injury rolls against the undead" on this
+#   band's copy of the special skill.  The bearer carries the band's printed rule key for the skill, which
+#   is what delivers the shared operator, and the Undead identity is supplied as the defender's own creature
+#   kind, the fact the printed word "undead" names.  The one-Wound defender then takes an injury roll whose
+#   declared face of two becomes the three that Stuns him only through the printed +1, and the same face
+#   without the grant only Knocks him Down; the dice and expectations are the ones the authored
+#   mechanic.blessing-of-morr case fixes.  REVIEWED still requires manual semantic review.
+
+
+# --- Authored scenarios ---
+# Derived from the printed sentence and the recorded contract; no engine output was consulted.  Strength 3
+# against Toughness 3 wounds on the declared 4+, and the one-Wound Undead defender then takes an injury
+# roll.  A Stunned warrior makes no attack of his own, so the tape closes after the injury die.
+
+- audit_id: rule/mordheim/vampire-hunters-of-sylvania-lotd5/band--special-skill-blessing-of-morr/mechanic.blessing-of-morr
+  id: the-blessing-lifts-the-injury-roll-to-a-stun
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      special_rule_ids: [band--special-skill-blessing-of-morr]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: undead}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.condition: STUNNED, state.second.wounds: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control for the clause: the same defender and the same declared injury face of two without the band
+# grant only reach the knocked-down band of the injury table.
+
+- audit_id: rule/mordheim/vampire-hunters-of-sylvania-lotd5/band--special-skill-blessing-of-morr/mechanic.blessing-of-morr
+  id: without-the-grant-the-same-face-only-knocks-down
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: undead}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.condition: KNOCKED_DOWN, state.second.wounds: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

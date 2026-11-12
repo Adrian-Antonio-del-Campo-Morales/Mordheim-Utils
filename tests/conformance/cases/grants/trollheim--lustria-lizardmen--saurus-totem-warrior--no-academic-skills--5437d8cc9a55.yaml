@@ -1,0 +1,52 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/lustria-lizardmen/saurus-totem-warrior--no-academic-skills/compiler.forbid-skill-categories
+# authoring_status: AUTHORED
+# authoring_progress: 2 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: [].  The refusal diagnostic the earlier note called missing is the shared stage's own category template (packages/python/roster-construction/mordheim_construction/_eligibility.js, the `compiler.forbid-skill-categories` branch: `skills are forbidden for ${band}/${profile}: ${pythonList(selected)}`), so the requirement is evidenced without inventing it.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios evidence the printed category ban on the construction route the record names. The recipient build that selects an Academic skill (`skill.battle-tongue`, category academic in sources/knowledge/catalog/skills/general.yaml) is refused with the shared stage's category template `skills are forbidden for lustria-lizardmen/saurus-totem-warrior: ['skill.battle-tongue']`, and the identical build without any skill is accepted at construction, which is the negative control that keeps the message attributable to the category ban.
+
+# --- Authored scenarios ---
+# The prohibition is a construction bar on one skill category; the offending skill is supplied as a
+# selected skill, and the message is the shared stage's own template
+# `skills are forbidden for ${band}/${profile}: ${pythonList(selected)}` for this origin's category.
+
+- audit_id: rule/trollheim/lustria-lizardmen/saurus-totem-warrior--no-academic-skills/compiler.forbid-skill-categories
+  id: a-saurus-totem-warrior-with-an-academic-skill-is-refused
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: saurus-totem-warrior
+      skill_ids:
+      - skill.battle-tongue
+  expect_error: "skills are forbidden for lustria-lizardmen/saurus-totem-warrior: ['skill.battle-tongue']"
+
+- audit_id: rule/trollheim/lustria-lizardmen/saurus-totem-warrior--no-academic-skills/compiler.forbid-skill-categories
+  id: a-saurus-totem-warrior-without-academic-skills-is-accepted-at-construction
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: saurus-totem-warrior
+    second:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: saurus-totem-warrior
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

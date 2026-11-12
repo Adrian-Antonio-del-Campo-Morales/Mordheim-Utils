@@ -1,0 +1,72 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/high-elves-lus/loremaster--tower-of-hoeth/profile.active-weapon-restrictions
+# authoring_status: AUTHORED
+# authoring_progress: the printed permission is evidenced as a construction refusal on the
+# active-weapon slots: the Loremaster fielding a weapon outside sword/dagger/Mage Staff is refused
+# with "weapon.mace may not be used by high-elves-lus/loremaster", while the same profile fielding a
+# sword constructs and resolves, and a Loremaster that merely owns the outside item while fielding a
+# printed weapon stays legal (the ownership-versus-use boundary this clause records).  The fragment is
+# the shared stage's own line for a permission row (`${id} may not be used by <band>/<profile>; the
+# printed clause admits only <permits>`, packages/python/roster-construction/mordheim_construction/
+# _eligibility.js activeWeaponIssues) and the permits tokens are this rule's own `allowed_kinds`
+# parameters read from sources/knowledge/bands/mordheim/high-elves-lus/special-rules.yaml.  REVIEWED
+# still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: the `tokenPermits` reader named in the register is established (activeWeaponIssues, _eligibility.js) together with this rule's own permitted tokens (`allowed_kinds`: weapon.sword, weapon.dagger, mage_staff_of_hoeth, read from the band's special-rules.yaml binding).  Three scenarios: the refusal of a Loremaster whose active weapon is outside the printed set, the admission of a Loremaster fielding a printed weapon, and the ownership variant in which the same outside item is only owned.  The fragment asserted is the message prefix through the recipient ids, so the refused-permits tail cannot make the declaration depend on an unrecorded Mage Staff catalogue identity, which is a data question independent of this clause.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/high-elves-lus/loremaster--tower-of-hoeth/profile.active-weapon-restrictions
+  id: loremaster-with-a-mace-as-active-weapon-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: high-elves-lus
+      profile_id: loremaster
+      main_weapon_id: weapon.mace
+  expect_error: weapon.mace may not be used by high-elves-lus/loremaster
+
+- audit_id: rule/mordheim/high-elves-lus/loremaster--tower-of-hoeth/profile.active-weapon-restrictions
+  id: loremaster-with-a-sword-as-active-weapon-is-accepted-at-construction
+  fighters:
+    first:
+      collection: mordheim
+      band_id: high-elves-lus
+      profile_id: loremaster
+      main_weapon_id: weapon.sword
+      off_hand_id: weapon.dagger
+    second:
+      collection: mordheim
+      band_id: high-elves-lus
+      profile_id: loremaster
+      main_weapon_id: weapon.sword
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_initial: {first.condition: OUT}
+  expect_final: {rounds_executed: 0, termination_reason: first_out}
+
+- audit_id: rule/mordheim/high-elves-lus/loremaster--tower-of-hoeth/profile.active-weapon-restrictions
+  id: loremaster-owning-an-outside-item-is-accepted-at-construction
+  fighters:
+    first:
+      collection: mordheim
+      band_id: high-elves-lus
+      profile_id: loremaster
+      main_weapon_id: weapon.sword
+      owned_item_ids: [weapon.sword]
+    second:
+      collection: mordheim
+      band_id: high-elves-lus
+      profile_id: loremaster
+      main_weapon_id: weapon.sword
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_initial: {first.condition: OUT}
+  expect_final: {rounds_executed: 0, termination_reason: first_out}

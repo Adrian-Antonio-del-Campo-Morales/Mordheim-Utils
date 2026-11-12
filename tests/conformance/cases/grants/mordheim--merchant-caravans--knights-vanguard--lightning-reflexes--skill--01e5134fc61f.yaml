@@ -1,0 +1,70 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/merchant-caravans/knights-vanguard--lightning-reflexes/skill.lightning-reflexes
+# authoring_status: AUTHORED
+# authoring_progress: the admitted strike-first-when-charged clause carries one authored scenario pair
+# derived from the printed rule and this band's own binding (special-rules.yaml id
+# knights-vanguard--lightning-reflexes, grant profile, effect skill.lightning-reflexes): the charged
+# Knight Vanguard takes the first attack from the warrior that charged it, decided by the printed
+# Initiative comparison, and the identical duel without the band fighter keeps the charger first.  The
+# printed text repeats the canonical shared operator without adding a term, so the band origin needs no
+# further scenario.  REVIEWED still requires manual semantic review and execution_status stays
+# UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios show the printed tie-break on the Knight Vanguard
+# this band grants it to (merchant-caravans / knights-vanguard, rule
+# knights-vanguard--lightning-reflexes bound to skill.lightning-reflexes).  In the trigger the knight
+# is charged, so both fighters stand in the strike-first tier and the printed comparison of Initiative
+# values puts the charged knight's 5 before the charger's 2; the control repeats the identical duel
+# with a hand-built warrior of the same characteristics and no rule, where the charge alone leaves the
+# charger first.  REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and this band's printed rule binding; no engine output was consulted.
+# The mount rule co-printed with this profile is recorded separately; if it contributes an attack die
+# of its own, this tape must be extended with it.
+- audit_id: rule/mordheim/merchant-caravans/knights-vanguard--lightning-reflexes/skill.lightning-reflexes
+  id: the-charged-knights-vanguard-acts-before-the-charger
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: merchant-caravans
+      profile_id: knights-vanguard
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+- audit_id: rule/mordheim/merchant-caravans/knights-vanguard--lightning-reflexes/skill.lightning-reflexes
+  id: without-the-rule-the-charger-acts-first
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.damage: 1, state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
