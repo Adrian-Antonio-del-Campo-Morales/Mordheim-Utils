@@ -8,10 +8,11 @@
 import { describe, expect, it } from "vitest";
 
 import type { CampaignDocument } from "@domain/campaign/index";
+import type { KnowledgeReader } from "@domain/campaign/kernel/ports";
 
 import { assignDramatisSearch, assignRareSearch, buyRareSearch, hireDramatisSearch, resolveDramatisSearch, resolveRareSearch, upgradeRareSearch } from "@app/campaign/features/searches/search-workflow";
 
-const reader: any = {
+const reader = {
   campaignSection(section: string) {
     if (section === "trading-post") {
       return {
@@ -52,7 +53,7 @@ const reader: any = {
     if (id === "hireling.dramatis.maximilian") return "Maximilian";
     return id;
   },
-};
+} as unknown as KnowledgeReader;
 
 function makeDoc(): CampaignDocument {
   const doc: unknown = {
@@ -329,7 +330,7 @@ describe("resolveDramatisSearch (D6 search roll)", () => {
 });
 
 /** Reader fake for the dramatis-hire flow (listings + hireling profile records). */
-const dramatisHireReader: any = {
+const dramatisHireReader = {
   campaignSection(section: string) {
     if (section === "hired-swords-and-dramatis") {
       return {
@@ -370,7 +371,7 @@ const dramatisHireReader: any = {
     }
     return { ok: false, reason: "not_found" };
   },
-};
+} as unknown as KnowledgeReader;
 
 /** A pending post-battle whose dramatis search succeeded and is unused. */
 function hireDoc(profileId = "hireling.dramatis.william"): CampaignDocument {

@@ -3,8 +3,9 @@
 # authoring_status: AUTHORED
 # authoring_progress: the admitted whole clause carries 3 authored scenarios derived from the printed
 #   rule and the recorded contract: a single-handed weapon in the extra arm adds one attack die, a
-#   shield in the extra arm still adds one, and the control - the same shield on a recipient of the same
-#   mutation row WITHOUT Extra Arm, which adds none.  REPAIR (closing pass): the control previously put
+#   shield in the extra arm adds none for the Mutant (adopted ruling 2026-11-10: only a Possessed gains
+#   the extra natural attack), and the control - the same shield on a recipient of the same
+#   mutation row WITHOUT Extra Arm, which also adds none.  REPAIR (closing pass): the control previously put
 #   the shield in extra_hand_id on the-possessed, a build the shared stage must refuse twice over (an
 #   extra hand requires Extra Arm or Tail Fighting, and that profile is offered no equipment at all), so
 #   the control never demonstrated anything.  It now wears the shield the ordinary way (off_hand_id) on
@@ -20,9 +21,10 @@
 # Governing rulings: docs/decisions/design-rulings.md
 #
 # AUTHORED: 3 scenarios evidence the printed alternative - the weapon arm and the shield arm -
-#   and their non-regression control.  Both printed cases put one extra attack die in the bearer's own
-#   pool, and the control shows that the shield itself is not what strikes: the same bearer, wearing the
-#   same shield the ordinary way and carrying a different mutation, resolves exactly one attack.
+#   and their non-regression control.  The weapon case puts one extra attack die in the bearer's own
+#   pool; the shield case, under the adopted ruling (2026-11-10), adds none for the Mutant, and the
+#   control shows the same shield worn the ordinary way, with a different mutation, also resolves
+#   exactly one attack.
 #   Reviewer note on the control's recipient: the printed clause names "the mutant", and the band's
 #   mandate is that a Mutant carries at least one mutation, so the control keeps a mutation that cannot
 #   fire in this scenario (Blackblood fires only when the bearer loses a wound, and the opponent declares
@@ -60,10 +62,12 @@
     0: {state.second.wounds: 2, state.second.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
-# The printed alternative: the shield in the extra arm, which the recorded contract resolves into one
-# extra attack with the bearer's own natural profile while carrying no weapon in that arm.
+# The printed alternative: the shield in the extra arm. The adopted ruling
+# (docs/decisions/design-rulings.md, 2026-11-10) resolves the Possessed sentence: only a Possessed
+# gains the extra natural attack; a Mutant holding a shield or buckler in the extra arm gains no
+# additional attack, so the strict script declares and consumes exactly one attack's rolls.
 - audit_id: rule/mordheim/cult-of-the-possessed/band--mutations-extra-arm/special-rule.band--mutations-extra-arm
-  id: a-shield-in-the-extra-arm-still-adds-one-attack
+  id: a-shield-in-the-extra-arm-adds-no-attack-for-the-mutant
   fighters:
     first:
       collection: mordheim
@@ -80,9 +84,8 @@
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
-    - {key: round.0.first.attack.0.hit, value: 1}
-    - {key: round.0.first.attack.1.hit, value: 4}
-    - {key: round.0.first.attack.1.wound, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
   expect_rounds:
     0: {state.second.wounds: 2, state.second.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

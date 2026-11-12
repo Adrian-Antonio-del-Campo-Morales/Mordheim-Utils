@@ -2,7 +2,7 @@
  * Node-side loader for the generated KB artefacts, for the completeness tools.
  *
  * This is NOT a second artefact reader: it reuses the maintained helper
- * `tests/support/kb-artefact.ts` (`readArtefactDocument`, which merges the
+ * `tests/knowledge/support/kb-artefact.ts` (`readArtefactDocument`, which merges the
  * initial document + rules prose + display text + catalogue fragments) by
  * loading it through `node:module`'s `registerHooks`. The hooks transpile the
  * helper's TypeScript dependency graph with `ts.transpileModule`, so this tool
@@ -71,7 +71,7 @@ export async function readPublishedArtefact() {
   ensureHooks();
   const path = resolve(REPO_ROOT, "outputs", "web-public", "knowledge", "knowledge-web.json");
   if (!existsSync(path)) return null;
-  const helper = await import(pathToFileURL(resolve(REPO_ROOT, "tests", "support", "kb-artefact.ts")).href);
+  const helper = await import(pathToFileURL(resolve(REPO_ROOT, "tests", "knowledge", "support", "kb-artefact.ts")).href);
   return helper.readArtefactDocument(path);
 }
 

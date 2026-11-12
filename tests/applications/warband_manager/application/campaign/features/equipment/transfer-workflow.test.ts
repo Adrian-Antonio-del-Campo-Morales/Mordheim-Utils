@@ -61,7 +61,7 @@ describe("transferEquippedItem (desktop transfer_equipped_item)", () => {
 
   it("requires a complete transferable set on the source", () => {
     const doc = makeDoc();
-    (doc.campaign.warriors[0] as any).equipment = [
+    (doc.campaign.warriors[0] as unknown as { equipment: unknown[] }).equipment = [
       { item_id: "sword", name: "Sword", quantity: 1, acquisition: "stash_assignment", transferable: true, per_model: true },
     ];
     (doc.campaign.warriors[0] as unknown as { quantity: number }).quantity = 2;

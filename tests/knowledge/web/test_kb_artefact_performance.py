@@ -157,13 +157,15 @@ class TestKbArtefactPerformance:
         # the deferred campaign catalogue. The hireling and campaign-completeness
         # delivery moved the shared skill set to 87 and the deferred catalogue to
         # 464 unique items and 17 campaign sections; the two Knights Feats skills
-        # (Armour Specialist, Combat Charge) later brought the skill set to 89.
+        # (Armour Specialist, Combat Charge) later brought the skill set to 89,
+        # and the Scourge split into its two printed entries (scourge,
+        # slaver_scourge) brought the items to 465.
         # Every id is unique in the source and in the artefact, so the growth is
         # content, not duplication.
         assert counts == {
             "bands": 161,
             "profiles": 1056,
             "skills": 89,
-            "items": 464,
+            "items": 465,
             "campaign_sections": 17,
         }

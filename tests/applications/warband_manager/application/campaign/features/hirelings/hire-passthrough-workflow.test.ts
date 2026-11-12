@@ -56,7 +56,8 @@ function makeKnowledge() {
     queryKnowledge(query: { id: { kind: string; value: string } }) {
       const row = records.get(`${query.id.kind}:${query.id.value}`);
       if (!row) return { ok: false as const, reason: "not_found" as const };
-      const { id, names, ...data } = row;
+      const { names, ...data } = row;
+      delete (data as { id?: unknown }).id;
       return { ok: true as const, record: { kind: query.id.kind.replace(/_id$/, "") as never, id: query.id as never, names: (names ?? {}) as Record<string, string>, data: data as OpenPayload } };
     },
     queryMany() {
