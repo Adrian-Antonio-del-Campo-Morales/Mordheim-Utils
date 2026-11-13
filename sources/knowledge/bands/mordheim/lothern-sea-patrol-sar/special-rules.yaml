@@ -10,7 +10,7 @@ rules:
     - id: unimplemented.lothern-sea-patrol-sar.band.excellent-eyes
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.movement
   name: Excellent Eyes
   effect: >-
     Elves have excellent eyesight, unmatched by mere humans; when spotting hidden enemy units they
@@ -37,7 +37,7 @@ rules:
     - id: unimplemented.lothern-sea-patrol-sar.band.look-rich
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Look Rich
   effect: >-
     High elves pay double upkeep for any hired swords that are not Elven, because humans tend to
@@ -66,7 +66,7 @@ rules:
     - id: unimplemented.lothern-sea-patrol-sar.band.fine-craftwork
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Fine Craftwork
   effect: >-
     High elves may not use any heavy armours except for Ithilmar armour. However, should they get
@@ -94,7 +94,7 @@ rules:
     - id: unimplemented.lothern-sea-patrol-sar.band.honours
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Honours
   effect: >-
     Each High Elf Hero may have one honour upon purchase. They may only be given one honour and
@@ -118,14 +118,24 @@ rules:
     band: true
 - id: band--honourable
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.lothern-sea-patrol-sar.band.honourable
-      scope: 'NO'
-      binding: null
-      reason: pending-classification
+    - id: compiler.forbid-item-categories
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.forbid-item-categories
+        parameters:
+          categories:
+          - poison
+          - drug
+      clauses:
+      - id: poison-and-drug-ban
+        scope: 'YES'
+      - id: hired-sword-ban
+        scope: 'NO'
   name: Honourable
   effect: >-
     Lothern Sea Patrol members may never use poisons or drugs, nor hire any Hired Swords who use
@@ -152,7 +162,7 @@ rules:
     - id: unimplemented.lothern-sea-patrol-sar.band.teetotalers
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Teetotalers
   effect: Lothern Sea Patrol members may never drink any alcohol, with the exception of Elf Wine.
   source:
@@ -177,7 +187,7 @@ rules:
     - id: unimplemented.lothern-sea-patrol-sar.band.swabbies-lothern
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Swabbies (Lothern Sea Patrol)
   effect: >-
     Lothern Sea Patrol may capture Swabbies. Willing members join the Ship's Company, unwilling
@@ -204,7 +214,7 @@ rules:
     - id: unimplemented.lothern-sea-patrol-sar.band.note-on-blackpowder
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: A Note on Blackpowder
   effect: >-
     Lothern Commodores have spent years watching the kingdoms of Man use Blackpowder weapons, and
@@ -228,14 +238,14 @@ rules:
     band: true
 - id: band--sea-patrol-skills
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.lothern-sea-patrol-sar.band.sea-patrol-skills
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: pending-classification
+      reason: pending-implementation
   name: Sea Patrol Skills
   effect: >-
     Graceful Strength: the Elf may use Double-Handed weapons without the usual penalty of striking
@@ -282,14 +292,15 @@ rules:
     band: true
 - id: commodore--leader
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.lothern-sea-patrol-sar.commodore.leader
-      scope: 'NO'
-      binding: null
-      reason: pending-classification
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any elf within 6" of the Commodore may use his Leadership characteristic when taking any
@@ -317,7 +328,7 @@ rules:
     - id: unimplemented.lothern-sea-patrol-sar.mist-mage.wizard
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.magic
   name: Wizard (Mist Mage)
   effect: >-
     The Mist Mage is a Wizard. He learns spells from the Spells of the Lothern Sea list: 1
@@ -342,14 +353,14 @@ rules:
     - mist-mage
 - id: bossuns--disciplined
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.lothern-sea-patrol-sar.bossuns.disciplined
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: pending-classification
+      reason: pending-implementation
   name: Disciplined
   effect: Any warrior within 3" of a Bossun may use his/her leadership instead of their own.
   source:
@@ -404,7 +415,7 @@ rules:
     - id: unimplemented.lothern-sea-patrol-sar.sea-rangers.hide-in-shadows
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.movement
   name: Hide in Shadows (Sea Rangers)
   effect: When trying to spot a Sea Ranger an opponent must halve his Initiative.
   source:
@@ -455,7 +466,7 @@ rules:
     - id: unimplemented.lothern-sea-patrol-sar.raw-recruits.specially-hired
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Specially Hired
   effect: >-
     You may hire Raw Recruits like normal, but you may also acquire them in the same manner as
@@ -483,11 +494,8 @@ rules:
     - id: unimplemented.lothern-sea-patrol-sar.raw-recruits.never-gain-experience
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Never Gain Experience (Raw Recruits)
-  effect: >-
-    Raw Recruits generally aren't interested in proving their worth to the crew, they are interested
-    in survival and hopefully escape! Raw Recruits never gain experience in games.
   source:
     manual: broheim.net
     printed_page: 4
@@ -495,14 +503,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Lothern%20Sea%20Patrol.pdf
   name_i18n:
     es: Nunca Ganarán Experiencia (Reclutas Novatos)
-  effect_i18n:
-    es: >-
-      Los Reclutas Novatos no están interesados en demostrar su valor a la tripulación, ¡les
-      interesa sobrevivir y escapar si pueden! Los Reclutas Novatos nunca ganan experiencia en las
-      partidas.
   applies_to:
     profile_ids:
     - raw-recruits
+  rule_ref: shared-rule.crew-never-gain-experience
 - id: raw-recruits--rabble
   runtime:
     scope: 'NO'
@@ -512,12 +516,8 @@ rules:
     - id: unimplemented.lothern-sea-patrol-sar.raw-recruits.rabble
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Rabble (Raw Recruits)
-  effect: >-
-    Raw Recruits do not need to be armed all the same. Each may be given different equipment, but
-    only items listed in the Raw Recruit equipment list. Raw Recruits can never use magic, or cast
-    spells of any sort, no matter their original background or abilities.
   source:
     manual: broheim.net
     printed_page: 4
@@ -525,14 +525,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Lothern%20Sea%20Patrol.pdf
   name_i18n:
     es: Chusma (Reclutas Novatos)
-  effect_i18n:
-    es: >-
-      Los Reclutas Novatos no necesitan ir armados por igual. Cada uno puede llevar equipo distinto,
-      pero solo objetos de la lista de equipo de Reclutas. Los Reclutas Novatos nunca pueden usar
-      magia ni lanzar hechizos de ningún tipo, sin importar su origen o habilidades previas.
   applies_to:
     profile_ids:
     - raw-recruits
+  rule_ref: shared-rule.rabble
 - id: raw-recruits--oh-dear-they-got-away
   runtime:
     scope: 'NO'
@@ -542,7 +538,7 @@ rules:
     - id: unimplemented.lothern-sea-patrol-sar.raw-recruits.oh-dear-they-got-away
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Oh Dear, They Got Away!
   effect: >-
     If the Sea Guard Warband itself Routs, any Raw Recruits who have already left the table in
@@ -572,7 +568,7 @@ rules:
     - id: unimplemented.lothern-sea-patrol-sar.raw-recruits.dont-mind-them
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.group
   name: Don't Mind Them, They Aren't True Elves!
   source:
     manual: broheim.net

@@ -2,8 +2,8 @@
 
 Scope of this work: `tests/integration/e2e/cases/grants` only. Nothing outside this directory was
 edited. Historical note: paths such as `tests/E2E/...` and `tests/python/...` below record the tree at
-the time of this handoff; the corpus now lives under `tests/integration/e2e/` and the register is
-`sources/knowledge/verification/clause-contracts.csv`. Every statement below is derived from the printed sources (`sources/knowledge/**`), the accepted
+the time of this handoff; the corpus later moved to `tests/integration/e2e/` and, on 2026-11-12, to
+`tests/conformance/`; the register was archived in `docs/archive/clause-register/`. Every statement below is derived from the printed sources (`sources/knowledge/**`), the accepted
 rulings in `docs/decisions/design-rulings.md` and the shared construction stage the rules compile to
 (`packages/python/roster-construction/mordheim_construction/compiler.py`, `contracts.py`, `_eligibility.js`
 and its mirror `packages/typescript/domain/eligibility/index.ts`), read for the *observable* a clause has,

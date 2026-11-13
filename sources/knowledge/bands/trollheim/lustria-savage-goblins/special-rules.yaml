@@ -34,19 +34,12 @@ rules:
           - feather_headdress
 - id: witch-doctor--leader
   name: Leader
-  effect: >-
-    Any warband model within 6" of the Witch Doctor may use his Leadership when taking Leadership
-    tests.
   source:
     manual: lustria
     printed_page: 100
     section: Heroes / 1 Witch Doctor / Leader
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier modelo de la banda a 6" del Brujo puede usar su Liderazgo al realizar chequeos de
-      Liderazgo.
   applies_to:
     profile_ids:
     - witch-doctor
@@ -60,6 +53,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: witch-doctor--spellcaster
   name: Spellcaster
   effect: >-
@@ -120,7 +114,7 @@ rules:
     - id: unimplemented.lustria-savage-goblins.witch-doctor.return-from-the-darkness
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.campaign
 - id: big-boss--second-in-command
   name: Second in Command
   effect: >-
@@ -221,15 +215,12 @@ rules:
         id: compiler.tracker-gear
 - id: zomblins--may-not-run
   name: May Not Run
-  effect: Zomblins may not run, but may charge normally.
   source:
     manual: lustria
     printed_page: 103
     section: Henchmen / 0-5 Zomblins / May Not Run
   name_i18n:
     es: No Pueden Correr
-  effect_i18n:
-    es: Los Zomblins no pueden correr, pero pueden cargar con normalidad.
   applies_to:
     profile_ids:
     - zomblins
@@ -241,7 +232,8 @@ rules:
     - id: unimplemented.lustria-savage-goblins.zomblins.may-not-run
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.movement
+  rule_ref: shared-rule.may-not-run
 - id: zomblins--fear
   name: Fear
   effect: Zomblins cause Fear.
@@ -302,18 +294,16 @@ rules:
         parameters:
           value: true
   name: Immune to Poison
-  effect: Zomblins are immune to poison.
   source:
     manual: lustria
     printed_page: 103
     section: Henchmen / 0-5 Zomblins / Immune to Poison
   name_i18n:
     es: Inmune al Veneno
-  effect_i18n:
-    es: Los Zomblins son inmunes al veneno.
   applies_to:
     profile_ids:
     - zomblins
+  rule_ref: shared-rule.immune-to-poison
 - id: zomblins--no-pain
   runtime:
     scope: 'YES'
@@ -355,7 +345,7 @@ rules:
     - id: unimplemented.lustria-savage-goblins.zomblins.brainless
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.campaign
   rule_ref: shared-rule.never-gain-experience
 - id: zomblintua--construction
   name: Construction
@@ -383,18 +373,15 @@ rules:
     - id: unimplemented.lustria-savage-goblins.zomblintua.construction
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.construction
 - id: zomblintua--may-not-run
   name: May Not Run
-  effect: Zomblintua may not run, but may charge normally.
   source:
     manual: lustria
     printed_page: 104
     section: Henchmen / 0-1 Zomblintua / May Not Run
   name_i18n:
     es: No Pueden Correr
-  effect_i18n:
-    es: El Zomblintua no puede correr, pero puede cargar con normalidad.
   applies_to:
     profile_ids:
     - zomblintua
@@ -406,7 +393,8 @@ rules:
     - id: unimplemented.lustria-savage-goblins.zomblintua.may-not-run
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.movement
+  rule_ref: shared-rule.may-not-run
 - id: zomblintua--fear
   name: Fear
   effect: Zomblintua causes Fear.
@@ -433,17 +421,12 @@ rules:
         id: mechanic.causes-fear
 - id: zomblintua--immune-to-psychology
   name: Immune to Psychology
-  effect: Zomblintua is immune to Psychology and never leaves close combat because of Psychology.
   source:
     manual: lustria
     printed_page: 104
     section: Henchmen / 0-1 Zomblintua / Immune to Psychology
   name_i18n:
     es: Inmune a la Psicología
-  effect_i18n:
-    es: >-
-      El Zomblintua es inmune a la Psicología y nunca abandona el combate cuerpo a cuerpo a causa de
-      la Psicología.
   applies_to:
     profile_ids:
     - zomblintua
@@ -457,6 +440,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+  rule_ref: shared-rule.immune-to-psychology
 - id: zomblintua--immune-to-poison
   runtime:
     scope: 'YES'
@@ -471,18 +455,16 @@ rules:
         parameters:
           value: true
   name: Immune to Poison
-  effect: Zomblintua is immune to poison.
   source:
     manual: lustria
     printed_page: 104
     section: Henchmen / 0-1 Zomblintua / Immune to Poison
   name_i18n:
     es: Inmune al Veneno
-  effect_i18n:
-    es: El Zomblintua es inmune al veneno.
   applies_to:
     profile_ids:
     - zomblintua
+  rule_ref: shared-rule.immune-to-poison
 - id: zomblintua--no-pain
   runtime:
     scope: 'YES'
@@ -495,18 +477,16 @@ rules:
         kind: mechanic
         id: skill.ignore-pain
   name: No Pain
-  effect: Zomblintua treats a Stunned result on the Injury chart as Knocked Down.
   source:
     manual: lustria
     printed_page: 104
     section: Henchmen / 0-1 Zomblintua / No Pain
   name_i18n:
     es: Sin Dolor
-  effect_i18n:
-    es: El Zomblintua trata un resultado Aturdido de la tabla de Heridas como Derribado.
   applies_to:
     profile_ids:
     - zomblintua
+  rule_ref: shared-rule.no-pain
 - id: zomblintua--brainless
   name: Brainless
   source:
@@ -526,7 +506,7 @@ rules:
     - id: unimplemented.lustria-savage-goblins.zomblintua.brainless
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.campaign
   rule_ref: shared-rule.never-gain-experience
 - id: zomblintua--large-target
   name: Large Target
@@ -554,7 +534,7 @@ rules:
     - id: unimplemented.lustria-savage-goblins.zomblintua.large-target
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.shooting
 - id: zomblintua--regeneration
   runtime:
     scope: 'YES'
@@ -622,18 +602,12 @@ rules:
     - zomblintua
 - id: band--jungle-natives
   name: Jungle Natives
-  effect: >-
-    Savage Goblins suffer no movement penalties for moving through woods or any kind of vegetation.
   source:
     manual: lustria
     printed_page: 98
     section: Savage Goblin Special Rules / Jungle Natives
   name_i18n:
     es: Nativos de la Selva
-  effect_i18n:
-    es: >-
-      Los Goblins salvajes no sufren penalizaciones de movimiento por moverse por bosques ni por
-      ningún tipo de vegetación.
   applies_to:
     band: true
   runtime:
@@ -644,7 +618,8 @@ rules:
     - id: unimplemented.lustria-savage-goblins.band.jungle-natives
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.movement
+  rule_ref: shared-rule.jungle-natives-band
 - id: band--unpleasant-company
   name: Unpleasant Company
   effect: >-
@@ -698,7 +673,7 @@ rules:
     - id: unimplemented.lustria-savage-goblins.band.camouflage
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.movement
 - id: band--fear-of-pointy-ears
   name: Fear of Pointy Ears
   effect: Savage Goblins are subject to Fear of Elves.
@@ -761,14 +736,14 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.lustria-savage-goblins.band.animosity
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.non-duel
       clauses:
       - id: whole
         scope: 'NO'
@@ -794,7 +769,7 @@ rules:
     - id: unimplemented.lustria-savage-goblins.band.savage-goblin-special-skills-infiltration
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.movement
   # Not shared: the printed entry names the profiles that may not take the skill and stops at the
   # deployment restriction, without the shared text's tie-break roll.
   effect: >-
@@ -807,15 +782,12 @@ rules:
 - id: band--savage-goblin-special-skills-unpredictable
   kind: warband_skill
   name: Unpredictable
-  effect: The Hero may declare one of its attacks Unpredictable; that attack cannot be parried.
   source:
     manual: lustria
     printed_page: 105
     section: Savage Goblin Special Skills / Unpredictable
   name_i18n:
     es: Impredecible
-  effect_i18n:
-    es: El Héroe puede declarar uno de sus ataques Impredecible; ese ataque no puede estocarse.
   eligibility:
   - witch-doctor
   - big-boss
@@ -833,6 +805,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.unpredictable-attack
+  rule_ref: shared-rule.unpredictable-attack
 - id: band--savage-goblin-special-skills-zomblin-medicine
   kind: warband_skill
   name: Zomblin Medicine

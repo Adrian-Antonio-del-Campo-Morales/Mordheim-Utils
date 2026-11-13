@@ -3,9 +3,6 @@ band_id: shadow-warriors
 rules:
 - id: shadow-master--leader
   name: Leader
-  effect: >-
-    Any warrior within 6" of the Shadow Master may use his Leadership characteristic when taking any
-    Leadership tests.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -13,10 +10,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/shadow-warriors
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier guerrero a 6" del Maestro de las Sombras puede usar su característica de Liderazgo
-      al realizar cualquier chequeo de Liderazgo.
   applies_to:
     profile_ids:
     - shadow-master
@@ -30,6 +23,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: shadow-weaver--wizard
   name: Wizard
   effect: >-
@@ -57,7 +51,7 @@ rules:
     - id: unimplemented.shadow-warriors.shadow-weaver.wizard
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.magic
 - id: band--hate-dark-elves
   name: Hate Dark Elves
   effect: >-
@@ -112,7 +106,7 @@ rules:
     - id: unimplemented.shadow-warriors.band.excellent-sight
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.movement
 - id: band--distaste-for-poison
   name: Distaste for Poison
   effect: Warriors in the Shadow Warrior warband may not use poisons of any type.
@@ -142,9 +136,6 @@ rules:
           - poison
 - id: band--unforgiving
   name: Unforgiving
-  effect: >-
-    In multiplayer games, the Shadow Warrior warband may never form an alliance with a warband of a
-    Chaotic nature, including Possessed, Skaven, Beastmen and Dark Elves.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -152,11 +143,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/shadow-warriors
   name_i18n:
     es: Implacables
-  effect_i18n:
-    es: >-
-      En partidas multijugador, la banda de Guerreros de las Sombras nunca puede formar una alianza
-      con una banda de naturaleza Caótica, incluyendo Poseídos, Skaven, Hombres bestia y Elfos
-      Oscuros.
   applies_to:
     band: true
   runtime:
@@ -167,7 +153,8 @@ rules:
     - id: unimplemented.shadow-warriors.band.unforgiving
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.non-duel
+  rule_ref: shared-rule.unforgiving
 - id: band--tolerant
   name: Tolerant
   effect: >-
@@ -244,7 +231,7 @@ rules:
     - id: unimplemented.shadow-warriors.band.shadow-warrior-special-skills-infiltration
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.movement
   rule_ref: shared-rule.infiltration
 - id: band--shadow-warrior-special-skills-see-in-shadows
   kind: warband_skill
@@ -275,7 +262,7 @@ rules:
     - id: unimplemented.shadow-warriors.band.shadow-warrior-special-skills-see-in-shadows
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.movement
 - id: band--shadow-warrior-special-skills-hide-in-shadows
   kind: warband_skill
   name: Hide in Shadows
@@ -306,7 +293,7 @@ rules:
     - id: unimplemented.shadow-warriors.band.shadow-warrior-special-skills-hide-in-shadows
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.movement
 - id: band--shadow-warrior-special-skills-sniper
   kind: warband_skill
   name: Sniper
@@ -423,7 +410,7 @@ rules:
     - id: unimplemented.shadow-warriors.band.shadow-warrior-special-skills-master-of-runes
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.magic
 - id: shadow-weaver--no-armoured-casting
   name: No Armour Casting
   source:

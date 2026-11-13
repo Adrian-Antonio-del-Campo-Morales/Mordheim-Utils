@@ -10,7 +10,7 @@ rules:
     - id: unimplemented.silent-brotherhood-sc.band.assignments
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Assignments
   effect: >-
     After the game any hero who did not go out of action may fulfil a client's assignment instead of
@@ -43,7 +43,7 @@ rules:
     - id: unimplemented.silent-brotherhood-sc.band.sworn-brotherhood
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Sworn Brotherhood
   effect: >-
     Whenever you want to hire a new hero during a campaign, the warband's leader must first pass a
@@ -102,7 +102,7 @@ rules:
     - id: unimplemented.silent-brotherhood-sc.band.modus-operandi
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Modus Operandi
   effect: >-
     Every hero may choose one modus operandi when hired (sniper 30 gc, executor 35 gc, lurker 35 gc;
@@ -149,8 +149,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any warrior within 6 inches of the Silent Master may use his Leadership instead of his own.
   source:
     manual: broheim.net
     printed_page: 4
@@ -158,13 +156,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sealedcity/Silent Brotherhood.pdf
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier guerrero a 6 pulgadas del Maestro Silencioso puede usar su Liderazgo en lugar del
-      propio.
   applies_to:
     profile_ids:
     - silent-master
+  rule_ref: shared-rule.leader
 - id: silent-master--perfect-killer
   runtime:
     scope: 'YES'
@@ -206,7 +201,7 @@ rules:
     - id: unimplemented.silent-brotherhood-sc.poisoner.toxic-trades
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Toxic Trades
   effect: >-
     If the hero doesn't search for rare items, he may make a single dose of Black Lotus instead. The
@@ -235,7 +230,7 @@ rules:
     - id: unimplemented.silent-brotherhood-sc.poisoner.master-of-poisons
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Master of Poisons
   effect: >-
     When using his toxic trades rule, the Poisoner may make D3-1 doses of Dark Venom instead of
@@ -265,7 +260,7 @@ rules:
     - id: unimplemented.silent-brotherhood-sc.thugs.loudmouths
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Loudmouths
   effect: Thugs never become heroes; re-roll all results of 'that lad's got talent'.
   source:
@@ -352,14 +347,15 @@ rules:
 - id: band--skill-backstabber
   kind: warband_skill
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.silent-brotherhood-sc.band.backstabber
-      scope: 'NO'
-      binding: null
-      reason: out-of-scope.non-duel
+    - id: skill.backstabber
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.backstabber
   name: Backstabber
   effect: >-
     The Assassin specializes in attacking his targets when their back is turned. The Assassin may

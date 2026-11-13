@@ -10,7 +10,7 @@ rules:
     - id: unimplemented.metal-mongers-mim.band.skurvey-alliance
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Skurvey Alliance
   effect: >-
     The hospitality of Riskin Tatter-Ear is extended only so far as to allies in his armada from
@@ -30,14 +30,14 @@ rules:
     band: true
 - id: band--skaven-special-skills
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.metal-mongers-mim.band.skaven-special-skills
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: pending-classification
+      reason: pending-implementation
   name: Skaven Special Skills
   effect: >-
     Skaven Heroes may choose to use the following skill list instead of the standard skill lists:
@@ -130,7 +130,7 @@ rules:
     - id: unimplemented.metal-mongers-mim.band.experimental-weapon-chart
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.shooting
   name: Experimental Weapon Chart
   effect: >-
     D6 result: 1 - Scrap: the weapon is mangled beyond repair; it must be removed from the warband's
@@ -168,7 +168,7 @@ rules:
     - id: unimplemented.metal-mongers-mim.item.warpfire-projector
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.shooting
   name: Warpfire Projector
   effect: >-
     Availability: Machine-Ogre only. Range: 6", Strength: 4, Save Modifier -1, Jet of Flame, Refuel.
@@ -202,7 +202,7 @@ rules:
     - id: unimplemented.metal-mongers-mim.item.ratling-gun
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Ratling Gun
   effect: >-
     275 gc (Forge-Rats and Technicians only), Rare 14. Range: 6"-16", Strength: 3, Save Modifier -1,
@@ -257,7 +257,7 @@ rules:
     - id: unimplemented.metal-mongers-mim.item.poison-wind-globe
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Poison Wind Globe
   effect: >-
     20 gold crowns (Skaven only), Rare 6. Range: 6", Strength: Special, Thrown weapon, Poison wind,
@@ -297,7 +297,7 @@ rules:
     - id: unimplemented.metal-mongers-mim.item.spike-jawed-snatcher
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Spike-Jawed Snatcher
   effect: >-
     25 gold crowns (Skaven only), Rare 10. Range: Close Combat, Strength: As user, Capture,
@@ -330,7 +330,7 @@ rules:
     - id: unimplemented.metal-mongers-mim.item.gas-mask
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Gas Mask
   effect: >-
     15 gold crowns, Rare 6. Protectively-coated visors crafted from leathery human skin. A skaven
@@ -362,7 +362,7 @@ rules:
     - id: unimplemented.metal-mongers-mim.item.pneumatic-arm
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Pneumatic Arm
   effect: >-
     140 gold crowns (Engineer Adept only), Rare 13. Pneumatic arms fastened to harnesses allow the
@@ -405,9 +405,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any warrior within 6" of the Engineer may use his Leadership value instead of his own when
-    taking Leadership tests.
   source:
     manual: broheim.net
     printed_page: 4
@@ -415,13 +412,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Metal%20Mongers.pdf
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier guerrero a 6" del Ingeniero puede usar su valor de Liderazgo en los chequeos de
-      Liderazgo.
   applies_to:
     profile_ids:
     - engineer-adept
+  rule_ref: shared-rule.leader
 - id: pirate-rats--water-rat
   runtime:
     scope: 'NO'
@@ -431,7 +425,7 @@ rules:
     - id: unimplemented.metal-mongers-mim.pirate-rats.water-rat
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.movement
   name: Water-Rat
   effect: >-
     Water-rats from Clan Skurvy are among the few skaven with an affinity for water and the lunatic
@@ -459,7 +453,7 @@ rules:
     - id: unimplemented.metal-mongers-mim.technicians.globadier
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Globadier
   effect: >-
     Technicians are specially selected from broods with high intelligences to be the assistants for
@@ -489,7 +483,7 @@ rules:
     - id: unimplemented.metal-mongers-mim.machine-ogre.large
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.shooting
   name: Large
   effect: >-
     Machine-Ogres are huge creatures and therefore a tempting target. Any model may shoot at the
@@ -545,9 +539,9 @@ rules:
         kind: mechanic
         id: mechanic.psychology-immunity
     - id: machine-ogre--bio-machinery.never-leaves-combat.pending
-      scope: 'YES'
+      scope: LATER
       binding: null
-      reason: out-of-scope.non-duel
+      reason: pending-implementation
       clauses:
       - id: never-leaves-combat
         scope: 'NO'
@@ -571,14 +565,17 @@ rules:
     - machine-ogre
 - id: machine-ogre--immune-to-poison
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.metal-mongers-mim.machine-ogre.immune-to-poison
-      scope: 'NO'
-      binding: null
-      reason: pending-classification
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
   name: Immune to Poison
   effect: >-
     Machine-Ogres are not alive as such; being a monstrous combination of dead flesh, arcane Skaven
@@ -606,7 +603,7 @@ rules:
     - id: unimplemented.metal-mongers-mim.machine-ogre.may-not-run
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.movement
   name: May Not Run
   effect: >-
     The Machine-Ogre is a lumbering mechanical brute! It lacks the sheer animal speed of a living
@@ -634,7 +631,7 @@ rules:
     - id: unimplemented.metal-mongers-mim.machine-ogre.warpstone-heart
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Warpstone Heart
   effect: >-
     The Machine-Ogre is a mindless machine requiring Wyrdstone shards to power it. It requires a
@@ -662,7 +659,7 @@ rules:
     - id: unimplemented.metal-mongers-mim.machine-ogre.warptooth
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.group
   name: Warptooth
   effect: >-
     The Machine-Ogre is designed to obey all commands given to it by its master and creator, the
@@ -724,7 +721,7 @@ rules:
     - id: unimplemented.metal-mongers-mim.machine-ogre.no-brain
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: No Brain
   source:
     manual: broheim.net
@@ -746,7 +743,7 @@ rules:
     - id: unimplemented.metal-mongers-mim.machine-ogre.unreliable
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.non-duel
   name: Unreliable
   effect: >-
     The technology of biomechanics is still in its infancy and as with most Clan Skyre experiments

@@ -73,14 +73,14 @@ rules:
     - saurus-slayer
 - id: reaver-beastmaster--war-beasts
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.lustrian-reavers.reaver-beastmaster.war-beasts
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.construction
       clauses:
       - id: war-beasts-hiring
         scope: 'NO'
@@ -145,11 +145,8 @@ rules:
     - id: unimplemented.lustrian-reavers.estalian-warhound.animal
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: out-of-scope.campaign
   name: Animal
-  effect: >-
-    The Warhound is an Animal, may not gain Experience, and if taken Out of Action is dead on a D6
-    roll of 1–2.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -157,13 +154,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
   name_i18n:
     es: Animal
-  effect_i18n:
-    es: >-
-      El Sabueso es un Animal, no puede ganar Experiencia, y si es puesto Fuera de combate muere con
-      una tirada de 1-2 en 1D6.
   applies_to:
     profile_ids:
     - estalian-warhound
+  rule_ref: shared-rule.animal-dies-on-1-2
 - id: estalian-warhound--beastmaster-leadership
   runtime:
     grant: profile
@@ -176,8 +170,6 @@ rules:
         kind: mechanic
         id: mechanic.handler-leadership
   name: Beastmaster Leadership
-  effect: >-
-    If within 6 inches of the Reaver Beastmaster, the Warhound may use the Beastmaster's Leadership.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -185,13 +177,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
   name_i18n:
     es: Liderazgo del Maestro de Bestias
-  effect_i18n:
-    es: >-
-      Si está a 6 pulgadas del Maestro de Bestias Asaltante, el Sabueso puede usar el Liderazgo del
-      Maestro de Bestias.
   applies_to:
     profile_ids:
     - estalian-warhound
+  rule_ref: shared-rule.beastmaster-leadership
 - id: barbary-monkey--nimble
   runtime:
     scope: 'YES'
@@ -240,11 +229,8 @@ rules:
     - id: unimplemented.lustrian-reavers.barbary-monkey.animal
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: out-of-scope.campaign
   name: Animal
-  effect: >-
-    The Barbary Monkey is an Animal, may not gain Experience, and if taken Out of Action is dead on
-    a D6 roll of 1–2.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -252,13 +238,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
   name_i18n:
     es: Animal
-  effect_i18n:
-    es: >-
-      El Mono de Berbería es un Animal, no puede ganar Experiencia, y si es puesto Fuera de combate
-      muere con una tirada de 1-2 en 1D6.
   applies_to:
     profile_ids:
     - barbary-monkey
+  rule_ref: shared-rule.animal-dies-on-1-2
 - id: barbary-monkey--beastmaster-leadership
   runtime:
     grant: profile
@@ -271,8 +254,6 @@ rules:
         kind: mechanic
         id: mechanic.handler-leadership
   name: Beastmaster Leadership
-  effect: >-
-    If within 6 inches of the Reaver Beastmaster, the Monkey may use the Beastmaster's Leadership.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -280,13 +261,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
   name_i18n:
     es: Liderazgo del Maestro de Bestias
-  effect_i18n:
-    es: >-
-      Si está a 6 pulgadas del Maestro de Bestias Asaltante, el Mono puede usar el Liderazgo del
-      Maestro de Bestias.
   applies_to:
     profile_ids:
     - barbary-monkey
+  rule_ref: shared-rule.beastmaster-leadership
 - id: jungle-shadow--silent-hunter
   runtime:
     scope: 'NO'

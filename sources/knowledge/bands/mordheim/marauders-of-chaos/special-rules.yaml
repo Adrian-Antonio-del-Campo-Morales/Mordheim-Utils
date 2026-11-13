@@ -13,9 +13,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any Warrior within 6" of the Marauder Chieftain may use his Leadership instead of his own when
-    taking Ld tests.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -23,13 +20,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier Guerrero a 6" del Jefe saqueador puede usar su Liderazgo en lugar del suyo propio al
-      realizar chequeos de L.
   applies_to:
     profile_ids:
     - marauder-chieftain
+  rule_ref: shared-rule.leader
 - id: seer--wizard
   runtime:
     scope: 'NO'
@@ -238,7 +232,7 @@ rules:
     - id: unimplemented.marauders-of-chaos.condemned.variable-experience
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.campaign
   name: Experience
   effect: >-
     When an advance would increase a variable characteristic, roll its die instead. The player may
@@ -269,7 +263,7 @@ rules:
     - id: unimplemented.marauders-of-chaos.condemned.fate
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.campaign
   name: Fate
   effect: >-
     Once all variable characteristics are permanently fixed, the Condemned may use equipment
@@ -413,7 +407,6 @@ rules:
       binding: null
       reason: out-of-scope.campaign
   name: No Brain
-  effect: The Spawn never gains Experience.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -421,11 +414,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
   name_i18n:
     es: Sin Cerebro
-  effect_i18n:
-    es: El Engendro nunca gana Experiencia.
   applies_to:
     profile_ids:
     - spawn-of-chaos
+  rule_ref: shared-rule.no-brain
 - id: spawn-of-chaos--large
   runtime:
     scope: 'NO'
@@ -993,7 +985,7 @@ rules:
     - id: unimplemented.marauders-of-chaos.band.marauder-special-skills-tattooed-body
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.campaign
   name: Tattooed Body
   effect: >-
     Only the warband's leader may have this skill. The Hero's body is covered with unholy Chaos
@@ -1026,7 +1018,7 @@ rules:
     - id: unimplemented.marauders-of-chaos.band.marauder-special-skills-sweeping-blow
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.group
   name: Sweeping Blow
   effect: >-
     Whenever the Hero takes an enemy model out of action using a double-handed weapon he may

@@ -3,9 +3,6 @@ band_id: ostlanders
 rules:
 - id: elder--leader
   name: Leader
-  effect: >-
-    Any warrior within 6" of the Elder may use his Leadership characteristic when taking Leadership
-    tests.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -13,10 +10,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier guerrero a 6" del Anciano puede usar su característica de Liderazgo al realizar
-      chequeos de Liderazgo.
   applies_to:
     profile_ids:
     - elder
@@ -30,6 +23,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: priest-of-taal--prayers
   name: Prayers
   source:
@@ -50,7 +44,7 @@ rules:
     - id: unimplemented.ostlanders.priest-of-taal.prayers
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.magic
   rule_ref: shared-rule.prayers
 - id: priest-of-taal--strictures
   name: Strictures
@@ -75,7 +69,8 @@ rules:
         kind: profile
         id: profile.equipment-restrictions
         parameters:
-          forbids: heavy-armour
+          forbids:
+          - heavy-armour
   rule_ref: shared-rule.strictures
 - id: ruffians--drunk
   name: Drunk
@@ -127,7 +122,7 @@ rules:
     - id: unimplemented.ostlanders.ruffians.no-respect
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.construction
 - id: ogre--fear
   name: Fear
   effect: The Ogre causes Fear.
@@ -241,7 +236,7 @@ rules:
     - id: unimplemented.ostlanders.ogre.slow-witted
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
 - id: band--self-sufficient
   name: Self-Sufficient
   effect: Ostlanders may never hire Mercenaries/Hired Swords except Ogres.
@@ -359,14 +354,14 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: selectable
     effects:
     - id: unimplemented.ostlanders.band.ostlander-special-skills-taunt
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.movement
       clauses:
       - id: taunt--scope--shooting-phase-producer
         scope: 'NO'
@@ -375,11 +370,6 @@ rules:
 - id: band--ostlander-special-skills-animal-friendship
   kind: warband_skill
   name: Animal Friendship
-  effect: >-
-    Having grown up amidst the animals of the forest, this warrior exudes a certain charm to all
-    'normal' animals (ie, warhorses, warhounds, etc) Animals will never attack him and up to two
-    wardogs (see Mordheim book, page 54) that the warrior owns do not count against the maximum
-    number of models in the warband.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -387,12 +377,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
   name_i18n:
     es: Amistad Animal
-  effect_i18n:
-    es: >-
-      Habiéndose criado entre los animales del bosque, este guerrero desprende un cierto encanto
-      para todos los animales 'normales' (es decir, corceles de guerra, perros de guerra, etc). Los
-      animales nunca lo atacarán y hasta dos perros de guerra (ver el libro de Mordheim, página 54)
-      que posea el guerrero no cuentan contra el número máximo de modelos de la banda.
   applies_to:
     band: true
   runtime:
@@ -410,6 +394,7 @@ rules:
         scope: 'YES'
       - id: whole--scope--wardog-count
         scope: 'NO'
+  rule_ref: shared-rule.animal-friendship
 - id: band--ostlander-special-skills-blood-oath
   kind: warband_skill
   name: Blood Oath
@@ -442,11 +427,9 @@ rules:
     - id: unimplemented.ostlanders.band.ostlander-special-skills-blood-oath
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.group
 - id: ruffians--no-missile-weapons
   name: No Missile Weapons
-  effect: >-
-    Ruffians may never use missile weapons, even if an Advance would otherwise allow them to do so.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -454,9 +437,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
   name_i18n:
     es: Sin Armas de Proyectil
-  effect_i18n:
-    es: >-
-      Los Matones jamás pueden usar armas de proyectil, incluso si una Mejora les permitiera acceder a ellas.
   applies_to:
     profile_ids:
     - ruffians
@@ -470,3 +450,4 @@ rules:
       binding:
         kind: compiler
         id: compiler.no-missile-weapons
+  rule_ref: shared-rule.flagellants-no-missile-weapons

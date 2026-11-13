@@ -85,7 +85,7 @@ The generator uses the identities and clauses declared on the knowledge-base
 records (`mordheim_knowledge.clauses.iter_identities`). For the conformance
 kinds, admission is decided per kind: every `core/` identity is admitted; a
 `mechanic/` identity is admitted unless it is listed under `mechanic_exclusions`
-in `registry/runtime-scope.yaml`; a `rule/` identity (one runtime effect) is
+in `sources/knowledge/registry/runtime-scope.yaml`; a `rule/` identity (one runtime effect) is
 admitted when the effect's own `scope` is `YES` or any of its clauses has
 `scope: 'YES'`. An undivided identity (no clauses) is a single obligation.
 `item/` identities are tracked by the knowledge base but are not conformance
@@ -269,7 +269,7 @@ which the full loop applies to already initialized fighters. Additional checks
 exercise the new real-driver loop and its validation boundaries.
 
 The original semantic verifier has since been removed. This snapshot table and
-the hashes below record historical provenance; the conformance suite retains its own local runner
+the hashes below record historical provenance; the rules-conformance suite retains its own local runner
 and does not depend on the retired files. The copied strict-support checks live
 in `integrity/test_runner.py`.
 
@@ -332,7 +332,7 @@ decision events contain `kind: decision`, `key` and `value`.
 `execute_case(case, root, dice, decisions)` is the lower-level observation API
 for explicit injected sources. The normal test entry point is `check_case`,
 which enforces complete consumption of strict scripts and requires an assertion.
-Case metadata such as `id` and `covers` is carried by the future corpus; this
+Case metadata such as `id` and `covers` is carried by the conformance corpus; this
 loop does not certify requirement coverage or inventory completeness.
 
 ### expect_fighters
@@ -365,7 +365,7 @@ dotted paths, first/second-only participants for the builds it observes) are
 part of the loader's static contract; deferred runtime validation follows the
 documented boundary for every other observation.
 
-### Harness capacities and external dependencies (2026-10-14, E07 contract revision)
+### Harness capacities and external dependencies (2026-10-14 contract revision)
 
 Facts the runner vocabulary already admits may be declared or observed through
 the existing channels without any new format; naming a lasting `FighterState`
@@ -382,7 +382,7 @@ an expected result. Two capacities matter for pending second-pass authoring:
   documented strictly as a technical protocol: the concepts (whose fire state
   it is, which combat-phase attempts the recovery) live in the case, never
   thresholds, dice or results taken from an engine run.
-- Compiled single-model projection pairs: `expect_fighters` (E01) observes the
+- Compiled single-model projection pairs: `expect_fighters` observes the
   compiled fighter — `armour_save`, `helmet_save`, `characteristics.*` and the
   rule/gift tags the engine compiles — so an admitted printed quantity that the
   compiler already materializes is asserted by pair (bearer/bearer-without),
@@ -392,8 +392,7 @@ Still external (must be specified, never implemented here): an observation of
 the opponent-attack pool *before* the printed minimum is not in any dataclass
 nor in the runner output — a `state.<side>.pool_size` pre-floor path stays
 impossible until the engine exposes that pre-floor fact behind an exact
-signature (to its owner; signature and the assertion it unlocks are in the
-E07 report), and no catalog id or harness build field materializes
+signature (to its owner, with the signature and the assertion it unlocks), and no catalog id or harness build field materializes
 `attack.blessed` on an attacker's incoming effect today. These
 dependencies unlock their consumers without touching this vocabulary, so no
 author re-authors for them in advance and no author fakes a pre-floor or a
@@ -534,11 +533,11 @@ oracle for it, and neither is edited here.
   loads its own YAML and uses the compiler and knowledge base; it has not been
   replaced by that corpus.
 
-## Running the suite after engine completion
+## Running the suite
 
-These commands belong to the deferred execution milestone. Do not run them
-during family authoring, even to discover technical request keys or repair
-fixtures. Use the engine-free structural validation described above instead.
+The suite runs in CI (see below). During source-derived family authoring, do
+not run it to discover technical request keys or repair fixtures; use the
+engine-free structural validation in *Declarative corpus* instead.
 
 The central repository launcher selects this suite with
 `tests conformance`; the `scenarios` subsection runs `execution/` (the declared
@@ -567,11 +566,11 @@ CI runs the suite and the non-regression control as separate steps ("Run the
 rules-conformance suite" and "Check accepted conformance coverage has not
 regressed") so a coverage loss is not hidden among unrelated conformance output.
 
-## Deferred runtime validation
+## Runtime validation
 
-The following commands also belong to the later engine-execution milestone. Do
-not run them during source-derived corpus authoring; use the engine-free
-structural validation in *Author by semantic family* instead.
+The same authoring restriction applies to these commands: do not run them
+during source-derived corpus authoring; use the engine-free structural
+validation in *Declarative corpus* instead.
 
 ```powershell
 python -m pytest tests/conformance/integrity/test_runner.py -q

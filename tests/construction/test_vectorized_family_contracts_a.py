@@ -23,7 +23,7 @@ def test_animal_friendship_and_contagious_traits_are_selectable_and_enforce_prer
         "horned-hunters", "horned-hunter",
         special_rule_ids=("band--horned-hunter-special-skills-animal-friendship",),
     ), ROOT)
-    assert "animal_friendship" in friend.global_effects.tags
+    assert "mechanic.animal-friendship" in friend.global_effects.tags
 
     with pytest.raises(ValueError, match="requires Rotten Body"):
         compile_fighter(build(

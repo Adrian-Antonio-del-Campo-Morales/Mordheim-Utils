@@ -3,17 +3,12 @@ band_id: khemri-thieves-guild
 rules:
 - id: guild-chief--leader
   name: Leader
-  effect: Any warband model within 6" of the Guild Chief may use his Leadership instead of its own.
   source:
     manual: khemri
     printed_page: 72
     section: Heroes / 1 Guild Chief / Leader
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier modelo de la banda a 6" del Jefe del Gremio puede usar su Liderazgo en lugar del
-      suyo propio.
   applies_to:
     profile_ids:
     - guild-chief
@@ -27,25 +22,15 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: guild-chief--wanted
   name: Wanted
-  effect: >-
-    If the Guild Chief is captured by an enemy warband after a battle, that warband may sell him to
-    the authorities for 1D6 plus his accumulated Experience in gold crowns. Then roll D6 for the
-    captive: 1-3 = one of his hands is cut off; 4-5 = he is branded on the forehead, suffering -1
-    Toughness and -3 on rolls to find Rare items; 6 = he is executed.
   source:
     manual: khemri
     printed_page: 72
     section: Heroes / 1 Guild Chief / Wanted
   name_i18n:
     es: Buscado
-  effect_i18n:
-    es: >-
-      Si el Jefe del Gremio es capturado por una banda enemiga tras una batalla, esa banda puede
-      venderlo a las autoridades por 1D6 más su Experiencia acumulada en coronas de oro. Luego tira
-      D6 por el cautivo: 1-3 = le cortan una mano; 4-5 = le marcan la frente con hierro, sufriendo
-      -1 Resistencia y -3 en las tiradas para encontrar objetos Raros; 6 = es ejecutado.
   applies_to:
     profile_ids:
     - guild-chief
@@ -57,19 +42,16 @@ rules:
     - id: unimplemented.khemri-thieves-guild.guild-chief.wanted
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.campaign
+  rule_ref: shared-rule.thieves-guild-wanted
 - id: guild-chief--contacts
   name: Contacts
-  effect: The Guild Chief gains +1 on rolls to find Rare items in the black market.
   source:
     manual: khemri
     printed_page: 72
     section: Heroes / 1 Guild Chief / Contacts
   name_i18n:
     es: Contactos
-  effect_i18n:
-    es: >-
-      El Jefe del Gremio obtiene +1 en las tiradas para encontrar objetos Raros en el mercado negro.
   applies_to:
     profile_ids:
     - guild-chief
@@ -81,22 +63,16 @@ rules:
     - id: unimplemented.khemri-thieves-guild.guild-chief.contacts
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.campaign
+  rule_ref: shared-rule.thieves-guild-contacts
 - id: guild-chief--disable-traps
   name: Disable Traps
-  effect: >-
-    The Guild Chief is an expert at detecting and disabling traps. Resolve this using the trap rules
-    referenced by the Khemri Experience section.
   source:
     manual: khemri
     printed_page: 72
     section: Heroes / 1 Guild Chief / Disable Traps
   name_i18n:
     es: Desactivar Trampas
-  effect_i18n:
-    es: >-
-      El Jefe del Gremio es un experto en detectar y desactivar trampas. Resuélvelo usando las
-      reglas de trampas referenciadas por la sección de Experiencia de Khemri.
   applies_to:
     profile_ids:
     - guild-chief
@@ -108,26 +84,16 @@ rules:
     - id: unimplemented.khemri-thieves-guild.guild-chief.disable-traps
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.non-duel
+  rule_ref: shared-rule.khemri-disable-traps
 - id: guild-master-thief--wanted
   name: Wanted
-  effect: >-
-    If the Master Thief is captured by an enemy warband after a battle, that warband may sell him to
-    the authorities for 1D6 plus his accumulated Experience in gold crowns. Then roll D6 for the
-    captive: 1-3 = one of his hands is cut off; 4-5 = he is branded on the forehead, suffering -1
-    Toughness and -3 on rolls to find Rare items; 6 = he is executed.
   source:
     manual: khemri
     printed_page: 72
     section: Heroes / 0-1 Master Thief / Wanted
   name_i18n:
     es: Buscado
-  effect_i18n:
-    es: >-
-      Si el Ladrón Maestro es capturado por una banda enemiga tras una batalla, esa banda puede
-      venderlo a las autoridades por 1D6 más su Experiencia acumulada en coronas de oro. Luego tira
-      D6 por el cautivo: 1-3 = le cortan una mano; 4-5 = le marcan la frente con hierro, sufriendo
-      -1 Resistencia y -3 en las tiradas para encontrar objetos Raros; 6 = es ejecutado.
   applies_to:
     profile_ids:
     - guild-master-thief
@@ -139,19 +105,16 @@ rules:
     - id: unimplemented.khemri-thieves-guild.guild-master-thief.wanted
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.campaign
+  rule_ref: shared-rule.thieves-guild-wanted
 - id: guild-master-thief--contacts
   name: Contacts
-  effect: The Master Thief gains +1 on rolls to find Rare items in the black market.
   source:
     manual: khemri
     printed_page: 72
     section: Heroes / 0-1 Master Thief / Contacts
   name_i18n:
     es: Contactos
-  effect_i18n:
-    es: >-
-      El Ladrón Maestro obtiene +1 en las tiradas para encontrar objetos Raros en el mercado negro.
   applies_to:
     profile_ids:
     - guild-master-thief
@@ -163,22 +126,16 @@ rules:
     - id: unimplemented.khemri-thieves-guild.guild-master-thief.contacts
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.campaign
+  rule_ref: shared-rule.thieves-guild-contacts
 - id: guild-master-thief--disable-traps
   name: Disable Traps
-  effect: >-
-    The Master Thief is an expert at detecting and disabling traps. Resolve this using the trap
-    rules referenced by the Khemri Experience section.
   source:
     manual: khemri
     printed_page: 72
     section: Heroes / 0-1 Master Thief / Disable Traps
   name_i18n:
     es: Desactivar Trampas
-  effect_i18n:
-    es: >-
-      El Ladrón Maestro es un experto en detectar y desactivar trampas. Resuélvelo usando las reglas
-      de trampas referenciadas por la sección de Experiencia de Khemri.
   applies_to:
     profile_ids:
     - guild-master-thief
@@ -190,18 +147,16 @@ rules:
     - id: unimplemented.khemri-thieves-guild.guild-master-thief.disable-traps
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.non-duel
+  rule_ref: shared-rule.khemri-disable-traps
 - id: guild-ruffian--contacts
   name: Contacts
-  effect: A Ruffian gains +1 on rolls to find Rare items in the black market.
   source:
     manual: khemri
     printed_page: 73
     section: Heroes / 0-2 Ruffians / Contacts
   name_i18n:
     es: Contactos
-  effect_i18n:
-    es: Un Matón obtiene +1 en las tiradas para encontrar objetos Raros en el mercado negro.
   applies_to:
     profile_ids:
     - guild-ruffian
@@ -213,22 +168,16 @@ rules:
     - id: unimplemented.khemri-thieves-guild.guild-ruffian.contacts
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.campaign
+  rule_ref: shared-rule.thieves-guild-contacts
 - id: guild-ruffian--disable-traps
   name: Disable Traps
-  effect: >-
-    Ruffians are experts at detecting and disabling traps. Resolve this using the trap rules
-    referenced by the Khemri Experience section.
   source:
     manual: khemri
     printed_page: 73
     section: Heroes / 0-2 Ruffians / Disable Traps
   name_i18n:
     es: Desactivar Trampas
-  effect_i18n:
-    es: >-
-      Los Matones son expertos en detectar y desactivar trampas. Resuélvelo usando las reglas de
-      trampas referenciadas por la sección de Experiencia de Khemri.
   applies_to:
     profile_ids:
     - guild-ruffian
@@ -240,7 +189,8 @@ rules:
     - id: unimplemented.khemri-thieves-guild.guild-ruffian.disable-traps
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.non-duel
+  rule_ref: shared-rule.khemri-disable-traps
 - id: guild-hashashiyyin--consummate-fighter
   name: Consummate Fighter
   effect: >-
@@ -273,17 +223,12 @@ rules:
           value: true
 - id: guild-hashashiyyin--contacts
   name: Contacts
-  effect: The Hashashiyyin Assassin gains +1 on rolls to find Rare items in the black market.
   source:
     manual: khemri
     printed_page: 73
     section: Heroes / 0-1 Hashashiyyin Assassin / Contacts
   name_i18n:
     es: Contactos
-  effect_i18n:
-    es: >-
-      El Asesino Hashashiyyin obtiene +1 en las tiradas para encontrar objetos Raros en el mercado
-      negro.
   applies_to:
     profile_ids:
     - guild-hashashiyyin
@@ -295,22 +240,16 @@ rules:
     - id: unimplemented.khemri-thieves-guild.guild-hashashiyyin.contacts
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.campaign
+  rule_ref: shared-rule.thieves-guild-contacts
 - id: guild-hashashiyyin--disable-traps
   name: Disable Traps
-  effect: >-
-    The Hashashiyyin Assassin is an expert at detecting and disabling traps. Resolve this using the
-    trap rules referenced by the Khemri Experience section.
   source:
     manual: khemri
     printed_page: 73
     section: Heroes / 0-1 Hashashiyyin Assassin / Disable Traps
   name_i18n:
     es: Desactivar Trampas
-  effect_i18n:
-    es: >-
-      El Asesino Hashashiyyin es un experto en detectar y desactivar trampas. Resuélvelo usando las
-      reglas de trampas referenciadas por la sección de Experiencia de Khemri.
   applies_to:
     profile_ids:
     - guild-hashashiyyin
@@ -322,7 +261,8 @@ rules:
     - id: unimplemented.khemri-thieves-guild.guild-hashashiyyin.disable-traps
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.non-duel
+  rule_ref: shared-rule.khemri-disable-traps
 - id: guild-beggar--alms
   name: Alms
   effect: >-
@@ -350,7 +290,7 @@ rules:
     - id: unimplemented.khemri-thieves-guild.guild-beggar.alms
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.campaign
 - id: band--guild-special-skills-pickpocket
   kind: warband_skill
   name: Pickpocket
@@ -385,7 +325,7 @@ rules:
     - id: unimplemented.khemri-thieves-guild.band.guild-special-skills-pickpocket
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.non-duel
 - id: band--guild-special-skills-knife-fighting
   kind: warband_skill
   runtime:
@@ -452,7 +392,7 @@ rules:
     - id: unimplemented.khemri-thieves-guild.band.guild-special-skills-hide-in-shadows
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.movement
 - id: band--guild-special-skills-poisoner
   kind: warband_skill
   name: Poisoner
@@ -481,14 +421,14 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: selectable
     effects:
     - id: unimplemented.khemri-thieves-guild.band.guild-special-skills-poisoner
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: out-of-scope.magic
+      reason: pending-implementation
 - id: band--guild-special-skills-fast-legs
   kind: warband_skill
   name: Fast Legs
@@ -519,7 +459,7 @@ rules:
     - id: unimplemented.khemri-thieves-guild.band.guild-special-skills-fast-legs
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.movement
 - id: band--guild-special-skills-infiltration
   kind: warband_skill
   name: Infiltration
@@ -543,7 +483,7 @@ rules:
     - id: unimplemented.khemri-thieves-guild.band.guild-special-skills-infiltration
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.movement
   # Not shared: the printed entry also names the profile that may not take the skill, which the
   # shared Infiltration text does not carry.
   effect: >-
@@ -574,7 +514,6 @@ rules:
           - weapon.ankus
           - defence.shield
           - armour.heavy-armour
-          - weapon.bagh-nakh
   name: Equipment Restrictions
   source:
     manual: khemri
@@ -597,9 +536,6 @@ rules:
       binding:
         kind: profile
         id: profile.equipment-restrictions
-        parameters:
-          forbids:
-          - weapon.bagh-nakh
   name: Equipment Restrictions
   source:
     manual: khemri
@@ -662,7 +598,6 @@ rules:
           - weapon.ankus
           - defence.shield
           - armour.heavy-armour
-          - weapon.bagh-nakh
   name: Equipment Restrictions
   source:
     manual: khemri
@@ -685,9 +620,6 @@ rules:
       binding:
         kind: profile
         id: profile.equipment-restrictions
-        parameters:
-          forbids:
-          - weapon.bagh-nakh
   name: Equipment Restrictions
   source:
     manual: khemri
@@ -716,7 +648,6 @@ rules:
           - weapon.ankus
           - defence.shield
           - armour.heavy-armour
-          - weapon.bagh-nakh
   name: Equipment Restrictions
   source:
     manual: khemri

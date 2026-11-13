@@ -10,7 +10,7 @@ rules:
     - id: unimplemented.watchmen-mim.band.black-caps
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Black Caps
   effect: City Watch patrols may requisition one Watch Carriage with two horses before every battle.
   source:
@@ -35,7 +35,7 @@ rules:
     - id: unimplemented.watchmen-mim.band.secretariat
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Secretariat
   effect: River Watch patrols may commandeer a River Boat before the start of every battle.
   source:
@@ -60,7 +60,7 @@ rules:
     - id: unimplemented.watchmen-mim.band.whistling
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.group
   name: Whistling
   effect: >-
     Watch patrols can summon assistance in the recovery phase by blowing their whistles: D3+1 Watch
@@ -91,7 +91,7 @@ rules:
     - id: unimplemented.watchmen-mim.band.jurisdiction
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Jurisdiction
   effect: >-
     Instead of rolling on the Serious Injury Chart, warriors taken out of action in close combat are
@@ -124,7 +124,7 @@ rules:
     - id: unimplemented.watchmen-mim.band.interrogation
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Interrogation
   effect: >-
     Instead of searching for a rare item, the leader of the Watch may interrogate a suspect Hero
@@ -194,7 +194,7 @@ rules:
     - id: unimplemented.watchmen-mim.band.fenland-striders
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: out-of-scope.movement
   name: Fenland Striders (Marsh Watch)
   effect: Marsh-watch Heroes and Officers re-roll any failed Initiative tests.
   source:
@@ -235,14 +235,14 @@ rules:
   rule_ref: shared-rule.leader
 - id: sergeants--falconer
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.watchmen-mim.sergeants.falconer
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: out-of-scope.non-duel
+      reason: deferred.other
   name: Falconer
   effect: >-
     Hunting birds may only be used by a Hero with the animal handling skill 'Falconer'. The falcon
@@ -391,7 +391,7 @@ rules:
     - id: unimplemented.watchmen-mim.sewer-jacks.tunnel-rat
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.non-duel
   name: Tunnel Rat
   source:
     manual: broheim.net

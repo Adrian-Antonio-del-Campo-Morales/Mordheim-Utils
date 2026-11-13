@@ -35,9 +35,6 @@ rules:
       binding: null
       reason: out-of-scope.magic
   name: Wizard
-  effect: >-
-    The Priestess is a Wizard and may use Amazon Rituals . She starts with one ritual chosen at
-    random from the list.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -45,13 +42,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons-lustria
   name_i18n:
     es: Mago
-  effect_i18n:
-    es: >-
-      La Sacerdotisa es una hechicera y puede usar los Rituales de las Amazonas. Comienza con un
-      ritual elegido al azar de la lista.
   applies_to:
     profile_ids:
     - serpent-priestess
+  rule_ref: shared-rule.amazon-priestess-wizard
 - id: jaguar-warriors--one-with-the-jungle
   runtime:
     scope: 'NO'

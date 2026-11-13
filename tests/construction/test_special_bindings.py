@@ -19,7 +19,7 @@ def test_automatic_profile_handlers_compile_trample_frantic_and_bear_hug():
     fanatic = compile_fighter(build("night-goblins-mic", "fanatics"))
     bear = compile_fighter(build("kislevites", "trained-bear"))
     assert any("rule.trample" in attack.tags for attack in centigor.extra_attacks)
-    assert fanatic.global_effects.priority == 10
+    assert "mechanic.frantic" in fanatic.global_effects.tags
     assert bear.global_effects.bear_hug
 
 

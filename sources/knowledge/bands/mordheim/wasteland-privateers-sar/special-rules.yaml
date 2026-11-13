@@ -3,14 +3,19 @@ band_id: wasteland-privateers-sar
 rules:
 - id: band--pirate-rules
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
+    - id: compiler.pirate-human-mercenary-equipment-access
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.pirate-human-mercenary-equipment-access
     - id: unimplemented.wasteland-privateers-sar.band.pirate-rules
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: General Pirate Rules
   source:
     manual: broheim.net
@@ -31,7 +36,7 @@ rules:
     - id: unimplemented.wasteland-privateers-sar.band.wasteland-special-rules
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.shooting
   name: Wasteland Special Rules
   effect: >-
     In a Wasteland Privateer Warband, any Henchmen Gunners may fire and reload Handguns in the same
@@ -60,7 +65,7 @@ rules:
     - id: unimplemented.wasteland-privateers-sar.gunners.wasteland-gunners
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.shooting
   name: Wasteland Gunners
   effect: >-
     In a Wasteland Privateer Warband, any Henchmen Gunners may fire and reload Handguns in the same
@@ -111,7 +116,7 @@ rules:
     - id: unimplemented.wasteland-privateers-sar.gunners.swivel-guns-are-dangerous
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Swivel Guns Is Dangerous, Matey!
   source:
     manual: broheim.net
@@ -133,7 +138,7 @@ rules:
     - id: unimplemented.wasteland-privateers-sar.boatswains.expert-riggers
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.movement
   name: Expert Riggers
   source:
     manual: broheim.net
@@ -155,7 +160,7 @@ rules:
     - id: unimplemented.wasteland-privateers-sar.swabbies.not-hired
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Not Hired
   source:
     manual: broheim.net
@@ -177,7 +182,7 @@ rules:
     - id: unimplemented.wasteland-privateers-sar.swabbies.never-gain-experience
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Never Gain Experience
   source:
     manual: broheim.net
@@ -192,14 +197,15 @@ rules:
   rule_ref: shared-rule.never-gain-experience
 - id: swabbies--rabble
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.wasteland-privateers-sar.swabbies.rabble
-      scope: 'NO'
-      binding: null
-      reason: pending-classification
+    - id: compiler.swabbie-rabble-loadout
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.swabbie-rabble-loadout
   name: Rabble
   source:
     manual: broheim.net
@@ -221,7 +227,7 @@ rules:
     - id: unimplemented.wasteland-privateers-sar.swabbies.blimey-they-got-away
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.group
   name: Blimey, They Got Away!
   source:
     manual: broheim.net
@@ -243,7 +249,7 @@ rules:
     - id: unimplemented.wasteland-privateers-sar.swabbies.dont-mind-them-mates
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.group
   name: Don't Mind Them Mates, They Ain't True Pirates!
   source:
     manual: broheim.net
@@ -268,7 +274,8 @@ rules:
         kind: profile
         id: profile.equipment-restrictions
         parameters:
-          forbids: armour-suit
+          forbids:
+          - armour-suit
   name: No Armour
   source:
     manual: broheim.net

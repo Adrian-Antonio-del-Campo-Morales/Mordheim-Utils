@@ -81,6 +81,10 @@ reason_codes:
   label: 'Out of scope: no effect on the one-against-one duel.'
   label_i18n:
     es: 'Fuera de alcance: sin efecto en el duelo uno contra uno.'
+- id: covered.elsewhere
+  label: 'Covered elsewhere: delivered by another bound effect, rule or supplied condition.'
+  label_i18n:
+    es: 'Cubierto en otro lugar: lo aporta otro efecto, regla o condición aportada ya vinculados.'
 - id: deferred.psychology
   label: 'Deferred: psychology subsystem.'
   label_i18n:
@@ -99,6 +103,9 @@ invariants:
 - Equivalence is always explicit and is never inferred from rule names or prose.
 - Every YES effect must have a binding when runtime.implemented is YES.
 - A rule is implemented YES only when every YES effect has an executable binding.
+- >-
+    An unbound effect's scope follows its reason family: out-of-scope.*, source-blocked, covered.elsewhere and
+    pending-classification are scope NO; deferred.* and pending-implementation are scope LATER.
 - An unbound effect names why in reason with one of the reason_codes, regardless of scope; the free text that
   once explained each case is archived in docs/archive/reason-texts.csv.
 - Rules without a runtime block are not classified yet and must not be treated as implemented.

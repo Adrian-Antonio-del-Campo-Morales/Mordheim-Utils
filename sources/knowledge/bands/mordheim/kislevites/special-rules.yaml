@@ -13,9 +13,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any warrior within 6" of the Druzhina Captain may use his Leadership characteristic when taking
-    any Leadership tests.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -23,13 +20,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/kislevites
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier guerrero a 6" del Capitán de Druzhina puede usar su característica de Liderazgo al
-      realizar cualquier chequeo de Liderazgo.
   applies_to:
     profile_ids:
     - druzhina-captain
+  rule_ref: shared-rule.leader
 - id: druzhina-captain--inheritance
   runtime:
     scope: 'NO'
@@ -152,7 +146,7 @@ rules:
     - id: unimplemented.kislevites.streltsi.gun-rest
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: out-of-scope.shooting
   name: Gun-Rest
   effect: >-
     A Streltsi warrior armed with both halberd and handgun may use the halberd as a gun-rest. The
@@ -388,7 +382,6 @@ rules:
       binding: null
       reason: out-of-scope.campaign
   name: Animal
-  effect: Trained Bears are animals and do not gain experience.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -396,11 +389,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/kislevites
   name_i18n:
     es: Animal
-  effect_i18n:
-    es: Los Osos adiestrados son animales y no ganan experiencia.
   applies_to:
     profile_ids:
     - trained-bear
+  rule_ref: shared-rule.animal
 - id: trained-bear--large-target
   runtime:
     scope: 'NO'

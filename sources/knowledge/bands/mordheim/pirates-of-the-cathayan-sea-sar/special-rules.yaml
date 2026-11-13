@@ -10,7 +10,7 @@ rules:
     - id: unimplemented.pirates-of-the-cathayan-sea-sar.band.swabbies-cathay
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Swabbies/Swivel Guns (Cathayan Pirates)
   effect: >-
     Cathayan Pirates can take human Swabbies, the stats of which are included later. See the rules
@@ -39,7 +39,7 @@ rules:
     - id: unimplemented.pirates-of-the-cathayan-sea-sar.band.swivel-guns-rare-lao-xiong
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Swivel Guns Are Rare, Lao Xiong!
   effect: >-
     Cathay Pirate Warbands may not start with a Swivel Gun on their roster in campaign games. If
@@ -66,7 +66,7 @@ rules:
     - id: unimplemented.pirates-of-the-cathayan-sea-sar.band.foreign-but-human
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Foreign, but Human
   effect: >-
     While not included in the above 'Human Pirates' Warband list, Cathayan Pirates still count as a
@@ -97,7 +97,7 @@ rules:
     - id: unimplemented.pirates-of-the-cathayan-sea-sar.band.stranger-in-a-strange-land
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.movement
   name: Stranger in a Strange Land
   effect: >-
     When playing in any campaign based in the Old World (including Mordheim, Albion, Sylvannia,
@@ -130,7 +130,7 @@ rules:
     - id: unimplemented.pirates-of-the-cathayan-sea-sar.band.succession
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Succession (Cathayan Pirates)
   effect: >-
     If the Disgraced Warlord is killed, one of the Shanghai'ers will take over in the same manner as
@@ -157,7 +157,7 @@ rules:
     - id: unimplemented.pirates-of-the-cathayan-sea-sar.item.katana
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Katana
   effect: >-
     20 gold crowns - Availability: Rare 10. Katanas are great-swords that are usually used by
@@ -199,7 +199,7 @@ rules:
     - id: unimplemented.pirates-of-the-cathayan-sea-sar.item.cathayan-candles
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Cathayan Candles
   effect: >-
     25+D6 gold crowns - Availability: Rare 9. Cathayan Candles are explosive sticks, made with black
@@ -240,7 +240,7 @@ rules:
     - id: unimplemented.pirates-of-the-cathayan-sea-sar.item.cathayan-plate-armour
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Cathayan Plate Armour
   effect: >-
     120 gold crowns - Availability: Rare 11. The Cathayan blacksmiths forge these heavy armours for
@@ -276,7 +276,7 @@ rules:
     - id: unimplemented.pirates-of-the-cathayan-sea-sar.item.quarterstaff
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Quarter Staff
   effect: >-
     15 gold crowns - Availability: Common. Fighting staffs are traditional weapons among the warrior
@@ -313,7 +313,7 @@ rules:
     - id: unimplemented.pirates-of-the-cathayan-sea-sar.item.chain-sticks
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Chain Sticks
   effect: >-
     20 gold crowns - Availability: Rare 7. Consisting of wooden bars tied together, chain sticks are
@@ -350,7 +350,7 @@ rules:
     - id: unimplemented.pirates-of-the-cathayan-sea-sar.item.fish-hook-shot
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Fish-Hook Shot
   effect: >-
     10 gold crowns - Availability: Rare 7. A hook shot is a fine rope or chain with a weighted
@@ -389,18 +389,16 @@ rules:
     band: true
 - id: disgraced-warlord--leader
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.pirates-of-the-cathayan-sea-sar.captain.leader
-      scope: 'NO'
-      binding: null
-      reason: pending-classification
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any pirate within 6" of the Disgraced Warlord may use his Leadership characteristic when taking
-    any Leadership tests.
   source:
     manual: broheim.net
     printed_page: 3
@@ -408,13 +406,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Pirates%20of%20the%20Cathayan%20Sea.pdf
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier pirata a 6" o menos del Señor de la Guerra Degradado puede usar su característica de
-      Liderazgo cuando realice cualquier tirada de Liderazgo.
   applies_to:
     profile_ids:
     - disgraced-warlord
+  rule_ref: shared-rule.leader
 - id: dragon-monk--unarmed-mastery
   runtime:
     scope: 'YES'
@@ -503,7 +498,7 @@ rules:
     - id: unimplemented.pirates-of-the-cathayan-sea-sar.gunners.swivel-guns-dangerous-lao-xiong
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Swivel Guns Are Dangerous, Lao Xiong!
   source:
     manual: broheim.net
@@ -525,7 +520,7 @@ rules:
     - id: unimplemented.pirates-of-the-cathayan-sea-sar.martial-artists.agile
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.movement
   name: Agile (Martial Artists)
   effect: >-
     Martial Artists are highly trained in climbing and maneuvering, as if they always carry Ropes &
@@ -557,9 +552,8 @@ rules:
     - id: unimplemented.pirates-of-the-cathayan-sea-sar.floordogs.not-hired
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Not Hired (Floordogs)
-  effect: Floordogs are not hired, they follow the special 'recruitment' rules.
   source:
     manual: broheim.net
     printed_page: 4
@@ -567,11 +561,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Pirates%20of%20the%20Cathayan%20Sea.pdf
   name_i18n:
     es: No Contratados (Perros de Cubierta)
-  effect_i18n:
-    es: Los Perros de Cubierta no son contratados, siguen las reglas especiales de 'reclutamiento'.
   applies_to:
     profile_ids:
     - floordogs
+  rule_ref: shared-rule.not-hired
 - id: floordogs--never-gain-experience
   runtime:
     scope: 'NO'
@@ -581,11 +574,8 @@ rules:
     - id: unimplemented.pirates-of-the-cathayan-sea-sar.floordogs.never-gain-experience
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Never Gain Experience (Floordogs)
-  effect: >-
-    Floordogs generally aren't interested in proving their worth to the Deck Hands, they are
-    interested in survival and hopefully escape! Floordogs never gain experience in games.
   source:
     manual: broheim.net
     printed_page: 4
@@ -593,14 +583,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Pirates%20of%20the%20Cathayan%20Sea.pdf
   name_i18n:
     es: Nunca Ganarán Experiencia (Perros de Cubierta)
-  effect_i18n:
-    es: >-
-      Los Perros de Cubierta no están interesados en demostrar su valor a los Marinadas, ¡les
-      interesa sobrevivir y escapar si pueden! Los Perros de Cubierta nunca ganan experiencia en las
-      partidas.
   applies_to:
     profile_ids:
     - floordogs
+  rule_ref: shared-rule.crew-never-gain-experience
 - id: floordogs--rabble
   runtime:
     scope: 'NO'
@@ -610,12 +596,8 @@ rules:
     - id: unimplemented.pirates-of-the-cathayan-sea-sar.floordogs.rabble
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Rabble (Floordogs)
-  effect: >-
-    Floordogs do not need to be armed all the same. Each may be given different equipment, but only
-    items listed in the Floordog equipment list. Floordogs can never use magic, or cast spells of
-    any sort, no matter their original background or abilities.
   source:
     manual: broheim.net
     printed_page: 4
@@ -623,15 +605,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Pirates%20of%20the%20Cathayan%20Sea.pdf
   name_i18n:
     es: Chusma (Perros de Cubierta)
-  effect_i18n:
-    es: >-
-      Los Perros de Cubierta no necesitan ir armados por igual. Cada uno puede llevar equipo
-      distinto, pero solo objetos de la lista de equipo de Perros de Cubierta. Los Perros de
-      Cubierta nunca pueden usar magia ni lanzar hechizos de ningún tipo, sin importar su origen o
-      habilidades previas.
   applies_to:
     profile_ids:
     - floordogs
+  rule_ref: shared-rule.rabble
 - id: floordogs--wo-kao-they-got-away
   runtime:
     scope: 'NO'
@@ -641,7 +618,7 @@ rules:
     - id: unimplemented.pirates-of-the-cathayan-sea-sar.floordogs.wo-kao-they-got-away
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.group
   name: Wo Kao, They Got Away!
   source:
     manual: broheim.net
@@ -663,7 +640,7 @@ rules:
     - id: unimplemented.pirates-of-the-cathayan-sea-sar.floordogs.dont-mind-them-lao-xiong
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.group
   name: Don't Mind Them Lao Xiong, They Ain't True Pirates!
   source:
     manual: broheim.net
@@ -678,14 +655,14 @@ rules:
   rule_ref: shared-rule.dont-mind-them
 - id: band--special-pirates-of-the-cathayan-sea-skills
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.pirates-of-the-cathayan-sea-sar.skills.special-pirates-of-the-cathayan-sea-skills
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: pending-classification
+      reason: pending-implementation
   name: Special Pirates of the Cathayan Sea Skills
   effect: >-
     Angel of the Sword: when wielding a Katana, a model may choose each round of combat; to gain an
@@ -742,7 +719,8 @@ rules:
         kind: profile
         id: profile.equipment-restrictions
         parameters:
-          forbids: armour-suit
+          forbids:
+          - armour-suit
   name: No Armour
   source:
     manual: broheim.net

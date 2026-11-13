@@ -16,12 +16,6 @@ rules:
       - id: animosity
         scope: 'NO'
   name: Animosity
-  effect: >-
-    Goblins spend much of their lives squabbling and fighting amongst themselves. Sometimes this
-    will happen at the worst of times. At the beginning of each Night Goblin turn roll a D6. On a
-    roll of 1 they start to squabble and will do nothing else for the rest of the turn. Only Night
-    Goblins are affected. Trolls, Squigs, Snotlings and other non-goblins are not affected and will
-    act as normal.
   source:
     manual: broheim.net
     printed_page: 8
@@ -29,13 +23,6 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Crooked Moon Night Goblins.pdf
   name_i18n:
     es: Rencor
-  effect_i18n:
-    es: >-
-      Los Goblins pasan gran parte de sus vidas reñían y peleando entre ellos. A veces esto ocurre
-      en el peor de los momentos. Al inicio de cada turno de Goblins Nocturnos tira 1D6. Con un
-      resultado de 1, empiezan a reñir y no harán nada más durante el resto del turno. Solo se ven
-      afectados los Goblins Nocturnos. Trolls, Squigs, Snotlings y otros no goblins no se ven
-      afectados y actuarán con normalidad.
   applies_to:
     band: true
     profile_ids:
@@ -45,6 +32,7 @@ rules:
     - squig-hopper
     - night-goblins
     - fanatics
+  rule_ref: shared-rule.night-goblin-animosity
 - id: band--hate-stunties-and-skaven
   runtime:
     scope: 'YES'
@@ -84,12 +72,12 @@ rules:
     - night-goblins
 - id: band--night-goblin-special-skills
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.crooked-moon-kep.band.night-goblin-special-skills
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.shooting
       clauses:
@@ -210,7 +198,7 @@ rules:
     - id: unimplemented.crooked-moon-kep.band.waagh-magic
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.magic
   name: WAAAGH Magic
   effect: >-
     WAAAGH spells are a ritual of art, prayer to Gork and Mork. The Shaman's spells: 1 Gork's Wacky
@@ -291,9 +279,8 @@ rules:
     - id: unimplemented.crooked-moon-kep.shaman.wizard
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.magic
   name: Wizard
-  effect: A Night Goblin Shaman is a Wizard and uses WAAAGH! magic.
   source:
     manual: broheim.net
     printed_page: 13
@@ -301,11 +288,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Crooked Moon Night Goblins.pdf
   name_i18n:
     es: Mago
-  effect_i18n:
-    es: Un Chamán Goblin Nocturno es un Hechicero y usa magia WAAAGH!.
   applies_to:
     profile_ids:
     - shaman
+  rule_ref: shared-rule.waaagh-wizard
 - id: squig-hopper--squig-jump
   runtime:
     scope: 'NO'
@@ -315,7 +301,7 @@ rules:
     - id: unimplemented.crooked-moon-kep.squig-hopper.squig-jump
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: Squig Jump
   effect: >-
     Squig Hoppers move using the random 2D6 Movement characteristic of their Squig mount instead of
@@ -382,9 +368,6 @@ rules:
         parameters:
           value: true
   name: Looney
-  effect: >-
-    Due to the effect of the mushrooms he is subject to frenzy. He must also test for permanent
-    damage after the battle as described in the rulebook.
   source:
     manual: broheim.net
     printed_page: 14
@@ -392,13 +375,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Crooked Moon Night Goblins.pdf
   name_i18n:
     es: Chiflado
-  effect_i18n:
-    es: >-
-      Debido al efecto de las setas está sujeto a Frenesí. También debe hacer un chequeo de daño
-      permanente tras la batalla, tal y como se describe en el libro de reglas.
   applies_to:
     profile_ids:
     - fanatics
+  rule_ref: shared-rule.looney
 - id: fanatics--frantic
   runtime:
     scope: 'YES'
@@ -437,13 +417,8 @@ rules:
     - id: unimplemented.crooked-moon-kep.cave-squigs.movement
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: Movement
-  effect: >-
-    Cave Squigs don't have a set movement characteristic but move with an unbelievably random
-    distance they move. Squigs never run and never declare a charge. Instead they are allowed to
-    contact an enemy model within their normal 2D6 movement. If this happens, they count as charging
-    for the following round of close combat just as if they had declared a charge.
   source:
     manual: broheim.net
     printed_page: 14
@@ -451,16 +426,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Crooked Moon Night Goblins.pdf
   name_i18n:
     es: Movimiento
-  effect_i18n:
-    es: >-
-      Los Squigs de Cueva no tienen una característica de Movimiento fija, sino que se mueven una
-      distancia increíblemente aleatoria. Los Squigs nunca corren ni declaran cargas. En su lugar,
-      se les permite contactar con un modelo enemigo dentro de su movimiento normal de 2D6. Si esto
-      ocurre, cuentan como que cargan para la siguiente ronda de combate cuerpo a cuerpo, igual que
-      si hubieran declarado una carga.
   applies_to:
     profile_ids:
     - cave-squigs
+  rule_ref: shared-rule.movement
 - id: cave-squigs--minderz
   runtime:
     scope: 'NO'
@@ -470,7 +439,7 @@ rules:
     - id: unimplemented.crooked-moon-kep.cave-squigs.minderz
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: Minderz
   source:
     manual: broheim.net
@@ -485,12 +454,12 @@ rules:
   rule_ref: shared-rule.minderz
 - id: cave-squigs--animals
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.crooked-moon-kep.cave-squigs.animals
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:
@@ -596,12 +565,12 @@ rules:
   rule_ref: shared-rule.regeneration
 - id: troll--dumb-monster
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.crooked-moon-kep.troll.dumb-monster
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:
@@ -621,12 +590,12 @@ rules:
   rule_ref: shared-rule.dumb-monster
 - id: troll--always-hungry
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.crooked-moon-kep.troll.always-hungry
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:
@@ -676,7 +645,7 @@ rules:
     - id: unimplemented.crooked-moon-kep.snotling-mob.mob
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.group
   name: Mob
   effect: >-
     Snotlings are naturally gregarious creatures. All members must stay within 6" and all will join
@@ -729,7 +698,7 @@ rules:
     - id: unimplemented.crooked-moon-kep.snotling-mob.dodgy
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.shooting
   name: Dodgy
   effect: >-
     The little creatures are constantly ducking and diving in the most infuriating way. They get a

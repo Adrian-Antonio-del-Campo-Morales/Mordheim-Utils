@@ -175,4 +175,4 @@ def test_every_execution_mechanism_can_enter_the_scalar_round_pipeline():
     # the White Tower and Instinctive Warrior are classified against the parry
     # operators the execution contract already carried.
     # The Cleaver mechanic was retired into the Axe it fights as (2026-11-11).
-    assert executed == 503
+    assert executed == 508

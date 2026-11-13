@@ -13,9 +13,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any warrior within 6" of the Boss may use his Leadership characteristic when taking Leadership
-    tests.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -23,13 +20,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier guerrero a 6" del Jefe puede usar su característica de Liderazgo cuando realice
-      chequeos de Liderazgo.
   applies_to:
     profile_ids:
     - black-orc-boss
+  rule_ref: shared-rule.leader
 - id: black-orc-boss--black-orc
   runtime:
     scope: 'YES'
@@ -69,14 +63,14 @@ rules:
   rule_ref: shared-rule.black-orc-save
 - id: black-orc-boss--oi-behave
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.black-orcs.black-orc-boss.oi-behave
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.group
       clauses:
       - id: oi-behave
         scope: 'NO'
@@ -183,7 +177,7 @@ rules:
     - id: unimplemented.black-orcs.orc-boyz.animosity
       scope: 'NO'
       binding: null
-      reason: out-of-scope.movement
+      reason: out-of-scope.non-duel
   name: Animosity
   source:
     manual: mordheimer.net
@@ -205,7 +199,7 @@ rules:
     - id: unimplemented.black-orcs.orc-shootaz.animosity
       scope: 'NO'
       binding: null
-      reason: out-of-scope.movement
+      reason: out-of-scope.non-duel
   name: Animosity
   source:
     manual: mordheimer.net
@@ -481,7 +475,7 @@ rules:
     - id: unimplemented.black-orcs.troll.dumb-monster
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: out-of-scope.campaign
   name: Dumb Monster
   source:
     manual: mordheimer.net
@@ -636,7 +630,7 @@ rules:
     - id: unimplemented.black-orcs.band.animosity
       scope: 'NO'
       binding: null
-      reason: out-of-scope.movement
+      reason: out-of-scope.non-duel
   name: Animosity
   effect: >-
     At the start of the Orc player's turn, roll a D6 for each Orc or Goblin Henchman not engaged in
@@ -766,7 +760,7 @@ rules:
     - id: unimplemented.black-orcs.band.black-orc-special-skills-waaagh
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: out-of-scope.movement
   name: Waaagh!
   source:
     manual: mordheimer.net
@@ -811,7 +805,7 @@ rules:
     - id: unimplemented.black-orcs.band.black-orc-special-skills-da-cunnin-plan
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.group
   name: Da Cunnin’ Plan
   source:
     manual: mordheimer.net

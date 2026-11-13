@@ -3,19 +3,12 @@ band_id: lustria-high-elves
 rules:
 - id: loremaster--leader
   name: Leader
-  effect: >-
-    Any warband model within 6" of the Loremaster may use his Leadership when taking Leadership
-    tests.
   source:
     manual: lustria
     printed_page: 116
     section: Heroes / 1 Loremaster / Leader
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier modelo de la banda a 6" del Maestro del saber puede usar su Liderazgo al realizar
-      chequeos de Liderazgo.
   applies_to:
     profile_ids:
     - loremaster
@@ -29,6 +22,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: loremaster--spellcaster
   name: Spellcaster
   effect: >-
@@ -87,7 +81,7 @@ rules:
     - id: unimplemented.lustria-high-elves.sword-guardians.swordmaster-protection
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.shooting
 - id: explorers--searcher
   name: Searcher
   effect: >-
@@ -114,7 +108,7 @@ rules:
     - id: unimplemented.lustria-high-elves.explorers.searcher
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.campaign
 - id: band--excellent-sight
   name: Excellent Sight
   source:
@@ -133,7 +127,7 @@ rules:
     - id: unimplemented.lustria-high-elves.band.excellent-sight
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.movement
   # Not shared: the Spanish Lustria source gives the distance in centimetres (twice the Initiative
   # in cm), not the inches of the shared text. The High Elf page itself was not retrievable; the
   # rule sentence is the one the same book prints for its Dark Elves, which the earlier record
@@ -207,15 +201,12 @@ rules:
           - drug
 - id: band--ancestral-customs
   name: Ancestral Customs
-  effect: High Elves may never use blackpowder weapons.
   source:
     manual: lustria
     printed_page: 114
     section: High Elf Special Rules / Ancestral Customs
   name_i18n:
     es: Costumbres Ancestrales
-  effect_i18n:
-    es: Los altos elfos nunca pueden usar armas de pólvora.
   applies_to:
     band: true
   runtime:
@@ -228,6 +219,7 @@ rules:
       binding:
         kind: compiler
         id: compiler.no-blackpowder-weapons
+  rule_ref: shared-rule.ancestral-customs
 - id: band--determination
   name: Determination
   effect: >-
@@ -246,14 +238,14 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.lustria-high-elves.band.determination
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.group
       clauses:
       - id: determination
         scope: 'NO'
@@ -308,14 +300,14 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: selectable
     effects:
     - id: unimplemented.lustria-high-elves.band.high-elf-special-skills-rune-master
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: out-of-scope.construction
+      reason: deferred.other
 - id: band--high-elf-special-skills-miniath
   kind: warband_skill
   runtime:
@@ -414,7 +406,7 @@ rules:
     - id: unimplemented.lustria-high-elves.band.high-elf-special-skills-stand-and-shoot
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.shooting
 - id: band--high-elf-special-skills-faerie
   kind: warband_skill
   name: Faerie

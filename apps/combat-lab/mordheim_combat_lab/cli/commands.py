@@ -878,7 +878,8 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
         description="Validate the knowledge base and its structural connections "
                     "(editorial schemas, execution contract, default profile "
                     "compilation); structural errors fail.  Game rules are "
-                    "checked by the modular mechanics and conformance suites.  Set "
+                    "checked by the modular mechanics and rules-conformance "
+                    "suites.  Set "
                     "MORDHEIM_COMBAT_LAB_KNOWLEDGE_PATH to check another "
                     "knowledge base.",
         formatter_class=_HelpFormatter)

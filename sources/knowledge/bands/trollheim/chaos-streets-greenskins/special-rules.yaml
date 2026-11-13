@@ -3,18 +3,12 @@ band_id: chaos-streets-greenskins
 rules:
 - id: orc-boss--leader
   name: Leader
-  effect: >-
-    Any warband model within 6" of the Orc Boss may use his Leadership when taking Leadership tests.
   source:
     manual: chaos-in-the-streets
     printed_page: 132
     section: Heroes / 1 Orc Boss / Special Rules / Leader
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier modelo de la banda a 6" del Jefe Orco puede usar su Liderazgo cuando realice
-      chequeos de Liderazgo.
   applies_to:
     profile_ids:
     - orc-boss
@@ -28,6 +22,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: orc-shaman--wizard
   name: Wizard
   effect: >-
@@ -54,7 +49,7 @@ rules:
     - id: unimplemented.chaos-streets-greenskins.orc-shaman.wizard
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.magic
 - id: orc-boyz--animosity
   name: Animosity
   source:
@@ -67,14 +62,14 @@ rules:
     profile_ids:
     - orc-boyz
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.chaos-streets-greenskins.orc-boyz.animosity
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.non-duel
       clauses:
       - id: animosity
         scope: 'NO'
@@ -100,14 +95,14 @@ rules:
     profile_ids:
     - goblin-warriors
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.chaos-streets-greenskins.goblin-warriors.animosity
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.non-duel
       clauses:
       - id: animosity
         scope: 'NO'
@@ -130,7 +125,7 @@ rules:
     - id: unimplemented.chaos-streets-greenskins.goblin-warriors.not-orcs
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.group
   rule_ref: shared-rule.not-orcs
 - id: goblin-warriors--useless-runts
   name: Useless Runts
@@ -158,7 +153,7 @@ rules:
     - id: unimplemented.chaos-streets-greenskins.goblin-warriors.useless-runts
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
 - id: goblin-warriors--fear-elves
   name: Fear Elves
   effect: Goblin Warriors are subject to Fear against Elves.
@@ -211,7 +206,7 @@ rules:
     - id: unimplemented.chaos-streets-greenskins.cave-squigs.squig-movement
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.movement
 - id: cave-squigs--squig-keepers
   name: Keepers
   effect: >-
@@ -243,7 +238,7 @@ rules:
     - id: unimplemented.chaos-streets-greenskins.cave-squigs.squig-keepers
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.movement
 - id: cave-squigs--not-orcs
   name: Not Orcs
   source:
@@ -263,19 +258,16 @@ rules:
     - id: unimplemented.chaos-streets-greenskins.cave-squigs.not-orcs
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.group
   rule_ref: shared-rule.not-orcs
 - id: cave-squigs--animal
   name: Animal
-  effect: Cave Squigs are animals and never gain Experience.
   source:
     manual: chaos-in-the-streets
     printed_page: 134
     section: Henchmen / 0-5 Cave Squigs / Animal
   name_i18n:
     es: Animal
-  effect_i18n:
-    es: Los Squigs de Cueva son animales y nunca ganan Experiencia.
   applies_to:
     profile_ids:
     - cave-squigs
@@ -287,7 +279,8 @@ rules:
     - id: unimplemented.chaos-streets-greenskins.cave-squigs.animal
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
+  rule_ref: shared-rule.animal
 - id: troll--fear
   name: Fear
   source:
@@ -377,14 +370,14 @@ rules:
     profile_ids:
     - troll
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.chaos-streets-greenskins.troll.stupid-monster
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.campaign
       clauses:
       - id: whole
         scope: 'NO'
@@ -407,8 +400,16 @@ rules:
     - id: unimplemented.chaos-streets-greenskins.troll.always-hungry
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
-  rule_ref: shared-rule.always-hungry
+      reason: out-of-scope.campaign
+  effect: >-
+    After each battle, the warband must pay 15 gc to keep the Troll. Instead, the Orc Boss may sacrifice
+    one Goblin Warrior or Cave Squig to feed it. If neither the upkeep nor a sacrifice is provided, the
+    Troll leaves the warband.
+  effect_i18n:
+    es: >-
+      Tras cada batalla, la banda debe pagar 15 coronas para mantener al Troll. En su lugar, el Jefe
+      Orco puede sacrificar un Guerrero Goblin o Squig de Cueva para alimentarlo. Si no se aporta ni la
+      manutención ni un sacrificio, el Troll abandona la banda.
 - id: troll--troll-vomit
   kind: profile_ability
   runtime:
@@ -458,7 +459,13 @@ rules:
       scope: 'NO'
       binding: null
       reason: out-of-scope.shooting
-  rule_ref: shared-rule.large-target
+  effect: >-
+    The Troll may be selected as a shooting target even if it is not the closest target, and missile
+    attacks against it gain +1 To Hit.
+  effect_i18n:
+    es: >-
+      El Troll puede ser seleccionado como objetivo de disparo incluso si no es el objetivo más cercano,
+      y los ataques de misil contra él obtienen +1 para impactar.
 - id: band--distasteful-company
   name: Distasteful Company
   effect: >-
@@ -526,14 +533,14 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.chaos-streets-greenskins.band.animosity
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.non-duel
       clauses:
       - id: whole
         scope: 'NO'
@@ -555,7 +562,7 @@ rules:
     - id: unimplemented.chaos-streets-greenskins.band.goblin-ratio
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.construction
   rule_ref: shared-rule.goblin-limit
 - id: band--cave-squig-ratio
   name: Cave Squig Limit
@@ -582,7 +589,7 @@ rules:
     - id: unimplemented.chaos-streets-greenskins.band.cave-squig-ratio
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.construction
 - id: band--orc-special-skills-ard-ead
   kind: warband_skill
   name: '''Ard ''Ead'
@@ -632,8 +639,14 @@ rules:
     - id: unimplemented.chaos-streets-greenskins.band.orc-special-skills-waaagh
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
-  rule_ref: shared-rule.waaagh
+      reason: out-of-scope.movement
+  effect: >-
+    The Orc adds 1D6 × 0.4" + 1" to its charge movement. This is the direct inch conversion of the
+    source's +1D6+2 cm rule.
+  effect_i18n:
+    es: >-
+      El orco suma 1D6 × 0,4" + 1" a su movimiento de carga. Esta es la conversión directa en pulgadas
+      de la regla +1D6+2 cm de la fuente.
 - id: band--orc-special-skills-ere-we-go
   kind: warband_skill
   name: '''Ere We Go!'
@@ -674,14 +687,14 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: selectable
     effects:
     - id: unimplemented.chaos-streets-greenskins.band.orc-special-skills-da-cunnin-plan
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.group
       clauses:
       - id: whole
         scope: 'NO'
@@ -764,7 +777,8 @@ rules:
         kind: profile
         id: profile.equipment-restrictions
         parameters:
-          forbids: armour
+          forbids:
+          - armour
   rule_ref: shared-rule.no-armour
 
 - id: cave-squigs--equipment-restrictions

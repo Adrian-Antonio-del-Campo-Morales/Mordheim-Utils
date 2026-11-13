@@ -30,7 +30,7 @@ CLAUSE_SCOPES = frozenset({"YES", "NO"})
 
 #: The closed vocabulary of ``reason`` values (``registry/runtime-schema.yaml``
 #: ``reason_codes``); ``reason_label`` renders a code for the applications.
-RUNTIME_REASON_CODES = frozenset({"pending-classification", "pending-implementation", "source-blocked", "out-of-scope.magic", "out-of-scope.shooting", "out-of-scope.movement", "out-of-scope.campaign", "out-of-scope.construction", "out-of-scope.group", "out-of-scope.non-duel", "deferred.psychology", "deferred.mounts", "deferred.other"})
+RUNTIME_REASON_CODES = frozenset({"pending-classification", "pending-implementation", "source-blocked", "out-of-scope.magic", "out-of-scope.shooting", "out-of-scope.movement", "out-of-scope.campaign", "out-of-scope.construction", "out-of-scope.group", "out-of-scope.non-duel", "covered.elsewhere", "deferred.psychology", "deferred.mounts", "deferred.other"})
 
 
 SELECTABLE_RULE_KINDS = frozenset({

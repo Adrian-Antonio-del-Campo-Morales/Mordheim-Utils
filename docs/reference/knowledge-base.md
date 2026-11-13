@@ -162,7 +162,21 @@ of `registry/runtime-schema.yaml` (`out-of-scope.magic`,
 `out-of-scope.campaign`, `deferred.psychology`, `pending-classification`, …).
 Each code carries the label the applications render, in both locales; the
 free text that once explained each case is archived in
-`docs/archive/reason-texts.csv`. A concrete unresolved dependency belongs in
+`docs/archive/reason-texts.csv`.
+
+The effect's `scope` follows its reason family: `out-of-scope.*`,
+`source-blocked`, `covered.elsewhere` and `pending-classification` are `NO`;
+`deferred.*` and `pending-implementation` are `LATER`. `pending-classification`
+is the intake code for an effect nobody has reviewed yet; since 2026-11-13 no
+effect carries it, and the strictness audit records that. `covered.elsewhere`
+marks an effect whose duel behaviour another bound effect, rule or supplied
+condition already delivers (an umbrella band rule restating its profile
+rules, or a placeholder kept because conformance scenarios still name it).
+A supplied condition is bound like `condition.netted`: the rule binds the
+condition with `grant: none` and keeps a separate unbound effect for the
+procedure that produces it (a pre-battle roll, a shooting-phase activation).
+A placeholder never restates a rule that another band binds: bind it the same
+way, or record why it differs (`tests/knowledge/test_runtime_classification.py`). A concrete unresolved dependency belongs in
 `TODO.md`, a ruling in `docs/decisions/design-rulings.md`.
 
 ## bands/ — the editorial warband data

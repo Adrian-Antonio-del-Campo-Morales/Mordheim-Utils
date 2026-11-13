@@ -7,7 +7,7 @@ in a separate tracker document.
 from __future__ import annotations
 
 from mordheim_knowledge.loader import load_bands
-from mordheim_knowledge.loader import runtime_bindings
+from mordheim_knowledge.loader import runtime_bindings, shared_rule_text
 from pathlib import Path
 import pytest as pytest
 
@@ -97,7 +97,7 @@ def test_bow_discipline_keeps_both_of_its_declared_bindings():
         restriction = bindings.get(("profile", "profile.equipment-restrictions"))
         assert restriction is not None, f"{band_id}/{rule_id}: profile.equipment-restrictions binding missing"
         parameters = restriction.get("parameters") or {}
-        assert parameters.get("forbids") == "crossbow"
+        assert parameters.get("forbids") == ["crossbow"]
         assert parameters.get("max_missile_weapons") == 1
         assert parameters.get("required_tag") == "bow"
         assert list(parameters.get("exempt_profile_ids") or ()) == ["cleric"]
@@ -116,6 +116,6 @@ def test_art_of_silent_death_kb_texts_use_to_wound_and_share_the_eshin_contract(
     )
     for band_id, rule_id in members:
         rule = next(rule for rule in packages[band_id].special_rules if rule["id"] == rule_id)
-        text = rule["effect"].lower()
+        text = shared_rule_text(rule).lower()
         assert "to wound" in text and "to hit roll of 5-6" not in text
         _family_binding(rule, "mechanic", "skill.art-of-silent-death", f"{band_id}/{rule_id}")

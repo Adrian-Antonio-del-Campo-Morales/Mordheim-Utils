@@ -3,18 +3,12 @@ band_id: khemri-cursed-of-karak-zorn
 rules:
 - id: karak-zorn-noble--leader
   name: Leader
-  effect: >-
-    Any warband model within 6" of the Karak-Zorn Noble may use his Leadership instead of its own.
   source:
     manual: khemri
     printed_page: 68
     section: Heroes / 1 Karak-Zorn Noble / Leader
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier modelo de la banda a 6" del Noble de Karak-Zorn puede usar su Liderazgo en lugar del
-      suyo propio.
   applies_to:
     profile_ids:
     - karak-zorn-noble
@@ -28,6 +22,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: priest-of-grungni--devout
   name: Devout
   effect: >-
@@ -54,7 +49,7 @@ rules:
     - id: unimplemented.khemri-cursed-of-karak-zorn.priest-of-grungni.devout
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.construction
 - id: troll-slayer--death-oath
   name: Death Oath
   source:
@@ -125,7 +120,7 @@ rules:
     - id: unimplemented.khemri-cursed-of-karak-zorn.shadowed.may-not-run
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.movement
   rule_ref: shared-rule.may-not-run
 - id: shadowed--fear
   name: Fear
@@ -243,7 +238,7 @@ rules:
     - id: unimplemented.khemri-cursed-of-karak-zorn.shadowed.brainless
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
 - id: band--hard-to-kill
   kind: profile_ability
   runtime:
@@ -307,7 +302,7 @@ rules:
     - id: unimplemented.khemri-cursed-of-karak-zorn.band.armour
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.movement
   rule_ref: shared-rule.dwarf-armour
 - id: band--hate-greenskins
   name: Hate Greenskins
@@ -377,7 +372,7 @@ rules:
     - id: unimplemented.khemri-cursed-of-karak-zorn.band.excellent-miners
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
 - id: band--karak-zorn-special-skills-magic-resistant
   kind: warband_skill
   name: Magic Resistant
@@ -409,7 +404,7 @@ rules:
     - id: unimplemented.khemri-cursed-of-karak-zorn.band.karak-zorn-special-skills-magic-resistant
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.magic
 - id: band--karak-zorn-special-skills-smith
   kind: warband_skill
   name: Smith
@@ -441,7 +436,7 @@ rules:
     - id: unimplemented.khemri-cursed-of-karak-zorn.band.karak-zorn-special-skills-smith
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
 - id: band--karak-zorn-special-skills-white-beard
   kind: warband_skill
   name: White Beard
@@ -459,14 +454,14 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: selectable
     effects:
     - id: unimplemented.khemri-cursed-of-karak-zorn.band.karak-zorn-special-skills-white-beard
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.group
       clauses:
       - id: whole
         scope: 'NO'
@@ -571,23 +566,17 @@ rules:
         kind: mechanic
         id: skill.ferocious-charge
   name: Ferocious Charge
-  effect: >-
-    The Troll Slayer may double his Attacks during the turn he charges, but suffers -1 To Hit during
-    that turn.
   source:
     manual: khemri
     printed_page: 67
     section: Troll Slayer Special Skills / Ferocious Charge
   name_i18n:
     es: Carga Feroz
-  effect_i18n:
-    es: >-
-      El Matatrolles puede doblar sus Ataques durante el turno en el que carga, pero sufre -1 por
-      Golpear ese turno.
   eligibility:
   - troll-slayer
   applies_to:
     band: true
+  rule_ref: shared-rule.ferocious-charge
 - id: band--troll-slayer-special-skills-berserker
   kind: warband_skill
   runtime:
@@ -601,19 +590,17 @@ rules:
         kind: mechanic
         id: skill.berserker
   name: Berserker
-  effect: The Troll Slayer gains +1 To Hit during the turn he charges.
   source:
     manual: khemri
     printed_page: 67
     section: Troll Slayer Special Skills / Berserker
   name_i18n:
     es: Berserker
-  effect_i18n:
-    es: El Matatrolles gana +1 por Golpear durante el turno en el que carga.
   eligibility:
   - troll-slayer
   applies_to:
     band: true
+  rule_ref: shared-rule.slayer-berserker
 - id: band--troll-slayer-special-skills-monster-slayer
   kind: warband_skill
   runtime:
@@ -675,21 +662,17 @@ rules:
         kind: profile
         id: profile.equipment-restrictions
         parameters:
-          forbids: armour
+          forbids:
+          - armour
   rule_ref: shared-rule.no-armour
 - id: troll-slayer--no-missile-weapons
   name: No Missile Weapons
-  effect: >-
-    A Troll Slayer may never use missile weapons.
   source:
     manual: khemri
     printed_page: 68
     section: Heroes / 0-1 Troll Slayer / No Missile Weapons
   name_i18n:
     es: Sin Armas de Proyectil
-  effect_i18n:
-    es: >-
-      Un Matatrolles jamás puede usar armas de proyectil.
   applies_to:
     profile_ids:
     - troll-slayer
@@ -703,7 +686,7 @@ rules:
       binding:
         kind: compiler
         id: compiler.no-missile-weapons
-
+  rule_ref: shared-rule.no-missile-weapons
 - id: cannibal-dwarfs--equipment-restrictions
   runtime:
     scope: 'YES'

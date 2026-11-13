@@ -74,7 +74,6 @@ rules:
         parameters:
           value: 4
   name: Scaly Skin
-  effect: Kroxigor has a natural save of 4+.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -82,11 +81,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
   name_i18n:
     es: Piel Escamosa
-  effect_i18n:
-    es: El Kroxigor tiene una salvación natural de 4+.
   applies_to:
     profile_ids:
     - kroxigor
+  rule_ref: shared-rule.scaly-skin-4
 - id: kroxigor--aquatic
   runtime:
     scope: 'NO'
@@ -98,8 +96,6 @@ rules:
       binding: null
       reason: out-of-scope.movement
   name: Aquatic
-  effect: >-
-    Kroxigor may move through water with no penalty, and count as being in cover whilst in water.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -107,13 +103,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
   name_i18n:
     es: Acuático
-  effect_i18n:
-    es: >-
-      El Kroxigor puede moverse por el agua sin penalización y cuenta como estando en cobertura
-      mientras esté en el agua.
   applies_to:
     profile_ids:
     - kroxigor
+  rule_ref: shared-rule.aquatic
 - id: kroxigor--cause-fear
   runtime:
     scope: 'YES'
@@ -170,9 +163,6 @@ rules:
       binding: null
       reason: out-of-scope.campaign
   name: Animal
-  effect: >-
-    Kroxigor are slow-witted creatures that never learn from their mistakes. The Kroxigor doesn't
-    gain experience.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -180,13 +170,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
   name_i18n:
     es: Animal
-  effect_i18n:
-    es: >-
-      Los Kroxigor son criaturas lentas de entendimiento que nunca aprenden de sus errores. El
-      Kroxigor no gana experiencia.
   applies_to:
     profile_ids:
     - kroxigor
+  rule_ref: shared-rule.animal
 - id: band--scaly-skin
   runtime:
     scope: 'YES'
@@ -327,8 +314,6 @@ rules:
       binding: null
       reason: out-of-scope.movement
   name: Aquatic
-  effect: >-
-    Skinks move through water terrain without penalty and count as being in cover while in water.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -336,12 +321,9 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
   name_i18n:
     es: Acuático
-  effect_i18n:
-    es: >-
-      Los Skinks se mueven por terreno de agua sin penalización y cuentan como estando en cobertura
-      mientras estén en el agua.
   applies_to:
     band: true
+  rule_ref: shared-rule.aquatic
 - id: band--jungle-born
   runtime:
     scope: 'NO'
@@ -486,14 +468,15 @@ rules:
 - id: band--lizardmen-special-skills-saurus-only-toughened-hide
   kind: warband_skill
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.lizardmen.band.lizardmen-special-skills-saurus-only-toughened-hide
-      scope: 'NO'
-      binding: null
-      reason: out-of-scope.non-duel
+    - id: skill.hard-to-kill
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.hard-to-kill
   name: Toughened Hide
   source:
     manual: mordheimer.net

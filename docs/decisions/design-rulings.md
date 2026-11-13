@@ -10,7 +10,7 @@ The former semantic YAML specifications also carried `question`/`ruling` fields.
 That test system has been retired. References to those specifications in older
 decisions are historical provenance, not instructions to restore it. This page
 retains the permanent rulings and their rationale; the retirement does not revoke
-any adopted decision. New rule evidence belongs in modular mechanics and conformance tests.
+any adopted decision. New rule evidence belongs in modular mechanics tests and conformance scenarios.
 
 ## Duel engine (modular oracle)
 

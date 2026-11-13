@@ -142,14 +142,14 @@ rules:
   kind: warband_skill
 - id: band--skill-elven-luck
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: selectable
     effects:
     - id: unimplemented.wood-elves-of-athel-loren-web.skill.elven-luck
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: out-of-scope.non-duel
+      reason: pending-implementation
   name: Elven Luck
   effect: The Elven Gods favour the Wood Elf. Once per game, he may reroll any failed roll.
   source:
@@ -311,11 +311,6 @@ rules:
       binding: null
       reason: out-of-scope.movement
   name: Camouflage
-  effect: >-
-    Waywatchers are experts at camouflage. They wear cloaks of green, brown or grey which are made
-    from leaves sewn together. By painting their faces and bodies with green and brown paint they
-    are almost invisible when hiding. When a Waywatcher is hidden, each enemy model has to make an
-    additional I test to spot them.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -323,15 +318,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/wood-elves-of-athel-loren
   name_i18n:
     es: Camuflaje
-  effect_i18n:
-    es: >-
-      Los Vigilantes de los Senderos son expertos en camuflaje. Visten capas verdes, marrones o
-      grises hechas de hojas cosidas. Pintando sus caras y cuerpos con pintura verde y marrón son
-      casi invisibles cuando se ocultan. Cuando un Vigilante de los Senderos está oculto, cada
-      modelo enemigo debe hacer una prueba adicional de I para detectarlo.
   applies_to:
     profile_ids:
     - waywatcher
+  rule_ref: shared-rule.camouflage
 - id: forest-mage--wizard
   runtime:
     scope: 'NO'

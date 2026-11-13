@@ -49,14 +49,14 @@ rules:
   rule_ref: shared-rule.dwarf-hard-head
 - id: band--grudgebearers
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.dwarf-slayer-cult-web.band.grudgebearers
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.construction
       clauses:
       - id: whole
         scope: 'NO'
@@ -157,7 +157,7 @@ rules:
     - id: unimplemented.dwarf-slayer-cult-web.band.slayer-campaign
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.campaign
     - id: mechanic.slayer-identity
       scope: 'YES'
       binding:
@@ -211,14 +211,14 @@ rules:
     - axe-hurlers
 - id: rememberer--record-of-valor
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.dwarf-slayer-cult-web.rememberer.record-of-valor
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.campaign
       clauses:
       - id: exploration-die
         scope: 'NO'
@@ -294,14 +294,14 @@ rules:
     - rememberer
 - id: rememberer--pick-up-the-slack
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.dwarf-slayer-cult-web.rememberer.pick-up-the-slack
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.campaign
       clauses:
       - id: whole
         scope: 'NO'
@@ -327,14 +327,14 @@ rules:
     - rememberer
 - id: rememberer--not-a-slayer
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.dwarf-slayer-cult-web.rememberer.not-a-slayer
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: covered.elsewhere
       clauses:
       - id: not-a-slayer
         scope: 'NO'
@@ -385,22 +385,18 @@ rules:
   rule_ref: shared-rule.leader
 - id: stubbles--skittish
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.dwarf-slayer-cult-web.stubbles.skittish
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:
       - id: skittish
         scope: 'NO'
   name: Skittish
-  effect: >-
-    As newly crowned Slayers, Stubbles do not have the skill 'Death Wish', and suffer psychology
-    like normal. When a Stubble gains 'That Lad's Got Talent', instead of making an immediate roll
-    on the Hero Advance Table, he MUST learn the skill 'Death Wish.'
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -408,15 +404,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dwarf-slayer-cult
   name_i18n:
     es: Nerviosos
-  effect_i18n:
-    es: >-
-      Como Matatrolles recién coronados, los Barbas Nacientes no tienen la habilidad "Deseo de
-      Muerte" y sufren psicología con normalidad. Cuando un Barba Naciente gana "¡Ese Chico Tiene
-      Talento!", en lugar de hacer una tirada inmediata en la Tabla de Mejoras del Héroe, DEBE
-      aprender la habilidad "Deseo de Muerte".
   applies_to:
     profile_ids:
     - stubbles
+  rule_ref: shared-rule.skittish
 - id: axe-hurlers--strong-arm
   runtime:
     scope: 'NO'
@@ -426,7 +417,7 @@ rules:
     - id: unimplemented.dwarf-slayer-cult-web.axe-hurlers.strong-arm
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.shooting
   name: Strong Arm
   effect: >-
     The Axe Hurler can use his strength to hurl thrown weapons farther still. When throwing weapons,
@@ -513,22 +504,18 @@ rules:
     - axe-hurlers
 - id: axe-hurlers--skittish
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.dwarf-slayer-cult-web.axe-hurlers.skittish
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:
       - id: skittish
         scope: 'NO'
   name: Skittish
-  effect: >-
-    As newly crowned Slayers, Hurlers do not have the skill 'Death Wish,' and suffer psychology like
-    normal. When a Hurler gains 'That Lad's Got Talent', instead of making an immediate roll on the
-    Hero Advance Table, he MUST learn the skill 'Death Wish.'
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -536,15 +523,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dwarf-slayer-cult
   name_i18n:
     es: Nerviosos
-  effect_i18n:
-    es: >-
-      Como Matatrolles recién coronados, los Lanzahachas no tienen la habilidad "Deseo de Muerte" y
-      sufren psicología con normalidad. Cuando un Lanzahachas gana "¡Ese Chico Tiene Talento!", en
-      lugar de hacer una tirada inmediata en la Tabla de Mejoras del Héroe, DEBE aprender la
-      habilidad "Deseo de Muerte".
   applies_to:
     profile_ids:
     - axe-hurlers
+  rule_ref: shared-rule.skittish
 - id: band--slayer-special-skills
   runtime:
     scope: 'YES'
@@ -667,12 +649,12 @@ rules:
     - rememberer
 - id: band--slayer-rites
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.dwarf-slayer-cult-web.rites.slayer-rites
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:

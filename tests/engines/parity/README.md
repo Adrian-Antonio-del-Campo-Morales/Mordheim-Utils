@@ -18,7 +18,7 @@ for how the two relate.
 
 | Path | Responsibility |
 |---|---|
-| `deliveries/` | Frozen parity deliveries, one `<sha256(case_key UTF-8)>.json` per translated conformance scenario. |
+| `deliveries/` | Frozen parity deliveries, one `<sha256(case_key UTF-8)>.json` per conformance scenario, whether `translated`, `blocked` or `not-applicable`. |
 | `reference_samples/` | Versioned sample stores (oracle and candidate outcome counts). |
 | `statistical/` | Pytest contracts of the catalogue, deliveries, sample store and reports, plus small six-sigma comparisons on frozen scenarios. |
 | `conftest.py` | Loads the frozen corpus `tests/engines/fixtures/compiled-cases.json` once per session (`cases` fixture); never compiles. |
@@ -66,7 +66,10 @@ see the [example](../../../docs/examples/parity-delivery.json).
 - **Freshness:** `source.sha256` pins the conformance YAML bytes. Editing a
   scenario makes its delivery `stale` until it is re-translated; a matching key
   alone does not prove freshness. A `source.revision` different from HEAD is a
-  warning only.
+  warning only. `source.revision` records the commit the delivery was
+  translated from (84a634db for the current set); the 2026-11-12 rename later
+  rewrote `source.path`, `case_key` and the pinned `sha256` mechanically, so
+  the path did not exist at that revision.
 
 Admission states (`admit`):
 
@@ -83,7 +86,9 @@ independently of the stored original horizon. Every rejected case stays in the
 report with its reason.
 
 Current counts: 5,161 deliveries = 4,167 translated, 530 blocked, 464
-not-applicable; 11 are stale (8 KAZ goblin, 3 Extra Arm).
+not-applicable; 11 are stale (8 KAZ goblin, 3 Extra Arm). Admission of
+`--scenarios deliveries` currently gives 2,673 admitted and 2,488 rejected
+(1,484 incompatible, 529 blocked, 464 not-applicable, 11 stale).
 
 ## Stored samples and reference stores
 
@@ -104,10 +109,13 @@ record `<key with / -> __>.json[.gz]`. Each record holds `engine`,
 | `numpy-deliveries-100k` | NumPy candidate, 2,678 delivery records. |
 | `native-deliveries-100k` | Native candidate, 2,678 delivery records. |
 
-The delivery stores hold 100,000 duels per record in ten 10,000-duel chunks,
+The delivery sample stores hold 100,000 duels per record in ten 10,000-duel chunks,
 seed 2026, 50-round limit. Recorded verdicts against the modular store: NumPy
 2,677 approved / 1 divergent; native 2,567 approved / 111 divergent. These are
-stored candidate results, not parity acceptance.
+stored candidate results, not parity acceptance. The stores predate the
+current delivery set: 254 records name scenario ids that no longer exist
+(including the two retired Cleaver deliveries) and 249 admitted deliveries have
+no record; see the backlog.
 
 `compare` executes no engine: it checks fingerprints, seeds, round limits and
 coverage, then applies the six-sigma gate; fewer than 7,200 duels is
@@ -123,13 +131,14 @@ runs the statistical and tooling tests: contracts and small comparisons of
 the infrastructure, not parity proof.
 
 Real campaigns are deliberate, long runs (`check parity`, `check samples
-sample|compare|status`); all options are in
-[Delivery parity campaigns](../../../docs/reference/tools.md#delivery-parity-campaigns).
+sample|compare|status`); their options are in
+[Comparing engines: `check parity`](../../../docs/reference/tools.md#comparing-engines-check-parity)
+and [Stored samples: `check samples`](../../../docs/reference/tools.md#stored-samples-check-samples).
 
 ```bash
 # Compare stored NumPy delivery samples with the modular oracle (no engine runs)
 python tools/mordheim-utils.py check samples compare --backend numpy --scenarios deliveries --simulations 100k --store tests/engines/parity/reference_samples/numpy-deliveries-100k --reference-store tests/engines/parity/reference_samples/modular-deliveries-100k --output outputs/parity-deliveries-stored/compare
-# Sample (or resume) a modular delivery store
+# Sample (or resume) a modular delivery sample store
 python tools/mordheim-utils.py check samples sample --backend modular --scenarios deliveries --simulations 100k --batch-size 500 --workers 2 --store outputs/parity-modular-deliveries
 # Coverage of a store
 python tools/mordheim-utils.py check samples status --scenarios deliveries --store outputs/parity-modular-deliveries

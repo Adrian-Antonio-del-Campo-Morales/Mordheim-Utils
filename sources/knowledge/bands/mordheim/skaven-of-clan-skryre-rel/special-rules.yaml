@@ -10,7 +10,7 @@ rules:
     - id: unimplemented.skaven-of-clan-skryre-rel.band.clan-skryre-special-equipment
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Clan Skryre Special Equipment
   effect: >-
     This equipment is only available to Clan Skryre, and no other warbands may purchase it. Poison
@@ -79,7 +79,7 @@ rules:
     - id: unimplemented.skaven-of-clan-skryre-rel.band.clan-skryre-magic
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.magic
   name: Clan Skryre Magic - Chain Lightning
   effect: >-
     Difficulty 7. Lightening arcs from the complex devices attached to the warlock's weapon and into
@@ -143,11 +143,8 @@ rules:
     - id: unimplemented.skaven-of-clan-skryre-rel.warlock-engineer.wizard
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.magic
   name: Wizard
-  effect: >-
-    A Warlock Engineer is a wizard and uses the Magic of the Horned Rat (see the Magic section for
-    details).
   source:
     manual: broheim.net
     printed_page: 7
@@ -155,13 +152,10 @@ rules:
     url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
   name_i18n:
     es: Mago
-  effect_i18n:
-    es: >-
-      Un Ingeniero Hechicero es un mago y usa la Magia de la Rata con Cuernos (ver la sección de
-      Magia para más detalles).
   applies_to:
     profile_ids:
     - warlock-engineer
+  rule_ref: shared-rule.wizard-horned-rat
 - id: overseer--slave-driver
   runtime:
     scope: 'YES'
@@ -193,14 +187,14 @@ rules:
     - overseer
 - id: overseer--slave-master
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.skaven-of-clan-skryre-rel.overseer.slave-master
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.campaign
       clauses:
       - id: whole
         scope: 'NO'
@@ -233,7 +227,7 @@ rules:
     - id: unimplemented.skaven-of-clan-skryre-rel.skaven-slaves.life-is-cheap
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.shooting
   name: Life Is Cheap
   effect: >-
     Skaven slaves are worthless to the Warlock Engineers. Members of a Clan Skryre warband may shoot
@@ -255,14 +249,14 @@ rules:
     - skaven-slaves
 - id: skaven-slaves--easy-come-easy-go
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.skaven-of-clan-skryre-rel.skaven-slaves.easy-come-easy-go
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.campaign
       clauses:
       - id: remove-slaves
         scope: 'NO'
@@ -288,14 +282,14 @@ rules:
     - skaven-slaves
 - id: skaven-slaves--numerous
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.skaven-of-clan-skryre-rel.skaven-slaves.numerous
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.construction
       clauses:
       - id: whole
         scope: 'NO'
@@ -326,7 +320,7 @@ rules:
     - id: unimplemented.skaven-of-clan-skryre-rel.skaven-slaves.experience
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Experience
   effect: Skaven Slaves don't survive long enough to gain experience.
   source:
@@ -350,7 +344,7 @@ rules:
     - id: unimplemented.skaven-of-clan-skryre-rel.skaven-slaves.worthless
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.group
   name: Worthless
   effect: >-
     A Warlock Engineer doesn't expect much from slaves, and is therefore not unsettled if skaven
@@ -386,7 +380,7 @@ rules:
     - id: unimplemented.skaven-of-clan-skryre-rel.giant-rats.pack-size
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Pack Size
   source:
     manual: broheim.net
@@ -408,7 +402,7 @@ rules:
     - id: unimplemented.skaven-of-clan-skryre-rel.giant-rats.experience
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Experience
   source:
     manual: broheim.net

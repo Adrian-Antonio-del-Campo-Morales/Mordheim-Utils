@@ -13,9 +13,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any warrior within 6" of the Horned Hunter may use his Leadership value when taking Leadership
-    tests.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -23,13 +20,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/horned-hunters
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier guerrero a 6" del Cazador de Cuernos puede usar su valor de Liderazgo cuando realice
-      chequeos de Liderazgo.
   applies_to:
     profile_ids:
     - horned-hunter
+  rule_ref: shared-rule.leader
 - id: horned-hunter--hang-the-bandit
   runtime:
     scope: 'YES'
@@ -89,7 +83,8 @@ rules:
         kind: profile
         id: profile.equipment-restrictions
         parameters:
-          forbids: heavy-armour
+          forbids:
+          - heavy-armour
   name: Strictures
   source:
     manual: mordheimer.net
@@ -161,7 +156,8 @@ rules:
         kind: profile
         id: profile.equipment-restrictions
         parameters:
-          forbids: armour
+          forbids:
+          - armour
   name: Strictures
   source:
     manual: mordheimer.net
@@ -213,7 +209,8 @@ rules:
         kind: profile
         id: profile.equipment-restrictions
         parameters:
-          forbids: armour
+          forbids:
+          - armour
   name: Strictures
   source:
     manual: mordheimer.net
@@ -355,13 +352,11 @@ rules:
     implemented: 'YES'
     grant: selectable
     effects:
-    - id: trait.animal-friendship
+    - id: mechanic.animal-friendship
       scope: 'YES'
       binding:
-        kind: trait
-        id: trait.animal-friendship
-        parameters:
-          value: true
+        kind: mechanic
+        id: mechanic.animal-friendship
       clauses:
       - id: whole--scope--animals-never-attack
         scope: 'YES'
@@ -370,10 +365,6 @@ rules:
       - id: wardog-count
         scope: 'NO'
   name: Animal Friendship
-  effect: >-
-    Having grown up amidst the animals of the forest this warrior exudes a certain charm to all
-    'normal' animals (warhorses, warhounds, etc.). Animals will never attack him and up to two
-    wardogs that the warrior owns do not count against the maximum number of models in the Warband.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -381,14 +372,9 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/horned-hunters
   name_i18n:
     es: Amistad Animal
-  effect_i18n:
-    es: >-
-      Habiéndose criado entre los animales del bosque, este guerrero irradia un cierto encanto a
-      todos los animales 'normales' (corceles de guerra, sabuesos de guerra, etc.). Los animales
-      jamás lo atacarán y hasta dos perros de guerra que posea el guerrero no cuentan para el número
-      máximo de modelos de la banda.
   applies_to:
     band: true
+  rule_ref: shared-rule.animal-friendship
 - id: band--horned-hunter-special-skills-pathfinder
   kind: warband_skill
   runtime:

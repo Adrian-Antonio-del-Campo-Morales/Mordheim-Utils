@@ -19,7 +19,7 @@ def test_combat_charge_is_offered_and_compiles_without_permanent_bonuses(band, r
         "mordheim", band) if profile.profile_id == recipient)
     offered = {skill.id: skill for skill in catalogue.skills(choice)}
     assert offered["skill.combat-charge"].runtime_available
-    assert ("skill.sword-master" in offered) is (band == "bretonnian-knights-errant-mou")
+    assert offered["skill.sword-master"].runtime_available  # feat 3, bound since 2026-11-13
     assert "skill.lancer" not in offered
     assert offered["skill.armour-specialist"].runtime_available
     assert catalogue.skill_rule_ids(("skill.combat-charge",)) == (("skill.combat-charge",), ())

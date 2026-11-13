@@ -108,7 +108,7 @@ rules:
     - id: unimplemented.dwarf-slayers-kaz.band.mighty-doom
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.group
   name: Mighty Doom
   effect: >-
     All every slayer seeks is an honourable death. A Slayer warband does not have to take Rout
@@ -223,9 +223,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any model in the warband within 6\" of the Giant Slayer may use his Leadership instead of
-    their own.
   source:
     manual: broheim.net
     printed_page: 33
@@ -233,13 +230,10 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier modelo de la banda a 6" del Gran Matatrolles puede usar su Liderazgo en lugar del
-      propio.
   applies_to:
     profile_ids:
     - giant-slayer
+  rule_ref: shared-rule.leader
 - id: rememberer--hard-to-find
   runtime:
     scope: 'NO'

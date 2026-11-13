@@ -3,12 +3,12 @@ band_id: survivors-of-strigos-sylv
 rules:
 - id: band--undead-leader
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.survivors-of-strigos-sylv.band.undead-leader
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:
@@ -33,14 +33,14 @@ rules:
     band: true
 - id: band--hired-swords
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.survivors-of-strigos-sylv.band.hired-swords
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: out-of-scope.campaign
+      reason: out-of-scope.construction
       clauses:
       - id: hired-swords
         scope: 'NO'
@@ -206,14 +206,14 @@ rules:
   rule_ref: shared-rule.no-pain
 - id: seer--seeker
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.survivors-of-strigos-sylv.seer.seeker
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.campaign
       clauses:
       - id: whole
         scope: 'NO'
@@ -270,7 +270,7 @@ rules:
     - id: unimplemented.survivors-of-strigos-sylv.domnu.child-of-darkness
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.non-duel
   name: Child of Darkness
   effect: >-
     Borne of the night, Domnu are steadfast and loyal servants of the Strigoi. They are immune to
@@ -343,12 +343,12 @@ rules:
   rule_ref: shared-rule.fear
 - id: giant-bats--animals
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.survivors-of-strigos-sylv.giant-bats.animals
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:
@@ -375,7 +375,7 @@ rules:
     - id: unimplemented.survivors-of-strigos-sylv.giant-bats.flying
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: Flying
   effect: >-
     Giant Bats fly through the night air, and thus do not need to climb or leap over gaps, even if
@@ -430,7 +430,7 @@ rules:
     - id: unimplemented.survivors-of-strigos-sylv.giant-bats.sonic
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: Sonic
   effect: >-
     Giant Bats use sonic vibrations to navigate the dark of night. No Line of Sight is needed for a
@@ -587,14 +587,14 @@ rules:
     - strigoi-vampire
 - id: seer--light-fingers
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.survivors-of-strigos-sylv.special.light-fingers
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.campaign
       clauses:
       - id: whole
         scope: 'NO'
@@ -686,7 +686,7 @@ rules:
     - id: unimplemented.survivors-of-strigos-sylv.special.practiced-arm
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.shooting
   name: Practiced Arm
   effect: >-
     Such is the skill with which the Gypsy can launch throwing knives that he can throw two of them

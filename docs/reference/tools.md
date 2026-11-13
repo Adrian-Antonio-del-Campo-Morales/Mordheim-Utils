@@ -220,7 +220,7 @@ Selection rules:
   and paths; without it the launcher exits 1 instead of reporting a run in
   which every test was skipped.
 - `tests kb` runs the **knowledge** suite only; there is no `knowledge`
-  subsection alias. Construction is a large battery and stays a separate
+  subsection alias. Construction is a large selection and stays a separate
   subsection instead of being bundled silently; the rules-conformance suite is
   its own `conformance` selection.
 - `tests warband-manager` has no shared default: pytest and Vitest do not accept
@@ -355,7 +355,7 @@ Collection and typechecks are not accelerated by xdist.
 Engine tests load checked-in `compiled-cases.json` and `compiled-builds.json`
 under `tests/engines/fixtures/`. Their loaders and conftest fixtures are required;
 ordinary execution does not regenerate inputs or fall back to compilation when
-a frozen input is missing. Knowledge, construction and conformance tests retain their
+a frozen input is missing. Knowledge and construction tests and the rules-conformance suite retain their
 source-backed preparation.
 
 - `precompiled_catalog.py` defines 43 unified scenarios with stable
@@ -499,7 +499,7 @@ Each entry explains what it executes in `<entry> --help`.
 
 | Entry | Executes |
 |---|---|
-| `check verify` | `python -m mordheim_combat_lab verify`: KB structure, editorial schemas, execution contract, binding contracts and default profile compilation. It is a structural gate, not the knowledge or rules-conformance test suites (see [Verification](verification.md#deterministic-modular-evidence)). |
+| `check verify` | `python -m mordheim_combat_lab verify`: KB structure, editorial schemas, execution contract, binding contracts and default profile compilation. It is a structural gate, not the knowledge suite or the rules-conformance suite (see [Verification](verification.md#deterministic-modular-evidence)). |
 | `check report rules` | `python -m tools.knowledge.clauses report`: every classified rule effect, mechanic and item with its scope, binding and declared clause coverage (`rules-inventory.csv`, `clause-coverage.csv`, `summary.json` in `outputs/audit/`). |
 | `check report tests` | `python -m mordheim_combat_lab test-report`: runs the test suite and writes an Excel-friendly technical CSV (`--output DIR`). |
 | `check parity` | `python -m mordheim_combat_lab parity`: compare the optimized engines with the modular oracle now (or, without `--scenarios`, the exact obligation checks). Its pytest checks are `tests parity statistical`. |
@@ -618,13 +618,18 @@ chunks, timestamps, environment and engine digests. Each candidate record has
 `tests/engines/parity/reference_samples/native-deliveries-100k` holds the corresponding
 Native candidate store. Both candidate scenario sets match the 2,678-record
 Modular oracle. The refreshed comparisons report 2,677 approved and 1 divergent
-for NumPy, and 2,567 approved and 111 divergent for Native. Another 2,485 parity
-deliveries are rejected before sampling and remain explicit in the reports.
+for NumPy, and 2,567 approved and 111 divergent for Native. Another 2,488 parity
+deliveries are currently rejected before sampling and remain explicit in the reports.
 These are stored candidate results, not parity acceptance.
 The import was verified with the sample-store reader for all 5,356 candidate
 records, checking byte-for-byte copies, input fingerprints, seed, round limits,
 contiguous chunks, outcome totals and current engine digests. All stored
 Modular references remained byte-identical; no simulations were rerun.
+On 2026-11-12 the "E2E" rename rewrote every delivery record in the three
+delivery sample stores: files were renamed from `e2e__<sha>` to
+`delivery__<sha>` and `corpus_key` changed from `e2e/...` to `delivery/...`.
+Every other field (counts, chunks, timestamps, environment, input and engine
+digests) is unchanged, so the records are no longer byte copies of the import.
 
 ```bash
 python tools/mordheim-utils.py check samples compare --backend numpy --scenarios deliveries --simulations 100k --store tests/engines/parity/reference_samples/numpy-deliveries-100k --reference-store tests/engines/parity/reference_samples/modular-deliveries-100k --output outputs/parity-deliveries-stored/compare
@@ -678,7 +683,7 @@ not rerun duels or change the sample counts.
 ### Delivery parity campaigns
 
 Delivery parity campaigns reuse frozen combat configurations with random dice, rather than
-replaying the original test's scripted dice and exact assertions. Combats run
+replaying the original conformance scenario's scripted dice and exact assertions. Combats run
 until termination or 50 rounds. Preparing a delivery does not establish engine
 compatibility or statistical parity. The [delivery format and admission rules](verification.md#parity-deliveries)
 define which inputs can execute; blocked, not-applicable, stale, invalid and
@@ -688,8 +693,8 @@ disagreeing decision-policy probe or a corrupt delivery catalogue stops the run
 full engine parity. The [parity charter](../../tests/engines/parity/README.md)
 explains deliveries, stored samples and reference stores in one place.
 
-These catalogues require a source checkout with `tests/engines/fixtures` and
-its frozen JSON files; the battery also requires the KB/compiler.
+These catalogues require a source checkout with `tests/engines/fixtures`,
+`tests/engines/parity/deliveries` and their frozen JSON files; the battery also requires the KB/compiler.
 
 ## Knowledge base
 

@@ -3,14 +3,14 @@ band_id: masters-of-horror-sylv
 rules:
 - id: band--hired-swords
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.masters-of-horror-sylv.band.hired-swords
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: out-of-scope.campaign
+      reason: out-of-scope.construction
       clauses:
       - id: hired-swords
         scope: 'NO'
@@ -31,12 +31,12 @@ rules:
     band: true
 - id: band--no-promotion
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.masters-of-horror-sylv.band.no-promotion
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:
@@ -59,12 +59,12 @@ rules:
     band: true
 - id: band--wolfman-max-stats
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.masters-of-horror-sylv.band.wolfman-max-stats
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:
@@ -270,9 +270,8 @@ rules:
     - id: unimplemented.masters-of-horror-sylv.zombies.may-not-run
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: May Not Run
-  effect: Zombies are slow Undead creatures and may not run (but may charge normally).
   source:
     manual: sylvania-supplement
     printed_page: 0
@@ -280,13 +279,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
   name_i18n:
     es: No Pueden Correr
-  effect_i18n:
-    es: >-
-      Los zombis son criaturas no muertas lentas y no pueden correr (pero pueden cargar con
-      normalidad).
   applies_to:
     profile_ids:
     - zombies
+  rule_ref: shared-rule.may-not-run
 - id: zombies--immune-to-psychology
   runtime:
     scope: 'YES'
@@ -326,7 +322,6 @@ rules:
         parameters:
           value: true
   name: Immune to Poison
-  effect: Zombies are immune to poisons.
   source:
     manual: sylvania-supplement
     printed_page: 0
@@ -334,11 +329,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
   name_i18n:
     es: Inmune al Veneno
-  effect_i18n:
-    es: Los zombis son inmunes a los venenos.
   applies_to:
     profile_ids:
     - zombies
+  rule_ref: shared-rule.immune-to-poison
 - id: zombies--no-pain
   runtime:
     scope: 'YES'
@@ -351,7 +345,6 @@ rules:
         kind: mechanic
         id: skill.ignore-pain
   name: No Pain
-  effect: Zombies treat Stunned results on the Injury table as Knocked Down.
   source:
     manual: sylvania-supplement
     printed_page: 0
@@ -359,26 +352,24 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
   name_i18n:
     es: Sin Dolor
-  effect_i18n:
-    es: Los zombis tratan los resultados Aturdido de la tabla de heridas como Derribado.
   applies_to:
     profile_ids:
     - zombies
+  rule_ref: shared-rule.no-pain
 - id: zombies--no-brain
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.masters-of-horror-sylv.zombies.no-brain
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:
       - id: whole
         scope: 'NO'
   name: No Brain
-  effect: Zombies do not gain experience.
   source:
     manual: sylvania-supplement
     printed_page: 0
@@ -386,11 +377,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
   name_i18n:
     es: Sin Cerebro
-  effect_i18n:
-    es: Los zombis no ganan experiencia.
   applies_to:
     profile_ids:
     - zombies
+  rule_ref: shared-rule.no-brain
 - id: flesh-construct--cause-fear
   runtime:
     scope: 'YES'
@@ -495,12 +485,12 @@ rules:
     - flesh-construct
 - id: flesh-construct--a-bit-unhinged
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.masters-of-horror-sylv.flesh-construct.a-bit-unhinged
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:
@@ -528,14 +518,14 @@ rules:
     - flesh-construct
 - id: flesh-construct--its-only-a-flesh-wound
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.masters-of-horror-sylv.flesh-construct.its-only-a-flesh-wound
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.campaign
       clauses:
       - id: repair-or-miss-a-game
         scope: 'NO'
@@ -573,7 +563,7 @@ rules:
     - id: unimplemented.masters-of-horror-sylv.flesh-construct.cannot-run
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: Cannot Run
   effect: >-
     After being pieced together from various stiffs, ones legs are often, well, stiff. Constructs
@@ -640,14 +630,14 @@ rules:
     - the-bitten
 - id: mad-scientist--surgeon
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.masters-of-horror-sylv.special.surgeon
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.campaign
       clauses:
       - id: reroll-an-injury-roll
         scope: 'NO'
@@ -671,14 +661,39 @@ rules:
     - mad-scientist
 - id: mad-scientist--alchemist
   runtime:
-    scope: LATER
-    implemented: 'NO'
-    grant: profile
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
     effects:
+    - id: condition.alchemist-resilience
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.alchemist-resilience
+    - id: condition.alchemist-strength
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.alchemist-strength
+    - id: condition.alchemist-backleys-brew
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.alchemist-backleys-brew
+    - id: condition.alchemist-aberrantius-vigortia
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.alchemist-aberrantius-vigortia
+    - id: condition.alchemist-addicted
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.alchemist-addicted
     - id: unimplemented.masters-of-horror-sylv.special.alchemist
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: out-of-scope.movement
+      reason: out-of-scope.campaign
       clauses:
       - id: start-of-game-potion--scope--potion-characteristic-bonuses
         scope: 'NO'
@@ -718,12 +733,12 @@ rules:
     - mad-scientist
 - id: mad-scientist--apt-revitalist
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.masters-of-horror-sylv.special.apt-revitalist
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:

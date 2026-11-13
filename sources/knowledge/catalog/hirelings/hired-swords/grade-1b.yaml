@@ -1851,14 +1851,14 @@ profiles:
     eligibility:
     - hireling.hired-sword.mule-skinner
     runtime:
-      scope: 'NO'
+      scope: LATER
       implemented: 'NO'
       grant: selectable
       effects:
       - id: unimplemented.hirelings.hired-sword.mule-skinner.animal-handling-falconer
-        scope: 'NO'
+        scope: LATER
         binding: null
-        reason: out-of-scope.shooting
+        reason: deferred.other
   - id: hireling.hired-sword.mule-skinner.skill.animal-handling-horse
     name: Animal Handling — Horse Handling
     name_i18n:
@@ -1881,7 +1881,7 @@ profiles:
       - id: unimplemented.hirelings.hired-sword.mule-skinner.animal-handling-horse
         scope: 'NO'
         binding: null
-        reason: out-of-scope.movement
+        reason: out-of-scope.construction
   - id: hireling.hired-sword.mule-skinner.rule.whip-master
     name: Whip Master
     effect: May reroll each hit roll using the whip once, accepting the second result even if worse.

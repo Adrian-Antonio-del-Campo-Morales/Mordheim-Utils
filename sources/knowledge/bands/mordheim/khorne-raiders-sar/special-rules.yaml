@@ -10,7 +10,7 @@ rules:
     - id: unimplemented.khorne-raiders-sar.band.khorne-raider-rules
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Khorne Raider Rules
   effect: >-
     Swabbies/Skinners: Khorne Raiders may attempt to enlist Crew members as normal. If the captain
@@ -85,14 +85,14 @@ rules:
     band: true
 - id: band--special-skills
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.khorne-raiders-sar.skills.special-skills
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: pending-classification
+      reason: pending-implementation
   name: Special Skills (Khorne Raiders)
   effect: >-
     Mutant: the Hero may buy one Mutation from the Possessed Mutation list; this skill may only be
@@ -152,18 +152,16 @@ rules:
     band: true
 - id: dread-captain--leader
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.khorne-raiders-sar.captain.leader
-      scope: 'NO'
-      binding: null
-      reason: pending-classification
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any warrior within 6" of the Dread Captain may use his Leadership characteristic when taking any
-    Leadership tests.
   source:
     manual: broheim.net
     printed_page: 3
@@ -171,23 +169,20 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Khorne%20Raiders.pdf
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier guerrero a 6" o menos del Capitán Pavoroso puede usar su característica de Liderazgo
-      cuando realice cualquier tirada de Liderazgo.
   applies_to:
     profile_ids:
     - dread-captain
+  rule_ref: shared-rule.leader
 - id: quartermasters--massive-swing
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.khorne-raiders-sar.quartermasters.massive-swing
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: pending-classification
+      reason: pending-implementation
   name: Massive Swing
   effect: >-
     A Quartermaster may carry ONE two-handed weapon (ex. Halberd, double-handed weapon) in one hand.
@@ -276,14 +271,14 @@ rules:
     - madbrains
 - id: madbrains--reckless
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.khorne-raiders-sar.madbrains.reckless
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: pending-classification
+      reason: pending-implementation
   name: Reckless (Madbrains)
   effect: >-
     Madbrains add +1 to all Injury rolls they make in hand-to-hand combat. However, all opponents in
@@ -304,14 +299,14 @@ rules:
     - madbrains
 - id: flayerkin--hooks
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.khorne-raiders-sar.flayerkin.hooks
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: pending-classification
+      reason: pending-implementation
   name: Hooks
   effect: >-
     The Flayerkins have extra sharp steel hooks at the end of each wrist. They gain an additional
@@ -341,7 +336,7 @@ rules:
     - id: unimplemented.khorne-raiders-sar.flayerkin.climbing
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.movement
   name: Climbing (Flayerkin)
   effect: The Flayerkin always counts as having Rope and Hook.
   source:
@@ -365,7 +360,7 @@ rules:
     - id: unimplemented.khorne-raiders-sar.flayerkin.chain-spine
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.movement
   name: Chain Spine
   effect: >-
     Long chains have been grafted to the spine of the Flayerkin, aiding allies in laying siege. If a
@@ -402,7 +397,7 @@ rules:
     - id: unimplemented.khorne-raiders-sar.flayerkin.mindless
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Mindless (Flayerkin)
   effect: >-
     After so much experimentation, the mental state of a Flayerkin is simple at best. Flayerkin
@@ -433,7 +428,8 @@ rules:
         kind: profile
         id: profile.equipment-restrictions
         parameters:
-          forbids: armour-suit
+          forbids:
+          - armour-suit
   name: No Armour
   source:
     manual: broheim.net

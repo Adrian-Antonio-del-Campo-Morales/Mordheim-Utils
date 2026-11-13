@@ -13,9 +13,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any warrior within 6" of the Mercenary Captain may use his Leadership characteristic when taking
-    Leadership tests.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -23,13 +20,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/mercenaries
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier guerrero a 6" del Capitán mercenario puede usar su característica de Liderazgo
-      cuando realice chequeos de Liderazgo.
   applies_to:
     profile_ids:
     - mercenary-captain
+  rule_ref: shared-rule.leader
 - id: swordsmen--expert-swordsmen
   kind: profile_ability
   runtime:
@@ -74,8 +68,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-twelve
   name: Reikland — Military Discipline
-  effect: >-
-    Reikland fighters may use their Captain's Leadership while within 12" instead of the normal 6".
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -83,14 +75,11 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/mercenaries
   name_i18n:
     es: Reikland — Disciplina Militar
-  effect_i18n:
-    es: >-
-      Los guerreros de Reikland pueden usar el Liderazgo de su Capitán estando a 12" en lugar de los
-      6" habituales.
   applies_to:
     band: true
     profile_ids:
     - mercenary-captain
+  rule_ref: shared-rule.reikland-military-discipline
 - id: band--reikland-marksman-training
   runtime:
     scope: 'NO'

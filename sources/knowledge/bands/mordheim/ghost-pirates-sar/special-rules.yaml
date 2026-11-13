@@ -10,7 +10,7 @@ rules:
     - id: unimplemented.ghost-pirates-sar.band.ghost-pirate-rules
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Swabbies (Ghost Pirates)
   effect: >-
     Ghost Pirates may capture models, using the Swabbies rules. Willing members join the Crew,
@@ -99,7 +99,7 @@ rules:
     - id: unimplemented.ghost-pirates-sar.item.cursed-pistol
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Cursed Pistol
   effect: >-
     5 gc (10 gc for a Brace) - Common. A pistol dragged into the depths of the ocean, clasped tight
@@ -141,18 +141,16 @@ rules:
     band: true
 - id: ghost-captain--leader
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.ghost-pirates-sar.ghost-captain.leader
-      scope: 'NO'
-      binding: null
-      reason: pending-classification
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any pirate within 6" of the Ghost Captain may use his Leadership characteristic when taking any
-    Leadership tests.
   source:
     manual: broheim.net
     printed_page: 3
@@ -160,13 +158,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier pirata a 6" o menos del Capitán Fantasma puede usar su característica de Liderazgo
-      cuando realice cualquier tirada de Liderazgo.
   applies_to:
     profile_ids:
     - ghost-captain
+  rule_ref: shared-rule.leader
 - id: ghost-captain--undead
   runtime:
     scope: 'YES'
@@ -191,7 +186,6 @@ rules:
         kind: mechanic
         id: mechanic.psychology-immunity
   name: Undead (Ghost Captain)
-  effect: A Ghost Captain is Immune to Poison, Immune to Psychology, and causes Fear.
   source:
     manual: broheim.net
     printed_page: 3
@@ -199,11 +193,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
   name_i18n:
     es: No Muerto (Capitán Fantasma)
-  effect_i18n:
-    es: Un Capitán Fantasma es inmune al veneno, inmune a la psicología y causa miedo.
   applies_to:
     profile_ids:
     - ghost-captain
+  rule_ref: shared-rule.ghost-pirate-undead
 - id: screaming-ghosts--undead
   runtime:
     scope: 'YES'
@@ -228,7 +221,6 @@ rules:
         kind: mechanic
         id: mechanic.psychology-immunity
   name: Undead (Screaming Ghosts)
-  effect: Screaming Ghosts are Immune to Poison, Immune to Psychology, and cause Fear.
   source:
     manual: broheim.net
     printed_page: 3
@@ -236,11 +228,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
   name_i18n:
     es: No Muerto (Espectros Aullantes)
-  effect_i18n:
-    es: Los Espectros Aullantes son inmunes al veneno, inmunes a la psicología y causan miedo.
   applies_to:
     profile_ids:
     - screaming-ghosts
+  rule_ref: shared-rule.ghost-pirate-undead
 - id: skeleton-mates--undead
   runtime:
     scope: 'YES'
@@ -265,7 +256,6 @@ rules:
         kind: mechanic
         id: mechanic.psychology-immunity
   name: Undead (Skeleton Mates)
-  effect: Skeleton Mates are Immune to Poison, Immune to Psychology, and cause Fear.
   source:
     manual: broheim.net
     printed_page: 3
@@ -273,11 +263,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
   name_i18n:
     es: No Muerto (Contramaestres Esqueletos)
-  effect_i18n:
-    es: Los Contramaestres Esqueletos son inmunes al veneno, inmunes a la psicología y causan miedo.
   applies_to:
     profile_ids:
     - skeleton-mates
+  rule_ref: shared-rule.ghost-pirate-undead
 - id: skeleton-mates--no-pain
   runtime:
     scope: 'YES'
@@ -290,7 +279,6 @@ rules:
         kind: mechanic
         id: skill.ignore-pain
   name: No Pain (Skeleton Mates)
-  effect: Skeleton Mates treat a 'stunned' result on the injury chart as 'knocked down'.
   source:
     manual: broheim.net
     printed_page: 3
@@ -298,13 +286,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
   name_i18n:
     es: Sin Dolor (Contramaestres Esqueletos)
-  effect_i18n:
-    es: >-
-      Los Contramaestres Esqueletos tratan un resultado 'aturdido' en la tabla de heridas como
-      'derribado'.
   applies_to:
     profile_ids:
     - skeleton-mates
+  rule_ref: shared-rule.no-pain
 - id: skeleton-mates--may-not-run
   runtime:
     scope: 'NO'
@@ -314,10 +299,8 @@ rules:
     - id: unimplemented.ghost-pirates-sar.skeleton-mates.may-not-run
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.movement
   name: May Not Run (Skeleton Mates)
-  effect: >-
-    Skeleton Mates are slow moving creatures, and may not run, though they may charge as normal.
   source:
     manual: broheim.net
     printed_page: 3
@@ -325,13 +308,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
   name_i18n:
     es: No Pueden Correr (Contramaestres Esqueletos)
-  effect_i18n:
-    es: >-
-      Los Contramaestres Esqueletos son criaturas lentas y no pueden correr, aunque pueden cargar
-      con normalidad.
   applies_to:
     profile_ids:
     - skeleton-mates
+  rule_ref: shared-rule.may-not-run
 - id: sea-singer--spells
   runtime:
     scope: 'NO'
@@ -341,7 +321,7 @@ rules:
     - id: unimplemented.ghost-pirates-sar.sea-singer.spells
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.magic
   name: Spells (Sea Singer)
   effect: >-
     A Sea Singer starts with one spell from the Songs of Sorrow spell list (see Songs of Sorrow): 1
@@ -471,9 +451,8 @@ rules:
     - id: unimplemented.ghost-pirates-sar.gibbets.no-brain
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: No Brain (Gibbets)
-  effect: Gibbets do not gain experience.
   source:
     manual: broheim.net
     printed_page: 4
@@ -481,11 +460,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
   name_i18n:
     es: Sin Cerebro (Jaulas de Hierro)
-  effect_i18n:
-    es: Las Jaulas de Hierro no ganan experiencia.
   applies_to:
     profile_ids:
     - gibbets
+  rule_ref: shared-rule.no-brain
 - id: gibbets--may-not-run
   runtime:
     scope: 'NO'
@@ -495,9 +473,8 @@ rules:
     - id: unimplemented.ghost-pirates-sar.gibbets.may-not-run
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.movement
   name: May Not Run (Gibbets)
-  effect: Gibbets are slow moving creatures, and may not run, though they may charge as normal.
   source:
     manual: broheim.net
     printed_page: 4
@@ -505,13 +482,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
   name_i18n:
     es: No Pueden Correr (Jaulas de Hierro)
-  effect_i18n:
-    es: >-
-      Las Jaulas de Hierro son criaturas lentas y no pueden correr, aunque pueden cargar con
-      normalidad.
   applies_to:
     profile_ids:
     - gibbets
+  rule_ref: shared-rule.may-not-run
 - id: gibbets--iron-cage
   runtime:
     scope: 'YES'
@@ -569,7 +543,7 @@ rules:
     - id: unimplemented.ghost-pirates-sar.gibbets.sink
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.movement
   name: Sink
   effect: >-
     In their heavy cages, Gibbets sink to the bottom of any water they move through. The river or
@@ -619,7 +593,6 @@ rules:
         kind: mechanic
         id: mechanic.psychology-immunity
   name: Undead (the Bloated)
-  effect: As Zombies, the Bloated are Immune to Poison, Immune to Psychology, and cause Fear.
   source:
     manual: broheim.net
     printed_page: 4
@@ -627,11 +600,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
   name_i18n:
     es: No Muerto (los Hinchos)
-  effect_i18n:
-    es: Como zombis, los Hinchos son inmunes al veneno, inmunes a la psicología y causan miedo.
   applies_to:
     profile_ids:
     - the-bloated
+  rule_ref: shared-rule.ghost-pirate-undead
 - id: the-bloated--no-pain
   runtime:
     scope: 'NO'
@@ -641,7 +613,7 @@ rules:
     - id: unimplemented.ghost-pirates-sar.the-bloated.no-pain
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: source-blocked
   name: No Pain (the Bloated)
   effect: >-
     The Bloated treat a 'stunned' result on the injury chart as 'knocked down'. (Note: the PDF also
@@ -669,9 +641,8 @@ rules:
     - id: unimplemented.ghost-pirates-sar.the-bloated.may-not-run
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.movement
   name: May Not Run (the Bloated)
-  effect: The Bloated are slow moving creatures, and may not run, though they may charge as normal.
   source:
     manual: broheim.net
     printed_page: 4
@@ -679,11 +650,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
   name_i18n:
     es: No Pueden Correr (los Hinchos)
-  effect_i18n:
-    es: Los Hinchos son criaturas lentas y no pueden correr, aunque pueden cargar con normalidad.
   applies_to:
     profile_ids:
     - the-bloated
+  rule_ref: shared-rule.may-not-run
 - id: the-bloated--no-brain
   runtime:
     scope: 'NO'
@@ -693,9 +663,8 @@ rules:
     - id: unimplemented.ghost-pirates-sar.the-bloated.no-brain
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: No Brain (the Bloated)
-  effect: The Bloated do not gain experience.
   source:
     manual: broheim.net
     printed_page: 4
@@ -703,11 +672,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
   name_i18n:
     es: Sin Cerebro (los Hinchos)
-  effect_i18n:
-    es: Los Hinchos no ganan experiencia.
   applies_to:
     profile_ids:
     - the-bloated
+  rule_ref: shared-rule.no-brain
 - id: the-bloated--squishy
   runtime:
     scope: 'YES'
@@ -746,7 +714,7 @@ rules:
     - id: unimplemented.ghost-pirates-sar.the-bloated.dead-mans-float
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.movement
   name: Dead Man's Float
   effect: >-
     The Bloated can float on the water, and thus can use this to their advantage. While in the
@@ -776,7 +744,7 @@ rules:
     - id: unimplemented.ghost-pirates-sar.the-bloated.weak-magic
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.group
   name: Weak Magic
   effect: >-
     If the Ghost Pirate Warband itself Routs, any Bloated who have already left the table in
@@ -806,7 +774,7 @@ rules:
     - id: unimplemented.ghost-pirates-sar.the-bloated.plenty-more-with-the-next-tide
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.group
   name: Plenty More with the Next Tide!
   effect: >-
     The rest of the crew barely notice if any Bloated go Out of Action - they know they'll find them
@@ -829,14 +797,14 @@ rules:
     - the-bloated
 - id: the-bloated--bloated-unarmed
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.ghost-pirates-sar.item.bloated-unarmed
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: pending-classification
+      reason: pending-implementation
   name: Unarmed Bloated
   effect: >-
     The Bloated do not REQUIRE equipment, and may make a single unarmed attack with no penalties.

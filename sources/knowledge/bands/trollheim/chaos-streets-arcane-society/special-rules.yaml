@@ -3,15 +3,8 @@ band_id: chaos-streets-arcane-society
 rules:
 - id: grand-wizard--leader
   name: Leader
-  effect: >-
-    Any warband model within 6" of the Grand Wizard may use his Leadership when taking Leadership
-    tests.
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier modelo de la banda a 6" del Gran Mago puede usar su Liderazgo cuando realice
-      chequeos de Liderazgo.
   applies_to:
     profile_ids:
     - grand-wizard
@@ -29,6 +22,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: grand-wizard--spellcaster
   name: Spellcaster
   effect: >-
@@ -55,7 +49,7 @@ rules:
     - id: unimplemented.chaos-streets-arcane-society.grand-wizard.spellcaster
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.magic
 - id: arcane-mage--spellcaster
   name: Spellcaster
   effect: >-
@@ -82,7 +76,7 @@ rules:
     - id: unimplemented.chaos-streets-arcane-society.arcane-mage.spellcaster
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.magic
 - id: arcane-mage--respect-for-the-arcane-society
   name: Respect for the Arcane Society
   effect: An Arcane Mage may never know more spells than the warband leader.
@@ -105,7 +99,7 @@ rules:
     - id: unimplemented.chaos-streets-arcane-society.arcane-mage.respect-for-the-arcane-society
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.magic
 - id: arcane-bodyguard--not-leader
   name: Not a Leader
   effect: >-
@@ -125,14 +119,14 @@ rules:
     printed_page: 170
     section: Heroes / 0-2 Arcane Bodyguards / Not a Leader
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.chaos-streets-arcane-society.arcane-bodyguard.not-leader
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.construction
       clauses:
       - id: not-a-leader
         scope: 'NO'
@@ -191,7 +185,7 @@ rules:
     - id: unimplemented.chaos-streets-arcane-society.arcane-aspirant.aspirant
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
 - id: arcane-assistant--prove-your-talent
   name: Prove Your Talent!
   effect: >-
@@ -220,7 +214,7 @@ rules:
     - id: unimplemented.chaos-streets-arcane-society.arcane-assistant.prove-your-talent
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
 - id: band--secret-society
   name: Secret Society
   effect: >-

@@ -13,9 +13,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any warrior within 6" of the Chieftain may use his Leadership characteristic when taking
-    Leadership tests.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -23,13 +20,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier guerrero a 6" del Jefe Tribal puede usar su característica de Liderazgo cuando
-      realice chequeos de Liderazgo.
   applies_to:
     profile_ids:
     - chieftain
+  rule_ref: shared-rule.leader
 - id: chieftain--ride-spiders
   runtime:
     scope: LATER
@@ -70,9 +64,8 @@ rules:
     - id: unimplemented.forest-goblins.braves.animosity
       scope: 'NO'
       binding: null
-      reason: out-of-scope.movement
+      reason: out-of-scope.non-duel
   name: Animosity
-  effect: Braves are subject to the rules for Animosity .
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -80,21 +73,20 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
   name_i18n:
     es: Rencor
-  effect_i18n:
-    es: Los Guerreros están sujetos a las reglas de Rencor.
   applies_to:
     profile_ids:
     - braves
+  rule_ref: shared-rule.animosity-forest-goblins
 - id: braves--remove-animosity
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.forest-goblins.braves.remove-animosity
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.campaign
       clauses:
       - id: remove-animosity
         scope: 'NO'
@@ -125,7 +117,7 @@ rules:
     - id: unimplemented.forest-goblins.shaman.wizard
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.magic
   name: Wizard
   source:
     manual: mordheimer.net
@@ -147,7 +139,7 @@ rules:
     - id: unimplemented.forest-goblins.forest-goblins.animosity
       scope: 'NO'
       binding: null
-      reason: out-of-scope.movement
+      reason: out-of-scope.non-duel
   name: Animosity
   source:
     manual: mordheimer.net
@@ -169,9 +161,8 @@ rules:
     - id: unimplemented.forest-goblins.red-toof-goblins.animosity
       scope: 'NO'
       binding: null
-      reason: out-of-scope.movement
+      reason: out-of-scope.non-duel
   name: Animosity
-  effect: Red Toof Boyz are subject to the rules for Animosity .
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -179,11 +170,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
   name_i18n:
     es: Rencor
-  effect_i18n:
-    es: Los Chicos Colaroja están sujetos a las reglas de Rencor.
   applies_to:
     profile_ids:
     - red-toof-goblins
+  rule_ref: shared-rule.animosity-forest-goblins
 - id: red-toof-goblins--berserkers
   runtime:
     scope: 'YES'
@@ -239,9 +229,8 @@ rules:
     - id: unimplemented.forest-goblins.sluggas.animosity
       scope: 'NO'
       binding: null
-      reason: out-of-scope.movement
+      reason: out-of-scope.non-duel
   name: Animosity
-  effect: Sluggas are subject to the rules for Animosity .
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -249,11 +238,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
   name_i18n:
     es: Rencor
-  effect_i18n:
-    es: Los Apedreadores están sujetos a las reglas de Rencor.
   applies_to:
     profile_ids:
     - sluggas
+  rule_ref: shared-rule.animosity-forest-goblins
 - id: sluggas--sluggas
   runtime:
     scope: 'NO'
@@ -265,9 +253,6 @@ rules:
       binding: null
       reason: out-of-scope.shooting
   name: Sluggas
-  effect: >-
-    In the shooting phase, the Sluggas may throw thrown weapons up to three times. This may not be
-    combined with Quick Shot if they should be promoted to hero status.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -275,13 +260,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
   name_i18n:
     es: Apedreadores (Sluggas)
-  effect_i18n:
-    es: >-
-      En la fase de disparo, los Apedreadores pueden lanzar armas arrojadizas hasta tres veces. Esto
-      no puede combinarse con Disparo Rápido si llegaran a ser ascendidos a estatus de héroe.
   applies_to:
     profile_ids:
     - sluggas
+  rule_ref: shared-rule.sluggas
 - id: gigantic-spider--fear
   runtime:
     scope: 'YES'
@@ -343,9 +325,6 @@ rules:
         parameters:
           value: true
   name: Poisonous
-  effect: >-
-    The Gigantic Spider's maw drips with vile poisons. When it wounds an enemy and a roll is made on
-    the injury table, 1: knocked down, 2-4: stunned, and 5-6: Out of Action.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -353,13 +332,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
   name_i18n:
     es: Venenoso
-  effect_i18n:
-    es: >-
-      El hocico de la Araña Gigantesca gotea venenos repugnantes. Cuando hiere a un enemigo y se
-      tira en la tabla de heridas: 1 = derribado, 2-4 = aturdido y 5-6 = Fuera de combate.
   applies_to:
     profile_ids:
     - gigantic-spider
+  rule_ref: shared-rule.gigantic-spider-poisonous
 - id: gigantic-spider--native
   runtime:
     scope: 'NO'
@@ -529,7 +505,7 @@ rules:
     - id: unimplemented.forest-goblins.band.animosity
       scope: 'NO'
       binding: null
-      reason: out-of-scope.movement
+      reason: out-of-scope.non-duel
   name: Animosity
   effect: >-
     At the start of the Orc player's turn, roll a D6 for each Orc or Goblin Henchman not engaged in

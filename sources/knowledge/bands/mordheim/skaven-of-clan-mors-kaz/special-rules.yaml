@@ -175,9 +175,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any model in the warband within 6\" of the Claw Leader may use his Leadership instead of their
-    own.
   source:
     manual: broheim.net
     printed_page: 36
@@ -185,12 +182,10 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier modelo de la banda a 6" del Líder Garra puede usar su Liderazgo en lugar del propio.
   applies_to:
     profile_ids:
     - claw-leader
+  rule_ref: shared-rule.leader
 - id: claw-leader--tactical-genius
   runtime:
     scope: 'NO'
@@ -231,9 +226,6 @@ rules:
       binding: null
       reason: out-of-scope.magic
   name: Wizard
-  effect: >-
-    A Mors Sorcerer is a wizard and uses the Magic of the Horned Rat. See the Magic section of the
-    rulebook for details.
   source:
     manual: broheim.net
     printed_page: 37
@@ -241,13 +233,10 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Mago
-  effect_i18n:
-    es: >-
-      Un Hechicero de Mors es un Hechicero y usa la Magia de la Rata Cuernuda. Consulta la sección
-      de Magia del libro de reglas para más detalles.
   applies_to:
     profile_ids:
     - mors-sorcerer
+  rule_ref: shared-rule.wizard-horned-rat
 - id: skavenslaves--experience
   runtime:
     scope: 'NO'
@@ -399,9 +388,6 @@ rules:
       binding: null
       reason: out-of-scope.shooting
   name: Large
-  effect: >-
-    Rat Ogres are huge creatures and therefore make tempting targets for archers. Any model may
-    shoot at a Rat Ogre, even if it is not the closest target.
   source:
     manual: broheim.net
     printed_page: 39
@@ -409,14 +395,10 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Grande
-  effect_i18n:
-    es: >-
-      Los Ogros Rata son criaturas enormes y por tanto constituyen objetivos tentadores para los
-      arqueros. Cualquier modelo puede disparar a un Ogro Rata, incluso si no es el objetivo más
-      cercano.
   applies_to:
     profile_ids:
     - rat-ogre
+  rule_ref: shared-rule.kroxigor-large
 - id: band--wolf-rats-variant
   runtime:
     scope: 'NO'
@@ -426,7 +408,7 @@ rules:
     - id: unimplemented.skaven-of-clan-mors-kaz.band.wolf-rats-variant
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: source-blocked
   name: Wolf Rats (to Be Confirmed)
   effect: >-
     Note: Rat Ogres and Wolf Rats are alternative list entries to be confirmed. 0-5 Wolf Rats (60

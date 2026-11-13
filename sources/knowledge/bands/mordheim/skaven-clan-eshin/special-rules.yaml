@@ -3,7 +3,6 @@ band_id: skaven-clan-eshin
 rules:
 - id: assassin-adept--leader
   name: Leader
-  effect: Any warrior within 6" of the Assassin Adept may use his Leadership instead of his own.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -11,8 +10,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: Cualquier guerrero a 6" del Adepto asesino puede usar su Liderazgo en lugar del suyo propio.
   applies_to:
     profile_ids:
     - assassin-adept
@@ -26,6 +23,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: assassin-adept--perfect-killer
   name: Perfect Killer
   effect: >-
@@ -86,7 +84,7 @@ rules:
     - id: unimplemented.skaven-clan-eshin.eshin-sorcerer.magic-user
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.magic
 - id: giant-rats--pack-size
   name: Pack Size
   effect: >-
@@ -113,7 +111,7 @@ rules:
     - id: unimplemented.skaven-clan-eshin.giant-rats.pack-size
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.construction
 - id: giant-rats--animal
   name: Animal
   source:
@@ -134,7 +132,7 @@ rules:
     - id: unimplemented.skaven-clan-eshin.giant-rats.animal
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
   rule_ref: shared-rule.animal
 - id: rat-ogre--fear
   name: Fear
@@ -206,7 +204,7 @@ rules:
     - id: unimplemented.skaven-clan-eshin.rat-ogre.experience
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
   rule_ref: shared-rule.never-gain-experience
 - id: rat-ogre--large-target
   name: Large Target
@@ -343,7 +341,7 @@ rules:
     - id: unimplemented.skaven-clan-eshin.band.skaven-special-skills-wall-runner
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.movement
   rule_ref: shared-rule.wall-runner
 - id: band--skaven-special-skills-infiltration
   kind: warband_skill
@@ -370,7 +368,7 @@ rules:
     - id: unimplemented.skaven-clan-eshin.band.skaven-special-skills-infiltration
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.movement
   rule_ref: shared-rule.infiltration
 - id: band--skaven-special-skills-art-of-silent-death
   kind: warband_skill
@@ -385,10 +383,6 @@ rules:
         kind: mechanic
         id: skill.art-of-silent-death
   name: Art of Silent Death
-  effect: >-
-    The Skaven may fight unarmed without penalties and counts as using two weapons, gaining +1
-    Attack. He scores a critical hit on a To Wound roll of 5-6 instead of only 6. When used with
-    Eshin Fighting Claws, this grants +2 Attacks instead of +1.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -396,11 +390,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
   name_i18n:
     es: Arte de la Muerte Silenciosa
-  effect_i18n:
-    es: >-
-      El skaven puede luchar desarmado sin penalizaciones y cuenta como si usara dos armas, ganando
-      +1 Ataque. Obtiene un golpe crítico con una tirada de Herir de 5-6 en lugar de solo 6. Cuando
-      se usa con las Garras de combate de Eshin, concede +2 Ataques en lugar de +1.
   eligibility:
   - assassin-adept
   - black-skaven
@@ -408,3 +397,4 @@ rules:
   - night-runners
   applies_to:
     band: true
+  rule_ref: shared-rule.art-of-silent-death

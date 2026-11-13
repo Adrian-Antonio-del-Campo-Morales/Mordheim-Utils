@@ -10,7 +10,7 @@ rules:
     - id: unimplemented.forest-goblins-lus.band.camouflage
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.movement
   name: Camouflage
   effect: >-
     Instead of spotting Forest Goblins automatically when hidden within an enemy's Initiative
@@ -38,7 +38,7 @@ rules:
     - id: unimplemented.forest-goblins-lus.band.natives
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.movement
   name: Natives
   effect: Forest Goblins suffer no movement penalties from moving through jungle terrain.
   source:
@@ -63,7 +63,7 @@ rules:
     - id: unimplemented.forest-goblins-lus.band.animosity
       scope: 'NO'
       binding: null
-      reason: out-of-scope.movement
+      reason: out-of-scope.non-duel
   name: Animosity
   effect: >-
     At the start of the Goblin player's turn, roll a D6 for each hero or henchman who suffers from
@@ -110,9 +110,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any models in the warband within 6 inches may use the Chieftain's Leadership instead of their
-    own.
   source:
     manual: broheim.net
     printed_page: 4
@@ -120,13 +117,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/lustria/Forest Goblins.pdf
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier modelo de la banda a 6 pulgadas puede usar el Liderazgo del Jefe Tribal en lugar del
-      suyo.
   applies_to:
     profile_ids:
     - chieftain
+  rule_ref: shared-rule.leader
 - id: bosses--animosity
   runtime:
     scope: 'NO'
@@ -136,7 +130,7 @@ rules:
     - id: unimplemented.forest-goblins-lus.bosses.animosity
       scope: 'NO'
       binding: null
-      reason: out-of-scope.movement
+      reason: out-of-scope.non-duel
   name: Animosity
   effect: >-
     Bosses are subject to the rules for Animosity. A Forest Goblin Boss may choose to remove his
@@ -164,7 +158,7 @@ rules:
     - id: unimplemented.forest-goblins-lus.shaman.wizard
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: out-of-scope.magic
   name: Wizard
   source:
     manual: broheim.net
@@ -186,7 +180,7 @@ rules:
     - id: unimplemented.forest-goblins-lus.forest-goblins.animosity
       scope: 'NO'
       binding: null
-      reason: out-of-scope.movement
+      reason: out-of-scope.non-duel
   name: Animosity
   source:
     manual: broheim.net
@@ -208,9 +202,8 @@ rules:
     - id: unimplemented.forest-goblins-lus.red-toof-clan-goblins.animosity
       scope: 'NO'
       binding: null
-      reason: out-of-scope.movement
+      reason: out-of-scope.non-duel
   name: Animosity
-  effect: Red Toof Clan Goblins are subject to the rules for Animosity.
   source:
     manual: broheim.net
     printed_page: 5
@@ -218,11 +211,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/lustria/Forest Goblins.pdf
   name_i18n:
     es: Rencor
-  effect_i18n:
-    es: Los Goblins del Clan Colaroja están sujetos a las reglas de Rencor.
   applies_to:
     profile_ids:
     - red-toof-clan-goblins
+  rule_ref: shared-rule.animosity-forest-goblins
 - id: red-toof-clan-goblins--berserkers
   runtime:
     grant: profile
@@ -272,9 +264,8 @@ rules:
     - id: unimplemented.forest-goblins-lus.sluggas.animosity
       scope: 'NO'
       binding: null
-      reason: out-of-scope.movement
+      reason: out-of-scope.non-duel
   name: Animosity
-  effect: Forest Goblin Sluggas are subject to the rules for Animosity.
   source:
     manual: broheim.net
     printed_page: 5
@@ -282,11 +273,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/lustria/Forest Goblins.pdf
   name_i18n:
     es: Rencor
-  effect_i18n:
-    es: Los Apedreadores goblins están sujetos a las reglas de Rencor.
   applies_to:
     profile_ids:
     - sluggas
+  rule_ref: shared-rule.animosity-forest-goblins
 - id: sluggas--sluggas
   runtime:
     scope: 'NO'
@@ -296,11 +286,8 @@ rules:
     - id: unimplemented.forest-goblins-lus.sluggas.sluggas
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: out-of-scope.shooting
   name: Sluggas
-  effect: >-
-    In the shooting phase, Sluggas may throw thrown weapons up to three times. This may not be
-    combined with Quick Shot if they are promoted to hero status.
   source:
     manual: broheim.net
     printed_page: 5
@@ -308,13 +295,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/lustria/Forest Goblins.pdf
   name_i18n:
     es: Apedreadores (Sluggas)
-  effect_i18n:
-    es: >-
-      En la fase de disparo, los Apedreadores pueden lanzar armas arrojadizas hasta tres veces. Esto
-      no puede combinarse con Disparo Rápido si son ascendidos a estatus de héroe.
   applies_to:
     profile_ids:
     - sluggas
+  rule_ref: shared-rule.sluggas
 - id: gigantic-spider--fear
   runtime:
     scope: 'YES'
@@ -347,7 +331,7 @@ rules:
     - id: unimplemented.forest-goblins-lus.gigantic-spider.large-monster
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: out-of-scope.shooting
   name: Large Monster
   effect: >-
     Gigantic Spiders are large targets and may always be shot at, regardless of whether they are the
@@ -380,9 +364,6 @@ rules:
         parameters:
           value: true
   name: Poisonous
-  effect: >-
-    The Gigantic Spider's maw drips with vile poisons. When it wounds an enemy and a roll is made on
-    the injury table: 1 = knocked down, 2-4 = stunned, 5-6 = out of action.
   source:
     manual: broheim.net
     printed_page: 5
@@ -390,13 +371,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/lustria/Forest Goblins.pdf
   name_i18n:
     es: Venenoso
-  effect_i18n:
-    es: >-
-      El hocico de la Araña Gigantesca gotea venenos repugnantes. Cuando hiere a un enemigo y se
-      tira en la tabla de heridas: 1 = derribado, 2-4 = aturdido, 5-6 = Fuera de combate.
   applies_to:
     profile_ids:
     - gigantic-spider
+  rule_ref: shared-rule.gigantic-spider-poisonous
 - id: gigantic-spider--native
   runtime:
     scope: 'NO'
@@ -406,7 +384,7 @@ rules:
     - id: unimplemented.forest-goblins-lus.gigantic-spider.native
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: out-of-scope.movement
   name: Native
   effect: >-
     Negotiating jungle terrain is no trouble for spiders; they move through jungle without penalty.
@@ -431,7 +409,7 @@ rules:
     - id: unimplemented.forest-goblins-lus.gigantic-spider.may-ride
       scope: LATER
       binding: null
-      reason: deferred.other
+      reason: deferred.mounts
       clauses:
       - id: mount
         scope: 'NO'
@@ -497,12 +475,12 @@ rules:
     - gigantic-spider
 - id: band--maximum-characteristics
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.forest-goblins-lus.band.maximum-characteristics
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:

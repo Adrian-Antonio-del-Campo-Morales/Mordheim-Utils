@@ -3,14 +3,14 @@ band_id: mazzalupo-web
 rules:
 - id: band--hired-swords
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.mazzalupo-web.band.hired-swords
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: out-of-scope.campaign
+      reason: out-of-scope.construction
       clauses:
       - id: whole
         scope: 'NO'
@@ -68,7 +68,6 @@ rules:
       - id: whole
         scope: 'NO'
   name: Riding (Horse)
-  effect: The Wandering knight has the Riding (horses) skill.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -76,11 +75,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/mazzalupo
   name_i18n:
     es: Montar (Caballo)
-  effect_i18n:
-    es: El Caballero Errante tiene la habilidad Montar (caballos).
   applies_to:
     profile_ids:
     - wandering-knight
+  rule_ref: shared-rule.riding-horses
 - id: wandering-knight--commands
   runtime:
     scope: 'NO'
@@ -401,7 +399,7 @@ rules:
     - id: unimplemented.mazzalupo-web.fallen-noble.indolent
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: out-of-scope.magic
   name: Indolent
   effect: >-
     Fallen nobles are resistant to orders and consider themselves of higher rank than any Wandering
@@ -436,7 +434,6 @@ rules:
       - id: whole
         scope: 'NO'
   name: Riding (Horse)
-  effect: The Fallen nobles have the Riding (horses) skill.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -444,11 +441,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/mazzalupo
   name_i18n:
     es: Montar (Caballo)
-  effect_i18n:
-    es: Los nobles decaídos tienen la habilidad Montar (caballos).
   applies_to:
     profile_ids:
     - fallen-noble
+  rule_ref: shared-rule.riding-horses
 - id: fallen-noble--ye-give-way
   runtime:
     scope: 'YES'

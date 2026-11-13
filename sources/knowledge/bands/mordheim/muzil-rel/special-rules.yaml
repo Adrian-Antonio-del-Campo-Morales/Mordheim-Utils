@@ -10,7 +10,7 @@ rules:
     - id: unimplemented.muzil-rel.band.muzil-scholars
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Scholars
   effect: A Muzil tribe may include up to 2 Scholars.
   source:
@@ -26,14 +26,14 @@ rules:
     band: true
 - id: band--slaves-can-lead
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.muzil-rel.band.slaves-can-lead
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.campaign
       clauses:
       - id: whole
         scope: 'NO'
@@ -85,6 +85,11 @@ rules:
       binding:
         kind: mechanic
         id: condition.poetry-victorious-leader
+    - id: condition.poetry-inspired
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.poetry-inspired
     - id: scholar--field-of-scholarship.cartography-and-physiology
       scope: 'NO'
       binding: null

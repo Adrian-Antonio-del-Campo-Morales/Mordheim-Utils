@@ -33,7 +33,7 @@ rules:
     - id: unimplemented.skaven-of-clan-pestilens-lus.skaven-slaves.doomed
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Doomed
   effect: >-
     If a Skaven Slave becomes a hero (rolls "the lad's got talent"), he is quickly executed by the
@@ -56,12 +56,12 @@ rules:
     - skaven-slaves
 - id: band--maximum-characteristics
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.skaven-of-clan-pestilens-lus.band.maximum-characteristics
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:
@@ -93,14 +93,14 @@ rules:
 - id: band--skill-cloud-of-flies
   kind: warband_skill
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: selectable
     effects:
     - id: unimplemented.skaven-of-clan-pestilens-lus.band.cloud-of-flies
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: out-of-scope.non-duel
+      reason: pending-implementation
   name: Cloud of Flies
   effect: >-
     The Skaven is surrounded by a cloud of buzzing flies. The flies will get in the eyes of enemy

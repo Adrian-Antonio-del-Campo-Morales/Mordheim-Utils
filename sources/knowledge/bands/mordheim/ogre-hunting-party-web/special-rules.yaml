@@ -3,14 +3,14 @@ band_id: ogre-hunting-party-web
 rules:
 - id: band--greenskins
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.ogre-hunting-party-web.band.greenskins
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.group
   name: Greenskins
   effect: >-
     Unlike Goblins, Gnoblars do not tend to work closely with Orcs. However, for all intents and
@@ -39,7 +39,7 @@ rules:
     - id: unimplemented.ogre-hunting-party-web.band.bicker
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.group
   name: Bicker
   effect: >-
     At the start of your turn, at the end of the Recovery phase, roll 1D6 for each Gnoblar henchmen
@@ -66,14 +66,14 @@ rules:
     - flingers
 - id: band--ideas-above-their-station
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.ogre-hunting-party-web.band.ideas-above-their-station
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.campaign
       clauses:
       - id: ideas-above-their-station
         scope: 'NO'
@@ -98,14 +98,14 @@ rules:
     band: true
 - id: band--distasteful-company
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.ogre-hunting-party-web.band.distasteful-company
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.construction
       clauses:
       - id: whole
         scope: 'NO'
@@ -135,12 +135,12 @@ rules:
     band: true
 - id: band--characteristic-increase
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.ogre-hunting-party-web.band.characteristic-increase
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:
@@ -193,7 +193,8 @@ rules:
         kind: profile
         id: profile.equipment-restrictions
         parameters:
-          forbids: heavy-armour
+          forbids:
+          - heavy-armour
       clauses:
       - id: armour-prohibition
         scope: 'YES'
@@ -204,9 +205,9 @@ rules:
       - id: all-alone-and-rating
         scope: 'NO'
     - id: unimplemented.ogre-hunting-party-web.band.huuuuge-excluded
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: out-of-scope.shooting
+      reason: deferred.psychology
   name: Huuuuge
   effect: >-
     Ogres are big, massive and frightening creatures. All ogre models cause fear. All ogres are
@@ -231,12 +232,12 @@ rules:
     - ogre-hunter
 - id: band--slow-witted
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.ogre-hunting-party-web.band.slow-witted
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:
@@ -302,7 +303,8 @@ rules:
         kind: profile
         id: profile.equipment-restrictions
         parameters:
-          forbids: weapon.dagger
+          forbids:
+          - weapon.dagger
   name: Don't Fight with Eating Knives
   effect: >-
     Ogres don't use daggers for fighting, just for eating. They don't carry them on the battlefield.
@@ -333,14 +335,14 @@ rules:
     - ogre-hunter
 - id: ogre-hunter--lazy
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.ogre-hunting-party-web.ogre-hunter.lazy
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.campaign
       clauses:
       - id: whole
         scope: 'NO'
@@ -376,7 +378,7 @@ rules:
     - id: unimplemented.ogre-hunting-party-web.ogre-hunter.central-figure
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.group
   name: Central Figure
   effect: >-
     The gnoblars flock around the Ogre Hunter, and take strength from his presence. If he is taken
@@ -406,7 +408,7 @@ rules:
     - id: unimplemented.ogre-hunting-party-web.ogre-hunter.sabre-trainer
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: Sabre Trainer
   effect: >-
     Whenever a Sabretusk cub rolls a 1 for Untamed, if it started the turn within 6" of this hero,
@@ -472,7 +474,7 @@ rules:
     - id: unimplemented.ogre-hunting-party-web.sabre-baiter.bait
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: Bait
   effect: >-
     Whenever a model declares a charge against a Sabre-baiter, he may immediately move 1D6" in the
@@ -509,7 +511,7 @@ rules:
     - id: unimplemented.ogre-hunting-party-web.flingers.scrap-slinger
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.shooting
   name: Scrap Slinger
   effect: >-
     A Flinger may throw 3 pieces of Sharp Stuff every turn, instead of the normal 1. (This does not
@@ -553,19 +555,18 @@ rules:
   rule_ref: shared-rule.fear
 - id: sabretusks--animals
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.ogre-hunting-party-web.sabretusks.animals
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:
       - id: whole
         scope: 'NO'
   name: Animals
-  effect: Sabretusks are animals, and don't gain experience.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -573,11 +574,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
   name_i18n:
     es: Animales
-  effect_i18n:
-    es: Los Sabretusks son animales y no ganan experiencia.
   applies_to:
     profile_ids:
     - sabretusks
+  rule_ref: shared-rule.animal
 - id: sabretusks--untamed
   runtime:
     scope: 'NO'
@@ -587,7 +587,7 @@ rules:
     - id: unimplemented.ogre-hunting-party-web.sabretusks.untamed
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: Untamed
   effect: >-
     Sabretusks don't bicker. However, at the start of each turn, roll 1D6 for each Sabretusk not in
@@ -935,7 +935,7 @@ rules:
     - id: unimplemented.ogre-hunting-party-web.ogre-hunting-skills.maneater
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
   name: Maneater
   effect: >-
     This Ogre may immediately learn one skill from the Shooting or Academic skill lists; this
@@ -996,7 +996,7 @@ rules:
     - id: unimplemented.ogre-hunting-party-web.ogre-hunting-skills.set-traps
       scope: 'NO'
       binding: null
-      reason: pending-implementation
+      reason: out-of-scope.movement
   name: Set Traps
   effect: >-
     A Trapper may set a trap if he spends a turn doing nothing else (he may not set traps if he's

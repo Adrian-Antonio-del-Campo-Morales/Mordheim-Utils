@@ -10,7 +10,7 @@ rules:
     - id: unimplemented.underworld-alliance-mim.band.who-iz-da-boss
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Who'z Da Boss!
   effect: >-
     At the end of a victorious game, instead of giving the leader +1 experience, roll a D6: 1 =
@@ -42,7 +42,7 @@ rules:
     - id: unimplemented.underworld-alliance-mim.band.warpstone-for-breakfast
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Warpstone for Breakfast
   effect: >-
     Any Hero may start the campaign with a single mutation (leaders may start with two) from the
@@ -68,14 +68,14 @@ rules:
     band: true
 - id: band--alliance-of-inconvenience
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.underworld-alliance-mim.band.alliance-of-inconvenience
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.group
       clauses:
       - id: alliance-of-inconvenience
         scope: 'NO'
@@ -111,7 +111,7 @@ rules:
     - id: unimplemented.underworld-alliance-mim.band.factional-jealousy
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: Factional Jealousy
   effect: >-
     A warrior of one type may never intercept the charge meant for a warrior of the other type.
@@ -136,7 +136,7 @@ rules:
     - id: unimplemented.underworld-alliance-mim.band.glory-hogz
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.group
   name: Glory Hogz
   effect: >-
     If one of the factions has routed, at the start of your turn you may roll 2D6; on a double, the
@@ -160,12 +160,22 @@ rules:
     band: true
 - id: band--power-grab
   runtime:
-    scope: LATER
-    implemented: 'NO'
-    grant: band
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
     effects:
+    - id: condition.power-grab-majority
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.power-grab-majority
+    - id: condition.power-grab-minority
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.power-grab-minority
     - id: unimplemented.underworld-alliance-mim.band.power-grab
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.group
       clauses:
@@ -199,7 +209,7 @@ rules:
     - id: unimplemented.underworld-alliance-mim.band.plenty-more-where-that-came-from
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Plenty More Where That Came From
   effect: >-
     If one of the two leaders dies, another hero of the same race takes command, earning the title
@@ -244,12 +254,12 @@ rules:
   rule_ref: shared-rule.leader
 - id: goblin-bully--one-upmanship
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: profile
     effects:
     - id: trait.re-roll-melee
-      scope: 'NO'
+      scope: LATER
       binding: null
       reason: deferred.other
   name: One Upmanship
@@ -302,7 +312,7 @@ rules:
     - id: unimplemented.underworld-alliance-mim.skaven-slum-lord.sneaky-snark
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Sneaky Snark
   effect: >-
     When fighting in the same combat as the Goblin Bully, if the Bully takes someone out of action
@@ -332,7 +342,7 @@ rules:
     - id: unimplemented.underworld-alliance-mim.skaven-slave-champions.tunnel-rat
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.non-duel
   name: Tunnel Rat
   source:
     manual: broheim.net
@@ -388,7 +398,7 @@ rules:
     - id: unimplemented.underworld-alliance-mim.boglars.largely-insignificant
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.group
   name: Largely Insignificant
   effect: >-
     Boglars count towards the number of warriors in a warband but are not considered for Rout tests
@@ -477,7 +487,7 @@ rules:
     - id: unimplemented.underworld-alliance-mim.sewer-squigs.movement
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: out-of-scope.movement
   name: Movement
   effect: >-
     Sewer Squigs move 2D6-1 inches each turn on land; when in water, they can swim 2D6 inches each
@@ -506,7 +516,7 @@ rules:
     - id: unimplemented.underworld-alliance-mim.giant-rats.pack-size
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Pack Size
   source:
     manual: broheim.net
@@ -521,14 +531,14 @@ rules:
   rule_ref: shared-rule.giant-rat-pack-size
 - id: giant-rats--experience
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.underworld-alliance-mim.giant-rats.experience
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.campaign
       clauses:
       - id: whole
         scope: 'NO'
@@ -634,7 +644,7 @@ rules:
     - id: unimplemented.underworld-alliance-mim.warpstone-troll.mutates
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Mutates
   effect: If wounded 3 or more times, roll on the Random Mutation Chart unless taken out of action.
   source:

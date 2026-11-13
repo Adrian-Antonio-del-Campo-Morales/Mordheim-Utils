@@ -44,7 +44,7 @@ rules:
     - id: unimplemented.shallows-beasts-mim.band.seafaring
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.movement
   name: Seafaring
   effect: >-
     Stromfels Reavers are seafarers and spend much of their time rowing boats. To represent this,
@@ -71,7 +71,7 @@ rules:
     - id: unimplemented.shallows-beasts-mim.band.stromfels-special-equipment
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Stromfels Reavers Special Equipment
   effect: >-
     This equipment is only available to the Cult of Stromfels, and no other warband may purchase it.
@@ -131,9 +131,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any warrior within 6" of the Buccaneer may use his Leadership value instead of his own when
-    taking Leadership tests.
   source:
     manual: broheim.net
     printed_page: 3
@@ -141,13 +138,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Shallows%20Beasts.pdf
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier guerrero a 6" del Bucanero puede usar su valor de Liderazgo en los chequeos de
-      Liderazgo.
   applies_to:
     profile_ids:
     - buccaneer
+  rule_ref: shared-rule.leader
 - id: buccaneer--swashbuckler
   runtime:
     scope: 'NO'
@@ -194,7 +188,7 @@ rules:
     - id: unimplemented.shallows-beasts-mim.mutant-priest.wizard
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.magic
   name: Wizard
   effect: >-
     The Mutant-Priest is a wizard and uses the Chaos Rituals on page 59 of the Mordheim rulebook.
@@ -221,7 +215,7 @@ rules:
     - id: unimplemented.shallows-beasts-mim.mutant-priest.prayers
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.magic
   name: Prayers
   effect: >-
     Mutant-Priests are servants of Manann's dark opposite Stromfels and may use the Prayers of
@@ -255,11 +249,6 @@ rules:
         kind: compiler
         id: compiler.strikes-last-bite
   name: Bite Attack
-  effect: >-
-    The Mutant-Priest has a powerful bite attack. This bite attack uses the Priest's own strength to
-    wound and receives no penalty for not using a weapon. The bite attack always strikes last,
-    regardless of who charged or which weapon is used. The bite even attacks after double-handed
-    weapons.
   source:
     manual: broheim.net
     printed_page: 3
@@ -267,25 +256,20 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Shallows%20Beasts.pdf
   name_i18n:
     es: Ataque de Mordisco
-  effect_i18n:
-    es: >-
-      El Sacerdote Mutante tiene un poderoso ataque de mordisco. Este ataque usa la propia Fuerza
-      del Sacerdote para herir y no sufre penalización por no usar arma. El mordisco siempre golpea
-      el último, sin importar quién cargó o qué arma se use. El mordisco ataca incluso tras las
-      armas a dos manos.
   applies_to:
     profile_ids:
     - mutant-priest
+  rule_ref: shared-rule.bite-attack
 - id: foundlings--blessed-child
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.shallows-beasts-mim.foundlings.blessed-child
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.campaign
       clauses:
       - id: whole
         scope: 'NO'
@@ -314,7 +298,7 @@ rules:
     - id: unimplemented.shallows-beasts-mim.fishmen.mer-creatures
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.movement
   name: Mer-Creatures
   effect: >-
     Stromfels cultists whose legs and arms warp in such a way that fish-scaled webbed limbs
@@ -348,7 +332,7 @@ rules:
     - id: unimplemented.shallows-beasts-mim.swampers.swamp-striders
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.movement
   name: Swamp Striders
   source:
     manual: broheim.net
@@ -370,7 +354,7 @@ rules:
     - id: unimplemented.shallows-beasts-mim.swampers.marsh-born
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: Marsh Born
   effect: >-
     Dense areas of watery fenland and log causeways are called home by Swampers. Swampers re-roll

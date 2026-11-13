@@ -3,17 +3,12 @@ band_id: khemri-necromancers
 rules:
 - id: necromancer--leader
   name: Leader
-  effect: Any warband model within 6" of the Necromancer may use his Leadership instead of its own.
   source:
     manual: khemri
     printed_page: 54
     section: Heroes / 1 Necromancer / Leader
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier modelo de la banda a 6" del Nigromante puede usar su Liderazgo en lugar del suyo
-      propio.
   applies_to:
     profile_ids:
     - necromancer
@@ -27,6 +22,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: necromancer--wizard
   name: Wizard
   source:
@@ -47,7 +43,13 @@ rules:
       scope: 'NO'
       binding: null
       reason: out-of-scope.magic
-  rule_ref: shared-rule.wizard
+  effect: >-
+    The Necromancer is a Wizard and begins with one Necromancy spell. The spell list and spell effects
+    are intentionally not modelled in this file.
+  effect_i18n:
+    es: >-
+      El Nigromante es un Hechicero y comienza con un hechizo de Nigromancia. La lista de hechizos y sus
+      efectos no se modelan intencionadamente en este archivo.
 - id: apprentice--student
   name: Student
   effect: >-
@@ -79,19 +81,12 @@ rules:
       reason: out-of-scope.magic
 - id: tomb-robbers--disable-traps
   name: Disable Traps
-  effect: >-
-    Tomb Robbers are experts at detecting and disabling traps. Resolve this using the trap rules
-    referenced by the Khemri Experience section.
   source:
     manual: khemri
     printed_page: 54
     section: Heroes / 0-3 Tomb Robbers / Disable Traps
   name_i18n:
     es: Desactivar Trampas
-  effect_i18n:
-    es: >-
-      Los Ladrones de tumbas son expertos en detectar y desactivar trampas. Resuélvelo usando las
-      reglas de trampas referenciadas por la sección de Experiencia de Khemri.
   applies_to:
     profile_ids:
     - tomb-robbers
@@ -103,7 +98,8 @@ rules:
     - id: unimplemented.khemri-necromancers.tomb-robbers.disable-traps
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.non-duel
+  rule_ref: shared-rule.khemri-disable-traps
 - id: skeleton-warriors--undead
   name: Undead
   source:
@@ -128,17 +124,12 @@ rules:
   rule_ref: shared-rule.undead
 - id: nehekharan-vultures--undead
   name: Undead
-  effect: Nehekharan Vultures are Undead and are subject to the warband's Undead special rules.
   source:
     manual: khemri
     printed_page: 55
     section: Henchmen / 0-5 Nehekharan Vultures / Undead
   name_i18n:
     es: No Muerto
-  effect_i18n:
-    es: >-
-      Los Buitres nehekaranos son No muertos y están sujetos a las reglas especiales de No muertos
-      de la banda.
   applies_to:
     profile_ids:
     - nehekharan-vultures
@@ -152,6 +143,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.undead
+  rule_ref: shared-rule.undead
 - id: nehekharan-vultures--flight
   name: Flight
   effect: >-
@@ -180,7 +172,7 @@ rules:
     - id: unimplemented.khemri-necromancers.nehekharan-vultures.flight
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.movement
 - id: nehekharan-vultures--fragile
   name: Fragile
   effect: >-
@@ -213,18 +205,12 @@ rules:
           value: 3
 - id: necromantic-abomination--undead
   name: Undead
-  effect: >-
-    The Necromantic Abomination is Undead and is subject to the warband's Undead special rules.
   source:
     manual: khemri
     printed_page: 55
     section: Henchmen / 0-1 Necromantic Abomination / Undead
   name_i18n:
     es: No Muerto
-  effect_i18n:
-    es: >-
-      La Abominación necromántica es No muerta y está sujeta a las reglas especiales de No muertos
-      de la banda.
   applies_to:
     profile_ids:
     - necromantic-abomination
@@ -238,17 +224,15 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.undead
+  rule_ref: shared-rule.undead
 - id: necromantic-abomination--impossible-to-hide
   name: Impossible to Hide
-  effect: The Necromantic Abomination is too large to Hide.
   source:
     manual: khemri
     printed_page: 55
     section: Henchmen / 0-1 Necromantic Abomination / Impossible to Hide
   name_i18n:
     es: Imposible de Ocultar
-  effect_i18n:
-    es: La Abominación necromántica es demasiado grande para Ocultarse.
   applies_to:
     profile_ids:
     - necromantic-abomination
@@ -260,7 +244,8 @@ rules:
     - id: unimplemented.khemri-necromancers.necromantic-abomination.impossible-to-hide
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.movement
+  rule_ref: shared-rule.impossible-to-hide
 - id: necromantic-abomination--large
   name: Large
   effect: >-
@@ -287,7 +272,7 @@ rules:
     - id: unimplemented.khemri-necromancers.necromantic-abomination.large
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.shooting
 - id: necromantic-abomination--upkeep
   name: Upkeep
   effect: After each battle, the Necromancer must pay 15 gc to maintain the Necromantic Abomination.
@@ -312,7 +297,7 @@ rules:
     - id: unimplemented.khemri-necromancers.necromantic-abomination.upkeep
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.campaign
 - id: necromantic-abomination--constant-evolution
   name: Constant Evolution
   effect: >-
@@ -344,7 +329,7 @@ rules:
     - id: unimplemented.khemri-necromancers.necromantic-abomination.constant-evolution
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.campaign
 - id: band--death-of-the-necromancer
   name: Death of the Necromancer
   effect: >-
@@ -373,7 +358,7 @@ rules:
     - id: unimplemented.khemri-necromancers.band.death-of-the-necromancer
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.campaign
 - id: band--cause-fear
   name: Cause Fear
   source:
@@ -471,7 +456,7 @@ rules:
     - id: unimplemented.khemri-necromancers.band.may-not-run
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.movement
   rule_ref: shared-rule.may-not-run-undead
 - id: band--immune-to-poison
   runtime:
@@ -530,7 +515,7 @@ rules:
     - id: unimplemented.khemri-necromancers.band.brainless
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.campaign
 - id: band--no-food-or-water
   name: No Food or Water
   effect: >-
@@ -560,7 +545,7 @@ rules:
     - id: unimplemented.khemri-necromancers.band.no-food-or-water
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.campaign
 - id: band--necromantic-modification-ogre-flesh
   kind: modification
   name: Ogre Flesh
@@ -785,7 +770,7 @@ rules:
     - id: unimplemented.khemri-necromancers.band.necromantic-modification-ram-legs
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.movement
 - id: band--necromantic-modification-wings
   name: Wings
   effect: >-
@@ -813,7 +798,7 @@ rules:
     - id: unimplemented.khemri-necromancers.band.necromantic-modification-wings
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.movement
 - id: band--necromantic-modification-anvil-head
   kind: modification
   name: Anvil Head

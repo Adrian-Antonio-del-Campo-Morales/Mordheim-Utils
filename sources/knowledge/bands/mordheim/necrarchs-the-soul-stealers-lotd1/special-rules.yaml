@@ -874,14 +874,14 @@ rules:
 - id: band--special-skill-pull-of-undeath
   kind: warband_skill
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: selectable
     effects:
     - id: unimplemented.necrarchs-the-soul-stealers-lotd1.band.pull-of-undeath
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: out-of-scope.campaign
+      reason: pending-implementation
   name: Pull of Undeath
   effect: >-
     So strong is the center of undeath within the Necrarch that he may save his constructs around
@@ -904,12 +904,12 @@ rules:
     band: true
 - id: band--racial-maximum
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.necrarchs-the-soul-stealers-lotd1.band.racial-maximum
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:

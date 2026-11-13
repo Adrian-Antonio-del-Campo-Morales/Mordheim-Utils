@@ -38,7 +38,7 @@ rules:
     - id: unimplemented.sea-ghosts-mim.band.excellent-sight
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.movement
   name: Excellent Sight
   source:
     manual: broheim.net
@@ -52,14 +52,18 @@ rules:
   rule_ref: shared-rule.excellent-sight
 - id: band--distaste-for-poison
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.sea-ghosts-mim.band.distaste-for-poison
-      scope: 'NO'
-      binding: null
-      reason: pending-classification
+    - id: compiler.forbid-item-categories
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.forbid-item-categories
+        parameters:
+          categories:
+          - poison
   name: Distaste for Poison
   effect: >-
     The use of poisons and various drugs is a Dark Elf specialty. As such, it is frowned upon by
@@ -87,7 +91,7 @@ rules:
     - id: unimplemented.sea-ghosts-mim.band.tolerant
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Tolerant
   effect: >-
     Due to their outsider status with the Asur, Sea Elves have learned to stifle their distaste for
@@ -119,7 +123,7 @@ rules:
     - id: unimplemented.sea-ghosts-mim.band.magicians
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Magicians
   effect: >-
     If a Sea Elf Rangers warband hires the Elf Mage Hired Sword then the magician can be retained
@@ -146,7 +150,7 @@ rules:
     - id: unimplemented.sea-ghosts-mim.band.unforgiving
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.non-duel
   name: Unforgiving
   effect: >-
     In addition to their hatred of their corrupt kin, elf folk have a long history of struggle
@@ -175,7 +179,7 @@ rules:
     - id: unimplemented.sea-ghosts-mim.band.sea-elf-special-skills
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.movement
   name: Sea Elf Special Skills
   effect: >-
     Sea Elf Rangers may choose to use the following skill list instead of the standard skill lists:
@@ -217,7 +221,7 @@ rules:
     - id: unimplemented.sea-ghosts-mim.item.lyre
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Lyre
   effect: >-
     15 gold crowns, Rare 8, Minstrels only. Handcrafted enchanted instruments from Ulthuan; the
@@ -274,9 +278,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any warrior within 6 inches of the Wayfinder may use his Leadership value instead of his own
-    when taking Leadership tests.
   source:
     manual: broheim.net
     printed_page: 5
@@ -284,23 +285,20 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Sea%20Ghosts.pdf
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier guerrero a 6 pulgadas del Buscador de Rutas puede usar su valor de Liderazgo en los
-      chequeos de Liderazgo.
   applies_to:
     profile_ids:
     - wayfinder
+  rule_ref: shared-rule.leader
 - id: wayfinder--navigator
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.sea-ghosts-mim.wayfinder.navigator
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.non-duel
       clauses:
       - id: whole
         scope: 'NO'
@@ -395,14 +393,14 @@ rules:
     - feast-master
 - id: feast-master--shadow-dances-of-loec
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.sea-ghosts-mim.feast-master.shadow-dances-of-loec
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: out-of-scope.campaign
+      reason: pending-implementation
   name: Shadow Dances of Loec
   effect: >-
     Enactors of the Shadow Dances of Loec, Feast-Masters may choose a new Dance to learn from the
@@ -428,14 +426,14 @@ rules:
     - feast-master
 - id: lookouts--seeker
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.sea-ghosts-mim.lookouts.seeker
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.campaign
       clauses:
       - id: whole
         scope: 'NO'
@@ -529,14 +527,14 @@ rules:
     - minstrels
 - id: wildkin--loner
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.sea-ghosts-mim.wildkin.loner
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: deferred.other
+      reason: deferred.psychology
   name: Loner
   effect: >-
     Wildkin never truly escape from the primal call of isolation. They are immune to All Alone tests
@@ -564,7 +562,7 @@ rules:
     - id: unimplemented.sea-ghosts-mim.wildkin.animal-charmer
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.movement
   name: Animal Charmer (Eg. Falcon Charmer)
   effect: >-
     Wildkin can control up to five animals provided that they remain within 6" of him. If an animal

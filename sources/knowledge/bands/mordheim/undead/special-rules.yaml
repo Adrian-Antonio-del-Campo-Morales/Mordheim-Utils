@@ -3,9 +3,6 @@ band_id: undead
 rules:
 - id: vampire--leader
   name: Leader
-  effect: >-
-    Any model in the warband within 6" of the Vampire may use the Vampire's Leadership instead of
-    its own.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -13,10 +10,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/undead
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier miniatura de la banda a 6" del Vampiro puede usar el Liderazgo del Vampiro en lugar
-      del suyo propio.
   applies_to:
     profile_ids:
     - vampire
@@ -30,6 +23,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: vampire--cause-fear
   name: Cause Fear
   source:
@@ -149,8 +143,14 @@ rules:
     - id: unimplemented.undead.necromancer.wizard
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
-  rule_ref: shared-rule.wizard
+      reason: out-of-scope.magic
+  effect: >-
+    The Necromancer is a Wizard and may use Necromantic magic. The Necromancy spell list itself is
+    intentionally not modelled in this file.
+  effect_i18n:
+    es: >-
+      El Nigromante es un Mago y puede usar la magia Nigromántica. La propia lista de hechizos de
+      Nigromancia no está modelada intencionadamente en este fichero.
 - id: ghouls--cause-fear
   name: Cause Fear
   source:
@@ -219,7 +219,7 @@ rules:
     - id: unimplemented.undead.dire-wolves.may-not-run
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.movement
   rule_ref: shared-rule.may-not-run
 - id: dire-wolves--cause-fear
   name: Cause Fear
@@ -317,7 +317,7 @@ rules:
     - id: unimplemented.undead.dire-wolves.unliving
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
   rule_ref: shared-rule.never-gain-experience
 - id: dire-wolves--no-pain
   runtime:
@@ -385,7 +385,7 @@ rules:
     - id: unimplemented.undead.zombies.may-not-run
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.movement
   rule_ref: shared-rule.may-not-run
 - id: zombies--immune-to-psychology
   name: Immune to Psychology
@@ -483,7 +483,7 @@ rules:
     - id: unimplemented.undead.zombies.no-brain
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
   rule_ref: shared-rule.never-gain-experience
 - id: band--undead-maximum-characteristics
   name: Undead Maximum Characteristics

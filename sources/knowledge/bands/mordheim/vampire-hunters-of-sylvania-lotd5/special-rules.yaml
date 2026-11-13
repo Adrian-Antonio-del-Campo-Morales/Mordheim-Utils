@@ -10,7 +10,7 @@ rules:
     - id: unimplemented.vampire-hunters-of-sylvania-lotd5.band.hired-swords
       scope: 'NO'
       binding: null
-      reason: out-of-scope.campaign
+      reason: out-of-scope.construction
   name: Hired Swords
   effect: >-
     Vampire Hunters accept nearly all aid that is available. As such, they may recruit Hired Swords
@@ -53,14 +53,14 @@ rules:
   rule_ref: shared-rule.leader
 - id: vampire-hunter--stake-the-vampire
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.vampire-hunters-of-sylvania-lotd5.vampire-hunter.stake-the-vampire
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: out-of-scope.movement
+      reason: deferred.psychology
   name: Stake the Vampire!
   source:
     manual: mordheimer.net
@@ -75,14 +75,14 @@ rules:
   rule_ref: shared-rule.stake-the-vampire
 - id: priest-of-morr--loner
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.vampire-hunters-of-sylvania-lotd5.priest-of-morr.loner
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: out-of-scope.group
+      reason: deferred.psychology
   name: Loner
   source:
     manual: mordheimer.net
@@ -127,14 +127,14 @@ rules:
     - priest-of-morr
 - id: slayer--stake-the-vampire
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.vampire-hunters-of-sylvania-lotd5.slayer.stake-the-vampire
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: out-of-scope.movement
+      reason: deferred.psychology
   name: Stake the Vampire!
   source:
     manual: mordheimer.net
@@ -149,14 +149,14 @@ rules:
   rule_ref: shared-rule.stake-the-vampire
 - id: pilgrim--fanatical
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.vampire-hunters-of-sylvania-lotd5.pilgrim.fanatical
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: out-of-scope.campaign
+      reason: deferred.psychology
   name: Fanatical
   effect: >-
     A Pilgrim of Pain believes that the end of the world is nigh should the undead threat not be
@@ -369,7 +369,7 @@ rules:
     - id: unimplemented.vampire-hunters-of-sylvania-lotd5.band.touch-of-darkness
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.non-duel
   name: Touch of Darkness
   effect: >-
     Long has the Slayer been dealing in death. Perhaps too long. Due to his heightened intuition, he

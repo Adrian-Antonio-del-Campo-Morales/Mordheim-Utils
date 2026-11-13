@@ -8,7 +8,7 @@ native with the modular oracle.
 
 The semantic YAML test runner and NumPy per-operation adapters are retired.
 There is no second semantic authoring or certification system. This change
-does not establish that current mechanics/conformance coverage is complete or that any
+does not establish that current modular mechanics and rules-conformance coverage is complete or that any
 unexecuted tests pass. Structural audits, corpus contracts and evidence records
 remain separate from behavioural proof.
 
@@ -36,6 +36,17 @@ charters define the contrasting suites:
 Naming note: until 2026-11-12 both the rules-conformance suite and the parity
 deliveries were called "E2E" (for example "E2E battery", "E2E statistical
 deliveries"); old notes, commit messages and `docs/archive/` use that name.
+The current terms are:
+
+| Term | Meaning |
+|---|---|
+| Rules-conformance suite | The test suite in `tests/conformance/` (launcher `tests conformance`). |
+| Conformance scenario | One declared case of that suite, identified `<audit_id>::<id>`. |
+| Conformance corpus | The scenario YAML files in `tests/conformance/cases/`. |
+| Parity delivery | One frozen duel configuration derived from a conformance scenario (`tests/engines/parity/deliveries/`, key `delivery/<audit_id>/<id>`). |
+| Delivery parity campaign | A `check parity` or `check samples` run over parity deliveries (`--scenarios deliveries`). |
+| Delivery sample store | A stored campaign sample over parity deliveries (`reference_samples/*-deliveries-100k`). |
+| Battery | The 122-case statistical parity catalogue (`--scenarios battery`), not a test suite. |
 
 ## Engine test fixtures
 
@@ -227,7 +238,7 @@ A genuinely missing source must be identified exactly; do not invent a rule.
 | Optimized-engine equivalence | Statistical parity and truncation scenarios | Observed distributions agree within the declared tolerances and sample limits. |
 | Test infrastructure | Tooling, corpus contracts and coverage checks | The specified measurement/detection mechanism works; no blanket rule certificate. |
 
-Run only the validation authorized for the change. Large batteries and
+Run only the validation authorized for the change. Large test selections and
 certification campaigns are separate work, not an automatic consequence of
 editing a rule.
 
@@ -280,8 +291,8 @@ themselves: the scenarios must also be executed successfully.
 Structural verification is reached through `check verify` (the application's
 `verify` command). It checks the editorial and execution contracts, validates
 binding contracts and compiles every band profile with its default
-construction. It is a structural gate; the modular mechanics and conformance suites
-own rule behaviour.
+construction. It is a structural gate; the modular mechanics suite and the rules-conformance
+suite own rule behaviour.
 
 The cross-engine deterministic replay suite was retired; each engine keeps its
 own deterministic replay and operator checks, and optimized engines remain
@@ -306,7 +317,7 @@ Statistics compare optimized-engine behaviour with the modular reference over
 curated archetype duels, covering rule variants and their interactions. The 6σ marginal gate
 (`check parity --scenarios ...`, or `check samples compare` on stored samples)
 compares first/second/unresolved rates on the
-42-pair archetype matrix (glass cannons, brutes, elites, tanks, parry,
+43-pair archetype matrix (glass cannons, brutes, elites, tanks, parry,
 mechanics like regeneration-vs-fire, ward saves, entangle, the
 timing/parry amplifiers — 4 hits vs one parry, a W1 stun stressor, a
 measurable-rate frenzy pair, the durable mirror and a 75-round heavy grind —
@@ -336,7 +347,7 @@ for the Cartesian product of all profiles (see *When to add a pair*).
   amplifiers and the eight coverage-completion probes. It intentionally
   removes baselines, mirrors and alternate matchup contexts, so it is the
   recommended 10–15 minute certification loop.
-- **`big` (42 pairs)** is the complete matrix. It adds the omitted baselines,
+- **`big` (43 pairs)** is the complete matrix. It adds the omitted baselines,
   mirrors and alternate contexts; these do not usually add a new rule family,
   but they are valuable for finding direction-dependent or composition bugs
   after substantial engine changes.
@@ -493,7 +504,7 @@ differences only warn.
 
 A statistical PASS compares outcome distributions; it does not prove that a
 rule changes them. The with/without-rule contrast over the oracle belongs to
-the modular mechanics and conformance suites.
+the modular mechanics suite and the rules-conformance suite.
 
 ## Limits of the evidence
 
@@ -545,7 +556,7 @@ clause register CSVs under `docs/archive/` are historical records, not current
 certificates.
 
 The retired interaction-specification matrix and its policy file no longer gate
-verification. Rule interactions belong to modular mechanics/conformance and the curated
+verification. Rule interactions belong to the modular mechanics and rules-conformance suites and the curated
 statistical scenario catalogue. Adopted decisions remain in
 [design-rulings.md](../decisions/design-rulings.md).
 
@@ -566,5 +577,5 @@ physical draw order explicitly; do not assume equal seeds imply equal streams.
 Native replay requires a rebuilt context-aware extension and never falls back.
 The native replay cases live in
 `tests/engines/native/runtime/test_duel_replay_native.py`; new
-mechanisms are specified and checked in modular mechanics/conformance tests, with
+mechanisms are specified and checked in the modular mechanics suite and the rules-conformance suite, with
 statistical scenarios for optimized-engine comparison.

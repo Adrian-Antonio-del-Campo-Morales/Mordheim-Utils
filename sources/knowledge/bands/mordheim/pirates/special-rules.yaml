@@ -74,7 +74,7 @@ rules:
     - id: unimplemented.pirates.boatswains.expert-riggers
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.movement
   rule_ref: shared-rule.expert-riggers
 - id: swabbies--not-hired
   name: Not Hired
@@ -103,7 +103,7 @@ rules:
     - id: unimplemented.pirates.swabbies.not-hired
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.construction
 - id: swabbies--never-gain-experience
   name: Never Gain Experience
   source:
@@ -124,7 +124,7 @@ rules:
     - id: unimplemented.pirates.swabbies.never-gain-experience
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
   rule_ref: shared-rule.never-gain-experience
 - id: swabbies--rabble
   name: Rabble
@@ -189,7 +189,7 @@ rules:
     - id: unimplemented.pirates.swabbies.escaped-swabbies
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
 - id: swabbies--not-true-pirates
   name: They Ain't True Pirates!
   effect: >-
@@ -210,14 +210,14 @@ rules:
     profile_ids:
     - swabbies
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.pirates.swabbies.not-true-pirates
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.group
       clauses:
       - id: whole
         scope: 'NO'
@@ -263,7 +263,7 @@ rules:
     - id: unimplemented.pirates.band.kidnapped
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.campaign
 - id: band--stragglers-and-prisoners
   name: Stragglers and Prisoners
   effect: >-
@@ -301,7 +301,7 @@ rules:
     - id: unimplemented.pirates.band.stragglers-and-prisoners
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
 - id: band--hired-swords
   name: Hired Swords
   effect: >-
@@ -353,7 +353,7 @@ rules:
     - id: unimplemented.pirates.band.one-off-games
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.construction
 - id: band--succession
   name: Succession
   effect: >-
@@ -380,10 +380,9 @@ rules:
     - id: unimplemented.pirates.band.succession
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
 - id: band--swabbie-limit
   name: Swabbie Limit
-  effect: The warband may never include more Swabbies than Crew.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -391,8 +390,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
   name_i18n:
     es: Límite de Fregones
-  effect_i18n:
-    es: La banda jamás puede incluir más Fregonas que Tripulación.
   applies_to:
     band: true
   runtime:
@@ -403,7 +400,8 @@ rules:
     - id: unimplemented.pirates.band.swabbie-limit
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.construction
+  rule_ref: shared-rule.swabbie-limit
 - id: band--pirate-special-skills-sea-shanty-singer
   kind: warband_skill
   name: Sea Shanty Singer
@@ -475,7 +473,7 @@ rules:
     - id: unimplemented.pirates.band.pirate-special-skills-sea-legs
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.movement
 - id: band--pirate-special-skills-cutlass-master
   kind: warband_skill
   name: Cutlass Master
@@ -505,14 +503,14 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: selectable
     effects:
     - id: unimplemented.pirates.band.pirate-special-skills-cutlass-master
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: out-of-scope.shooting
+      reason: pending-implementation
 - id: band--pirate-special-skills-booming-voice
   kind: warband_skill
   name: Booming Voice
@@ -543,14 +541,14 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: selectable
     effects:
     - id: unimplemented.pirates.band.pirate-special-skills-booming-voice
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.group
       clauses:
       - id: booming-voice
         scope: 'NO'

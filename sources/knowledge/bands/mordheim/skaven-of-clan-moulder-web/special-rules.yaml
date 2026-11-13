@@ -3,14 +3,19 @@ band_id: skaven-of-clan-moulder-web
 rules:
 - id: band--packmasters-and-goading
   runtime:
-    scope: LATER
-    implemented: 'NO'
-    grant: band
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
     effects:
+    - id: condition.goading-charge
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.goading-charge
     - id: unimplemented.skaven-of-clan-moulder-web.band.packmasters-and-goading
       scope: LATER
       binding: null
-      reason: deferred.other
+      reason: deferred.psychology
       clauses:
       - id: packmasters-and-goading
         scope: 'NO'
@@ -75,7 +80,7 @@ rules:
     - id: unimplemented.skaven-of-clan-moulder-web.band.mutations
       scope: 'NO'
       binding: null
-      reason: out-of-scope.campaign
+      reason: out-of-scope.construction
   name: Mutations
   effect: >-
     Certain models may purchase Mutations from the Possessed Warband list in the Mordheim Rulebook.
@@ -94,12 +99,12 @@ rules:
     band: true
 - id: band--animal-limitations
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.skaven-of-clan-moulder-web.band.animal-limitations
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:
@@ -145,14 +150,14 @@ rules:
   rule_ref: shared-rule.leader
 - id: packmaster--master-handler
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.skaven-of-clan-moulder-web.packmaster.master-handler
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.construction
       clauses:
       - id: whole
         scope: 'NO'
@@ -244,14 +249,14 @@ rules:
     - apprentices
 - id: apprentices--heir-to-power
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.skaven-of-clan-moulder-web.apprentices.heir-to-power
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.campaign
       clauses:
       - id: whole
         scope: 'NO'
@@ -282,14 +287,14 @@ rules:
     - apprentices
 - id: giant-rats--pack-size
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.skaven-of-clan-moulder-web.giant-rats.pack-size
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.construction
       clauses:
       - id: whole
         scope: 'NO'
@@ -313,12 +318,12 @@ rules:
     - giant-rats
 - id: giant-rats--experience
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.skaven-of-clan-moulder-web.giant-rats.experience
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:
@@ -422,12 +427,12 @@ rules:
     es: Un Ogro Rata está sujeto a Estupidez salvo que haya un Héroe del Clan Moulder a 6 pulgadas.
 - id: rat-ogres--experience
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.skaven-of-clan-moulder-web.rat-ogres.experience
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:
@@ -454,7 +459,7 @@ rules:
     - id: unimplemented.skaven-of-clan-moulder-web.rat-ogres.large-target
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.shooting
   name: Large Target
   source:
     manual: mordheimer.net
@@ -506,14 +511,14 @@ rules:
     - rat-ogres
 - id: rat-ogres--hard-to-handle
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.skaven-of-clan-moulder-web.rat-ogres.hard-to-handle
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.construction
       clauses:
       - id: whole
         scope: 'NO'

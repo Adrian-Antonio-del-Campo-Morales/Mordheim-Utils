@@ -33,14 +33,14 @@ rules:
   rule_ref: shared-rule.kindred-hatred
 - id: band--fey-acuity
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.druchii-mic.band.fey-acuity
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.campaign
       clauses:
       - id: whole
         scope: 'NO'
@@ -78,7 +78,8 @@ rules:
         kind: profile
         id: profile.equipment-restrictions
         parameters:
-          forbids: blackpowder
+          forbids:
+          - blackpowder
   name: Disdain
   effect: >-
     Dark Elves may never use black powder weapons, as they find them too crude, noisy and
@@ -131,14 +132,14 @@ rules:
     band: true
 - id: band--slavers
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.druchii-mic.band.slavers
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.campaign
       clauses:
       - id: whole
         scope: 'NO'
@@ -161,12 +162,12 @@ rules:
     band: true
 - id: band--maximum-characteristics
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.druchii-mic.band.maximum-characteristics
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:
@@ -238,14 +239,14 @@ rules:
     - sorceress
 - id: beastmaster--slavehounds
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.druchii-mic.beastmaster.slavehounds
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: out-of-scope.campaign
+      reason: out-of-scope.construction
       clauses:
       - id: whole
         scope: 'NO'
@@ -276,7 +277,7 @@ rules:
     - id: unimplemented.druchii-mic.shades.natural-stealth
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: Natural Stealth
   effect: >-
     If a Shade is Hidden, enemy models halve their Initiative value for determining if they can
@@ -328,14 +329,14 @@ rules:
     - witch-elves
 - id: witch-elves--maibd-poison
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.druchii-mic.witch-elves.maibd-poison
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.construction
       clauses:
       - id: whole--scope--witch-elves-only
         scope: 'NO'
@@ -380,7 +381,6 @@ rules:
       binding: null
       reason: out-of-scope.campaign
   name: Animals
-  effect: Slavehounds are animals, and all animal rules apply to them. They never gain experience.
   source:
     manual: mordheim-index-catalog
     printed_page: 0
@@ -388,13 +388,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/druchii
   name_i18n:
     es: Animales
-  effect_i18n:
-    es: >-
-      Los Sabuesos de Esclavos son animales, y se les aplican todas las reglas de animales. Nunca
-      ganan experiencia.
   applies_to:
     profile_ids:
     - slavehounds
+  rule_ref: shared-rule.animal
 - id: slavehounds--beastmaster
   runtime:
     scope: 'YES'
@@ -453,7 +450,7 @@ rules:
     - id: unimplemented.druchii-mic.slavehounds.pack-work
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: Pack Work
   effect: >-
     Slavehounds are trained to detect hiding slaves and show them to their masters. If a Slavehound
@@ -485,7 +482,7 @@ rules:
     - id: unimplemented.druchii-mic.special.frenzied-charge
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: Frenzied Charge
   effect: >-
     The Dark Elf is infused with an intense raging thirst for blood and is a whirlwind in
@@ -549,7 +546,7 @@ rules:
     - id: unimplemented.druchii-mic.special.infiltration
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: Infiltration
   effect: The Dark Elf can Infiltrate. This skill is identical to the Skaven skill.
   source:
@@ -569,14 +566,14 @@ rules:
     - beastmaster
 - id: noble--poisoner
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.druchii-mic.special.poisoner
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.campaign
       clauses:
       - id: whole
         scope: 'NO'
@@ -614,7 +611,7 @@ rules:
     - id: unimplemented.druchii-mic.special.marksman-of-naggaroth
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.shooting
   name: Marksman of Naggaroth
   effect: >-
     Eyes of this hero are so keen and hands so steady that he can completely omit the penalty for
@@ -642,14 +639,14 @@ rules:
     - beastmaster
 - id: noble--will-to-survive
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.druchii-mic.special.will-to-survive
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.campaign
       clauses:
       - id: will-to-survive
         scope: 'NO'
@@ -688,7 +685,7 @@ rules:
     - id: unimplemented.druchii-mic.special.keen-sight
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: Keen Sight
   effect: >-
     There are numerous legends detailing the excellent eyesight of the Elves, both Druchii and Asur
@@ -721,7 +718,7 @@ rules:
     - id: unimplemented.druchii-mic.band.naggaroth-prices
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.construction
   name: Naggaroth Prices
   effect: >-
     These special prices represent the lower rarity of these items in Naggaroth. When attempting to

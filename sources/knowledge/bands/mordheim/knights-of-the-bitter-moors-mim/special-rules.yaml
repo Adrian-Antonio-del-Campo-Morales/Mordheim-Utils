@@ -10,7 +10,7 @@ rules:
     - id: unimplemented.knights-of-the-bitter-moors-mim.band.peasant-labour
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Peasant Labour
   effect: >-
     Bretonnian Knights always use the starting warband prices for Horses and Armour; the peasantry
@@ -40,7 +40,7 @@ rules:
     - id: unimplemented.knights-of-the-bitter-moors-mim.band.hired-swords
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Hired Swords
   effect: >-
     Bretonnians are counted as Humans and can hire any Hired Sword applicable to Humans, except
@@ -67,7 +67,7 @@ rules:
     - id: unimplemented.knights-of-the-bitter-moors-mim.band.ladys-blessing
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.shooting
   name: Lady's Blessing
   effect: >-
     Before the game, make a Leadership test against the warband leader's Leadership. If successful,
@@ -102,9 +102,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any warrior within 6 inches of the Questing Knight may use his Leadership when taking Leadership
-    tests.
   source:
     manual: broheim.net
     printed_page: 4
@@ -112,23 +109,20 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Knights Of The Bitter%20Moors.pdf
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier guerrero a 6 pulgadas del Caballero Buscador puede usar su Liderazgo en los chequeos
-      de Liderazgo.
   applies_to:
     profile_ids:
     - questing-knight
+  rule_ref: shared-rule.leader
 - id: questing-knight--knights-virtue
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.knights-of-the-bitter-moors-mim.questing-knight.knights-virtue
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: deferred.other
+      reason: deferred.psychology
   name: Knights Virtue
   source:
     manual: broheim.net
@@ -150,7 +144,7 @@ rules:
     - id: unimplemented.knights-of-the-bitter-moors-mim.questing-knight.ride
       scope: LATER
       binding: null
-      reason: deferred.other
+      reason: deferred.mounts
       clauses:
       - id: whole
         scope: 'NO'
@@ -212,7 +206,7 @@ rules:
     - id: unimplemented.knights-of-the-bitter-moors-mim.knights-errant.ride
       scope: LATER
       binding: null
-      reason: deferred.other
+      reason: deferred.mounts
       clauses:
       - id: whole
         scope: 'NO'
@@ -230,14 +224,14 @@ rules:
   rule_ref: shared-rule.knights-ride
 - id: knights-errant--knights-virtue
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.knights-of-the-bitter-moors-mim.knights-errant.knights-virtue
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: deferred.other
+      reason: deferred.psychology
   name: Knights Virtue
   source:
     manual: broheim.net
@@ -289,7 +283,7 @@ rules:
     - id: unimplemented.knights-of-the-bitter-moors-mim.squires.ride
       scope: LATER
       binding: null
-      reason: deferred.other
+      reason: deferred.mounts
       clauses:
       - id: whole
         scope: 'NO'
@@ -316,7 +310,7 @@ rules:
     - id: unimplemented.knights-of-the-bitter-moors-mim.squires.animal-handler
       scope: LATER
       binding: null
-      reason: deferred.other
+      reason: deferred.mounts
       clauses:
       - id: whole
         scope: 'NO'
@@ -344,7 +338,7 @@ rules:
     - id: unimplemented.knights-of-the-bitter-moors-mim.mounted-yeomen.mounted-or-nothin
       scope: LATER
       binding: null
-      reason: deferred.other
+      reason: deferred.mounts
       clauses:
       - id: whole
         scope: 'NO'
@@ -377,7 +371,7 @@ rules:
     - id: unimplemented.knights-of-the-bitter-moors-mim.mounted-yeomen.smarts
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: out-of-scope.construction
   name: Smarts
   effect: >-
     Even with their supreme lack of caring for the peasantry, knights know having too much cavalry
@@ -407,7 +401,7 @@ rules:
     - id: unimplemented.knights-of-the-bitter-moors-mim.band.field-trebuchet
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: out-of-scope.shooting
   name: Field Trebuchet (Special Equipment)
   effect: >-
     A siege weapon costing 175 gold crowns (special availability, takes D3+1 games to build if not

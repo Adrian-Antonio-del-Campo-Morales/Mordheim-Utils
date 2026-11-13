@@ -63,7 +63,7 @@ TypeScript domain/eligibility → browser domain/application adapters
 
 ## Shared resources and entry points
 
-`mordheim_knowledge.loader.knowledge_root()` resolves `sources/knowledge/`, including the `MORDHEIM_COMBAT_LAB_KNOWLEDGE_PATH` override and frozen-executable support. Structural verification (`check verify`) audits the editorial and execution contracts, binding contracts and default construction. Rule evidence lives in modular mechanics and rules-conformance tests, not in runtime resources.
+`mordheim_knowledge.loader.knowledge_root()` resolves `sources/knowledge/`, including the `MORDHEIM_COMBAT_LAB_KNOWLEDGE_PATH` override and frozen-executable support. Structural verification (`check verify`) audits the editorial and execution contracts, binding contracts and default construction. Rule evidence lives in the modular mechanics suite and the rules-conformance suite, not in runtime resources.
 
 Python entry points declared in `pyproject.toml`:
 

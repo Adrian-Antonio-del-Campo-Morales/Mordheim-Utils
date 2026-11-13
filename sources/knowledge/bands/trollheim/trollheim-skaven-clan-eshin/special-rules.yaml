@@ -3,17 +3,12 @@ band_id: trollheim-skaven-clan-eshin
 rules:
 - id: assassin-adept--leader
   name: Leader
-  effect: Any warband warrior within 6" of the Assassin may use his Leadership instead of its own.
   source:
     manual: trollheim
     printed_page: 94
     section: Heroes / 1 Assassin / Leader
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier guerrero de la banda a 6" del Asesino puede usar su Liderazgo en lugar del suyo
-      propio.
   applies_to:
     profile_ids:
     - assassin-adept
@@ -27,6 +22,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: assassin-adept--consummate-fighter
   name: Consummate Fighter
   effect: >-
@@ -107,7 +103,7 @@ rules:
     - id: unimplemented.trollheim-skaven-clan-eshin.giant-rats.pack-size
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.construction
 - id: giant-rats--animal
   name: Animal
   source:
@@ -127,7 +123,7 @@ rules:
     - id: unimplemented.trollheim-skaven-clan-eshin.giant-rats.animal
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.campaign
   rule_ref: shared-rule.animal
 - id: rat-ogre--fear
   name: Fear
@@ -192,7 +188,7 @@ rules:
     - id: unimplemented.trollheim-skaven-clan-eshin.rat-ogre.experience
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.campaign
   rule_ref: shared-rule.never-gain-experience
 - id: rat-ogre--large-target
   name: Large Target
@@ -220,7 +216,7 @@ rules:
     - id: unimplemented.trollheim-skaven-clan-eshin.rat-ogre.large-target
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.shooting
 - id: band--skaven-special-skills-black-hunger
   kind: warband_skill
   name: Black Hunger
@@ -254,15 +250,7 @@ rules:
         scope: 'NO'
   # Not shared: this source prints the metric Movement bonus (1D6 x 0.4" + 1"), not the +D3" of the
   # shared text, and the two are different magnitudes.
-  effect: >-
-    At the start of his turn, the Skaven Hero may invoke Black Hunger. For that turn he gains +1
-    Attack and adds the result of 1D6 x 0.4" + 1" to his Movement. At the end of the turn he suffers
-    1D3 Strength 3 hits with no armour save.
-  effect_i18n:
-    es: >-
-      Al comienzo de su turno, el Héroe skaven puede invocar el Hambre negra. Durante ese turno gana
-      +1 Ataque y añade a su Movimiento el resultado de 1D6 x 0,4" + 1". Al final del turno sufre
-      1D3 impactos de Fuerza 3 sin tirada de salvación por armadura.
+  rule_ref: shared-rule.black-hunger-trollheim
 - id: band--skaven-special-skills-tail-fighting
   kind: warband_skill
   runtime:
@@ -277,20 +265,12 @@ rules:
         id: special-rule.band--skaven-special-skills-tail-fighting
   runtime_selectable: true
   name: Tail Fighting
-  effect: >-
-    The Skaven may wield a Dagger, Shield or Sword with his tail. A weapon held this way grants one
-    additional attack with that weapon; a Shield held this way grants +1 to the armour save instead.
   source:
     manual: trollheim
     printed_page: 93
     section: Skaven Special Skills / Tail Fighting
   name_i18n:
     es: Combate con la Cola
-  effect_i18n:
-    es: >-
-      El skaven puede empuñar una Daga, un Escudo o una Espada con la cola. Un arma sostenida de
-      esta manera otorga un ataque adicional con esa arma; un Escudo sostenido de esta manera otorga
-      +1 en la tirada de salvación por armadura en su lugar.
   eligibility:
   - assassin-adept
   - black-skaven
@@ -298,6 +278,7 @@ rules:
   - night-runners
   applies_to:
     band: true
+  rule_ref: shared-rule.tail-fighting
 - id: band--skaven-special-skills-wall-runner
   kind: warband_skill
   name: Wall Runner
@@ -329,7 +310,7 @@ rules:
     - id: unimplemented.trollheim-skaven-clan-eshin.band.skaven-special-skills-wall-runner
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.movement
 - id: band--skaven-special-skills-infiltration
   kind: warband_skill
   name: Infiltration
@@ -354,7 +335,7 @@ rules:
     - id: unimplemented.trollheim-skaven-clan-eshin.band.skaven-special-skills-infiltration
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.movement
   rule_ref: shared-rule.infiltration
 - id: band--skaven-special-skills-art-of-silent-death
   kind: warband_skill
@@ -369,23 +350,12 @@ rules:
         kind: mechanic
         id: skill.art-of-silent-death
   name: Art of Silent Death
-  effect: >-
-    In close combat the Skaven may fight with bare claws without penalty and counts as using two
-    close-combat weapons, gaining +1 Attack. The Hero causes a critical hit on a 'to wound' roll of
-    5-6 instead of only 6. When combined with Eshin Fighting Claws, the skill grants +2 Attacks
-    instead of +1.
   source:
     manual: trollheim
     printed_page: 93
     section: Skaven Special Skills / Art of Silent Death
   name_i18n:
     es: Arte de la Muerte Silenciosa
-  effect_i18n:
-    es: >-
-      En combate cuerpo a cuerpo, el skaven puede combatir con las garras desnudas sin penalización
-      y cuenta como si usara dos armas de combate cuerpo a cuerpo, ganando +1 Ataque. El Héroe causa
-      un golpe crítico con una tirada de herir de 5-6 en lugar de solo 6. Combinada con las Garras
-      de combate de Eshin, la habilidad otorga +2 Ataques en lugar de +1.
   eligibility:
   - assassin-adept
   - black-skaven
@@ -393,3 +363,4 @@ rules:
   - night-runners
   applies_to:
     band: true
+  rule_ref: shared-rule.art-of-silent-death

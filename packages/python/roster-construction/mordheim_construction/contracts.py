@@ -235,7 +235,6 @@ PROFILE_RULE_EFFECTS = {
     # resolve it on the attack's own weapon and properties, never on a visible
     # weapon name.  Missile references stay outside the duel.
     "banshee--cold-steel": {"effects": {"tags": ("defence.cold-steel",)}},
-    "fanatics--frantic": {"effects": {"priority": 10}},
     "centigors--trample": {},
     # Spiked Tail adds one repeated natural tail attack at the bearer's
     # Strength +1; the extra attack itself is assembled in ``compile_fighter``

@@ -13,8 +13,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any models in the warband within 6" of the Magister may use his Leadership instead of their own.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -22,13 +20,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/cult-of-the-possessed
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Todas las miniaturas de la banda a 6" del Magister pueden usar su Liderazgo en lugar del suyo
-      propio.
   applies_to:
     profile_ids:
     - magister
+  rule_ref: shared-rule.leader
 - id: magister--magic-user
   runtime:
     scope: 'NO'
@@ -38,7 +33,7 @@ rules:
     - id: unimplemented.cult-of-the-possessed.magister.magic-user
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.magic
   name: Magic User
   effect: >-
     The Magister has the ability to use magic and casts spells like any other magicians, and the

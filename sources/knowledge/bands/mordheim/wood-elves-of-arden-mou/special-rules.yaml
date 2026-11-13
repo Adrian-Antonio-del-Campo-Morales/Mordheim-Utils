@@ -54,7 +54,7 @@ rules:
     - id: unimplemented.wood-elves-of-arden-mou.band.woodland-incantations
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: out-of-scope.magic
   name: Woodland Incantations
   effect: >-
     A Forest Mage randomly chooses one spell from the Wood Elven spell list. 1. Song of Thorns (diff
@@ -110,18 +110,16 @@ rules:
     band: true
 - id: protector-of-the-hunt--leader
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.wood-elves-of-arden-mou.protector-of-the-hunt.leader
-      scope: 'NO'
-      binding: null
-      reason: out-of-scope.non-duel
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any warrior within 6" of the Protector of the Hunt may use his Leadership value when taking
-    Leadership tests.
   source:
     manual: broheim.net
     printed_page: 4
@@ -129,13 +127,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Wood%20Elves%20of%20Arden.pdf
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier guerrero a 6 pulgadas del Protector de la Caza puede usar su valor de Liderazgo
-      cuando haga pruebas de Liderazgo.
   applies_to:
     profile_ids:
     - protector-of-the-hunt
+  rule_ref: shared-rule.leader
 - id: elder-scout--sniper
   runtime:
     scope: 'NO'
@@ -145,7 +140,7 @@ rules:
     - id: unimplemented.wood-elves-of-arden-mou.elder-scout.sniper
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: out-of-scope.shooting
   name: Sniper
   source:
     manual: broheim.net
@@ -167,13 +162,8 @@ rules:
     - id: unimplemented.wood-elves-of-arden-mou.elder-scout.camouflage
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: out-of-scope.movement
   name: Camouflage
-  effect: >-
-    Elder scouts are experts of camouflage. They wear cloaks of green, brown or grey which are made
-    from leaves sewn together or with incorporated foliage. By painting their faces and bodies with
-    green and brown paint they are almost invisible when hiding. When an Elder Scout is hidden, each
-    enemy model has to make an additional I test to spot him.
   source:
     manual: broheim.net
     printed_page: 4
@@ -181,15 +171,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Wood%20Elves%20of%20Arden.pdf
   name_i18n:
     es: Camuflaje
-  effect_i18n:
-    es: >-
-      Los Exploradores Mayores son expertos en camuflaje. Llevan capas verdes, marrones o grises
-      hechas de hojas cosidas o con follaje incorporado. Pintando sus caras y cuerpos con pintura
-      verde y marrón son casi invisibles cuando se ocultan. Cuando un Explorador Mayor está oculto,
-      cada modelo enemigo debe hacer una prueba adicional de I para detectarlo.
   applies_to:
     profile_ids:
     - elder-scout
+  rule_ref: shared-rule.camouflage
 - id: forest-mage--wizard
   runtime:
     scope: 'NO'
@@ -199,7 +184,7 @@ rules:
     - id: unimplemented.wood-elves-of-arden-mou.forest-mage.wizard
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: out-of-scope.magic
   name: Wizard
   effect: A Forest Mage can cast spells. Randomly choose one spell from the Wood Elven spell list.
   source:
@@ -225,7 +210,7 @@ rules:
     - id: unimplemented.wood-elves-of-arden-mou.scout.crossfire
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: out-of-scope.shooting
   name: Crossfire
   source:
     manual: broheim.net
@@ -240,14 +225,14 @@ rules:
   rule_ref: shared-rule.crossfire
 - id: ivy-ferret--running-about
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.wood-elves-of-arden-mou.ivy-ferret.running-about
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: out-of-scope.non-duel
+      reason: deferred.other
   name: Running About
   effect: >-
     Due to his small size and very quick movement the Ivy ferret is almost impossible to hit. It
@@ -273,14 +258,14 @@ rules:
     - ivy-ferret
 - id: ivy-ferret--immunity-to-poison
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.wood-elves-of-arden-mou.ivy-ferret.immunity-to-poison
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: out-of-scope.non-duel
+      reason: deferred.other
   name: Immunity to Poison
   effect: Ivy Ferrets are immune to all forms of poison.
   source:
@@ -304,7 +289,7 @@ rules:
     - id: unimplemented.wood-elves-of-arden-mou.ivy-ferret.spirit
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: out-of-scope.campaign
   name: Spirit
   effect: The Ivy Ferret is a woodland spirit and therefore gains no experience.
   source:
@@ -321,14 +306,14 @@ rules:
     - ivy-ferret
 - id: ivy-ferret--poison-teeth
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.wood-elves-of-arden-mou.ivy-ferret.poison-teeth
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: out-of-scope.non-duel
+      reason: deferred.other
   name: Poison Teeth
   effect: >-
     Because of their spiritual nature a bite from an Ivy ferret is almost poisonlike in its effect.

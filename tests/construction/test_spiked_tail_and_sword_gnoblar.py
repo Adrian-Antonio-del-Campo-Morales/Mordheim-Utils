@@ -25,7 +25,7 @@ import pytest
 
 from mordheim_construction.compiler import compile_fighter
 from mordheim_core.models import FighterBuild
-from mordheim_knowledge.loader import read_yaml, runtime_bindings
+from mordheim_knowledge.loader import read_yaml, runtime_bindings, shared_rule_text
 
 ROOT = Path(__file__).resolve().parents[2]
 KB = ROOT / "sources" / "knowledge"
@@ -51,7 +51,7 @@ def gnoblar(fighter):
 
 # source publication
 def test_spiked_tail_rule_publishes_the_repeated_strength_plus_one_clause():
-    text = " ".join(str(rule(LORDS_OF_THE_MARSH, "fimir-warriors--spiked-tail")["effect"]).split())
+    text = " ".join(shared_rule_text(rule(LORDS_OF_THE_MARSH, "fimir-warriors--spiked-tail")).split())
     assert "extra tail attack in each hand-to-hand combat phase" in text
     assert "Strength +1" in text
 

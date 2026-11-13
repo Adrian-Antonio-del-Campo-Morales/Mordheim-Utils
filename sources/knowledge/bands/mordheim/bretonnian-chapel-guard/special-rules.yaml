@@ -33,7 +33,7 @@ rules:
     - id: unimplemented.bretonnian-chapel-guard.questing-knight.knight
       scope: 'NO'
       binding: null
-      reason: out-of-scope.campaign
+      reason: covered.elsewhere
   name: Knight
   source:
     manual: mordheimer.net
@@ -85,7 +85,8 @@ rules:
         kind: profile
         id: profile.equipment-restrictions
         parameters:
-          forbids: weapon.lance
+          forbids:
+          - weapon.lance
   name: Vow of Poverty
   effect: May not take a Lance.
   source:
@@ -137,7 +138,7 @@ rules:
     - id: unimplemented.bretonnian-chapel-guard.knights-errant.knight
       scope: 'NO'
       binding: null
-      reason: out-of-scope.campaign
+      reason: covered.elsewhere
   name: Knight
   source:
     manual: mordheimer.net
@@ -162,7 +163,8 @@ rules:
         kind: profile
         id: profile.equipment-restrictions
         parameters:
-          forbids: defence.helmet
+          forbids:
+          - defence.helmet
   name: Vain
   effect: >-
     The Knight may not wear a helmet, as it reduces their chances of being noticed by pretty ladies.
@@ -282,22 +284,18 @@ rules:
     - squires
 - id: battle-pilgrims--low-caste
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.bretonnian-chapel-guard.battle-pilgrims.low-caste
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.campaign
       clauses:
       - id: low-caste
         scope: 'NO'
   name: Low Caste
-  effect: >-
-    Battle Pilgrims are peasants, and while they are not stupid, there is a glass ceiling to what
-    they can attain in Bretonnian society. Low Caste henchmen learn experience and advance as
-    normal, but reroll any results of “The Lad's Got Talent”, and may never become heroes.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -305,15 +303,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/bretonnian-chapel-guard
   name_i18n:
     es: Baja Cuna
-  effect_i18n:
-    es: >-
-      Los Peregrinos de Guerra son campesinos y, aunque no son estúpidos, hay un techo de cristal en
-      lo que pueden alcanzar en la sociedad bretoniana. Los secuaces de Baja cuna ganan experiencia
-      y mejoran con normalidad, pero repiten cualquier resultado de 'El mozo tiene talento' y jamás
-      pueden convertirse en héroes.
   applies_to:
     profile_ids:
     - battle-pilgrims
+  rule_ref: shared-rule.low-caste
 - id: battle-pilgrims--hatred
   runtime:
     scope: 'YES'
@@ -415,22 +408,18 @@ rules:
     - battle-pilgrims
 - id: bowmen--low-caste
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.bretonnian-chapel-guard.bowmen.low-caste
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.campaign
       clauses:
       - id: low-caste
         scope: 'NO'
   name: Low Caste
-  effect: >-
-    Bowmen are peasants, and while they are not stupid, there is a glass ceiling to what they can
-    attain in Bretonnian society. Low Caste henchmen learn experience and advance as normal, but
-    reroll any results of “The Lad's Got Talent”, and may never become heroes.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -438,15 +427,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/bretonnian-chapel-guard
   name_i18n:
     es: Baja Cuna
-  effect_i18n:
-    es: >-
-      Los Arqueros son campesinos y, aunque no son estúpidos, hay un techo de cristal en lo que
-      pueden alcanzar en la sociedad bretoniana. Los secuaces de Baja cuna ganan experiencia y
-      mejoran con normalidad, pero repiten cualquier resultado de 'El mozo tiene talento' y jamás
-      pueden convertirse en héroes.
   applies_to:
     profile_ids:
     - bowmen
+  rule_ref: shared-rule.low-caste
 - id: band--chivalry
   runtime:
     scope: 'YES'
@@ -477,14 +461,14 @@ rules:
     band: true
 - id: band--lords-boon
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.bretonnian-chapel-guard.band.lords-boon
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.mounts
+      reason: out-of-scope.construction
       clauses:
       - id: whole
         scope: 'NO'

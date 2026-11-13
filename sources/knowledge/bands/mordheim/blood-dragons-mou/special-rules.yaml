@@ -10,7 +10,7 @@ rules:
     - id: unimplemented.blood-dragons-mou.band.balance-warning
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Balance Warning (Blood Dragons)
   effect: >-
     As they are, the Blood Dragons are far too powerful and end up dominating any campaign. The
@@ -39,7 +39,7 @@ rules:
     - id: unimplemented.blood-dragons-mou.band.bloodline-abilities
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Bloodline Abilities
   effect: >-
     A vampire may choose one or more of the following bloodline abilities at the beginning of the
@@ -80,17 +80,16 @@ rules:
     band: true
 - id: vampire--leader
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.blood-dragons-mou.vampire.leader
-      scope: 'NO'
-      binding: null
-      reason: pending-classification
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader (Vampire)
-  effect: >-
-    Any warrior within 6" of the Vampire may use his Leadership value when taking Leadership tests.
   source:
     manual: broheim.net
     printed_page: 4
@@ -98,13 +97,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
   name_i18n:
     es: Líder (Vampiro)
-  effect_i18n:
-    es: >-
-      Cualquier guerrero a 6" o menos del Vampiro puede usar su valor de Liderazgo cuando realice
-      tiradas de Liderazgo.
   applies_to:
     profile_ids:
     - vampire
+  rule_ref: shared-rule.leader
 - id: vampire--fear
   runtime:
     scope: 'YES'
@@ -117,7 +113,6 @@ rules:
         kind: mechanic
         id: mechanic.causes-fear
   name: Fear (Vampire)
-  effect: A Vampire causes Fear in his opponents.
   source:
     manual: broheim.net
     printed_page: 4
@@ -125,11 +120,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
   name_i18n:
     es: Miedo (Vampiro)
-  effect_i18n:
-    es: Un Vampiro causa miedo en sus oponentes.
   applies_to:
     profile_ids:
     - vampire
+  rule_ref: shared-rule.fear
 - id: vampire--immune-to-psychology
   runtime:
     scope: 'YES'
@@ -176,7 +170,6 @@ rules:
         parameters:
           value: true
   name: Immune to Poisons (Vampire)
-  effect: A vampire is immune to all forms of poison.
   source:
     manual: broheim.net
     printed_page: 4
@@ -184,11 +177,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
   name_i18n:
     es: Inmune al Veneno (Vampiro)
-  effect_i18n:
-    es: Un vampiro es inmune a todas las formas de veneno.
   applies_to:
     profile_ids:
     - vampire
+  rule_ref: shared-rule.immune-to-poison
 - id: vampire--no-pain
   runtime:
     scope: 'YES'
@@ -221,7 +213,7 @@ rules:
     - id: unimplemented.blood-dragons-mou.vampire.summoner
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.group
   name: Summoner
   effect: >-
     All the undead in the Warband were summoned by the arcane powers of the vampire. When the
@@ -251,7 +243,7 @@ rules:
     - id: unimplemented.blood-dragons-mou.vampire.bloodline-abilities
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Bloodline Abilities (Vampire)
   effect: >-
     The Vampire may start the game with one or more Bloodline abilities (see Bloodline Abilities).
@@ -281,7 +273,6 @@ rules:
         kind: mechanic
         id: mechanic.causes-fear
   name: Fear (Wights)
-  effect: A Wight causes Fear in his opponents.
   source:
     manual: broheim.net
     printed_page: 4
@@ -289,11 +280,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
   name_i18n:
     es: Miedo (Espectros)
-  effect_i18n:
-    es: Un Espectro causa miedo en sus oponentes.
   applies_to:
     profile_ids:
     - wights
+  rule_ref: shared-rule.fear
 - id: wights--immune-to-psychology
   runtime:
     scope: 'YES'
@@ -340,7 +330,6 @@ rules:
         parameters:
           value: true
   name: Immune to Poisons (Wights)
-  effect: A Wight is immune to all forms of poison.
   source:
     manual: broheim.net
     printed_page: 4
@@ -348,11 +337,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
   name_i18n:
     es: Inmune al Veneno (Espectros)
-  effect_i18n:
-    es: Un Espectro es inmune a todas las formas de veneno.
   applies_to:
     profile_ids:
     - wights
+  rule_ref: shared-rule.immune-to-poison
 - id: wights--no-pain
   runtime:
     scope: 'YES'
@@ -411,7 +399,6 @@ rules:
         kind: mechanic
         id: mechanic.causes-fear
   name: Fear (Skeleton Warriors)
-  effect: A skeleton causes Fear in his opponents.
   source:
     manual: broheim.net
     printed_page: 5
@@ -419,11 +406,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
   name_i18n:
     es: Miedo (Guerreros Esqueleto)
-  effect_i18n:
-    es: Un esqueleto causa miedo en sus oponentes.
   applies_to:
     profile_ids:
     - skeleton-warriors
+  rule_ref: shared-rule.fear
 - id: skeleton-warriors--immune-to-psychology
   runtime:
     scope: 'YES'
@@ -470,7 +456,6 @@ rules:
         parameters:
           value: true
   name: Immune to Poisons (Skeleton Warriors)
-  effect: A skeleton is immune to all forms of poison.
   source:
     manual: broheim.net
     printed_page: 5
@@ -478,11 +463,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
   name_i18n:
     es: Inmune al Veneno (Guerreros Esqueleto)
-  effect_i18n:
-    es: Un esqueleto es inmune a todas las formas de veneno.
   applies_to:
     profile_ids:
     - skeleton-warriors
+  rule_ref: shared-rule.immune-to-poison
 - id: skeleton-warriors--no-pain
   runtime:
     scope: 'YES'
@@ -515,7 +499,7 @@ rules:
     - id: unimplemented.blood-dragons-mou.skeletons.slow
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.movement
   name: Slow (Skeleton Warriors)
   effect: >-
     Consisting just of old bones, skeletons are moving very slow. Therefore they might not run,
@@ -543,7 +527,7 @@ rules:
     - id: unimplemented.blood-dragons-mou.skeletons.no-brain
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: No Brain (Skeleton Warriors)
   source:
     manual: broheim.net
@@ -602,7 +586,6 @@ rules:
         parameters:
           value: true
   name: Immune to Poisons (Grave Guards)
-  effect: A grave guard is immune to all forms of poison.
   source:
     manual: broheim.net
     printed_page: 6
@@ -610,11 +593,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
   name_i18n:
     es: Inmune al Veneno (Guardianes de Tumba)
-  effect_i18n:
-    es: Un guardián de tumba es inmune a todas las formas de veneno.
   applies_to:
     profile_ids:
     - grave-guards
+  rule_ref: shared-rule.immune-to-poison
 - id: grave-guards--no-pain
   runtime:
     scope: 'YES'
@@ -647,7 +629,7 @@ rules:
     - id: unimplemented.blood-dragons-mou.grave-guards.slow
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.movement
   name: Slow (Grave Guards)
   effect: >-
     Grave Guards are very slow when walking in their rusty armours. They may not run, although they
@@ -701,7 +683,6 @@ rules:
         kind: mechanic
         id: mechanic.causes-fear
   name: Fear (Hell Hounds)
-  effect: A Hell Hound causes Fear in his opponents.
   source:
     manual: broheim.net
     printed_page: 6
@@ -709,11 +690,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
   name_i18n:
     es: Miedo (Sabuesos Infernales)
-  effect_i18n:
-    es: Un Sabueso Infernal causa miedo en sus oponentes.
   applies_to:
     profile_ids:
     - hell-hounds
+  rule_ref: shared-rule.fear
 - id: hell-hounds--immune-to-psychology
   runtime:
     scope: 'YES'
@@ -760,7 +740,6 @@ rules:
         parameters:
           value: true
   name: Immune to Poisons (Hell Hounds)
-  effect: A Hell Hound is immune to all forms of poison.
   source:
     manual: broheim.net
     printed_page: 6
@@ -768,11 +747,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
   name_i18n:
     es: Inmune al Veneno (Sabuesos Infernales)
-  effect_i18n:
-    es: Un Sabueso Infernal es inmune a todas las formas de veneno.
   applies_to:
     profile_ids:
     - hell-hounds
+  rule_ref: shared-rule.immune-to-poison
 - id: hell-hounds--no-pain
   runtime:
     scope: 'YES'
@@ -805,7 +783,7 @@ rules:
     - id: unimplemented.blood-dragons-mou.hell-hounds.animal
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Animal (Hell Hounds)
   effect: Hell Hounds never gain experience. They are animals and cannot use weapons or armour.
   source:

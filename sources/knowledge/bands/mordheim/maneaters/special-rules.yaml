@@ -13,7 +13,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: Any warrior within 6" of the Captain may use his Leadership when taking Ld tests.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -21,11 +20,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/maneaters
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: Cualquier guerrero a 6" del Capitán puede usar su Liderazgo cuando realice chequeos de Ld.
   applies_to:
     profile_ids:
     - captain
+  rule_ref: shared-rule.leader
 - id: mountain-guide--ranger
   runtime:
     scope: 'NO'
@@ -57,14 +55,14 @@ rules:
     - mountain-guide
 - id: mountain-guide--loner
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.maneaters.mountain-guide.loner
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.construction
       clauses:
       - id: all-alone
         scope: 'NO'
@@ -101,10 +99,6 @@ rules:
         kind: mechanic
         id: mechanic.bull-charge
   name: Bull Charge
-  effect: >-
-    Ogres learn to use their vast bulk in a charge, trampling the enemy to the ground. When
-    charging, Bulls may attempt a single attack with a +1 'to hit' modifier rather than making their
-    normal attacks. If successful the enemy model is automatically knocked down.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -112,15 +106,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/maneaters
   name_i18n:
     es: Carga de Toro
-  effect_i18n:
-    es: >-
-      Los ogros aprenden a usar su enorme mole al cargar, arrollando al enemigo. Al cargar, los
-      Toros pueden intentar un único ataque con un modificador de +1 para impactar en lugar de
-      realizar sus ataques normales. Si tiene éxito, el modelo enemigo queda automáticamente
-      derribado.
   applies_to:
     profile_ids:
     - bulls
+  rule_ref: shared-rule.bull-charge
 - id: sabretusks--trained
   runtime:
     grant: profile
@@ -200,21 +189,18 @@ rules:
     - sabretusks
 - id: sabretusks--ignored
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.maneaters.sabretusks.ignored
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.group
       clauses:
       - id: whole
         scope: 'NO'
   name: Ignored
-  effect: >-
-    Sabretusks that are out of action do not count to the number of out of action models for the
-    purpose of Rout tests.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -222,13 +208,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/maneaters
   name_i18n:
     es: Ignorado
-  effect_i18n:
-    es: >-
-      Los Dientes de Sable que estén Fuera de combate no cuentan en el número de modelos Fuera de
-      combate a efectos de chequeos de huida.
   applies_to:
     profile_ids:
     - sabretusks
+  rule_ref: shared-rule.ignored-for-rout
 - id: sabretusks--fear
   runtime:
     scope: 'YES'
@@ -263,7 +246,6 @@ rules:
       binding: null
       reason: out-of-scope.campaign
   name: Animals
-  effect: Sabretusks are animals and thus do not gain experience.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -271,11 +253,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/maneaters
   name_i18n:
     es: Animales
-  effect_i18n:
-    es: Los Dientes de Sable son animales y por tanto no ganan experiencia.
   applies_to:
     profile_ids:
     - sabretusks
+  rule_ref: shared-rule.animal
 - id: band--fear
   runtime:
     scope: 'YES'
@@ -314,7 +295,7 @@ rules:
     - id: unimplemented.maneaters.band.large
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: out-of-scope.shooting
   name: Large
   effect: >-
     All Ogre warriors except Youngbloods and Half-growns are Large targets: they may be selected as
@@ -336,14 +317,14 @@ rules:
     band: true
 - id: band--gluttony
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.maneaters.band.gluttony
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.mounts
+      reason: out-of-scope.campaign
       clauses:
       - id: whole
         scope: 'NO'
@@ -553,7 +534,7 @@ rules:
     - id: unimplemented.maneaters.band.ogres-special-skills-maneater
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
   name: Maneater
   effect: >-
     Ogres are not civilized of their own accord but it is proven they are prone to absorb foreign
@@ -589,10 +570,6 @@ rules:
         kind: mechanic
         id: mechanic.bull-charge
   name: Bull Charge
-  effect: >-
-    Ogres learn to use their vast bulk in a charge, trampling the enemy to the ground. When
-    charging, an Ogre with this skill may attempt a single attack with a +1 'to hit' modifier rather
-    than making his normal attacks. If successful the enemy model is automatically knocked down.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -600,14 +577,9 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/maneaters
   name_i18n:
     es: Carga de Toro
-  effect_i18n:
-    es: >-
-      Los ogros aprenden a usar su enorme mole al cargar, arrollando al enemigo. Al cargar, un ogro
-      con esta habilidad puede intentar un único ataque con un modificador de +1 para impactar en
-      lugar de realizar sus ataques normales. Si tiene éxito, el modelo enemigo queda
-      automáticamente derribado.
   applies_to:
     band: true
+  rule_ref: shared-rule.bull-charge
 - id: band--ogres-special-skills-dog-of-war
   kind: warband_skill
   runtime:
@@ -644,14 +616,14 @@ rules:
 - id: band--ogres-special-skills-bellowing-roar
   kind: warband_skill
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: selectable
     effects:
     - id: unimplemented.maneaters.band.ogres-special-skills-bellowing-roar
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.group
       clauses:
       - id: whole
         scope: 'NO'

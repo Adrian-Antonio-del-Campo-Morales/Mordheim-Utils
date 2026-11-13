@@ -13,7 +13,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: Any warrior within 6“ of the Sorcerer may use his Leadership when taking Ld tests.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -21,11 +20,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/black-dwarfs
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: Cualquier guerrero a 6“ del Hechicero puede usar su Liderazgo al realizar chequeos de L.
   applies_to:
     profile_ids:
     - sorcerer
+  rule_ref: shared-rule.leader
 - id: sorcerer--wizard
   runtime:
     scope: 'NO'
@@ -253,7 +251,7 @@ rules:
     - id: unimplemented.black-dwarfs.band.armour
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.movement
   name: Armour
   effect: >-
     Applies to all warriors except Informers. Chaos Dwarfs never suffer movement penalties for
@@ -282,10 +280,6 @@ rules:
       binding: null
       reason: out-of-scope.construction
   name: Hired Swords
-  effect: >-
-    The warband may hire Ogre Bodyguards, Pit Fighters, Warlocks, Imperial Assassins and Hobgoblin
-    Scouts, plus Hired Swords available to all warbands or to Orc or Chaos warbands. It may never
-    hire Elves.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -293,13 +287,9 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/black-dwarfs
   name_i18n:
     es: Espadas a Sueldo
-  effect_i18n:
-    es: >-
-      La banda puede contratar Guardaespaldas ogros, Luchadores de fosa, Brujos, Asesinos imperiales
-      y Exploradores hobgoblin, más las Espadas a sueldo disponibles para todas las bandas o para
-      bandas de orcos o del Caos. Nunca puede contratar elfos.
   applies_to:
     band: true
+  rule_ref: shared-rule.chaos-dwarf-hired-swords
 - id: band--characteristic-maximum
   runtime:
     scope: 'NO'
@@ -375,11 +365,6 @@ rules:
       binding: null
       reason: out-of-scope.construction
   name: Extra Tough
-  effect: >-
-    A Chaos Dwarf with this skill is notorious for walking away from wounds that would kill a lesser
-    warrior. When rolling on the Heroes Serious Injury chart for this Hero after a game in which he
-    has been taken out of action, the dice may be re-rolled once. The result of this second dice
-    roll must be accepted, even if it is a worse result.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -387,14 +372,9 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/black-dwarfs
   name_i18n:
     es: Extra Resistente
-  effect_i18n:
-    es: >-
-      Un Enano del Caos con esta habilidad es famoso por sobrevivir a heridas que matarían a un
-      guerrero inferior. Al tirar en la tabla de Heridas Graves de Héroes para este héroe tras una
-      partida en la que haya sido retirado del combate, el dado puede repetirse una vez. El
-      resultado de esta segunda tirada debe aceptarse, incluso si es peor.
   applies_to:
     band: true
+  rule_ref: shared-rule.extra-tough
 - id: band--chaos-dwarf-special-skills-chaos-engineer
   kind: warband_skill
   runtime:
@@ -500,14 +480,14 @@ rules:
 - id: band--chaos-dwarf-special-skills-tyrant
   kind: warband_skill
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: selectable
     effects:
     - id: unimplemented.black-dwarfs.band.chaos-dwarf-special-skills-tyrant
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.group
       clauses:
       - id: tyrant
         scope: 'NO'
@@ -563,8 +543,6 @@ rules:
   rule_ref: shared-rule.hard-as-steel
 - id: bull-centaur--no-missile-weapons
   name: No Missile Weapons
-  effect: >-
-    A Bull Centaur may never use missile weapons.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -572,9 +550,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/black-dwarfs
   name_i18n:
     es: Sin Armas de Proyectil
-  effect_i18n:
-    es: >-
-      Un Centauro Toro jamás puede usar armas de proyectil.
   applies_to:
     profile_ids:
     - bull-centaur
@@ -588,3 +563,4 @@ rules:
       binding:
         kind: compiler
         id: compiler.no-missile-weapons
+  rule_ref: shared-rule.no-missile-weapons

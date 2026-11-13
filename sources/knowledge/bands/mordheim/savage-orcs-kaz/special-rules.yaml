@@ -42,7 +42,7 @@ rules:
     - id: unimplemented.savage-orcs-kaz.band.animosity
       scope: 'NO'
       binding: null
-      reason: out-of-scope.group
+      reason: out-of-scope.non-duel
   name: Animosity
   effect: >-
     Just like their more sophisticated (?) cousins, Savage Orcs suffer from animosity. See TC6 in
@@ -101,7 +101,7 @@ rules:
     - id: unimplemented.savage-orcs-kaz.band.gobbo-rout-counting
       scope: 'NO'
       binding: null
-      reason: out-of-scope.campaign
+      reason: out-of-scope.group
   name: Ain't Orcz (Rout Counting)
   effect: >-
     Orcs don't expect much from their lesser cousins and are not bothered if they break or get slain
@@ -228,9 +228,8 @@ rules:
     - id: unimplemented.savage-orcs-kaz.brutes.animosity
       scope: 'NO'
       binding: null
-      reason: out-of-scope.group
+      reason: out-of-scope.non-duel
   name: Animosity
-  effect: Savage Orc Brutes are subject to the rules for animosity.
   source:
     manual: broheim.net
     printed_page: 58
@@ -238,11 +237,10 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Rencor
-  effect_i18n:
-    es: Los Brutos Orcos Salvajes están sujetos a las reglas de animosidad.
   applies_to:
     profile_ids:
     - brutes
+  rule_ref: shared-rule.animosity-forest-goblins
 - id: nuttaz--animosity
   runtime:
     scope: 'NO'
@@ -252,9 +250,8 @@ rules:
     - id: unimplemented.savage-orcs-kaz.nuttaz.animosity
       scope: 'NO'
       binding: null
-      reason: out-of-scope.group
+      reason: out-of-scope.non-duel
   name: Animosity
-  effect: Savage Orc Nuttaz are subject to the rules for animosity.
   source:
     manual: broheim.net
     printed_page: 58
@@ -262,11 +259,10 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Rencor
-  effect_i18n:
-    es: Los Chalados Orcos Salvajes están sujetos a las reglas de animosidad.
   applies_to:
     profile_ids:
     - nuttaz
+  rule_ref: shared-rule.animosity-forest-goblins
 - id: nuttaz--frenzy
   runtime:
     scope: 'YES'
@@ -312,9 +308,8 @@ rules:
     - id: unimplemented.savage-orcs-kaz.boyz.animosity
       scope: 'NO'
       binding: null
-      reason: out-of-scope.group
+      reason: out-of-scope.non-duel
   name: Animosity
-  effect: Savage Orc Boyz are subject to the rules for animosity.
   source:
     manual: broheim.net
     printed_page: 58
@@ -322,11 +317,10 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Rencor
-  effect_i18n:
-    es: Los Chicos Orcos Salvajes están sujetos a las reglas de animosidad.
   applies_to:
     profile_ids:
     - boyz
+  rule_ref: shared-rule.animosity-forest-goblins
 - id: gobbo-boyz--animosity
   runtime:
     scope: 'NO'
@@ -336,9 +330,8 @@ rules:
     - id: unimplemented.savage-orcs-kaz.gobbo-boyz.animosity
       scope: 'NO'
       binding: null
-      reason: out-of-scope.group
+      reason: out-of-scope.non-duel
   name: Animosity
-  effect: Savage Orc Gobbo Boyz are subject to the rules for animosity.
   source:
     manual: broheim.net
     printed_page: 59
@@ -346,11 +339,10 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Rencor
-  effect_i18n:
-    es: Los Chicos Gobbo Orcos Salvajes están sujetos a las reglas de animosidad.
   applies_to:
     profile_ids:
     - gobbo-boyz
+  rule_ref: shared-rule.animosity-forest-goblins
 - id: gobbo-boyz--aint-orcz
   runtime:
     scope: 'NO'
@@ -360,7 +352,7 @@ rules:
     - id: unimplemented.savage-orcs-kaz.gobbo-boyz.aint-orcz
       scope: 'NO'
       binding: null
-      reason: out-of-scope.campaign
+      reason: out-of-scope.group
   name: Ain't Orcz
   effect: >-
     Each Gobbo boy taken out of action counts as half a model when testing to see if an Orc warband
@@ -410,7 +402,7 @@ rules:
     - id: unimplemented.savage-orcs-kaz.band.hired-swords
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Hired Swords
   effect: >-
     A Savage Orc warband may hire the following Hired Swords and Dramatis Personae: Black Orc
@@ -437,7 +429,7 @@ rules:
     - id: unimplemented.savage-orcs-kaz.band.pet
       scope: 'NO'
       binding: null
-      reason: out-of-scope.campaign
+      reason: out-of-scope.construction
   name: Pet
   effect: >-
     One Savage Orc hero may have a single pet. This can be a War Boar, Giant Wolf or Giant Spider.

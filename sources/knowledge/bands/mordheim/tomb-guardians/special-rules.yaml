@@ -28,7 +28,6 @@ rules:
         id: mechanic.leader-six
 - id: tomb-lord--undead
   name: Undead
-  effect: The Tomb Lord is undead and follows all rules for the Undead.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -36,9 +35,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
   name_i18n:
     es: No Muerto
-  effect_i18n:
-    es: >-
-      El Señor de la Tumba es un muerto viviente y sigue todas las reglas de los Muertos Vivientes.
   applies_to:
     profile_ids:
     - tomb-lord
@@ -52,6 +48,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.undead
+  rule_ref: shared-rule.undead
 - id: tomb-lord--flammable
   runtime:
     scope: 'YES'
@@ -104,10 +101,9 @@ rules:
     - id: unimplemented.tomb-guardians.liche-priest.wizard
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.magic
 - id: liche-priest--undead
   name: Undead
-  effect: The Liche Priest is undead and follows all rules for the Undead.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -115,8 +111,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
   name_i18n:
     es: No Muerto
-  effect_i18n:
-    es: El Sacerdote liche es un muerto viviente y sigue todas las reglas de los Muertos Vivientes.
   applies_to:
     profile_ids:
     - liche-priest
@@ -130,6 +124,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.undead
+  rule_ref: shared-rule.undead
 - id: acolytes--undead
   name: Undead
   source:
@@ -226,7 +221,7 @@ rules:
     - id: unimplemented.tomb-guardians.tomb-guardians.experience
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.campaign
 - id: tomb-scorpions--living
   name: Living
   source:
@@ -240,14 +235,14 @@ rules:
     profile_ids:
     - tomb-scorpions
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.tomb-guardians.tomb-scorpions.living
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: covered.elsewhere
   rule_ref: shared-rule.living
 - id: tomb-scorpions--animal
   name: Animal
@@ -269,7 +264,7 @@ rules:
     - id: unimplemented.tomb-guardians.tomb-scorpions.animal
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
   rule_ref: shared-rule.animal
 - id: tomb-scorpions--scorpion-sting
   runtime:
@@ -285,10 +280,6 @@ rules:
         parameters:
           applies_to_own_attack: true
   name: Scorpion's Sting
-  effect: >-
-    The Tomb Scorpion attacks with its poisonous sting. The source resolves this as an attack
-    treated as if using Black Lotus; the underlying poison-item mechanics are intentionally not
-    duplicated in this file.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -296,14 +287,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
   name_i18n:
     es: Aguijón de Escorpión
-  effect_i18n:
-    es: >-
-      El Escorpión de la Tumba ataca con su aguijón venenoso. La fuente lo resuelve como un ataque
-      tratado como si usara Loto Negro; las mecánicas subyacentes del objeto veneno no están
-      duplicadas intencionadamente en este fichero.
   applies_to:
     profile_ids:
     - tomb-scorpions
+  rule_ref: shared-rule.scorpion-sting
 - id: band--cause-fear
   name: Cause Fear
   source:
@@ -400,14 +387,14 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.tomb-guardians.band.may-not-run
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.movement
       clauses:
       - id: may-not-run
         scope: 'NO'
@@ -468,7 +455,7 @@ rules:
     - id: unimplemented.tomb-guardians.band.no-brain
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
 - id: band--tomb-lord-skill-memory
   name: Tomb Lord Skill Memory
   effect: >-
@@ -496,7 +483,7 @@ rules:
     - id: unimplemented.tomb-guardians.band.tomb-lord-skill-memory
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
 - id: band--do-not-drink
   name: Do Not Drink
   effect: >-
@@ -516,14 +503,14 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.tomb-guardians.band.do-not-drink
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.non-duel
       clauses:
       - id: do-not-drink
         scope: 'NO'
@@ -549,7 +536,7 @@ rules:
     - id: unimplemented.tomb-guardians.band.home-ground
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
 - id: band--drive-chariot
   name: Drive Chariot
   effect: >-
@@ -579,7 +566,7 @@ rules:
     - id: unimplemented.tomb-guardians.band.drive-chariot
       scope: LATER
       binding: null
-      reason: deferred.psychology
+      reason: deferred.mounts
       clauses:
       - id: whole
         scope: 'NO'
@@ -612,7 +599,7 @@ rules:
     - id: unimplemented.tomb-guardians.band.tomb-guardian-experience-clarification
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.campaign
 - id: band--tomb-guardian-maximum-characteristics
   name: Tomb Guardian Maximum Characteristics
   effect: >-
@@ -647,8 +634,6 @@ rules:
       reason: out-of-scope.construction
 - id: liche-priest--no-armour
   name: No Armour
-  effect: >-
-    A Liche Priest may never wear armour because it interferes with spell casting.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -656,9 +641,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
   name_i18n:
     es: Sin Armadura
-  effect_i18n:
-    es: >-
-      Un Sacerdote Liche jamás puede llevar armadura porque interfiere con el lanzamiento de conjuros.
   applies_to:
     profile_ids:
     - liche-priest
@@ -673,8 +655,9 @@ rules:
         kind: profile
         id: profile.equipment-restrictions
         parameters:
-          forbids: armour
-
+          forbids:
+          - armour
+  rule_ref: shared-rule.no-armour
 - id: tomb-scorpions--equipment-restrictions
   runtime:
     scope: 'YES'

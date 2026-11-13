@@ -3,17 +3,12 @@ band_id: khemri-mages
 rules:
 - id: archmage--leader
   name: Leader
-  effect: Any warband model within 6" of the Archmage may use his Leadership instead of its own.
   source:
     manual: khemri
     printed_page: 62
     section: Heroes / 1 Archmage / Leader
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier modelo de la banda a 6" del Arquimago puede usar su Liderazgo en lugar del suyo
-      propio.
   applies_to:
     profile_ids:
     - archmage
@@ -27,6 +22,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: archmage--spellcaster
   name: Spellcaster
   effect: >-
@@ -266,7 +262,7 @@ rules:
     - id: unimplemented.khemri-mages.mechanical-beast.brainless
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.campaign
 - id: mechanical-beast--do-not-eat
   name: Do Not Eat
   effect: Mechanical Beasts do not need water.
@@ -289,18 +285,15 @@ rules:
     - id: unimplemented.khemri-mages.mechanical-beast.do-not-eat
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.campaign
 - id: mechanical-beast--may-not-run
   name: May Not Run
-  effect: Mechanical Beasts may not run, but may charge normally.
   source:
     manual: khemri
     printed_page: 63
     section: Henchmen / 0-5 Mechanical Beasts / May Not Run
   name_i18n:
     es: No Pueden Correr
-  effect_i18n:
-    es: Las Bestias Mecánicas no pueden correr, pero pueden cargar con normalidad.
   applies_to:
     profile_ids:
     - mechanical-beast
@@ -312,7 +305,8 @@ rules:
     - id: unimplemented.khemri-mages.mechanical-beast.may-not-run
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.movement
+  rule_ref: shared-rule.may-not-run
 - id: band--pupil-limit
   name: Pupil Limit
   effect: >-
@@ -340,7 +334,7 @@ rules:
     - id: unimplemented.khemri-mages.band.pupil-limit
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.construction
 - id: band--mage-special-skills-dispel-magic
   kind: warband_skill
   name: Dispel Magic
@@ -440,7 +434,7 @@ rules:
     - id: unimplemented.khemri-mages.band.mage-special-skills-mechanic
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.campaign
 
 - id: archmage--equipment-restrictions
   runtime:
@@ -485,6 +479,10 @@ rules:
         parameters:
           forbids:
           - sling
+    - id: mage--equipment-restrictions.no-familiar-at-creation
+      scope: 'NO'
+      binding: null
+      reason: out-of-scope.construction
   name: Equipment Restrictions
   source:
     manual: khemri
@@ -510,6 +508,10 @@ rules:
         parameters:
           forbids:
           - sling
+    - id: witch--equipment-restrictions.no-familiar-at-creation
+      scope: 'NO'
+      binding: null
+      reason: out-of-scope.construction
   name: Equipment Restrictions
   source:
     manual: khemri

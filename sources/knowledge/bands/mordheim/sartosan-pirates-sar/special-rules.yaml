@@ -3,14 +3,19 @@ band_id: sartosan-pirates-sar
 rules:
 - id: band--pirate-rules
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
+    - id: compiler.pirate-human-mercenary-equipment-access
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.pirate-human-mercenary-equipment-access
     - id: unimplemented.sartosan-pirates-sar.band.pirate-rules
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: General Pirate Rules
   source:
     manual: broheim.net
@@ -31,7 +36,7 @@ rules:
     - id: unimplemented.sartosan-pirates-sar.band.sartosan-special-rules
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Sartosan Special Rules
   effect: >-
     Unlike other Human Pirates, Sartosan Pirates can start with a Swivel Gun (must purchase it, of
@@ -56,14 +61,14 @@ rules:
     band: true
 - id: band--sartosan-old-pirate-skills
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.sartosan-pirates-sar.band.sartosan-old-pirate-skills
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: pending-classification
+      reason: pending-implementation
   name: Sartosan 'Old' Pirate Skills
   effect: >-
     Sea Shanty Singer: the pirate is renowned throughout the seas as one of the greatest singers
@@ -140,7 +145,7 @@ rules:
     - id: unimplemented.sartosan-pirates-sar.gunners.swivel-guns-are-dangerous
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Swivel Guns Is Dangerous, Matey!
   source:
     manual: broheim.net
@@ -162,7 +167,7 @@ rules:
     - id: unimplemented.sartosan-pirates-sar.boatswains.expert-riggers
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: Expert Riggers
   source:
     manual: broheim.net
@@ -184,7 +189,7 @@ rules:
     - id: unimplemented.sartosan-pirates-sar.swabbies.not-hired
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Not Hired
   source:
     manual: broheim.net
@@ -206,7 +211,7 @@ rules:
     - id: unimplemented.sartosan-pirates-sar.swabbies.never-gain-experience
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Never Gain Experience
   source:
     manual: broheim.net
@@ -221,14 +226,15 @@ rules:
   rule_ref: shared-rule.never-gain-experience
 - id: swabbies--rabble
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.sartosan-pirates-sar.swabbies.rabble
-      scope: 'NO'
-      binding: null
-      reason: pending-classification
+    - id: compiler.swabbie-rabble-loadout
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.swabbie-rabble-loadout
   name: Rabble
   source:
     manual: broheim.net
@@ -243,14 +249,14 @@ rules:
   rule_ref: shared-rule.rabble
 - id: swabbies--blimey-they-got-away
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.sartosan-pirates-sar.swabbies.blimey-they-got-away
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.group
       clauses:
       - id: whole
         scope: 'NO'
@@ -275,7 +281,7 @@ rules:
     - id: unimplemented.sartosan-pirates-sar.swabbies.dont-mind-them-mates
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.group
   name: Don't Mind Them Mates, They Ain't True Pirates!
   source:
     manual: broheim.net
@@ -300,7 +306,8 @@ rules:
         kind: profile
         id: profile.equipment-restrictions
         parameters:
-          forbids: armour-suit
+          forbids:
+          - armour-suit
   name: No Armour
   source:
     manual: broheim.net

@@ -56,7 +56,7 @@ rules:
     - id: unimplemented.clan-angrund-kep.band.armour
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.movement
   name: Armour
   source:
     manual: broheim.net
@@ -98,14 +98,14 @@ rules:
     band: true
 - id: band--grudgebearers
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.clan-angrund-kep.band.grudgebearers
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: out-of-scope.campaign
+      reason: out-of-scope.construction
       clauses:
       - id: whole
         scope: 'NO'
@@ -245,9 +245,6 @@ rules:
           - skill.ferocious-charge
           - skill.monster-slayer
   name: Slayer Skills
-  effect: >-
-    Troll Slayers may choose a kill from the Troll Slayer skill table instead of the normal skill
-    table when they gain a new skill.
   source:
     manual: broheim.net
     printed_page: 20
@@ -255,21 +252,18 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Habilidades de Matatrolles
-  effect_i18n:
-    es: >-
-      Los Matatrolles pueden escoger una habilidad de la Tabla de Habilidades de Matatrolles en
-      lugar de la tabla de habilidades normal cuando ganan una habilidad nueva.
   applies_to:
     profile_ids:
     - dwarf-troll-slayers
+  rule_ref: shared-rule.slayer-skills
 - id: ironbreaker--watch-out
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.clan-angrund-kep.ironbreaker.watch-out
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:
@@ -338,7 +332,7 @@ rules:
     - id: unimplemented.clan-angrund-kep.band.dwarf-special-skills-extra-tough
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.campaign
   name: Extra Tough
   source:
     manual: broheim.net
@@ -431,9 +425,6 @@ rules:
         kind: mechanic
         id: skill.ferocious-charge
   name: Ferocious Charge
-  effect: >-
-    The Slayer may double his attacks on the turn in which he charges. He the suffers a -1 to hit
-    penalty that turn.
   source:
     manual: broheim.net
     printed_page: 20
@@ -443,12 +434,9 @@ rules:
     es: Carga Feroz
   eligibility:
   - dwarf-troll-slayers
-  effect_i18n:
-    es: >-
-      El Matatrolles puede doblar sus ataques en el turno en el que carga. Sufre entonces una
-      penalización de -1 por impactar ese turno.
   applies_to:
     band: true
+  rule_ref: shared-rule.ferocious-charge
 - id: band--slayer-special-skills-monster-slayer
   kind: warband_skill
   runtime:
@@ -467,10 +455,6 @@ rules:
       - id: effective-strength-for-armour
         scope: 'YES'
   name: Monster Slayer
-  effect: >-
-    The Slayer always wounds any opponent on a roll of 4+, regardless of Toughness, unless his own
-    Strength (after all modifiers for weapons used, etc) would mean that a lower roll than this is
-    needed.
   source:
     manual: broheim.net
     printed_page: 20
@@ -480,13 +464,9 @@ rules:
     es: Matamostro
   eligibility:
   - dwarf-troll-slayers
-  effect_i18n:
-    es: >-
-      El Matatrolles siempre hiere a cualquier oponente con una tirada de 4+, independientemente de
-      la Resistencia, a menos que su propia Fuerza (tras todos los modificadores por armas usadas,
-      etc.) signifique que se necesita una tirada menor.
   applies_to:
     band: true
+  rule_ref: shared-rule.monster-slayer
 - id: band--slayer-special-skills-berserker
   kind: warband_skill
   runtime:
@@ -500,8 +480,6 @@ rules:
         kind: mechanic
         id: skill.berserker
   name: Berserker
-  effect: >-
-    The Slayer may add +1 to his 'close combat to hit' rolls during the turn in which he charges.
   source:
     manual: broheim.net
     printed_page: 20
@@ -511,13 +489,9 @@ rules:
     es: Berserker
   eligibility:
   - dwarf-troll-slayers
-  effect_i18n:
-    es: >-
-      El Matatrolles puede sumar +1 a sus tiradas «por impactar en combate cerrado» durante el turno
-      en el que carga.
   applies_to:
     band: true
-
+  rule_ref: shared-rule.berserker
 - id: dwarf-troll-slayers--equipment-restrictions
   runtime:
     scope: 'YES'

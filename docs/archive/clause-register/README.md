@@ -3,7 +3,7 @@
 These files are **retired working data**. Nothing in the repository reads them; they are kept
 because their unmigrated columns may still help a reviewer trace an old decision. The live data is
 the knowledge base itself: every classified record declares its `clauses`
-(see [Clauses](../../reference/knowledge-base.md#clauses)) and
+(see [Identities and clauses](../../reference/knowledge-base.md#identities-and-clauses)) and
 `python tools/knowledge/clauses.py` reports the inventory and its test coverage.
 
 | File | What it was |

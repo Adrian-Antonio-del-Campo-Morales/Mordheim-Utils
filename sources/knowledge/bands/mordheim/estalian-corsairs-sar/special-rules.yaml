@@ -3,14 +3,19 @@ band_id: estalian-corsairs-sar
 rules:
 - id: band--pirate-rules
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
+    - id: compiler.pirate-human-mercenary-equipment-access
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.pirate-human-mercenary-equipment-access
     - id: unimplemented.estalian-corsairs-sar.band.pirate-rules
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: General Pirate Rules
   source:
     manual: broheim.net
@@ -31,7 +36,7 @@ rules:
     - id: unimplemented.estalian-corsairs-sar.band.estalian-special-rules
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Estalian Special Rules
   effect: >-
     All Estalian Captains and Champions start off with the skill Expert Swordsman. In addition,
@@ -83,7 +88,7 @@ rules:
     - id: unimplemented.estalian-corsairs-sar.gunners.swivel-guns-are-dangerous
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Swivel Guns Is Dangerous, Matey!
   source:
     manual: broheim.net
@@ -105,7 +110,7 @@ rules:
     - id: unimplemented.estalian-corsairs-sar.boatswains.expert-riggers
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.movement
   name: Expert Riggers
   source:
     manual: broheim.net
@@ -127,7 +132,7 @@ rules:
     - id: unimplemented.estalian-corsairs-sar.swabbies.not-hired
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Not Hired
   source:
     manual: broheim.net
@@ -149,7 +154,7 @@ rules:
     - id: unimplemented.estalian-corsairs-sar.swabbies.never-gain-experience
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Never Gain Experience
   source:
     manual: broheim.net
@@ -164,14 +169,15 @@ rules:
   rule_ref: shared-rule.crew-never-gain-experience
 - id: swabbies--rabble
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.estalian-corsairs-sar.swabbies.rabble
-      scope: 'NO'
-      binding: null
-      reason: pending-classification
+    - id: compiler.swabbie-rabble-loadout
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.swabbie-rabble-loadout
   name: Rabble
   source:
     manual: broheim.net
@@ -193,7 +199,7 @@ rules:
     - id: unimplemented.estalian-corsairs-sar.swabbies.blimey-they-got-away
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.group
   name: Blimey, They Got Away!
   source:
     manual: broheim.net
@@ -215,7 +221,7 @@ rules:
     - id: unimplemented.estalian-corsairs-sar.swabbies.dont-mind-them-mates
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.group
   name: Don't Mind Them Mates, They Ain't True Pirates!
   source:
     manual: broheim.net

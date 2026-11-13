@@ -3,14 +3,14 @@ band_id: skaven-of-clan-pestilens-mou
 rules:
 - id: band--pestilens-special-skills
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.skaven-of-clan-pestilens-mou.band.pestilens-special-skills
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: out-of-scope.non-duel
+      reason: pending-implementation
   name: Clan Pestilence Special Skills
   effect: >-
     Skaven Heroes with the Special skill available to them may choose to use the following Skill
@@ -41,14 +41,14 @@ rules:
     band: true
 - id: band--plague-censer
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.skaven-of-clan-pestilens-mou.band.plague-censer
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: out-of-scope.non-duel
+      reason: pending-implementation
   name: Plague Censer
   effect: >-
     Cost 75+5D6 wt, Rare 12. A Plague Censer is a hollow spiked metal ball attached to a long chain
@@ -155,8 +155,6 @@ rules:
         kind: mechanic
         id: skill.resilient
   name: Resilient (Plague Priest)
-  effect: >-
-    The Plague Priest is a disease-ridden Skaven and starts with the Resilience Strength skill.
   source:
     manual: broheim.net
     printed_page: 5
@@ -164,13 +162,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Skaven%20of%20Clan%20Pestilens.pdf
   name_i18n:
     es: Resistente
-  effect_i18n:
-    es: >-
-      El Sacerdote de la Peste es un skaven lleno de enfermedades y empieza con la habilidad de
-      Fuerza Resistencia.
   applies_to:
     profile_ids:
     - plague-priest
+  rule_ref: shared-rule.pestilens-resilient
 - id: plague-champion--frenzy
   runtime:
     scope: 'YES'
@@ -212,8 +207,6 @@ rules:
         kind: mechanic
         id: skill.resilient
   name: Resilient (Plague Champion)
-  effect: >-
-    The Plague Champion is a disease-ridden Skaven and starts with the Resilience Strength skill.
   source:
     manual: broheim.net
     printed_page: 5
@@ -221,13 +214,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Skaven%20of%20Clan%20Pestilens.pdf
   name_i18n:
     es: Resistente
-  effect_i18n:
-    es: >-
-      El Campeón de la Peste es un skaven lleno de enfermedades y empieza con la habilidad de Fuerza
-      Resistencia.
   applies_to:
     profile_ids:
     - plague-champion
+  rule_ref: shared-rule.pestilens-resilient
 - id: plague-rat--plague-infested
   runtime:
     scope: 'YES'
@@ -266,9 +256,8 @@ rules:
     - id: unimplemented.skaven-of-clan-pestilens-mou.plague-rat.animals
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: out-of-scope.campaign
   name: Animals
-  effect: The Plague-Rats are animals and never gain experience.
   source:
     manual: broheim.net
     printed_page: 6
@@ -276,11 +265,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Skaven%20of%20Clan%20Pestilens.pdf
   name_i18n:
     es: Animales
-  effect_i18n:
-    es: Las Rataspeste son animales y nunca ganan experiencia.
   applies_to:
     profile_ids:
     - plague-rat
+  rule_ref: shared-rule.animal
 - id: skaven-slave--abused
   runtime:
     scope: 'NO'
@@ -290,7 +278,7 @@ rules:
     - id: unimplemented.skaven-of-clan-pestilens-mou.skaven-slave.abused
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: out-of-scope.campaign
   name: Abused
   effect: >-
     Skaven Slaves are badly mistreated and never have the chance to advance. Slaves do not gain

@@ -3,8 +3,6 @@ band_id: pit-fighters
 rules:
 - id: pit-king--leader
   name: Leader
-  effect: >-
-    Any models in the warband within 6" of the King may use his Leadership instead of their own.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -12,9 +10,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Todos los modelos de la banda a 6" del Rey pueden usar su Liderazgo en lugar del suyo propio.
   applies_to:
     profile_ids:
     - pit-king
@@ -28,6 +23,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: pit-king--pit-fighter
   name: Pit Fighter
   source:
@@ -103,7 +99,6 @@ rules:
   rule_ref: shared-rule.hard-to-kill
 - id: dwarf-troll-slayer--hard-head
   name: Hard Head
-  effect: Dwarfs ignores the special rules for maces, clubs, etc. They are not easy to knock out!
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -111,8 +106,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
     es: Cabeza Dura
-  effect_i18n:
-    es: Los enanos ignoran las reglas especiales de mazas, porras, etc. ¡No es fácil dejarlos K.O.!
   applies_to:
     profile_ids:
     - dwarf-troll-slayer
@@ -128,6 +121,7 @@ rules:
         id: trait.concussion-immune
         parameters:
           value: true
+  rule_ref: shared-rule.dwarf-hard-head
 - id: dwarf-troll-slayer--hate-orcs-and-goblins
   name: Hate Orcs and Goblins
   effect: >-
@@ -311,7 +305,7 @@ rules:
     - id: unimplemented.pit-fighters.pursuers.evade
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.movement
   rule_ref: shared-rule.evade
 - id: ogre-pit-fighter--pit-fighter
   name: Pit Fighter
@@ -340,7 +334,6 @@ rules:
   rule_ref: shared-rule.pit-fighter
 - id: ogre-pit-fighter--fear
   name: Fear
-  effect: Ogre Pit Fighters are large, threatening creatures that cause fear.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -348,8 +341,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
     es: Miedo
-  effect_i18n:
-    es: Los Luchadores de Foso Ogro son criaturas grandes y amenazantes que causan miedo.
   applies_to:
     profile_ids:
     - ogre-pit-fighter
@@ -363,11 +354,9 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.causes-fear
+  rule_ref: shared-rule.fear
 - id: ogre-pit-fighter--large
   name: Large
-  effect: >-
-    Ogre Pit Fighters are huge, lumbering creatures and therefore make tempting targets for archers.
-    Any model may shoot at the Ogre Pit Fighter, even if he is not the closest target.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -375,11 +364,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
     es: Grande
-  effect_i18n:
-    es: >-
-      Los Luchadores de Foso Ogro son criaturas enormes y torpes y por tanto constituyen objetivos
-      tentadores para los arqueros. Cualquier modelo puede disparar al Luchador de Foso Ogro,
-      incluso si no es el objetivo más cercano.
   applies_to:
     profile_ids:
     - ogre-pit-fighter
@@ -392,6 +376,7 @@ rules:
       scope: 'NO'
       binding: null
       reason: out-of-scope.shooting
+  rule_ref: shared-rule.kroxigor-large
 - id: ogre-pit-fighter--skills
   name: Skills
   source:
@@ -449,7 +434,7 @@ rules:
     - id: unimplemented.pit-fighters.ogre-pit-fighter.slow-witted
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
 - id: band--pit-fighter-skill
   name: Pit Fighter
   effect: >-
@@ -469,14 +454,14 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.pit-fighters.band.pit-fighter-skill
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: out-of-scope.shooting
+      reason: pending-implementation
 - id: band--hired-swords
   name: Hired Swords
   effect: Pit Fighters may hire all normally available Hired Swords except the Elf Ranger.
@@ -604,7 +589,7 @@ rules:
     - id: unimplemented.pit-fighters.band.in-the-pit
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
 - id: band--pit-fighter-skill-bulging-biceps
   kind: warband_skill
   runtime:
@@ -618,9 +603,6 @@ rules:
         kind: mechanic
         id: skill.mighty-biceps
   name: Bulging Biceps
-  effect: >-
-    The warrior ignores the penalty from the Heavy weapon special rule; a weapon's Strength bonus
-    therefore applies in every round of close combat.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -628,12 +610,9 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
     es: Bíceps Desbordantes
-  effect_i18n:
-    es: >-
-      El guerrero ignora la penalización de la regla especial de Arma Pesada; el bonificador de
-      Fuerza del arma se aplica por tanto en cada asalto de combate cuerpo a cuerpo.
   applies_to:
     band: true
+  rule_ref: shared-rule.pit-fighter-bulging-biceps
 - id: band--pit-fighter-skill-force-of-will
   kind: warband_skill
   name: Force of Will
@@ -670,9 +649,6 @@ rules:
 - id: band--pit-fighter-skill-arms-master
   kind: warband_skill
   name: Arms Master
-  effect: >-
-    The warrior ignores all 'difficult to use' weapon restrictions, allowing combinations that would
-    normally be prohibited.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -680,10 +656,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
     es: Maestro de Armas
-  effect_i18n:
-    es: >-
-      El guerrero ignora todas las restricciones de armas 'difíciles de usar', permitiendo
-      combinaciones que normalmente estarían prohibidas.
   applies_to:
     band: true
   runtime:
@@ -696,12 +668,10 @@ rules:
       binding:
         kind: compiler
         id: compiler.ignore-difficult-to-use-restrictions
+  rule_ref: shared-rule.pit-fighter-arms-master
 - id: band--pit-fighter-skill-body-slam
   kind: warband_skill
   name: Body Slam
-  effect: >-
-    Instead of a normal charge attack sequence, the warrior may make one Body Slam attack at +1
-    Strength and +1 to hit, with no weapon bonuses or abilities; it scores a critical hit on 5+.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -709,11 +679,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
     es: Planchazo
-  effect_i18n:
-    es: >-
-      En lugar de una secuencia normal de ataque de carga, el guerrero puede realizar un único
-      ataque de Planchazo a +1 Fuerza y +1 para impactar, sin bonificaciones ni habilidades de
-      armas; causa un impacto crítico con un 5+.
   applies_to:
     band: true
   runtime:
@@ -726,6 +691,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.body-slam
+  rule_ref: shared-rule.pit-fighter-body-slam
 - id: band--pit-fighter-skill-grizzled-veteran
   kind: warband_skill
   name: Grizzled Veteran
@@ -754,9 +720,6 @@ rules:
 - id: band--troll-slayer-special-skills-ferocious-charge
   kind: warband_skill
   name: Ferocious Charge
-  effect: >-
-    The Slayer may double his attacks on the turn that he charges. He will suffer a -1 to hit
-    penalty on that turn.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -764,10 +727,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
     es: Carga Feroz
-  effect_i18n:
-    es: >-
-      El Matatrolles puede doblar sus ataques en el asalto en el que carga. Sufrirá una penalización
-      de -1 para impactar ese asalto.
   eligibility:
   - dwarf-troll-slayer
   applies_to:
@@ -782,13 +741,10 @@ rules:
       binding:
         kind: mechanic
         id: skill.ferocious-charge
+  rule_ref: shared-rule.ferocious-charge
 - id: band--troll-slayer-special-skills-monster-slayer
   kind: warband_skill
   name: Monster Slayer
-  effect: >-
-    The Slayer always wounds any opponent on a roll of 4+, regardless of Toughness, unless his own
-    Strength (after all modifiers due to weapon bonuses, etc.) would mean that a lower roll than
-    this is needed.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -796,11 +752,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
     es: Matamostro
-  effect_i18n:
-    es: >-
-      El Matatrolles siempre hiere a cualquier oponente con un resultado de 4+, independientemente de
-      su Resistencia, salvo que su propia Fuerza (tras todos los modificadores debidos a
-      bonificadores de armas, etc.) signifique que se necesita una tirada menor.
   eligibility:
   - dwarf-troll-slayer
   applies_to:
@@ -815,6 +766,7 @@ rules:
       binding:
         kind: mechanic
         id: skill.monster-slayer
+  rule_ref: shared-rule.monster-slayer
 - id: band--troll-slayer-special-skills-berserker
   kind: warband_skill
   runtime:
@@ -874,7 +826,8 @@ rules:
         kind: profile
         id: profile.equipment-restrictions
         parameters:
-          forbids: armour
+          forbids:
+          - armour
   rule_ref: shared-rule.no-armour
 - id: dwarf-troll-slayer--no-missile-weapons
   name: No Missile Weapons

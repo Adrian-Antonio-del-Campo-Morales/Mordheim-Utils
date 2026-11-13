@@ -13,9 +13,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any warrior of the Cavalcade Warband within 6" of the Aristocrat may use his Leadership value
-    when taking Leadership tests.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -23,13 +20,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier guerrero de la banda de la Cabalgata a 6" del Aristócrata puede usar su valor de
-      Liderazgo al realizar chequeos de Liderazgo.
   applies_to:
     profile_ids:
     - aristocrat
+  rule_ref: shared-rule.leader
 - id: aristocrat--expert-horseman
   runtime:
     scope: LATER
@@ -148,14 +142,19 @@ rules:
     - twisted-scholar
 - id: cursed-piper--danse-macabre
   runtime:
-    scope: LATER
-    implemented: 'NO'
-    grant: profile
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
     effects:
+    - id: condition.danse-macabre-controlled
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.danse-macabre-controlled
     - id: unimplemented.cursed-cavalcade.cursed-piper.danse-macabre
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.shooting
       clauses:
       - id: control-enemy--scope--danse-state
         scope: 'NO'
@@ -292,7 +291,6 @@ rules:
       binding: null
       reason: out-of-scope.shooting
   name: Large Target
-  effect: Great Bears are Large Targets as defined in the shooting rules.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -300,11 +298,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
   name_i18n:
     es: Objetivo Grande
-  effect_i18n:
-    es: Los Osos Grandes son Objetivos Grandes según se define en las reglas de disparo.
   applies_to:
     profile_ids:
     - great-bear
+  rule_ref: shared-rule.large-target
 - id: great-bear--animal
   runtime:
     scope: 'NO'
@@ -316,7 +313,6 @@ rules:
       binding: null
       reason: out-of-scope.campaign
   name: Animal
-  effect: Great Bears are animals and thus do not gain experience.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -324,11 +320,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
   name_i18n:
     es: Animal
-  effect_i18n:
-    es: Los Osos Grandes son animales y por tanto no ganan experiencia.
   applies_to:
     profile_ids:
     - great-bear
+  rule_ref: shared-rule.animal
 - id: wild-beasts--charge
   runtime:
     scope: 'YES'
@@ -370,7 +365,6 @@ rules:
       binding: null
       reason: out-of-scope.campaign
   name: Animal
-  effect: Wild Beasts are animals and thus do not gain experience.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -378,11 +372,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
   name_i18n:
     es: Animal
-  effect_i18n:
-    es: Las Bestias salvajes son animales y por tanto no ganan experiencia.
   applies_to:
     profile_ids:
     - wild-beasts
+  rule_ref: shared-rule.animal
 - id: fighting-ape--cymbals
   runtime:
     scope: 'NO'
@@ -453,7 +446,7 @@ rules:
     - id: unimplemented.cursed-cavalcade.fighting-ape.animal
       scope: 'NO'
       binding: null
-      reason: out-of-scope.movement
+      reason: out-of-scope.campaign
   name: Animal
   effect: >-
     Fighting Apes are animals and thus do not gain experience, but can still climb and enter
@@ -682,7 +675,7 @@ rules:
     - id: unimplemented.cursed-cavalcade.band.cursed-cavalcade-special-skills-duelist
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.movement
   name: Duelist
   effect: >-
     The warrior is an expert in hand-to-hand combat method of the Imperial duelist, aristocrats

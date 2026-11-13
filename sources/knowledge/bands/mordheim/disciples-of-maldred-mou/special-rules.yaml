@@ -3,17 +3,16 @@ band_id: disciples-of-maldred-mou
 rules:
 - id: prophet--leader
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.disciples-of-maldred-mou.prophet.leader
-      scope: 'NO'
-      binding: null
-      reason: pending-classification
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader (Prophet)
-  effect: >-
-    Any warrior within 6" of the Prophet may use his Leadership value when taking Leadership tests.
   source:
     manual: broheim.net
     printed_page: 4
@@ -21,13 +20,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Disciples%20of%20Maldred.pdf
   name_i18n:
     es: Líder (Profeta)
-  effect_i18n:
-    es: >-
-      Cualquier guerrero a 6" o menos del Profeta puede usar su valor de Liderazgo cuando realice
-      tiradas de Liderazgo.
   applies_to:
     profile_ids:
     - prophet
+  rule_ref: shared-rule.leader
 - id: prophet--wizard
   runtime:
     scope: 'NO'
@@ -37,7 +33,7 @@ rules:
     - id: unimplemented.disciples-of-maldred-mou.prophet.wizard
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.magic
   name: Wizard (Prophet)
   effect: The Prophet of the False Grail is a wizard and uses Chaos Rituals.
   source:
@@ -61,7 +57,7 @@ rules:
     - id: unimplemented.disciples-of-maldred-mou.prophet.corrupting-influence
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Corrupting Influence
   effect: >-
     A Prophet of the False Grail uses guile and cunning to deceive his followers into acts of
@@ -100,7 +96,7 @@ rules:
     - id: unimplemented.disciples-of-maldred-mou.prophet.his-masters-gift
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: His Master's Gift (Prophet)
   effect: >-
     When a Prophet has accumulated enough experience, instead of picking a skill he may roll on the
@@ -128,7 +124,7 @@ rules:
     - id: unimplemented.disciples-of-maldred-mou.band.gifts-of-tzeentch
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Gifts of Tzeentch
   effect: >-
     Roll 2D6. 2-3 The Master's Foresight: from now on the character is allowed to reroll one die
@@ -178,14 +174,14 @@ rules:
     band: true
 - id: questing-knights--knights-virtue
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.disciples-of-maldred-mou.questing-knights.knights-virtue
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: pending-classification
+      reason: deferred.psychology
   name: Knight's Virtue
   effect: >-
     An untainted Questing Knight is a chivalrous warrior who is superior to ordinary warriors. He
@@ -217,7 +213,7 @@ rules:
     - id: unimplemented.disciples-of-maldred-mou.questing-knights.knights-feats
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Knight's Feats (Questing Knight)
   effect: >-
     A Questing Knight is a mighty hero capable of dashing feats of strength and bravery. He may
@@ -250,7 +246,7 @@ rules:
     - id: unimplemented.disciples-of-maldred-mou.questing-knights.corruption
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Corruption
   effect: >-
     After each battle any untainted Knights (ie. basic Questing Knights) must take a Ld test in
@@ -293,7 +289,7 @@ rules:
     - id: unimplemented.disciples-of-maldred-mou.questing-knights.his-masters-gift
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: His Master's Gift (Corrupt Knight)
   effect: >-
     Once corrupted, when a Knight has accumulated enough experience, instead of picking a skill he
@@ -321,7 +317,7 @@ rules:
     - id: unimplemented.disciples-of-maldred-mou.squires.oath-of-servitude
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Oath of Servitude
   effect: >-
     When hiring new Squires, elect which Knight they are to follow. Note that a Knight may only have
@@ -354,7 +350,7 @@ rules:
     - id: unimplemented.disciples-of-maldred-mou.squires.in-his-lords-footsteps
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: In His Lord's Footsteps
   effect: >-
     On a Knight's death, the Squire is released from his bond and elevated into the sacred order of
@@ -408,8 +404,19 @@ rules:
           - questing-knights
           skills:
           - skill.armour-specialist
+    - id: profile.skill-access.sword-master
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.skill-access
+        parameters:
+          category: special
+          profile_ids:
+          - questing-knights
+          skills:
+          - skill.sword-master
     - id: unimplemented.disciples-of-maldred-mou.band.knights-feats-maldred
-      scope: 'NO'
+      scope: LATER
       binding: null
       reason: pending-implementation
     - id: excluded.knights-feats.lancer

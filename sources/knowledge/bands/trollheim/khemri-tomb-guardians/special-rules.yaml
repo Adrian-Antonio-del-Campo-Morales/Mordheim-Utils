@@ -3,17 +3,12 @@ band_id: khemri-tomb-guardians
 rules:
 - id: tomb-lord--leader
   name: Leader
-  effect: Any warband model within 6" of the Tomb Lord may use his Leadership instead of its own.
   source:
     manual: khemri
     printed_page: 44
     section: Heroes / 1 Tomb Lord / Leader
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier modelo de la banda a 6" del Señor de la tumba puede usar su Liderazgo en lugar del
-      suyo propio.
   applies_to:
     profile_ids:
     - tomb-lord
@@ -27,19 +22,15 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: tomb-lord--undead
   name: Undead
-  effect: The Tomb Lord is Undead and is subject to the warband's Undead special rules.
   source:
     manual: khemri
     printed_page: 44
     section: Heroes / 1 Tomb Lord / Undead
   name_i18n:
     es: No Muerto
-  effect_i18n:
-    es: >-
-      El Señor de la tumba es No muerto y está sujeto a las reglas especiales de No muertos de la
-      banda.
   applies_to:
     profile_ids:
     - tomb-lord
@@ -53,6 +44,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.undead
+  rule_ref: shared-rule.undead
 - id: tomb-lord--flammable
   runtime:
     scope: 'YES'
@@ -107,17 +99,12 @@ rules:
       reason: out-of-scope.magic
 - id: mortuary-priest--undead
   name: Undead
-  effect: The Mortuary Priest is Undead and is subject to the warband's Undead special rules.
   source:
     manual: khemri
     printed_page: 44
     section: Heroes / 0-1 Mortuary Priest / Undead
   name_i18n:
     es: No Muerto
-  effect_i18n:
-    es: >-
-      El Sacerdote funerario es No muerto y está sujeto a las reglas especiales de No muertos de la
-      banda.
   applies_to:
     profile_ids:
     - mortuary-priest
@@ -131,17 +118,15 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.undead
+  rule_ref: shared-rule.undead
 - id: necrotect--undead
   name: Undead
-  effect: The Necrotect is Undead and is subject to the warband's Undead special rules.
   source:
     manual: khemri
     printed_page: 45
     section: Heroes / 0-1 Necrotect / Undead
   name_i18n:
     es: No Muerto
-  effect_i18n:
-    es: El Necrotecto es No muerto y está sujeto a las reglas especiales de No muertos de la banda.
   applies_to:
     profile_ids:
     - necrotect
@@ -155,6 +140,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.undead
+  rule_ref: shared-rule.undead
 - id: necrotect--hatred
   kind: profile_ability
   runtime:
@@ -206,20 +192,15 @@ rules:
     - id: unimplemented.khemri-tomb-guardians.necrotect.stone-forger
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.group
 - id: mortuary-acolytes--undead
   name: Undead
-  effect: Mortuary Acolytes are Undead and are subject to the warband's Undead special rules.
   source:
     manual: khemri
     printed_page: 45
     section: Heroes / 0-3 Mortuary Acolytes / Undead
   name_i18n:
     es: No Muerto
-  effect_i18n:
-    es: >-
-      Los Acólitos funerarios son No muertos y están sujetos a las reglas especiales de No muertos
-      de la banda.
   applies_to:
     profile_ids:
     - mortuary-acolytes
@@ -233,19 +214,15 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.undead
+  rule_ref: shared-rule.undead
 - id: skeleton-warriors--undead
   name: Undead
-  effect: Skeleton Warriors are Undead and are subject to the warband's Undead special rules.
   source:
     manual: khemri
     printed_page: 46
     section: Henchmen / Skeleton Warriors / Undead
   name_i18n:
     es: No Muerto
-  effect_i18n:
-    es: >-
-      Los Guerreros esqueleto son No muertos y están sujetos a las reglas especiales de No muertos
-      de la banda.
   applies_to:
     profile_ids:
     - skeleton-warriors
@@ -259,19 +236,15 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.undead
+  rule_ref: shared-rule.undead
 - id: tomb-guardians--undead
   name: Undead
-  effect: Tomb Guardians are Undead and are subject to the warband's Undead special rules.
   source:
     manual: khemri
     printed_page: 46
     section: Henchmen / Tomb Guardians / Undead
   name_i18n:
     es: No Muerto
-  effect_i18n:
-    es: >-
-      Los Guardianes de la tumba son No muertos y están sujetos a las reglas especiales de No
-      muertos de la banda.
   applies_to:
     profile_ids:
     - tomb-guardians
@@ -285,6 +258,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.undead
+  rule_ref: shared-rule.undead
 - id: tomb-scorpions--living
   name: Living
   source:
@@ -297,26 +271,23 @@ rules:
     profile_ids:
     - tomb-scorpions
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.khemri-tomb-guardians.tomb-scorpions.living
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: covered.elsewhere
   rule_ref: shared-rule.living
 - id: tomb-scorpions--animal
   name: Animal
-  effect: Tomb Scorpions are animals and never gain Experience.
   source:
     manual: khemri
     printed_page: 46
     section: Henchmen / 0-3 Tomb Scorpions / Animal
   name_i18n:
     es: Animal
-  effect_i18n:
-    es: Los Escorpiones de tumba son animales y nunca ganan Experiencia.
   applies_to:
     profile_ids:
     - tomb-scorpions
@@ -328,7 +299,8 @@ rules:
     - id: unimplemented.khemri-tomb-guardians.tomb-scorpions.animal
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.campaign
+  rule_ref: shared-rule.animal
 - id: tomb-scorpions--scorpion-sting
   runtime:
     scope: 'YES'
@@ -343,24 +315,16 @@ rules:
         parameters:
           applies_to_own_attack: true
   name: Scorpion's Sting
-  effect: >-
-    A Tomb Scorpion attacks with the poisonous sting in its tail. The source resolves this as though
-    the attack used Black Lotus; the underlying poison-item mechanics are intentionally not
-    duplicated in this file.
   source:
     manual: khemri
     printed_page: 46
     section: Henchmen / 0-3 Tomb Scorpions / Scorpion's Sting
   name_i18n:
     es: Aguijón de Escorpión
-  effect_i18n:
-    es: >-
-      Un Escorpión de tumba ataca con el aguijón venenoso de su cola. La fuente lo resuelve como si
-      el ataque usara Loto negro; la mecánica subyacente del objeto venenoso no se duplica
-      intencionadamente en este archivo.
   applies_to:
     profile_ids:
     - tomb-scorpions
+  rule_ref: shared-rule.scorpion-sting
 - id: stone-golem--stone-body
   runtime:
     scope: 'YES'
@@ -447,18 +411,16 @@ rules:
         parameters:
           value: true
   name: Immune to Poison
-  effect: The Stone Golem is immune to poison.
   source:
     manual: khemri
     printed_page: 47
     section: Henchmen / 0-1 Stone Golem / Immune to Poison
   name_i18n:
     es: Inmune al Veneno
-  effect_i18n:
-    es: El Gólem de piedra es inmune al veneno.
   applies_to:
     profile_ids:
     - stone-golem
+  rule_ref: shared-rule.immune-to-poison
 - id: stone-golem--brainless
   name: Brainless
   effect: The Stone Golem never gains Experience.
@@ -481,18 +443,15 @@ rules:
     - id: unimplemented.khemri-tomb-guardians.stone-golem.brainless
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.campaign
 - id: stone-golem--impossible-to-hide
   name: Impossible to Hide
-  effect: The Stone Golem is too large to Hide.
   source:
     manual: khemri
     printed_page: 47
     section: Henchmen / 0-1 Stone Golem / Impossible to Hide
   name_i18n:
     es: Imposible de Ocultar
-  effect_i18n:
-    es: El Gólem de piedra es demasiado grande para Ocultarse.
   applies_to:
     profile_ids:
     - stone-golem
@@ -504,7 +463,8 @@ rules:
     - id: unimplemented.khemri-tomb-guardians.stone-golem.impossible-to-hide
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.movement
+  rule_ref: shared-rule.impossible-to-hide
 - id: stone-golem--large-target
   name: Large Target
   effect: >-
@@ -531,7 +491,7 @@ rules:
     - id: unimplemented.khemri-tomb-guardians.stone-golem.large-target
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.shooting
 - id: stone-golem--no-water
   name: No Water
   effect: The Stone Golem does not need water.
@@ -554,7 +514,7 @@ rules:
     - id: unimplemented.khemri-tomb-guardians.stone-golem.no-water
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.campaign
 - id: stone-golem--animated
   name: Animated
   effect: The Stone Golem is an animated being and is not Undead.
@@ -570,14 +530,14 @@ rules:
     profile_ids:
     - stone-golem
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.khemri-tomb-guardians.stone-golem.animated
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: covered.elsewhere
 - id: band--cause-fear
   name: Cause Fear
   source:
@@ -690,7 +650,7 @@ rules:
     - id: unimplemented.khemri-tomb-guardians.band.no-food-or-water
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.campaign
 - id: band--may-not-run
   name: May Not Run
   source:
@@ -716,7 +676,7 @@ rules:
     - id: unimplemented.khemri-tomb-guardians.band.may-not-run
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.movement
   rule_ref: shared-rule.may-not-run-undead
 - id: band--immune-to-poison
   runtime:
@@ -781,7 +741,7 @@ rules:
     - id: unimplemented.khemri-tomb-guardians.band.brainless
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.campaign
 - id: band--at-home
   name: At Home
   effect: When the warband explores in Khemri, roll one additional die during the Exploration phase.
@@ -803,20 +763,15 @@ rules:
     - id: unimplemented.khemri-tomb-guardians.band.at-home
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.campaign
 - id: mortuary-priest--no-armour
   name: No Armour
-  effect: >-
-    A Mortuary Priest may never wear armour because it interferes with the Priest's powers.
   source:
     manual: khemri
     printed_page: 44
     section: Heroes / 0-1 Mortuary Priest / No Armour
   name_i18n:
     es: Sin Armadura
-  effect_i18n:
-    es: >-
-      Un Sacerdote Funerario jamás puede llevar armadura porque interfiere con los poderes del Sacerdote.
   applies_to:
     profile_ids:
     - mortuary-priest
@@ -831,8 +786,9 @@ rules:
         kind: profile
         id: profile.equipment-restrictions
         parameters:
-          forbids: armour
-
+          forbids:
+          - armour
+  rule_ref: shared-rule.no-armour
 - id: mortuary-acolytes--equipment-restrictions
   runtime:
     scope: 'YES'

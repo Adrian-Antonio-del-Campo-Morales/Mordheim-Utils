@@ -321,11 +321,9 @@
               "items": { "$ref": "#/$defs/id" }
             },
             "forbids": {
-              "description": "Item, category or rule id the binding forbids.",
-              "oneOf": [
-                { "$ref": "#/$defs/id" },
-                { "type": "array", "items": { "$ref": "#/$defs/id" } }
-              ]
+              "description": "Item, category or rule ids the binding forbids (always a list).",
+              "type": "array",
+              "items": { "$ref": "#/$defs/id" }
             },
             "ignore_penalties": {
               "description": "Whether the binding cancels the usual penalties.",
@@ -465,7 +463,7 @@
         },
         "reason": {
           "description": "Required whenever there is no binding: one of the `reason_codes` of `registry/runtime-schema.yaml`. The applications render the code's label; the historical free text is archived in docs/archive/reason-texts.csv.",
-          "enum": ["pending-classification", "pending-implementation", "source-blocked", "out-of-scope.magic", "out-of-scope.shooting", "out-of-scope.movement", "out-of-scope.campaign", "out-of-scope.construction", "out-of-scope.group", "out-of-scope.non-duel", "deferred.psychology", "deferred.mounts", "deferred.other"]
+          "enum": ["pending-classification", "pending-implementation", "source-blocked", "out-of-scope.magic", "out-of-scope.shooting", "out-of-scope.movement", "out-of-scope.campaign", "out-of-scope.construction", "out-of-scope.group", "out-of-scope.non-duel", "covered.elsewhere", "deferred.psychology", "deferred.mounts", "deferred.other"]
         },
         "clauses": {
           "description": "The clauses of this effect; their identity is `rule/<collection>/<owner>/<rule-id>/<effect-id>`.",

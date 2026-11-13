@@ -3,19 +3,12 @@ band_id: lustria-dark-elves
 rules:
 - id: dark-prince--leader
   name: Leader
-  effect: >-
-    Any warband model within 6" of the Dark Prince may use his Leadership when taking Leadership
-    tests.
   source:
     manual: lustria
     printed_page: 61
     section: Heroes / 1 Dark Prince / Leader
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier modelo de la banda a 6" del Príncipe oscuro puede usar su Liderazgo al realizar
-      chequeos de Liderazgo.
   applies_to:
     profile_ids:
     - dark-prince
@@ -29,6 +22,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: darkblades--close-combat-specialists
   name: Close Combat Specialists
   effect: Darkblades may never use missile weapons of any kind.
@@ -75,7 +69,7 @@ rules:
     - id: unimplemented.lustria-dark-elves.beastmaster.cold-one-handler
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.construction
 - id: dark-elf-sorceress--spellcaster
   name: Spellcaster
   effect: >-
@@ -106,19 +100,12 @@ rules:
       reason: out-of-scope.magic
 - id: shadows--natural-stealth
   name: Natural Stealth
-  effect: >-
-    While a Shadow is Hidden, enemy models suffer -1 Initiative when determining whether they can
-    detect it.
   source:
     manual: lustria
     printed_page: 63
     section: Henchmen / 0-5 Shadows / Natural Stealth
   name_i18n:
     es: Sigilo Natural
-  effect_i18n:
-    es: >-
-      Mientras una Sombra esté Oculta, los modelos enemigos sufren -1 de Iniciativa al determinar si
-      pueden detectarla.
   applies_to:
     profile_ids:
     - shadows
@@ -130,18 +117,16 @@ rules:
     - id: unimplemented.lustria-dark-elves.shadows.natural-stealth
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.movement
+  rule_ref: shared-rule.natural-stealth
 - id: cold-ones--animal
   name: Animal
-  effect: Cold Ones are animals and never gain Experience.
   source:
     manual: lustria
     printed_page: 64
     section: Henchmen / 0-2 Cold Ones / Animal
   name_i18n:
     es: Animal
-  effect_i18n:
-    es: Los Gélidos son animales y nunca ganan Experiencia.
   applies_to:
     profile_ids:
     - cold-ones
@@ -153,7 +138,8 @@ rules:
     - id: unimplemented.lustria-dark-elves.cold-ones.animal
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.campaign
+  rule_ref: shared-rule.animal
 - id: cold-ones--beastmaster-dependency
   name: Beastmaster Dependency
   effect: >-
@@ -182,7 +168,7 @@ rules:
     - id: unimplemented.lustria-dark-elves.cold-ones.beastmaster-dependency
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.campaign
 - id: cold-ones--stupidity
   name: Stupidity
   effect: >-
@@ -314,7 +300,7 @@ rules:
     - id: unimplemented.lustria-dark-elves.band.excellent-sight
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.movement
   # Not shared: the Spanish Lustria source gives the distance in centimetres (twice the Initiative
   # in cm), not the inches of the shared text.
   effect: >-
@@ -328,15 +314,12 @@ rules:
       normal (el doble de su atributo de Iniciativa en cm).
 - id: band--ancestral-customs
   name: Ancestral Customs
-  effect: Dark Elves may never use blackpowder weapons.
   source:
     manual: lustria
     printed_page: 59
     section: Dark Elf Special Rules / Ancestral Customs
   name_i18n:
     es: Costumbres Ancestrales
-  effect_i18n:
-    es: Los elfos oscuros nunca pueden usar armas de pólvora.
   applies_to:
     band: true
   runtime:
@@ -349,6 +332,7 @@ rules:
       binding:
         kind: compiler
         id: compiler.no-blackpowder-weapons
+  rule_ref: shared-rule.ancestral-customs
 - id: band--cold-one-requirement
   name: Cold One Requirement
   effect: The warband may include up to two Cold Ones only if it also includes a Beastmaster.
@@ -370,7 +354,7 @@ rules:
     - id: unimplemented.lustria-dark-elves.band.cold-one-requirement
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.construction
 - id: band--dark-elf-special-skills-infiltration
   kind: warband_skill
   name: Infiltration
@@ -402,7 +386,7 @@ rules:
     - id: unimplemented.lustria-dark-elves.band.dark-elf-special-skills-infiltration
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.movement
 - id: band--dark-elf-special-skills-fury-of-khaine
   kind: warband_skill
   name: Fury of Khaine
@@ -437,7 +421,7 @@ rules:
     - id: unimplemented.lustria-dark-elves.band.dark-elf-special-skills-fury-of-khaine
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.movement
 - id: band--dark-elf-special-skills-strong-constitution
   kind: warband_skill
   name: Strong Constitution
@@ -536,7 +520,7 @@ rules:
     - id: unimplemented.lustria-dark-elves.band.dark-elf-special-skills-poison-expert
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.campaign
 - id: dark-elf-sorceress--no-armoured-casting
   name: No Armour Casting
   source:
@@ -715,18 +699,13 @@ rules:
         kind: profile
         id: profile.natural-attacks
   name: Natural Weapons
-  effect: >-
-    Cold Ones are animals and never use weapons or armour; their claws and jaws are natural attacks.
   source:
     manual: lustria
     printed_page: 64
     section: 0-2 Cold Ones
   name_i18n:
     es: Armas Naturales
-  effect_i18n:
-    es: >-
-      Los Sangre Fría son animales que nunca usan armas ni armaduras; sus garras y mandíbulas son
-      ataques naturales.
   applies_to:
     profile_ids:
     - cold-ones
+  rule_ref: shared-rule.natural-weapons-animal

@@ -383,14 +383,14 @@ rules:
     profile_ids:
     - blood-dragon-vampire
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.chaos-streets-undead-bloodlines.blood-dragon-vampire.brave
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.group
       clauses:
       - id: whole
         scope: 'NO'
@@ -420,7 +420,7 @@ rules:
     - id: unimplemented.chaos-streets-undead-bloodlines.blood-dragon-vampire.honour
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.group
 - id: blood-dragon-vampire--warriors-code
   name: Warrior's Code
   effect: >-
@@ -587,19 +587,15 @@ rules:
     - id: unimplemented.chaos-streets-undead-bloodlines.necrarch-vampire.wizard
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.magic
 - id: necrarch-vampire--hates-the-living
   name: Hates the Living
-  effect: The Necrarch Vampire may hire only Undead Hired Swords or Dramatis Personae.
   source:
     manual: chaos-in-the-streets
     printed_page: 177
     section: 1 Necrarch Vampire / Hates the Living
   name_i18n:
     es: Odia a los Vivientes
-  effect_i18n:
-    es: >-
-      El Vampiro Necrarca solo puede contratar Espadas a Sueldo o Personajes Dramáticos No-muertos.
   applies_to:
     profile_ids:
     - necrarch-vampire
@@ -612,6 +608,7 @@ rules:
       scope: 'NO'
       binding: null
       reason: out-of-scope.construction
+  rule_ref: shared-rule.hates-the-living
 - id: strigoi-vampire--leader
   name: Leader
   source:
@@ -751,15 +748,12 @@ rules:
     - strigoi-vampire
 - id: strigoi-vampire--hates-the-living
   name: Hates the Living
-  effect: The Strigoi Vampire may hire only Undead Hired Swords or Dramatis Personae.
   source:
     manual: chaos-in-the-streets
     printed_page: 178
     section: 1 Strigoi Vampire / Hates the Living
   name_i18n:
     es: Odia a los Vivientes
-  effect_i18n:
-    es: El Vampiro Strigoi solo puede contratar Espadas a Sueldo o Personajes Dramáticos No-muertos.
   applies_to:
     profile_ids:
     - strigoi-vampire
@@ -772,6 +766,7 @@ rules:
       scope: 'NO'
       binding: null
       reason: out-of-scope.construction
+  rule_ref: shared-rule.hates-the-living
 - id: necromancer--wizard
   name: Wizard
   source:
@@ -791,7 +786,7 @@ rules:
     - id: unimplemented.chaos-streets-undead-bloodlines.necromancer.wizard
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.magic
   rule_ref: shared-rule.wizard
 - id: carrion-ghoul--fear
   name: Fear
@@ -836,7 +831,7 @@ rules:
     - id: unimplemented.chaos-streets-undead-bloodlines.zombie.may-not-run
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.movement
   rule_ref: shared-rule.may-not-run
 - id: zombie--fear
   name: Fear
@@ -947,7 +942,7 @@ rules:
     - id: unimplemented.chaos-streets-undead-bloodlines.zombie.brainless
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
   rule_ref: shared-rule.never-gain-experience
 - id: ghoul--fear
   name: Fear
@@ -1014,7 +1009,7 @@ rules:
     - id: unimplemented.chaos-streets-undead-bloodlines.dire-wolf.may-not-run
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.movement
   rule_ref: shared-rule.may-not-run
 - id: dire-wolf--fear
   name: Fear
@@ -1096,14 +1091,14 @@ rules:
     profile_ids:
     - dire-wolf
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.chaos-streets-undead-bloodlines.dire-wolf.undead-animal
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.campaign
       clauses:
       - id: whole
         scope: 'NO'
@@ -1132,15 +1127,12 @@ rules:
   rule_ref: shared-rule.no-pain
 - id: vampire-bat--may-not-run
   name: May Not Run
-  effect: Vampire Bats may not run, but may charge normally.
   source:
     manual: chaos-in-the-streets
     printed_page: 181
     section: Call the Bats / May Not Run
   name_i18n:
     es: No Pueden Correr
-  effect_i18n:
-    es: Los Murciélagos Vampiro no pueden correr, pero pueden cargar con normalidad.
   applies_to:
     profile_ids:
     - vampire-bat
@@ -1152,7 +1144,8 @@ rules:
     - id: unimplemented.chaos-streets-undead-bloodlines.vampire-bat.may-not-run
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.movement
+  rule_ref: shared-rule.may-not-run
 - id: vampire-bat--fear
   name: Fear
   effect: Vampire Bats cause Fear.
@@ -1274,7 +1267,7 @@ rules:
     - id: unimplemented.chaos-streets-undead-bloodlines.vampire-bat.fly
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.movement
 - id: vampire-bat--summoned-creature
   name: Summoned Creature
   effect: >-
@@ -2122,19 +2115,16 @@ rules:
         kind: profile
         id: profile.natural-attacks
   name: Natural Weapons
-  effect: Never uses weapons or armour and suffers no penalty for fighting without equipment.
   source:
     manual: chaos-in-the-streets
     printed_page: 179
     section: 0-1 Carrion Ghoul
   name_i18n:
     es: Armas Naturales
-  effect_i18n:
-    es: Nunca usa armas ni armaduras y no sufre penalización por luchar sin equipo.
   applies_to:
     profile_ids:
     - carrion-ghoul
-
+  rule_ref: shared-rule.natural-weapons
 - id: zombie--natural-weapons
   runtime:
     scope: 'YES'
@@ -2156,20 +2146,16 @@ rules:
         kind: profile
         id: profile.natural-attacks
   name: Natural Weapons
-  effect: >-
-    Zombies may not use weapons or armour and suffer no penalty for fighting without equipment.
   source:
     manual: chaos-in-the-streets
     printed_page: 180
     section: Zombies
   name_i18n:
     es: Armas Naturales
-  effect_i18n:
-    es: Los Zombis no pueden usar armas ni armaduras y no sufren penalización por luchar sin equipo.
   applies_to:
     profile_ids:
     - zombie
-
+  rule_ref: shared-rule.natural-weapons
 - id: ghoul--natural-weapons
   runtime:
     scope: 'YES'
@@ -2191,15 +2177,13 @@ rules:
         kind: profile
         id: profile.natural-attacks
   name: Natural Weapons
-  effect: Ghouls never use weapons or armour and suffer no penalty for fighting without equipment.
   source:
     manual: chaos-in-the-streets
     printed_page: 180
     section: Ghouls
   name_i18n:
     es: Armas Naturales
-  effect_i18n:
-    es: Los Ghouls nunca usan armas ni armaduras y no sufren penalización por luchar sin equipo.
   applies_to:
     profile_ids:
     - ghoul
+  rule_ref: shared-rule.natural-weapons

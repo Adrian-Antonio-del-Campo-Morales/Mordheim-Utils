@@ -13,9 +13,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any warrior within 6" of the Moot Elder may use his Leadership characteristic when taking
-    Leadership tests.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -23,23 +20,20 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/mootlanders
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier guerrero a 6" del Anciano del Moot puede usar su característica de Liderazgo al
-      realizar chequeos de Liderazgo.
   applies_to:
     profile_ids:
     - moot-elder
+  rule_ref: shared-rule.leader
 - id: master-chef--inspired-cooking
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.mootlanders.master-chef.inspired-cooking
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: out-of-scope.construction
+      reason: pending-implementation
   name: Inspired Cooking
   effect: >-
     Any Halfling models within 6" of a Halfling Master Chef may re-roll any failed hits in combat
@@ -67,7 +61,7 @@ rules:
     - id: unimplemented.mootlanders.halfling-thieves.sneaky
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: out-of-scope.shooting
   name: Sneaky
   effect: >-
     Halfling Thieves are always at -1 to hit when targeted by shooting. This modifier is cumulative

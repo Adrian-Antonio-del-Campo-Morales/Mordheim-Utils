@@ -10,11 +10,8 @@ rules:
     - id: unimplemented.savage-orcs-sar.band.da-mob-rules
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Base Rules (Da Mob)
-  effect: >-
-    The Savage Orcs use the exact same rules as the Da Mob Warband with the changes listed in this
-    document.
   source:
     manual: broheim.net
     printed_page: 5
@@ -22,12 +19,9 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
   name_i18n:
     es: Reglas Base (la Horda)
-  effect_i18n:
-    es: >-
-      Los Orcos Salvajes usan exactamente las mismas reglas que La Horda con los cambios listados en
-      este documento.
   applies_to:
     band: true
+  rule_ref: shared-rule.da-mob-base-rules
 - id: band--roster
   runtime:
     scope: 'NO'
@@ -37,7 +31,7 @@ rules:
     - id: unimplemented.savage-orcs-sar.band.roster
       scope: 'NO'
       binding: null
-      reason: out-of-scope.campaign
+      reason: out-of-scope.construction
   name: Roster (Da Mob Composition)
   effect: >-
     The Savage Orcs field the same warband composition as the Da Mob list: 1 Orc Boss, 0-1 Orc
@@ -64,14 +58,14 @@ rules:
     band: true
 - id: band--savage-orc-rules
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.savage-orcs-sar.band.savage-orc-rules
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: pending-classification
+      reason: pending-implementation
   name: Savage Orc Variation
   effect: >-
     The Savage Orcs use the exact same rules as the Da Mob Warband with the following changes.
@@ -119,7 +113,7 @@ rules:
     - id: unimplemented.savage-orcs-sar.band.wild-animosity
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.group
   name: Wild Animosity
   effect: >-
     Cave orcs are even more ill-disciplined than their more advanced cousins, and are almost
@@ -170,14 +164,14 @@ rules:
     band: true
 - id: band--savage-orc-special-skills
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.savage-orcs-sar.band.savage-orc-special-skills
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: pending-classification
+      reason: deferred.psychology
   name: Savage Orc Special Skills
   effect: >-
     Savage Orcs have access to the following extra special skills, in addition to their normal Orc
@@ -227,7 +221,7 @@ rules:
     - id: unimplemented.savage-orcs-sar.item.throwing-axe
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Throwing Axe
   effect: >-
     15 gold crowns, Rare 5. A smaller axe specially weighted for hurling from dangerous distances.

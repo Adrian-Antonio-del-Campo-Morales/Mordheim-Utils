@@ -10,7 +10,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.band.no-skin-no-service
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: No Skin, No Service
   effect: Ethereal models may not enter settlements unless otherwise specified.
   source:
@@ -26,14 +26,14 @@ rules:
     band: true
 - id: band--requilary
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.call-of-the-night-haint-mim.band.requilary
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
       clauses:
       - id: requilary
         scope: 'NO'
@@ -74,7 +74,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.band.ethereal
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: covered.elsewhere
   name: Ethereal
   effect: >-
     Spirits have a 4+ unmodifiable save against all attacks, taken after the To Hit roll. It may not
@@ -170,7 +170,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.cairn-wraith.may-not-run
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: May Not Run
   effect: The Cairn Wraith may not run.
   source:
@@ -224,7 +224,6 @@ rules:
         parameters:
           value: true
   name: Immune to Poison
-  effect: The Cairn Wraith is immune to poison.
   source:
     manual: broheim.net
     printed_page: 4
@@ -232,11 +231,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
   name_i18n:
     es: Inmune al Veneno
-  effect_i18n:
-    es: El Espectro de Cairn es inmune al veneno.
   applies_to:
     profile_ids:
     - cairn-wraith
+  rule_ref: shared-rule.immune-to-poison
 - id: cairn-wraith--no-pain
   runtime:
     scope: 'YES'
@@ -249,7 +247,6 @@ rules:
         kind: mechanic
         id: skill.ignore-pain
   name: No Pain
-  effect: The Cairn Wraith treats stunned results as knocked down.
   source:
     manual: broheim.net
     printed_page: 4
@@ -257,11 +254,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
   name_i18n:
     es: Sin Dolor
-  effect_i18n:
-    es: El Espectro de Cairn trata los resultados aturdido como derribado.
   applies_to:
     profile_ids:
     - cairn-wraith
+  rule_ref: shared-rule.no-pain
 - id: cairn-wraith--wizard
   runtime:
     scope: 'NO'
@@ -271,7 +267,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.cairn-wraith.wizard
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: out-of-scope.magic
   name: Wizard
   effect: >-
     The Cairn Wraith was a necromancer in life and starts with one spell from the Necromancy list.
@@ -299,7 +295,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.cairn-wraith.warrior-wizard
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: out-of-scope.magic
   name: Warrior Wizard
   effect: The Cairn Wraith is able to wear armour and cast spells without penalty.
   source:
@@ -323,7 +319,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.cairn-wraith.death-was-merely-the-beginning
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Death Was Merely the Beginning
   effect: >-
     Cairn Wraiths cannot die, as they are already dead. Any time the Cairn Wraith rolls 11-15 Dead
@@ -385,7 +381,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.corpse-master.gofer
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Gofer
   effect: >-
     As the only "Human" member of the warband, the Corpse Master may visit D3+1 places within
@@ -413,7 +409,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.corpse-master.guardian-of-the-requilary
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: Guardian of the Requilary
   effect: >-
     The Corpse Master takes his roll very seriously and will never voluntarily move more than 6
@@ -497,14 +493,14 @@ rules:
     - malignant-spirits
 - id: revenants--spectral-ascension
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.call-of-the-night-haint-mim.revenants.spectral-ascension
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.campaign
       clauses:
       - id: ethereal-on-promotion
         scope: 'NO'
@@ -597,7 +593,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.poltergeists.silent-move
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: Silent Move
   effect: Poltergeists always remain hidden unless they charge an enemy warrior.
   source:
@@ -621,7 +617,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.poltergeists.ignored
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.group
   name: Ignored
   effect: Poltergeists that are taken out of action do not count towards rout tests.
   source:
@@ -645,7 +641,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.mourngul.nightmare-birth
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.group
   name: Nightmare Birth
   effect: >-
     A huge amount of death is required to pull a Mourngul into the physical realm: it may only be
@@ -784,7 +780,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.tomb-banshee.may-not-run
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: May Not Run
   effect: The Tomb Banshee may not run.
   source:
@@ -861,7 +857,6 @@ rules:
         kind: mechanic
         id: skill.ignore-pain
   name: No Pain
-  effect: The Tomb Banshee treats stunned results as knocked down.
   source:
     manual: broheim.net
     printed_page: 4
@@ -869,11 +864,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
   name_i18n:
     es: Sin Dolor
-  effect_i18n:
-    es: La Banshee de Tumba trata los resultados aturdido como derribado.
   applies_to:
     profile_ids:
     - tomb-banshee
+  rule_ref: shared-rule.no-pain
 - id: malignant-spirits--ethereal
   runtime:
     scope: 'YES'
@@ -938,7 +932,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.malignant-spirits.may-not-run
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: May Not Run
   effect: Malignant Spirits may not run.
   source:
@@ -1015,7 +1009,6 @@ rules:
         kind: mechanic
         id: skill.ignore-pain
   name: No Pain
-  effect: Malignant Spirits treat stunned results as knocked down.
   source:
     manual: broheim.net
     printed_page: 4
@@ -1023,11 +1016,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
   name_i18n:
     es: Sin Dolor
-  effect_i18n:
-    es: Los Espíritus Malignos tratan los resultados aturdido como derribado.
   applies_to:
     profile_ids:
     - malignant-spirits
+  rule_ref: shared-rule.no-pain
 - id: revenants--causes-fear
   runtime:
     scope: 'YES'
@@ -1062,7 +1054,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.revenants.may-not-run
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: May Not Run
   effect: Revenants may not run.
   source:
@@ -1189,7 +1181,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.spirit-hosts.large
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: out-of-scope.shooting
   name: Large
   effect: Spirit Hosts are Large Targets as defined in the shooting rules.
   source:
@@ -1238,7 +1230,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.spirit-hosts.may-not-run
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: May Not Run
   effect: Spirit Hosts may not run.
   source:
@@ -1315,7 +1307,6 @@ rules:
         kind: mechanic
         id: skill.ignore-pain
   name: No Pain
-  effect: Spirit Hosts treat stunned results as knocked down.
   source:
     manual: broheim.net
     printed_page: 5
@@ -1323,11 +1314,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
   name_i18n:
     es: Sin Dolor
-  effect_i18n:
-    es: Las Huestes de Espíritus tratan los resultados aturdido como derribado.
   applies_to:
     profile_ids:
     - spirit-hosts
+  rule_ref: shared-rule.no-pain
 - id: spirit-hosts--no-brain
   runtime:
     scope: 'NO'
@@ -1337,7 +1327,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.spirit-hosts.no-brain
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: out-of-scope.campaign
   name: No Brain
   effect: Spirit Hosts never gain experience.
   source:
@@ -1416,7 +1406,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.poltergeists.may-not-run
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: May Not Run
   effect: Poltergeists may not run.
   source:
@@ -1513,7 +1503,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.poltergeists.no-brain
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: out-of-scope.campaign
   name: No Brain
   effect: Poltergeists never gain experience.
   source:
@@ -1567,7 +1557,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.mourngul.large
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: out-of-scope.shooting
   name: Large
   source:
     manual: broheim.net
@@ -1614,7 +1604,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.mourngul.may-not-run
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: May Not Run
   effect: The Mourngul may not run.
   source:
@@ -1691,7 +1681,6 @@ rules:
         kind: mechanic
         id: skill.ignore-pain
   name: No Pain
-  effect: The Mourngul treats stunned results as knocked down.
   source:
     manual: broheim.net
     printed_page: 5
@@ -1699,11 +1688,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
   name_i18n:
     es: Sin Dolor
-  effect_i18n:
-    es: El Mourngul trata los resultados aturdido como derribado.
   applies_to:
     profile_ids:
     - mourngul
+  rule_ref: shared-rule.no-pain
 - id: mourngul--no-brain
   runtime:
     scope: 'NO'
@@ -1713,9 +1701,8 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.mourngul.no-brain
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: out-of-scope.campaign
   name: No Brain
-  effect: The Mourngul never gains experience.
   source:
     manual: broheim.net
     printed_page: 5
@@ -1723,19 +1710,18 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
   name_i18n:
     es: Sin Cerebro
-  effect_i18n:
-    es: El Mourngul nunca gana experiencia.
   applies_to:
     profile_ids:
     - mourngul
+  rule_ref: shared-rule.no-brain
 - id: band--characteristic-increase
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.call-of-the-night-haint-mim.band.characteristic-increase
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:
@@ -1763,14 +1749,14 @@ rules:
     band: true
 - id: tomb-banshee--siren-song
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.call-of-the-night-haint-mim.tomb-banshee.siren-song
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: out-of-scope.non-duel
+      reason: deferred.psychology
   name: Siren Song
   effect: >-
     The terrifying howl of the Banshee takes on a sweet harmonic value in the ears of some men, in
@@ -1806,7 +1792,7 @@ rules:
     - id: unimplemented.call-of-the-night-haint-mim.corpse-master.conduit-of-death
       scope: 'NO'
       binding: null
-      reason: pending-implementation
+      reason: out-of-scope.magic
   name: Conduit of Death
   effect: >-
     Part of the Corpse Master's Duties is feeding the Requilary and releasing the stored energies of

@@ -3,14 +3,14 @@ band_id: halflings-mic
 rules:
 - id: band--pretty-much-human
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.halflings-mic.band.pretty-much-human
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: out-of-scope.campaign
+      reason: out-of-scope.construction
       clauses:
       - id: whole
         scope: 'NO'
@@ -79,14 +79,14 @@ rules:
     - halfling-warriors
 - id: band--halfling-items
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.halflings-mic.band.halfling-items
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.construction
       clauses:
       - id: knowledge-item-bonus-exemption
         scope: 'NO'
@@ -132,14 +132,14 @@ rules:
   rule_ref: shared-rule.leader
 - id: halfling-cook--master-chef
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.halflings-mic.halfling-cook.master-chef
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.campaign
       clauses:
       - id: whole
         scope: 'NO'
@@ -179,7 +179,7 @@ rules:
     - id: unimplemented.halflings-mic.halfling-thief.infiltrator
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: Infiltrator
   effect: >-
     He may always be placed on the battlefield after enemy warband(s), and can be placed anywheres
@@ -210,7 +210,7 @@ rules:
     - id: unimplemented.halflings-mic.halfling-thief.pick-locks
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: Pick Locks
   effect: >-
     When testing to open a locked door, a Halfling Thief needs only make a successful Initiative
@@ -231,14 +231,14 @@ rules:
     - halfling-thief
 - id: halfling-thief--cutpurse
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.halflings-mic.halfling-thief.cutpurse
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.campaign
       clauses:
       - id: whole
         scope: 'NO'
@@ -264,19 +264,18 @@ rules:
     - halfling-thief
 - id: piggies--animals
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.halflings-mic.piggies.animals
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:
       - id: whole
         scope: 'NO'
   name: Animals
-  effect: Piggies are animals and never gain experience.
   source:
     manual: mordheim-index-catalog
     printed_page: 0
@@ -284,11 +283,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings
   name_i18n:
     es: Animales
-  effect_i18n:
-    es: Los cerditos son animales y nunca ganan experiencia.
   applies_to:
     profile_ids:
     - piggies
+  rule_ref: shared-rule.animal
 - id: village-ogre--fear
   runtime:
     scope: 'YES'
@@ -323,11 +321,8 @@ rules:
     - id: unimplemented.halflings-mic.village-ogre.large
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.shooting
   name: Large
-  effect: >-
-    Ogre-kin are huge, lumbering creatures and therefor make tempting targets for archers. Any
-    target may shoot at an Ogre, even if he is not the closest model.
   source:
     manual: mordheim-index-catalog
     printed_page: 0
@@ -335,14 +330,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings
   name_i18n:
     es: Grande
-  effect_i18n:
-    es: >-
-      Los parientes de los ogros son criaturas enormes y torpes que por tanto constituyen objetivos
-      tentadores para los arqueros. Cualquiera puede disparar a un Ogro, aunque no sea el modelo más
-      cercano.
   applies_to:
     profile_ids:
     - village-ogre
+  rule_ref: shared-rule.kroxigor-large
 - id: village-ogre--skills
   runtime:
     scope: 'YES'
@@ -376,12 +367,12 @@ rules:
     - village-ogre
 - id: village-ogre--slow-witted
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.halflings-mic.village-ogre.slow-witted
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:
@@ -405,14 +396,14 @@ rules:
     - village-ogre
 - id: village-ogre--protective
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.halflings-mic.village-ogre.protective
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: out-of-scope.campaign
+      reason: out-of-scope.construction
       clauses:
       - id: whole
         scope: 'NO'
@@ -447,7 +438,7 @@ rules:
     - id: unimplemented.halflings-mic.special.quiet-as-a-mouse
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: Quiet as a Mouse
   effect: >-
     The halfling as adept at staying as quiet as a mouse whilst hiding. Enemy warriors must use half
@@ -551,7 +542,7 @@ rules:
     - id: unimplemented.halflings-mic.special.stealthy
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: Stealthy (Halfling Thieves Only)
   effect: >-
     The Halfling Thief can hide even after running, and can run while within 8" of enemy models if
@@ -579,7 +570,7 @@ rules:
     - id: unimplemented.halflings-mic.special.skilled-huntsman
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.shooting
   name: Skilled Huntsman
   effect: >-
     The halfling has been hunting things ever since he was young (the more food he has, the better!)

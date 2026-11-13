@@ -3,7 +3,6 @@ band_id: skaven-clan-pestilens
 rules:
 - id: plague-priest--leader
   name: Leader
-  effect: Any warrior within 6" of the Plague Priest may use his Leadership instead of its own.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -11,10 +10,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/skaven-pestilens
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier guerrero a 6" del Sacerdote de la Peste puede usar su Liderazgo en lugar del suyo
-      propio.
   applies_to:
     profile_ids:
     - plague-priest
@@ -28,6 +23,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: pestilens-sorcerer--spellcaster
   name: Spellcaster
   effect: >-
@@ -55,7 +51,7 @@ rules:
     - id: unimplemented.skaven-clan-pestilens.pestilens-sorcerer.spellcaster
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.magic
 - id: giant-rats--animal
   name: Animal
   source:
@@ -76,7 +72,7 @@ rules:
     - id: unimplemented.skaven-clan-pestilens.giant-rats.animal
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
   rule_ref: shared-rule.animal
 - id: rat-ogre--fear
   name: Fear
@@ -148,7 +144,7 @@ rules:
     - id: unimplemented.skaven-clan-pestilens.rat-ogre.experience
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
   rule_ref: shared-rule.never-gain-experience
 - id: rat-ogre--large-target
   name: Large Target
@@ -202,10 +198,6 @@ rules:
 - id: band--clan-pestilens-special-skills-black-hunger
   kind: warband_skill
   name: Black Hunger
-  effect: >-
-    At the beginning of his turn, the Hero may invoke Black Hunger. For that turn he gains +1 Attack
-    and +D3" to his total Movement, then suffers D3 Strength 3 hits with no armour save at the end
-    of the turn.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -213,11 +205,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/skaven-pestilens
   name_i18n:
     es: Hambre Negra
-  effect_i18n:
-    es: >-
-      Al comienzo de su turno, el Héroe puede invocar el Hambre negra. Durante ese turno gana +1
-      Ataque y +D3" a su Movimiento total, y luego sufre D3 impactos de Fuerza 3 sin salvación por
-      armadura al final del turno.
   eligibility:
   - plague-priest
   - pestilens-sorcerer
@@ -240,6 +227,7 @@ rules:
         scope: 'YES'
       - id: movement
         scope: 'NO'
+  rule_ref: shared-rule.black-hunger
 - id: band--clan-pestilens-special-skills-censer-bearer
   kind: warband_skill
   name: Censer Bearer
@@ -363,8 +351,6 @@ rules:
 - id: band--clan-pestilens-special-skills-ignore-pain
   kind: warband_skill
   name: Ignore Pain
-  effect: >-
-    Requires the Resilient Strength skill. The Hero treats Stunned injury results as Knocked Down.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -372,10 +358,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/skaven-pestilens
   name_i18n:
     es: Ignorar el Dolor
-  effect_i18n:
-    es: >-
-      Requiere la habilidad Fuerza Resistente. El Héroe trata los resultados de herida de Aturdido
-      como Derribado.
   eligibility:
   - plague-priest
   - pestilens-sorcerer
@@ -398,3 +380,4 @@ rules:
         scope: 'YES'
       - id: requires-resilient
         scope: 'YES'
+  rule_ref: shared-rule.ignore-pain

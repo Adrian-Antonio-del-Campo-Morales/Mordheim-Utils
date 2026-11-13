@@ -3,19 +3,12 @@ band_id: chaos-streets-sons-of-nagarythe
 rules:
 - id: shadow-master--leader
   name: Leader
-  effect: >-
-    Any warband model within 6" of the Shadow Master may use his Leadership when taking Leadership
-    tests.
   source:
     manual: chaos-in-the-streets
     printed_page: 140
     section: Heroes / 1 Shadow Master / Special Rules / Leader
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier modelo de la banda a 6" del Maestro de las Sombras puede usar su Liderazgo cuando
-      realice chequeos de Liderazgo.
   applies_to:
     profile_ids:
     - shadow-master
@@ -29,6 +22,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: shadow-weaver--wizard
   name: Wizard
   effect: >-
@@ -55,7 +49,7 @@ rules:
     - id: unimplemented.chaos-streets-sons-of-nagarythe.shadow-weaver.wizard
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.magic
 - id: band--hate-dark-elves
   name: Hate Dark Elves
   effect: >-
@@ -104,7 +98,7 @@ rules:
     - id: unimplemented.chaos-streets-sons-of-nagarythe.band.excellent-sight
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.movement
 - id: band--honourable
   name: Honourable
   effect: Warriors in the warband may not use poisons or drugs of any kind.
@@ -134,19 +128,12 @@ rules:
           - drug
 - id: band--unforgiving
   name: Unforgiving
-  effect: >-
-    In multiplayer games, the warband may never form an alliance with a Chaotic warband, including
-    Possessed, Skaven, Beastmen and Dark Elves.
   source:
     manual: chaos-in-the-streets
     printed_page: 137
     section: Special Rules / Unforgiving
   name_i18n:
     es: Implacables
-  effect_i18n:
-    es: >-
-      En partidas multijugador, la banda jamás puede formar una alianza con una banda Caótica,
-      incluidos Poseídos, Skaven, Beastmen y Elfos Oscuros.
   applies_to:
     band: true
   runtime:
@@ -157,7 +144,8 @@ rules:
     - id: unimplemented.chaos-streets-sons-of-nagarythe.band.unforgiving
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.non-duel
+  rule_ref: shared-rule.unforgiving
 - id: band--tolerant
   name: Tolerant
   effect: >-
@@ -217,7 +205,7 @@ rules:
     - id: unimplemented.chaos-streets-sons-of-nagarythe.band.shadow-warrior-special-skills-see-in-shadows
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.movement
 - id: band--shadow-warrior-special-skills-master-of-runes
   kind: warband_skill
   name: Master of Runes
@@ -248,14 +236,14 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: selectable
     effects:
     - id: unimplemented.chaos-streets-sons-of-nagarythe.band.shadow-warrior-special-skills-master-of-runes
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: out-of-scope.construction
+      reason: deferred.other
 - id: band--shadow-warrior-special-skills-elven-agility
   kind: warband_skill
   runtime:
@@ -350,7 +338,7 @@ rules:
     - id: unimplemented.chaos-streets-sons-of-nagarythe.band.shadow-warrior-special-skills-infiltration
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.movement
   rule_ref: shared-rule.infiltration
 - id: band--shadow-warrior-special-skills-sniper
   kind: warband_skill
@@ -409,7 +397,7 @@ rules:
     - id: unimplemented.chaos-streets-sons-of-nagarythe.band.shadow-warrior-special-skills-hide-in-shadows
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.movement
 - id: shadow-weaver--no-armoured-casting
   name: No Armour Casting
   source:

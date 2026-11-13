@@ -104,10 +104,11 @@ rules:
         id: profile.skill-access
         parameters:
           category: special
+          skills:
+          - skill.berserker
+          - skill.ferocious-charge
+          - skill.monster-slayer
   name: Slayer Skills
-  effect: >-
-    Troll Slayers may choose a skill from the Troll Slayer Skill table instead of the normal Skill
-    tables when they gain a new skill.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -115,13 +116,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
   name_i18n:
     es: Habilidades de Matatrolles
-  effect_i18n:
-    es: >-
-      Los Matatrolles pueden elegir una habilidad de la tabla de Habilidades de Matatrolles en lugar
-      de las tablas de Habilidades normales cuando ganan una nueva habilidad.
   applies_to:
     profile_ids:
     - dwarf-troll-slayers
+  rule_ref: shared-rule.slayer-skills
 - id: band--hard-to-kill
   runtime:
     scope: 'YES'
@@ -177,7 +175,7 @@ rules:
     - id: unimplemented.dwarf-treasure-hunters.band.armour
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.movement
   name: Armour
   source:
     manual: mordheimer.net
@@ -220,7 +218,7 @@ rules:
     - id: unimplemented.dwarf-treasure-hunters.band.grudgebearers
       scope: 'NO'
       binding: null
-      reason: out-of-scope.campaign
+      reason: out-of-scope.construction
   name: Grudgebearers
   source:
     manual: mordheimer.net
@@ -305,7 +303,7 @@ rules:
     - id: unimplemented.dwarf-treasure-hunters.band.dwarf-special-skills-extra-tough
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.campaign
   name: Extra Tough
   source:
     manual: mordheimer.net
@@ -398,9 +396,6 @@ rules:
         kind: mechanic
         id: skill.ferocious-charge
   name: Ferocious Charge
-  effect: >-
-    The Slayer may double his attacks on the turn in which he charges, but suffers a -1 to hit
-    penalty that turn.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -408,14 +403,11 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
   name_i18n:
     es: Carga Feroz
-  effect_i18n:
-    es: >-
-      El Matatrolles puede doblar sus ataques en el turno en que carga, pero sufre una penalización
-      de -1 para impactar ese turno.
   eligibility:
   - dwarf-troll-slayers
   applies_to:
     band: true
+  rule_ref: shared-rule.ferocious-charge
 - id: band--slayer-special-skills-monster-slayer
   eligibility:
   - dwarf-troll-slayers
@@ -462,7 +454,6 @@ rules:
         kind: mechanic
         id: skill.berserker
   name: Berserker
-  effect: The Slayer adds +1 to his close combat to-hit rolls during the turn in which he charges.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -470,12 +461,9 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
   name_i18n:
     es: Berserker
-  effect_i18n:
-    es: >-
-      El Matatrolles añade +1 a sus tiradas para impactar en combate cuerpo a cuerpo durante el
-      turno en que carga.
   applies_to:
     band: true
+  rule_ref: shared-rule.berserker
 - id: dwarf-troll-slayers--no-armour
   name: No Armour
   source:
@@ -499,7 +487,8 @@ rules:
         kind: profile
         id: profile.equipment-restrictions
         parameters:
-          forbids: armour
+          forbids:
+          - armour
   rule_ref: shared-rule.no-armour
 - id: dwarf-troll-slayers--no-missile-weapons
   name: No Missile Weapons

@@ -75,8 +75,10 @@ points and documents owned by a specific artefact live beside them:
   the checkout root.
 - `contracts/*/README.md` — `tests/knowledge/test_editorial_schemas.py`
   requires each contract README next to its schemas.
-- `tests/conformance/README.md` — the rules-conformance suite's own contract and
+- [`tests/conformance/README.md`](../tests/conformance/README.md) — the rules-conformance suite's own contract and
   procedure notes, owned with the corpus it describes.
+- [`tests/engines/parity/README.md`](../tests/engines/parity/README.md) — the engine parity charter:
+  parity deliveries, delivery sample stores and campaigns.
 - [`docs/archive/`](archive/README.md) — retired working documents kept for
   reference (the former clause register CSVs and the completed review
   worklists); nothing reads them.

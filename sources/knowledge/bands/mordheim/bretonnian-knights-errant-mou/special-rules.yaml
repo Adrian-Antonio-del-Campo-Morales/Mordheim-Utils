@@ -3,14 +3,14 @@ band_id: bretonnian-knights-errant-mou
 rules:
 - id: knights-errant--brettonian-leader
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.bretonnian-knights-errant-mou.knights-errant.brettonian-leader
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.construction
       clauses:
       - id: whole
         scope: 'NO'
@@ -47,14 +47,14 @@ rules:
     - knights-errant
 - id: knights-errant--knights-virtue
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.bretonnian-knights-errant-mou.knights-errant.knights-virtue
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: deferred.other
+      reason: deferred.psychology
   name: Knights Virtue
   source:
     manual: broheim.net
@@ -150,7 +150,7 @@ rules:
     - id: unimplemented.bretonnian-knights-errant-mou.band.hired-swords
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Hired Swords
   effect: >-
     The Knights Errant warband may not recruit evil Hired Swords or those who practice magic or use

@@ -240,14 +240,14 @@ rules:
     - imperial-noble
 - id: imperial-noble--family-heirloom
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.adventurers-kaz.imperial-noble.family-heirloom
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: out-of-scope.campaign
+      reason: deferred.psychology
   name: Family Heirloom
   effect: >-
     The Family Heirloom is a special sword or pistol that has been in the family for a long time.
@@ -535,7 +535,7 @@ rules:
     - id: unimplemented.adventurers-kaz.band.hired-swords
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Hired Swords
   effect: >-
     The warband has access to the following Hired Swords: Dwarf Trollslayer, Freelancer (no horse),

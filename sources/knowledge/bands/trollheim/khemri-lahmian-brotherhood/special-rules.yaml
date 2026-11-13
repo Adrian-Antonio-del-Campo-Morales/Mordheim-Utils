@@ -3,18 +3,12 @@ band_id: khemri-lahmian-brotherhood
 rules:
 - id: lahmian-vampire--leader
   name: Leader
-  effect: >-
-    Any warband model within 6" of the Lahmian Vampire may use her Leadership instead of its own.
   source:
     manual: khemri
     printed_page: 86
     section: Heroes / 1 Lahmian Vampire / Leader
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier modelo de la banda a 6" del Vampiro Lahmiano puede usar su Liderazgo en lugar del
-      suyo propio.
   applies_to:
     profile_ids:
     - lahmian-vampire
@@ -28,6 +22,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: lahmian-vampire--undead
   name: Undead
   effect: >-
@@ -84,7 +79,7 @@ rules:
     - id: unimplemented.khemri-lahmian-brotherhood.lahmian-vampire.local-knowledge
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
 - id: necromancer--wizard
   name: Wizard
   source:
@@ -104,29 +99,22 @@ rules:
     - id: unimplemented.khemri-lahmian-brotherhood.necromancer.wizard
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
-  rule_ref: shared-rule.wizard
+      reason: out-of-scope.magic
+  effect: >-
+    The Necromancer is a Wizard and begins with one Necromancy spell. The spell list and spell effects
+    are intentionally not modelled in this file.
+  effect_i18n:
+    es: >-
+      El Nigromante es un Hechicero y comienza con un hechizo de Nigromancia. La lista de hechizos y sus
+      efectos no se modelan intencionadamente en este archivo.
 - id: beloved--devoted-to-the-vampire
   name: Devoted to the Vampire
-  effect: >-
-    If the Lahmian Vampire is Knocked Down in close combat, the Beloved enters Frenzy until the
-    Vampire stands up. He must move toward her as quickly as possible and attacks anyone within 2"
-    of the Vampire. If the Vampire is killed in close combat, the Beloved enters Frenzy and is
-    subject to Hatred against her killer until that model dies; after the killer dies, the Beloved
-    returns to normal.
   source:
     manual: khemri
     printed_page: 86
     section: Heroes / 0-1 Beloved / Devoted to the Vampire
   name_i18n:
     es: Devotos del Vampiro
-  effect_i18n:
-    es: >-
-      Si el Vampiro Lahmiano es Derribado en combate cuerpo a cuerpo, el Amado entra en Frenesí
-      hasta que el Vampiro se levante. Debe moverse hacia ella lo más rápido posible y ataca a
-      cualquiera que esté a 2" del Vampiro. Si el Vampiro muere en combate cuerpo a cuerpo, el Amado
-      entra en Frenesí y está sujeto a Odio contra quien lo mató hasta que ese modelo muera; tras la
-      muerte del asesino, el Amado vuelve a la normalidad.
   applies_to:
     profile_ids:
     - beloved
@@ -147,17 +135,15 @@ rules:
         scope: 'NO'
       - id: devoted-frenzy--scope--hatred-against-killer
         scope: 'YES'
+  rule_ref: shared-rule.devoted-to-the-vampire
 - id: beloved--accustomed-to-fear
   name: Accustomed to Fear
-  effect: The Beloved is immune to Fear caused by Vampires, Skeletons and Spirits.
   source:
     manual: khemri
     printed_page: 86
     section: Heroes / 0-1 Beloved / Accustomed to Fear
   name_i18n:
     es: Acostumbrado al Miedo
-  effect_i18n:
-    es: El Amado es inmune al Miedo causado por Vampiros, Esqueletos y Espíritus.
   applies_to:
     profile_ids:
     - beloved
@@ -171,17 +157,15 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.accustomed-to-fear
+  rule_ref: shared-rule.accustomed-to-fear
 - id: blood-sister--accustomed-to-fear
   name: Accustomed to Fear
-  effect: The Blood Sister is immune to Fear caused by Vampires, Skeletons and Spirits.
   source:
     manual: khemri
     printed_page: 87
     section: Heroes / 0-1 Blood Sister / Accustomed to Fear
   name_i18n:
     es: Acostumbrado al Miedo
-  effect_i18n:
-    es: La Hermana de sangre es inmune al Miedo causado por Vampiros, Esqueletos y Espíritus.
   applies_to:
     profile_ids:
     - blood-sister
@@ -195,6 +179,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.accustomed-to-fear
+  rule_ref: shared-rule.accustomed-to-fear
 - id: blood-sister--semi-vampire
   name: Semi-Vampire
   effect: >-
@@ -225,18 +210,15 @@ rules:
     - id: unimplemented.khemri-lahmian-brotherhood.blood-sister.semi-vampire
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
 - id: lackeys--accustomed-to-fear
   name: Accustomed to Fear
-  effect: Lackeys are immune to Fear caused by Vampires, Skeletons and Spirits.
   source:
     manual: khemri
     printed_page: 87
     section: Heroes / 0-2 Lackeys / Accustomed to Fear
   name_i18n:
     es: Acostumbrado al Miedo
-  effect_i18n:
-    es: Los Lacayos son inmunes al Miedo causado por Vampiros, Esqueletos y Espíritus.
   applies_to:
     profile_ids:
     - lackeys
@@ -250,27 +232,15 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.accustomed-to-fear
+  rule_ref: shared-rule.accustomed-to-fear
 - id: lackeys--devoted-to-the-vampire
   name: Devoted to the Vampire
-  effect: >-
-    If the Lahmian Vampire is Knocked Down in close combat, the Lackey enters Frenzy until the
-    Vampire stands up. He must move toward her as quickly as possible and attacks anyone within 2"
-    of the Vampire. If the Vampire is killed in close combat, the Lackey enters Frenzy and is
-    subject to Hatred against her killer until that model dies; after the killer dies, the Lackey
-    returns to normal.
   source:
     manual: khemri
     printed_page: 87
     section: Heroes / 0-2 Lackeys / Devoted to the Vampire
   name_i18n:
     es: Devotos del Vampiro
-  effect_i18n:
-    es: >-
-      Si el Vampiro Lahmiano es Derribado en combate cuerpo a cuerpo, el Lacayo entra en Frenesí
-      hasta que el Vampiro se levante. Debe moverse hacia ella lo más rápido posible y ataca a
-      cualquiera que esté a 2" del Vampiro. Si el Vampiro muere en combate cuerpo a cuerpo, el
-      Lacayo entra en Frenesí y está sujeto a Odio contra quien lo mató hasta que ese modelo muera;
-      tras la muerte del asesino, el Lacayo vuelve a la normalidad.
   applies_to:
     profile_ids:
     - lackeys
@@ -291,6 +261,7 @@ rules:
         scope: 'NO'
       - id: devoted-frenzy--scope--hatred-against-killer
         scope: 'YES'
+  rule_ref: shared-rule.devoted-to-the-vampire
 - id: lackeys--favoured
   name: Favoured
   effect: >-
@@ -312,14 +283,14 @@ rules:
     profile_ids:
     - lackeys
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.khemri-lahmian-brotherhood.lackeys.favoured
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.campaign
       clauses:
       - id: favoured
         scope: 'NO'
@@ -347,15 +318,12 @@ rules:
   rule_ref: shared-rule.undead
 - id: blood-slaves--accustomed-to-fear
   name: Accustomed to Fear
-  effect: Blood Slaves are immune to Fear caused by Vampires, Skeletons and Spirits.
   source:
     manual: khemri
     printed_page: 88
     section: Henchmen / 0-5 Blood Slaves / Accustomed to Fear
   name_i18n:
     es: Acostumbrado al Miedo
-  effect_i18n:
-    es: Los Esclavos de sangre son inmunes al Miedo causado por Vampiros, Esqueletos y Espíritus.
   applies_to:
     profile_ids:
     - blood-slaves
@@ -369,6 +337,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.accustomed-to-fear
+  rule_ref: shared-rule.accustomed-to-fear
 - id: black-hounds--fear
   name: Fear
   effect: Black Hounds cause Fear.
@@ -395,15 +364,12 @@ rules:
         id: mechanic.causes-fear
 - id: black-hounds--animal
   name: Animal
-  effect: Black Hounds are animals and never gain Experience.
   source:
     manual: khemri
     printed_page: 88
     section: Henchmen / 0-5 Black Hounds / Animal
   name_i18n:
     es: Animal
-  effect_i18n:
-    es: Los Sabuesos negros son animales y nunca ganan Experiencia.
   applies_to:
     profile_ids:
     - black-hounds
@@ -415,20 +381,16 @@ rules:
     - id: unimplemented.khemri-lahmian-brotherhood.black-hounds.animal
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
+  rule_ref: shared-rule.animal
 - id: spirits--undead
   name: Undead
-  effect: Spirits are Undead and are subject to the warband's Undead special rules.
   source:
     manual: khemri
     printed_page: 89
     section: Henchmen / 0-5 Spirits / Undead
   name_i18n:
     es: No Muerto
-  effect_i18n:
-    es: >-
-      Los Espíritus son No muertos y están sujetos a las reglas especiales de No muertos de la
-      banda.
   applies_to:
     profile_ids:
     - spirits
@@ -442,6 +404,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.undead
+  rule_ref: shared-rule.undead
 - id: spirits--spiritual-weapons
   runtime:
     scope: 'YES'
@@ -495,18 +458,15 @@ rules:
     - id: unimplemented.khemri-lahmian-brotherhood.jackals.pack
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.group
 - id: jackals--animal
   name: Animal
-  effect: Jackals are animals and never gain Experience.
   source:
     manual: khemri
     printed_page: 89
     section: Henchmen / Jackals / Animal
   name_i18n:
     es: Animal
-  effect_i18n:
-    es: Los Chacales son animales y nunca ganan Experiencia.
   applies_to:
     profile_ids:
     - jackals
@@ -518,7 +478,8 @@ rules:
     - id: unimplemented.khemri-lahmian-brotherhood.jackals.animal
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.campaign
+  rule_ref: shared-rule.animal
 - id: band--background-selection
   name: Foreign or Native Background
   effect: >-
@@ -647,8 +608,14 @@ rules:
     - id: unimplemented.khemri-lahmian-brotherhood.band.may-not-run
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
-  rule_ref: shared-rule.may-not-run-undead
+      reason: out-of-scope.movement
+  effect: >-
+    Skeleton Warriors and Spirits may not run, but may charge normally. Lahmian Vampires are explicitly
+    exempt and may run normally.
+  effect_i18n:
+    es: >-
+      Los Guerreros esqueleto y los Espíritus no pueden correr, pero pueden cargar con normalidad. Los
+      Vampiros Lahmianos están eximidos explícitamente y pueden correr con normalidad.
 - id: band--immune-to-poison
   runtime:
     scope: 'YES'
@@ -704,7 +671,7 @@ rules:
     - id: unimplemented.khemri-lahmian-brotherhood.band.brainless
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.campaign
 - id: band--no-food-or-water
   name: No Food or Water
   effect: >-
@@ -734,7 +701,7 @@ rules:
     - id: unimplemented.khemri-lahmian-brotherhood.band.no-food-or-water
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.campaign
 - id: band--death-of-the-vampire
   name: Death of the Vampire
   effect: >-
@@ -767,7 +734,7 @@ rules:
     - id: unimplemented.khemri-lahmian-brotherhood.band.death-of-the-vampire
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.campaign
 - id: band--lahmian-special-skills-celerity
   kind: warband_skill
   name: Celerity
@@ -798,7 +765,7 @@ rules:
     - id: unimplemented.khemri-lahmian-brotherhood.band.lahmian-special-skills-celerity
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.movement
 - id: band--lahmian-special-skills-hypnotize
   kind: warband_skill
   name: Hypnotize
@@ -968,7 +935,7 @@ rules:
     - id: unimplemented.khemri-lahmian-brotherhood.band.lahmian-special-skills-creature-of-the-night
       scope: 'NO'
       binding: null
-      reason: out-of-scope.magic
+      reason: out-of-scope.movement
 
 - id: blood-slaves--equipment-restrictions
   runtime:
@@ -1129,22 +1096,16 @@ rules:
         kind: profile
         id: profile.natural-attacks
   name: Natural Weapons
-  effect: >-
-    Black Hounds never use weapons or armour and suffer no penalty for fighting without equipment.
   source:
     manual: khemri
     printed_page: 88
     section: 0-5 Black Hounds
   name_i18n:
     es: Armas Naturales
-  effect_i18n:
-    es: >-
-      Los Sabuesos Negros nunca usan armas ni armaduras y no sufren penalización por luchar sin
-      equipo.
   applies_to:
     profile_ids:
     - black-hounds
-
+  rule_ref: shared-rule.natural-weapons
 - id: jackals--natural-weapons
   runtime:
     scope: 'YES'
@@ -1166,15 +1127,13 @@ rules:
         kind: profile
         id: profile.natural-attacks
   name: Natural Weapons
-  effect: Jackals never use weapons or armour and suffer no penalty for fighting without equipment.
   source:
     manual: khemri
     printed_page: 89
     section: Jackals
   name_i18n:
     es: Armas Naturales
-  effect_i18n:
-    es: Los Chacales nunca usan armas ni armaduras y no sufren penalización por luchar sin equipo.
   applies_to:
     profile_ids:
     - jackals
+  rule_ref: shared-rule.natural-weapons

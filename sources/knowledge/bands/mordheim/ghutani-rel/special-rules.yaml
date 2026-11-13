@@ -3,14 +3,14 @@ band_id: ghutani-rel
 rules:
 - id: band--bitter-enmity
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.ghutani-rel.band.bitter-enmity
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.campaign
       clauses:
       - id: injury-chart-substitution
         scope: 'NO'
@@ -71,7 +71,7 @@ rules:
     - id: unimplemented.ghutani-rel.band.ghutani-scholar-fields
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Scholar Fields of Study
   effect: Ghutani scholar fields of study may only be poetry or theology.
   source:
@@ -87,23 +87,18 @@ rules:
     band: true
 - id: band--slaves-can-lead
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.ghutani-rel.band.slaves-can-lead
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.construction
       clauses:
       - id: whole
         scope: 'NO'
   name: Slaves May Become Warband Leader
-  effect: >-
-    The honour code of the Arabian tribes demands that they treat slaves fairly. It is a regular
-    occurrence for slaves, or the sons of slaves, to gain high positions in Araby, especially if
-    they can prove themselves on the battlefield. Therefore, it is possible for a slave in an
-    Arabian warband to become a warband leader.
   source:
     manual: broheim.net
     printed_page: 2
@@ -111,14 +106,9 @@ rules:
     url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
   name_i18n:
     es: Los Esclavos Pueden Llegar a Líderes de Banda
-  effect_i18n:
-    es: >-
-      El código de honor de las tribus arábigas exige que traten a los esclavos con justicia. Es
-      habitual que los esclavos, o los hijos de esclavos, alcancen posiciones elevadas en Araby,
-      sobre todo si demuestran su valía en el campo de batalla. Por tanto, es posible que un esclavo
-      de una banda árabe se convierta en el líder de la banda.
   applies_to:
     band: true
+  rule_ref: shared-rule.slaves-can-lead
 - id: emir--leader
   runtime:
     scope: 'YES'
@@ -156,6 +146,11 @@ rules:
       binding:
         kind: mechanic
         id: condition.poetry-victorious-leader
+    - id: condition.poetry-inspired
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.poetry-inspired
     - id: scholar--field-of-scholarship.cartography-and-physiology
       scope: 'NO'
       binding: null

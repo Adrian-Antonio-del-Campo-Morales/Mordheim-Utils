@@ -66,9 +66,8 @@ CASES = [
      "refused": [], "allowed": ["blunderbuss"]},
     {"band": "snotlings-web", "profile": "bullied-goblin",
      "refused": ["elf_bow"], "allowed": ["weapon.dagger"]},
-    # Strigoi Skeletons: no missile weapons.
-    {"band": "strigoi-kaz", "profile": "skeletons",
-     "refused": ["crossbow"], "allowed": ["weapon.sword"]},
+    # Strigoi Skeletons bind the shared compiler.no-missile-weapons contract since
+    # 2026-11-13; the contract tests cover that refusal.
     # Slayers: no armour, no constant-save cloak, no thrown-else missiles;
     # the printed Lucky Charm exception is not forbidden.
     {"band": "dwarf-slayer-cult-web", "profile": "giant-slayer",

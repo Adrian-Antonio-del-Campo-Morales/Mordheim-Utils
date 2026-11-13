@@ -3,14 +3,14 @@ band_id: channel-rats-mim
 rules:
 - id: band--water-caravan
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.channel-rats-mim.band.water-caravan
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.construction
       clauses:
       - id: whole
         scope: 'NO'
@@ -36,12 +36,12 @@ rules:
     band: true
 - id: band--lucky-white-heather
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.channel-rats-mim.band.lucky-white-heather
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:
@@ -77,12 +77,12 @@ rules:
     band: true
 - id: band--shadowy-traditions
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.channel-rats-mim.band.shadowy-traditions
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:
@@ -137,12 +137,12 @@ rules:
     band: true
 - id: petru--wizard
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.channel-rats-mim.petru.wizard
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.magic
       clauses:
@@ -173,7 +173,7 @@ rules:
     - id: unimplemented.channel-rats-mim.band.charms-and-hexes
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.magic
   name: Charms & Hexes
   effect: >-
     Charms and Hexes are the magic of witchcraft. They involve copious amounts of spell ingredients
@@ -220,12 +220,12 @@ rules:
     band: true
 - id: petru--necromancy
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.channel-rats-mim.petru.necromancy
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.magic
       clauses:
@@ -251,12 +251,32 @@ rules:
     - petru
 - id: petru--potions
   runtime:
-    scope: LATER
-    implemented: 'NO'
-    grant: profile
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
     effects:
+    - id: condition.petru-debilitating
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.petru-debilitating
+    - id: condition.petru-strength
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.petru-strength
+    - id: condition.petru-resilience
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.petru-resilience
+    - id: condition.petru-fortitude
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.petru-fortitude
     - id: unimplemented.channel-rats-mim.petru.potions
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
   name: Potions
@@ -302,9 +322,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any warrior within 6" of the Domnu may use his Leadership value instead of his own when taking
-    Leadership tests.
   source:
     manual: broheim.net
     printed_page: 179
@@ -312,13 +329,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Channel Rats.pdf
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier guerrero a 6" del Domnu puede usar su valor de Liderazgo en lugar del propio cuando
-      realice chequeos de Liderazgo.
   applies_to:
     profile_ids:
     - domnu
+  rule_ref: shared-rule.leader
 - id: domnu--prize-fighter
   runtime:
     scope: 'YES'
@@ -331,9 +345,6 @@ rules:
         kind: mechanic
         id: skill.unarmed-fighting
   name: Prize-Fighter
-  effect: >-
-    The Caravan Master suffers no penalties whatsoever for fighting unarmed and receives +1 Attack
-    when doing so.
   source:
     manual: broheim.net
     printed_page: 179
@@ -341,13 +352,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Channel Rats.pdf
   name_i18n:
     es: Luchador
-  effect_i18n:
-    es: >-
-      El Maestro de Caravana no sufre ninguna penalización por pelear desarmado y recibe +1 Ataque
-      al hacerlo.
   applies_to:
     profile_ids:
     - domnu
+  rule_ref: shared-rule.prize-fighter
 - id: domnu--bear-hug
   runtime:
     scope: 'YES'
@@ -399,12 +407,12 @@ rules:
     - domnu
 - id: tinker--grifter
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.channel-rats-mim.tinker.grifter
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:
@@ -437,7 +445,7 @@ rules:
     - id: unimplemented.channel-rats-mim.tinker.rigger
       scope: 'NO'
       binding: null
-      reason: out-of-scope.campaign
+      reason: out-of-scope.non-duel
   name: Rigger
   effect: >-
     The Tinker is skilled in fixing minor damage to watercraft. If the boat or barge is stationary
@@ -471,7 +479,7 @@ rules:
     - id: unimplemented.channel-rats-mim.truant.spry
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: Spry
   effect: >-
     A Truant is used to climbing in and out of portholes, as well as running along rooftops with
@@ -499,7 +507,7 @@ rules:
     - id: unimplemented.channel-rats-mim.truant.taunt
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.shooting
   name: Taunt
   effect: >-
     During the Shooting phase, the Truant may choose to taunt one enemy instead of shooting with a
@@ -533,7 +541,7 @@ rules:
     - id: unimplemented.channel-rats-mim.dead-eye.dead-eye-shot
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.shooting
   name: Dead Eye Shot
   effect: >-
     The Dead-Eye has the eyes of an eagle and can hit the smallest target. He ignores to hit
@@ -561,7 +569,7 @@ rules:
     - id: unimplemented.channel-rats-mim.dead-eye.target-practice
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.shooting
   name: Target Practice
   effect: >-
     The warrior can fire a single missile attack when being charged. Models that stand and shoot
@@ -582,14 +590,14 @@ rules:
     - dead-eyes
 - id: dead-eyes--weapons-expert
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.channel-rats-mim.dead-eye.weapons-expert
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: out-of-scope.campaign
+      reason: out-of-scope.construction
       clauses:
       - id: weapons-expert-reference
         scope: 'NO'
@@ -775,14 +783,22 @@ rules:
 - id: band--strigany-special-skills-songster
   kind: warband_skill
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.channel-rats-mim.strigany.songster
-      scope: 'NO'
-      binding: null
-      reason: out-of-scope.group
+    - id: mechanic.songster
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.songster
+      clauses:
+      - id: songster
+        scope: 'YES'
+      - id: songster-group-emission
+        scope: 'NO'
+      - id: songster-rout
+        scope: 'NO'
   name: Songster
   effect: >-
     Any friendly model within 6" of the Hero may re-roll any failed Leadership test with a +1 to
@@ -809,22 +825,16 @@ rules:
 - id: band--strigany-special-skills-prize-fighter
   kind: warband_skill
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.channel-rats-mim.strigany.prize-fighter
-      scope: LATER
-      binding: null
-      reason: deferred.other
+    - id: skill.unarmed-fighting
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.unarmed-fighting
   name: Prize-Fighter
-  effect: >-
-    The Hero suffers no penalties whatsoever for fighting unarmed and receives +1 Attack when
-    doing so.
-
-  effect_i18n:
-    es: >-
-      El Héroe no sufre penalización alguna por luchar desarmado y recibe +1 Ataque cuando lo hace.
   source:
     manual: broheim.net
     printed_page: 181
@@ -839,6 +849,7 @@ rules:
   - truants
   applies_to:
     band: true
+  rule_ref: shared-rule.prize-fighter
 - id: band--strigany-special-skills-animal-charmer
   kind: warband_skill
   runtime:
@@ -849,7 +860,7 @@ rules:
     - id: unimplemented.channel-rats-mim.strigany.animal-charmer
       scope: 'NO'
       binding: null
-      reason: out-of-scope.movement
+      reason: out-of-scope.group
   name: Animal Charmer
   effect: >-
     The Hero can control up to five animals using Strigany charms provided that they remain

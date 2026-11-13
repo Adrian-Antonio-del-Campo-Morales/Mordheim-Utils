@@ -10,11 +10,8 @@ rules:
     - id: unimplemented.orc-pirates-sar.band.da-mob-rules
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Base Rules (Da Mob)
-  effect: >-
-    The Orc Pirates use the exact same rules as the Da Mob Warband with the changes listed in this
-    document.
   source:
     manual: broheim.net
     printed_page: 2
@@ -22,12 +19,9 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
   name_i18n:
     es: Reglas Base (la Horda)
-  effect_i18n:
-    es: >-
-      Los Piratas Orcos usan exactamente las mismas reglas que la banda de La Horda con los cambios
-      listados en este documento.
   applies_to:
     band: true
+  rule_ref: shared-rule.da-mob-base-rules
 - id: band--pressganging-orc
   runtime:
     scope: 'NO'
@@ -37,7 +31,7 @@ rules:
     - id: unimplemented.orc-pirates-sar.band.pressganging-orc
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Pressganging (Orc Pirates)
   effect: >-
     The Orc may attempt to pressgang enemies they capture following the normal rules for
@@ -69,7 +63,7 @@ rules:
     - id: unimplemented.orc-pirates-sar.item.booma-pistol
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Booma Pistol
   effect: >-
     Cost 20 gc (40 gc for a brace), Common, Greenskins Only. Maximum Range: Special; Strength: 5;
@@ -131,7 +125,7 @@ rules:
     - id: unimplemented.orc-pirates-sar.goblin-enjuneer.glass-ceiling
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Glass Ceiling
   effect: While the goblin is respected enough to be a hero, he can never be warband Leader.
   source:
@@ -157,7 +151,7 @@ rules:
     - id: unimplemented.orc-pirates-sar.goblin-enjuneer.booma-tweaker
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.shooting
   name: Booma Tweaker
   effect: >-
     During any game that includes your Enjuneer, you may improve Booma Pistol shots. Any time you
@@ -188,7 +182,7 @@ rules:
     - id: unimplemented.orc-pirates-sar.goblin-enjuneer.mad-bomba
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Mad Bomba
   effect: >-
     If the Enjuneer uses his Rarity roll in the Postgame phase to look for a Firebomb, he treats it
@@ -217,7 +211,7 @@ rules:
     - id: unimplemented.orc-pirates-sar.goblin-swabbies.under-der-thumb
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.group
   name: Under Der Thumb
   effect: >-
     Unlike most Goblins, the Swabbies DON'T suffer Animosity - they are far too oppressed to do
@@ -245,7 +239,7 @@ rules:
     - id: unimplemented.orc-pirates-sar.goblin-swabbies.spendible
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.shooting
   name: Spendible
   effect: >-
     The Orcs don't consider the Swabbies as equals, and have no problem shooting into a combat that
@@ -273,7 +267,7 @@ rules:
     - id: unimplemented.orc-pirates-sar.goblin-swabbies.never-gain-experience
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Never Gain Experience (Goblin Swabbies)
   source:
     manual: broheim.net
@@ -288,14 +282,15 @@ rules:
   rule_ref: shared-rule.crew-never-gain-experience
 - id: goblin-swabbies--rabble
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.orc-pirates-sar.goblin-swabbies.rabble
-      scope: 'NO'
-      binding: null
-      reason: pending-classification
+    - id: compiler.swabbie-rabble-loadout
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.swabbie-rabble-loadout
   name: Rabble (Goblin Swabbies)
   source:
     manual: broheim.net
@@ -317,7 +312,7 @@ rules:
     - id: unimplemented.orc-pirates-sar.goblin-swabbies.blimey-they-got-away
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.group
   name: Blimey, They Got Away! (Goblin Swabbies)
   source:
     manual: broheim.net
@@ -339,7 +334,7 @@ rules:
     - id: unimplemented.orc-pirates-sar.goblin-swabbies.dont-mind-them-mates
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.group
   name: Don't Mind Them Mates, They Ain't True Pirates! (Goblin Swabbies)
   source:
     manual: broheim.net
@@ -361,7 +356,7 @@ rules:
     - id: unimplemented.orc-pirates-sar.sea-squigs.stats-like-da-mob
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Sea Squigs (Base Profile)
   effect: >-
     Sea Squigs use the Cave Squig profile from the Da Mob warband. While not drastically different
@@ -390,7 +385,7 @@ rules:
     - id: unimplemented.orc-pirates-sar.sea-squigs.movement
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.movement
   name: Sea Squig Movement
   effect: >-
     They move 2D6-1" each turn on land. However, when in water, they are able to swim 2D6" each
@@ -420,7 +415,7 @@ rules:
     - id: unimplemented.orc-pirates-sar.sea-squigs.cats-of-nine-tails
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.movement
   name: Sea Squigs and Cats of Nine Tails
   effect: >-
     On a Pirate Ship, Cats of Nine Tails are far more common than prodders - Sea Squigs will not go
@@ -449,7 +444,7 @@ rules:
     - id: unimplemented.orc-pirates-sar.sea-troll.aquatic
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.movement
   name: Aquatic (Sea Troll)
   effect: The Sea Troll does not suffer penalty for moving through water. It counts as 'Aquatic'.
   source:
@@ -507,7 +502,7 @@ rules:
     - id: unimplemented.orc-pirates-sar.sea-troll.loses-vomit
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Sea Troll (Base Rules)
   effect: >-
     Orc Pirates often find it easiest to pick up a Sea Troll or a River Troll over a Troll of the

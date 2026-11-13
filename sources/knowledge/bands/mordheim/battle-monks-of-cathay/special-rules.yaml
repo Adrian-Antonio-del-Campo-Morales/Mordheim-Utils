@@ -13,7 +13,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: Any warrior within 6“ of the Emissary may use his Leadership when taking Ld tests.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -21,11 +20,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: Cualquier guerrero a 6" del Emisario puede usar su Liderazgo cuando realice chequeos de Ld.
   applies_to:
     profile_ids:
     - emissary
+  rule_ref: shared-rule.leader
 - id: emissary--ride-horse
   runtime:
     scope: LATER
@@ -55,14 +53,14 @@ rules:
     - emissary
 - id: emissary--decree
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.battle-monks-of-cathay.emissary.decree
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.campaign
       clauses:
       - id: decree
         scope: 'NO'
@@ -249,21 +247,18 @@ rules:
     - raging-peasants
 - id: raging-peasants--ignored
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.battle-monks-of-cathay.raging-peasants.ignored
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.group
       clauses:
       - id: whole
         scope: 'NO'
   name: Ignored
-  effect: >-
-    Peasants that are out of action do not count toward the number of out-of-action models for the
-    purpose of Rout tests.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -271,13 +266,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
   name_i18n:
     es: Ignorado
-  effect_i18n:
-    es: >-
-      Los campesinos que estén Fuera de combate no cuentan para el número de modelos Fuera de
-      combate a efectos de chequeos de huida.
   applies_to:
     profile_ids:
     - raging-peasants
+  rule_ref: shared-rule.ignored-for-rout
 - id: raging-peasants--downtrodden
   runtime:
     scope: 'YES'
@@ -598,14 +590,14 @@ rules:
 - id: band--battle-monks-special-skills-warmonger
   kind: warband_skill
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: selectable
     effects:
     - id: unimplemented.battle-monks-of-cathay.band.battle-monks-special-skills-warmonger
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.campaign
       clauses:
       - id: warmonger
         scope: 'NO'

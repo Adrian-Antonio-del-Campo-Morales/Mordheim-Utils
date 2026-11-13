@@ -3,19 +3,12 @@ band_id: chaos-streets-deathbringers
 rules:
 - id: shadow-blade--leader
   name: Leader
-  effect: >-
-    Any warband model within 6" of the Shadow Blade may use his Leadership when taking Leadership
-    tests.
   source:
     manual: chaos-in-the-streets
     printed_page: 162
     section: Heroes / 1 Shadow Blade / Leader
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier modelo de la banda a 6" de la Hoja de Sombra puede usar su Liderazgo cuando realice
-      chequeos de Liderazgo.
   applies_to:
     profile_ids:
     - shadow-blade
@@ -29,6 +22,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: shadow-blade--consummate-fighter
   name: Consummate Fighter
   effect: >-
@@ -112,7 +106,7 @@ rules:
     - id: unimplemented.chaos-streets-deathbringers.shadow-blade.fade-into-shadows
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.group
 - id: silent-hunter--infiltration
   name: Infiltration
   source:
@@ -132,7 +126,7 @@ rules:
     - id: unimplemented.chaos-streets-deathbringers.silent-hunter.infiltration
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.movement
   rule_ref: shared-rule.infiltration
 - id: silent-hunter--loner
   name: Loner
@@ -241,7 +235,7 @@ rules:
     - id: unimplemented.chaos-streets-deathbringers.band.look-behind-you
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.movement
 - id: band--no-noise
   name: No Noise!
   effect: No member of the warband may use blackpowder weapons.
@@ -297,7 +291,7 @@ rules:
     - id: unimplemented.chaos-streets-deathbringers.band.leader-death
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.campaign
 - id: band--deathbringer-special-skills-hit-and-fade
   kind: warband_skill
   name: Hit and Fade
@@ -334,7 +328,7 @@ rules:
     - id: unimplemented.chaos-streets-deathbringers.band.deathbringer-special-skills-hit-and-fade
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.movement
 - id: band--deathbringer-special-skills-death-blow
   kind: warband_skill
   name: Death Blow
@@ -406,7 +400,7 @@ rules:
     - id: unimplemented.chaos-streets-deathbringers.band.deathbringer-special-skills-poison-master
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
 - id: band--deathbringer-special-skills-defensive-stance
   kind: warband_skill
   runtime:
@@ -515,7 +509,7 @@ rules:
     - id: unimplemented.chaos-streets-deathbringers.band.deathbringer-special-skills-feign-death
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.movement
 - id: band--deathbringer-special-skills-infiltration
   kind: warband_skill
   name: Infiltration
@@ -540,5 +534,5 @@ rules:
     - id: unimplemented.chaos-streets-deathbringers.band.deathbringer-special-skills-infiltration
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.movement
   rule_ref: shared-rule.infiltration

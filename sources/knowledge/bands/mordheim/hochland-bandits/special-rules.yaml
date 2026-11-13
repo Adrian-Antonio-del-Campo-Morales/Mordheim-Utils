@@ -13,9 +13,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any warrior within 6" of the Bandit Prince may use his Leadership characteristic when taking any
-    Leadership tests.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -23,13 +20,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier guerrero a 6" del Príncipe Bandido puede usar su característica de Liderazgo cuando
-      realice cualquier chequeo de Liderazgo.
   applies_to:
     profile_ids:
     - bandit-prince
+  rule_ref: shared-rule.leader
 - id: footpads--concealment
   runtime:
     scope: 'NO'
@@ -515,10 +509,6 @@ rules:
       binding: null
       reason: out-of-scope.movement
   name: Hide in Shadows
-  effect: >-
-    The Bandit has become an expert at concealing himself from his enemies (and potential victims!).
-    An enemy warrior attempting to detect this warrior when he is Hidden must halve his Initiative
-    (round up) before measuring the distance.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -526,13 +516,9 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
   name_i18n:
     es: Ocultarse en las Sombras
-  effect_i18n:
-    es: >-
-      El Bandido se ha convertido en un experto ocultándose de sus enemigos (¡y de sus potenciales
-      víctimas!). Un guerrero enemigo que intente detectar a este guerrero cuando esté Oculto debe
-      dividir a la mitad su Iniciativa (redondeando hacia arriba) antes de medir la distancia.
   applies_to:
     band: true
+  rule_ref: shared-rule.hide-in-shadows
 - id: band--bandit-special-skills-jump-back
   kind: warband_skill
   runtime:
@@ -583,7 +569,7 @@ rules:
     - id: unimplemented.hochland-bandits.band.bandit-special-skills-sniper
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.shooting
   name: Sniper
   effect: >-
     The bandit is an expert at shooting his victims from the comfort of cover. When Hiding, the

@@ -3,14 +3,14 @@ band_id: slavers-rel
 rules:
 - id: band--extra-treasure
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.slavers-rel.band.extra-treasure
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.campaign
       clauses:
       - id: whole
         scope: 'NO'
@@ -35,14 +35,14 @@ rules:
     band: true
 - id: band--slaves-talent-advance
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.slavers-rel.band.slaves-talent-advance
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.campaign
       clauses:
       - id: slaves-talent-advance
         scope: 'NO'
@@ -89,7 +89,7 @@ rules:
     - id: unimplemented.slavers-rel.band.hiring-restrictions
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Hiring Restrictions (Slaves)
   effect: >-
     It is not a mistake that a slaver warband may have up to 20 warriors, yet the restrictions on
@@ -120,7 +120,7 @@ rules:
     - id: unimplemented.slavers-rel.band.slaver-special-equipment
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Slaver Special Equipment
   effect: >-
     This equipment is only available to Slavers, and no other warbands may purchase it. Trapper's
@@ -170,7 +170,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: Any warrior within 6" of the Slave Merchant may use his Leadership instead of his own.
   source:
     manual: broheim.net
     printed_page: 11
@@ -178,12 +177,10 @@ rules:
     url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier guerrero a 6" del Mercader de Esclavos puede usar su Liderazgo en lugar del propio.
   applies_to:
     profile_ids:
     - slave-merchant
+  rule_ref: shared-rule.leader
 - id: overseer--slave-driver
   runtime:
     scope: 'YES'
@@ -260,7 +257,6 @@ rules:
         kind: mechanic
         id: mechanic.causes-fear
   name: Fear
-  effect: Ogres are large, threatening creatures that cause fear.
   source:
     manual: broheim.net
     printed_page: 11
@@ -268,11 +264,10 @@ rules:
     url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
   name_i18n:
     es: Miedo
-  effect_i18n:
-    es: Los ogros son criaturas grandes y amenazantes que causan miedo.
   applies_to:
     profile_ids:
     - ogre-bodyguard
+  rule_ref: shared-rule.fear
 - id: ogre-bodyguard--large
   runtime:
     scope: 'NO'
@@ -282,11 +277,8 @@ rules:
     - id: unimplemented.slavers-rel.ogre-bodyguard.large
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.shooting
   name: Large
-  effect: >-
-    Ogres are huge, lumbering creatures and therefore make tempting targets for archers. Any model
-    may shoot at an Ogre, even if it is not the closest target.
   source:
     manual: broheim.net
     printed_page: 11
@@ -294,23 +286,20 @@ rules:
     url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
   name_i18n:
     es: Grande
-  effect_i18n:
-    es: >-
-      Los ogros son criaturas enormes y torpes que por tanto constituyen blancos tentadores para los
-      arqueros. Cualquier modelo puede disparar a un Ogro, aunque no sea el objetivo más cercano.
   applies_to:
     profile_ids:
     - ogre-bodyguard
+  rule_ref: shared-rule.kroxigor-large
 - id: ogre-bodyguard--slow-witted
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.slavers-rel.ogre-bodyguard.slow-witted
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.campaign
       clauses:
       - id: whole
         scope: 'NO'
@@ -341,9 +330,8 @@ rules:
     - id: unimplemented.slavers-rel.hounds.experience
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Experience
-  effect: Hounds are animals and do not gain experience.
   source:
     manual: broheim.net
     printed_page: 11
@@ -351,11 +339,10 @@ rules:
     url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
   name_i18n:
     es: Experiencia
-  effect_i18n:
-    es: Los sabuesos son animales y no ganan experiencia.
   applies_to:
     profile_ids:
     - hounds
+  rule_ref: shared-rule.animal
 - id: hounds--keen-scent
   runtime:
     scope: 'NO'

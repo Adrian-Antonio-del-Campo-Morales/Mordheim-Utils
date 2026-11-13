@@ -3,18 +3,12 @@ band_id: trollheim-cult-of-the-possessed
 rules:
 - id: magister--leader
   name: Leader
-  effect: >-
-    Any warband model within 6" of the Magister may use his Leadership when taking Leadership tests.
   source:
     manual: trollheim
     printed_page: 74
     section: Heroes / 1 Magister / Leader
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier modelo de la banda a 6" del Magister puede usar su Liderazgo al realizar chequeos de
-      Liderazgo.
   applies_to:
     profile_ids:
     - magister
@@ -28,6 +22,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: magister--spellcaster
   name: Spellcaster
   effect: >-

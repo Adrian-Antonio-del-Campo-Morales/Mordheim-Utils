@@ -3,18 +3,12 @@ band_id: chaos-streets-pit-fighters
 rules:
 - id: pit-king--leader
   name: Leader
-  effect: >-
-    Any warband model within 6" of the Pit King may use his Leadership when taking Leadership tests.
   source:
     manual: chaos-in-the-streets
     printed_page: 122
     section: Heroes / 1 Pit King / Special Rules / Leader
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier modelo de la banda a 6" del Rey del Foso puede usar su Liderazgo cuando realice
-      chequeos de Liderazgo.
   applies_to:
     profile_ids:
     - pit-king
@@ -28,6 +22,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: pit-king--pit-fighter
   name: Pit Fighter
   source:
@@ -40,14 +35,14 @@ rules:
     profile_ids:
     - pit-king
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.chaos-streets-pit-fighters.pit-king.pit-fighter
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: out-of-scope.shooting
+      reason: pending-implementation
   rule_ref: shared-rule.pit-fighter
 - id: dwarf-troll-slayer--pit-fighter
   name: Pit Fighter
@@ -61,14 +56,14 @@ rules:
     profile_ids:
     - dwarf-troll-slayer
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.chaos-streets-pit-fighters.dwarf-troll-slayer.pit-fighter
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: out-of-scope.shooting
+      reason: pending-implementation
   rule_ref: shared-rule.pit-fighter
 - id: dwarf-troll-slayer--hard-to-kill
   kind: profile_ability
@@ -241,14 +236,14 @@ rules:
     profile_ids:
     - pit-veterans
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.chaos-streets-pit-fighters.pit-veterans.pit-fighter
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: out-of-scope.shooting
+      reason: pending-implementation
   rule_ref: shared-rule.pit-fighter
 - id: pit-fighters--pit-fighter
   name: Pit Fighter
@@ -262,14 +257,14 @@ rules:
     profile_ids:
     - pit-fighters
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.chaos-streets-pit-fighters.pit-fighters.pit-fighter
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: out-of-scope.shooting
+      reason: pending-implementation
   rule_ref: shared-rule.pit-fighter
 - id: pursuers--pit-fighter
   name: Pit Fighter
@@ -283,14 +278,14 @@ rules:
     profile_ids:
     - pursuers
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.chaos-streets-pit-fighters.pursuers.pit-fighter
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: out-of-scope.shooting
+      reason: pending-implementation
   rule_ref: shared-rule.pit-fighter
 - id: pursuers--evade
   name: Evade
@@ -311,7 +306,7 @@ rules:
     - id: unimplemented.chaos-streets-pit-fighters.pursuers.evade
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.movement
   rule_ref: shared-rule.evade
 - id: ogre-pit-fighter--pit-fighter
   name: Pit Fighter
@@ -325,14 +320,14 @@ rules:
     profile_ids:
     - ogre-pit-fighter
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.chaos-streets-pit-fighters.ogre-pit-fighter.pit-fighter
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: out-of-scope.shooting
+      reason: pending-implementation
   rule_ref: shared-rule.pit-fighter
 - id: ogre-pit-fighter--fear
   name: Fear
@@ -438,7 +433,7 @@ rules:
     - id: unimplemented.chaos-streets-pit-fighters.ogre-pit-fighter.slow-witted
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
 - id: band--pit-fighter-skill
   name: Pit Fighter
   effect: >-
@@ -457,14 +452,14 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.chaos-streets-pit-fighters.band.pit-fighter-skill
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: out-of-scope.shooting
+      reason: pending-implementation
 - id: band--fighting-styles
   name: Weapons & Armour — Fighting Styles
   effect: >-
@@ -584,7 +579,7 @@ rules:
     - id: unimplemented.chaos-streets-pit-fighters.band.in-the-pit
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.campaign
 - id: band--pit-fighter-skill-bulging-biceps
   kind: warband_skill
   runtime:
@@ -598,25 +593,19 @@ rules:
         kind: mechanic
         id: skill.mighty-biceps
   name: Bulging Biceps
-  effect: >-
-    The Hero ignores the penalty from the Heavy weapon special rule; the weapon's Strength bonus
-    applies in every round of close combat.
   source:
     manual: chaos-in-the-streets
     printed_page: 121
     section: Pit Fighter Special Skills / Bulging Biceps
   name_i18n:
     es: Bíceps Desbordantes
-  effect_i18n:
-    es: >-
-      El Héroe ignora la penalización de la regla especial de Arma Pesada; el bonificador de Fuerza
-      del arma se aplica en cada asalto de combate cuerpo a cuerpo.
   eligibility:
   - pit-king
   - pit-veterans
   - dwarf-troll-slayer
   applies_to:
     band: true
+  rule_ref: shared-rule.pit-fighter-bulging-biceps
 - id: band--pit-fighter-skill-force-of-will
   kind: warband_skill
   name: Force of Will
@@ -656,19 +645,12 @@ rules:
 - id: band--pit-fighter-skill-arms-master
   kind: warband_skill
   name: Arms Master
-  effect: >-
-    The Hero ignores all Difficult to Use weapon restrictions and may combine weapons that would
-    normally be prohibited.
   source:
     manual: chaos-in-the-streets
     printed_page: 121
     section: Pit Fighter Special Skills / Arms Master
   name_i18n:
     es: Maestro de Armas
-  effect_i18n:
-    es: >-
-      El Héroe ignora todas las restricciones de armas Difíciles de Usar y puede combinar armas que
-      normalmente estarían prohibidas.
   eligibility:
   - pit-king
   - pit-veterans
@@ -685,24 +667,16 @@ rules:
       binding:
         kind: compiler
         id: compiler.ignore-difficult-to-use-restrictions
+  rule_ref: shared-rule.pit-fighter-arms-master
 - id: band--pit-fighter-skill-body-slam
   kind: warband_skill
   name: Body Slam
-  effect: >-
-    Instead of making normal charge attacks, the Hero may make a single Body Slam attack at +1
-    Strength and +1 To Hit, with no weapon or skill modifiers. The attack scores a critical hit on
-    5+.
   source:
     manual: chaos-in-the-streets
     printed_page: 121
     section: Pit Fighter Special Skills / Body Slam
   name_i18n:
     es: Planchazo
-  effect_i18n:
-    es: >-
-      En lugar de realizar ataques de carga normales, el Héroe puede realizar un único ataque de
-      Planchazo a +1 Fuerza y +1 para impactar, sin modificadores de armas ni habilidades. El ataque
-      causa un impacto crítico con un 5+.
   eligibility:
   - pit-king
   - pit-veterans
@@ -719,6 +693,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.body-slam
+  rule_ref: shared-rule.pit-fighter-body-slam
 - id: band--pit-fighter-skill-grizzled-veteran
   kind: warband_skill
   name: Grizzled Veteran
@@ -760,23 +735,17 @@ rules:
         kind: mechanic
         id: skill.monster-slayer
   name: Monster Slayer
-  effect: >-
-    The Slayer wounds any opponent on 4+ regardless of Toughness, unless his modified Strength would
-    normally wound on a lower result.
   source:
     manual: chaos-in-the-streets
     printed_page: 121
     section: Troll Slayer Special Skills / Monster Slayer
   name_i18n:
     es: Matamostro
-  effect_i18n:
-    es: >-
-      El Matatrolles hiere a cualquier oponente con un 4+ independientemente de su Resistencia, salvo
-      que su Fuerza modificada hierna normalmente con un resultado menor.
   eligibility:
   - dwarf-troll-slayer
   applies_to:
     band: true
+  rule_ref: shared-rule.monster-slayer-trollheim
 - id: band--troll-slayer-special-skills-ferocious-charge
   kind: warband_skill
   runtime:
@@ -790,23 +759,17 @@ rules:
         kind: mechanic
         id: skill.ferocious-charge
   name: Ferocious Charge
-  effect: >-
-    The Slayer may double his Attacks during the turn he charges, but suffers -1 To Hit during that
-    turn.
   source:
     manual: chaos-in-the-streets
     printed_page: 121
     section: Troll Slayer Special Skills / Ferocious Charge
   name_i18n:
     es: Carga Feroz
-  effect_i18n:
-    es: >-
-      El Matatrolles puede doblar sus Ataques durante el asalto en el que carga, pero sufre -1 para
-      impactar durante ese asalto.
   eligibility:
   - dwarf-troll-slayer
   applies_to:
     band: true
+  rule_ref: shared-rule.ferocious-charge
 - id: band--troll-slayer-special-skills-berserker
   kind: warband_skill
   runtime:
@@ -820,19 +783,17 @@ rules:
         kind: mechanic
         id: skill.berserker
   name: Berserker
-  effect: The Slayer gains +1 To Hit during the turn he charges.
   source:
     manual: chaos-in-the-streets
     printed_page: 121
     section: Troll Slayer Special Skills / Berserker
   name_i18n:
     es: Berserker
-  effect_i18n:
-    es: El Matatrolles gana +1 para impactar durante el asalto en el que carga.
   eligibility:
   - dwarf-troll-slayer
   applies_to:
     band: true
+  rule_ref: shared-rule.slayer-berserker
 - id: dwarf-troll-slayer--no-armour
   name: No Armour
   source:
@@ -855,7 +816,8 @@ rules:
         kind: profile
         id: profile.equipment-restrictions
         parameters:
-          forbids: armour
+          forbids:
+          - armour
   rule_ref: shared-rule.no-armour
 - id: dwarf-troll-slayer--no-missile-weapons
   name: No Missile Weapons

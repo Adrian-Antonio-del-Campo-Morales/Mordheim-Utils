@@ -3,16 +3,12 @@ band_id: khemri-hobgoblin-raiders
 rules:
 - id: khann--leader
   name: Leader
-  effect: Any warband model within 6" of the Khann may use his Leadership instead of its own.
   source:
     manual: khemri
     printed_page: 80
     section: Heroes / 1 Khann / Leader
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier modelo de la banda a 6" del Khann puede usar su Liderazgo en lugar del suyo propio.
   applies_to:
     profile_ids:
     - khann
@@ -26,6 +22,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: hobgoblin-shaman--wizard
   name: Wizard
   effect: >-
@@ -53,22 +50,15 @@ rules:
     - id: unimplemented.khemri-hobgoblin-raiders.hobgoblin-shaman.wizard
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.magic
 - id: sneaky--unpredictable
   name: Unpredictable
-  effect: >-
-    The Sneaky may declare one of its attacks Unpredictable; that attack cannot be parried by the
-    opponent.
   source:
     manual: khemri
     printed_page: 80
     section: Heroes / 0-1 Sneaky / Unpredictable
   name_i18n:
     es: Impredecible
-  effect_i18n:
-    es: >-
-      El Furtivo puede declarar uno de sus ataques Impredecible; ese ataque no puede ser emparañado
-      por el oponente.
   applies_to:
     profile_ids:
     - sneaky
@@ -82,47 +72,39 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.unpredictable-attack
+  rule_ref: shared-rule.unpredictable-attack
 - id: archers--moving-shot
   name: Moving Shot
-  effect: >-
-    An Archer ignores the normal shooting penalty for moving. This rule may also be used while the
-    Archer is mounted on a Giant Wolf.
   source:
     manual: khemri
     printed_page: 81
     section: Henchmen / 0-5 Archers / Moving Shot
   name_i18n:
     es: Disparo en Movimiento
-  effect_i18n:
-    es: >-
-      Un Arquero ignora la penalización normal de disparo por moverse. Esta regla también puede
-      usarse mientras el Arquero esté montado en un Lobo Gigante.
   applies_to:
     profile_ids:
     - archers
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.khemri-hobgoblin-raiders.archers.moving-shot
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.shooting
       clauses:
       - id: whole
         scope: 'NO'
+  rule_ref: shared-rule.hobgoblin-moving-shot
 - id: giant-wolves--animal
   name: Animal
-  effect: Giant Wolves are animals and never gain Experience.
   source:
     manual: khemri
     printed_page: 81
     section: Henchmen / 0-5 Giant Wolves / Animal
   name_i18n:
     es: Animal
-  effect_i18n:
-    es: Los Lobos Gigantes son animales y nunca ganan Experiencia.
   applies_to:
     profile_ids:
     - giant-wolves
@@ -134,7 +116,8 @@ rules:
     - id: unimplemented.khemri-hobgoblin-raiders.giant-wolves.animal
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
+  rule_ref: shared-rule.animal
 - id: giant-wolves--mount
   name: Mount
   effect: >-
@@ -167,7 +150,7 @@ rules:
     - id: unimplemented.khemri-hobgoblin-raiders.giant-wolves.mount
       scope: LATER
       binding: null
-      reason: deferred.psychology
+      reason: deferred.mounts
       clauses:
       - id: mount
         scope: 'NO'
@@ -203,14 +186,14 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.khemri-hobgoblin-raiders.band.traitors
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.group
       clauses:
       - id: whole
         scope: 'NO'
@@ -235,26 +218,19 @@ rules:
     - id: unimplemented.khemri-hobgoblin-raiders.band.wolf-riders
       scope: LATER
       binding: null
-      reason: deferred.psychology
+      reason: deferred.mounts
       clauses:
       - id: whole
         scope: 'NO'
 - id: band--hobgoblin-special-skills-moving-shot
   kind: warband_skill
   name: Moving Shot
-  effect: >-
-    The Hero ignores the normal shooting penalty for moving. This skill may also be used while the
-    Hero is mounted on a Giant Wolf.
   source:
     manual: khemri
     printed_page: 79
     section: Hobgoblin Special Skills / Moving Shot
   name_i18n:
     es: Disparo en Movimiento
-  effect_i18n:
-    es: >-
-      El Héroe ignora la penalización normal de disparo por moverse. Esta habilidad también puede
-      usarse mientras el Héroe esté montado en un Lobo Gigante.
   eligibility:
   - khann
   - hobgoblin-shaman
@@ -263,17 +239,18 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: selectable
     effects:
     - id: unimplemented.khemri-hobgoblin-raiders.band.hobgoblin-special-skills-moving-shot
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.shooting
       clauses:
       - id: whole
         scope: 'NO'
+  rule_ref: shared-rule.hobgoblin-moving-shot
 - id: band--hobgoblin-special-skills-disguised
   kind: warband_skill
   name: Disguised
@@ -305,23 +282,16 @@ rules:
     - id: unimplemented.khemri-hobgoblin-raiders.band.hobgoblin-special-skills-disguised
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.movement
 - id: band--hobgoblin-special-skills-unpredictable
   kind: warband_skill
   name: Unpredictable
-  effect: >-
-    The Hero may declare one of its attacks Unpredictable; that attack cannot be parried by the
-    opponent.
   source:
     manual: khemri
     printed_page: 79
     section: Hobgoblin Special Skills / Unpredictable
   name_i18n:
     es: Impredecible
-  effect_i18n:
-    es: >-
-      El Héroe puede declarar uno de sus ataques Impredecible; ese ataque no puede ser emparañado
-      por el oponente.
   eligibility:
   - khann
   - hobgoblin-shaman
@@ -339,6 +309,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.unpredictable-attack
+  rule_ref: shared-rule.unpredictable-attack
 - id: band--hobgoblin-special-skills-wolf-tamer
   kind: warband_skill
   name: Wolf Tamer
@@ -376,7 +347,7 @@ rules:
     - id: unimplemented.khemri-hobgoblin-raiders.band.hobgoblin-special-skills-wolf-tamer
       scope: LATER
       binding: null
-      reason: deferred.psychology
+      reason: deferred.mounts
       clauses:
       - id: wolf-tamer
         scope: 'NO'
@@ -408,20 +379,15 @@ rules:
     - id: unimplemented.khemri-hobgoblin-raiders.band.hobgoblin-special-skills-ambush
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.movement
 - id: hobgoblin-shaman--no-armoured-casting
   name: No Armour Casting
-  effect: >-
-    A Hobgoblin Shaman may not cast spells while wearing armour.
   source:
     manual: khemri
     printed_page: 80
     section: Heroes / 0-1 Hobgoblin Shaman / No Armour Casting
   name_i18n:
     es: Sin Conjuros con Armadura
-  effect_i18n:
-    es: >-
-      Un Chamán Hobgoblin no puede lanzar conjuros mientras lleva armadura.
   applies_to:
     profile_ids:
     - hobgoblin-shaman
@@ -434,3 +400,4 @@ rules:
       scope: 'NO'
       binding: null
       reason: out-of-scope.magic
+  rule_ref: shared-rule.no-armoured-casting

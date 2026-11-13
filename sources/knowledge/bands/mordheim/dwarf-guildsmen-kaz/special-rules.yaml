@@ -107,9 +107,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any model in the warband within 6\" of the Dwarf Master Craftsman may use his Leadership
-    instead of their own.
   source:
     manual: broheim.net
     printed_page: 26
@@ -117,13 +114,10 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier modelo de la banda a 6\" del Maestro Artesano Enano puede usar su Liderazgo en
-      lugar del propio.
   applies_to:
     profile_ids:
     - master-craftsman
+  rule_ref: shared-rule.leader
 - id: band--shame
   runtime:
     scope: 'NO'
@@ -177,7 +171,7 @@ rules:
     - id: unimplemented.dwarf-guildsmen-kaz.band.miners
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: Miners
   effect: >-
     Miners are particularly adept at finding their way underground and at need will make new
@@ -234,14 +228,29 @@ rules:
     band: true
 - id: band--brewers
   runtime:
-    scope: LATER
-    implemented: 'NO'
-    grant: band
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
     effects:
+    - id: condition.troll-brew-fear-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.troll-brew-fear-immunity
+    - id: condition.troll-brew-frenzy
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.troll-brew-frenzy
+    - id: condition.troll-brew-special-brew
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.troll-brew-special-brew
     - id: unimplemented.dwarf-guildsmen-kaz.band.brewers
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: out-of-scope.group
+      reason: out-of-scope.campaign
       clauses:
       - id: brew-fear-immunity
         scope: 'NO'

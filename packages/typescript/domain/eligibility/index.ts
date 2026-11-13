@@ -1091,6 +1091,12 @@ export interface BuildContext {
 }
 
 export const BLACKPOWDER_WEAPONS = ["weapon.pistol", "weapon.duelling-pistol"];
+/**
+ * The two pistol mechanics the catalogue may name without an item row; every
+ * other missile weapon is recognised by its item kind (`itemIsMissile`), so a
+ * printed "no missile weapons" clause refuses bows, crossbows and thrown
+ * weapons as well. `compiler.no-blackpowder-weapons` is the narrower clause.
+ */
 export const MISSILE_WEAPONS = BLACKPOWDER_WEAPONS;
 /** 'A trapper starts with ONE of the following Special Skills'. */
 export const VETERAN_TRACKER_SKILLS: readonly string[] = [
@@ -1575,6 +1581,10 @@ export function buildRestriction(context: BuildContext, stage: string): string |
   const selected: (string | null | undefined)[] = [...hands, b.armour_id, ...b.defence_ids,
     b.main_material_id, b.off_material_id, b.main_poison_id, b.off_poison_id, ...b.preparation_ids];
   const has = (id: string) => contracts.includes(id);
+  // A missile weapon is decided by the item's own kind; the bare pistol
+  // mechanics keep their verdict when the catalogue publishes no row for them.
+  const isMissile = (id: string | null | undefined) => Boolean(id)
+    && (MISSILE_WEAPONS.includes(id!) || tokenForbids("ranged-weapons", id!, carriedItemFacts(c, id!)));
   const forbiddenSkills = (predicate: (id: string) => boolean) => b.skill_ids.filter(predicate).sort();
   const magic = (id: string) => id.includes("arcane") || id.includes("sorcery");
   if (stage === "boundEquipment" && b.band_id === "marauders-of-chaos" && b.profile_id === "condemned") {
@@ -1617,9 +1627,7 @@ export function buildRestriction(context: BuildContext, stage: string): string |
     // catalogue publishes no row for them. A direct selection therefore meets
     // the refusal the picker already applied instead of surviving because the
     // chosen id is neither of the two pistol mechanics.
-    const isMissile = (id: string) => MISSILE_WEAPONS.includes(id)
-      || tokenForbids("ranged-weapons", id, carriedItemFacts(c, id));
-    if (forbidden.includes("ranged-weapons") && selected.some((id) => Boolean(id) && isMissile(id!)))
+    if ((forbidden.includes("ranged-weapons") || has("compiler.no-missile-weapons")) && selected.some(isMissile))
       return `missile weapons are forbidden for ${who}`;
     if (forbidden.includes("heavy-armour") && HEAVY_ARMOUR.includes(b.armour_id)) return `heavy armour is forbidden for ${who}`;
     if (forbidden.includes("weapon.lance") && selected.includes("weapon.lance")) return `lance is forbidden for ${who}`;
@@ -1676,7 +1684,6 @@ export function buildRestriction(context: BuildContext, stage: string): string |
     return null;
   }
   if (stage === "categoryProhibitions") {
-    if (has("compiler.no-missile-weapons") && containsAny(hands, MISSILE_WEAPONS)) return `missile weapons are forbidden for ${who}`;
     if (has("compiler.no-blackpowder-weapons") && containsAny(hands, BLACKPOWDER_WEAPONS)) return `blackpowder weapons are forbidden for ${who}`;
     if (has("compiler.strictures") && ["dragon-monks", "warrior-monks"].includes(p.id) && (b.armour_id !== "armour.no-armour" || b.defence_ids.includes("defence.sea-dragon-cloak"))) return "Dragon Monks and Warrior Monks may never wear armour";
     const categories = compiler_bindings.filter((binding) => binding.id === "compiler.forbid-item-categories").flatMap((binding) => strings(binding.parameters?.["categories"]));
@@ -1756,13 +1763,13 @@ export function buildRestriction(context: BuildContext, stage: string): string |
   const knight = (p.rule_ids ?? []).some((id) => id.endsWith("--knight")) || b.variant_ids.includes("promotion.knight-errant");
   if (has("compiler.powder-s-expensive") && p.type !== "hero" && containsAny(hands, BLACKPOWDER_WEAPONS)) return `blackpowder weapons are forbidden for Bandit Henchmen: ${who}`;
   if (has("compiler.chivalry") && knight) {
-    if (containsAny(hands, MISSILE_WEAPONS)) return `missile weapons are forbidden for Knights: ${who}`;
+    if (hands.some(isMissile)) return `missile weapons are forbidden for Knights: ${who}`;
     if (b.main_poison_id || b.off_poison_id) return `poisons are forbidden for Knights: ${who}`;
     if (drugsForbidden(context) === "knight" && containsAny(b.preparation_ids, DRUG_PREPARATIONS)) return `drugs are forbidden for Knights: ${who}`;
   }
   if (has("compiler.haughty") && containsAny(equipment, ["material.gromril", "material.obsidian", "armour.gromril-armour"])) return `Dwarf-made equipment is forbidden for ${who}`;
   if (has("compiler.chaos-engineer") && Array.from(equipment).some((id) => id.includes("chaos"))) return `Chaos armour is forbidden for ${who}`;
-  if (has("compiler.saurus-skill-prohibitions") && ["saurus-totem-warrior", "saurus-totem-warriors", "saurus-braves"].includes(p.id) && containsAny(hands, MISSILE_WEAPONS)) return "missile weapons are forbidden for Saurus";
+  if (has("compiler.saurus-skill-prohibitions") && ["saurus-totem-warrior", "saurus-totem-warriors", "saurus-braves"].includes(p.id) && hands.some(isMissile)) return "missile weapons are forbidden for Saurus";
   // A preparation is decided by the bearer's own printed clause through the
   // same `preparationIssue` the picker reads, never by the band list the
   // neutral profile models below: a short weapon list is not a preparation ban.
@@ -2433,6 +2440,9 @@ export function profileFactsProjection(args: {
         if (!promotionSkills.includes(category)) promotionSkills.push(category);
       }
     }
+    // The printed 'may never use missile weapons' clause is one token for the
+    // offer and the whole-set check alike, whichever binding kind declares it.
+    if (binding.id === "compiler.no-missile-weapons" && rule.runtime?.implemented === "YES" && !forbids.includes("ranged-weapons")) forbids.push("ranged-weapons");
     if (binding.id === "profile.active-weapon-restrictions") {
       // A permission clause ('may only use a sword, dagger or Mage Staff in
       // battle') carries no prohibition token: it is projected only as the

@@ -52,7 +52,7 @@ rules:
     - id: unimplemented.snotlings-web.band.small-target
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.shooting
   name: Small Target
   effect: >-
     All Snotlings are at minus one (-1) to be hit from ranged attacks because they are so diminutive
@@ -140,7 +140,7 @@ rules:
     - id: unimplemented.snotlings-web.band.not-so-tough-gits
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
   name: Not-So-Tough Gits
   effect: >-
     When you roll on the injury table for Snotlings, a roll of a 1 is knocked down 2-3 means stunned
@@ -170,14 +170,14 @@ rules:
     - runts
 - id: band--weakness-in-numbers
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.snotlings-web.band.weakness-in-numbers
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.campaign
       clauses:
       - id: whole
         scope: 'NO'
@@ -211,14 +211,14 @@ rules:
     band: true
 - id: band--scavengers
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.snotlings-web.band.scavengers
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.campaign
       clauses:
       - id: whole
         scope: 'NO'
@@ -249,12 +249,12 @@ rules:
     band: true
 - id: band--that-gits-got-talent
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.snotlings-web.band.that-gits-got-talent
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:
@@ -280,14 +280,14 @@ rules:
     band: true
 - id: band--too-unruly
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.snotlings-web.band.too-unruly
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: out-of-scope.campaign
+      reason: out-of-scope.construction
       clauses:
       - id: whole
         scope: 'NO'
@@ -310,12 +310,12 @@ rules:
     band: true
 - id: band--characteristic-increase
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.snotlings-web.band.characteristic-increase
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:
@@ -386,7 +386,7 @@ rules:
     - id: unimplemented.snotlings-web.bullied-goblin.not-a-snotling
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
   name: Not a Snotling
   effect: >-
     The Bullied Goblin is NOT a Snotling, and does not use the rules for "Dodgy", "Small", and "Not
@@ -409,14 +409,14 @@ rules:
     - bullied-goblin
 - id: bullied-goblin--mob-rule
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.snotlings-web.shared.mob-rule
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.group
       clauses:
       - id: mob-rule
         scope: 'NO'
@@ -447,12 +447,12 @@ rules:
     - shaman
 - id: bullied-goblin--the-rigors-of-leadership
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.snotlings-web.shared.the-rigors-of-leadership
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:
@@ -497,7 +497,7 @@ rules:
     - id: unimplemented.snotlings-web.scouts.scout
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: Scout
   effect: >-
     Each Snotling Scout has this modified Infiltration skill representing their diminutive size and
@@ -534,7 +534,7 @@ rules:
     - id: unimplemented.snotlings-web.scouts.hes-no-threat
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: He's No Threat!
   effect: >-
     Single Snotlings, especially small ones like Scouts, are not given much respect for their threat
@@ -589,7 +589,7 @@ rules:
     - id: unimplemented.snotlings-web.shaman.eadache
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.magic
   name: '''Eadache!'
   effect: >-
     After each time that a Shaman attempts to cast a spell, successful or not, roll 1D6: on a roll
@@ -616,18 +616,15 @@ rules:
     - shaman
 - id: shoota-teams--teamwork
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: profile
     effects:
     - id: profile.single-model-projection
-      scope: 'NO'
+      scope: LATER
       binding: null
       reason: deferred.other
   name: Teamwork
-  effect: >-
-    While a Shoota Team technically consists of 2 or more snotlings, for all intents and purposes,
-    they count as one model.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -635,13 +632,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
   name_i18n:
     es: Trabajo en Equipo
-  effect_i18n:
-    es: >-
-      Aunque un Equipo de Tiro técnicamente consiste en 2 o más snotlings, a todos los efectos
-      prácticos cuentan como un solo modelo.
   applies_to:
     profile_ids:
     - shoota-teams
+  rule_ref: shared-rule.snotling-teamwork
 - id: shoota-teams--cumbersome
   runtime:
     scope: 'NO'
@@ -651,7 +645,7 @@ rules:
     - id: unimplemented.snotlings-web.shoota-teams.cumbersome
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: Cumbersome
   effect: >-
     Any Shoota Team possessing a Missile weapon (other than Pebble or a Slingshot) can never run
@@ -679,7 +673,7 @@ rules:
     - id: unimplemented.snotlings-web.shoota-teams.recoil
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.shooting
   name: Recoil
   effect: >-
     When they fire a missile weapon other than a Pebble or Slingshot, Shoota Teams are immediately
@@ -711,18 +705,15 @@ rules:
     - shoota-teams
 - id: snotling-mobs--teamwork
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: profile
     effects:
     - id: profile.single-model-projection
-      scope: 'NO'
+      scope: LATER
       binding: null
       reason: deferred.other
   name: Teamwork
-  effect: >-
-    While a Snotling Mob technically consists of LOTS of snotlings, for all intents and purposes,
-    they count as one model.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -730,13 +721,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
   name_i18n:
     es: Trabajo en Equipo
-  effect_i18n:
-    es: >-
-      Aunque un Mob Snotling técnicamente consiste de MUCHOS snotlings, a todos los efectos
-      prácticos cuenta como un solo modelo.
   applies_to:
     profile_ids:
     - snotling-mobs
+  rule_ref: shared-rule.snotling-teamwork
 - id: snotling-mobs--not-so-small-surprisingly-tough
   runtime:
     scope: 'YES'
@@ -780,12 +768,12 @@ rules:
     - snotling-mobs
 - id: snotling-mobs--mass-stupidity
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.snotlings-web.snotling-mobs.mass-stupidity
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:
@@ -811,14 +799,14 @@ rules:
     - snotling-mobs
 - id: snotling-mobs--mob-mentality
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.snotlings-web.snotling-mobs.mob-mentality
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.group
       clauses:
       - id: mob-mentality
         scope: 'NO'
@@ -856,7 +844,8 @@ rules:
         kind: profile
         id: profile.equipment-restrictions
         parameters:
-          forbids: armour
+          forbids:
+          - armour
           max_active_one_handed_weapons: 1
   name: Teeny Hands
   effect: >-
@@ -886,14 +875,14 @@ rules:
     - runts
 - id: runts--smallest-of-the-small
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.snotlings-web.runts.smallest-of-the-small
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.shooting
       clauses:
       - id: ranged-and-death
         scope: 'NO'
@@ -920,12 +909,12 @@ rules:
     - runts
 - id: runts--experience
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.snotlings-web.runts.experience
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:
@@ -955,14 +944,14 @@ rules:
     - runts
 - id: runts--swarm-size
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.snotlings-web.runts.swarm-size
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.construction
       clauses:
       - id: whole
         scope: 'NO'
@@ -986,14 +975,14 @@ rules:
     - runts
 - id: wheelo--movement
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.snotlings-web.wheelo.movement
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
       clauses:
       - id: whole
         scope: 'NO'
@@ -1178,7 +1167,7 @@ rules:
     - id: unimplemented.snotlings-web.wheelo.tough-machine
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
   name: Tough Machine
   effect: >-
     The Snotling Special Rules of "Not So Tough Gits", "Small", and "Dodgy" do not apply to Wheelos.
@@ -1208,12 +1197,12 @@ rules:
     - wheelo
 - id: wheelo--upgrades
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.snotlings-web.wheelo.upgrades
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:
@@ -1254,14 +1243,14 @@ rules:
     - wheelo
 - id: bullied-goblin--stampede
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.snotlings-web.special.stampede
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.group
       clauses:
       - id: whole
         scope: 'NO'
@@ -1352,7 +1341,7 @@ rules:
     - id: unimplemented.snotlings-web.special.worm
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: Worm
   effect: >-
     (Scout and Promoted Runts Only) The Snotling is a master of fitting through small spaces and
@@ -1460,14 +1449,14 @@ rules:
     - shaman
 - id: bullied-goblin--mob-master
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.snotlings-web.special.mob-master
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.group
       clauses:
       - id: mob-master
         scope: 'NO'

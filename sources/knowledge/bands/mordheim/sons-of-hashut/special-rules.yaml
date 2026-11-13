@@ -3,9 +3,6 @@ band_id: sons-of-hashut
 rules:
 - id: apprentice-sorcerer--leader
   name: Leader
-  effect: >-
-    Any warrior within 6" of the Apprentice Sorcerer may use his Leadership when taking Leadership
-    tests.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -13,10 +10,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier guerrero a 6" del Hechicero aprendiz puede usar su Liderazgo al realizar chequeos de
-      Liderazgo.
   applies_to:
     profile_ids:
     - apprentice-sorcerer
@@ -30,6 +23,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: apprentice-sorcerer--rituals-of-chaos
   name: Rituals of Chaos
   effect: >-
@@ -58,7 +52,7 @@ rules:
     - id: unimplemented.sons-of-hashut.apprentice-sorcerer.rituals-of-chaos
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.magic
 - id: bull-centaur--large-target
   name: Large Target
   effect: >-
@@ -116,7 +110,7 @@ rules:
     - id: unimplemented.sons-of-hashut.hobgoblins.skinny
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.campaign
 - id: hobgoblins--nobody-cares-about-them
   name: Nobody Cares About Them
   effect: >-
@@ -137,14 +131,14 @@ rules:
     profile_ids:
     - hobgoblins
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.sons-of-hashut.hobgoblins.nobody-cares-about-them
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.group
       clauses:
       - id: whole
         scope: 'NO'
@@ -207,7 +201,7 @@ rules:
     - id: unimplemented.sons-of-hashut.band.armour
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.movement
 - id: band--hard-to-kill
   name: Hard to Kill
   source:
@@ -262,7 +256,7 @@ rules:
     - id: unimplemented.sons-of-hashut.band.slavers
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
 - id: band--uncommon
   name: Uncommon
   effect: >-
@@ -290,7 +284,7 @@ rules:
     - id: unimplemented.sons-of-hashut.band.uncommon
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.construction
 - id: band--indentured-servants
   name: Indentured Servants
   effect: >-
@@ -322,10 +316,6 @@ rules:
       reason: out-of-scope.construction
 - id: band--hired-swords
   name: Hired Swords
-  effect: >-
-    The warband may hire an Ogre Bodyguard, Pit Fighter, Warlock, Imperial Assassin, Hobgoblin
-    Scout, any Hired Sword described as available to all, and Hired Swords allowed to Orc or Chaos
-    warbands. It may never hire Elves.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -333,12 +323,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
   name_i18n:
     es: Espadas a Sueldo
-  effect_i18n:
-    es: >-
-      La banda puede contratar un Guardaespaldas ogro, un Luchador de fosa, un Brujo, un Asesino
-      imperial, un Explorador hobgoblin, cualquier Espada a sueldo descrita como disponible para
-      todas, y las Espadas a sueldo permitidas a bandas de orcos o del Caos. Nunca puede contratar
-      elfos.
   applies_to:
     band: true
   runtime:
@@ -350,6 +334,7 @@ rules:
       scope: 'NO'
       binding: null
       reason: out-of-scope.construction
+  rule_ref: shared-rule.chaos-dwarf-hired-swords
 - id: band--sons-of-hashut-maximum-characteristics
   name: Sons of Hashut Maximum Characteristics
   effect: >-
@@ -448,7 +433,7 @@ rules:
     - id: unimplemented.sons-of-hashut.band.chaos-dwarfs-special-skills-extra-tough
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.campaign
 - id: band--chaos-dwarfs-special-skills-unlimited-hatred
   kind: warband_skill
   name: Unlimited Hatred
@@ -518,8 +503,6 @@ rules:
         scope: 'YES'
 - id: apprentice-sorcerer--no-armoured-casting
   name: No Armour Casting
-  effect: >-
-    An Apprentice Sorcerer may not cast spells while wearing armour.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -527,9 +510,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
   name_i18n:
     es: Sin Conjuros con Armadura
-  effect_i18n:
-    es: >-
-      Un Hechicero Aprendiz no puede lanzar conjuros mientras lleva armadura.
   applies_to:
     profile_ids:
     - apprentice-sorcerer
@@ -542,6 +522,7 @@ rules:
       scope: 'NO'
       binding: null
       reason: out-of-scope.magic
+  rule_ref: shared-rule.no-armoured-casting
 - id: blunderbuss-chaos-dwarfs--equipment-restrictions
   name: Equipment Restrictions
   effect: >-

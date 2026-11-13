@@ -13,9 +13,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any Warrior within 6" of the Beastman Chieftain may use his Leadership characteristic when
-    taking Leadership tests.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -23,13 +20,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier Guerrero a 6" del Jefe Hombre bestia puede usar su característica de Liderazgo al
-      realizar chequeos de Liderazgo.
   applies_to:
     profile_ids:
     - beastmen-chieftain
+  rule_ref: shared-rule.leader
 - id: beastmen-shaman--wizard
   runtime:
     scope: 'NO'
@@ -213,7 +207,6 @@ rules:
       binding: null
       reason: out-of-scope.campaign
   name: Animals
-  effect: Chaos Hounds are animals and never gain Experience.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -221,11 +214,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
   name_i18n:
     es: Animales
-  effect_i18n:
-    es: Los Sabuesos del Caos son animales y nunca ganan Experiencia.
   applies_to:
     profile_ids:
     - warhounds-of-chaos
+  rule_ref: shared-rule.animal
 - id: minotaur--fear
   runtime:
     scope: 'YES'
@@ -318,7 +310,6 @@ rules:
       binding: null
       reason: out-of-scope.shooting
   name: Large Target
-  effect: Minotaurs are Large Targets as defined in the shooting rules .
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -326,11 +317,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
   name_i18n:
     es: Objetivo Grande
-  effect_i18n:
-    es: Los Minotauros son Objetivos Grandes según se define en las reglas de disparo.
   applies_to:
     profile_ids:
     - minotaur
+  rule_ref: shared-rule.large-target
 - id: band--animals
   runtime:
     scope: 'NO'
@@ -509,7 +499,7 @@ rules:
     - id: unimplemented.beastmen-raiders.band.beastmen-special-skills-bellowing-roar
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.group
   name: Bellowing Roar
   effect: Only the Beastmen Chief may have this skill. He may re-roll any failed Rout tests.
   source:
@@ -573,5 +563,6 @@ rules:
         kind: profile
         id: profile.equipment-restrictions
         parameters:
-          forbids: armour
+          forbids:
+          - armour
   rule_ref: shared-rule.no-armour

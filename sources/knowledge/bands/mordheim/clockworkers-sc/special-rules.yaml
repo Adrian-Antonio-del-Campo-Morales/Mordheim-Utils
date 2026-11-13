@@ -3,14 +3,14 @@ band_id: clockworkers-sc
 rules:
 - id: band--constructs
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.clockworkers-sc.band.constructs
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: covered.elsewhere
       clauses:
       - id: need-orders
         scope: 'NO'
@@ -72,8 +72,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any warrior within 6 inches of the Master of Clocks may use his Leadership instead of his own.
   source:
     manual: broheim.net
     printed_page: 3
@@ -81,13 +79,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clockworkers.pdf
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier guerrero a 6 pulgadas del Maestro de los Relojes puede usar su Liderazgo en lugar
-      del propio.
   applies_to:
     profile_ids:
     - master-of-clocks
+  rule_ref: shared-rule.leader
 - id: master-of-clocks--laws-of-construction
   runtime:
     scope: 'NO'
@@ -97,7 +92,7 @@ rules:
     - id: unimplemented.clockworkers-sc.master-of-clocks.laws-of-construction
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: out-of-scope.magic
   name: Laws of Construction
   effect: >-
     The Master of Clocks is able to overwrite the basic functions of his constructs and thus starts
@@ -130,7 +125,7 @@ rules:
     - id: unimplemented.clockworkers-sc.master-of-clocks.promotion
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Promotion
   effect: >-
     If the Master of Clocks dies or otherwise leaves the expedition, the new leader may learn Laws
@@ -158,7 +153,7 @@ rules:
     - id: unimplemented.clockworkers-sc.dwarf-engineer.armour
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.movement
   name: Armour
   source:
     manual: broheim.net
@@ -228,7 +223,7 @@ rules:
     - id: unimplemented.clockworkers-sc.dwarf-engineer.smithery
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Smithery
   effect: >-
     Instead of searching for rare items, the engineer may equip a single construct with any weapon
@@ -258,7 +253,7 @@ rules:
     - id: unimplemented.clockworkers-sc.metallurgist.moonstone-refinery
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Moonstone Refinery
   effect: >-
     Instead of searching for rare items, the Metallurgist may split one moonstone into D6 orichalcum
@@ -286,7 +281,7 @@ rules:
     - id: unimplemented.clockworkers-sc.metallurgist.hellish-tincture
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: out-of-scope.shooting
   name: Hellish Tincture
   effect: >-
     Once per game this tincture may be thrown in the same way as blessed water and sets its target
@@ -315,7 +310,7 @@ rules:
     - id: unimplemented.clockworkers-sc.handymen.crude
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Crude
   effect: >-
     When rolling 'That Lad's got talent', the new hero must choose combat and strength skills as his
@@ -389,7 +384,6 @@ rules:
       - id: construct-equipment-slot-capacity
         scope: 'YES'
   name: Construct
-  effect: Clockwork soldiers are constructs as described in the band special rules.
   source:
     manual: broheim.net
     printed_page: 5
@@ -397,13 +391,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clockworkers.pdf
   name_i18n:
     es: Construcción
-  effect_i18n:
-    es: >-
-      Los soldados de cuerda son constructos, tal como se describe en las reglas especiales de la
-      banda.
   applies_to:
     profile_ids:
     - clockwork-soldiers
+  rule_ref: shared-rule.clockwork-construct
 - id: clockwork-soldiers--solitary-maintenance
   runtime:
     scope: 'NO'
@@ -413,7 +404,7 @@ rules:
     - id: unimplemented.clockworkers-sc.clockwork-soldiers.solitary-maintenance
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Solitary Maintenance
   effect: Each clockwork soldier forms its own henchmen group.
   source:
@@ -483,7 +474,6 @@ rules:
       - id: construct-equipment-slot-capacity
         scope: 'YES'
   name: Construct
-  effect: Clockwork fiends are constructs as described in the band special rules.
   source:
     manual: broheim.net
     printed_page: 5
@@ -491,13 +481,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clockworkers.pdf
   name_i18n:
     es: Construcción
-  effect_i18n:
-    es: >-
-      Los demonios de cuerda son constructos, tal como se describe en las reglas especiales de la
-      banda.
   applies_to:
     profile_ids:
     - clockwork-fiend
+  rule_ref: shared-rule.clockwork-construct
 - id: clockwork-fiend--cause-fear
   runtime:
     scope: 'YES'
@@ -534,7 +521,7 @@ rules:
     - id: unimplemented.clockworkers-sc.clockwork-fiend.large-target
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: out-of-scope.shooting
   name: Large Target
   effect: Due to its huge size, the Clockwork fiend counts as a large target.
   source:
@@ -558,7 +545,7 @@ rules:
     - id: unimplemented.clockworkers-sc.clockwork-fiend.lumbering-behemoth
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Lumbering Behemoth
   effect: >-
     Moonstone infusions need the doubled amount of orichalcum tokens per characteristic increase.
@@ -586,7 +573,7 @@ rules:
     - id: unimplemented.clockworkers-sc.band.puppeteer
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.group
   name: Puppeteer
   effect: >-
     The Hero has improved control on the dependent constructs far above the basic level of his
@@ -650,7 +637,7 @@ rules:
     - id: unimplemented.clockworkers-sc.band.gift-of-sentience
       scope: 'NO'
       binding: null
-      reason: pending-implementation
+      reason: out-of-scope.campaign
   name: Gift of Sentience
   effect: >-
     Instead of searching for rare items the Clockworker may attempt Bramstetter's most dangerous
@@ -685,7 +672,7 @@ rules:
     - id: unimplemented.clockworkers-sc.band.experimental-enhancements
       scope: 'NO'
       binding: null
-      reason: pending-implementation
+      reason: out-of-scope.campaign
   name: Experimental Enhancements
   effect: >-
     Apprentice only. During their learning process, apprentices craft the oddest devices and

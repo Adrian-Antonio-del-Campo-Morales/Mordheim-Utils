@@ -143,7 +143,7 @@ rules:
     - id: unimplemented.norse-explorers-btb.wolves.animals
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
   rule_ref: shared-rule.animal
 - id: wulfen--equipment-restrictions
   runtime:
@@ -213,7 +213,7 @@ rules:
     - id: unimplemented.norse-explorers-btb.band.seafaring
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.movement
   rule_ref: shared-rule.seafaring
 - id: band--norse-special-skills-barbarian-courage
   kind: warband_skill
@@ -367,7 +367,8 @@ rules:
         kind: profile
         id: profile.equipment-restrictions
         parameters:
-          forbids: armour
+          forbids:
+          - armour
   rule_ref: shared-rule.no-armour
 
 - id: wolves--equipment-restrictions

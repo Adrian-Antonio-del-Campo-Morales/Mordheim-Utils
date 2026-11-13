@@ -402,7 +402,7 @@ rules:
     - id: unimplemented.merchant-caravans.band.trade-wagon-required
       scope: 'NO'
       binding: null
-      reason: out-of-scope.campaign
+      reason: out-of-scope.construction
   name: Trade Wagon Required
   effect: >-
     A starting Merchant Caravan must include one Trade Wagon. The Trade Wagon remains equipment
@@ -450,14 +450,14 @@ rules:
 - id: band--merchant-special-skills-bribery
   kind: warband_skill
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: selectable
     effects:
     - id: unimplemented.merchant-caravans.band.merchant-special-skills-bribery
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.psychology
+      reason: out-of-scope.group
       clauses:
       - id: whole
         scope: 'NO'

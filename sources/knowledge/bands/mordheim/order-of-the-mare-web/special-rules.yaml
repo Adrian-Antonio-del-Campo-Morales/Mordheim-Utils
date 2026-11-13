@@ -3,14 +3,14 @@ band_id: order-of-the-mare-web
 rules:
 - id: band--knights-virtue
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.order-of-the-mare-web.band.knights-virtue
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: deferred.other
+      reason: deferred.psychology
   name: Knight's Virtue
   source:
     manual: mordheimer.net
@@ -24,14 +24,14 @@ rules:
   rule_ref: shared-rule.knights-virtue
 - id: band--hired-swords
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.order-of-the-mare-web.band.hired-swords
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.construction
       clauses:
       - id: whole
         scope: 'NO'
@@ -53,14 +53,14 @@ rules:
     band: true
 - id: band--horse-and-rider
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.order-of-the-mare-web.band.horse-and-rider
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.construction
       clauses:
       - id: whole
         scope: 'NO'
@@ -106,14 +106,14 @@ rules:
   rule_ref: shared-rule.leader
 - id: paragon--knights-virtue
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.order-of-the-mare-web.shared.knights-virtue
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: deferred.other
+      reason: deferred.psychology
   name: Knight's Virtue
   source:
     manual: mordheimer.net
@@ -215,12 +215,12 @@ rules:
     - pilgrims
 - id: pilgrims--peasants
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.order-of-the-mare-web.pilgrims.peasants
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:
@@ -285,7 +285,7 @@ rules:
     - id: unimplemented.order-of-the-mare-web.band.dame-of-the-mare-succession
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.construction
   name: Dame of the Mare Succession
   effect: >-
     Your warband must include a single Dame of the Mare. If she is removed you must recruit a new

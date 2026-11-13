@@ -13,5 +13,5 @@
   "magnitudes": [
     "winner"
   ],
-  "reason": "El E2E prescribe una decision explicita: round.0.first.main-weapon-majority=true (fighters.first: main_weapon_id=weapon.mace, off_hand_id=weapon.dagger), que fija que arma lleva la mayoria de ataques y por tanto el perfil aplicado a cada ataque. Falta una politica general de decisiones para trayectorias aleatorias que reproduzca esa nominacion; la politica predeterminada del motor no la declara, y conservar la cinta o borrarla asumiria una equivalencia no demostrada. Entrada afectada: decisions[0].key=round.0.first.main-weapon-majority."
+  "reason": "The conformance scenario prescribes an explicit decision: round.0.first.main-weapon-majority=true (fighters.first: main_weapon_id=weapon.mace, off_hand_id=weapon.dagger), which fixes which weapon carries the majority of attacks and therefore the profile applied to each attack. No general decision policy for randomly branched trajectories reproduces that nomination; the engine-default policy does not declare it, and keeping or deleting the script would assume an unproven equivalence. Affected input: decisions[0].key=round.0.first.main-weapon-majority."
 }

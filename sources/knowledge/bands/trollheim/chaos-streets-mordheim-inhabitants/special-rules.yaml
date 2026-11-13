@@ -3,18 +3,12 @@ band_id: chaos-streets-mordheim-inhabitants
 rules:
 - id: prophet--leader
   name: Leader
-  effect: >-
-    Any warband model within 6" of the Prophet may use his Leadership when taking Leadership tests.
   source:
     manual: chaos-in-the-streets
     printed_page: 147
     section: Heroes / 1 Prophet / Special Rules / Leader
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier modelo de la banda a 6" del Profeta puede usar su Liderazgo cuando realice chequeos
-      de Liderazgo.
   applies_to:
     profile_ids:
     - prophet
@@ -28,17 +22,15 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: prophet--fanatic
   name: Fanatic
-  effect: The Prophet automatically passes every test based on Leadership.
   source:
     manual: chaos-in-the-streets
     printed_page: 147
     section: Heroes / 1 Prophet / Special Rules / Fanatic
   name_i18n:
     es: Fanático
-  effect_i18n:
-    es: El Profeta supera automáticamente todos los chequeos basados en Liderazgo.
   applies_to:
     profile_ids:
     - prophet
@@ -52,6 +44,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.automatic-leadership
+  rule_ref: shared-rule.fanatic-automatic-leadership
 - id: prophet--orator
   name: Orator
   effect: >-
@@ -79,18 +72,15 @@ rules:
     - id: unimplemented.chaos-streets-mordheim-inhabitants.prophet.orator
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.magic
 - id: desolate-soul--fanatic
   name: Fanatic
-  effect: The Desolate Soul automatically passes every test based on Leadership.
   source:
     manual: chaos-in-the-streets
     printed_page: 148
     section: Heroes / 0-1 Desolate Soul / Special Rules / Fanatic
   name_i18n:
     es: Fanático
-  effect_i18n:
-    es: El Alma Desolada supera automáticamente todos los chequeos basados en Liderazgo.
   applies_to:
     profile_ids:
     - desolate-soul
@@ -104,6 +94,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.automatic-leadership
+  rule_ref: shared-rule.fanatic-automatic-leadership
 - id: desolate-soul--death-wish
   name: Death Wish
   effect: >-
@@ -130,7 +121,7 @@ rules:
     - id: unimplemented.chaos-streets-mordheim-inhabitants.desolate-soul.death-wish
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.movement
 - id: desolate-soul--profound-hatred
   name: Profound Hatred
   effect: >-
@@ -229,15 +220,12 @@ rules:
         scope: 'YES'
 - id: street-dogs--animal
   name: Animal
-  effect: Street Dogs are animals and never gain Experience.
   source:
     manual: chaos-in-the-streets
     printed_page: 149
     section: Henchmen / 0-5 Street Dogs / Special Rules / Animals
   name_i18n:
     es: Animal
-  effect_i18n:
-    es: Los Perros Callejeros son animales y nunca ganan Experiencia.
   applies_to:
     profile_ids:
     - street-dogs
@@ -249,7 +237,8 @@ rules:
     - id: unimplemented.chaos-streets-mordheim-inhabitants.street-dogs.animal
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
+  rule_ref: shared-rule.animal
 - id: band--mordheim-natives
   name: Mordheim Natives
   effect: >-
@@ -275,7 +264,7 @@ rules:
     - id: unimplemented.chaos-streets-mordheim-inhabitants.band.mordheim-natives
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
 - id: band--wanderers
   name: Wanderers
   effect: >-
@@ -301,7 +290,7 @@ rules:
     - id: unimplemented.chaos-streets-mordheim-inhabitants.band.wanderers
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
 - id: band--look-after-their-own
   name: Look After Their Own
   effect: >-
@@ -327,7 +316,7 @@ rules:
     - id: unimplemented.chaos-streets-mordheim-inhabitants.band.look-after-their-own
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
 - id: band--hired-swords
   name: Hired Swords
   effect: >-

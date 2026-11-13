@@ -13,9 +13,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any warrior within 6” of the Knight may use his Leadership characteristic when taking a
-    Leadership test.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -23,13 +20,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/imperial-outriders
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier guerrero a 6" del Caballero puede usar su característica de Liderazgo cuando realice
-      un chequeo de Liderazgo.
   applies_to:
     profile_ids:
     - knight
+  rule_ref: shared-rule.leader
 - id: knight--ride
   runtime:
     scope: LATER
@@ -44,7 +38,6 @@ rules:
       - id: whole
         scope: 'NO'
   name: Ride
-  effect: The Knight has the Ride skill as detailed in the Blazing Saddles article.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -52,11 +45,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/imperial-outriders
   name_i18n:
     es: Montar
-  effect_i18n:
-    es: El Caballero tiene la habilidad Montar tal como se detalla en el artículo Blazing Saddles.
   applies_to:
     profile_ids:
     - knight
+  rule_ref: shared-rule.ride-blazing-saddles
 - id: outriders--ride
   runtime:
     scope: LATER
@@ -71,7 +63,6 @@ rules:
       - id: whole
         scope: 'NO'
   name: Ride
-  effect: Outriders have the Ride skill as detailed in the Blazing Saddles article.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -79,11 +70,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/imperial-outriders
   name_i18n:
     es: Montar
-  effect_i18n:
-    es: Los Outriders tienen la habilidad Montar tal como se detalla en el artículo Blazing Saddles.
   applies_to:
     profile_ids:
     - outriders
+  rule_ref: shared-rule.ride-blazing-saddles
 - id: scouts--ride
   runtime:
     scope: LATER
@@ -98,7 +88,6 @@ rules:
       - id: whole
         scope: 'NO'
   name: Ride
-  effect: Scouts have the Ride skill as detailed in the Blazing Saddles article.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -106,11 +95,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/imperial-outriders
   name_i18n:
     es: Montar
-  effect_i18n:
-    es: Los Scouts tienen la habilidad Montar tal como se detalla en el artículo Blazing Saddles.
   applies_to:
     profile_ids:
     - scouts
+  rule_ref: shared-rule.ride-blazing-saddles
 - id: chasseurs--ride
   runtime:
     scope: LATER
@@ -125,7 +113,6 @@ rules:
       - id: whole
         scope: 'NO'
   name: Ride
-  effect: Chasseurs have the Ride skill as detailed in the Blazing Saddles article.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -133,11 +120,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/imperial-outriders
   name_i18n:
     es: Montar
-  effect_i18n:
-    es: Los Chasseurs tienen la habilidad Montar tal como se detalla en el artículo Blazing Saddles.
   applies_to:
     profile_ids:
     - chasseurs
+  rule_ref: shared-rule.ride-blazing-saddles
 - id: hussars--ride
   runtime:
     scope: LATER
@@ -152,7 +138,6 @@ rules:
       - id: whole
         scope: 'NO'
   name: Ride
-  effect: Horsemen have the Ride skill as detailed in the Blazing Saddles article.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -160,11 +145,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/imperial-outriders
   name_i18n:
     es: Montar
-  effect_i18n:
-    es: Los jinetes tienen la habilidad Montar tal como se detalla en el artículo Blazing Saddles.
   applies_to:
     profile_ids:
     - hussars
+  rule_ref: shared-rule.ride-blazing-saddles
 - id: hussars--combat-riding
   runtime:
     scope: LATER
@@ -208,7 +192,6 @@ rules:
       - id: whole
         scope: 'NO'
   name: Ride
-  effect: Grooms have the Ride skill as detailed in the Blazing Saddles article.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -216,13 +199,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/imperial-outriders
   name_i18n:
     es: Montar
-  effect_i18n:
-    es: >-
-      Los Palafreneros tienen la habilidad Montar tal como se detalla en el artículo Blazing
-      Saddles.
   applies_to:
     profile_ids:
     - grooms
+  rule_ref: shared-rule.ride-blazing-saddles
 - id: grooms--horse-handling
   runtime:
     scope: LATER
@@ -254,14 +234,14 @@ rules:
     - grooms
 - id: band--hired-swords
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.imperial-outriders.band.hired-swords
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.mounts
+      reason: out-of-scope.construction
       clauses:
       - id: whole
         scope: 'NO'
@@ -412,14 +392,14 @@ rules:
     band: true
 - id: band--out-of-action-models
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.imperial-outriders.band.out-of-action-models
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.mounts
+      reason: out-of-scope.campaign
       clauses:
       - id: whole
         scope: 'NO'
@@ -442,14 +422,14 @@ rules:
     band: true
 - id: band--dead-horses
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.imperial-outriders.band.dead-horses
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.mounts
+      reason: out-of-scope.campaign
       clauses:
       - id: whole
         scope: 'NO'
@@ -472,14 +452,14 @@ rules:
     band: true
 - id: band--dense-terrain
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.imperial-outriders.band.dense-terrain
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.mounts
+      reason: out-of-scope.movement
       clauses:
       - id: whole
         scope: 'NO'

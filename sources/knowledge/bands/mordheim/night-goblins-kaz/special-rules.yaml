@@ -16,12 +16,6 @@ rules:
       - id: animosity
         scope: 'NO'
   name: Animosity
-  effect: >-
-    Goblins spend much of their lives squabbling and fighting amongst themselves. Sometimes this
-    will happen at the worst of times. At the beginning of each Night Goblin turn roll a D6. On a
-    roll of 1 they start to squabble and will do nothing else for the rest of the turn. Only Night
-    Goblins are affected. Trolls, squigs, snotlings and other non-goblins are not affected and will
-    act as normal.
   source:
     manual: broheim.net
     printed_page: 44
@@ -29,13 +23,6 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Rencor
-  effect_i18n:
-    es: >-
-      Los Goblins pasan gran parte de sus vidas riñendo y peleando entre ellos. A veces esto ocurre
-      en el peor de los momentos. Al inicio de cada turno de Goblins Nocturnos tira 1D6. Con un
-      resultado de 1, empiezan a reñir y no harán nada más durante el resto del turno. Solo se ven
-      afectados los Goblins Nocturnos. Trolls, squigs, snotlings y otros no goblins no se ven
-      afectados y actuarán con normalidad.
   applies_to:
     profile_ids:
     - big-boss
@@ -43,6 +30,7 @@ rules:
     - bosses
     - night-goblins
     - fanatics
+  rule_ref: shared-rule.night-goblin-animosity
 - id: band--hate-stunties
   runtime:
     scope: 'YES'
@@ -79,14 +67,14 @@ rules:
     - night-goblins
 - id: band--night-goblin-special-skills
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.night-goblins-kaz.band.night-goblin-special-skills
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.shooting
       clauses:
       - id: whole--scope--ded-shooty
         scope: 'NO'
@@ -290,9 +278,6 @@ rules:
       - id: after-battle-damage
         scope: 'NO'
   name: Looney
-  effect: >-
-    Due to the effect of the Mushrooms he is subject to Frenzy. He must also test for permanent
-    damage after the battle as described in the rulebook.
   source:
     manual: broheim.net
     printed_page: 47
@@ -300,29 +285,21 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Chiflado
-  effect_i18n:
-    es: >-
-      Debido al efecto de las setas está sujeto a Frenesí. También debe hacer un chequeo de daño
-      permanente tras la batalla, tal y como se describe en el libro de reglas.
   applies_to:
     profile_ids:
     - fanatics
+  rule_ref: shared-rule.looney
 - id: fanatics--frantic
   runtime:
     scope: 'YES'
     implemented: 'YES'
     grant: profile
     effects:
-    - id: skill.always-strikes-first
+    - id: mechanic.frantic
       scope: 'YES'
       binding:
         kind: mechanic
-        id: skill.always-strikes-first
-    - id: profile-rule.fanatics--frantic
-      scope: 'YES'
-      binding:
-        kind: compiler
-        id: profile-rule.fanatics--frantic
+        id: mechanic.frantic
   name: Frantic
   effect: >-
     The Fanatic is hyperactive and will strike first in combat ignoring penalties for weapons or
@@ -571,7 +548,7 @@ rules:
     - id: unimplemented.night-goblins-kaz.snotling-mob.mob
       scope: 'NO'
       binding: null
-      reason: out-of-scope.movement
+      reason: out-of-scope.group
   name: Mob
   source:
     manual: broheim.net
@@ -640,7 +617,7 @@ rules:
     - id: unimplemented.night-goblins-kaz.band.hired-swords
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Hired Swords
   effect: >-
     The Night Goblin warband may hire the following Hired Swords and Dramatis Personae: Black Orc

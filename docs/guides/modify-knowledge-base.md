@@ -81,7 +81,7 @@ For an authorized destructive merge:
 - document which IDs are retired and which campaign versions are accepted;
 - test the absence of retired IDs, reference resolution, recipients, bindings,
   affected campaign rules and read/write of the format;
-- run formatting, structural `verify`, the authorized mechanics/conformance checks and parity before
+- run formatting, structural `verify`, the authorized modular mechanics and rules-conformance checks and parity before
   publishing.
 
 Do not merge when the recipient changes, a contextual exception exists, the

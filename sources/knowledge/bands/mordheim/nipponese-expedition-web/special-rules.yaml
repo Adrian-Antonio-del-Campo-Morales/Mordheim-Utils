@@ -3,14 +3,14 @@ band_id: nipponese-expedition-web
 rules:
 - id: band--may-hire
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.nipponese-expedition-web.band.may-hire
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.construction
       clauses:
       - id: whole
         scope: 'NO'
@@ -39,7 +39,7 @@ rules:
     - id: unimplemented.nipponese-expedition-web.band.strategic-minded
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.group
   name: Strategic Minded
   effect: >-
     A Nipponese warband must rely on its battlefield experience so far from home. They may choose to
@@ -94,7 +94,6 @@ rules:
       - id: whole
         scope: 'NO'
   name: Ride
-  effect: The Hatamoto has the Ride skill as detailed in the Blazing Saddles article.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -102,13 +101,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/nipponese-expedition
   name_i18n:
     es: Montar
-  effect_i18n:
-    es: >-
-      El Hatamoto tiene la habilidad Montar tal y como se detalla en el artículo Sillas de Fuego
-      (Blazing Saddles).
   applies_to:
     profile_ids:
     - hatamoto
+  rule_ref: shared-rule.ride-blazing-saddles
 - id: vim-to-mage--tenants-of-the-order
   runtime:
     scope: 'YES'
@@ -180,7 +176,7 @@ rules:
     - id: unimplemented.nipponese-expedition-web.shinobi.infiltration
       scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.movement
   name: Infiltration
   source:
     manual: mordheimer.net
@@ -195,14 +191,14 @@ rules:
   rule_ref: shared-rule.infiltration
 - id: shinobi--loner
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.nipponese-expedition-web.shinobi.loner
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.construction
       clauses:
       - id: whole
         scope: 'NO'
@@ -234,7 +230,6 @@ rules:
       - id: whole
         scope: 'NO'
   name: Ride
-  effect: A Retainer has the Ride skill as detailed in the Blazing Saddles article.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -242,13 +237,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/nipponese-expedition
   name_i18n:
     es: Montar
-  effect_i18n:
-    es: >-
-      Un Vasallo tiene la habilidad Montar tal y como se detalla en el artículo Sillas de Fuego
-      (Blazing Saddles).
   applies_to:
     profile_ids:
     - retainer
+  rule_ref: shared-rule.ride-blazing-saddles
 - id: ashigaru--wall-of-steel
   runtime:
     scope: 'YES'
@@ -282,12 +274,12 @@ rules:
     - ashigaru
 - id: onnabushi--wardens-of-the-castle
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.nipponese-expedition-web.onnabushi.wardens-of-the-castle
-      scope: 'NO'
+      scope: LATER
       binding: null
       reason: deferred.other
   name: Wardens of the Castle
@@ -399,7 +391,8 @@ rules:
         kind: profile
         id: profile.equipment-restrictions
         parameters:
-          forbids: armour-suit
+          forbids:
+          - armour-suit
   name: No Armour
   source:
     manual: mordheimer.net
@@ -517,14 +510,14 @@ rules:
 - id: band--nippon-special-skills-last-stand
   kind: warband_skill
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: selectable
     effects:
     - id: unimplemented.nipponese-expedition-web.nippon.last-stand
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: out-of-scope.group
+      reason: deferred.psychology
   name: Last Stand
   effect: >-
     If this model would normally take an all-alone test, it may be re-rolled; in addition, at the

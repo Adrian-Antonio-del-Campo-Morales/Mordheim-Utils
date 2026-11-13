@@ -46,7 +46,7 @@ rules:
     - id: unimplemented.protectorate-of-sigmar-lotd3.band.witch-hunter-hired-swords
       scope: 'NO'
       binding: null
-      reason: out-of-scope.campaign
+      reason: out-of-scope.construction
   name: Selective Hired Swords
   effect: >-
     The Protectorates are selective when it comes to which Hired Swords may accompany them. As such,
@@ -268,9 +268,6 @@ rules:
       binding: null
       reason: out-of-scope.magic
   name: Protection of Sigmar
-  effect: >-
-    The pious has been blessed by the Church. Any spell which would affect him is nullified on a D6
-    roll of 4+. Note that if the spell is nullified it will not affect any other models either.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -278,13 +275,9 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/protectorate-of-sigmar
   name_i18n:
     es: Protección de Sigmar
-  effect_i18n:
-    es: >-
-      El piadoso ha sido bendecido por la Iglesia. Cualquier hechizo que le afecte se anula con un
-      resultado de 4+ en un D6. Ten en cuenta que si el hechizo se anula, tampoco afectará a otras
-      miniaturas.
   applies_to:
     band: true
+  rule_ref: shared-rule.protection-of-sigmar
 - id: band--special-skill-unshakeable-faith
   kind: warband_skill
   runtime:
@@ -326,7 +319,7 @@ rules:
     - id: unimplemented.protectorate-of-sigmar-lotd3.band.utter-determination
       scope: 'NO'
       binding: null
-      reason: out-of-scope.campaign
+      reason: out-of-scope.group
   name: Utter Determination
   effect: >-
     Only the Warrior Priest may have this skill, which allows him to re-roll any failed Rout tests.

@@ -41,7 +41,7 @@ rules:
     - id: unimplemented.lizardmen-lus.band.armour-cost
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Armour
   effect: >-
     Armour is rare amongst the Lizardmen and the cost of light armour is always 50 gold crowns.
@@ -105,7 +105,7 @@ rules:
     - id: unimplemented.lizardmen-lus.band.saurus-rarity
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Saurus Rarity
   effect: >-
     You can never have more Saurus Braves than Skink Braves in the warband; the Slann mage-priests
@@ -168,7 +168,7 @@ rules:
     - id: unimplemented.lizardmen-lus.skink-priest.wizard
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: out-of-scope.magic
   name: Wizard
   source:
     manual: broheim.net
@@ -195,7 +195,6 @@ rules:
         parameters:
           value: 4
   name: Scaly Skin
-  effect: Kroxigor have a natural save of 4+.
   source:
     manual: broheim.net
     printed_page: 5
@@ -203,11 +202,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/lustria/Lizardmen.pdf
   name_i18n:
     es: Piel Escamosa
-  effect_i18n:
-    es: Los Kroxigor tienen una salvación natural de 4+.
   applies_to:
     profile_ids:
     - kroxigor
+  rule_ref: shared-rule.scaly-skin-4
 - id: kroxigor--aquatic
   runtime:
     scope: 'NO'
@@ -217,10 +215,8 @@ rules:
     - id: unimplemented.lizardmen-lus.kroxigor.aquatic
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: out-of-scope.movement
   name: Aquatic
-  effect: >-
-    Kroxigor may move through water with no penalty and count as being in cover while in the water.
   source:
     manual: broheim.net
     printed_page: 5
@@ -228,13 +224,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/lustria/Lizardmen.pdf
   name_i18n:
     es: Acuático
-  effect_i18n:
-    es: >-
-      Los Kroxigor pueden moverse por el agua sin penalización y cuentan como en cobertura mientras
-      estén en el agua.
   applies_to:
     profile_ids:
     - kroxigor
+  rule_ref: shared-rule.aquatic
 - id: kroxigor--cause-fear
   runtime:
     scope: 'YES'
@@ -267,7 +260,7 @@ rules:
     - id: unimplemented.lizardmen-lus.kroxigor.large
       scope: 'NO'
       binding: null
-      reason: out-of-scope.non-duel
+      reason: out-of-scope.shooting
   name: Large
   source:
     manual: broheim.net
@@ -282,21 +275,18 @@ rules:
   rule_ref: shared-rule.kroxigor-large
 - id: kroxigor--animal
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.lizardmen-lus.kroxigor.animal
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: out-of-scope.campaign
       clauses:
       - id: whole
         scope: 'NO'
   name: Animal
-  effect: >-
-    Kroxigor are slow-witted creatures that never learn from their mistakes; they do not gain
-    experience.
   source:
     manual: broheim.net
     printed_page: 5
@@ -304,21 +294,18 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/lustria/Lizardmen.pdf
   name_i18n:
     es: Animal
-  effect_i18n:
-    es: >-
-      Los Kroxigor son criaturas de ingenio lento que nunca aprenden de sus errores; no ganan
-      experiencia.
   applies_to:
     profile_ids:
     - kroxigor
+  rule_ref: shared-rule.animal
 - id: band--maximum-characteristics
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.lizardmen-lus.band.maximum-characteristics
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: out-of-scope.campaign
       clauses:
@@ -360,10 +347,6 @@ rules:
         kind: compiler
         id: compiler.bite-attack
   name: Bite Attack
-  effect: >-
-    The Saurus have a powerful bite attack, this bite attack uses the Saurus' own strength to wound
-    and receives no penalty for not using a weapon. The bite attack always strikes last, regardless
-    of who charged or which weapon is used, even after double-handed weapons.
   source:
     manual: broheim.net
     printed_page: 1
@@ -371,15 +354,11 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/lustria/Lizardmen.pdf
   name_i18n:
     es: Ataque de Mordisco
-  effect_i18n:
-    es: >-
-      Los Saurus tienen un poderoso ataque de mordisco; este ataque usa la propia Fuerza del Saurus
-      para herir y no recibe penalización por no usar un arma. El ataque de mordisco siempre golpea
-      el último, sin importar quién cargó ni qué arma se use, incluso después de armas a dos manos.
   applies_to:
     profile_ids:
     - saurus-totem-warriors
     - saurus-braves
+  rule_ref: shared-rule.bite-attack
 - id: band--aquatic
   runtime:
     scope: 'NO'
@@ -391,9 +370,6 @@ rules:
       binding: null
       reason: out-of-scope.movement
   name: Aquatic
-  effect: >-
-    Skinks may move through water terrain with no penalty, and count as being in cover whilst they
-    are in the water.
   source:
     manual: broheim.net
     printed_page: 1
@@ -401,15 +377,12 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/lustria/Lizardmen.pdf
   name_i18n:
     es: Acuático
-  effect_i18n:
-    es: >-
-      Los Skinks pueden moverse por terreno de agua sin penalización y cuentan como estando en
-      cobertura mientras estén en el agua.
   applies_to:
     profile_ids:
     - skink-priest
     - skink-great-crests
     - skink-braves
+  rule_ref: shared-rule.aquatic
 - id: band--jungle-born
   runtime:
     scope: 'NO'
@@ -538,14 +511,15 @@ rules:
 - id: band--lizardmen-special-skills-saurus-only-toughened-hide
   kind: warband_skill
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.lizardmen-lus.band.lizardmen-special-skills-saurus-only-toughened-hide
-      scope: 'NO'
-      binding: null
-      reason: out-of-scope.non-duel
+    - id: skill.hard-to-kill
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.hard-to-kill
   name: Toughened Hide
   source:
     manual: broheim.net

@@ -120,7 +120,7 @@ Choose a named selection from the test tree: `tests modular mechanics`, `tests c
 
 Cross-cutting suites keep their own selections: `tests parity` (statistical comparisons and the tools that check them), `tests shared` (engine contracts and frozen inputs) and `tests tooling` (architecture, launcher, coverage and verification-tool checks).
 
-Engine suites load versioned inputs from `tests/engines/fixtures/` through the existing loaders and conftest fixtures. Normal test runs do not regenerate them. The conformance corpus lives in `tests/conformance/`; rules, construction and conformance tests retain their compiler/KB workflow, as do documented compilation-rejection exceptions. Fixture loading is separate from whether an optimized engine implements every rule. See [engine test fixtures](docs/reference/verification.md#engine-test-fixtures).
+Engine suites load versioned inputs from `tests/engines/fixtures/` through the existing loaders and conftest fixtures. Normal test runs do not regenerate them. The conformance corpus lives in `tests/conformance/`; rules and construction tests and the rules-conformance suite retain their compiler/KB workflow, as do documented compilation-rejection exceptions. Fixture loading is separate from whether an optimized engine implements every rule. See [engine test fixtures](docs/reference/verification.md#engine-test-fixtures).
 
 Modular tests are separated into `tests/engines/modular/mechanics` for game-rule
 application and `tests/engines/modular/runtime` for simulator structure and
@@ -154,7 +154,7 @@ See [Tools and launcher](docs/reference/tools.md#selections) for test selection 
 | `sources/knowledge/` | Canonical YAML knowledge base |
 | `contracts/` | Campaign-file and knowledge editorial schemas |
 | `tests/engines/` | Modular, NumPy, native, shared and parity tests; versioned precompiled fixtures |
-| `tests/knowledge/`, `tests/construction/`, `tests/conformance/` | KB, construction and rules-conformance tests |
+| `tests/knowledge/`, `tests/construction/`, `tests/conformance/` | KB tests, construction tests and the rules-conformance suite |
 | `tests/applications/` | Combat Lab and Warband Manager tests across languages |
 | `tests/tooling/` | Launcher, architecture, coverage, verification and parity tooling checks |
 | `tools/` | Launcher, knowledge generation, verification, web checks and Windows packaging |

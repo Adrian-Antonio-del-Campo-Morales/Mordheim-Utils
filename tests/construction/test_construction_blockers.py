@@ -169,7 +169,7 @@ def test_teeny_hands_forbids_armour_without_emptying_the_shared_list():
     )
     binding = _binding(rule, "profile.equipment-restrictions")
     assert binding is not None, "runts--teeny-hands publishes no equipment prohibition"
-    assert (binding.get("parameters") or {}).get("forbids") == "armour"
+    assert (binding.get("parameters") or {}).get("forbids") == ["armour"]
     # The prohibition is a profile token: the shared list keeps offering armour
     # to the other slots that use it.
     shared = [

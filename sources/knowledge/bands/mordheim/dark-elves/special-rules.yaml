@@ -13,9 +13,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any models in the warband within 6" of the High Born may use his Leadership instead of their
-    own.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -23,13 +20,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dark-elves
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Todos los modelos de la banda a 6" del Alto Nacido pueden usar su Liderazgo en lugar del suyo
-      propio.
   applies_to:
     profile_ids:
     - high-born
+  rule_ref: shared-rule.leader
 - id: beastmaster--cold-one-beasthound
   runtime:
     scope: 'NO'
@@ -39,7 +33,7 @@ rules:
     - id: unimplemented.dark-elves.beastmaster.cold-one-beasthound
       scope: 'NO'
       binding: null
-      reason: out-of-scope.campaign
+      reason: out-of-scope.construction
   name: Cold One Beasthound
   effect: >-
     The Beastmaster may be accompanied by up to two Cold One Beasthounds, these are bought as
@@ -120,7 +114,7 @@ rules:
     - id: unimplemented.dark-elves.shades.natural-stealth
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.movement
   name: Natural Stealth
   effect: >-
     The first thing that Dark Elf Scouts master is the art of moving without being seen or heard. If
@@ -152,8 +146,6 @@ rules:
       binding: null
       reason: out-of-scope.campaign
   name: Animals
-  effect: >-
-    Cold One Beasthounds are animals and all animal rules apply to them, they never gain experience.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -161,13 +153,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dark-elves
   name_i18n:
     es: Animales
-  effect_i18n:
-    es: >-
-      Los Sabuesos Bestia de Frío Uno son animales y se les aplican todas las reglas de animales;
-      nunca ganan experiencia.
   applies_to:
     profile_ids:
     - cold-one-beasthounds
+  rule_ref: shared-rule.animal
 - id: cold-one-beasthounds--beastmaster
   runtime:
     scope: 'NO'
@@ -219,7 +208,7 @@ rules:
     - id: unimplemented.dark-elves.cold-one-beasthounds.stupidity.outside-duel
       scope: 'NO'
       binding: null
-      reason: out-of-scope.movement
+      reason: out-of-scope.group
   name: Stupidity
   effect: >-
     Cold One Beasthounds may use the basic Leadership of the Beastmaster if they are within 6" of
@@ -406,7 +395,7 @@ rules:
     - id: unimplemented.dark-elves.band.dark-elf-special-skills-fury-of-khaine
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.movement
   name: Fury of Khaine
   effect: >-
     The Dark Elf is infused with an intense raging thirst for blood and is a whirlwind in

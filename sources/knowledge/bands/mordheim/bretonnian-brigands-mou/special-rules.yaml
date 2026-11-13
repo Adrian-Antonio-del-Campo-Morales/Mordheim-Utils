@@ -10,7 +10,7 @@ rules:
     - id: unimplemented.bretonnian-brigands-mou.band.look-out-behind-you
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.movement
   name: Look Out Behind You!
   effect: >-
     Brigand warband members (but not hired swords) are adept at ambushes and evasion. Subtract 1
@@ -38,7 +38,7 @@ rules:
     - id: unimplemented.bretonnian-brigands-mou.band.men-of-low-character
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: Men of Low Character
   effect: >-
     Brigands are justly suspicious of outsiders, fearing they may be agents of the law. They may not
@@ -68,7 +68,7 @@ rules:
     - id: unimplemented.bretonnian-brigands-mou.band.the-boss
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.construction
   name: The Boss
   effect: >-
     The leader of the brigands is often the meanest and baddest from the lot. He rules by fear and
@@ -122,8 +122,19 @@ rules:
           - fallen-noble
           skills:
           - skill.armour-specialist
+    - id: profile.skill-access.sword-master
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.skill-access
+        parameters:
+          category: special
+          profile_ids:
+          - fallen-noble
+          skills:
+          - skill.sword-master
     - id: unimplemented.bretonnian-brigands-mou.band.knights-feats
-      scope: 'NO'
+      scope: LATER
       binding: null
       reason: pending-implementation
     - id: excluded.knights-feats.lancer
@@ -143,17 +154,16 @@ rules:
   rule_ref: shared-rule.knights-feats
 - id: scarface--leader
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.bretonnian-brigands-mou.scarface.leader
-      scope: 'NO'
-      binding: null
-      reason: pending-classification
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader (Scarface)
-  effect: >-
-    Any warrior within 6" of the Scarface may use his Leadership value when taking Leadership tests.
   source:
     manual: broheim.net
     printed_page: 4
@@ -161,13 +171,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Bretonnian%20Brigands.pdf
   name_i18n:
     es: Líder (Cicatriz)
-  effect_i18n:
-    es: >-
-      Cualquier guerrero a 6" o menos del Cicatriz puede usar su valor de Liderazgo cuando realice
-      tiradas de Liderazgo.
   applies_to:
     profile_ids:
     - scarface
+  rule_ref: shared-rule.leader
 - id: scarface--horribly-scarred
   runtime:
     scope: 'YES'
@@ -206,7 +213,7 @@ rules:
     - id: unimplemented.bretonnian-brigands-mou.fallen-noble.old-connections
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Old Connections
   effect: >-
     Due to his former life, he still is well connected. This gives him an edge in acquiring all
@@ -234,7 +241,7 @@ rules:
     - id: unimplemented.bretonnian-brigands-mou.fallen-noble.knights-feats
       scope: 'NO'
       binding: null
-      reason: pending-classification
+      reason: out-of-scope.campaign
   name: Knights Feats (Fallen Noble)
   effect: >-
     A Fallen Noble may choose from the Knight's Feats skill list in addition to his ordinary skills

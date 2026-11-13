@@ -9,7 +9,7 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: the declared prohibition is evidenced as a construction refusal: the recipient build where carrying weapon.bagh-nakh in main_weapon_id is refused with ""weapon.bagh-nakh" is forbidden for khemri-thieves-guild/guild-ruffian.", and the same recipient without the item is accepted at construction. One refusal is declared per printed recipient of the rule. Consumer: the shared eligibility stage (packages/python/roster-construction/mordheim_construction/_eligibility.js).
+# AUTHORED: the declared prohibition is evidenced as a construction refusal: the recipient build where carrying weapon.bagh-nakh in main_weapon_id is refused with "equipment is not available to khemri-thieves-guild/guild-ruffian: ['weapon.bagh-nakh']", and the same recipient without the item is accepted at construction. One refusal is declared per printed recipient of the rule. Consumer: the shared eligibility stage (packages/python/roster-construction/mordheim_construction/_eligibility.js).
 # authoring_progress: 2 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
 
 # --- Authored scenarios ---
@@ -22,7 +22,7 @@
       band_id: khemri-thieves-guild
       profile_id: guild-ruffian
       main_weapon_id: weapon.bagh-nakh
-  expect_error: '"weapon.bagh-nakh" is forbidden for khemri-thieves-guild/guild-ruffian.'
+  expect_error: "equipment is not available to khemri-thieves-guild/guild-ruffian: ['weapon.bagh-nakh']"
 
 - audit_id: rule/trollheim/khemri-thieves-guild/guild-ruffian--equipment-restrictions/profile.equipment-restrictions
   id: guild-ruffian-without-weapon-bagh-nakh-is-accepted-at-construction

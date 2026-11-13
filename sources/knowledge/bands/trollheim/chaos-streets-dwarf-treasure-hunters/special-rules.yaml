@@ -59,19 +59,12 @@ rules:
       reason: out-of-scope.shooting
 - id: dwarf-troll-slayers--death-oath
   name: Death Oath
-  effect: >-
-    Dwarf Troll Slayers are completely immune to all Psychology and do not need to take tests for
-    fighting alone.
   source:
     manual: chaos-in-the-streets
     printed_page: 114
     section: Heroes / 0-2 Dwarf Troll Slayers / Special Rules / Death Oath
   name_i18n:
     es: Juramento de Muerte
-  effect_i18n:
-    es: >-
-      Los Matatrolles Enanos son completamente inmunes a toda la Psicología y no necesitan hacer
-      chequeos por luchar solos.
   applies_to:
     profile_ids:
     - dwarf-troll-slayers
@@ -90,6 +83,7 @@ rules:
         scope: 'YES'
       - id: death-oath-all-alone
         scope: 'NO'
+  rule_ref: shared-rule.death-oath
 - id: dwarf-troll-slayers--slayer-skills
   name: Slayer Skills
   effect: >-
@@ -184,7 +178,7 @@ rules:
     - id: unimplemented.chaos-streets-dwarf-treasure-hunters.band.armour
       scope: 'NO'
       binding: null
-      reason: out-of-scope.construction
+      reason: out-of-scope.movement
   rule_ref: shared-rule.dwarf-armour
 - id: band--hate-orcs-and-goblins
   name: Hate Orcs and Goblins
@@ -226,7 +220,11 @@ rules:
       scope: 'NO'
       binding: null
       reason: out-of-scope.construction
-  rule_ref: shared-rule.grudgebearers
+  effect: >-
+    A Dwarf Treasure Hunter warband may never hire an Elven Hired Sword.
+  effect_i18n:
+    es: >-
+      Una banda de Cazatesoros Enanos jamás puede contratar una Espada a Sueldo Elfa.
 - id: band--incomparable-miners
   name: Incomparable Miners
   source:
@@ -245,7 +243,7 @@ rules:
     - id: unimplemented.chaos-streets-dwarf-treasure-hunters.band.incomparable-miners
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
   rule_ref: shared-rule.incomparable-miners
 - id: band--dwarf-special-skills-master-of-blades
   kind: warband_skill
@@ -325,7 +323,7 @@ rules:
     - id: unimplemented.chaos-streets-dwarf-treasure-hunters.band.dwarf-special-skills-extra-tough
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
   rule_ref: shared-rule.extra-tough
 - id: band--dwarf-special-skills-resource-hunter
   kind: warband_skill
@@ -350,7 +348,7 @@ rules:
     - id: unimplemented.chaos-streets-dwarf-treasure-hunters.band.dwarf-special-skills-resource-hunter
       scope: 'NO'
       binding: null
-      reason: out-of-scope.shooting
+      reason: out-of-scope.campaign
   rule_ref: shared-rule.resource-hunter
 - id: band--dwarf-special-skills-true-grit
   kind: warband_skill
@@ -417,23 +415,17 @@ rules:
         kind: mechanic
         id: skill.monster-slayer
   name: Monster Slayer
-  effect: >-
-    The Slayer always wounds an opponent on a 4+ regardless of Toughness, unless his modified
-    Strength would normally allow him to wound on a lower result.
   source:
     manual: chaos-in-the-streets
     printed_page: 113
     section: Troll Slayer Special Skills / Monster Slayer
   name_i18n:
     es: Matamostro
-  effect_i18n:
-    es: >-
-      El Matatrolles siempre hiere a un oponente con un 4+ independientemente de su Resistencia,
-      salvo que su Fuerza modificada le permita normalmente herir con un resultado menor.
   eligibility:
   - dwarf-troll-slayers
   applies_to:
     band: true
+  rule_ref: shared-rule.monster-slayer-trollheim
 - id: band--slayer-special-skills-ferocious-charge
   kind: warband_skill
   runtime:
@@ -447,23 +439,17 @@ rules:
         kind: mechanic
         id: skill.ferocious-charge
   name: Ferocious Charge
-  effect: >-
-    The Slayer may double his Attacks on the turn he charges, but suffers -1 To Hit during that
-    turn.
   source:
     manual: chaos-in-the-streets
     printed_page: 113
     section: Troll Slayer Special Skills / Ferocious Charge
   name_i18n:
     es: Carga Feroz
-  effect_i18n:
-    es: >-
-      El Matatrolles puede doblar sus Ataques en el asalto en el que carga, pero sufre -1 para
-      impactar durante ese asalto.
   eligibility:
   - dwarf-troll-slayers
   applies_to:
     band: true
+  rule_ref: shared-rule.ferocious-charge
 - id: band--slayer-special-skills-berserker
   kind: warband_skill
   runtime:
@@ -477,19 +463,17 @@ rules:
         kind: mechanic
         id: skill.berserker
   name: Berserker
-  effect: The Slayer gains +1 To Hit during the turn in which he charges.
   source:
     manual: chaos-in-the-streets
     printed_page: 113
     section: Troll Slayer Special Skills / Berserker
   name_i18n:
     es: Berserker
-  effect_i18n:
-    es: El Matatrolles gana +1 para impactar durante el asalto en el que carga.
   eligibility:
   - dwarf-troll-slayers
   applies_to:
     band: true
+  rule_ref: shared-rule.slayer-berserker
 - id: dwarf-troll-slayers--no-armour
   name: No Armour
   source:
@@ -512,7 +496,8 @@ rules:
         kind: profile
         id: profile.equipment-restrictions
         parameters:
-          forbids: armour
+          forbids:
+          - armour
   rule_ref: shared-rule.no-armour
 - id: dwarf-troll-slayers--no-missile-weapons
   name: No Missile Weapons
