@@ -1,9 +1,9 @@
 ﻿# Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-ignore-pain/skill.ignore-pain
-# authoring_status: PARTIAL
-# authoring_progress: the admitted ignore-pain clause carries one authored scenario whose bearer is the
-#   printed recipient of the band's rule (read statically from the band eligibility declaration); the
-#   requires-resilient prerequisite of the same identity is PARTIAL with its concrete blocker below.
+# authoring_status: AUTHORED
+# authoring_progress: both admitted clauses carry authored scenarios: ignore-pain (the Stunned-to-Knocked-Down
+#   conversion on the printed recipient) and requires-resilient (a construction refusal of the bearer
+#   without Resilient, with the conversion scenario, which declares Resilient, as its accepted control).
 #   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
@@ -17,17 +17,14 @@
 # AUTHORED[ignore-pain]: 1 scenario evidences the conversion (see the closing note above).
 #
 # Clause: requires-resilient (scope: YES)
-# PARTIAL[requires-resilient]: [D] the clause is a construction prerequisite ("Requires the Resilient
-#   Strength skill"), and no scenario evidences it.  The input side is not the problem: the fixture can
-#   declare a bearer with the granted skill and without it, and the shared eligibility contract does
-#   carry prerequisite refusals (loadoutRestriction and its skill stage return contract-keyed free-form
-#   sentences such as "Contagious requires Rotten Body").  What no source fixes is the *identity* of
-#   this refusal: there is no contract id for a Resilient prerequisite on this skill and no printed
-#   wording for the message, so any `expect_error` fragment here would be invented rather than derived.
-#   Blocker: that unresolved refusal identity (class D).  Implementation defect the future tape would
-#   detect, recorded separately and not as the blocker: the skillIssue / loadoutRestriction skill stage
-#   performs no Resilient check for an ignore-pain bearer, which is the missing connection the register
-#   names.  The duel-side clause ignore-pain is authored below.
+# AUTHORED[requires-resilient]: 2 scenarios.  Printed text (shared-rule.ignore-pain): "Requires the
+#   Resilient Strength skill."  The earlier blocker in this note was FALSE and is corrected: the refusal
+#   identity does exist - packages/python/roster-construction/mordheim_construction/_eligibility.js::
+#   specialRuleRestriction ("prerequisites" stage) returns the literal sentence "Ignore Pain requires
+#   Resilient" when band--clan-pestilens-special-skills-ignore-pain is declared without skill.resilient
+#   among the build's skills or starting skills.  The refusal is the printed recipient declaring Ignore
+#   Pain without Resilient; the accepted control is the conversion scenario below, the same recipient
+#   declaring both.
 
 
 # --- Authored scenarios ---
@@ -40,6 +37,7 @@
   id: a-stunned-result-becomes-knocked-down
   covers:
   - ignore-pain
+  - requires-resilient
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -80,3 +78,17 @@
   expect_final:
     rounds_executed: 1
     termination_reason: horizon
+
+# The printed prerequisite: the same printed recipient declaring Ignore Pain without the Resilient
+# Strength skill is refused at construction with the shared stage's own sentence for this skill.
+- audit_id: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-ignore-pain/skill.ignore-pain
+  id: ignore-pain-without-resilient-is-refused
+  covers:
+  - requires-resilient
+  fighters:
+    first:
+      collection: mordheim
+      band_id: skaven-clan-pestilens
+      profile_id: plague-monks
+      special_rule_ids: [band--clan-pestilens-special-skills-ignore-pain]
+  expect_error: Ignore Pain requires Resilient

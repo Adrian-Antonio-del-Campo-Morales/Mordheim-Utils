@@ -1,11 +1,15 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/lords-of-the-marsh-mim/shearls--craven/mechanic.craven
 # authoring_status: AUTHORED
-# authoring_progress: the admitted craven clause carries 2 authored scenarios for the printed
+# authoring_progress: the admitted craven clause carries 3 authored scenarios for the printed
 # individual psychology consequence (a fear-causing Shearl that must take the round-0 Fear test
 # anyway, and the identical duel without the rule, where no Leadership die is asked for).
 # REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED; no
 # behavioral result is claimed.
+# Real-recipient addendum (2026-11-16): one further scenario builds the printed Lords of the Marsh
+# profile itself (so its own Stupidity and the band's Cold-Blooded 3D6 Leadership tests are on the
+# tape), exercising the KB grant of this identity rather than only the operator injected into the
+# hand-built fixtures above.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -15,7 +19,7 @@
 # Governing rulings: docs/decisions/design-rulings.md
 #
 # Clause: craven--scope--craven (scope: YES)
-# AUTHORED[craven--scope--craven]: 2 scenarios cover the printed subjection to Fear: the bearer
+# AUTHORED[craven--scope--craven]: 3 scenarios cover the printed subjection to Fear: the bearer
 # that causes Fear still takes the round-0 Fear test before its own charge (two sixes against its
 # Leadership 6 cancel that charge and leave the duel disengaged), and the identical duel without the
 # rule asks for no Leadership die at all because a mutual Fear-causer is ordinarily exempt. The fixed
@@ -75,3 +79,43 @@
   expect_rounds:
     0: {attacks.0.damage: 1, state.first_charged: True, state.second.wounds: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Real recipient (2026-11-16): the printed Shearl profile, promoted to Hero (promotion.hero, the
+# supplied 'lad's got talent' result) and carrying the Heroes' serious injury Horrible Scars
+# (campaign.condition.causes-fear), so it causes Fear and only Craven keeps it subject to Fear
+# against a Fear-causing enemy. Its printed Stupidity is tested first (3D6 discarding the highest
+# under Cold-Blooded: 1,1,1 passes); the Fear test 6,6,6 keeps 12 against Leadership 6 and cancels
+# the charge. Without Craven the mutual Fear-causer would ask for no Fear die.
+- audit_id: rule/mordheim/lords-of-the-marsh-mim/shearls--craven/mechanic.craven
+  id: a-promoted-scarred-shearl-still-tests-fear-before-its-charge
+  covers: [craven--scope--craven]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: lords-of-the-marsh-mim
+      profile_id: shearls
+      variant_ids: [promotion.hero]
+      condition_ids: [campaign.condition.causes-fear]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.causes-fear]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context:
+    charging: [first]
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.first.stupidity.0, value: 1}
+  - {key: round.0.first.stupidity.1, value: 1}
+  - {key: round.0.first.stupidity.2, value: 1}
+  - {key: round.0.first.fear.charge.0, value: 6}
+  - {key: round.0.first.fear.charge.1, value: 6}
+  - {key: round.0.first.fear.charge.2, value: 6}
+  expect_rounds:
+    0:
+      attacks: []
+      state.first_charged: false
+      state.failed_charges: [first]
+      state.engaged: false
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}

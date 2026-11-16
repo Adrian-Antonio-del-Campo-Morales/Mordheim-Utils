@@ -1,11 +1,15 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/lothern-sea-patrol-sar/seaguards--spear-master/mechanic.seaguard-spear-master
 # authoring_status: AUTHORED
-# authoring_progress: the admitted clause carries 3 authored scenarios for both printed halves: the
+# authoring_progress: the admitted clause carries 5 authored scenarios for both printed halves: the
 # first-round +1 Strength read through the wound target of a spear attack (with the plain spear as its
 # own control) and the one chosen failed hit taken again behind the declared decision.  REVIEWED still
 # requires manual semantic review and execution_status stays UNEXECUTED; no behavioral result is
 # claimed.
+# Real-recipient addendum (2026-11-16): 2 further scenario(s) build the printed Lothern Sea Patrol
+# profile itself (seaguards), so the KB grant of this identity is exercised rather than only the
+# shared operator injected into hand-built fixtures; the earlier fixture scenarios stay as the
+# operator cases.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -14,7 +18,7 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: 3 scenarios cover the first-round spear bonus: a
+# AUTHORED: 5 scenarios cover the first-round spear bonus: a
 # declared To Wound three reaches Strength 4 (3+ against Toughness 3) with the rule and the identical
 # tape without it only reaches Strength 3, whose 4+ the same three misses; the third scenario declares
 # the executor's once-per-duel choice (`<attack-key>.spear-master`) and shows the chosen failed hit
@@ -91,4 +95,63 @@
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.hit: True, attacks.0.wounded: True, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Real recipient (2026-11-16): the same duel as
+# the-first-round-strength-bonus-turns-the-declared-three-into-a-wound, but the bearer is built as
+# the printed Lothern Sea Patrol Seaguards profile (mordheim/lothern-sea-patrol-sar/seaguards) (the
+# rule is printed on that profile) instead of injecting mechanic.seaguard-spear-master into a
+# hand-built fighter; the explicit characteristics keep that scenario's dice model.
+- audit_id: rule/mordheim/lothern-sea-patrol-sar/seaguards--spear-master/mechanic.seaguard-spear-master
+  id: the-first-round-strength-bonus-turns-the-declared-three-into-a-wound-as-the-real-seaguards
+  fighters:
+    first:
+      collection: mordheim
+      band_id: lothern-sea-patrol-sar
+      profile_id: seaguards
+      main_weapon_id: weapon.spear
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context:
+    charging: [first]
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.first.attack.0.hit, value: 4}
+  - {key: round.0.first.attack.0.wound, value: 3}
+  - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: true, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Real recipient (2026-11-16): the same duel as the-chosen-failed-hit-is-taken-again-once, but the
+# bearer is built as the printed Lothern Sea Patrol Seaguards profile
+# (mordheim/lothern-sea-patrol-sar/seaguards) (the rule is printed on that profile) instead of
+# injecting mechanic.seaguard-spear-master into a hand-built fighter; the explicit characteristics
+# keep that scenario's dice model.
+- audit_id: rule/mordheim/lothern-sea-patrol-sar/seaguards--spear-master/mechanic.seaguard-spear-master
+  id: the-chosen-failed-hit-is-taken-again-once-as-the-real-seaguards
+  fighters:
+    first:
+      collection: mordheim
+      band_id: lothern-sea-patrol-sar
+      profile_id: seaguards
+      main_weapon_id: weapon.spear
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context:
+    charging: [first]
+    active_participant: first
+  maximum_rounds: 1
+  decisions:
+  - {key: round.0.first.attack.0.spear-master, value: true}
+  rolls:
+  - {key: round.0.first.attack.0.hit, value: 3}
+  - {key: round.0.first.attack.0.hit.reroll, value: 5}
+  - {key: round.0.first.attack.0.wound, value: 3}
+  - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: true, attacks.0.damage: 1, state.second.wounds: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

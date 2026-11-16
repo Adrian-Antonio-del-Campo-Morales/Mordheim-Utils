@@ -27,9 +27,11 @@
 # on a non-excepted recipient is therefore refused by the offered-set gate, which is not this clause's
 # evidence, and the clause's own token refusal cannot be reached with a legal input.  The refusal template is
 # known (`"${token}" is forbidden for ${band}/${profile}.`) and no new operator is needed.  Pending datum:
-# the KB activation binding for this rule plus either a named weapon on a recipient's own list or an accepted
-# disposition that the clause is a Trading-Post/acquisition prohibition with no construction-stage input
-# (the clause's own source row also declares runtime scope LATER / implemented NO with a null binding).
+# either a named weapon on a recipient's own list or an accepted disposition that the clause is a
+# Trading-Post/acquisition prohibition with no construction-stage input.  The KB activation binding is no
+# longer missing: the clause's source row now records scope YES / implemented YES and binds
+# profile.equipment-restrictions with forbids [long_bow, elf_bow, handgun, hochland_long_rifle,
+# blunderbuss] (checked 2026-11-16); the earlier "scope LATER / null binding" note is withdrawn.
 # REVIEWED still requires manual semantic review.
 # authoring_progress: 0 authored scenario(s) in this file; authored clauses []; the admitted whole clause
 #   stays pending on a named input/activation datum, not on a missing operator: the printed refusal template

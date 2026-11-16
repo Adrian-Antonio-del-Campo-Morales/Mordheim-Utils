@@ -16,6 +16,10 @@
 # exactly what the user's rule forbids).  The configuration itself may be declarable; the expected
 # observation is not.  1 scenario evidences the recorded ruling that the printed "may begin with one or two Mutations" admits a Possessed with no mutation.  Pending: the upper-bound refusal (three mutations), whose missing datum is the diagnostic the construction stage emits when the maximum is exceeded.
 
+# De-duplication note (2026-11-16): the duplicate KB source recorded here earlier has been removed, so
+#   this rule is now the single source and its scenarios fail when its binding is removed (rule-removal
+#   probe).  Earlier note, kept for history: this binding is a construction contract (compiler.possessed-optional-zero-to-two-mutations-at-recruitment) with no duel consumer; the only compiled trace of the grant is CompiledFighter.construction_tags, so scenario a-p...
+
 # --- Authored scenarios ---
 # The recorded user ruling reads the printed "may" as optional, so zero mutations are allowed;
 # the acceptance control is the recipient built with no mutation at all, which must be admitted
@@ -39,4 +43,6 @@
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.first.attack.1.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
+  expect_fighters:
+    first.construction_tags: [compiler.mutation-purchase-at-recruitment, compiler.possessed-optional-zero-to-two-mutations-at-recruitment]
   expect_final: {rounds_executed: 1, termination_reason: horizon}

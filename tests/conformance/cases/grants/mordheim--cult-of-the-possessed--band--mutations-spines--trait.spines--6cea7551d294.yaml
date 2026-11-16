@@ -1,7 +1,7 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/cult-of-the-possessed/band--mutations-spines/trait.spines
 # authoring_status: AUTHORED
-# authoring_progress: the admitted spines clause carries 3 authored scenarios derived from the printed
+# authoring_progress: the admitted spines clause carries 4 authored scenarios derived from the printed
 #   rule and the recorded contract: the automatic Strength 1 hit at the start of the close-combat phase
 #   lands on the contacting opponent, the identical phase without the trait asks for no such die, and
 #   the printed "never cause critical hits" is pinned on its own boundary - the declared six on the
@@ -16,7 +16,7 @@
 # Governing rulings: docs/decisions/design-rulings.md
 #
 # Clause: whole--scope--spines (scope: YES)
-# AUTHORED[whole--scope--spines]: 3 scenarios evidence the printed automatic hit.  It is resolved
+# AUTHORED[whole--scope--spines]: 4 scenarios evidence the printed automatic hit.  It is resolved
 #   before the attack pools with no To Hit die at all, and its declared five is the Strength 1 face on
 #   the printed table against the opposing Toughness 2, so the contacting opponent loses one wound; the
 #   non-regression control repeats the identical phase on a fixture without the trait, where no spines
@@ -27,6 +27,9 @@
 #   six is exactly that candidate and the tape shows the denial - one wound taken, where a critical
 #   chart's two would take two.  The hit is dealt once each close-combat phase, and one phase is what
 #   the duel tape shows.  REVIEWED still requires manual semantic review.
+# Real recipient (2026-11-16): one further scenario builds the band's printed Mutant from the band package
+# with the entry selected through special_rule_ids, so the KB grant itself (not an injected mechanic id or
+# trait) is exercised.
 #
 # Clause: whole--scope--cost (scope: NO)
 # Outside the admitted clause scope; retained for context, not a test TODO.
@@ -109,3 +112,31 @@
     0: {state.second.wounds: 2, state.first.wounds: 2, state.second.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
+
+# Real recipient (2026-11-16): the bearer is the band's printed Mutant built from the band package with
+# the Spines mutation selected through special_rule_ids (characteristics overridden only to keep the
+# fixture's dice math), so the band's KB row supplies the automatic Strength 1 hit; without it the spines
+# wound die would go unused.
+- audit_id: rule/mordheim/cult-of-the-possessed/band--mutations-spines/trait.spines
+  id: the-printed-mutant-with-spines-hits-the-contacting-opponent
+  covers: [whole--scope--spines]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids: [band--mutations-spines]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.spines.wound, value: 5}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 1, state.first.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

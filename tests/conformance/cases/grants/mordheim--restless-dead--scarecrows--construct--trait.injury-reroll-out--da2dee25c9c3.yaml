@@ -92,6 +92,9 @@
 # each lost Wound: two dice, the first the printed Out of Action and the second the band-1 Knocked
 # Down, whose worse result stands.  No re-roll choice is declared, so the engine offering one - or
 # rolling a re-roll die - fails the case: that decline is the printed exception on this tape.
+# Corrected 2026-11-16: the body earlier started the scarecrow at three Wounds (above its printed W1,
+# which the runner now rejects, and which would leave it standing after two wounds with no injury
+# roll at all); it now starts at the printed single Wound this comment already described.
 
 - audit_id: rule/mordheim/restless-dead/scarecrows--construct/trait.injury-reroll-out
   id: a-wound-caused-by-fire-is-not-rerolled
@@ -104,7 +107,7 @@
       band_id: restless-dead
       profile_id: scarecrows
   initial_state:
-    second: {attacks: 0, wounds: 3}
+    second: {attacks: 0, wounds: 1}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:

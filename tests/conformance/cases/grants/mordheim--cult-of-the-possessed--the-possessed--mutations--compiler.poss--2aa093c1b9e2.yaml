@@ -20,6 +20,10 @@
 #   row grants.  Together they show the printed "one or more mutations each" as a permission with a
 #   standing zero minimum rather than a requirement.  REVIEWED still requires manual semantic review.
 
+# De-duplication note (2026-11-16): the duplicate KB source recorded here earlier has been removed, so
+#   this rule is now the single source and its scenarios fail when its binding is removed (rule-removal
+#   probe).  Earlier note, kept for history: this binding is a construction contract (compiler.possessed-optional-mutations-at-recruitment) with no duel consumer; the only compiled trace of the grant is CompiledFighter.construction_tags, so scenario a-possessed-may...
+
 # --- Authored scenarios ---
 # Derived from the printed rule and the recorded ruling; no engine output was consulted.  The
 # recipient is the band's printed Possessed profile in both scenarios, and the opponent is hand-built
@@ -49,6 +53,8 @@
   expect_initial: {first.wounds: 2}
   expect_rounds:
     0: {state.second.wounds: 2, state.second.condition: STANDING}
+  expect_fighters:
+    first.construction_tags: [compiler.mutation-purchase-at-recruitment, compiler.possessed-optional-mutations-at-recruitment]
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 - audit_id: rule/mordheim/cult-of-the-possessed/the-possessed--mutations/compiler.possessed-optional-mutations-at-recruitment

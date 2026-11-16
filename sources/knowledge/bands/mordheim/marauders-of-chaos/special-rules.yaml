@@ -80,15 +80,14 @@ rules:
     - seer
 - id: warhounds-of-chaos--natural-weapons
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: profile.natural-attacks
-      scope: 'YES'
-      binding:
-        kind: profile
-        id: profile.natural-attacks
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   name: Natural Weapons
   effect: Warhounds have no weapons but fight without the normal penalties for being unarmed.
   source:

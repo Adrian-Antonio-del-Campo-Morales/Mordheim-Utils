@@ -1,13 +1,17 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/lustrian-reavers/conqueror--survivor/trait.survivor
 # authoring_status: AUTHORED
-# authoring_progress: the admitted survivor clause carries three authored scenarios for the printed
+# authoring_progress: the admitted survivor clause carries four authored scenarios for the printed
 #   "Treat Out of Action as Stunned if the Conqueror is standing when receiving the Wound": a
 #   standing bearer whose injury roll takes it out of action is Stunned instead, the same dice against
 #   a bearer without the trait are taken out, and a bearer that was already Knocked Down when it
 #   received the wound is taken out as well, which is the printed "unless the model is already
 #   Knocked Down or Stunned".  REVIEWED still requires manual semantic review and execution_status
 #   stays UNEXECUTED.
+# Real-recipient addendum (2026-11-16): 1 further scenario(s) build the printed Lustrian Reavers
+# profile itself (conqueror), so the KB grant of this identity is exercised rather than only the
+# shared operator injected into hand-built fixtures; the earlier fixture scenarios stay as the
+# operator cases.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -17,7 +21,7 @@
 # Governing rulings: docs/decisions/design-rulings.md
 #
 # Clause: cannot-be-out-while-standing (scope: YES)
-# AUTHORED[cannot-be-out-while-standing]: 3 scenarios cover the recorded contract "an Out of Action
+# AUTHORED[cannot-be-out-while-standing]: 4 scenarios cover the recorded contract "an Out of Action
 #   result while standing becomes Stunned; observable: a standing bearer is Stunned instead of
 #   removed": the trauma die of six is the ordinary out-of-action face, so the standing bearer keeps
 #   STUNNED, the identical tape without the trait takes the bearer out, and the third scenario starts
@@ -96,3 +100,32 @@
   expect_rounds:
     0: {attacks.0.damage: 1, state.second.condition: OUT}
   expect_final: {rounds_executed: 1, termination_reason: second_out}
+# Real recipient (2026-11-16): the same duel as a-standing-bearer-is-stunned-instead-of-taken-out,
+# but the bearer is built as the printed Lustrian Reavers Conqueror profile
+# (mordheim/lustrian-reavers/conqueror) (the rule is printed on that profile) instead of injecting
+# trait.survivor into a hand-built fighter; the explicit characteristics keep that scenario's dice
+# model.
+- audit_id: rule/mordheim/lustrian-reavers/conqueror--survivor/trait.survivor
+  id: a-standing-bearer-is-stunned-instead-of-taken-out-as-the-real-conqueror
+  covers: [cannot-be-out-while-standing]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: lustrian-reavers
+      profile_id: conqueror
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1, leadership: 7}
+  duel_context:
+    charging: []
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.first.attack.0.hit, value: 4}
+  - {key: round.0.first.attack.0.wound, value: 4}
+  - {key: round.0.first.attack.0.injury.0, value: 6}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.condition: STUNNED, state.second.wounds: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

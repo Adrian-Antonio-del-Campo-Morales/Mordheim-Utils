@@ -10,13 +10,18 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: 2 scenarios cover the single reroll offered while charging a
-#   Fear-causer and its refusal.  The trigger is the printed one, so a Fear-causer that
-#   was not charged (no charge and no established contact) offers nothing.
+# AUTHORED: 4 scenarios cover the reroll offered while charging a Fear-causer, the reroll
+#   offered when charged by one (the printed "charged by" branch, the bearer not charging),
+#   the second result standing when the reroll also fails ("once, accepting the second
+#   result"), and declining the optional reroll.  Corrected 2026-11-16: the header earlier
+#   claimed a "Fear-causer that was not charged offers nothing" case and the id
+#   one-failed-test-is-all-the-vow-covers claimed the once-only limit, but no scenario
+#   showed either; the printed "in combat with" branch makes the former claim wrong for an
+#   engaged duel, so it is withdrawn, and the once-only limit is now that scenario's body.
 
 # --- Authored scenarios ---
-# # The charge is against a Fear-causing opponent, so the failed individual Leadership
-# # test is offered exactly one reroll and the accepted second result stands.
+# The charge is against a Fear-causing opponent, so the failed individual Leadership
+# test is offered exactly one reroll and the accepted second result stands.
 - audit_id: mechanic/mechanic.questing-vow
   id: the-failed-test-against-a-fear-causer-is-taken-again
   fighters:
@@ -43,10 +48,41 @@
   expect_rounds:
     0: {state.first_charged: True, attacks.0.damage: 1, state.second.wounds: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
-# # The printed reroll is optional and single: refusing it leaves the failed test standing,
-# # so the voluntary charge is cancelled and no attack is resolved.
+# "The Knight may re-roll any Leadership test once, accepting the second result": the
+# reroll is taken and also fails, so the second result stands and no further reroll is
+# offered (the strict decision script would fail on a second reroll request); the
+# voluntary charge is cancelled and no attack is resolved.  Body corrected 2026-11-16:
+# it earlier declined the reroll, which shows optionality, not the once-only limit; that
+# refusal now lives in declining-the-vow-reroll-leaves-the-failed-test below.
 - audit_id: mechanic/mechanic.questing-vow
   id: one-failed-test-is-all-the-vow-covers
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.questing-vow]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.causes-fear]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.fear.charge.reroll, value: true}
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 6}
+    - {key: round.0.first.fear.charge.1, value: 6}
+    - {key: round.0.first.fear.charge.reroll.0, value: 6}
+    - {key: round.0.first.fear.charge.reroll.1, value: 5}
+  expect_rounds:
+    0: {attacks: [], state.first_charged: False, state.engaged: False, state.failed_charges: ['first']}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# The printed reroll is optional: refusing it leaves the failed test standing, so the
+# voluntary charge is cancelled and no attack is resolved.  (Moved here 2026-11-16 from
+# the earlier body of one-failed-test-is-all-the-vow-covers.)
+- audit_id: mechanic/mechanic.questing-vow
+  id: declining-the-vow-reroll-leaves-the-failed-test
   fighters:
     first:
       main_weapon_id: weapon.mace
@@ -67,3 +103,34 @@
     0: {attacks: [], state.first_charged: False, state.engaged: False, state.failed_charges: ['first']}
   expect_final: {rounds_executed: 1, termination_reason: disengaged}
 
+# The printed "charged by ... a fear-causing enemy" branch: the bearer does not charge; the
+# Fear-causer charges it.  The failed Fear test (6+6 against Leadership 6) would leave the
+# bearer hitting only on sixes; the vow's reroll (1+1) passes, so its WS3-against-WS3 hit
+# of 4 lands normally.  The causer makes no attacks of its own (initial_state) so the tape
+# isolates the test.
+- audit_id: mechanic/mechanic.questing-vow
+  id: the-failed-test-when-charged-by-a-fear-causer-is-taken-again
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.questing-vow]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.causes-fear]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.fear.charged.reroll, value: true}
+  rolls:
+    - {key: round.0.first.fear.charged.0, value: 6}
+    - {key: round.0.first.fear.charged.1, value: 6}
+    - {key: round.0.first.fear.charged.reroll.0, value: 1}
+    - {key: round.0.first.fear.charged.reroll.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -1,6 +1,6 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/black-orcs/orc-nuttaz--savage/profile.equipment-restrictions
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -32,15 +32,19 @@
 #   its acceptance control), which is the other content this row owns.
 #
 # Clause: mandatory-charge (scope: YES)
-# PARTIAL[mandatory-charge]: [C] the counter-case itself is unstatable, and the register's disposition is
-#   an accepted scope exclusion.  The duel takes a charge as a fixture fact (duel_context.charging), so no
-#   declared input expresses the printed "Nuttaz declines to charge" case the obligation exists to forbid,
-#   and the printed obligation governs run/charge distance and direction, which is the movement subsystem the
-#   1v1 duel does not admit: the clause therefore owns neither a duel-time observation nor a declarable
-#   negative.  The register note records the same resolved 1v1 exclusion (deferred with the movement
-#   subsystem, not queued for implementation) while its scope-review entry classifies the charge obligation
-#   itself as an admitted individual consequence; the two are recorded together rather than silently dropped.
-#   REVIEWED still requires manual semantic review.
+# AUTHORED[mandatory-charge]: printed "Nuttaz must always run or charge their maximum distance towards the
+#   nearest opponent they can see."  The run, the distance, the visibility search and the target choice are
+#   the movement subsystem, recorded separately on this rule as effect movement.compulsory-charge (scope NO,
+#   out-of-scope.movement); what the duel can observe is the obligation itself once the caller supplies that
+#   the Nuttaz is making its required charge, through the catalog's supplied compulsion
+#   condition.nuttaz-charge (catalog/rules/conditions.yaml; the clause register's C02a row records the
+#   same reuse).  Its enforcement is implemented: the duel start refuses a carrier that is not charging
+#   (packages/python/combat-engine/mordheim_combat/modular/state.py, initialize_duel: "A supplied compulsory
+#   charge requires its initial in-range charging attempt"), and construction restricts the condition to
+#   the native Orc Nuttaz (roster-construction compiler.py: "the required Nuttaz charge needs the native Orc
+#   Nuttaz").  3 scenarios: the Nuttaz under its required charge declared as not charging is refused (the
+#   "Nuttaz declines to charge" case the earlier note called unstatable - it is stated by charging: []), the
+#   same Nuttaz declared charging is accepted and fights, and the condition on an Orc Boy is refused.
 #
 # Clause: whole (scope: YES)
 # AUTHORED[whole]: the declared prohibition is evidenced as a construction refusal: the recipient build where carrying armour.heavy-armour in armour_id is refused with "armour is forbidden for black-orcs/orc-nuttaz", and the same recipient without the item is accepted at construction. One refusal is declared per printed recipient of the rule. Consumer: the shared eligibility stage (packages/python/roster-construction/mordheim_construction/_eligibility.js).
@@ -50,7 +54,7 @@
 #
 # Clause: no-rout-leadership (scope: NO)
 # Outside the admitted clause scope; retained for context, not a test TODO.
-# authoring_progress: 4 authored scenario(s) in this file; authored clauses ['whole', 'extra-attack']; clauses still pending or unrepresentable in this file: ['mandatory-charge']. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+# authoring_progress: 5 authored scenario(s) in this file (the light-armour refusal was moved here on 2026-11-16 from the out-of-scope placeholder rule/mordheim/black-orcs/orc-nuttaz--savage/psychology.leadership-restrictions, renamed orc-nuttaz-with-light-armour-is-refused because the heavy-armour case already held its id; its two other scenarios were exact duplicates of this file's and were dropped); authored clauses ['whole', 'extra-attack', 'mandatory-charge'] (3 mandatory-charge scenarios added 2026-11-16, so the file now holds 8). REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
 
 # --- Authored scenarios ---
 
@@ -136,3 +140,78 @@
   expect_final:
     rounds_executed: 1
     termination_reason: horizon
+
+- audit_id: rule/mordheim/black-orcs/orc-nuttaz--savage/profile.equipment-restrictions
+  id: orc-nuttaz-with-light-armour-is-refused
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: black-orcs
+      profile_id: orc-nuttaz
+      armour_id: armour.light-armour
+  expect_error: armour is forbidden for black-orcs/orc-nuttaz
+
+# The printed obligation: a Nuttaz making its required charge may not decline it.  The supplied
+# compulsion is declared and the duel declares that nobody charges, so the duel must refuse to start.
+- audit_id: rule/mordheim/black-orcs/orc-nuttaz--savage/profile.equipment-restrictions
+  id: a-nuttaz-under-its-required-charge-cannot-decline-it
+  covers: [mandatory-charge]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: black-orcs
+      profile_id: orc-nuttaz
+      main_weapon_id: weapon.axe
+      condition_ids: [condition.nuttaz-charge]
+    second:
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 4, wounds: 3, initiative: 1, attacks: 1}
+  duel_context:
+    charging: []
+    active_participant: first
+  expect_error: A supplied compulsory charge requires its initial in-range charging attempt
+
+# Control: the same Nuttaz under the same compulsion, declared charging, is accepted and fights its
+# printed Attacks 1 plus the printed extra attack; both entries miss on a natural 1 and the opponent's
+# attacks are set to 0, so the round shows only that the required charge was made.
+- audit_id: rule/mordheim/black-orcs/orc-nuttaz--savage/profile.equipment-restrictions
+  id: the-nuttaz-making-its-required-charge-fights
+  covers: [mandatory-charge]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: black-orcs
+      profile_id: orc-nuttaz
+      main_weapon_id: weapon.axe
+      condition_ids: [condition.nuttaz-charge]
+    second:
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 4, wounds: 3, initiative: 1, attacks: 1}
+  initial_state:
+    second:
+      attacks: 0
+  duel_context:
+    charging: [first]
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.first_charged: true, attacks.0.hit: False, attacks.1.hit: False, state.second.wounds: 3}
+  expect_final:
+    rounds_executed: 1
+    termination_reason: horizon
+
+# Recipient: the obligation belongs to the Nuttaz alone, so the same supplied compulsion on an Orc Boy
+# of the same band is refused at construction.
+- audit_id: rule/mordheim/black-orcs/orc-nuttaz--savage/profile.equipment-restrictions
+  id: the-required-nuttaz-charge-is-refused-for-an-orc-boy
+  covers: [mandatory-charge]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: black-orcs
+      profile_id: orc-boyz
+      condition_ids: [condition.nuttaz-charge]
+  expect_error: the required Nuttaz charge needs the native Orc Nuttaz

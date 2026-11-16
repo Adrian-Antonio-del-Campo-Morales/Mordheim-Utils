@@ -1,10 +1,10 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/savage-orcs-kaz/gobbo-boyz--equipment-restrictions/profile.equipment-restrictions
 # authoring_status: AUTHORED
-# authoring_progress: the admitted whole clause carries 2 authored scenarios derived from the printed
-#   prohibition and the recorded contract: the bow-carrying build is refused at construction with the shared
-#   stage's own verbatim fragment, and the same recipient without the item constructs and runs.  REVIEWED
-#   still requires manual semantic review and execution_status stays UNEXECUTED.
+# authoring_progress: 3 authored scenario(s) for the admitted whole clause: the Bow-carrying Gobbo Boy is
+#   refused, the same recipient without it is accepted, and (2026-11-16) a Gobbo Boy carrying the Short Bow,
+#   a separate unrestricted row of the same printed list, is admitted.  REVIEWED still requires manual
+#   semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -13,15 +13,15 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: 2 scenarios.  The declared token 'bow' is not an uninterpreted placeholder: "bow" is
-#   member of EQUIPMENT_TAG_VOCABULARY in packages/python/roster-construction/mordheim_construction/_eligibility.js,
-#   so it is an INTERPRETED_TOKEN and equipmentIssue() refuses the carrying item with its own template
-#   `"${token}" is forbidden for ${band}/${profile}.` - the exact string this file now asserts.  The item
-#   spelling follows the neighbouring bands' equipment-access rows, which publish bow-family items by their
-#   short id; the token check also matches the item id directly, so either spelling resolves.  Consumer: the
-#   shared eligibility stage reached by compile_fighter.
+# AUTHORED: 3 scenarios.  The printed list row is "Bow (not Gobbo Boyz)"; the separate "Short Bow" row
+#   (5 gc) carries no restriction (sources/knowledge/bands/mordheim/savage-orcs-kaz/equipment-access.yaml:
+#   short_bow has no applies_to; bow has applies_to.profile_ids [boss, weirdo, spottaz, brutes, nuttaz, boyz]).
+#   The Bow refusal below is decided by that gated list row (`"bow" is not on any equipment list of ...`),
+#   not by this binding's token.
+# De-duplication note (2026-11-16): the duplicate KB source recorded here earlier has been removed, so
+#   this rule is now the single source and its scenarios fail when its binding is removed (rule-removal
+#   probe).  Earlier note, kept for history: the Bow refusal is REDUNDANT with the gated `bow` row of sources/knowledge/bands/mordheim/savage-orcs-kaz/equipment-access.yaml (applies_to.profile_ids excludes gobbo-boyz).  No on-list item is forbidden by the printed r...
 # --- Authored scenarios ---
-# Derived from the printed prohibition and the shared stage's template; no engine output was consulted.
 
 - audit_id: rule/mordheim/savage-orcs-kaz/gobbo-boyz--equipment-restrictions/profile.equipment-restrictions
   id: a-bow-carrying-gobbo-boy-is-refused
@@ -31,7 +31,7 @@
       band_id: savage-orcs-kaz
       profile_id: gobbo-boyz
       owned_item_ids: [bow]
-  expect_error: '"bow" is not on any equipment list of savage-orcs-kaz/gobbo-boyz.'
+  expect_error: '"item:bow" is forbidden for savage-orcs-kaz/gobbo-boyz.'
 
 - audit_id: rule/mordheim/savage-orcs-kaz/gobbo-boyz--equipment-restrictions/profile.equipment-restrictions
   id: the-same-recipient-without-a-bow-is-accepted-at-construction
@@ -55,3 +55,24 @@
   expect_final:
     rounds_executed: 0
     termination_reason: first_out
+
+# The printed prohibition names the Bow row only.  The Short Bow is its own unrestricted row of the same
+# list, so a Gobbo Boy carrying it is admitted; the build is put out of action at the outset so no die is
+# requested.
+
+- audit_id: rule/mordheim/savage-orcs-kaz/gobbo-boyz--equipment-restrictions/profile.equipment-restrictions
+  id: the-short-bow-is-not-the-forbidden-bow
+  fighters:
+    first:
+      collection: mordheim
+      band_id: savage-orcs-kaz
+      profile_id: gobbo-boyz
+      owned_item_ids: [short_bow]
+    second:
+      collection: mordheim
+      band_id: savage-orcs-kaz
+      profile_id: gobbo-boyz
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_initial: {first.condition: OUT}
+  expect_final: {rounds_executed: 0, termination_reason: first_out}

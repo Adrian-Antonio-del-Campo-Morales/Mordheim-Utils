@@ -30,6 +30,17 @@
 #   list entry decides between two stage messages - see the clause note.  REVIEWED requires manual semantic review
 #   and execution_status stays UNEXECUTED.
 
+# De-duplication note (2026-11-16): the duplicate source the earlier discrimination note named - the
+#   `beastmaster_whip` row of `dark-elf-equipment-list` in sources/knowledge/bands/trollheim/lustria-dark-elves/equipment-access.yaml, its applies_to.profile_ids [beastmaster] gate - was removed.
+#   Every profile the gate excluded carries this printed restriction as its own forbids token, so the
+#   list now offers the row to all its users and this binding is the single encoding of the printed
+#   reservation: the refusal below is the binding's own '"<item>" is forbidden for <band>/<profile>.'
+#   (only the expect_error wording changed; the refusal itself is unchanged) and the scenario discriminates.
+#   Header prose above that quotes the list sentence '... is not on any equipment list ...' describes the
+#   state before this change.  The Whip half the PARTIAL note above holds pending is therefore no longer
+#   ambiguous and is asserted by the-dark-prince-may-not-select-the-beastmasters-whip (added 2026-11-16 from
+#   the printed 'May not select the Beastmaster's Whip; it is Beastmaster only').
+
 # --- Authored scenarios ---
 
 - audit_id: rule/trollheim/lustria-dark-elves/dark-prince--equipment-restrictions/profile.equipment-restrictions
@@ -64,3 +75,13 @@
   expect_final:
     rounds_executed: 0
     termination_reason: second_out
+
+- audit_id: rule/trollheim/lustria-dark-elves/dark-prince--equipment-restrictions/profile.equipment-restrictions
+  id: the-dark-prince-may-not-select-the-beastmasters-whip
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: dark-prince
+      owned_item_ids: [beastmaster_whip]
+  expect_error: '"beastmaster_whip" is forbidden for lustria-dark-elves/dark-prince.'

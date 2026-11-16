@@ -29,9 +29,11 @@
 #   non-Strength list is accepted at construction and runs.  Recorded interpretation kept: the printed leader
 #   exception (Da Biggest Boss, the profile.skill-access origin) is not asserted here, and no promotion
 #   variant is declared, because the contract's branch is keyed on the skill-list variant alone.
+# Provenance (2026-11-16): 2 scenario(s) moved here from rule/mordheim/night-goblins-web/boss--da-biggest-boss/profile.skill-access, whose binding is now covered.elsewhere (de-duplication of construction encodings); bodies unchanged, covers labels dropped.
 
 
 # --- Authored scenarios ---
+
 # The promoted henchman's skill-list selection is declared as the skill-list.* variant the contract reads;
 # the refusal strings are the contract's two branches taken verbatim from _eligibility.js::profileTail.
 - audit_id: rule/mordheim/night-goblins-web/band--promoted-henchmen-no-strength/compiler.promoted-hero-no-strength-access
@@ -77,3 +79,34 @@
   expect_final:
     rounds_executed: 0
     termination_reason: first_out
+
+- audit_id: rule/mordheim/night-goblins-web/band--promoted-henchmen-no-strength/compiler.promoted-hero-no-strength-access
+  id: the-boss-may-take-a-strength-skill
+  fighters:
+    first:
+      collection: mordheim
+      band_id: night-goblins-web
+      profile_id: boss
+      skill_ids: [skill.mighty-blow]
+      main_weapon_id: weapon.club
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_final: {rounds_executed: 1}
+
+# The printed exclusion of the same clause: no other member of the warband except the current leader
+# may ever use Strength skills, evidenced on the band's own non-leader profile with the same
+# canonical Strength skill.
+- audit_id: rule/mordheim/night-goblins-web/band--promoted-henchmen-no-strength/compiler.promoted-hero-no-strength-access
+  id: another-member-of-the-warband-is-refused-the-same-strength-skill
+  fighters:
+    first:
+      collection: mordheim
+      band_id: night-goblins-web
+      profile_id: night-goblin-warriors
+      skill_ids: [skill.mighty-blow]
+      main_weapon_id: weapon.dagger
+  expect_error: "Strength skills are forbidden for night-goblins-web/night-goblin-warriors: ['skill.mighty-blow']"

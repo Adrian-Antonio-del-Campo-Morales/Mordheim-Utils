@@ -1,6 +1,6 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/crooked-moon-kep/band--night-goblin-special-skills-netter/condition.netted
-# authoring_status: TODO
+# authoring_status: PARTIAL
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -8,7 +8,55 @@
 # REVIEWED requires semantic review; covers labels alone are insufficient.
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
+# Discrimination note (2026-11-16, reviewed): not a duplication, so the KB is kept and no
+#   single-source change applies.  This is the documented supplied-condition pattern
+#   (docs/reference/knowledge-base.md, Reason codes): the band rule
+#   band--night-goblin-special-skills-netter binds condition.netted with `grant: none` only to name the
+#   printed rule that produces the condition; it is never a compile route.  The condition's one operator
+#   is its row in sources/knowledge/catalog/rules/conditions.yaml, reached only through the supplied
+#   condition_ids entry these scenarios declare, so the scenarios test it through its condition id, as
+#   intended.  Removing the band binding cannot change a build; removing the catalogue row refuses the
+#   build.  The only place the band rule could become observable is the recipient gate, which
+#   compiler.py hard-codes (compile_fighter's supplied-condition checks on band/profile/kind) instead of
+#   reading this rule's applies_to; that is a compiler choice, not a KB duplicate.
 # Record: sources/knowledge/bands/mordheim/crooked-moon-kep/special-rules.yaml
-# TODO: Review the rule and author all required scenarios.
+# PARTIAL: Scenarios moved here on 2026-11-16 from the placeholder identity rule/mordheim/crooked-moon-
+#   kep/band--night-goblin-special-skills/unimplemented.crooked-moon-kep.band.night-goblin-special-
+#   skills, whose KB effect is now unbound (out-of-scope.shooting for the umbrella skill list); the duel
+#   behaviour they exercise is this identity's.  Inputs, dice and expectations are unchanged by the
+#   move; each scenario's own comments carry its derivation and may still name the placeholder record
+#   they were authored against.  The one scenario is the absence control: a printed Night Goblin without
+#   the Netter rule charges and no net die is requested.  Gap: no scenario supplies condition.netted and
+#   observes the netted target (automatically hit, counted as knocked down).
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+
+# The retained control preserves its source-derived ordinary charge and legal equipment.
+# The control: the identical charge on the same profile build without the band netter rule, where no
+# net die is requested at all and the ordinary attack misses.
+- audit_id: rule/mordheim/crooked-moon-kep/band--night-goblin-special-skills-netter/condition.netted
+  id: without-the-band-netter-rule-the-charge-asks-for-no-net-die
+  fighters:
+    first:
+      collection: mordheim
+      band_id: crooked-moon-kep
+      profile_id: night-goblins
+      main_weapon_id: weapon.club
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.animosity, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.0.knocked_down_target: false, state.second.condition: STANDING,
+        state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.animosity, sides: 6, value: 4}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}

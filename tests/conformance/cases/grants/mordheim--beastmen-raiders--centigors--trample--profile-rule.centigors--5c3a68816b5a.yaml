@@ -13,6 +13,9 @@
 # REVIEWED requires semantic review; covers labels alone are insufficient.
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
+# De-duplication note (2026-11-16): the duplicate KB source recorded here earlier has been removed, so
+#   this rule is now the single source and its scenarios fail when its binding is removed (rule-removal
+#   probe).  Earlier note, kept for history: the binding profile-rule.centigors--trample (kind: compiler) is a marker that compilation never reads; packages/python/roster-construction/mordheim_construction/compiler.py keys the effect on the applicable rule id 'cent...
 #
 # AUTHORED: 2 scenarios cover the printed additional attack: the bearer resolves a second
 # attack entry after its ordinary weapon attack, once while charging and once while it is the model

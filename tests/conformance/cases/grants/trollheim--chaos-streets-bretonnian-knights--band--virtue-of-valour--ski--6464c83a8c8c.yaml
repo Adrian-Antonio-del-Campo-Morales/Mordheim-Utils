@@ -1,7 +1,7 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/chaos-streets-bretonnian-knights/band--virtue-of-valour/skill.virtue-of-valour
 # authoring_status: AUTHORED
-# authoring_progress: the admitted whole clause carries three authored scenarios derived from the printed
+# authoring_progress: the admitted whole clause carries five authored scenarios derived from the printed
 # sentence and the recorded contract, mirroring the authored mechanics origin of the same effect_id
 # (cases/mechanics/skill.virtue-of-valour.yaml): a defender whose printed Strength is strictly higher makes
 # the failed hit take a second die and the declared reroll hits, an equal-Strength defender is offered no
@@ -10,6 +10,10 @@
 # special-rules.yaml), so the band origin contributes no second runtime term and the tapes read the canonical
 # operator through the fixture's grant list.  REVIEWED still requires manual semantic review and
 # execution_status stays UNEXECUTED.
+# Real-recipient addendum (2026-11-16): 2 further scenario(s) build the printed Bretonnian Knights
+# profile itself (questing-knight) and select band--virtue-of-valour through special_rule_ids, so
+# the KB grant of this identity is exercised rather than only the shared operator injected into
+# hand-built fixtures; the earlier fixture scenarios stay as the operator cases.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -18,7 +22,7 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: 3 scenarios cover the printed "when fighting a model with a higher Strength
+# AUTHORED: 5 scenarios cover the printed "when fighting a model with a higher Strength
 # characteristic" reroll.  The bearer's printed Strength is 3 in both the trigger and the control fixtures,
 # so the only difference is the defender's printed Strength (4 against 3, the strict comparison the contract
 # closes on), and the third scenario declares a reroll that fails as well, which the printed reroll does not
@@ -90,3 +94,62 @@
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 
+# Real recipient (2026-11-16): the same duel as
+# a-higher-strength-defender-turns-the-missed-hit-into-a-hit, but the bearer is built as the printed
+# Bretonnian Knights Questing Knight profile
+# (trollheim/chaos-streets-bretonnian-knights/questing-knight), with the band rule selected through
+# special_rule_ids [band--virtue-of-valour] instead of injecting skill.virtue-of-valour into a
+# hand-built fighter; the explicit characteristics keep that scenario's dice model.
+- audit_id: rule/trollheim/chaos-streets-bretonnian-knights/band--virtue-of-valour/skill.virtue-of-valour
+  id: a-higher-strength-defender-turns-the-missed-hit-into-a-hit-as-the-real-questing-knight
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-bretonnian-knights
+      profile_id: questing-knight
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [band--virtue-of-valour]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context:
+    charging: [first]
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.first.attack.0.hit, value: 2}
+  - {key: round.0.first.attack.0.hit.reroll, value: 4}
+  - {key: round.0.first.attack.0.wound, value: 4}
+  - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Real recipient (2026-11-16): the same duel as an-equal-strength-defender-grants-no-reroll, but the
+# bearer is built as the printed Bretonnian Knights Questing Knight profile
+# (trollheim/chaos-streets-bretonnian-knights/questing-knight), with the band rule selected through
+# special_rule_ids [band--virtue-of-valour] instead of injecting skill.virtue-of-valour into a
+# hand-built fighter; the explicit characteristics keep that scenario's dice model.
+- audit_id: rule/trollheim/chaos-streets-bretonnian-knights/band--virtue-of-valour/skill.virtue-of-valour
+  id: an-equal-strength-defender-grants-no-reroll-as-the-real-questing-knight
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-bretonnian-knights
+      profile_id: questing-knight
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [band--virtue-of-valour]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context:
+    charging: [first]
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.first.attack.0.hit, value: 2}
+  - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

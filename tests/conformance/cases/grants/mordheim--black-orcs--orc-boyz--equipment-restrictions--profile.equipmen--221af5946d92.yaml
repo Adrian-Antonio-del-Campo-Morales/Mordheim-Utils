@@ -3,6 +3,12 @@
 # authoring_status: AUTHORED
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
+# Note (2026-11-16): this effect is now covered.elsewhere and outside the admitted scope: the same
+#   printed restriction is encoded once, by the band's equipment-list line (Orc Boyz crossbow, Thieves
+#   Guild Bagh Nakh) or by the profiles' own printed skill access (Strigany, Nipponese tables). The
+#   scenarios below stay as documentation; no admitted identity carries a list line, so they give no
+#   coverage.
+#
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
@@ -14,17 +20,21 @@
 #   `"crossbow" is not on any equipment list of black-orcs/orc-boyz.` while the profile the sentence reserves it to,
 #   black-orcs/orc-shootaz, is accepted at construction with the same weapon (the band's own equipment
 #   access gates the crossbow entry with applies_to.profile_ids [orc-shootaz], so the reservation is
-#   visible from both sides).  The refusal is the shared stage's tag-token branch: boundEquipment filters
-#   the profile's forbidden tokens to the shared ones and then calls equipmentIssue with
-#   equipment_access null and equipment_forbids ['crossbow'], so tokenForbids reaches the tag match
-#   (`if (EQUIPMENT_TAG_VOCABULARY.includes(token)) return item.tags.includes(token);`) and the message
-#   is `"${token}" is forbidden for ${band_id}/${profile_id}.`  Consumer: the shared eligibility stage
-#   (packages/python/roster-construction/mordheim_construction/_eligibility.js).
+#   visible from both sides).  The refusal is the shared stage's per-item list check (code
+#   equipment_not_permitted), raised before any forbids token is read.
 # authoring_progress: 3 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
 
+# Discrimination note (2026-11-16): REDUNDANT - no legal build exercises this binding without its duplicate source:
+#   sources/knowledge/bands/mordheim/black-orcs/equipment-access.yaml, list `henchmen-list`, row item_id
+#   `crossbow` applies_to profile_ids [orc-shootaz]: the row is not offered to this recipient, so the list
+#   check refuses the item before the binding's token is read, and no item that IS on this recipient's list
+#   is forbidden by the printed rule alone.  The scenarios below stay as truthful evidence of the printed
+#   outcome, but they cannot show this binding.
+
 # --- Authored scenarios ---
-# The refusal is the shared stage's tag-token branch, reached through the profile's recorded
-# prohibition token 'crossbow'; the accepted build is the profile the sentence reserves the item to.
+# The refusal is the shared per-item list check
+# (`"<item>" is not on any equipment list of <band>/<profile>.`), see the discrimination note above.
+# The accepted build is the profile the sentence reserves the item to.
 - audit_id: rule/mordheim/black-orcs/orc-boyz--equipment-restrictions/profile.equipment-restrictions
   id: orc-boy-carrying-a-crossbow-is-refused
   fighters:

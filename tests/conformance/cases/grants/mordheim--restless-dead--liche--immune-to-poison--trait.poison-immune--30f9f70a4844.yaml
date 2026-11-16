@@ -12,6 +12,9 @@
 # REVIEWED requires semantic review; covers labels alone are insufficient.
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
+# De-duplication note (2026-11-16): the duplicate KB source recorded here earlier has been removed, so
+#   this rule is now the single source and its scenarios fail when its binding is removed (rule-removal
+#   probe).  Earlier note, kept for history: the same effect is delivered independently by sources/knowledge/bands/mordheim/restless-dead/profiles.yaml, profile liche, key combat_traits.poison_immune: true, so removing this rule's binding leaves the compiled fighte...
 #
 # AUTHORED: 1 scenario shows the printed poison immunity against the one duel-time
 # poison rider: a Nightshade-coated mace wounds the bearer, the wound is taken as any

@@ -1,7 +1,7 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/marauders-of-chaos/spawn-of-chaos--psychology/mechanic.automatic-leadership
 # authoring_status: AUTHORED
-# authoring_progress: the admitted automatic-leadership clause carries 2 authored scenarios, derived from
+# authoring_progress: the admitted automatic-leadership clause carries 3 authored scenarios, derived from
 #   the printed sentence and the recorded contract, and the representation input the previous note waited
 #   for is no longer needed: the pair uses a fixture carrying the canonical operator
 #   (mechanic.automatic-leadership), which is how the accepted grants of this directory deliver an operator
@@ -10,6 +10,10 @@
 #   Leadership die requested at all, and the negative control showing the same bearer without the operator
 #   failing the same test and striking only on sixes.  REVIEWED still requires manual semantic review and
 #   execution_status stays UNEXECUTED.
+# Real-recipient addendum (2026-11-16): one further scenario builds the printed Spawn of Chaos
+# profile; because the Spawn causes Fear (and so never tests Fear), the automatic pass is shown on
+# an enemy-forced Hypnotic Gaze Leadership test, exercising the KB grant of this identity rather
+# than only the operator injected into the fixtures above.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -18,7 +22,7 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: 2 scenarios cover the single admitted clause.  The bearer is charged by
+# AUTHORED: 3 scenarios cover the single admitted clause.  The bearer is charged by
 #   a fear-causing opponent, so it owes a Fear test; carrying the canonical operator it passes before any
 #   die is requested - the strict tape therefore declares no Leadership die and its declared To Hit four
 #   lands - while the identical bearer without the operator rolls the same test at
@@ -74,4 +78,32 @@
     - {key: round.0.first.attack.0.hit, value: 4}
   expect_rounds:
     0: {attacks.0.hit: false, attacks.1.hit: false, state.first.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Real recipient (2026-11-16): the printed Spawn of Chaos profile itself (no equipment, printed
+# profile). Its own Fear exempts it from Fear tests, so the Leadership test is forced instead by an
+# enemy's Hypnotic Gaze ("one enemy in base contact must pass a Leadership test ... if it fails, it
+# may not attack"); the Spawn "automatically passes all Leadership-based tests", so no gaze die is
+# declared, it is not barred and resolves its printed D6+1 Attacks (the declared 1 gives two misses)
+# after the gazer's missed blow.
+- audit_id: rule/mordheim/marauders-of-chaos/spawn-of-chaos--psychology/mechanic.automatic-leadership
+  id: the-real-spawn-passes-the-gaze-leadership-test-without-rolling
+  fighters:
+    first: {collection: mordheim, band_id: marauders-of-chaos, profile_id: spawn-of-chaos}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.hypnotic-gaze]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  duel_context:
+    charging: []
+    active_participant: second
+  maximum_rounds: 1
+  decisions:
+  - {key: round.0.first.hypnotic-gaze, value: true}
+  rolls:
+  - {key: round.0.first.spawn-attacks, value: 1}
+  - {key: round.0.second.attack.0.hit, value: 1}
+  - {key: round.0.first.attack.0.hit, value: 1}
+  - {key: round.0.first.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.first.charm_attack_blocked: false, state.first.charm_auto_hit: false, attacks.2.hit: false}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

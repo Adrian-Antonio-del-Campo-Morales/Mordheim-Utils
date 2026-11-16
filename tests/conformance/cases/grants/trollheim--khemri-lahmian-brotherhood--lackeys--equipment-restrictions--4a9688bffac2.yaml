@@ -26,6 +26,15 @@
 # authoring_progress: 2 authored scenario(s) in this file; authored clauses ['whole']; no admitted clause of this
 # origin is left pending.  REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
 
+# De-duplication note (2026-11-16): the duplicate source the earlier discrimination note named - the
+#   `snake_whip` rows of `foreign-undead-equipment-list` and `native-undead-equipment-list` in sources/knowledge/bands/trollheim/khemri-lahmian-brotherhood/equipment-access.yaml, its applies_to.profile_ids [lahmian-vampire, blood-sister] gate - was removed.
+#   Every profile the gate excluded carries this printed restriction as its own forbids token, so the
+#   list now offers the row to all its users and this binding is the single encoding of the printed
+#   reservation: the refusal below is the binding's own '"<item>" is forbidden for <band>/<profile>.'
+#   (only the expect_error wording changed; the refusal itself is unchanged) and the scenario discriminates.
+#   Header prose above that quotes the list sentence '... is not on any equipment list ...' describes the
+#   state before this change.
+
 # --- Authored scenarios ---
 
 - audit_id: rule/trollheim/khemri-lahmian-brotherhood/lackeys--equipment-restrictions/profile.equipment-restrictions
@@ -36,7 +45,7 @@
       band_id: khemri-lahmian-brotherhood
       profile_id: lackeys
       owned_item_ids: [snake_whip]
-  expect_error: '"snake_whip" is not on any equipment list of khemri-lahmian-brotherhood/lackeys.'
+  expect_error: '"snake_whip" is forbidden for khemri-lahmian-brotherhood/lackeys.'
 
 - audit_id: rule/trollheim/khemri-lahmian-brotherhood/lackeys--equipment-restrictions/profile.equipment-restrictions
   id: the-printed-holder-of-the-snake-whip-is-admitted-at-construction

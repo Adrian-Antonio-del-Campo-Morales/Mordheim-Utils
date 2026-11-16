@@ -12,6 +12,9 @@
 # REVIEWED requires semantic review; covers labels alone are insufficient.
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
+# De-duplication note (2026-11-16): the duplicate KB source recorded here earlier has been removed, so
+#   this rule is now the single source and its scenarios fail when its binding is removed (rule-removal
+#   probe).  Earlier note, kept for history: the same effect is delivered independently by sources/knowledge/bands/mordheim/restless-dead/profiles.yaml, profile zombies, key combat_traits.poison_immune: true, so removing this rule's binding leaves the compiled figh...
 #
 # AUTHORED: 1 scenario shows the printed poison immunity against the one duel-time
 # poison rider: a Nightshade-coated mace wounds the bearer, the wound is taken as any
@@ -19,8 +22,7 @@
 # bearer's recorded initiative_penalty stays 0.  The bearer is the restless-dead/zombies profile
 # that prints the rule, which declares no armour, ward or regeneration save and no
 # Ethereal-class hit gate, so the mace lands its wound without a declared defence die.
-# The bearer starts the duel at two wounds and declares no attack, so a single unsaved
-# wound leaves it standing and no injury roll is needed; the clause is single-faceted,
+# The bearer keeps its printed one wound and declares no attack, so the unsaved wound takes it to its declared injury roll; the clause is single-faceted,
 # so no second scenario is required.
 # REVIEWED still requires manual semantic review and execution_status stays
 # UNEXECUTED.
@@ -42,7 +44,7 @@
       main_poison_id: poison.nightshade
       characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
     second: {collection: mordheim, band_id: restless-dead, profile_id: zombies}
-  initial_state: {second: {wounds: 2, attacks: 0}}
+  initial_state: {second: {attacks: 0}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:

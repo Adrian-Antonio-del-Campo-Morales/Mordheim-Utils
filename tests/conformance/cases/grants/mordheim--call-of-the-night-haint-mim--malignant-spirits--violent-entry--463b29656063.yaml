@@ -1,10 +1,11 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/call-of-the-night-haint-mim/malignant-spirits--violent-entry/condition.summoned-this-turn
 # authoring_status: AUTHORED
-# authoring_progress: the admitted whole clause has no authored scenario.  The pending requirement is
-#   named in the clause note below: an admitted operator for the print's +1 to hit and +1 Strength
-#   charge bonus, whose trigger the excluded summoning subsystem supplies.  REVIEWED still requires
-#   manual semantic review and execution_status stays UNEXECUTED.
+# authoring_progress: the admitted whole clause carries 1 authored scenario: the bearer is supplied
+#   condition.summoned-this-turn and charges, and the declared faces read the print's +1 to hit and
+#   +1 Strength charge bonus (see the AUTHORED note below; the earlier "no authored scenario" line
+#   was stale and corrected 2026-11-16).  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -12,6 +13,17 @@
 # REVIEWED requires semantic review; covers labels alone are insufficient.
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
+# Discrimination note (2026-11-16, reviewed): not a duplication, so the KB is kept and no
+#   single-source change applies.  This is the documented supplied-condition pattern
+#   (docs/reference/knowledge-base.md, Reason codes): the band rule malignant-spirits--violent-entry
+#   binds condition.summoned-this-turn with `grant: none` only to name the printed rule that produces
+#   the condition; it is never a compile route.  The condition's one operator is its row in
+#   sources/knowledge/catalog/rules/conditions.yaml, reached only through the supplied condition_ids
+#   entry these scenarios declare, so the scenarios test it through its condition id, as intended.
+#   Removing the band binding cannot change a build; removing the catalogue row refuses the build.  The
+#   only place the band rule could become observable is the recipient gate, which compiler.py hard-codes
+#   (compile_fighter's supplied-condition checks on band/profile/kind) instead of reading this rule's
+#   applies_to; that is a compiler choice, not a KB duplicate.
 #
 # AUTHORED: [B] the printed charge bonus is now authored below: the duel's round-0 charge stands for the print's "charge on the turn they were summoned" (the summoning turn is the duel's opening), the printed rule id is declared on the bearer as the grant, and the declared hit and wound faces are the printed +1 to hit and +1 Strength terms (target 3+ against Weapon Skill 4 and Toughness 4).  Remaining gap (PENDING[B]): the compiled operator that marks the charge as the summoning turn's charge; the tape fails loudly until it exists.  Original note: no scenario is authorable in this revision.  The record carries no effect_id, its
 #   relation is unresolved, and the printed trigger - a charge made on the turn the spirit was

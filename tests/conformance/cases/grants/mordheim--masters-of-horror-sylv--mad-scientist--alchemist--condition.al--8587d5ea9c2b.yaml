@@ -1,0 +1,90 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/masters-of-horror-sylv/mad-scientist--alchemist/condition.alchemist-addicted
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Discrimination note (2026-11-16, reviewed): not a duplication, so the KB is kept and no
+#   single-source change applies.  This is the documented supplied-condition pattern
+#   (docs/reference/knowledge-base.md, Reason codes): the band rule mad-scientist--alchemist binds
+#   condition.alchemist-addicted with `grant: none` only to name the printed rule that produces the
+#   condition; it is never a compile route.  The condition's one operator is its row in
+#   sources/knowledge/catalog/rules/conditions.yaml, reached only through the supplied condition_ids
+#   entry these scenarios declare, so the scenarios test it through its condition id, as intended.
+#   Removing the band binding cannot change a build; removing the catalogue row refuses the build.  The
+#   only place the band rule could become observable is the recipient gate, which compiler.py hard-codes
+#   (compile_fighter's supplied-condition checks on band/profile/kind) instead of reading this rule's
+#   applies_to; that is a compiler choice, not a KB duplicate.
+# Record: sources/knowledge/bands/mordheim/masters-of-horror-sylv/special-rules.yaml
+# AUTHORED: Scenarios moved here on 2026-11-16 from the placeholder identity rule/mordheim/masters-of-
+#   horror-sylv/mad-scientist--alchemist/unimplemented.masters-of-horror-sylv.special.alchemist, whose
+#   KB effect is now unbound (a supplied-condition split: the start-of-game potion roll stays unbound,
+#   each potion is a bound condition); the duel behaviour they exercise is this identity's.  Inputs,
+#   dice and expectations are unchanged by the move; each scenario's own comments carry its derivation
+#   and may still name the placeholder record they were authored against.  The supplied addicted Mad
+#   Scientist takes no action of its own; without the supplied addiction the same duelist strikes back.
+#   REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/masters-of-horror-sylv/mad-scientist--alchemist/condition.alchemist-addicted
+  id: the-supplied-addicted-scientist-takes-no-action-of-its-own
+  # "[he] will not engage in any other activity during a game until he has had his Aberrantius Vigortia
+  # potion.  He will stand and brew potions until a 6 is rolled."  The catalogue's
+  # condition.alchemist-addicted supplies the admitted cannot-act state, so the affected duelist resolves
+  # no attack of its own: no attack die is declared for it, which the strict tape enforces, while the
+  # opponent's declared blow still lands.
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: masters-of-horror-sylv
+      profile_id: mad-scientist
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.alchemist-addicted]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  # The canonical Scientist causes Fear; the charger explicitly passes that unrelated test.
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/masters-of-horror-sylv/mad-scientist--alchemist/condition.alchemist-addicted
+  id: without-the-supplied-addiction-the-same-duelist-strikes-back
+  # The control: the identical duelist without the supplied condition takes its own attack, so its declared
+  # miss is consumed.  A consumer that barred this duelist wrongly leaves that declared die unconsumed and
+  # the strict tape fails, which is what makes the pair discriminate.
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: masters-of-horror-sylv
+      profile_id: mad-scientist
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  # The canonical Scientist causes Fear; the charger explicitly passes that unrelated test.
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

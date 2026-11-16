@@ -40,9 +40,9 @@
 #   own runtime block says the same ("missile-equipment access is outside the current close-combat-only
 #   scope").  The scenarios therefore evidence the construction access only.
 #   DEFECTS THE SCENARIOS DETECT (recorded, not hidden, and not a reason to withhold them): this origin's
-#   row records `scope: LATER / implemented: 'NO'` with `binding: null` and the reason "Deferred: skill
-#   acquisition (Weapons Training / Weapons Expert) is a campaign progression mechanic", so no binding
-#   reaches the shared construction stage and the admitted build is refused today for the wrong reason.
+#   row now records scope YES / implemented YES and binds compiler.weapons-training-exception (checked
+#   2026-11-16); the earlier "`binding: null`, Deferred: skill acquisition" note and the claim that no
+#   binding reaches the shared construction stage are withdrawn (only the Weapons Expert effect stays null).
 #   The expectation stays the printed permission and must not be relaxed to that refusal.
 #
 # AUTHORED: 1 scenario carries the printed melee expansion.  RECIPIENT: the
@@ -56,7 +56,7 @@
 # melee-weapon expansion").  Once again the skill is supplied as an already-taken selection, since the act
 # of learning it is the excluded half.
 #   DEFECTS THE SCENARIOS DETECT (recorded, not hidden, and not a reason to withhold them): the same
-#   `scope: LATER / implemented: 'NO' / binding: null` row as above, plus the register's own record that
+#   row as above (now bound, checked 2026-11-16; the "binding: null" note is withdrawn), plus the register's own record that
 #   "the shared rule recognizes Weapons Training, but Cunning has no canonical grant and the unconditional
 #   equipment ban can still win".  The unconditional equipment ban is the printed restriction this clause
 #   carves an exception into, so the expectation is the printed permission and must not be relaxed to the

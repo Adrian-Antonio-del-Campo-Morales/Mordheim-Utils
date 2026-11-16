@@ -12,6 +12,13 @@
 # REVIEWED requires semantic review; covers labels alone are insufficient.
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
+# Discrimination note (2026-11-16): the same natural armour is delivered by
+#   sources/knowledge/bands/trollheim/lustria-lizardmen/special-rules.yaml, rule band--scaly-skin
+#   (grant: band), effect compiler.lizardmen-scaly-skin, which compiler.py turns into
+#   natural_armour_save (4 Kroxigor / 5 Saurus / 6 others), natural_armour_stacks: true and
+#   natural_armour_worst_save: 6 for every profile of the band, so removing trait.natural-armour-save
+#   leaves the compiled saurus-braves unchanged.  The rule applies to saurus-braves only, which always
+#   carries the band rule, so no legal build reaches it without the duplicate.
 #
 # AUTHORED: 6 scenarios cover the printed 5+ Scaly Skin save on the real
 #   attack route (saved on 5, wounded on 4), its per-profile value against another Lizardman of

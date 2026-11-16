@@ -87,19 +87,13 @@ rules:
         parameters:
           value: 6
     - id: trait.natural-armour-stacks
-      scope: 'YES'
-      binding:
-        kind: trait
-        id: trait.natural-armour-stacks
-        parameters:
-          value: true
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
     - id: trait.natural-armour-worst-save
-      scope: 'YES'
-      binding:
-        kind: trait
-        id: trait.natural-armour-worst-save
-        parameters:
-          value: 6
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   rule_ref: shared-rule.scaly-skin-6
 - id: skink-priest--amphibious
   name: Amphibious
@@ -170,19 +164,13 @@ rules:
         parameters:
           value: 5
     - id: trait.natural-armour-stacks
-      scope: 'YES'
-      binding:
-        kind: trait
-        id: trait.natural-armour-stacks
-        parameters:
-          value: true
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
     - id: trait.natural-armour-worst-save
-      scope: 'YES'
-      binding:
-        kind: trait
-        id: trait.natural-armour-worst-save
-        parameters:
-          value: 6
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
 - id: saurus-totem-warrior--bite-attack
   runtime:
     scope: 'YES'
@@ -229,19 +217,13 @@ rules:
         parameters:
           value: 6
     - id: trait.natural-armour-stacks
-      scope: 'YES'
-      binding:
-        kind: trait
-        id: trait.natural-armour-stacks
-        parameters:
-          value: true
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
     - id: trait.natural-armour-worst-save
-      scope: 'YES'
-      binding:
-        kind: trait
-        id: trait.natural-armour-worst-save
-        parameters:
-          value: 6
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   rule_ref: shared-rule.scaly-skin-6
 - id: skink-great-crests--amphibious
   name: Amphibious
@@ -312,19 +294,13 @@ rules:
         parameters:
           value: 6
     - id: trait.natural-armour-stacks
-      scope: 'YES'
-      binding:
-        kind: trait
-        id: trait.natural-armour-stacks
-        parameters:
-          value: true
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
     - id: trait.natural-armour-worst-save
-      scope: 'YES'
-      binding:
-        kind: trait
-        id: trait.natural-armour-worst-save
-        parameters:
-          value: 6
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
 - id: skink-braves--amphibious
   name: Amphibious
   source:
@@ -394,19 +370,13 @@ rules:
         parameters:
           value: 5
     - id: trait.natural-armour-stacks
-      scope: 'YES'
-      binding:
-        kind: trait
-        id: trait.natural-armour-stacks
-        parameters:
-          value: true
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
     - id: trait.natural-armour-worst-save
-      scope: 'YES'
-      binding:
-        kind: trait
-        id: trait.natural-armour-worst-save
-        parameters:
-          value: 6
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
 - id: saurus-braves--bite-attack
   runtime:
     scope: 'YES'
@@ -463,33 +433,27 @@ rules:
       - id: strength-cannot-go-beyond-six
         scope: 'YES'
     - id: trait.natural-armour-stacks
-      scope: 'YES'
-      binding:
-        kind: trait
-        id: trait.natural-armour-stacks
-        parameters:
-          value: true
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
       clauses:
       - id: four-plus-scaly-skin
-        scope: 'YES'
+        scope: 'NO'
       - id: stacks-with-armour-but-not-hardened-leather
-        scope: 'YES'
+        scope: 'NO'
       - id: strength-cannot-go-beyond-six
-        scope: 'YES'
+        scope: 'NO'
     - id: trait.natural-armour-worst-save
-      scope: 'YES'
-      binding:
-        kind: trait
-        id: trait.natural-armour-worst-save
-        parameters:
-          value: 6
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
       clauses:
       - id: four-plus-scaly-skin
-        scope: 'YES'
+        scope: 'NO'
       - id: stacks-with-armour-but-not-hardened-leather
-        scope: 'YES'
+        scope: 'NO'
       - id: strength-cannot-go-beyond-six
-        scope: 'YES'
+        scope: 'NO'
 - id: kroxigor--aquatic
   name: Aquatic
   source:

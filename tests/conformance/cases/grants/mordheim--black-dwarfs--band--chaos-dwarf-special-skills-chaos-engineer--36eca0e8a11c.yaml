@@ -13,6 +13,17 @@
 # REVIEWED requires semantic review; covers labels alone are insufficient.
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
+# Discrimination note (2026-11-16, reviewed): not a duplication of one printed fact, so the KB is kept
+#   and no single-source change applies.  The skill's only in-scope effect is "may never wear the Chaos
+#   Armours".  armour.chaos-armour (sources/knowledge/catalog/mechanics/close-combat.yaml) is on no
+#   Black Dwarfs equipment list (sources/knowledge/bands/mordheim/black-dwarfs/equipment-access.yaml
+#   lists only the out-of-scope mechanical_suit / engine_of_chaos), so construction refuses it for every
+#   profile with or without the skill ("equipment is not available to black-dwarfs/bull-centaur:
+#   ['armour.chaos-armour']").  That omission is a separate printed fact, the list's contents, not a
+#   restatement of the ban.  Marking the ban covered.elsewhere would leave this selectable skill with no
+#   bound effect at all.  The compiled tag compiler.chaos-engineer has no duel consumer.  The prose
+#   below saying "this revision records no executable armour id" is out of date: the id exists, but no
+#   recipient may carry it.
 #
 # Clause: whole--scope--armour-restriction (scope: YES)
 # PARTIAL[whole--scope--armour-restriction]: [CLOSING-REVIEW [C]] the positive half is authored and the negative half is

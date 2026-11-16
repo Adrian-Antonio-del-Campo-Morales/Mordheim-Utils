@@ -126,13 +126,16 @@ def test_profile_characteristics_projects_selected_bonuses():
     assert middenheimer.characteristics.strength == ordinary.characteristics.strength + 1
 
 
-def test_profile_fist_overrides_the_unarmed_profile_fallback():
+def test_a_penalty_free_unarmed_profile_fights_with_natural_attacks():
+    # "fight unarmed without penalty": a profile with no equipment lists fights
+    # with its natural attacks (single source since 2026-11-16; the former
+    # penalty-free profile.fist binding was the same fact a second time).
     peasant = compile_fighter(FighterBuild(
         "mordheim", band_id="battle-monks-of-cathay", profile_id="raging-peasants",
     ))
-    assert "weapon.fist" in peasant.main_weapon.tags
-    assert peasant.main_weapon.strength_bonus == -1
-    assert peasant.main_weapon.target_armour_bonus == 1
+    assert "weapon.natural-attacks" in peasant.main_weapon.tags
+    assert peasant.main_weapon.strength_bonus == 0
+    assert peasant.main_weapon.target_armour_bonus == 0
 
 
 def test_profile_natural_attacks_selects_the_natural_weapon():

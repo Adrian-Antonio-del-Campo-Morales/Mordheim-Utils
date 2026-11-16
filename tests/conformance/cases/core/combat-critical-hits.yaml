@@ -10,7 +10,8 @@
 # executor_capability_note: two scenarios depend on executor support that is not
 #   yet verified (engine gaps, not authoring pendings).
 #   a-critical-table-modifier-shifts-the-applied-band needs the build entry
-#   main_material_id: material.dark-elf-blade to compile and the compiled effect
+#   main_weapon_id: weapon.sword with main_material_id: material.dark-elf-blade
+#   (the printed sword-or-dagger upgrade) to compile and the compiled effect
 #   to carry critical_injury_bonus.
 #   a-higher-multiple-damage-source-prevails needs main_weapon_id:
 #   weapon.ball-and-chain to be an admitted loadout and the D3 damage die to be
@@ -109,16 +110,19 @@
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 # Basic table, result 3 or more: the armour save is ignored.  The defender wears
-# light armour, so a wrongly rolled armour die fails the strict tape because it
-# was never scripted.
+# light armour (6+) and the Strength 3 swordsman imposes no save modifier, so
+# without the clause a 6+ save would be possible and its die would be requested;
+# an unscripted armour die fails the strict tape.  (A Strength 4 attacker would
+# reduce the 6+ save to nothing and prove nothing.)  The sword has no Concussion,
+# so Injury rolls of 1 are Knocked Down.
 
 - audit_id: core/combat-critical-hits
   id: critical-result-three-ignores-armour
   covers: [basic-table]
   fighters:
     first:
-      main_weapon_id: weapon.mace
-      characteristics: *s4-attacker
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
       main_weapon_id: weapon.mace
       armour_id: armour.light-armour
@@ -162,7 +166,8 @@
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 # A critical-table result of 2 leaves armour untouched, so the save is rolled
-# before the doubling and this unprotected defender's six-plus save holds.
+# before the doubling and this light-armoured defender's 6+ save holds against
+# the Strength 3 attacker.
 
 - audit_id: core/combat-critical-hits
   id: critical-result-two-still-rolls-the-armour-save
@@ -343,14 +348,16 @@
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 # Basic table, result 4: 3 or more ignores armour, but the +2 to Injury begins
-# only at 5, so an Injury result of 4 is Stunned and not Out of Action.
+# only at 5, so an Injury result of 4 is Stunned and not Out of Action.  As
+# above, the Strength 3 attacker leaves the light armour's 6+ save possible, so
+# the unscripted armour die is what proves the save is ignored.
 - audit_id: core/combat-critical-hits
   id: critical-result-four-ignores-armour-without-an-injury-bonus
   covers: [basic-table]
   fighters:
     first:
-      main_weapon_id: weapon.mace
-      characteristics: *s4-attacker
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
       main_weapon_id: weapon.mace
       armour_id: armour.light-armour
@@ -393,17 +400,19 @@
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 # A critical-table modifier shifts which band the D6 lands in.  material.dark-elf-
-# blade adds +1 ("Adds +1 to the critical hit table", catalog/mechanics/
-# close-combat.yaml), so a raw critical die of 4 resolves as 5: it reaches the 5+
-# band and adds +2 to Injury.  A roll of 1 on the Injury table then becomes 3, a
-# Stunned result; without the modifier the same raw 4 would be the 3-4 band with
-# no Injury bonus and the 1 would be Knocked Down.
+# blade adds +1 ("when rolling on the critical hit chart a Dark Elf blade will add
+# +1 to the result", catalog/items/materials-and-upgrades.yaml); the printed
+# upgrade applies to "a sword or dagger", so the blade is a sword.  A raw critical
+# die of 4 resolves as 5: it reaches the 5+ band and adds +2 to Injury.  A roll of
+# 1 on the Injury table then becomes 3, a Stunned result; without the modifier
+# the same raw 4 would be the 3-4 band with no Injury bonus and the 1 would be
+# Knocked Down (Wicked Edge stuns only 2-4, so it does not reach a 1).
 - audit_id: core/combat-critical-hits
   id: a-critical-table-modifier-shifts-the-applied-band
   covers: [basic-table]
   fighters:
     first:
-      main_weapon_id: weapon.mace
+      main_weapon_id: weapon.sword
       main_material_id: material.dark-elf-blade
       characteristics: *s4-attacker
     second:

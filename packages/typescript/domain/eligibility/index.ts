@@ -208,6 +208,10 @@ const INTERPRETED_TOKENS = ["armour", "armour-suit", "heavy-armour", "ranged-wea
 export const NATURAL_ATTACK_ID = "weapon.natural-attacks";
 
 export function tokenForbids(token: string, itemId: string, item: ItemFacts | null): boolean {
+  // `item:<id>` names exactly one catalogue item and never a category, for the
+  // printed lines whose item id is also a category word ("Bow (not Gobbo
+  // Boyz)" forbids the Bow, not the Short Bow).
+  if (token.startsWith("item:")) return itemId === token.slice("item:".length);
   if (token === itemId || token === item?.mechanic_id) return true;
   if (itemId === NATURAL_ATTACK_ID || item?.mechanic_id === NATURAL_ATTACK_ID) return false;
   if (token === "non-thrown-ranged") return itemIsMissile(item) && !item?.tags?.includes("thrown");
@@ -397,7 +401,7 @@ export function equipmentIssue(args: {
     };
   }
   const resolvedItems = [...(profile.equipment_forbid_items ?? []), ...(args.band_forbid_items ?? [])];
-  const unknown = forbids.find((token) => !INTERPRETED_TOKENS.includes(token) && token !== itemId
+  const unknown = forbids.find((token) => !INTERPRETED_TOKENS.includes(token) && !token.startsWith("item:") && token !== itemId
     && !isEquipmentMechanic(token) && !resolvedItems.includes(token));
   if (unknown) return {
     code: "construction_clause_unstructured", subject_ids: subject, rule_id: unknown, owner_task: "KB",
@@ -1643,7 +1647,8 @@ export function buildRestriction(context: BuildContext, stage: string): string |
     // such as `handgun` whose record publishes no mechanic. A token that names
     // no canonical item stays informational and never becomes a refusal.
     const sharedTokens = forbidden.filter((token) => !BOUND_STAGE_TOKENS.includes(token)
-      && (INTERPRETED_TOKENS.includes(token) || token.includes(".") || carriedItemFacts(c, token) !== null));
+      && (INTERPRETED_TOKENS.includes(token) || token.startsWith("item:") || token.includes(".")
+        || carriedItemFacts(c, token) !== null));
     // The profile's own printed kit travels with the prohibition: a clause that
     // forbids all equipment ('may only ever use its free pointy stick') forbids
     // what the bearer might be given, never the pieces the same profile prints

@@ -10,10 +10,13 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: 4 scenarios cover the failed Leadership test that blocks the target's
+# AUTHORED: 5 scenarios cover the failed Leadership test that blocks the target's
 #   attacks while leaving it standing and defending, the passed test that leaves both
 #   pools intact, the recorded immunity that skips the test for an Undead target, and
 #   the absence of the gate without the dance.
+# Real recipient (2026-11-16): one further scenario builds the band's printed Serpent Priestess from the
+# band package with the entry selected through special_rule_ids, so the KB grant itself (not an injected
+# mechanic id) is exercised.
 
 # --- Authored scenarios ---
 # The band origin grants the shared mesmerising-dance gate. The two declared sixes total
@@ -98,4 +101,31 @@
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.hit: False, attacks.1.hit: False, state.second.charm_attack_blocked: False}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Real recipient (2026-11-16): the band's printed Serpent Priestess is built from the band package with
+# the Mesmerising Dance entry selected through special_rule_ids (characteristics overridden only to keep
+# the dice math), so the band's KB row supplies the gate; without it no Leadership test is requested and
+# the target's own attack die would be missing from the tape.  The mace is not on this profile's equipment
+# list, so the build keeps the default dagger, which changes nothing this tape decides.
+- audit_id: rule/mordheim/amazons-lustria/band--amazon-special-skills-mesmerising-dance/mechanic.mesmerising-dance
+  id: the-printed-serpent-priestess-with-the-dance-blocks-the-target
+  fighters:
+    first:
+      collection: mordheim
+      band_id: amazons-lustria
+      profile_id: serpent-priestess
+      special_rule_ids: [band--amazon-special-skills-mesmerising-dance]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.mesmerising-dance.0, value: 6}
+    - {key: round.0.second.mesmerising-dance.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.charm_attack_blocked: true, state.second.condition: STANDING, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

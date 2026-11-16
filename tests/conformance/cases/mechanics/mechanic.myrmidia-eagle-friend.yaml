@@ -10,7 +10,7 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: 2 scenarios cover the eagle as its own strike-first Strength 3 attack resolved in its own pool before the bearer's hand weapon, and the same configuration without the mark, whose tape carries no eagle die at all.
+# AUTHORED: 3 scenarios cover the eagle as its own strike-first attack resolved in its own pool before the bearer's hand weapon, the eagle using the bearer's Weapon Skill at Strength 3 ahead of a faster opponent (dice at both boundaries), and the same configuration without the mark, whose tape carries no eagle die at all.
 
 # --- Authored scenarios ---
 # The eagle is a directed weapon contribution, not a third fighter: it resolves first
@@ -59,3 +59,39 @@
   expect_rounds:
     0: {attacks.0.hit: false, attacks.1.hit: false, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Added 2026-11-16: the first scenario's dice (hit 6, wound 1) pass whatever Weapon
+# Skill or Strength the eagle uses, and its I5 bearer acts first anyway.  Printed:
+# eagles "strike first, use her Weapon Skill, and each successful attack inflicts a
+# Strength 3 hit".  Here the bearer is the slower fighter (I2 against I5, nobody
+# charges), so only the eagle's strike first puts its pool before the opponent, while
+# the bearer's own attack still comes last.  The bearer has WS4 against WS3, so the
+# eagle hits on 3 (a WS3 eagle would need 4); the bearer has S5, so the eagle's wound
+# roll of 3 fails only because the hit is Strength 3 against Toughness 3 (needs 4),
+# where the bearer's own Strength would wound on 2.
+- audit_id: mechanic/mechanic.myrmidia-eagle-friend
+  id: the-eagle-uses-the-bearer-s-weapon-skill-at-strength-three-before-a-faster-opponent
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.myrmidia-eagle-friend]
+      characteristics: {weapon_skill: 4, strength: 5, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.eagle.0.attack.0.hit, value: 3}
+    - {key: round.0.first.eagle.0.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.hit_target: 3, attacks.0.wounded: false,
+        attacks.1.hit: false, attacks.2.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.eagle.0.attack.0.hit, sides: 6, value: 3}
+    - {kind: roll, key: round.0.first.eagle.0.attack.0.wound, sides: 6, value: 3}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}

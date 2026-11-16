@@ -315,15 +315,19 @@
               "type": "array",
               "items": { "$ref": "#/$defs/id" }
             },
+            "default": {
+              "description": "The band-wide value a compiler contract prints for every recipient that has no own printed value (Scaly Skin: Skinks 6+); `profile_ids` with `value` print the exceptions.",
+              "type": "integer"
+            },
             "exempt_profile_ids": {
               "description": "Profiles a compulsory-equipment requirement does not apply to (the printed exception).",
               "type": "array",
               "items": { "$ref": "#/$defs/id" }
             },
             "forbids": {
-              "description": "Item, category or rule ids the binding forbids (always a list).",
+              "description": "Item, category or rule ids the binding forbids (always a list). `item:<id>` names exactly one catalogue item and never the category of the same name.",
               "type": "array",
-              "items": { "$ref": "#/$defs/id" }
+              "items": { "anyOf": [ { "$ref": "#/$defs/id" }, { "type": "string", "pattern": "^item:[a-z0-9][a-z0-9._-]*$" } ] }
             },
             "ignore_penalties": {
               "description": "Whether the binding cancels the usual penalties.",

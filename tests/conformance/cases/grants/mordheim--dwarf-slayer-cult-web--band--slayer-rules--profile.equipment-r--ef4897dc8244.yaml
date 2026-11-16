@@ -2,7 +2,7 @@
 # audit_id: rule/mordheim/dwarf-slayer-cult-web/band--slayer-rules/profile.equipment-restrictions
 # authoring_status: PARTIAL
 # authoring_progress: the admitted deathwish--scope--deathwish-psychology clause carries 3 authored scenario(s) derived
-# from the printed rule, the recorded semantic contract and the printed profile; any remaining
+# (the file holds 13 under this audit_id; the other 10 are no-armour-no-toys refusals; checked 2026-11-16) from the printed rule, the recorded semantic contract and the printed profile; any remaining
 # face of the file stays recorded as pending below.  REVIEWED still requires manual semantic
 # review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -43,6 +43,7 @@
 #
 # Clause: postgame (scope: NO)
 # Outside the admitted clause scope; retained for context, not a test TODO.
+# Provenance (2026-11-16): 3 scenario(s) moved here from rule/mordheim/dwarf-slayer-cult-web/axe-hurlers--born-marksmen/profile.equipment-restrictions, whose binding is now covered.elsewhere (de-duplication of construction encodings); bodies unchanged, covers labels dropped.
 
 # --- Authored scenarios ---
 
@@ -227,3 +228,54 @@
       profile_id: troll-slayers
       main_weapon_id: weapon.duelling-pistol
   expect_error: '"non-thrown-ranged" is forbidden for dwarf-slayer-cult-web/troll-slayers.'
+
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/band--slayer-rules/profile.equipment-restrictions
+  id: a-non-thrown-missile-weapon-is-refused-for-an-axe-hurler
+  # weapon.pistol is a missile weapon that is not thrown, so the refused input lies inside the printed
+  # subset.  The fragment is the shared category sentence this family's authored refusals exhibit.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: axe-hurlers
+      main_weapon_id: weapon.pistol
+  expect_error: '"non-thrown-ranged" is forbidden for dwarf-slayer-cult-web/axe-hurlers.'
+
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/band--slayer-rules/profile.equipment-restrictions
+  id: the-printed-thrown-weapon-exception-is-admitted
+  # The printed exception: a thrown weapon is allowed, and the Axe Hurler's own list carries throwing_axe.
+  # The row is declared through the carried-item channel, the same channel the sibling kit cases use.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: axe-hurlers
+      main_weapon_id: weapon.mace
+      owned_item_ids: [throwing_axe]
+    second:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: giant-slayer
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {second: {condition: OUT}}
+  expect_initial: {second.condition: OUT}
+  expect_final: {rounds_executed: 0, termination_reason: second_out}
+
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/band--slayer-rules/profile.equipment-restrictions
+  id: the-same-axe-hurler-without-a-missile-weapon-constructs
+  # The acceptance control of the same family: the recipient with no missile weapon is admitted, so the
+  # refusal above is the prohibition and not a refusal of the profile itself.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: axe-hurlers
+      main_weapon_id: weapon.mace
+    second:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: giant-slayer
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {second: {condition: OUT}}
+  expect_initial: {second.condition: OUT}
+  expect_final: {rounds_executed: 0, termination_reason: second_out}

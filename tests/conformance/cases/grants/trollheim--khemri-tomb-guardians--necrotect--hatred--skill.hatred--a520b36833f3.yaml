@@ -1,7 +1,7 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/khemri-tomb-guardians/necrotect--hatred/skill.hatred
 # authoring_status: AUTHORED
-# authoring_progress: the admitted first-round-reroll clause now carries 3 authored scenarios derived from
+# authoring_progress: the admitted first-round-reroll clause now carries 4 authored scenarios (count corrected 2026-11-16) derived from
 #   the printed rule and the printed Necrotect profile of this band.  The clause is expressible because the
 #   printed rule needs no enemy filter and the corpus already fixes every key the tape uses: the bearer is
 #   the band's own `necrotect` profile (whose rule_ids carry necrotect--hatred and whose starting skills
@@ -10,6 +10,11 @@
 #   consumer these tapes detect, never a reason to withhold them.  REVIEWED still requires manual semantic
 #   review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Note (2026-11-16): this printed profile ability is now granted automatically (grant: profile) and is
+#   the single source of the skill; the duplicate combat_traits.starting_skills entry was removed.
+#   Scenarios no longer select it through special_rule_ids, and older prose here that speaks of
+#   'selecting' the rule refers to the former encoding.
 #
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
@@ -48,7 +53,7 @@
 - audit_id: rule/trollheim/khemri-tomb-guardians/necrotect--hatred/skill.hatred
   id: a-first-round-miss-is-rerolled-against-an-enemy-without-a-hated-identity
   fighters:
-    first: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: necrotect, main_weapon_id: weapon.mace, special_rule_ids: [necrotect--hatred]}
+    first: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: necrotect, main_weapon_id: weapon.mace}
     second:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
@@ -71,7 +76,7 @@
 - audit_id: rule/trollheim/khemri-tomb-guardians/necrotect--hatred/skill.hatred
   id: the-same-offer-holds-for-an-explicitly-different-enemy-identity
   fighters:
-    first: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: necrotect, main_weapon_id: weapon.mace, special_rule_ids: [necrotect--hatred]}
+    first: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: necrotect, main_weapon_id: weapon.mace}
     second:
       main_weapon_id: weapon.mace
       trait_overrides: {creature_kind: daemon}
@@ -96,7 +101,7 @@
 - audit_id: rule/trollheim/khemri-tomb-guardians/necrotect--hatred/skill.hatred
   id: the-second-round-of-the-same-close-combat-offers-no-reroll
   fighters:
-    first: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: necrotect, main_weapon_id: weapon.mace, special_rule_ids: [necrotect--hatred]}
+    first: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: necrotect, main_weapon_id: weapon.mace}
     second:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
@@ -116,12 +121,14 @@
     1: {attacks.0.damage: 0, state.second.wounds: 1}
   expect_final: {rounds_executed: 2, termination_reason: horizon}
 
-# The selectable dedicated clause must not leak onto a bearer that has not selected it.
-# Its ordinary starting Hatred remains suppressed by Undead Psychology immunity.
+# The Necrotect's printed clause must not leak onto a band-mate without it: an Undead Skeleton Warrior
+# charging the same opponent keeps its missed hit of 2, and no re-roll die is requested.  (Body changed
+# 2026-11-16: the clause is now the Necrotect's automatic profile ability, so a Necrotect without it is
+# no longer a legal build; the id still reads the old selection wording.)
 - audit_id: rule/trollheim/khemri-tomb-guardians/necrotect--hatred/skill.hatred
   id: without-the-selected-clause-ordinary-hatred-remains-suppressed
   fighters:
-    first: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: necrotect, main_weapon_id: weapon.mace}
+    first: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: skeleton-warriors, main_weapon_id: weapon.mace}
     second:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}

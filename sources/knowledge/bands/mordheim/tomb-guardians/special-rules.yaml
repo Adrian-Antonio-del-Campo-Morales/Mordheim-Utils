@@ -39,15 +39,14 @@ rules:
     profile_ids:
     - tomb-lord
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: mechanic.undead
-      scope: 'YES'
-      binding:
-        kind: mechanic
-        id: mechanic.undead
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   rule_ref: shared-rule.undead
 - id: tomb-lord--flammable
   runtime:
@@ -115,15 +114,14 @@ rules:
     profile_ids:
     - liche-priest
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: mechanic.undead
-      scope: 'YES'
-      binding:
-        kind: mechanic
-        id: mechanic.undead
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   rule_ref: shared-rule.undead
 - id: acolytes--undead
   name: Undead
@@ -139,14 +137,13 @@ rules:
     - acolytes
   runtime:
     grant: profile
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     effects:
     - id: mechanic.undead
-      scope: 'YES'
-      binding:
-        kind: mechanic
-        id: mechanic.undead
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   rule_ref: shared-rule.undead
 - id: skeleton-warriors--undead
   name: Undead
@@ -161,15 +158,14 @@ rules:
     profile_ids:
     - skeleton-warriors
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: mechanic.undead
-      scope: 'YES'
-      binding:
-        kind: mechanic
-        id: mechanic.undead
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   rule_ref: shared-rule.undead
 - id: tomb-guardians--undead
   name: Undead
@@ -184,15 +180,14 @@ rules:
     profile_ids:
     - tomb-guardians
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: mechanic.undead
-      scope: 'YES'
-      binding:
-        kind: mechanic
-        id: mechanic.undead
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   rule_ref: shared-rule.undead
 - id: tomb-guardians--experience
   name: Experience

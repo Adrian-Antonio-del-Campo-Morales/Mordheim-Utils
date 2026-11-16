@@ -62,15 +62,14 @@ rules:
     profile_ids:
     - wulfen
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: profile.natural-attacks
-      scope: 'YES'
-      binding:
-        kind: profile
-        id: profile.natural-attacks
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   rule_ref: shared-rule.natural-weapons
 - id: wulfen--fear
   name: Fear

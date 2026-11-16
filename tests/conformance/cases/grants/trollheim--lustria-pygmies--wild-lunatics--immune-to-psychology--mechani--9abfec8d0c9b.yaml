@@ -1,7 +1,7 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/lustria-pygmies/wild-lunatics--immune-to-psychology/mechanic.psychology-immunity
 # authoring_status: AUTHORED
-# authoring_progress: the admitted psychology-immunity clause carries 3 authored scenario(s) derived
+# authoring_progress: the admitted psychology-immunity clause carries 4 authored scenario(s) derived
 # from the printed rule, the recorded semantic contract and the printed profile; any remaining
 # face of the file stays recorded as pending below.  REVIEWED still requires manual semantic
 # review and execution_status stays UNEXECUTED.
@@ -14,7 +14,7 @@
 # Governing rulings: docs/decisions/design-rulings.md
 #
 # AUTHORED: the bearer wild-lunatics is the declared recipient, built from its printed profile (W1 A1); the opponent is a hand-built fixture that declares its own facts.
-#   3 scenario(s) cover the clause: the Stupid bearer resolves no Stupidity test at all: its declared Lead test never happens, so the tape holds only its own attack; the same Stupid state does request the two-dice test for pygmies, which does not carry the rule, and the failed test takes its attack away; the fear-causing charger reaches the bearer, which would be tested and is not, so the tape holds only the two attack pools.
+#   3 scenario(s) cover the clause (a 4th, discriminating one is added at the end - see its note): the Stupid bearer resolves no Stupidity test at all: its declared Lead test never happens, so the tape holds only its own attack; the same Stupid state does request the two-dice test for pygmies, which does not carry the rule, and the failed test takes its attack away; the fear-causing charger reaches the bearer, which would be tested and is not, so the tape holds only the two attack pools.
 #   Every strike is declared as a natural 1, so each round reports the Fear or Stupidity request under test and nothing else.
 #   REVIEWED still requires manual semantic review.
 
@@ -70,6 +70,33 @@
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
     - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Discriminating repair (2026-11-16): the two immune scenarios above cannot tell the immunity apart.
+#   Both declare the bearer's own printed Lunatics roll as a 1 ("On 1-3 that model gains Frenzy"),
+#   and a frenzied warrior already ignores Fear and passes Stupidity without a test, so the Fear test
+#   and the Head Injury Stupidity test are skipped with or without the immunity.  They stay as
+#   evidence of the printed outcome.  This scenario declares the Lunatics roll as a 4 ("on 4-6 it
+#   gains Stupidity"): the warrior is not frenzied, so only the printed "Wild Lunatics are immune to
+#   Psychology" spares it the Fear test of a warrior charged by a Fear-causer.  The charger is the
+#   active duelist, so the bearer takes no Stupidity test of its own this round, and it fights with
+#   its unfrenzied printed A1.  Every strike is a natural 1.
+- audit_id: rule/trollheim/lustria-pygmies/wild-lunatics--immune-to-psychology/mechanic.psychology-immunity
+  id: the-unfrenzied-lunatic-is-not-tested-for-fear
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: trollheim, band_id: lustria-pygmies, profile_id: wild-lunatics}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.lunatics, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

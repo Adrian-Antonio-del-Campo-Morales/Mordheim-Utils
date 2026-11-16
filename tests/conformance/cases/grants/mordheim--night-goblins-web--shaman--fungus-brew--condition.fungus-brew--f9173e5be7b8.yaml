@@ -1,0 +1,71 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/night-goblins-web/shaman--fungus-brew/condition.fungus-brew-belligerent
+# authoring_status: AUTHORED
+# Real-recipient note (2026-11-16): no build can exercise this KB grant. shaman--fungus-brew is
+# runtime.grant none; construction refuses it on the printed recipient ("special rule is not available
+# to night-goblins-web/night-goblin-warriors: shaman--fungus-brew") and on the Shaman ("special rule is
+# not selectable: shaman--fungus-brew"), so the result can only be supplied through condition_ids (the
+# catalog condition record), as the scenarios below do. The rule-removal probe stays inert.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/night-goblins-web/special-rules.yaml
+# AUTHORED: Scenarios moved here on 2026-11-16 from the placeholder identity rule/mordheim/night-
+#   goblins-web/shaman--fungus-brew/unimplemented.night-goblins-web.shaman.fungus-brew, whose KB effect
+#   is now unbound (a supplied-condition split: brewing stays unbound, each brew result is a bound
+#   condition); the duel behaviour they exercise is this identity's.  Inputs, dice and expectations are
+#   unchanged by the move; each scenario's own comments carry its derivation and may still name the
+#   placeholder record they were authored against.  A supplied Belligerent result re-rolls the first-
+#   round miss; without it the same miss stands.  REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+
+# The printed Belligerent result.  The canonical supplied condition (condition.fungus-brew-belligerent, which
+# catalog/rules/conditions.yaml binds to skill.hatred) is declared on the affected duelist through
+# FighterBuild.condition_ids, so the printed first-round Hatred is what the tape reads and no chart operator or
+# enemy identity is invented: the declared miss 2 is rerolled, the accepted 4 lands, wounds and removes one
+# wound.  A consumer that offers no reroll for the supplied condition fails here.
+- audit_id: rule/mordheim/night-goblins-web/shaman--fungus-brew/condition.fungus-brew-belligerent
+  id: a-supplied-belligerent-result-rerolls-the-first-round-miss
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.fungus-brew-belligerent]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 4, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 4}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.first.attack.0.hit, value: 2}
+  - {key: round.0.first.attack.0.hit.reroll, value: 4}
+  - {key: round.0.first.attack.0.wound, value: 4}
+  - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control for the identical declared miss with no brew result supplied: nothing rerolls it, so the attack
+# does not land and the attacked warrior keeps its wounds.
+- audit_id: rule/mordheim/night-goblins-web/shaman--fungus-brew/condition.fungus-brew-belligerent
+  id: without-the-supplied-result-the-same-first-round-miss-stands
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 4, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 4}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.first.attack.0.hit, value: 2}
+  - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

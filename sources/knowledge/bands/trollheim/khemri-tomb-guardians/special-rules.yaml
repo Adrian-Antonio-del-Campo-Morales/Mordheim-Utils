@@ -35,15 +35,14 @@ rules:
     profile_ids:
     - tomb-lord
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: mechanic.undead
-      scope: 'YES'
-      binding:
-        kind: mechanic
-        id: mechanic.undead
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   rule_ref: shared-rule.undead
 - id: tomb-lord--flammable
   runtime:
@@ -109,15 +108,14 @@ rules:
     profile_ids:
     - mortuary-priest
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: mechanic.undead
-      scope: 'YES'
-      binding:
-        kind: mechanic
-        id: mechanic.undead
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   rule_ref: shared-rule.undead
 - id: necrotect--undead
   name: Undead
@@ -131,22 +129,21 @@ rules:
     profile_ids:
     - necrotect
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: mechanic.undead
-      scope: 'YES'
-      binding:
-        kind: mechanic
-        id: mechanic.undead
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   rule_ref: shared-rule.undead
 - id: necrotect--hatred
   kind: profile_ability
   runtime:
     scope: 'YES'
     implemented: 'YES'
-    grant: selectable
+    grant: profile
     effects:
     - id: skill.hatred
       scope: 'YES'
@@ -205,15 +202,14 @@ rules:
     profile_ids:
     - mortuary-acolytes
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: mechanic.undead
-      scope: 'YES'
-      binding:
-        kind: mechanic
-        id: mechanic.undead
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   rule_ref: shared-rule.undead
 - id: skeleton-warriors--undead
   name: Undead
@@ -227,15 +223,14 @@ rules:
     profile_ids:
     - skeleton-warriors
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: mechanic.undead
-      scope: 'YES'
-      binding:
-        kind: mechanic
-        id: mechanic.undead
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   rule_ref: shared-rule.undead
 - id: tomb-guardians--undead
   name: Undead
@@ -249,15 +244,14 @@ rules:
     profile_ids:
     - tomb-guardians
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: mechanic.undead
-      scope: 'YES'
-      binding:
-        kind: mechanic
-        id: mechanic.undead
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   rule_ref: shared-rule.undead
 - id: tomb-scorpions--living
   name: Living

@@ -1,13 +1,14 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/high-elves-lus/band--skill-miniath/skill.miniath
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
 # authoring_progress: the admitted parry-with-any-weapon clause carries 3 authored scenarios derived from
-# the printed rule and the recorded contract.  The additional-attempt clause stays pending: the record's own
-# analysis_status is needs_clarification and the adopted resolution ruling caps this skill's parry capacity
-# at one attempt, so the printed second attempt has no representable observable.
-# The missing piece is a scope decision (adopt the band printing as an explicit exception, or keep the
-# ruling), not a scenario that could be derived from the current contract.
+# the printed rule and the recorded contract.  The reroll-with-a-parrying-weapon clause carries 2 scenarios
+# reading the printed "additional parry attempt" as the failed-parry re-roll (ruling of 2026-11-16).
 # REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# Real-recipient addendum (2026-11-16): 1 further scenario(s) build the printed High Elves profile
+# itself (loremaster) and select band--skill-miniath through special_rule_ids, so the KB grant of
+# this identity is exercised rather than only the shared operator injected into hand-built fixtures;
+# the earlier fixture scenarios stay as the operator cases.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -16,13 +17,12 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# Clause: additional-attempt (scope: YES)
-# PARTIAL[additional-attempt]: [D] no scenario is authored.  The printed additional parry attempt is not
-# representable under the accepted contract: Miniath already contributes a parry with any weapon plus the
-# native-parry reroll, and the capacity is then capped at one attempt, while the adopted resolution ruling
-# names only Unbeatable Warrior and the double-bladed sword as exceedances.  The record is marked
-# needs_clarification and the M3 note above records the source-vs-ruling conflict as open, so the pending
-# requirement is the coordinator's re-scope decision, not an authored die tape.
+# Clause: reroll-with-a-parrying-weapon (scope: YES)
+# AUTHORED[reroll-with-a-parrying-weapon]: 3 scenarios read the printed second sentence ("If he has a weapon
+#   that he can parry with he gains an additional parry attempt") as the failed-parry re-roll that the Lustria
+#   rulebook and the catalogue print for the same skill (ruling of 2026-11-16 in
+#   docs/decisions/design-rulings.md; the clause was renamed from additional-attempt to the shared id): a
+#   sword bearer's failed parry is rolled again and blocks, and without the skill the same failed parry stands.
 #
 # Clause: parry-with-any-weapon (scope: YES)
 # AUTHORED[parry-with-any-weapon]: 3 scenarios show the parry allowance the printed stanza adds to a bearer
@@ -34,8 +34,7 @@
 # consulted.  A mace cannot parry on its own, so the only difference between the two capacity scenarios is
 # the skill; the third resolves a real mace parry, keyed on the attack being parried, of which the
 # attacker's hit of 4 is beaten by the parry die of 5, so the wound never lands and the single allowance the
-# clause grants is consumed.  The additional-attempt clause of this origin is deliberately not tested here
-# (see the PARTIAL note in the header).
+# clause grants is consumed.  The re-roll scenarios follow at the end of the file.
 - audit_id: rule/mordheim/high-elves-lus/band--skill-miniath/skill.miniath
   id: the-skill-allows-a-parry-with-a-weapon-that-cannot-parry
   covers: [parry-with-any-weapon]
@@ -90,4 +89,80 @@
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.parried: True, attacks.0.wounded: False, state.second.wounds: 2, state.second.parries_remaining: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed additional attempt, read as the re-roll the Lustria rulebook prints for the same skill
+# (ruling "Miniath: the additional parry attempt is the failed-parry re-roll", docs/decisions/design-rulings.md):
+# the bearer carries a sword, a weapon he can parry with, so his failed parry die of 3 against the hit of 4 is
+# rolled again and the 5 blocks; the successful block consumes the sword's single parry.
+- audit_id: rule/mordheim/high-elves-lus/band--skill-miniath/skill.miniath
+  id: a-failed-parry-is-rolled-again-with-a-parrying-weapon
+  covers: [reroll-with-a-parrying-weapon]
+  fighters:
+    first: *miniath-attacker
+    second:
+      main_weapon_id: weapon.sword
+      skill_ids: [skill.miniath]
+      characteristics: *miniath-bearer
+  duel_context: *miniath-context
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 3}
+    - {key: round.0.first.attack.0.parry.reroll, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: true, attacks.0.wounded: false, state.second.wounds: 2, state.second.parries_remaining: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same sword bearer without the skill has no re-roll (a sword alone grants none; only a sword
+# with a buckler does), so the failed parry die of 3 stands and the wound die of 4 wounds Toughness 3.
+- audit_id: rule/mordheim/high-elves-lus/band--skill-miniath/skill.miniath
+  id: without-the-skill-a-failed-sword-parry-stands
+  covers: [reroll-with-a-parrying-weapon]
+  fighters:
+    first: *miniath-attacker
+    second:
+      main_weapon_id: weapon.sword
+      characteristics: *miniath-bearer
+  duel_context: *miniath-context
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Real recipient (2026-11-16): the same duel as
+# a-failed-parry-is-rolled-again-with-a-parrying-weapon, but the bearer is built as the printed High
+# Elves Loremaster profile (mordheim/high-elves-lus/loremaster), with the band rule selected through
+# special_rule_ids [band--skill-miniath] instead of injecting skill.miniath into a hand-built
+# fighter; the explicit characteristics keep that scenario's dice model.
+- audit_id: rule/mordheim/high-elves-lus/band--skill-miniath/skill.miniath
+  id: a-failed-parry-is-rolled-again-with-a-parrying-weapon-as-the-real-loremaster
+  covers: [reroll-with-a-parrying-weapon]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: high-elves-lus
+      profile_id: loremaster
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      special_rule_ids: [band--skill-miniath]
+  duel_context:
+    charging: []
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.first.attack.0.hit, value: 4}
+  - {key: round.0.first.attack.0.parry, value: 3}
+  - {key: round.0.first.attack.0.parry.reroll, value: 5}
+  - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: true, attacks.0.wounded: false, state.second.wounds: 2, state.second.parries_remaining: 0}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -1,6 +1,6 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills-bull-charge/mechanic.bull-charge
-# authoring_status: TODO
+# authoring_status: AUTHORED
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +9,92 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/bands/mordheim/ogre-hunting-party-web/special-rules.yaml
-# TODO: Review the rule and author all required scenarios.
+# AUTHORED: 3 scenarios read the printed single attack on the charge: the accepted declaration resolves
+#   exactly one attack on its own key at +1 to hit, whose unparried unsaved hit leaves the defender Knocked
+#   Down with no To Wound roll (the armour save that keeps the defender standing is the recorded border case),
+#   and the declined declaration resolves the profile's normal attacks.  The operator is supplied through the
+#   fighter's grant list (canonical mechanic.bull-charge).  Authored under the table identity and moved here
+#   unchanged (see the provenance line).  REVIEWED still requires manual semantic review.
+# Provenance (2026-11-16): 3 scenario(s) moved here from rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills/profile.skill-access, whose binding is now covered.elsewhere (de-duplication of construction encodings); bodies unchanged, covers labels dropped.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+
+# Derived from the printed sentence and the recorded contract; no engine output was consulted.  The
+# declared replacement pool is one attack on its own key, so the tape shows one attack where the fixture
+# has two, and the automatic knock-down needs no To Wound roll.
+- audit_id: rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills-bull-charge/mechanic.bull-charge
+  id: a-declared-bull-charge-knocks-the-enemy-down
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.bull-charge]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.bull-charge, value: true}
+  rolls:
+    - {key: round.0.first.bull-charge.hit, value: 3}
+  expect_rounds:
+    0: {attacks.0.hit: true, state.second.condition: KNOCKED_DOWN, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: decision, key: round.0.first.bull-charge, value: true}
+    - {kind: roll, key: round.0.first.bull-charge.hit, sides: 6, value: 3}
+
+# The recorded reading of the printed "if successful": an armour save stops the knock-down, so the
+# defender stays standing.
+- audit_id: rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills-bull-charge/mechanic.bull-charge
+  id: an-unsaved-hit-knocks-down-while-a-save-leaves-the-defender-standing
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.bull-charge]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.light-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.bull-charge, value: true}
+  rolls:
+    - {key: round.0.first.bull-charge.hit, value: 3}
+    - {key: round.0.first.bull-charge.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.condition: STANDING, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed "rather than making his normal attacks": declining the declaration resolves the profile's
+# two attacks on their own keys instead of the single charge attack.
+- audit_id: rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills-bull-charge/mechanic.bull-charge
+  id: declining-the-declaration-resolves-the-normal-attacks
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.bull-charge]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.bull-charge, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.condition: STANDING, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: decision, key: round.0.first.bull-charge, value: false}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.1.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}

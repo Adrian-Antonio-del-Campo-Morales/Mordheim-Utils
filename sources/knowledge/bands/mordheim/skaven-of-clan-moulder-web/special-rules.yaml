@@ -542,17 +542,14 @@ rules:
     - rat-ogres
 - id: band--clan-moulder-special-skills
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: band
     effects:
     - id: profile.skill-access
-      scope: 'YES'
-      binding:
-        kind: profile
-        id: profile.skill-access
-        parameters:
-          category: special
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
     - id: unimplemented.skaven-of-clan-moulder-web.special.clan-moulder-special-skills
       scope: 'NO'
       binding: null

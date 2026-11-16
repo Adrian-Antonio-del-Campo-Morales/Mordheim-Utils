@@ -12,6 +12,9 @@
 # REVIEWED requires semantic review; covers labels alone are insufficient.
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
+# De-duplication note (2026-11-16): the duplicate KB source recorded here earlier has been removed, so
+#   this rule is now the single source and its scenarios fail when its binding is removed (rule-removal
+#   probe).  Earlier note, kept for history: the same effect is delivered independently by sources/knowledge/bands/mordheim/dark-elves/profiles.yaml, profile cold-one-beasthounds, key combat_traits.natural_armour_unmodified: true, so removing this rule's binding le...
 #
 # Clause: critical-negation (scope: YES)
 # AUTHORED[critical-negation]: 1 scenario covers the printed 'no save' critical: the declared natural

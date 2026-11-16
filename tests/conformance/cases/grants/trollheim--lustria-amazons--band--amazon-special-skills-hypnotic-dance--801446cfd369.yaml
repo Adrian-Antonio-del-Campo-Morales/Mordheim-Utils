@@ -1,7 +1,7 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/lustria-amazons/band--amazon-special-skills-hypnotic-dance/mechanic.mesmerising-dance
 # authoring_status: AUTHORED
-# authoring_progress: the admitted hypnotic-dance clause carries 3 authored scenarios derived from the printed
+# authoring_progress: the admitted hypnotic-dance clause carries 5 authored scenarios derived from the printed
 #   sentence and the modular consumer.  The blocker recorded here previously was FALSE and is corrected: the
 #   consumer exists - packages/python/combat-engine/mordheim_combat/modular/rounds.py implements this exact
 #   idiom in the dance loop for mechanic.mesmerising-dance, testing the target's own Leadership at the key
@@ -11,6 +11,11 @@
 #   special-rules.yaml, to exactly that mechanic.  The printed "Undead and Lizardmen are unaffected" is the
 #   branch's own exclusion tuple (nature.undead, species.lizardman, mechanic.charm-immunity).  REVIEWED still
 #   requires manual semantic review and execution_status stays UNEXECUTED.
+# Real-recipient addendum (2026-11-16): 2 further scenario(s) build the printed Amazons profile
+# itself (amazon-priestess) and select band--amazon-special-skills-hypnotic-dance through
+# special_rule_ids, so the KB grant of this identity is exercised rather than only the shared
+# operator injected into hand-built fixtures; the earlier fixture scenarios stay as the operator
+# cases.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -19,7 +24,7 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: 3 scenarios cover the printed charm.  The register's "a new branch is needed"
+# AUTHORED: 5 scenarios cover the printed charm.  The register's "a new branch is needed"
 #   was not correct for this source: rounds.py's dance loop already implements exactly this idiom for
 #   mechanic.mesmerising-dance, and the control-family witness maps this band row to that mechanic.  The
 #   target's own Leadership is tested at round.<round>.<target label>.mesmerising-dance (its two dice are .0
@@ -95,6 +100,69 @@
   rolls:
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.charm_attack_blocked: false, attacks.0.hit: false, attacks.1.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Real recipient (2026-11-16): the same duel as a-failed-dance-test-bars-the-target-for-the-round,
+# but the bearer is built as the printed Amazons Priestess profile
+# (trollheim/lustria-amazons/amazon-priestess), with the band rule selected through special_rule_ids
+# [band--amazon-special-skills-hypnotic-dance] instead of injecting mechanic.mesmerising-dance into
+# a hand-built fighter; the explicit characteristics keep that scenario's dice model. The profile's
+# equipment list does not offer the original weapon, so it carries weapon.sword; no die of the
+# declared tape depends on that swap.
+- audit_id: rule/trollheim/lustria-amazons/band--amazon-special-skills-hypnotic-dance/mechanic.mesmerising-dance
+  id: a-failed-dance-test-bars-the-target-for-the-round-as-the-real-amazon-priestess
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-amazons
+      profile_id: amazon-priestess
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.sword
+      special_rule_ids: [band--amazon-special-skills-hypnotic-dance]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context:
+    charging: []
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.second.mesmerising-dance.0, value: 6}
+  - {key: round.0.second.mesmerising-dance.1, value: 6}
+  - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.charm_attack_blocked: true, state.second.condition: STANDING, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Real recipient (2026-11-16): the same duel as a-passed-dance-test-leaves-both-pools-intact, but
+# the bearer is built as the printed Amazons Priestess profile
+# (trollheim/lustria-amazons/amazon-priestess), with the band rule selected through special_rule_ids
+# [band--amazon-special-skills-hypnotic-dance] instead of injecting mechanic.mesmerising-dance into
+# a hand-built fighter; the explicit characteristics keep that scenario's dice model. The profile's
+# equipment list does not offer the original weapon, so it carries weapon.sword; no die of the
+# declared tape depends on that swap.
+- audit_id: rule/trollheim/lustria-amazons/band--amazon-special-skills-hypnotic-dance/mechanic.mesmerising-dance
+  id: a-passed-dance-test-leaves-both-pools-intact-as-the-real-amazon-priestess
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-amazons
+      profile_id: amazon-priestess
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.sword
+      special_rule_ids: [band--amazon-special-skills-hypnotic-dance]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context:
+    charging: []
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.second.mesmerising-dance.0, value: 1}
+  - {key: round.0.second.mesmerising-dance.1, value: 1}
+  - {key: round.0.first.attack.0.hit, value: 1}
+  - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {state.second.charm_attack_blocked: false, attacks.0.hit: false, attacks.1.hit: false}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -5,10 +5,9 @@
 #   model derived from the printed rule and the recorded semantic contract: the grant delivers
 #   the first-round reroll against the qualifying dwarf; the same miss stands without the
 #   qualifying identity; the printed fanatics exemption receives no reroll; a band model
-#   outside the clause receives no reroll. PENDING GAP (not a scenario gap): the band record
-#   carries no activated binding for this canonical effect (runtime scope LATER,
-#   implemented=NO, null binding), so the compiled Night Goblin may reach the duel without the
-#   Hatred its scenarios declare. REVIEWED still requires manual semantic review and
+#   outside the clause receives no reroll. The band record now binds mechanic.hatred-dwarfs
+#   (runtime scope YES, implemented YES; checked 2026-11-16); the earlier "null binding" pending
+#   gap is withdrawn. REVIEWED still requires manual semantic review and
 #   execution_status stays UNEXECUTED; no behavioral result is claimed.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
@@ -18,7 +17,7 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: Documented difference (AUTHORED vs implementation): every face this record prints has a written scenario, so AUTHORED is the correct header; the motor side is what stays pending [B] - the band row is an unimplemented placeholder with no activated binding (runtime scope LATER, implemented=NO), so the compiled Night Goblin may reach the duel without the Hatred these scenarios declare; 4 authored scenario(s) cover every face this record prints for its model:
+# AUTHORED: Documented difference (AUTHORED vs implementation): every face this record prints has a written scenario, so AUTHORED is the correct header; the band row now binds mechanic.hatred-dwarfs (scope YES, implemented YES; checked 2026-11-16), so the earlier "unimplemented placeholder" note is withdrawn; 4 authored scenario(s) cover every face this record prints for its model:
 #   the grant delivers the first-round reroll against the qualifying dwarf; the same miss
 #   stands without the qualifying identity; the printed fanatics exemption receives no reroll;
 #   a band model outside the clause receives no reroll.

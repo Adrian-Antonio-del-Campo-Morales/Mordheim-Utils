@@ -1,7 +1,7 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/dwarf-rangers/band--dwarf-special-skills-true-grit/skill.tough-as-steel
 # authoring_status: AUTHORED
-# authoring_progress: the admitted clause carries 5 authored scenarios derived from the printed True Grit
+# authoring_progress: the admitted clause carries 7 authored scenarios derived from the printed True Grit
 # injury sentence and the recorded contract.  The bearer is a fixture declaring the canonical skill this
 # band's printed skill entry grants, because the register records the band origin as the same injury-table
 # operator with no second runtime contribution; the two control scenarios repeat the same fixture without
@@ -14,11 +14,14 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: 5 scenarios cover the printed chart: an injury total of 5 leaves the bearer Stunned where
+# AUTHORED: 7 scenarios cover the printed chart: an injury total of 5 leaves the bearer Stunned where
 # the ordinary table takes the same total Out of Action, a total of 3 leaves it Knocked Down where the
 # ordinary table merely Stuns, a total of 6 still takes the bearer out of action, and the control scenarios
 # show the same totals on a bearer without the skill.  A total of 4 is Stunned on both tables, so it does
 # not discriminate and is not used.
+# Real recipient (2026-11-16): two further scenarios build the band's printed runesmith with and without
+# the True Grit entry selected through special_rule_ids; against the profile's own Hard to Kill the total
+# of 3 is Knocked Down with the selection and Stunned without it.
 
 # --- Authored scenarios ---
 # Derived from the printed sentence and the recorded chart (1-3 knocked down, 4-5 stunned, 6 out of action);
@@ -117,3 +120,52 @@
   expect_rounds:
     0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: OUT}
   expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+# Real recipient (2026-11-16): the band's own printed runesmith is built from the band package with the
+# printed True Grit entry selected through special_rule_ids, so the grant under test is the band's KB row
+# rather than an injected skill id.  The printed profile also carries the Dwarf Hard to Kill rule (Stunned
+# on 2-5, out on 6), so the discriminating total is 3: True Grit's chart leaves it Knocked Down where Hard
+# to Kill alone (the contrast below, same profile without the selection) Stuns.  The printed Toughness 4
+# needs the declared 5 to wound against Strength 3; the WS3 attacker hits the higher-WS bearer on 4.
+- audit_id: rule/mordheim/dwarf-rangers/band--dwarf-special-skills-true-grit/skill.tough-as-steel
+  id: the-printed-runesmith-with-true-grit-is-knocked-down-on-a-three
+  fighters:
+    first:
+      main_weapon_id: weapon.axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: runesmith
+      main_weapon_id: weapon.mace
+      special_rule_ids: [band--dwarf-special-skills-true-grit]
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 3}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/dwarf-rangers/band--dwarf-special-skills-true-grit/skill.tough-as-steel
+  id: the-printed-runesmith-without-true-grit-is-stunned-on-the-same-three
+  fighters:
+    first:
+      main_weapon_id: weapon.axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: runesmith
+      main_weapon_id: weapon.mace
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 3}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -6,8 +6,10 @@
 # before damage).  The bearer is the profile build mordheim/battle-monks-of-cathay/raging-peasants,
 # which prints that a wounded Peasant is taken out of action without an injury roll; it contributes
 # no attacks, so round 0 carries only the attacker's dice.  The first scenario spends the printed
-# single Wound, and the second shows the same end at one Wound more than the profile prints, so the
-# pair carries the recorded 'regardless of remaining Wounds' part of the contract.  Neither tape
+# single Wound; the second (body corrected 2026-11-16, see its comment) gives the attacker two
+# blows (one misses) and shows the one wound still ends the fight with no injury die.  The recorded
+# 'regardless of remaining Wounds' part of the contract is not exercisable on the printed W1
+# profile and is no longer claimed.  Neither tape
 # declares an injury die, and the strict tape fails if the engine requests one.  REVIEWED still
 # requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -19,8 +21,11 @@
 # Governing rulings: docs/decisions/design-rulings.md
 #
 # AUTHORED: 2 scenarios show the printed end: the first unsaved wound takes the
-#   bearer Out of Action with no injury die at all, both at its printed single Wound and at one Wound
-#   above it, so the outcome cannot be the ordinary injury ladder.
+#   bearer Out of Action with no injury die at all, against one blow and against two blows of which
+#   one hits, so the outcome cannot be the ordinary injury ladder.
+# De-duplication note (2026-11-16): the duplicate KB source recorded here earlier has been removed, so
+#   this rule is now the single source and its scenarios fail when its binding is removed (rule-removal
+#   probe).  Earlier note, kept for history: the same injury_profile 2 is delivered independently by sources/knowledge/bands/mordheim/battle-monks-of-cathay/profiles.yaml, profile raging-peasants, key combat_traits.injury_profile: 2, so removing this rule's binding...
 
 # --- Authored scenarios ---
 # Derived from the printed sentence and the recorded contract; no engine output was consulted.  The
@@ -49,22 +54,27 @@
     0: {attacks.0.wounded: True, state.second.condition: OUT}
   expect_final: {rounds_executed: 1, termination_reason: second_out}
 
-# The recorded contract adds 'regardless of remaining Wounds'; the same bearer at one Wound more
-# than the profile prints is still ended by that first unsaved wound.
-
+# Body corrected 2026-11-16 (the id is kept for the accepted-evidence baseline and no longer
+# describes the setup): the former body raised the bearer to two Wounds, above the printed W1 the
+# runner now refuses, and no legal Raging Peasant build carries more than one Wound (no equipment
+# list, no armour, no wound-granting rule).  The corrected body keeps the printed W1 and varies the
+# attack instead: the attacker strikes twice (both to-hit dice are rolled together, the second
+# misses), the one hitting blow wounds, and the bearer is out at once with no injury die requested;
+# the strict tape declares none.
 - audit_id: rule/mordheim/battle-monks-of-cathay/raging-peasants--downtrodden/trait.injury-profile
   id: the-first-wound-takes-out-a-peasant-above-its-printed-wounds
   fighters:
     first:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 2}
     second: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: raging-peasants}
-  initial_state: {second: {wounds: 2, attacks: 0}}
+  initial_state: {second: {attacks: 0}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.1.hit, value: 1}
     - {key: round.0.first.attack.0.wound, value: 5}
   expect_rounds:
-    0: {attacks.0.wounded: True, state.second.condition: OUT}
+    0: {attacks.0.wounded: True, attacks.1.hit: False, state.second.condition: OUT}
   expect_final: {rounds_executed: 1, termination_reason: second_out}

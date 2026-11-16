@@ -1,7 +1,7 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/sea-ghosts-mim/minstrels--songster/mechanic.songster
 # authoring_status: AUTHORED
-# authoring_progress: the admitted songster clause carries three authored scenarios derived from the
+# authoring_progress: the admitted songster clause carries four authored scenarios derived from the
 # printed sentence and the recorded contract, mirroring the authored optional-reroll grant of the same
 # family in this directory (dwarf-rangers dwarf-longbeards--stubborn): the failed Leadership test offers
 # exactly one reroll, the declared choice takes it and the second result passes, the accepted second result
@@ -14,6 +14,10 @@
 # third participant, while the printed Rout half is the excluded group procedure.  REVIEWED still requires
 # manual semantic review and
 # execution_status stays UNEXECUTED.
+# Real-recipient addendum (2026-11-16): one further scenario supplies the printed Minstrel as a
+# nearby friendly provider to a printed Sea Ranger, so the KB grant of this identity (and the
+# printed +1 and 6" radius recorded above as not asserted) is exercised rather than only the
+# fixture's leadership-reroll operator.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -23,7 +27,7 @@
 # Governing rulings: docs/decisions/design-rulings.md
 #
 # Clause: songster (scope: YES)
-# AUTHORED[songster]: 3 scenarios read the printed "may re-roll any failed Leadership test" as the single
+# AUTHORED[songster]: 4 scenarios read the printed "may re-roll any failed Leadership test" as the single
 # optional reroll the effect resolves.  The bearer is a hand-built fixture of the printed Leadership the
 # test uses, and the enemy charges it as a fear-causer (its causes-fear fact is its own trait_override), so
 # the test under evidence is the charged warrior's Fear test, whose printed failure makes its own hits need
@@ -119,3 +123,48 @@
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 
+# Real recipient (2026-11-16): the printed Minstrel profile itself (rule minstrels--songster) stands
+# 4" from a friendly printed Sea Ranger (explicit Leadership 6, axe from its own list) who is
+# charged by a Fear-causer. "Any friendly model within 6" of the warrior may re-roll any failed
+# Leadership test with a +1 to Leadership": 6+6 fails, the declared reroll is taken, and 3+4 = 7
+# passes only at the printed +1, so the Ranger's hits do not need sixes. Without the Minstrel's
+# grant no reroll would be offered.
+- audit_id: rule/mordheim/sea-ghosts-mim/minstrels--songster/mechanic.songster
+  id: a-sea-ranger-beside-the-real-minstrel-rerolls-the-failed-fear-test-at-plus-one
+  covers: [songster]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      collection: mordheim
+      band_id: sea-ghosts-mim
+      profile_id: sea-rangers
+      main_weapon_id: weapon.axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context:
+    first_id: first
+    second_id: second
+    charging: [first]
+    active_participant: first
+    distances:
+    - [second, minstrel, 4]
+    nearby:
+    - participant_id: minstrel
+      side_id: second
+      condition: standing
+      fighter: {collection: mordheim, band_id: sea-ghosts-mim, profile_id: minstrels}
+  maximum_rounds: 1
+  decisions:
+  - {key: round.0.second.fear.charged.reroll, value: true}
+  rolls:
+  - {key: round.0.second.fear.charged.0, value: 6}
+  - {key: round.0.second.fear.charged.1, value: 6}
+  - {key: round.0.second.fear.charged.reroll.0, value: 3}
+  - {key: round.0.second.fear.charged.reroll.1, value: 4}
+  - {key: round.0.first.attack.0.hit, value: 1}
+  - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

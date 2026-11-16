@@ -12,6 +12,15 @@
 # AUTHORED: 2 scenarios evidence the declared entry restriction on the construction route the record names. 'parrot' is the catalogue's own carried item id (sources/knowledge/catalog/items/trollheim.yaml), so the bound profile.equipment-restrictions binding this band declares (grant: profile, implemented YES) reaches it through the shared eligibility stage: a Ship's Mate build carrying the Parrot is refused with '"parrot" is not on any equipment list of lustria-pirates/ships-mates.' and the identical build without it is accepted at construction. REVIEWED still requires manual semantic review.
 # authoring_progress: 2 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
 
+# De-duplication note (2026-11-16): the duplicate source the earlier discrimination note named - the
+#   `scourge`, `pirate_flag` (applies_to.profile_types [hero]) and `parrot` (applies_to.profile_ids [pirate-captain, boatswains]) rows of `pirate-equipment-list` in sources/knowledge/bands/trollheim/lustria-pirates/equipment-access.yaml, their gates - was removed.
+#   Every profile the gate excluded carries this printed restriction as its own forbids token, so the
+#   list now offers the row to all its users and this binding is the single encoding of the printed
+#   reservation: the refusal below is the binding's own '"<item>" is forbidden for <band>/<profile>.'
+#   (only the expect_error wording changed; the refusal itself is unchanged) and the scenario discriminates.
+#   Header prose above that quotes the list sentence '... is not on any equipment list ...' describes the
+#   state before this change.
+
 # --- Authored scenarios ---
 # Same clause, different recipient.
 
@@ -23,7 +32,7 @@
       band_id: lustria-pirates
       profile_id: ships-mates
       owned_item_ids: [parrot]
-  expect_error: '"parrot" is not on any equipment list of lustria-pirates/ships-mates.'
+  expect_error: '"parrot" is forbidden for lustria-pirates/ships-mates.'
 
 - audit_id: rule/trollheim/lustria-pirates/ships-mates--equipment-restrictions/profile.equipment-restrictions
   id: ships-mates-without-the-parrot-is-accepted-at-construction

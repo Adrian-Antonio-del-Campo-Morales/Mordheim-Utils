@@ -15,8 +15,11 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: 2 scenarios cover the single Fear-triggered Leadership reroll and the effect of
+# AUTHORED: 3 scenarios cover the single Fear-triggered Leadership reroll and the effect of
 #   declining it.
+# Real recipient (2026-11-16): one further scenario builds the band's printed Questing Knight from the
+# band package with the entry selected through special_rule_ids, so the KB grant itself (not an injected
+# mechanic id) is exercised.
 
 # --- Authored scenarios ---
 # Derived from the printed rule and the recorded contract; no engine output was consulted.  The
@@ -70,3 +73,37 @@
     0: {attacks: [], state.first_charged: False, state.engaged: False, state.failed_charges: ['first']}
   expect_final: {rounds_executed: 1, termination_reason: disengaged}
 
+
+# Real recipient (2026-11-16): the band's printed Questing Knight is built from the band package with the
+# Questing Vow entry selected through special_rule_ids (characteristics overridden only to keep the
+# fixture's dice math), so the band's KB row offers the reroll of the failed Fear test; without it the
+# first failure stands and the charge fails.
+- audit_id: rule/mordheim/bretonnian-chapel-guard/band--questing-vow/mechanic.questing-vow
+  id: the-printed-questing-knight-with-the-vow-retakes-the-failed-fear-test
+  fighters:
+    first:
+      collection: mordheim
+      band_id: bretonnian-chapel-guard
+      profile_id: questing-knight
+      special_rule_ids: [band--questing-vow]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.causes-fear]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 6}
+    - {key: round.0.first.fear.charge.1, value: 6}
+    - {key: round.0.first.fear.charge.reroll.0, value: 1}
+    - {key: round.0.first.fear.charge.reroll.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  decisions:
+    - {key: round.0.first.fear.charge.reroll, value: true}
+  expect_rounds:
+    0: {state.first_charged: true, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

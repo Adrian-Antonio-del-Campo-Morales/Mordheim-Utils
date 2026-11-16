@@ -209,9 +209,6 @@ SPECIAL_RULE_EFFECTS = {
     # Bear Hug's source binding retains the historic special-rule namespace;
     # PROFILE_RULE_EFFECTS is what grants it automatically to the Bear.
     "trained-bear--bear-hug": {"effects": {"bear_hug": True}},
-    # The Necrotect selects an unconditional first-round repetition, not the
-    # ordinary Psychology rule called Hatred.
-    "necrotect--hatred": {"effects": {"tags": ("mechanic.first-round-hit-reroll",)}},
     "band--mutations-extra-arm": {},
     "band--mutations-great-claw": {},
     "band--beastmen-special-skills-horned-one": {},
@@ -227,6 +224,10 @@ SPECIAL_RULE_EFFECTS = {
 
 
 PROFILE_RULE_EFFECTS = {
+    # The Necrotect's printed Hatred is an unconditional first-round repetition,
+    # not the ordinary Psychology rule called Hatred (which its Undead immunity
+    # would cancel). It is the profile's own printed ability, granted automatically.
+    "necrotect--hatred": {"effects": {"tags": ("mechanic.first-round-hit-reroll",)}},
     # Cold Steel (Necrarchs Banshee): the printed clause reads the identity of
     # the incoming attack -- a steel or iron weapon can harm the bearer at -1 to
     # hit, a blessed or magical one hits normally, and the body identities its

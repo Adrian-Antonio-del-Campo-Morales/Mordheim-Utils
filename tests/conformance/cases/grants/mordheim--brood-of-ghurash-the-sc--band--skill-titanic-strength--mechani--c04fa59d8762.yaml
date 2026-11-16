@@ -15,8 +15,11 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: 3 scenarios cover the Strength test after a hit that fails to wound, its failed
+# AUTHORED: 4 scenarios cover the Strength test after a hit that fails to wound, its failed
 #   and passed outcomes, and the absence of any test without the rule.
+# Real recipient (2026-11-16): one further scenario builds the band's printed Broodmother from the band
+# package with the entry selected through special_rule_ids, so the KB grant itself (not an injected
+# mechanic id or trait) is exercised.
 
 # --- Authored scenarios ---
 # Derived from the printed rule and the recorded contract; no engine output was consulted.  The
@@ -80,3 +83,33 @@
     0: {state.first.condition: STANDING, state.first.wounds: 2, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
+
+# Real recipient (2026-11-16): the charged bearer is the band's printed Broodmother built from the band
+# package with the Titanic Strength entry selected through special_rule_ids (characteristics overridden
+# only to keep the fixture's dice math), so the band's KB row supplies the Strength test after the failed
+# wound; without it no titanic-strength die is requested.  The Broodmother causes Fear, so the charger is
+# given the causes-fear fact, which exempts it from the Fear test.  Trolls fight with their printed bare
+# fists (the mace is not on the list); the bearer's attack still fails to wound on the declared 1.
+- audit_id: rule/mordheim/brood-of-ghurash-the-sc/band--skill-titanic-strength/mechanic.titanic-strength
+  id: the-printed-broodmother-with-titanic-strength-knocks-the-defender-down
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: brood-of-ghurash-the-sc
+      profile_id: broodmother
+      special_rule_ids: [band--skill-titanic-strength]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 1}
+    - {key: round.0.second.attack.0.titanic-strength, value: 6}
+  expect_rounds:
+    0: {state.first.condition: KNOCKED_DOWN, state.first.wounds: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

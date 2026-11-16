@@ -17,8 +17,10 @@
 # Governing rulings: docs/decisions/design-rulings.md
 #
 # Clause: brood-mentality--scope--stupidity (scope: YES)
-# AUTHORED[brood-mentality--scope--stupidity]: 2 scenarios cover the supplied per-member Leadership
+# AUTHORED[brood-mentality--scope--stupidity]: 3 scenarios cover the supplied per-member Leadership
 #   bonus raising the Stupidity requirement, and the same dice failing without it.
+# Real recipient (2026-11-16): one further scenario builds the band's printed Youth from the band package,
+# so the KB grant itself (not an injected mechanic id or trait) is exercised.
 #
 # Clause: brood-mentality--scope--roster-condition (scope: NO)
 # Outside the admitted clause scope; retained for context, not a test TODO.
@@ -73,3 +75,39 @@
     0: {state.first.stupidity_failed: True, attacks: [], state.first_charged: False, state.failed_charges: ['first'], state.engaged: False}
   expect_final: {rounds_executed: 1, termination_reason: disengaged}
 
+
+# Real recipient (2026-11-16): the charging bearer is the band's printed Youth built from the band package
+# (characteristics overridden only to keep the fixture's dice math), so both Stupidity and the Brood
+# Mentality bonus come from the band's own row; only the current count of nearby members is supplied
+# (stupidity_leadership_bonus: 1).  Without the row's brood-mentality binding the same total of seven
+# fails the supplied Leadership 6.  The Youth causes Fear, so the opponent is given the causes-fear fact,
+# which exempts it from the Fear test and keeps the tape free of its Leadership dice.  Trolls fight with
+# their printed bare fists (the mace is not on the list), so the fixture Strength is raised to 4 to keep
+# the fist's effective Strength 3 and the same wound face of four.
+# The fist's +1 to the target's armour gives the unarmoured opponent a 6+ save, which the declared 1 fails.
+- audit_id: rule/mordheim/brood-of-ghurash-the-sc/band--brood-mentality/mechanic.brood-mentality
+  id: the-printed-youth-adds-the-supplied-brood-bonus-to-its-stupidity-test
+  covers: [brood-mentality--scope--stupidity]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: brood-of-ghurash-the-sc
+      profile_id: youths
+      trait_overrides: {stupidity_leadership_bonus: 1}
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 6}
+    - {key: round.0.first.stupidity.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.stupidity_failed: false, state.first_charged: true, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

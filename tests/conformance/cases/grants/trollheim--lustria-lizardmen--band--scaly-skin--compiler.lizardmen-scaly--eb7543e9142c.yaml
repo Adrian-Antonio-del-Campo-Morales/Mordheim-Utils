@@ -2,6 +2,11 @@
 # audit_id: rule/trollheim/lustria-lizardmen/band--scaly-skin/compiler.lizardmen-scaly-skin
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
+# Note (2026-11-16): this band rule is the single source of the printed Scaly Skin mechanics (stacks
+#   with armour, no Strength reduction beyond 6+); each profile's own rule prints only its save value.
+#   The stacking and worst-save scenarios formerly on the per-profile identities were moved here (exact
+#   duplicates of the value scenarios dropped).
+#
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
@@ -19,6 +24,10 @@
 #   the printed negation by a result that denies armour saves.
 # PARTIAL: the printed exception "except Hardened Leather provides no additional bonus" is unobservable in this revision and is recorded rather than dropped: a Lizardman wearing hardened or toughened leathers is a build the printed lists forbid (skinks-, saurus- and kroxigor-equipment-list offer no such item, and no band package pairs it with a Scaly Skin profile), so the compiler's cancellation of the leather contribution has no legal recipient to observe.  The representable half - the prohibition itself - is authored below as a construction refusal with the corpus's established armour-prohibition diagnostic `armour is forbidden for <band>/<profile>`, the same contract the kroxigor identities use, so an illegally armoured Lizardman is refused instead of silently keeping the natural save.  The remaining terms of this printed rule (the two natural saves, the 6+ floor, the ordinary-armour combination and the ignore-armour negation) are authored above.
 # Missing datum: a legal Scaly Skin bearer that may wear Hardened Leather, which this revision does not contain.
+# De-duplication note (2026-11-16): the duplicate KB source recorded here earlier has been removed, so
+#   this rule is now the single source and its scenarios fail when its binding is removed (rule-removal
+#   probe).  Earlier note, kept for history: this binding is the construction contract compiler.lizardmen-scaly-skin; its compiler consumer (compiler.py, the natural armour it writes) produces the same values the per-profile rules below already supply, so the only ...
+
 # --- Authored scenarios ---
 # Derived from the printed rule text, the recorded parameters of this register
 # row and the band package; no engine output was consulted.  The duel is
@@ -47,6 +56,8 @@
     - {key: round.0.second.attack.2.hit, value: 1}
   expect_rounds:
     0: {state.second.wounds: 3, state.second.condition: STANDING}
+  expect_fighters:
+    second.construction_tags: [compiler.lizardmen-scaly-skin]
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 - audit_id: rule/trollheim/lustria-lizardmen/band--scaly-skin/compiler.lizardmen-scaly-skin
@@ -139,3 +150,279 @@
       main_weapon_id: weapon.halberd
       armour_id: armour.toughened-leathers
   expect_error: "equipment is not available to lustria-lizardmen/kroxigor: ['armour.toughened-leathers']"
+
+- audit_id: rule/trollheim/lustria-lizardmen/band--scaly-skin/compiler.lizardmen-scaly-skin
+  id: a-strength-six-attacker-beats-the-kroxigor-save-on-five
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 6, toughness: 3, wounds: 2, initiative: 7, attacks: 1}
+    second: {collection: trollheim, band_id: lustria-lizardmen, profile_id: kroxigor, main_weapon_id: weapon.halberd}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.2.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-lizardmen/band--scaly-skin/compiler.lizardmen-scaly-skin
+  id: a-strength-six-attacker-still-leaves-the-saurus-braves-save-on-six
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 6, toughness: 3, wounds: 2, initiative: 7, attacks: 1}
+    second: {collection: trollheim, band_id: lustria-lizardmen, profile_id: saurus-braves, main_weapon_id: weapon.stone-axe}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-lizardmen/band--scaly-skin/compiler.lizardmen-scaly-skin
+  id: a-strength-six-attacker-beats-the-saurus-braves-save-on-five
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 6, toughness: 3, wounds: 2, initiative: 7, attacks: 1}
+    second: {collection: trollheim, band_id: lustria-lizardmen, profile_id: saurus-braves, main_weapon_id: weapon.stone-axe}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-lizardmen/band--scaly-skin/compiler.lizardmen-scaly-skin
+  id: a-shield-improves-the-saurus-braves-save
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 7, attacks: 1}
+    second: {collection: trollheim, band_id: lustria-lizardmen, profile_id: saurus-braves, main_weapon_id: weapon.stone-axe, off_hand_id: defence.shield}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-lizardmen/band--scaly-skin/compiler.lizardmen-scaly-skin
+  id: a-strength-six-attacker-still-leaves-the-saurus-totem-warrior-save-on-six
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 6, toughness: 3, wounds: 2, initiative: 7, attacks: 1}
+    second: {collection: trollheim, band_id: lustria-lizardmen, profile_id: saurus-totem-warrior, main_weapon_id: weapon.stone-axe}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-lizardmen/band--scaly-skin/compiler.lizardmen-scaly-skin
+  id: a-strength-six-attacker-beats-the-saurus-totem-warrior-save-on-five
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 6, toughness: 3, wounds: 2, initiative: 7, attacks: 1}
+    second: {collection: trollheim, band_id: lustria-lizardmen, profile_id: saurus-totem-warrior, main_weapon_id: weapon.stone-axe}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-lizardmen/band--scaly-skin/compiler.lizardmen-scaly-skin
+  id: a-shield-improves-the-saurus-totem-warrior-save
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 7, attacks: 1}
+    second: {collection: trollheim, band_id: lustria-lizardmen, profile_id: saurus-totem-warrior, main_weapon_id: weapon.stone-axe, off_hand_id: defence.shield}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-lizardmen/band--scaly-skin/compiler.lizardmen-scaly-skin
+  id: a-strength-six-attacker-still-leaves-the-skink-braves-save-on-six
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 6, toughness: 3, wounds: 2, initiative: 7, attacks: 1}
+    second: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-braves, main_weapon_id: weapon.stone-axe}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-lizardmen/band--scaly-skin/compiler.lizardmen-scaly-skin
+  id: a-strength-six-attacker-beats-the-skink-braves-save-on-five
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 6, toughness: 3, wounds: 2, initiative: 7, attacks: 1}
+    second: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-braves, main_weapon_id: weapon.stone-axe}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-lizardmen/band--scaly-skin/compiler.lizardmen-scaly-skin
+  id: light-armour-improves-the-skink-braves-save
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 7, attacks: 1}
+    second: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-braves, main_weapon_id: weapon.stone-axe, armour_id: armour.light-armour}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-lizardmen/band--scaly-skin/compiler.lizardmen-scaly-skin
+  id: a-strength-six-attacker-still-leaves-the-skink-great-crests-save-on-six
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 6, toughness: 3, wounds: 2, initiative: 7, attacks: 1}
+    second: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-great-crests, main_weapon_id: weapon.stone-axe}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-lizardmen/band--scaly-skin/compiler.lizardmen-scaly-skin
+  id: a-strength-six-attacker-beats-the-skink-great-crests-save-on-five
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 6, toughness: 3, wounds: 2, initiative: 7, attacks: 1}
+    second: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-great-crests, main_weapon_id: weapon.stone-axe}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-lizardmen/band--scaly-skin/compiler.lizardmen-scaly-skin
+  id: light-armour-improves-the-skink-great-crests-save
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 7, attacks: 1}
+    second: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-great-crests, main_weapon_id: weapon.stone-axe, armour_id: armour.light-armour}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-lizardmen/band--scaly-skin/compiler.lizardmen-scaly-skin
+  id: a-strength-six-attacker-still-leaves-the-skink-priest-save-on-six
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 6, toughness: 3, wounds: 2, initiative: 7, attacks: 1}
+    second: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-priest, main_weapon_id: weapon.stone-axe}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-lizardmen/band--scaly-skin/compiler.lizardmen-scaly-skin
+  id: a-strength-six-attacker-beats-the-skink-priest-save-on-five
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 6, toughness: 3, wounds: 2, initiative: 7, attacks: 1}
+    second: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-priest, main_weapon_id: weapon.stone-axe}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

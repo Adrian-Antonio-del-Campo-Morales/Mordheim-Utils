@@ -9,8 +9,8 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: the declared prohibition is evidenced as a construction refusal: the recipient build where carrying armour.heavy-armour in armour_id is refused with "armour is forbidden for norse-explorers-btb/beserkers", and the same recipient without the item is accepted at construction. One refusal is declared per printed recipient of the rule. Consumer: the shared eligibility stage (packages/python/roster-construction/mordheim_construction/_eligibility.js).
-# authoring_progress: 2 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+# AUTHORED: the declared prohibition is evidenced as a construction refusal: the recipient build where carrying armour.heavy-armour in armour_id is refused with "armour is forbidden for norse-explorers-btb/beserkers", and the same recipient without the item is accepted at construction. One refusal is declared per printed recipient of the rule. Added 2026-11-16: heavy armour is not on the Beserkers' hero-equipment-list, so the printed "This warrior may never wear any form of armour" is now also evidenced on the armour that list offers (light armour, helmet and shield, bands/mordheim/norse-explorers-btb/equipment-access.yaml), which only this rule forbids. Consumer: the shared eligibility stage (packages/python/roster-construction/mordheim_construction/_eligibility.js).
+# authoring_progress: 5 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
 
 # --- Authored scenarios ---
 
@@ -46,3 +46,36 @@
   expect_final:
     rounds_executed: 0
     termination_reason: first_out
+
+# "Any form of armour" on the Beserkers' own list: light armour, which the list offers.
+- audit_id: rule/mordheim/norse-explorers-btb/beserkers--no-armour/profile.equipment-restrictions
+  id: beserkers-with-light-armour-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: norse-explorers-btb
+      profile_id: beserkers
+      armour_id: armour.light-armour
+  expect_error: armour is forbidden for norse-explorers-btb/beserkers
+
+# The helmet the same list offers.
+- audit_id: rule/mordheim/norse-explorers-btb/beserkers--no-armour/profile.equipment-restrictions
+  id: beserkers-with-a-helmet-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: norse-explorers-btb
+      profile_id: beserkers
+      defence_ids: [defence.helmet]
+  expect_error: armour is forbidden for norse-explorers-btb/beserkers
+
+# The shield the same list offers (a shield is armour in the printed equipment rules).
+- audit_id: rule/mordheim/norse-explorers-btb/beserkers--no-armour/profile.equipment-restrictions
+  id: beserkers-with-a-shield-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: norse-explorers-btb
+      profile_id: beserkers
+      off_hand_id: defence.shield
+  expect_error: armour is forbidden for norse-explorers-btb/beserkers

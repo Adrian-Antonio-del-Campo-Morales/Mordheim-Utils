@@ -1,6 +1,6 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/clan-angrund-kep/band--slayer-special-skills-monster-slayer/skill.monster-slayer
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
 # authoring_progress: the wounds-on-four-plus clause carries three authored scenarios derived from
 # the printed stanza, the recorded contract and the admitted monster-slayer grants specification
 # (the Toughness-6 cap, its contrast without the grant, and the retained easier target), while the
@@ -14,15 +14,21 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# Clause: effective-strength-for-armour (scope: YES)
-# PARTIAL[effective-strength-for-armour]: [D] the armour-modifier face stays pending.  This origin's
-# printed stanza repeats only the wound sentence and does not itself print the armour sentence;
-# the effective-Strength reading is carried by the separate variant tag
-# skill.monster-slayer-effective-strength-armour, and no accepted source records that this band's
-# recipient is bound to that variant (the karak-zorn publication prints the sentence and is proved
-# by editorial-monster-slayer-armour.yaml).  A duel scenario cannot be fixed before that binding
-# is recorded, because the tape must declare exactly the armour die the engine asks for: a save the
-# effective Strength makes impossible is skipped while a raw-Strength basis still rolls it.
+# Clause: effective-strength-for-armour (scope: NO)
+# Outside the admitted clause scope since 2026-11-16 (KB set it to NO: the record's printed text (shared-rule.monster-slayer, and the record's own text before the repoint) has no armour sentence).
+#   Earlier note: KB-FIX, not an authoring gap.  The record
+#   bands/mordheim/clan-angrund-kep/special-rules.yaml band--slayer-special-skills-monster-slayer carries no
+#   effect text of its own and resolves its printed text through rule_ref shared-rule.monster-slayer
+#   (catalog/rules/special-rules.yaml), which prints only the wound sentence: "This warrior always wounds any
+#   opponent on a roll of 4+, regardless of Toughness, unless his own Strength (after all modifiers for
+#   weapons used, etc.) would mean that a lower roll than this is needed."  No armour sentence is printed for
+#   this origin, and its only binding is mechanic skill.monster-slayer (tag skill.monster-slayer); the
+#   armour face exists only where it is printed (trollheim/khemri-cursed-of-karak-zorn
+#   band--troll-slayer-special-skills-monster-slayer, a separate effect bound to
+#   skill.monster-slayer-effective-strength-armour).  Recommended KB change: remove clause
+#   effective-strength-for-armour from effect skill.monster-slayer of this record (or set it scope 'NO'
+#   with the reason that the cited source does not print it), leaving wounds-on-four-plus as the record's
+#   only clause.  Not authored: a tape for an unprinted sentence would invent a rule.
 #
 # Clause: wounds-on-four-plus (scope: YES)
 # AUTHORED[wounds-on-four-plus]: 3 scenarios read the printed cap on the band's Slayer recipient.

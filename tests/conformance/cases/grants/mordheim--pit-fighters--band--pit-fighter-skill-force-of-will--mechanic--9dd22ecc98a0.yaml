@@ -1,12 +1,16 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/pit-fighters/band--pit-fighter-skill-force-of-will/mechanic.force-of-will
 # authoring_status: AUTHORED
-# authoring_progress: the admitted force-of-will clause carries two authored scenarios derived from the
+# authoring_progress: the admitted force-of-will clause carries four authored scenarios derived from the
 # printed rule and the recorded contract: a passed D6 against the bearer's Toughness puts it back on its
 # feet with one Wound and still fighting, and a failed one leaves it out of action.  The printed
-# cumulative -1 of later rounds is the same resource repeated and is not part of these two scenarios,
+# cumulative -1 of later rounds is the same resource repeated and is not part of these four scenarios,
 # as the mechanic origin's own case records.  REVIEWED still requires manual semantic review and
 # execution_status stays UNEXECUTED.
+# Real-recipient addendum (2026-11-16): 2 further scenario(s) build the printed Pit Fighters profile
+# itself (pit-king) and select band--pit-fighter-skill-force-of-will through special_rule_ids, so
+# the KB grant of this identity is exercised rather than only the shared operator injected into
+# hand-built fixtures; the earlier fixture scenarios stay as the operator cases.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -15,7 +19,7 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: 2 scenarios cover the printed rescue test both ways: the passed D6 against
+# AUTHORED: 4 scenarios cover the printed rescue test both ways: the passed D6 against
 # Toughness stands the bearer back up with one Wound and still fighting, and the failed one leaves it
 # out of action.  The recorded register reads this printed text as repeating the canonical force-of-will
 # clause without adding a term ("the band origin creates no second runtime contribution"), so the
@@ -70,3 +74,66 @@
     0: {state.second.condition: OUT, state.second.force_of_will_active: false}
   expect_final: {rounds_executed: 1, termination_reason: second_out}
 
+# Real recipient (2026-11-16): the same duel as the-toughness-test-stands-him-back-up, but the
+# bearer is built as the printed Pit Fighters Pit King profile (mordheim/pit-fighters/pit-king),
+# with the band rule selected through special_rule_ids [band--pit-fighter-skill-force-of-will]
+# instead of injecting mechanic.force-of-will into a hand-built fighter; the explicit
+# characteristics keep that scenario's dice model. The profile's equipment list does not offer the
+# original weapon, so it carries weapon.axe; no die of the declared tape depends on that swap.
+- audit_id: rule/mordheim/pit-fighters/band--pit-fighter-skill-force-of-will/mechanic.force-of-will
+  id: the-toughness-test-stands-him-back-up-as-the-real-pit-king
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: pit-fighters
+      profile_id: pit-king
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+      main_weapon_id: weapon.axe
+      special_rule_ids: [band--pit-fighter-skill-force-of-will]
+  duel_context:
+    charging: [first]
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.first.attack.0.hit, value: 4}
+  - {key: round.0.first.attack.0.wound, value: 4}
+  - {key: round.0.first.attack.0.injury.0, value: 5}
+  - {key: round.0.first.attack.0.force-of-will.rescue, value: 2}
+  - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.condition: STANDING, state.second.wounds: 1, state.second.force_of_will_active: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Real recipient (2026-11-16): the same duel as a-failed-test-leaves-him-out, but the bearer is
+# built as the printed Pit Fighters Pit King profile (mordheim/pit-fighters/pit-king), with the band
+# rule selected through special_rule_ids [band--pit-fighter-skill-force-of-will] instead of
+# injecting mechanic.force-of-will into a hand-built fighter; the explicit characteristics keep that
+# scenario's dice model. The profile's equipment list does not offer the original weapon, so it
+# carries weapon.axe; no die of the declared tape depends on that swap.
+- audit_id: rule/mordheim/pit-fighters/band--pit-fighter-skill-force-of-will/mechanic.force-of-will
+  id: a-failed-test-leaves-him-out-as-the-real-pit-king
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: pit-fighters
+      profile_id: pit-king
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+      main_weapon_id: weapon.axe
+      special_rule_ids: [band--pit-fighter-skill-force-of-will]
+  duel_context:
+    charging: [first]
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.first.attack.0.hit, value: 4}
+  - {key: round.0.first.attack.0.wound, value: 4}
+  - {key: round.0.first.attack.0.injury.0, value: 5}
+  - {key: round.0.first.attack.0.force-of-will.rescue, value: 5}
+  expect_rounds:
+    0: {state.second.condition: OUT, state.second.force_of_will_active: false}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}

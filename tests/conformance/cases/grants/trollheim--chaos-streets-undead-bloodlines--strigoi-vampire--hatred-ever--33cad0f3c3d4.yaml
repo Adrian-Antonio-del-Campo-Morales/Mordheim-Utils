@@ -7,11 +7,23 @@
 #   a custom non-immune Hatred bearer provide independent negative/positive controls.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
+# Note (2026-11-16): this printed profile ability is now granted automatically (grant: profile) and is
+#   the single source of the skill; the duplicate combat_traits.starting_skills entry was removed.
+#   Scenarios no longer select it through special_rule_ids, and older prose here that speaks of
+#   'selecting' the rule refers to the former encoding.
+#
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
+# Discrimination note (2026-11-16, reviewed): the duplicate source is gone and what remains is a
+#   genuine printed interaction, so no further single-source change applies.  The strigoi-vampire
+#   profile's `combat_traits.starting_skills: [skill.ignore-pain, skill.hatred]` was removed on
+#   2026-11-16 (this rule became grant: profile), so this rule is now the only source of skill.hatred.
+#   Its reroll stays unobservable by ruling: docs/decisions/design-rulings.md "Strigoi Psychology
+#   immunity suppresses Hatred against everyone" (strigoi-vampire--immune-to-psychology, same and only
+#   recipient).
 #
 # AUTHORED: immunity suppresses selected Hatred with/without enemy identity;
 #   non-recipient lacks the benefit; ordinary non-immune Hatred retains its reroll.
@@ -30,7 +42,6 @@
       collection: trollheim
       band_id: chaos-streets-undead-bloodlines
       profile_id: strigoi-vampire
-      special_rule_ids: [strigoi-vampire--hatred-everyone]
       main_weapon_id: weapon.natural-attacks
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
@@ -55,7 +66,6 @@
       collection: trollheim
       band_id: chaos-streets-undead-bloodlines
       profile_id: strigoi-vampire
-      special_rule_ids: [strigoi-vampire--hatred-everyone]
       main_weapon_id: weapon.natural-attacks
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:

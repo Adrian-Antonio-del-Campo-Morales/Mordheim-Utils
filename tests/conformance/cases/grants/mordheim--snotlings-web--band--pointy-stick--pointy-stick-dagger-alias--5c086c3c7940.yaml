@@ -17,6 +17,14 @@
 # REVIEWED requires semantic review; covers labels alone are insufficient.
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
+# Discrimination note (2026-11-16, reviewed): not a duplication, so the KB is kept and no
+#   single-source change applies.  The rule is an alias with `grant: none`: it records that this band's
+#   "Dagger/Pointy Stick" rows are weapon.dagger, and it is never a compile route.  The printed "+1
+#   enemy armour save, 6+ if none" is encoded once, as the catalogue weapon.dagger row's
+#   target_armour_bonus 1 (sources/knowledge/catalog/mechanics/execution.yaml), which the bearer reaches
+#   through its carried main_weapon_id, so the scenarios test the pointy stick through its item id, as
+#   intended.  The PENDING[implementation] text below ("written to fail until that row exists") is out
+#   of date: both scenarios pass through the dagger row.
 #
 # AUTHORED: the printed rule ("An enemy wounded by a pointy stick gains a +1 bonus to his
 #   armour save, and a 6+ armour save if he has none normally") fixes one outcome for one named recipient,
@@ -31,7 +39,8 @@
 #   its own in the second position and the attacker strikes first on Initiative, so each round holds exactly
 #   the attacker's own dice.  The item carries no effect row for this origin, so PENDING[implementation]:
 #   the recorded effect_id proposed.weapon-pointy-stick-armour-bonus is an unpromoted proposal and this
-#   origin's runtime block is scope LATER / implemented NO with a null binding, so nothing today adds the
+#   origin's runtime block now binds weapon.dagger (scope YES / implemented YES, checked 2026-11-16; the
+#   earlier "null binding" note is withdrawn), but that alias binding still adds nothing for the
 #   printed `effect.target_armour_bonus` (the operator the register notes is subtracted in
 #   phases.armour_target and composes with the base-7 convention to yield the printed 6+) to a bearer's
 #   attack.  Both scenarios are written to fail until that row exists; the source cotejo the register

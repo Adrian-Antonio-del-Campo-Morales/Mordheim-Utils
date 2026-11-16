@@ -24,6 +24,11 @@
 
 
 # --- Authored scenarios ---
+# Body fix (2026-11-16): both scenarios previously armed the bearer with a mace, whose printed Concussion
+# already turns an injury face of 2 into Stunned, so the positive passed without the blessing and the
+# control had to use a face of 1 (contradicting the "same face" prose).  The bearer now swings an axe
+# (no injury-table modifier; its save penalty is moot against an unarmoured defender) and both
+# scenarios script the same face of two, as the prose says.
 # Derived from the printed sentence and the recorded contract; no engine output was consulted.  Strength 3
 # against Toughness 3 wounds on the declared 4+, and the one-Wound Undead defender then takes an injury
 # roll.  A Stunned warrior makes no attack of his own, so the tape closes after the injury die.
@@ -32,7 +37,7 @@
   id: the-blessing-lifts-the-injury-roll-to-a-stun
   fighters:
     first:
-      main_weapon_id: weapon.mace
+      main_weapon_id: weapon.axe
       special_rule_ids: [band--special-skill-blessing-of-morr]
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
@@ -56,7 +61,7 @@
   id: without-the-grant-the-same-face-only-knocks-down
   fighters:
     first:
-      main_weapon_id: weapon.mace
+      main_weapon_id: weapon.axe
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
       main_weapon_id: weapon.mace
@@ -67,7 +72,7 @@
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
-    - {key: round.0.first.attack.0.injury.0, value: 1}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
   expect_rounds:
     0: {attacks.0.damage: 1, state.second.condition: KNOCKED_DOWN, state.second.wounds: 0}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

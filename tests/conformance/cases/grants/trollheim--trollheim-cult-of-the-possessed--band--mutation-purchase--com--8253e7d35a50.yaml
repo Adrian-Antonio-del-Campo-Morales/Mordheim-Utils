@@ -12,6 +12,10 @@
 #
 # AUTHORED: 2 scenarios evidence the printed recipient bound on the construction route the record names. A build of a line the printed sentence does not name (brethren) that carries a mutation row is refused with the shared stage's diagnostic `mutations are available only to Mutants and the Possessed: trollheim-cult-of-the-possessed/brethren`, while the printed recipient (mutants) carrying the same mutation row is accepted at construction - the negative control that keeps the message attributable to the recipient bound rather than to the mutation itself. The campaign timing of the purchase (later additions, costs) stays excluded as the register records.
 
+# De-duplication note (2026-11-16): the duplicate KB source recorded here earlier has been removed, so
+#   this rule is now the single source and its scenarios fail when its binding is removed (rule-removal
+#   probe).  Earlier note, kept for history: this binding is a construction contract (compiler.mutation-purchase-at-recruitment) with no duel consumer; the only compiled trace of the grant is CompiledFighter.construction_tags, so scenario a-mutant-with-the-same-mut...
+
 # --- Authored scenarios ---
 # The mutation row is the same in both tapes, so the recipient identity is the only difference.
 #
@@ -65,6 +69,8 @@
       condition: OUT
   expect_initial:
     first.condition: OUT
+  expect_fighters:
+    first.construction_tags: [compiler.mutant-requires-mutation-at-recruitment, compiler.mutation-purchase-at-recruitment]
   expect_final:
     rounds_executed: 0
     termination_reason: first_out

@@ -726,7 +726,7 @@ rules:
   runtime:
     scope: 'YES'
     implemented: 'YES'
-    grant: selectable
+    grant: profile
     effects:
     - id: skill.hatred
       scope: 'YES'
@@ -2075,10 +2075,9 @@ rules:
           - armour
           - equipment
     - id: profile.natural-attacks
-      scope: 'YES'
-      binding:
-        kind: profile
-        id: profile.natural-attacks
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   name: Natural Weapons
   effect: >-
     May not use weapons, armour or items and suffers no penalty for fighting without equipment.
@@ -2110,10 +2109,9 @@ rules:
           - weapons
           - armour
     - id: profile.natural-attacks
-      scope: 'YES'
-      binding:
-        kind: profile
-        id: profile.natural-attacks
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   name: Natural Weapons
   source:
     manual: chaos-in-the-streets
@@ -2141,10 +2139,9 @@ rules:
           - weapons
           - armour
     - id: profile.natural-attacks
-      scope: 'YES'
-      binding:
-        kind: profile
-        id: profile.natural-attacks
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   name: Natural Weapons
   source:
     manual: chaos-in-the-streets
@@ -2172,10 +2169,9 @@ rules:
           - weapons
           - armour
     - id: profile.natural-attacks
-      scope: 'YES'
-      binding:
-        kind: profile
-        id: profile.natural-attacks
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   name: Natural Weapons
   source:
     manual: chaos-in-the-streets

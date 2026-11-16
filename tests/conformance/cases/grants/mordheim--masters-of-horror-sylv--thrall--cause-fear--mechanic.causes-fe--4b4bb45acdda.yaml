@@ -5,6 +5,13 @@
 # the charged opponent's Leadership test (a failed test forces sixes to hit, a passed test fights
 # normally).  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED;
 # no behavioral result is claimed.
+# Discrimination note (2026-11-16): REDUNDANT - no legal build can discriminate this grant.  The same
+#   mechanic.causes-fear reaches every Thrall from
+#   sources/knowledge/bands/mordheim/masters-of-horror-sylv/special-rules.yaml key mad-scientist--lunatic
+#   (grant: profile; applies_to.profile_ids lists mad-scientist, thrall, wolfman, hunchbacks; effects
+#   mechanic.causes-fear and mechanic.leadership-reroll).  The compiled Thrall is identical with and
+#   without this binding.  (Lunatic is printed as a Special Skill; its automatic profile grant is a KB
+#   question for the coordinator, not settled here.)
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.

@@ -1,7 +1,7 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--lahmia-power-deceive/mechanic.lahmia-deceive
 # authoring_status: AUTHORED
-# authoring_progress: the admitted deceive clause carries 3 authored scenarios derived from the printed
+# authoring_progress: the admitted deceive clause carries 5 authored scenarios derived from the printed
 #   sentence and the modular consumer.  The blocker recorded here previously was FALSE and is corrected:
 #   rounds.py declares LAHMIA_POWERS = (("mechanic.lahmia-deceive", ("nature.undead", "nature.daemon",
 #   "mechanic.psychology-immunity"), "deceive", True), ...), resolve_round opens each combat phase with the
@@ -11,6 +11,10 @@
 #   duel cannot show because this vampire is its only possible target, so the duel-frame consequence is
 #   exactly the bar the tape asserts.  REVIEWED still requires manual semantic review and execution_status
 #   stays UNEXECUTED.
+# Real-recipient addendum (2026-11-16): 2 further scenario(s) build the printed Undead Bloodlines
+# profile itself (lahmia-vampire) and select band--lahmia-power-deceive through special_rule_ids, so
+# the KB grant of this identity is exercised rather than only the shared operator injected into
+# hand-built fixtures; the earlier fixture scenarios stay as the operator cases.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -19,7 +23,7 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: 3 scenarios cover the class.  Scenario 1 declares the use and the enemy's failed
+# AUTHORED: 5 scenarios cover the class.  Scenario 1 declares the use and the enemy's failed
 #   own-value test and shows it barred for the phase (charm_attack_blocked, the observable the engine
 #   attaches to the printed bar).  Scenario 2 supplies the printed immunity of Undead and Daemons and shows
 #   the enemy untouched with no test die requested.  Scenario 3 is the negative control: declining the use
@@ -95,6 +99,67 @@
   rolls:
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.charm_attack_blocked: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Real recipient (2026-11-16): the same duel as
+# a-declared-deceive-that-fails-bars-the-enemy-for-the-phase, but the bearer is built as the printed
+# Undead Bloodlines Lahmia Vampire profile
+# (trollheim/chaos-streets-undead-bloodlines/lahmia-vampire), with the band rule selected through
+# special_rule_ids [band--lahmia-power-deceive] instead of injecting mechanic.lahmia-deceive into a
+# hand-built fighter; the explicit characteristics keep that scenario's dice model.
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--lahmia-power-deceive/mechanic.lahmia-deceive
+  id: a-declared-deceive-that-fails-bars-the-enemy-for-the-phase-as-the-real-lahmia-vampire
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: lahmia-vampire
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [band--lahmia-power-deceive]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context:
+    charging: []
+    active_participant: first
+  decisions:
+  - {key: round.0.second.deceive, value: true}
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.second.deceive.0, value: 6}
+  - {key: round.0.second.deceive.1, value: 6}
+  - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.charm_attack_blocked: true, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Real recipient (2026-11-16): the same duel as an-undead-enemy-is-unaffected-by-deceive, but the
+# bearer is built as the printed Undead Bloodlines Lahmia Vampire profile
+# (trollheim/chaos-streets-undead-bloodlines/lahmia-vampire), with the band rule selected through
+# special_rule_ids [band--lahmia-power-deceive] instead of injecting mechanic.lahmia-deceive into a
+# hand-built fighter; the explicit characteristics keep that scenario's dice model.
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--lahmia-power-deceive/mechanic.lahmia-deceive
+  id: an-undead-enemy-is-unaffected-by-deceive-as-the-real-lahmia-vampire
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: lahmia-vampire
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [band--lahmia-power-deceive]
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: undead}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context:
+    charging: []
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.first.attack.0.hit, value: 1}
+  - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.hit: false, attacks.1.hit: false, state.second.charm_attack_blocked: false}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

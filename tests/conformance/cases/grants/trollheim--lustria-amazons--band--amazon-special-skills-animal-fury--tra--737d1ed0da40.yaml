@@ -15,27 +15,22 @@
 #   so the extra die is the printed "+1 Attack during a turn in which she charges"; each tape fails
 #   if the count is wrong.
 #
-# AUTHORED: 1 scenario evidences the printed immunity as an
-#   absent test: a fear-causing enemy charges the bearer, and the tape carries no Fear dice at all
-#   although the same configuration rolls them for a bearer without the rule (the cold-blooded
-#   sibling case shows that tape).  A build that still tests fails on the undeclared die.  The
-#   register records this origin's connection to mechanic.fear-immunity as pending implementation
-#   work, so the expectation is written from the printed rule and the recorded contract.
+# AUTHORED: 2 scenarios evidence the printed immunity as an
+#   absent test: a fear-causing enemy charges the bearer (an Amazon Champion with the skill), and the
+#   tape carries no Fear dice at all, while the same configuration rolls them for the same Champion
+#   without the skill (body and contrast rewritten 2026-11-16; see the note above the scenarios).  A build that still tests fails on the undeclared die.  The
+#   expectation is written from the printed rule and the recorded contract.
 #
 
-# authoring_progress: 3 authored scenario(s) in this file; authored clauses
+# authoring_progress: 4 authored scenario(s) in this file; authored clauses
 #   ['fear-immunity--scope--charge-attack', 'fear-immunity--scope--fear-immunity']; clauses still
 #   pending or unrepresentable in this file: [].  REVIEWED requires manual semantic review and
 #   execution_status stays UNEXECUTED.
 
 # --- Authored scenarios ---
-# WHAT THESE TAPES FAIL ON (checked statically in the shared construction stage, not by running it): this
-# row is recorded `implemented: NO`, so `compile_fighter()` refuses the declared selection with
-# "special rule is outside the executable duel runtime: band--amazon-special-skills-animal-fury: Retained
-# individual clause: The +1 Attack in a turn in which she charges is an admitted individual charge and
-# attack consequence. Printed clause: gains +1 Attack during a turn in which she charges" before any duel
-# runs.  The scenarios keep the printed +1 Attack and the Fear immunity because that is the requirement;
-# they are expected to fail on them until the recorded consumers exist.
+# Superseded 2026-11-16: an earlier note here said the row was recorded `implemented: NO` and that these
+# tapes would fail at construction; the band record now has `implemented: YES` with both effects bound
+# (mechanic.fear-immunity and trait.charge-attack-bonus), so the declared selection constructs.
 # Derived from the printed sentence ("The Hero is immune to Fear and All Alone tests and gains +1
 # Attack during a turn in which she charges") and the recorded contract for the admitted half
 # (mechanic.fear-immunity: no Fear test is taken, other Leadership and Psychology tests roll
@@ -92,6 +87,14 @@
     0: {state.second.wounds: 3, state.second.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
+# Body corrected 2026-11-16 (same id, same covers): the earlier body built the Totem Warrior, whose own
+#   printed Frenzy (amazon-totem-warriors--frenzy) already spares a frenzied warrior the Fear test, so
+#   the absent test did not depend on this skill, and it raised that W1 profile to 2 wounds through
+#   initial_state, an impossible state.  The bearer is now an Amazon Champion (printed W1 A1 Ld7, no
+#   profile rule of its own; listed in the skill's eligibility) with the skill selected, at its printed
+#   wounds.  Charged by a Fear-causer, the printed "The Hero is immune to Fear" leaves no Fear die on
+#   the tape; the contrast below charges the same Champion without the skill and its Fear test is
+#   declared (1+1 passes Ld7).  Every strike is a natural 1.
 - audit_id: rule/trollheim/lustria-amazons/band--amazon-special-skills-animal-fury/mechanic.fear-immunity
   id: the-charged-bearer-takes-no-fear-test
   covers: [fear-immunity--scope--fear-immunity]
@@ -103,18 +106,38 @@
     second:
       collection: trollheim
       band_id: lustria-amazons
-      profile_id: amazon-totem-warriors
+      profile_id: amazon-champions
       special_rule_ids: [band--amazon-special-skills-animal-fury]
       main_weapon_id: weapon.stone-axe
-  initial_state: {second: {wounds: 2}}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
-    # The bearer's printed pool carries a second attack, so its second To Hit die is declared.
-    - {key: round.0.second.attack.1.hit, value: 1}
   expect_rounds:
-    0: {state.second.fear_hit_sixes: False, state.first.wounds: 2, state.second.wounds: 1}
+    0: {state.second.fear_hit_sixes: False, state.first.wounds: 2, state.second.wounds: 1, state.second.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
+- audit_id: rule/trollheim/lustria-amazons/band--amazon-special-skills-animal-fury/mechanic.fear-immunity
+  id: the-same-champion-without-the-skill-is-tested-for-fear
+  covers: [fear-immunity--scope--fear-immunity]
+  fighters:
+    first:
+      main_weapon_id: weapon.stone-axe
+      skill_ids: [mechanic.causes-fear]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      collection: trollheim
+      band_id: lustria-amazons
+      profile_id: amazon-champions
+      main_weapon_id: weapon.stone-axe
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: False, state.first.wounds: 2, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

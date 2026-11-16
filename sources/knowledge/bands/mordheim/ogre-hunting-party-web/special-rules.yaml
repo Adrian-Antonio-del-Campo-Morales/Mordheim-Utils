@@ -298,13 +298,9 @@ rules:
         kind: mechanic
         id: mechanic.ogre-unarmed
     - id: profile.equipment-restrictions
-      scope: 'YES'
-      binding:
-        kind: profile
-        id: profile.equipment-restrictions
-        parameters:
-          forbids:
-          - weapon.dagger
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   name: Don't Fight with Eating Knives
   effect: >-
     Ogres don't use daggers for fighting, just for eating. They don't carry them on the battlefield.
@@ -668,28 +664,23 @@ rules:
     - sabretusks
 - id: band--ogre-hunting-skills
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: band
     effects:
     - id: profile.skill-access
-      scope: 'YES'
-      binding:
-        kind: profile
-        id: profile.skill-access
-        parameters:
-          category: special
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
       clauses:
       - id: ogre-skill-list-rest
-        scope: 'YES'
+        scope: 'NO'
       - id: crude-belch
-        scope: 'YES'
+        scope: 'NO'
       - id: bull-charge
-        scope: 'YES'
+        scope: 'NO'
       - id: netter
         scope: 'NO'
-    # The table grants the printed choice; each named member keeps its own
-    # record, so an excluded member is never granted by the access itself.
   name: Ogre Hunting Party Special Skills
   effect: >-
     Crude Belch: Ogres and Gnoblars eat almost anything. A Hero with this 'condition' may unleash

@@ -1,0 +1,92 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/channel-rats-mim/petru--potions/condition.petru-strength
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Discrimination note (2026-11-16, reviewed): not a duplication, so the KB is kept and no
+#   single-source change applies.  This is the documented supplied-condition pattern
+#   (docs/reference/knowledge-base.md, Reason codes): the band rule petru--potions binds
+#   condition.petru-strength with `grant: none` only to name the printed rule that produces the
+#   condition; it is never a compile route.  The condition's one operator is its row in
+#   sources/knowledge/catalog/rules/conditions.yaml, reached only through the supplied condition_ids
+#   entry these scenarios declare, so the scenarios test it through its condition id, as intended.
+#   Removing the band binding cannot change a build; removing the catalogue row refuses the build.  The
+#   only place the band rule could become observable is the recipient gate, which compiler.py hard-codes
+#   (compile_fighter's supplied-condition checks on band/profile/kind) instead of reading this rule's
+#   applies_to; that is a compiler choice, not a KB duplicate.
+# Record: sources/knowledge/bands/mordheim/channel-rats-mim/special-rules.yaml
+# AUTHORED: Scenarios moved here on 2026-11-16 from the placeholder identity rule/mordheim/channel-rats-
+#   mim/petru--potions/unimplemented.channel-rats-mim.petru.potions, whose KB effect is now unbound (a
+#   supplied-condition split: the pre-battle draught roll stays unbound, each result is a bound
+#   condition); the duel behaviour they exercise is this identity's.  Inputs, dice and expectations are
+#   unchanged by the move; each scenario's own comments carry its derivation and may still name the
+#   placeholder record they were authored against.  The draught raises the printed Petru's Strength by
+#   one; the same hero without a supplied draught keeps its base characteristics (the shared control of
+#   the four draught identities), and two draughts of the same table in one build are refused.  REVIEWED
+#   still requires manual semantic review.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/channel-rats-mim/petru--potions/condition.petru-strength
+  id: the-strength-draught-raises-the-affected-heroes-strength-by-one
+  # "2-3 Strength (+1 Strength bonus ...)": the supplied result is the catalogue's canonical
+  # condition.petru-strength and the printed grant is read on the affected Hero.
+  fighters:
+    first:
+      # The supplied draught is read on a Hero recipient, so the affected model is the
+      # band's own hero profile carrying the fixture's characteristics.
+      collection: mordheim
+      band_id: channel-rats-mim
+      profile_id: petru
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.petru-strength]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 5, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {second: {condition: OUT}}
+  maximum_rounds: 1
+  expect_initial: {first.strength: 4}
+  expect_final: {rounds_executed: 0, termination_reason: second_out}
+
+- audit_id: rule/mordheim/channel-rats-mim/petru--potions/condition.petru-strength
+  id: two-draughts-of-the-same-table-in-one-build-are-refused
+  # The printed table is "a single Hero ... may chance upon the Petru before battle to risk one of these
+  # vitalogist wares": one draught.  The supplied-result resolver raises its own sentence when two
+  # results of this table are declared on one build, which is that printed restriction as a construction
+  # fact.  The sentence is the resolver's own, not an invented diagnostic.
+  fighters:
+    first:
+      # The supplied draught is read on a Hero recipient, so the affected model is the
+      # band's own hero profile carrying the fixture's characteristics.
+      collection: mordheim
+      band_id: channel-rats-mim
+      profile_id: petru
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.petru-strength, condition.petru-resilience]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
+  expect_error: "choose only one supplied result of the same potion table"
+
+- audit_id: rule/mordheim/channel-rats-mim/petru--potions/condition.petru-strength
+  id: without-a-supplied-draught-the-same-hero-keeps-its-base-characteristics
+  # The control for all four grants: the identical fixture with no supplied result reads the base
+  # characteristics unchanged, so the four grants above are attributable to the draught and not to the
+  # build shape.
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 5, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {second: {condition: OUT}}
+  maximum_rounds: 1
+  expect_initial: {first.strength: 3, first.toughness: 3, first.wounds: 2}
+  expect_final: {rounds_executed: 0, termination_reason: second_out}

@@ -12,6 +12,10 @@
 # AUTHORED: the declared prohibition is evidenced as a construction refusal: the recipient build where carrying weapon.dagger in off_hand_id is refused with ""weapon.dagger" is forbidden for ogre-hunting-party-web/ogre-hunter.", and the same recipient without the item is accepted at construction. One refusal is declared per printed recipient of the rule. Consumer: the shared eligibility stage (packages/python/roster-construction/mordheim_construction/_eligibility.js).
 # authoring_progress: 2 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
 
+# De-duplication note (2026-11-16): the duplicate KB source recorded here earlier has been removed, so
+#   this rule is now the single source and its scenarios fail when its binding is removed (rule-removal
+#   probe).  Earlier note, kept for history: REDUNDANT - no legal build exercises this binding without its duplicate source: sources/knowledge/bands/mordheim/ogre-hunting-party-web/special-rules.yaml, rule `ogre-hunter--dont- fight-with-eating-knives`, effect profi...
+
 # --- Authored scenarios ---
 
 - audit_id: rule/mordheim/ogre-hunting-party-web/ogre-hunter--equipment-restrictions/profile.equipment-restrictions

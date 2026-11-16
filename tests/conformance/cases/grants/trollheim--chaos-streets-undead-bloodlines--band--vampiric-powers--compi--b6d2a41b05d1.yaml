@@ -23,6 +23,10 @@
 #   consequence belongs to its own identity and is not re-asserted here.  REVIEWED still requires manual
 #   semantic review.
 
+# De-duplication note (2026-11-16): the duplicate KB source recorded here earlier has been removed, so
+#   this rule is now the single source and its scenarios fail when its binding is removed (rule-removal
+#   probe).  Earlier note, kept for history: this binding is a construction contract (compiler.vampiric-powers) with no duel consumer; the only compiled trace of the grant is CompiledFighter.construction_tags, so scenario a-vampire-may-select-a-power-row-of-its-own...
+
 # --- Authored scenarios ---
 # Derived from the printed sentence, the recorded contract and the band source's own rule ids; no engine
 # output was consulted.  Both fighters declare zero attacks so the round resolves without dice and the
@@ -51,6 +55,8 @@
   rolls:
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
+  expect_fighters:
+    first.construction_tags: [compiler.vampiric-powers]
   expect_final: {rounds_executed: 1}
 
 - audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--vampiric-powers/compiler.vampiric-powers

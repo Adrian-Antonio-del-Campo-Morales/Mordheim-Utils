@@ -128,7 +128,7 @@ rules:
       - id: psychology-immunity--scope--postgame-death-reroll
         scope: 'NO'
       - id: psychology-immunity--scope--kit-restrictions
-        scope: 'YES'
+        scope: 'NO'
       - id: psychology-immunity--scope--magic-bar
         scope: 'NO'
       - id: psychology-immunity--scope--victory-exploration
@@ -473,13 +473,9 @@ rules:
       - id: promotion-shooting-skill-choice--scope--promotion-event
         scope: 'NO'
     - id: profile.equipment-restrictions
-      scope: 'YES'
-      binding:
-        kind: profile
-        id: profile.equipment-restrictions
-        parameters:
-          forbids:
-          - non-thrown-ranged
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   name: Born Marksmen
   effect: >-
     If an Axe Hurler rolls a "That Lad's Got Talent" as an advancement, he may always choose

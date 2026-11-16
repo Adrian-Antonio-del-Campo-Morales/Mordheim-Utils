@@ -13,6 +13,11 @@
 #   the admission scenario is the same build with the two-handed main weapon and an ordinary hand
 #   weapon in the other hand.  REVIEWED still requires manual semantic review and execution_status
 #   stays UNEXECUTED.
+# Real-recipient addendum (2026-11-16): the activation surface named above is the band skill
+# selected through special_rule_ids on an Ogre Hero; one further scenario authors the admission half
+# with the printed Difficult to Use weapon (a Morning Star) and a club on the Maneaters Captain. It
+# currently fails (ENGINE-DEFECT noted on the scenario). The "not two Difficult to Use weapons" half
+# stays pending: a Morning Star cannot be carried in the off hand, so no build offers two.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -22,9 +27,10 @@
 # Governing rulings: docs/decisions/design-rulings.md
 #
 # PARTIAL: [C] 1 authored scenario declares the restriction the printed relaxation removes - the
-#   two-handed main weapon is refused with the shared diagnostic - and the admission half is pending
-#   on the unnamed activation surface recorded above.  The printed "but not two Difficult to Use
-#   weapons" half cannot be authored before the positive half has a build.
+#   two-handed main weapon is refused with the shared diagnostic - and (2026-11-16) 1 authored scenario
+#   declares the admission half on the Maneaters Captain (Morning Star and club), which fails on the
+#   engine refusal noted on it.  The printed "but not two Difficult to Use weapons" half stays pending:
+#   no build can carry a second Difficult to Use weapon in the off hand.
 
 # --- Authored scenarios ---
 # Derived from the printed rule and the shared construction diagnostic; no engine output was
@@ -40,3 +46,28 @@
       off_hand_id: weapon.dagger
       characteristics: {weapon_skill: 3, strength: 4, toughness: 4, wounds: 2, initiative: 3, attacks: 2}
   expect_error: main weapon occupies both hands
+# Real recipient (2026-11-16): the printed admission half. The Maneaters Captain selects Master of
+# Arms through special_rule_ids and carries a Morning Star (on his equipment list; the rulebook's
+# Difficult to Use weapon, which otherwise forbids a second weapon) with a club in the other hand -
+# "a Difficult to Use weapon and a hand weapon at the same time". The build must construct; the
+# bearer starts out of action so no die is needed. ENGINE-DEFECT (2026-11-16): construction refuses
+# it with "weapon.morning-star cannot be combined with weapon.club" (the compiled contract only
+# relaxes two-handed main weapons); the printed expectation is kept.
+- audit_id: rule/mordheim/maneaters/band--ogres-special-skills-master-of-arms/mechanic.master-of-arms
+  id: a-master-of-arms-captain-wields-a-morning-star-and-a-hand-weapon
+  fighters:
+    first:
+      collection: mordheim
+      band_id: maneaters
+      profile_id: captain
+      special_rule_ids: [band--ogres-special-skills-master-of-arms]
+      main_weapon_id: weapon.morning-star
+      off_hand_id: weapon.club
+    second: {main_weapon_id: weapon.mace}
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first: {condition: OUT}
+  expect_fighters: {first.main_weapon.tags.0: weapon.morning-star, first.off_hand.tags.0: weapon.club}
+  expect_final: {rounds_executed: 0, termination_reason: first_out}

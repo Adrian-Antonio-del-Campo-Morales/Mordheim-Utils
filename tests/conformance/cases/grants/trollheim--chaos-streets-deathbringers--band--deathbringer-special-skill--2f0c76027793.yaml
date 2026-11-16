@@ -6,6 +6,11 @@
 # hand-built fixture with the printed two Attacks, and the per-round declaration is the decision key
 # the mechanic origin's own case uses.  REVIEWED still requires manual semantic review and
 # execution_status stays UNEXECUTED.
+# Real-recipient addendum (2026-11-16): 2 further scenario(s) build the printed Deathbringers
+# profile itself (silent-hunter) and select band--deathbringer-special-skills-death-blow through
+# special_rule_ids, so the KB grant of this identity is exercised rather than only the shared
+# operator injected into hand-built fixtures; the earlier fixture scenarios stay as the operator
+# cases.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -15,11 +20,11 @@
 # Governing rulings: docs/decisions/design-rulings.md
 #
 # Clause: optional-use (scope: YES)
-# AUTHORED[optional-use]: 1 scenario covers the elective nature of the replacement: the bearer
+# AUTHORED[optional-use]: 2 scenarios cover the elective nature of the replacement: the bearer
 # declines the per-round declaration and both of his profile attacks are resolved instead of one.
 #
 # Clause: single-attack-with-bonuses (scope: YES)
-# AUTHORED[single-attack-with-bonuses]: 2 scenarios cover the accepted replacement: one attack that
+# AUTHORED[single-attack-with-bonuses]: 3 scenarios cover the accepted replacement: one attack that
 # hits and wounds on faces the lower targets cannot reach without the printed +1 To Hit and +1 To
 # Wound, and one whose injury face of two becomes the three that Stuns the victim only through the
 # printed +1 on the Injury roll.
@@ -100,4 +105,72 @@
     - {key: round.0.first.attack.0.injury.0, value: 2}
   expect_rounds:
     0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Real recipient (2026-11-16): the same duel as the-bearer-declines-and-attacks-normally, but the
+# bearer is built as the printed Deathbringers Silent Hunter profile
+# (trollheim/chaos-streets-deathbringers/silent-hunter), with the band rule selected through
+# special_rule_ids [band--deathbringer-special-skills-death-blow] instead of injecting
+# mechanic.death-blow into a hand-built fighter; the explicit characteristics keep that scenario's
+# dice model. The profile's equipment list does not offer the original weapon, so it carries
+# weapon.club; no die of the declared tape depends on that swap.
+- audit_id: rule/trollheim/chaos-streets-deathbringers/band--deathbringer-special-skills-death-blow/mechanic.death-blow
+  id: the-bearer-declines-and-attacks-normally-as-the-real-silent-hunter
+  covers: [optional-use]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-deathbringers
+      profile_id: silent-hunter
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+      main_weapon_id: weapon.club
+      special_rule_ids: [band--deathbringer-special-skills-death-blow]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context:
+    charging: [first]
+    active_participant: first
+  maximum_rounds: 1
+  decisions:
+  - {key: round.0.first.death-blow, value: false}
+  rolls:
+  - {key: round.0.first.attack.0.hit, value: 1}
+  - {key: round.0.first.attack.1.hit, value: 1}
+  - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Real recipient (2026-11-16): the same duel as the-single-attack-adds-one-to-hit-and-to-wound, but
+# the bearer is built as the printed Deathbringers Silent Hunter profile
+# (trollheim/chaos-streets-deathbringers/silent-hunter), with the band rule selected through
+# special_rule_ids [band--deathbringer-special-skills-death-blow] instead of injecting
+# mechanic.death-blow into a hand-built fighter; the explicit characteristics keep that scenario's
+# dice model. The profile's equipment list does not offer the original weapon, so it carries
+# weapon.club; no die of the declared tape depends on that swap.
+- audit_id: rule/trollheim/chaos-streets-deathbringers/band--deathbringer-special-skills-death-blow/mechanic.death-blow
+  id: the-single-attack-adds-one-to-hit-and-to-wound-as-the-real-silent-hunter
+  covers: [single-attack-with-bonuses]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-deathbringers
+      profile_id: silent-hunter
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+      main_weapon_id: weapon.club
+      special_rule_ids: [band--deathbringer-special-skills-death-blow]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context:
+    charging: [first]
+    active_participant: first
+  maximum_rounds: 1
+  decisions:
+  - {key: round.0.first.death-blow, value: true}
+  rolls:
+  - {key: round.0.first.attack.0.hit, value: 3}
+  - {key: round.0.first.attack.0.wound, value: 3}
+  - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: true, attacks.0.damage: 1, state.second.wounds: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

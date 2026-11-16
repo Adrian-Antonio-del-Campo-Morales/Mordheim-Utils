@@ -1,0 +1,140 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/clockworkers-sc/clockwork-fiend--construct/mechanic.psychology-immunity
+# authoring_status: AUTHORED
+# Repair 2026-11-16: +2 authored scenarios at the end of the file (now 4 in total) - the
+#   real recipient, under a supplied Head Injury Stupidity, takes no Stupidity test, and a non-immune
+#   band-mate under the same Stupidity takes it.  They are the scenarios that fail when this grant is
+#   removed (the Fear scenario cannot: see the note above them), so any wording in this header that
+#   calls "a Stupidity test skipped for the same warrior" unobserved is superseded for that variant.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/clockworkers-sc/special-rules.yaml
+# AUTHORED: 2 scenarios evidence the printed immunity through the one Psychology
+#   request this setup can make - the round-0 Fear test of the charged warrior.  The bearer is the printed
+#   clockwork-fiend profile which the construct record grants mechanic.psychology-immunity directly (no id is injected); the opposing fixture declares causes_fear and
+#   charges.  In the immune scenario the tape declares no Fear die at all, and the strict tape consumes exactly
+#   the declared dice and rejects both an undeclared request and an unused entry, so a test the engine still
+#   asked for fails the case instead of passing quietly - the absence is the assertion.  In the contrast
+#   scenario the same charger meets the band's non-construct handymen, which carries no psychology immunity, and
+#   its two Leadership dice are declared and pass on 1+1, so the same setup does produce the request when the
+#   immunity is absent.
+#
+# Scenarios split out on 2026-11-16 from the rule/mordheim/clockworkers-sc/clockwork-fiend--
+#   construct/trait.poison-immune file, which hosted them under that identity's header after the KB
+#   split this printed rule into one effect per consequence; inputs, dice and expectations are
+#   unchanged.
+#
+# Out of scope (not a marker): [E] accepted scope disposition, not
+#   an authoring gap: the register now records this row as `clause_scope: NO` (batch
+#   `scope-admitted-contract-reconciliation`, `implementation_work: none`), applying the 2026-10-04
+#   boundary ruling - never leaving close combat because of psychology is produced by the excluded
+#   Break/Rout procedure, which the isolated 1v1 duel does not run, so no consumer is assigned and the
+#   complete KB rule text is preserved.  The observation does exist (`state.engaged`, reported by the
+#   runner as the documented `disengaged` termination reason), but it is the voluntary exit of the whole
+#   engagement, not the printed psychology-forced leaving of one warrior, and no declared roll or decision
+#   key in the documented executor contract makes a duelist leave hand-to-hand combat: declaring the flag
+#   false would assert the opposite of the rule and setting it true asserts nothing the clause decides,
+#   so no discriminating tape is authorable.  The earlier [C] classification here (a missing producer) is
+#   superseded by this disposition.  The requirement is retained, not weakened or deleted.  REVIEWED
+#   still requires manual semantic review.
+
+# --- Authored scenarios ---
+
+# The contrast: the same charger against the band's non-construct handymen, which carries no psychology immunity,
+# does ask for the two-dice Fear test, declared here as a passing 1+1.
+- audit_id: rule/mordheim/clockworkers-sc/clockwork-fiend--construct/mechanic.psychology-immunity
+  id: a-band-mate-without-the-immunity-is-tested
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 7, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: clockworkers-sc, profile_id: handymen}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed immunity to Psychology, read through the round-0 Fear test of the charged warrior: the charger
+# declares causes_fear, and the immune construct declares no Fear die at all, so the round holds only the
+# charger's strike.  The bearer's own attack dice are suppressed, as the sibling poison tapes do for this profile.
+- audit_id: rule/mordheim/clockworkers-sc/clockwork-fiend--construct/mechanic.psychology-immunity
+  id: the-charged-construct-is-not-tested-for-fear
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 7, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: clockworkers-sc, profile_id: clockwork-fiend}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  # No Fear die is offered to the immune construct. Its emptied pool still resolves one printed
+  # unarmed attack, declared here as a miss so the observation stays the immunity.
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.wounds: 3, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Discriminating repair (2026-11-16): the Fear scenario above cannot tell the immunity apart, because
+#   the bearer's own printed Fear rule already exempts it from Fear tests, so it stays as evidence
+#   of the printed outcome but not of this grant.  The printed immunity ("not affected by
+#   psychology" - Stupidity is a Psychology test) is read instead through Stupidity: the bearer,
+#   built from its own printed profile (clockwork-fiend: W3 A3 Ld8), carries a supplied Head Injury
+#   (permanent disability result 6: the warrior is subject to Stupidity, design-rulings
+#   "Disability consumes a permanent supplied result - 2026-10-15") and is the active duelist with
+#   no friendly Hero nearby, so a non-immune warrior must take the 2D6 Stupidity test at the start
+#   of its turn.  The immune bearer declares no Stupidity die and keeps fighting: the strict tape
+#   holds only its single strike (the construct carries
+#   no weapon, so its printed A3 is held to one attack by the accepted one-attack fist cap,
+#   design-rulings S1), a natural 1, so nothing else is resolved.  The
+#   hand-built opponent fights with attacks 0.  Contrast: the band-mate handymen
+#   (W1 Ld6), which binds no psychology
+#   immunity, is asked for the same test; 6+6 fails it against any Leadership, so it is Stupid and
+#   makes no attack.
+
+- audit_id: rule/mordheim/clockworkers-sc/clockwork-fiend--construct/mechanic.psychology-immunity
+  id: the-immune-warrior-takes-no-stupidity-test
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: clockworkers-sc, profile_id: clockwork-fiend}
+  initial_state: {first: {attacks: 0}, second: {resources_spent: [disability.6]}}
+  duel_context: {charging: [], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.second.wounds: 3, state.second.stupidity_failed: false, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/clockworkers-sc/clockwork-fiend--construct/mechanic.psychology-immunity
+  id: a-band-mate-without-the-immunity-is-tested-for-stupidity
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: clockworkers-sc, profile_id: handymen}
+  initial_state: {first: {attacks: 0}, second: {resources_spent: [disability.6]}}
+  duel_context: {charging: [], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.stupidity.0, value: 6}
+    - {key: round.0.second.stupidity.1, value: 6}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.second.wounds: 1, state.second.stupidity_failed: true, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

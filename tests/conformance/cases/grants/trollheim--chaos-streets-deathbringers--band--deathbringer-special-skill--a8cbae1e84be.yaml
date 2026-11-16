@@ -6,6 +6,11 @@
 # a hand-built fixture that carries the band's printed rule as the canonical skill the shared
 # operator consumes, which is exactly how the mechanic origin's own case reads it.  REVIEWED still
 # requires manual semantic review and execution_status stays UNEXECUTED.
+# Real-recipient addendum (2026-11-16): 1 further scenario(s) build the printed Deathbringers
+# profile itself (silent-hunter) and select band--deathbringer-special-skills-defensive-stance
+# through special_rule_ids, so the KB grant of this identity is exercised rather than only the
+# shared operator injected into hand-built fixtures; the earlier fixture scenarios stay as the
+# operator cases.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -15,7 +20,7 @@
 # Governing rulings: docs/decisions/design-rulings.md
 #
 # Clause: match-with-a-parrying-weapon (scope: YES)
-# AUTHORED[match-with-a-parrying-weapon]: 1 scenario covers the printed equality: the bearer
+# AUTHORED[match-with-a-parrying-weapon]: 2 scenarios cover the printed equality: the bearer
 # carries a sword, whose own Parry rule lets an equal attack roll block the attack.
 #
 # Clause: parry-with-any-weapon (scope: YES)
@@ -93,4 +98,35 @@
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.parried: True, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Real recipient (2026-11-16): the same duel as an-equal-roll-parries-with-a-parrying-weapon, but
+# the bearer is built as the printed Deathbringers Silent Hunter profile
+# (trollheim/chaos-streets-deathbringers/silent-hunter), with the band rule selected through
+# special_rule_ids [band--deathbringer-special-skills-defensive-stance] instead of injecting
+# skill.defensive-stance into a hand-built fighter; the explicit characteristics keep that
+# scenario's dice model.
+- audit_id: rule/trollheim/chaos-streets-deathbringers/band--deathbringer-special-skills-defensive-stance/skill.defensive-stance
+  id: an-equal-roll-parries-with-a-parrying-weapon-as-the-real-silent-hunter
+  covers: [match-with-a-parrying-weapon]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      collection: trollheim
+      band_id: chaos-streets-deathbringers
+      profile_id: silent-hunter
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+      special_rule_ids: [band--deathbringer-special-skills-defensive-stance]
+  duel_context:
+    charging: [first]
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.first.attack.0.hit, value: 4}
+  - {key: round.0.first.attack.0.parry, value: 4}
+  - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: true, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

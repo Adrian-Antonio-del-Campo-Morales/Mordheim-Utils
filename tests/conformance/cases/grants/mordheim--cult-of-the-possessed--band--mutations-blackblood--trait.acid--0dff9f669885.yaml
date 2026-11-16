@@ -1,7 +1,7 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/cult-of-the-possessed/band--mutations-blackblood/trait.acid-blood
 # authoring_status: AUTHORED
-# authoring_progress: the admitted acid-blood clause carries 3 authored scenarios derived from the
+# authoring_progress: the admitted acid-blood clause carries 4 authored scenarios derived from the
 #   printed rule and the recorded contract: the wound that the bearer loses answers with the printed
 #   Strength 3 hit on the contacting opponent, the identical wound on a bearer without the trait costs
 #   the attacker nothing, and the printed "(no critical hits)" is pinned on its own boundary - the
@@ -17,7 +17,7 @@
 # Governing rulings: docs/decisions/design-rulings.md
 #
 # Clause: whole--scope--acid-blood (scope: YES)
-# AUTHORED[whole--scope--acid-blood]: 3 scenarios evidence the printed reaction on the real wound
+# AUTHORED[whole--scope--acid-blood]: 4 scenarios evidence the printed reaction on the real wound
 #   route: the bearer's own lost wound is followed by the automatic Strength 3 hit, whose declared four
 #   against the attacker's Toughness 3 takes a wound off that attacker, and the same attack on the same
 #   fixture without the trait leaves the attacker untouched.  The printed "(no critical hits)" is
@@ -27,6 +27,9 @@
 #   Toughness 3 needs a four, so the declared six is exactly that candidate and the tape shows the
 #   denial - the contacting attacker loses one wound, where a critical chart's two would cost it two.
 #   REVIEWED still requires manual semantic review.
+# Real recipient (2026-11-16): one further scenario builds the band's printed Mutant from the band package
+# with the entry selected through special_rule_ids, so the KB grant itself (not an injected mechanic id or
+# trait) is exercised.
 #
 # Clause: whole--scope--cost (scope: NO)
 # Outside the admitted clause scope; retained for context, not a test TODO.
@@ -112,3 +115,32 @@
     0: {attacks.0.damage: 1, state.first.wounds: 3, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
+
+# Real recipient (2026-11-16): the wounded bearer is the band's printed Mutant built from the band package
+# with the Blackblood mutation selected through special_rule_ids (characteristics overridden only to keep
+# the fixture's dice math), so the band's KB row supplies the acid answer; without it no acid-blood die is
+# requested.
+- audit_id: rule/mordheim/cult-of-the-possessed/band--mutations-blackblood/trait.acid-blood
+  id: the-printed-mutant-with-blackblood-answers-the-wound
+  covers: [whole--scope--acid-blood]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids: [band--mutations-blackblood]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.acid-blood.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.first.wounds: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

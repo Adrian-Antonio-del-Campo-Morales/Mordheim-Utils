@@ -155,17 +155,14 @@ rules:
   rule_ref: shared-rule.unarmed-fighting
 - id: raging-peasants--unarmed
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: profile.fist
-      scope: 'YES'
-      binding:
-        kind: profile
-        id: profile.fist
-        parameters:
-          ignore_penalties: true
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   name: Unarmed
   effect: Raging Peasants are treated as fighting unarmed, but without any penalties.
   source:
@@ -412,22 +409,19 @@ rules:
     band: true
 - id: band--battle-monks-special-skills
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: band
     effects:
     - id: profile.skill-access
-      scope: 'YES'
-      binding:
-        kind: profile
-        id: profile.skill-access
-        parameters:
-          category: special
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
       clauses:
       - id: whole
-        scope: 'YES'
+        scope: 'NO'
       - id: emissary-limit
-        scope: 'YES'
+        scope: 'NO'
   name: Battle Monks Special Skills
   effect: >-
     Battle Monks of Cathay may choose to use the following skill list instead of the standard skill

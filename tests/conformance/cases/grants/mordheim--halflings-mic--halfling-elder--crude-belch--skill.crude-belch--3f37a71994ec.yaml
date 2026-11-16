@@ -1,7 +1,7 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/halflings-mic/halfling-elder--crude-belch/skill.crude-belch-halfling
 # authoring_status: AUTHORED
-# authoring_progress: the admitted clause carries 3 authored scenarios for the printed belch: the
+# authoring_progress: the admitted clause carries 4 authored scenarios for the printed belch: the
 # failed base-contact Leadership test that costs the enemy its first attack while the rest of the pool
 # still resolves, the passed test that leaves the pool alone, and the single-attack enemy whose only
 # attack is lost.  REVIEWED still requires manual semantic review and execution_status stays
@@ -14,13 +14,16 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: 3 scenarios cover the printed first-round belch on all enemies in base contact:
+# AUTHORED: 4 scenarios cover the printed first-round belch on all enemies in base contact:
 # the bearer declares it (decision round.0.first.crude-belch), the enemy fails its Leadership test on
 # two sixes and its first attack is lost while its second attack still resolves, a passed test leaves
 # both attacks, and an enemy with a single Attack loses that whole pool, which is the printed "even
 # their only attack".  The fixed fixture declares the canonical skill.crude-belch-halfling operator the
 # band's sentence repeats; the halfling-only recipient is the printed one.  REVIEWED still requires
 # manual semantic review.
+# Real recipient (2026-11-16): one further scenario builds the band's printed Halfling Cook from the band
+# package with the entry selected through special_rule_ids, so the KB grant itself (not an injected skill
+# id) is exercised.
 
 # --- Authored scenarios ---
 # The halfling declares the belch in the first round and the enemy fails the Leadership test on two
@@ -96,4 +99,34 @@
     - {key: round.0.first.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.hit: false, attacks.1.hit: false, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Real recipient (2026-11-16): the belcher is the band's printed Halfling Cook (a listed recipient) built
+# from the band package with the Crude Belch entry selected through special_rule_ids (characteristics
+# overridden only to keep the fixture's dice math), so the band's KB row offers the belch; without it no
+# belch decision or Leadership dice are requested and the enemy's first attack die would be asked for.
+- audit_id: rule/mordheim/halflings-mic/halfling-elder--crude-belch/skill.crude-belch-halfling
+  id: the-printed-halfling-cook-s-belch-costs-the-enemy-its-first-attack
+  fighters:
+    first:
+      collection: mordheim
+      band_id: halflings-mic
+      profile_id: halfling-cook
+      special_rule_ids: [halfling-elder--crude-belch]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 2, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.crude-belch.leadership.0, value: 6}
+    - {key: round.0.first.crude-belch.leadership.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  decisions:
+    - {key: round.0.first.crude-belch, value: true}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, attacks.2.hit: false, state.first.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

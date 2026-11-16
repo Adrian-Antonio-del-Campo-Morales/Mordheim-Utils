@@ -27,9 +27,12 @@
 # Lizardmen") and the recorded contract (mechanic.amazon-isolationists: a qualifying enemy rerolls
 # a failed first-round attack).  The bearer is a printed Amazon warrior of the band; the two
 # qualifying opponents are members of the two printed target bands, and the control is hand-built
-# with the same Weapon Skill so the declared natural one always misses.  Wounds are supplied above
-# one and the opponent's attacks suppressed, so each tape holds the reroll question alone; a
-# build without the band rule asks for no reroll die and fails on the undeclared roll.
+# with the same Weapon Skill so the declared natural one always misses.  The opponents' attacks are
+# suppressed, so each tape holds the reroll question alone; a build without the band rule asks for
+# no reroll die and fails on the undeclared roll.  Corrected 2026-11-16: the two band opponents
+# earlier started at three Wounds, above their printed W1 (rejected by the runner now); they keep
+# their printed single Wound, which the landed reroll takes, so the Injury die the tapes already
+# declared is the consequence of that one wound.
 
 - audit_id: rule/trollheim/lustria-amazons/band--isolationists/mechanic.amazon-isolationists
   id: the-first-round-miss-against-lizardmen-is-taken-again
@@ -43,7 +46,7 @@
       collection: trollheim
       band_id: lustria-lizardmen
       profile_id: skink-braves
-  initial_state: {second: {wounds: 3, attacks: 0}}
+  initial_state: {second: {attacks: 0}}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
@@ -71,7 +74,7 @@
       collection: trollheim
       band_id: lustria-norse
       profile_id: marauders
-  initial_state: {second: {wounds: 3, attacks: 0}}
+  initial_state: {second: {attacks: 0}}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:

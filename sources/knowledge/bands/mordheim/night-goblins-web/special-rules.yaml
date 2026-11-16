@@ -26,17 +26,14 @@ rules:
   rule_ref: shared-rule.leader
 - id: boss--da-biggest-boss
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: profile.skill-access
-      scope: 'YES'
-      binding:
-        kind: profile
-        id: profile.skill-access
-        parameters:
-          category: strength
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
     - id: campaign.leader-inheritance
       scope: 'NO'
       binding: null

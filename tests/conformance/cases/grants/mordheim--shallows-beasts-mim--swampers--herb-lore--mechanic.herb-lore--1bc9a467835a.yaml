@@ -1,21 +1,15 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/shallows-beasts-mim/swampers--herb-lore/mechanic.herb-lore
-# authoring_status: PARTIAL
-# authoring_progress: the admitted self-heal clause is authored below (the corridor re-checked the
-#   clause note because the 2026-10-14 snapshot predates the KB activation and the rounds branch):
-#   the band's own row swampers--herb-lore is scope YES / implemented YES / grant profile with the
-#   live mechanic.herb-lore binding (sources/knowledge/bands/mordheim/shallows-beasts-mim/
-#   special-rules.yaml), and resolve_round does request the healing die for a bearer with missing
-#   wounds (rounds.py:255).  The tape below declares the only face this corpus vocabulary can reach:
-#   the bearer carries the printed profile (wounds 1, the same rule_ids list), so at full health
-#   current.wounds < maximum is false and the healing decision and die are never requested - the
-#   absence of the round.N.first.herb-lore key is the assertion.  The remaining printed face - the
-#   4+ restoration of one lost wound - stays dependent on an admissible initial lost-wound state:
-#   catalog/rules/conditions.yaml carries no duel-time condition whose operator declares a lost
-#   wound (chest-wound and hand-injury reduce Toughness/Weapon Skill, not the wound count), and the
-#   printed Swamper maximum is wounds 1, so no legal build starts wounded.  Inventoriating one
-#   from the tape would assert a state the sources do not supply.  REVIEWED still requires manual
-#   semantic review and execution_status stays UNEXECUTED.
+# authoring_status: AUTHORED
+# authoring_progress: the admitted self-heal clause carries three authored scenarios on the band's own
+#   printed Swamper (profile row swampers--herb-lore, scope YES / implemented YES / grant profile,
+#   mechanic.herb-lore binding).  The printed restoration face is reached through the duel itself, not
+#   an invented starting state: the opponent takes the Swamper's single printed wound in round 0 and the
+#   injury die leaves it Knocked Down at zero wounds; in the Swamper's own following turn the healing is
+#   offered, and the printed "on a roll of 4+ the model has 1 wound restored" restores the wound on a
+#   four and does not on a three.  The full-health face (no healing request when no wound is missing) is
+#   kept.  The request keys round.N.first.herb-lore (decision and die) were read from the engine's step
+#   names only.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -25,22 +19,21 @@
 # Governing rulings: docs/decisions/design-rulings.md
 #
 # Clause: heal-in-recovery-phase--scope--self-heal (scope: YES)
-# PARTIAL[heal-in-recovery-phase--scope--self-heal]: [C] not asserted, and the class is the input rather than
-# the observation: the printed "on a roll of 4+ the model has 1 wound restored" is keyed to "the start of the
-# recovery phase", a step of the turn the 1v1 duel contract has no key for, so the die the print requires
-# cannot be declared without inventing a step name.  Separately - and detected by the tape that input would
-# allow - the burden is the implementation defect the register records: the record's own binding is the null
-# placeholder unimplemented.shallows-beasts-mim.swampers.herb-lore, its relation is unresolved, and no
-# operator restores a wound to a standing fighter.
+# AUTHORED[heal-in-recovery-phase--scope--self-heal]: 3 scenarios.  A Swamper that lost its wound in the
+# opponent's turn is offered the self-heal at the start of its own turn and a four restores one wound; a
+# three (one face below the printed 4+) restores nothing; at full health no healing is requested at all.
+# The duel has no separate recovery-phase step; the start of the bearer's own turn is the step that
+# carries the printed healing.  (Superseded 2026-11-16: the earlier note that the binding was the null
+# placeholder and that no lost-wound state is reachable is false - the row binds mechanic.herb-lore and
+# the opponent's blow supplies the lost wound.)
 #
 # Clause: heal-in-recovery-phase--scope--ally-heal (scope: NO)
 # Outside the admitted clause scope; retained for context, not a test TODO.
 
 # --- Authored scenarios ---
 # Derived from the printed rule row (implemented YES, mechanic.herb-lore binding) and the printed
-# Swamper profile (wounds 1); no engine output was consulted.  No charge is declared, so the round
-# resolves without combat and the only candidate request would be the healing decision/die, which
-# the branches gate on missing wounds: none is declared, so no herb-lore key must be requested.
+# Swamper profile (wounds 1); no engine output was consulted.  In the first scenario no wound is ever
+# missing, so the healing decision/die must not be requested; only the two missed attacks are declared.
 
 - audit_id: rule/mordheim/shallows-beasts-mim/swampers--herb-lore/mechanic.herb-lore
   id: the-full-health-bearer-never-requests-the-healing-die
@@ -63,5 +56,57 @@
     0: {state.first.wounds: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
-# The printed 4+ restoration face stays dependent on an admissible initial lost-wound state
-# (conditions.yaml carries none of that class), so only the full-health face is declared here.
+# The printed restoration face.  Round 0 is the opponent's turn: its higher Initiative (5 against the
+# printed 3) lets it strike first, its four hits the printed Weapon Skill 2, its four wounds the printed
+# Toughness 3 with Strength 3, and the injury die of one is Knocked Down, so the single printed wound is
+# gone and the Swamper makes no attack that round.  Round 1 is the Swamper's turn: it uses the skill on
+# itself and the four restores one wound ("on a roll of 4+ the model has 1 wound restored").  The two
+# natural ones of round 1 are misses, so nothing else changes the wound count.
+- audit_id: rule/mordheim/shallows-beasts-mim/swampers--herb-lore/mechanic.herb-lore
+  id: a-four-restores-the-swampers-lost-wound
+  covers: [heal-in-recovery-phase--scope--self-heal]
+  fighters:
+    first: {collection: mordheim, band_id: shallows-beasts-mim, profile_id: swampers}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: second}
+  maximum_rounds: 2
+  decisions:
+    - {key: round.1.first.herb-lore, value: true}
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.injury.0, value: 1}
+    - {key: round.1.first.herb-lore, value: 4}
+    - {key: round.1.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 0, state.first.condition: KNOCKED_DOWN}
+    1: {state.first.wounds: 1, state.first.condition: STANDING}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+
+# The printed threshold from below: the same duel with a three on the healing die restores nothing.
+- audit_id: rule/mordheim/shallows-beasts-mim/swampers--herb-lore/mechanic.herb-lore
+  id: a-three-restores-nothing
+  covers: [heal-in-recovery-phase--scope--self-heal]
+  fighters:
+    first: {collection: mordheim, band_id: shallows-beasts-mim, profile_id: swampers}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: second}
+  maximum_rounds: 2
+  decisions:
+    - {key: round.1.first.herb-lore, value: true}
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.injury.0, value: 1}
+    - {key: round.1.first.herb-lore, value: 3}
+    - {key: round.1.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 0, state.first.condition: KNOCKED_DOWN}
+    1: {state.first.wounds: 0}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}

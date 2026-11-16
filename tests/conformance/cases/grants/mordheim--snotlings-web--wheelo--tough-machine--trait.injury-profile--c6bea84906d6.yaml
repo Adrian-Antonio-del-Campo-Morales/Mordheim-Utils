@@ -17,6 +17,12 @@
 # REVIEWED requires semantic review; covers labels alone are insufficient.
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
+# De-duplicated (2026-11-16): band--not-so-tough-gits used to list its recipients in
+#   applies_to.profile_ids, leaving out bullied-goblin, snotling-mobs and wheelo, which restated the
+#   exemption this rule prints.  That band rule now applies to the whole band, and this profile rule's
+#   injury_profile 0 replaces the band value for wheelo (selection._profile_rule_traits: a profile grant
+#   overrides the band-wide default), so this rule is the single source of the exemption.  The compiled
+#   wheelo is unchanged, and the scenarios below now fail when this binding is removed.
 #
 # Clause: normal-table (scope: YES)
 # AUTHORED[normal-table]: 2 scenarios hold the exemption: the Wheelo uses the normal injury table,

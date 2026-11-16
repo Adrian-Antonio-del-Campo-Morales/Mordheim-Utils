@@ -16,6 +16,17 @@
 # REVIEWED requires semantic review; covers labels alone are insufficient.
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
+# Discrimination note (2026-11-16, reviewed): not a duplication, so the KB is kept and no
+#   single-source change applies.  This is the documented supplied-condition pattern
+#   (docs/reference/knowledge-base.md, Reason codes): the band rule scholar--field-of-scholarship binds
+#   condition.poetry-victorious-leader with `grant: none` only to name the printed rule that produces
+#   the condition; it is never a compile route.  The condition's one operator is its row in
+#   sources/knowledge/catalog/rules/conditions.yaml, reached only through the supplied condition_ids
+#   entry these scenarios declare, so the scenarios test it through its condition id, as intended.
+#   Removing the band binding cannot change a build; removing the catalogue row refuses the build.  The
+#   only place the band rule could become observable is the recipient gate, which compiler.py hard-codes
+#   (compile_fighter's supplied-condition checks on band/profile/kind) instead of reading this rule's
+#   applies_to; that is a compiler choice, not a KB duplicate.
 #
 # PARTIAL: [E] accepted scope disposition, recorded against the canonical register: the row
 #   field-of-scholarship--scope--injury-reroll carries clause_scope NO (the printed producer is the
@@ -35,7 +46,8 @@
 #   Ld 8 / Ld 9; no key or value is invented (the supplied value comes from the printed profile and the
 #   decision is the corpus's ordinary Leadership test).  The printed reward gate ("if your warband won the
 #   last battle they fought") is a previous-battle fact no fixture field or condition identity carries; it is
-#   recorded here, not silently dropped.  Pending implementation: the binding is null.  REVIEWED still
+#   recorded here, not silently dropped.  The record now binds mechanic
+#   condition.poetry-victorious-leader (checked 2026-11-16); the "binding is null" note is withdrawn.  REVIEWED still
 #   requires manual semantic review.
 #
 

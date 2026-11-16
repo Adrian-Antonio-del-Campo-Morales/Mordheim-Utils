@@ -113,10 +113,13 @@ def test_profiles_materialize_band_wide_skill_grants_and_prose_lists() -> None:
     artefact = _artefact()
     profiles = {(str(row["collection"]), str(row["band_id"]), str(row["id"])): row
                 for row in artefact["profiles"]}
-    amazon = profiles[("mordheim", "amazons-lustria", "amazon-warriors")]
-    assert amazon["skill_access"] == ["special"]
-    assert amazon["skill_lists"] == [{"rule_id": "band--amazon-special-skills",
-                                     "category": "special", "skills": []}]
+    # "Amazon Heroines may use the following skill table": the heroes' own
+    # printed skill access is the single source (2026-11-16); the band-wide
+    # grant no longer reaches henchmen the print does not name.
+    heroine = profiles[("mordheim", "amazons-lustria", "serpent-priestess")]
+    assert "special" in heroine["skill_access"]
+    henchman = profiles[("mordheim", "amazons-lustria", "amazon-warriors")]
+    assert henchman["skill_access"] == []
 
 
 def test_profiles_flatten_list_valued_forbids() -> None:

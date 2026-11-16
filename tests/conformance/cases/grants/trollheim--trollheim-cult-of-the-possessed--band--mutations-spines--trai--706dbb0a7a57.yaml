@@ -1,7 +1,12 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-spines/trait.spines
 # authoring_status: AUTHORED
-# authoring_progress: 2 authored scenario(s) in this file; authored clauses ['whole--scope--spines']; clauses still pending or unrepresentable in this file: [].  The tape key the earlier note called missing is the round-start handler's own composition (packages/python/combat-engine/mordheim_combat/modular/rounds.py::resolve_round passing `round.{round_index}.first.spines` / `.second.spines` into packages/python/combat-engine/mordheim_combat/modular/aftermath.py::_spines, whose automatic hit then reads `<key>.wound`), which the authored Mordheim copy of the same shared trait already exercises (tests/conformance/cases/grants/mordheim--cult-of-the-possessed--band--mutations-spines--trait.spines--6cea7551d294.yaml).  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# authoring_progress: 3 authored scenario(s) in this file; authored clauses ['whole--scope--spines']; clauses still pending or unrepresentable in this file: [].  The tape key the earlier note called missing is the round-start handler's own composition (packages/python/combat-engine/mordheim_combat/modular/rounds.py::resolve_round passing `round.{round_index}.first.spines` / `.second.spines` into packages/python/combat-engine/mordheim_combat/modular/aftermath.py::_spines, whose automatic hit then reads `<key>.wound`), which the authored Mordheim copy of the same shared trait already exercises (tests/conformance/cases/grants/mordheim--cult-of-the-possessed--band--mutations-spines--trait.spines--6cea7551d294.yaml).  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# Real-recipient addendum (2026-11-16): 1 further scenario(s) build the printed Cult of the
+# Possessed profile itself (the-possessed) and select band--mutations-spines through
+# special_rule_ids, so the KB grant of this identity is exercised rather than only the shared
+# operator injected into hand-built fixtures; the earlier fixture scenarios stay as the operator
+# cases.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -11,7 +16,7 @@
 # Governing rulings: docs/decisions/design-rulings.md
 #
 # Clause: whole--scope--spines (scope: YES)
-# AUTHORED[whole--scope--spines]: 2 scenarios evidence the printed automatic hit on the real round route. At the start of the close-combat phase the bearer deals one automatic Strength 1 hit with criticals disabled to the contacting opponent while both attack pools declare misses, so the wound taken can only come from the trait; the identical phase on the identical fixture without the trait leaves every wound in place.
+# AUTHORED[whole--scope--spines]: 3 scenarios evidence the printed automatic hit on the real round route. At the start of the close-combat phase the bearer deals one automatic Strength 1 hit with criticals disabled to the contacting opponent while both attack pools declare misses, so the wound taken can only come from the trait; the identical phase on the identical fixture without the trait leaves every wound in place.
 #
 # Clause: whole--scope--cost (scope: NO)
 # Outside the admitted clause scope; retained for context, not a test TODO.
@@ -59,4 +64,36 @@
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {state.second.wounds: 2, state.first.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Real recipient (2026-11-16): the same duel as
+# the-automatic-spines-hit-lands-on-the-contacting-opponent, but the bearer is built as the printed
+# Cult of the Possessed The Possessed profile
+# (trollheim/trollheim-cult-of-the-possessed/the-possessed), with the band rule selected through
+# special_rule_ids [band--mutations-spines] instead of injecting trait.spines into a hand-built
+# fighter; the explicit characteristics keep that scenario's dice model. The profile may not carry
+# the hand-built fixture's weapon, so it fights with its own printed attacks and no carried weapon;
+# no die of the declared tape depends on that.
+- audit_id: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-spines/trait.spines
+  id: the-automatic-spines-hit-lands-on-the-contacting-opponent-as-the-real-the-possessed
+  covers: [whole--scope--spines]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: the-possessed
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+      special_rule_ids: [band--mutations-spines]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 2, initiative: 2, attacks: 1}
+  duel_context:
+    charging: []
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.first.spines.wound, value: 5}
+  - {key: round.0.first.attack.0.hit, value: 1}
+  - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 1, state.first.wounds: 2, state.second.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

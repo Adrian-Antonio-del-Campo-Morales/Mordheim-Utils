@@ -1,7 +1,7 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/chaos-streets-undead-bloodlines/lahmia-vampire--enchanting-beauty/mechanic.enchanting-beauty
 # authoring_status: AUTHORED
-# authoring_progress: the admitted enchanting-beauty clause carries 3 authored scenarios derived from the
+# authoring_progress: the admitted enchanting-beauty clause carries 4 authored scenarios derived from the
 #   printed sentence and the modular consumer.  The blocker recorded here previously was FALSE and is
 #   corrected: the modifier IS applied - rounds.py's opponent-supplied Leadership step adds the tag
 #   condition.enchanting-beauty to a contacting enemy that is neither Undead nor Daemon, and
@@ -13,6 +13,10 @@
 #   printed Undead exemption.  The bearer is the fixture carrying the canonical tag, because the band row
 #   only names and binds the profile's own rule.  REVIEWED still requires manual semantic review and
 #   execution_status stays UNEXECUTED.
+# Real-recipient addendum (2026-11-16): 1 further scenario(s) build the printed Undead Bloodlines
+# profile itself (lahmia-vampire), so the KB grant of this identity is exercised rather than only
+# the shared operator injected into hand-built fixtures; the earlier fixture scenarios stay as the
+# operator cases.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -21,7 +25,7 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: 3 scenarios cover the printed passive penalty on the contacting enemy's own
+# AUTHORED: 4 scenarios cover the printed passive penalty on the contacting enemy's own
 #   Leadership tests.  The register's "no consumer applies a Leadership modifier" was not correct: the
 #   modifier is applied in two consumed steps (rounds.py adds condition.enchanting-beauty to a contacting
 #   enemy that is neither nature.undead nor nature.daemon; leadership.py subtracts the one point, floored at
@@ -104,4 +108,34 @@
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {state.second.stupidity_failed: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Real recipient (2026-11-16): the same duel as
+# the-printed-penalty-turns-a-passing-total-into-a-failure, but the bearer is built as the printed
+# Undead Bloodlines Lahmia Vampire profile
+# (trollheim/chaos-streets-undead-bloodlines/lahmia-vampire) (the rule is printed on that profile)
+# instead of injecting mechanic.enchanting-beauty into a hand-built fighter; the explicit
+# characteristics keep that scenario's dice model.
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/lahmia-vampire--enchanting-beauty/mechanic.enchanting-beauty
+  id: the-printed-penalty-turns-a-passing-total-into-a-failure-as-the-real-lahmia-vampire
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: lahmia-vampire
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 8}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.stupidity]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context:
+    charging: []
+    active_participant: second
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.second.stupidity.0, value: 3}
+  - {key: round.0.second.stupidity.1, value: 4}
+  - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.stupidity_failed: true}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

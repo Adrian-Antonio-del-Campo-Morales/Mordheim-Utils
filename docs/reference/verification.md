@@ -224,7 +224,12 @@ applicable integrated checks including the rules-conformance suite, and preserve
 CSV keys and traceability. A binding,
 closed row or test count alone proves none of these. Reuse existing tests; add
 only missing discriminators for behaviour, limits, consumption, expiry or
-composition. Record unresolved concrete defects in [the backlog](../../TODO.md).
+composition. Whether a scenario discriminates is measured by the rule-removal
+probe (`python tests/conformance/integrity/removal_probe.py`), which re-runs each
+identity's scenarios with its rule taken away and reports the identities whose
+evidence passes anyway; see
+[the conformance README](../../tests/conformance/README.md#rule-removal-probe).
+Record unresolved concrete defects in [the backlog](../../TODO.md).
 A genuinely missing source must be identified exactly; do not invent a rule.
 
 ## Verification responsibilities

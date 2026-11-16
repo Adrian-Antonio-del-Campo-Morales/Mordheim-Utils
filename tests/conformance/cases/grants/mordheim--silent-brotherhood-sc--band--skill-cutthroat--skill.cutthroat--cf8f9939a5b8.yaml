@@ -1,10 +1,17 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/silent-brotherhood-sc/band--skill-cutthroat/skill.cutthroat
 # authoring_status: AUTHORED
-# authoring_progress: the admitted dagger-pair-penalty clause carries two authored scenarios derived
+# authoring_progress: the admitted dagger-pair-penalty clause carries five authored scenarios derived
 # from the printed rule and the recorded contract - the same paired-dagger wound against the same 5+
 # armour, resolved one step worse with the skill.  REVIEWED still requires manual semantic review and
 # execution_status stays UNEXECUTED.
+# Real-recipient addendum (2026-11-16): 1 further scenario(s) build the printed Silent Brotherhood
+# profile itself (silent-master) and select band--skill-cutthroat through special_rule_ids, so the
+# KB grant of this identity is exercised rather than only the shared operator injected into
+# hand-built fixtures; the earlier fixture scenarios stay as the operator cases.  That Silent Master
+# case does not discriminate the skill (its own printed Perfect Killer already worsens the save by
+# one, so the four fails either way); 2 more scenarios (2026-11-16) build the printed Poisoner, which
+# has no armour-save rule of its own, with and without the selected skill.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -13,10 +20,10 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: 2 scenarios cover the printed extra -1 on the enemy armour save for
+# AUTHORED: 5 scenarios (3 fixture/Silent Master + 2 real Poisoner) cover the printed extra -1 on the enemy armour save for
 # a wound inflicted with daggers wielded as a pair, with the printed dagger profile's own +1 still in
 # place: the same armour face of four fails with the skill and holds without it, so the pair alone is
-# what leaves the save one point better and the skill is what spends it.  Both fighters are fixtures
+# what leaves the save one point better and the skill is what spends it.  In the two fixture cases both fighters are fixtures
 # and the printed pair is the main weapon plus the off-hand dagger; the defender's heavy armour and
 # its 5+ face are fixture facts.  The lone-dagger case (the skill requires the pair) is recorded, not
 # asserted: the main-hand dagger without an off-hand weapon is already the printed single-dagger
@@ -24,7 +31,7 @@
 # REVIEWED still requires manual semantic review.
 
 # --- Authored scenarios ---
-# Both scenarios use the same pair (a dagger in each hand), the same 5+ heavy armour on the
+# The fixture scenarios use the same pair (a dagger in each hand), the same 5+ heavy armour on the
 # defender and the same wound, and script the same armour face of four: the printed dagger
 # profile already grants the target +1 armour save, so four holds against the pair alone and
 # is one short of the save the skill worsens by one.
@@ -76,3 +83,96 @@
     0: {attacks.0.saved: True, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
+# Real recipient (2026-11-16): the same duel as cutthroat-dagger-pair-worsens-the-save, but the
+# bearer is built as the printed Silent Brotherhood Silent Master profile
+# (mordheim/silent-brotherhood-sc/silent-master), with the band rule selected through
+# special_rule_ids [band--skill-cutthroat] instead of injecting skill.cutthroat into a hand-built
+# fighter; the explicit characteristics keep that scenario's dice model.
+- audit_id: rule/mordheim/silent-brotherhood-sc/band--skill-cutthroat/skill.cutthroat
+  id: cutthroat-dagger-pair-worsens-the-save-as-the-real-silent-master
+  fighters:
+    first:
+      collection: mordheim
+      band_id: silent-brotherhood-sc
+      profile_id: silent-master
+      main_weapon_id: weapon.dagger
+      off_hand_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [band--skill-cutthroat]
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context:
+    charging: [first]
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.first.attack.0.hit, value: 4}
+  - {key: round.0.first.attack.1.hit, value: 1}
+  - {key: round.0.first.attack.0.wound, value: 4}
+  - {key: round.0.first.attack.0.armour, value: 4}
+  - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Discriminating real recipient (2026-11-16): the Silent Master scenario above cannot tell the skill
+# apart, because the Silent Master's own printed Perfect Killer (silent-master--perfect-killer, "an
+# extra -1 modifier to any armour save") already turns the face of four into a failure without
+# Cutthroat.  The printed Poisoner (mordheim/silent-brotherhood-sc/poisoner) has special-skill access
+# and only campaign rules, so the same paired-dagger duel isolates the selected band skill: heavy
+# armour 5+ with the dagger's +1 saves on 4+, Cutthroat's -1 makes it 5+, so the four fails with the
+# skill and holds without it.  Wounds 1 is the Poisoner's printed maximum.
+- audit_id: rule/mordheim/silent-brotherhood-sc/band--skill-cutthroat/skill.cutthroat
+  id: cutthroat-dagger-pair-worsens-the-save-as-the-real-poisoner
+  fighters:
+    first:
+      collection: mordheim
+      band_id: silent-brotherhood-sc
+      profile_id: poisoner
+      main_weapon_id: weapon.dagger
+      off_hand_id: weapon.dagger
+      special_rule_ids: [band--skill-cutthroat]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.first.attack.0.hit, value: 4}
+  - {key: round.0.first.attack.1.hit, value: 1}
+  - {key: round.0.first.attack.0.wound, value: 4}
+  - {key: round.0.first.attack.0.armour, value: 4}
+  - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The same Poisoner without the selected skill: the four holds.
+- audit_id: rule/mordheim/silent-brotherhood-sc/band--skill-cutthroat/skill.cutthroat
+  id: cutthroat-the-real-poisoner-without-the-skill-holds-the-four
+  fighters:
+    first:
+      collection: mordheim
+      band_id: silent-brotherhood-sc
+      profile_id: poisoner
+      main_weapon_id: weapon.dagger
+      off_hand_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.first.attack.0.hit, value: 4}
+  - {key: round.0.first.attack.1.hit, value: 1}
+  - {key: round.0.first.attack.0.wound, value: 4}
+  - {key: round.0.first.attack.0.armour, value: 4}
+  - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

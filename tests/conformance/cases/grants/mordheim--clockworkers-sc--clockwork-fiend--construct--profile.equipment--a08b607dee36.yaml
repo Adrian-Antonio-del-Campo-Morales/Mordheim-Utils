@@ -1,6 +1,8 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/clockworkers-sc/clockwork-fiend--construct/profile.equipment-restrictions
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: the slot-capacity clause carries 3 construction scenarios; the in-built-equipment clause
+#   is a recorded KB-FIX (campaign removal plus a duplicate of the slot capacity).
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -11,9 +13,81 @@
 # Clauses and contracts: sources/knowledge/bands/mordheim/clockworkers-sc/special-rules.yaml
 #
 # Clause: construct-equipment-slot-capacity (scope: YES)
-# TODO[construct-equipment-slot-capacity]: Review the rule and author all required scenarios.
+# AUTHORED[construct-equipment-slot-capacity]: 3 scenarios read the printed capacity ("Four equipment
+#   slots and one armour slot", profiles.yaml clockwork-fiend equipment_restrictions; "Two-handed and missile weapons
+#   take up 2 slots, other weapons need 1 slot", special-rules.yaml) at its boundary: a kit filling exactly
+#   4/4 equipment slots is accepted, one weighted slot more is refused, and a second armour piece is
+#   refused.  The earlier note's claim that no slot input or diagnostic exists is false and is corrected: the
+#   record now binds profile.equipment-restrictions with parameters equipment_slots 4, armour_slots 1 and
+#   per-item slot_costs (special-rules.yaml clockwork-fiend--construct), which
+#   packages/typescript/domain/eligibility/index.ts (binding projection ~2455-2466, check ~2290-2305; bundled
+#   as packages/python/roster-construction/mordheim_construction/_eligibility.js:1413) counts over the declared
+#   hands, armour and owned_item_ids (copies = max(declared, owned)) and refuses with "Construct equipment
+#   requires E/4 equipment slots and A/1 armour slots."
+#   (Relocated on 2026-11-16 from the trait.poison-immune header; re-verified and authored the same day.)
 #
-# Clause: construct-excluded-producers--scope--in-built-equipment (scope: YES)
-# TODO[construct-excluded-producers--scope--in-built-equipment]: Review the rule and author all required scenarios.
+# Clause: construct-excluded-producers--scope--in-built-equipment (scope: NO)
+# Outside the admitted clause scope since 2026-11-16 (KB set it to NO: removing or abandoning fitted equipment is a campaign change; using slots is the construct-equipment-slot-capacity clause).
+#   Earlier note: KB-FIX.  The printed In-built Equipment
+#   rule (band--constructs effect text: "once given, a weapon or armour may not be removed; constructs use
+#   slots instead of the normal weapon maximums, and enough equipment must be abandoned to free the required
+#   slots") has three parts.  "May not be removed" and "enough equipment must be abandoned" are campaign
+#   equipment changes between games (no duel or single-build observable: a construction check sees one kit,
+#   never its history).  "Use slots instead of the normal weapon maximums" is the slot capacity itself, which
+#   is clause construct-equipment-slot-capacity of this same effect and is authored there.  Nothing remains as
+#   a distinct construction/duel obligation.  Recommended KB change:
+#   sources/knowledge/bands/mordheim/clockworkers-sc/special-rules.yaml, record clockwork-fiend--construct, effect
+#   profile.equipment-restrictions, clause construct-excluded-producers--scope--in-built-equipment -> scope
+#   'NO' (reason out-of-scope.campaign), matching the in-built-equipment clause of band--constructs, which is
+#   already scope 'NO'.  Not authored.
+#   (Relocated on 2026-11-16 from the trait.poison-immune header; re-verified the same day.)
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# Derived from the printed capacity and slot costs; construction-only, no combat is resolved.
+# Sword, axe, mace and shield are four one-slot items (4/4); three hand weapons are accepted because slots replace the normal weapon maximums.
+- audit_id: rule/mordheim/clockworkers-sc/clockwork-fiend--construct/profile.equipment-restrictions
+  id: a-kit-filling-every-equipment-slot-is-accepted
+  covers: [construct-equipment-slot-capacity]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: clockworkers-sc
+      profile_id: clockwork-fiend
+      main_weapon_id: weapon.sword
+      off_hand_id: weapon.axe
+      owned_item_ids: [sword, axe, mace, shield]
+    second: {}
+  # Construction is the observation: no charge is declared and the bearer is put out of action before
+  # the first phase (the corpus's control shape), so the duel requests no die at all.
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.characteristics.wounds: 3
+
+# Halberd (2) + clockwork rifle (2, missile) + sword (1) need 5 of the 4 slots.
+- audit_id: rule/mordheim/clockworkers-sc/clockwork-fiend--construct/profile.equipment-restrictions
+  id: one-slot-over-the-equipment-capacity-is-refused
+  covers: [construct-equipment-slot-capacity]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: clockworkers-sc
+      profile_id: clockwork-fiend
+      main_weapon_id: weapon.halberd
+      owned_item_ids: [halberd, clockwork_rifle, sword]
+  expect_error: "Construct equipment requires 5/4 equipment slots"
+
+# The single armour slot: light armour worn and heavy armour owned are two armour pieces, so the kit is
+# refused on the armour count although its one sword is inside the equipment capacity.
+- audit_id: rule/mordheim/clockworkers-sc/clockwork-fiend--construct/profile.equipment-restrictions
+  id: a-second-armour-piece-is-refused
+  covers: [construct-equipment-slot-capacity]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: clockworkers-sc
+      profile_id: clockwork-fiend
+      main_weapon_id: weapon.sword
+      armour_id: armour.light-armour
+      owned_item_ids: [sword, light_armour, heavy_armour]
+  expect_error: "Construct equipment requires 1/4 equipment slots and 2/1 armour slots."

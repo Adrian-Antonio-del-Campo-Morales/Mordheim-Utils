@@ -1,7 +1,7 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/weapon.skull-busta
 # authoring_status: AUTHORED
-# authoring_progress: the admitted clause carries six authored scenarios for the Strength bonus, the Injury band, the helmet clamp with a control and the permitted shield, plus two refusals for the printed weapon and mounted prohibitions. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# authoring_progress: the admitted clause carries authored scenarios for the Strength bonus, the Injury band, the helmet clamp with a control, the permitted shield and an Orc bearer accepted from the band list, plus three refusals for the printed weapon, mounted and goblin prohibitions (the goblin refusal added 2026-11-16). REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -10,7 +10,7 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: 6 scenarios and 2 refusals cover the first-round +1 Strength and its expiry, the Concussion band, the Basha helmet clamp with its control, the shield permission and the two printed prohibitions.
+# AUTHORED: 6 scenarios and 3 refusals cover the first-round +1 Strength and its expiry, the Concussion band, the Basha helmet clamp with its control, the shield permission, the printed "may not be used by goblins" prohibition with its Orc control from the same band list, and the other-weapon and mounted prohibitions.
 
 # --- Authored scenarios ---
 # mechanic/weapon.skull-busta - Basha: +1 Strength in the first combat turn,
@@ -156,3 +156,36 @@
     0: {attacks.0.damage: 1, state.second.wounds: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
+# Added 2026-11-16: the printed "they may not be used by goblins".  The only band that
+# lists the Skull Busta (savage-orcs-kaz equipment-access.yaml, "not while mounted, not
+# goblins") offers it to its Orc profiles but not to its Gobbo Boyz, which share the
+# Savage Orc equipment list; building a Gobbo with one is refused.
+- audit_id: mechanic/weapon.skull-busta
+  id: skull-busta-may-not-be-used-by-a-goblin
+  fighters:
+    first: {collection: mordheim, band_id: savage-orcs-kaz, profile_id: gobbo-boyz, main_weapon_id: weapon.skull-busta}
+    second:
+      main_weapon_id: weapon.mace
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  expect_error: "equipment is not available to savage-orcs-kaz/gobbo-boyz"
+
+# Control for the goblin refusal: a Savage Orc Boy of the same band and list takes the
+# same Skull Busta and fights with it (first-round Strength 4 against Toughness 3 wounds
+# on a 3).
+- audit_id: mechanic/weapon.skull-busta
+  id: an-orc-of-the-same-band-may-take-the-skull-busta
+  fighters:
+    first: {collection: mordheim, band_id: savage-orcs-kaz, profile_id: boyz, main_weapon_id: weapon.skull-busta}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 1, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

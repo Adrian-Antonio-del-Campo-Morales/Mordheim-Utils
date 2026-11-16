@@ -1,0 +1,72 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/high-elves-lus/band--haughty/compiler.haughty
+# authoring_status: AUTHORED
+# authoring_progress: the admitted dwarf-equipment-bar clause carries 3 authored scenarios (a Gromril
+#   armour refusal, a Gromril weapon refusal and the accepted control).  REVIEWED still requires manual
+#   semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/high-elves-lus/special-rules.yaml
+#
+# Clause: whole--scope--dwarf-equipment-bar (scope: YES)
+# AUTHORED[whole--scope--dwarf-equipment-bar]: 3 scenarios.  Printed text: "nor use equipment of Dwarf
+#   origin, including Gromril weapons and armour".  packages/python/roster-construction/
+#   mordheim_construction/_eligibility.js (has("compiler.haughty")) refuses a build whose equipment set
+#   contains material.gromril, material.obsidian or armour.gromril-armour with "Dwarf-made equipment is
+#   forbidden for <band>/<profile>".  The two refusals use the two printed examples (Gromril armour, a
+#   Gromril weapon); the control shows the same Loremaster without them constructs while an unaffiliated
+#   fighter carrying the same Gromril items constructs too.
+#
+# Clause: whole--scope--hired-sword-blood-bar (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+# --- Authored scenarios ---
+# A High Elf Loremaster wearing Gromril armour is refused.
+- audit_id: rule/mordheim/high-elves-lus/band--haughty/compiler.haughty
+  id: a-loremaster-in-gromril-armour-is-refused
+  covers: [whole--scope--dwarf-equipment-bar]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: high-elves-lus
+      profile_id: loremaster
+      main_weapon_id: weapon.sword
+      armour_id: armour.gromril-armour
+  expect_error: Dwarf-made equipment is forbidden for high-elves-lus/loremaster
+# A High Elf Loremaster wielding a Gromril weapon is refused.
+- audit_id: rule/mordheim/high-elves-lus/band--haughty/compiler.haughty
+  id: a-loremaster-with-a-gromril-sword-is-refused
+  covers: [whole--scope--dwarf-equipment-bar]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: high-elves-lus
+      profile_id: loremaster
+      main_weapon_id: weapon.sword
+      main_material_id: material.gromril
+  expect_error: Dwarf-made equipment is forbidden for high-elves-lus/loremaster
+# Control: the same Loremaster with an ordinary sword and no Gromril constructs, and an unaffiliated
+# fighter carrying the same Gromril sword and armour constructs too.  The Loremaster is put out of
+# action before the first phase, so no die is needed.
+- audit_id: rule/mordheim/high-elves-lus/band--haughty/compiler.haughty
+  id: the-same-loremaster-without-gromril-constructs
+  covers: [whole--scope--dwarf-equipment-bar]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: high-elves-lus
+      profile_id: loremaster
+      main_weapon_id: weapon.sword
+    second:
+      main_weapon_id: weapon.sword
+      main_material_id: material.gromril
+      armour_id: armour.gromril-armour
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_initial: {first.condition: OUT}
+  expect_final: {rounds_executed: 0, termination_reason: first_out}

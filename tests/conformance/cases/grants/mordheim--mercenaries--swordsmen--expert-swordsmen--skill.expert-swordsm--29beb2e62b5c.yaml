@@ -7,11 +7,19 @@
 #   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
+# Note (2026-11-16): this printed profile ability is now granted automatically (grant: profile) and is
+#   the single source of the skill; the duplicate combat_traits.starting_skills entry was removed.
+#   Scenarios no longer select it through special_rule_ids, and older prose here that speaks of
+#   'selecting' the rule refers to the former encoding.
+#
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
+# De-duplication note (2026-11-16): the duplicate KB source recorded here earlier has been removed, so
+#   this rule is now the single source and its scenarios fail when its binding is removed (rule-removal
+#   probe).  Earlier note, kept for history: the same skill is delivered by sources/knowledge/bands/mordheim/mercenaries/profiles.yaml, profile swordsmen, key combat_traits.starting_skills: ["skill.expert-swordsman"]; this rule's grant is selectable, and selecting ...
 #
 # AUTHORED: 2 scenarios read the printed band delivery: the Swordsmen profile's own starting
 #   skill re-rolls the charged miss with a normal sword, and the identical charge with an ordinary

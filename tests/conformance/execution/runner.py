@@ -165,6 +165,14 @@ def execute_case(case: dict, root: Path, dice: DiceSource, decisions: DecisionPo
     _check_fields(builds, {"first", "second"}, "fighters")
     _check_fields(overrides, {"first", "second"}, "initial_state")
     first, second = (_build(builds.get(side, {}), root) for side in ("first", "second"))
+    for side, fighter in (("first", first), ("second", second)):
+        supplied = overrides.get(side, {}).get("wounds")
+        # A supplied wound count above the compiled maximum is not a state the
+        # printed profile can be in; the engine would silently clamp it, so the
+        # scenario would assert a different starting state than it declares.
+        if type(supplied) is int and supplied > fighter.characteristics.wounds:
+            raise ValueError(f"initial_state.{side}.wounds {supplied} exceeds the compiled "
+                             f"maximum {fighter.characteristics.wounds}")
     context = _duel_context(case.get("duel_context"), root)
     events = []
     recorded_dice = _RecordingDice(dice, events)

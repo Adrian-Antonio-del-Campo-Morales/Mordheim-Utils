@@ -1,11 +1,16 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/norse-explorers-btb/band--norse-special-skills-barbarian-courage/mechanic.fear-reroll
 # authoring_status: AUTHORED
-# authoring_progress: the admitted fear-reroll clause carries 2 authored scenarios derived from the
+# authoring_progress: the admitted fear-reroll clause carries 3 authored scenarios derived from the
 #   printed rule and the recorded contract: the warrior bearing the printed operator takes its failed
 #   Fear test again and accepts the second result, so the charge stands, and the identical charge
 #   without the operator keeps the failure and is cancelled.  REVIEWED still requires manual semantic
 #   review and execution_status stays UNEXECUTED.
+# Real-recipient addendum (2026-11-16): 1 further scenario(s) build the printed Norse Explorers
+# profile itself (jarl) and select band--norse-special-skills-barbarian-courage through
+# special_rule_ids, so the KB grant of this identity is exercised rather than only the shared
+# operator injected into hand-built fixtures; the earlier fixture scenarios stay as the operator
+# cases.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -15,7 +20,7 @@
 # Governing rulings: docs/decisions/design-rulings.md
 #
 # Clause: fear-reroll (scope: YES)
-# AUTHORED[fear-reroll]: 2 scenarios cover the printed optional reroll of a failed Fear test.  The
+# AUTHORED[fear-reroll]: 3 scenarios cover the printed optional reroll of a failed Fear test.  The
 #   register records this band line as the shared mechanic.fear-reroll operator with no second runtime
 #   contribution, so the operator is supplied on the fixture exactly as the canonical case does; the
 #   charge of the rerolling warrior is the vehicle and the second result is the accepted one.  The
@@ -78,3 +83,40 @@
   expect_rounds:
     0: {state.first_charged: False, state.engaged: False}
   expect_final: {rounds_executed: 1, termination_reason: disengaged}
+# Real recipient (2026-11-16): the same duel as the-failed-fear-test-is-taken-again, but the bearer
+# is built as the printed Norse Explorers Jarl profile (mordheim/norse-explorers-btb/jarl), with the
+# band rule selected through special_rule_ids [band--norse-special-skills-barbarian-courage] instead
+# of injecting mechanic.fear-reroll into a hand-built fighter; the explicit characteristics keep
+# that scenario's dice model.
+- audit_id: rule/mordheim/norse-explorers-btb/band--norse-special-skills-barbarian-courage/mechanic.fear-reroll
+  id: the-failed-fear-test-is-taken-again-as-the-real-jarl
+  covers: [fear-reroll]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: norse-explorers-btb
+      profile_id: jarl
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+      special_rule_ids: [band--norse-special-skills-barbarian-courage]
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.causes-fear]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context:
+    charging: [first]
+    active_participant: first
+  maximum_rounds: 1
+  decisions:
+  - {key: round.0.first.fear.charge.reroll, value: true}
+  rolls:
+  - {key: round.0.first.fear.charge.0, value: 6}
+  - {key: round.0.first.fear.charge.1, value: 6}
+  - {key: round.0.first.fear.charge.reroll.0, value: 1}
+  - {key: round.0.first.fear.charge.reroll.1, value: 1}
+  - {key: round.0.first.attack.0.hit, value: 4}
+  - {key: round.0.first.attack.0.wound, value: 4}
+  - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.first_charged: true, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

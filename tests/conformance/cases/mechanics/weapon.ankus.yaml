@@ -79,6 +79,9 @@
     0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: STUNNED}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 # Strikes first: the ordered tape shows the bearer resolving before a higher-Initiative defender.
+# Corrected 2026-11-16: nobody charges (the earlier body let the bearer charge,
+# so it struck first through the charge whatever the Ankus did); the I2 bearer
+# precedes the I5 opponent only through the printed "Strikes first".
 
 - audit_id: mechanic/weapon.ankus
   id: ankus-strikes-first-despite-lower-initiative
@@ -89,7 +92,7 @@
     second:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
-  duel_context: {charging: [first], active_participant: first}
+  duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 1}

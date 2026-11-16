@@ -1,7 +1,7 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/khemri-hobgoblin-raiders/sneaky--unpredictable/mechanic.unpredictable-attack
 # authoring_status: AUTHORED
-# authoring_progress: the admitted whole clause carries 3 authored scenarios mirroring the authored sibling of
+# authoring_progress: the admitted whole clause carries 5 authored scenarios mirroring the authored sibling of
 #   the same effect_id in this directory (band--savage-goblin-special-skills-unpredictable), whose tape fixes the
 #   registered declaration key round.0.<side>.unpredictable-attack.<index>; the earlier note that the pool key is a
 #   placeholder is therefore superseded.  The recipient is the printed Sneaky and, exactly as the sibling does,
@@ -10,6 +10,10 @@
 #   attack stays parryable when the declaration is declined, and a two-attack bearer whose declaration names only
 #   its second attack keeps the window on its first.  REVIEWED still requires manual semantic review and
 #   execution_status stays UNEXECUTED.
+# Real-recipient addendum (2026-11-16): 2 further scenario(s) build the printed Hobgoblin Raiders
+# profile itself (sneaky), so the KB grant of this identity is exercised rather than only the shared
+# operator injected into hand-built fixtures; the earlier fixture scenarios stay as the operator
+# cases.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -18,7 +22,7 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: 3 scenarios read the printed declaration.  The parry window is observed through a buckler
+# AUTHORED: 5 scenarios read the printed declaration.  The parry window is observed through a buckler
 #   defender, so a refused parry is the absent parry die plus the unspent parry attempt, and the declaration is the
 #   registered decision key the sibling tape of the same effect_id supplies.  Still open for a later review, and
 #   recorded rather than asserted: the band row that installs mechanic.unpredictable-attack on the Sneaky (the
@@ -104,4 +108,67 @@
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.parried: true, attacks.1.parried: false, state.second.parries_remaining: 0, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Real recipient (2026-11-16): the same duel as a-declared-attack-cannot-be-parried, but the bearer
+# is built as the printed Hobgoblin Raiders Sneaky profile
+# (trollheim/khemri-hobgoblin-raiders/sneaky) (the rule is printed on that profile) instead of
+# injecting mechanic.unpredictable-attack into a hand-built fighter; the explicit characteristics
+# keep that scenario's dice model.
+- audit_id: rule/trollheim/khemri-hobgoblin-raiders/sneaky--unpredictable/mechanic.unpredictable-attack
+  id: a-declared-attack-cannot-be-parried-as-the-real-sneaky
+  fighters:
+    first:
+      collection: trollheim
+      band_id: khemri-hobgoblin-raiders
+      profile_id: sneaky
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      off_hand_id: defence.buckler
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context:
+    charging: [first]
+    active_participant: first
+  maximum_rounds: 1
+  decisions:
+  - {key: round.0.first.unpredictable-attack.0, value: true}
+  rolls:
+  - {key: round.0.first.attack.0.hit, value: 4}
+  - {key: round.0.first.attack.0.wound, value: 4}
+  - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: false, state.second.parries_remaining: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Real recipient (2026-11-16): the same duel as
+# the-same-attack-is-parryable-when-nothing-is-declared, but the bearer is built as the printed
+# Hobgoblin Raiders Sneaky profile (trollheim/khemri-hobgoblin-raiders/sneaky) (the rule is printed
+# on that profile) instead of injecting mechanic.unpredictable-attack into a hand-built fighter; the
+# explicit characteristics keep that scenario's dice model.
+- audit_id: rule/trollheim/khemri-hobgoblin-raiders/sneaky--unpredictable/mechanic.unpredictable-attack
+  id: the-same-attack-is-parryable-when-nothing-is-declared-as-the-real-sneaky
+  fighters:
+    first:
+      collection: trollheim
+      band_id: khemri-hobgoblin-raiders
+      profile_id: sneaky
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      off_hand_id: defence.buckler
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context:
+    charging: [first]
+    active_participant: first
+  maximum_rounds: 1
+  decisions:
+  - {key: round.0.first.unpredictable-attack.0, value: false}
+  rolls:
+  - {key: round.0.first.attack.0.hit, value: 4}
+  - {key: round.0.first.attack.0.parry, value: 3}
+  - {key: round.0.first.attack.0.wound, value: 4}
+  - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: false, state.second.parries_remaining: 0, state.second.wounds: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

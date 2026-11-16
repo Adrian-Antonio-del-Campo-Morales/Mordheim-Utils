@@ -5,25 +5,77 @@ what is pending and when it is done.
 
 ## Rules-conformance coverage
 
-- **Authoring backlog.** 663 of 2,396 admitted identities have no scenarios and
-  21 of 443 admitted clauses are uncovered. Check with
-  `MORDHEIM_CONFORMANCE_REQUIRE_COMPLETE=1 python -m pytest tests/conformance -q`;
+- **Authoring backlog.** 611 of 2,333 admitted identities have no scenarios.
+  Check with `MORDHEIM_CONFORMANCE_REQUIRE_COMPLETE=1 python -m pytest tests/conformance -q`;
   done when the gate passes.
-- **Missing scaffolds.** 300 admitted identities have no authoring file (224
-  hireling identities, the bindings added on 2026-11-13, and
-  `night-goblins-kaz--band--animosity--mechanic.goblin-squabble`). Done when
-  `python tests/conformance/generate_skeletons.py --check` exits 0.
-- **Scenarios on placeholder identities.** 60 scenarios still name placeholder
-  identities of rules whose duel effect is now bound (the seven supplied-condition
-  splits: Petru potions, Mad Scientist alchemy, Danse Macabre, Fungus Brew,
-  Dwarf Brewers, Power Grab, Goading; plus Reikland, Mad Cap Masters,
-  Constructs, Rememberer, the living Tomb Scorpions and the Stone Golem). They
-  count as outside-scope scenarios. Done when they are moved onto the bound
-  identities (and their parity deliveries re-pinned).
-- **Weak scenarios.** Rule-removal probing showed scenarios whose dice never
-  reach the rule's boundary (Strength of Steel, Strike to Injure, Unarmed
-  Critical Strikes, Unstoppable Charge). Done when each positive scenario fails
-  with its rule removed.
+- **Engine disagrees with the printed rule (9 failing scenarios).**
+  `weapon.broadsword` strikes last (`priority: -1` in `execution.yaml`, not
+  printed); Long Daggers carry an unprinted `weapon.dagger` tag (Knife Fighting
+  applies, the dagger save does not) — 2 scenarios; Master of Arms does not allow
+  a Difficult-to-Use weapon with a hand weapon; Machine-Ogre Bio Machinery is
+  `implemented: NO`, so its psychology immunity never compiles; Rousing Sermon
+  (`skill.inspiring-sermon`) offers no declaration and adds the attack even when
+  declined — 2 scenarios; Von Carstein Hypnotic Gaze is refused for want of a
+  bloodline prefix; `core/combat-order::strike-first-overrides-the-standing-up-penalty`
+  expects a stood-up Always-Strikes-First fighter to strike last. Done when each
+  scenario passes (the combat-order one after a ruling confirms the reading; its
+  id still reads the old way).
+- **Parity deliveries behind the corpus.** 278 delivery keys name scenarios that
+  no longer exist, 602 scenarios have no delivery and 1,257 deliveries are stale
+  (`source.sha256`). Done when the deliveries are re-prepared with `export_cases`
+  and the orphans removed.
+- **Scenarios on out-of-scope identities.** 10 identities outside the admitted
+  scope still carry scenarios because no admitted identity holds their
+  behaviour: Living (Mordheim and Trollheim Tomb Scorpions; a profile
+  `creature_kind: living` trait), Animated (Stone Golem), Teamwork (Snotling Mobs,
+  Shoota Teams; LATER), and restrictions encoded only by an equipment-list line
+  or a profile's skill access (Orc Boyz crossbow, Thieves Guild Enforcer and
+  Ruffian, Strigany and Nipponese skill tables). Done when each behaviour has an
+  admitted identity to hold the scenarios, or the scenarios are retired.
+- **Catalogue skills unreachable by scenarios.** The 56
+  `rule/catalog/{general,warband}/skill.*` identities have `grant: none` and no
+  construction path reads their binding (`skill_ids` and starting skills resolve
+  to the mechanic directly); the same holds for the six Fungus Brew conditions and
+  Danse Macabre. The rule-removal probe reports them `inert`. Done when the KB
+  routes these grants through their records or excludes them from conformance.
+- **Printed-source checks before de-duplicating.** Sons of Nagarythe Powerful
+  Build: the Shadow Master and Shadow Walker already list `strength` in
+  `skill_access`, so the skill adds nothing for them; check the printed skill
+  tables. `mad-scientist--lunatic` is printed as a Special Skill but granted
+  automatically to four Masters of Horror profiles, which also makes the Thrall's
+  own Cause Fear redundant; check the print. Done when each encoding matches its
+  print and the probe reports the identity `discriminating`.
+- **Construction-only evidence.** About 35 combat identities (handler leadership,
+  brood mentality, mutations, tail attacks, ...) are refused at construction when
+  their rule is removed, so no scenario shows their duel effect with and without
+  the rule. Done when each has a scenario whose duel observable changes, or the
+  build genuinely cannot exist without the rule (record why).
+- **Haughty also bars obsidian.** The Dwarf-equipment guard in
+  `_eligibility.js` treats `material.obsidian` as Dwarf-made; the printed text
+  names only Dwarf origin and Gromril. Done when the guard matches the print or a
+  ruling records why.
+- **Scenarios that contradict or miss their print.** Pirates Sea Shanty
+  `a-psychology-immune-enemy-is-not-tested-and-keeps-both-attacks` contradicts the
+  print (only Undead and non-living are exempt); Curse of the Reborn
+  `the-four-plus-regeneration-save-ignores-the-wound` claims
+  `blocked-by-fire-and-blessed` without evidencing it; the Ogre Hunting skills
+  file hosts five hand-built bull-charge/crude-belch scenarios that do not
+  exercise it. Done when each scenario matches its print and identity.
+- **Engine or eligibility behaviour without printed support.** Any two Dwarf axes
+  get a parry re-roll regardless of skill (`contexts.py::_parry_context`); Wheelo
+  fittings are gated on `mechanic.wheelo-impact`, not on the rule; the
+  chaos-streets Troll Slayer refuses every special skill through `skill_ids`
+  while a Dwarf Noble is admitted to Monster Slayer; Battle Monks warrior-monks
+  henchmen are admitted to Energy Focus. Done when each is fixed or ruled.
+- **Header prose out of date.** Some `AUTHORED`/`PARTIAL` marker texts quote old
+  scenario counts (automatic-leadership and rat-ogre Stupidity families, Khemri
+  Necrotect, `weapon.kusara-kama`); House Guard Adjutant and
+  `weapon.yari-two-handed` describe a scenario the file no longer holds; the
+  Snotlings Bigsnotz Big Bully header calls Big Bully "implemented NO"; the
+  Snotlings Wheelo grant header repeats the "Strength 3 crew" reading; the
+  Swordsmen, Troll Slayer Hard to Kill, Strigoi and Necrotect Hatred files still
+  describe selecting rules that are now automatic. Done when each header matches
+  its file and the KB.
 
 ## Runtime classification
 
@@ -75,8 +127,8 @@ what is pending and when it is done.
 
 ## Engine coverage lost with the retired replay suites
 
-The coverage budget was regenerated on 2026-11-13; 282 statements that the
-retired replay suites covered are no longer covered (127 in
+282 engine statements are covered by no current suite since the replay suites
+were retired (127 in
 `vectorized/_operators.py`, 78 in `vectorized/_attacks.py`, 28 in
 `vectorized/_driver.py`, 24 in `phases.py`, 25 across `modular/`). Done when they
 are covered again or explicitly accepted as out of scope.
@@ -127,6 +179,6 @@ modular engine requires explicit authorization.
 
 | Follow-up | Completion condition |
 | --- | --- |
-| Implement the Sunstaff Lustria melee profile | Add the bearer-Strength profile without invented two-handed, +1 Strength or ignition properties, then reconnect its item/simulation mapping and pending register clause (motor support pending by user decision, 2026-11-10). |
+| Implement the Sunstaff Lustria melee profile | Add the bearer-Strength profile without invented two-handed, +1 Strength or ignition properties, then reconnect its item/simulation mapping and pending register clause (engine support stays pending by user decision). |
 | Resolve hireling `unresolved_references` | Replace references as canonical catalogues become available; keep genuinely unresolved links explicit. |
 | Define composite-entity schemas | Establish schemas before admitting multi-warrior, mounted or multi-persona Dramatis Personae. |

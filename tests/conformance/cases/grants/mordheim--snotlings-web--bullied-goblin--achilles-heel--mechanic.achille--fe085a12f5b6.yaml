@@ -1,6 +1,6 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/snotlings-web/bullied-goblin--achilles-heel/mechanic.achilles-heel
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
 # authoring_progress: the criticals-on-six clause now carries two authored tapes (the printed critical on
 # a natural six regardless of the opponent's Toughness, and the control in which the same faces leave an
 # ordinary wound) declared through the band's own published warband_skill row; the armour-denial half
@@ -16,7 +16,9 @@
 # Governing rulings: docs/decisions/design-rulings.md
 #
 # Clause: criticals-and-charge--scope--criticals-on-six (scope: YES)
-# PARTIAL[criticals-and-charge--scope--criticals-on-six]: the granted critical condition is now asserted by
+# AUTHORED[criticals-and-charge--scope--criticals-on-six]: the granted critical condition is now asserted by
+#   (2026-11-16: both scenarios of this clause pass against the modular engine, so the PENDING[B] consumer
+#   below exists; the remaining half of the stanza is now scope NO.)
 # the two tapes below, and the blocker previously recorded here is corrected because it was false.  The
 # band's own published row (bands/mordheim/snotlings-web/special-rules.yaml, id bullied-goblin--achilles-heel,
 # kind warband_skill, applies_to.profile_ids [bullied-goblin, bigsnotz, scouts, shaman]) is scope YES /
@@ -29,17 +31,21 @@
 # critical when the required target is already six: the selection is admitted, so this is behaviour and not
 # a missing input.  The Stampede half of the printed stanza is the separate clause below.
 #
-# Clause: criticals-and-charge--scope--stampede-armour-denial (scope: YES)
-# PARTIAL[criticals-and-charge--scope--stampede-armour-denial]: [C] the printed armour denial is conditional
-# on the Stampede charge attack, and that carrier is an accepted exclusion rather than a missing branch:
-# bands/mordheim/snotlings-web/special-rules.yaml records bullied-goblin--stampede as scope NO /
-# implemented NO with the reason "Stampede requires other Snotlings that charged the same warrior to
-# forfeit attacks and tracks multiple charging models across the warband, which is group coordination of
-# additional participants outside the two-duelist scope".  With no carrier for that charge attack in the
-# isolated duel there is no fixture that can state the "when combined with the Stampede charge attack"
-# case, so the 5+ wound face has nothing to attach to; the blocked item is that dependency
-# (rule/mordheim/snotlings-web/bullied-goblin--stampede/whole), while this clause's own row is bound and
-# implemented as the sibling half above shows.  Retained as withheld, never as a pass.
+# Clause: criticals-and-charge--scope--stampede-armour-denial (scope: NO)
+# Outside the admitted clause scope since 2026-11-16 (KB set it to NO: it applies only with the Stampede charge attack, which is scope NO (out-of-scope.group)).
+#   Earlier note: KB-FIX (verified 2026-11-16).  The printed
+#   sentence is conditional on another rule: "In addition, when combined with the Stampede charge attack, on
+#   any successful rolls to wound of 5+, the opponent gains no armour save."  Its carrier,
+#   bands/mordheim/snotlings-web/special-rules.yaml bullied-goblin--stampede, is runtime scope 'NO' /
+#   implemented 'NO', effect unimplemented.snotlings-web.special.stampede with binding null, reason
+#   out-of-scope.group and its single clause whole scope 'NO' (Stampede tracks the other Snotlings that
+#   charged the same warrior and has them forfeit attacks - additional participants outside the duel).  With
+#   no in-scope Stampede charge attack there is no duel input that states the condition, so this clause
+#   cannot be an admitted obligation.  Recommended KB change: in the same file, record
+#   bullied-goblin--achilles-heel, effect mechanic.achilles-heel, set clause
+#   criticals-and-charge--scope--stampede-armour-denial to scope 'NO' (reason out-of-scope.group, following
+#   its carrier bullied-goblin--stampede).  Not authored.
+#
 
 # --- Authored scenarios ---
 # Derived from the printed skill and the band's own published row; no engine output was consulted.

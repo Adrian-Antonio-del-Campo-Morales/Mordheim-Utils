@@ -6,6 +6,10 @@
 # whose sentence repeats the canonical clause without adding a term; the clause facts therefore mirror the
 # canonical shared case (cases/mechanics/skill.miniath.yaml).
 # REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# Real-recipient addendum (2026-11-16): 2 further scenario(s) build the printed High Elves profile
+# itself (loremaster) and select band--high-elf-special-skills-miniath through special_rule_ids, so
+# the KB grant of this identity is exercised rather than only the shared operator injected into
+# hand-built fixtures; the earlier fixture scenarios stay as the operator cases.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -15,7 +19,7 @@
 # Governing rulings: docs/decisions/design-rulings.md
 #
 # Clause: parry-with-any-weapon (scope: YES)
-# AUTHORED[parry-with-any-weapon]: 3 scenarios show the parry allowance the skill adds to a bearer whose
+# AUTHORED[parry-with-any-weapon]: 5 scenarios show the parry allowance the skill adds to a bearer whose
 # carried weapon cannot parry (a mace): the allowance is read as state.parries_remaining 1 against 0 without
 # the skill, and a mace parry attempt really resolves, blocking a hit of 4 with a parry die of 5.
 #
@@ -125,4 +129,67 @@
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.parried: True, attacks.0.wounded: False, state.second.wounds: 2, state.second.parries_remaining: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Real recipient (2026-11-16): the same duel as
+# the-skill-allows-a-parry-with-a-weapon-that-cannot-parry, but the bearer is built as the printed
+# High Elves Loremaster profile (trollheim/lustria-high-elves/loremaster), with the band rule
+# selected through special_rule_ids [band--high-elf-special-skills-miniath] instead of injecting
+# skill.miniath into a hand-built fighter; the explicit characteristics keep that scenario's dice
+# model. The profile's equipment list does not offer the original weapon, so it carries weapon.axe;
+# no die of the declared tape depends on that swap.
+- audit_id: rule/trollheim/lustria-high-elves/band--high-elf-special-skills-miniath/skill.miniath
+  id: the-skill-allows-a-parry-with-a-weapon-that-cannot-parry-as-the-real-loremaster
+  covers: [parry-with-any-weapon]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: trollheim
+      band_id: lustria-high-elves
+      profile_id: loremaster
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      main_weapon_id: weapon.axe
+      special_rule_ids: [band--high-elf-special-skills-miniath]
+  duel_context:
+    charging: []
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.first.attack.0.hit, value: 1}
+  - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.parries_remaining: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Real recipient (2026-11-16): the same duel as the-mace-parry-attempt-blocks-the-hit, but the
+# bearer is built as the printed High Elves Loremaster profile
+# (trollheim/lustria-high-elves/loremaster), with the band rule selected through special_rule_ids
+# [band--high-elf-special-skills-miniath] instead of injecting skill.miniath into a hand-built
+# fighter; the explicit characteristics keep that scenario's dice model. The profile's equipment
+# list does not offer the original weapon, so it carries weapon.axe; no die of the declared tape
+# depends on that swap.
+- audit_id: rule/trollheim/lustria-high-elves/band--high-elf-special-skills-miniath/skill.miniath
+  id: the-mace-parry-attempt-blocks-the-hit-as-the-real-loremaster
+  covers: [parry-with-any-weapon]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: trollheim
+      band_id: lustria-high-elves
+      profile_id: loremaster
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      main_weapon_id: weapon.axe
+      special_rule_ids: [band--high-elf-special-skills-miniath]
+  duel_context:
+    charging: []
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.first.attack.0.hit, value: 4}
+  - {key: round.0.first.attack.0.parry, value: 5}
+  - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: true, attacks.0.wounded: false, state.second.wounds: 2, state.second.parries_remaining: 0}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -9,27 +9,24 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: the declared token 'crossbow' IS enforced over the build loadout by the shared eligibility
-# stage, contrary to the earlier note: _eligibility.js::buildRestriction (stage boundEquipment) collects the
-# binding's forbids tokens from profile_bindings, keeps the ones that are interpreted tokens or that resolve
-# to a catalogue item (BOUND_STAGE_TOKENS holds only armour, ranged-weapons, heavy-armour, weapon.lance and
-# defence.helmet), and runs equipmentIssue over [main_weapon_id, off_hand_id, extra_hand_id, armour_id,
-# ...defence_ids]; equipmentIssue's forbids loop emits `"${token}" is forbidden for ${band}/${profile}.` for
-# a token that equals the carried item id or one of its tags, and 'crossbow' is in EQUIPMENT_TAG_VOCABULARY.
-# The catalogue row is sources/knowledge/catalog/items/weapons-ranged.yaml (`- id: crossbow`, tags: crossbow).
-# The binding is printed in this band's special-rules.yaml (profile.equipment-restrictions, forbids: crossbow,
-# max_missile_weapons: 1, required_tag: bow, exempt_profile_ids: [cleric]) and the printed profile text of each
-# warrior repeats it (sources/knowledge/bands/mordheim/outlaws-of-stirwood-forest/profiles.yaml).  Two refusals
-# and one acceptance tape are declared.  REVIEWED still requires manual semantic review.
-# authoring_progress: 3 authored scenario(s) in this file; authored clauses ['whole']; no admitted clause of
+# AUTHORED: the printed rule has three construction terms, all on this band's own binding
+#   (sources/knowledge/bands/mordheim/outlaws-of-stirwood-forest/special-rules.yaml, `band--bow-discipline`,
+#   profile.equipment-restrictions: forbids [crossbow], max_missile_weapons 1, required_tag bow,
+#   exempt_profile_ids [cleric]).  (1) Every warrior except the Cleric must carry a bow-type weapon: an Outlaw
+#   built with a sword and no bow is refused, the Cleric built the same way is admitted.  (2) Only one missile
+#   weapon at a time: an Outlaw carrying a bow and a short bow (both on his list) is refused.  (3) No crossbows:
+#   the crossbow refusals below hold, but they are decided by the band's equipment list, which carries no
+#   crossbow at all (`"crossbow" is not on any equipment list of ...`), not by this binding.
+# De-duplication note (2026-11-16): the duplicate KB source recorded here earlier has been removed, so
+#   this rule is now the single source and its scenarios fail when its binding is removed (rule-removal
+#   probe).  Earlier note, kept for history: the crossbow clause is REDUNDANT with sources/knowledge/bands/mordheim/outlaws-of-stirwood-forest/equipment-access.yaml (no crossbow row on the only list the warriors use), so no build can show it; terms (1) and (2) are ...
+# authoring_progress: 6 authored scenario(s) in this file; authored clauses ['whole']; no admitted clause of
 # this origin is left pending.  REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
 
 # --- Authored scenarios ---
 
-# The declared token 'crossbow' is enforced over the build loadout, not over a carried kit: the shared stage
-# keeps the interpreted token and runs equipmentIssue over the build's own weapon/armour/defence slots, whose
-# forbids loop prints `"crossbow" is forbidden for <band>/<profile>.`  No carried-item input is needed, which
-# is why the earlier 'no build can carry it' note was wrong.
+# The crossbow refusals: the crossbow is on no equipment list of this band, so the list check refuses it
+# before the binding's token is read (see the discrimination note above).
 
 - audit_id: rule/mordheim/outlaws-of-stirwood-forest/band--bow-discipline/profile.equipment-restrictions
   id: a-crossbow-is-refused-for-an-outlaw
@@ -79,3 +76,47 @@
   expect_final:
     rounds_executed: 0
     termination_reason: first_out
+
+# The required bow (printed: every warrior except the Cleric must carry a bow-type missile weapon) and the
+# one-missile-weapon limit.  Items are supplied as carried gear from the warriors' own list; the admitted
+# build is put out of action at the outset so no die is requested.
+
+- audit_id: rule/mordheim/outlaws-of-stirwood-forest/band--bow-discipline/profile.equipment-restrictions
+  id: an-outlaw-without-a-bow-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: outlaws-of-stirwood-forest
+      profile_id: outlaws
+      main_weapon_id: weapon.sword
+      owned_item_ids: [sword]
+  expect_error: 'The equipment of outlaws-of-stirwood-forest/outlaws includes no "bow"'
+
+- audit_id: rule/mordheim/outlaws-of-stirwood-forest/band--bow-discipline/profile.equipment-restrictions
+  id: an-outlaw-carrying-two-missile-weapons-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: outlaws-of-stirwood-forest
+      profile_id: outlaws
+      main_weapon_id: weapon.mace
+      owned_item_ids: [bow, short_bow]
+  expect_error: 'outlaws-of-stirwood-forest/outlaws carries 2 missile weapons; the band allows 1.'
+
+- audit_id: rule/mordheim/outlaws-of-stirwood-forest/band--bow-discipline/profile.equipment-restrictions
+  id: the-cleric-without-a-bow-is-admitted
+  fighters:
+    first:
+      collection: mordheim
+      band_id: outlaws-of-stirwood-forest
+      profile_id: cleric
+      main_weapon_id: weapon.sword
+      owned_item_ids: [sword]
+    second:
+      collection: mordheim
+      band_id: outlaws-of-stirwood-forest
+      profile_id: outlaws
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_initial: {first.condition: OUT}
+  expect_final: {rounds_executed: 0, termination_reason: first_out}

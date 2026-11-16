@@ -1,7 +1,8 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/lustria-dark-elves/cold-ones--stupidity/mechanic.stupidity
 # authoring_status: AUTHORED
-# authoring_progress: the admitted stupidity clause carries 3 authored scenarios for the family
+# authoring_progress: the admitted stupidity clause carries 4 authored scenarios (the 4th, added 2026-11-16, is the
+#   discriminating one: it supplies no Stupidity trait override - see its note) for the family
 #   model derived from the printed rule, the recorded parameterized contract and the accepted
 #   handler-parent case: the supplied Beastmaster value 8 carries a test total of eight, the same
 #   total fails against the Cold One's own printed Leadership 4 when no handler value is supplied
@@ -113,3 +114,29 @@
     0: {state.first.stupidity_failed: false, state.first.frenzy: true, state.second.wounds: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
+
+# Discriminating repair (2026-11-16): the three scenarios above also supply `stupidity: true` as a trait
+#   override, which reaches the same Stupidity state the KB grant delivers, so they pass with or without
+#   the grant and do not evidence it.  This scenario builds the printed Cold One with no Stupidity
+#   trait at all: the Stupidity it must test comes only from its printed "cold-ones--stupidity" rule.
+#   With no handler value supplied, the own printed Leadership 4 is tested; 4+4 = 8 fails it, so the
+#   charge is cancelled and no attack is resolved, exactly as in the second scenario above.
+- audit_id: rule/trollheim/lustria-dark-elves/cold-ones--stupidity/mechanic.stupidity
+  id: the-printed-cold-one-is-tested-without-a-supplied-stupidity-trait
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: cold-ones
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 4}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.first.stupidity_failed: true, state.first_charged: false, state.engaged: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}

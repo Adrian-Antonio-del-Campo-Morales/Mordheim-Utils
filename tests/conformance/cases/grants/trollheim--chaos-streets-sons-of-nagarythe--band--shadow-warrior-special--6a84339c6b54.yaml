@@ -1,10 +1,10 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/chaos-streets-sons-of-nagarythe/band--shadow-warrior-special-skills-powerful-build/profile.skill-access
 # authoring_status: PARTIAL
-# authoring_progress: the grant and the closure of the special list are covered; the clause is marked
-#   PARTIAL below because the printed Shadow Weaver exclusion names no resolvable profile here and
-#   the Strength category is already printed on both eligible profiles, so the grant itself is
-#   idempotent for them.  PARTIAL is authoring and semantic contrast only; execution_status stays
+# authoring_progress: the grant, the closure of the special list and (2026-11-16) the printed Shadow
+#   Weaver exclusion are covered; the clause stays PARTIAL because the Strength category is already
+#   printed on both eligible profiles, so the grant itself is idempotent for them (see the
+#   Discrimination note).  The "two-warrior" cap is warband-level and not represented.  PARTIAL is authoring and semantic contrast only; execution_status stays
 #   UNEXECUTED and no functional result exists.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
@@ -13,7 +13,16 @@
 # REVIEWED requires semantic review; covers labels alone are insufficient.
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
+# Discrimination note (2026-11-16): the grant (Strength skill access) is delivered independently by
+#   the eligible profiles' own printed skill_access in
+#   sources/knowledge/bands/trollheim/chaos-streets-sons-of-nagarythe/profiles.yaml (shadow-master
+#   `skill_access: [combat, shooting, strength, special]`, shadow-walker `skill_access: [combat, strength,
+#   special]`); the rule's eligibility admits only these two profiles, so no legal build can show the
+#   grant.  The printed Shadow Weaver exclusion is now resolved (profile id shadow-weaver) and asserted
+#   as a construction refusal below; it is a refusal, not a duel observable of the grant.
 #
+# Update 2026-11-16: the Shadow Weaver half below is now resolved (profile id shadow-weaver) and
+#   asserted by a-shadow-weaver-may-never-take-powerful-build; only the idempotent-grant half remains.
 # PARTIAL: [C] two halves stay unrepresented for want of identity, not of authoring: the printed
 # Shadow Weaver exclusion names only the class (the band package's profile id for it was not resolved
 # here), and the Strength category is already printed in both eligible profiles' `skill_access`, so the
@@ -56,3 +65,15 @@
       profile_id: shadow-master
       skill_ids: [skill.monster-slayer]
   expect_error: "skills are not available to chaos-streets-sons-of-nagarythe/shadow-master: ['skill.monster-slayer']"
+
+# The printed exclusion "A Shadow Weaver may never take this skill": the band's Shadow Weaver
+# (trollheim/chaos-streets-sons-of-nagarythe/shadow-weaver) selecting the row is refused (2026-11-16).
+- audit_id: rule/trollheim/chaos-streets-sons-of-nagarythe/band--shadow-warrior-special-skills-powerful-build/profile.skill-access
+  id: a-shadow-weaver-may-never-take-powerful-build
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-sons-of-nagarythe
+      profile_id: shadow-weaver
+      special_rule_ids: [band--shadow-warrior-special-skills-powerful-build]
+  expect_error: "special rule is not available to chaos-streets-sons-of-nagarythe/shadow-weaver: band--shadow-warrior-special-skills-powerful-build"

@@ -12,10 +12,18 @@
 # AUTHORED: 2 scenarios evidence the declared prohibition on the construction route the record names. The token 'beastmaster_whip' is a carried item id of the catalogue (sources/knowledge/catalog/items/trollheim.yaml), so the bound profile.equipment-restrictions binding declared by this band's own special-rules.yaml (grant: profile, implemented YES) reaches it through the shared eligibility stage: a Darkblade build carrying the item is refused with '"beastmaster_whip" is not on any equipment list of lustria-dark-elves/darkblades.' and the identical build without the item is accepted at construction. REVIEWED still requires manual semantic review.
 # authoring_progress: 2 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
 
+# De-duplication note (2026-11-16): the duplicate source the earlier discrimination note named - the
+#   `beastmaster_whip` row of `dark-elf-equipment-list` in sources/knowledge/bands/trollheim/lustria-dark-elves/equipment-access.yaml, its applies_to.profile_ids [beastmaster] gate - was removed.
+#   Every profile the gate excluded carries this printed restriction as its own forbids token, so the
+#   list now offers the row to all its users and this binding is the single encoding of the printed
+#   reservation: the refusal below is the binding's own '"<item>" is forbidden for <band>/<profile>.'
+#   (only the expect_error wording changed; the refusal itself is unchanged) and the scenario discriminates.
+#   Header prose above that quotes the list sentence '... is not on any equipment list ...' describes the
+#   state before this change.
+
 # --- Authored scenarios ---
-# The prohibition is carried by the profile binding the band declares for these Darkblades; the
-# offending item is supplied as carried gear, and the message is the shared stage's own template
-# `"${token}" is forbidden for ${band}/${profile}.` with this origin's token and recipient.
+# Each banned entry is supplied as carried gear; the refusal is this binding's per-item forbids check
+# (`"<item>" is forbidden for <band>/<profile>.`), see the de-duplication note above.
 
 - audit_id: rule/trollheim/lustria-dark-elves/darkblades--equipment-restrictions/profile.equipment-restrictions
   id: darkblades-with-the-beastmasters-whip-is-refused
@@ -25,7 +33,7 @@
       band_id: lustria-dark-elves
       profile_id: darkblades
       owned_item_ids: [beastmaster_whip]
-  expect_error: '"beastmaster_whip" is not on any equipment list of lustria-dark-elves/darkblades.'
+  expect_error: '"beastmaster_whip" is forbidden for lustria-dark-elves/darkblades.'
 
 - audit_id: rule/trollheim/lustria-dark-elves/darkblades--equipment-restrictions/profile.equipment-restrictions
   id: darkblades-without-the-beastmasters-whip-is-accepted-at-construction

@@ -527,15 +527,14 @@ rules:
   rule_ref: shared-rule.thieves-guild-equipment-restrictions
 - id: guild-enforcer--equipment-restrictions
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: profile.equipment-restrictions
-      scope: 'YES'
-      binding:
-        kind: profile
-        id: profile.equipment-restrictions
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   name: Equipment Restrictions
   source:
     manual: khemri
@@ -611,15 +610,14 @@ rules:
   rule_ref: shared-rule.thieves-guild-equipment-restrictions
 - id: guild-ruffian--equipment-restrictions
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: profile.equipment-restrictions
-      scope: 'YES'
-      binding:
-        kind: profile
-        id: profile.equipment-restrictions
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   name: Equipment Restrictions
   source:
     manual: khemri

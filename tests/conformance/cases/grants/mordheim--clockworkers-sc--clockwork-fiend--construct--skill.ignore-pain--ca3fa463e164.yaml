@@ -1,0 +1,76 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/clockworkers-sc/clockwork-fiend--construct/skill.ignore-pain
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/clockworkers-sc/special-rules.yaml
+# AUTHORED: 2 scenarios evidence the printed post-chart transformation, derived from the
+#   printed rule and the canonical mechanic tape (cases/mechanics/skill.ignore-pain.yaml).  The bearer is the
+#   printed clockwork-fiend profile this clause names, which the construct record grants skill.ignore-pain directly (no id is injected); the printed Resilient prerequisite stays out, since the equivalence guidance forbids adding it to an
+#   innate No Pain.  The bearer starts on its last wound (initial_state wounds: 1 on the printed W3) and
+#   declares no attack, so the declared hit-wound-injury sequence ends on the injury chart: the declared three
+#   leaves it KNOCKED_DOWN, and the identical declared dice leave the ordinary hand-built control STUNNED.  The
+#   transformation is read at the injury boundary the clause governs, not through an internal flag.
+#
+# Scenarios split out on 2026-11-16 from the rule/mordheim/clockworkers-sc/clockwork-fiend--
+#   construct/trait.poison-immune file, which hosted them under that identity's header after the KB
+#   split this printed rule into one effect per consequence; inputs, dice and expectations are
+#   unchanged.
+
+# --- Authored scenarios ---
+
+# The printed No Pain, read at the injury boundary: the bearer is the printed profile this clause names and it
+# stands on its last wound, so the declared hit-wound-injury sequence reaches the chart, whose declared three is
+# the printed Stunned result - and the clause converts it to Knocked Down.
+- audit_id: rule/mordheim/clockworkers-sc/clockwork-fiend--construct/skill.ignore-pain
+  id: a-stunned-result-leaves-the-construct-knocked-down
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      # The Fiend prints T5, so the attacker needs S8 for the declared five to wound at all
+      # without being the critical six.
+      characteristics: {weapon_skill: 3, strength: 8, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+    second: {collection: mordheim, band_id: clockworkers-sc, profile_id: clockwork-fiend}
+  initial_state: {second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    # A five wounds an S8 attack against T3 without being the critical six, so the
+    # scenario reads the poisoned wound itself.
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 3}
+  expect_rounds:
+    0: {state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control for the same declared dice against an ordinary hand-built neighbour instead of the construct: the
+# chart result is identical and this time it stands as the printed Stunned, so the conversion is the construct's.
+- audit_id: rule/mordheim/clockworkers-sc/clockwork-fiend--construct/skill.ignore-pain
+  id: without-the-construct-rule-the-same-result-stuns
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    # Both print Initiative 2, so the tie die decides the order; a four sends the attacker first.
+    - {key: round.0.priority-tie, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    # A five wounds an S8 attack against T3 without being the critical six, so the
+    # scenario reads the poisoned wound itself.
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 3}
+  expect_rounds:
+    0: {state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

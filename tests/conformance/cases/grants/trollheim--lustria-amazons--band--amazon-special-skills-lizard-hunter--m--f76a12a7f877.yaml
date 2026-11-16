@@ -28,8 +28,9 @@
 # own Initiative is higher than the bearer's (four against three), so nothing but the rule can
 # put the bearer's die first.  The control opponent is hand-built with the same higher Initiative
 # and no printed species, and there the opponent's die is the first one declared.  Both fighters
-# keep a single attack and the defender's wounds are supplied above one, so the tape holds the
-# ordering question alone.
+# keep a single attack and every strike misses, so the tape holds the ordering question alone.
+# Corrected 2026-11-16: the Skink scenario earlier supplied two Wounds to the printed W1 Skink
+# Brave (rejected by the runner now); it keeps its printed single Wound, which no strike touches.
 
 - audit_id: rule/trollheim/lustria-amazons/band--amazon-special-skills-lizard-hunter/mechanic.strike-first-vs-skinks-always
   id: the-bearer-strikes-before-a-skink
@@ -45,7 +46,6 @@
       band_id: lustria-lizardmen
       profile_id: skink-braves
       main_weapon_id: weapon.stone-axe
-  initial_state: {second: {wounds: 2}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:

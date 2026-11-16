@@ -10,7 +10,8 @@
 # band file already uses (catalog/skills/warband.yaml: skill.monster-slayer, category special, source_refs
 # "Slayer Special Skills / Monster Slayer").  The two Rememberer columns are declared through the fixture's
 # established species override, which is how this corpus already states a fighter's species identity.  The
-# missing KB binding is recorded as the defect the scenarios detect, not as a reason to withhold them.
+# earlier "missing KB binding" note is withdrawn: the record now binds profile.skill-access (checked
+# 2026-11-16, see the DEFECTS note below).
 # REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
@@ -39,10 +40,10 @@
 #   the Dwarf Rememberer and skill.sprint (speed) for the Human Rememberer, both admitted, each beside the
 #   other column's own access as recorded context.
 #   DEFECTS THE SCENARIOS DETECT (recorded, not hidden, and not a reason to withhold them): this origin's
-#   row records `scope: LATER / implemented: 'NO'` with `binding: null` and the reason "Deferred
-#   cross-reference: the Slayer skill column and the Slayer Special Skills list live in Town Cryer 6 (or
-#   Best of Town Crier), not in this document", so no machine-readable member list reaches the shared
-#   construction stage; and the published `rememberer` profile records one merged skill_access
+#   row now records `scope: YES / implemented: 'YES'` and binds profile.skill-access with parameters
+#   {"category": "special", "skills": [skill.ferocious-charge, skill.monster-slayer, skill.berserker]}
+#   (checked 2026-11-16); the earlier "binding: null / Deferred cross-reference" note is withdrawn.  The
+#   published `rememberer` profile records one merged skill_access
 #   (combat / shooting / academic), so the printed race split is not projected at all and a Rememberer of
 #   either race is refused the column its own printed rule grants.  Those are implementation gaps; the
 #   expectations below stay the printed permissions.

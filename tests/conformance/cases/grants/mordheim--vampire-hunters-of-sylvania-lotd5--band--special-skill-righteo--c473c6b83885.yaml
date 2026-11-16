@@ -1,12 +1,17 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/vampire-hunters-of-sylvania-lotd5/band--special-skill-righteous-aura/skill.sigmar-s-sign
 # authoring_status: AUTHORED
-# authoring_progress: the admitted sigmar-s-sign clause carries 3 authored scenarios derived from the
+# authoring_progress: the admitted sigmar-s-sign clause carries 5 authored scenarios derived from the
 #   printed rule and the recorded contract: an Undead opponent's first attack against the bearer is lost in
 #   the first round (the tape schedules one attack chain where the same fixture otherwise schedules two),
 #   an ordinary opponent keeps both attacks, and the same Undead opponent keeps both attacks against a
 #   bearer without the grant.  REVIEWED still requires manual semantic review and execution_status stays
 #   UNEXECUTED.
+# Real-recipient addendum (2026-11-16): 2 further scenario(s) build the printed Vampire Hunters of
+# Sylvania profile itself (vampire-hunter) and select band--special-skill-righteous-aura through
+# special_rule_ids, so the KB grant of this identity is exercised rather than only the shared
+# operator injected into hand-built fixtures; the earlier fixture scenarios stay as the operator
+# cases.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -15,7 +20,7 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: 3 scenarios read the printed "Possessed or Undead opponents lose their first attack
+# AUTHORED: 5 scenarios read the printed "Possessed or Undead opponents lose their first attack
 #   against the warrior in the first round of hand-to-hand combat (down to a minimum of 1)".  The bearer
 #   carries the printed operator, the Undead opponent is supplied as its own creature kind and given a
 #   two-attack fixture so the lost first attack is visible as the attack count itself (all strikes are
@@ -92,6 +97,64 @@
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.first.attack.1.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Real recipient (2026-11-16): the same duel as an-undead-opponent-loses-its-first-attack, but the
+# bearer is built as the printed Vampire Hunters of Sylvania Vampire Hunter profile
+# (mordheim/vampire-hunters-of-sylvania-lotd5/vampire-hunter), with the band rule selected through
+# special_rule_ids [band--special-skill-righteous-aura] instead of injecting skill.sigmar-s-sign
+# into a hand-built fighter; the explicit characteristics keep that scenario's dice model.
+- audit_id: rule/mordheim/vampire-hunters-of-sylvania-lotd5/band--special-skill-righteous-aura/skill.sigmar-s-sign
+  id: an-undead-opponent-loses-its-first-attack-as-the-real-vampire-hunter
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: undead}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      collection: mordheim
+      band_id: vampire-hunters-of-sylvania-lotd5
+      profile_id: vampire-hunter
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      special_rule_ids: [band--special-skill-righteous-aura]
+  duel_context:
+    charging: []
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.first.attack.0.hit, value: 1}
+  - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Real recipient (2026-11-16): the same duel as an-ordinary-opponent-keeps-both-attacks, but the
+# bearer is built as the printed Vampire Hunters of Sylvania Vampire Hunter profile
+# (mordheim/vampire-hunters-of-sylvania-lotd5/vampire-hunter), with the band rule selected through
+# special_rule_ids [band--special-skill-righteous-aura] instead of injecting skill.sigmar-s-sign
+# into a hand-built fighter; the explicit characteristics keep that scenario's dice model.
+- audit_id: rule/mordheim/vampire-hunters-of-sylvania-lotd5/band--special-skill-righteous-aura/skill.sigmar-s-sign
+  id: an-ordinary-opponent-keeps-both-attacks-as-the-real-vampire-hunter
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      collection: mordheim
+      band_id: vampire-hunters-of-sylvania-lotd5
+      profile_id: vampire-hunter
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      special_rule_ids: [band--special-skill-righteous-aura]
+  duel_context:
+    charging: []
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.first.attack.0.hit, value: 1}
+  - {key: round.0.first.attack.1.hit, value: 1}
+  - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {state.first.wounds: 2, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -27,9 +27,12 @@
       characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
+  # Corrected 2026-11-16: the wound face is three, the face only the charging turn's Strength 4
+  # turns into a wound against Toughness 3 (Strength 3 needs a four).  The earlier four wounded at
+  # either Strength and so did not show the bonus.
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
-    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.damage: 1, state.second.wounds: 1}

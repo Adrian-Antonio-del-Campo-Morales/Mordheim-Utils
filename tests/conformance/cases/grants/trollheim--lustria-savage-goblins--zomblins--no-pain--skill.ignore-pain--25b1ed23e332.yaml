@@ -23,6 +23,10 @@
 # prerequisite of the Skill form is not asserted here; it is an acquisition gate, not a duel-time
 # condition, and this bearer prints the rule innately.  REVIEWED still requires manual semantic review.
 
+# De-duplication note (2026-11-16): the duplicate KB source recorded here earlier has been removed, so
+#   this rule is now the single source and its scenarios fail when its binding is removed (rule-removal
+#   probe).  Earlier note, kept for history: REDUNDANT.  The same skill.ignore-pain is delivered by sources/knowledge/bands/trollheim/lustria-savage-goblins/profiles.yaml, profile zomblins, key combat_traits.starting_skills (skill.ignore-pain).  This rule is a prof...
+
 # --- Authored scenarios ---
 # Derived from the printed rule and the printed profile; no engine output was consulted.
 # The fixture's Initiative is higher and the bearer contributes no attacks of its own (initial_state),

@@ -137,17 +137,14 @@ rules:
     band: true
 - id: band--amazon-special-skills
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: band
     effects:
     - id: profile.skill-access
-      scope: 'YES'
-      binding:
-        kind: profile
-        id: profile.skill-access
-        parameters:
-          category: special
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   name: Amazon Special Skills
   effect: >-
     Amazon Heroines may use the following skill table instead of any of the standard skill tables

@@ -1,9 +1,10 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/dwarf-slayer-cult-web/band--slayer-rules/mechanic.psychology-immunity
-# authoring_status: PARTIAL
-# authoring_progress: the admitted clause carries 2 authored scenario(s) reading
-#   the Fear test and its non-immune contrast; the clause's remaining variants are recorded
-#   as pending in its PARTIAL note.  execution_status stays UNEXECUTED.
+# authoring_status: AUTHORED
+# authoring_progress: the psychology-immunity clause carries 2 authored scenario(s) reading the Fear test
+#   and its non-immune contrast; the psychology-coverage clause carries 6 (Stupidity, Frenzy and Hatred,
+#   each with its control); the kit-restrictions clause is PARTIAL as a KB placement problem.
+#   execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -12,18 +13,43 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# Clause: psychology-immunity--scope--kit-restrictions (scope: YES)
-# PARTIAL[psychology-immunity--scope--kit-restrictions]: [C] the printed half "No Armour, No Toys!" stays
-#   pending on an adapter contract the corpus does not define: there is no stable observation for
-#   rejecting an item a profile may not take, so no scenario can assert the refusal.
+# Clause: psychology-immunity--scope--kit-restrictions (scope: NO)
+# Outside the admitted clause scope since 2026-11-16 (KB set it to NO: it duplicates no-armour-no-toys on the profile.equipment-restrictions effect, which refuses the kit).
+#   Earlier note: KB-FIX - the clause sits on the wrong effect and
+#   duplicates another clause.  Printed "No Armour, No Toys! Slayers may never use armour of any kind, nor
+#   cloaks that provide a constant save bonus (though they may use Lucky Charms). Also, they may not use any
+#   missiles that aren't thrown, nor may they learn magic."  That prohibition is carried by the same rule's
+#   other effect, profile.equipment-restrictions (forbids armour, constant-save-cloak, non-thrown-ranged),
+#   whose clause no-armour-no-toys already owns it, with its refusals evidenced in
+#   grants/mordheim--dwarf-slayer-cult-web--band--slayer-rules--profile.equipment-r--ef4897dc8244.yaml
+#   ("armour is forbidden for ...", '"constant-save-cloak" is forbidden for ...', '"non-thrown-ranged" is
+#   forbidden for ...').  mechanic.psychology-immunity grants no item check, so a refusal declared under
+#   this identity would be produced by the sibling effect, not by this one.  Recommended KB change:
+#   sources/knowledge/bands/mordheim/dwarf-slayer-cult-web/special-rules.yaml, band--slayer-rules, effect
+#   mechanic.psychology-immunity: remove clause psychology-immunity--scope--kit-restrictions (merge it into
+#   profile.equipment-restrictions/no-armour-no-toys) or set it to scope NO as a duplicate.  The mirror
+#   placement looks swapped too: the psychology clause deathwish--scope--deathwish-psychology sits on
+#   profile.equipment-restrictions (not this file's identity; recorded, not changed).
 #
 # Clause: psychology-immunity--scope--psychology-coverage (scope: YES)
-# PARTIAL[psychology-immunity--scope--psychology-coverage]: [C] the covered-test list (printed "This
-#   includes Hatred, Frenzy & Stupidity") is only partly evidenced - the authored scenarios read the
-#   Fear test.  Denying a Hatred reroll or a Frenzy bonus needs the same second grant named above.
+# AUTHORED[psychology-immunity--scope--psychology-coverage]: printed "This includes Hatred, Frenzy &
+#   Stupidity."  6 scenarios, one pair per named psychology: (Stupidity) the printed Troll Slayer under the
+#   supplied disability.6 stupidity takes no test while the Rememberer under the same supply is tested and
+#   fails; (Frenzy) the Troll Slayer with the supplied frenzy trait stays unfrenzied and strikes once while
+#   the Rememberer with the same trait doubles its A1; (Hatred) a first-round miss is not re-rolled for a
+#   warrior carrying mechanic.psychology-immunity with skill.hatred, and is re-rolled for the same warrior
+#   without the immunity.  The Hatred pair is hand-built because no printed profile of this band carries
+#   both (the band's Hatred names the Rememberer, Stubbles and Axe Hurlers; the immunity binding names
+#   giant-slayer, doomseeker and troll-slayers, consistent with the Hatred rule's "ignored if the warrior
+#   later becomes Immune to Psychology") and construction refuses skill.hatred on the Slayer ranks.
+#   Implemented in packages/python/combat-engine/mordheim_combat/modular: state.py (frenzy is off under
+#   mechanic.psychology-immunity), state.py/psychology.py (stupidity), contexts.py (Hatred needs
+#   psychology_allowed).
 #
 # Clause: psychology-immunity--scope--psychology-immunity (scope: YES)
-# PARTIAL[psychology-immunity--scope--psychology-immunity]: [C] 2 scenarios evidence the printed immunity
+# AUTHORED[psychology-immunity--scope--psychology-immunity]: [C] 2 scenarios evidence the printed immunity
+#   (2026-11-16: the Stupidity, Hatred and Frenzy variants named below are authored under the
+#   psychology-coverage clause, so nothing is pending for this clause.)
 #   through the one Psychology request this
 #   setup can make - the round-0 Fear test of the charged warrior.  In the immune scenario the
 #   tape declares no Fear die at all, and the strict tape consumes exactly the declared dice and
@@ -32,17 +58,14 @@
 #   In the contrast scenario the non-immune band-mate rememberer is charged the same way and its
 #   two Leadership dice are declared and pass on 1+1, so the same setup does produce the request
 #   when the immunity is absent.
-#   NOT YET EVIDENCED: the clause is not fully evidenced.  Its recorded contract covers any
-#   individual Psychology test and the denial of a Hatred reroll and of a Frenzy bonus, so these
-#   variants stay unobserved: (a) a Stupidity test skipped for the same warrior - no corpus
-#   profile pairs this immunity with a Stupidity grant, so the variant needs that grant (or an
-#   accepted equivalent fixture); (b) the denial of a Hatred reroll and of a Frenzy bonus - the
-#   same missing second grant.
+#   NOT YET EVIDENCED under this clause: its recorded contract also covers the denial of a
+#   Stupidity test, a Hatred reroll and a Frenzy bonus; those variants are now authored below under
+#   the psychology-coverage clause (the earlier note that no fixture could supply them was wrong:
+#   the disability.6 state, the frenzy trait and a hand-built skill.hatred supply them).
 #   Dice derivation (sources): the warrior strikes with its printed Attacks value A1 and its rules
-#   []
 #   add no round-0 die request of their own - every strike is declared as a natural 1, so no
 #   on-hit, wound, save or injury effect can trigger, and a charged model takes no charge bonus.
-#   Immunity source (sources): the band rule band--slayer-rules binds mechanic.psychology-immunity, profile.equipment-restrictions with applies_to ['giant-slayer', 'doomseeker', 'troll-slayers', 'stubbles', 'axe-hurlers'], so it covers
+#   Immunity source (sources): the band rule band--slayer-rules binds mechanic.psychology-immunity with profile_ids ['giant-slayer', 'doomseeker', 'troll-slayers'] (the rule's applies_to also lists stubbles and axe-hurlers, which the immunity binding does not name), so it covers
 #   the carrier troll-slayers and not the contrast rememberer.
 #   The Fear test itself is a 2D6 Leadership test, so the variant list above concerns the
 #   clause's other consequences, not an unavailable tape.
@@ -105,4 +128,147 @@
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {state.first.wounds: 3, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Psychology coverage: printed "completely immune to all psychology ... This includes Hatred, Frenzy &
+# Stupidity."  Each covered psychology is supplied to the printed Troll Slayer, and the same supply
+# to the non-immune band-mate Rememberer is the control showing the supply does act.  The opponent is a
+# hand-built fixture without Fear, so no Fear request exists in these rounds.
+
+# Stupidity: the supplied stupidity (the disability.6 state the sibling identity uses) owes a test on
+# the bearer's own turn; the immune Troll Slayer takes none, so its tape holds only its own attack.
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/band--slayer-rules/mechanic.psychology-immunity
+  id: the-immune-troll-slayer-takes-no-stupidity-test
+  covers: [psychology-immunity--scope--psychology-coverage]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: dwarf-slayer-cult-web, profile_id: troll-slayers}
+  initial_state: {first: {attacks: 0}, second: {resources_spent: [disability.6]}}
+  duel_context: {charging: [], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.second.wounds: 1, state.second.stupidity_failed: false, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Control: the Rememberer under the same supply is tested; 5+6 = 11 fails against its printed Ld 8,
+# and a warrior that fails its Stupidity test does not attack, so no attack die follows.
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/band--slayer-rules/mechanic.psychology-immunity
+  id: the-rememberer-under-the-same-stupidity-is-tested
+  covers: [psychology-immunity--scope--psychology-coverage]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: dwarf-slayer-cult-web, profile_id: rememberer}
+  initial_state: {first: {attacks: 0}, second: {resources_spent: [disability.6]}}
+  duel_context: {charging: [], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.stupidity.0, value: 5}
+    - {key: round.0.second.stupidity.1, value: 6}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.second.wounds: 1, state.second.stupidity_failed: true, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Frenzy: a supplied Frenzy would double the bearer's printed A1; the immune Troll Slayer is not
+# Frenzied and strikes once.
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/band--slayer-rules/mechanic.psychology-immunity
+  id: the-immune-troll-slayer-is-not-frenzied
+  covers: [psychology-immunity--scope--psychology-coverage]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: troll-slayers
+      trait_overrides: {frenzy: true}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_initial: {first.frenzy: false}
+  expect_rounds:
+    0: {state.first.frenzy: false, attacks.0.hit: False, attacks.1.hit: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Control: the Rememberer under the same supplied Frenzy is Frenzied, so its printed A1 becomes two
+# blows and the opponent's blow is the third entry.
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/band--slayer-rules/mechanic.psychology-immunity
+  id: the-rememberer-under-the-same-frenzy-doubles-its-attacks
+  covers: [psychology-immunity--scope--psychology-coverage]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: rememberer
+      trait_overrides: {frenzy: true}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_initial: {first.frenzy: true}
+  expect_rounds:
+    0: {state.first.frenzy: true, attacks.0.hit: False, attacks.1.hit: False, attacks.2.hit: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Hatred: no printed profile of this band carries both this immunity and Hatred (the band's Hatred rule
+# names only the Rememberer, Stubbles and Axe Hurlers, none of whom the immunity binding names), and
+# construction refuses skill.hatred on the Slayer ranks, so the pair uses the hand-built device of the
+# accepted twins: the canonical operator this binding grants (mechanic.psychology-immunity) together
+# with skill.hatred.  A Hatred re-roll of a first-round miss is denied to the immune warrior: its miss
+# (a 2) stands, with no re-roll die declared.
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/band--slayer-rules/mechanic.psychology-immunity
+  id: the-immune-warrior-gets-no-hatred-reroll
+  covers: [psychology-immunity--scope--psychology-coverage]
+  fighters:
+    first:
+      skill_ids: [skill.hatred, mechanic.psychology-immunity]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Control: the same warrior with the same Hatred and without the immunity re-rolls the same miss; the
+# re-roll is a natural 6, which always hits, and the wound roll is a natural 1, which never wounds.
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/band--slayer-rules/mechanic.psychology-immunity
+  id: the-same-warrior-without-the-immunity-rerolls-the-miss
+  covers: [psychology-immunity--scope--psychology-coverage]
+  fighters:
+    first:
+      skill_ids: [skill.hatred]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.damage: 0, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

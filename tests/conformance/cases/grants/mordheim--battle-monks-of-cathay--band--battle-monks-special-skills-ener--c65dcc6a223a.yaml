@@ -1,7 +1,7 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/battle-monks-of-cathay/band--battle-monks-special-skills-energy-focus/compiler.energy-focus
 # authoring_status: AUTHORED
-# authoring_progress: the admitted clause carries 3 authored scenarios mirroring the published
+# authoring_progress: the admitted clause carries 4 authored scenarios mirroring the published
 #   mechanic case of the same operator.  The declaration route the earlier note called missing does
 #   exist: the chosen sacrifice is supplied as the fixture field energy_focus_attacks, which the
 #   executor reads as both the pool reduction and the equal Strength gain (see
@@ -17,15 +17,20 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: 3 scenarios cover the exchange through the printed unarmed scope: the declared
+# AUTHORED: 4 scenarios cover the exchange through the printed unarmed scope: the declared
 #   sacrifice of one attack leaves the pool one die smaller while the same die wounds at one Strength
 #   higher (Strength 5 against Toughness 3 wounds on a 2+ where Strength 4 needs a 3+), the control
 #   without the sacrifice keeps the whole pool at the lower Strength, and the executor's unarmed floor
 #   leaves no attack at all when the sacrifice is taken without a printed unarmed skill.  The declared
 #   count is supplied as energy_focus_attacks - the same declaration route the published case of this
 #   operator uses - and the band row is recorded as adding no second runtime term.
+# Real recipient (2026-11-16): one further scenario builds the band's printed Dragon Monk from the band
+# package with the Energy Focus entry selected through special_rule_ids, so the KB grant itself (not an
+# injected mechanic id) is exercised.
+# Provenance (2026-11-16): 6 scenario(s) moved here from rule/mordheim/battle-monks-of-cathay/band--battle-monks-special-skills/profile.skill-access, whose binding is now covered.elsewhere (de-duplication of construction encodings); bodies unchanged, covers labels dropped.
 
 # --- Authored scenarios ---
+
 # Mirrors cases/mechanics/mechanic.energy-focus.yaml (same printed clause, same operator): the
 # declared count of sacrificed attacks is supplied as energy_focus_attacks, which the executor
 # reads as both the pool reduction and the equal Strength gain.  The base profile has Attacks 2
@@ -100,3 +105,127 @@
   expect_rounds:
     0: {attacks: [], state.second.wounds: 3, state.engaged: true}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Real recipient (2026-11-16): the band's printed Dragon Monk (an eligible recipient whose own profile row
+# supplies Unarmed Fighting) is built from the band package with the Energy Focus entry selected through
+# special_rule_ids, and the same declared sacrifice of one attack.  Characteristics are overridden only to
+# keep the fixture's Attacks 2 and dice math; the wound face of three succeeds only at the exchanged
+# Strength 4, and without the selected row neither the pool nor the Strength changes, so the strict tape
+# would be wrong in both length and outcome.
+- audit_id: rule/mordheim/battle-monks-of-cathay/band--battle-monks-special-skills-energy-focus/compiler.energy-focus
+  id: the-printed-dragon-monk-with-energy-focus-trades-an-attack-for-strength
+  fighters:
+    first:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: dragon-monks
+      special_rule_ids: [band--battle-monks-special-skills-energy-focus]
+      main_weapon_id: weapon.fist
+      energy_focus_attacks: 1
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state:
+    second: {wounds: 3, attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.first.attack.1.hit, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.1.wound, value: 3}
+  expect_rounds:
+    0: {attacks.0.damage: 1, attacks.1.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/battle-monks-of-cathay/band--battle-monks-special-skills-energy-focus/compiler.energy-focus
+  id: the-emissary-is-admitted-to-the-warmonger-skill
+  # The printed narrowing: the Warmonger skill is the one the Emissary may take. The declared
+  # identity is the band's own published rule id whose recorded eligibility is exactly
+  # [emissary], so the recipient stage admits the Emissary and the refusal that follows is the
+  # member's own deferred sentence (scope LATER / implemented NO, "Deferred subsystem:
+  # psychology") - never the availability sentence its sibling tape receives. That class is the
+  # admission this clause can observe; the member's effect stays its own requirement.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: emissary
+      special_rule_ids: [band--battle-monks-special-skills-warmonger]
+  expect_error: "special rule is outside the executable duel runtime: band--battle-monks-special-skills-warmonger"
+
+- audit_id: rule/mordheim/battle-monks-of-cathay/band--battle-monks-special-skills-energy-focus/compiler.energy-focus
+  id: the-emissary-cannot-take-another-member-of-the-table
+  # The printed second half: the Emissary may only pick the Warmonger skill, so a sibling
+  # member is refused for it. The fragment is the shared availability sentence, raised from
+  # that member's own recorded eligibility [dragon-monks], which agrees with the printed
+  # narrowing.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: emissary
+      special_rule_ids: [band--battle-monks-special-skills-energy-focus]
+  expect_error: "special rule is not available to battle-monks-of-cathay/emissary: band--battle-monks-special-skills-energy-focus"
+
+- audit_id: rule/mordheim/battle-monks-of-cathay/band--battle-monks-special-skills-energy-focus/compiler.energy-focus
+  id: a-published-member-of-the-band-table-is-selectable
+  # The table's printed permission: the Monks may use this list, so its published member
+  # must be a legal selection for its printed recipient and the engagement must start.
+  # Both fighters carry a sword so the declared zero Attacks is not replaced by the
+  # printed unarmed attack; the observation stays the access itself.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: dragon-monks
+      special_rule_ids: [band--battle-monks-special-skills-energy-focus]
+      main_weapon_id: weapon.sword
+    second:
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_initial: {first.attacks: 0, second.attacks: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/battle-monks-of-cathay/band--battle-monks-special-skills-energy-focus/compiler.energy-focus
+  id: the-same-member-is-refused-for-a-henchman-the-print-excludes
+  # The printed recipient is the monk profile the member's own eligibility names; a Henchman
+  # carries no "special" category, so the member must be refused for it.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: soldiers
+      special_rule_ids: [band--battle-monks-special-skills-energy-focus]
+  expect_error: "special rule is not available to battle-monks-of-cathay/soldiers: band--battle-monks-special-skills-energy-focus"
+
+- audit_id: rule/mordheim/battle-monks-of-cathay/band--battle-monks-special-skills-energy-focus/compiler.energy-focus
+  id: a-special-skill-outside-the-printed-table-is-refused
+  # The closure of the same printed access through the list route (skill_ids). Restored
+  # deliberately: its sentence is produced today by the empty member list, which is why the
+  # admission tape above stands beside it as the discriminating control.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: emissary
+      skill_ids: [skill.monster-slayer]
+      main_weapon_id: weapon.sword
+  expect_error: "skills are not available to battle-monks-of-cathay/emissary: ['skill.monster-slayer']"
+
+- audit_id: rule/mordheim/battle-monks-of-cathay/band--battle-monks-special-skills-energy-focus/compiler.energy-focus
+  id: a-member-of-another-bands-table-is-refused
+  # The other direction of the same table boundary: the printed permission opens THIS band's table,
+  # so another band's published member is not selectable here. The declared-selection route resolves
+  # the id against this band's own package rows and answers with the band-level availability sentence.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: dragon-monks
+      special_rule_ids: [band--amazon-special-skills-skink-hunter]
+  expect_error: "special rule is not available to battle-monks-of-cathay: band--amazon-special-skills-skink-hunter"

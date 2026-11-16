@@ -65,6 +65,13 @@
 #   that keep the refusals from firing today are named in authoring_progress; they are the defect these
 #   scenarios are written to detect, not a reason to drop the requirement.
 
+# Discrimination note (2026-11-16): this effect binds compiler.master-of-throwing-weapons,
+#   which sets the compiled missile_weapon_limit to the printed five; the carried-kit admissions and
+#   refusals in this file are enforced by the sibling effect profile.equipment-restrictions
+#   (max_missile_weapons: 5) of the same rule.  Scenario
+#   the-tracker-is-admitted-with-five-carried-missile-weapons therefore also asserts the compiled limit
+#   (first 5, the unselected second Tracker 2), which fails when only this binding is removed.
+
 # --- Authored scenarios ---
 # Derived from the printed clause, the recorded contract and the band's own profile and equipment-list
 # rows; no engine output was consulted.  Both fighters declare zero attacks in the admission scenario,
@@ -93,6 +100,9 @@
   maximum_rounds: 1
   rolls:
     - {key: round.0.priority-tie, value: 1}
+  expect_fighters:
+    first.missile_weapon_limit: 5
+    second.missile_weapon_limit: 2
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 - audit_id: rule/trollheim/lustria-savage-goblins/band--savage-goblin-special-skills-master-of-throwing-weapons/mechanic.master-of-throwing-weapons

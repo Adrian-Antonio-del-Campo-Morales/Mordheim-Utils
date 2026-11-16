@@ -162,12 +162,6 @@ rules:
       tirar dos veces en la tabla de heridas graves de héroes.
   applies_to:
     band: true
-    profile_ids:
-    - bigsnotz
-    - scouts
-    - shaman
-    - shoota-teams
-    - runts
 - id: band--weakness-in-numbers
   runtime:
     scope: 'NO'
@@ -1106,15 +1100,14 @@ rules:
     - wheelo
 - id: wheelo--combat
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: mechanic.wheelo-impact
-      scope: 'YES'
-      binding:
-        kind: mechanic
-        id: mechanic.wheelo-impact
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   name: Combat
   effect: >-
     The statline above represents the stats of the Wheelo's Crew members, who pull out built-in
@@ -1307,7 +1300,7 @@ rules:
       - id: criticals-and-charge--scope--criticals-on-six
         scope: 'YES'
       - id: criticals-and-charge--scope--stampede-armour-denial
-        scope: 'YES'
+        scope: 'NO'
   name: Achilles' Heel
   effect: >-
     Your Snotling always causes Critical Hits on rolls of 6 (when wounding) regardless of opponent's

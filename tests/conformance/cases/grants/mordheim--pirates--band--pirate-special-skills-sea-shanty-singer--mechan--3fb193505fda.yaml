@@ -1,12 +1,16 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/pirates/band--pirate-special-skills-sea-shanty-singer/mechanic.sea-shanty
 # authoring_status: AUTHORED
-# authoring_progress: the admitted sea-shanty-singer clause carries two authored scenarios for the
+# authoring_progress: the admitted sea-shanty-singer clause carries four authored scenarios for the
 # printed Leadership gate and its printed Psychology/Undead exception.  The configuration is fully
 # expressible in the corpus vocabulary, so the expectation is written even though the engine has no
 # branch for it yet: Documented difference (AUTHORED vs implementation): both printed faces have written scenarios, so AUTHORED is the correct header; what stays pending is the motor side [B] - a round-pipeline branch that applies a singer-supplied attack penalty
 # and the registered declaration key naming the chosen enemy (see the clause note).  REVIEWED still
 # requires manual semantic review and execution_status stays UNEXECUTED.
+# Real-recipient addendum (2026-11-16): two further scenarios build the printed Pirate Captain and
+# select Sea Shanty Singer through special_rule_ids (the failing living enemy loses one attack; an
+# Undead enemy is not tested, the printed exclusion of this origin), so the KB grant of this identity
+# is exercised on a real recipient.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -15,7 +19,7 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: 2 authored scenarios declare the printed Leadership gate (the chosen
+# AUTHORED: 4 authored scenarios declare the printed Leadership gate (the chosen
 #   enemy in base contact fails and loses 1 Attack for the turn) and its printed exception (a
 #   Psychology-immune enemy is never tested and keeps its Attacks).  Documented difference (AUTHORED vs implementation): every representable face of the clause has a written scenario, so AUTHORED is the correct header; what stays pending is the motor side [B]: the printed configuration is representable, the consumer is not - `proposed.sea-shanty-singer` has no branch in
 #   the Pirates round pipeline and the declaration that names the chosen enemy is unregistered, so the
@@ -97,4 +101,64 @@
     - {key: round.0.second.attack.1.hit, value: 1}
   expect_rounds:
     0: {state.second.attacks: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Real recipient (2026-11-16): the same duel as the matching hand-built scenario above, but the
+# singer is the printed Pirate Captain profile with Sea Shanty Singer selected through
+# special_rule_ids, instead of a band-less fixture carrying the band entry; the explicit
+# characteristics keep that dice model.
+- audit_id: rule/mordheim/pirates/band--pirate-special-skills-sea-shanty-singer/mechanic.sea-shanty
+  id: the-real-pirate-captains-shanty-costs-a-failing-enemy-one-attack
+  fighters:
+    first:
+      collection: mordheim
+      band_id: pirates
+      profile_id: pirate-captain
+      special_rule_ids: [band--pirate-special-skills-sea-shanty-singer]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 2, leadership: 7}
+  duel_context:
+    charging: []
+    active_participant: first
+  maximum_rounds: 1
+  decisions:
+  - {key: round.0.first.sea-shanty, value: true}
+  rolls:
+  - {key: round.0.first.sea-shanty.leadership.0, value: 5}
+  - {key: round.0.first.sea-shanty.leadership.1, value: 5}
+  - {key: round.0.priority-tie, value: 4}
+  - {key: round.0.first.attack.0.hit, value: 1}
+  - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Real recipient contrast (2026-11-16): the same printed Pirate Captain with Sea Shanty Singer selected
+# through special_rule_ids, facing an Undead enemy. The printed "This does not affect Undead or other
+# non-living creatures" leaves that enemy untested: no song is offered, no Leadership die is declared and
+# both of its attacks are resolved.
+- audit_id: rule/mordheim/pirates/band--pirate-special-skills-sea-shanty-singer/mechanic.sea-shanty
+  id: the-real-pirate-captains-shanty-leaves-an-undead-enemy-untested
+  fighters:
+    first:
+      collection: mordheim
+      band_id: pirates
+      profile_id: pirate-captain
+      special_rule_ids: [band--pirate-special-skills-sea-shanty-singer]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: undead}
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 2, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.priority-tie, value: 4}
+  - {key: round.0.first.attack.0.hit, value: 1}
+  - {key: round.0.second.attack.0.hit, value: 1}
+  - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {attacks.2.hit: false}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

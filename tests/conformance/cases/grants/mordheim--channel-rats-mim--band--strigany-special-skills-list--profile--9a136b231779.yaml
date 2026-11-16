@@ -6,12 +6,18 @@
 # Strigany hero and for a band henchman); the admission direction stays withheld because this origin
 # publishes no member rows, and that exact cause is named in the clause note below.  REVIEWED still requires manual semantic review and execution_status
 # stays UNEXECUTED.  Source check (verified): the origin row `band--strigany-special-skills-list` in
-# sources/knowledge/bands/mordheim/channel-rats-mim/special-rules.yaml (line 645 onward) records
-# `scope: LATER`, `implemented: 'NO'`, `grant: band`, a null binding and the placeholder
-# `unimplemented.channel-rats-mim.band.strigany-special-skills-list`, so the recipient profiles and
-# the resolved member list this scaffold needs are absent from the source as well - the deferral is
-# recorded there, not inferred here.
+# sources/knowledge/bands/mordheim/channel-rats-mim/special-rules.yaml now records `scope: YES`,
+# `implemented: 'YES'`, `grant: band` and binds profile.skill-access with parameters
+# {"category": "special"} (checked 2026-11-16); the earlier "scope LATER / null binding / placeholder"
+# note is withdrawn.  The binding names a category only, so the resolved member list this scaffold
+# needs is still absent from the source.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Note (2026-11-16): this effect is now covered.elsewhere and outside the admitted scope: the same
+#   printed restriction is encoded once, by the band's equipment-list line (Orc Boyz crossbow, Thieves
+#   Guild Bagh Nakh) or by the profiles' own printed skill access (Strigany, Nipponese tables). The
+#   scenarios below stay as documentation; no admitted identity carries a list line, so they give no
+#   coverage.
 #
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
@@ -33,9 +39,9 @@
 #   henchman as well.
 #   STILL WITHHELD, with its exact cause: the admission direction cannot name a member.  The printed list is
 #   stated openly ("Knowledge of Myths (exploration), Bull Rush, Songster, etc.") and this origin publishes
-#   no member rows at all - its special-rules.yaml carries one row for the list itself (scope LATER /
-#   implemented NO / grant band / null binding / the placeholder unimplemented.channel-rats-mim.band.
-#   strigany-special-skills-list), no kind: warband_skill rows for the members, and no skill.* catalogue row
+#   no member rows at all - its special-rules.yaml carries one row for the list itself (now scope YES /
+#   implemented YES / grant band / binding profile.skill-access {"category": "special"}, checked
+#   2026-11-16), no kind: warband_skill rows for the members, and no skill.* catalogue row
 #   whose source_refs name channel-rats-mim.  The two names it does carry are shared with other origins'
 #   printed clauses (Bull Rush is the Ostlanders' mechanic.bull-charge facet, Songster the
 #   sea-ghosts/hireling mechanic.songster facet) and the equivalence review leaves them to the skills
@@ -45,6 +51,13 @@
 #   resolved member set has to be projected into the profile's special skill list, after which the admission
 #   tape is written from it.  REVIEWED still requires manual semantic review.
 
+
+# Discrimination note (2026-11-16): REDUNDANT.  The special skill category this binding grants is already
+#   printed on every hero of the band in sources/knowledge/bands/mordheim/channel-rats-mim/profiles.yaml, key
+#   skill_access (special) on domnu, petru, tinker, truants; the member skill rows' eligibility admits only those
+#   heroes, and the henchmen (skill_access: []) are refused by that eligibility, not by this binding.
+#   No admission or refusal changes when only this binding is removed.  KB decision left to the
+#   coordinator.
 
 # --- Authored scenarios ---
 # Derived from the printed table sentence, the reviewed EQ-P-SKILL-ACCESS row, this band's own profiles.yaml

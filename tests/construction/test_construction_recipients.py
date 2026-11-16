@@ -124,7 +124,10 @@ RECIPIENT_CASES = [
                          ids=[f"{row[0]}:{row[1]}:{row[2]}" for row in RECIPIENT_CASES])
 def test_a_printed_recipient_reaches_its_profile_and_no_peer(band, item, recipient, peer):
     assert item in offers(band, recipient)
-    assert item not in offers(band, peer)
+    # The peer never obtains the item: either the list line names only the
+    # recipient, or (single source since 2026-11-16) the peer's own printed
+    # restriction refuses it.
+    assert item not in offers(band, peer) or refusal(band, peer, item, None) == "equipment_forbidden"
 
 
 def test_the_hero_only_sacred_marking_reaches_every_hero_and_no_henchman():
@@ -436,7 +439,7 @@ def test_the_leader_exception_decides_a_selection_and_keeps_the_clause_halves():
     # The other two printed halves keep their verdict for the same bearer: the
     # Sacrifice Dagger stays refused and a missile without Thrown Weapon does too.
     assert [issue["code"] for issue in decisions(leader, ("sacrifice_dagger",))] \
-        == ["equipment_not_permitted"]
+        == ["equipment_forbidden"]  # Red Teeth's own printed ban (single source since 2026-11-16)
     assert [issue["code"] for issue in decisions(leader, ("short_bow",))] == ["equipment_forbidden"]
 
 

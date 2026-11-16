@@ -1,10 +1,13 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/lizardmen-lus/band--cold-blooded/mechanic.cold-blooded-psychology
 # authoring_status: AUTHORED
-# authoring_progress: the admitted cold-blooded-psychology clause carries 2 authored scenarios: an
+# authoring_progress: the admitted cold-blooded-psychology clause carries 3 authored scenarios: an
 # individual Psychology test consumes three dice and discards the highest, and a non-Psychology
 # Leadership path still asks for only the ordinary two.  REVIEWED still requires manual semantic
 # review and execution_status stays UNEXECUTED; no behavioral result is claimed.
+# Real-recipient addendum (2026-11-16): one further scenario builds the printed Skink Great Crest
+# profile, so the band-wide Cold-Blooded grant itself (not only the operator injected into the
+# fixtures above) is exercised; its printed Scaly Skin armour die is declared on the tape.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -14,7 +17,7 @@
 # Governing rulings: docs/decisions/design-rulings.md
 #
 # Clause: cold-blooded-psychology (scope: YES)
-# AUTHORED[cold-blooded-psychology]: 2 scenarios cover the printed 3D6 keep-lowest-two on an
+# AUTHORED[cold-blooded-psychology]: 3 scenarios cover the printed 3D6 keep-lowest-two on an
 # individual Psychology test: a charged Fear test where the declared six is discarded and the sum of
 # seven passes against Leadership 7, and a non-Psychology Leadership path (the fire Fear test) that
 # still rolls only two dice and fails on 12, which is the printed "does not alter other Leadership
@@ -73,3 +76,39 @@
   expect_rounds:
     0: {attacks: [], state.first_charged: False, state.failed_charges: ['first'], state.engaged: False}
   expect_final: {rounds_executed: 1, termination_reason: disengaged}
+# Real recipient (2026-11-16): the same charge as
+# an-individual-psychology-test-keeps-the-lowest-two, but the charged defender is the printed Skink
+# Great Crest profile, which receives the band-wide Cold-Blooded rule from the band itself rather
+# than an injected operator. 6,6,1 keeps 1+6 = 7 against Leadership 7, so the Fear test passes and
+# the Skink hits on its ordinary 4+. The profile's equipment list has no mace, so it carries an axe
+# (its attack misses on the declared 1, so the axe changes nothing), and the band's printed Scaly
+# Skin save (Skinks 6+) asks for one armour die, declared as a failing 1.
+- audit_id: rule/mordheim/lizardmen-lus/band--cold-blooded/mechanic.cold-blooded-psychology
+  id: the-real-skink-great-crest-keeps-the-lowest-two-of-three-fear-dice
+  covers: [cold-blooded-psychology]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.causes-fear]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: lizardmen-lus
+      profile_id: skink-great-crests
+      main_weapon_id: weapon.axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context:
+    charging: [first]
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.second.fear.charged.0, value: 6}
+  - {key: round.0.second.fear.charged.1, value: 6}
+  - {key: round.0.second.fear.charged.2, value: 1}
+  - {key: round.0.first.attack.0.hit, value: 4}
+  - {key: round.0.first.attack.0.wound, value: 4}
+  - {key: round.0.first.attack.0.armour, value: 1}
+  - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.1.hit_target: 4, state.second.fear_hit_sixes: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

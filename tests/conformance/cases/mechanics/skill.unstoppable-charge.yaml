@@ -24,11 +24,15 @@
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
+  # Corrected 2026-11-16: the defender's Weapon Skill is 3, so the charging turn's Weapon Skill 4
+  # exceeds it and hits on 3+, while the printed Weapon Skill 3 would need 4+; the declared three is
+  # therefore a hit only because of the bonus.  The earlier body (defender Weapon Skill 4, hit face
+  # four) hit at either Weapon Skill: 3 or 4 against 4 both need 4+ on the printed to-hit chart.
   rolls:
-    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 3}
     - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
@@ -44,12 +48,13 @@
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
-  # Weapon Skill 3 against Weapon Skill 4 hits on the declared 4+; the charging
-  # turn's printed bonus is what turns a declared 3 into a hit, so the same face
-  # chosen here misses without the charge.  The four is not a miss on its own.
+  # Weapon Skill 3 against Weapon Skill 3 hits on 4+; the charging turn's printed
+  # +1 Weapon Skill (4 against 3: 3+) is what turns a declared 3 into a hit, so
+  # the same face misses without the charge.  (Corrected 2026-11-16: the defender
+  # was Weapon Skill 4, against which the bonus changes nothing.)
   rolls:
     - {key: round.0.first.attack.0.hit, value: 3}
     - {key: round.0.second.attack.0.hit, value: 1}

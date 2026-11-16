@@ -1,6 +1,6 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/condition.impetuous-charge
-# authoring_status: TODO
+# authoring_status: AUTHORED
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +9,116 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+# AUTHORED: Scenarios moved here on 2026-11-16 from the placeholder identity rule/mordheim/bretonnian-
+#   chapel-guard/knights-errant--impetuous/knights-errant--impetuous.producer, whose KB effect is now
+#   unbound (out-of-scope.movement: the compulsory charge itself is a movement-phase procedure); the
+#   duel behaviour they exercise is this identity's.  Inputs, dice and expectations are unchanged by the
+#   move; each scenario's own comments carry its derivation and may still name the placeholder record
+#   they were authored against.  The 4 scenarios read the supplied compelled-charge fact on the printed
+#   Knight Errant: the compelled charge passes the Fear gate with no die, the ordinary charge into the
+#   same Fear-causer still owes the test, and the optional Leadership test either releases the
+#   compulsion (passed) or keeps it and its exemption (failed).  REVIEWED still requires manual semantic
+#   review.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+
+# The control: the same charge without the supplied compulsion is an ordinary charge into a
+# fear-causing enemy, so the round.0.first.fear.charge test is owed and passes on 3+2 (5 of 7).
+- audit_id: mechanic/condition.impetuous-charge
+  id: an-ordinary-charge-into-the-same-enemy-still-owes-the-fear-test
+  fighters:
+    first: {collection: mordheim, band_id: bretonnian-chapel-guard, profile_id: knights-errant}
+    second:
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 8, strength: 8, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 3}
+    - {key: round.0.first.fear.charge.1, value: 2}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 1, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The psychology exemption: the compelled charge carries no fear die at all.  In the control the same
+# charge without the supplied condition owes the ordinary round.0.first.fear.charge test, so the pair
+# separates the exemption (which belongs to the compelled charge) from fear-free charging.
+- audit_id: mechanic/condition.impetuous-charge
+  id: the-compelled-charge-passes-the-fear-gate-without-a-die
+  fighters:
+    first:
+      collection: mordheim
+      band_id: bretonnian-chapel-guard
+      profile_id: knights-errant
+      condition_ids: [condition.impetuous-charge]
+    second:
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 8, strength: 8, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.impetuous-avoid-compulsion, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 1, state.first.condition: STANDING, state.second.wounds: 3, state.second.condition: STANDING, state.first.fear_hit_sixes: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The failed avoidance keeps the compulsion: 6+6 fails the release, the print does not force the
+# knight to avoid, and the compelled charge retains its psychology exemption - no fear die - and
+# the round resolves as close combat.
+- audit_id: mechanic/condition.impetuous-charge
+  id: the-failed-avoidance-keeps-the-compulsion-and-its-exemption
+  fighters:
+    first:
+      collection: mordheim
+      band_id: bretonnian-chapel-guard
+      profile_id: knights-errant
+      condition_ids: [condition.impetuous-charge]
+    second:
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 8, strength: 8, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.impetuous-avoid-compulsion, value: true}
+  rolls:
+    - {key: round.0.first.impetuous-release.0, value: 6}
+    - {key: round.0.first.impetuous-release.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 1, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The optional avoidance: the declared decision offers the round.0.first.impetuous-release test.
+# Passing it (3+4 = 7, the printed boundary) releases the compulsion, so the same charge then owes
+# the ordinary fear test - the release is observed through the test being taken, not invented.
+- audit_id: mechanic/condition.impetuous-charge
+  id: the-passed-avoidance-releases-the-compulsion-and-restores-the-fear-gate
+  fighters:
+    first:
+      collection: mordheim
+      band_id: bretonnian-chapel-guard
+      profile_id: knights-errant
+      condition_ids: [condition.impetuous-charge]
+    second:
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 8, strength: 8, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.impetuous-avoid-compulsion, value: true}
+  rolls:
+    - {key: round.0.first.impetuous-release.0, value: 3}
+    - {key: round.0.first.impetuous-release.1, value: 4}
+    - {key: round.0.first.fear.charge.0, value: 4}
+    - {key: round.0.first.fear.charge.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 1, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

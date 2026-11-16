@@ -7,6 +7,12 @@
 #   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
+# Note (2026-11-16): this effect is now covered.elsewhere and outside the admitted scope: the same
+#   printed restriction is encoded once, by the band's equipment-list line (Orc Boyz crossbow, Thieves
+#   Guild Bagh Nakh) or by the profiles' own printed skill access (Strigany, Nipponese tables). The
+#   scenarios below stay as documentation; no admitted identity carries a list line, so they give no
+#   coverage.
+#
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
@@ -30,6 +36,13 @@
 #   resolved printed member set has to be projected into the profile's special skill list, after which the
 #   admission tape is written from it.  REVIEWED still requires manual semantic review.
 
+
+# Discrimination note (2026-11-16): REDUNDANT.  The special skill category this binding grants is already
+#   printed on every hero of the band in sources/knowledge/bands/mordheim/nipponese-expedition-web/profiles.yaml, key
+#   skill_access (special) on hatamoto, vim-to-mage, shinobi, retainer; the member skill rows' eligibility admits only those
+#   heroes, and the henchmen (skill_access: []) are refused by that eligibility, not by this binding.
+#   No admission or refusal changes when only this binding is removed.  KB decision left to the
+#   coordinator.
 
 # --- Authored scenarios ---
 # Derived from the printed list sentence, the reviewed EQ-P-SKILL-ACCESS row, this band's own profiles.yaml

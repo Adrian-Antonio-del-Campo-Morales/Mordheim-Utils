@@ -1,10 +1,14 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/halflings-mic/halfling-elder--shifty/skill.shifty
 # authoring_status: AUTHORED
-# authoring_progress: the admitted clause carries 2 authored scenarios for the printed bonus attack:
+# authoring_progress: the admitted clause carries 3 authored scenarios for the printed bonus attack:
 # the charged bearer's pool carries one further attack resolved at the strike-first tier, and the same
 # warrior without the rule carries neither.  REVIEWED still requires manual semantic review and
 # execution_status stays UNEXECUTED; no behavioral result is claimed.
+# Real-recipient addendum (2026-11-16): 1 further scenario(s) build the printed Halflings profile
+# itself (halfling-elder) and select halfling-elder--shifty through special_rule_ids, so the KB
+# grant of this identity is exercised rather than only the shared operator injected into hand-built
+# fixtures; the earlier fixture scenarios stay as the operator cases.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -13,7 +17,7 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: 2 scenarios cover the printed bonus attack
+# AUTHORED: 3 scenarios cover the printed bonus attack
 # when charged that strikes first: the charged bearer's pool carries one further attack resolved
 # at the strike-first tier (declared on the executor's own sticky key
 # round.0.first.shifty.attack.0.hit, before the charger's attack and before the bearer's own
@@ -65,4 +69,33 @@
     - {key: round.0.first.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.hit: False, attacks.1.hit: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Real recipient (2026-11-16): the same duel as shifty-charged-halfling-earns-a-strike-first-attack,
+# but the bearer is built as the printed Halflings Halfling Elder profile
+# (mordheim/halflings-mic/halfling-elder), with the band rule selected through special_rule_ids
+# [halfling-elder--shifty] instead of injecting skill.shifty into a hand-built fighter; the explicit
+# characteristics keep that scenario's dice model.
+- audit_id: rule/mordheim/halflings-mic/halfling-elder--shifty/skill.shifty
+  id: shifty-charged-halfling-earns-a-strike-first-attack-as-the-real-halfling-elder
+  fighters:
+    first:
+      collection: mordheim
+      band_id: halflings-mic
+      profile_id: halfling-elder
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [halfling-elder--shifty]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context:
+    charging: [second]
+    active_participant: second
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.first.shifty.attack.0.hit, value: 1}
+  - {key: round.0.second.attack.0.hit, value: 1}
+  - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, attacks.2.hit: false, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -1,7 +1,7 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.mark-of-arkhar
-# authoring_status: PARTIAL
-# authoring_progress: the frenzy clause carries authored scenarios derived from the printed rule and the recorded contract; the Bloodfather-role clause is PARTIAL because no duel observable exists for it. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# authoring_status: AUTHORED
+# authoring_progress: the frenzy clause carries authored scenarios derived from the printed rule and the recorded contract; the Bloodfather-role clause is PARTIAL as a KB placement problem (its printed consequences are already classified, one by one, on the band record's own effects). REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -10,34 +10,28 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# Clause: whole--scope--bloodfather-role (scope: YES)
-# PARTIAL[whole--scope--bloodfather-role]: resolved by coordinator decision, closing
-#   the structured dependency. The clause is delivered as a scope/ownership transfer with
-#   its concrete datum, no reading pre-empted by an assertion.
-#   Normative text: the printed sentence of the frozen clause ("A Seer with this mark
-#   becomes a Bloodfather") together with the role's own printed consequences that
-#   continue in the same source (no casting, and the after-combat Leadership test
-#   granting +1 to Weapon Skill, Strength, Toughness or Initiative until the end of
-#   the battle, each characteristic once, plus Strength skill access).
-#   Input: a Seer declared with the_mark (the mark id this file's own record carries)
-#   meeting an ordinary opponent, since every printed consequence of the role lives
-#   outside the duel or before/after it.
-#   Assertion that is blocked: the role's effects are not round observations at all -
-#   the casting prohibition belongs to the excluded magic subsystem, the skill access
-#   is construction rather than duel state, and the after-combat test happens when no
-#   round resolves. The concrete missing branches:
-#   (a) the inheritance question the register already records - the inherited mapping
-#   reads the shared mechanic as "Frenzy and a 4+ spell save, with the Bloodfather
-#   progression left to the campaign", while the printed effect in the same source
-#   states the role and its own combat effects; the two branches are kept and the
-#   4+ spell save is a scope-NO clause of this file, so neither is asserted;
-#   (b) a consumer for the role at all: a case-insensitive search of packages/python
-#   for bloodfather returns nothing, so neither branch has an executor to observe.
-#   DECISION (D15-A, 2026-10-14): the role is campaign progression per the inherited
-#   mapping - not a duel effect and no duel consumer is owed. The role's printed
-#   after-combat consequences transfer to the campaign continuity record; no
-#   additional-scenario gap remains in this file and the frenzy clause's two authored
-#   scenarios (below) carry the file's executable side.
+# Clause: whole--scope--bloodfather-role (scope: NO)
+# Outside the admitted clause scope since 2026-11-16 (KB set it to NO: every Bloodfather consequence is its own effect of marauders-of-chaos band--mark-of-arkhar).
+#   Earlier note: KB-FIX - the clause should not be an admitted obligation of this
+#   shared mechanic.  Printed: "A Seer with this mark becomes a Bloodfather: he cannot cast spells; whenever
+#   he takes an enemy Out of Action in hand-to-hand combat, he may pass a Leadership test to gain +1 WS, S, T
+#   or I until the end of the battle, with each characteristic increased at most once. A Bloodfather may
+#   also take Strength skills."  Becoming a Bloodfather has no effect of its own beyond these consequences,
+#   and the band record that grants this mark (bands/mordheim/marauders-of-chaos/special-rules.yaml,
+#   band--mark-of-arkhar) already classifies each of them as a separate effect: bloodfather--strength-access
+#   (scope YES, profile.skill-access category strength for the seer; evidenced in its own corpus file
+#   grants/mordheim--marauders-of-chaos--band--mark-of-arkhar--bloodfather--strengt--c121e29543a4.yaml),
+#   bloodfather--cannot-cast and bloodfather--spell-targeting (scope NO, out-of-scope.magic) and
+#   bloodfather--post-combat-gain (scope NO, out-of-scope.non-duel: the trigger is taking the duel opponent
+#   Out of Action, which ends the duel).  So the role has no duel observable left on this identity, and its
+#   only in-scope part already has its own identity.  Recommended KB change: in
+#   sources/knowledge/catalog/mechanics/close-combat.yaml, record mechanic.mark-of-arkhar, set clause
+#   whole--scope--bloodfather-role to scope NO (or retire it) with the reason that the role's consequences
+#   are owned by the band--mark-of-arkhar bloodfather--* effects.
+#   Correction: an earlier note cited "DECISION (D15-A, 2026-10-14)" for treating the role as campaign
+#   progression; no such decision exists in docs/decisions/design-rulings.md (nor anywhere else in docs/),
+#   so it is not relied on here.  A search of packages/python for "bloodfather" still finds no consumer;
+#   the Seer's Strength access is a construction grant read through profile.skill-access.
 #
 # Clause: whole--scope--frenzy (scope: YES)
 # AUTHORED[whole--scope--frenzy]: 2 scenarios cover the marked leader being Frenzied with his printed A1 doubled into two blows, observed through the attack indices the engine then requests, and the same warrior without the mark keeping one attack. Documented key: the mark supplies no dice of its own and grants the frenzy flag from the executor's own effect set (execution.yaml mechanic.mark-of-arkhar, frenzy: true), which state.<side>.frenzy exposes in the round snapshot.

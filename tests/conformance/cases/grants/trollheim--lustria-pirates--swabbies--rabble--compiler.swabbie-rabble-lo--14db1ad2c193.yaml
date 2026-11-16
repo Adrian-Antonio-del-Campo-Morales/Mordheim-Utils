@@ -32,6 +32,10 @@
 # Clause: whole--scope--casting-bar (scope: NO)
 # Outside the admitted clause scope; retained for context, not a test TODO.
 
+# De-duplication note (2026-11-16): the duplicate KB source recorded here earlier has been removed, so
+#   this rule is now the single source and its scenarios fail when its binding is removed (rule-removal
+#   probe).  Earlier note, kept for history: this binding is a construction contract (compiler.swabbie-rabble-loadout) with no duel consumer; the only compiled trace of the grant is CompiledFighter.construction_tags, so scenario the-swabbie-list-row-is-admitted-at-...
+
 # --- Authored scenarios ---
 # Derived from the printed sentence and this origin's two published equipment lists (profiles.yaml for the
 # recipient's own list, equipment-access.yaml for the rows each list offers); no engine output was consulted.
@@ -75,6 +79,8 @@
       condition: OUT
   expect_initial:
     second.condition: OUT
+  expect_fighters:
+    first.construction_tags: [compiler.pirate-human-mercenary-equipment-access, compiler.swabbie-rabble-loadout]
   expect_final:
     rounds_executed: 0
     termination_reason: second_out

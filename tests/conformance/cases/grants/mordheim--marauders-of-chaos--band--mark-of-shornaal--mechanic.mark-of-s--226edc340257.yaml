@@ -1,12 +1,16 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/marauders-of-chaos/band--mark-of-shornaal/mechanic.mark-of-shornaal
 # authoring_status: PARTIAL
-# authoring_progress: the printed mark carries 3 authored scenarios - the failed 3D6-discard-lowest test
+# authoring_progress: the printed mark carries 5 authored scenarios - the failed 3D6-discard-lowest test
 #   with its blocked/auto-hit pair, the passed face of the same test with the flag cleared, and the printed
 #   once-per-battle resumption as a two-round strict tape.  One residual stays pending and is class [C] in
 #   the clause marker below: the wound/injury continuation of the automatic hit, whose request keys no
 #   accepted source fixes.  REVIEWED still requires manual semantic review and execution_status stays
 #   UNEXECUTED.
+# Real-recipient addendum (2026-11-16): 2 further scenario(s) build the printed Marauders of Chaos
+# profile itself (marauder-chieftain) and select band--mark-of-shornaal through special_rule_ids, so
+# the KB grant of this identity is exercised rather than only the shared operator injected into
+# hand-built fixtures; the earlier fixture scenarios stay as the operator cases.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -115,3 +119,65 @@
     0: {state.second.charm_attack_blocked: False}
     1: {state.second.charm_attack_blocked: False}
   expect_final: {rounds_executed: 2, termination_reason: horizon}
+# Real recipient (2026-11-16): the same duel as
+# a-failed-test-blocks-the-attacker-of-the-marked-leader, but the bearer is built as the printed
+# Marauders of Chaos Marauder Chieftain profile (mordheim/marauders-of-chaos/marauder-chieftain),
+# with the band rule selected through special_rule_ids [band--mark-of-shornaal] instead of injecting
+# mechanic.mark-of-shornaal into a hand-built fighter; the explicit characteristics keep that
+# scenario's dice model.
+- audit_id: rule/mordheim/marauders-of-chaos/band--mark-of-shornaal/mechanic.mark-of-shornaal
+  id: a-failed-test-blocks-the-attacker-of-the-marked-leader-as-the-real-marauder-chieftain
+  fighters:
+    first:
+      collection: mordheim
+      band_id: marauders-of-chaos
+      profile_id: marauder-chieftain
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+      special_rule_ids: [band--mark-of-shornaal]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context:
+    charging: []
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.second.shornaal.0, value: 6}
+  - {key: round.0.second.shornaal.1, value: 6}
+  - {key: round.0.second.shornaal.2, value: 6}
+  - {key: round.0.first.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {state.second.charm_attack_blocked: true, state.second.charm_auto_hit: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Real recipient (2026-11-16): the same duel as a-passed-test-lets-the-enemy-attack-normally, but
+# the bearer is built as the printed Marauders of Chaos Marauder Chieftain profile
+# (mordheim/marauders-of-chaos/marauder-chieftain), with the band rule selected through
+# special_rule_ids [band--mark-of-shornaal] instead of injecting mechanic.mark-of-shornaal into a
+# hand-built fighter; the explicit characteristics keep that scenario's dice model.
+- audit_id: rule/mordheim/marauders-of-chaos/band--mark-of-shornaal/mechanic.mark-of-shornaal
+  id: a-passed-test-lets-the-enemy-attack-normally-as-the-real-marauder-chieftain
+  fighters:
+    first:
+      collection: mordheim
+      band_id: marauders-of-chaos
+      profile_id: marauder-chieftain
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+      special_rule_ids: [band--mark-of-shornaal]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context:
+    charging: []
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.second.shornaal.0, value: 1}
+  - {key: round.0.second.shornaal.1, value: 2}
+  - {key: round.0.second.shornaal.2, value: 3}
+  - {key: round.0.first.attack.0.hit, value: 1}
+  - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.charm_attack_blocked: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

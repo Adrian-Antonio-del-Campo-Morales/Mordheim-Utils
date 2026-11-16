@@ -42,15 +42,14 @@ rules:
     profile_ids:
     - lahmian-vampire
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: mechanic.undead
-      scope: 'YES'
-      binding:
-        kind: mechanic
-        id: mechanic.undead
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
 - id: lahmian-vampire--local-knowledge
   name: Local Knowledge
   effect: >-
@@ -307,14 +306,13 @@ rules:
     - skeleton-warriors
   runtime:
     grant: profile
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     effects:
     - id: mechanic.undead
-      scope: 'YES'
-      binding:
-        kind: mechanic
-        id: mechanic.undead
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   rule_ref: shared-rule.undead
 - id: blood-slaves--accustomed-to-fear
   name: Accustomed to Fear
@@ -395,15 +393,14 @@ rules:
     profile_ids:
     - spirits
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: mechanic.undead
-      scope: 'YES'
-      binding:
-        kind: mechanic
-        id: mechanic.undead
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   rule_ref: shared-rule.undead
 - id: spirits--spiritual-weapons
   runtime:
@@ -1091,10 +1088,9 @@ rules:
           - weapons
           - armour
     - id: profile.natural-attacks
-      scope: 'YES'
-      binding:
-        kind: profile
-        id: profile.natural-attacks
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   name: Natural Weapons
   source:
     manual: khemri
@@ -1122,10 +1118,9 @@ rules:
           - weapons
           - armour
     - id: profile.natural-attacks
-      scope: 'YES'
-      binding:
-        kind: profile
-        id: profile.natural-attacks
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   name: Natural Weapons
   source:
     manual: khemri

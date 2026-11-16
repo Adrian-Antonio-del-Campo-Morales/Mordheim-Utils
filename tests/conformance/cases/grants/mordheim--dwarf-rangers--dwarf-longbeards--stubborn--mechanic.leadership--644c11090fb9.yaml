@@ -10,7 +10,9 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: 3 scenarios cover the single optional reroll succeeding, the accepted second failure with no third attempt (the printed "never reroll a reroll"), and the declined offer.  The register records this band origin as the shared optional-reroll facet whose printed "never reroll a reroll" is enforced by reusing the same threshold once, so the tapes read the canonical operator through the fighter's grant list exactly as the mechanic origin's own case does; the Longbeard's own printed sentence is the recipient condition this file records.
+# AUTHORED: 4 scenarios cover the single optional reroll succeeding, the accepted second failure with no third attempt (the printed "never reroll a reroll"), and the declined offer.  The register records this band origin as the shared optional-reroll facet whose printed "never reroll a reroll" is enforced by reusing the same threshold once, so the tapes read the canonical operator through the fighter's grant list exactly as the mechanic origin's own case does; the Longbeard's own printed sentence is the recipient condition this file records.
+# Real recipient (2026-11-16): one further scenario builds the band's printed Dwarf Longbeard from the
+# band package, so the KB grant itself (not an injected mechanic id) is exercised.
 
 # --- Authored scenarios ---
 # The failed Fear test offers exactly one reroll; the declared choice takes it, the
@@ -89,3 +91,36 @@
   expect_rounds:
     0: {attacks: [], state.first_charged: False, state.failed_charges: ['first'], state.engaged: False}
   expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# Real recipient (2026-11-16): the charging bearer is the band's printed Dwarf Longbeard built from the
+# band package (characteristics overridden only to keep the fixture's dice math), so the optional reroll
+# comes from the profile's own Stubborn row; without it the reroll is not offered and the first failure
+# stops the charge.
+- audit_id: rule/mordheim/dwarf-rangers/dwarf-longbeards--stubborn/mechanic.leadership-reroll
+  id: the-printed-longbeard-retakes-the-failed-fear-test
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-longbeards
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.causes-fear]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 6}
+    - {key: round.0.first.fear.charge.1, value: 6}
+    - {key: round.0.first.fear.charge.reroll.0, value: 1}
+    - {key: round.0.first.fear.charge.reroll.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  decisions:
+    - {key: round.0.first.fear.charge.reroll, value: true}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.first_charged: true, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

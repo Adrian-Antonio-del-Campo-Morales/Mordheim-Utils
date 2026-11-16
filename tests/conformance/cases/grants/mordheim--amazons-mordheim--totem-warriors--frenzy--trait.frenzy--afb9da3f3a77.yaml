@@ -15,6 +15,9 @@
 # REVIEWED requires semantic review; covers labels alone are insufficient.
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
+# De-duplication note (2026-11-16): the duplicate KB source recorded here earlier has been removed, so
+#   this rule is now the single source and its scenarios fail when its binding is removed (rule-removal
+#   probe).  Earlier note, kept for history: the same effect is delivered independently by sources/knowledge/bands/mordheim/amazons-mordheim/profiles.yaml, profile totem-warriors, key combat_traits.frenzy: true, so removing this rule's binding leaves the compiled f...
 #
 # AUTHORED: 4 scenario(s) cover the clause.  The doubled count is declared by the dice the
 #   round consumes: a first-round bearer whose supplied attack count is 1 strikes twice, and the third

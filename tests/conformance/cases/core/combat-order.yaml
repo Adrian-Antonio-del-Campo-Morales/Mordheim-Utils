@@ -22,8 +22,10 @@
 #
 # Clause: stood-up-strikes-last (scope: YES)
 # AUTHORED[stood-up-strikes-last]: 3 scenarios cover the penalty in the turn the
-#   warrior stood up, its expiry the following round, and a strike-first ability
-#   overriding it.
+#   warrior stood up, its expiry the following round, and the penalty applying to
+#   a warrior that also has a strike-first ability (corrected 2026-11-16: the
+#   earlier "a strike-first ability overrides it" had no printed or ruled basis;
+#   see the scenario's comment).
 #
 # --- Migrated authored scenarios ---
 # Source: cases/core/order.yaml
@@ -41,8 +43,8 @@
 # The clauses require: charge and other strike-first effects before ordinary
 # Initiative order; within a tier the higher Initiative first; an exact tie
 # decided without bias; the charge scope limited to the first round; a warrior
-# that stood up striking last only in that turn; and an explicit strike-first
-# ability overriding the standing-up penalty.
+# that stood up striking last only in that turn, whatever strike-first effect
+# (charge or ability) it otherwise has.
 #
 # The first scenario declares the shared profiles as YAML anchors; every
 # scenario scripts its own dice and states the order it expects.
@@ -50,8 +52,8 @@
 # Two admitted clauses is a small contractual surface, and no number of
 # `covers` declarations certifies an ID.  These scenarios are the evidence for
 # this ID: the charge tier, its expiry, the Initiative tier with both sides of
-# an exact tie, the standing-up penalty and its expiry, and the strike-first
-# exception.  Every admitted clause of the ID has at least one reviewed
+# an exact tie, the standing-up penalty and its expiry, and the penalty applied
+# to a strike-first warrior.  Every admitted clause of the ID has at least one reviewed
 # scenario; semantic certification still requires the engine to satisfy them.
 #
 
@@ -245,8 +247,20 @@
     - {kind: roll, key: round.1.first.attack.0.hit, sides: 6, value: 1}
     - {kind: roll, key: round.1.second.attack.0.hit, sides: 6, value: 1}
 
-# An explicit strike-first ability overrides the standing-up penalty: the fighter
-# that just got up keeps the strike-first tier and acts before its opponent.
+# Corrected 2026-11-16 (body only; the id is protected by the accepted-evidence
+# baseline and is historical).  The earlier body expected an explicit
+# strike-first ability to override the standing-up penalty.  No printed text or
+# design ruling says so: the printed rule (catalog/rules/core-combat.yaml,
+# combat-order) reads "Charge and other strike-first effects resolve before
+# normal Initiative order; a warrior who stood up in the Recovery phase strikes
+# last", placing a charge and every other strike-first effect in the same class,
+# and Always Strikes First prints only "Strikes first in close combat."
+# (catalog/skills/warband.yaml).  stood-up-fighter-strikes-last above already
+# expects the penalty to beat the charge ("Strike Last controls the whole round
+# order. The first-round max priority floor does not erase negative priority",
+# design-rulings.md); the same sentence therefore makes the penalty beat the
+# other strike-first effects too.  The stood-up Always-Strikes-First fighter,
+# with the higher Initiative and without a charge, strikes after its opponent.
 
 - audit_id: core/combat-order
   id: strike-first-overrides-the-standing-up-penalty
@@ -261,17 +275,17 @@
       characteristics: *ws3-s3-t3-w2-i2
   initial_state:
     first: {condition: KNOCKED_DOWN}
-  duel_context: {charging: [first], active_participant: first}
+  duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
-    - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
   expect_rounds:
     0: {state.first.condition: STANDING, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
   expect_events:
-    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
     - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
 
 # A strike-first effect other than a charge also resolves before ordinary
 # Initiative order: the strike-first fighter acts first although the opponent

@@ -37,9 +37,12 @@
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
   duel_context: &ucs-context {charging: [], active_participant: first}
   maximum_rounds: 1
+  # Corrected 2026-11-16: the wound face is five - the face the printed 5-6 range adds; the fist's
+  # Strength 2 against Toughness 3 wounds on exactly 5+, so the five both wounds and is critical
+  # only through this skill.  The earlier six was critical with or without it.
   rolls:
     - {key: round.0.first.attack.0.hit, value: 6}
-    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 5}
     - {key: round.0.first.attack.0.critical, value: 1}
     - {key: round.0.first.attack.0.armour, value: 1}
     - {key: round.0.first.attack.0.injury.0, value: 1}

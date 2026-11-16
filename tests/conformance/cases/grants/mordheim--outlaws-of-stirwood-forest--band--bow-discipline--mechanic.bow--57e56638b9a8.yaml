@@ -45,6 +45,10 @@
 #   observation or normative decision.  The pending note above is retained unchanged as the record of
 #   the defect.  REVIEWED (manual semantic review) remains separate and is not claimed here.
 
+# De-duplication note (2026-11-16): the duplicate KB source recorded here earlier has been removed, so
+#   this rule is now the single source and its scenarios fail when its binding is removed (rule-removal
+#   probe).  Earlier note, kept for history: this effect binds compiler.bow-discipline, which sets the compiled missile_weapon_limit to the printed one; the two kit refusals in this file are enforced by the sibling effect profile.equipment-restrictions (max_missile...
+
 - audit_id: rule/mordheim/outlaws-of-stirwood-forest/band--bow-discipline/mechanic.bow-discipline
   id: a-kit-carrying-two-missile-weapons-is-refused
   fighters:
@@ -66,3 +70,26 @@
       main_weapon_id: weapon.mace
       owned_item_ids: [weapon.pistol]
   expect_error: 'The equipment of outlaws-of-stirwood-forest/outlaws includes no "bow": the band compiles the kit from that family only.'
+
+# The printed bound on an admitted kit (added 2026-11-16): an Outlaw carrying exactly one bow is
+# admitted, and the compiled fighter carries the printed one-missile-weapon limit ("only one missile
+# weapon at a time") instead of the ordinary two.  Neither warrior attacks (initial_state), the
+# fixture's Initiative 1 leaves no strike-order tie, so the round needs no die.
+- audit_id: rule/mordheim/outlaws-of-stirwood-forest/band--bow-discipline/mechanic.bow-discipline
+  id: a-single-bow-kit-is-admitted-with-the-one-weapon-bound
+  fighters:
+    first:
+      collection: mordheim
+      band_id: outlaws-of-stirwood-forest
+      profile_id: outlaws
+      main_weapon_id: weapon.mace
+      owned_item_ids: [bow]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 1, attacks: 1}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_fighters:
+    first.missile_weapon_limit: 1
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

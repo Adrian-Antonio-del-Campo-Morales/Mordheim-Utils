@@ -328,6 +328,9 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
     automatic_rule_effects = EffectSet()
     automatic_compiler_contracts = set()
     automatic_compiler_bindings = []
+    # Profile rules whose executable compiler binding was actually read: only
+    # these may contribute rule-id keyed attacks (Trample, Spiked Tail) below.
+    read_profile_rules = set()
     if package is not None:
         for rule in _applicable_rules(package, profile):
             runtime = rule.get("runtime") or {}
@@ -344,6 +347,7 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
                     raise ValueError(f"profile rule has no executable compiler contract: {rule.get('id')}")
                 automatic_rule_effects = merge_effects(automatic_rule_effects, EffectSet(**contract.get("effects", {})))
                 traits.update(contract.get("traits", {}))
+                read_profile_rules.add(str(rule.get("id")))
     selected_special_effects = EffectSet()
     if 'compiler.assassin-poisoner' in automatic_compiler_contracts:
         allowed = {'poison.black-lotus', 'poison.black-venom'}
@@ -659,24 +663,33 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
     compiler_contracts=automatic_compiler_contracts|selected_compiler_contracts
     compiler_bindings=(*automatic_compiler_bindings,*selected_compiler_bindings)
     if "compiler.lizardmen-scaly-skin" in compiler_contracts:
-        natural=4 if build.profile_id=="kroxigor" else 5 if str(build.profile_id).startswith("saurus") else 6
-        # The shared contract prints the band default; a clause that names the
-        # saved profiles overrides that default for exactly those profiles
-        # (Fimir Warriors 5+ while the rest of the band keeps 6+).  Only this
-        # binding consumes the value, and a malformed one is refused here
-        # instead of silently compiling a wrong save.
-        for binding in compiler_bindings:
-            parameters=binding.get("parameters") or {}
-            if (binding.get("id")!="compiler.lizardmen-scaly-skin"
-                    or build.profile_id not in (parameters.get("profile_ids") or ())):
-                continue
-            value=parameters.get("value")
+        # The band rule prints the shared Scaly Skin mechanics (stacks with
+        # armour, Strength cannot reduce it beyond 6+).  The save value has one
+        # source: the profile's own printed Scaly Skin rule (Kroxigor 4+, every
+        # Lustria-rulebook profile) when it has one; otherwise the value the
+        # band text itself prints, declared on the binding as a band `default`
+        # plus `profile_ids`/`value` overrides (Saurus 5+, Fimir Warriors 5+).
+        # No value is inferred from a profile's name.
+        def printed_save(value, where):
             if isinstance(value,bool) or not isinstance(value,int) or not 2<=value<=7:
-                raise ValueError(
-                    f"compiler.lizardmen-scaly-skin prints an invalid natural armour save "
-                    f"for {build.profile_id}: {value!r}"
-                )
-            natural=value
+                raise ValueError(f"compiler.lizardmen-scaly-skin prints an invalid natural armour save "
+                                 f"for {build.profile_id} ({where}): {value!r}")
+            return value
+        natural=_profile_rule_traits(package, profile).get("natural_armour_save") if package is not None else None
+        if natural is not None:
+            natural=printed_save(natural, "profile rule")
+        else:
+            for binding in compiler_bindings:
+                parameters=binding.get("parameters") or {}
+                if binding.get("id")!="compiler.lizardmen-scaly-skin":
+                    continue
+                if build.profile_id in (parameters.get("profile_ids") or ()):
+                    natural=printed_save(parameters.get("value"), "profile override")
+                    break
+                if parameters.get("default") is not None:
+                    natural=printed_save(parameters.get("default"), "band default")
+            if natural is None:
+                raise ValueError(f"compiler.lizardmen-scaly-skin has no printed save value for {build.profile_id}")
         traits.update({"natural_armour_save":natural,"natural_armour_stacks":True,"natural_armour_worst_save":6})
     loadout_mechanics = (*selected_special_mechanics,
         *(_profile_rule_mechanics(package, profile) if package is not None else ()))
@@ -874,7 +887,12 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
         if rule.get("kind") == "warband_skill" and rule["id"] in build.special_rule_ids
         for binding in runtime_bindings(rule, "mechanic")
     ]
-    skill_effects_ids = [item for item in (*build.skill_ids, *selected_skill_mechanics)
+    # A skill the profile's own printed rule grants is a skill of the fighter,
+    # exactly as a printed starting skill or a selected one: it belongs to the
+    # skill layer that survives a lost item, whichever encoding granted it.
+    profile_rule_skill_ids = [item for item in profile_rule_skills if item.startswith("skill.")]
+    skill_effects_ids = [item for item in dict.fromkeys(
+                             (*build.skill_ids, *selected_skill_mechanics, *profile_rule_skill_ids))
                          if item not in inert_ids]
     if "compiler.weapons-training-exception" in compiler_contracts:
         skill_effects_ids = [item for item in skill_effects_ids if item != "skill.weapons-training"]
@@ -1330,7 +1348,7 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
     if "mechanic.myrmidia-eagle-friend" in global_effects.tags:
         extra_attacks.extend(EffectSet(tags=("rule.eagle-friend",), fixed_strength=3, priority=1)
                             for _ in range(eagle_count or 1))
-    automatic_rule_ids = {str(rule.get("id")) for rule in _applicable_profile_rules(package, profile)} if package is not None else set()
+    automatic_rule_ids = read_profile_rules
     # Natural and profile-granted attacks are resolved independently, so
     # weapon modifiers never leak into horns, hooves, claws, or bites.
     if "centigors--trample" in automatic_rule_ids:

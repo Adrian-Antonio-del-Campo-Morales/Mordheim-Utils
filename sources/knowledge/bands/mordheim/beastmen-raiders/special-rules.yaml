@@ -173,15 +173,14 @@ rules:
     - ungor
 - id: warhounds-of-chaos--natural-weapons
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: profile.natural-attacks
-      scope: 'YES'
-      binding:
-        kind: profile
-        id: profile.natural-attacks
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   name: Natural Weapons
   effect: Chaos Hounds have no weapons, but can fight without any penalties.
   source:

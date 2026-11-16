@@ -18,8 +18,11 @@
 # Governing rulings: docs/decisions/design-rulings.md
 #
 # AUTHORED: 2 scenarios show the printed end: once the wound is established the
-#   bearer is Out of Action with no injury die at all, both at its printed Wound and at one Wound
-#   above it, so the outcome cannot be the ordinary injury ladder.  The Ethereal interception die is
+#   bearer is Out of Action with no injury die at all, both for an ordinary one-wound hit and for
+#   a two-wound critical hit (which would otherwise force two injury rolls), so the outcome cannot
+#   be the ordinary injury ladder.  Corrected 2026-11-16: the second scenario earlier started the
+#   bearer at two Wounds, above its printed W1 (the runner now rejects that state, and no legal
+#   build gives a Poltergeist a second Wound).  The Ethereal interception die is
 #   part of the same tape, declared below its own threshold so the wound is real.
 
 # --- Authored scenarios ---
@@ -51,8 +54,13 @@
     0: {attacks.0.wounded: True, state.second.condition: OUT}
   expect_final: {rounds_executed: 1, termination_reason: second_out}
 
-# The recorded contract adds 'regardless of remaining Wounds'; the same bearer at one Wound more
-# than the profile prints is still ended by that first unsaved wound.
+# Body corrected 2026-11-16 (the id is historical: the earlier body started the Poltergeist at
+# two Wounds, above its printed W1, an impossible state the runner now rejects).  The printed
+# "do not roll for injury" is shown here on a hit that would otherwise demand two injury rolls:
+# the natural six to wound is a critical (Strength 8 against Toughness 3 needs only a 2), whose
+# table result of 1 deals two wounds to the one-Wound bearer.  Without the rule that overkill
+# forces two injury dice; with it the tape declares none and the bearer is taken out at once.
+# The critical result 1-2 would let an armour save be rolled first, but the bearer has none.
 
 - audit_id: rule/mordheim/call-of-the-night-haint-mim/poltergeists--incorporeal/trait.injury-profile
   id: the-first-wound-takes-out-a-poltergeist-above-its-printed-wounds
@@ -61,13 +69,14 @@
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
     second: {collection: mordheim, band_id: call-of-the-night-haint-mim, profile_id: poltergeists}
-  initial_state: {second: {wounds: 2, attacks: 0}}
+  initial_state: {second: {wounds: 1, attacks: 0}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
     - {key: round.0.first.attack.0.hit, value: 5}
     - {key: round.0.first.attack.0.ethereal, value: 3}
-    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.critical, value: 1}
   expect_rounds:
-    0: {attacks.0.wounded: True, state.second.condition: OUT}
+    0: {attacks.0.wounded: True, attacks.0.critical: True, state.second.condition: OUT}
   expect_final: {rounds_executed: 1, termination_reason: second_out}

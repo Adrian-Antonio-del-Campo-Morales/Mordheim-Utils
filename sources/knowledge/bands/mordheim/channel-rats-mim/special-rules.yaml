@@ -648,17 +648,14 @@ rules:
     - fugitives
 - id: band--strigany-special-skills-list
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: band
     effects:
     - id: profile.skill-access
-      scope: 'YES'
-      binding:
-        kind: profile
-        id: profile.skill-access
-        parameters:
-          category: special
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   name: Strigany Special Skills
   effect: >-
     River Strigany may choose to use the following skill list instead of the standard skill lists.

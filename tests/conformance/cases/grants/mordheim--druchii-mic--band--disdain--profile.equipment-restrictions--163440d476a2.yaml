@@ -16,10 +16,9 @@
 #   rule/mordheim/dark-elves/band--black-powder-weapons authors for the same printed sentence; the earlier
 #   note already recorded that reading.
 #   DEFECTS THE SCENARIOS DETECT (recorded, not hidden, and not a reason to withhold them): (1) this band's rule
-#   declares no binding and no effect id at all
-#   (sources/knowledge/bands/mordheim/druchii-mic/special-rules.yaml, rule band--disdain: effects bind the
-#   placeholder `unimplemented.druchii-mic.band.disdain` with `binding: null`), so no contract reaches the
-#   build; (2) the same source row's own runtime block records `scope: LATER / implemented: 'NO'` with the
+#   declared no binding (checked 2026-11-16: sources/knowledge/bands/mordheim/druchii-mic/special-rules.yaml,
+#   rule band--disdain, now binds profile.equipment-restrictions with forbids [blackpowder], scope YES /
+#   implemented YES; the earlier "placeholder with `binding: null`" note is withdrawn); (2) the same source row's own runtime block records `scope: LATER / implemented: 'NO'` with the
 #   reason "equipment-purchase restrictions are roster-construction mechanics outside the duel scope", while
 #   the semantic register admits the clause as in-scope - the conflict is visible in the refusal the scenario
 #   requires, and the resolution is an explicit re-scope plus the activation binding, not a new operator.

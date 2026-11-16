@@ -1,0 +1,75 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/lothern-sea-patrol-sar/band--honourable/compiler.forbid-item-categories
+# authoring_status: AUTHORED
+# authoring_progress: the admitted poison-and-drug-ban clause carries 3 authored scenarios (a poison
+#   refusal, a drug refusal and the accepted control).  REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/lothern-sea-patrol-sar/special-rules.yaml
+#
+# Clause: poison-and-drug-ban (scope: YES)
+# AUTHORED[poison-and-drug-ban]: 3 scenarios.  Printed text: "Lothern Sea Patrol members may never use
+#   poisons or drugs".  The band row binds compiler.forbid-item-categories with categories [poison, drug];
+#   packages/python/roster-construction/mordheim_construction/_eligibility.js (stage categoryProhibitions)
+#   refuses a poisoned weapon with "poisons are forbidden for <band>/<profile>" and a drug preparation
+#   (drugsForbidden == "category") with "drugs are forbidden for <band>/<profile>".  The control shows
+#   the same member without them constructs, while an unaffiliated fighter carrying the same poison and
+#   drug also constructs, so the refusals belong to the band rule and not to the items.
+#
+# Clause: hired-sword-ban (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+# --- Authored scenarios ---
+# A Lothern Commodore using a poisoned weapon is refused.
+- audit_id: rule/mordheim/lothern-sea-patrol-sar/band--honourable/compiler.forbid-item-categories
+  id: a-commodore-with-a-poisoned-weapon-is-refused
+  covers: [poison-and-drug-ban]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: lothern-sea-patrol-sar
+      profile_id: commodore
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.black-lotus
+  expect_error: poisons are forbidden for lothern-sea-patrol-sar/commodore
+# A Lothern Commodore taking a drug is refused.
+- audit_id: rule/mordheim/lothern-sea-patrol-sar/band--honourable/compiler.forbid-item-categories
+  id: a-commodore-taking-crimson-shade-is-refused
+  covers: [poison-and-drug-ban]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: lothern-sea-patrol-sar
+      profile_id: commodore
+      main_weapon_id: weapon.sword
+      preparation_ids: [preparation.crimson-shade]
+  expect_error: drugs are forbidden for lothern-sea-patrol-sar/commodore
+# Control: the same Commodore without poison or drug constructs, and an unaffiliated fighter carrying
+# the same poison and drug constructs too.  The Commodore is put out of action before the first phase,
+# so no die is needed.
+- audit_id: rule/mordheim/lothern-sea-patrol-sar/band--honourable/compiler.forbid-item-categories
+  id: the-same-commodore-without-poison-or-drug-constructs
+  covers: [poison-and-drug-ban]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: lothern-sea-patrol-sar
+      profile_id: commodore
+      main_weapon_id: weapon.sword
+    second:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.black-lotus
+      preparation_ids: [preparation.crimson-shade]
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  # The opponent's printed Crimson Shade rolls its D3 Initiative bonus at duel start (the key of the
+  # canonical preparation.crimson-shade tape); the face is irrelevant to the construction asserted here.
+  rolls:
+    - {key: second.crimson-shade, sides: 3, value: 1}
+  expect_initial: {first.condition: OUT}
+  expect_final: {rounds_executed: 0, termination_reason: first_out}

@@ -1,11 +1,15 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/lustrian-reavers/barbary-monkey--beastmaster-leadership/mechanic.handler-leadership
 # authoring_status: AUTHORED
-# authoring_progress: the admitted handler-leadership clause carries 2 authored scenarios for the two
+# authoring_progress: the admitted handler-leadership clause carries 3 authored scenarios for the two
 # faces of the supplied value: the Beastmaster's Leadership is the one tested (the monkey's own value
 # would fail the same eight) and, with no handler value supplied, the animal's own Leadership is
 # tested and the charge is cancelled.  REVIEWED still requires manual semantic review and
 # execution_status stays UNEXECUTED; no behavioral result is claimed.
+# Real-recipient addendum (2026-11-16): 1 further scenario(s) build the printed Lustrian Reavers
+# profile itself (barbary-monkey), so the KB grant of this identity is exercised rather than only
+# the shared operator injected into hand-built fixtures; the earlier fixture scenarios stay as the
+# operator cases.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -14,7 +18,7 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: 2 scenarios cover the printed "may use the Beastmaster's
+# AUTHORED: 3 scenarios cover the printed "may use the Beastmaster's
 # Leadership": with the handler value supplied (trait fact stupidity_leadership) the individual test
 # is taken against 8 and passes on a declared four plus four, so the charge and the attack stand;
 # without a supplied value the animal's own Leadership 3 is tested and the same eight fails, which
@@ -68,3 +72,35 @@
   expect_rounds:
     0: {attacks: [], state.first.stupidity_failed: True, state.first_charged: False, state.engaged: False}
   expect_final: {rounds_executed: 1, termination_reason: disengaged}
+# Real recipient (2026-11-16): the same duel as the-supplied-beastmaster-value-is-the-one-tested,
+# but the bearer is built as the printed Lustrian Reavers Barbary Monkey profile
+# (mordheim/lustrian-reavers/barbary-monkey) (the rule is printed on that profile) instead of
+# injecting mechanic.handler-leadership into a hand-built fighter; the explicit characteristics keep
+# that scenario's dice model. The profile's equipment list does not offer the original weapon, so it
+# carries weapon.dagger; no die of the declared tape depends on that swap.
+- audit_id: rule/mordheim/lustrian-reavers/barbary-monkey--beastmaster-leadership/mechanic.handler-leadership
+  id: the-supplied-beastmaster-value-is-the-one-tested-as-the-real-barbary-monkey
+  fighters:
+    first:
+      collection: mordheim
+      band_id: lustrian-reavers
+      profile_id: barbary-monkey
+      trait_overrides: {stupidity: true, stupidity_leadership: 8}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 3}
+      main_weapon_id: weapon.dagger
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context:
+    charging: [first]
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.first.stupidity.0, value: 4}
+  - {key: round.0.first.stupidity.1, value: 4}
+  - {key: round.0.first.attack.0.hit, value: 4}
+  - {key: round.0.first.attack.0.wound, value: 4}
+  - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.stupidity_failed: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

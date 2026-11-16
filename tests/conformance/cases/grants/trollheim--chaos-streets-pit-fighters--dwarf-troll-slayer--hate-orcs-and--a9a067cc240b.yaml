@@ -9,6 +9,16 @@
 #   complete psychology immunity, and the recorded immunity contract removes the Hatred reroll,
 #   so the matched identity alone cannot reach the tape. REVIEWED still requires manual
 #   semantic review and execution_status stays UNEXECUTED; no behavioral result is claimed.
+# Discrimination note (2026-11-16, reviewed): a genuine printed interaction, not a duplication, so the
+#   KB is kept and no single-source change applies.  The binding is the only source of
+#   mechanic.hatred-orcs-goblins (the duplicate starting_skills entry of this profile was removed on
+#   2026-11-16).  Its only duel consequence, the first-round Hatred reroll, is denied by the complete
+#   psychology immunity of
+#   sources/knowledge/bands/trollheim/chaos-streets-pit-fighters/special-rules.yaml key
+#   dwarf-troll-slayer--death-oath (shared-rule.death-oath, clause psychology-immunity)
+#   (mechanic.psychology-immunity), which is printed for the same and only recipient.  Neither record
+#   restates the other, so every legal build that carries this Hatred also carries the immunity, and the
+#   scenarios evidence the combined printed outcome.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -17,7 +27,7 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: Documented difference (AUTHORED vs implementation): every expressible face this record prints has a written scenario, so AUTHORED is the correct header; the motor side is what stays pending [B] - the band row is an unimplemented placeholder with no activated binding, so the compiled Dwarf Troll Slayer may reach the duel without the Hatred these scenarios declare; the co-printed complete psychology immunity then suppresses the matched-identity reroll; 3 authored scenario(s) cover every expressible face this record prints for its model:
+# AUTHORED: Documented difference (AUTHORED vs implementation): every expressible face this record prints has a written scenario, so AUTHORED is the correct header; the band row now binds mechanic.hatred-orcs-goblins (implemented YES; the earlier "unimplemented placeholder" wording was false and is withdrawn 2026-11-16), but the co-printed complete psychology immunity suppresses the matched-identity reroll on the only printed recipient; 3 authored scenario(s) cover every expressible face this record prints for its model:
 #   the printed recipient's own complete psychology immunity suppresses the reroll; the same
 #   miss stands without the qualifying identity; a band-mate outside the printed recipients
 #   receives no reroll.

@@ -15,8 +15,10 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: 3 scenarios cover the one immediate extra wound on a natural hit six, the five
+# AUTHORED: 4 scenarios cover the one immediate extra wound on a natural hit six, the five
 #   that adds nothing, and the same six without the rule.
+# Real recipient (2026-11-16): one further scenario builds the band's printed Spirit Host from the band
+# package, so the KB grant itself (not an injected mechanic id or trait) is exercised.
 
 # --- Authored scenarios ---
 # Derived from the printed rule and the recorded contract; no engine output was consulted.  The
@@ -79,3 +81,30 @@
     0: {attacks.0.hit: true, attacks.0.wounded: false, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
+
+# Real recipient (2026-11-16): the charging bearer is the band's printed Spirit Host built from the band
+# package with its printed natural attacks (characteristics overridden only to keep the fixture's dice
+# math), so the extra wound comes from the profile's own Spectral Touch row; without it the failed wound
+# roll leaves the opponent unhurt.  The Spirit Host causes Fear, so the opponent is given the causes-fear
+# fact, which exempts it from the Fear test.
+- audit_id: rule/mordheim/call-of-the-night-haint-mim/spirit-hosts--spectral-touch/trait.spectral-touch
+  id: the-printed-spirit-host-adds-a-wound-on-a-natural-six
+  fighters:
+    first:
+      collection: mordheim
+      band_id: call-of-the-night-haint-mim
+      profile_id: spirit-hosts
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: true, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

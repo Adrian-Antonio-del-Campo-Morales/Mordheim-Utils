@@ -5,7 +5,8 @@
 #   that selects a printed table member is built and the duel runs, and a special skill outside the
 #   printed table is refused with the shared access diagnostic.  The member used for the admission is
 #   Thick Skull, one of the Chaos Dwarf special skills this band itself binds, not a guess.  REVIEWED
-#   still requires manual semantic review and execution_status stays UNEXECUTED.
+#   still requires manual semantic review and execution_status stays UNEXECUTED.  A third scenario
+#   (2026-11-16) refuses a catalogue special skill outside the printed tables (see Addition below).
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -14,13 +15,18 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: 2 scenarios cover the printed permission (Chaos Dwarfs may use the band special
+# AUTHORED: 3 scenarios cover the printed permission (Chaos Dwarfs may use the band special
 #   skill list instead of the standard lists).  The admission scenario builds the recipient with
 #   this band's own Chaos Dwarf special-skill member for Thick Skull (whose binding carries
 #   skill.thick-skull), and records that the duel ran unrefused; the closure scenario shows a special skill
 #   outside the printed table refused.  The band's binding declares only the category, so the full
 #   member list stays the KB's to publish; the one member asserted here is the band's own bound
 #   identity.  REVIEWED still requires manual semantic review.
+# Addition (2026-11-16): Hard to Kill is a Dwarf racial special rule, not a member of the printed Chaos Dwarf special-skill table
+#   (Extra Tough, Chaos Engineer, Thick Skull, Resource Hunter, Tyrant, True Grit) nor of the Sorcerer's other
+#   tables, so the Sorcerer may not choose it.  The refusal is the bound special list closing
+#   the profile's generic 'special' access; without this binding the profile's own skill_access 'special'
+#   (profiles.yaml) admits that catalogue special skill, so this scenario is the one that depends on the rule.
 
 # --- Authored scenarios ---
 # Derived from the printed rule, the recorded semantic contract and this band's own Chaos Dwarf
@@ -57,3 +63,14 @@
       skill_ids: [skill.monster-slayer]
       main_weapon_id: weapon.mace
   expect_error: "skills are not available to black-dwarfs/sorcerer: ['skill.monster-slayer']"
+
+- audit_id: rule/mordheim/black-dwarfs/band--chaos-dwarf-special-skills/profile.skill-access
+  id: a-racial-special-rule-outside-the-printed-table-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: sorcerer
+      skill_ids: [skill.hard-to-kill]
+      main_weapon_id: weapon.mace
+  expect_error: "skills are not available to black-dwarfs/sorcerer: ['skill.hard-to-kill']"

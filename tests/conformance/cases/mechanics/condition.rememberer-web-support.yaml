@@ -1,6 +1,6 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/condition.rememberer-web-support
-# authoring_status: TODO
+# authoring_status: PARTIAL
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +9,57 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+# PARTIAL: Scenarios moved here on 2026-11-16 from the placeholder identity rule/mordheim/dwarf-slayer-
+#   cult-web/rememberer--rememberer/rememberer--rememberer.provider, whose KB effect is now unbound
+#   (out-of-scope.group: the Rememberer's presence is a group fact supplied to the duel as this
+#   condition); the duel behaviour they exercise is this identity's.  Inputs, dice and expectations are
+#   unchanged by the move; each scenario's own comments carry its derivation and may still name the
+#   placeholder record they were authored against.  One scenario: the printed Slayer Hero supplied with
+#   the Rememberer within 6" re-rolls a failed To Hit roll.  Gap: the printed once-per-game limit and
+#   the Large-creature half of the opponent gate are not asserted; the tape states the Toughness 5+
+#   half.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+
+- audit_id: mechanic/condition.rememberer-web-support
+  id: the-supplied-rememberer-rerolls-a-failed-to-hit-roll
+  # The printed benefit: a Slayer Hero fighting a Toughness 5 creature and within six inches of the Rememberer
+  # may re-roll any failed To Hit rolls.  The declared miss of two is taken again on a four, which lands the
+  # hit; the bearer's declared Strength 4 against the printed Toughness 5 makes the wound face five and the
+  # damage one.  The `.hit.reroll` die is the corpus's own hit-re-roll route (the accepted axe-expert and Luck
+  # tapes declare the same key), so the tape fails on an unrequested die until the rule's null binding is
+  # projected - the PENDING implementation defect, not a withheld requirement.  The printed "once only" limit
+  # and the Large-creature half of the gate are recorded in the clause marker above.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: giant-slayer
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.rememberer-web-support]
+      characteristics: {weapon_skill: 5, strength: 4, toughness: 4, wounds: 1, initiative: 3, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 5, wounds: 2, initiative: 2, attacks: 1}
+  duel_context:
+    charging: []
+    active_participant: first
+    nearby:
+      - participant_id: rememberer
+        side_id: first
+        condition: standing
+        fighter: {collection: mordheim, band_id: dwarf-slayer-cult-web, profile_id: rememberer}
+    distances:
+      - [first, rememberer, 6]
+  initial_state: {first: {strength: 4}}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.rememberer, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: True, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

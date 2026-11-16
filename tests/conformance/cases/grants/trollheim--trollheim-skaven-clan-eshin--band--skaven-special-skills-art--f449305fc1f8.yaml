@@ -2,6 +2,11 @@
 # audit_id: rule/trollheim/trollheim-skaven-clan-eshin/band--skaven-special-skills-art-of-silent-death/skill.art-of-silent-death
 # authoring_status: AUTHORED
 # authoring_progress: the admitted whole clause carries authored scenarios derived from the printed sentence and the recorded contract (the unarmed pool gains the printed attack, the critical threshold is 5, and the paired claw profile supplies the further attack through its own extra weapon attack).  The tape shapes mirror the authored canonical operator of the same effect_id; the register records this band origin as repeating it without adding a term.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# Real-recipient addendum (2026-11-16): 2 further scenario(s) build the printed Skaven Clan Eshin
+# profile itself (assassin-adept) and select band--skaven-special-skills-art-of-silent-death through
+# special_rule_ids, so the KB grant of this identity is exercised rather than only the shared
+# operator injected into hand-built fixtures; the earlier fixture scenarios stay as the operator
+# cases.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -10,7 +15,7 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: 5 scenarios cover the unarmed extra attack, the critical hit on a To Wound roll of five, and the paired fighting-claw pool ending one attack higher, each with the same configuration without the skill where the printed improvement is the only difference.
+# AUTHORED: 7 scenarios cover the unarmed extra attack, the critical hit on a To Wound roll of five, and the paired fighting-claw pool ending one attack higher, each with the same configuration without the skill where the printed improvement is the only difference.
 
 # --- Authored scenarios ---
 # The printed sentence claims three independently observable consequences: fighting with bare
@@ -120,6 +125,67 @@
     - {key: round.0.first.attack.1.hit, value: 1}
     - {key: round.0.first.attack.2.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, attacks.2.hit: false, attacks.3.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Real recipient (2026-11-16): the same duel as bare-claws-carry-the-extra-attack, but the bearer is
+# built as the printed Skaven Clan Eshin Assassin profile
+# (trollheim/trollheim-skaven-clan-eshin/assassin-adept), with the band rule selected through
+# special_rule_ids [band--skaven-special-skills-art-of-silent-death] instead of injecting
+# skill.art-of-silent-death into a hand-built fighter; the explicit characteristics keep that
+# scenario's dice model.
+- audit_id: rule/trollheim/trollheim-skaven-clan-eshin/band--skaven-special-skills-art-of-silent-death/skill.art-of-silent-death
+  id: bare-claws-carry-the-extra-attack-as-the-real-assassin-adept
+  fighters:
+    first:
+      collection: trollheim
+      band_id: trollheim-skaven-clan-eshin
+      profile_id: assassin-adept
+      main_weapon_id: weapon.fist
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [band--skaven-special-skills-art-of-silent-death]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context:
+    charging: [first]
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.first.attack.0.hit, value: 1}
+  - {key: round.0.first.attack.1.hit, value: 1}
+  - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, attacks.2.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Real recipient (2026-11-16): the same duel as the-paired-fighting-claws-carry-a-further-attack,
+# but the bearer is built as the printed Skaven Clan Eshin Assassin profile
+# (trollheim/trollheim-skaven-clan-eshin/assassin-adept), with the band rule selected through
+# special_rule_ids [band--skaven-special-skills-art-of-silent-death] instead of injecting
+# skill.art-of-silent-death into a hand-built fighter; the explicit characteristics keep that
+# scenario's dice model.
+- audit_id: rule/trollheim/trollheim-skaven-clan-eshin/band--skaven-special-skills-art-of-silent-death/skill.art-of-silent-death
+  id: the-paired-fighting-claws-carry-a-further-attack-as-the-real-assassin-adept
+  fighters:
+    first:
+      collection: trollheim
+      band_id: trollheim-skaven-clan-eshin
+      profile_id: assassin-adept
+      main_weapon_id: weapon.fighting-claws
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [band--skaven-special-skills-art-of-silent-death]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context:
+    charging: [first]
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.first.attack.0.hit, value: 1}
+  - {key: round.0.first.attack.1.hit, value: 1}
+  - {key: round.0.first.attack.2.hit, value: 1}
+  - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.hit: false, attacks.1.hit: false, attacks.2.hit: false, attacks.3.hit: false, state.second.wounds: 3}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

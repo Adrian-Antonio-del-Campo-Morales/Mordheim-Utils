@@ -14,6 +14,9 @@
 # REVIEWED requires semantic review; covers labels alone are insufficient.
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
+# De-duplication note (2026-11-16): the duplicate KB source recorded here earlier has been removed, so
+#   this rule is now the single source and its scenarios fail when its binding is removed (rule-removal
+#   probe).  Earlier note, kept for history: the same effect is delivered independently by sources/knowledge/bands/mordheim/tileans/profiles.yaml, profile duelists, key combat_traits.counts_as_buckler: true, so removing this rule's binding leaves the compiled fight...
 #
 # AUTHORED: 3 scenarios read the printed parry the cloak grants its bearer.  The bearer
 #   is built from the printed Duelists profile of this band, whose own rule binding supplies the flag; the

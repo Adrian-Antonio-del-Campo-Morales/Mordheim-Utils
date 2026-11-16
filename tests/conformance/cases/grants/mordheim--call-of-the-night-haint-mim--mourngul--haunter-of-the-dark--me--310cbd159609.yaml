@@ -16,9 +16,10 @@
 #   `state.second.wounds`, so no threshold is guessed and no new key is invented.
 #   DEFECT THE SCENARIOS DETECT (recorded, not hidden): `mechanic.ethereal-hit-save` is hard-coded to 4+ in
 #   both consumers (modular/pools.py and modular/attacks.py, each `dice.roll(...) >= 4`) and carries no
-#   parameter, and this rule's own row is the placeholder
-#   `unimplemented.call-of-the-night-haint-mim.mourngul.haunter-of-the-dark` with `implemented: 'NO'` and a
-#   null binding, so the printed 3+ never reaches the save.  The printed face that the 4+ would not discard is
+#   parameter.  This rule's own row now binds mechanic.ethereal-hit-save-improved (scope YES, implemented
+#   YES; checked 2026-11-16); the earlier "placeholder with implemented NO and a null binding" note is
+#   withdrawn.  Whether the bound mechanic carries the printed 3+ to the save is not verified by this static
+#   pass.  The printed face that the 4+ would not discard is
 #   the ethereal face 3 on the Mourngul, which is scenario one below; the resolution is a parameterised
 #   threshold plus a real binding for the granted rule, not a new operator.  REVIEWED still requires manual
 #   semantic review and execution_status stays UNEXECUTED.

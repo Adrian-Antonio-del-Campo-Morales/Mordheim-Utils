@@ -57,6 +57,8 @@ a single affected file or node ID; the complete corpus is a full-pipeline run.
 | `integrity/test_inventory.py` | Reconciles the corpus with the knowledge-base clause inventory, prints the coverage report and runs the opt-in completeness gate. |
 | `integrity/test_non_regression.py` | Compares the live corpus with the reviewed accepted-evidence reference set-wise, and demonstrates that the control detects a lost scenario, clause reference or identity. |
 | `integrity/test_variants.py` | Proves that sibling scenarios share variant data through YAML anchors and that running or editing one variant leaves its siblings intact. |
+| `integrity/removal_probe.py` | Rule-removal probe and CLI: re-runs each identity's scenarios with its rule taken away and reports whether the evidence depends on the rule (see *Rule-removal probe*). Executes the modular engine; reads, never writes, the corpus and the KB. |
+| `integrity/test_removal_probe.py` | Self-contained checks that the probe tells discriminating, non-discriminating, inert and baseline-failing evidence apart. |
 | `integrity/evidence/coverage-baseline.yaml` | Reviewed accepted coverage evidence (identity, protected scenarios and their clause references) with the clause-inventory digest it was accepted against. Read-only for the tests. |
 | `cases/core`, `cases/mechanics`, `cases/grants` | One YAML authoring document per admitted identity, named from it by `generate_skeletons.relative_path()` and carrying it in its header. A file holds that identity's scenarios, or an empty scaffold body while it is unauthored; empty scaffolds contribute no collected scenarios or coverage. |
 
@@ -303,7 +305,9 @@ observations after checking every declared expectation. It calls production
 implemented in the test harness.
 
 Builds use `fighters.first` and `fighters.second`. Overrides use those same keys
-under `initial_state`. `duel_context` accepts the production `DuelContext` fields;
+under `initial_state`. A supplied `wounds` above the fighter's compiled maximum is
+rejected: the engine would clamp it silently, so the scenario would assert a
+different starting state than it declares. `duel_context` accepts the production `DuelContext` fields;
 each nearby provider declares `participant_id`, `side_id`, a `fighter` build and
 an optional supported `condition`. Production context validation remains active.
 
@@ -513,6 +517,59 @@ The reference is deliberately separate from the opt-in global completeness gate:
 the gate lists every pending identity and admitted clause and fails when
 completeness is requested, while the reference only protects what has been
 accepted so far and never claims completeness.
+
+## Rule-removal probe
+
+A passing scenario does not by itself prove that it tests its rule: it may pass
+equally with the rule removed, because its dice never reach the rule's boundary,
+because another rule of the same setup already decides the outcome, or because
+the KB delivers the same effect twice. `integrity/removal_probe.py` measures this
+by re-executing every scenario of an identity with that identity's rule taken
+away:
+
+- `rule/` identities: when a build selects the rule (`special_rule_ids`) it is
+  un-selected; otherwise the identity's effect binding is filtered out of
+  `runtime_bindings` for the compiler and the eligibility engine, so the build
+  compiles as if the KB did not bind that effect.
+- `mechanic/` identities: the mechanic id is deleted from every id list of every
+  build. A mechanic reached only through a weapon, armour or material slot is
+  reported `inert`, because the probe does not substitute equipment.
+- `core/` identities are not probed.
+
+| Scenario outcome | Meaning |
+| --- | --- |
+| `fails` | An `EvidenceMismatch`: a die, a decision, an observation or a declared refusal changed. |
+| `refused` | The build is now refused by construction, so behaviour is never shown with and without the rule. |
+| `survives` | The scenario still passes without the rule. |
+| `inert` | The removal never reached a build: the scenarios never exercise the identity's KB grant (for example a hand-built fighter with the shared mechanic injected through `skill_ids`). |
+| `baseline-fails` | The scenario already fails with the rule present; it is not counted. |
+
+An identity is `discriminating` when one scenario `fails`, `construction-only`
+when none fails but one is `refused`, `inert` when every scenario is inert,
+`untested` when every scenario fails at baseline, and `non-discriminating`
+otherwise. For construction rules (skill access, equipment restrictions) a
+refusal is the rule's own effect, so `construction-only` is expected there.
+
+```powershell
+python tests/conformance/integrity/removal_probe.py                                  # whole corpus, about a minute
+python tests/conformance/integrity/removal_probe.py --identity rule/mordheim/sons-of-hashut/band--hard-head/trait.concussion-immune --show discriminating
+python tests/conformance/integrity/removal_probe.py --identities-file ids.txt --json outputs/removal-probe.json --show non-discriminating
+python tests/conformance/integrity/removal_probe.py --fail-on non-discriminating      # exit 1 when any identity has that verdict
+```
+
+`--workers N` (default 4; `1` runs serially) uses forked worker processes.
+`--json` writes every scenario outcome per identity.
+
+Use the probe after authoring or repairing scenarios, and after a KB change that
+moves where an effect is encoded. A `non-discriminating` identity needs one of
+two things. If a legal build can reach the rule's boundary, it needs a better
+scenario. If no build can isolate the rule, the KB encodes the effect twice and
+should keep a single source: when an effect is legitimately delivered by another
+rule or convention, mark it `covered.elsewhere`
+(see [the KB reference](../../docs/reference/knowledge-base.md)); otherwise name
+the duplicate in a dated `# Discrimination note` in the file header. A verdict
+is measurement, never an oracle: do not change an expectation to satisfy the
+probe, and do not count a probe run as conformance coverage.
 
 ## Derived artefacts
 

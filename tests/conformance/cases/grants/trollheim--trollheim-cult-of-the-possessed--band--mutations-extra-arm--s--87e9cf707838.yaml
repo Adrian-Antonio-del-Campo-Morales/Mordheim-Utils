@@ -1,7 +1,7 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-extra-arm/special-rule.band--mutations-extra-arm
 # authoring_status: AUTHORED
-# authoring_progress: the admitted whole clause carries authored scenarios derived from the printed sentence and the recorded contract (the mutation accepts a one-handed weapon, Shield or Buckler; the weapon grants a separate attack and the Possessed's shield keeps its natural attack).  The recipient is built from the band package with the rule selected through `special_rule_ids`, as the band's other mutation grants are.  The printed "may not carry a weapon" limitation of the Possessed has no construction consumer and is recorded, not asserted.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# authoring_progress: the admitted whole clause carries authored scenarios derived from the printed sentence and the recorded contract (the mutation accepts a one-handed weapon, Shield or Buckler; the weapon grants a separate attack and the Possessed's shield keeps its natural attack).  The recipient is built from the band package with the rule selected through `special_rule_ids`, as the band's other mutation grants are.  Added 2026-11-16: the Possessed branch (adopted ruling 2026-11-10): the Possessed gains one extra natural attack with an empty extra arm or a shield, without double counting, a weapon in its extra arm is refused (by its empty printed equipment list, "The Possessed never use weapons or armour"), and the same Possessed without the mutation keeps two attacks.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -10,7 +10,7 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: 2 scenarios evidence the printed extra attack on the Mutant recipient through the size of the attack pool, with the same recipient without the mutation as the contrast.
+# AUTHORED: 6 scenarios evidence the printed extra attack on the Mutant recipient through the size of the attack pool, with the same recipient without the mutation as the contrast, and the Possessed branch (empty arm, shield without double counting, weapon refused, control without the mutation).
 
 # --- Authored scenarios ---
 # "A Mutant may use a one-handed weapon in the extra arm and gains +1 Attack": the extra arm
@@ -62,4 +62,96 @@
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.hit: false, attacks.1.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Added 2026-11-16: the Possessed branch of the adopted ruling "A Possessed with Extra Arm always
+# gains one additional natural attack. It applies with an empty extra hand, shield or buckler,
+# without double counting; the Possessed cannot carry a weapon" (docs/decisions/design-rulings.md,
+# 2026-11-10).  The recipient is the band's printed Possessed (WS4 S4 T4 W2 I4 A2, which "never use
+# weapons or armour") at its printed profile; nobody charges, so no Fear test arises from its printed
+# Fear, and the hand-built victim makes no attacks.  Every hit die is a natural 1, so the number of
+# declared hit dice is the observable: two printed Attacks plus the one natural attack the mutation
+# grants.
+
+# With the extra arm empty the Possessed makes three attacks, one more than its printed two.
+- audit_id: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-extra-arm/special-rule.band--mutations-extra-arm
+  id: the-possessed-with-an-empty-extra-arm-gains-one-natural-attack
+  fighters:
+    first:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: the-possessed
+      special_rule_ids: [band--mutations-extra-arm]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.2.hit, value: 1}
+  expect_rounds:
+    0: {attacks.2.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# With a shield in the extra arm it still gains exactly one attack (no double counting): three hit dice, not four.
+- audit_id: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-extra-arm/special-rule.band--mutations-extra-arm
+  id: the-possessed-with-a-shield-in-the-extra-arm-gains-one-attack-not-two
+  fighters:
+    first:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: the-possessed
+      special_rule_ids: [band--mutations-extra-arm]
+      extra_hand_id: defence.shield
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.2.hit, value: 1}
+  expect_rounds:
+    0: {attacks.2.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "But still cannot carry a weapon": a weapon in the Possessed's extra arm is refused.  The refusal
+# comes from the Possessed's empty equipment list (printed "The Possessed never use weapons"), the
+# same construction stage that must hold for the extra arm.
+- audit_id: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-extra-arm/special-rule.band--mutations-extra-arm
+  id: the-possessed-may-not-carry-a-weapon-in-the-extra-arm
+  fighters:
+    first:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: the-possessed
+      special_rule_ids: [band--mutations-extra-arm]
+      extra_hand_id: weapon.mace
+  expect_error: "equipment is not available to trollheim-cult-of-the-possessed/the-possessed: ['weapon.mace']"
+
+# Control: the same Possessed with a different mutation (band--mutations-acid-blood, which cannot fire here) keeps its printed two attacks.
+- audit_id: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-extra-arm/special-rule.band--mutations-extra-arm
+  id: the-same-possessed-without-the-extra-arm-keeps-two-attacks
+  fighters:
+    first:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: the-possessed
+      special_rule_ids: [band--mutations-acid-blood]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {attacks.1.hit: false, state.second.wounds: 3}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

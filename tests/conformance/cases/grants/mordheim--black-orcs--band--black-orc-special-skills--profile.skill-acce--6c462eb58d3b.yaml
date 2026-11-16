@@ -5,7 +5,8 @@
 #   Boss that selects a printed table member is built and the duel runs, and a special skill outside
 #   the printed table is refused with the shared access diagnostic.  The member used for the
 #   admission is Thick Skull, the skill this band's own Ard Ead rule binds, not a guess.  REVIEWED
-#   still requires manual semantic review and execution_status stays UNEXECUTED.
+#   still requires manual semantic review and execution_status stays UNEXECUTED.  A third scenario
+#   (2026-11-16) refuses a catalogue special skill outside the printed tables (see Addition below).
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -14,12 +15,17 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: 2 scenarios cover the printed permission (Black Orc Heroes may use the band
+# AUTHORED: 3 scenarios cover the printed permission (Black Orc Heroes may use the band
 #   special skill list instead of the standard lists available to them).  The admission scenario
 #   builds the recipient with skill.thick-skull, the identity this band's own Ard Ead special-skill
 #   rule binds, and records that the duel ran unrefused; the closure scenario shows a special skill
 #   outside the printed table refused.  The binding declares only the category, so the remaining
 #   published members stay the KB's to enumerate.  REVIEWED still requires manual semantic review.
+# Addition (2026-11-16): Regeneration is the Troll's printed rule, not a member of the printed Black Orc special-skill table
+#   (Proven Warrior, 'Ard 'Ead, Waaagh!, 'Ere We Go!, Da Cunnin' Plan, 'Eadbasher) nor of any standard table, so
+#   the Black Orc Boss may not choose it.  The refusal is the bound special list closing
+#   the profile's generic 'special' access; without this binding the profile's own skill_access 'special'
+#   (profiles.yaml) admits that catalogue special skill, so this scenario is the one that depends on the rule.
 
 # --- Authored scenarios ---
 # Derived from the printed rule, the recorded semantic contract and this band's own Ard Ead binding;
@@ -52,3 +58,13 @@
       profile_id: black-orc-boss
       skill_ids: [skill.monster-slayer]
   expect_error: "skills are not available to black-orcs/black-orc-boss: ['skill.monster-slayer']"
+
+- audit_id: rule/mordheim/black-orcs/band--black-orc-special-skills/profile.skill-access
+  id: a-special-rule-outside-the-printed-table-is-refused-for-the-boss
+  fighters:
+    first:
+      collection: mordheim
+      band_id: black-orcs
+      profile_id: black-orc-boss
+      skill_ids: [skill.regeneration]
+  expect_error: "skills are not available to black-orcs/black-orc-boss: ['skill.regeneration']"

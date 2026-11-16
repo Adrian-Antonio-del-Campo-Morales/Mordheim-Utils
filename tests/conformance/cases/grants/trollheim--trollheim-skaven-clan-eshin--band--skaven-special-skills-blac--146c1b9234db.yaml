@@ -1,11 +1,16 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/trollheim-skaven-clan-eshin/band--skaven-special-skills-black-hunger/mechanic.black-hunger
 # authoring_status: AUTHORED
-# authoring_progress: the admitted attack-and-backlash clause carries 2 authored scenarios derived
+# authoring_progress: the admitted attack-and-backlash clause carries 4 authored scenarios derived
 # from the printed skill text and the shared black-hunger operator: the +1 Attack of the invoked
 # turn appears as a second mace attack and the end-of-turn D3 Strength 3 hits land with no armour
 # roll requested at all.  The printed Movement term is the excluded movement clause of this same
 # file.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# Real-recipient addendum (2026-11-16): 2 further scenario(s) build the printed Skaven Clan Eshin
+# profile itself (assassin-adept) and select band--skaven-special-skills-black-hunger through
+# special_rule_ids, so the KB grant of this identity is exercised rather than only the shared
+# operator injected into hand-built fixtures; the earlier fixture scenarios stay as the operator
+# cases.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -15,7 +20,7 @@
 # Governing rulings: docs/decisions/design-rulings.md
 #
 # Clause: attack-and-backlash (scope: YES)
-# AUTHORED[attack-and-backlash]: 2 scenarios evidence the printed skill for its own bearer: the
+# AUTHORED[attack-and-backlash]: 4 scenarios evidence the printed skill for its own bearer: the
 #   invoked turn adds one attack to the printed A1 profile (two mace attacks) and the end-of-turn
 #   backlash is D3 Strength 3 hits with no armour save, proved by a bearer wearing light armour
 #   for whom no armour face is requested.  The retained automatic activation convention of the
@@ -76,6 +81,77 @@
     - {key: round.0.second.attack.0.hit, value: 1}
     - {key: round.0.first.black-hunger.hits, sides: 3, value: 1}
     - {key: round.0.first.black-hunger.hit.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first.wounds: 1, attacks.3.damage: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Real recipient (2026-11-16): the same duel as the-invocation-grants-one-extra-attack, but the
+# bearer is built as the printed Skaven Clan Eshin Assassin profile
+# (trollheim/trollheim-skaven-clan-eshin/assassin-adept), with the band rule selected through
+# special_rule_ids [band--skaven-special-skills-black-hunger] instead of injecting
+# mechanic.black-hunger into a hand-built fighter; the explicit characteristics keep that scenario's
+# dice model. The profile's equipment list does not offer the original weapon, so it carries
+# weapon.sword; no die of the declared tape depends on that swap.
+- audit_id: rule/trollheim/trollheim-skaven-clan-eshin/band--skaven-special-skills-black-hunger/mechanic.black-hunger
+  id: the-invocation-grants-one-extra-attack-as-the-real-assassin-adept
+  covers: [attack-and-backlash]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: trollheim-skaven-clan-eshin
+      profile_id: assassin-adept
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.sword
+      special_rule_ids: [band--skaven-special-skills-black-hunger]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context:
+    charging: [first]
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.first.attack.0.hit, value: 4}
+  - {key: round.0.first.attack.1.hit, value: 4}
+  - {key: round.0.first.attack.0.wound, value: 4}
+  - {key: round.0.first.attack.1.wound, value: 4}
+  - {key: round.0.second.attack.0.hit, value: 1}
+  - {key: round.0.first.black-hunger.hits, sides: 3, value: 1}
+  - {key: round.0.first.black-hunger.hit.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.damage: 1, attacks.1.damage: 1, state.second.wounds: 1, state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Real recipient (2026-11-16): the same duel as the-backlash-ignores-armour, but the bearer is built
+# as the printed Skaven Clan Eshin Assassin profile
+# (trollheim/trollheim-skaven-clan-eshin/assassin-adept), with the band rule selected through
+# special_rule_ids [band--skaven-special-skills-black-hunger] instead of injecting
+# mechanic.black-hunger into a hand-built fighter; the explicit characteristics keep that scenario's
+# dice model. The profile's equipment list does not offer the original weapon, so it carries
+# weapon.sword; no die of the declared tape depends on that swap.
+- audit_id: rule/trollheim/trollheim-skaven-clan-eshin/band--skaven-special-skills-black-hunger/mechanic.black-hunger
+  id: the-backlash-ignores-armour-as-the-real-assassin-adept
+  covers: [attack-and-backlash]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: trollheim-skaven-clan-eshin
+      profile_id: assassin-adept
+      armour_id: armour.light-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.sword
+      special_rule_ids: [band--skaven-special-skills-black-hunger]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context:
+    charging: [first]
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.first.attack.0.hit, value: 1}
+  - {key: round.0.first.attack.1.hit, value: 1}
+  - {key: round.0.second.attack.0.hit, value: 1}
+  - {key: round.0.first.black-hunger.hits, sides: 3, value: 1}
+  - {key: round.0.first.black-hunger.hit.0.wound, value: 4}
   expect_rounds:
     0: {state.first.wounds: 1, attacks.3.damage: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

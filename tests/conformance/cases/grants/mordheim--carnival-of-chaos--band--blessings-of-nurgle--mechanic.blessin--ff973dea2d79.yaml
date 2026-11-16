@@ -38,6 +38,10 @@
 # Clause: whole--scope--blessing-price (scope: NO)
 # Outside the admitted clause scope; retained for context, not a test TODO.
 
+# De-duplication note (2026-11-16): the duplicate KB source recorded here earlier has been removed, so
+#   this rule is now the single source and its scenarios fail when its binding is removed (rule-removal
+#   probe).  Earlier note, kept for history: this binding is a construction contract (compiler.blessings-of-nurgle) with no duel consumer; the only compiled trace of the grant is CompiledFighter.construction_tags, so scenario a-tainted-one-may-carry-more-than-one-b...
+
 # --- Authored scenarios ---
 # Derived from the printed sentence, the printed profiles and the recorded contract; no engine output
 # was consulted.  The consumer is the shared construction/eligibility stage, whose diagnostic for a
@@ -111,5 +115,7 @@
   expect_initial: {second.wounds: 2}
   expect_rounds:
     0: {state.first.wounds: 3, state.second.wounds: 2, state.second.condition: STANDING}
+  expect_fighters:
+    second.construction_tags: [compiler.blessings-of-nurgle, compiler.nurgle-s-blessings]
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 

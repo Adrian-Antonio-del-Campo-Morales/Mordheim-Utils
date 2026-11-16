@@ -14,8 +14,10 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: 2 scenarios cover the printed 4+ save against magic weapons and its absence
+# AUTHORED: 3 scenarios cover the printed 4+ save against magic weapons and its absence
 #   against a mundane attack.
+# Real recipient (2026-11-16): one further scenario builds the band's printed Corpse Master from the band
+# package, so the KB grant itself (not an injected mechanic id or trait) is exercised.
 
 # --- Authored scenarios ---
 # Derived from the printed rule and the recorded contract; no engine output was consulted.  Magic
@@ -62,3 +64,30 @@
     0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
+
+# Real recipient (2026-11-16): the charged bearer is the band's printed Corpse Master built from the band
+# package (characteristics overridden only to keep the fixture's dice math), so the 4+ save against the
+# magical attack comes from the profile's own Magical Void row; without it no save die is requested.
+- audit_id: rule/mordheim/call-of-the-night-haint-mim/corpse-master--magical-void/mechanic.magical-void
+  id: the-printed-corpse-master-saves-the-magical-attack-on-four
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {magical_attacks: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: call-of-the-night-haint-mim
+      profile_id: corpse-master
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

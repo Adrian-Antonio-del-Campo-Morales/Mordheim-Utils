@@ -1,12 +1,15 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/maneaters/bulls--bull-charge/mechanic.bull-charge
 # authoring_status: AUTHORED
-# authoring_progress: the admitted clause carries 3 authored scenarios for the printed charge
+# authoring_progress: the admitted clause carries 4 authored scenarios for the printed charge
 # substitution: the declared single +1 attack that knocks the defender down without a To Wound roll,
 # the recorded reading of "if successful" as an unparried unsaved hit (the armour save that leaves the
 # defender standing), and the declined declaration that resolves the normal attacks.  REVIEWED still
 # requires manual semantic review and execution_status stays UNEXECUTED; no behavioral result is
 # claimed.
+# Real-recipient addendum (2026-11-16): one further scenario builds the printed Bull profile, so the
+# KB grant of this identity is exercised rather than only the operator injected into the fixtures
+# above; the band's printed Fear adds the enemy's passing Fear test to its tape and event list.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -15,7 +18,7 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: 3 scenarios cover the printed charge for the Bulls: the declared charge resolves
+# AUTHORED: 4 scenarios cover the printed charge for the Bulls: the declared charge resolves
 # exactly one attack on its own key (round.0.first.bull-charge.hit) instead of the profile's two and
 # an unparried, unsaved hit leaves the defender KNOCKED_DOWN without a To Wound roll; an armour save
 # stops that knock-down; and declining the declaration resolves the profile's normal attacks.  The
@@ -102,3 +105,39 @@
     - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
     - {kind: roll, key: round.0.first.attack.1.hit, sides: 6, value: 1}
     - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+# Real recipient (2026-11-16): the same charge as a-declared-bull-charge-knocks-the-enemy-down, but
+# the charger is the printed Maneaters Bull profile, whose own rule bulls--bull-charge grants the
+# operator. The explicit characteristics keep the original dice model; the Bull's equipment list has
+# no mace, so it carries a club (the Bull Charge replaces its normal attacks, so the weapon asks for
+# no die). The band's printed Fear (band--fear) makes the charged enemy, now given Leadership 7,
+# test Fear first: 1+1 passes.
+- audit_id: rule/mordheim/maneaters/bulls--bull-charge/mechanic.bull-charge
+  id: a-declared-bull-charge-knocks-the-enemy-down-as-the-real-bull
+  fighters:
+    first:
+      collection: mordheim
+      band_id: maneaters
+      profile_id: bulls
+      main_weapon_id: weapon.club
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context:
+    charging: [first]
+    active_participant: first
+  maximum_rounds: 1
+  decisions:
+  - {key: round.0.first.bull-charge, value: true}
+  rolls:
+  - {key: round.0.second.fear.charged.0, value: 1}
+  - {key: round.0.second.fear.charged.1, value: 1}
+  - {key: round.0.first.bull-charge.hit, value: 3}
+  expect_rounds:
+    0: {attacks.0.hit: true, state.second.condition: KNOCKED_DOWN, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+  - {kind: roll, key: round.0.second.fear.charged.0, sides: 6, value: 1}
+  - {kind: roll, key: round.0.second.fear.charged.1, sides: 6, value: 1}
+  - {kind: decision, key: round.0.first.bull-charge, value: true}
+  - {kind: roll, key: round.0.first.bull-charge.hit, sides: 6, value: 3}

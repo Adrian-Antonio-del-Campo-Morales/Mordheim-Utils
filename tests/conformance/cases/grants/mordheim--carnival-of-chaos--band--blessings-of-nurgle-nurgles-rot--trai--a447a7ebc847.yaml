@@ -20,8 +20,7 @@
 # bearer's recorded initiative_penalty stays 0.  The bearer is the carnival-of-chaos/tainted-ones profile
 # that prints the rule, which declares no armour, ward or regeneration save and no
 # Ethereal-class hit gate, so the mace lands its wound without a declared defence die.
-# The bearer starts the duel at two wounds and declares no attack, so a single unsaved
-# wound leaves it standing and no injury roll is needed; the clause is single-faceted,
+# The bearer keeps its printed one wound and declares no attack, so the unsaved wound takes it to its declared injury roll; the clause is single-faceted,
 # so no second scenario is required.
 
 # The printed clause names the Tainted One, so the fixture is the tainted-ones profile and the selection is Nurgle's Rot, the one Blessing of Nurgle whose admitted binding is trait.poison-immune.
@@ -52,7 +51,7 @@
       main_poison_id: poison.nightshade
       characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
     second: {collection: mordheim, band_id: carnival-of-chaos, profile_id: tainted-ones, special_rule_ids: [band--blessings-of-nurgle-nurgles-rot]}
-  initial_state: {second: {wounds: 2, attacks: 0}}
+  initial_state: {second: {attacks: 0}}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:

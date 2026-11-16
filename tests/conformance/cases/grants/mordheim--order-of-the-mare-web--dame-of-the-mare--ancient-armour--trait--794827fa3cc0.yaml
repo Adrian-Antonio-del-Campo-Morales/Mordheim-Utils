@@ -2,7 +2,8 @@
 # audit_id: rule/mordheim/order-of-the-mare-web/dame-of-the-mare--ancient-armour/trait.natural-armour-unmodified
 # authoring_status: AUTHORED
 # authoring_progress: the admitted five-plus-unmodifiable-save clause carries 3 authored scenarios derived from
-# the printed rule and the printed profile.
+# the printed rule and the printed profile, one of them a Strength 5 blow whose save stays at the
+# printed 5+ ("a 5+ save that cannot be modified").
 # REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED;
 # no behavioral result is claimed.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -16,7 +17,8 @@
 # Clause: five-plus-unmodifiable-save (scope: YES)
 # AUTHORED[five-plus-unmodifiable-save]: 3 scenarios show the printed save in the armour phase: the mace's
 #   Strength 3 face leaves the printed threshold unmodified, so a die at the threshold is saved
-#   and a die one face below it is not.  The clauses the file also admits are evidenced by their own scenario.  REVIEWED still requires manual semantic review and
+#   and a die one face below it is not; a Strength 5 blow, which would worsen an ordinary save by
+#   two, still meets the printed 5+ on a five because the save "cannot be modified".  The clauses the file also admits are evidenced by their own scenario.  REVIEWED still requires manual semantic review and
 #   execution_status stays UNEXECUTED.
 # The negation clause is evidenced by a magical attacker: no save face is
 # requested and the wound is taken.
@@ -101,4 +103,26 @@
     - {key: round.0.first.attack.0.injury.0, value: 1}
   expect_rounds:
     0: {attacks.0.saved: false, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed "cannot be modified": a Strength 5 blow would take two points off an ordinary save
+# (5+ would become impossible), but this save stays 5+, so the five saves it.  Strength 5 against
+# the printed Toughness 3 wounds on 3+; the wound face five is not a natural six, so no critical.
+- audit_id: rule/mordheim/order-of-the-mare-web/dame-of-the-mare--ancient-armour/trait.natural-armour-unmodified
+  id: a-strength-five-blow-does-not-modify-the-printed-save
+  covers: [five-plus-unmodifiable-save]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 5, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: order-of-the-mare-web, profile_id: dame-of-the-mare}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 1, state.second.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -14,6 +14,15 @@ any adopted decision. New rule evidence belongs in modular mechanics tests and c
 
 ## Duel engine (modular oracle)
 
+- **Miniath's "additional parry attempt" is the failed-parry re-roll.** The
+  Lustria High Elves printing on broheim.net (`high-elves-lus/special-rules.yaml::band--skill-miniath`,
+  "If he has a weapon that he can parry with he gains an additional parry
+  attempt") and the Lustria rulebook printing (`lustria-high-elves::band--high-elf-special-skills-miniath`,
+  p.119, "may re-roll a failed parry attempt") describe one skill with one
+  effect: with a natively parrying weapon, a failed parry is rolled again; the
+  parry allowance stays one. Both records bind `skill.miniath` with the clause
+  `reroll-with-a-parrying-weapon`; the printed texts are kept unchanged.
+  (User decision adopted 2026-11-16.)
 - **Bone Helmets use the ordinary Helmet defence.** Both `bone_helmet` and
   `bone_helmet_skink_priest_only` retain `mechanic_id: defence.helmet`; the latter
   keeps its recipient restriction. This is an adopted equivalence, not an

@@ -619,17 +619,14 @@ rules:
     - plague-cart
 - id: plague-cart--guardian-unarmed
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: mechanic.guardian-unarmed
-      scope: 'YES'
-      binding:
-        kind: trait
-        id: trait.guardian-unarmed
-        parameters:
-          value: true
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   name: Guardian Unarmed
   effect: The Guardian suffers no penalties for fighting unarmed.
   source:

@@ -21,7 +21,7 @@
 # PARTIAL: [C] three requirements, separated; the access is in scope even though every member's own
 #   effect is not, and the tape set is written from that distinction.
 #   R1 TABLE ACCESS - (rule/mordheim/arabian-tomb-raiders/band--arabian-tomb-raiders-special-skills/
-#   profile.skill-access; effect_id profile.skill-access; binding parameters {"category":"special"};
+#   profile.skill-access; effect_id profile.skill-access; binding parameters {"category":"special","skills":[3 members]};
 #   runtime scope YES / implemented YES / grant band / applies_to.band true): "Arab Heroes may use the
 #   following skill table instead of any of the standard skill tables available to them."  A member's own
 #   printed consequence being dispositioned out of the duel does not exclude this selection requirement
@@ -57,7 +57,7 @@
 #         rejected the table wholesale would answer with the availability sentence and fail tape 1.
 #   (b) skill_ids routes a *catalogue* skill through skillIssue()/profileSkillLists(), which is the route
 #   that reads the profile.skill-access member array; it can only name a member the catalogue carries, and
-#   for this table that array is empty.
+#   for this table that array now lists the three members (checked 2026-11-16).
 #   WHICH CLAUSE EACH ROUTE EVIDENCES (read statically in the shared construction stage, never by
 #   running it).  Route (a) resolves the declared id against this band's own package rows, then runs the
 #   recipients stage and the access stage's recipient predicate (the recipient profile's own "special"
@@ -69,9 +69,9 @@
 #   this band publishes being a legal special selection for an Arab Hero) together with the restored
 #   refusal of a special skill outside the table.
 #   MISSING CAPABILITY (PENDING implementation defect, not an authoring blocker and not a reason to
-#   withhold a requirement): (i) the profile.skill-access binding of this table declares parameters
-#   {"category":"special"} WITHOUT a "skills" member array, so profileSkillLists() yields nothing for
-#   this table, and the buildAccess fallback - catalogue rows whose source_refs name the band - is empty
+#   withhold a requirement): (i) [withdrawn 2026-11-16: the profile.skill-access binding now declares a
+#   "skills" member array listing the three printed members, so the "WITHOUT a skills array" note no
+#   longer holds] and the buildAccess fallback - catalogue rows whose source_refs name the band - is empty
 #   because this band's members are its own kind: warband_skill rows and carry no catalogue row; and
 #   (ii) the list route rejects any identity the catalogue does not carry before the member list is
 #   consulted.  The identities (the band's own published member ids), the recipient (the Arab Hero) and

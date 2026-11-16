@@ -12,14 +12,21 @@
 #
 # AUTHORED: 2 scenarios evidence the first-round missed-hit reroll against a
 #   Vampire of another bloodline and the same miss standing against a Strigoi.
+#   Corrected 2026-11-16: both bearers now also carry mechanic.psychology-immunity
+#   (the Strigoi Vampire's own strigoi-vampire--immune-to-psychology), so the
+#   positive scenario exercises the ruling "Strigoi Psychology immunity suppresses
+#   Hatred against everyone ... Preserve the separately scoped Kindred Hatred
+#   exception" (design-rulings.md); earlier the "immune" bearer had no immunity.
 
 # --- Authored scenarios ---
-# A non-Strigoi bloodline qualifies despite the bearer's Psychology immunity.
+# A non-Strigoi bloodline qualifies despite the bearer's Psychology immunity: the
+# printed "A Strigoi Vampire Hates vampires of other blood-lines" survives the
+# immunity by the adopted ruling, so the first-round miss of 2 is rerolled.
 - audit_id: mechanic/mechanic.kindred-hatred
   id: an-immune-strigoi-rerolls-against-another-bloodline
   fighters:
     first:
-      skill_ids: [mechanic.kindred-hatred]
+      skill_ids: [mechanic.kindred-hatred, mechanic.psychology-immunity]
       main_weapon_id: weapon.mace
       trait_overrides: {vampire: true, vampire_bloodline: strigoi}
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
@@ -42,7 +49,7 @@
   id: the-same-miss-stands-against-a-kindred-strigoi
   fighters:
     first:
-      skill_ids: [mechanic.kindred-hatred]
+      skill_ids: [mechanic.kindred-hatred, mechanic.psychology-immunity]
       main_weapon_id: weapon.mace
       trait_overrides: {vampire: true, vampire_bloodline: strigoi}
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}

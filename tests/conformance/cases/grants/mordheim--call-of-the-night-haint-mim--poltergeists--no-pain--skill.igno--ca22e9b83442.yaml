@@ -1,13 +1,10 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/call-of-the-night-haint-mim/poltergeists--no-pain/skill.ignore-pain
-# authoring_status: AUTHORED
-# authoring_progress: no active scenario.  The single authored witness (an Injury-table result
-#   that the table makes Stunned, converted to Knocked Down) is archived in
-#   tests/TMP_E2E/FIX_E2E_0098__mordheim--call-of-the-night-haint-mim--poltergeists--no-pain--ski.md
-#   because Incorporeal (injury_profile 2) takes this bearer out of action on any unsaved wound
-#   without an Injury roll, so the conversion has no reachable result for this profile.  This file
-#   claims no positive coverage of the clause.  REVIEWED still requires manual semantic review and
-#   execution_status stays UNEXECUTED.
+# authoring_status: PARTIAL
+# authoring_progress: no scenario.  The printed No Pain (Stunned counts as Knocked Down) has no reachable
+#   result on this profile: the same profile's printed Incorporeal ("When a Poltergeist is wounded do not
+#   roll for injury; it is immediately taken out of action", bound as trait.injury-profile 2) removes the
+#   injury roll the conversion acts on.  REVIEWED is not claimed and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -16,14 +13,12 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: no active scenario.  The historical witness is archived in the delivery
-# FIX; Incorporeal resolves OUT before the Injury chart for this bearer, so the printed
-# Stunned-to-Knocked-Down conversion is not claimed as covered.
-
-# --- Authored scenarios ---
-# The historical declaration is archived in
-# tests/TMP_E2E/FIX_E2E_0098__mordheim--call-of-the-night-haint-mim--poltergeists--no-pain--ski.md
-# because Incorporeal (injury_profile 2) takes a wounded Poltergeist out of action without an
-# Injury roll, so its printed Stunned-to-Knocked-Down conversion cannot be exercised.
+# PARTIAL: no scenario is authored, and the reason is a source interaction, not a missing input.  Any
+#   unsaved wound takes the printed Poltergeist out of action without an Injury roll (Incorporeal), so no
+#   Stunned result exists for No Pain to convert.  A tape could only show Incorporeal's own outcome, which
+#   belongs to that identity, not this one.  A KB disposition (for example covered.elsewhere for this
+#   effect) would close this file; until then it stays PARTIAL.  (Corrected 2026-11-16: the earlier header
+#   claimed AUTHORED with an empty body and pointed at tests/TMP_E2E/FIX_E2E_0098, an archive that was
+#   never committed.)
 
 []  # Empty scenario list: this file contributes no test or coverage.

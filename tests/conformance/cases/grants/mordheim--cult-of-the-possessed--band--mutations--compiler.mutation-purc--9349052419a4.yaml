@@ -26,6 +26,10 @@
 # Clause: whole--scope--mutation-price (scope: NO)
 # Outside the admitted clause scope; retained for context, not a test TODO.
 
+# De-duplication note (2026-11-16): the duplicate KB source recorded here earlier has been removed, so
+#   this rule is now the single source and its scenarios fail when its binding is removed (rule-removal
+#   probe).  Earlier note, kept for history: this binding is a construction contract (compiler.mutation-purchase-at-recruitment) with no duel consumer; the only compiled trace of the grant is CompiledFighter.construction_tags, so scenario a-mutation-supplied-with-t...
+
 # --- Authored scenarios ---
 # Derived from the printed rule and the recorded contract; no engine output was consulted.  Every
 # strike is declared as a natural one, so the round carries only the attack dice of the two fighters.
@@ -52,6 +56,8 @@
   expect_initial: {first.wounds: 2}
   expect_rounds:
     0: {state.second.wounds: 2, state.second.condition: STANDING}
+  expect_fighters:
+    first.construction_tags: [compiler.mutant-requires-mutation-at-recruitment, compiler.mutation-purchase-at-recruitment]
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 # The construction face of the same printed sentence: a recipient that reaches the field without the
