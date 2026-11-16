@@ -10,9 +10,9 @@
 #   contributes no test.  REVIEWED still requires manual semantic review and execution_status stays
 #   UNEXECUTED.
 # Real-recipient addendum (2026-11-16): two further scenarios build the printed Warrior Priest and
-# select Rousing Sermon through special_rule_ids (declared and declined). Both currently fail:
-# through the KB binding skill.inspiring-sermon the engine offers no declaration and adds the attack
-# unconditionally (ENGINE-DEFECT noted on the scenarios); the printed expectations are kept.
+# select Rousing Sermon through special_rule_ids (declared and declined). Both failed until the
+# engine offered the declaration for skill.inspiring-sermon (fixed 2026-11-16); before, it added the attack
+# unconditionally; the printed expectations are kept.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -125,7 +125,11 @@
   - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0:
-      state.first.resources_spent: [round.0.rousing-sermon, rousing-sermon]
+      # Chaos in the Streets p.153 sets no once-per-game limit ("At the start of the
+      # Protectorate player's turn, the Warrior Priest may declare a Rousing Sermon"), unlike
+      # the mordheimer.net copy ("only one Rousing Sermon per game"): only this turn's
+      # declaration is scoped, no battle-wide resource.
+      state.first.resources_spent: [round.0.rousing-sermon]
       attacks.0.damage: 1
       attacks.1.hit: false
       attacks.2.hit: false

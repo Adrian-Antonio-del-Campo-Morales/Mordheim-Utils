@@ -247,8 +247,9 @@
     - {kind: roll, key: round.1.first.attack.0.hit, sides: 6, value: 1}
     - {kind: roll, key: round.1.second.attack.0.hit, sides: 6, value: 1}
 
-# Corrected 2026-11-16 (body only; the id is protected by the accepted-evidence
-# baseline and is historical).  The earlier body expected an explicit
+# Corrected 2026-11-16 (body, then id: formerly
+# strike-first-overrides-the-standing-up-penalty, renamed with the
+# accepted-evidence baseline).  The earlier body expected an explicit
 # strike-first ability to override the standing-up penalty.  No printed text or
 # design ruling says so: the printed rule (catalog/rules/core-combat.yaml,
 # combat-order) reads "Charge and other strike-first effects resolve before
@@ -263,7 +264,7 @@
 # with the higher Initiative and without a charge, strikes after its opponent.
 
 - audit_id: core/combat-order
-  id: strike-first-overrides-the-standing-up-penalty
+  id: the-standing-up-penalty-overrides-always-strikes-first
   covers: [stood-up-strikes-last]
   fighters:
     first:

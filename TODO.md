@@ -5,25 +5,26 @@ what is pending and when it is done.
 
 ## Rules-conformance coverage
 
-- **Authoring backlog.** 611 of 2,333 admitted identities have no scenarios.
+- **Authoring backlog.** 603 of 2,272 admitted identities have no scenarios.
   Check with `MORDHEIM_CONFORMANCE_REQUIRE_COMPLETE=1 python -m pytest tests/conformance -q`;
   done when the gate passes.
-- **Engine disagrees with the printed rule (9 failing scenarios).**
-  `weapon.broadsword` strikes last (`priority: -1` in `execution.yaml`, not
-  printed); Long Daggers carry an unprinted `weapon.dagger` tag (Knife Fighting
-  applies, the dagger save does not) — 2 scenarios; Master of Arms does not allow
-  a Difficult-to-Use weapon with a hand weapon; Machine-Ogre Bio Machinery is
-  `implemented: NO`, so its psychology immunity never compiles; Rousing Sermon
-  (`skill.inspiring-sermon`) offers no declaration and adds the attack even when
-  declined — 2 scenarios; Von Carstein Hypnotic Gaze is refused for want of a
-  bloodline prefix; `core/combat-order::strike-first-overrides-the-standing-up-penalty`
-  expects a stood-up Always-Strikes-First fighter to strike last. Done when each
-  scenario passes (the combat-order one after a ruling confirms the reading; its
-  id still reads the old way).
-- **Parity deliveries behind the corpus.** 278 delivery keys name scenarios that
-  no longer exist, 602 scenarios have no delivery and 1,257 deliveries are stale
-  (`source.sha256`). Done when the deliveries are re-prepared with `export_cases`
-  and the orphans removed.
+- **Rousing Sermon (Trollheim) cost not modelled.** The printed "He may not use
+  Prayers that turn" is not enforced, and `catalog/skills/warband.yaml`
+  (`skill.inspiring-sermon`) describes a passive "+1 Attack for the turn" without
+  the declaration. The two fixture scenarios in the Trollheim file exercise
+  `mechanic.rousing-sermon` (the once-per-game Mordheim operator), not this
+  rule's binding. Done when the cost is modelled or ruled out of duel scope and
+  the fixtures are rebound.
+- **Hypnotic Gaze for Lahmia.** Eligibility reads the KB `eligibility` list
+  (`von-carstein-vampire`, `lahmia-vampire`), but the cited print (*Chaos in the
+  Streets* p.181) is a Von Carstein section. Done when the list matches the print.
+- **Master of Arms reaches only the Morning Star.** Items carry no
+  Difficult-to-Use flag, so the exception in `eligibility/index.ts` names the
+  Morning Star. Done when Difficult to Use is a declared item property, or a
+  ruling confirms the Morning Star is the only such one-handed weapon on the list.
+- **Dead Strongman branch.** `phases.py` still names `weapon.broadsword` in the
+  Strongman exemption, though the broadsword has no penalty to remove. Done when
+  the branch reads the two-handed case only.
 - **Scenarios on out-of-scope identities.** 10 identities outside the admitted
   scope still carry scenarios because no admitted identity holds their
   behaviour: Living (Mordheim and Trollheim Tomb Scorpions; a profile
@@ -32,24 +33,35 @@ what is pending and when it is done.
   or a profile's skill access (Orc Boyz crossbow, Thieves Guild Enforcer and
   Ruffian, Strigany and Nipponese skill tables). Done when each behaviour has an
   admitted identity to hold the scenarios, or the scenarios are retired.
-- **Catalogue skills unreachable by scenarios.** The 56
-  `rule/catalog/{general,warband}/skill.*` identities have `grant: none` and no
-  construction path reads their binding (`skill_ids` and starting skills resolve
-  to the mechanic directly); the same holds for the six Fungus Brew conditions and
-  Danse Macabre. The rule-removal probe reports them `inert`. Done when the KB
-  routes these grants through their records or excludes them from conformance.
+- **Conditions and bull-charge unreachable by scenarios.** 8 rule identities
+  probe `inert`: the six Fungus Brew conditions and Danse Macabre (band rules
+  that bind a supplied `condition.*` with `grant: none`) and the Ogre
+  bull-charge. Done when each is routed, re-authored against its own binding or
+  excluded with its own reason.
 - **Printed-source checks before de-duplicating.** Sons of Nagarythe Powerful
   Build: the Shadow Master and Shadow Walker already list `strength` in
   `skill_access`, so the skill adds nothing for them; check the printed skill
   tables. `mad-scientist--lunatic` is printed as a Special Skill but granted
-  automatically to four Masters of Horror profiles, which also makes the Thrall's
-  own Cause Fear redundant; check the print. Done when each encoding matches its
-  print and the probe reports the identity `discriminating`.
-- **Construction-only evidence.** About 35 combat identities (handler leadership,
-  brood mentality, mutations, tail attacks, ...) are refused at construction when
+  automatically to four Masters of Horror profiles, which makes the Thrall's own
+  Cause Fear redundant: `thrall--cause-fear` and the five
+  `mad-scientist--alchemist` conditions probe `non-discriminating`; check the
+  print. Done when each encoding matches its print and the probe reports the
+  identity `discriminating`.
+- **Construction-only evidence.** The probe reports 70 identities
+  `construction-only`. For 12 the rule *is* a construction rule (skill access,
+  equipment restrictions, single-model projection), where a refusal is the
+  expected verdict. The other 58 are combat identities (handler leadership,
+  brood mentality, mutations, tail attacks, ...) refused at construction when
   their rule is removed, so no scenario shows their duel effect with and without
   the rule. Done when each has a scenario whose duel observable changes, or the
   build genuinely cannot exist without the rule (record why).
+- **Equipment mechanics the probe cannot reach.** 12 mechanics probe `inert`
+  because their execution entry carries only a tag and the effect comes from the
+  item catalogue or is synthesised by the engine (nine body armours,
+  `material.normal`, `weapon.natural-attacks`, `mechanic.norse-shieldmaster`);
+  `skill.regeneration-blocked-by-blessed` waits for an `attack.blessed` source.
+  Done when the probe can substitute an item, or these are accepted as covered
+  by item-level coverage.
 - **Haughty also bars obsidian.** The Dwarf-equipment guard in
   `_eligibility.js` treats `material.obsidian` as Dwarf-made; the printed text
   names only Dwarf origin and Gromril. Done when the guard matches the print or a
@@ -67,15 +79,6 @@ what is pending and when it is done.
   chaos-streets Troll Slayer refuses every special skill through `skill_ids`
   while a Dwarf Noble is admitted to Monster Slayer; Battle Monks warrior-monks
   henchmen are admitted to Energy Focus. Done when each is fixed or ruled.
-- **Header prose out of date.** Some `AUTHORED`/`PARTIAL` marker texts quote old
-  scenario counts (automatic-leadership and rat-ogre Stupidity families, Khemri
-  Necrotect, `weapon.kusara-kama`); House Guard Adjutant and
-  `weapon.yari-two-handed` describe a scenario the file no longer holds; the
-  Snotlings Bigsnotz Big Bully header calls Big Bully "implemented NO"; the
-  Snotlings Wheelo grant header repeats the "Strength 3 crew" reading; the
-  Swordsmen, Troll Slayer Hard to Kill, Strigoi and Necrotect Hatred files still
-  describe selecting rules that are now automatic. Done when each header matches
-  its file and the KB.
 
 ## Runtime classification
 
@@ -133,6 +136,14 @@ were retired (127 in
 `vectorized/_driver.py`, 24 in `phases.py`, 25 across `modular/`). Done when they
 are covered again or explicitly accepted as out of scope.
 
+## Order-dependent engine test
+
+`tests/engines/modular/mechanics/test_source_corrections.py::test_m25_break_preserves_prepared_hits_and_projects_surviving_equipment[weapon.dagger]`
+passes alone and in its own file, but fails under
+`pytest tests/engines tests/construction -n 4 -k "<selection>"` with
+`unused rolls: p.attack.1.armour`, also on a clean checkout of `4f271cb7b`.
+Done when the shared state it depends on is found and isolated.
+
 ## Combat Lab checklist popover
 
 Unverified `TclError: bad window path name` after `root.update()` in
@@ -140,6 +151,25 @@ Unverified `TclError: bad window path name` after `root.update()` in
 (`test_popover_body_matches_the_dark_theme`,
 `test_popover_shows_a_visible_scrollbar`; needs Tkinter). Done when both pass
 with their theme, width and scrollbar assertions intact.
+
+## Parity deliveries derived from the conformance corpus
+
+Deliveries in `tests/engines/parity/deliveries/` are derived artefacts of the
+rules-conformance corpus, not part of the rules-conformance suite; they are
+tracked here so corpus work is not blocked on them. A delivery is never proof of
+its source scenario's expectations. Charter:
+[`tests/engines/parity/README.md`](tests/engines/parity/README.md).
+
+- **Parity deliveries behind the corpus.** Against 5,390 corpus scenarios and
+  5,161 deliveries, 436 delivery keys name scenarios that no longer exist, 665
+  scenarios have no delivery and 1,321 deliveries are stale (`source.sha256`);
+  `tests/engines/fixtures/compiled-cases.json` likewise holds `conformance/...`
+  entries under retired scenario ids. Done when the deliveries are re-prepared
+  with `export_cases` and the orphans removed. This must precede any delivery
+  re-sample.
+- **Delivery README figures are stale.** `tests/engines/parity/README.md`
+  prints admission counts that no longer hold. Done when they are refreshed
+  after the re-preparation above.
 
 ## Optimized-backend verification
 
@@ -155,10 +185,11 @@ modular engine requires explicit authorization.
 - **NumPy.** Re-sample `numpy-deliveries-100k` from a clean commit (the current
   engine passes every delivery against `modular-deliveries-100k` at 20,000
   duels).
-- **Stale stores.** In each delivery store, 254 records name scenario ids that no
-  longer exist and 249 admitted deliveries have no record; 11 deliveries are
-  stale (8 Night Goblins KAZ, 3 Extra Arm). KAZ goblin and Main Gauche samples
-  predate their behaviour changes. Regenerate at the next re-sample.
+- **Stale stores.** In each of the three delivery stores (`modular-`, `numpy-`,
+  `native-deliveries-100k`), records name scenario ids that no longer exist and
+  admitted deliveries have no record; KAZ goblin and Main Gauche samples predate
+  their behaviour changes. Regenerate at the next re-sample, after *Parity
+  deliveries behind the corpus* is cleared.
 - **Systematic offset.** NumPy deliveries all pass, but first-win z-scores
   average about +0.2 and unresolved ones about +0.9 over 1,815 inputs (one shared
   seed). Determine whether it is an engine difference or the oracle-provenance
@@ -171,8 +202,8 @@ modular engine requires explicit authorization.
   terminal condition should become a compared magnitude.
 - **Portable native digests.** Add a line-ending rule for `.pyx`/`.pxd` in
   `.gitattributes` so Windows and Linux checkouts produce the same digest.
-- **Rejected deliveries.** 1,484 deliveries need `initial_state` overrides or
-  auxiliary participants and 529 prescribe scripted decisions; they stay
+- **Rejected deliveries.** Deliveries that need `initial_state` overrides or
+  auxiliary participants, or that prescribe scripted decisions, stay
   uncertified until the shared runner supports them.
 
 ## Knowledge gaps

@@ -54,3 +54,134 @@
     0: {attacks.0.hit: false, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
+# Migrated 2026-11-16 from the retired catalogue-skill identity
+# rule/catalog/warband/skill.berserker/skill.berserker (the record is the printed definition of this mechanic, so it is no
+# longer a separate identity).
+- audit_id: mechanic/skill.berserker
+  id: the-charging-turn-hits-on-three
+  fighters:
+    first:
+      skill_ids:
+      - skill.berserker
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 4
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 5
+        attacks: 1
+    second:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 4
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 2
+        attacks: 1
+  duel_context:
+    charging:
+    - first
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - key: round.0.first.attack.0.hit
+    value: 3
+  - key: round.0.first.attack.0.wound
+    value: 4
+  - key: round.0.second.attack.0.hit
+    value: 1
+  expect_rounds:
+    0:
+      attacks.0.hit: true
+      attacks.0.damage: 1
+      state.second.wounds: 2
+  expect_final:
+    rounds_executed: 1
+    termination_reason: horizon
+
+# Migrated 2026-11-16 from the retired catalogue-skill identity
+# rule/catalog/warband/skill.berserker/skill.berserker (the record is the printed definition of this mechanic, so it is no
+# longer a separate identity).
+- audit_id: mechanic/skill.berserker
+  id: the-uncharged-turn-does-not-hit-on-three
+  fighters:
+    first:
+      skill_ids:
+      - skill.berserker
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 4
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 5
+        attacks: 1
+    second:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 4
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 2
+        attacks: 1
+  duel_context:
+    charging: []
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - key: round.0.first.attack.0.hit
+    value: 3
+  - key: round.0.second.attack.0.hit
+    value: 1
+  expect_rounds:
+    0:
+      attacks.0.hit: false
+      state.second.wounds: 3
+  expect_final:
+    rounds_executed: 1
+    termination_reason: horizon
+
+# Migrated 2026-11-16 from the retired catalogue-skill identity
+# rule/catalog/warband/skill.berserker/skill.berserker (the record is the printed definition of this mechanic, so it is no
+# longer a separate identity).
+- audit_id: mechanic/skill.berserker
+  id: without-the-tag-the-charging-three-misses
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 4
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 5
+        attacks: 1
+    second:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 4
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 2
+        attacks: 1
+  duel_context:
+    charging:
+    - first
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - key: round.0.first.attack.0.hit
+    value: 3
+  - key: round.0.second.attack.0.hit
+    value: 1
+  expect_rounds:
+    0:
+      attacks.0.hit: false
+      state.second.wounds: 3
+  expect_final:
+    rounds_executed: 1
+    termination_reason: horizon

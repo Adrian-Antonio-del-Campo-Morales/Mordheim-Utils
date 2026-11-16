@@ -112,7 +112,19 @@ rule (`core/<rule-id>`), a close-combat mechanic the runtime scope keeps
 (`mechanic/<mechanic-id>`), an implemented item (`item/<item-id>`) or a `YES`
 effect of a band rule, catalogue skill or hireling rule
 (`rule/<collection>/<owner>/<rule-id>/<effect-id>`; hireling rules are
-`rule/catalog/<dir>/...` with `<dir>` `hired-swords` or `dramatis-personae`). The printed prose is the
+`rule/catalog/<dir>/...` with `<dir>` `hired-swords` or `dramatis-personae`).
+
+A catalogue skill whose record id, effect id and `mechanic` binding id are the
+one same id is the exception: it is where `mechanic/<id>` prints its text, not a
+second obligation, so it is counted on that mechanic and admitted nowhere else
+(`clauses.defines_its_mechanic`). Nothing routes through such a record either —
+`skill_ids` and starting skills execute the `execution.yaml` entry of that id
+directly — so no scenario could tell the record apart from its mechanic. The
+match is on the exact id and never on names or prose: a catalogue skill that
+binds a *different* mechanic (one printed rule delivered by another's operator)
+keeps its own identity.
+
+The printed prose is the
 rule; an identity is one undivided obligation unless its record declares
 **clauses**, which it does only when the printed text has several observable
 parts or deliberately excludes one:

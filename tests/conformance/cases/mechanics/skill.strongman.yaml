@@ -85,12 +85,12 @@
   expect_rounds:
     0: {attacks.0.hit: True, attacks.0.damage: 1, state.second.wounds: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
-# The same broadsword without the skill.  Body corrected 2026-11-16 (the id is
-# historical and protected): the printed Broadsword has no strike-last rule, so
+# The same broadsword without the skill.  Body corrected 2026-11-16 (renamed
+# from a-broadsword-without-the-skill-strikes-last): the printed Broadsword has no strike-last rule, so
 # without Strongman the I5 bearer still strikes before the I2 mace, exactly as
 # with it.  A strike-last order here would be an engine defect, not the print.
 - audit_id: mechanic/skill.strongman
-  id: a-broadsword-without-the-skill-strikes-last
+  id: a-broadsword-without-the-skill-keeps-the-initiative-order
   fighters:
     first:
       main_weapon_id: weapon.broadsword

@@ -87,6 +87,15 @@ any adopted decision. New rule evidence belongs in modular mechanics tests and c
   priority floor does not erase negative priority; charged spears get no
   extra tier. Strongman remains an explicit exception; equal first-strike
   tiers compare Initiative.
+- **The standing-up penalty also beats Always Strikes First** (2026-11-16).
+  The core Combat order prints "Charge and other strike-first effects resolve
+  before normal Initiative order; a warrior who stood up in the Recovery phase
+  strikes last", and Always Strikes First prints only "Strikes first in close
+  combat", so a stood-up bearer strikes last. Only a rule that prints the
+  exception keeps strike-first: Lahmia Lost Innocence (*Chaos in the Streets*
+  p.183, "including when standing up"), carried as
+  `rule.strike-first-when-standing-up`. The Khemri copy (p.90) prints no such
+  exception. Frantic's top tier is unchanged.
 - **One combat-phase iteration per player turn**, starting with the charger's
   turn. Both fighters reset phase resources; only the active player's fighter
   recovers or tests paralysis/fire. Replaces simultaneous recovery; the
@@ -390,6 +399,16 @@ parameter of the execution contract was project scaffolding and is removed from
 `sources/knowledge/catalog/mechanics/execution.yaml`. Armoured defenders save
 at their own printed face against the longsword. The corresponding conformance
 clauses-authored record is in the corpus ficha for `weapon.cathayan-longsword`.
+
+## The Dragon Sword keeps the Katana's parry — 2026-11-16
+
+The user decides that the older Katana wording governs the Dragon Sword. The
+current Dragon Sword print (mordheimer.net) lists only "Strength: As user +1" and
+Two-handed, but states that the weapon "was referred to as 'Katana'" in older
+material, and the Katana print adds "parry". The Dragon Sword therefore parries
+like the Katana: the `parry: true` of `weapon.dragon-sword` in
+`sources/knowledge/catalog/mechanics/execution.yaml` stays, and the corpus ficha
+for `weapon.dragon-sword` evidences it.
 
 ## The Starsword printed Dodge save is the ward save — 2026-10-14
 

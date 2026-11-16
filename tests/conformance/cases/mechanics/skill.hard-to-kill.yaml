@@ -56,3 +56,45 @@
     0: {state.second.condition: OUT}
   expect_final: {rounds_executed: 1, termination_reason: second_out}
 
+# Migrated 2026-11-16 from the retired catalogue-skill identity
+# rule/catalog/warband/skill.hard-to-kill/skill.hard-to-kill (the record is the printed definition of this mechanic, so it is no
+# longer a separate identity).
+- audit_id: mechanic/skill.hard-to-kill
+  id: the-ordinary-chart-still-takes-an-unmarked-bearer-out-on-a-five
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 5
+        attacks: 1
+    second:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 2
+        attacks: 1
+  duel_context:
+    charging:
+    - first
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - key: round.0.first.attack.0.hit
+    value: 4
+  - key: round.0.first.attack.0.wound
+    value: 4
+  - key: round.0.first.attack.0.injury.0
+    value: 5
+  expect_rounds:
+    0:
+      state.second.condition: OUT
+  expect_final:
+    rounds_executed: 1
+    termination_reason: second_out

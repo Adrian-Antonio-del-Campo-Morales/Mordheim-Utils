@@ -275,8 +275,10 @@ def resolve_priority(context: PriorityContext) -> PriorityResult:
     # it strikes last, and the first-round charge floor never raises it — the
     # standing ruling that Strike Last controls the whole round order.
     absent_initiative = fighter.characteristics.initiative is None
-    # Lost Innocence explicitly retains strike-first when standing up.
-    if context.stood_up and not has_tag(fighter.global_effects, "skill.always-strikes-first"):
+    # Only a rule that prints the exception (Lahmia Lost Innocence, "including when
+    # standing up") keeps strike-first after standing up; plain Always Strikes First
+    # does not, because Strike Last controls the whole round order (design-rulings.md).
+    if context.stood_up and not has_tag(fighter.global_effects, "rule.strike-first-when-standing-up"):
         value = -1
     if absent_initiative:
         value = -1
@@ -361,8 +363,6 @@ def build_attacks(context: AttackPoolContext) -> AttackPoolResult:
         has_tag(fighter.main_weapon, tag)
         for tag in ("weapon.fist", "weapon.fighting-claws")
     ):
-        attacks += 1
-    if context.player_turn and has_tag(effect, "skill.inspiring-sermon"):
         attacks += 1
     if context.first_round:
         attacks += fighter.main_weapon.first_round_attacks_bonus

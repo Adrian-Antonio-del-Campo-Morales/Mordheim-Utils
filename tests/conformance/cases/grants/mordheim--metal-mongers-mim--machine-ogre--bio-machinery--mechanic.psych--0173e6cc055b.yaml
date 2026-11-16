@@ -87,10 +87,11 @@
 # gazed by an enemy with Hypnotic Gaze, whose printed text says "Models immune to Psychology are
 # unaffected": no gaze die is asked for, the ogre is not barred and resolves its three printed
 # attacks (all declared misses). Unlike the Fear scenario above, its own Fear cannot produce this
-# result. ENGINE-DEFECT (2026-11-16): the KB record machine-ogre--bio-machinery carries
-# runtime.implemented 'NO' (sources/knowledge/bands/mordheim/metal-mongers-mim/special-rules.yaml),
-# so the immunity never compiles and round.0.second.hypnotic-gaze.0 is requested; the printed
-# expectation is kept.
+# result. Because the immune model is "unaffected", the gaze is never declared against it either:
+# unlike the Automatic Leadership copy (Spawn of Chaos), where the gaze is declared and its test
+# passes without a die, here no declaration is scripted. (Fixed 2026-11-16: the KB record
+# machine-ogre--bio-machinery carried runtime.implemented 'NO' although its only YES effect is
+# bound, so the immunity never compiled; the printed expectation was kept unchanged.)
 - audit_id: rule/mordheim/metal-mongers-mim/machine-ogre--bio-machinery/mechanic.psychology-immunity
   id: the-machine-ogre-ignores-a-hypnotic-gaze
   fighters:
@@ -103,8 +104,6 @@
     charging: []
     active_participant: first
   maximum_rounds: 1
-  decisions:
-  - {key: round.0.second.hypnotic-gaze, value: true}
   rolls:
   - {key: round.0.first.attack.0.hit, value: 1}
   - {key: round.0.second.attack.0.hit, value: 1}

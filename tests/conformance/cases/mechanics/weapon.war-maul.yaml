@@ -14,7 +14,8 @@
 #   save on both faces, the strike-last priority, the refused parry, the two-handed
 #   occupancy and the -1 Initiative. The Initiative penalty acts through the
 #   tie-break of the priority comparison, which needs a second strike-last weapon
-#   at the same tier: against a broadsword (Strike Last, no Initiative penalty) the
+#   at the same tier: against a double-handed weapon (Strike Last, no Initiative
+#   penalty; the broadsword used before prints no strike-last, corrected 2026-11-16) the
 #   maul's lowered Initiative loses a tie-break it would otherwise win and turns a
 #   win into an exact tie that needs the priority die.
 
@@ -142,7 +143,7 @@
 
 # Every strike-last weapon shares the lower tier, so the printed -1 Initiative is
 # read where the tier cannot decide: within the tier the effective Initiatives are
-# compared, and the maul's own is one lower.  The broadsword also strikes last and
+# compared, and the maul's own is one lower.  The double-handed weapon also strikes last and
 # carries no Initiative penalty, so equal printed Initiative must resolve to the
 # maul acting second, with no priority-tie die at all.
 - audit_id: mechanic/weapon.war-maul
@@ -152,7 +153,7 @@
       main_weapon_id: weapon.war-maul
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
     second:
-      main_weapon_id: weapon.broadsword
+      main_weapon_id: weapon.double-handed-weapon
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
@@ -176,7 +177,7 @@
       main_weapon_id: weapon.war-maul
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
     second:
-      main_weapon_id: weapon.broadsword
+      main_weapon_id: weapon.double-handed-weapon
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1}
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1

@@ -360,8 +360,6 @@ def attack_count(fighter: CompiledFighter, charging: np.ndarray, first_round: bo
         result += 1
     elif has(effect,"skill.art-of-silent-death") and (has(fighter.main_weapon,"weapon.fist") or has(fighter.main_weapon,"weapon.fighting-claws")):
         result += 1
-    if has(effect,"skill.inspiring-sermon"):
-        result += np.asarray(player_turn, dtype=np.int16)
     if first_round:
         result += fighter.main_weapon.first_round_attacks_bonus
     if frenzy is not None:
@@ -518,7 +516,7 @@ def priority(fighter: CompiledFighter, opponent: CompiledFighter, first_round: b
             value[:] = 20
         if has(fighter.global_effects, "skill.lightning-reflexes"):
             value[charged] = np.maximum(value[charged], 1)
-    if not has(fighter.global_effects, "skill.always-strikes-first"):
+    if not has(fighter.global_effects, "rule.strike-first-when-standing-up"):
         value[stood] = -1
     # ``phases.resolve_priority``: a profile that prints no Initiative fights
     # outside the Initiative order — it strikes last and the first-round charge

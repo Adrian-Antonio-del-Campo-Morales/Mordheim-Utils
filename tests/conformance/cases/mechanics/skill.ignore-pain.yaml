@@ -57,3 +57,49 @@
     0: {state.second.condition: STUNNED}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
+# Migrated 2026-11-16 from the retired catalogue-skill identity
+# rule/catalog/warband/skill.ignore-pain/skill.ignore-pain (the record is the printed definition of this mechanic, so it is no
+# longer a separate identity).  Renamed from a-stunned-result-becomes-knocked-down: this file already holds a
+# scenario of that name with different inputs.
+- audit_id: mechanic/skill.ignore-pain
+  id: a-stunned-result-becomes-knocked-down-against-a-stronger-attacker
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 10
+        strength: 8
+        toughness: 3
+        wounds: 3
+        initiative: 10
+        attacks: 1
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.ignore-pain
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+        leadership: 7
+  duel_context:
+    charging: []
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - key: round.0.first.attack.0.hit
+    value: 4
+  - key: round.0.first.attack.0.wound
+    value: 5
+  - key: round.0.first.attack.0.injury.0
+    value: 3
+  expect_rounds:
+    0:
+      state.second.wounds: 0
+      state.second.condition: KNOCKED_DOWN
+  expect_final:
+    rounds_executed: 1
+    termination_reason: horizon

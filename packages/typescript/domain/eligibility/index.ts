@@ -1839,7 +1839,7 @@ export function buildRestriction(context: BuildContext, stage: string): string |
 }
 
 function profileTail(context: BuildContext): string | null {
-  const { build: b, profile: p, contracts } = context;
+  const { build: b, profile: p, contracts, package: pack } = context;
   const has = (id: string) => contracts.includes(id);
   const forbiddenSkills = (predicate: (id: string) => boolean) => b.skill_ids.filter(predicate).sort();
   const magic = (id: string) => id.includes("arcane") || id.includes("sorcery");
@@ -1847,7 +1847,10 @@ function profileTail(context: BuildContext): string | null {
   if (has("compiler.tracker-gear") && !["rope_hook", "bolas"].every((id) => (p.fixed_equipment ?? []).includes(id))) return "Trackers must begin with Rope and Hook and Bolas";
   if (has("compiler.vampiric-powers")) {
     const bloodline = p.id.endsWith("-vampire") ? p.id.slice(0, -8) : p.id;
-    const foreign = b.special_rule_ids.filter((id) => id.includes("-power-") && !id.includes(`band--${bloodline}-power-`));
+    // A power's printed bloodline list (`eligibility`) decides; the id prefix is the fallback.
+    const owners = (id: string) => pack.special_rules.find((rule) => rule.id === id)?.eligibility;
+    const foreign = b.special_rule_ids.filter((id) => id.includes("-power-")
+      && !(owners(id)?.length ? owners(id)!.includes(p.id) : id.includes(`band--${bloodline}-power-`)));
     if (foreign.length) return `Vampiric Powers must belong to the Vampire's bloodline: ${pythonList(foreign)}`;
   }
   if (has("compiler.warrior-s-code")) {
@@ -2733,7 +2736,11 @@ export function loadoutRestriction(args: {
       "weapon.squig-prodder": ["defence.shield", "weapon.spiked-gauntlet"],
       "weapon.boar-spear": ["defence.shield", "defence.buckler"],
     };
-    if (restricted[b.main_weapon_id] && !restricted[b.main_weapon_id]!.includes(b.off_hand_id)) return `${b.main_weapon_id} cannot be combined with ${b.off_hand_id}`;
+    // Master of Arms: 'may now wield a Difficult to Use weapon and a hand weapon at the same time,
+    // but not two Difficult to Use weapons'. The Morning Star is the Difficult to Use one-hander;
+    // a Difficult to Use off-hand cannot be selected (off_hand: false), so any off-hand weapon qualifies.
+    const masterOfArms = b.main_weapon_id === "weapon.morning-star" && b.off_hand_id.startsWith("weapon.") && contracts.includes("compiler.master-of-arms");
+    if (restricted[b.main_weapon_id] && !masterOfArms && !restricted[b.main_weapon_id]!.includes(b.off_hand_id)) return `${b.main_weapon_id} cannot be combined with ${b.off_hand_id}`;
     if (["armour.toughened-leathers", "armour.ninja-robes"].includes(b.armour_id) && ["defence.shield", "defence.kite-shield"].includes(b.off_hand_id)) return "toughened leathers cannot be combined with a shield";
     if (["armour.wizard-s-robe", "armour.eshin-assassin-robes"].includes(b.armour_id) && ["defence.shield", "defence.buckler", "defence.kite-shield"].includes(b.off_hand_id)) return `${b.armour_id} cannot be combined with other armour except a helmet`;
   }

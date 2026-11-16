@@ -89,7 +89,11 @@ kinds, admission is decided per kind: every `core/` identity is admitted; a
 `mechanic/` identity is admitted unless it is listed under `mechanic_exclusions`
 in `sources/knowledge/registry/runtime-scope.yaml`; a `rule/` identity (one runtime effect) is
 admitted when the effect's own `scope` is `YES` or any of its clauses has
-`scope: 'YES'`. An undivided identity (no clauses) is a single obligation.
+`scope: 'YES'`. One `rule/` kind is never admitted: a catalogue skill whose
+record, effect and `mechanic` binding ids are the one same id prints the text of
+`mechanic/<id>` rather than stating an obligation of its own, so its scenarios
+belong to that mechanic (see *Identities and clauses* in
+[the KB reference](../../docs/reference/knowledge-base.md)). An undivided identity (no clauses) is a single obligation.
 `item/` identities are tracked by the knowledge base but are not conformance
 kinds. The generator creates one YAML authoring file for each admitted ID. Every file starts at TODO. All new cases are authored
 from scratch using the rule and accepted contract; the only exception is the
@@ -532,8 +536,15 @@ away:
   `runtime_bindings` for the compiler and the eligibility engine, so the build
   compiles as if the KB did not bind that effect.
 - `mechanic/` identities: the mechanic id is deleted from every id list of every
-  build. A mechanic reached only through a weapon, armour or material slot is
-  reported `inert`, because the probe does not substitute equipment.
+  build. When no list holds it — a weapon, armour, material or poison sits in a
+  scalar slot such as `main_weapon_id` — the mechanic's `execution.yaml` entry is
+  neutralised instead: the id still resolves, so the build stays legal, but the
+  entry contributes no tag, bonus or flag. An entry that carries nothing but its
+  own tag (most body armour, `material.normal`) delivers its effect from the item
+  catalogue, which the probe does not substitute, so a scenario surviving its
+  neutralisation is reported `inert`. Such a tag may still be read by another
+  rule's operator (heavy armour by Armour Specialist); that evidence belongs to
+  the other identity.
 - `core/` identities are not probed.
 
 | Scenario outcome | Meaning |

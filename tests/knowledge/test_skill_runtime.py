@@ -228,3 +228,35 @@ def test_ignore_pain_prerequisite_is_covered_by_shared_construction():
     from dataclasses import replace
     fighter = compile_fighter(replace(base, skill_ids=("skill.resilient",)), ROOT)
     assert "skill.ignore-pain" in fighter.global_effects.tags
+
+
+def test_a_skill_that_defines_its_own_mechanic_is_not_a_second_identity():
+    """The definition record is counted on ``mechanic/<id>``, never twice.
+
+    A catalogue skill whose record, effect and ``mechanic`` binding ids are the
+    one same id prints the text of that mechanic; nothing routes through the
+    record (``skill_ids`` execute the ``execution.yaml`` entry of that id), so a
+    scenario could not tell the two apart.  Every catalogue skill carries that
+    shape today; a skill that bound a *different* mechanic would keep its own
+    identity, which is why the inventory matches on the exact id.
+    """
+    from mordheim_knowledge.clauses import iter_identities
+
+    identities = {i.identity: i for i in iter_identities(ROOT)}
+    checked = 0
+    for skill in load_skills("mordheim", ROOT):
+        runtime = skill.get("runtime") or {}
+        for effect in runtime.get("effects") or ():
+            binding = effect.get("binding") or {}
+            if not (str(binding.get("kind")) == "mechanic"
+                    and str(skill["id"]) == str(effect["id"]) == str(binding.get("id"))):
+                continue
+            mechanic = identities.get(f"mechanic/{skill['id']}")
+            if mechanic is None or not mechanic.admitted:
+                continue
+            checked += 1
+            rule = next((i for k, i in identities.items()
+                         if k.endswith(f"/{skill['id']}/{effect['id']}")), None)
+            assert rule is not None and not rule.admitted, (
+                f"{skill['id']} defines mechanic/{skill['id']} and must not be admitted twice")
+    assert checked > 50, f"expected the catalogue skill lot, checked {checked}"

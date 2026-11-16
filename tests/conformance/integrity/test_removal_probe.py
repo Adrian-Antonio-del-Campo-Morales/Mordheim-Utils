@@ -89,6 +89,53 @@ def test_a_mechanic_is_removed_from_the_build_id_lists():
     assert probe_scenario(HARD_TO_KILL, case) == "fails"
 
 
+BROADSWORD = "mechanic/weapon.broadsword"
+
+# The printed Broadsword's +1 Strength moves the wound target against Toughness 3
+# to 3+, so a wound die of 3 wounds only with the bonus.  The weapon sits in the
+# scalar main_weapon_id slot, which no id list holds.
+BROADSWORD_WOUNDS_ON_THREE = {
+    "fighters": {
+        "first": {"main_weapon_id": "weapon.broadsword",
+                  "characteristics": {"weapon_skill": 3, "strength": 3, "toughness": 3,
+                                      "wounds": 2, "initiative": 5, "attacks": 1}},
+        "second": {"main_weapon_id": "weapon.mace",
+                   "characteristics": {"weapon_skill": 3, "strength": 3, "toughness": 3,
+                                       "wounds": 2, "initiative": 2, "attacks": 1}},
+    },
+    "duel_context": {"charging": ["first"], "active_participant": "first"},
+    "maximum_rounds": 1,
+    "rolls": [{"key": "round.0.first.attack.0.hit", "value": 4},
+              {"key": "round.0.first.attack.0.wound", "value": 3},
+              {"key": "round.0.second.attack.0.hit", "value": 1}],
+    "expect_rounds": {0: {"attacks.0.damage": 1, "attacks.1.damage": 0, "state.second.wounds": 1}},
+    "expect_final": {"rounds_executed": 1, "termination_reason": "horizon"},
+}
+
+
+def test_an_equipment_slot_is_removed_by_neutralising_its_execution_entry():
+    assert probe_scenario(BROADSWORD, BROADSWORD_WOUNDS_ON_THREE) == "fails"
+
+
+def test_an_equipment_scenario_that_passes_without_the_entry_survives():
+    # A wound die of 4 wounds at Strength 3 as well: the bonus never matters.
+    case = copy.deepcopy(BROADSWORD_WOUNDS_ON_THREE)
+    case["rolls"][1]["value"] = 4
+    assert probe_scenario(BROADSWORD, case) == "survives"
+
+
+def test_a_tag_only_entry_whose_effect_lives_in_the_item_catalogue_is_inert():
+    # Light Armour's execution entry carries only its tag; the save itself comes
+    # from the item record, so neutralising the entry never touches the effect.
+    case = copy.deepcopy(BROADSWORD_WOUNDS_ON_THREE)
+    case["fighters"]["first"]["main_weapon_id"] = "weapon.mace"
+    case["fighters"]["second"]["armour_id"] = "armour.light-armour"
+    case["rolls"] = [{"key": "round.0.first.attack.0.hit", "value": 1},
+                     {"key": "round.0.second.attack.0.hit", "value": 1}]
+    case["expect_rounds"] = {0: {"state.second.wounds": 2, "state.first.wounds": 2}}
+    assert probe_scenario("mechanic/armour.light-armour", case) == "inert"
+
+
 @pytest.mark.parametrize("outcomes,expected", [
     ({"a": "fails", "b": "survives"}, "discriminating"),
     ({"a": "refused", "b": "survives"}, "construction-only"),

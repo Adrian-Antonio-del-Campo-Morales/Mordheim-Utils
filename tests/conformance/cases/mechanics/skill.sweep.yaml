@@ -45,6 +45,35 @@
     0: {attacks.0.hit: True, attacks.0.wounded: True, attacks.0.critical: False, attacks.0.damage: 1, state.second.condition: OUT}
   expect_final: {rounds_executed: 1, termination_reason: second_out}
 
+# The same sweep at the Strength boundary.  The automatic hit is a hit of the
+# double-handed weapon, so it strikes at the bearer's Strength 3 plus the weapon's
+# printed +2: Strength 5 against Toughness 3 wounds on a 2+ on the core wound
+# chart.  The declared wound die of 2 therefore wounds only because the hit carries
+# the weapon's Strength (at Strength 3 it would need a 4+), which the 4 above cannot
+# show.  Restored 2026-11-16 from the retired catalogue-skill copy, where it had
+# been dropped as redundant by mistake.
+- audit_id: mechanic/skill.sweep
+  id: the-automatic-hit-wounds-at-the-double-handed-weapon-strength
+  fighters:
+    first:
+      main_weapon_id: weapon.double-handed-weapon
+      skill_ids: [skill.sweep]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 3}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.sweep, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.first.attack.0.injury.0, value: 6}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: True, attacks.0.critical: False, attacks.0.damage: 1, state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
 - audit_id: mechanic/skill.sweep
   id: a-passed-initiative-test-grants-no-hit-at-all
   fighters:

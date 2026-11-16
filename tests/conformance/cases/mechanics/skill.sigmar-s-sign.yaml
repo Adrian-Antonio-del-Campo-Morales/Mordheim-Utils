@@ -116,3 +116,54 @@
   expect_rounds:
     0: {attacks.0.hit: false, attacks.1.wounded: true, state.first.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Migrated 2026-11-16 from the retired catalogue-skill identity
+# rule/catalog/warband/skill.sigmar-s-sign/skill.sigmar-s-sign (the record is the printed definition of this mechanic, so it is no
+# longer a separate identity).
+- audit_id: mechanic/skill.sigmar-s-sign
+  id: the-printed-floor-keeps-the-attack-of-a-single-attack-undead-attacker
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.sigmar-s-sign
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 5
+        attacks: 1
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides:
+        creature_kind: undead
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 2
+        attacks: 1
+  duel_context:
+    charging:
+    - first
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - key: round.0.first.attack.0.hit
+    value: 4
+  - key: round.0.first.attack.0.wound
+    value: 4
+  - key: round.0.second.attack.0.hit
+    value: 4
+  - key: round.0.second.attack.0.wound
+    value: 4
+  expect_rounds:
+    0:
+      attacks.0.hit: true
+      attacks.1.hit: true
+      state.first.wounds: 2
+  expect_final:
+    rounds_executed: 1
+    termination_reason: horizon

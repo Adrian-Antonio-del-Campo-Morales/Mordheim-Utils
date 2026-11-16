@@ -1,7 +1,7 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/weapon.broadsword
 # authoring_status: AUTHORED
-# authoring_progress: the admitted clause carries four authored scenarios for the +1 Strength boundary, the strike-last order, the refused second weapon and the permitted shield. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# authoring_progress: the admitted clause carries four authored scenarios for the +1 Strength boundary, the ordinary Initiative order, the refused second weapon and the permitted shield. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -10,10 +10,10 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: 4 scenarios and 1 refusal cover the +1 Strength boundary, the printed strike-last tier, the refused second weapon and the permitted shield.
+# AUTHORED: 4 scenarios and 1 refusal cover the +1 Strength boundary, the ordinary Initiative order (no printed strike-last), the refused second weapon and the permitted shield.
 
 # --- Authored scenarios ---
-# mechanic/weapon.broadsword - Strength +1, strikes after ordinary weapons, and
+# mechanic/weapon.broadsword - Strength +1, ordinary Initiative order, and
 # only a shield may fill the other hand.
 #
 # Expectations come from the printed rule and the admitted clause `whole`, never
@@ -32,17 +32,14 @@
       characteristics: &d-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
-  # The broadsword is a two-handed weapon, so its bearer strikes last however the
-  # printed Initiatives read; the defender opens the round and the tape follows the
-  # pool's real order.
+  # Corrected 2026-11-16: the printed Broadsword is one-handed (it may carry a
+  # shield) and prints no strike-last rule, so the charging I5 bearer opens the round.
   rolls:
-    - {key: round.0.second.attack.0.hit, value: 1}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 3}
-  # The defender strikes first, so its own attack is the first entry of the round: the
-  # broadsword's wound is the second one, and it is the one the boosted Strength lands.
+    - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
-    0: {attacks.0.damage: 0, attacks.1.damage: 1, state.second.wounds: 1}
+    0: {attacks.0.damage: 1, attacks.1.damage: 0, state.second.wounds: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 # One face below the boosted wound target.
 
@@ -57,20 +54,22 @@
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
-  # The broadsword is a two-handed weapon, so its bearer strikes last however the
-  # printed Initiatives read; the defender opens the round and the tape follows the
-  # pool's real order.
+  # Corrected 2026-11-16: the printed Broadsword is one-handed (it may carry a
+  # shield) and prints no strike-last rule, so the charging I5 bearer opens the round.
   rolls:
-    - {key: round.0.second.attack.0.hit, value: 1}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.damage: 0, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
-# Neither fighter charges, so only the printed strike-last tier can send the ordinary weapon first; the bearer's higher Initiative cannot lift it.
+# Neither fighter charges.  Body corrected 2026-11-16 (renamed from
+# broadsword-strikes-after-an-ordinary-weapon): the
+# printed Broadsword ("Strength: As user +1 Difficult to use") prints no strike-last
+# rule, so ordinary Initiative order applies and the I5 bearer strikes first.
 
 - audit_id: mechanic/weapon.broadsword
-  id: broadsword-strikes-after-an-ordinary-weapon
+  id: broadsword-keeps-the-ordinary-initiative-order
   fighters:
     first:
       main_weapon_id: weapon.broadsword
@@ -81,14 +80,14 @@
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
-    - {key: round.0.second.attack.0.hit, value: 1}
     - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {state.second.wounds: 2, state.first.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
   expect_events:
-    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
     - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
 # The printed restriction on a second weapon in the other hand is declared as a refusal.
 
 - audit_id: mechanic/weapon.broadsword
@@ -117,8 +116,8 @@
   duel_context: {charging: [], active_participant: first}
   maximum_rounds: 1
   rolls:
-    - {key: round.0.second.attack.0.hit, value: 1}
     - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {state.second.wounds: 2, state.first.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -28,6 +28,10 @@
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
+  # The skill's only printed origin (Chaos in the Streets p.153) makes it optional: "the
+  # Warrior Priest may declare a Rousing Sermon", so the bonus follows the declaration.
+  decisions:
+    - {key: round.0.first.rousing-sermon, value: true}
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.1.hit, value: 1}

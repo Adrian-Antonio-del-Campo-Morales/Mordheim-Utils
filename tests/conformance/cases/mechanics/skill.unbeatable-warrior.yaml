@@ -73,3 +73,49 @@
     0: {attacks.0.parried: true, attacks.1.parried: false, attacks.1.damage: 1, state.second.parries_remaining: 0, state.second.wounds: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
+# Migrated 2026-11-16 from the retired catalogue-skill identity
+# rule/catalog/warband/skill.unbeatable-warrior/skill.unbeatable-warrior (the record is the printed definition of this mechanic, so it is no
+# longer a separate identity).
+- audit_id: mechanic/skill.unbeatable-warrior
+  id: the-same-flag-also-blocks-on-an-equal-roll
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 5
+        attacks: 1
+    second:
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.unbeatable-warrior
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 2
+        attacks: 1
+  initial_state:
+    second:
+      attacks: 0
+  duel_context:
+    charging:
+    - first
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - key: round.0.first.attack.0.hit
+    value: 4
+  - key: round.0.first.attack.0.parry
+    value: 4
+  expect_rounds:
+    0:
+      attacks.0.parried: true
+      state.second.wounds: 2
+  expect_final:
+    rounds_executed: 1
+    termination_reason: horizon

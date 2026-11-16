@@ -441,10 +441,16 @@ def resolve_round(
     sermon_key = f"round.{state.round_index}.rousing-sermon"
     if (current.condition in (phases.Condition.STANDING, phases.Condition.KNOCKED_DOWN)
             and not lost_turn and not (current.grappled or current.grappling or current.netted)
-            and has_tag(fighter.global_effects, "mechanic.rousing-sermon")
-            and "rousing-sermon" not in current.resources_spent
+            and (has_tag(fighter.global_effects, "mechanic.rousing-sermon")
+                 and "rousing-sermon" not in current.resources_spent
+                 # Chaos in the Streets p.153: "At the start of the Protectorate player's
+                 # turn, the Warrior Priest may declare a Rousing Sermon" -- optional, on
+                 # each own turn, with no once-per-game limit.
+                 or has_tag(fighter.global_effects, "skill.inspiring-sermon"))
             and decisions.choose(f"round.{state.round_index}.{label}.rousing-sermon", fighter)):
-        current = current.spend("rousing-sermon").spend(sermon_key)
+        current = current.spend(sermon_key)
+        if has_tag(fighter.global_effects, "mechanic.rousing-sermon"):
+            current = current.spend("rousing-sermon")
         state = replace(state, **{label: current})
     if sermon_key in current.resources_spent:
         fighter = replace(fighter, global_effects=replace(fighter.global_effects,

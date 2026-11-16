@@ -1052,16 +1052,19 @@ def _rousing_sermon(fighter: CompiledFighter, state: CombatState,
     +1 Attack for that one phase.
     """
     granted = np.zeros(state.wounds.size, dtype=bool)
-    if rows.size == 0 or not has(fighter.global_effects, "mechanic.rousing-sermon"):
+    once = has(fighter.global_effects, "mechanic.rousing-sermon")
+    # skill.inspiring-sermon (Chaos in the Streets) may be declared on every own turn.
+    if rows.size == 0 or not (once or has(fighter.global_effects, "skill.inspiring-sermon")):
         return granted
     eligible = rows[np.isin(state.condition[rows], (STANDING, KNOCKED_DOWN))
                     & ~lost_turn[rows]
                     & ~state.grappled[rows] & ~state.grappling[rows]
                     & ~state.netted[rows]
-                    & ~ledger.rousing_sermon_used[rows]]
+                    & ~(ledger.rousing_sermon_used[rows] & once)]
     if eligible.size == 0 or not _choose(decisions, key, fighter):
         return granted
-    ledger.rousing_sermon_used[eligible] = True
+    if once:
+        ledger.rousing_sermon_used[eligible] = True
     granted[eligible] = True
     return granted
 

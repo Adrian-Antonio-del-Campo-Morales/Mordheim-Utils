@@ -11,4 +11,192 @@
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
 # TODO: Review the rule and author all required scenarios.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+
+# Migrated 2026-11-16 from the retired catalogue-skill identity
+# rule/catalog/warband/skill.chosen-of-the-white-tower/skill.chosen-of-the-white-tower (the record is the printed definition of this mechanic, so it is no
+# longer a separate identity).
+- audit_id: mechanic/skill.chosen-of-the-white-tower
+  id: the-training-grants-a-parry-without-a-parrying-weapon
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 5
+        attacks: 1
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.chosen-of-the-white-tower
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 2
+        attacks: 1
+  duel_context:
+    charging:
+    - first
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - key: round.0.first.attack.0.hit
+    value: 4
+  - key: round.0.first.attack.0.parry
+    value: 5
+  - key: round.0.second.attack.0.hit
+    value: 1
+  expect_rounds:
+    0:
+      attacks.0.parried: true
+      state.second.wounds: 2
+  expect_final:
+    rounds_executed: 1
+    termination_reason: horizon
+
+# Migrated 2026-11-16 from the retired catalogue-skill identity
+# rule/catalog/warband/skill.chosen-of-the-white-tower/skill.chosen-of-the-white-tower (the record is the printed definition of this mechanic, so it is no
+# longer a separate identity).
+- audit_id: mechanic/skill.chosen-of-the-white-tower
+  id: a-failed-parry-with-a-sword-is-rolled-again
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 5
+        attacks: 1
+    second:
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.chosen-of-the-white-tower
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 2
+        attacks: 1
+  duel_context:
+    charging:
+    - first
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - key: round.0.first.attack.0.hit
+    value: 4
+  - key: round.0.first.attack.0.parry
+    value: 3
+  - key: round.0.first.attack.0.parry.reroll
+    value: 5
+  - key: round.0.second.attack.0.hit
+    value: 1
+  expect_rounds:
+    0:
+      attacks.0.parried: true
+      attacks.0.wounded: false
+      state.second.wounds: 2
+  expect_final:
+    rounds_executed: 1
+    termination_reason: horizon
+
+# Migrated 2026-11-16 from the retired catalogue-skill identity
+# rule/catalog/warband/skill.chosen-of-the-white-tower/skill.chosen-of-the-white-tower (the record is the printed definition of this mechanic, so it is no
+# longer a separate identity).
+- audit_id: mechanic/skill.chosen-of-the-white-tower
+  id: another-parrying-weapon-is-not-rolled-again
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 5
+        attacks: 1
+    second:
+      main_weapon_id: weapon.trident
+      skill_ids:
+      - skill.chosen-of-the-white-tower
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 2
+        attacks: 1
+  duel_context:
+    charging:
+    - first
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - key: round.0.first.attack.0.hit
+    value: 4
+  - key: round.0.first.attack.0.parry
+    value: 3
+  - key: round.0.first.attack.0.wound
+    value: 4
+  - key: round.0.second.attack.0.hit
+    value: 1
+  expect_rounds:
+    0:
+      attacks.0.parried: false
+      attacks.0.damage: 1
+      state.second.wounds: 1
+  expect_final:
+    rounds_executed: 1
+    termination_reason: horizon
+
+# Migrated 2026-11-16 from the retired catalogue-skill identity
+# rule/catalog/warband/skill.chosen-of-the-white-tower/skill.chosen-of-the-white-tower (the record is the printed definition of this mechanic, so it is no
+# longer a separate identity).
+- audit_id: mechanic/skill.chosen-of-the-white-tower
+  id: without-the-training-no-parry-is-offered
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 5
+        attacks: 1
+    second:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 2
+        attacks: 1
+  duel_context:
+    charging:
+    - first
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - key: round.0.first.attack.0.hit
+    value: 4
+  - key: round.0.first.attack.0.wound
+    value: 4
+  - key: round.0.second.attack.0.hit
+    value: 1
+  expect_rounds:
+    0:
+      attacks.0.parried: false
+      attacks.0.damage: 1
+      state.second.wounds: 1
+  expect_final:
+    rounds_executed: 1
+    termination_reason: horizon

@@ -9,7 +9,10 @@ demonstrate:
 * ``item/<item-id>`` — an item whose ``combat_status`` is ``implemented``;
 * ``rule/<collection>/<owner>/<rule-id>/<effect-id>`` — a classified effect of a
   band rule, catalogue skill, or hireling rule (``catalog/hirelings/<owner>/``,
-  top-level and inline profile rules alike) whose scope is ``YES``.
+  top-level and inline profile rules alike) whose scope is ``YES``.  A catalogue
+  skill that is the printed definition of the mechanic of the same id is the one
+  exception: it is counted on ``mechanic/<id>`` instead (see
+  ``defines_its_mechanic``).
 
 A record may break its printed text into *clauses* (``clauses: [{id, scope}]``)
 when it has several observable parts, or when part of the printed text is
@@ -99,6 +102,9 @@ def iter_identities(root: Path | None = None) -> Iterator[Identity]:
     excluded = {str(row.get("id")) for row in read_yaml(base / "registry/runtime-scope.yaml").get("mechanic_exclusions") or ()}
     mechanics = base / "catalog/mechanics/close-combat.yaml"
     catalogue = read_yaml(mechanics)
+    admitted_mechanics = {
+        str(record["id"]) for family in MECHANIC_FAMILIES
+        for record in catalogue.get(family) or () if str(record["id"]) not in excluded}
     for family in MECHANIC_FAMILIES:
         for record in catalogue.get(family) or ():
             identity = f"mechanic/{record['id']}"
@@ -108,12 +114,34 @@ def iter_identities(root: Path | None = None) -> Iterator[Identity]:
             identity = f"item/{item['id']}"
             yield Identity(identity, relative(path), item.get("combat_status") == "implemented", _clauses(item, identity))
 
-    def rule_effects(rule: dict, collection: str, owner: str, source: str) -> Iterator[Identity]:
+    def defines_its_mechanic(rule: dict, effect: dict) -> bool:
+        """Is this record the printed definition of the mechanic of the same id?
+
+        A catalogue skill whose record id, effect id and ``mechanic`` binding id
+        are the one same id does not state an obligation of its own: it is where
+        ``mechanic/<id>`` prints its text.  Nothing routes through such a record
+        either — ``skill_ids`` and starting skills execute the ``execution.yaml``
+        entry of that id directly — so a scenario could never tell the record
+        apart from its mechanic.  The obligation is counted once, on
+        ``mechanic/<id>``, and the record stays bound and readable.  The match is
+        on the exact id, never on names or prose: a skill that binds a *different*
+        mechanic (one printed rule delivered by another's operator) keeps its own
+        identity.
+        """
+        binding = effect.get("binding") or {}
+        return (str(binding.get("kind")) == "mechanic"
+                and str(rule["id"]) == str(effect["id"]) == str(binding.get("id"))
+                and str(binding.get("id")) in admitted_mechanics)
+
+    def rule_effects(rule: dict, collection: str, owner: str, source: str,
+                     *, catalogue_skill: bool = False) -> Iterator[Identity]:
         for effect in (rule.get("runtime") or {}).get("effects") or ():
             identity = rule_identity(collection, owner, str(rule["id"]), str(effect["id"]))
             clauses = _clauses(effect, identity)
             scope = str(effect.get("scope"))
             admitted = scope == ADMITTED_SCOPE or any(c.admitted for c in clauses)
+            if catalogue_skill and defines_its_mechanic(rule, effect):
+                admitted = False
             yield Identity(identity, source, admitted, clauses, scope)
 
     for path in sorted((base / "bands").glob("*/*/special-rules.yaml")):
@@ -121,7 +149,8 @@ def iter_identities(root: Path | None = None) -> Iterator[Identity]:
             yield from rule_effects(rule, path.parent.parent.name, path.parent.name, relative(path))
     for path in sorted((base / "catalog/skills").glob("*.yaml")):
         for skill in read_yaml(path).get("skills") or ():
-            yield from rule_effects(skill, "catalog", path.stem, relative(path))
+            yield from rule_effects(skill, "catalog", path.stem, relative(path),
+                                    catalogue_skill=True)
     for path in sorted((base / "catalog/hirelings").glob("*/*.yaml")):
         document = read_yaml(path)
         for rule in document.get("rules") or ():

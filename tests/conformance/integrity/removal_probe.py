@@ -17,6 +17,14 @@ How the rule is removed
 ``mechanic/<id>``
     The mechanic id is deleted from every id list (``skill_ids``,
     ``condition_ids``, ``special_rule_ids``, ...) of every build in the scenario.
+    When no list holds it — equipment sits in scalar slots such as
+    ``main_weapon_id`` or ``armour_id`` — the mechanic's ``execution.yaml`` entry
+    is neutralised instead: the compiler still finds the id, so the build stays
+    legal, but the entry contributes no tag, bonus or flag.  The removal counts as
+    reaching a build only when a compile actually looks the entry up.  An entry
+    that carries nothing but its own tag delivers its effect from the item
+    catalogue (an armour save, a material's profile), so a scenario that survives
+    its neutralisation is reported ``inert``: the removal never touched the effect.
 ``core/`` identities are not probed (a core rule cannot be removed).
 
 Per-scenario outcome
@@ -71,7 +79,7 @@ REPOSITORY_ROOT = Path(__file__).resolve().parents[3]
 VERDICTS = ("discriminating", "construction-only", "inert", "non-discriminating", "untested")
 
 # The removal target is process-global: the filtered ``runtime_bindings`` reads it.
-_TARGET = {"rule": None, "effect": None, "hits": 0}
+_TARGET = {"rule": None, "effect": None, "mechanic": None, "tag_only": False, "hits": 0}
 _STATE: dict = {}
 
 
@@ -115,6 +123,29 @@ def install() -> None:
     # Every module that imported the function by name holds its own reference.
     for module in (loader, compiler, selection, eligibility):
         module.runtime_bindings = filtered
+
+    from mordheim_core.effects import ExecutionEffect
+    from mordheim_core.models import EffectSet
+    original_index = compiler.effect_index
+
+    class _Counting(dict):
+        def __getitem__(self, key):
+            if key == _TARGET["mechanic"]:
+                _TARGET["hits"] += 1
+            return super().__getitem__(key)
+
+    def neutralised(ruleset, root=None):
+        index = original_index(ruleset, root)  # cached: copied, never mutated
+        target = _TARGET["mechanic"]
+        if target is None or target not in index:
+            return index
+        result = _Counting(index)
+        entry = index[target]
+        result[target] = ExecutionEffect(EffectSet(), entry.trigger, entry.application, entry.stacking)
+        return result
+
+    # Only the compiler applies the index; the engine reads the compiled fighter.
+    compiler.effect_index = neutralised
     _STATE.update(installed=True, eligibility=eligibility, check=check_case,
                   mismatch=EvidenceMismatch, root=knowledge_root())
 
@@ -156,14 +187,24 @@ def _remove(identity: str, case: dict) -> bool:
             if isinstance(value, list) and mechanic in value:
                 build[key] = [item for item in value if item != mechanic]
                 touched = True
-    _TARGET.update(rule=None, effect=None, hits=1 if touched else 0)
-    return touched
+    if touched:
+        _TARGET.update(rule=None, effect=None, mechanic=None, tag_only=False, hits=1)
+        return True
+    from mordheim_knowledge.loader import load_execution_contract
+    entry = next((row for row in load_execution_contract("mordheim").get("mechanics") or ()
+                  if str(row.get("id")) == mechanic), None)
+    if entry is None:
+        _TARGET.update(rule=None, effect=None, mechanic=None, tag_only=False, hits=0)
+        return False
+    _TARGET.update(rule=None, effect=None, mechanic=mechanic, hits=0,
+                   tag_only=set(entry.get("parameters") or {}) <= {"tags"})
+    return True
 
 
 def probe_scenario(identity: str, case: dict) -> str:
     """Outcome of one scenario of ``identity`` with the identity's rule removed."""
     install()
-    _TARGET.update(rule=None, effect=None, hits=0)
+    _TARGET.update(rule=None, effect=None, mechanic=None, tag_only=False, hits=0)
     if _execute(copy.deepcopy(case)) != "passes":
         return "baseline-fails"
     mutated = copy.deepcopy(case)
@@ -171,9 +212,10 @@ def probe_scenario(identity: str, case: dict) -> str:
     try:
         outcome = _execute(mutated) if reached else "inert"
         if outcome == "passes":
-            outcome = "survives" if _TARGET["hits"] else "inert"
+            reached = _TARGET["hits"] and not (_TARGET["mechanic"] and _TARGET["tag_only"])
+            outcome = "survives" if reached else "inert"
     finally:
-        _TARGET.update(rule=None, effect=None, hits=0)
+        _TARGET.update(rule=None, effect=None, mechanic=None, tag_only=False, hits=0)
         _STATE["eligibility"]._catalogue.cache_clear()
     return outcome
 

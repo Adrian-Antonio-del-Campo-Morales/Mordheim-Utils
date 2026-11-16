@@ -22,7 +22,7 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: 3 scenarios carry the printed unconditional first-round reroll onto the
+# AUTHORED: 4 scenarios carry the printed unconditional first-round reroll onto the
 #   real route.  The bearer is the band's printed `necrotect` profile (profiles.yaml: WS 3, S 3, T 4, W 1,
 #   I 3, A 1, rule_ids [necrotect--undead, necrotect--hatred, necrotect--stone-forger], starting skills
 #   [skill.hatred, skill.ignore-pain]), so the warrior carries the printed row through its own profile and
@@ -33,13 +33,15 @@
 #   identity tag at all, and one explicitly carries {creature_kind: daemon}, the non-Undead identity this
 #   corpus uses elsewhere.  The third tape is the printed first-round-only term: maximum_rounds 2, with the
 #   same declared reroll in round 0 and none in round 1, so a second-round reroll request fails the strict
-#   tape.  The register's own note records the defect these tapes detect: the printed clause is an
+#   tape.  The fourth tape is the non-leak negative: a band-mate Skeleton Warrior, who does not carry the
+#   Necrotect's automatic profile ability, keeps its missed hit of 2 and is offered no reroll die, so a
+#   consumer that applied the clause band-wide fails there.  The register's own note records the defect these tapes detect: the printed clause is an
 #   unconditional first-round To-Hit reroll rather than identity-filtered Hatred, the engine exposes
 #   effect.reroll_hits, and the dedicated binding for this band row is still only proposed, so the shared
 #   skill.hatred operator keeps filtering on a supplied enemy identity and the reroll is never offered.
 
 # --- Authored scenarios ---
-# The dedicated printed first-round reroll is selected through its declared grant channel;
+# The dedicated printed first-round reroll is granted automatically by the profile (grant: profile);
 # the profile's starting Hatred alone remains subject to ordinary Psychology immunity.
 # Derived from the printed rule, the printed Necrotect profile of this band and the recorded contract; no
 # engine output was consulted.  The vehicle is the first close-combat round's To-Hit roll of the bearer,
@@ -124,9 +126,10 @@
 # The Necrotect's printed clause must not leak onto a band-mate without it: an Undead Skeleton Warrior
 # charging the same opponent keeps its missed hit of 2, and no re-roll die is requested.  (Body changed
 # 2026-11-16: the clause is now the Necrotect's automatic profile ability, so a Necrotect without it is
-# no longer a legal build; the id still reads the old selection wording.)
+# no longer a legal build; renamed from
+# without-the-selected-clause-ordinary-hatred-remains-suppressed.)
 - audit_id: rule/trollheim/khemri-tomb-guardians/necrotect--hatred/skill.hatred
-  id: without-the-selected-clause-ordinary-hatred-remains-suppressed
+  id: a-band-mate-without-the-clause-gets-no-reroll
   fighters:
     first: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: skeleton-warriors, main_weapon_id: weapon.mace}
     second:

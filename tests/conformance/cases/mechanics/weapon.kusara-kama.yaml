@@ -16,10 +16,10 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# PARTIAL: 5 scenarios evidence the printed extra -1 armour modifier, the
-#   printed two-handed occupancy and the printed weapon hamper; the earlier reason
-#   for leaving the hamper unauthored is corrected here, and two hamper tapes are
-#   authored below. The executor contract does define the state and the keys - modular/attacks.py:275-281 sets
+# PARTIAL: 6 scenarios evidence the printed extra -1 armour modifier (two tapes),
+#   the printed two-handed occupancy (one refusal) and the printed weapon hamper
+#   (three tapes); the earlier reason for leaving the hamper unauthored is
+#   corrected here, and the hamper tapes are authored below. The executor contract does define the state and the keys - modular/attacks.py:275-281 sets
 #   attack_penalty and appends the chosen hand to hampered_hands (the hand chosen
 #   by the decision {attack_key}.kusara-main-hand), modular/pools.py:294-307
 #   consumes both and retains the published minimum, and modular/aftermath.py:96
@@ -41,7 +41,7 @@
 # weapon.kusara-kama - two-handed with an extra -1 armour modifier.
 # Two scenarios pin the printed -1 (a worn 5+ save moves to 6+) and one refusal
 # declares the printed two-handed occupancy. The printed weapon-hamper sentence
-# is evidenced by the last two scenarios; see the PARTIAL note in the clause header
+# is evidenced by the last three scenarios; see the PARTIAL note in the clause header
 # for the data points that still have no observation.
 
 - audit_id: mechanic/weapon.kusara-kama

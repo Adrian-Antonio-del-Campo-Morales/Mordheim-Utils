@@ -8,8 +8,8 @@
 # the shared operator without adding a second runtime contribution.  REVIEWED still requires manual
 # semantic review and execution_status stays UNEXECUTED.
 # Real-recipient addendum (2026-11-16): 2 further scenario(s) build the printed Mercenaries profile
-# itself (swordsmen) and select swordsmen--expert-swordsmen through special_rule_ids, so the KB
-# grant of this identity is exercised rather than only the shared operator injected into hand-built
+# itself (swordsmen), which carries swordsmen--expert-swordsmen automatically (grant: profile), so
+# the KB grant of this identity is exercised rather than only the shared operator injected into hand-built
 # fixtures; the earlier fixture scenarios stay as the operator cases.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
@@ -101,9 +101,10 @@
 
 # Real recipient (2026-11-16): the same duel as a-charging-sword-rerolls-its-failed-hit, but the
 # bearer is built as the printed Mercenaries Swordsmen profile
-# (trollheim/trollheim-mercenaries/swordsmen), with the band rule selected through special_rule_ids
-# [swordsmen--expert-swordsmen] instead of injecting skill.expert-swordsman into a hand-built
-# fighter; the explicit characteristics keep that scenario's dice model.
+# (trollheim/trollheim-mercenaries/swordsmen), which carries the band rule
+# swordsmen--expert-swordsmen automatically (grant: profile) instead of injecting
+# skill.expert-swordsman into a hand-built fighter; the explicit characteristics keep that
+# scenario's dice model.
 - audit_id: rule/trollheim/trollheim-mercenaries/swordsmen--expert-swordsmen/skill.expert-swordsman
   id: a-charging-sword-rerolls-its-failed-hit-as-the-real-swordsmen
   fighters:
@@ -130,7 +131,7 @@
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 # Real recipient (2026-11-16): the same duel as a-great-sword-rerolls-nothing, but the bearer is
 # built as the printed Mercenaries Swordsmen profile (trollheim/trollheim-mercenaries/swordsmen),
-# with the band rule selected through special_rule_ids [swordsmen--expert-swordsmen] instead of
+# which carries the band rule swordsmen--expert-swordsmen automatically (grant: profile) instead of
 # injecting skill.expert-swordsman into a hand-built fighter; the explicit characteristics keep that
 # scenario's dice model.
 - audit_id: rule/trollheim/trollheim-mercenaries/swordsmen--expert-swordsmen/skill.expert-swordsman

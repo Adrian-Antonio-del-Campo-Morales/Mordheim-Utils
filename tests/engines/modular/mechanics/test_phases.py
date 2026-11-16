@@ -205,10 +205,15 @@ def test_priority_and_attack_generation_are_directly_testable_phases(precompiled
 
 @pytest.mark.parametrize("charging", [False, True])
 def test_standing_up_preserves_only_explicit_always_strikes_first(charging, precompiled):
+    # The name is historical (it keys the frozen case).  Plain Always Strikes First
+    # prints only "Strikes first in close combat", and Strike Last controls the
+    # whole round order (design-rulings.md), so the stood-up penalty beats it too;
+    # only a rule that prints the exception (Lahmia Lost Innocence, "including when
+    # standing up") keeps strike-first - see test_always_strikes_first.py.
     compiled = precompiled()
     ordinary = compiled.first
     always_first = compiled.second
-    for actor, expected in ((ordinary, -1), (always_first, 1)):
+    for actor, expected in ((ordinary, -1), (always_first, -1)):
         result = resolve_priority(PriorityContext(
             actor, ordinary, first_round=True, charging=charging, stood_up=True,
         ))

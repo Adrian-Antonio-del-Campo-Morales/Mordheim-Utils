@@ -216,7 +216,7 @@ NUMPY_CONNECTED_TAGS = frozenset({
     # Phase 4: the 8 printed weapon profiles.  Six compile entirely to generic
     # EffectSet fields the vectorized operators already consume (katana: S+1/
     # parry/two-handed; kanabo: S+1/concussion/two-handed; knuckledusters:
-    # paired; long-daggers: parry/paired + weapon.dagger; pry-bar: parry/
+    # paired; long-daggers: parry/paired; pry-bar: parry/
     # concussion; wizards-staff: parry/concussion/two-handed).  Skull Busta's
     # helmet branch was already in ``vectorized/_attacks.py``; Shock Rod's
     # stun-on-1-4 branch landed with this entry.  Specs confirmed at the

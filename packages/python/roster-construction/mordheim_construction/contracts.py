@@ -200,7 +200,10 @@ SPECIAL_RULE_EFFECTS = {
     "band--blood-dragon-power-red-fury": {"effects": {"attacks_bonus": 1}},
     "band--blood-dragon-power-infallible": {"effects": {"charge_reroll_hits": True}},
     "band--blood-dragon-power-strength-of-steel": {"effects": {"charge_strength_bonus": 1}},
-    "band--lahmia-power-lost-innocence": {"effects": {"priority": 10}},
+    # Chaos in the Streets p.183 prints "including when standing up": the exemption from
+    # the stood-up penalty belongs to this rule, not to Always Strikes First in general.
+    "band--lahmia-power-lost-innocence": {"effects": {"priority": 10,
+        "tags": ("rule.strike-first-when-standing-up",)}},
     "band--strigoi-power-monstrosity": {"stats": {"wounds": 1}},
     "band--strigoi-power-infinite-hatred": {"effects": {"reroll_hits": True}},
     # Optional profile rules are selected through FighterBuild.special_rule_ids.

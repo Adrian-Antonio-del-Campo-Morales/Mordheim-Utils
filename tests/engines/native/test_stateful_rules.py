@@ -159,6 +159,19 @@ def test_the_rousing_sermon_grants_its_phase_one_attack_once_per_battle():
     assert len(preaching.log) == len(plain.log) + 1
 
 
+def test_the_inspiring_sermon_is_declared_and_a_declined_one_adds_nothing():
+    # Chaos in the Streets p.153: the Warrior Priest "may declare" a Rousing
+    # Sermon at the start of his turn; the attack is not automatic.
+    first, second = _pair()
+    priest = _tagged(first, "skill.inspiring-sermon")
+    _, plain, _ = _run(first, second, 1)
+    _, declared, policy = _run(priest, second, 1)
+    _, declined, _ = _run(priest, second, 1, policy=_Policy(**{"rousing-sermon": False}))
+    assert "round.0.first.rousing-sermon" in policy.keys
+    assert len(declared.log) == len(plain.log) + 1
+    assert len(declined.log) == len(plain.log)
+
+
 def test_the_alchemist_brew_restores_the_backley_penalty_it_applied():
     first, second = _pair()
     # The brew prints Strength and Initiative penalties at duel start; a
