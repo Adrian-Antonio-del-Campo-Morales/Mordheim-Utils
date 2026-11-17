@@ -233,6 +233,54 @@ Send short progress updates with counts and specific gaps; reserve the detailed
 inventory for final handoff. Report files with scenarios separately from counts
 by authoring status, since a `PARTIAL` file may still have an empty body.
 
+### Hireling recipients
+
+The hireling catalogue (`catalog/hirelings/`) is compiled through its own route and
+the first hireling batch (psychology, 2026-11-17) fixed these conventions; the
+`catalog--hired-swords--*` and `catalog--dramatis-personae--*` files under
+`cases/grants/` show them in full.
+
+- **Recipient build.** `collection: mordheim`, `band_id: hirelings.<hired-sword|dramatis-personae>.<grade>`,
+  `profile_id: hireling.<kind>.<slug>`, `characteristics: {weapon_skill: 3, strength: 3,
+  toughness: 3, wounds: 2, initiative: 5, attacks: 1}` (fixture facts; the printed
+  Leadership stays). A `grant: profile` rule applies by itself, so nothing is selected;
+  a `selectable` hireling skill is selected with `special_rule_ids: [<rule id>]` on the
+  real profile. Omit `main_weapon_id` to take the printed kit's default; name a kit
+  weapon when the kit lists a firearm first (pistols fire in close combat) or when the
+  recipient's own wound matters. An active item outside the printed kit is refused by
+  the kit resolver, so hand-built equipment is not an option.
+- **Opponent.** Hand-built: `main_weapon_id: weapon.mace`, `characteristics: {weapon_skill: 3,
+  strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}`, plus the
+  one fact the rule reads (`trait_overrides: {causes_fear: true}`, `{species: orc}`,
+  `{elf_kind: dark}`, `{creature_kind: undead}`, `{spellcaster: true}`).
+- **Control.** The grade-1b Bard (`hirelings.hired-sword.1b` / `hireling.hired-sword.bard`,
+  `main_weapon_id: weapon.dagger`, same fixture): a hireling without any psychology rule,
+  compiled through the same route, so the request the rule removes (or the re-roll it
+  grants) is shown present without it. For a selectable skill the control is the same
+  profile without the selection.
+- **Refusal.** The Bard with `special_rule_ids: [<rule id>]` and
+  `expect_error: "special rule is not available to hirelings.hired-sword.1b"`. A rule of the
+  Bard's own package is refused by the eligibility gate (`<band>/<profile>`), one of another
+  package by the compiler (`<band>` only); the fragment is their common prefix.
+- **Dice.** The strict tape is consumed in request order, not by key: declare the rolls in
+  the order the engine asks (all hits of a side before its wounds; Lightning Reflexes strikes
+  before the charger). Silence a side with `initial_state: {<side>: {attacks: 0}}`; a
+  frenzied recipient doubles a supplied `attacks: 1`. Fear: `round.<i>.<side>.fear.charged.{0,1}`
+  for the charged side, `.fear.charge.{0,1}` for the charger (a failed charge test ends in
+  `termination_reason: disengaged`); observe `state.<side>.fear_hit_sixes` and
+  `attacks.<n>.hit_target`. Hatred re-roll: `round.0.<side>.attack.0.hit.reroll`. Fear re-roll:
+  decision `round.0.<side>.fear.charged.reroll`, then `.reroll.{0,1}`. A D3 die declares
+  `sides: 3`. The profile's other printed rules add their own requests, which are declared
+  with a comment naming the rule (the Djinn's powers are declined with
+  `djinn-power.curse|luck: false`; Snorri needs `trait_overrides: {snorri_drunk_result: 3}`;
+  Belandysh's Inconsistency rolls `characteristic.<stat>.<n>` when first needed; a dagger
+  grants its target a 6+ save). A merge key (`<<: *recipient`) is overridden by an explicit
+  `trait_overrides`, so restate companion traits when adding one.
+- **Identity.** A hireling's combat identity is its profile's `combat_traits`; Fear and other
+  effects come only from its printed rules. Five profiles do not compile today (`TODO.md`,
+  *Hireling profiles that do not compile*): their identities stay `PARTIAL` with the blocker
+  named and an empty body.
+
 ## Migrated pilot scenarios
 
 The pilot scenarios were authored before the one-file-per-ID organization and

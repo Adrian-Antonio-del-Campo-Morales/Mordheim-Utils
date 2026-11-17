@@ -1217,7 +1217,7 @@ function expressionMatches(node: OpenPayload, bandId: IdString, groups: readonly
 export interface BandHiringClause {
   readonly rule_id: IdString;
   readonly band_id: IdString;
-  /** Hireling traits the band may not hire (`catalog/hirelings/traits.yaml`). */
+  /** Hireling traits the band may not hire (the facts derived from each hireling profile). */
   readonly exclude_traits: readonly string[];
   /** Item tags the band's Hired Swords may not use (`catalog/items` tags). */
   readonly exclude_item_tags: readonly string[];

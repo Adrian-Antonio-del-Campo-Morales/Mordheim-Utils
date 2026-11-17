@@ -5,8 +5,9 @@ what is pending and when it is done.
 
 ## Rules-conformance coverage
 
-- **Authoring backlog.** 603 of 2,272 admitted identities have no scenarios.
-  Check with `MORDHEIM_CONFORMANCE_REQUIRE_COMPLETE=1 python -m pytest tests/conformance -q`;
+- **Authoring backlog.** 562 of 2,272 admitted identities have no scenarios. The division
+  into batches, the order and the per-batch procedure are in *Rules-conformance authoring
+  plan* below. Check with `MORDHEIM_CONFORMANCE_REQUIRE_COMPLETE=1 python -m pytest tests/conformance -q`;
   done when the gate passes.
 - **Rousing Sermon (Trollheim) cost not modelled.** The printed "He may not use
   Prayers that turn" is not enforced, and `catalog/skills/warband.yaml`
@@ -22,9 +23,32 @@ what is pending and when it is done.
   Difficult-to-Use flag, so the exception in `eligibility/index.ts` names the
   Morning Star. Done when Difficult to Use is a declared item property, or a
   ruling confirms the Morning Star is the only such one-handed weapon on the list.
-- **Dead Strongman branch.** `phases.py` still names `weapon.broadsword` in the
-  Strongman exemption, though the broadsword has no penalty to remove. Done when
-  the branch reads the two-handed case only.
+- **Dead Strongman branch.** `phases.py`, `vectorized/_operators.py` and
+  `native/_combat_compile.py` still name `weapon.broadsword` in the Strongman
+  exemption, though the broadsword has no penalty to remove. Done when the three
+  branches read the two-handed case only.
+- **Hireling profiles that do not compile.** Five hireling profiles are refused by the
+  kit resolver before any rule can be exercised, so their 7 psychology identities stay
+  `PARTIAL` with an empty body: `clan-skryre-rat-ogre` (warpfire-thrower), `roadwarden`
+  (horsemans-hammer), `dark-elf-assassin` (dark-elf-blade) and `dijin-katal` (druchii
+  assassin's cloak) need a canonical combat mapping or a resolved rule for a unique kit
+  item; `the-headless-horseman` has no characteristics line (horseman and steed are a
+  composite). Done when each profile compiles through `band_id: hirelings.<kind>.<grade>`.
+- **Band members' hiring facts are not published.** Every hireling profile was reviewed on
+  2026-11-17 (species, elf kind, creature kind, spellcaster, `evil`, `priest`; composite
+  entries declare no combat identity) and `hire-eligibility.ts` reads hirelings only through
+  the derived `hireling_traits`. Band members still go through the hard-coded
+  `FEAR_PROFILE_KEYWORDS` / `SPELLCASTER_PROFILE_KEYWORDS` substring lists; the Witch
+  Hunter's printed exception covers priests of Sigmar, Ulric, Taal and Morr only, while the
+  code excuses any `priest`. Several species and alignment calls rest on knowledge of the
+  printed sources rather than the KB text (marked medium confidence in the review): check
+  them when the prints are mirrored. Done when the generator publishes band members' facts
+  and the keyword lists are gone (web-app phase).
+- **Witch Hunter Burn the Witch binds the general `skill.hatred`.** The print hates enemy
+  spellcasters; the band Witch Hunters bind `mechanic.burn-the-witch`, which reads
+  `identity.spellcaster` (`trait_overrides: {spellcaster: true}` declares it), while
+  the hired Witch Hunter binds the generic hatred of everyone. Done when the hireling
+  rule binds `mechanic.burn-the-witch` and its file covers the non-spellcaster boundary.
 - **Scenarios on out-of-scope identities.** 10 identities outside the admitted
   scope still carry scenarios because no admitted identity holds their
   behaviour: Living (Mordheim and Trollheim Tomb Scorpions; a profile
@@ -58,10 +82,23 @@ what is pending and when it is done.
 - **Equipment mechanics the probe cannot reach.** 12 mechanics probe `inert`
   because their execution entry carries only a tag and the effect comes from the
   item catalogue or is synthesised by the engine (nine body armours,
-  `material.normal`, `weapon.natural-attacks`, `mechanic.norse-shieldmaster`);
-  `skill.regeneration-blocked-by-blessed` waits for an `attack.blessed` source.
+  `material.normal`, `weapon.natural-attacks`, `mechanic.norse-shieldmaster`).
   Done when the probe can substitute an item, or these are accepted as covered
   by item-level coverage.
+- **`skill.regeneration-blocked-by-blessed` is authorable.** Its file still says no
+  build supplies `attack.blessed`, but `condition.blessed-weapon` (with
+  `trait_overrides: {blessed_weapon_slots: [main]}`) does, and a Curse of the Reborn
+  scenario already uses it. Done when the mechanic's own blocked branch is authored
+  and the header corrected.
+- **Coverage baseline digest is stale.** `integrity/evidence/coverage-baseline.yaml`
+  was accepted on 2026-10-08 against an inventory digest that no longer matches (the
+  control re-checks each clause and passes, but reports the move) and protects 15
+  identities only. Done when a reviewed edit refreshes the digest and extends the
+  reference to the reviewed identities.
+- **`crude-belch-ogre` probes non-discriminating without a note.** It is the only one of
+  the 27 non-discriminating identities without a dated `# Discrimination note`; its
+  scenarios exercise `skill.crude-belch-halfling` and two Monster Slayer refusals.
+  Done when the identity has a better scenario or its note.
 - **Haughty also bars obsidian.** The Dwarf-equipment guard in
   `_eligibility.js` treats `material.obsidian` as Dwarf-made; the printed text
   names only Dwarf origin and Gromril. Done when the guard matches the print or a
@@ -79,6 +116,73 @@ what is pending and when it is done.
   chaos-streets Troll Slayer refuses every special skill through `skill_ids`
   while a Dwarf Noble is admitted to Monster Slayer; Battle Monks warrior-monks
   henchmen are admitted to Energy Focus. Done when each is fixed or ruled.
+
+## Rules-conformance authoring plan
+
+The plan of record for the 562 admitted identities without scenarios (2026-11-17, after
+the first hireling batch of 41 identities landed). `tools/conformance/backlog_batches.py`
+derives it from the knowledge base and the corpus and never writes either; covered
+identities drop out when it is re-run, so the table below is refreshed as batches land.
+
+```bash
+.venv/bin/python tools/conformance/backlog_batches.py --table          # this table
+.venv/bin/python tools/conformance/backlog_batches.py --batch B02      # one batch's identities
+.venv/bin/python tools/conformance/backlog_batches.py --out <work-dir> # batches.json + <id>.ids.txt for the probe
+```
+
+**Unit.** A printed-rule group: an uncovered mechanic with every uncovered rule bound to it
+(one oracle; the mechanic through `skill_ids`, its rules through the real build), or the rules
+that share a binding. A component of more than 30 members with an authored model
+(`profile.equipment-restrictions`) is split by collection. **Effort:** 4 to derive a new
+contract, 1 to add a member to an authored or batch-local model, 1.5 for a construction
+member (admission/refusal pair), 2 for a triage item. Batches hold about 50 units.
+**Triage first:** the `PARTIAL` files with a recorded blocker, the operators no engine or
+construction code reads (`mechanic.haunted-mien`, `mechanic.suckers`,
+`condition.disability-2/4/5`, `armour.mage-robes`, `armour.wizard-robe`) and the identities
+on the five hireling profiles that do not compile. Triage is a decision pass (author,
+rule or withhold with the blocker named), not bulk authoring. **Model** counts the
+identities whose binding already has authored scenarios elsewhere.
+
+| Batch | Theme | Ids | Model | Effort | Routes |
+| --- | --- | ---: | ---: | ---: | --- |
+| B00 | triage-blockers-1 | 22 | 12 | 44 | real profile build 15, special_rule_ids 2, construction 2, condition_ids 2, skill_ids 1 |
+| B01 | triage-blockers-2 | 22 | 5 | 44 | real profile build 7, condition_ids 7, skill_ids 4, special_rule_ids 2, construction 2 |
+| B02 | psy-tests-and-enemy-effects | 25 | 15 | 37 | skill_ids 15, real profile build 10 |
+| B03 | hatred-frenzy-and-charge-rages-1 | 25 | 5 | 55 | skill_ids 12, real profile build 10, special_rule_ids 3 |
+| B04 | hatred-frenzy-and-charge-rages-2 | 24 | 5 | 54 | skill_ids 13, real profile build 8, special_rule_ids 3 |
+| B05 | leadership-1 | 29 | 23 | 38 | real profile build 20, skill_ids 6, special_rule_ids 3 |
+| B06 | leadership-2 | 22 | 12 | 37 | skill_ids 10, real profile build 9, special_rule_ids 3 |
+| B07 | survival-injury-and-immunity-1 | 36 | 21 | 57 | real profile build 23, skill_ids 9, special_rule_ids 4 |
+| B08 | survival-injury-and-immunity-2 | 32 | 14 | 56 | real profile build 20, skill_ids 8, special_rule_ids 4 |
+| B09 | survival-saves-and-rerolls | 28 | 11 | 58 | real profile build 21, skill_ids 6, special_rule_ids 1 |
+| B10 | supplied-conditions-1 | 23 | 6 | 59 | condition_ids 23 |
+| B11 | supplied-conditions-2 | 29 | 16 | 59 | condition_ids 29 |
+| B12 | equipment-items-1 | 16 | 1 | 46 | equipment slot 16 |
+| B13 | equipment-items-2 | 16 | 3 | 43 | equipment slot 16 |
+| B14 | equipment-items-3 | 15 | 2 | 45 | equipment slot 15 |
+| B15 | construction-equipment-1 | 35 | 34 | 52.5 | construction 35 |
+| B16 | construction-equipment-2 | 35 | 33 | 52.5 | construction 35 |
+| B17 | construction-skills-and-profile | 43 | 28 | 64.5 | construction 43 |
+| B18 | operators-hirelings-1 | 25 | 15 | 40 | real profile build 17, skill_ids 5, special_rule_ids 3 |
+| B19 | operators-hirelings-2 | 22 | 10 | 40 | real profile build 10, special_rule_ids 7, skill_ids 5 |
+| B20 | operators-band-rules | 38 | 24 | 68 | skill_ids 27, real profile build 6, special_rule_ids 5 |
+| | **Total** | **562** | 295 | 1049.5 | |
+
+**Order.** Triage first (B00–B01). Then the model-heavy themes, which confirm the workflow on
+cheap members: leadership, construction-equipment, construction-skills-and-profile,
+survival-injury-and-immunity. Then psy-tests-and-enemy-effects, hatred-frenzy-and-charge-rages
+and survival-saves-and-rerolls. The new-contract themes last: supplied-conditions,
+equipment-items, operators-hirelings, operators-band-rules. Batches own disjoint files by
+construction and may run in parallel; the coordinator owns the shared documents (this file,
+the design rulings, the conformance README).
+
+**Per batch.** Follow *Author by semantic family* in `tests/conformance/README.md`
+(hireling recipients: *Hireling recipients* there). Verify with
+`validate_corpus.py` (0 metadata conflicts), `pytest tests/conformance/execution/test_cases.py -k <selector> -n 4`
+and `removal_probe.py --identities-file <id>.ids.txt --workers 3 --show non-discriminating`.
+A surviving scenario whose duplicate is a KB encoding gets a dated `# Discrimination note`;
+an identity that cannot be built stays `PARTIAL` with the blocker named. Record new rulings
+in `docs/decisions/design-rulings.md` and new defects here.
 
 ## Runtime classification
 
@@ -143,6 +247,26 @@ passes alone and in its own file, but fails under
 `pytest tests/engines tests/construction -n 4 -k "<selection>"` with
 `unused rolls: p.attack.1.armour`, also on a clean checkout of `4f271cb7b`.
 Done when the shared state it depends on is found and isolated.
+
+## Intermittent removal-probe baseline failure
+
+On 2026-11-17, two P0 probe runs (`--workers 3`) reported both Grave Robber hatred
+scenarios `baseline-fails` (identity `inert`) although they pass under pytest; nine later
+runs (three CLI, six instrumented) were clean, and the cause was not found. While looking,
+`mordheim_construction.eligibility` was found to install the catalogue into its JavaScript
+engine once per process (`_installed`), while the probe only clears the Python
+`_catalogue` cache: a removal never reaches the JavaScript eligibility checks. Done when the
+probe resets the installed catalogue per execution and the flake is explained or gone.
+
+## Web construction-blockers test F074
+
+`tests/applications/warband_manager/domain/campaign/construction-blockers.test.ts`
+("Printed entry recipients (F074) > applies a printed recipient clause across the
+collections") expects `equipment_not_permitted` for Trollheim entries (Lustria Pirates
+parrot, Lustria High Elves mage staff, Deathbringers witch sword) and gets
+`equipment_forbidden`; it fails the same way on an artefact generated from the
+committed KB (2026-11-17), so it predates the hireling work. Done when the verdict code
+matches the printed recipient clause.
 
 ## Combat Lab checklist popover
 

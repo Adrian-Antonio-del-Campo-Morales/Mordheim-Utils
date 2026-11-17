@@ -174,7 +174,8 @@ export function createHirelingsWorkflow(deps: HirelingsWorkflowDeps) {
     const groups = listings.campaignRows("warband_groups");
     const bandGroups = groupIdsOf(groups, campaign.identity.band_id);
     // Dynamic eligibility context (desktop hire-eligibility engine): the KB
-    // trait registry plus the warband roster drive conditional/rejected verdicts.
+    // hireling facts (derived from each profile by the KB generator) plus the
+    // warband roster drive conditional/rejected verdicts.
     const hirelingSection = listings.campaignSection("hirelings");
     const profiles = Array.isArray(hirelingSection["profiles"]) ? hirelingSection["profiles"] as readonly { id: string; rule_ids?: readonly string[]; rules?: readonly { id: string }[] }[] : [];
     const traitsRaw = (hirelingSection["traits"] ?? {}) as Record<string, readonly string[]>;
