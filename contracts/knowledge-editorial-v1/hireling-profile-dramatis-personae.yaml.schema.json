@@ -100,6 +100,25 @@
           "description": "Canonical skill ids the character starts with. Empty when the source declares none.",
           "$ref": "defs.schema.json#/$defs/id_list"
         },
+        "combat_traits": {
+          "description": "The character's duel identity, with the same keys and meaning as `combat_traits` in a band's `profiles.yaml` (`mordheim_construction.contracts.TRAIT_TYPES`). Effects such as causing Fear come only from printed rules, and a nature a printed rule already gives (Daemonic Flesh, Undead) is not repeated. Composite entries (a rider and its mount, a pair) declare none.",
+          "type": "object",
+          "additionalProperties": false,
+          "minProperties": 1,
+          "properties": {
+            "species": { "type": "string", "enum": ["human", "dwarf", "goblin", "skaven"] },
+            "elf_kind": { "type": "string", "enum": ["dark", "other"] },
+            "creature_kind": { "type": "string", "enum": ["undead"] },
+            "spellcaster": { "type": "boolean" }
+          }
+        },
+        "hiring_traits": {
+          "description": "Hiring facts that are neither a duel identity nor a printed rule, with the meaning of the Hired Sword schema: `evil` (tied to Chaos, the Undead, the Skaven or the Dark Elves) and `priest` (a priest of a god who uses prayers).",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "enum": ["evil", "priest"] }
+        },
         "rules": {
           "description": "The intrinsic special rules, inline: text that belongs to this character and is not shared.",
           "type": "array",

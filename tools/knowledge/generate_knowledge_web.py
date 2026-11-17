@@ -26,7 +26,7 @@ for package_root in reversed(PACKAGE_ROOTS):
 
 from mordheim_knowledge.campaign import (  # noqa: E402
     load_campaign_catalog,
-    load_hireling_traits,
+    hireling_traits,
     load_hirelings,
     load_post_battle_sequence,
     load_warband_groups,
@@ -1066,14 +1066,13 @@ def _build_campaign_section(ruleset: str, item_ids: set[str]) -> dict:
 
     # Hirelings: profiles, rules and traits as separate deterministic arrays.
     hirelings = load_hirelings(ruleset)
-    traits = load_hireling_traits(ruleset)
+    # The hiring facts are derived from each profile (combat identity, printed
+    # rules, hiring_traits); the published shape is unchanged for the web app.
+    traits = hireling_traits(ruleset)
     section["hirelings"] = {
         "profiles": sorted((_row(profile) for profile in hirelings.profiles), key=_sort_key),
         "rules": sorted((_row(rule) for rule in hirelings.rules), key=_sort_key),
-        "traits": {
-            str(row["profile_id"]): sorted(str(trait) for trait in row.get("traits") or ())
-            for row in sorted(traits, key=lambda row: str(row["profile_id"]))
-        },
+        "traits": {profile_id: list(traits[profile_id]) for profile_id in sorted(traits)},
     }
     section["warband_groups"] = sorted(
         (dict(group) for group in load_warband_groups(ruleset)), key=_sort_key,

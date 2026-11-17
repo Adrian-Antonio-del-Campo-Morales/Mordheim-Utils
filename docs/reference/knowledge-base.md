@@ -208,7 +208,7 @@ A band directory is typically four files:
 the shared `defs.schema.json`) describing its fields, types and editorial
 conventions: the four files of a band package, the catalogue families
 (`items`, `skills`, `rules`, `mechanics`), the hireling catalogue
-(`hired-swords`, `dramatis-personae`, their `rules.yaml`, `traits.yaml`) and the
+(`hired-swords`, `dramatis-personae` and their `rules.yaml`) and the
 campaign catalogue (the thirteen documents of `catalog/campaign/`, including the
 typed campaign effects and the exploration procedure tree).
 `mordheim_knowledge.editorial_schemas` validates them all, the structural
@@ -368,7 +368,14 @@ concepts stay in the profile's `unresolved_references`; remove only references
 that resolve after adding the canonical catalogue/schema. Do not invent IDs.
 Campaign rolls, choices and rewards are runtime state, not KB facts. Dynamic
 roster/variant restrictions use `*.rule.campaign-eligibility` and canonical
-traits rather than application-maintained sets. Composite warriors, mounts or
+traits rather than application-maintained sets. Every fact lives once, on the
+profile: a hireling's combat identity is its `combat_traits` (species, elf kind,
+creature kind, lizardman, spellcaster; the same keys as a band profile, none for a
+composite entry), effects such as causing Fear come only from its printed rules,
+and the facts that are neither (alignment `evil`, calling `priest`) are its
+`hiring_traits`.
+`mordheim_knowledge.campaign.hireling_traits` derives the hiring facts from those
+three sources for the web generator. Composite warriors, mounts or
 selectable personas remain `status: out_of_scope` until a schema can represent
 them without flattening their rules.
 

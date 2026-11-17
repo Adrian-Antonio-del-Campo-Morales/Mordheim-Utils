@@ -206,10 +206,23 @@ their separate evidence and ownership.
   (`campaign.limit.racial-maximum.*`); warband rules and campaign advancement
   reference them by id and never embed the statline.
 - **Hireling eligibility is evaluated by the application** from
-  `*.rule.campaign-eligibility` rules and the KB trait registry
-  (`catalog/hirelings/traits.yaml`), never inferred from static warband
+  `*.rule.campaign-eligibility` rules and the hiring facts of each profile
+  (`mordheim_knowledge.campaign.hireling_traits`), never inferred from static warband
   groups; ambiguous contexts produce explicit `needs_variant`/`unknown`
   decisions instead of guesses.
+- **A hireling fact is declared once, on its profile** (2026-11-17). Its combat
+  identity is the profile's `combat_traits`, exactly as for a band profile; an
+  effect such as causing Fear comes only from a printed rule and its binding;
+  alignment and calling are `hiring_traits`. The hiring facts are derived from
+  those, never kept in a second list: the retired `catalog/hirelings/traits.yaml`
+  mixed race, alignment, role and campaign affiliation, and projecting it into
+  combat duplicated four printed Cause Fear rules, gave Fear or an Undead nature
+  to four hirelings whose prints have neither, and missed nine printed
+  fear-causers in the hiring checks. The Bone Goliath is an Undead construct,
+  not an Ogre. `evil` marks a hireling the sources tie to Chaos, the Undead, the
+  Skaven or the Dark Elves (hireable only by such warbands, or printed as one of
+  them); criminals, greenskins and good-aligned casters are not `evil` by
+  default. `priest` marks a priest of a god who uses prayers, never a spellcaster.
 - **Hireling profile identities are not reused from bands** merely because
   names match; source-only concepts stay in `unresolved_references` until
   their catalogue exists.

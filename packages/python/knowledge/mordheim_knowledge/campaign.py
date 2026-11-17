@@ -543,38 +543,48 @@ def load_hirelings(
     return HirelingCatalogue(tuple(profiles), tuple(top_rules))
 
 
-@lru_cache(maxsize=None)
-def load_hireling_traits(
-    ruleset: str = "mordheim", root: Path | None = None
-) -> tuple[dict, ...]:
-    """Canonical intrinsic traits of the hireling profiles (``traits.yaml``).
+#: Printed rule bindings that state a hiring fact of their bearer.
+_HIRING_FACT_BINDINGS = {"mechanic.causes-fear": "fear-causing", "mechanic.undead": "undead"}
 
-    Every ``profile_id`` must resolve against ``catalog/hirelings/**`` so the
-    registry cannot drift from the profiles it describes.
+
+@lru_cache(maxsize=None)
+def hireling_traits(
+    ruleset: str = "mordheim", root: Path | None = None
+) -> dict[str, tuple[str, ...]]:
+    """The facts the hiring rules read about each hireling, derived from the profile.
+
+    Nothing is declared twice: race and nature come from the profile's
+    ``combat_traits`` (``elf_kind`` → ``elf``, ``species`` → its value,
+    ``creature_kind: undead`` → ``undead``, ``spellcaster``), ``fear-causing``
+    and ``undead`` also from an admitted effect of the profile's printed rules
+    (its inline ``rules`` and its ``rule_ids``) bound to ``mechanic.causes-fear``
+    or ``mechanic.undead``, and alignment and calling from ``hiring_traits``.
+    Profiles without any fact are omitted.
     """
-    base = (root or knowledge_root()) / HIRELING_CATALOGUE_DIR
-    path = base / "traits.yaml"
-    document = read_yaml(path)
-    _check_header(
-        document, path, ruleset,
-        require_catalog=False, require_status=False,
-    )
-    rows = tuple(document.get("traits") or ())
-    profile_ids = [str(row.get("profile_id") or "") for row in rows]
-    if any(not profile_id for profile_id in profile_ids):
-        raise ValueError(f"hireling traits has a row without profile_id: {path}")
-    if len(profile_ids) != len(set(profile_ids)):
-        raise ValueError(f"hireling traits has duplicate profile ids: {path}")
-    known = {
-        str(row.get("id") or "") for row in load_hirelings(ruleset, root).profiles
-    }
-    missing = sorted(set(profile_ids) - known)
-    if missing:
-        raise ValueError(
-            "hireling traits reference unknown profiles: "
-            + ", ".join(missing[:8])
-        )
-    return rows
+    catalogue = load_hirelings(ruleset, root)
+    shared = {str(rule.get("id")): rule for rule in catalogue.rules}
+    result: dict[str, tuple[str, ...]] = {}
+    for profile in catalogue.profiles:
+        combat = profile.get("combat_traits") or {}
+        facts = set(profile.get("hiring_traits") or ())
+        if combat.get("elf_kind"):
+            facts.add("elf")
+        if combat.get("species"):
+            facts.add(str(combat["species"]))
+        if combat.get("creature_kind") == "undead":
+            facts.add("undead")
+        if combat.get("spellcaster"):
+            facts.add("spellcaster")
+        rules = [rule for rule in profile.get("rules") or () if isinstance(rule, dict)]
+        rules += [shared[rule_id] for rule_id in profile.get("rule_ids") or () if rule_id in shared]
+        for rule in rules:
+            for effect in (rule.get("runtime") or {}).get("effects") or ():
+                fact = _HIRING_FACT_BINDINGS.get(str((effect.get("binding") or {}).get("id")))
+                if fact and effect.get("scope") == "YES":
+                    facts.add(fact)
+        if facts:
+            result[str(profile["id"])] = tuple(sorted(facts))
+    return result
 
 
 # Campaign catalogue loaders

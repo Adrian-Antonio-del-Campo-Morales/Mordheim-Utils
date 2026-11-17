@@ -67,7 +67,6 @@ HIRELING_DOCUMENTS: tuple[tuple[str, str], ...] = tuple(
 ) + (
     ("catalog/hirelings/hired-swords/rules.yaml", "hireling-rules.yaml.schema.json"),
     ("catalog/hirelings/dramatis-personae/rules.yaml", "hireling-rules.yaml.schema.json"),
-    ("catalog/hirelings/traits.yaml", "hirelings-traits.yaml.schema.json"),
 )
 
 #: Documents that live in a covered tree but belong to another workflow, with

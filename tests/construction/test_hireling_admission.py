@@ -225,6 +225,8 @@ def test_aenur_unique_weapon_strength_is_not_granted_twice_by_its_intrinsic_rule
 # --- the prepared trait facts, with a live consequence ------------------------
 
 def test_the_prepared_trait_facts_reach_admitted_hirelings():
+    # Fear comes from each printed Cause Fear rule; the identity facts come from
+    # the profile's own `combat_traits` (the hiring trait registry is not read).
     bodyguard = compile_hireling("hireling.hired-sword.ogre-bodyguard",
                                  main_weapon_id="weapon.double-handed-weapon")
     assert "mechanic.causes-fear" in bodyguard.global_effects.tags
@@ -232,10 +234,11 @@ def test_the_prepared_trait_facts_reach_admitted_hirelings():
     fury = compile_hireling("hireling.hired-sword.chaos-fury")
     assert "mechanic.causes-fear" in fury.global_effects.tags
     assert "nature.daemon" in fury.global_effects.tags
-    # The Dark Mage's Fear and Despise Despoilers rows are admitted.
+    # The Dark Mage prints Despise Despoilers and no Cause Fear rule; he is a spellcaster.
     mage = compile_hireling("hireling.hired-sword.dark-mage")
-    assert "mechanic.causes-fear" in mage.global_effects.tags
+    assert "mechanic.causes-fear" not in mage.global_effects.tags
     assert "mechanic.despise-despoilers" in mage.global_effects.tags
+    assert "identity.spellcaster" in mage.global_effects.tags
 
 
 def test_the_fanatic_reaches_the_duel_with_his_printed_weapon():

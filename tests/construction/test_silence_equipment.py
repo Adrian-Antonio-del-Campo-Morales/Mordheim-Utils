@@ -158,7 +158,6 @@ def _isolated_kb(tmp_path: Path) -> Path:
             "profiles": [{"id": "hireling.contract", "kind": "hired-sword",
                           "rules": [{"id": "hireling.contract.rule"}]}],
         },
-        "catalog/hirelings/traits.yaml": {"schema_version": 1, "ruleset": "mordheim", "traits": []},
         "catalog/items/contract.yaml": {"ruleset": "mordheim", "items": [{
             "id": "pistol", "kind": "ranged-weapon", "tags": [], "mechanic_id": "weapon.pistol",
             "combat_status": "out_of_scope",
