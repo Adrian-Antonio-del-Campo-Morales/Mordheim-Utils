@@ -1,6 +1,12 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.clan-skryre-rat-ogre.rule.immune-to-poison/trait.poison-immune
-# authoring_status: TODO
+# authoring_status: PARTIAL
+# authoring_progress: no scenario; the recipient cannot be built through the hireling route (B00 triage,
+#   2026-11-17): 'hireling unique equipment needs a canonical combat mapping:
+#   hireling.hired-sword.clan-skryre-rat-ogre.item.bio-armour' (the Bio-Mechanical Armour prints a 4+ save
+#   but has no catalogue item and mechanic). The poison-immunity family model applies once the profile
+#   compiles; the body stays empty and the gap explicit.
+# PARTIAL: missing datum - the profile does not compile; re-derive when the knowledge base supplies it.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +15,5 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-1b.yaml
-# TODO: Review the rule and author all required scenarios.
 
 []  # Empty scenario list: this file contributes no test or coverage.

@@ -223,6 +223,24 @@ their separate evidence and ownership.
   Skaven or the Dark Elves (hireable only by such warbands, or printed as one of
   them); criminals, greenskins and good-aligned casters are not `evil` by
   default. `priest` marks a priest of a god who uses prayers, never a spellcaster.
+- **Conformance triage decisions** (2026-11-17, first triage batch).
+  - A profile rule that only grants the band's own rule ("this warrior has the warband's
+    Pit Fighter rule") is `covered.elsewhere`; the band rule carries the effect (the Pit
+    Fighter skill, `LATER` until a terrain operator reads "fighting in ruins, buildings or
+    The Pit").
+  - A composite Dramatis Persona published `out_of_scope` (the Headless Horseman, rider and
+    steed) admits no duel effect: its effects are `LATER` (`deferred.mounts`) until the
+    composite-entity schema exists.
+  - A selectable printed effect that only acts outside the duel (Suckers: Initiative tests
+    when climbing) keeps its admitted carrier effect with no tags: the construction layer
+    refuses a selected rule with no admitted effect, so removing it would make a legal roster
+    unbuildable. Its scenarios evidence the legal selection and the unchanged duel, with a
+    Discrimination note.
+  - A hireling unique item whose printed rule the source marks uncertain (Dijin Katal's
+    Druchii Assassin's Cloak) is a `source-blocked` rule, so the profile compiles without
+    inventing an effect. A unique item that is a printed catalogue upgrade binds that
+    upgrade's mechanic (the Dark Elf Assassin's blade binds `material.dark-elf-blade`, as
+    Innominatus's does).
 - **Hireling profile identities are not reused from bands** merely because
   names match; source-only concepts stay in `unresolved_references` until
   their catalogue exists.

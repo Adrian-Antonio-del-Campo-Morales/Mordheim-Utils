@@ -37,17 +37,14 @@ rules:
     profile_ids:
     - pit-king
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: trait.pit-fighter
-      scope: 'YES'
-      binding:
-        kind: trait
-        id: trait.pit-fighter
-        parameters:
-          value: true
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   rule_ref: shared-rule.pit-fighter
 - id: dwarf-troll-slayer--pit-fighter
   name: Pit Fighter
@@ -62,17 +59,14 @@ rules:
     profile_ids:
     - dwarf-troll-slayer
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: trait.pit-fighter
-      scope: 'YES'
-      binding:
-        kind: trait
-        id: trait.pit-fighter
-        parameters:
-          value: true
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   rule_ref: shared-rule.pit-fighter
 - id: dwarf-troll-slayer--hard-to-kill
   runtime:
@@ -223,17 +217,14 @@ rules:
     profile_ids:
     - pit-veterans
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: trait.pit-fighter
-      scope: 'YES'
-      binding:
-        kind: trait
-        id: trait.pit-fighter
-        parameters:
-          value: true
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   rule_ref: shared-rule.pit-fighter
 - id: pit-fighters--pit-fighter
   name: Pit Fighter
@@ -248,17 +239,14 @@ rules:
     profile_ids:
     - pit-fighters
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: trait.pit-fighter
-      scope: 'YES'
-      binding:
-        kind: trait
-        id: trait.pit-fighter
-        parameters:
-          value: true
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   rule_ref: shared-rule.pit-fighter
 - id: pursuers--pit-fighter
   name: Pit Fighter
@@ -273,17 +261,14 @@ rules:
     profile_ids:
     - pursuers
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: trait.pit-fighter
-      scope: 'YES'
-      binding:
-        kind: trait
-        id: trait.pit-fighter
-        parameters:
-          value: true
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   rule_ref: shared-rule.pit-fighter
 - id: pursuers--evade
   name: Evade
@@ -320,17 +305,14 @@ rules:
     profile_ids:
     - ogre-pit-fighter
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: trait.pit-fighter
-      scope: 'YES'
-      binding:
-        kind: trait
-        id: trait.pit-fighter
-        parameters:
-          value: true
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   rule_ref: shared-rule.pit-fighter
 - id: ogre-pit-fighter--fear
   name: Fear

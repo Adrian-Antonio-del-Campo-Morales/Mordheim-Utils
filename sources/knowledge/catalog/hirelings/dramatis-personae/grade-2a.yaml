@@ -454,14 +454,13 @@ profiles:
       es: Causa Miedo
     runtime:
       grant: profile
-      scope: 'YES'
-      implemented: 'YES'
+      scope: 'LATER'
+      implemented: 'NO'
       effects:
       - id: mechanic.causes-fear
-        scope: 'YES'
-        binding:
-          kind: mechanic
-          id: mechanic.causes-fear
+        scope: 'LATER'
+        binding: null
+        reason: deferred.mounts
   - id: hireling.dramatis.the-headless-horseman.rule.immune-to-psychology
     name: Immune to Psychology
     effect: Horseman and steed are immune to psychology.
@@ -472,14 +471,13 @@ profiles:
       es: Inmune a la Psicología
     runtime:
       grant: profile
-      scope: 'YES'
-      implemented: 'YES'
+      scope: 'LATER'
+      implemented: 'NO'
       effects:
       - id: mechanic.psychology-immunity
-        scope: 'YES'
-        binding:
-          kind: mechanic
-          id: mechanic.psychology-immunity
+        scope: 'LATER'
+        binding: null
+        reason: deferred.mounts
   - id: hireling.dramatis.the-headless-horseman.rule.immune-to-poison
     name: Immune to Poison
     effect: Horseman and steed are immune to poison.
@@ -489,17 +487,14 @@ profiles:
     name_i18n:
       es: Inmune al Veneno
     runtime:
-      scope: 'YES'
-      implemented: 'YES'
       grant: profile
+      scope: 'LATER'
+      implemented: 'NO'
       effects:
       - id: trait.poison-immune
-        scope: 'YES'
-        binding:
-          kind: trait
-          id: trait.poison-immune
-          parameters:
-            value: true
+        scope: 'LATER'
+        binding: null
+        reason: deferred.mounts
   - id: hireling.dramatis.the-headless-horseman.rule.faithful-steed
     name: Faithful Steed
     effect: May never dismount.
@@ -527,14 +522,13 @@ profiles:
       es: No Muerto
     runtime:
       grant: profile
-      scope: 'YES'
-      implemented: 'YES'
+      scope: 'LATER'
+      implemented: 'NO'
       effects:
       - id: mechanic.undead
-        scope: 'YES'
-        binding:
-          kind: mechanic
-          id: mechanic.undead
+        scope: 'LATER'
+        binding: null
+        reason: deferred.mounts
   - id: hireling.dramatis.the-headless-horseman.rule.expert-rider
     name: Expert Rider
     effect: Counts as stationary for shooting after moving.

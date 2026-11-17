@@ -461,6 +461,8 @@ profiles:
       name: Integrated Warpfire Thrower
       name_i18n:
         es: Lanzallamas de Disformidad Integrado
+      rules:
+      - hireling.hired-sword.clan-skryre-rat-ogre.rule.warpfire-thrower
     - id: hireling.hired-sword.clan-skryre-rat-ogre.item.bio-armour
       name: Bio-Mechanical Armour
       save: 4+
@@ -658,6 +660,8 @@ profiles:
       name: Dark Elf Blade
       name_i18n:
         es: Arma Elfa Oscura
+      rules:
+      - hireling.hired-sword.dark-elf-assassin.item.dark-elf-blade.rule.combat
     - id: hireling.hired-sword.dark-elf-assassin.item.dark-cloak
       name: Dark Cloak
       counts_as:
@@ -692,6 +696,27 @@ profiles:
           id: trait.perfect-killer
           parameters:
             value: true
+  - id: hireling.hired-sword.dark-elf-assassin.item.dark-elf-blade.rule.combat
+    name: Dark Elf Blade
+    name_i18n:
+      es: Arma Elfa Oscura
+    effect: >-
+      Adds +1 to the critical hit table and treats Injury results of 2-4 as stunned; retains the
+      underlying weapon's properties.
+    effect_i18n:
+      es: >-
+        Añade +1 a la tabla de golpes críticos y trata los resultados de Herida de 2-4 como
+        Aturdido; conserva las propiedades del arma subyacente.
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: material.dark-elf-blade
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: material.dark-elf-blade
   - id: hireling.hired-sword.dark-elf-assassin.rule.kindred-hatred
     name: Kindred Hatred
     effect: Uses the source Dark Elf hatred rule.

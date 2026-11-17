@@ -67,9 +67,9 @@ ORDER = ("triage-blockers", "psy-immunities", "psy-tests-and-enemy-effects", "ha
          "equipment-items", "construction-equipment", "construction-skills-and-profile",
          "operators-hirelings", "operators-band-rules")
 
-# Profiles the kit resolver refuses today (TODO.md, hireling profiles that do not compile).
-UNCOMPILABLE_PROFILES = ("clan-skryre-rat-ogre", "roadwarden", "dark-elf-assassin",
-                         "dijin-katal-the-renegade-assassin", "the-headless-horseman")
+# A hireling profile that the construction layer refuses for want of KB data (its kit or its
+# duel profile) blocks every identity it carries; other refusals need a scenario input instead.
+UNCOMPILABLE_MARKERS = ("canonical combat mapping", "canonical duel profile", "complete legal printed kit")
 
 
 def _yaml(path: pathlib.Path):
@@ -99,6 +99,41 @@ def _find_rule(doc: dict, rule_id: str) -> dict | None:
     return None
 
 
+_COMPILE_CACHE: dict[str, str | None] = {}
+
+
+def _hireling_blocker(profile_id: str) -> str | None:
+    """The construction refusal of a hireling profile built with no options, if it is a KB gap."""
+    if profile_id not in _COMPILE_CACHE:
+        from mordheim_core.models import FighterBuild
+        from mordheim_construction.compiler import compile_fighter
+        from mordheim_knowledge.campaign import load_hirelings
+        profile = next((p for p in load_hirelings("mordheim").profiles if p["id"] == profile_id), None)
+        blocker = None
+        if profile is not None:
+            band = f"hirelings.{profile['kind']}.{profile.get('grade') or 'core'}"
+            try:
+                compile_fighter(FighterBuild("mordheim", band_id=band, profile_id=profile_id, collection="mordheim"))
+            except Exception as error:  # noqa: BLE001 - classify the refusal by its message
+                message = str(error).splitlines()[0]
+                if any(marker in message for marker in UNCOMPILABLE_MARKERS):
+                    blocker = message.split("Error: ")[-1][:160]
+        _COMPILE_CACHE[profile_id] = blocker
+    return _COMPILE_CACHE[profile_id]
+
+
+def _condition_effects() -> dict:
+    """Condition records whose duel content is carried by sibling effects with their own bindings."""
+    doc = _yaml(KB / "catalog/rules/conditions.yaml")
+    rows = next((v for v in doc.values() if isinstance(v, list)), []) if isinstance(doc, dict) else []
+    carried = set()
+    for row in rows:
+        effects = (row.get("runtime") or {}).get("effects") or []
+        if any(e.get("id") != row.get("id") and e.get("scope") == "YES" and e.get("binding") for e in effects):
+            carried.add(str(row.get("id")))
+    return carried
+
+
 def backlog() -> list[dict]:
     """One record per admitted identity without a scenario."""
     definitions = read_definitions(KB)
@@ -110,6 +145,10 @@ def backlog() -> list[dict]:
     mechanics_doc = _yaml(KB / "catalog/mechanics/close-combat.yaml")
     families = {str(row["id"]): family for family, rows in mechanics_doc.items() if isinstance(rows, list)
                 for row in rows if isinstance(row, dict) and "id" in row}
+    sections = {str(row["id"]): str(((row.get("source_refs") or [{}])[0] or {}).get("section") or "")
+                for rows in mechanics_doc.values() if isinstance(rows, list)
+                for row in rows if isinstance(row, dict) and "id" in row}
+    carried = _condition_effects()
     docs: dict[str, dict] = {}
     covered_bindings: set[str] = set()
     records = []
@@ -137,7 +176,8 @@ def backlog() -> list[dict]:
             tags = (entry.get("parameters") or {}).get("tags") or []
             row.update(binding=mechanic, binding_kind="mechanic", family=families.get(mechanic, ""),
                        hireling=False, params=sorted((entry.get("parameters") or {}).keys()),
-                       engine_reads_tag=any(tag in engine for tag in [mechanic, *tags]))
+                       section=sections.get(mechanic, ""),
+                       engine_reads_tag=mechanic in carried or any(tag in engine for tag in [mechanic, *tags]))
             if identity in covered:
                 covered_bindings.add(mechanic)
         records.append(row)
@@ -174,10 +214,10 @@ def _triage_reason(row: dict) -> str | None:
         return "PARTIAL file with a recorded blocker"
     if row["kind"] == "mechanic" and not row["engine_reads_tag"] and set(row["params"]) <= {"tags"}:
         return "no engine code reads the execution tag"
-    if any(f".{profile}." in row["identity"] for profile in UNCOMPILABLE_PROFILES):
-        return "hireling profile does not compile"
-    if row["binding"] == "trait.pit-fighter":
-        return "binding has no consumer"
+    if row.get("hireling"):
+        profile_id = re.sub(r"\.(rule|skill|patron|item)\..*$", "", row.get("rule_id", ""))
+        if _hireling_blocker(profile_id):
+            return "hireling profile does not compile"
     return None
 
 
@@ -200,6 +240,17 @@ def groups(rows: list[dict]) -> list[dict]:
     by_binding: dict[str, list[dict]] = collections.defaultdict(list)
     for row in rows:
         by_binding[row["binding"] or row["identity"]].append(row)
+    # One printed rule spread over several mechanics (Disability 1-6, Fungus Brew, Petru...) is
+    # one family: the mechanics of a shared printed source section travel together.
+    by_section: dict[str, list[str]] = collections.defaultdict(list)
+    for binding, members in by_binding.items():
+        section = next((m.get("section") for m in members if m["kind"] == "mechanic" and m.get("section")), "")
+        if section:
+            by_section[section].append(binding)
+    for section, bindings in by_section.items():
+        if len(bindings) > 1:
+            merged = [m for b in sorted(bindings) for m in by_binding.pop(b)]
+            by_binding[f"{sorted(bindings)[0]} (+{len(bindings) - 1} of {section})"] = merged
     result = []
     for binding, members in list(by_binding.items()):
         members.sort(key=lambda r: (r["kind"] != "mechanic", r["identity"]))

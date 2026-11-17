@@ -5,7 +5,7 @@ what is pending and when it is done.
 
 ## Rules-conformance coverage
 
-- **Authoring backlog.** 562 of 2,272 admitted identities have no scenarios. The division
+- **Authoring backlog.** 547 of 2,263 admitted identities have no scenarios. The division
   into batches, the order and the per-batch procedure are in *Rules-conformance authoring
   plan* below. Check with `MORDHEIM_CONFORMANCE_REQUIRE_COMPLETE=1 python -m pytest tests/conformance -q`;
   done when the gate passes.
@@ -27,13 +27,21 @@ what is pending and when it is done.
   `native/_combat_compile.py` still name `weapon.broadsword` in the Strongman
   exemption, though the broadsword has no penalty to remove. Done when the three
   branches read the two-handed case only.
-- **Hireling profiles that do not compile.** Five hireling profiles are refused by the
-  kit resolver before any rule can be exercised, so their 7 psychology identities stay
-  `PARTIAL` with an empty body: `clan-skryre-rat-ogre` (warpfire-thrower), `roadwarden`
-  (horsemans-hammer), `dark-elf-assassin` (dark-elf-blade) and `dijin-katal` (druchii
-  assassin's cloak) need a canonical combat mapping or a resolved rule for a unique kit
-  item; `the-headless-horseman` has no characteristics line (horseman and steed are a
-  composite). Done when each profile compiles through `band_id: hirelings.<kind>.<grade>`.
+- **Hireling profiles that do not compile.** Fifteen in-scope hireling profiles are refused by
+  the construction layer for want of KB data, so every identity they carry waits in triage
+  (`backlog_batches.py` detects them live). A unique kit item needs a canonical combat
+  mapping (a catalogue item and mechanic, like the Sabertooth Hide, or `counts_as`, or a
+  resolved rule): `clan-skryre-rat-ogre` (bio-armour, a printed 4+ save), `roadwarden`
+  (horsemans-hammer), `warrior-priest-of-sigmar` (hammer-of-sigmar), `knight-of-the-white-wolf`
+  (huge-hammer), `imperial-tactician` (two-handed-sword), `halfling-knight` (cavalry-spear),
+  `thief` (thiefs-cloak), `ninja` (smoke-bomb), `pyromaniac` (fireworks), and the Dramatis
+  Personae `dark-emissary` (staff-of-darkness), `truthsayer` (staff-of-light), `busty-gwen`
+  (knives) and `william-schakestange-master-bard` (lucky-rabbits-foot); `fire-eater` and
+  `holy-man` fail the printed-kit matcher with no options. Resolved on 2026-11-17: the Dark
+  Elf Assassin's blade binds the catalogue Dark Elf Blade upgrade, Dijin Katal's cloak is a
+  `source-blocked` rule, the Rat Ogre's Warpfire Thrower references its scope-NO rule, and the
+  Headless Horseman's duel effects are `LATER` (`deferred.mounts`; composite entry). Done when
+  each profile compiles through `band_id: hirelings.<kind>.<grade>`.
 - **Band members' hiring facts are not published.** Every hireling profile was reviewed on
   2026-11-17 (species, elf kind, creature kind, spellcaster, `evil`, `priest`; composite
   entries declare no combat identity) and `hire-eligibility.ts` reads hirelings only through
@@ -62,7 +70,15 @@ what is pending and when it is done.
   that bind a supplied `condition.*` with `grant: none`) and the Ogre
   bull-charge. Done when each is routed, re-authored against its own binding or
   excluded with its own reason.
-- **Printed-source checks before de-duplicating.** Sons of Nagarythe Powerful
+- **Protectorate of Sigmar (LotD3) special-skill access.** Unshakeable Faith (and the other
+  band-wide special skills) has no eligibility list and no hero prints the `special` skill
+  access, so the selection is refused for every profile and the identity stays `PARTIAL`.
+  Done when the print says which heroes may use the band's Special Skills and the KB carries
+  it (a `special` access or an eligibility list).
+- **Printed-source checks before de-duplicating.** Skaven of Clan Mors and Clan Skryre
+  (Karak Azgal) `band--rulebook-inheritance` grants a skill list whose members are already
+  Hero-only warband skills of their own: the access is encoded twice and the two files carry a
+  Discrimination note; keep one source. Sons of Nagarythe Powerful
   Build: the Shadow Master and Shadow Walker already list `strength` in
   `skill_access`, so the skill adds nothing for them; check the printed skill
   tables. `mad-scientist--lunatic` is printed as a Special Skill but granted
@@ -119,8 +135,8 @@ what is pending and when it is done.
 
 ## Rules-conformance authoring plan
 
-The plan of record for the 562 admitted identities without scenarios (2026-11-17, after
-the first hireling batch of 41 identities landed). `tools/conformance/backlog_batches.py`
+The plan of record for the 547 admitted identities without scenarios (2026-11-17, after
+the first hireling batch of 41 identities and the first triage batch landed). `tools/conformance/backlog_batches.py`
 derives it from the knowledge base and the corpus and never writes either; covered
 identities drop out when it is re-run, so the table below is refreshed as batches land.
 
@@ -137,44 +153,49 @@ that share a binding. A component of more than 30 members with an authored model
 contract, 1 to add a member to an authored or batch-local model, 1.5 for a construction
 member (admission/refusal pair), 2 for a triage item. Batches hold about 50 units.
 **Triage first:** the `PARTIAL` files with a recorded blocker, the operators no engine or
-construction code reads (`mechanic.haunted-mien`, `mechanic.suckers`,
-`condition.disability-2/4/5`, `armour.mage-robes`, `armour.wizard-robe`) and the identities
-on the five hireling profiles that do not compile. Triage is a decision pass (author,
+construction code reads (a condition whose duel content sits in sibling effects counts as
+read), and the identities on hireling profiles that do not compile (detected live). The
+mechanics of one printed source section (Disability 1–6, Fungus Brew, Petru...) form one
+family and are never split. Triage is a decision pass (author,
 rule or withhold with the blocker named), not bulk authoring. **Model** counts the
 identities whose binding already has authored scenarios elsewhere.
 
 | Batch | Theme | Ids | Model | Effort | Routes |
 | --- | --- | ---: | ---: | ---: | --- |
-| B00 | triage-blockers-1 | 22 | 12 | 44 | real profile build 15, special_rule_ids 2, construction 2, condition_ids 2, skill_ids 1 |
-| B01 | triage-blockers-2 | 22 | 5 | 44 | real profile build 7, condition_ids 7, skill_ids 4, special_rule_ids 2, construction 2 |
-| B02 | psy-tests-and-enemy-effects | 25 | 15 | 37 | skill_ids 15, real profile build 10 |
-| B03 | hatred-frenzy-and-charge-rages-1 | 25 | 5 | 55 | skill_ids 12, real profile build 10, special_rule_ids 3 |
-| B04 | hatred-frenzy-and-charge-rages-2 | 24 | 5 | 54 | skill_ids 13, real profile build 8, special_rule_ids 3 |
-| B05 | leadership-1 | 29 | 23 | 38 | real profile build 20, skill_ids 6, special_rule_ids 3 |
-| B06 | leadership-2 | 22 | 12 | 37 | skill_ids 10, real profile build 9, special_rule_ids 3 |
-| B07 | survival-injury-and-immunity-1 | 36 | 21 | 57 | real profile build 23, skill_ids 9, special_rule_ids 4 |
-| B08 | survival-injury-and-immunity-2 | 32 | 14 | 56 | real profile build 20, skill_ids 8, special_rule_ids 4 |
-| B09 | survival-saves-and-rerolls | 28 | 11 | 58 | real profile build 21, skill_ids 6, special_rule_ids 1 |
-| B10 | supplied-conditions-1 | 23 | 6 | 59 | condition_ids 23 |
-| B11 | supplied-conditions-2 | 29 | 16 | 59 | condition_ids 29 |
-| B12 | equipment-items-1 | 16 | 1 | 46 | equipment slot 16 |
-| B13 | equipment-items-2 | 16 | 3 | 43 | equipment slot 16 |
-| B14 | equipment-items-3 | 15 | 2 | 45 | equipment slot 15 |
-| B15 | construction-equipment-1 | 35 | 34 | 52.5 | construction 35 |
-| B16 | construction-equipment-2 | 35 | 33 | 52.5 | construction 35 |
-| B17 | construction-skills-and-profile | 43 | 28 | 64.5 | construction 43 |
-| B18 | operators-hirelings-1 | 25 | 15 | 40 | real profile build 17, skill_ids 5, special_rule_ids 3 |
-| B19 | operators-hirelings-2 | 22 | 10 | 40 | real profile build 10, special_rule_ids 7, skill_ids 5 |
-| B20 | operators-band-rules | 38 | 24 | 68 | skill_ids 27, real profile build 6, special_rule_ids 5 |
-| | **Total** | **562** | 295 | 1049.5 | |
+| B00 | triage-blockers | 31 | 9 | 62 | real profile build 12, condition_ids 8, skill_ids 6, special_rule_ids 3, construction 2 |
+| B01 | psy-tests-and-enemy-effects | 24 | 14 | 36 | skill_ids 14, real profile build 10 |
+| B02 | hatred-frenzy-and-charge-rages-1 | 25 | 3 | 49 | skill_ids 14, real profile build 7, special_rule_ids 4 |
+| B03 | hatred-frenzy-and-charge-rages-2 | 27 | 7 | 48 | skill_ids 12, real profile build 12, special_rule_ids 2, condition_ids 1 |
+| B04 | leadership | 51 | 33 | 66 | real profile build 27, skill_ids 16, special_rule_ids 6, condition_ids 2 |
+| B05 | survival-injury-and-immunity-1 | 34 | 18 | 55 | real profile build 22, skill_ids 9, special_rule_ids 3 |
+| B06 | survival-injury-and-immunity-2 | 34 | 17 | 55 | real profile build 20, skill_ids 7, special_rule_ids 5, equipment slot 2 |
+| B07 | survival-saves-and-rerolls | 32 | 11 | 62 | real profile build 21, skill_ids 6, equipment slot 3, special_rule_ids 1, condition_ids 1 |
+| B08 | supplied-conditions-1 | 23 | 3 | 41 | condition_ids 21, skill_ids 1, real profile build 1 |
+| B09 | supplied-conditions-2 | 27 | 19 | 39 | condition_ids 27 |
+| B10 | equipment-items-1 | 23 | 4 | 56 | equipment slot 21, skill_ids 1, real profile build 1 |
+| B11 | equipment-items-2 | 21 | 3 | 54 | equipment slot 21 |
+| B12 | construction-equipment-1 | 35 | 34 | 52.5 | construction 35 |
+| B13 | construction-equipment-2 | 35 | 33 | 52.5 | construction 35 |
+| B14 | construction-skills-and-profile | 43 | 28 | 64.5 | construction 43 |
+| B15 | operators-hirelings | 39 | 27 | 57 | real profile build 24, special_rule_ids 10, skill_ids 5 |
+| B16 | operators-band-rules | 43 | 25 | 64 | skill_ids 29, real profile build 7, special_rule_ids 5, condition_ids 1, equipment slot 1 |
+| | **Total** | **547** | 288 | 913.5 | |
 
-**Order.** Triage first (B00–B01). Then the model-heavy themes, which confirm the workflow on
+**Order.** Triage first (B00). Then the model-heavy themes, which confirm the workflow on
 cheap members: leadership, construction-equipment, construction-skills-and-profile,
 survival-injury-and-immunity. Then psy-tests-and-enemy-effects, hatred-frenzy-and-charge-rages
 and survival-saves-and-rerolls. The new-contract themes last: supplied-conditions,
 equipment-items, operators-hirelings, operators-band-rules. Batches own disjoint files by
 construction and may run in parallel; the coordinator owns the shared documents (this file,
 the design rulings, the conformance README).
+
+**Landed.** The first hireling batch (41 identities) and the first triage batch (22 identities,
+2026-11-17): 10 identities left the inventory by ruling (six Pit Fighter grants
+`covered.elsewhere`, four Headless Horseman effects `LATER`); six were authored, four after KB
+fixes (Dark Elf Assassin and Dijin Katal Kindred Hatred, the two Skaven rulebook-inheritance
+pairs) and the two Suckers identities as a legal selection with no duel effect; Disability 2 and 5
+returned to their family; the Rat Ogre (Bio-Armour) and Unshakeable Faith (special-skill access)
+stay `PARTIAL` with the blocker named. The decisions are in the design rulings.
 
 **Per batch.** Follow *Author by semantic family* in `tests/conformance/README.md`
 (hireling recipients: *Hireling recipients* there). Verify with
@@ -186,11 +207,11 @@ in `docs/decisions/design-rulings.md` and new defects here.
 
 ## Runtime classification
 
-- **Bindings that execute nothing.** `trait.pit-fighter` (six Mordheim Pit
-  Fighters profiles; construction tests pin the trait tag),
-  `compiler.warrior-wizard` (the Liche) and `condition.large-target` (three
-  hired-sword rules) read as implemented, but no engine or compiler code
-  consumes them. Decide per binding: implement it, or unbind it.
+- **Bindings that execute nothing.** `compiler.warrior-wizard` (the Liche) reads as
+  implemented, but no engine or compiler code consumes it. Decide: implement it, or unbind
+  it. (`trait.pit-fighter` was resolved on 2026-11-17: the six profile grants are
+  `covered.elsewhere` by the band's Pit Fighter skill, itself `LATER` pending a terrain
+  operator for "fighting in ruins, buildings or The Pit".)
 - **Saurus bite.** `compiler.bite-attack` never strikes last (only
   `rule.strikes-last-bite` does, `modular/rounds.py`), although the printed bite
   "always strikes last".

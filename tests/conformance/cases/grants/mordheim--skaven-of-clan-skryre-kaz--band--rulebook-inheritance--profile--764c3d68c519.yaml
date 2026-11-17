@@ -1,17 +1,18 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/skaven-of-clan-skryre-kaz/band--rulebook-inheritance/profile.skill-access
-# authoring_status: PARTIAL
-# authoring_progress: no scenario is derived for the admitted whole clause, and the reason is a
-#   missing input rather than missing authoring work.  The printed sentence grants the rulebook
-#   Skaven weapons and special skills while denying the Art of Silent Death, which its own contract
-#   records as construction legality; the corpus route for such a rule is a construction refusal
-#   whose declared fragment is a verbatim part of the message the construction module emits for the
-#   denied skill.  This origin, however, names no recipient: the record has no effect_id, no consumer
-#   and empty conditions, and the printed recipient is the band's "Skaven Heroes" as a class.  A
-#   fixture would therefore have to name a hero profile id and a resolved rulebook skill list this
-#   origin does not declare; naming either from guesswork would misreport the origin.  REVIEWED
-#   still requires manual semantic review and execution_status stays UNEXECUTED; no behavioral
-#   result is claimed.
+# authoring_status: AUTHORED
+# authoring_progress: 2 authored scenarios (construction admission/refusal pair, B00 triage 2026-11-17): a
+#   Skaven Hero is admitted to a skill of the printed rulebook Skaven special list and a henchman of the
+#   band is refused it.  The earlier blocker (no named recipient) is resolved: the printed recipients are
+#   the band's Heroes, and every Hero profile of the band prints the `special` skill access the binding
+#   reads.  The printed denial of the Art of Silent Death is a scope-NO effect of the same record.
+# AUTHORED: the admission and the refusal of the printed list are declared below; REVIEWED still requires
+#   manual semantic review.
+# Discrimination note (2026-11-17, B00 triage): the admission and the refusal survive this binding's
+#   removal because the KB encodes the same access twice: each listed member rule
+#   (`band--skaven-special-skills-*`) is a Hero-only warband skill of its own, and every Hero of the band
+#   prints the `special` skill access, so the members are admitted to the Heroes and refused to the
+#   henchmen without this record. Single-source candidate (TODO.md, printed-source checks).
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -19,26 +20,49 @@
 # REVIEWED requires semantic review; covers labels alone are insufficient.
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/skaven-of-clan-skryre-kaz/special-rules.yaml
 #
-# PARTIAL: [E] excluded by the register's own accepted scope disposition ("An equivalent printed
-#   CRITERION CORRECTION (final reconciliation): the wording "excluded by an accepted scope decision" above
-#   is replaced by the precise record.  This requirement is NOT out of the admitted scope: its own recorded
-#   scope_reason admits it - "Granting Clan Skryre the rulebook Skaven weapons and special skills while refusing Art of Silent Death is a printed access rule with a named denial, which is construction legality." - and nothing here is concluded from a scope-LATER / implemented-NO /
-#   null binding, which belongs to another row and carries its own recorded reason.  What blocks a tape is
-#   the concrete requirement named above in this marker; the clause stays recorded as withheld and is not
-#   dropped, aliased to another origin or counted as covered.  Where this file also quotes a register
-#   exclusion, that exclusion applies to the campaign, roster or advancement faces it names.
-# stanza for Clan Skryre: the access grants and the named exclusion are construction and campaign state, so
-# no duel operator is required and none exists"), whose inherited contract closes as "unmodelled while
-# equipment access and skill-list access are construction and campaign concerns".  [B] is not available
-# either: the printed recipient is the band's "Skaven Heroes" as a class with no effect_id, no consumer
-# and empty conditions, so a fixture would have to invent the recipient profile id and the resolved
-# rulebook list.  Closing review keeps PARTIAL with this citation; the narrower datum is recorded below.
-#   Pending requirement named exactly: this origin's recipients (the band's Skaven
-#   Heroes) must resolve to concrete profile ids, and the band's rulebook skill list must resolve as
-#   an access set, so that a construction refusal on the printed denial of skill.art-of-silent-death
-#   can be declared with its verbatim message fragment and an admission can be declared for a
-#   printed allowed rulebook skill.  Without those two resolutions the fixture would assert an
-#   invented recipient or an invented allowance.
+# --- Authored scenarios ---
+# Construction pair: the rule grants the band's Heroes the rulebook Skaven special skills (Black Hunger,
+# Tail Fighting, Wall Runner, Infiltration).  The Hero selecting Black Hunger
+# is compiled with the skill; a henchman of the same band selecting it is refused.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+- audit_id: rule/mordheim/skaven-of-clan-skryre-kaz/band--rulebook-inheritance/profile.skill-access
+  id: a-skaven-hero-is-admitted-to-a-printed-rulebook-special-skill
+  fighters:
+    first:
+      collection: mordheim
+      band_id: skaven-of-clan-skryre-kaz
+      profile_id: master-engineer
+      special_rule_ids: [band--skaven-special-skills-black-hunger]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    # The admitted Black Hunger prints +1 Attack for the turn it is invoked: the Hero's one blow
+    # is declared as a natural 1.  Its own duel contract belongs to its own identity.
+    - {key: round.0.first.attack.0.hit, value: 1}
+    # At the end of the turn it prints D3 Strength 3 hits on the Hero with no armour save: one hit.
+    - {key: round.0.first.black-hunger.hits, sides: 3, value: 1}
+    # The Strength 3 hit's wound roll is a natural 1, so it wounds nothing.
+    - {key: round.0.first.black-hunger.hit.0.wound, value: 1}
+  # The compiled Hero carries its printed facts plus the admitted skill (mechanic.black-hunger); the
+  # same Hero without the selection compiles the same list without it.
+  expect_fighters:
+    first.global_effects.tags: ['mechanic.leader-six', 'mechanic.black-hunger', 'armour.no-armour', 'fighter-kind.hero', 'band.skaven-of-clan-skryre-kaz']
+
+- audit_id: rule/mordheim/skaven-of-clan-skryre-kaz/band--rulebook-inheritance/profile.skill-access
+  id: a-henchman-of-the-band-is-refused-the-same-skill
+  fighters:
+    first:
+      collection: mordheim
+      band_id: skaven-of-clan-skryre-kaz
+      profile_id: clanrats
+      special_rule_ids: [band--skaven-special-skills-black-hunger]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to skaven-of-clan-skryre-kaz/clanrats: band--skaven-special-skills-black-hunger"

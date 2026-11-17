@@ -340,6 +340,8 @@ profiles:
       name: Druchii Assassin's Cloak
       name_i18n:
         es: Capa de Asesino Druchii
+      rules:
+      - hireling.dramatis.dijin-katal-the-renegade-assassin.item.druchii-assassins-cloak.rule.non-duel
   skill_access: []
   starting_skill_ids:
   - skill.strike-to-injure
@@ -348,6 +350,26 @@ profiles:
   - skill.lightning-reflexes
   - skill.trick-shooter
   rules:
+  - id: hireling.dramatis.dijin-katal-the-renegade-assassin.item.druchii-assassins-cloak.rule.non-duel
+    name: Druchii Assassin's Cloak
+    name_i18n:
+      es: Capa de Asesino Druchii
+    effect: >-
+      The cloak's printed rule is marked uncertain by the source; no duel effect is modelled until
+      the print is confirmed.
+    effect_i18n:
+      es: >-
+        La fuente marca como dudosa la regla impresa de la capa; no se modela ningún efecto en el
+        duelo hasta confirmar el texto impreso.
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.dramatis.dijin-katal-the-renegade-assassin.item.druchii-assassins-cloak.non-duel
+        scope: 'NO'
+        binding: null
+        reason: source-blocked
   - id: hireling.dramatis.dijin-katal-the-renegade-assassin.rule.kindred-hatred
     name: Kindred Hatred
     effect: Uses source hatred rule.
