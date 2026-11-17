@@ -10,19 +10,22 @@ what is pending and when it is done.
   plan* below. Check with `MORDHEIM_CONFORMANCE_REQUIRE_COMPLETE=1 python -m pytest tests/conformance -q`;
   done when the gate passes.
 - **Rousing Sermon (Trollheim) cost not modelled.** The printed "He may not use
-  Prayers that turn" is not enforced, and `catalog/skills/warband.yaml`
-  (`skill.inspiring-sermon`) describes a passive "+1 Attack for the turn" without
-  the declaration. The two fixture scenarios in the Trollheim file exercise
-  `mechanic.rousing-sermon` (the once-per-game Mordheim operator), not this
-  rule's binding. Done when the cost is modelled or ruled out of duel scope and
-  the fixtures are rebound.
+  Prayers that turn" is not enforced (no engine models Prayers), and
+  `catalog/skills/warband.yaml` (`skill.inspiring-sermon`) still describes a passive
+  "+1 Attack for the turn" without the declaration. The Trollheim file holds two
+  real-profile scenarios plus two fixtures on `mechanic.rousing-sermon` (the
+  once-per-game Mordheim operator), and its "ENGINE-DEFECT (2026-11-16)" comments are
+  stale. Done when the cost is ruled out of duel scope or modelled, the skill text
+  matches, and the fixtures are retired or rebound.
 - **Hypnotic Gaze for Lahmia.** Eligibility reads the KB `eligibility` list
   (`von-carstein-vampire`, `lahmia-vampire`), but the cited print (*Chaos in the
   Streets* p.181) is a Von Carstein section. Done when the list matches the print.
-- **Master of Arms reaches only the Morning Star.** Items carry no
-  Difficult-to-Use flag, so the exception in `eligibility/index.ts` names the
-  Morning Star. Done when Difficult to Use is a declared item property, or a
-  ruling confirms the Morning Star is the only such one-handed weapon on the list.
+- **Master of Arms misses the Broadsword.** Items carry no Difficult-to-Use flag, so
+  the exception in `eligibility/index.ts` (and `_eligibility.js`) names the Morning
+  Star only, while the KB prints the Broadsword as the one-handed "Difficult to use"
+  weapon (`weapons-close-combat.yaml`) and the Morning Star's KB text says only
+  "Heavy". Done when Difficult to Use is a declared item property read by the
+  exception, after checking the Morning Star's print.
 - **Dead Strongman branch.** `phases.py`, `vectorized/_operators.py` and
   `native/_combat_compile.py` still name `weapon.broadsword` in the Strongman
   exemption, though the broadsword has no penalty to remove. Done when the three
@@ -37,21 +40,15 @@ what is pending and when it is done.
   `thief` (thiefs-cloak), `ninja` (smoke-bomb), `pyromaniac` (fireworks), and the Dramatis
   Personae `dark-emissary` (staff-of-darkness), `truthsayer` (staff-of-light), `busty-gwen`
   (knives) and `william-schakestange-master-bard` (lucky-rabbits-foot); `fire-eater` and
-  `holy-man` fail the printed-kit matcher with no options. Resolved on 2026-11-17: the Dark
-  Elf Assassin's blade binds the catalogue Dark Elf Blade upgrade, Dijin Katal's cloak is a
-  `source-blocked` rule, the Rat Ogre's Warpfire Thrower references its scope-NO rule, and the
-  Headless Horseman's duel effects are `LATER` (`deferred.mounts`; composite entry). Done when
-  each profile compiles through `band_id: hirelings.<kind>.<grade>`.
-- **Band members' hiring facts are not published.** Every hireling profile was reviewed on
-  2026-11-17 (species, elf kind, creature kind, spellcaster, `evil`, `priest`; composite
-  entries declare no combat identity) and `hire-eligibility.ts` reads hirelings only through
-  the derived `hireling_traits`. Band members still go through the hard-coded
-  `FEAR_PROFILE_KEYWORDS` / `SPELLCASTER_PROFILE_KEYWORDS` substring lists; the Witch
-  Hunter's printed exception covers priests of Sigmar, Ulric, Taal and Morr only, while the
-  code excuses any `priest`. Several species and alignment calls rest on knowledge of the
-  printed sources rather than the KB text (marked medium confidence in the review): check
-  them when the prints are mirrored. Done when the generator publishes band members' facts
-  and the keyword lists are gone (web-app phase).
+  `holy-man` fail the printed-kit matcher with no options. Done when each profile compiles
+  through `band_id: hirelings.<kind>.<grade>`.
+- **Band members' hiring facts are not published.** `hire-eligibility.ts` reads hirelings
+  through the derived `hireling_traits`, but band members still go through the hard-coded
+  `FEAR_PROFILE_KEYWORDS` / `SPELLCASTER_PROFILE_KEYWORDS` substring lists, and the Witch
+  Hunter's printed exception (priests of Sigmar, Ulric, Taal and Morr only) is coded as any
+  `priest`. Several hireling species and alignment facts rest on knowledge of the printed
+  sources rather than the KB text: check them when the prints are mirrored. Done when the
+  generator publishes band members' facts and the keyword lists are gone (web-app phase).
 - **Witch Hunter Burn the Witch binds the general `skill.hatred`.** The print hates enemy
   spellcasters; the band Witch Hunters bind `mechanic.burn-the-witch`, which reads
   `identity.spellcaster` (`trait_overrides: {spellcaster: true}` declares it), while
@@ -111,21 +108,23 @@ what is pending and when it is done.
   control re-checks each clause and passes, but reports the move) and protects 15
   identities only. Done when a reviewed edit refreshes the digest and extends the
   reference to the reviewed identities.
-- **`crude-belch-ogre` probes non-discriminating without a note.** It is the only one of
-  the 27 non-discriminating identities without a dated `# Discrimination note`; its
-  scenarios exercise `skill.crude-belch-halfling` and two Monster Slayer refusals.
-  Done when the identity has a better scenario or its note.
-- **Haughty also bars obsidian.** The Dwarf-equipment guard in
-  `_eligibility.js` treats `material.obsidian` as Dwarf-made; the printed text
-  names only Dwarf origin and Gromril. Done when the guard matches the print or a
-  ruling records why.
-- **Scenarios that contradict or miss their print.** Pirates Sea Shanty
-  `a-psychology-immune-enemy-is-not-tested-and-keeps-both-attacks` contradicts the
-  print (only Undead and non-living are exempt); Curse of the Reborn
-  `the-four-plus-regeneration-save-ignores-the-wound` claims
-  `blocked-by-fire-and-blessed` without evidencing it; the Ogre Hunting skills
-  file hosts five hand-built bull-charge/crude-belch scenarios that do not
-  exercise it. Done when each scenario matches its print and identity.
+- **Ogre Hunting scenarios that miss their identity.** `crude-belch-ogre` probes
+  non-discriminating without a dated `# Discrimination note`: its file exercises
+  `skill.crude-belch-halfling` and hosts two Monster Slayer refusals moved from the retired
+  skill-access file; the three `bull-charge` scenarios inject `mechanic.bull-charge` through
+  `skill_ids` and probe `inert`. Done when each identity has scenarios on its own binding (or
+  its note) and the refusals live with the identity they evidence.
+- **Haughty also bars obsidian for the Mordheim High Elves.** One Dwarf-equipment guard
+  (`_eligibility.js`, `index.ts`) serves two bands and treats `material.obsidian` as
+  Dwarf-made: the Trollheim print names "Gromril and Obsidian", the Mordheim
+  (`high-elves-lus`) print only Dwarf origin and Gromril. Done when the guard follows each
+  band's print.
+- **Scenarios that contradict or miss their print.** The Mordheim Pirates Sea Shanty
+  scenario `a-psychology-immune-enemy-is-not-tested-and-keeps-both-attacks` contradicts its
+  print (only Undead and non-living are exempt; the Trollheim copy matches its own print);
+  in both Curse of the Reborn files `the-four-plus-regeneration-save-ignores-the-wound`
+  declares `blocked-by-fire-and-blessed` without evidencing it. Done when each scenario
+  matches its print and identity.
 - **Engine or eligibility behaviour without printed support.** Any two Dwarf axes
   get a parry re-roll regardless of skill (`contexts.py::_parry_context`); Wheelo
   fittings are gated on `mechanic.wheelo-impact`, not on the rule; the
@@ -135,10 +134,10 @@ what is pending and when it is done.
 
 ## Rules-conformance authoring plan
 
-The plan of record for the 547 admitted identities without scenarios (2026-11-17, after
-the first hireling batch of 41 identities and the first triage batch landed). `tools/conformance/backlog_batches.py`
-derives it from the knowledge base and the corpus and never writes either; covered
-identities drop out when it is re-run, so the table below is refreshed as batches land.
+The plan of record for the admitted identities without scenarios.
+`tools/conformance/backlog_batches.py` derives it from the knowledge base and the corpus and
+never writes either; covered identities drop out when it is re-run, so the table below is
+refreshed as batches land.
 
 ```bash
 .venv/bin/python tools/conformance/backlog_batches.py --table          # this table
@@ -156,8 +155,8 @@ member (admission/refusal pair), 2 for a triage item. Batches hold about 50 unit
 construction code reads (a condition whose duel content sits in sibling effects counts as
 read), and the identities on hireling profiles that do not compile (detected live). The
 mechanics of one printed source section (Disability 1–6, Fungus Brew, Petru...) form one
-family and are never split. Triage is a decision pass (author,
-rule or withhold with the blocker named), not bulk authoring. **Model** counts the
+family and are never split. Triage is a decision pass (author, rule or withhold with the
+blocker named), not bulk authoring. **Model** counts the
 identities whose binding already has authored scenarios elsewhere.
 
 | Batch | Theme | Ids | Model | Effort | Routes |
@@ -189,14 +188,6 @@ equipment-items, operators-hirelings, operators-band-rules. Batches own disjoint
 construction and may run in parallel; the coordinator owns the shared documents (this file,
 the design rulings, the conformance README).
 
-**Landed.** The first hireling batch (41 identities) and the first triage batch (22 identities,
-2026-11-17): 10 identities left the inventory by ruling (six Pit Fighter grants
-`covered.elsewhere`, four Headless Horseman effects `LATER`); six were authored, four after KB
-fixes (Dark Elf Assassin and Dijin Katal Kindred Hatred, the two Skaven rulebook-inheritance
-pairs) and the two Suckers identities as a legal selection with no duel effect; Disability 2 and 5
-returned to their family; the Rat Ogre (Bio-Armour) and Unshakeable Faith (special-skill access)
-stay `PARTIAL` with the blocker named. The decisions are in the design rulings.
-
 **Per batch.** Follow *Author by semantic family* in `tests/conformance/README.md`
 (hireling recipients: *Hireling recipients* there). Verify with
 `validate_corpus.py` (0 metadata conflicts), `pytest tests/conformance/execution/test_cases.py -k <selector> -n 4`
@@ -209,9 +200,11 @@ in `docs/decisions/design-rulings.md` and new defects here.
 
 - **Bindings that execute nothing.** `compiler.warrior-wizard` (the Liche) reads as
   implemented, but no engine or compiler code consumes it. Decide: implement it, or unbind
-  it. (`trait.pit-fighter` was resolved on 2026-11-17: the six profile grants are
-  `covered.elsewhere` by the band's Pit Fighter skill, itself `LATER` pending a terrain
-  operator for "fighting in ruins, buildings or The Pit".)
+  it.
+- **Pit Fighter skill needs a terrain operator.** `band--pit-fighter-skill` ("+1 WS and +1 A
+  when fighting in ruins, buildings or The Pit") is `LATER` (pending implementation); the
+  duel context already carries `terrain` labels. Done when an operator reads them or the
+  skill is ruled out of the duel.
 - **Saurus bite.** `compiler.bite-attack` never strikes last (only
   `rule.strikes-last-bite` does, `modular/rounds.py`), although the printed bite
   "always strikes last".
@@ -271,7 +264,7 @@ Done when the shared state it depends on is found and isolated.
 
 ## Intermittent removal-probe baseline failure
 
-On 2026-11-17, two P0 probe runs (`--workers 3`) reported both Grave Robber hatred
+On 2026-11-17, two probe runs of the first hireling batch (`--workers 3`) reported both Grave Robber hatred
 scenarios `baseline-fails` (identity `inert`) although they pass under pytest; nine later
 runs (three CLI, six instrumented) were clean, and the cause was not found. While looking,
 `mordheim_construction.eligibility` was found to install the catalogue into its JavaScript
@@ -305,11 +298,12 @@ tracked here so corpus work is not blocked on them. A delivery is never proof of
 its source scenario's expectations. Charter:
 [`tests/engines/parity/README.md`](tests/engines/parity/README.md).
 
-- **Parity deliveries behind the corpus.** Against 5,390 corpus scenarios and
-  5,161 deliveries, 436 delivery keys name scenarios that no longer exist, 665
-  scenarios have no delivery and 1,321 deliveries are stale (`source.sha256`);
-  `tests/engines/fixtures/compiled-cases.json` likewise holds `conformance/...`
-  entries under retired scenario ids. Done when the deliveries are re-prepared
+- **Parity deliveries behind the corpus.** Measured on 2026-11-17 against 5,390
+  corpus scenarios (the corpus has grown since): of 5,161 deliveries, 436 keys name
+  scenarios that no longer exist, 665 scenarios had no delivery and 1,321 deliveries
+  were stale (`source.sha256`). `tests/engines/fixtures/compiled-cases.json` holds
+  `conformance/...` entries under retired scenario ids, and its manifest still lists
+  the retired `catalog/hirelings/traits.yaml` as an input. Done when the deliveries are re-prepared
   with `export_cases` and the orphans removed. This must precede any delivery
   re-sample.
 - **Delivery README figures are stale.** `tests/engines/parity/README.md`
@@ -357,4 +351,4 @@ modular engine requires explicit authorization.
 | --- | --- |
 | Implement the Sunstaff Lustria melee profile | Add the bearer-Strength profile without invented two-handed, +1 Strength or ignition properties, then reconnect its item/simulation mapping and pending register clause (engine support stays pending by user decision). |
 | Resolve hireling `unresolved_references` | Replace references as canonical catalogues become available; keep genuinely unresolved links explicit. |
-| Define composite-entity schemas | Establish schemas before admitting multi-warrior, mounted or multi-persona Dramatis Personae. |
+| Define composite-entity schemas | Establish schemas before admitting multi-warrior, mounted or multi-persona Dramatis Personae; the Headless Horseman's four duel effects wait on it (`LATER`, `deferred.mounts`). |
